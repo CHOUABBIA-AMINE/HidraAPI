@@ -102,3 +102,33 @@ Owner approval on 2026-10-05 requires GitHub Environment `production` to enforce
 The post-deployment acceptance path must be authenticated, read-only, harmless to business data and database-backed.
 
 Actual reviewer identities, hostnames, URLs and credentials remain controlled environment configuration and are not committed here.
+
+
+## HPR-CI-003 release evidence and CI handoff — 2026-10-13
+
+The updated release eligibility helper strengthens the prior workflow-name-only lookup.
+Manual dispatch, exact 40-character source identity, main ancestry, production Environment,
+change/schema/rollback declarations, immutable artifact digest and deployment controls
+remain unchanged. No release/deployment or live reviewer-setting verification occurred.
+
+Future candidates require the latest completed successful exact-main HidraAPI CI run
+and attempt; every mandatory full/aggregate job; an authenticated SHA/run/attempt-named
+aggregate artifact; GitHub ZIP digest verification; and revalidation of all raw lane
+reports, lifecycle, current/base API and genuine catalog facts. Pagination, ambiguous/
+missing/stale/expired/cancelled/partial/Fast/PR merge-ref evidence fails closed. Trusted
+helper policy survives candidate checkout. Signed artifact redirects receive no GitHub
+token. The explicit legacy discriminator permits only recorded accepted #668 at c1f25af
+with its exact workflow hash/run/attempt/report ZIP digest; it grants no future partial
+workflow exemption. The fallback oracle remains mandatory during shadow; optimized
+adoption is false until the roadmap campaign establishes equivalence and performance.
+
+Operate existing main directly; do not create branches/PRs or proof images. Authorized
+code pushes automatically start Full, Fast and relevant Docs. Observe exact published
+SHA startup and stop; owner sends next or fail. If manual dispatch is required and the
+connector lacks it, the agent stops BEFORE starting CI and gives the workflow/ref/SHA.
+For full acceptance open [HidraAPI CI](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/workflows/ci.yml),
+click Run workflow, choose main, verify the expected SHA, then Run workflow. For fast
+measurement use [HidraAPI Fast Feedback](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/workflows/ci-fast-feedback.yml);
+for documentation use [Documentation Validation](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/workflows/docs.yml).
+The agent awaits feedback; it does not use browser dispatch or start a release workflow.
+Fast success is diagnostic feedback and cannot substitute for full release evidence.

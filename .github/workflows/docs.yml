@@ -1,64 +1,79 @@
 name: HidraAPI Documentation Validation
-
-on:
+'on':
   push:
     branches:
-      - main
+    - main
     paths:
-      - "doc/**"
-      - "**/*.md"
-      - ".github/scripts/validate_docs.py"
-      - ".github/scripts/test_validate_docs.py"
-      - ".github/scripts/validate_openapi_snapshot.py"
-      - ".github/scripts/test_validate_openapi_snapshot.py"
-      - ".github/scripts/generate_data_dictionary.py"
-      - ".github/scripts/test_generate_data_dictionary.py"
-      - ".github/database-dictionary-ownership.json"
-      - ".github/documentation-validation.json"
-      - ".github/workflows/docs.yml"
-      - ".github/workflows/ci.yml"
+    - doc/**
+    - '**/*.md'
+    - .github/scripts/validate_docs.py
+    - .github/scripts/test_validate_docs.py
+    - .github/scripts/validate_openapi_snapshot.py
+    - .github/scripts/test_validate_openapi_snapshot.py
+    - .github/scripts/generate_data_dictionary.py
+    - .github/scripts/test_generate_data_dictionary.py
+    - .github/database-dictionary-ownership.json
+    - .github/documentation-validation.json
+    - .github/workflows/docs.yml
+    - .github/workflows/ci.yml
+    - .github/ci-test-inventory.json
+    - .github/scripts/verify_ci_test_inventory.py
+    - .github/scripts/test_verify_ci_test_inventory.py
+    - .github/scripts/verify_full_ci_evidence.py
+    - .github/scripts/test_verify_full_ci_evidence.py
+    - .github/scripts/resolve_openapi_base.py
+    - .github/scripts/test_resolve_openapi_base.py
+    - .github/workflows/ci-fast-feedback.yml
+    - .github/workflows/release.yml
   pull_request:
     branches:
-      - main
+    - main
     paths:
-      - "doc/**"
-      - "**/*.md"
-      - ".github/scripts/validate_docs.py"
-      - ".github/scripts/test_validate_docs.py"
-      - ".github/scripts/validate_openapi_snapshot.py"
-      - ".github/scripts/test_validate_openapi_snapshot.py"
-      - ".github/scripts/generate_data_dictionary.py"
-      - ".github/scripts/test_generate_data_dictionary.py"
-      - ".github/database-dictionary-ownership.json"
-      - ".github/documentation-validation.json"
-      - ".github/workflows/docs.yml"
-      - ".github/workflows/ci.yml"
-  workflow_dispatch:
-
+    - doc/**
+    - '**/*.md'
+    - .github/scripts/validate_docs.py
+    - .github/scripts/test_validate_docs.py
+    - .github/scripts/validate_openapi_snapshot.py
+    - .github/scripts/test_validate_openapi_snapshot.py
+    - .github/scripts/generate_data_dictionary.py
+    - .github/scripts/test_generate_data_dictionary.py
+    - .github/database-dictionary-ownership.json
+    - .github/documentation-validation.json
+    - .github/workflows/docs.yml
+    - .github/workflows/ci.yml
+    - .github/ci-test-inventory.json
+    - .github/scripts/verify_ci_test_inventory.py
+    - .github/scripts/test_verify_ci_test_inventory.py
+    - .github/scripts/verify_full_ci_evidence.py
+    - .github/scripts/test_verify_full_ci_evidence.py
+    - .github/scripts/resolve_openapi_base.py
+    - .github/scripts/test_resolve_openapi_base.py
+    - .github/workflows/ci-fast-feedback.yml
+    - .github/workflows/release.yml
+  workflow_dispatch: null
 permissions:
   contents: read
-
 concurrency:
-  group: hidraapi-docs-${{ github.ref }}
-  cancel-in-progress: true
-
+  group: hidraapi-docs-${{ github.sha }}
+  cancel-in-progress: false
 jobs:
   validate:
     name: Canonical documentation validation
     runs-on: ubuntu-latest
     timeout-minutes: 5
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Test canonical documentation validators
-        run: |
-          python3 .github/scripts/test_validate_docs.py
-          python3 .github/scripts/test_validate_openapi_snapshot.py
-          python3 .github/scripts/test_generate_data_dictionary.py
-
-      - name: Validate canonical documentation and OpenAPI snapshot
-        run: |
-          python3 .github/scripts/validate_docs.py
-          python3 .github/scripts/validate_openapi_snapshot.py
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Test canonical documentation validators
+      run: |
+        python3 .github/scripts/test_validate_docs.py
+        python3 .github/scripts/test_validate_openapi_snapshot.py
+        python3 .github/scripts/test_generate_data_dictionary.py
+        python3 .github/scripts/test_resolve_openapi_base.py
+        python3 .github/scripts/test_verify_ci_test_inventory.py
+        python3 .github/scripts/test_verify_full_ci_evidence.py
+        python3 .github/scripts/verify_ci_test_inventory.py
+    - name: Validate canonical documentation and OpenAPI snapshot
+      run: |
+        python3 .github/scripts/validate_docs.py
+        python3 .github/scripts/validate_openapi_snapshot.py

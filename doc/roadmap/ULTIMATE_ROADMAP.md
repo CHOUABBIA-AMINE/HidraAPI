@@ -27,6 +27,20 @@ by this planning commit. Current planning commit message:
 `docs(roadmap): consolidate development baseline and ci verification plan`.
 
 
+
+### Current execution checkpoint — HPR-CI-003, 2026-10-13
+
+Refreshed main `c1f25af77f2568c49db4fc740e3f502d3b43e6dc`, tree
+`fef8b93c6bb72f0124f1db8a74577fb46b1582f3`: [Production #668](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38386171892)
+and [Docs #268](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38386171956)
+SUCCESS. HPR-P25-047 is accepted within its original area-B scope. Owner Next selects
+HPR-CI-003, exact message `ci: automate fast feedback and preserve full verification gates`,
+exclusive thirteen-file envelope below. CI-003 is IN PROGRESS / SHADOW IMPLEMENTED /
+HOSTED EQUIVALENCE AND PERFORMANCE PENDING. The prospective architecture is installed
+as a shadow transition with the unrestricted oracle REQUIRED; optimized acceptance is
+disabled. The older Part D timings and source inventory retain their original date.
+Current exact-source/report counts and implementation details are appended below.
+
 ### Owner execution protocol — 2026-10-13 Fail correction
 
 Use existing main directly with an expected-head guard. No pull requests or new local
@@ -58,8 +72,8 @@ aggregate may replace it. D1–D5 are internal gates, never new HPR task IDs.
 
 | Order | Code | Task | Module / owner | Status | Dependencies | Files | Testing | Acceptance | Track | Commit |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | HPR-CI-003 | Automatic fast suite and equivalent parallel full verification | CI / independent verification | PLANNED / REGISTERED; exact scope below | Accepted 049; this Docs PASS; owner selection | CI-003 closed list | Selection/report/release negative tests; shadow full verification | No lost cases; mandatory gate fail-closed; repeatable timing | CI | `ci: automate fast feedback and preserve full verification gates` |
-| 2 | HPR-P25-047 | Provider/link database security generations | Identity | IN PROGRESS / CODE IMPLEMENTED / CI PENDING | Accepted 046/048/049; existing registration Docs; separate Next | Existing seven-file list, unchanged | Real writers, Flyway fresh/upgrade, native/bulk/race/rollback | Exact implementation Production + Docs SUCCESS | F1 | `feat(identity): enforce provider and link security generations` |
+| 1 | HPR-CI-003 | Automatic fast suite and equivalent parallel full verification | CI / independent verification | IN PROGRESS / SHADOW IMPLEMENTED; equivalence/performance PENDING | Accepted 049; this Docs PASS; owner selection | CI-003 closed list | Selection/report/release negative tests; shadow full verification | No lost cases; mandatory gate fail-closed; repeatable timing | CI | `ci: automate fast feedback and preserve full verification gates` |
+| 2 | HPR-P25-047 | Provider/link database security generations | Identity | COMPLETED / CI ACCEPTED | Accepted 046/048/049; existing registration Docs; separate Next | Existing seven-file list, unchanged | Real writers, Flyway fresh/upgrade, native/bulk/race/rollback | Exact implementation Production + Docs SUCCESS | F1 | `feat(identity): enforce provider and link security generations` |
 | 3 | HPR-P25-050 | Immutable operation binding and trusted issuance/reader | Identity; Platform technical wiring | PLANNED / REGISTERED; D1 scope gate | 047; accepted 044/045 design | D1 then exact Identity list; no code authorization yet | LOCAL/LDAP/AD/OIDC, expiry, generation, rollback | B1 provenance and storage proof; no inferred B2/B3 | F1 | `feat(identity): bind protected operations to trusted authentication` |
 | 4 | HPR-P25-051 | Cross-owner revocation/time/transaction linearization | Identity / Party / Topology; Platform mechanics | BLOCKED on D2 atomic-time and transaction proof | 050; accepted 038/043; D2 | D2 then exact owner/export/fence list | Real PostgreSQL owner/race/expiry/connection tests | B2/B3 and writer ordering + bounded latency PASS | F1 | `feat(security): linearize cross owner protected operations` |
 | 5 | HPR-P25-052 | Topology authoring, route/profile and revision publication APIs | Topology; read-only foreign owner contracts | PLANNED / REGISTERED; D3 contract/scope gate | 051; accepted 018/019/020/032/034/036/037/038; D3 | D3 closed authoring/storage/API list | Actual API round trips, epochs/CAS/history/import-export | F1-02/03/04 within explicit supported topology scope | F1 | `feat(topology): expose governed engineering revision workflows` |
@@ -71,7 +85,7 @@ aggregate may replace it. D1–D5 are internal gates, never new HPR task IDs.
 | 11 | HPR-P25-058 | Synthetic integrated PLATFORM matrix and verification | Independent testing; all 24 module owners | PLANNED / REGISTERED; D5 exact test-scope gate | CI-003; 052–057; accepted 030 design; D5 | D5 concrete operator/API/test paths | Both acceptance namespaces; Java21/Postgres/OpenAPI/security | F4-01/02 actual cases, exact-SHA raw evidence | F4 | `test(platform): verify engineering and operational acceptance` |
 | 12 | HPR-P25-031 | Independent engineering foundation closure audit | Independent governance; accountable source owners | PLANNED / REGISTERED; existing ID retained | 058; accepted F1–F3 scopes; explicit owner scope acceptance | Existing roadmap + append-only reconciliation | Read-only evidence audit; full CI on audited runtime SHA | F4-03 PASS/CLOSED only within proven foundation scope | F4 | `docs(roadmap): audit engineering foundation acceptance` |
 
-047 is selected and implemented in the seven-file publication below; exact-main Production and Docs acceptance remains pending.
+047 is COMPLETED / CI ACCEPTED at c1f25af, Production #668 and Docs #268 SUCCESS. Owner Next selects CI-003 from the closed eligible sequence; no 050 code is selected.
 CI-003 is scheduled early, and may be selected first after this registration Docs PASS
 and explicit owner choice; it is not an artificial prerequisite that blocks 047.
 This consolidation executes neither. New IDs 050–058 and CI-003 fill previously unregistered
@@ -214,8 +228,8 @@ No assumed speedup, release or auto-deploy. Exact message is in Part A.
 #### HPR-P25-047 — Existing frozen seven-file task
 
 The complete original registration and acceptance requirements below remain binding.
-Blockers 048/049 are resolved by accepted #665/#666; current state is PLANNED / REGISTERED,
-not implementation completed. Exact CREATE: the registered generation SQL and
+Blockers 048/049 are resolved by accepted #665/#666; 047 is now COMPLETED / CI ACCEPTED
+at c1f25af, exact-head Production #668 and Docs #268 SUCCESS. Exact CREATE: the registered generation SQL and
 `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProviderLinkSecurityGenerationPostgresIntegrationTest.java`.
 Exact UPDATE: the registered LOCAL generation test, `.github/database-dictionary-ownership.json`,
 `doc/database/DATA_DICTIONARY.md`, this roadmap and reconciliation. DELETE none.
@@ -1338,7 +1352,7 @@ The table classifies every recovered numerical HPR identifier. Objective/message
 | HPR-P25-044 | DESIGN COMPLETE | Future runtime assigned 050–058; design is not executable completion |
 | HPR-P25-045 | DESIGN COMPLETE | Future runtime assigned 050–058; design is not executable completion |
 | HPR-P25-046 | COMPLETED / ACCEPTED (recorded bounded scope) | 049 directly confirmed #666/#266; other accepted subsets retain original source/CI limits |
-| HPR-P25-047 | IN PROGRESS / CODE IMPLEMENTED / CI PENDING | Owner-selected seven-file implementation; authentic dictionary refreshed; full exact-main acceptance required |
+| HPR-P25-047 | COMPLETED / CI ACCEPTED | Production #668 and Docs #268 SUCCESS at c1f25af; generation transport remains later |
 | HPR-P25-048 | COMPLETED / ACCEPTED (recorded bounded scope) | 049 directly confirmed #666/#266; other accepted subsets retain original source/CI limits |
 | HPR-P25-049 | COMPLETED / ACCEPTED (recorded bounded scope) | 049 directly confirmed #666/#266; other accepted subsets retain original source/CI limits |
 | HPR-P3-001 | DEFERRED | Original P3 objective/message preserved; no foundation dependency |
@@ -1383,7 +1397,7 @@ This is an execution-status summary of the authoritative task table below, **not
 | **HPR-P25-044 B1 operation-authentication provenance policy** | **DESIGN COMPLETED / DOCS #255 SUCCESS** | Dedicated issuer/jti session binding selected; runtime storage/issuance/reader and B2/B3 remain OPEN |
 | **HPR-P25-045 B1 storage preflight** | **DESIGN COMPLETED / DOCS #257 SUCCESS** | DB security generations and immutable binding design selected; runtime OPEN |
 | **HPR-P25-046 LOCAL credential generation** | **COMPLETED / PRODUCTION #662 AND DOCS #261 SUCCESS** | Accepted at repaired `554f2a0`; operation provenance runtime still OPEN |
-| **HPR-P25-047 provider/link generations** | **IN PROGRESS / CODE IMPLEMENTED / CI PENDING** | Frozen seven-file implementation selected; candidate tests passed; final main Production and Docs required |
+| **HPR-P25-047 provider/link generations** | **COMPLETED / CI ACCEPTED** | Exact-main Production #668 and Docs #268 SUCCESS at c1f25af |
 | **HPR-P25-048 provider/link jsonb correction** | **COMPLETED / PRODUCTION #665 AND DOCS #264 SUCCESS** | Accepted at `99cae14`; forward-migration test correction is separately registered as 049 |
 | **HPR-P25-049 JSONB test migration compatibility** | **COMPLETED / ACCEPTED** | Exact-head Production #666 and Docs #266 SUCCESS at 8c173f4; separate owner Next may select 047 |
 | F1-02 through F1-04 publication, APIs and topology verification | PLANNED; subsequent implementation slices not registered | Register bounded HPRs before execution |
@@ -1398,7 +1412,7 @@ This is an execution-status summary of the authoritative task table below, **not
 
 **Product policy:** Hidra is universal, configurable and company/network/product independent. No real customer data, P&IDs, vendor curves or live SCADA are prerequisites for generic development. PLATFORM software testing uses explicit synthetic data; customer SITE commissioning is an entirely separate gate. Numerical simulation work is deferred.
 
-**Code discipline:** `HPR-P25-037` is implemented and CI accepted; `HPR-P25-038` policy design is accepted; `HPR-P25-039` Party eligibility is accepted; `HPR-P25-040` trusted Topology actor export is CI accepted; `HPR-P25-041` paired scoped permission export is CI accepted; `HPR-P25-042` live Facility/Party owner-reference query is CI accepted; `HPR-P25-043` cross-owner access linearization design is Docs accepted; `HPR-P25-044` B1 operation-authentication provenance policy is completed as design below; policy Docs #255 SUCCESS. `HPR-P25-045` additive binding/credential-security storage policy is completed as design below; policy Docs #257 SUCCESS. `HPR-P25-046` LOCAL credential generations and bounded CI repairs are accepted at repaired `554f2a0`: exact-head Production #662 and Docs #261 SUCCESS. `HPR-P25-048` is accepted at `99cae14`: exact-head Production #665 and Docs #264 SUCCESS. Its original JSONB count/tail blocker is resolved by HPR-P25-049 at `8c173f4`, exact-head Production #666 and Docs #266 SUCCESS. `HPR-P25-047` is IN PROGRESS / CODE IMPLEMENTED / CI PENDING; the selected unchanged seven-file implementation awaits final main Production and Docs acceptance. Runtime provenance, common-time and transaction-participation gates remain OPEN. Subsequent runtime obligations are prospectively registered as 050–058 above, with code blocked until D1–D5 close exact contracts/scopes. Codes `F1-02` etc. remain **planning references only**, mapped to the prospective HPR IDs above. Select those HPR IDs only after their accepted exact create/update/delete scope and gate; a planning reference alone cannot authorize code. Dependencies are minimum known gates, not blanket permission.
+**Code discipline:** `HPR-P25-037` is implemented and CI accepted; `HPR-P25-038` policy design is accepted; `HPR-P25-039` Party eligibility is accepted; `HPR-P25-040` trusted Topology actor export is CI accepted; `HPR-P25-041` paired scoped permission export is CI accepted; `HPR-P25-042` live Facility/Party owner-reference query is CI accepted; `HPR-P25-043` cross-owner access linearization design is Docs accepted; `HPR-P25-044` B1 operation-authentication provenance policy is completed as design below; policy Docs #255 SUCCESS. `HPR-P25-045` additive binding/credential-security storage policy is completed as design below; policy Docs #257 SUCCESS. `HPR-P25-046` LOCAL credential generations and bounded CI repairs are accepted at repaired `554f2a0`: exact-head Production #662 and Docs #261 SUCCESS. `HPR-P25-048` is accepted at `99cae14`: exact-head Production #665 and Docs #264 SUCCESS. Its original JSONB count/tail blocker is resolved by HPR-P25-049 at `8c173f4`, exact-head Production #666 and Docs #266 SUCCESS. `HPR-P25-047` is COMPLETED / CI ACCEPTED at c1f25af: Production #668 and Docs #268 SUCCESS. Database generations alone do not close trusted issuance or B2/B3. Runtime provenance, common-time and transaction-participation gates remain OPEN. Subsequent runtime obligations are prospectively registered as 050–058 above, with code blocked until D1–D5 close exact contracts/scopes. Codes `F1-02` etc. remain **planning references only**, mapped to the prospective HPR IDs above. Select those HPR IDs only after their accepted exact create/update/delete scope and gate; a planning reference alone cannot authorize code. Dependencies are minimum known gates, not blanket permission.
 
 | Order | Code / planning reference | Task | Current status | Dependencies / gate | Track |
 |---|---|---|---|---|---|
@@ -1414,7 +1428,7 @@ This is an execution-status summary of the authoritative task table below, **not
 | 2.8 | HPR-P25-046 | LOCAL credential database security generation | COMPLETED — exact-head Production #662 and Docs #261 SUCCESS | Accepted at repaired `554f2a07c2ddb1147ea1517f331ac6b7b87652b6`; B1 runtime still OPEN | F1 |
 | 2.8a | HPR-P25-048 | Correct provider/link existing jsonb ORM binding | COMPLETED — exact-head Production #665 and Docs #264 SUCCESS | Accepted at `99cae14ab2aa1b752dca34686fb76cf76d666a27`; JSONB writer compatibility retained | F1 |
 | 2.8b | HPR-P25-049 | Make JSONB fresh-chain proof forward compatible | COMPLETED — Production #666 / Docs #266 SUCCESS | Accepted at 8c173f4942371b377f9155e7d99af4e4c5fc288c; preserve nine real tests | F1 |
-| 2.9 | HPR-P25-047 | Provider and external-link database security generations | IN PROGRESS / CODE IMPLEMENTED / CI PENDING | Selected seven-file envelope; final exact-main acceptance pending | F1 |
+| 2.9 | HPR-P25-047 | Provider and external-link database security generations | COMPLETED / CI ACCEPTED | Production #668 and Docs #268 SUCCESS at c1f25af | F1 |
 | 2a | F1-02 implementation | Station revision history / transactional publication | PLANNED — not registered or implemented | HPR-P25-038 policy design; exact implementation allowlist and subsequent owner Next | F1 |
 | 3 | F1-03 | Company-scoped authoring, topology APIs and exact-history access | PLANNED — needs HPR registration | F1-02; authorization/API contracts | F1 |
 | 4 | F1-04 | Synthetic multi-company topology validation | PLANNED — needs HPR registration | F1-03; registered acceptance test envelope | F1 |
@@ -6652,3 +6666,121 @@ reviewed_dictionary_checked=true, zero unresolved owners, matching emitted hash.
 Exact seven-file scope, all 146 prior migrations, candidate-tested four source/ownership
 blobs, unchanged other dictionary relation sections, append-only reconciliation and
 whitespace PASS. No local Java execution or final-main full CI SUCCESS is claimed.
+
+
+## 2026-10-13 — HPR-CI-003 automatic fast and fail-closed full shadow implementation
+
+Owner Next selects the first eligible remaining closed implementation, HPR-CI-003.
+Current AGENTS, roadmap/reconciliation, POM and all four workflow sources were read.
+Refreshed main `c1f25af77f2568c49db4fc740e3f502d3b43e6dc` has exact-head Production
+#668 and Docs #268 SUCCESS, including real repository verification, current OpenAPI
+security/equality, dictionary capture/check and historical backward compatibility.
+HPR-P25-047 is now COMPLETED / CI ACCEPTED; no further Identity/runtime work is bundled.
+
+Exact message: `ci: automate fast feedback and preserve full verification gates`.
+CREATE: `.github/ci-test-inventory.json`; `.github/scripts/verify_ci_test_inventory.py`;
+`.github/scripts/test_verify_ci_test_inventory.py`; `.github/scripts/verify_full_ci_evidence.py`;
+`.github/scripts/test_verify_full_ci_evidence.py`.
+UPDATE: `.github/workflows/ci-fast-feedback.yml`, `.github/workflows/ci.yml`,
+`.github/workflows/docs.yml`, `.github/workflows/release.yml`, `doc/testing/TEST_STRATEGY.md`,
+`doc/operations/CI_CD_RELEASE_GUIDE.md`, this roadmap and append-only reconciliation.
+DELETE none. Thirteen files only. All application/test Java, all 147 SQL migrations,
+POM/dependencies/wrapper, ownership/dictionary, API snapshots, deployment and version/
+release source outside the registered release workflow remain unchanged. No branch,
+PR, generated image, screenshot, release dispatch or deployment was created.
+
+Authenticated #668 report artifact 11807681487 was downloaded and its ZIP SHA-256
+verified against GitHub digest `5b2fbdf6d8e813867cc45e86ed655e3ff784e08a7b8e3bf6213c2c19fea76c7f`.
+Actual 371 XML suites / 1,776 invocation identities / zero failures/errors/skips match
+every current concrete source class, including the one abstract support and its three
+Organization subclasses. Manifest records exact FQCN/source hash/owner/lane/dependency/
+inherited associations and every parameterized invocation. Source changes, unsupported
+discovery shapes, new/unclassified/extra/duplicate classes and empty lanes fail review.
+Counts are observed baseline facts, never a fixed global migration/test acceptance total.
+
+Current selections: Fast 294 classes / 1,262 cases; unit/architecture plus lightweight
+context 295 / 1,306; DB shard0 37 / 241, shard1 39 / 229; full disjoint union 371 / 1,776.
+Shard assignment is deterministic longest-measured-class first, complete classes only.
+#668 reported class-duration sums are 449.126s and 449.128s; these are not workflow wall
+times or a speedup. Actual accepted #668 job elapsed 660s, repository verification 525s,
+current API 32s, dictionary 9s and historical API 52s. Class sums can overlap under forks.
+
+Fast automatically runs on relevant main pushes/PRs and supports owner manual dispatch;
+includes reviewed unit/source/security/mapper/controller-mock and architecture classes
+across all applicable owners. It compiles all test sources but selects exact reviewed
+FQCNs using existing Surefire support. No DB service; inaccessible Docker endpoint and
+strict report rejection prevent Docker skips from counting as success. The lightweight
+context class remains full-only. All 24 module populations retain full verification;
+simulation tests remain regression coverage, not simulator development.
+
+Full retains name HidraAPI CI and its unrestricted clean verify with two reused forks.
+Required shadow jobs run static validation, unit/architecture, two isolated Postgres
+shards (one JVM fork each, no method concurrency) and independent API/dictionary checks.
+Each test-owning partition uses clean verify, retaining compiler/enforcer/MapStruct/
+package/Boot lifecycle and Java21/packaged-jar provenance. Existing PostgreSQL16/18 class
+fixtures remain unchanged. API jobs package with tests explicitly omitted because
+test-owning jobs enforce them; omission is not itself verification. Current hidra_test
+and historical hidra_base are distinct disposable databases. Genuine current physical
+capture/check completes before historical startup. No target/report/database acceptance
+cache or different-SHA reuse; setup-java dependency cache remains.
+
+All existing docs/OpenAPI/P1/HA/backup/release/observability/database-operations/base
+checks remain required. An always-evaluated Full Verification Gate requires all five
+needs groups (including both DB matrix jobs) to succeed; exact SHA/run/attempt/classifier/
+job/lifecycle agree; raw XML classes/invocations appear once in the disjoint partition;
+every required case succeeds without skips; the union equals the same-run unrestricted
+oracle; API/base/catalog/source/server facts and hashes agree across independent jobs.
+Missing, failed, skipped, cancelled, timed-out, duplicated, corrupt or stale evidence
+denies acceptance. Diagnostic raw reports/logs are retained even after failure. Mandatory
+lane artifacts are named by SHA/run/attempt/lane, hashed and retained; aggregate retains
+the authenticated raw bundle and receipt for release. Main Full/Docs cancel=false per SHA;
+only superseded PR Fast may cancel. Explicit cancellation never supplies acceptance.
+
+Release retains manual/exact-SHA/main-ancestry/change/environment/digest/schema/rollback
+controls and all deploy code. Trusted workflow helper is retained before historical
+candidate checkout. Paginated authenticated lookup requires the latest exact-main full
+run/attempt, every expected successful job, verified aggregate ZIP digest and rechecked
+raw bundle. Same-name partial/Fast/PR merge/parent/stale results cannot qualify. Legacy
+fallback is limited to the explicitly recorded accepted #668 SHA/run/attempt/workflow
+hash/report artifact digest, not a general workflow-name bypass. Expired/missing evidence
+fails closed. Signed download redirect receives no GitHub authorization header. No live
+release/environment-reviewer/deployment verification is claimed by these policy tests.
+
+Transition disposition: IN PROGRESS / SHADOW IMPLEMENTED / CI PENDING. Optimized adoption
+is explicitly false and unrestricted fallback remains mandatory. First exact-main push
+starts Full, Fast and Docs; observe startup and STOP. Required three representative
+same-SHA oracle/partition campaigns, at least five comparable timing observations per
+configuration, cold-cache/failure/flake distributions and median targets (Fast<=3m,
+Full<=7m) remain NOT ESTABLISHED. A single run cannot activate optimization or claim
+performance acceptance. Predictable scheduling/measurement repairs stay within CI-003;
+no new task ID, silent POM/test change or later implementation is selected.
+
+Owner manual-CI rule persists: if connector dispatch is unavailable, stop BEFORE starting
+it; state workflow, main ref, exact SHA and browser steps, then await feedback. Current
+main push automatically starts all relevant workflows; manual browser dispatch is not used.
+F1–F4/P2.5 and D1–D5 remain OPEN; simulation/P3 is deferred; gas-first/GZ2, Hidra own
+engine, steady/transient direction, versioned inputs, operator control, synthetic data
+and owner deployment calibration are preserved. No generic CI supplies SITE acceptance.
+
+
+HPR-CI-003 final local validation actually executed: all 94 Python policy/validator
+checks PASS (10 docs, 10 OpenAPI, 17 dictionary, 14 base resolver, 18 inventory,
+25 full-evidence). Canonical docs PASS: 98 documents, 5,345 relative links, 24 modules,
+13 P2 rows. Offline OpenAPI PASS: 263 operations, 244 paths, 231 schemas. P1 retained
+consistency and all six existing operational validators PASS without a new physical
+exercise. actionlint v1.7.12 (official release checksum verified), four-workflow YAML,
+all embedded Bash syntax, twelve simulated push/PR trigger cases and required fallback/
+matrix/aggregate/cancellation predicates PASS. Actual accepted #668 raw XML exactly
+matches the current manifest/source/support/parameterized cases: 371 / 1,776 / zero
+failures/errors/skips. No new Java/Fast/shadow runtime execution is implied by replay.
+Exact thirteen-file scope, all Java/147 SQL/build/ops/dictionary/API/history/version
+preservation, append-only reconciliation/strategy/release guide and whitespace PASS.
+
+Local Maven spot command `bash ./mvnw -B -q -Dtest=StationInternalGraphTest,StationInternalGraphValidatorTest test`
+was attempted and failed before compilation: Boot parent 4.1.1 cannot resolve because
+repo.maven.apache.org reports Temporary failure in name resolution. Local Java17 and
+absent Docker remain additional limitations. No local Java21/DB/Fast PASS is claimed.
+New workflow startup and all hosted shadow/equivalence/measurement acceptance remain
+pending. Guarded direct-main publication verifies exact parent/tree/message/blob/scope,
+confirms Full/Fast/Docs startup on published SHA and STOP; no completion polling or
+later HPR implementation. No branch, PR, image, manual workflow dispatch or deployment.

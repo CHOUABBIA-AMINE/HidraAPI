@@ -1,29 +1,112 @@
 name: HidraAPI Fast Feedback
-
-on:
-  workflow_dispatch:
-
+'on':
+  push:
+    branches:
+    - main
+    paths:
+    - src/main/**
+    - src/test/**
+    - pom.xml
+    - .mvn/**
+    - mvnw
+    - mvnw.cmd
+    - .github/ci-test-inventory.json
+    - .github/scripts/verify_ci_test_inventory.py
+    - .github/scripts/test_verify_ci_test_inventory.py
+    - .github/scripts/verify_full_ci_evidence.py
+    - .github/scripts/test_verify_full_ci_evidence.py
+    - .github/scripts/generate_data_dictionary.py
+    - .github/scripts/test_generate_data_dictionary.py
+    - .github/scripts/resolve_openapi_base.py
+    - .github/scripts/test_resolve_openapi_base.py
+    - .github/workflows/ci-fast-feedback.yml
+    - .github/workflows/ci.yml
+  pull_request:
+    branches:
+    - main
+    paths:
+    - src/main/**
+    - src/test/**
+    - pom.xml
+    - .mvn/**
+    - mvnw
+    - mvnw.cmd
+    - .github/ci-test-inventory.json
+    - .github/scripts/verify_ci_test_inventory.py
+    - .github/scripts/test_verify_ci_test_inventory.py
+    - .github/scripts/verify_full_ci_evidence.py
+    - .github/scripts/test_verify_full_ci_evidence.py
+    - .github/scripts/generate_data_dictionary.py
+    - .github/scripts/test_generate_data_dictionary.py
+    - .github/scripts/resolve_openapi_base.py
+    - .github/scripts/test_resolve_openapi_base.py
+    - .github/workflows/ci-fast-feedback.yml
+    - .github/workflows/ci.yml
+  workflow_dispatch: null
 permissions:
   contents: read
-
+concurrency:
+  group: hidraapi-fast-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   focused-domain-tests:
-    name: Java 21 focused station graph tests
+    name: Java 21 reviewed fast suite
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      DOCKER_HOST: unix:///hidra-fast-no-docker.sock
     steps:
-      - name: Checkout exact revision
-        uses: actions/checkout@v4
-
-      - name: Set up Java 21 and Maven cache
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '21'
-          cache: maven
-
-      - name: Ensure Maven wrapper is executable
-        run: chmod +x mvnw
-
-      - name: Execute explicitly selected domain tests
-        run: ./mvnw -B -q -Dtest=StationInternalGraphTest,StationInternalGraphValidatorTest test
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Test selection and acceptance policies
+      run: |
+        python3 .github/scripts/test_validate_docs.py
+        python3 .github/scripts/test_validate_openapi_snapshot.py
+        python3 .github/scripts/test_generate_data_dictionary.py
+        python3 .github/scripts/test_resolve_openapi_base.py
+        python3 .github/scripts/test_verify_ci_test_inventory.py
+        python3 .github/scripts/test_verify_full_ci_evidence.py
+    - name: Validate source inventory
+      run: python3 .github/scripts/verify_ci_test_inventory.py
+    - name: Set up Java 21
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: '21'
+        cache: maven
+    - name: Ensure Maven wrapper is executable
+      run: chmod +x mvnw
+    - name: Select reviewed exact fast classes
+      id: selection
+      run: |
+        set -euo pipefail
+        classes="$(python3 .github/scripts/verify_ci_test_inventory.py --select fast)"
+        echo "classes=${classes}" >> "$GITHUB_OUTPUT"
+    - name: Execute all reviewed fast and architecture cases
+      env:
+        CI_TEST_CLASSES: ${{ steps.selection.outputs.classes }}
+      run: bash ./mvnw -B -q test "-Dtest=${CI_TEST_CLASSES}"
+    - name: Require every selected raw test report
+      if: always()
+      run: python3 .github/scripts/verify_ci_test_inventory.py --select fast --reports target/surefire-reports --evidence target/ci/fast/evidence.json
+    - name: Retain lane evidence and diagnostics
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: hidra-ci-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}-fast
+        path: target/ci/fast/
+        if-no-files-found: error
+        retention-days: 14
+    - name: Retain raw failure logs
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: hidra-ci-diagnostics-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}-fast
+        path: |-
+          target/surefire-reports/
+          target/openapi/
+          target/database/
+        if-no-files-found: warn
+        retention-days: 14

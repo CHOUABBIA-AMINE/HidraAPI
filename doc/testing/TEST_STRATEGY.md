@@ -109,3 +109,47 @@ release/cancellation design and equivalence/measurement acceptance. Runtime impr
 are PLANNED, not implemented. Existing unrestricted full verify remains authoritative
 until same-SHA oracle equivalence succeeds. Generic PLATFORM and customer SITE remain
 separate; no simulator accuracy or customer commissioning is established by full CI.
+
+
+## HPR-CI-003 installed shadow verification — 2026-10-13
+
+This source update supersedes the prior manual-only/two-test/current cancellation and
+warning-only report claims for the new workflow revision. Accepted source baseline is
+c1f25af, Production #668 / Docs #268 SUCCESS: 371 concrete XML classes / 1,776 executed
+cases / no failures/errors/skips; 372 Java test sources include the inherited abstract
+support. The [reviewed manifest](../../.github/ci-test-inventory.json) records exact source
+and case identities; new or modified tests require reviewed inventory updates rather
+than annotation/name guesses. Existing Java/POM/Testcontainers fixtures remain unchanged.
+
+Fast now triggers on relevant main pushes and PRs plus manual dispatch, selecting 294
+classes / 1,262 cases (reviewed unit/architecture only), no Postgres/Docker service.
+Full unit owns 295 / 1,306 including the initially full-only lightweight context. Its
+two isolated complete-class DB shards own 37 / 241 and 39 / 229, using existing16/18
+fixtures, one fork per shard, no parallel methods. Source/report counts are dated facts.
+
+Run selections through the manifest checker:
+
+```bash
+python3 .github/scripts/verify_ci_test_inventory.py
+classes="$(python3 .github/scripts/verify_ci_test_inventory.py --select fast)"
+bash ./mvnw -B -q test "-Dtest=${classes}"
+python3 .github/scripts/verify_ci_test_inventory.py --select fast --reports target/surefire-reports
+```
+
+Full test partitions each run clean verify with exact classes, retaining build/package
+lifecycle; independent API jobs own Java21 current boot/security/snapshot equality,
+real dictionary and actual historical OpenAPI compatibility. Current and historical
+apps use separate disposable databases. Static retains all validators/ops checks.
+Unrestricted two-fork full verify remains REQUIRED as an oracle throughout shadow.
+The always-evaluated aggregate rejects absent/extra/duplicate/failed/errored/skipped/
+cancelled/stale artifacts or jobs and compares actual class/case/API/catalog facts on
+the same SHA/run/attempt. Raw diagnostics and lane summaries remain available on failure.
+Mandatory main Full/Docs no longer cancel for a newer SHA; Fast PR feedback may cancel.
+
+Optimization/equivalence/performance acceptance is pending hosted execution and the
+registered multi-revision/repeated measurement campaign. Warm Fast<=3m and Full<=7m
+are targets, not results. Shadow deliberately duplicates the full oracle; it does not
+claim reduced full wall time or runner cost. Java21/Docker prerequisites are unchanged.
+Owner workflow procedure is main only, no PR/new branches/proof images; observe exact
+push CI startup then STOP. Unsupported manual dispatch is handed to the owner BEFORE
+starting it. PLATFORM regression proof remains separate from customer SITE commissioning.

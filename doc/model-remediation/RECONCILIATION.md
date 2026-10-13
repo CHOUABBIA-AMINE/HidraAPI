@@ -18300,3 +18300,121 @@ reviewed_dictionary_checked=true, zero unresolved owners, matching emitted hash.
 Exact seven-file scope, all 146 prior migrations, candidate-tested four source/ownership
 blobs, unchanged other dictionary relation sections, append-only reconciliation and
 whitespace PASS. No local Java execution or final-main full CI SUCCESS is claimed.
+
+
+## 2026-10-13 — HPR-CI-003 automatic fast and fail-closed full shadow implementation
+
+Owner Next selects the first eligible remaining closed implementation, HPR-CI-003.
+Current AGENTS, roadmap/reconciliation, POM and all four workflow sources were read.
+Refreshed main `c1f25af77f2568c49db4fc740e3f502d3b43e6dc` has exact-head Production
+#668 and Docs #268 SUCCESS, including real repository verification, current OpenAPI
+security/equality, dictionary capture/check and historical backward compatibility.
+HPR-P25-047 is now COMPLETED / CI ACCEPTED; no further Identity/runtime work is bundled.
+
+Exact message: `ci: automate fast feedback and preserve full verification gates`.
+CREATE: `.github/ci-test-inventory.json`; `.github/scripts/verify_ci_test_inventory.py`;
+`.github/scripts/test_verify_ci_test_inventory.py`; `.github/scripts/verify_full_ci_evidence.py`;
+`.github/scripts/test_verify_full_ci_evidence.py`.
+UPDATE: `.github/workflows/ci-fast-feedback.yml`, `.github/workflows/ci.yml`,
+`.github/workflows/docs.yml`, `.github/workflows/release.yml`, `doc/testing/TEST_STRATEGY.md`,
+`doc/operations/CI_CD_RELEASE_GUIDE.md`, this roadmap and append-only reconciliation.
+DELETE none. Thirteen files only. All application/test Java, all 147 SQL migrations,
+POM/dependencies/wrapper, ownership/dictionary, API snapshots, deployment and version/
+release source outside the registered release workflow remain unchanged. No branch,
+PR, generated image, screenshot, release dispatch or deployment was created.
+
+Authenticated #668 report artifact 11807681487 was downloaded and its ZIP SHA-256
+verified against GitHub digest `5b2fbdf6d8e813867cc45e86ed655e3ff784e08a7b8e3bf6213c2c19fea76c7f`.
+Actual 371 XML suites / 1,776 invocation identities / zero failures/errors/skips match
+every current concrete source class, including the one abstract support and its three
+Organization subclasses. Manifest records exact FQCN/source hash/owner/lane/dependency/
+inherited associations and every parameterized invocation. Source changes, unsupported
+discovery shapes, new/unclassified/extra/duplicate classes and empty lanes fail review.
+Counts are observed baseline facts, never a fixed global migration/test acceptance total.
+
+Current selections: Fast 294 classes / 1,262 cases; unit/architecture plus lightweight
+context 295 / 1,306; DB shard0 37 / 241, shard1 39 / 229; full disjoint union 371 / 1,776.
+Shard assignment is deterministic longest-measured-class first, complete classes only.
+#668 reported class-duration sums are 449.126s and 449.128s; these are not workflow wall
+times or a speedup. Actual accepted #668 job elapsed 660s, repository verification 525s,
+current API 32s, dictionary 9s and historical API 52s. Class sums can overlap under forks.
+
+Fast automatically runs on relevant main pushes/PRs and supports owner manual dispatch;
+includes reviewed unit/source/security/mapper/controller-mock and architecture classes
+across all applicable owners. It compiles all test sources but selects exact reviewed
+FQCNs using existing Surefire support. No DB service; inaccessible Docker endpoint and
+strict report rejection prevent Docker skips from counting as success. The lightweight
+context class remains full-only. All 24 module populations retain full verification;
+simulation tests remain regression coverage, not simulator development.
+
+Full retains name HidraAPI CI and its unrestricted clean verify with two reused forks.
+Required shadow jobs run static validation, unit/architecture, two isolated Postgres
+shards (one JVM fork each, no method concurrency) and independent API/dictionary checks.
+Each test-owning partition uses clean verify, retaining compiler/enforcer/MapStruct/
+package/Boot lifecycle and Java21/packaged-jar provenance. Existing PostgreSQL16/18 class
+fixtures remain unchanged. API jobs package with tests explicitly omitted because
+test-owning jobs enforce them; omission is not itself verification. Current hidra_test
+and historical hidra_base are distinct disposable databases. Genuine current physical
+capture/check completes before historical startup. No target/report/database acceptance
+cache or different-SHA reuse; setup-java dependency cache remains.
+
+All existing docs/OpenAPI/P1/HA/backup/release/observability/database-operations/base
+checks remain required. An always-evaluated Full Verification Gate requires all five
+needs groups (including both DB matrix jobs) to succeed; exact SHA/run/attempt/classifier/
+job/lifecycle agree; raw XML classes/invocations appear once in the disjoint partition;
+every required case succeeds without skips; the union equals the same-run unrestricted
+oracle; API/base/catalog/source/server facts and hashes agree across independent jobs.
+Missing, failed, skipped, cancelled, timed-out, duplicated, corrupt or stale evidence
+denies acceptance. Diagnostic raw reports/logs are retained even after failure. Mandatory
+lane artifacts are named by SHA/run/attempt/lane, hashed and retained; aggregate retains
+the authenticated raw bundle and receipt for release. Main Full/Docs cancel=false per SHA;
+only superseded PR Fast may cancel. Explicit cancellation never supplies acceptance.
+
+Release retains manual/exact-SHA/main-ancestry/change/environment/digest/schema/rollback
+controls and all deploy code. Trusted workflow helper is retained before historical
+candidate checkout. Paginated authenticated lookup requires the latest exact-main full
+run/attempt, every expected successful job, verified aggregate ZIP digest and rechecked
+raw bundle. Same-name partial/Fast/PR merge/parent/stale results cannot qualify. Legacy
+fallback is limited to the explicitly recorded accepted #668 SHA/run/attempt/workflow
+hash/report artifact digest, not a general workflow-name bypass. Expired/missing evidence
+fails closed. Signed download redirect receives no GitHub authorization header. No live
+release/environment-reviewer/deployment verification is claimed by these policy tests.
+
+Transition disposition: IN PROGRESS / SHADOW IMPLEMENTED / CI PENDING. Optimized adoption
+is explicitly false and unrestricted fallback remains mandatory. First exact-main push
+starts Full, Fast and Docs; observe startup and STOP. Required three representative
+same-SHA oracle/partition campaigns, at least five comparable timing observations per
+configuration, cold-cache/failure/flake distributions and median targets (Fast<=3m,
+Full<=7m) remain NOT ESTABLISHED. A single run cannot activate optimization or claim
+performance acceptance. Predictable scheduling/measurement repairs stay within CI-003;
+no new task ID, silent POM/test change or later implementation is selected.
+
+Owner manual-CI rule persists: if connector dispatch is unavailable, stop BEFORE starting
+it; state workflow, main ref, exact SHA and browser steps, then await feedback. Current
+main push automatically starts all relevant workflows; manual browser dispatch is not used.
+F1–F4/P2.5 and D1–D5 remain OPEN; simulation/P3 is deferred; gas-first/GZ2, Hidra own
+engine, steady/transient direction, versioned inputs, operator control, synthetic data
+and owner deployment calibration are preserved. No generic CI supplies SITE acceptance.
+
+
+HPR-CI-003 final local validation actually executed: all 94 Python policy/validator
+checks PASS (10 docs, 10 OpenAPI, 17 dictionary, 14 base resolver, 18 inventory,
+25 full-evidence). Canonical docs PASS: 98 documents, 5,345 relative links, 24 modules,
+13 P2 rows. Offline OpenAPI PASS: 263 operations, 244 paths, 231 schemas. P1 retained
+consistency and all six existing operational validators PASS without a new physical
+exercise. actionlint v1.7.12 (official release checksum verified), four-workflow YAML,
+all embedded Bash syntax, twelve simulated push/PR trigger cases and required fallback/
+matrix/aggregate/cancellation predicates PASS. Actual accepted #668 raw XML exactly
+matches the current manifest/source/support/parameterized cases: 371 / 1,776 / zero
+failures/errors/skips. No new Java/Fast/shadow runtime execution is implied by replay.
+Exact thirteen-file scope, all Java/147 SQL/build/ops/dictionary/API/history/version
+preservation, append-only reconciliation/strategy/release guide and whitespace PASS.
+
+Local Maven spot command `bash ./mvnw -B -q -Dtest=StationInternalGraphTest,StationInternalGraphValidatorTest test`
+was attempted and failed before compilation: Boot parent 4.1.1 cannot resolve because
+repo.maven.apache.org reports Temporary failure in name resolution. Local Java17 and
+absent Docker remain additional limitations. No local Java21/DB/Fast PASS is claimed.
+New workflow startup and all hosted shadow/equivalence/measurement acceptance remain
+pending. Guarded direct-main publication verifies exact parent/tree/message/blob/scope,
+confirms Full/Fast/Docs startup on published SHA and STOP; no completion polling or
+later HPR implementation. No branch, PR, image, manual workflow dispatch or deployment.

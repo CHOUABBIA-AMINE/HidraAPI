@@ -6500,3 +6500,67 @@ no optimized equivalence/latency/fast PASS, platform freeze or implementation is
 No local Maven/DB run was needed or executed for this documentation-only consolidation;
 current accepted runtime evidence is recovered exact-SHA #666, not this new Docs head.
 Guarded publication and new-head Docs acceptance remain pending until observed.
+
+
+## 2026-10-13 — HPR-P25-047 complete implementation candidate and catalog prerequisite
+
+Owner Next selects the existing HPR-P25-047 seven-file implementation. Refreshed main
+`08cc7269b87ddb6e3297bb2981d9de4ad6f470f6`, tree
+`798bfc3911c448b50f00035e4cd1b8bb4bfa31d2`; Docs #267 SUCCESS. Accepted executable
+baseline remains `8c173f4942371b377f9155e7d99af4e4c5fc288c`, Production #666 / Docs #266
+SUCCESS. The two heads differ only in three documentation files. Current AGENTS,
+roadmap/reconciliation and the complete unchanged 047 registration were read; 048/049
+resolve the prior JSONB/migration-assertion blockers. No 050/CI-003 implementation.
+
+Exact implementation message: `feat(identity): enforce provider and link security generations`.
+Prepared migration
+`V20261012_002__p25_identity_provider_link_security_generations.sql` is the reviewed
+registered area-B guard design: database-owned positive default generation, nineteen
+provider and seven link security fields, null-safe/semantic-jsonb comparisons, neutral
+field preservation, immutable id/created_at, forbidden caller generation/delete/truncate,
+anti-overflow and six invoker triggers. Old SQL bytes and all production Java remain
+unchanged. New two-table dictionary ownership entries cite current entity and new SQL;
+all existing entries remain identical. No generation transport or authentication policy.
+
+The new canonical ProviderLinkSecurityGenerationPostgresIntegrationTest contains thirteen
+real PostgreSQL16/Flyway/Spring/JPA methods: fresh complete source inventory, actual
+predecessor upgrade with every old field/checksum retained, unexpected-column collision
+and transactional migration rollback, every security/neutral field and applicable nullable
+transition, semantic jsonb/no-op/multi-field/A-B-A, tamper/deletion/reset/overflow,
+actual adapter/repository saves/flush/clear/fresh reload and joint downstream rollback,
+native/JPQL bulk writes, COPY/MERGE/UPSERT, independent backend lock observation/barriers,
+isolated owners and retained provider/FK constraints. Privileged overflow setup is an
+uncommitted disposable fixture with guards reenabled before protected writes. No sleeps,
+live credentials/provider/customer data, mock generation proof or skipped-DB PASS.
+
+Existing LOCAL credential test edits are limited to UpdatedOn and fresh/upgrade migration
+assertions: required 046 presence, no pending, all pending migrations executed and captured
+installed-rank prefix preserved. Its pre-046 target and all other methods are identical.
+Existing nine JSONB writer tests are untouched and remain forward-compatible after 049.
+
+Focused seven-class Maven command attempted through Bash. It fails before compilation:
+Spring Boot parent 4.1.1 cannot resolve from Maven Central (Temporary failure in name
+resolution). Local Java is17, no PostgreSQL/Docker is available. No local Java/database
+PASS. All37 validator unit tests, canonical docs (98 docs/5,340 links/24 modules/13 P2
+rows), offline OpenAPI (263 operations/244 paths/231 schemas), existing P1 consistency,
+exact guard field sets, old SQL/LOCAL bodies/ownership preservation and whitespace PASS.
+
+Final main publication still requires genuine current migrated catalog rendering and
+review through the unchanged generator. That collector explicitly restricts collection
+to the designated disposable Actions database and validates exact checkout/source facts;
+no fake Actions identity, rewritten server build or hand-authored dictionary is allowed.
+Therefore the current dictionary remains unchanged in the validation draft; its later
+full-CI drift gate is expected to differ until authentic evidence is recovered. That is
+not full candidate acceptance. Hosted test execution and schema-only catalog capture
+are needed before final seven-file publication. Retain the real runtime results and
+dictionary source/catalog/build provenance before rendering the final dictionary.
+
+Validation draft branch: `codex/hpr-p25-047-complete-validation`; exclusive six-file
+subset (new SQL/test, LOCAL test, ownership and these two docs), no dictionary fabrication,
+PR, main mutation, workflow/dependency change or deployment. Connector tools do not expose
+workflow dispatch. Hosted validation has NOT STARTED until a real run is observed.
+Candidate identity/scope/blob checks precede dispatch; do not claim candidate runtime
+acceptance. After real results, recover the catalog, render/check dictionary, validate
+final exact seven-file scope and expected-head main publication, observe required CI
+startup and STOP without waiting or selecting another code. HPR-P25-047 remains
+IN PROGRESS / VALIDATION DRAFT, NOT IMPLEMENTED ON MAIN. F1–F4 OPEN; simulator/P3 deferred.

@@ -7,7 +7,7 @@
  *
  * @Name        : LocalCredentialSecurityGenerationPostgresIntegrationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-12
+ * @UpdatedOn   : 2026-10-13
  *
  * @Type        : Class
  * @Layer       : Infrastructure Test
@@ -83,7 +83,8 @@ class LocalCredentialSecurityGenerationPostgresIntegrationTest {
 
     @Test void freshAndPredecessorUpgradePreserveRowsAndOldChecksums() {
         flyway.validate();
-        assertEquals("20261012.001", flyway.info().current().getVersion().toString());
+        assertEquals(0, flyway.info().pending().length);
+        assertEquals(1, jdbc.queryForObject("SELECT count(*) FROM flyway_schema_history WHERE success AND type='SQL' AND version='20261012.001'", Integer.class));
         assertEquals(3, jdbc.queryForObject("SELECT count(*) FROM pg_trigger WHERE tgrelid=?::regclass AND NOT tgisinternal", Integer.class, TABLE).intValue());
         String database = "credential_upgrade_" + UUID.randomUUID().toString().replace("-", "");
         jdbc.execute("CREATE DATABASE " + database);
@@ -95,10 +96,12 @@ class LocalCredentialSecurityGenerationPostgresIntegrationTest {
         var before = upgrade.queryForMap("SELECT * FROM " + TABLE + " WHERE id='upgrade-credential'");
         var history = upgrade.queryForList("SELECT installed_rank,version,script,checksum,success FROM flyway_schema_history ORDER BY installed_rank");
         var latest = Flyway.configure().dataSource(source).locations("classpath:db/migration").load();
-        latest.migrate(); latest.validate();
+        int pending = latest.info().pending().length;
+        assertEquals(pending, latest.migrate().migrationsExecuted); latest.validate();
+        assertEquals(0, latest.info().pending().length);
         var after = upgrade.queryForMap("SELECT * FROM " + TABLE + " WHERE id='upgrade-credential'");
         assertEquals(1L, after.remove("security_version")); assertEquals(before, after);
-        assertEquals(history, upgrade.queryForList("SELECT installed_rank,version,script,checksum,success FROM flyway_schema_history WHERE version<>'20261012.001' ORDER BY installed_rank"));
+        assertEquals(history, upgrade.queryForList("SELECT installed_rank,version,script,checksum,success FROM flyway_schema_history WHERE installed_rank<=? ORDER BY installed_rank", history.getLast().get("installed_rank")));
     }
 
     @Test void neutralWritesAndEachSecurityFieldHaveCorrectGeneration() {

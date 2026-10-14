@@ -29,6 +29,15 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-P25-051 D2 proof selection, 2026-10-14
+
+050/A–D are COMPLETED / CI ACCEPTED at 81d46bc: Full #683/Fast #16/Docs #287 SUCCESS.
+Owner Next selects 051's required D2 design boundary. A database-time stability interval
+and final guarded linearization statement are selected candidates; exact next scope is
+one isolated PostgreSQL proof class plus inventory/governance, registered below. No 051
+production source/API is implemented here. D2 proof/real owner integration remain open;
+052/B2/B3 adoption remains blocked. This two-document amendment stops after Docs startup.
+
 ### Current execution checkpoint — HPR-P25-050D B1 reader candidate, 2026-10-14
 
 A/B/C are CI accepted; C passed Full #682/Fast #15/Docs #286 on 3facf12. Owner Next selects
@@ -360,8 +369,8 @@ aggregate may replace it. D1–D5 are internal gates, never new HPR task IDs.
 |---|---|---|---|---|---|---|---|---|---|---|
 | 1 | HPR-CI-003 | Automatic fast suite and equivalent parallel full verification | CI / independent verification | IN PROGRESS / ORACLE RESOURCE CANDIDATE; prior 5x same-SHA equivalence retained; multi-revision/performance OPEN | Accepted 049; this Docs PASS; owner selection | CI-003 closed list | Selection/report/release negative tests; shadow full verification | No lost cases; mandatory gate fail-closed; repeatable timing | CI | `ci: automate fast feedback and preserve full verification gates` |
 | 2 | HPR-P25-047 | Provider/link database security generations | Identity | COMPLETED / CI ACCEPTED | Accepted 046/048/049; existing registration Docs; separate Next | Existing seven-file list, unchanged | Real writers, Flyway fresh/upgrade, native/bulk/race/rollback | Exact implementation Production + Docs SUCCESS | F1 | `feat(identity): enforce provider and link security generations` |
-| 3 | HPR-P25-050 | Immutable operation binding and trusted issuance/reader, staged 050A–050D | Identity; Platform technical wiring | IN PROGRESS / 050A CI ACCEPTED; 050B CANDIDATE / 050C–D NOT IMPLEMENTED | 047; accepted 044/045 design | Exact 050A/B/C/D lists in 2026-10-14 amendment; 050A next after Docs acceptance | Fresh-schema LOCAL/LDAP/AD/OIDC, expiry, generation, rollback; no deployed-data migration | B1 provenance and storage proof across all four children; no inferred B2/B3 | F1 | Child messages registered below; original message retained by 050D |
-| 4 | HPR-P25-051 | Cross-owner revocation/time/transaction linearization | Identity / Party / Topology; Platform mechanics | BLOCKED on D2 atomic-time and transaction proof | 050; accepted 038/043; D2 | D2 then exact owner/export/fence list | Real PostgreSQL owner/race/expiry/connection tests | B2/B3 and writer ordering + bounded latency PASS | F1 | `feat(security): linearize cross owner protected operations` |
+| 3 | HPR-P25-050 | Immutable operation binding and trusted issuance/reader, staged 050A–050D | Identity; Platform technical wiring | COMPLETED / A–D AND B1 CI ACCEPTED AT 81d46bc | 047; accepted 044/045 design | Exact 050A/B/C/D lists executed; Full #683/Fast #16/Docs #287 SUCCESS | Fresh-schema LOCAL/LDAP/AD/OIDC, expiry, generation, rollback; no deployed-data migration | B1 provenance and storage proof across all four children; no inferred B2/B3 | F1 | Child messages registered below; original message retained by 050D |
+| 4 | HPR-P25-051 | Cross-owner revocation/time/transaction linearization | Identity / Party / Topology; Platform mechanics | IN PROGRESS / D2 METHOD SELECTED; PROOF PENDING | 050; accepted 038/043; D2 | D2 then exact owner/export/fence list | Real PostgreSQL owner/race/expiry/connection tests | B2/B3 and writer ordering + bounded latency PASS | F1 | `feat(security): linearize cross owner protected operations` |
 | 5 | HPR-P25-052 | Topology authoring, route/profile and revision publication APIs | Topology; read-only foreign owner contracts | PLANNED / REGISTERED; D3 contract/scope gate | 051; accepted 018/019/020/032/034/036/037/038; D3 | D3 closed authoring/storage/API list | Actual API round trips, epochs/CAS/history/import-export | F1-02/03/04 within explicit supported topology scope | F1 | `feat(topology): expose governed engineering revision workflows` |
 | 6 | HPR-P25-053 | Product/property/method metadata authoring and history | Custody; source approval through Workflow | PLANNED / REGISTERED; D3 contract/scope gate | 051; accepted 018/022 design; D3 | D3 exact Custody/owner-export list | Multi-product metadata, unsupported shape, old GAS replay | F2-01 and product share of F2-03 | F2 | `feat(custody): govern versioned product engineering data` |
 | 7 | HPR-P25-054 | Installed-unit/asset and manufacturer-characteristic history | Topology installed configuration; Assets lifecycle; Party manufacturer; existing Simulation data store | PLANNED / REGISTERED; D3 contract/scope gate | 052; accepted 020/021 design; D3 | D3 exact per-owner list | Nine distinct units; curve/table/units/lifecycle/history | F2-02 and equipment share of F2-03; data only | F2 | `feat(engineering): govern installed units and characteristic revisions` |
@@ -7941,7 +7950,7 @@ them only within the separately selected stage after validation against current 
 
 ### Execution order, exact messages and acceptance state
 
-Parent HPR-P25-050 remains IN PROGRESS / STAGED; A/B/C CI accepted, D is a candidate. The following
+Parent HPR-P25-050 is COMPLETED / CI ACCEPTED for integrated B1 at 81d46bc. The following
 child IDs are implementation subdivisions of that parent, not new product requirements.
 Dependency order is strict: 050A → 050B → 050C → 050D. No batch is authorized. A separate
 owner Next selects exactly one child after its prerequisite exact-SHA CI is accepted;
@@ -7957,7 +7966,7 @@ An intermediate green child proves only its own bounded deliverable, not complet
 | HPR-P25-050A | Trusted binding foundations and private verification receipts | accepted 044/045/046/047/049 and this amendment | COMPLETED / CI ACCEPTED | `feat(identity): add trusted authentication binding foundations` |
 | HPR-P25-050B | Fresh-schema binding storage and session guards | CI-accepted HPR-P25-050A | COMPLETED / CI ACCEPTED | `feat(identity): persist immutable authentication bindings` |
 | HPR-P25-050C | Real provider verification and atomic bound issuance | CI-accepted HPR-P25-050B | COMPLETED / CI ACCEPTED | `feat(identity): complete trusted bound authentication` |
-| HPR-P25-050D | Bound-operation reader and integrated B1 acceptance | CI-accepted HPR-P25-050C | IN PROGRESS / IMPLEMENTED CANDIDATE; CI PENDING | `feat(identity): bind protected operations to trusted authentication` |
+| HPR-P25-050D | Bound-operation reader and integrated B1 acceptance | CI-accepted HPR-P25-050C | COMPLETED / CI ACCEPTED | `feat(identity): bind protected operations to trusted authentication` |
 
 050D retains the original parent implementation message. The original one-commit
 message is not separately executed or used to squash accepted child commits. Parent
@@ -8811,3 +8820,190 @@ PROGRESS / shadow-fallback-required, mandatory fallback retained, optimized adop
 Development remains synthetic, with no production/deployed-data migration/preservation or
 release/deployment. Gas-first/GZ2, Hidra's own engine, steady/transient direction, versioned
 inputs/operator control persist; owner supplies calibration later, Simulation/P3 deferred.
+
+
+## 2026-10-14 — HPR-P25-051 D2 method selection and bounded proof envelope
+
+### Accepted prerequisite and selected boundary
+
+Refreshed main is 81d46bcb8bc8821f67eafbb26cd1279f6d091457, tree
+fbf63bb4978f33862663780142ab206035160a51. Full #683 (38552443731), Fast #16
+(38552443714) and Docs #287 (38552443729) are SUCCESS. All seven Full jobs,
+including API/dictionary, both PostgreSQL shards, unrestricted oracle and authenticated
+Full Verification Gate, succeeded. A/B/C/D are accepted: parent HPR-P25-050 is
+COMPLETED / CI ACCEPTED for its registered integrated B1 scope. This supplies neither
+transaction-valid B2 permission nor B3 cross-owner fencing, deployment/SITE acceptance
+or a protected Topology API. Its first 038/043 and all source-preservation obligations remain.
+
+Owner Next selects the registered 051 D2 prerequisite. Current roadmap explicitly blocks
+runtime CREATE/UPDATE until D2 method/export/transaction scope is resolved. This is one
+bounded same-ID design amendment, not a new HPR/product requirement or runtime completion.
+Exclusive current scope: UPDATE roadmap and append-only reconciliation only; no CREATE/
+DELETE or Java/SQL/CI-inventory/workflow change. Exact amendment commit message registered
+here: `docs(security): select operation time fencing proof`. Original future implementation
+message remains `feat(security): linearize cross owner protected operations`.
+
+051 is IN PROGRESS / D2 METHOD SELECTED / DATABASE PROOF PENDING. D2 is not CLOSED or
+runtime accepted. The next internal execution is the single concrete proof below, only
+on a separate Next after this amendment's Docs success. Its acceptance may reject this
+method; no protected runtime integration or 052 automatic selection is allowed yet.
+
+### Source facts requiring the new technique
+
+Current IdentityAuthorizationApplicationService evaluates at its own Instant.now.
+TopologyScopedAccessQueryService is Identity-owned and obtains two sequential company/
+facility decisions, not one common operation time. JpaAuthorizationEvidenceAdapter filters
+validFrom/validTo and attribute windows at its supplied observation time; its window is
+inclusive lower/exclusive upper. AuthorizationEvidence exports already selected grants/
+rules/attributes and does not export every future transition. HidraTransactionConfiguration
+only enables management. The accepted B1 owner query intentionally uses REQUIRES_NEW,
+READ_COMMITTED read-only; it cannot be reused as 051 same-transaction B3 proof. Future
+051 must retain ordinary APIs/B1 and introduce a separate owner-controlled transaction
+participation path, rather than silently upgrading their existing observations to permits.
+
+### Selected candidate: fenced stability interval plus final database guard
+
+The design choice is a bounded stability interval, not permission at two unrelated times.
+Under one actual writable READ_COMMITTED physical owner transaction, acquire all admitted
+security/ownership contributor fences before reading contributors. Identity, then Party,
+then Topology is the fixed owner order; each owner's concrete schema/relation order and
+row/key order must be source-enumerated before runtime integration. Coarse table-level
+SHARE ROW EXCLUSIVE is the candidate baseline: it conflicts with ordinary DML relation
+locks and itself, covering inserts/phantoms without requiring every native writer to
+cooperate with an advisory lock. It deliberately serializes protected work and can delay
+unrelated administration; its costs must pass the explicit synthetic thresholds below.
+No bypass of owner triggers/privileges, no claimed nonblocking production capacity.
+
+After fences, capture database clock_timestamp as sample s on the SAME physical backend/
+transaction. Obtain fresh bound authentication, epoch/company/facility owner images and
+both decisions at s. Every contributor and supported predicate must be constant over an
+interval [s,u), with u no later than the earliest relevant future transition or deadline.
+Enumerate future starts/ends even for currently inactive/nonmatching grants, memberships,
+subject attributes and potential DENY rules; include token/source assertion/session/
+credential/provider/User lock and ownership-effective boundaries. Provider/link/credential
+A/B/A and source mutations are additionally ordered by the retained database fences.
+Dropping a future DENY because it is not applicable at s is prohibited. No arbitrary
+future count, infinity sentinel or Java wall-clock estimate can stand in for coverage.
+
+Both company/facility results must PERMIT at s, and the entire dependency set must be
+covered by the same interval. Unknown/free-form time predicates, missing contributor
+families, an unbounded external dependency, unrepresentable time, unsupported policy or
+incomplete future-rule coverage give DENY/INDETERMINATE. A new protected path never falls
+back to the ordinary evaluator's earlier Boolean. Existing ordinary policy meaning and
+window endpoints remain unchanged; a conservative empty interval fails closed. No new
+business permission or external-claim equivalence is introduced by this amendment.
+
+Prepare/provisionally execute all admitted business work and explicitly flush JPA inside
+that transaction. It is still private/uncommitted. The LAST admitted application database
+statement is an owner-controlled guard/receipt statement that captures actual database
+time t once, checks s <= t < u, all expected epochs/head identities and the bounded-work
+budget, then records the chosen read/head-operation linearization time. Failure raises and
+aborts the whole transaction; no savepoint/catch-and-continue. The candidate logical
+linearization point is this final guard AFTER provisional work, under all retained fences;
+it is not claimed to be the earlier Java decision, row-write timestamp or later commit
+clock. No business write, delayed ORM flush, callback evaluation or authority mutation may
+follow it before COMMIT. Results/receipts leave only after successful physical commit.
+Protected readers must follow the same fence/order/guard protocol and withhold data until
+commit; legacy/unfenced read APIs retain their own existing semantics and are not B3 proof.
+
+Proof must demonstrate this final-statement condition through actual JPA/JDBC and a real
+Spring transaction lifecycle, including adversarial late flush/beforeCommit callbacks.
+If the chosen lifecycle cannot enforce it, D2 remains blocked: do not rename an ordinary
+beforeCommit check as an atomic head fence. A driver error with uncertain COMMIT outcome
+returns operational INDETERMINATE and no success or automatic retry; do not claim rollback
+without observed database evidence. No network/directory/JWK/solver work inside fences.
+
+Database clock rollback (t<s), elapsed lifetime, empty/invalid window, missing/wrong physical
+connection or read-only/wrong isolation/REQUIRES_NEW/async participation rejects. Forward
+clock jumps are checked against u and budget. The database time sample is the declared
+operation time; production clock discipline is not established by synthetic tests.
+No statement_timestamp/transaction_timestamp or decoder skew extends valid authority.
+
+### Synthetic engineering envelope and failure policy
+
+Select test targets, not production service promises: lock_timeout 250 ms per acquisition,
+statement_timeout 750 ms, maximum protected work 500 ms measured from the first admitted
+fence attempt to final guard, idle-in-transaction timeout 1,000 ms. Aggregate deadline
+must also be checked between acquisitions, so a long relation list cannot multiply the
+per-lock wait into an unbounded request. On 8 concurrent synthetic contenders, require
+no success beyond budget, no missing rollback and post-release admin-writer completion
+within 1,000 ms at p95, excluding declared injected outages. Record actual sample count,
+all observed waits/holds/tails/aborts, runner resources and cold/warm conditions; don't
+report only medians or hide rejected requests. Threshold failure blocks coarse-fence
+adoption; no retry/backoff is silently introduced. Timeouts do not prove a finite COMMIT/
+WAL/network hold bound; observe that tail separately and withhold operational readiness
+when uncertain or excessive. Owner supplies deployment capacity/calibration later.
+
+### Exact next proof scope, acceptance and stop
+
+Register one D2 proof-only internal commit of HPR-P25-051. Exact message:
+`test(security): prove protected operation temporal fencing`.
+CREATE only:
+`src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/CrossOwnerOperationTemporalFencePostgresIntegrationTest.java`.
+UPDATE only `.github/ci-test-inventory.json`, roadmap and append-only reconciliation.
+DELETE none. Name/path are absent at this exact main; previous cases/policies/Fast lanes/
+archives/timing remain unchanged. The new class is PostgreSQL-only, actual JUnit names
+and source hash registered from execution/enumeration; skipped tests are not proof.
+No production class, migration, ownership/dictionary, new protected API, dependency,
+helper/workflow/version/history or foreign owner source is writable in this proof envelope.
+Original final 051 implementation message and runtime scope remain separately gated.
+
+Use real disposable PostgreSQL16, fresh current Flyway, Spring/JPA/JDBC on the actual
+owner datasource and independent backend connections. Test-scoped mechanics may use
+synthetic disposable guard/head/window fixtures and invoker temporary functions, clearly
+labelled prototype fixtures rather than existing Topology publication or deployment proof.
+No permanent Flyway SQL, privileged trigger/role bypass, forged server/source metadata,
+sleeps as race proof or foreign production JPA import. The isolated proof must cover:
+
+- Native insert/delete/update and phantom DENY attempts before/after real relation fences;
+  owner ordering, same/different transaction/backend observations, actual pg_locks/
+  pg_blocking_pids or NOWAIT barriers, timeout/deadlock abort and rollback.
+- One database time across paired decisions and final guarded provisional read/head write;
+  expiry and future DENY activation during work (even initially nonmatching/inactive),
+  half-open equality, source cap, earliest boundary, unsupported/incomplete predicate
+  fail-closed, backward/forward clock samples and no transaction-start-time substitute.
+- Genuine JPA+JDBC same-connection/transaction behavior, wrong isolation/read-only/async/
+  REQUIRES_NEW rejection; late dirty flush and beforeCommit/callback adversaries; partial
+  savepoint rejection; failed final guard rolls back every provisional synthetic effect.
+- Physical successful commit before delivery, actual observed commit failure versus unknown
+  outcome, no returned partial data/receipt and no automatic retry; eight-way contention
+  with measured acquisition/hold/admin tails and all declared engineering thresholds.
+
+Prototype success proves only the mechanism that was actually exercised. It does not
+close the real contributor inventory, existing policy completeness, writer participation,
+owner exports, concrete 038 head/epoch integration or final runtime B2/B3. Before those
+runtime edits, D2 still requires an exact production allowlist and every owner relation/
+method/temporal dependency enumerated from current source plus independently proven method.
+A failed proof repairs/rejects this candidate within 051; it cannot authorize dependent APIs.
+This explicit boundary prevents the proof fixture from masquerading as live owner coverage.
+
+### References, validation and current publication
+
+Method review uses official PostgreSQL16 references:
+[explicit locking](https://www.postgresql.org/docs/16/explicit-locking.html),
+[database time functions](https://www.postgresql.org/docs/16/functions-datetime.html),
+[client timeouts](https://www.postgresql.org/docs/16/runtime-config-client.html).
+These substantiate primitive semantics, not this candidate's integrated correctness or
+measured costs. No new Java, database, signature, fence, throughput or clock proof is
+executed by this documentation amendment. Prior #683 is accepted B1 source evidence only.
+Run the six unchanged Python suites, canonical docs/offline OpenAPI/P1 consistency and
+exact two-document/append-only/source preservation checks. Record actual outcomes before
+publication. Main only, expected head 81d46bcb8bc8821f67eafbb26cd1279f6d091457; exact message/
+parent/tree/blob scope verified. This docs-only change triggers Docs automatically; Full/
+Fast push filters exclude it. Observe Docs startup and STOP, no manual Full/Fast dispatch
+or completion polling. The next owner feedback selects the registered proof only after
+Docs success; it does not select the still-blocked final production 051 integration.
+
+Gas-first/GZ2, Hidra's own engine, steady/transient direction, versioned inputs/operator
+control remain. Development data is synthetic; no production data/upgrade/backfill or
+release/deployment is assumed, and calibration comes from the owner later. Simulation/P3
+stays deferred. CI-003 remains IN PROGRESS, mandatory oracle/fallback and optimized=false.
+
+
+Actual amendment validation: all six unchanged Python suites PASS (102 cases); canonical
+docs PASS (98 documents/5,355 relative links/24 modules/13 P2 rows); offline OpenAPI PASS
+(263 operations/244 paths/231 schemas); P1 evidence consistency PASS. Exact two-document
+scope, 4,825 other unchanged tracked blobs, absent proof path, append-only reconciliation
+and added-line whitespace PASS. No new runtime/DB/fence/latency proof is claimed. Positive
+uncontended commit cases are mandatory in the future proof; a contention cohort in which
+all requests abort cannot establish useful throughput or close the synthetic capacity gate.

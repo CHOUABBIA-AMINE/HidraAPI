@@ -30,6 +30,115 @@ by this planning commit. Current planning commit message:
 
 
 
+
+### Current execution checkpoint — HPR-P25-051 complete migration lexical census and temporal expression gate, 2026-10-14
+
+**Live gate:** main `89cf1f047b6315295cc15e06c69d0d6eb44935d1` passed exact-SHA
+Docs run #38579434233. The latest runtime-bearing SHA remains
+`76b14cda4520f1eff242bd474c02ce4db317d385`: Full #686, Fast #19
+and Docs #292 are each SUCCESS. HPR-P25-051A is ACCEPTED as technical
+transaction lifecycle only. Parent 051/D2/B2/B3 remain OPEN. The selected
+work is a source-only SAME-ID D2 evidence checkpoint; not 052 or a runtime task.
+
+#### All-148 Flyway lexical DML/trigger census
+
+All **148** current `src/main/resources/db/migration/*.sql` Git blobs at
+this immutable main tree were inspected by a read-only, case-insensitive
+static search for explicit `INSERT INTO`, `UPDATE`, `DELETE FROM`,
+`TRUNCATE`, `LOCK TABLE`, `ALTER TABLE` on `hidra_identity_*`,
+`hidra_party_*` or `hidra_topology_*`, and for literal `CREATE TRIGGER
+... ON` such relations. Initial schema-creation files were included.
+This is an **all-file lexical census**, NOT a SQL parser, PostgreSQL
+catalog/privilege audit, runtime trace, dynamic SQL proof, exhaustive
+referenced-object graph, exhaustive DML classification or evidence that
+an unmatched table has no writer. Baseline Flyway checksums remain unchanged.
+
+Source-confirmed relevant results, supplementing the prior exact
+relation/writer table:
+
+| Migration family | Lexically observed effects and relevance |
+|---|---|
+| `V20260929_001__enforce_same_module_reference_integrity_a.sql` | Broad Identity/Party/Topology `ALTER TABLE` referential constraints; these are FK checks, not time-valid PERMIT or phantom protection |
+| `V20260929_004__provision_organization_scope_permissions.sql` | Four migration-time Identity Permission INSERT statements; historical provisioning, not normal runtime grant owner fencing |
+| `V20261004_011__hmr_011_identity_permission.sql` | Four grant/mapping admission triggers testing ACTIVE Permission; not reciprocal permission-transition enforcement |
+| `V20261006_010/011/012/013` | User uniqueness, delegation, session and direct-grant ALTER constraints; no observed full relation permission fence |
+| `V20261011_002__p25_topology_station_graph_revisions.sql` | Immutable station-graph UPDATE/DELETE/TRUNCATE triggers; append-only revision does not implement a publication head |
+| `V20261012_001`, `V20261012_002` | LOCAL credential, Provider and ExternalIdentity write/security-generation and delete/truncate guard triggers |
+| `V20261013_001__p25_identity_operation_binding.sql` | Binding and bound-session triggers, native Provider -> Credential/Link -> User -> Session row-lock order, READ COMMITTED; not a D2 transaction-wide lock protocol |
+
+The scan additionally observed unrelated topology pipeline-system,
+connection and pipeline migration-time INSERT/UPDATE, and immutable
+physical-network revision guards. It did **not** establish a literal
+`CREATE TRIGGER ... ON hidra_party_party` or `... ON
+hidra_topology_facility` across the reviewed files. This is strictly
+a negative lexical observation, not a conclusion about triggers created
+indirectly/dynamically, other schemas, data privileges or cross-module
+writers. The previous file-specific audits remain authoritative for
+actual trigger bodies and method behavior.
+
+#### Exact time-expression source evidence and conservative D2 proposal
+
+`AuthorizationExpressionEvaluator` accepts nested `all`, `any`,
+`not`, and leaf `exists`, `eq`, `in` over
+`(subject|resource|action|context).*` attributes, with typed
+STRING/NUMBER/BOOLEAN/DATE/DATETIME equality; unknown, malformed or
+missing data become INDETERMINATE. All branches are intentionally
+evaluated, not short-circuited.
+`JpaAuthorizationEvidenceAdapter` supplies
+`context.evaluatedAt=at.toString()` and selects currently active
+grants/role/group membership, attributes and policy versions at `at`.
+`AuthorizationPolicyEvaluator` implements DENY precedence and
+INDETERMINATE for unresolved expressions; **none of these components
+computes earliest future boundary u** for protected operations.
+
+Therefore, **proposed for 051 owner integration only, not yet accepted or
+implemented**: fail CLOSED for every condition/rule referring to
+`context.evaluatedAt`, unsupported dynamic-time data, unclassified
+custom attributes or a missing future-event census. A permitted static
+leaf must have provably immutable facts throughout [s,u); all nested
+branches (including a currently nonmatching DENY) must participate in
+future-event extraction and be fully source-verified. Half-open
+valid_from/to and effective_from/to transitions, B1 session/source
+deadlines, clock-only lockedUntil changes and provider/attribute source
+availability must be included, even when currently inactive or
+unmatched. No fabricated upper bound or cached earlier Boolean is
+eligible. A separate reviewed compiler/port contract and PostgreSQL
+boundary tests are still required; no production rule grammar or
+existing evaluator changes are authorized here.
+
+#### Concrete remaining acceptance gates
+
+1. Enumerate all **runtime Java/JPA/native/bulk/external normal-writer**
+   entry points for the evaluated relation family, including inherited
+   repository operations; static Flyway history alone cannot cover these.
+2. Prove global relation/row lock ordering against the B1 native owner
+   trigger (including session writes and Party/Facility transfers), with
+   independent connection deadlock/phantom, lock timeout and no-retry tests.
+3. Define precise same-backend immutable Identity B1 + paired permission,
+   Party ACTIVE and Facility/head owner exports, and source-controlled
+   temporal grammar/predicate compiler; their current Boolean,
+   SecurityContext or REQUIRES_NEW methods are not substitutes.
+4. Source-register one forward migration for actual Party/Facility
+   owner epoch/transfer hold and Topology 038 head/predecessor CAS only
+   after design/ownership/schema decisions; preserve all old migrations.
+5. Register an EXACT production/test/file allowlist and prove with
+   fresh PostgreSQL16/Flyway real JPA/JDBC tests: common s/u, t guard,
+   no writes after final guard, observed commit, rollback, 8-way
+   synthetic contention, admin p95<=1000ms and positive successes.
+   Retain accepted 051A limits 250/750/1000ms and 500ms work budget.
+
+**Disposition:** HPR-P25-051/D2 production owner integration remains
+BLOCKED; no B2/B3 or release acceptance and 052 remains UNSELECTED.
+Do not infer all migration/source writers are safe from this lexical
+scan. This bounded current action UPDATEs only the Ultimate Roadmap
+and append-only RECONCILIATION; CREATE/DELETE none. Reuse exactly
+`docs(security): select operation time fencing proof`.
+Preserve Java/tests, Flyway, old evidence, inventories and CI setup.
+Publish with expected HEAD 89cf1f0, verify exact two-file parent/tree
+and automatic Docs startup then STOP; do not poll completion or run
+manual Full/Fast CI.
+
+
 ### Current execution checkpoint — HPR-P25-051 native writer and trigger audit, 2026-10-14
 
 **Current evidence.** Main \`16004888feb3fa660694382d16ae4dade61c6a2a\` passed

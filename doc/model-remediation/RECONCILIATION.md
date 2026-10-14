@@ -21181,3 +21181,40 @@ protected production implementation scope/migration yet, no B2/B3 or 052
 acceptance. Only two governance files change with registered
 \`docs(security): select operation time fencing proof\`; STOP after
 automatic Docs startup on guarded exact new main.
+
+
+## 2026-10-14 — HPR-P25-051 complete migration lexical census and expression-time design gate
+
+Exact live `main` 89cf1f047b6315295cc15e06c69d0d6eb44935d1 had Docs
+#38579434233 SUCCESS. Runtime 76b14cda4520f1eff242bd474c02ce4db317d385
+retains Full #686/Fast #19/Docs #292 SUCCESS; 051A is CI ACCEPTED.
+A read-only lexical source pass inspected ALL 148 Flyway SQL Git blobs
+for explicit Identity/Party/Topology DML/ALTER/LOCK targets and literal
+CREATE TRIGGER ON tables. Reviewed hits include existing broad FK
+ALTERs, migration-time Identity Permission INSERT, HMR-011 active grant
+admission triggers, local/provider/external security-generation triggers,
+B1 binding/session triggers and immutable station/physical revision
+triggers. No direct Party or Facility CREATE TRIGGER was matched by this
+lexical method. It neither parses dynamic SQL nor proves absence of a
+trigger, JPA/native runtime writer, privileged path or owner fence.
+
+The exact current AuthorizationExpressionEvaluator grammar supports
+nested all/any/not and exists/eq/in leaves with typed equality, and
+JpaAuthorizationEvidenceAdapter supplies context.evaluatedAt at its
+selected instant. AuthorizationPolicyEvaluator has DENY precedence,
+but no owner code computes a future time-stability interval u.
+Conservative proposal (NOT implemented or accepted) rejects
+context.evaluatedAt and unclassified dynamic-time policies until
+source-verified future transition extraction and actual PG boundary
+tests support them. Half-open grant/policy/attribute and source expiry
+windows and inactive/future DENY must all be accounted for.
+
+Remaining blockers: complete normal/privileged runtime writer graph,
+compatible owner lock DAG, exact protected B1/Identity/Party/Topology
+ports, supported temporal grammar/compiler, 038 head/epoch/hold schema,
+exact runtime/test allowlist and real hosted PostgreSQL acceptance.
+HPR-P25-051/D2/B2/B3 remain open; 052 and release remain blocked.
+Only two docs files are changed; existing code, migrations, CI inventory
+and past evidence unchanged. Registered message remains
+`docs(security): select operation time fencing proof`. Observe new
+Docs startup then STOP.

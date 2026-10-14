@@ -233,7 +233,7 @@ class NativeOwnerFenceCompatibilityPostgresIntegrationTest {
                     + " VALUES"
                     + " (?,?,'TOPOLOGY','FACILITY','READ',false,'ACTIVE',clock_timestamp(),clock_timestamp())",
                 permission,
-                permission);
+                "topology:facility:read-" + permission);
         String insert =
                 "INSERT INTO "
                         + G

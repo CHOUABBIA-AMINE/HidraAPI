@@ -32,6 +32,36 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-P25-051 D2 fixture repair, 2026-10-14
+
+Owner Fail selects repair of native-owner compatibility candidate
+`eddf03bbab9e179308a9f5ff139e0b8ab017e5ed`, not a later task.
+Full #687 PostgreSQL shard 1 failed: 348 tests, zero assertion failures,
+one error and zero skips. The error is
+`relationFenceBlocksPhantomPermissionWriter`: its synthetic Permission
+code was a bare UUID, violating the existing
+`ck_hmr011_identity_permission_code_format` constraint. The installed
+V20261004_011 constraint requires three lowercase alphanumeric/hyphen
+segments separated by colons. Fix only that fixture code to
+`topology:facility:read-<synthetic UUID>`; preserve its unique ID and all
+six test identities, collision assertions, timeouts and production constraints.
+
+Same registered four-path repair scope and exact message:
+`test(security): prove native owner fence compatibility`.
+UPDATE the existing new test, its inventory source hash, this roadmap
+and append-only reconciliation; CREATE/DELETE none. Existing migrations,
+production code, other tests, workflows, inventory cases/lanes/timings/policies
+and release files remain unchanged. New test source SHA-256:
+`6d0a402fca090a13dd93f6f3ca900d5d011a53ad0375b46f7d8cb3a75b5bd881`.
+
+Validation: source diff and constraint-regex compatibility checked;
+no local Maven/PostgreSQL execution claimed for this repair. Hosted Full,
+Fast and Docs must start on the guarded repair SHA, then STOP.
+The failed prior run is not acceptance; require successful exact-SHA Full
+aggregate and genuine zero-skip PostgreSQL reports on a separate Next/Fail.
+Parent 051/D2/B2/B3 and 038 owner integration remain OPEN; 052 unselected.
+No release/deployment, simulation advancement or constraint weakening.
+
 ### Current execution checkpoint — HPR-P25-051 D2 native-owner compatibility test candidate, 2026-10-14
 
 Owner Next selects only the registered four-path test envelope after main

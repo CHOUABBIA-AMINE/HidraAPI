@@ -21900,3 +21900,59 @@ persist. Gas-first/GZ2, own engine, steady/transient, versioned inputs/
 operator control; synthetic development, owner calibration later,
 Simulation/P3 deferred; no release/deployment.
 
+
+
+## 2026-10-14 — HPR-P25-051C supplied boundary slice CI acceptance
+
+Owner Next recovered live main `f68a729594a9dd2a54911501396394af4eef17c7`,
+parent `68757afa87d6f58c8609c2aca10185b03df9bdb1`, tree
+`c87fb4528fdbbea33d0959856014b3dfef9e0e86`.
+Exact-SHA [Full #690](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38600369907),
+[Fast #23](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38600369794)
+and [Docs #306](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38600370035)
+are completed SUCCESS. All seven Full jobs, including both PostgreSQL
+partitions, unrestricted oracle, runtime API/dictionary and authenticated
+Full Verification Gate, are SUCCESS.
+
+**HPR-P25-051C COMPLETED / SUPPLIED BOUNDARY REDUCTION CI ACCEPTED.**
+Downloaded this exact attempt's unit-architecture artifact `11913183217`
+and PostgreSQL partition-1 artifact `11912464814`. Genuine Surefire XML
+contains all12 AuthorizationTemporalBoundaryCompilerTest identities and
+all4 AuthorizationTemporalBoundaryPostgresIntegrationTest identities;
+each suite has zero failures/errors/skips/flakes. Reported durations
+0.020s and2.382s are observations, not scheduling baseline changes or
+production latency SLOs. The formerly locally skipped PostgreSQL cases
+now have actual hosted zero-skip evidence on this runtime SHA.
+
+Authenticated aggregate:379 classes/2013 tests, zero failures/errors/skips,
+same-run equivalence true, source SHA matching f68a729, inventory digest
+`840d209a64a5f9414a09b23e3116cfdc74845fa77fb4e085120b915b878114a8`.
+Oracle fallback remains required; optimized_adoption_eligible=false.
+The current runtime/compiler source, inventory and migrations remain
+unchanged by this acceptance checkpoint.
+
+Acceptance covers pure reduction of supplied facts and real PostgreSQL
+half-open/microsecond/timezone/infinity parity only. The dormant compiler
+does not collect the owner event set, certify coverage, freeze authority
+facts or grant permission. Parent051/D2/B2/B3 remain IN PROGRESS/OPEN.
+The next same-ID source/scope closure must register actual Identity-owned
+event collection from the complete graph (including future inactive/
+nonmatching DENY, grant/membership/policy/attribute/B1 boundaries) and
+its exact implementation/test paths. Do not substitute current-at-s JPA
+filters or a caller completeness Boolean. No new runtime path or052
+is admitted by this checkpoint. Global writer/privilege/lock ordering,
+real protected Identity/Party/Topology exports, same database s/u/t
+and038 publication head/epoch remain OPEN.
+
+Current action uses registered same-ID governance message
+`docs(security): select operation time fencing proof`; UPDATE only
+roadmap and append-only reconciliation, CREATE/DELETE none. Preserve
+all source/tests/inventory/migrations/workflows/history/version/release
+blobs. Validate exact two-path append-only scope and canonical docs,
+publish directly to expected-head main, verify parent/tree/blobs, observe
+automatic exact-SHA Docs startup then STOP. Startup is not success;
+accepted runtime stays anchored to f68a729.
+Gas-first/GZ2, own engine, steady/transient, versioned inputs/operator
+control persist; synthetic development, owner calibration later,
+Simulation/P3 deferred; no release/deployment.
+

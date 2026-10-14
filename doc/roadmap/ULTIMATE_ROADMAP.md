@@ -32,6 +32,90 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-P25-051D fenced Identity event collector candidate, 2026-10-14
+
+Owner Next selected only the five-path registered envelope after main
+`f8da655277de327edf8782996d16095500bd74e7` and exact-SHA Docs #308 SUCCESS.
+Exact message: `feat(identity): collect fenced temporal event candidates`.
+**051D IN PROGRESS / IMPLEMENTED CANDIDATE / HOSTED CI PENDING.**
+
+Created JdbcIdentityTemporalEventCollector and its ten-case real PostgreSQL
+integration test. The private repository requires an existing writable Spring
+transaction and actual READ COMMITTED/non-read-only PostgreSQL settings.
+MANDATORY participation does not start another transaction. It locks the
+eleven registered temporal/expression relations in one fixed lexical-order
+SHARE ROW EXCLUSIVE SQL statement before owner reads or clock sampling.
+It then takes one real DB clock/PID/XID sample, reads the exact selected
+binding ID with parameterized SQL, and reads whole timed/condition/rule
+supersets with fixed identifiers, deterministic ordering and LIMIT1025.
+No ACTIVE/effect/claim/current-window or caller graph filter is used.
+
+All twelve registered temporal projections are mapped to actual051C kinds,
+including unrelated historical session/binding intervals and optional source
+expiry as ordinary census facts. Selected native/source expiry inputs alone
+are required B1 bounds. Reject absent/future selected issue time, expired/
+malformed deadlines, >1024 combined temporal inputs or >1024 expression rows,
+unsupported051B predicates and nonnull obligations; no silent truncation.
+Actual051B dependencies and051C earliest/tied contributors become materialized
+public records plus immutable Java lists, with diagnostic source counts.
+There is no Optional, JDBC resource, lazy entity or unmodifiableSortedSet
+escape in Candidate. A native tuple or constructed Candidate does not prove
+producer origin, B1 eligibility, paired permission or full static owner
+coverage. The component is private/dormant for business authorization.
+
+The ten registered PostgreSQL test identities are implemented in source.
+They use fresh real PostgreSQL16/Flyway/Hibernate validate, actual Spring
+collector+051A, valid SQL-trigger fixtures, actual time and independent
+native connections. Cases cover inactive/unmatched future DENY; tied role,
+membership, policy and attribute starts; selected native/source/session
+expiry and exact source-count increment; hidden clock/custom predicate and
+obligation rejection; actual DB sample PID/XID; independent phantom writer
+55P03/rollback and positive post-release commit; missing and genuinely expired
+binding; 1025-row overflow/rollback; ambient/read-only/wrong-isolation rejection;
+late last-relation lock failure with flushed JPA provisional state, receipt,
+caught SQL error/no recovery/no returned result and positive post-release
+collection. Latches/pg_blocking_pids and bounded joins retain original limits.
+The real short expiry is observed by bounded DB-clock polling OUTSIDE protected
+work; no sleep, fake clock, altered deadline or trigger bypass. Ordinary test
+grant/policy/attribute rows are removed in FK order; guarded security identities
+are retained. Test-local final receipt samples DB time once and checks s<=t<u,
+never actual publication/head/permission authority.
+
+**Local validation boundaries:** the earlier cached Java21/Maven toolchain
+and dependency cache are no longer present. Attempting the focused Maven
+environment failed because the exact cached Maven executable is missing;
+current default Java is17. No Java21 compile, architecture/Fast/JUnit or
+PostgreSQL execution is claimed. The genuine Java17 compiler parser passed
+syntax-only parsing of both new files; this is NOT type analysis or tests.
+Six unchanged Python suites PASS:102 cases. Source inventory, canonical docs,
+offline OpenAPI and retained P1 checks PASS. Existing source Git-blob parity
+outside the registered scope, exact headers/whitespace, old inventory raw-byte
+preservation/cases/timing/policy and append-only reconciliation are checked.
+Hosted Full/Fast/Docs are required for actual Java21/provider/test evidence;
+no fabricated or locally skipped acceptance.
+
+Inventory adds only the genuine source class/ten case identities, fast=false,
+owning PG partition/oracle and explicitly unmeasured zero scheduling hint.
+Fast299/unit300/PG37+43/oracle380/historical4.
+Inventory SHA256: `41d9ae2249c031ab2729a7957c654973afa60145720735037d6289ddef380c7f`.
+Collector source SHA256:
+`71315b78acd2fd531033d4e77a6d45bb55556f3c2204dc67c7742809f9474a07`;
+new test source SHA256:
+`de2ffadc8baf4581692e22246f4daadda7286693b7de3a203dae05c1591ee37d`.
+Only two Java CREATEs plus inventory/roadmap/append-only reconciliation UPDATEs;
+no existing tests/source/migrations/workflows/dependencies or versions changed.
+
+Publish directly to expected-head main with exact child message; verify
+parent/tree/two-CREATE/three-UPDATE blobs and automatic Full/Fast/Docs START
+on actual runtime SHA, then STOP. On a separate Next/Fail inspect exact-SHA
+aggregate and all ten genuine zero-skip PG reports before051D acceptance
+or repair. Parent051/D2/B2/B3, static owner/privilege/writer graph, universal
+lock ordering, real paired permission/Party/Topology exports and038
+head/epoch remain OPEN. 052 unselected. CI-003 oracle/fallback mandatory,
+optimized=false; gas-first/GZ2, own engine, steady/transient, versioned
+inputs/operator control persist. Synthetic development; owner calibration
+later; Simulation/P3 deferred; no release/deployment.
+
 ### Current execution checkpoint — HPR-P25-051D Identity temporal event collector registration, 2026-10-14
 
 Live main `f27937f5b9d8145e47e46071d8eb8d77f5a4a1a3` has exact-SHA

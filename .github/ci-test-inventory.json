@@ -1868,6 +1868,29 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "completeTimedEstateIncludesInactiveFutureDeny",
+        "databaseSampleAndCandidateUseSameBackend",
+        "lateRelationLockFailureRollsBackAndCannotRecover",
+        "missingBindingOrExpiredB1Rejects",
+        "nativeWriterCannotChangeCensusBeforeCommit",
+        "oversizedCensusRollsBackWithoutPartialResult",
+        "readOnlyAndNoTransactionCallsReject",
+        "roleMembershipPolicyAndAttributeFutureStartsAreRetained",
+        "selectedBindingAndSessionExpiryBoundCandidate",
+        "staticExpressionGateRejectsHiddenClockAndUnclassifiedAttribute"
+      ],
+      "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.IdentityTemporalEventCollectorPostgresIntegrationTest",
+      "dependency_reason": "Real PostgreSQL16/Flyway/Spring production collector and protected lifecycle proof; private temporal candidate only. Zero scheduling hint is unmeasured pending hosted execution.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/IdentityTemporalEventCollectorPostgresIntegrationTest.java",
+      "source_sha256": "de2ffadc8baf4581692e22246f4daadda7286693b7de3a203dae05c1591ee37d",
+      "supports": []
+    },
+    {
       "baseline_seconds": 14.252,
       "cases": [
         "actualJpaAdapterOmitsVersionAndRollsBackHashAndGenerationTogether",

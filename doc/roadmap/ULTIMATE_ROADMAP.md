@@ -32,6 +32,75 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-P25-051 D2 native-owner compatibility test candidate, 2026-10-14
+
+Owner Next selects only the registered four-path test envelope after main
+`f5f8776075ab287f8fa9890a5a6926a617082a03` and Documentation #298 SUCCESS.
+Exact commit message: `test(security): prove native owner fence compatibility`.
+
+**Disposition: IN PROGRESS / TEST CANDIDATE IMPLEMENTED / HOSTED CI PENDING.**
+The new `NativeOwnerFenceCompatibilityPostgresIntegrationTest` contains the six
+registered JUnit identities. Its real PostgreSQL16/Flyway/JPA configuration
+validates the actual current migration inventory and the installed binding
+trigger order; it compares JDBC/Hibernate PID and XID in one writable READ
+COMMITTED protected transaction. Independent native connections exercise an
+uncontended binding INSERT/replay, a phantom direct Permission grant INSERT,
+the native binding trigger's preceding Provider row lock followed by the real
+LoginSession port's PESSIMISTIC_WRITE collision, and Provider/LOCAL Credential/
+ExternalIdentity generation revocation. Every writer wait is observed through
+`pg_blocking_pids`, uses latch barriers and bounded joins, and requires actual
+SQLSTATE `55P03` plus rollback and a positive commit after fence release.
+
+The protected-abort case explicitly flushes a real User JPA provisional change,
+adds a provisional test receipt, then encounters an independently held Credential
+row through the native binding trigger. It requires a rejected result, failed
+in-transaction recovery, no final guard, no surviving JPA change/binding/receipt,
+and a positive native commit after release. The existing 250ms lock, 750ms
+statement, 1000ms idle and 500ms protected-work limits are unchanged. Generation
+revocation uses separate bounded protected attempts, never stacked waits inside
+one work budget. No sleep, mocked lock, security-row TRUNCATE/DELETE, trigger
+bypass or production source change was introduced.
+
+Binding tuples use deliberately synthetic zero authenticator bytes and prove
+**SQL-trigger structure only**, never private producer origin, B1 eligibility,
+permission, general deadlock freedom or full owner integration. Receipt storage
+is disposable test-local data, not the 038 publication head or an owner API.
+
+**Exact scope:** CREATE only the registered Identity integration test; UPDATE
+only `.github/ci-test-inventory.json`, this roadmap and append-only reconciliation.
+All existing test bodies, source, migrations, workflows, dictionaries, versions,
+CI baseline/timings/policies and historical archive remain unchanged. Inventory
+adds only this class and its six source/report identities, `fast=false`, owning
+PostgreSQL lane and unrestricted oracle. Its `baseline_seconds=0` is explicitly
+an unmeasured scheduling hint, not an observed duration. Inventory digest:
+`920354c088857d7ffde1572abebf09870e899224ff13bd99f37688f2bb32d413`;
+Fast 297, unit/architecture 298, PostgreSQL partitions 37+41, oracle 376,
+historical 4. Test source SHA-256:
+`3e25d21afdff855e2a98d24fbbf2ba9b44cca24bc26d3cfa1692230857d0e768`.
+
+**Local validation:** Java 21 Maven
+`bash ./mvnw -o -B -q -Dtest=NativeOwnerFenceCompatibilityPostgresIntegrationTest,ArchitectureGuardrailTest test`
+PASS: all source/test compilation and 16 architecture cases, zero failures/errors.
+All six new PostgreSQL cases are SKIPPED because this workspace has no Docker
+executable/socket; none was actually executed and no PostgreSQL acceptance is
+claimed. Initial Maven attempts encountered DNS, proxy-certificate and stale
+proxy failures; workspace-only proxy/trust-store configuration resolved dependency
+retrieval, followed by the successful offline command. No project configuration
+or dependencies changed. Six existing Python policy suites: 102 cases PASS.
+Current-source inventory validation, canonical docs, offline OpenAPI snapshot,
+retained P1 evidence and exact scope/append-only/whitespace checks PASS.
+
+Publish directly to expected-head main; verify actual parent/tree/four-path blobs,
+observe automatic Full/Fast/Docs CI START on the actual published SHA, then STOP.
+Startup is not completion. On a separate Next/Fail, inspect exact-SHA hosted
+results and genuine zero-skip PostgreSQL reports before acceptance or repair.
+Parent 051/D2/B2/B3, complete writer/privilege graph, temporal expression compiler,
+Identity/Party/Topology protected owner ports and 038 head/epoch integration remain
+OPEN. 052 is not selected. CI-003 retains mandatory oracle/fallback and
+optimized adoption false. Gas-first/GZ2, own engine, steady/transient direction,
+versioned inputs and operator control persist; synthetic development data only,
+owner deployment calibration later, Simulation/P3 deferred. No release/deployment.
+
 ### Current execution checkpoint — HPR-P25-051 D2 native-owner lock proof test registration, 2026-10-14
 
 **Current source and CI:** Starting main `b0691face7e503d7aa596caff154661c460c9140` has exact-SHA

@@ -1822,6 +1822,25 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "freshFlywayAndNativeTriggerLockOrderAreReal",
+        "generationRevocationWaitsOrFailsClosed",
+        "lockAbortLeavesNoPartialProtectedWrite",
+        "nativeBindingTriggerAndRelationFenceAbortSafely",
+        "relationFenceBlocksPhantomPermissionWriter",
+        "uncontendedNativeBindingWriterCommits"
+      ],
+      "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.NativeOwnerFenceCompatibilityPostgresIntegrationTest",
+      "dependency_reason": "Test-only actual PostgreSQL16/Flyway/JPA/native Identity writer collision proof. Zero timing hint is unmeasured, not a fabricated duration; hosted zero-skip acceptance pending.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/NativeOwnerFenceCompatibilityPostgresIntegrationTest.java",
+      "source_sha256": "3e25d21afdff855e2a98d24fbbf2ba9b44cca24bc26d3cfa1692230857d0e768",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0.0,
       "cases": [
         "allFourProvenanceBranchesRoundTripExactSyntheticStructuralTuples",

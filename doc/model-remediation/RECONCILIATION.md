@@ -21255,3 +21255,45 @@ This registration alone is only two governance-file UPDATEs with
 not close D2, B2/B3, complete writer census, global deadlock
 freedom, temporal grammar, Party/Facility epoch, 038 head,
 HPR-P25-051 or 052. STOP after exact-SHA Docs startup.
+
+
+## 2026-10-14 — HPR-P25-051 D2 native-owner compatibility test candidate
+
+Registration main f5f8776075ab287f8fa9890a5a6926a617082a03 and Docs #298
+SUCCESS admitted only the four-path test envelope. Exact message:
+`test(security): prove native owner fence compatibility`.
+
+Created NativeOwnerFenceCompatibilityPostgresIntegrationTest with the six
+registered identities: fresh actual Flyway inventory/installed trigger order,
+same physical JDBC/Hibernate transaction, uncontended native binding/replay,
+phantom direct grant blocking, real native Provider-before-Session row-lock
+collision with writable JPA session access, Provider/Credential/Link generation
+revocation and full protected rollback after explicit provisional JPA flush.
+Latch gates, observed pg_blocking_pids, bounded independent joins, real SQLSTATE
+55P03 abort/rollback, positive commits after release and stale-generation 23514
+rejection are asserted. Existing protected time limits are unchanged; no sleeps,
+security-row deletion/truncation or trigger bypass. Zero authentication tags
+are SQL-trigger fixtures only, not producer-origin or eligible B1 evidence.
+Test-local receipts never claim 038 head or permission authority.
+
+Only the registered new test, CI inventory, roadmap and append-only reconciliation
+change. Every existing inventory entry/case/hash, baseline, timing and policy is
+unchanged. New class fast=false; six report/source identities; unmeasured zero
+scheduling hint labeled explicitly, no fabricated duration. Inventory digest
+920354c088857d7ffde1572abebf09870e899224ff13bd99f37688f2bb32d413;
+Fast297/unit298/PG37+41/oracle376/historical4. Test source SHA256
+3e25d21afdff855e2a98d24fbbf2ba9b44cca24bc26d3cfa1692230857d0e768.
+
+Java21 focused offline Maven compile/test PASS: 16 architecture tests executed,
+zero failures/errors, six new PostgreSQL tests SKIPPED (Docker executable/socket
+absent). Local skips are NOT PostgreSQL proof. Initial network/proxy failures
+were resolved through workspace-only proxy and trust-store setup; no repository
+build/configuration change. Six Python policy suites102 PASS; inventory, docs,
+offline OpenAPI, retained P1 evidence and scope/append-only/whitespace PASS.
+Test candidate remains IN PROGRESS / HOSTED CI PENDING. Require genuine zero-skip
+PostgreSQL reports on the actual eventual commit before acceptance. Publish with
+expected-head main guard, verify parent/tree/four blobs, observe automatic
+Full/Fast/Docs startup, then STOP without completion polling or advancing.
+Parent051/D2/B2/B3, full writer graph/time compiler/owner ports/038 head remain
+OPEN, 052 unselected, CI-003 oracle/fallback retained and optimized=false,
+Simulation/P3 deferred; no release/deployment.

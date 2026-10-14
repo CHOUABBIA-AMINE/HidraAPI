@@ -7,7 +7,7 @@
  *
  * @Name        : HidraAccessTokenIssuer
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-15
+ * @UpdatedOn   : 2026-10-14
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -22,12 +22,7 @@ package dz.sh.hidra.modules.identity.infrastructure.security;
 import dz.sh.hidra.modules.identity.application.model.IssuedAccessToken;
 import dz.sh.hidra.modules.identity.application.port.out.AccessTokenIssuerPort;
 import dz.sh.hidra.modules.identity.domain.model.HidraPrincipal;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.TreeSet;
-import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -35,6 +30,13 @@ import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Component;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.TreeSet;
+import java.util.UUID;
 
 /**
  * Provider-neutral Hidra access-token issuer.
@@ -49,6 +51,11 @@ public final class HidraAccessTokenIssuer implements AccessTokenIssuerPort {
     private static final String TOKEN_TYPE = "Bearer";
     private static final String SUBJECT_CLAIM = "sub";
 
+    private org.springframework.beans.factory.ObjectProvider<
+                    org.springframework.security.oauth2.jwt.JwtDecoder>
+            nativeDecoder;
+    private int maxTokenBytes = 65536;
+    private final boolean exactKeys;
     private final JwtEncoder jwtEncoder;
     private final String issuer;
     private final String audience;
@@ -64,18 +71,153 @@ public final class HidraAccessTokenIssuer implements AccessTokenIssuerPort {
             @Value("${hidra.platform.security.jwt.principal-claim:sub}") String principalClaim,
             @Value("${hidra.platform.security.jwt.roles-claim:roles}") String rolesClaim,
             @Value("${hidra.platform.security.jwt.scope-claim:scope}") String scopeClaim,
-            @Value("${hidra.platform.security.jwt.access-token-ttl-seconds:900}") long accessTokenTtlSeconds
-    ) {
+            @Value("${hidra.platform.security.jwt.access-token-ttl-seconds:900}")
+                    long accessTokenTtlSeconds) {
+        this.exactKeys =
+                Objects.equals(issuer, issuer == null ? null : issuer.strip())
+                        && Objects.equals(audience, audience == null ? null : audience.strip());
         this.jwtEncoder = Objects.requireNonNull(jwtEncoder);
         this.issuer = requireConfigured(issuer, "hidra.platform.security.jwt.token-issuer");
         this.audience = requireConfigured(audience, "hidra.platform.security.jwt.audience");
-        this.principalClaim = requireConfigured(principalClaim, "hidra.platform.security.jwt.principal-claim");
+        this.principalClaim =
+                requireConfigured(principalClaim, "hidra.platform.security.jwt.principal-claim");
         this.rolesClaim = requireConfigured(rolesClaim, "hidra.platform.security.jwt.roles-claim");
         this.scopeClaim = requireConfigured(scopeClaim, "hidra.platform.security.jwt.scope-claim");
         if (accessTokenTtlSeconds <= 0) {
-            throw new IllegalStateException("Hidra JWT access-token TTL must be greater than zero seconds.");
+            throw new IllegalStateException(
+                    "Hidra JWT access-token TTL must be greater than zero seconds.");
         }
         this.accessTokenTtlSeconds = accessTokenTtlSeconds;
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public HidraAccessTokenIssuer(
+            JwtEncoder encoder,
+            @Value("${hidra.platform.security.jwt.token-issuer:hidra-api}") String issuer,
+            @Value("${hidra.platform.security.jwt.audience:hidra-api}") String audience,
+            @Value("${hidra.platform.security.jwt.principal-claim:sub}") String principalClaim,
+            @Value("${hidra.platform.security.jwt.roles-claim:roles}") String rolesClaim,
+            @Value("${hidra.platform.security.jwt.scope-claim:scope}") String scopeClaim,
+            @Value("${hidra.platform.security.jwt.access-token-ttl-seconds:900}") long ttl,
+            @org.springframework.beans.factory.annotation.Qualifier("hidraJwtDecoder")
+                    org.springframework.beans.factory.ObjectProvider<
+                                    org.springframework.security.oauth2.jwt.JwtDecoder>
+                            decoder,
+            @Value("${hidra.identity.bound-authentication.max-token-bytes:65536}")
+                    int maxTokenBytes) {
+        this(encoder, issuer, audience, principalClaim, rolesClaim, scopeClaim, ttl);
+        if (maxTokenBytes <= 0)
+            throw new IllegalArgumentException("Invalid bound token byte envelope.");
+        this.nativeDecoder = Objects.requireNonNull(decoder);
+        this.maxTokenBytes = maxTokenBytes;
+    }
+
+    @Override
+    public dz.sh.hidra.modules.identity.application.model.AccessTokenIssuerSettings settings() {
+        if (!exactKeys)
+            throw new IllegalStateException(
+                    "Bound native keys must preserve exact configured text.");
+        var reserved =
+                java.util.Set.of(
+                        "iss",
+                        "sub",
+                        "aud",
+                        "iat",
+                        "exp",
+                        "jti",
+                        "authentication_type",
+                        "identity_provider_id",
+                        "username",
+                        "display_name");
+        if (reserved.contains(rolesClaim)
+                || reserved.contains(scopeClaim)
+                || rolesClaim.equals(scopeClaim)
+                || (!principalClaim.equals("sub")
+                        && (reserved.contains(principalClaim)
+                                || principalClaim.equals(rolesClaim)
+                                || principalClaim.equals(scopeClaim))))
+            throw new IllegalStateException(
+                    "Bound native claim configuration overlaps identity metadata.");
+        return new dz.sh.hidra.modules.identity.application.model.AccessTokenIssuerSettings(
+                issuer, audience, accessTokenTtlSeconds);
+    }
+
+    @Override
+    public IssuedAccessToken issue(
+            HidraPrincipal principal,
+            dz.sh.hidra.modules.identity.application.model.AccessTokenIssuanceContext context) {
+        settings();
+        if (nativeDecoder == null)
+            throw new IllegalStateException(
+                    "Bound signing requires native cryptographic readback.");
+        long minimumBytes = 0;
+        for (String value :
+                (Iterable<String>)
+                        java.util.stream.Stream.concat(
+                                        principal.roles().stream(),
+                                        principal.permissions().stream())
+                                ::iterator) {
+            minimumBytes += value.getBytes(java.nio.charset.StandardCharsets.UTF_8).length;
+            if (minimumBytes > maxTokenBytes)
+                throw new IllegalStateException("Bound native claims exceed their byte envelope.");
+        }
+        IssuedAccessToken encoded;
+        Jwt decoded;
+        try {
+            encoded = encode(principal, context.jti(), context.issuedAt(), context.expiresAt());
+            if (encoded.tokenValue().getBytes(java.nio.charset.StandardCharsets.UTF_8).length
+                    > maxTokenBytes)
+                throw new IllegalStateException("Bound native token exceeds its byte envelope.");
+            decoded = nativeDecoder.getObject().decode(encoded.tokenValue());
+        } catch (RuntimeException failure) {
+            throw new IllegalStateException("Bound native signing or readback failed.");
+        }
+        if (!exactClaims(
+                decoded,
+                issuer,
+                audience,
+                principal.userId(),
+                context.jti(),
+                principal.authenticationType().name(),
+                principal.identityProviderId(),
+                context.issuedAt(),
+                context.expiresAt()))
+            throw new IllegalStateException(
+                    "Native signing readback disagrees with its owner tuple.");
+        return new IssuedAccessToken(
+                encoded.tokenValue(),
+                TOKEN_TYPE,
+                context.jti(),
+                context.issuedAt(),
+                context.expiresAt(),
+                issuer,
+                audience,
+                principal.userId(),
+                principal.authenticationType().name(),
+                principal.identityProviderId());
+    }
+
+    static boolean exactClaims(
+            Jwt jwt,
+            String issuer,
+            String audience,
+            String subject,
+            String jti,
+            String type,
+            String provider,
+            Instant issued,
+            Instant expires) {
+        Object aud = jwt.getClaims().get("aud");
+        return "HS256".equals(jwt.getHeaders().get("alg"))
+                && Objects.equals(jwt.getClaims().get("iss"), issuer)
+                && aud instanceof List<?> values
+                && values.equals(List.of(audience))
+                && Objects.equals(jwt.getClaims().get("sub"), subject)
+                && Objects.equals(jwt.getClaims().get("jti"), jti)
+                && Objects.equals(jwt.getClaims().get("authentication_type"), type)
+                && Objects.equals(jwt.getClaims().get("identity_provider_id"), provider)
+                && Objects.equals(jwt.getClaims().get("iat"), issued)
+                && Objects.equals(jwt.getClaims().get("exp"), expires);
     }
 
     /**
@@ -89,20 +231,26 @@ public final class HidraAccessTokenIssuer implements AccessTokenIssuerPort {
         Instant expiresAt = issuedAt.plusSeconds(accessTokenTtlSeconds);
         String jti = UUID.randomUUID().toString();
 
+        return encode(principal, jti, issuedAt, expiresAt);
+    }
+
+    private IssuedAccessToken encode(
+            HidraPrincipal principal, String jti, Instant issuedAt, Instant expiresAt) {
         List<String> roles = new ArrayList<>(new TreeSet<>(principal.roles()));
         List<String> permissions = new ArrayList<>(new TreeSet<>(principal.permissions()));
 
-        JwtClaimsSet.Builder claims = JwtClaimsSet.builder()
-                .issuer(issuer)
-                .subject(principal.userId())
-                .audience(List.of(audience))
-                .issuedAt(issuedAt)
-                .expiresAt(expiresAt)
-                .id(jti)
-                .claim(rolesClaim, roles)
-                .claim(scopeClaim, permissions)
-                .claim("username", principal.username())
-                .claim("authentication_type", principal.authenticationType().name());
+        JwtClaimsSet.Builder claims =
+                JwtClaimsSet.builder()
+                        .issuer(issuer)
+                        .subject(principal.userId())
+                        .audience(List.of(audience))
+                        .issuedAt(issuedAt)
+                        .expiresAt(expiresAt)
+                        .id(jti)
+                        .claim(rolesClaim, roles)
+                        .claim(scopeClaim, permissions)
+                        .claim("username", principal.username())
+                        .claim("authentication_type", principal.authenticationType().name());
 
         if (!SUBJECT_CLAIM.equals(principalClaim)) {
             claims.claim(principalClaim, principal.userId());
@@ -120,7 +268,8 @@ public final class HidraAccessTokenIssuer implements AccessTokenIssuerPort {
 
     private static String requireConfigured(String value, String propertyName) {
         if (value == null || value.isBlank()) {
-            throw new IllegalStateException(propertyName + " must not be blank for Hidra token issuance.");
+            throw new IllegalStateException(
+                    propertyName + " must not be blank for Hidra token issuance.");
         }
         return value.trim();
     }

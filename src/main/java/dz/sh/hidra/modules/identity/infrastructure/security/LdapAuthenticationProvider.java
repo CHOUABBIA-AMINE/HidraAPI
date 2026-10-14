@@ -7,7 +7,7 @@
  *
  * @Name        : LdapAuthenticationProvider
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-15
+ * @UpdatedOn   : 2026-10-14
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -34,10 +34,7 @@ import dz.sh.hidra.modules.identity.infrastructure.persistence.repository.Extern
 import dz.sh.hidra.modules.identity.infrastructure.persistence.repository.IdentityProviderJpaRepository;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.repository.UserJpaRepository;
 import dz.sh.hidra.platform.security.LdapAuthenticationToken;
-import java.time.Instant;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -50,26 +47,56 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
 /**
  * Database-linked LDAP/Active Directory authentication strategy.
  */
 @Component
-@ConditionalOnProperty(prefix = "hidra.platform.security.ldap", name = "enabled", havingValue = "true")
+@ConditionalOnProperty(
+        prefix = "hidra.platform.security.ldap",
+        name = "enabled",
+        havingValue = "true")
 public final class LdapAuthenticationProvider implements AuthenticationProvider {
 
+    private final dz.sh.hidra.modules.identity.application.port.out
+                    .AuthenticationSecurityStateQueryPort
+            states;
+    private final TrustedAuthenticationVerificationRegistry verification;
+    private final dz.sh.hidra.platform.configuration.HidraLdapSecurityProperties properties;
     private final LdapCredentialVerificationPort credentialVerificationPort;
     private final IdentityProviderJpaRepository identityProviderRepository;
     private final ExternalIdentityJpaRepository externalIdentityRepository;
     private final UserJpaRepository userRepository;
     private final IdentityAdministrationQueryUseCase queryUseCase;
 
+    /** Legacy constructor preserves ordinary principal/assertion tests; it produces no bound receipt. */
+    public LdapAuthenticationProvider(
+            LdapCredentialVerificationPort verifier,
+            IdentityProviderJpaRepository providers,
+            ExternalIdentityJpaRepository links,
+            UserJpaRepository users,
+            IdentityAdministrationQueryUseCase query) {
+        this(verifier, providers, links, users, query, null, null, null);
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
     public LdapAuthenticationProvider(
             LdapCredentialVerificationPort credentialVerificationPort,
             IdentityProviderJpaRepository identityProviderRepository,
             ExternalIdentityJpaRepository externalIdentityRepository,
             UserJpaRepository userRepository,
-            IdentityAdministrationQueryUseCase queryUseCase
-    ) {
+            IdentityAdministrationQueryUseCase queryUseCase,
+            dz.sh.hidra.modules.identity.application.port.out.AuthenticationSecurityStateQueryPort
+                    states,
+            TrustedAuthenticationVerificationRegistry verification,
+            dz.sh.hidra.platform.configuration.HidraLdapSecurityProperties properties) {
+        this.states = states;
+        this.verification = verification;
+        this.properties = properties;
         this.credentialVerificationPort = Objects.requireNonNull(credentialVerificationPort);
         this.identityProviderRepository = Objects.requireNonNull(identityProviderRepository);
         this.externalIdentityRepository = Objects.requireNonNull(externalIdentityRepository);
@@ -78,53 +105,88 @@ public final class LdapAuthenticationProvider implements AuthenticationProvider 
     }
 
     @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+    public Authentication authenticate(Authentication authentication)
+            throws AuthenticationException {
         if (!(authentication instanceof LdapAuthenticationToken ldapRequest)) {
             return null;
         }
 
-        String principal = normalize(ldapRequest.getPrincipal() == null ? null : ldapRequest.getPrincipal().toString());
+        String principal =
+                normalize(
+                        ldapRequest.getPrincipal() == null
+                                ? null
+                                : ldapRequest.getPrincipal().toString());
         String credentials = ldapRequest.getCredentials() instanceof String value ? value : null;
         if (principal == null || credentials == null || credentials.isEmpty()) {
             throw invalidCredentials();
         }
 
         IdentityProviderJpaEntity directoryProvider = resolveActiveDirectoryProvider();
-        VerifiedDirectoryIdentity verifiedIdentity = credentialVerificationPort.verify(principal, credentials)
-                .orElseThrow(LdapAuthenticationProvider::invalidCredentials);
+        var capturedProvider =
+                states == null
+                        ? null
+                        : states.provider(
+                                directoryProvider.id(), directoryProvider.providerType().name());
+        if (capturedProvider != null
+                && (!Objects.equals(capturedProvider.directoryBaseDn(), properties.baseDn())
+                        || !Objects.equals(
+                                capturedProvider.userSearchBase(), properties.userSearchBase())))
+            throw new AuthenticationServiceException(
+                    "Selected directory configuration disagrees with its verifier.");
+        VerifiedDirectoryIdentity verifiedIdentity =
+                credentialVerificationPort
+                        .verify(principal, credentials)
+                        .orElseThrow(LdapAuthenticationProvider::invalidCredentials);
 
-        ExternalIdentityJpaEntity externalIdentity = externalIdentityRepository
-                .findByIdentityProviderIdAndExternalSubject(directoryProvider.id(), verifiedIdentity.subject())
-                .orElseThrow(() -> new BadCredentialsException("Verified directory identity is not linked to Hidra."));
+        var snapshot =
+                states == null
+                        ? null
+                        : states.external(capturedProvider, verifiedIdentity.subject(), null, null);
+        ExternalIdentityJpaEntity externalIdentity =
+                externalIdentityRepository
+                        .findByIdentityProviderIdAndExternalSubject(
+                                directoryProvider.id(), verifiedIdentity.subject())
+                        .orElseThrow(
+                                () ->
+                                        new BadCredentialsException(
+                                                "Verified directory identity is not linked to"
+                                                    + " Hidra."));
         if (externalIdentity.status() != ExternalIdentityStatus.LINKED) {
             throw new DisabledException("External directory identity is not linked and active.");
         }
 
-        UserJpaEntity user = userRepository.findById(externalIdentity.userId())
-                .orElseThrow(() -> new AuthenticationServiceException("Linked Hidra user no longer exists."));
+        UserJpaEntity user =
+                userRepository
+                        .findById(externalIdentity.userId())
+                        .orElseThrow(
+                                () ->
+                                        new AuthenticationServiceException(
+                                                "Linked Hidra user no longer exists."));
         enforceAccountState(user);
+        if (snapshot != null
+                && (!snapshot.userId().equals(user.id())
+                        || !snapshot.externalIdentityId().equals(externalIdentity.id())))
+            throw invalidCredentials();
 
         IdentityAdministrationQueryUseCase.PrincipalView authorization =
                 queryUseCase.principal(user.id(), List.of());
 
-        HidraPrincipal hidraPrincipal = new HidraPrincipal(
-                user.id(),
-                user.username(),
-                user.displayName(),
-                directoryProvider.providerType(),
-                directoryProvider.id(),
-                Set.of(),
-                Set.copyOf(authorization.effectivePermissions()),
-                externalIdentity.id()
-        );
+        HidraPrincipal hidraPrincipal =
+                new HidraPrincipal(
+                        user.id(),
+                        user.username(),
+                        user.displayName(),
+                        directoryProvider.providerType(),
+                        directoryProvider.id(),
+                        Set.of(),
+                        Set.copyOf(authorization.effectivePermissions()),
+                        externalIdentity.id());
 
-        UsernamePasswordAuthenticationToken result = UsernamePasswordAuthenticationToken.authenticated(
-                hidraPrincipal,
-                null,
-                AuthorityUtils.NO_AUTHORITIES
-        );
+        UsernamePasswordAuthenticationToken result =
+                UsernamePasswordAuthenticationToken.authenticated(
+                        hidraPrincipal, null, AuthorityUtils.NO_AUTHORITIES);
         result.setDetails(ldapRequest.getDetails());
-        return result;
+        return verification == null ? result : verification.verifiedDirect(result, snapshot);
     }
 
     @Override
@@ -133,19 +195,23 @@ public final class LdapAuthenticationProvider implements AuthenticationProvider 
     }
 
     private IdentityProviderJpaEntity resolveActiveDirectoryProvider() {
-        List<IdentityProviderJpaEntity> providers = identityProviderRepository.findAll().stream()
-                .filter(provider -> provider.status() == IdentityProviderStatus.ACTIVE)
-                .filter(provider -> provider.providerType() == ProviderType.LDAP
-                        || provider.providerType() == ProviderType.ACTIVE_DIRECTORY)
-                .toList();
+        List<IdentityProviderJpaEntity> providers =
+                identityProviderRepository.findAll().stream()
+                        .filter(provider -> provider.status() == IdentityProviderStatus.ACTIVE)
+                        .filter(
+                                provider ->
+                                        provider.providerType() == ProviderType.LDAP
+                                                || provider.providerType()
+                                                        == ProviderType.ACTIVE_DIRECTORY)
+                        .toList();
 
         if (providers.isEmpty()) {
-            throw new BadCredentialsException("LDAP/Active Directory authentication provider is not available.");
+            throw new BadCredentialsException(
+                    "LDAP/Active Directory authentication provider is not available.");
         }
         if (providers.size() > 1) {
             throw new AuthenticationServiceException(
-                    "Multiple active LDAP/Active Directory identity providers are configured."
-            );
+                    "Multiple active LDAP/Active Directory identity providers are configured.");
         }
         return providers.getFirst();
     }

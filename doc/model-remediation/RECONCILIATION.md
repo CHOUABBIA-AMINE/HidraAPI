@@ -20066,3 +20066,120 @@ mandatory fallback and optimized adoption disabled. No production data/upgrade e
 or release/deployment is introduced. Gas-first/GZ2, Hidra's own engine, steady/transient
 direction, versioned inputs/operator control and synthetic development data persist;
 owner supplies calibration later and Simulation/P3 remains deferred.
+
+
+## 2026-10-14 — HPR-P25-050C verified producers and atomic bound completion candidate
+
+Owner Next selects only 050C after exact-head main 04d6fbc6f290873b1b25cbda8f7860c582568ea0,
+tree 16e5c0cb47fe3cc3fd8c60c32be1b80b5ebfc02d: Full #681 (38542323342), Fast #14
+(38542323305) and Docs #285 (38542323532) all SUCCESS. Every Full job, including API/
+dictionary, both PostgreSQL shards, the unrestricted oracle and Full Verification Gate,
+succeeded. Shard 1 reports 247 cases, zero failures/errors/skips, including B's 37 cases.
+050B is therefore COMPLETED / CI ACCEPTED for its bounded storage/guard scope.
+050C is IN PROGRESS / IMPLEMENTED CANDIDATE / CI PENDING; 050D and 051 stay unselected
+and blocked pending their predecessors. Parent 050 and integrated B1 remain incomplete.
+Exact registered C message: `feat(identity): complete trusted bound authentication`.
+
+### Real producers and exact source transport
+
+LOCAL captures provider generation before the actual atomic credential hash/id/generation
+query, checks the captured active status and verifies that exact hash. It then produces
+the private receipt after normalized Hidra authorization and the established independent
+LOCAL verification outcome. Cached JPA credential generations are not evidence.
+Directory captures actual LDAP/AD provider type/configuration before verification and
+requires agreement with the selected verifier's base/search settings. The production
+LDAP adapter reads the identity from the authenticated bind callback's exact entry DN,
+not a separate earlier profile search. Stable entryUUID/UPN/DN subject text is preserved
+verbatim; display fields may normalize. Only after success does one owner query capture
+the exact link/User/generation. The direct adapter enforces selected versus actual type,
+invocation identity and cleanup on exceptions/errors; the application transports the
+private handle only to completion and always closes its invocation after proxy return.
+
+OIDC captures exact provider/link/User images first, bounds the original bearer using
+the configurable 65,536-byte default, then re-decodes that original token through the
+qualified external decoder before minting a private receipt. Raw issuer/subject/deadline
+must agree exactly and the real deadline must remain future. Existing original-assertion
+capture uses the finally verified JWT and retains its accepted limits/semantics.
+Legacy constructor overloads required by the unchanged original ownership tests retain
+ordinary assertion/principal behavior but produce NO bound receipt. Spring selects the
+new injected constructors. Such public DTO/token/constructor objects still cannot pass
+consumption or fall back to successful unbound completion.
+
+### One physical completion commit
+
+Through the real Spring proxy, REQUIRED READ_COMMITTED non-read-only completion requires
+its own new owner transaction. Joining a caller's unfinished transaction fails closed,
+so a returned bearer cannot precede that caller's later commit. The consumed private
+receipt chooses canonical binding/session/jti IDs and one whole-second interval, floors
+the OIDC cap, flushes the JPA session, checks fresh eligibility, signs, cryptographically
+reads back exact typed issuer/singleton audience/sub/jti/type/provider/iat/exp, appends
+the authenticated binding and writes non-LOCAL success in the same physical transaction.
+Private origin is minted only by the consumed producer. Registry publication is after
+successful commit and invocation cleanup follows the proxy commit/return. Failures expose
+no result and never retry signing or silently issue an unbound success. LOCAL verification
+outcome remains a distinct REQUIRES_NEW meaning, not atomic bound-completion success.
+
+Issuer configuration cannot overlap reserved identity metadata. Native output shares
+the configurable byte envelope; cryptographic signing/readback failures discard private
+exception causes/details. IssuedAccessToken diagnostics redact its bearer. Existing
+ordinary issuer overload remains source compatible for unchanged native JWT regression
+tests; bound completion always requires the exact-context/readback overload. No route,
+public API result shape, claims schema, dependency, configuration file or permission
+meaning changes. The B1 reader and Topology write/authorization remain absent in C.
+
+### New proof and actual local validation
+
+The single new BoundAuthenticationCompletionPostgresIntegrationTest has 22 actual JUnit
+identities: real LOCAL, LDAP, AD and signed OIDC completion; exact source subjects/type/
+cap and private tag validation; JPA/JDBC/native signing on the same observed backend;
+an independent connection sees no uncommitted session and afterCommit precedes delivery;
+save/sign/append/event/precommit faults and an actual deferred PostgreSQL FK commit failure;
+provider/credential/link A/B/A and hash change during verification; forged public inputs/
+OIDC JWT, reused receipt, wrong password, directory denial and nested owner-commit denial;
+native cryptographic readback failure redaction. Fixtures are synthetic, PostgreSQL16
+uses real Flyway/Spring/JPA, and the directory port is a deterministic synthetic verifier,
+not a live LDAP/AD deployment claim. OIDC and native cryptographic paths use test keys.
+
+Actual Java21 unchanged-wrapper offline focused run PASS: 90 unit cases, zero failures/
+errors/skips across the registered provider/verifier/receipt/guardrail/original-assertion
+and native JWT regressions. All 22 new PostgreSQL cases are SKIPPED locally because Docker/
+its socket is absent, not accepted/PASS. Compilation includes the full new test class.
+The retained original ownership tests are unchanged and pass. Initial mock setup duplicate
+lookups were corrected; assertions were retained. New unit cases verify the atomic hash,
+authenticated-entry transport/fail-closed callback and cryptographic readback/redaction.
+Actual Fast run PASS: all 296 reviewed classes / 1,309 cases, zero failures/errors/skips;
+strict raw-report equality PASS. Reports are retained separately from the skipped PG
+report; no required case is hidden. Local startup Byte Buddy agent changes no repository
+build/Mockito setting. Hosted four-provider transactions/commit failure remain UNVERIFIED
+until new exact-SHA zero-skip Full/oracle/partition reports, not inferred from compilation.
+
+All six unchanged Python policy suites PASS (102 cases); canonical documentation PASS
+(98 documents/5,355 relative links/24 modules/13 P2 rows), offline OpenAPI PASS
+(263 operations/244 paths/231 schemas), P1 evidence consistency PASS and strict current
+inventory PASS. Inventory now has 297 unit / 37+37 DB / 371 oracle classes. All previous
+case identities, Fast memberships, lane policies, timing/baseline records and four
+historical archive decisions remain; only scoped test digests/actual cases and the new
+PG lane entry change. Its zero timing hint honestly awaits hosted execution.
+Inventory SHA-256: `5754e4179b119f8b64df9e59af2340f9f311350626aca83e14d478f2f821a228`.
+The genuine Full #680 capture still passes unchanged dictionary equality against the
+byte-identical migration/JPA source bundle; API/dictionary on accepted Full #681 also
+succeeded. No dictionary, ownership, SQL, mapping or generator change is in C.
+
+### Exact boundary and stop rule
+
+Scope is exactly 1 CREATE / 22 UPDATE, the registered C allowlist. All canonical Author/
+CreatedOn headers remain; reconciliation keeps its full published prefix, whitespace
+and source/inventory parity are checked. All other blobs, including every SQL/reader,
+Topology/provider configuration, API/controller, workflows/helpers/build/history/version,
+remain unchanged. Publish directly to existing main using expected head 04d6fbc and the
+registered message; verify exact parent/tree/path/blob scope. Observe Full/Fast/Docs
+startup on the published candidate SHA, then STOP without waiting for completion or
+advancing D. If a required workflow cannot start through available tools, give the
+owner the named Actions workflow/main dispatch handoff and stop before manual dispatch.
+
+C acceptance remains open. D requires a separate Next after C's full actual-SHA gates
+pass; 051 remains blocked until A–D/integrated B1 acceptance. CI-003 remains IN PROGRESS,
+mandatory oracle/fallback retained and optimized adoption disabled. HidraAPI is a
+synthetic-data development project, with no production data migration/preservation or
+release/deployment. Gas-first/GZ2, own engine, steady/transient direction, versioned
+inputs/operator control persist. Owner supplies calibration later; Simulation/P3 deferred.

@@ -7,7 +7,7 @@
  *
  * @Name        : LdapCredentialVerificationAdapterTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-15
+ * @UpdatedOn   : 2026-10-14
  *
  * @Type        : Class
  * @Layer       : Test
@@ -24,16 +24,19 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
 import dz.sh.hidra.platform.configuration.HidraLdapSecurityProperties;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.ldap.core.support.LdapContextSource;
+import org.springframework.ldap.support.LdapEncoder;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.Duration;
 import java.util.Base64;
 import java.util.Optional;
+
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
-import org.junit.jupiter.api.Test;
-import org.springframework.ldap.core.support.LdapContextSource;
-import org.springframework.ldap.support.LdapEncoder;
 
 class LdapCredentialVerificationAdapterTest {
 
@@ -44,9 +47,11 @@ class LdapCredentialVerificationAdapterTest {
 
         String filter = invokeUserFilter(adapter, submittedPrincipal);
 
-        assertThat(filter).isEqualTo(
-                "(&(objectClass=person)(uid=" + LdapEncoder.filterEncode(submittedPrincipal) + "))"
-        );
+        assertThat(filter)
+                .isEqualTo(
+                        "(&(objectClass=person)(uid="
+                                + LdapEncoder.filterEncode(submittedPrincipal)
+                                + "))");
         assertThat(filter).doesNotContain("uid=*))(");
     }
 
@@ -68,18 +73,21 @@ class LdapCredentialVerificationAdapterTest {
         attributes.put(new BasicAttribute("sAMAccountName", "operator"));
         attributes.put(new BasicAttribute("displayName", " Directory Operator "));
         attributes.put(new BasicAttribute("mail", " operator@example.invalid "));
-        attributes.put(new BasicAttribute("distinguishedName", " CN=Operator,OU=Users,DC=example,DC=invalid "));
+        attributes.put(
+                new BasicAttribute(
+                        "distinguishedName", " CN=Operator,OU=Users,DC=example,DC=invalid "));
 
         Object entry = invokeMapEntry(attributes);
 
         assertThat(invokeAccessor(entry, "objectGuid"))
                 .isEqualTo("objectGUID:" + Base64.getEncoder().encodeToString(objectGuid));
-        assertThat(invokeAccessor(entry, "userPrincipalName")).isEqualTo("operator@example.invalid");
+        assertThat(invokeAccessor(entry, "userPrincipalName"))
+                .isEqualTo(" operator@example.invalid ");
         assertThat(invokeAccessor(entry, "samAccountName")).isEqualTo("operator");
         assertThat(invokeAccessor(entry, "displayName")).isEqualTo("Directory Operator");
         assertThat(invokeAccessor(entry, "mail")).isEqualTo("operator@example.invalid");
         assertThat(invokeAccessor(entry, "distinguishedName"))
-                .isEqualTo("CN=Operator,OU=Users,DC=example,DC=invalid");
+                .isEqualTo(" CN=Operator,OU=Users,DC=example,DC=invalid ");
     }
 
     @Test
@@ -93,23 +101,102 @@ class LdapCredentialVerificationAdapterTest {
         assertThat(missingCredentials).isEmpty();
     }
 
+    @Test
+    void authenticatedBindCallbackTransportsExactEntrySubjectRatherThanEarlierProfileSearch()
+            throws Exception {
+        var adapter = adapter("(uid={0})");
+        var template = mock(org.springframework.ldap.core.LdapTemplate.class);
+        org.springframework.test.util.ReflectionTestUtils.setField(
+                adapter, "ldapTemplate", template);
+        var context = mock(javax.naming.directory.DirContext.class);
+        var attrs = new BasicAttributes(true);
+        attrs.put(new BasicAttribute("entryUUID", "  exact-é-authenticated-entry  "));
+        attrs.put(new BasicAttribute("uid", " operator "));
+        org.mockito.Mockito.when(
+                        context.getAttributes(
+                                org.mockito.ArgumentMatchers.any(javax.naming.Name.class),
+                                org.mockito.ArgumentMatchers.any(String[].class)))
+                .thenReturn(attrs);
+        org.mockito.Mockito.when(
+                        template.authenticate(
+                                org.mockito.ArgumentMatchers.anyString(),
+                                org.mockito.ArgumentMatchers.anyString(),
+                                org.mockito.ArgumentMatchers.anyString(),
+                                org.mockito.ArgumentMatchers.any(
+                                        org.springframework.ldap.core
+                                                .AuthenticatedLdapEntryContextCallback.class)))
+                .thenAnswer(
+                        i -> {
+                            ((org.springframework.ldap.core.AuthenticatedLdapEntryContextCallback)
+                                            i.getArgument(3))
+                                    .executeWithContext(
+                                            context,
+                                            new org.springframework.ldap.core
+                                                    .LdapEntryIdentification(
+                                                    new javax.naming.ldap.LdapName(
+                                                            "uid=operator,dc=synthetic"),
+                                                    new javax.naming.ldap.LdapName(
+                                                            "uid=operator")));
+                            return true;
+                        });
+        var verified = adapter.verify("operator", "synthetic-password").orElseThrow();
+        assertThat(verified.subject()).isEqualTo("  exact-é-authenticated-entry  ");
+        assertThat(verified.username()).isEqualTo("operator");
+        org.mockito.Mockito.verify(context)
+                .getAttributes(
+                        new javax.naming.ldap.LdapName("uid=operator"),
+                        new String[] {
+                            "objectGUID",
+                            "entryUUID",
+                            "userPrincipalName",
+                            "sAMAccountName",
+                            "uid",
+                            "displayName",
+                            "cn",
+                            "mail",
+                            "distinguishedName"
+                        });
+    }
+
+    @Test
+    void successfulBindWithoutAuthenticatedEntryCannotManufactureAnIdentity() {
+        var adapter = adapter("(uid={0})");
+        var template = mock(org.springframework.ldap.core.LdapTemplate.class);
+        org.springframework.test.util.ReflectionTestUtils.setField(
+                adapter, "ldapTemplate", template);
+        org.mockito.Mockito.when(
+                        template.authenticate(
+                                org.mockito.ArgumentMatchers.anyString(),
+                                org.mockito.ArgumentMatchers.anyString(),
+                                org.mockito.ArgumentMatchers.anyString(),
+                                org.mockito.ArgumentMatchers.any(
+                                        org.springframework.ldap.core
+                                                .AuthenticatedLdapEntryContextCallback.class)))
+                .thenReturn(true);
+        assertThatThrownBy(() -> adapter.verify("operator", "synthetic-password"))
+                .isInstanceOf(IllegalStateException.class);
+    }
+
     private static LdapCredentialVerificationAdapter adapter(String filter) {
-        HidraLdapSecurityProperties properties = new HidraLdapSecurityProperties(
-                true,
-                "ldap://directory.example.invalid:389",
-                "DC=example,DC=invalid",
-                "OU=Users",
-                filter,
-                null,
-                null,
-                Duration.ofSeconds(2),
-                Duration.ofSeconds(3)
-        );
+        HidraLdapSecurityProperties properties =
+                new HidraLdapSecurityProperties(
+                        true,
+                        "ldap://directory.example.invalid:389",
+                        "DC=example,DC=invalid",
+                        "OU=Users",
+                        filter,
+                        null,
+                        null,
+                        Duration.ofSeconds(2),
+                        Duration.ofSeconds(3));
         return new LdapCredentialVerificationAdapter(mock(LdapContextSource.class), properties);
     }
 
-    private static String invokeUserFilter(LdapCredentialVerificationAdapter adapter, String principal) throws Exception {
-        Method method = LdapCredentialVerificationAdapter.class.getDeclaredMethod("userFilter", String.class);
+    private static String invokeUserFilter(
+            LdapCredentialVerificationAdapter adapter, String principal) throws Exception {
+        Method method =
+                LdapCredentialVerificationAdapter.class.getDeclaredMethod(
+                        "userFilter", String.class);
         method.setAccessible(true);
         try {
             return (String) method.invoke(adapter, principal);
@@ -122,10 +209,9 @@ class LdapCredentialVerificationAdapterTest {
     }
 
     private static Object invokeMapEntry(BasicAttributes attributes) throws Exception {
-        Method method = LdapCredentialVerificationAdapter.class.getDeclaredMethod(
-                "mapEntry",
-                javax.naming.directory.Attributes.class
-        );
+        Method method =
+                LdapCredentialVerificationAdapter.class.getDeclaredMethod(
+                        "mapEntry", javax.naming.directory.Attributes.class);
         method.setAccessible(true);
         return method.invoke(null, attributes);
     }

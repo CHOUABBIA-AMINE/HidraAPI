@@ -1454,7 +1454,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java",
-      "source_sha256": "a5faeaabe276d040499d1934d5ca1aa66b9313da1b7139c368558e4fe6efa510",
+      "source_sha256": "9788f4afdabd0077ed55ba3ebf1c3ced57481269887c6f05be54a2aa97c6573e",
       "supports": []
     },
     {
@@ -1707,6 +1707,41 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0.0,
+      "cases": [
+        "activeDirectoryCompletionRetainsActualTypeAndLdapSessionProtocol",
+        "actualPostgresqlDeferredCommitFailureReturnsNoResultAndRollsBackEverything",
+        "allOwnerWritesAndSigningObserveOneBackendAndCommitBeforeDelivery",
+        "beforeCommitFaultCannotPublishOidcReceiptOrDeliverSignedResult",
+        "bindingAppendFailureRollsBackSignedSessionAndExposesNoBearer",
+        "changedAtomicCredentialDuringPasswordVerificationCannotRelabelSuccess",
+        "completionInsideCallerTransactionRejectsDeliveryBeforeOuterCommit",
+        "credentialAbaAfterVerificationRejectsTheOriginalHashGeneration",
+        "directoryLinkAbaAfterRealVerificationRejectsOriginalReceipt",
+        "externalEventFailureRollsBackSessionBindingAndPublication",
+        "forgedOidcJwtCannotBypassQualifiedCryptographicReadback",
+        "forgedPublicCompletionInputCannotMintPrivateOrigin",
+        "ldapCompletionHasExactVerifiedSubjectAndOneBoundSuccessEvent",
+        "localCompletionHasRealCapturedCredentialAndSignedPersistentOrigin",
+        "nativeCryptographicReadbackFailureIsSanitizedAndRollsBack",
+        "oidcCompletionUsesOriginalSignedBearerAndFloorsItsSourceCap",
+        "providerAbaAfterVerificationCannotCreateAnUnboundSuccess",
+        "realDirectoryVerificationDenialCannotFallBackToUnboundCompletion",
+        "repeatedOidcReceiptCannotCreateASecondSession",
+        "sessionFlushFailureReturnsNothingAndRollsBackOwnerState",
+        "signingFailureRollsBackFlushedSessionWithoutRetry",
+        "wrongPasswordHasNoProducerReceiptSessionOrBinding"
+      ],
+      "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.BoundAuthenticationCompletionPostgresIntegrationTest",
+      "dependency_reason": "050C real PostgreSQL16/Flyway/JPA four-provider signed completion and observed owner commit/rollback. Synthetic directory verifier; local Docker absent, all 22 cases skipped, hosted zero-skip execution/timing pending (0 hint).",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/BoundAuthenticationCompletionPostgresIntegrationTest.java",
+      "source_sha256": "93c491f61732b48d3dcb9f48910f4925a951367b648ae6bf8148731fdef98d38",
+      "supports": []
+    },
+    {
       "baseline_seconds": 11.047,
       "cases": [
         "downstreamFailureAfterFlushedChangesRollsBackBothOwners",
@@ -1912,7 +1947,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverterTest.java",
-      "source_sha256": "ce9e0ed290141be912abed71ac05cc94c9cb51a05c7887b596cb0ac6b07efc25",
+      "source_sha256": "8bf1bc53a72f28124e18779390b2ad3f6d7a3fe01de6498f3fe5f15b2283ef95",
       "supports": []
     },
     {
@@ -1934,16 +1969,18 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapAuthenticationProviderTest.java",
-      "source_sha256": "7289c17bd93a095fb22f1988e7528b25c7576d82e58bfeb85ca8aee7edd9bafe",
+      "source_sha256": "9ec1016518856a4c5f6e3adddcb745be28283ef917e19818f602586c763ddf7e",
       "supports": []
     },
     {
       "baseline_seconds": 0.118,
       "cases": [
+        "authenticatedBindCallbackTransportsExactEntrySubjectRatherThanEarlierProfileSearch",
         "blankPrincipalOrCredentialsFailClosedBeforeDirectoryAccess",
         "escapesSubmittedPrincipalBeforeBuildingDirectorySearchFilter",
         "normalizesActiveDirectoryAttributesToStableObjectGuidSubject",
-        "rejectsSearchFilterWithoutPrincipalPlaceholder"
+        "rejectsSearchFilterWithoutPrincipalPlaceholder",
+        "successfulBindWithoutAuthenticatedEntryCannotManufactureAnIdentity"
       ],
       "class": "dz.sh.hidra.modules.identity.infrastructure.security.LdapCredentialVerificationAdapterTest",
       "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
@@ -1951,7 +1988,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapCredentialVerificationAdapterTest.java",
-      "source_sha256": "5464bee70158645d487e219859e7b878dd40ee70fe7ca5e90b1626e619aa1675",
+      "source_sha256": "43b24eca235929c32ae07964497603a9b4ad54dbc4ecb6a753676ee2b5b13b3d",
       "supports": []
     },
     {
@@ -1977,7 +2014,8 @@
         "rejectsLockedUserBeforeCredentialVerificationAndRecordsLockedOutcome",
         "rejectsUnavailableLocalProviderWithoutLookingUpUserOrCredential",
         "rejectsWrongPasswordAndRecordsSanitizedFailureWithoutResolvingPermissions",
-        "supportsOnlyLocalAuthenticationTokenContract"
+        "supportsOnlyLocalAuthenticationTokenContract",
+        "verifiesAtomicCapturedHashRatherThanTheStaleCredentialRepositoryImage"
       ],
       "class": "dz.sh.hidra.modules.identity.infrastructure.security.LocalAuthenticationProviderTest",
       "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
@@ -1985,7 +2023,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/LocalAuthenticationProviderTest.java",
-      "source_sha256": "fa0735eb7c4d0bbea198c56fb0bc8342edd2df377d4a28157027540534d5588e",
+      "source_sha256": "7fb7726644229bc79c5364cf29f2237fda99aafb01f3588ec5ff9cb30cad1d7a",
       "supports": []
     },
     {
@@ -2055,6 +2093,7 @@
         "attestationMustAgreeWithExactConfiguredIssuerAudienceAndTtl",
         "attestationRequiresActiveWritableSynchronizedTransactionAndCannotRetry",
         "blankNativeKeyDoesNotBreakDormantBeanButCannotAttest",
+        "boundIssuerCryptographicReadbackRejectsFakeBearerWithoutSecretDiagnostics",
         "changedPrincipalPermissionsRejectAndConsumeTheReceipt",
         "constructorAndGetterCopiesProtectWitnessEqualityAndHashing",
         "consumedOidcReceiptRequiresItsSameActualAmbientObject",
@@ -2067,6 +2106,7 @@
         "hkdfMatchesRfc5869LongVector",
         "hkdfMatchesRfc5869ShortVector",
         "malformedAttestationAttemptCannotBeRetriedWithValidIds",
+        "nativeReadbackRequiresExactSingletonRawAudienceAndTypedOwnerClaims",
         "oidcReceiptCannotBeConsumedByAnotherThreadOrForgedContext",
         "oldPublicOidcConstructorsHaveNoReceiptEvenWithAuthenticatedPrincipal",
         "persistentWitnessSurvivesRegistryRestartButRejectsAnotherKey",
@@ -2082,7 +2122,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationTest.java",
-      "source_sha256": "71cf523f80cd74591f4f2c0f661e44e01ca55811ef3856924b77b418b7440f0f",
+      "source_sha256": "e13f18015e2e47c943e6cc51943dbdeca2612973198e321a1134cb3888251784",
       "supports": []
     },
     {

@@ -7,7 +7,7 @@
  *
  * @Name        : DirectAuthenticationPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-15
+ * @UpdatedOn   : 2026-10-14
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -26,6 +26,11 @@ import dz.sh.hidra.modules.identity.domain.value.ProviderType;
  * Outbound port for provider-selected direct credential verification and principal normalization.
  */
 public interface DirectAuthenticationPort {
+
+    dz.sh.hidra.modules.identity.application.model.VerifiedDirectAuthenticationResult verify(
+            ProviderType type, String principal, String credentials);
+
+    void finishVerification();
 
     HidraPrincipal authenticate(ProviderType providerType, String principal, String credentials);
 }

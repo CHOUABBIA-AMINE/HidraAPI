@@ -7,7 +7,7 @@
  *
  * @Name        : AuthenticationSessionLifecycleApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-15
+ * @UpdatedOn   : 2026-10-14
  *
  * @Type        : Class
  * @Layer       : Application
@@ -24,17 +24,18 @@ import dz.sh.hidra.modules.identity.application.port.out.IdentityProviderReposit
 import dz.sh.hidra.modules.identity.application.port.out.LoginSessionRepositoryPort;
 import dz.sh.hidra.modules.identity.domain.model.AuthenticationEvent;
 import dz.sh.hidra.modules.identity.domain.model.HidraPrincipal;
-import dz.sh.hidra.modules.identity.domain.model.IdentityProvider;
 import dz.sh.hidra.modules.identity.domain.model.LoginSession;
 import dz.sh.hidra.modules.identity.domain.value.AuthenticationEventType;
 import dz.sh.hidra.modules.identity.domain.value.AuthenticationProtocol;
 import dz.sh.hidra.modules.identity.domain.value.LoginSessionStatus;
 import dz.sh.hidra.modules.identity.domain.value.ProviderType;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Provider-neutral lifecycle service for logical authentication sessions.
@@ -54,8 +55,7 @@ public class AuthenticationSessionLifecycleApplicationService {
     public AuthenticationSessionLifecycleApplicationService(
             LoginSessionRepositoryPort loginSessionRepository,
             AuthenticationEventRepositoryPort authenticationEventRepository,
-            IdentityProviderRepositoryPort identityProviderRepository
-    ) {
+            IdentityProviderRepositoryPort identityProviderRepository) {
         this.loginSessionRepository = Objects.requireNonNull(loginSessionRepository);
         this.authenticationEventRepository = Objects.requireNonNull(authenticationEventRepository);
         this.identityProviderRepository = Objects.requireNonNull(identityProviderRepository);
@@ -70,40 +70,79 @@ public class AuthenticationSessionLifecycleApplicationService {
             Instant expiresAt,
             String clientIp,
             String userAgent,
-            String correlationId
-    ) {
+            String correlationId) {
         Objects.requireNonNull(principal, "Hidra principal must not be null.");
         Instant now = Instant.now();
         if (expiresAt == null || !expiresAt.isAfter(now)) {
-            throw new IllegalArgumentException("Session expiry must be after the session start time.");
+            throw new IllegalArgumentException(
+                    "Session expiry must be after the session start time.");
         }
 
-        LoginSession session = loginSessionRepository.save(new LoginSession(
-                UUID.randomUUID().toString(),
-                principal.userId(),
-                principal.identityProviderId(),
-                principal.externalIdentityId(),
-                now,
-                now,
-                expiresAt,
-                clientIp,
-                userAgent,
-                LoginSessionStatus.ACTIVE,
-                correlationId,
-                protocol(principal.authenticationType()),
-                null
-        ));
+        LoginSession session =
+                loginSessionRepository.save(
+                        new LoginSession(
+                                UUID.randomUUID().toString(),
+                                principal.userId(),
+                                principal.identityProviderId(),
+                                principal.externalIdentityId(),
+                                now,
+                                now,
+                                expiresAt,
+                                clientIp,
+                                userAgent,
+                                LoginSessionStatus.ACTIVE,
+                                correlationId,
+                                protocol(principal.authenticationType()),
+                                null));
 
         if (principal.authenticationType() != ProviderType.LOCAL) {
-            authenticationEventRepository.save(authenticationEvent(
-                    session,
-                    AuthenticationEventType.LOGIN_SUCCESS,
-                    protocol(principal.authenticationType()),
-                    null,
-                    now
-            ));
+            authenticationEventRepository.save(
+                    authenticationEvent(
+                            session,
+                            AuthenticationEventType.LOGIN_SUCCESS,
+                            protocol(principal.authenticationType()),
+                            null,
+                            now));
         }
         return session;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public LoginSession startBoundSession(
+            HidraPrincipal principal,
+            String id,
+            Instant issuedAt,
+            Instant expiresAt,
+            String clientIp,
+            String userAgent,
+            String correlationId) {
+        return loginSessionRepository.save(
+                new LoginSession(
+                        id,
+                        principal.userId(),
+                        principal.identityProviderId(),
+                        principal.externalIdentityId(),
+                        issuedAt,
+                        issuedAt,
+                        expiresAt,
+                        clientIp,
+                        userAgent,
+                        LoginSessionStatus.ACTIVE,
+                        correlationId,
+                        protocol(principal.authenticationType()),
+                        null));
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void recordBoundSuccess(HidraPrincipal principal, LoginSession session) {
+        if (principal.authenticationType() != ProviderType.LOCAL)
+            authenticationEventRepository.save(
+                    authenticationEvent(
+                            session,
+                            AuthenticationEventType.LOGIN_SUCCESS,
+                            session.sessionType(),
+                            null,
+                            session.startedAt()));
     }
 
     /**
@@ -120,9 +159,12 @@ public class AuthenticationSessionLifecycleApplicationService {
             status = LoginSessionStatus.EXPIRED;
         }
         if (status != LoginSessionStatus.ACTIVE) {
-            return status == session.status() ? session : saveWithStatus(session, status, effectiveSeenAt);
+            return status == session.status()
+                    ? session
+                    : saveWithStatus(session, status, effectiveSeenAt);
         }
-        return loginSessionRepository.save(copy(session, effectiveSeenAt, LoginSessionStatus.ACTIVE, null));
+        return loginSessionRepository.save(
+                copy(session, effectiveSeenAt, LoginSessionStatus.ACTIVE, null));
     }
 
     /**
@@ -136,13 +178,13 @@ public class AuthenticationSessionLifecycleApplicationService {
         }
         Instant now = Instant.now();
         LoginSession loggedOut = saveWithStatus(session, LoginSessionStatus.LOGGED_OUT, now);
-        authenticationEventRepository.save(authenticationEvent(
-                loggedOut,
-                AuthenticationEventType.LOGOUT,
-                protocolForSession(loggedOut),
-                null,
-                now
-        ));
+        authenticationEventRepository.save(
+                authenticationEvent(
+                        loggedOut,
+                        AuthenticationEventType.LOGOUT,
+                        protocolForSession(loggedOut),
+                        null,
+                        now));
         return loggedOut;
     }
 
@@ -174,15 +216,21 @@ public class AuthenticationSessionLifecycleApplicationService {
         if (sessionId == null || sessionId.isBlank()) {
             throw new IllegalArgumentException("Session id must not be blank.");
         }
-        return loginSessionRepository.findById(sessionId.trim())
-                .orElseThrow(() -> new IllegalArgumentException("Authentication session was not found."));
+        return loginSessionRepository
+                .findById(sessionId.trim())
+                .orElseThrow(
+                        () ->
+                                new IllegalArgumentException(
+                                        "Authentication session was not found."));
     }
 
-    private LoginSession saveWithStatus(LoginSession session, LoginSessionStatus status, Instant seenAt) {
+    private LoginSession saveWithStatus(
+            LoginSession session, LoginSessionStatus status, Instant seenAt) {
         return loginSessionRepository.save(copy(session, session.lastSeenAt(), status, seenAt));
     }
 
-    private static LoginSession copy(LoginSession session, Instant lastSeenAt, LoginSessionStatus status, Instant endedAt) {
+    private static LoginSession copy(
+            LoginSession session, Instant lastSeenAt, LoginSessionStatus status, Instant endedAt) {
         return new LoginSession(
                 session.id(),
                 session.userId(),
@@ -196,8 +244,7 @@ public class AuthenticationSessionLifecycleApplicationService {
                 status,
                 session.correlationId(),
                 session.sessionType(),
-                endedAt
-        );
+                endedAt);
     }
 
     private AuthenticationProtocol protocolForSession(LoginSession session) {
@@ -212,7 +259,9 @@ public class AuthenticationSessionLifecycleApplicationService {
             case OIDC, KEYCLOAK, AZURE_AD, OKTA -> AuthenticationProtocol.OIDC;
             case OAUTH2 -> AuthenticationProtocol.OAUTH2;
             case SAML2 -> AuthenticationProtocol.SAML2;
-            default -> throw new IllegalArgumentException("Unsupported authentication provider protocol: " + providerType);
+            default ->
+                    throw new IllegalArgumentException(
+                            "Unsupported authentication provider protocol: " + providerType);
         };
     }
 
@@ -221,8 +270,7 @@ public class AuthenticationSessionLifecycleApplicationService {
             AuthenticationEventType eventType,
             AuthenticationProtocol protocol,
             String failureReason,
-            Instant occurredAt
-    ) {
+            Instant occurredAt) {
         return new AuthenticationEvent(
                 UUID.randomUUID().toString(),
                 session.userId(),
@@ -236,7 +284,6 @@ public class AuthenticationSessionLifecycleApplicationService {
                 failureReason,
                 null,
                 occurredAt,
-                session.correlationId()
-        );
+                session.correlationId());
     }
 }

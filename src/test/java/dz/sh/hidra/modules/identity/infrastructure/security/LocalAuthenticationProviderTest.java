@@ -7,7 +7,7 @@
  *
  * @Name        : LocalAuthenticationProviderTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-19
+ * @UpdatedOn   : 2026-10-14
  *
  * @Type        : Class
  * @Layer       : Test
@@ -41,18 +41,19 @@ import dz.sh.hidra.modules.identity.infrastructure.persistence.entity.UserJpaEnt
 import dz.sh.hidra.modules.identity.infrastructure.persistence.repository.IdentityProviderJpaRepository;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.repository.UserJpaRepository;
 import dz.sh.hidra.platform.security.LocalAuthenticationToken;
-import java.time.Instant;
-import java.util.List;
-import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
 
 class LocalAuthenticationProviderTest {
 
@@ -68,6 +69,8 @@ class LocalAuthenticationProviderTest {
     private LocalAuthenticationOutcomeApplicationService outcomeService;
     private PasswordEncoder passwordEncoder;
     private LocalAuthenticationProvider provider;
+    private dz.sh.hidra.modules.identity.application.port.out.AuthenticationSecurityStateQueryPort
+            states;
     private IdentityAdministratorGrantService administratorGrantService;
 
     @BeforeEach
@@ -79,15 +82,67 @@ class LocalAuthenticationProviderTest {
         outcomeService = mock(LocalAuthenticationOutcomeApplicationService.class);
         passwordEncoder = new BCryptPasswordEncoder();
         administratorGrantService = mock(IdentityAdministratorGrantService.class);
-        provider = new LocalAuthenticationProvider(
-                identityProviderRepository,
-                userRepository,
-                localCredentialRepository,
-                queryUseCase,
-                outcomeService,
-                passwordEncoder,
-                administratorGrantService
-        );
+        states =
+                mock(
+                        dz.sh.hidra.modules.identity.application.port.out
+                                .AuthenticationSecurityStateQueryPort.class);
+        when(states.provider(PROVIDER_ID, "LOCAL"))
+                .thenReturn(
+                        new dz.sh.hidra.modules.identity.application.port.out
+                                .AuthenticationSecurityStateQueryPort.ProviderState(
+                                PROVIDER_ID, "LOCAL", 1, null, null, null));
+        when(states.credential(USER_ID))
+                .thenAnswer(
+                        invocation -> {
+                            var c =
+                                    localCredentialRepository
+                                            .findByUserId(USER_ID)
+                                            .orElseThrow(
+                                                    () ->
+                                                            new BadCredentialsException(
+                                                                    "Invalid LOCAL credentials."));
+                            return new dz.sh.hidra.modules.identity.application.model
+                                    .LocalCredentialVerificationState(
+                                    c.id(), c.userId(), c.passwordHash(), c.credentialStatus(), 1);
+                        });
+        provider =
+                new LocalAuthenticationProvider(
+                        identityProviderRepository,
+                        userRepository,
+                        queryUseCase,
+                        outcomeService,
+                        passwordEncoder,
+                        administratorGrantService,
+                        states,
+                        new TrustedAuthenticationVerificationRegistry(
+                                "synthetic-unit-key-material-32-bytes-only",
+                                "hidra-api",
+                                "hidra-api"));
+    }
+
+    @Test
+    void verifiesAtomicCapturedHashRatherThanTheStaleCredentialRepositoryImage() {
+        when(identityProviderRepository.findAll())
+                .thenReturn(List.of(localProvider(IdentityProviderStatus.ACTIVE)));
+        when(userRepository.findByUsername(USERNAME))
+                .thenReturn(Optional.of(user(UserStatus.ACTIVE, null)));
+        var authorization = mock(IdentityAdministrationQueryUseCase.PrincipalView.class);
+        when(queryUseCase.principal(USER_ID, List.of())).thenReturn(authorization);
+        when(authorization.effectivePermissions()).thenReturn(List.of());
+        org.mockito.Mockito.doReturn(
+                        new dz.sh.hidra.modules.identity.application.model
+                                .LocalCredentialVerificationState(
+                                "captured-credential",
+                                USER_ID,
+                                passwordEncoder.encode(PASSWORD),
+                                "ACTIVE",
+                                7))
+                .when(states)
+                .credential(USER_ID);
+        var actual =
+                provider.authenticate(LocalAuthenticationToken.unauthenticated(USERNAME, PASSWORD));
+        assertThat(actual.isAuthenticated()).isTrue();
+        verify(localCredentialRepository, never()).findByUserId(USER_ID);
     }
 
     @Test
@@ -102,9 +157,11 @@ class LocalAuthenticationProviderTest {
         when(userRepository.findByUsername(USERNAME)).thenReturn(Optional.of(user));
         when(localCredentialRepository.findByUserId(USER_ID)).thenReturn(Optional.of(credential));
         when(queryUseCase.principal(USER_ID, List.of())).thenReturn(authorization);
-        when(authorization.effectivePermissions()).thenReturn(List.of("pipeline:read", "alarm:acknowledge"));
+        when(authorization.effectivePermissions())
+                .thenReturn(List.of("pipeline:read", "alarm:acknowledge"));
 
-        LocalAuthenticationToken request = LocalAuthenticationToken.unauthenticated(USERNAME, PASSWORD);
+        LocalAuthenticationToken request =
+                LocalAuthenticationToken.unauthenticated(USERNAME, PASSWORD);
         request.setDetails("request-details");
 
         Authentication result = provider.authenticate(request);
@@ -121,56 +178,88 @@ class LocalAuthenticationProviderTest {
         assertThat(principal.authenticationType()).isEqualTo(ProviderType.LOCAL);
         assertThat(principal.identityProviderId()).isEqualTo(PROVIDER_ID);
         assertThat(principal.roles()).isEmpty();
-        assertThat(principal.permissions()).containsExactlyInAnyOrder("pipeline:read", "alarm:acknowledge");
+        assertThat(principal.permissions())
+                .containsExactlyInAnyOrder("pipeline:read", "alarm:acknowledge");
 
         verify(queryUseCase).principal(USER_ID, List.of());
         assertThat(result.getAuthorities()).isEmpty();
         verify(outcomeService).recordSuccess(USER_ID, PROVIDER_ID);
-        verify(outcomeService, never()).recordFailure(org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.any());
+        verify(outcomeService, never())
+                .recordFailure(
+                        org.mockito.ArgumentMatchers.any(),
+                        org.mockito.ArgumentMatchers.any(),
+                        org.mockito.ArgumentMatchers.any());
     }
 
     @Test
     void activeGlobalAdministratorIsPropagatedToPrincipalAndSpringAuthority() {
-        when(identityProviderRepository.findAll()).thenReturn(List.of(localProvider(IdentityProviderStatus.ACTIVE)));
-        when(userRepository.findByUsername(USERNAME)).thenReturn(Optional.of(user(UserStatus.ACTIVE, null)));
+        when(identityProviderRepository.findAll())
+                .thenReturn(List.of(localProvider(IdentityProviderStatus.ACTIVE)));
+        when(userRepository.findByUsername(USERNAME))
+                .thenReturn(Optional.of(user(UserStatus.ACTIVE, null)));
         when(localCredentialRepository.findByUserId(USER_ID))
                 .thenReturn(Optional.of(credential("ACTIVE", passwordEncoder.encode(PASSWORD))));
-        when(queryUseCase.principal(USER_ID, List.of())).thenReturn(
-                new IdentityAdministrationQueryUseCase.PrincipalView(USER_ID, "IDENTITY_USER",
-                        USER_ID, USERNAME, "Pipeline Operator", null, List.of(), List.of()));
+        when(queryUseCase.principal(USER_ID, List.of()))
+                .thenReturn(
+                        new IdentityAdministrationQueryUseCase.PrincipalView(
+                                USER_ID,
+                                "IDENTITY_USER",
+                                USER_ID,
+                                USERNAME,
+                                "Pipeline Operator",
+                                null,
+                                List.of(),
+                                List.of()));
         when(administratorGrantService.hasActiveGlobalAdministratorGrant(USER_ID)).thenReturn(true);
 
-        Authentication result = provider.authenticate(LocalAuthenticationToken.unauthenticated(USERNAME, PASSWORD));
+        Authentication result =
+                provider.authenticate(LocalAuthenticationToken.unauthenticated(USERNAME, PASSWORD));
         HidraPrincipal principal = (HidraPrincipal) result.getPrincipal();
         assertThat(principal.roles()).containsExactly("HIDRA_ADMIN");
-        assertThat(result.getAuthorities()).extracting(a -> a.getAuthority())
+        assertThat(result.getAuthorities())
+                .extracting(a -> a.getAuthority())
                 .containsExactly("ROLE_HIDRA_ADMIN");
         verify(outcomeService).recordSuccess(USER_ID, PROVIDER_ID);
     }
 
     @Test
     void rejectsWrongPasswordAndRecordsSanitizedFailureWithoutResolvingPermissions() {
-        when(identityProviderRepository.findAll()).thenReturn(List.of(localProvider(IdentityProviderStatus.ACTIVE)));
-        when(userRepository.findByUsername(USERNAME)).thenReturn(Optional.of(user(UserStatus.ACTIVE, null)));
+        when(identityProviderRepository.findAll())
+                .thenReturn(List.of(localProvider(IdentityProviderStatus.ACTIVE)));
+        when(userRepository.findByUsername(USERNAME))
+                .thenReturn(Optional.of(user(UserStatus.ACTIVE, null)));
         when(localCredentialRepository.findByUserId(USER_ID))
                 .thenReturn(Optional.of(credential("ACTIVE", passwordEncoder.encode(PASSWORD))));
 
-        assertThatThrownBy(() -> provider.authenticate(
-                LocalAuthenticationToken.unauthenticated(USERNAME, "wrong-secret")
-        )).isInstanceOf(BadCredentialsException.class)
+        assertThatThrownBy(
+                        () ->
+                                provider.authenticate(
+                                        LocalAuthenticationToken.unauthenticated(
+                                                USERNAME, "wrong-secret")))
+                .isInstanceOf(BadCredentialsException.class)
                 .hasMessage("Invalid LOCAL credentials.");
 
-        verify(queryUseCase, never()).principal(org.mockito.ArgumentMatchers.anyString(), anyList());
+        verify(queryUseCase, never())
+                .principal(org.mockito.ArgumentMatchers.anyString(), anyList());
         verify(outcomeService).recordFailure(USER_ID, PROVIDER_ID, "BAD_CREDENTIALS");
-        verify(outcomeService, never()).recordSuccess(org.mockito.ArgumentMatchers.anyString(), org.mockito.ArgumentMatchers.anyString());
+        verify(outcomeService, never())
+                .recordSuccess(
+                        org.mockito.ArgumentMatchers.anyString(),
+                        org.mockito.ArgumentMatchers.anyString());
     }
 
     @Test
     void rejectsLockedUserBeforeCredentialVerificationAndRecordsLockedOutcome() {
-        when(identityProviderRepository.findAll()).thenReturn(List.of(localProvider(IdentityProviderStatus.ACTIVE)));
-        when(userRepository.findByUsername(USERNAME)).thenReturn(Optional.of(user(UserStatus.LOCKED, null)));
+        when(identityProviderRepository.findAll())
+                .thenReturn(List.of(localProvider(IdentityProviderStatus.ACTIVE)));
+        when(userRepository.findByUsername(USERNAME))
+                .thenReturn(Optional.of(user(UserStatus.LOCKED, null)));
 
-        assertThatThrownBy(() -> provider.authenticate(LocalAuthenticationToken.unauthenticated(USERNAME, PASSWORD)))
+        assertThatThrownBy(
+                        () ->
+                                provider.authenticate(
+                                        LocalAuthenticationToken.unauthenticated(
+                                                USERNAME, PASSWORD)))
                 .isInstanceOf(LockedException.class)
                 .hasMessage("Hidra user account is locked.");
 
@@ -180,24 +269,36 @@ class LocalAuthenticationProviderTest {
 
     @Test
     void rejectsInactiveCredentialAndRecordsDisabledOutcome() {
-        when(identityProviderRepository.findAll()).thenReturn(List.of(localProvider(IdentityProviderStatus.ACTIVE)));
-        when(userRepository.findByUsername(USERNAME)).thenReturn(Optional.of(user(UserStatus.ACTIVE, null)));
+        when(identityProviderRepository.findAll())
+                .thenReturn(List.of(localProvider(IdentityProviderStatus.ACTIVE)));
+        when(userRepository.findByUsername(USERNAME))
+                .thenReturn(Optional.of(user(UserStatus.ACTIVE, null)));
         when(localCredentialRepository.findByUserId(USER_ID))
                 .thenReturn(Optional.of(credential("DISABLED", passwordEncoder.encode(PASSWORD))));
 
-        assertThatThrownBy(() -> provider.authenticate(LocalAuthenticationToken.unauthenticated(USERNAME, PASSWORD)))
+        assertThatThrownBy(
+                        () ->
+                                provider.authenticate(
+                                        LocalAuthenticationToken.unauthenticated(
+                                                USERNAME, PASSWORD)))
                 .isInstanceOf(DisabledException.class)
                 .hasMessage("LOCAL credential is not active.");
 
-        verify(queryUseCase, never()).principal(org.mockito.ArgumentMatchers.anyString(), anyList());
-        verify(outcomeService).recordFailure(USER_ID, PROVIDER_ID, "ACCOUNT_OR_CREDENTIAL_DISABLED");
+        verify(queryUseCase, never())
+                .principal(org.mockito.ArgumentMatchers.anyString(), anyList());
+        verify(outcomeService)
+                .recordFailure(USER_ID, PROVIDER_ID, "ACCOUNT_OR_CREDENTIAL_DISABLED");
     }
 
     @Test
     void rejectsUnavailableLocalProviderWithoutLookingUpUserOrCredential() {
         when(identityProviderRepository.findAll()).thenReturn(List.of());
 
-        assertThatThrownBy(() -> provider.authenticate(LocalAuthenticationToken.unauthenticated(USERNAME, PASSWORD)))
+        assertThatThrownBy(
+                        () ->
+                                provider.authenticate(
+                                        LocalAuthenticationToken.unauthenticated(
+                                                USERNAME, PASSWORD)))
                 .isInstanceOf(BadCredentialsException.class)
                 .hasMessage("LOCAL authentication provider is not available.");
 
@@ -209,7 +310,11 @@ class LocalAuthenticationProviderTest {
     @Test
     void supportsOnlyLocalAuthenticationTokenContract() {
         assertThat(provider.supports(LocalAuthenticationToken.class)).isTrue();
-        assertThat(provider.supports(org.springframework.security.authentication.UsernamePasswordAuthenticationToken.class)).isFalse();
+        assertThat(
+                        provider.supports(
+                                org.springframework.security.authentication
+                                        .UsernamePasswordAuthenticationToken.class))
+                .isFalse();
     }
 
     private static IdentityProviderJpaEntity localProvider(IdentityProviderStatus status) {
@@ -237,8 +342,7 @@ class LocalAuthenticationProviderTest {
                 null,
                 null,
                 now,
-                now
-        );
+                now);
     }
 
     private static UserJpaEntity user(UserStatus status, Instant lockedUntil) {
@@ -258,8 +362,7 @@ class LocalAuthenticationProviderTest {
                 status == UserStatus.ACTIVE ? now : null,
                 null,
                 null,
-                now
-        );
+                now);
     }
 
     private static LocalCredential credential(String status, String hash) {

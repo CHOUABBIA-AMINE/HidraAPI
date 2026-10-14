@@ -7,7 +7,7 @@
  *
  * @Name        : IdentityOidcJwtAuthenticationConverterTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-06
+ * @UpdatedOn   : 2026-10-14
  *
  * @Type        : Class
  * @Layer       : Test
@@ -39,9 +39,7 @@ import dz.sh.hidra.modules.identity.infrastructure.persistence.entity.UserJpaEnt
 import dz.sh.hidra.modules.identity.infrastructure.persistence.repository.ExternalIdentityJpaRepository;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.repository.IdentityProviderJpaRepository;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.repository.UserJpaRepository;
-import java.time.Instant;
-import java.util.List;
-import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -49,7 +47,13 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.oauth2.jwt.Jwt;
 
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
+
 class IdentityOidcJwtAuthenticationConverterTest {
+    private static final Instant TEST_NOW =
+            Instant.now().truncatedTo(java.time.temporal.ChronoUnit.SECONDS);
 
     private static final String USER_ID = "user-oidc-1";
     private static final String PROVIDER_ID = "provider-oidc";
@@ -69,13 +73,53 @@ class IdentityOidcJwtAuthenticationConverterTest {
         externalIdentityRepository = mock(ExternalIdentityJpaRepository.class);
         userRepository = mock(UserJpaRepository.class);
         queryUseCase = mock(IdentityAdministrationQueryUseCase.class);
-        converter = new IdentityOidcJwtAuthenticationConverter(
-                identityProviderRepository,
-                externalIdentityRepository,
-                userRepository,
-                queryUseCase,
-                mock(SpringAuthorizationContextAdapter.class)
-        );
+        var states =
+                mock(
+                        dz.sh.hidra.modules.identity.application.port.out
+                                .AuthenticationSecurityStateQueryPort.class);
+        when(states.provider(PROVIDER_ID, "OIDC"))
+                .thenReturn(
+                        new dz.sh.hidra.modules.identity.application.port.out
+                                .AuthenticationSecurityStateQueryPort.ProviderState(
+                                PROVIDER_ID, "OIDC", 1, ISSUER, null, null));
+        when(states.external(
+                        org.mockito.ArgumentMatchers.any(),
+                        org.mockito.ArgumentMatchers.anyString(),
+                        org.mockito.ArgumentMatchers.anyString(),
+                        org.mockito.ArgumentMatchers.any()))
+                .thenAnswer(
+                        i -> {
+                            return new dz.sh.hidra.modules.identity.application.model
+                                    .AuthenticationVerificationSnapshot(
+                                    USER_ID,
+                                    "OIDC",
+                                    PROVIDER_ID,
+                                    1,
+                                    externalIdentity(ExternalIdentityStatus.LINKED).id(),
+                                    i.getArgument(1),
+                                    1L,
+                                    i.getArgument(2),
+                                    i.getArgument(3),
+                                    null,
+                                    null);
+                        });
+        var decoder = mock(org.springframework.beans.factory.ObjectProvider.class);
+        when(decoder.getObject())
+                .thenReturn((org.springframework.security.oauth2.jwt.JwtDecoder) token -> jwt());
+        converter =
+                new IdentityOidcJwtAuthenticationConverter(
+                        identityProviderRepository,
+                        externalIdentityRepository,
+                        userRepository,
+                        queryUseCase,
+                        mock(SpringAuthorizationContextAdapter.class),
+                        states,
+                        new TrustedAuthenticationVerificationRegistry(
+                                "synthetic-unit-key-material-32-bytes-only",
+                                "hidra-api",
+                                "hidra-api"),
+                        decoder,
+                        65536);
     }
 
     @Test
@@ -84,13 +128,16 @@ class IdentityOidcJwtAuthenticationConverterTest {
                 mock(IdentityAdministrationQueryUseCase.PrincipalView.class);
         when(identityProviderRepository.findByProviderTypeAndIssuerUri(ProviderType.OIDC, ISSUER))
                 .thenReturn(Optional.of(oidcProvider(IdentityProviderStatus.ACTIVE)));
-        when(externalIdentityRepository.findByIdentityProviderIdAndExternalSubject(PROVIDER_ID, SUBJECT))
+        when(externalIdentityRepository.findByIdentityProviderIdAndExternalSubject(
+                        PROVIDER_ID, SUBJECT))
                 .thenReturn(Optional.of(externalIdentity(ExternalIdentityStatus.LINKED)));
         when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user(UserStatus.ACTIVE)));
         when(queryUseCase.principal(USER_ID, List.of())).thenReturn(authorization);
-        when(authorization.effectivePermissions()).thenReturn(List.of("pipeline:read", "alarm:acknowledge"));
+        when(authorization.effectivePermissions())
+                .thenReturn(List.of("pipeline:read", "alarm:acknowledge"));
 
-        HidraOidcAuthenticationToken result = (HidraOidcAuthenticationToken) converter.convert(jwt());
+        HidraOidcAuthenticationToken result =
+                (HidraOidcAuthenticationToken) converter.convert(jwt());
 
         assertThat(result.isAuthenticated()).isTrue();
         assertThat(result.getCredentials()).isNull();
@@ -104,10 +151,13 @@ class IdentityOidcJwtAuthenticationConverterTest {
         assertThat(principal.authenticationType()).isEqualTo(ProviderType.OIDC);
         assertThat(principal.identityProviderId()).isEqualTo(PROVIDER_ID);
         assertThat(principal.roles()).isEmpty();
-        assertThat(principal.permissions()).containsExactlyInAnyOrder("pipeline:read", "alarm:acknowledge");
+        assertThat(principal.permissions())
+                .containsExactlyInAnyOrder("pipeline:read", "alarm:acknowledge");
 
-        verify(identityProviderRepository).findByProviderTypeAndIssuerUri(ProviderType.OIDC, ISSUER);
-        verify(externalIdentityRepository).findByIdentityProviderIdAndExternalSubject(PROVIDER_ID, SUBJECT);
+        verify(identityProviderRepository)
+                .findByProviderTypeAndIssuerUri(ProviderType.OIDC, ISSUER);
+        verify(externalIdentityRepository)
+                .findByIdentityProviderIdAndExternalSubject(PROVIDER_ID, SUBJECT);
         verify(queryUseCase).principal(USER_ID, List.of());
     }
 
@@ -117,24 +167,27 @@ class IdentityOidcJwtAuthenticationConverterTest {
                 mock(IdentityAdministrationQueryUseCase.PrincipalView.class);
         when(identityProviderRepository.findByProviderTypeAndIssuerUri(ProviderType.OIDC, ISSUER))
                 .thenReturn(Optional.of(oidcProvider(IdentityProviderStatus.ACTIVE)));
-        when(externalIdentityRepository.findByIdentityProviderIdAndExternalSubject(PROVIDER_ID, SUBJECT))
+        when(externalIdentityRepository.findByIdentityProviderIdAndExternalSubject(
+                        PROVIDER_ID, SUBJECT))
                 .thenReturn(Optional.of(externalIdentity(ExternalIdentityStatus.LINKED)));
         when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user(UserStatus.ACTIVE)));
         when(queryUseCase.principal(USER_ID, List.of())).thenReturn(authorization);
         when(authorization.effectivePermissions()).thenReturn(List.of("pipeline:read"));
 
-        Jwt externalJwt = Jwt.withTokenValue("external-token")
-                .header("alg", "RS256")
-                .issuer(ISSUER)
-                .subject(SUBJECT)
-                .issuedAt(Instant.parse("2026-09-15T10:00:00Z"))
-                .expiresAt(Instant.parse("2026-09-15T11:00:00Z"))
-                .claim("roles", List.of("HIDRA_ADMIN", "pipeline:delete"))
-                .claim("groups", List.of("Domain Admins", "Operators"))
-                .claim("scope", "openid pipeline:delete")
-                .build();
+        Jwt externalJwt =
+                Jwt.withTokenValue("external-token")
+                        .header("alg", "RS256")
+                        .issuer(ISSUER)
+                        .subject(SUBJECT)
+                        .issuedAt(TEST_NOW)
+                        .expiresAt(TEST_NOW.plusSeconds(3600))
+                        .claim("roles", List.of("HIDRA_ADMIN", "pipeline:delete"))
+                        .claim("groups", List.of("Domain Admins", "Operators"))
+                        .claim("scope", "openid pipeline:delete")
+                        .build();
 
-        HidraPrincipal principal = ((HidraOidcAuthenticationToken) converter.convert(externalJwt)).getPrincipal();
+        HidraPrincipal principal =
+                ((HidraOidcAuthenticationToken) converter.convert(externalJwt)).getPrincipal();
 
         assertThat(principal.roles()).isEmpty();
         assertThat(principal.permissions()).containsExactly("pipeline:read");
@@ -143,18 +196,20 @@ class IdentityOidcJwtAuthenticationConverterTest {
 
     @Test
     void rejectsMissingIssuerOrSubjectBeforeIdentityLookup() {
-        Jwt missingIssuer = Jwt.withTokenValue("external-token")
-                .header("alg", "RS256")
-                .subject(SUBJECT)
-                .issuedAt(Instant.parse("2026-09-15T10:00:00Z"))
-                .expiresAt(Instant.parse("2026-09-15T11:00:00Z"))
-                .build();
-        Jwt missingSubject = Jwt.withTokenValue("external-token")
-                .header("alg", "RS256")
-                .issuer(ISSUER)
-                .issuedAt(Instant.parse("2026-09-15T10:00:00Z"))
-                .expiresAt(Instant.parse("2026-09-15T11:00:00Z"))
-                .build();
+        Jwt missingIssuer =
+                Jwt.withTokenValue("external-token")
+                        .header("alg", "RS256")
+                        .subject(SUBJECT)
+                        .issuedAt(TEST_NOW)
+                        .expiresAt(TEST_NOW.plusSeconds(3600))
+                        .build();
+        Jwt missingSubject =
+                Jwt.withTokenValue("external-token")
+                        .header("alg", "RS256")
+                        .issuer(ISSUER)
+                        .issuedAt(TEST_NOW)
+                        .expiresAt(TEST_NOW.plusSeconds(3600))
+                        .build();
 
         assertThatThrownBy(() -> converter.convert(missingIssuer))
                 .isInstanceOf(BadCredentialsException.class)
@@ -163,8 +218,10 @@ class IdentityOidcJwtAuthenticationConverterTest {
                 .isInstanceOf(BadCredentialsException.class)
                 .hasMessage("OIDC identity is missing issuer or subject.");
 
-        verify(identityProviderRepository, never()).findByProviderTypeAndIssuerUri(
-                org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.anyString());
+        verify(identityProviderRepository, never())
+                .findByProviderTypeAndIssuerUri(
+                        org.mockito.ArgumentMatchers.any(),
+                        org.mockito.ArgumentMatchers.anyString());
     }
 
     @Test
@@ -183,22 +240,26 @@ class IdentityOidcJwtAuthenticationConverterTest {
                 .isInstanceOf(BadCredentialsException.class)
                 .hasMessage("OIDC identity provider is not available.");
 
-        verify(externalIdentityRepository, never()).findByIdentityProviderIdAndExternalSubject(
-                org.mockito.ArgumentMatchers.anyString(), org.mockito.ArgumentMatchers.anyString());
+        verify(externalIdentityRepository, never())
+                .findByIdentityProviderIdAndExternalSubject(
+                        org.mockito.ArgumentMatchers.anyString(),
+                        org.mockito.ArgumentMatchers.anyString());
     }
 
     @Test
     void rejectsUnmappedOrInactiveExternalIdentity() {
         when(identityProviderRepository.findByProviderTypeAndIssuerUri(ProviderType.OIDC, ISSUER))
                 .thenReturn(Optional.of(oidcProvider(IdentityProviderStatus.ACTIVE)));
-        when(externalIdentityRepository.findByIdentityProviderIdAndExternalSubject(PROVIDER_ID, SUBJECT))
+        when(externalIdentityRepository.findByIdentityProviderIdAndExternalSubject(
+                        PROVIDER_ID, SUBJECT))
                 .thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> converter.convert(jwt()))
                 .isInstanceOf(BadCredentialsException.class)
                 .hasMessage("OIDC identity is not linked to a Hidra user.");
 
-        when(externalIdentityRepository.findByIdentityProviderIdAndExternalSubject(PROVIDER_ID, SUBJECT))
+        when(externalIdentityRepository.findByIdentityProviderIdAndExternalSubject(
+                        PROVIDER_ID, SUBJECT))
                 .thenReturn(Optional.of(externalIdentity(ExternalIdentityStatus.UNLINKED)));
 
         assertThatThrownBy(() -> converter.convert(jwt()))
@@ -206,7 +267,10 @@ class IdentityOidcJwtAuthenticationConverterTest {
                 .hasMessage("OIDC identity is not linked to a Hidra user.");
 
         verify(userRepository, never()).findById(USER_ID);
-        verify(queryUseCase, never()).principal(org.mockito.ArgumentMatchers.anyString(), org.mockito.ArgumentMatchers.anyList());
+        verify(queryUseCase, never())
+                .principal(
+                        org.mockito.ArgumentMatchers.anyString(),
+                        org.mockito.ArgumentMatchers.anyList());
     }
 
     @Test
@@ -216,7 +280,10 @@ class IdentityOidcJwtAuthenticationConverterTest {
         assertThatThrownBy(() -> converter.convert(jwt()))
                 .isInstanceOf(LockedException.class)
                 .hasMessage("Hidra user account is locked.");
-        verify(queryUseCase, never()).principal(org.mockito.ArgumentMatchers.anyString(), org.mockito.ArgumentMatchers.anyList());
+        verify(queryUseCase, never())
+                .principal(
+                        org.mockito.ArgumentMatchers.anyString(),
+                        org.mockito.ArgumentMatchers.anyList());
 
         setUp();
         arrangeLinkedIdentity(user(UserStatus.DISABLED));
@@ -224,27 +291,35 @@ class IdentityOidcJwtAuthenticationConverterTest {
         assertThatThrownBy(() -> converter.convert(jwt()))
                 .isInstanceOf(DisabledException.class)
                 .hasMessage("Hidra user account is not active.");
-        verify(queryUseCase, never()).principal(org.mockito.ArgumentMatchers.anyString(), org.mockito.ArgumentMatchers.anyList());
+        verify(queryUseCase, never())
+                .principal(
+                        org.mockito.ArgumentMatchers.anyString(),
+                        org.mockito.ArgumentMatchers.anyList());
     }
 
     @Test
     void rejectsLinkedIdentityWhoseHidraUserNoLongerExists() {
         when(identityProviderRepository.findByProviderTypeAndIssuerUri(ProviderType.OIDC, ISSUER))
                 .thenReturn(Optional.of(oidcProvider(IdentityProviderStatus.ACTIVE)));
-        when(externalIdentityRepository.findByIdentityProviderIdAndExternalSubject(PROVIDER_ID, SUBJECT))
+        when(externalIdentityRepository.findByIdentityProviderIdAndExternalSubject(
+                        PROVIDER_ID, SUBJECT))
                 .thenReturn(Optional.of(externalIdentity(ExternalIdentityStatus.LINKED)));
         when(userRepository.findById(USER_ID)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> converter.convert(jwt()))
                 .isInstanceOf(BadCredentialsException.class)
                 .hasMessage("OIDC identity is not linked to a Hidra user.");
-        verify(queryUseCase, never()).principal(org.mockito.ArgumentMatchers.anyString(), org.mockito.ArgumentMatchers.anyList());
+        verify(queryUseCase, never())
+                .principal(
+                        org.mockito.ArgumentMatchers.anyString(),
+                        org.mockito.ArgumentMatchers.anyList());
     }
 
     private void arrangeLinkedIdentity(UserJpaEntity mappedUser) {
         when(identityProviderRepository.findByProviderTypeAndIssuerUri(ProviderType.OIDC, ISSUER))
                 .thenReturn(Optional.of(oidcProvider(IdentityProviderStatus.ACTIVE)));
-        when(externalIdentityRepository.findByIdentityProviderIdAndExternalSubject(PROVIDER_ID, SUBJECT))
+        when(externalIdentityRepository.findByIdentityProviderIdAndExternalSubject(
+                        PROVIDER_ID, SUBJECT))
                 .thenReturn(Optional.of(externalIdentity(ExternalIdentityStatus.LINKED)));
         when(userRepository.findById(USER_ID)).thenReturn(Optional.of(mappedUser));
     }
@@ -254,14 +329,14 @@ class IdentityOidcJwtAuthenticationConverterTest {
                 .header("alg", "RS256")
                 .issuer(ISSUER)
                 .subject(SUBJECT)
-                .issuedAt(Instant.parse("2026-09-15T10:00:00Z"))
-                .expiresAt(Instant.parse("2026-09-15T11:00:00Z"))
+                .issuedAt(TEST_NOW)
+                .expiresAt(TEST_NOW.plusSeconds(3600))
                 .claim("email", "external.operator@example.invalid")
                 .build();
     }
 
     private static IdentityProviderJpaEntity oidcProvider(IdentityProviderStatus status) {
-        Instant now = Instant.parse("2026-09-15T10:00:00Z");
+        Instant now = TEST_NOW;
         return new IdentityProviderJpaEntity(
                 PROVIDER_ID,
                 "OIDC_MAIN",
@@ -285,12 +360,11 @@ class IdentityOidcJwtAuthenticationConverterTest {
                 null,
                 null,
                 now,
-                now
-        );
+                now);
     }
 
     private static ExternalIdentityJpaEntity externalIdentity(ExternalIdentityStatus status) {
-        Instant now = Instant.parse("2026-09-15T10:00:00Z");
+        Instant now = TEST_NOW;
         return new ExternalIdentityJpaEntity(
                 "external-oidc-1",
                 USER_ID,
@@ -306,12 +380,11 @@ class IdentityOidcJwtAuthenticationConverterTest {
                 now,
                 status,
                 now,
-                now
-        );
+                now);
     }
 
     private static UserJpaEntity user(UserStatus status) {
-        Instant now = Instant.parse("2026-09-15T10:00:00Z");
+        Instant now = TEST_NOW;
         return new UserJpaEntity(
                 USER_ID,
                 USERNAME,
@@ -327,7 +400,6 @@ class IdentityOidcJwtAuthenticationConverterTest {
                 status == UserStatus.ACTIVE ? now : null,
                 null,
                 null,
-                now
-        );
+                now);
     }
 }

@@ -7,7 +7,7 @@
  *
  * @Name        : AccessTokenIssuerPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-15
+ * @UpdatedOn   : 2026-10-14
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -28,4 +28,10 @@ import dz.sh.hidra.modules.identity.domain.model.HidraPrincipal;
 public interface AccessTokenIssuerPort {
 
     IssuedAccessToken issue(HidraPrincipal principal);
+
+    dz.sh.hidra.modules.identity.application.model.AccessTokenIssuerSettings settings();
+
+    IssuedAccessToken issue(
+            HidraPrincipal principal,
+            dz.sh.hidra.modules.identity.application.model.AccessTokenIssuanceContext context);
 }

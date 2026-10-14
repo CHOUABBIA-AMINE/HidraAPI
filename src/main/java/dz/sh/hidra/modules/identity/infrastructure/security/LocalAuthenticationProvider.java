@@ -7,7 +7,7 @@
  *
  * @Name        : LocalAuthenticationProvider
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-19
+ * @UpdatedOn   : 2026-10-14
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -20,10 +20,8 @@
 package dz.sh.hidra.modules.identity.infrastructure.security;
 
 import dz.sh.hidra.modules.identity.application.port.in.IdentityAdministrationQueryUseCase;
-import dz.sh.hidra.modules.identity.application.port.out.LocalCredentialRepositoryPort;
 import dz.sh.hidra.modules.identity.application.service.LocalAuthenticationOutcomeApplicationService;
 import dz.sh.hidra.modules.identity.domain.model.HidraPrincipal;
-import dz.sh.hidra.modules.identity.domain.model.LocalCredential;
 import dz.sh.hidra.modules.identity.domain.value.IdentityProviderStatus;
 import dz.sh.hidra.modules.identity.domain.value.ProviderType;
 import dz.sh.hidra.modules.identity.domain.value.UserStatus;
@@ -32,10 +30,7 @@ import dz.sh.hidra.modules.identity.infrastructure.persistence.entity.UserJpaEnt
 import dz.sh.hidra.modules.identity.infrastructure.persistence.repository.IdentityProviderJpaRepository;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.repository.UserJpaRepository;
 import dz.sh.hidra.platform.security.LocalAuthenticationToken;
-import java.time.Instant;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -48,17 +43,25 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
 /**
  * Database-backed LOCAL authentication strategy.
  */
 @Component
 public final class LocalAuthenticationProvider implements AuthenticationProvider {
 
+    private final dz.sh.hidra.modules.identity.application.port.out
+                    .AuthenticationSecurityStateQueryPort
+            states;
+    private final TrustedAuthenticationVerificationRegistry verification;
     private static final String ACTIVE_CREDENTIAL_STATUS = "ACTIVE";
 
     private final IdentityProviderJpaRepository identityProviderRepository;
     private final UserJpaRepository userRepository;
-    private final LocalCredentialRepositoryPort localCredentialRepository;
     private final IdentityAdministrationQueryUseCase queryUseCase;
     private final LocalAuthenticationOutcomeApplicationService outcomeService;
     private final PasswordEncoder passwordEncoder;
@@ -67,15 +70,17 @@ public final class LocalAuthenticationProvider implements AuthenticationProvider
     public LocalAuthenticationProvider(
             IdentityProviderJpaRepository identityProviderRepository,
             UserJpaRepository userRepository,
-            LocalCredentialRepositoryPort localCredentialRepository,
             IdentityAdministrationQueryUseCase queryUseCase,
             LocalAuthenticationOutcomeApplicationService outcomeService,
             PasswordEncoder passwordEncoder,
-            IdentityAdministratorGrantService administratorGrantService
-    ) {
+            IdentityAdministratorGrantService administratorGrantService,
+            dz.sh.hidra.modules.identity.application.port.out.AuthenticationSecurityStateQueryPort
+                    states,
+            TrustedAuthenticationVerificationRegistry verification) {
+        this.states = Objects.requireNonNull(states);
+        this.verification = Objects.requireNonNull(verification);
         this.identityProviderRepository = Objects.requireNonNull(identityProviderRepository);
         this.userRepository = Objects.requireNonNull(userRepository);
-        this.localCredentialRepository = Objects.requireNonNull(localCredentialRepository);
         this.queryUseCase = Objects.requireNonNull(queryUseCase);
         this.outcomeService = Objects.requireNonNull(outcomeService);
         this.passwordEncoder = Objects.requireNonNull(passwordEncoder);
@@ -83,13 +88,19 @@ public final class LocalAuthenticationProvider implements AuthenticationProvider
     }
 
     @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+    public Authentication authenticate(Authentication authentication)
+            throws AuthenticationException {
         if (!(authentication instanceof LocalAuthenticationToken localRequest)) {
             return null;
         }
 
-        String username = normalize(localRequest.getPrincipal() == null ? null : localRequest.getPrincipal().toString());
-        String submittedPassword = localRequest.getCredentials() instanceof String value ? value : null;
+        String username =
+                normalize(
+                        localRequest.getPrincipal() == null
+                                ? null
+                                : localRequest.getPrincipal().toString());
+        String submittedPassword =
+                localRequest.getCredentials() instanceof String value ? value : null;
         String userId = null;
         String providerId = null;
 
@@ -100,15 +111,17 @@ public final class LocalAuthenticationProvider implements AuthenticationProvider
 
             IdentityProviderJpaEntity localProvider = resolveActiveLocalProvider();
             providerId = localProvider.id();
+            var capturedProvider = states.provider(providerId, "LOCAL");
 
-            UserJpaEntity user = userRepository.findByUsername(username)
-                    .orElseThrow(LocalAuthenticationProvider::invalidCredentials);
+            UserJpaEntity user =
+                    userRepository
+                            .findByUsername(username)
+                            .orElseThrow(LocalAuthenticationProvider::invalidCredentials);
             userId = user.id();
             enforceAccountState(user);
 
-            LocalCredential credential = localCredentialRepository.findByUserId(user.id())
-                    .orElseThrow(LocalAuthenticationProvider::invalidCredentials);
-            if (!ACTIVE_CREDENTIAL_STATUS.equalsIgnoreCase(credential.credentialStatus())) {
+            var credential = states.credential(user.id());
+            if (!ACTIVE_CREDENTIAL_STATUS.equalsIgnoreCase(credential.status())) {
                 throw new DisabledException("LOCAL credential is not active.");
             }
             if (!passwordEncoder.matches(submittedPassword, credential.passwordHash())) {
@@ -118,30 +131,45 @@ public final class LocalAuthenticationProvider implements AuthenticationProvider
             IdentityAdministrationQueryUseCase.PrincipalView authorization =
                     queryUseCase.principal(user.id(), List.of());
 
-            boolean globalAdministrator = administratorGrantService.hasActiveGlobalAdministratorGrant(user.id());
+            boolean globalAdministrator =
+                    administratorGrantService.hasActiveGlobalAdministratorGrant(user.id());
             Set<String> roles = globalAdministrator ? Set.of("HIDRA_ADMIN") : Set.of();
 
-            HidraPrincipal principal = new HidraPrincipal(
-                    user.id(),
-                    user.username(),
-                    user.displayName(),
-                    ProviderType.LOCAL,
-                    localProvider.id(),
-                    roles,
-                    Set.copyOf(authorization.effectivePermissions())
-            );
+            HidraPrincipal principal =
+                    new HidraPrincipal(
+                            user.id(),
+                            user.username(),
+                            user.displayName(),
+                            ProviderType.LOCAL,
+                            localProvider.id(),
+                            roles,
+                            Set.copyOf(authorization.effectivePermissions()));
 
             outcomeService.recordSuccess(user.id(), localProvider.id());
 
-            UsernamePasswordAuthenticationToken result = UsernamePasswordAuthenticationToken.authenticated(
-                    principal,
-                    null,
-                    globalAdministrator
-                            ? List.of(new SimpleGrantedAuthority("ROLE_HIDRA_ADMIN"))
-                            : List.of()
-            );
+            UsernamePasswordAuthenticationToken result =
+                    UsernamePasswordAuthenticationToken.authenticated(
+                            principal,
+                            null,
+                            globalAdministrator
+                                    ? List.of(new SimpleGrantedAuthority("ROLE_HIDRA_ADMIN"))
+                                    : List.of());
             result.setDetails(localRequest.getDetails());
-            return result;
+            var snapshot =
+                    new dz.sh.hidra.modules.identity.application.model
+                            .AuthenticationVerificationSnapshot(
+                            user.id(),
+                            "LOCAL",
+                            capturedProvider.id(),
+                            capturedProvider.version(),
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            credential.credentialId(),
+                            credential.securityVersion());
+            return verification.verifiedDirect(result, snapshot);
         } catch (AuthenticationException failure) {
             outcomeService.recordFailure(userId, providerId, failureReason(failure));
             throw failure;
@@ -154,16 +182,18 @@ public final class LocalAuthenticationProvider implements AuthenticationProvider
     }
 
     private IdentityProviderJpaEntity resolveActiveLocalProvider() {
-        List<IdentityProviderJpaEntity> providers = identityProviderRepository.findAll().stream()
-                .filter(provider -> provider.providerType() == ProviderType.LOCAL)
-                .filter(provider -> provider.status() == IdentityProviderStatus.ACTIVE)
-                .toList();
+        List<IdentityProviderJpaEntity> providers =
+                identityProviderRepository.findAll().stream()
+                        .filter(provider -> provider.providerType() == ProviderType.LOCAL)
+                        .filter(provider -> provider.status() == IdentityProviderStatus.ACTIVE)
+                        .toList();
 
         if (providers.isEmpty()) {
             throw new BadCredentialsException("LOCAL authentication provider is not available.");
         }
         if (providers.size() > 1) {
-            throw new AuthenticationServiceException("Multiple active LOCAL identity providers are configured.");
+            throw new AuthenticationServiceException(
+                    "Multiple active LOCAL identity providers are configured.");
         }
         return providers.getFirst();
     }

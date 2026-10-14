@@ -7,7 +7,7 @@
  *
  * @Name        : DirectAuthenticationApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-14
  *
  * @Type        : Class
  * @Layer       : Application
@@ -26,8 +26,10 @@ import dz.sh.hidra.modules.identity.application.port.in.AuthenticateDirectUserUs
 import dz.sh.hidra.modules.identity.application.port.in.CompleteAuthenticatedPrincipalUseCase;
 import dz.sh.hidra.modules.identity.application.port.out.DirectAuthenticationPort;
 import dz.sh.hidra.modules.identity.domain.model.HidraPrincipal;
-import java.util.Objects;
+
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 /**
  * Application orchestration for the canonical direct-login flow.
@@ -40,8 +42,7 @@ public final class DirectAuthenticationApplicationService implements Authenticat
 
     public DirectAuthenticationApplicationService(
             DirectAuthenticationPort directAuthenticationPort,
-            CompleteAuthenticatedPrincipalUseCase completionUseCase
-    ) {
+            CompleteAuthenticatedPrincipalUseCase completionUseCase) {
         this.directAuthenticationPort = Objects.requireNonNull(directAuthenticationPort);
         this.completionUseCase = Objects.requireNonNull(completionUseCase);
     }
@@ -50,25 +51,27 @@ public final class DirectAuthenticationApplicationService implements Authenticat
     public AuthenticationResult authenticate(DirectAuthenticationCommand command) {
         Objects.requireNonNull(command, "DirectAuthenticationCommand must not be null.");
 
-        HidraPrincipal principal = directAuthenticationPort.authenticate(
-                command.providerType(),
-                command.principal(),
-                command.credentials()
-        );
-        return completionUseCase.complete(
-                new AuthenticatedPrincipalInput(
-                        principal.userId(),
-                        principal.username(),
-                        principal.displayName(),
-                        principal.authenticationType(),
-                        principal.identityProviderId(),
-                        principal.roles(),
-                        principal.permissions(),
-                principal.externalIdentityId()
-                ),
-                command.clientIp(),
-                command.userAgent(),
-                command.correlationId()
-        );
+        var verified =
+                directAuthenticationPort.verify(
+                        command.providerType(), command.principal(), command.credentials());
+        try {
+            HidraPrincipal principal = verified.principal();
+            return completionUseCase.complete(
+                    new AuthenticatedPrincipalInput(
+                            principal.userId(),
+                            principal.username(),
+                            principal.displayName(),
+                            principal.authenticationType(),
+                            principal.identityProviderId(),
+                            principal.roles(),
+                            principal.permissions(),
+                            principal.externalIdentityId(),
+                            verified.verificationHandle()),
+                    command.clientIp(),
+                    command.userAgent(),
+                    command.correlationId());
+        } finally {
+            directAuthenticationPort.finishVerification();
+        }
     }
 }

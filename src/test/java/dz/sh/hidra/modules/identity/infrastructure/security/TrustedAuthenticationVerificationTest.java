@@ -74,6 +74,96 @@ class TrustedAuthenticationVerificationTest {
     }
 
     @Test
+    void boundIssuerCryptographicReadbackRejectsFakeBearerWithoutSecretDiagnostics() {
+        var encoder =
+                (org.springframework.security.oauth2.jwt.JwtEncoder)
+                        parameters ->
+                                org.springframework.security.oauth2.jwt.Jwt.withTokenValue(
+                                                "private-synthetic-bearer")
+                                        .header("alg", "HS256")
+                                        .claims(c -> c.putAll(parameters.getClaims().getClaims()))
+                                        .build();
+        var decoder =
+                (org.springframework.security.oauth2.jwt.JwtDecoder)
+                        token -> {
+                            throw new org.springframework.security.oauth2.jwt.JwtException(
+                                    "private-synthetic-bearer");
+                        };
+        var provider =
+                new org.springframework.beans.factory.support.StaticListableBeanFactory(
+                                java.util.Map.of("decoder", decoder))
+                        .getBeanProvider(org.springframework.security.oauth2.jwt.JwtDecoder.class);
+        var issuer =
+                new HidraAccessTokenIssuer(
+                        encoder,
+                        "hidra-api",
+                        "hidra-api",
+                        "sub",
+                        "roles",
+                        "scope",
+                        900,
+                        provider,
+                        65536);
+        var p =
+                new HidraPrincipal(
+                        "user",
+                        "operator",
+                        null,
+                        ProviderType.LOCAL,
+                        "provider",
+                        Set.of(),
+                        Set.of());
+        assertThatThrownBy(
+                        () ->
+                                issuer.issue(
+                                        p,
+                                        new AccessTokenIssuanceContext(
+                                                JTI,
+                                                Instant.now()
+                                                        .minusSeconds(1)
+                                                        .truncatedTo(
+                                                                java.time.temporal.ChronoUnit
+                                                                        .SECONDS),
+                                                Instant.now()
+                                                        .plusSeconds(60)
+                                                        .truncatedTo(
+                                                                java.time.temporal.ChronoUnit
+                                                                        .SECONDS))))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Bound native signing or readback failed.")
+                .hasNoCause();
+    }
+
+    @Test
+    void nativeReadbackRequiresExactSingletonRawAudienceAndTypedOwnerClaims() {
+        var now = Instant.now().truncatedTo(java.time.temporal.ChronoUnit.SECONDS);
+        var jwt =
+                org.springframework.security.oauth2.jwt.Jwt.withTokenValue("synthetic")
+                        .header("alg", "HS256")
+                        .issuer("hidra-api")
+                        .subject("user")
+                        .audience(java.util.List.of("hidra-api", "other"))
+                        .issuedAt(now)
+                        .expiresAt(now.plusSeconds(60))
+                        .claim("jti", JTI)
+                        .claim("authentication_type", "LOCAL")
+                        .claim("identity_provider_id", "provider")
+                        .build();
+        assertThat(
+                        HidraAccessTokenIssuer.exactClaims(
+                                jwt,
+                                "hidra-api",
+                                "hidra-api",
+                                "user",
+                                JTI,
+                                "LOCAL",
+                                "provider",
+                                now,
+                                now.plusSeconds(60)))
+                .isFalse();
+    }
+
+    @Test
     void hkdfMatchesRfc5869ShortVector() {
         assertThat(
                         TrustedAuthenticationVerificationRegistry.hkdf(

@@ -7,7 +7,7 @@
  *
  * @Name        : VerifiedDirectoryIdentity
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-15
+ * @UpdatedOn   : 2026-10-14
  *
  * @Type        : Record
  * @Layer       : Application
@@ -27,11 +27,11 @@ public record VerifiedDirectoryIdentity(
         String username,
         String displayName,
         String emailAddress,
-        String distinguishedName
-) {
+        String distinguishedName) {
 
     public VerifiedDirectoryIdentity {
-        subject = require(subject, "subject");
+        if (subject == null || subject.isBlank() || subject.indexOf('\0') >= 0)
+            throw new IllegalArgumentException("subject must be nonblank exact directory text.");
         username = require(username, "username");
         displayName = normalize(displayName);
         emailAddress = normalize(emailAddress);

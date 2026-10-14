@@ -14,7 +14,7 @@
  * @Module      : identity
  * @Package     : dz.sh.hidra.modules.identity
  *
- * @Description : Protects strict binding values, opaque JDK-only exports and dormant receipt transport boundaries for stage 050A.
+ * @Description : Protects strict binding values, opaque JDK-only exports and exclusive real-producer receipt transport boundaries.
  *
  */
 package dz.sh.hidra.modules.identity;
@@ -315,8 +315,8 @@ class OperationAuthenticationBoundaryGuardrailTest {
             }
         }
         assertThat(producers)
-                .as("050A registers receipts without wiring later-stage providers")
-                .isZero();
+                .as("050C permits exactly the three successful producer implementations")
+                .isEqualTo(3);
     }
 
     @Test

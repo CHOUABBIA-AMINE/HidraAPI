@@ -7,7 +7,7 @@
  *
  * @Name        : AuthenticationCompletionApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-14
  *
  * @Type        : Class
  * @Layer       : Application
@@ -19,82 +19,129 @@
  */
 package dz.sh.hidra.modules.identity.application.service;
 
-import dz.sh.hidra.modules.identity.application.model.AuthenticatedPrincipalInput;
-import dz.sh.hidra.modules.identity.application.model.AuthenticationResult;
-import dz.sh.hidra.modules.identity.application.model.IssuedAccessToken;
+import dz.sh.hidra.modules.identity.application.model.*;
 import dz.sh.hidra.modules.identity.application.port.in.CompleteAuthenticatedPrincipalUseCase;
-import dz.sh.hidra.modules.identity.application.port.out.AccessTokenIssuerPort;
+import dz.sh.hidra.modules.identity.application.port.out.*;
 import dz.sh.hidra.modules.identity.domain.model.HidraPrincipal;
-import dz.sh.hidra.modules.identity.domain.model.LoginSession;
-import java.util.Objects;
+
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-/**
- * Shared provider-neutral completion path used after a normalized identity has been authenticated.
- */
+import java.time.Clock;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Objects;
+import java.util.UUID;
+
+/** One actual owner transaction; proxy commit succeeds before the login result is delivered. */
 @Service
-public final class AuthenticationCompletionApplicationService implements CompleteAuthenticatedPrincipalUseCase {
-
-    private final AccessTokenIssuerPort accessTokenIssuer;
-    private final AuthenticationSessionLifecycleApplicationService sessionLifecycle;
+public class AuthenticationCompletionApplicationService
+        implements CompleteAuthenticatedPrincipalUseCase {
+    private final AccessTokenIssuerPort issuer;
+    private final AuthenticationSessionLifecycleApplicationService lifecycle;
+    private final TrustedAuthenticationVerificationPort verification;
+    private final OperationAuthenticationBindingRepositoryPort bindings;
+    private final AuthenticationSecurityStateQueryPort states;
+    private final Clock clock;
 
     public AuthenticationCompletionApplicationService(
-            AccessTokenIssuerPort accessTokenIssuer,
-            AuthenticationSessionLifecycleApplicationService sessionLifecycle
-    ) {
-        this.accessTokenIssuer = Objects.requireNonNull(accessTokenIssuer);
-        this.sessionLifecycle = Objects.requireNonNull(sessionLifecycle);
+            AccessTokenIssuerPort issuer,
+            AuthenticationSessionLifecycleApplicationService lifecycle,
+            TrustedAuthenticationVerificationPort verification,
+            OperationAuthenticationBindingRepositoryPort bindings,
+            AuthenticationSecurityStateQueryPort states,
+            @Qualifier("identityAuthenticationClock") Clock clock) {
+        this.issuer = Objects.requireNonNull(issuer);
+        this.lifecycle = Objects.requireNonNull(lifecycle);
+        this.verification = Objects.requireNonNull(verification);
+        this.bindings = Objects.requireNonNull(bindings);
+        this.states = Objects.requireNonNull(states);
+        this.clock = Objects.requireNonNull(clock);
     }
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)
     public AuthenticationResult complete(
             AuthenticatedPrincipalInput input,
             String clientIp,
             String userAgent,
-            String correlationId
-    ) {
-        Objects.requireNonNull(input, "AuthenticatedPrincipalInput must not be null.");
-
-        HidraPrincipal principal = new HidraPrincipal(
-                input.userId(),
-                input.username(),
-                input.displayName(),
-                input.authenticationType(),
-                input.identityProviderId(),
-                input.roles(),
-                input.permissions(),
-                input.externalIdentityId()
-        );
-        IssuedAccessToken accessToken = accessTokenIssuer.issue(principal);
-        LoginSession session = sessionLifecycle.startSession(
-                principal,
-                accessToken.expiresAt(),
-                clientIp,
-                userAgent,
-                correlationId
-        );
-        return result(principal, session, accessToken);
-    }
-
-    private static AuthenticationResult result(
-            HidraPrincipal principal,
-            LoginSession session,
-            IssuedAccessToken accessToken
-    ) {
+            String correlationId) {
+        if (!TransactionSynchronizationManager.isActualTransactionActive()
+                || TransactionSynchronizationManager.isCurrentTransactionReadOnly()
+                || !TransactionSynchronizationManager.isSynchronizationActive()
+                || !org.springframework.transaction.interceptor.TransactionAspectSupport
+                        .currentTransactionStatus()
+                        .isNewTransaction())
+            throw new IllegalStateException("Bound completion requires an owner transaction.");
+        var trusted = verification.consume(Objects.requireNonNull(input));
+        var snapshot = trusted.snapshot();
+        var settings = issuer.settings();
+        Instant issued = clock.instant().truncatedTo(ChronoUnit.SECONDS),
+                expires = issued.plusSeconds(settings.ttlSeconds());
+        if (snapshot.sourceExpiresAt() != null && snapshot.sourceExpiresAt().isBefore(expires))
+            expires = snapshot.sourceExpiresAt().truncatedTo(ChronoUnit.SECONDS);
+        if (!expires.isAfter(clock.instant()))
+            throw new IllegalStateException("Verified authentication deadline elapsed.");
+        var principal =
+                new HidraPrincipal(
+                        input.userId(),
+                        input.username(),
+                        input.displayName(),
+                        input.authenticationType(),
+                        input.identityProviderId(),
+                        input.roles(),
+                        input.permissions(),
+                        input.externalIdentityId());
+        var context = new AccessTokenIssuanceContext(UUID.randomUUID().toString(), issued, expires);
+        var binding =
+                trusted.attest(
+                        UUID.randomUUID().toString(),
+                        UUID.randomUUID().toString(),
+                        settings,
+                        context);
+        var session =
+                lifecycle.startBoundSession(
+                        principal,
+                        binding.sessionId(),
+                        issued,
+                        expires,
+                        clientIp,
+                        userAgent,
+                        correlationId);
+        if (!states.current(binding, clock.instant()))
+            throw new IllegalStateException("Verification generations or eligibility changed.");
+        var token = issuer.issue(principal, context);
+        if (!Objects.equals(token.issuer(), binding.nativeIssuer())
+                || !Objects.equals(token.audience(), binding.nativeAudience())
+                || !Objects.equals(token.subject(), binding.userId())
+                || !Objects.equals(token.authenticationType(), binding.authenticationType())
+                || !Objects.equals(token.providerId(), binding.providerId())
+                || !Objects.equals(token.jti(), binding.jti())
+                || !Objects.equals(token.issuedAt(), issued)
+                || !Objects.equals(token.expiresAt(), expires))
+            throw new IllegalStateException(
+                    "Issued native token does not match its authenticated tuple.");
+        bindings.append(binding);
+        lifecycle.recordBoundSuccess(principal, session);
+        if (!clock.instant().isBefore(expires))
+            throw new IllegalStateException("Completion deadline elapsed.");
+        trusted.publishAfterCommit(binding);
         return new AuthenticationResult(
                 session.id(),
-                accessToken.tokenValue(),
-                accessToken.tokenType(),
-                accessToken.jti(),
-                accessToken.issuedAt(),
-                accessToken.expiresAt(),
+                token.tokenValue(),
+                token.tokenType(),
+                token.jti(),
+                issued,
+                expires,
                 principal.userId(),
                 principal.username(),
                 principal.displayName(),
                 principal.authenticationType(),
                 principal.identityProviderId(),
                 principal.roles(),
-                principal.permissions()
-        );
+                principal.permissions());
     }
 }

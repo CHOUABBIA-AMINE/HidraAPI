@@ -7,7 +7,7 @@
  *
  * @Name        : IssuedAccessToken
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-15
+ * @UpdatedOn   : 2026-10-14
  *
  * @Type        : Record
  * @Layer       : Application
@@ -29,8 +29,22 @@ public record IssuedAccessToken(
         String tokenType,
         String jti,
         Instant issuedAt,
-        Instant expiresAt
-) {
+        Instant expiresAt,
+        String issuer,
+        String audience,
+        String subject,
+        String authenticationType,
+        String providerId) {
+
+    public IssuedAccessToken(
+            String tokenValue, String tokenType, String jti, Instant issuedAt, Instant expiresAt) {
+        this(tokenValue, tokenType, jti, issuedAt, expiresAt, null, null, null, null, null);
+    }
+
+    @Override
+    public String toString() {
+        return "IssuedAccessToken[REDACTED]";
+    }
 
     public IssuedAccessToken {
         if (tokenValue == null || tokenValue.isBlank()) {

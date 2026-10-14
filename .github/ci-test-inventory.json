@@ -1796,7 +1796,7 @@
       "lane": "postgres-integration",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/OperationAuthenticationBindingPostgresIntegrationTest.java",
-      "source_sha256": "604d225e6860bba22e1ca05f8472009123cd6a8901df7e7cf9dcdfd8a3fd8616",
+      "source_sha256": "9cda295a0740386970335a5c4851e80a757ca1a7f6bb3496296b747928fba5ce",
       "supports": []
     },
     {

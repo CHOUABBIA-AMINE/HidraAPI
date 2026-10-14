@@ -19992,3 +19992,77 @@ Next does not select C while B's actual physical/catalog acceptance remains open
 repairs B first. Parent 050/051, CI-003 optimization adoption and P3 remain open/deferred.
 Gas-first/GZ2, own engine, steady/transient direction, versioned inputs/operator control
 and synthetic development data persist. No deployment/calibration request, PR or branch.
+
+
+## 2026-10-14 — HPR-P25-050B Fail repair: provider fixtures and genuine dictionary
+
+Owner Fail selects repair of Full #680 (run 38540244111) on main
+`778dd05c422ae655322bdc8232e7a5eeefe86875`, tree
+`003818df29e1d192df7ebe25e0962a371f086fd5`. Fast #13 and Docs #284 succeeded.
+Full #680 failed: API/dictionary reported physical dictionary drift; PostgreSQL shard 1
+and the unrestricted greenfield oracle each ran the new 37 cases with 31 errors, zero
+failures and zero skips. All reported test errors originate in the fixture's provider
+INSERT colliding with the existing singleton active LOCAL/directory indexes. Static,
+unit/architecture and PostgreSQL shard 0 succeeded. Missing sealed lane artifacts are
+consequences of those failed steps, not permission to weaken evidence or workflow gates.
+
+### Repair and retained acceptance boundary
+
+The shared synthetic fixture now retires earlier active LOCAL or directory providers
+using ordinary guarded status UPDATE before creating a new provider. LDAP and
+ACTIVE_DIRECTORY share the same directory singleton. Each new provider still begins
+with generation one. No constraints/triggers are disabled and no binding/session rows
+are deleted or truncated. The A/B/A case checks each restored ACTIVE provider's stale
+snapshot immediately, before preparing another LOCAL fixture, retaining its independent
+positive-generation invalidation proof. All 37 test identities remain; all other test
+bodies and runtime/SQL sources are unchanged. Only that class's source digest changes
+in the reviewed inventory; cases, lanes, policies, timing hints and archives are retained.
+
+The actual API failure diagnostics artifact 11882295824 contains the real read-only
+PostgreSQL catalog from source 778dd05c422ae655322bdc8232e7a5eeefe86875. Its ZIP digest is
+`268948a0a328b6d3c94ca8881e6273f511208f79363d6fcf7e24f6e531f1462e`, matching GitHub metadata.
+The unchanged dictionary renderer validates the artifact against the current unchanged
+migration/JPA inventory and explicit ownership, then regenerates DATA_DICTIONARY.md.
+The catalog proves PostgreSQL 16.15, 148 migrations, 470 JPA mappings, 491 relations and
+zero unresolved owners; the binding table has 21 columns, 22 constraints and four guards,
+with the other four guards on sessions. This physical capture is not proof that the
+31 fixture-blocked security/race tests passed.
+
+Catalog SHA-256: `835d572aa29c030b3f179fd407f5e5994526d18f3b876a789744203dbb1c2381`.
+Dictionary SHA-256: `e0e22ad4637984b318ee3f9f919cc7b123dc8a64f7663e76d08b38e0c121ea7b`.
+Migration/JPA source-bundle SHA-256:
+`36bf5c60a41229ce66c7cbf8fd3cd401b8652f6baadb666ebd702feac8f8c214`.
+The catalog honestly retains its capture SHA; no source/server/environment metadata is
+spoofed. Test/inventory/governance changes do not change that validated physical bundle.
+
+### Actual validation and publication protocol
+
+Java21 unchanged-wrapper offline test-compile PASS. All six unchanged Python suites
+PASS (102 cases); documentation PASS (98 documents, 5,355 relative links before this
+record, 24 modules, 13 P2 rows), offline OpenAPI PASS (263 operations/244 paths/231 schemas),
+P1 evidence consistency PASS, strict inventory validation PASS and genuine captured
+catalog/reviewed-dictionary equality PASS. Inventory digest is
+`7a5a0bb704b0b169fe3c9b15159c1f43311e678336727a0e785b68675255da92`.
+No local Docker/socket exists: corrected PostgreSQL fixture/race execution remains
+UNVERIFIED locally and requires new zero-skip hosted reports. Earlier failed CI is not
+relabelled as success; compiled tests and catalog equality cannot establish DB acceptance.
+
+Repair scope is exactly five UPDATE paths: the registered new PostgreSQL test, its
+inventory source digest, physical dictionary, roadmap and reconciliation. No CREATE;
+all SQL/runtime/ownership/workflows/build/API/history/version sources remain unchanged.
+Reconciliation is append-only. Publish directly to existing main, expected head
+778dd05c422ae655322bdc8232e7a5eeefe86875, with registered message
+`feat(identity): persist immutable authentication bindings`; verify parent/tree/blob scope.
+The test/inventory change matches existing Full/Fast push filters; observe Full/Fast/Docs
+startup on the published SHA and STOP, without waiting for completion or auto-advancing.
+If a required workflow does not start and full dispatch is unavailable, stop before
+manual dispatch and tell the owner to use Actions, the named workflow, Run workflow,
+branch main. No dummy trigger edits or PR/branch are authorized by this repair.
+
+050B remains IN PROGRESS / REPAIRED CANDIDATE / CI PENDING until actual-SHA Full/Fast/Docs
+success including all required PostgreSQL cases, unrestricted oracle, partitions and
+physical comparison. C/D/051 remain blocked and unselected. CI-003 remains shadow with
+mandatory fallback and optimized adoption disabled. No production data/upgrade exercise
+or release/deployment is introduced. Gas-first/GZ2, Hidra's own engine, steady/transient
+direction, versioned inputs/operator control and synthetic development data persist;
+owner supplies calibration later and Simulation/P3 remains deferred.

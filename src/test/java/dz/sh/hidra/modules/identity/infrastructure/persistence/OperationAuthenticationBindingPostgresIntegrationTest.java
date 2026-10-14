@@ -407,6 +407,8 @@ class OperationAuthenticationBindingPostgresIntegrationTest {
         var provider = fixture("LOCAL");
         jdbc.update("UPDATE " + P + " SET status='INACTIVE' WHERE id=?", provider.providerId());
         jdbc.update("UPDATE " + P + " SET status='ACTIVE' WHERE id=?", provider.providerId());
+        reject(() -> nativeInsert(jdbc, provider, Map.of()));
+        assertFalse(states.current(provider, Instant.now()));
         var credential = fixture("LOCAL");
         jdbc.update(
                 "UPDATE " + C + " SET password_hash='changed' WHERE id=?",
@@ -414,15 +416,15 @@ class OperationAuthenticationBindingPostgresIntegrationTest {
         jdbc.update(
                 "UPDATE " + C + " SET password_hash='synthetic-hash' WHERE id=?",
                 credential.credentialId());
+        reject(() -> nativeInsert(jdbc, credential, Map.of()));
+        assertFalse(states.current(credential, Instant.now()));
         var external = fixture("OIDC");
         jdbc.update(
                 "UPDATE " + E + " SET status='UNLINKED' WHERE id=?", external.externalIdentityId());
         jdbc.update(
                 "UPDATE " + E + " SET status='LINKED' WHERE id=?", external.externalIdentityId());
-        for (var b : List.of(provider, credential, external)) {
-            reject(() -> nativeInsert(jdbc, b, Map.of()));
-            assertFalse(states.current(b, Instant.now()));
-        }
+        reject(() -> nativeInsert(jdbc, external, Map.of()));
+        assertFalse(states.current(external, Instant.now()));
     }
 
     @Test
@@ -1117,6 +1119,21 @@ class OperationAuthenticationBindingPostgresIntegrationTest {
     }
 
     private OperationAuthenticationBinding fixture(String type) {
+        // Fresh synthetic owners obey the existing singleton active-provider indexes.
+        // Retire earlier fixtures through ordinary guarded SQL; never delete bindings or disable
+        // constraints. Directory uniqueness covers LDAP and ACTIVE_DIRECTORY together.
+        if (type.equals("LOCAL"))
+            jdbc.update(
+                    "UPDATE "
+                            + P
+                            + " SET status='INACTIVE' WHERE status='ACTIVE' AND"
+                            + " provider_type='LOCAL'");
+        else if (type.equals("LDAP") || type.equals("ACTIVE_DIRECTORY"))
+            jdbc.update(
+                    "UPDATE "
+                            + P
+                            + " SET status='INACTIVE' WHERE status='ACTIVE' AND provider_type IN"
+                            + " ('LDAP','ACTIVE_DIRECTORY')");
         String user = id(),
                 provider = id(),
                 external = type.equals("LOCAL") ? null : id(),

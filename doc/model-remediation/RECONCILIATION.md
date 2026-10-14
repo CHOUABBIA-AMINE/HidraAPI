@@ -21329,3 +21329,55 @@ aggregate and genuine zero-skip PostgreSQL reports on a separate Next/Fail.
 Parent 051/D2/B2/B3 and 038 owner integration remain OPEN; 052 unselected.
 No release/deployment, simulation advancement or constraint weakening.
 
+
+
+## 2026-10-14 — HPR-P25-051 native-owner test slice CI acceptance
+
+Owner Next inspected live main `016d972725ac9a02a46f08ec024e0a4b0f95bda6`,
+parent `eddf03bbab9e179308a9f5ff139e0b8ab017e5ed`, tree
+`c9510a3a0eb3ba5f8bd6605178863f669c7588f2`. Exact-SHA
+[Full #688](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38587270668),
+[Fast #21](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38587270665)
+and [Docs #300](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38587270660)
+are completed SUCCESS. All seven Full jobs, including both PostgreSQL
+partitions, unrestricted oracle and authenticated Full Verification Gate,
+are SUCCESS.
+
+**Disposition: NATIVE-OWNER COMPATIBILITY TEST SLICE CI ACCEPTED.**
+Downloaded exact-run PostgreSQL partition-1 artifact `11905469274`
+and inspected genuine Surefire XML
+`TEST-dz.sh.hidra.modules.identity.infrastructure.persistence.NativeOwnerFenceCompatibilityPostgresIntegrationTest.xml`:
+six tests, zero failures, errors, skips and flakes; reported class duration
+11.809 seconds. All six registered identities are present, including the
+repaired phantom Permission writer fixture. This is observed hosted test
+duration, not a new inventory scheduling baseline or production latency SLO.
+The authenticated aggregate reports 376 classes / 1,985 tests,
+zero failures/errors/skips, same-run oracle equivalence true,
+inventory digest `90b44e82955a689e2ef1712e1a2c813866353d91f7e5518e944dbb0986ab6398`,
+source SHA matching the repair, fallback required true and optimized
+adoption eligible false. Runtime OpenAPI equality and compatibility passed.
+Prior Full #687 failure remains historical; it is superseded only by
+this exact repaired runtime evidence, never rewritten as success.
+
+This acceptance closes only the six registered native-trigger/normal-writer
+compatibility cases. Synthetic zero authenticators are still SQL-trigger
+fixtures, never private producer-origin/B1/permission proof. No universal
+deadlock-freedom, complete writer/privilege census, temporal expression
+compiler, protected Identity/Party/Topology exports or 038 head/epoch
+integration is accepted. HPR-P25-051/D2/B2/B3 remain IN PROGRESS/OPEN;
+052 is not selected. The next same-ID D2 scope closure must recover actual
+owner source and register exact runtime paths before production integration;
+this checkpoint admits NO new production/test/migration path.
+
+Current action uses the existing same-ID governance message
+`docs(security): select operation time fencing proof`; UPDATE only
+this roadmap and append-only reconciliation, CREATE/DELETE none.
+All source, tests, inventory, migrations, workflows, historical archive,
+versions and release artifacts remain unchanged. Validate exact two-document
+scope and append-only reconciliation; publish directly to expected-head main,
+observe automatic exact-SHA Docs startup, then STOP. New documentation CI
+startup is not completion and does not replace the accepted runtime SHA.
+Gas-first/GZ2, own engine, steady/transient direction, versioned inputs,
+operator control and synthetic development persist; owner calibration later,
+Simulation/P3 deferred, no release/deployment.
+

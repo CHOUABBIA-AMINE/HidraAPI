@@ -32,6 +32,169 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-P25-051C temporal boundary reduction registration, 2026-10-14
+
+Live main `ab2dbaee705325a7dfdc5406af58038022549227` has exact-SHA
+Docs #304 SUCCESS. Accepted runtime `6c92406a37a132dd4b435c4ba9f36083985c2ad5`
+retains Full #689/Fast #22/Docs #303 SUCCESS; 051A lifecycle, native-owner
+compatibility slice and051B static syntax are accepted. Parent051/D2/B2/B3
+remain OPEN. Owner Next selects source-based same-ID temporal contract
+closure; this registration admits one bounded future 051C implementation.
+
+#### Source-confirmed time inventory
+
+At this exact SHA, Identity persistence entity paths under
+`src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/`
+show: UserPermissionGrantJpaEntity has nonnull validFrom AND validTo;
+UserRoleGrantJpaEntity, GroupRoleGrantJpaEntity, RolePermissionGrantJpaEntity
+and UserGroupMembershipJpaEntity have nonnull validFrom and nullable validTo;
+AuthorizationPolicyVersionJpaEntity has nonnull effectiveFrom and nullable
+effectiveTo; SubjectSecurityAttributeJpaEntity has nullable validFrom/validTo;
+UserJpaEntity has nullable lockedUntil; LoginSessionJpaEntity has nullable
+expiresAt. These mappings alone do not establish runtime eligibility.
+
+`src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcAuthenticationSecurityStateQueryAdapter.java`
+tests current B1 eligibility with now >= issuedAt, now < expiresAt,
+now < sourceExpiresAt when present, and lockedUntil <= now when present.
+`src/main/java/dz/sh/hidra/modules/identity/domain/model/OperationAuthenticationBinding.java`
+requires finite native issue/expiry whole seconds and finite OIDC source
+expiry aligned to PostgreSQL microseconds, with native expiry <= source expiry.
+The existing JPA evidence adapter uses half-open grant/version/attribute
+windows, but selects current-active paths and does not produce an exhaustive
+future event set. Future inactive/nonmatching DENY, membership, attribute,
+policy and source changes remain required in later owner collection.
+
+#### Exact future 051C scope
+
+Eligible on a SEPARATE owner Next only after registration Docs success.
+Exact implementation message:
+`feat(identity): reduce protected temporal boundaries`.
+
+| Operation | Exact path |
+|---|---|
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationTemporalBoundaryCompiler.java` |
+| CREATE | `src/test/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationTemporalBoundaryCompilerTest.java` |
+| CREATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/AuthorizationTemporalBoundaryPostgresIntegrationTest.java` |
+| UPDATE | `.github/ci-test-inventory.json` |
+| UPDATE | `doc/roadmap/ULTIMATE_ROADMAP.md` |
+| UPDATE | `doc/model-remediation/RECONCILIATION.md` — append-only |
+| DELETE | None |
+
+All three CREATE names were collision-scanned against the live recursive tree.
+Canonical Java headers, exact package, Identity Domain/Test layers required.
+Production dependencies: Java standard library only, within existing private
+Identity domain. No Spring/JPA/Platform or foreign module imports.
+No existing evaluator/compiler/adapter/port/test, migration, configuration,
+workflow/helper, dependency, dictionary, version/history or API is writable.
+No runtime owner coordinator is connected by this slice.
+
+#### Closed reduction contract
+
+Provide compile(Instant sampledAt, List<BoundaryInput> inputs), immutable
+input/output records and fixed enums. This is **pure reduction of supplied
+owner facts**, not an event query, completeness certificate, PERMIT or owner
+witness. No caller Boolean claiming complete inventory, public authorization
+port, Clock/Instant.now, DB/network/directory access or callback.
+
+BoundaryInput retains a bounded nonblank sourceId (<=160 characters),
+kind, from and to. Fixed kinds:
+DIRECT_GRANT (required from/to); GRANT_OR_MEMBERSHIP (required from,
+optional to); POLICY_VERSION (required from, optional to);
+ATTRIBUTE (optional from/to); LOCKED_UNTIL (from absent, to optional);
+B1_EXPIRY (from absent, to REQUIRED). Kind names are descriptive source
+fact categories, not automatic extraction from a JPA entity.
+For every window with both endpoints require from < to; never silently
+repair empty/reversed ranges. B1_EXPIRY <= sampledAt rejects as already
+expired; an expired grant/window alone does not imply B1 expiry.
+Null lockedUntil/attribute endpoints mean no boundary supplied, not
+absence of a writer or complete coverage.
+
+Validate sampledAt and all present times as finite PostgreSQL timestamptz
+values using existing binding's bounds [-210866803200,9224318016000)
+epoch seconds AND nanoseconds divisible by1000. Reject finer precision,
+do not round or floor a potentially unsafe sample/upper bound. Input
+count bound1024 (synthetic engineering cap, not calibrated network size);
+reject oversized/null collections, null elements, unknown/null kinds,
+missing required endpoints, invalid identifiers or duplicate sourceId/kind
+pairs. Distinct kinds may share one sourceId. No silent truncation.
+
+Collect BOTH start/end boundaries, including from future/inactive/unmatched
+windows; the pure compiler receives no active-status filter. Reduce to the
+minimum endpoint STRICTLY > sampledAt; boundaries exactly at sampledAt
+already belong to the current half-open evaluation and do not become a
+future horizon. Past boundaries do not move sample or fabricate validity.
+LOCKED_UNTIL contributes its future to; required B1 expiry must be future.
+Keep all tied sourceId/kind/endpoint contributors in deterministic sorted
+immutable output, with no mutable caller-list aliasing.
+
+Output disposition BOUNDED_CANDIDATE (earliestFuture present),
+NO_FUTURE_BOUNDARY (absent) or UNSUPPORTED (reason; no partial plan).
+NO_FUTURE_BOUNDARY is NOT unlimited permission; never use Instant.MAX,
+database infinity, a magic grace interval or arbitrary sample+duration.
+Reason enum must distinguish missing/invalid input, invalid window,
+unrepresentable time, duplicate source, excessive input and expired B1.
+A later protected coordinator must separately establish coverage, evaluate
+authority at database sample s, intersect all owner/B1 boundaries and work
+limits, then enforce s <= t < u in its single final DB statement. Candidate
+construction never grants access or closes that proof.
+
+#### Acceptance identities and real PostgreSQL boundary parity
+
+Unit identities (planned, must become genuine JUnit reports):
+earliestFutureIncludesInactiveWindowStarts;
+startAndEndEqualityUseHalfOpenSemantics;
+pastWindowsDoNotInventFutureHorizon;
+nullableAttributeAndLockBoundariesAreExplicit;
+requiredGrantAndPolicyEndpointsAreValidated;
+b1ExpiryAtOrBeforeSampleRejects;
+futureB1ExpiryIntersectsOtherWindows;
+duplicateAndOversizedInputsRejectWithoutPartialPlan;
+postgresPrecisionAndFiniteRangeAreRequired;
+tiedContributorsAndResultsAreImmutable;
+inputOrderingCannotChangeReduction;
+noFutureBoundaryIsNotUnlimitedAuthority.
+
+Real PostgreSQL16 Testcontainers class, plain JUnit/JDBC with the actual
+production compiler; no Spring replacement, mocked clock/database or schema
+migration is needed for these timestamp-arithmetic fixtures. Genuine cases:
+postgresHalfOpenEqualityMatchesCompiler;
+postgresMicrosecondRoundTripsPreserveCandidate;
+postgresSessionTimeZoneCannotChangeInstantBoundary;
+postgresRejectsNonfiniteOwnerBoundariesAtCompilerBoundary.
+Use independent real connections, parameterized timestamptz values and
+positive SQL results; check t==s, t==u, one microsecond before/after, future
+start versus expiry, equivalent offset representations, session zones and
+database infinity mapped/rejected as unrepresentable Java facts. Fixtures
+prove PostgreSQL timestamp/half-open parity ONLY, never actual owner coverage,
+protected transaction fencing or full B2/B3 acceptance. No sleeps, stored
+business head/function or administrative trigger bypass.
+
+Inventory: add only two genuine classes with exact actual source SHA256 and
+enumerated report cases. Unit reviewed Fast/unit/oracle; PG fast=false DB
+lane/oracle; unmeasured baseline_seconds=0 labeled explicitly. Retain every
+old entry/case/hash/order/timing/policy/archive, including raw formatting.
+Focused Java21 Maven compiler unit/PG + ArchitectureGuardrailTest; real PG
+local skips are NOT acceptance. Run reviewed Fast/raw report equality,
+six unchanged Python policy suites, docs/offline OpenAPI/P1/source inventory,
+headers/exact 3CREATE+3UPDATE/append-only checks. Publish implementation
+guarded main, observe Full/Fast/Docs startup then STOP. Later acceptance
+requires exact-SHA success and zero-skip genuine PostgreSQL cases.
+
+#### Current registration and boundary
+
+051C PLANNED/REGISTERED, not implemented. Current action UPDATE only
+roadmap and append-only reconciliation, CREATE/DELETE none, with
+`docs(security): select operation time fencing proof`. Validate two-path
+scope and Docs; guard main at ab2dbae, observe automatic Docs startup
+then STOP. Next executes ONLY this six-path implementation after Docs
+success; Fail repairs current gates. The source-specific owner collection,
+complete mutation/privilege graph, global relation/row ordering, real
+Identity/Party/Topology exports, full database s/u/t and038 head/epoch
+remain open under parent051; no052 or release selection. CI-003 full
+oracle/fallback and optimized=false persist. Gas-first/GZ2, own engine,
+steady/transient, versioned inputs/operator control; synthetic development,
+owner calibration later, Simulation/P3 deferred; no release/deployment.
+
 ### Current execution checkpoint — HPR-P25-051B CI acceptance, 2026-10-14
 
 Owner Next recovered live main `6c92406a37a132dd4b435c4ba9f36083985c2ad5`,

@@ -32,6 +32,152 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-P25-051B static expression compiler registration, 2026-10-14
+
+Live main `83c58e975392befdd34392378843b43879effe44` has exact-SHA
+Docs #301 SUCCESS. Accepted runtime `016d972725ac9a02a46f08ec024e0a4b0f95bda6`
+retains Full #688/Fast #21/Docs #300 SUCCESS and six real native-owner
+compatibility cases. Owner Next selects SAME-ID D2 scope closure;
+this action registers one bounded production-domain slice, not 052.
+
+#### Source evidence and purpose
+
+Reviewed current production files:
+`src/main/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationExpressionEvaluator.java`,
+`src/main/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationPolicyEvaluator.java`,
+`src/main/java/dz/sh/hidra/modules/identity/domain/policy/AuthorizationJson.java`,
+`src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaAuthorizationEvidenceAdapter.java`
+and the existing AuthorizationPolicyRule JPA entity/repository.
+The evaluator accepts all/any/not/exists/eq/in; evaluates every branch;
+supports STRING/NUMBER/BOOLEAN/DATE/DATETIME literal equality. The shared
+JSON codec enforces 8192 characters, depth16, nodes256, duplicate-field
+and numeric-scale bounds. Evidence supplies context.evaluatedAt from
+the selected instant, plus request/subject/action facts; custom attribute
+values may be JSON/LIST and come from independently filtered owner rows.
+Current policy evaluation never computes future boundary u.
+
+Register HPR-P25-051B as a **private Identity domain syntax compiler**.
+It classifies a conservative static expression subset and returns immutable
+referenced-fact dependencies plus an explicit unsupported reason. It does
+NOT evaluate a request, mint permission, produce an owner fence witness,
+choose a clock, or compute an interval. A supported result is only a
+syntactic candidate; later owner integration must prove all referenced
+facts frozen on the same physical transaction and enumerate every
+future grant/policy/attribute/B1 transition. No caller-supplied stable-fact
+Boolean/list may substitute for that evidence.
+
+#### Exact future implementation envelope
+
+Eligible ONLY on a separate owner Next after this registration Docs succeeds.
+Exact child commit message:
+`feat(identity): compile protected static expression syntax`.
+
+| Operation | Exact path |
+|---|---|
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationExpressionStabilityCompiler.java` |
+| CREATE | `src/test/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationExpressionStabilityCompilerTest.java` |
+| UPDATE | `.github/ci-test-inventory.json` |
+| UPDATE | `doc/roadmap/ULTIMATE_ROADMAP.md` |
+| UPDATE | `doc/model-remediation/RECONCILIATION.md` — append-only |
+| DELETE | None |
+
+Both CREATE paths are absent in the exact live recursive Git tree.
+Canonical Java headers, Identity Domain/Identity Test layers and exact
+packages required. Domain uses Java standard library plus existing
+Identity AuthorizationJson only; no Spring/JPA/Platform or foreign module
+imports. No existing evaluator, evidence adapter, tests, JSON codec,
+controller/port, SQL/Flyway, workflow, dependency, dictionary, version,
+history or release file is writable. The compiler remains dormant until
+a separately registered protected owner coordinator consumes it;
+ordinary authorization compatibility is unchanged.
+
+#### Required compiler contract
+
+- Expose one bounded compile(String) entry point and immutable result
+  (classification, sorted immutable referencedAttributes, reason enum).
+  Distinguish SUPPORTED_STATIC_SYNTAX from UNSUPPORTED; neither means
+  PERMIT, temporal safety or owner eligibility. Null expression follows
+  the existing unconditional syntax; literal JSON null is unsupported.
+  No parsed mutable object, caller callback or external I/O escapes.
+- Reuse AuthorizationJson.parse and its bounds; enforce exact field sets
+  and nonempty all/any args, exact not arg, exists attribute only and
+  eq/in attribute/type/value. Visit ALL branches, including expressions
+  hidden behind any/all/not; reject unsupported input without throwing
+  to the calling coordinator. Do not accept missing/null leaf values,
+  empty in lists, unknown operators/types or incorrectly typed constants.
+- Conservative exact referenced-fact allowlist:
+  subject.id, subject.type, subject.status, subject.groupIds,
+  resource.type, resource.referenceId, action.permissionCode, action.name,
+  context.scopeType, context.scopeReferenceId. Allowlist reflects current
+  adapter facts, NOT proof they are presently available or time-stable.
+  Reject context.evaluatedAt at any nesting level and all unclassified
+  facts, including subject.attributes.*, other context keys and arbitrary
+  resource/action attributes. No wildcard or caller-widened allowlist.
+- STRING constants are strings; NUMBER uses parsed BigDecimal;
+  BOOLEAN uses booleans; DATE validates LocalDate text and DATETIME
+  validates Instant text, consistent with the existing evaluator's
+  literal/string equality (never convert equal instants into a new
+  normalized equality policy). For in validate EVERY literal. No
+  comparisons, arithmetic, clock/date functions or custom grammar.
+- Deterministic rejection categories cover malformed syntax/JSON,
+  unsupported operator/type, clock-dependent reference, unclassified
+  reference and invalid literal. Clear partial dependencies on rejection
+  so no incomplete dependency list can be treated as a complete plan.
+  Exact precedence among multiple rejection categories need not imply
+  authorization priority. Never short-circuit into supported classification.
+- Supported static syntax still requires actual evidence evaluation;
+  absent/mismatched typed facts retain existing INDETERMINATE behavior.
+  Static dates and booleans are not proof of a complete time interval.
+  DENY precedence stays solely in existing AuthorizationPolicyEvaluator.
+
+#### Behavioral acceptance and inventory
+
+Register genuine unit identities (not current execution claims):
+nullExpressionIsUnconditionalSyntax;
+nestedStaticSyntaxCollectsAllDependencies;
+clockReferenceIsRejectedAtEveryNestingLevel;
+unclassifiedReferencesCannotBeCallerAdmitted;
+malformedAndDuplicateFieldsAreRejected;
+unknownOperatorsAndTypesAreRejected;
+everyInLiteralMustMatchDeclaredType;
+dateAndDatetimeConstantsKeepEvaluatorSemantics;
+unsupportedBranchCannotHideBehindBooleanOutcome;
+jsonResourceBoundsRemainEnforced;
+resultsAreImmutableAndDeterministic;
+supportedSyntaxDoesNotOverrideIndeterminateEvaluation.
+
+Use JUnit5/AssertJ with real existing evaluator/JSON behavior, no Spring
+context or mocked syntax parser. Include all five literal types and
+all six operators, malformed fields/empty args/list/missing values,
+encoded clock references, nested unknown branches, immutable results
+and positive parity cases. Add ONLY this genuine test class to reviewed
+Fast/unit and oracle inventory with actual source SHA256/case identities;
+unmeasured baseline_seconds=0 explicitly labeled. Preserve all previous
+cases/hashes/lanes/policies/timings and archives.
+
+Run focused Java21 Maven new unit + ArchitectureGuardrailTest, reviewed
+Fast suite/report checks, six existing Python policy suites, source
+inventory, canonical docs/offline OpenAPI/P1, exact 2 CREATE/3 UPDATE scope,
+headers and append-only reconciliation. Hosted Full/Fast/Docs must start
+on the actual guarded implementation SHA, then STOP; acceptance requires
+successful exact-SHA hosted results. No locally skipped test may count.
+
+#### Current registration and STOP
+
+Child 051B PLANNED / REGISTERED; implementation begins on the next turn
+after Docs success. This current action UPDATEs only roadmap plus
+append-only reconciliation, CREATE/DELETE none, using existing message
+`docs(security): select operation time fencing proof`. Preserve every
+other Git blob. Guard main at 83c58e9, verify parent/tree/two-path scope,
+observe automatic Docs startup then STOP. Current registration performs
+no runtime test and does not claim the compiler implemented.
+Parent051/D2/B2/B3, complete writer/privilege graph, global lock ordering,
+future-event interval compiler, actual Identity/Party/Topology exports
+and 038 head/epoch remain OPEN. 052 unselected; CI-003 oracle/fallback
+mandatory and optimized=false. Gas-first/GZ2, own engine, steady/transient,
+versioned inputs/operator control persist; synthetic development only,
+owner calibration later, Simulation/P3 deferred, no release/deployment.
+
 ### Current execution checkpoint — HPR-P25-051 D2 native-owner test acceptance, 2026-10-14
 
 Owner Next inspected live main `016d972725ac9a02a46f08ec024e0a4b0f95bda6`,

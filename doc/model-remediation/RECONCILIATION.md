@@ -20682,3 +20682,229 @@ omitted three tracked files in packages literally named target; they were restor
 byte-identically before final successful compile/docs checks, with no tracked changes.
 Exact four-file/other-21-body/case/policy/header/append-only preservation is checked before
 publication. The server guard, timeout and aggregate work budgets are not relaxed.
+
+
+## 2026-10-14 — HPR-P25-051 proof acceptance and 051A production lifecycle scope
+
+### Current stage and bounded acceptance
+
+Authoritative main da4ce33ead7db40776049c861027947b61b96270, tree
+d686d0ca208b9ed98fcf4fd47b9320701a8fec27. Full #685 (38559065173), Fast #18
+(38559065215) and Docs #290 (38559065165) SUCCESS. All seven Full jobs passed,
+including both PostgreSQL shards, unrestricted oracle and Full Verification Gate.
+Owner Next selects the same-ID D2 production-lifecycle scope decision; it does not select
+052, a protected Topology API or final 051 integration.
+
+The repaired prototype is CI ACCEPTED FOR ITS ISOLATED MECHANISM. Authenticated postgres1
+artifact 11890918501 has ZIP SHA-256
+`413a5eb1e0752ac7b3aa92413073d80c8faefd6a7b69a55ca41eed2b8cb79a4c`.
+Its actual raw CrossOwnerOperationTemporalFencePostgresIntegrationTest report has 22 cases,
+0 failures/errors/skips, 12.765 s class time. Case identities equal the unchanged reviewed
+inventory. Source-bound evidence.json names this exact SHA, postgres1 lane, inventory
+SHA-256 `632c0c1991b462640192bc34ea0ae875956277c89f5825a603a017941968c3de`,
+and 317 executed lane cases, all successful without skips. Existing timing hints stay
+unchanged; this docs scope cannot mutate CI inventory. The successful oracle independently
+passed its strict raw-report verification; it is not replaced by the shard-only evidence.
+
+Both logged synthetic cohorts committed 8/8 with zero aborts. Postgres1 total attempt times
+7.474617–15.912973 ms, admin p95 0.612519 ms at n=8, 4 CPUs and 4,192,206,848-byte JVM heap.
+Oracle total attempt times 7.144062–30.469256 ms, admin p95 1.071958 ms at n=8, 4 CPUs and
+2,147,483,648-byte JVM heap. All per-attempt acquisition waits/holds/commit tails remain in
+the exact job logs; fresh fixture/warm Spring, no injected outage in either cohort. These
+are distinct runner samples, not merged medians or deployment sizing. Real uncontended
+commit, native writer/phantom/timeout/deadlock, elapsed clock/budget, late-flush/callback,
+rollback and lost-acknowledgement cases passed. The disabled-seal counterexample ALSO
+passed: ordinary Spring plus a final DB guard alone admits a later beforeCommit write.
+No production seal, policy completeness, owner exports, 038 integration, bounded external
+COMMIT/WAL/network tail or final B2/B3 is established by the prototype.
+
+This execution UPDATEs roadmap and append-only reconciliation ONLY; CREATE/DELETE none.
+Exact current amendment message:
+`docs(security): register protected transaction lifecycle implementation`.
+051 remains IN PROGRESS. D2 proof mechanism is accepted, production lifecycle/contributor/
+owner integration gates remain open. A bounded child 051A is registered below to implement
+the missing technical lifecycle first, with its own actual PostgreSQL acceptance before
+any owner permissions/publication path adopts it. This is decomposition of the existing
+051 requirement, not a new product obligation or a batch authorizing multiple commits.
+
+### Source-reviewed technical boundary
+
+| Current source | Observed fact | Consequence for 051A |
+|---|---|---|
+| `src/main/java/dz/sh/hidra/platform/configuration/HidraTransactionConfiguration.java` | Only enables Spring transactions; no explicit transaction-manager bean | Register the actual provider-aware manager and datasource decoration in this existing configuration |
+| `src/main/java/dz/sh/hidra/platform/persistence/TransactionExecutor.java` | Existing two Supplier/Runnable signatures express ordinary transactions | Preserve it; protected execution is a separate technical contract |
+| `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` | Only the exact Workbench service currently admits Platform JPA access | Explicitly review the two named technical JPA dependencies below; no implicit inheritance/reflection escape or package-wide exemption |
+| `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAuthorizationApplicationService.java` | Own Instant.now, ordinary evidence load and optional decision persistence | Not callable as 051A final authority; stays unchanged |
+| `src/main/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessQueryService.java` | Sequential company/facility evaluations | Stays ordinary point-in-time evidence; no automatic B2 upgrade |
+| `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaAuthorizationEvidenceAdapter.java` | Filters current windows and selected policy versions/groups before export | Real future contributor coverage remains a later 051 gate |
+| `src/main/java/dz/sh/hidra/modules/identity/application/service/OperationAuthenticationQueryApplicationService.java` | B1 REQUIRES_NEW/read-only query | Retain unchanged; cannot participate in protected 051A transaction |
+
+Platform must own only transaction/datasource mechanics, never User/grants/company/facility/
+permission meaning. It may not import business modules or private owner persistence. JPA
+provider commit control belongs in technical infrastructure, not an Identity permission
+rule. The deliberate architecture change allows direct jakarta.persistence dependencies
+ONLY for these exact names in addition to the existing Workbench exception:
+`dz.sh.hidra.platform.persistence.ProtectedJpaTransactionManager` and
+`dz.sh.hidra.platform.configuration.HidraTransactionConfiguration`.
+It NEVER allows module-persistence dependencies for either class. Positive and negative
+classifier tests must pin those two names and reject representative other Platform and
+foreign persistence references. Retain the Workbench exposure-policy dependency assertion,
+all existing architecture case identities and cross-module ownership rules. The executor
+and datasource decorator themselves have no JPA/business-module dependency.
+
+### 051A lifecycle method and failure policy
+
+Register a separate trusted server-side coordinator with the concrete technical entry
+`<T> T execute(Supplier<T> provisionalWork, Runnable flush, Runnable finalGuard)`.
+These callbacks are owner-compiled code, not HTTP/deserialized/plugin/remote inputs. No
+new REST/API, permission object or cached permit is exported. Nulls, ambient transaction,
+nested protected execution or unsupported manager/datasource participation reject before
+work; no REQUIRES_NEW workaround. The coordinator creates one new writable READ_COMMITTED
+Spring/JPA physical transaction and retains its private thread/context until physical
+commit/rollback/cleanup actually finish. No async or resumed/savepoint continuation.
+
+Use actual manager/datasource wiring, not a second test bean masquerading as production.
+A provider-aware ProtectedJpaTransactionManager brackets physical commit/rollback calls;
+ordinary execution outside a protected context retains existing transaction semantics.
+Datasource wrappers cover Spring JDBC and Hibernate statement preparation/execution and
+provider connection lifecycle, not just a JdbcTemplate created by the new coordinator.
+The manager bridge admits physical transaction control only in owner-controlled provider
+completion phases, never during work/flush/final guard or ordinary beforeCommit callbacks.
+A premature/double/foreign commit/rollback, savepoint, autocommit/isolation/read-only change,
+connection replacement or contradictory lifecycle observation rejects. No stack-trace
+caller authentication, reflection-based JPA bypass or catching-and-continuing.
+
+Required phases are opening/working/flushing/final-guard/sealed/provider-completion/finished.
+Capture actual backend PID, transaction identity, writable isolation and physical datasource
+connection in the admission phase, then validate participation on all admitted application
+SQL. Admission clock metadata is NOT permission time s; post-fence s/u/t and epoch/head
+checks stay business-owner obligations for later 051 integration. Phase transitions and
+backend/connection identities cannot be minted/modified by a caller-supplied permit.
+Connection/Statement/ResultSet/DatabaseMetaData getConnection paths must return controlled
+wrappers; raw vendor unwrap and alien/cached handle use must fail while protected context
+is active or the handle is bound to that attempt. A captured handle used from another
+thread, after completion or inside a new transaction rejects, rather than becoming a
+new unscoped connection. No raw JDBC resource, stream, lazy query, EntityManager or
+managed entity is an admitted delivered result. Owners materialize immutable data inside
+work. Cached raw vendor datasource/connection and DriverManager/custom network/async work
+are outside the reviewed owner invocation protocol and MUST NOT be claimed protected.
+Before later adoption, enumerate owner call paths and prove that none uses such an escape;
+051A is not a sandbox against arbitrary malicious Java/DDL/administrative code.
+
+After provisionalWork, call the owner flush callback explicitly on the same transaction.
+Only then enter the final-guard phase. It admits exactly ONE actual application SQL
+execution, a bounded scalar guard/receipt owned by the later business coordinator.
+Automatically seal preparation/execution when that statement completes; zero, multiple,
+batched, streaming, delayed ORM SQL or callback evaluation after it rejects. Any failed
+SQL/phase check poisons the entire attempt and prevents success even if the callback catches
+its exception. No authority/work SQL follows the guard before commit; late Hibernate dirty
+flush and Spring/provider callbacks must abort, never silently commit partial effects.
+Owner-required epoch/window predicates belong IN that final DB statement, not a Java
+beforeCommit recheck. 051A has no permanent business guard function/table or Flyway change;
+real PostgreSQL proof may supply disposable invoker fixture SQL. Its successful technical
+transaction is not permission or Topology publication authority.
+
+Retain synthetic lock_timeout=250 ms, statement_timeout=750 ms and idle-in-transaction
+session timeout=1000 ms. The coordinator applies a conservative 500 ms protected-work
+budget starting at work admission (no later than first owner fence attempt); supplemental
+monotonic elapsed checks cannot replace the owner's eventual DB-clock s/u/t guard.
+Check aggregate budget before guard and after its return, abort if exceeded. No retry/
+backoff, grace interval or network/directory/JWK/solver work inside the protected callbacks.
+Observe commit/release tails separately; these limits do not guarantee finite physical
+COMMIT/network/WAL duration. This is an engineering envelope, not production calibration.
+
+Results leave execute ONLY after actual physical commit and lifecycle completion. A failed
+pre-commit attempt rolls back the entire transaction; assert database effects rather than
+assuming rollback. Commit/afterCommit/cleanup errors or lost acknowledgement give operational
+INDETERMINATE with no returned result and no automatic retry; do not label an uncertain or
+observably committed outcome rolled back. Distinguish diagnostics for known pre-commit
+rejection and uncertain completion, preserve causes, and clear/release private context on
+all paths without allowing another attempt to inherit a sealed connection or cached permit.
+
+### Exact future 051A scope and acceptance
+
+Future child status: HPR-P25-051A PLANNED / EXACT SCOPE REGISTERED. Eligible only on a
+separate owner Next after this amendment's Docs SUCCESS. Exact implementation message:
+`feat(security): enforce protected transaction lifecycle`.
+CREATE only these five currently absent paths:
+
+- `src/main/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutor.java`
+- `src/main/java/dz/sh/hidra/platform/persistence/ProtectedOperationDataSource.java`
+- `src/main/java/dz/sh/hidra/platform/persistence/ProtectedJpaTransactionManager.java`
+- `src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedTransactionLifecyclePostgresIntegrationTest.java`
+
+UPDATE only these five existing paths:
+
+- `src/main/java/dz/sh/hidra/platform/configuration/HidraTransactionConfiguration.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `.github/ci-test-inventory.json`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md` (append only)
+
+DELETE none. Names were collision-scanned against exact main. No other production owner
+classes, B1/ordinary evaluator, existing 22-case prototype, migrations, dictionary/ownership,
+configuration/property/build/dependency, workflow/helper, version/history or protected API
+is writable. No parent implementation message or 052 scope is substituted for this child.
+Only changed actual source hashes, retained architecture cases plus actually enumerated
+new cases, and the two new test class entries may change inventory. Classifier-only unit
+cases belong to reviewed Fast/unit lanes; real Spring/PG/JPA tests are DB-only. Old cases/
+Fast/timings/baseline/policies/four archives remain; new timing reflects actual evidence or
+zero pending hosted measurement. Strict raw report checks stay enabled; no skip acceptance.
+
+Unit acceptance: exact state machine and poison-on-caught-error, no-ambient/no-nested path,
+wrong isolation/read-only/backend/connection/thread, final exactly-one execution, raw unwrap/
+getConnection/batch/stream/late handle escape, premature commit/rollback/savepoint and context
+cleanup, dormant ordinary-path compatibility, no retry, and precise uncertain-outcome
+classification. Tests must exercise behavior, not mirror private implementation fields.
+
+Actual PostgreSQL16 fresh-Flyway acceptance MUST invoke the PRODUCTION bean chain (not
+prototype replacement/mocks) and the actual Identity-owned JPA EntityManager plus JDBC.
+Prove one physical backend/xid, explicit flush and final receipt, fences retained until
+actual commit; native writer barrier/timeout; dirty flush and Spring beforeCommit/provider
+callback/read adversaries; nested/REQUIRES_NEW/async/read-only/wrong connection rejection;
+actual savepoint/control attempts and full rollback; swallowed SQL/guard errors cannot
+return success; direct wrapper escape and reused/cross-thread handles; physical successful
+commit before delivery, deferred constraint failure/observed rollback, and injected driver
+lost acknowledgement after actual commit/indeterminate/no retry. Fault injection may wrap
+ONLY the transport observation; production lifecycle components must remain exercised.
+Keep ordinary read-only/REQUIRES_NEW/B1 queries and all current regressions green. Repeat
+8-way synthetic cohort with all waits/holds/aborts/admin p95<=1000 ms and successes within
+500 ms; positive uncontended success is mandatory, no all-aborted capacity conclusion.
+Report resources/cold-warm conditions and observed commit tails; no production SLO claim.
+
+Run focused new unit/DB and existing 22-case proof/architecture/B1 completion/reader
+regressions, six policy suites, canonical docs/offline OpenAPI/P1, inventory and exact scope/
+old-case/ownership checks. Hosted Full/Fast/Docs and authenticated aggregate must pass on
+that eventual exact runtime SHA before 051A acceptance; local Docker skips are not proof.
+If the provider lifecycle cannot enforce these conditions, repair/reject 051A within this
+scope and keep parent blocked; no weaker beforeCommit check or dependent API fallback.
+
+Later real-owner contributor/temporal/policy completeness, Identity/Party/Topology exported
+participation and concrete 038 head/epoch/read integration remain under 051/D2 with exact
+paths NOT yet admitted. An accepted 051A is a technical prerequisite only. The accepted
+prototype and this registration cannot close D2 or final B2/B3. Do not select 052 or invent
+additional owner runtime paths during 051A. Further same-ID scope closure is separately
+selected after its actual acceptance.
+
+### Current validation, publication and stop
+
+This amendment executes no new Java/DB proof. Validate the six unchanged Python suites,
+canonical docs/offline OpenAPI/P1 and two-document/source/append-only/collision/evidence
+parity. Publish main with expected head da4ce33ead7db40776049c861027947b61b96270, exact
+current docs message and parent/tree/path/blob scope. Docs starts automatically; Full/Fast
+push filters exclude this docs-only change. Observe Docs startup and STOP; no manual Full/
+Fast dispatch or completion polling. Next selects only registered 051A after Docs success;
+Fail repairs this amendment first. No branch/PR, deployment/release or images.
+Gas-first/GZ2, own engine, steady/transient direction, versioned inputs/operator control,
+synthetic development and owner calibration persist; no deployed-data migration obligation.
+Simulation/P3 remains deferred. CI-003 remains IN PROGRESS, oracle/fallback mandatory and
+optimized=false.
+
+
+Actual amendment validation: six unchanged Python suites PASS (102 cases); canonical docs
+PASS (98 documents/5,355 relative links/24 modules/13 P2 rows); offline OpenAPI PASS
+(263 operations/244 paths/231 schemas); retained P1 consistency PASS. Exact two-document
+scope, 4,826 other unchanged tracked blobs, append-only reconciliation, five absent future
+CREATE paths and genuine source/inventory/case/artifact parity verified before publication.
+No new runtime/DB test or production lifecycle acceptance is claimed by this amendment.

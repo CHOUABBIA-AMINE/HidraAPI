@@ -1743,6 +1743,41 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "beforeCommitWriteAndCallbackEvaluationCannotFollowGuard",
+        "declaredStatementTimeoutOutageAbortsEveryProvisionalEffect",
+        "deferredCommitFailureHasObservedRollbackAndNoDeliveryOrRetry",
+        "earliestBoundaryIncludesInactiveNonmatchingDenyAndSourceCap",
+        "eightContendersReportEveryWaitHoldCommitTailAbortAndAdminCompletion",
+        "expiryAndFutureDenyActivationDuringWorkRejectFinalGuard",
+        "freshFlywayAndJpaJdbcShareOneWritablePhysicalTransaction",
+        "guardedHeadAndProtectedReadDeliverOnlyAfterPhysicalCommit",
+        "halfOpenEqualityBackwardAndForwardSamplesRejectEveryProvisionalEffect",
+        "heldNativeWriterCausesFenceTimeoutAndFullRollback",
+        "inclusiveLowerAndExclusiveUpperWindowsHaveExactDatabaseEquality",
+        "lateDirtyJpaFlushAfterGuardIsRejectedAndEntireTransactionRollsBack",
+        "lostCommitAcknowledgementIsIndeterminateEvenWhenObserverSeesCommittedEffects",
+        "nativeDeadlockVictimAbortsAndBothTransactionsLeaveNoPartialEffect",
+        "nativeDenyCommittedBeforeFenceIsObservedAndNoProvisionalEffectEscapes",
+        "nativeInsertDeleteUpdateAndPhantomDenyCannotPassHeldRelationFences",
+        "ordinarySpringFinalGuardWithoutDatasourceSealIsNotAnAtomicFence",
+        "partialSavepointContinuationIsRejectedInsteadOfReturningPermit",
+        "transactionStartTimestampCannotReplaceCurrentDatabaseClockOrWorkBudget",
+        "unsupportedAndIncompleteDependenciesFailClosed",
+        "wrongEpochRejectsTheFinalGuardAndRollsBackJpaAndHead",
+        "wrongIsolationReadOnlyMissingAsyncAndRequiresNewParticipationReject"
+      ],
+      "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.CrossOwnerOperationTemporalFencePostgresIntegrationTest",
+      "dependency_reason": "Excluded; actual PostgreSQL16/Flyway/Spring/JPA/JDBC temporal-fence prototype; local 22 skipped cases enumerate identities only, hosted proof required",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/CrossOwnerOperationTemporalFencePostgresIntegrationTest.java",
+      "source_sha256": "b468c81afa99a36c659464a3caa8c21e75ba14c8943ee1f7bc3db5610db1127d",
+      "supports": []
+    },
+    {
       "baseline_seconds": 11.047,
       "cases": [
         "downstreamFailureAfterFlushedChangesRollsBackBothOwners",

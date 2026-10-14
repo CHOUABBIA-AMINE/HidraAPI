@@ -20511,3 +20511,107 @@ scope, 4,825 other unchanged tracked blobs, absent proof path, append-only recon
 and added-line whitespace PASS. No new runtime/DB/fence/latency proof is claimed. Positive
 uncontended commit cases are mandatory in the future proof; a contention cohort in which
 all requests abort cannot establish useful throughput or close the synthetic capacity gate.
+
+
+## 2026-10-14 — HPR-P25-051 isolated temporal-fence proof candidate
+
+Refreshed authoritative main: 97c60fed8aabafda71a63ccbd2c772ba484c4739, tree
+ad7c57ce45904e654bfdf0c9987bd4b32aa2d8e6. Docs #288 (38554984807) SUCCESS;
+unchanged runtime 81d46bc remains accepted by Full #683/Fast #16/Docs #287.
+Owner Next selects only the registered D2 proof envelope. Exact commit message remains
+`test(security): prove protected operation temporal fencing`. This is a test candidate,
+not accepted D2, final 051, new protected API or production B2/B3 implementation.
+
+### Exercised mechanics and explicit lifecycle boundary
+
+One new CrossOwnerOperationTemporalFencePostgresIntegrationTest contains 22 actual JUnit
+cases. It boots the actual application/datasource, PostgreSQL16 Testcontainers, current
+fresh Flyway and Hibernate validate. Independent native connections exercise writer
+conflicts. Test-created unique schemas contain disposable synthetic Identity/Party/Topology
+relations, complete named window families, head/epoch and receipts plus an invoker guard
+function. Actual Identity User JPA work participates in the same Spring physical transaction
+as JDBC. Foreign production JPA sources, production owner contracts and migrations are not
+changed or imported. The synthetic paired decisions are deliberately simple fixture epoch/
+window decisions; they are not existing policy coverage or real company/facility exports.
+
+The prototype takes writable READ_COMMITTED, ordered SHARE ROW EXCLUSIVE fences, one
+post-fence clock_timestamp sample, every synthetic future window transition (including
+inactive/nonmatching DENY), and a final server-time/head/budget guard after explicit JPA
+flush. Receipts capture the same backend/xid and final DB operation time. Tests cover
+native insert/delete/update/phantom conflict and post-release writes, already committed
+DENY, lock timeout/aborted transaction, an observed pg_blocking_pids deadlock cycle and
+rollback; source cap/earliest boundary, exact half-open endpoints, unsupported/incomplete
+families, invalid/backward/forward candidate samples, actual elapsed DB-clock expiry and
+500 ms budget, wrong epoch, and transaction-start timestamp insufficiency. Invalid input
+samples are labelled candidate inputs: no server clock or metadata is fabricated.
+
+A TEST-ONLY datasource wrapper observes actual JDBC and Hibernate connection/statements,
+checks physical participation, and seals statement preparation/execution after the guard.
+It refuses actual JDBC savepoint attempts. Real commit-time dirty JPA flush and beforeCommit
+write/read callback adversaries must fail and roll back the complete provisional operation.
+Wrong isolation, read-only, missing/async or REQUIRES_NEW participation is rejected.
+A counterexample deliberately disables this seal: an ordinary Spring beforeCommit callback
+can write after the final database guard. Therefore an ordinary guard/beforeCommit alone
+is NOT an admitted atomic fence. No production seal exists in this change, and the fixture
+wrapper does not establish production datasource/unwrap/privilege confinement. D2 remains
+blocked for runtime adoption pending hosted evidence AND a concrete independently reviewed
+production lifecycle boundary, contributor inventory/exports and exact allowed paths.
+
+Successful fixture results leave after TransactionTemplate physical commit. Deferred FK
+failure proves observed rollback without delivery/retry. A distinct injected driver error
+AFTER a real successful commit simulates a lost acknowledgement: no success/retry returns,
+while an independent database observation sees committed effects. That is operational
+INDETERMINATE, explicitly not rollback or a real deployment network/WAL test.
+
+The eight-way simultaneous cohort records every attempt's waits, acquisition/guard/commit
+state, total/hold and successful commit tails; actual success/abort counts and all eight
+post-release admin samples, CPUs/JVM heap and fresh-fixture/warm-Spring condition are printed.
+At least one cohort success and separate uncontended commits are mandatory. Database counts
+must equal committed successes, no accepted guard exceeds 500 ms, and eight admin samples'
+p95 (maximum at this sample count) must be <=1000 ms. lock_timeout=250 ms,
+statement_timeout=750 ms and idle_in_transaction_session_timeout=1000 ms are set per
+transaction. Aggregate DB-time deadline is checked between fences. A separate explicit
+server-delay timeout outage tests statement cancellation/rollback; it is not race ordering
+and is excluded from the contention cohort. No retry is introduced. Timing is synthetic,
+not owner deployment capacity; no finite COMMIT/network/WAL tail guarantee is claimed.
+
+### Actual local evidence and required hosted acceptance
+
+Fresh Java21 compilation and the focused Maven test lifecycle succeeded after clearing only
+generated compilation outputs. Maven command: `bash ./mvnw -o -q
+-Dtest=CrossOwnerOperationTemporalFencePostgresIntegrationTest
+-DargLine=-javaagent:/root/.m2/repository/net/bytebuddy/byte-buddy-agent/1.18.11/byte-buddy-agent-1.18.11.jar test`.
+JUnit/Surefire enumerated 22 cases, zero failures/errors, ALL 22 SKIPPED because this local
+runtime has no Docker/socket. These skips are NOT PostgreSQL proof or acceptance. No local
+fence/throughput/commit measurements are fabricated. Exact names come from those genuine
+reports; source hash is the compiled formatted source. The new DB-only inventory entry has
+baseline_seconds=0 pending hosted timing. All old entries, Fast memberships, cases, timing,
+policies and four historical archives are unchanged. Six policy suites and source/docs/
+OpenAPI/P1 checks are recorded below only after execution.
+
+### Publication and remaining selection
+
+Exclusive scope: CREATE the single registered test; UPDATE CI inventory, roadmap and
+append-only reconciliation; DELETE none. All production Java, migrations, dictionary/
+ownership, APIs, workflow/helpers/build/configuration, historical sources and versions stay
+byte-identical. Verify exact parent/tree/path/blob scope and expected-head publish directly
+to main. Observe automatic Full/Fast/Docs startup on the published SHA then STOP; do not
+poll completion or select 052. Next reviews this proof's exact-SHA CI within 051; Fail
+repairs it first. Even green hosted prototype cases cannot close real-owner D2/B2/B3 or
+admit runtime edits without an exact production scope and lifecycle/inventory decision.
+
+Gas-first/GZ2, Hidra's own engine, steady/transient direction, versioned inputs/operator
+control remain. Synthetic development only; no deployed data migration/backfill/preservation
+or release is assumed. Owner supplies calibration later. Simulation/P3 stays deferred.
+CI-003 remains IN PROGRESS, mandatory oracle/fallback retained and optimized=false.
+
+
+Actual final validation: six unchanged Python suites PASS (102 cases); canonical docs PASS
+(98 documents/5,355 links/24 modules/13 P2 rows); offline OpenAPI PASS (263 operations/
+244 paths/231 schemas); P1 consistency PASS. Source inventory PASS: unchanged Fast296,
+unit297 and four historical archives; DB37+39 and oracle373. Inventory SHA-256:
+`8a2a69bd070f6d82ed24febf5fb3d55d8e8a39d4aa8d3ee723fb2cbb31ff3351`.
+Focused compiled JUnit enumeration: 22 cases, 0 failures/errors, 22 SKIPPED without Docker;
+no database acceptance/timing claim. Exact 1 CREATE / 3 UPDATE, unchanged other tracked
+blobs, prior case/policy parity, canonical headers and append-only reconciliation checks
+are required before guarded main publication. No production or optimized CI adoption.

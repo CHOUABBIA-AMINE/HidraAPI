@@ -7,7 +7,7 @@
  *
  * @Name        : ArchitectureGuardrailTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-09
+ * @UpdatedOn   : 2026-10-14
  *
  * @Type        : Class
  * @Layer       : Test
@@ -19,18 +19,26 @@
  */
 package dz.sh.hidra;
 
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.tngtech.archunit.core.domain.Dependency;
 import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.domain.JavaField;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
+
+import dz.sh.hidra.modules.organization.application.service.ResponsibilityAssignmentApplicationService;
+import dz.sh.hidra.modules.organization.application.service.ResponsibilityReconciliationApplicationService;
+import dz.sh.hidra.modules.organization.application.service.ResponsibilityRevocationApplicationService;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import dz.sh.hidra.modules.organization.application.service.ResponsibilityRevocationApplicationService;
-import dz.sh.hidra.modules.organization.application.service.ResponsibilityReconciliationApplicationService;
-import dz.sh.hidra.modules.organization.application.service.ResponsibilityAssignmentApplicationService;
+
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Modifier;
@@ -41,10 +49,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.StreamSupport;
-
-import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Protects the architectural dependency direction defined by the Hidra coding policy.
@@ -67,82 +71,83 @@ class ArchitectureGuardrailTest {
     private static final String WORKBENCH_EXPOSURE_POLICY =
             "dz.sh.hidra.platform.workbench.HidraOperationalWorkbenchExposurePolicy";
 
-    private static final JavaClasses PRODUCTION_CLASSES = new ClassFileImporter()
-            .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-            .importPackages("dz.sh.hidra");
+    private static final JavaClasses PRODUCTION_CLASSES =
+            new ClassFileImporter()
+                    .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+                    .importPackages("dz.sh.hidra");
 
     /**
      * Deliberately exported package prefixes may be added here only together with the
      * architecture decision/roadmap task that creates that public module contract.
      */
-    private static final Set<String> EXPORTED_CROSS_MODULE_PACKAGE_PREFIXES = Set.of(
-            "dz.sh.hidra.modules.workflow.application.contract.documents",
-            "dz.sh.hidra.modules.workflow.application.contract.target",
-            "dz.sh.hidra.modules.identity.application.contract.workflow",
-            "dz.sh.hidra.modules.identity.application.contract.topology",
-            "dz.sh.hidra.modules.organization.application.contract.workflow",
-            "dz.sh.hidra.modules.workflow.application.contract.planning",
-            "dz.sh.hidra.modules.workflow.application.contract.organization",
-            "dz.sh.hidra.modules.workflow.application.contract.alarm",
-            "dz.sh.hidra.modules.topology.application.contract.organization",
-            "dz.sh.hidra.modules.topology.application.contract.simulation",
-            "dz.sh.hidra.modules.topology.application.contract.leakdetection",
-            "dz.sh.hidra.modules.topology.application.contract.analytics",
-            "dz.sh.hidra.modules.organization.application.contract.analytics",
-            "dz.sh.hidra.modules.audit.application.contract.organization",
-            "dz.sh.hidra.modules.audit.application.contract.alarm",
-            "dz.sh.hidra.modules.party.application.contract.topology",
-            "dz.sh.hidra.modules.party.application.contract.planning",
-            "dz.sh.hidra.modules.custody.application.contract.planning",
-            "dz.sh.hidra.modules.custody.application.contract.simulation",
-            "dz.sh.hidra.modules.telemetry.application.contract.monitoring",
-            "dz.sh.hidra.modules.telemetry.application.contract.simulation",
-            "dz.sh.hidra.modules.telemetry.application.contract.planning",
-            "dz.sh.hidra.modules.planning.application.contract.monitoring",
-            "dz.sh.hidra.modules.topology.application.contract.assets",
-            "dz.sh.hidra.modules.organization.application.contract.assets",
-            "dz.sh.hidra.modules.party.application.contract.assets",
-            "dz.sh.hidra.modules.organization.application.contract.integration",
-            "dz.sh.hidra.modules.identity.application.contract.reporting",
-            "dz.sh.hidra.modules.workflow.application.contract.reporting",
-            "dz.sh.hidra.modules.organization.application.contract.reporting",
-            "dz.sh.hidra.modules.organization.application.contract.risk",
-            "dz.sh.hidra.modules.organization.application.contract.integrity",
-            "dz.sh.hidra.modules.topology.application.contract.integrity",
-            "dz.sh.hidra.modules.organization.application.contract.leakdetection",
-            "dz.sh.hidra.modules.organization.application.contract.identity",
-            "dz.sh.hidra.modules.topology.application.contract.planning",
-            "dz.sh.hidra.modules.identity.application.contract.documents",
-            "dz.sh.hidra.modules.identity.application.contract.integration",
-            "dz.sh.hidra.modules.documents.application.contract.target",
-            "dz.sh.hidra.modules.documents.application.contract.audit",
-            "dz.sh.hidra.modules.documents.application.contract.reporting",
-            "dz.sh.hidra.modules.workflow.application.contract.audit",
-            "dz.sh.hidra.modules.identity.application.contract.planning",
-            "dz.sh.hidra.modules.organization.application.contract.planning",
-            "dz.sh.hidra.modules.topology.application.contract.risk",
-            "dz.sh.hidra.modules.audit.application.contract.risk",
-            "dz.sh.hidra.modules.risk.application.contract.evidence",
-            "dz.sh.hidra.modules.identity.application.contract.risk",
-            "dz.sh.hidra.modules.workflow.application.contract.risk",
-            "dz.sh.hidra.modules.audit.application.contract.simulation",
-            "dz.sh.hidra.modules.identity.application.contract.incident",
-            "dz.sh.hidra.modules.organization.application.contract.incident",
-            "dz.sh.hidra.modules.topology.application.contract.incident",
-            "dz.sh.hidra.modules.workflow.application.contract.incident",
-            "dz.sh.hidra.modules.workflow.application.contract.integrity",
-            "dz.sh.hidra.modules.identity.application.contract.integrity",
-            "dz.sh.hidra.modules.audit.application.contract.custody",
-            "dz.sh.hidra.modules.workflow.application.contract.custody",
-            "dz.sh.hidra.modules.identity.application.contract.custody",
-            "dz.sh.hidra.modules.integrity.application.contract.assets",
-            "dz.sh.hidra.modules.workflow.application.contract.assets",
-            "dz.sh.hidra.modules.identity.application.contract.assets",
-            "dz.sh.hidra.modules.identity.application.contract.hse",
-            "dz.sh.hidra.modules.organization.application.contract.hse",
-            "dz.sh.hidra.modules.workflow.application.contract.hse",
-            "dz.sh.hidra.modules.assets.application.contract.hse"
-    );
+    private static final Set<String> EXPORTED_CROSS_MODULE_PACKAGE_PREFIXES =
+            Set.of(
+                    "dz.sh.hidra.modules.workflow.application.contract.documents",
+                    "dz.sh.hidra.modules.workflow.application.contract.target",
+                    "dz.sh.hidra.modules.identity.application.contract.workflow",
+                    "dz.sh.hidra.modules.identity.application.contract.topology",
+                    "dz.sh.hidra.modules.organization.application.contract.workflow",
+                    "dz.sh.hidra.modules.workflow.application.contract.planning",
+                    "dz.sh.hidra.modules.workflow.application.contract.organization",
+                    "dz.sh.hidra.modules.workflow.application.contract.alarm",
+                    "dz.sh.hidra.modules.topology.application.contract.organization",
+                    "dz.sh.hidra.modules.topology.application.contract.simulation",
+                    "dz.sh.hidra.modules.topology.application.contract.leakdetection",
+                    "dz.sh.hidra.modules.topology.application.contract.analytics",
+                    "dz.sh.hidra.modules.organization.application.contract.analytics",
+                    "dz.sh.hidra.modules.audit.application.contract.organization",
+                    "dz.sh.hidra.modules.audit.application.contract.alarm",
+                    "dz.sh.hidra.modules.party.application.contract.topology",
+                    "dz.sh.hidra.modules.party.application.contract.planning",
+                    "dz.sh.hidra.modules.custody.application.contract.planning",
+                    "dz.sh.hidra.modules.custody.application.contract.simulation",
+                    "dz.sh.hidra.modules.telemetry.application.contract.monitoring",
+                    "dz.sh.hidra.modules.telemetry.application.contract.simulation",
+                    "dz.sh.hidra.modules.telemetry.application.contract.planning",
+                    "dz.sh.hidra.modules.planning.application.contract.monitoring",
+                    "dz.sh.hidra.modules.topology.application.contract.assets",
+                    "dz.sh.hidra.modules.organization.application.contract.assets",
+                    "dz.sh.hidra.modules.party.application.contract.assets",
+                    "dz.sh.hidra.modules.organization.application.contract.integration",
+                    "dz.sh.hidra.modules.identity.application.contract.reporting",
+                    "dz.sh.hidra.modules.workflow.application.contract.reporting",
+                    "dz.sh.hidra.modules.organization.application.contract.reporting",
+                    "dz.sh.hidra.modules.organization.application.contract.risk",
+                    "dz.sh.hidra.modules.organization.application.contract.integrity",
+                    "dz.sh.hidra.modules.topology.application.contract.integrity",
+                    "dz.sh.hidra.modules.organization.application.contract.leakdetection",
+                    "dz.sh.hidra.modules.organization.application.contract.identity",
+                    "dz.sh.hidra.modules.topology.application.contract.planning",
+                    "dz.sh.hidra.modules.identity.application.contract.documents",
+                    "dz.sh.hidra.modules.identity.application.contract.integration",
+                    "dz.sh.hidra.modules.documents.application.contract.target",
+                    "dz.sh.hidra.modules.documents.application.contract.audit",
+                    "dz.sh.hidra.modules.documents.application.contract.reporting",
+                    "dz.sh.hidra.modules.workflow.application.contract.audit",
+                    "dz.sh.hidra.modules.identity.application.contract.planning",
+                    "dz.sh.hidra.modules.organization.application.contract.planning",
+                    "dz.sh.hidra.modules.topology.application.contract.risk",
+                    "dz.sh.hidra.modules.audit.application.contract.risk",
+                    "dz.sh.hidra.modules.risk.application.contract.evidence",
+                    "dz.sh.hidra.modules.identity.application.contract.risk",
+                    "dz.sh.hidra.modules.workflow.application.contract.risk",
+                    "dz.sh.hidra.modules.audit.application.contract.simulation",
+                    "dz.sh.hidra.modules.identity.application.contract.incident",
+                    "dz.sh.hidra.modules.organization.application.contract.incident",
+                    "dz.sh.hidra.modules.topology.application.contract.incident",
+                    "dz.sh.hidra.modules.workflow.application.contract.incident",
+                    "dz.sh.hidra.modules.workflow.application.contract.integrity",
+                    "dz.sh.hidra.modules.identity.application.contract.integrity",
+                    "dz.sh.hidra.modules.audit.application.contract.custody",
+                    "dz.sh.hidra.modules.workflow.application.contract.custody",
+                    "dz.sh.hidra.modules.identity.application.contract.custody",
+                    "dz.sh.hidra.modules.integrity.application.contract.assets",
+                    "dz.sh.hidra.modules.workflow.application.contract.assets",
+                    "dz.sh.hidra.modules.identity.application.contract.assets",
+                    "dz.sh.hidra.modules.identity.application.contract.hse",
+                    "dz.sh.hidra.modules.organization.application.contract.hse",
+                    "dz.sh.hidra.modules.workflow.application.contract.hse",
+                    "dz.sh.hidra.modules.assets.application.contract.hse");
 
     /**
      * Exact temporary exceptions present in the forensic baseline.
@@ -150,24 +155,20 @@ class ArchitectureGuardrailTest {
      * <p>Values are root class names; nested types of the same contract are covered.
      * No wildcard package exception is allowed.</p>
      */
-    private static final Map<String, Set<String>> TRANSITIONAL_CROSS_MODULE_DEPENDENCIES =
-            Map.of();
-
+    private static final Map<String, Set<String>> TRANSITIONAL_CROSS_MODULE_DEPENDENCIES = Map.of();
 
     @Test
     void transactionalOrganizationResponsibilityServicesMustRemainProxyable() {
         assertFalse(
                 Modifier.isFinal(ResponsibilityAssignmentApplicationService.class.getModifiers()),
-                "Transactional responsibility assignment service must remain proxyable."
-        );
+                "Transactional responsibility assignment service must remain proxyable.");
         assertFalse(
                 Modifier.isFinal(ResponsibilityRevocationApplicationService.class.getModifiers()),
-                "Transactional responsibility revocation service must remain proxyable."
-        );
+                "Transactional responsibility revocation service must remain proxyable.");
         assertFalse(
-                Modifier.isFinal(ResponsibilityReconciliationApplicationService.class.getModifiers()),
-                "Transactional responsibility reconciliation service must remain proxyable."
-        );
+                Modifier.isFinal(
+                        ResponsibilityReconciliationApplicationService.class.getModifiers()),
+                "Transactional responsibility reconciliation service must remain proxyable.");
     }
 
     @Test
@@ -183,8 +184,7 @@ class ArchitectureGuardrailTest {
                         "org.hibernate..",
                         "io.swagger.v3.oas.annotations..",
                         "dz.sh.hidra.platform..",
-                        "dz.sh.hidra.modules.."
-                )
+                        "dz.sh.hidra.modules..")
                 .check(PRODUCTION_CLASSES);
     }
 
@@ -201,8 +201,7 @@ class ArchitectureGuardrailTest {
                         "org.hibernate..",
                         "com.fasterxml.jackson..",
                         "io.swagger.v3.oas.annotations..",
-                        "dz.sh.hidra.platform.."
-                )
+                        "dz.sh.hidra.platform..")
                 .check(PRODUCTION_CLASSES);
     }
 
@@ -218,8 +217,7 @@ class ArchitectureGuardrailTest {
                         "..modules..infrastructure..",
                         "jakarta.persistence..",
                         "org.springframework.web..",
-                        "org.springframework.data.."
-                )
+                        "org.springframework.data..")
                 .check(PRODUCTION_CLASSES);
     }
 
@@ -244,8 +242,7 @@ class ArchitectureGuardrailTest {
                 .resideInAnyPackage(
                         "..application.port.out..",
                         "..infrastructure.persistence..",
-                        "org.springframework.data.."
-                )
+                        "org.springframework.data..")
                 .check(PRODUCTION_CLASSES);
     }
 
@@ -262,19 +259,20 @@ class ArchitectureGuardrailTest {
                 JavaClass target = dependency.getTargetClass();
                 String targetPackage = target.getPackageName();
 
-                boolean dependsOnJpa = targetPackage.equals("jakarta.persistence")
-                        || targetPackage.startsWith("jakarta.persistence.");
-                boolean dependsOnModulePersistence = targetPackage.startsWith(MODULE_PREFIX)
-                        && targetPackage.contains(".infrastructure.persistence");
+                boolean dependsOnJpa =
+                        targetPackage.equals("jakarta.persistence")
+                                || targetPackage.startsWith("jakarta.persistence.");
+                boolean dependsOnModulePersistence =
+                        targetPackage.startsWith(MODULE_PREFIX)
+                                && targetPackage.contains(".infrastructure.persistence");
 
                 if (!dependsOnJpa && !dependsOnModulePersistence) {
                     continue;
                 }
 
                 boolean reviewedWorkbenchJpaDependency =
-                        REVIEWED_GENERIC_PERSISTENCE_READER.equals(source.getName())
-                                && dependsOnJpa
-                                && !dependsOnModulePersistence;
+                        reviewedPlatformJpa(
+                                source.getName(), dependsOnJpa, dependsOnModulePersistence);
 
                 if (!reviewedWorkbenchJpaDependency) {
                     violations.add(source.getName() + " -> " + target.getName());
@@ -284,20 +282,23 @@ class ArchitectureGuardrailTest {
 
         assertTrue(
                 violations.isEmpty(),
-                () -> "Platform code must not introduce generic JPA/module-persistence access outside "
-                        + "the reviewed Workbench boundary. Violations: " + violations
-        );
+                () ->
+                        "Platform code must not introduce generic JPA/module-persistence access"
+                                + " outside the exact reviewed Workbench and technical transaction"
+                                + " boundaries. Violations: "
+                                + violations);
 
         JavaClass reviewedReader = PRODUCTION_CLASSES.get(REVIEWED_GENERIC_PERSISTENCE_READER);
-        boolean dependsOnExposurePolicy = reviewedReader.getDirectDependenciesFromSelf().stream()
-                .map(Dependency::getTargetClass)
-                .map(JavaClass::getName)
-                .anyMatch(WORKBENCH_EXPOSURE_POLICY::equals);
+        boolean dependsOnExposurePolicy =
+                reviewedReader.getDirectDependenciesFromSelf().stream()
+                        .map(Dependency::getTargetClass)
+                        .map(JavaClass::getName)
+                        .anyMatch(WORKBENCH_EXPOSURE_POLICY::equals);
 
         assertTrue(
                 dependsOnExposurePolicy,
-                "The reviewed Workbench persistence reader must retain the fail-closed exposure policy dependency."
-        );
+                "The reviewed Workbench persistence reader must retain the fail-closed exposure"
+                        + " policy dependency.");
     }
 
     @Test
@@ -333,36 +334,41 @@ class ArchitectureGuardrailTest {
 
         assertTrue(
                 violations.isEmpty(),
-                () -> "Business modules must not depend on another module's private "
-                        + "domain/infrastructure/application packages. Violations: " + violations
-        );
+                () ->
+                        "Business modules must not depend on another module's private "
+                                + "domain/infrastructure/application packages. Violations: "
+                                + violations);
     }
 
     @Test
     void transitionalCrossModuleAllowlistMustRemainExactAndInUse() {
         List<String> missingAllowlistedDependencies = new ArrayList<>();
 
-        TRANSITIONAL_CROSS_MODULE_DEPENDENCIES.forEach((sourceName, targetRoots) -> {
-            JavaClass source = PRODUCTION_CLASSES.get(sourceName);
-            Set<String> actualTargets = new HashSet<>();
-            for (Dependency dependency : source.getDirectDependenciesFromSelf()) {
-                actualTargets.add(dependency.getTargetClass().getName());
-            }
+        TRANSITIONAL_CROSS_MODULE_DEPENDENCIES.forEach(
+                (sourceName, targetRoots) -> {
+                    JavaClass source = PRODUCTION_CLASSES.get(sourceName);
+                    Set<String> actualTargets = new HashSet<>();
+                    for (Dependency dependency : source.getDirectDependenciesFromSelf()) {
+                        actualTargets.add(dependency.getTargetClass().getName());
+                    }
 
-            for (String targetRoot : targetRoots) {
-                boolean present = actualTargets.stream()
-                        .anyMatch(targetName -> isTargetRoot(targetName, targetRoot));
-                if (!present) {
-                    missingAllowlistedDependencies.add(sourceName + " -> " + targetRoot);
-                }
-            }
-        });
+                    for (String targetRoot : targetRoots) {
+                        boolean present =
+                                actualTargets.stream()
+                                        .anyMatch(
+                                                targetName -> isTargetRoot(targetName, targetRoot));
+                        if (!present) {
+                            missingAllowlistedDependencies.add(sourceName + " -> " + targetRoot);
+                        }
+                    }
+                });
 
         assertTrue(
                 missingAllowlistedDependencies.isEmpty(),
-                () -> "Remove stale transitional dependency exceptions as soon as their imports "
-                        + "are refactored. Missing dependencies: " + missingAllowlistedDependencies
-        );
+                () ->
+                        "Remove stale transitional dependency exceptions as soon as their imports "
+                                + "are refactored. Missing dependencies: "
+                                + missingAllowlistedDependencies);
     }
 
     @Test
@@ -370,107 +376,124 @@ class ArchitectureGuardrailTest {
         assertTrue(
                 isForbiddenCrossModuleDependency(
                         "dz.sh.hidra.modules.planning.application.service.ExampleService",
-                        "dz.sh.hidra.modules.identity.domain.model.User"
-                ),
-                "An unlisted cross-module dependency on another module's domain must be rejected."
-        );
+                        "dz.sh.hidra.modules.identity.domain.model.User"),
+                "An unlisted cross-module dependency on another module's domain must be rejected.");
 
         assertTrue(
                 isForbiddenCrossModuleDependency(
                         "dz.sh.hidra.modules.planning.application.service.PlanningApprovalApplicationService",
-                        "dz.sh.hidra.modules.workflow.application.port.in.WorkflowQueryUseCase"
-                ),
-                "Planning must no longer depend on Workflow's private application ports."
-        );
+                        "dz.sh.hidra.modules.workflow.application.port.in.WorkflowQueryUseCase"),
+                "Planning must no longer depend on Workflow's private application ports.");
 
         assertFalse(
                 isForbiddenCrossModuleDependency(
                         "dz.sh.hidra.modules.planning.application.service.PlanningApprovalApplicationService",
-                        "dz.sh.hidra.modules.workflow.application.contract.planning.PlanningWorkflowContract"
-                ),
-                "The deliberate Workflow contract exported to Planning must remain allowed."
-        );
+                        "dz.sh.hidra.modules.workflow.application.contract.planning.PlanningWorkflowContract"),
+                "The deliberate Workflow contract exported to Planning must remain allowed.");
 
         assertTrue(
                 isForbiddenCrossModuleDependency(
                         "dz.sh.hidra.modules.organization.infrastructure.adapter.AuthoritativeOperationalScopeTargetResolverAdapter",
-                        "dz.sh.hidra.modules.topology.application.port.in.ResolveTopologyOperationalScopeTargetUseCase"
-                ),
-                "Organization must no longer depend on Topology's private application ports."
-        );
+                        "dz.sh.hidra.modules.topology.application.port.in.ResolveTopologyOperationalScopeTargetUseCase"),
+                "Organization must no longer depend on Topology's private application ports.");
 
         assertFalse(
                 isForbiddenCrossModuleDependency(
                         "dz.sh.hidra.modules.organization.infrastructure.adapter.AuthoritativeOperationalScopeTargetResolverAdapter",
-                        "dz.sh.hidra.modules.topology.application.contract.organization.TopologyOperationalScopeTargetContract"
-                ),
-                "The deliberate Topology contract exported to Organization must remain allowed."
-        );
+                        "dz.sh.hidra.modules.topology.application.contract.organization.TopologyOperationalScopeTargetContract"),
+                "The deliberate Topology contract exported to Organization must remain allowed.");
 
         assertFalse(
                 isForbiddenCrossModuleDependency(
                         "dz.sh.hidra.modules.organization.application.service.ResponsibilityAssignmentApplicationService",
-                        "dz.sh.hidra.modules.workflow.application.contract.organization.OrganizationResponsibilityWorkflowContract"
-                ),
-                "The deliberate Workflow responsibility contract exported to Organization must remain allowed."
-        );
+                        "dz.sh.hidra.modules.workflow.application.contract.organization.OrganizationResponsibilityWorkflowContract"),
+                "The deliberate Workflow responsibility contract exported to Organization must"
+                        + " remain allowed.");
 
         assertFalse(
                 isForbiddenCrossModuleDependency(
                         "dz.sh.hidra.modules.organization.application.service.ResponsibilityAssignmentApplicationService",
-                        "dz.sh.hidra.modules.audit.application.contract.organization.OrganizationResponsibilityAuditContract"
-                ),
-                "The deliberate Audit responsibility contract exported to Organization must remain allowed."
-        );
+                        "dz.sh.hidra.modules.audit.application.contract.organization.OrganizationResponsibilityAuditContract"),
+                "The deliberate Audit responsibility contract exported to Organization must remain"
+                        + " allowed.");
 
         assertFalse(
                 isForbiddenCrossModuleDependency(
                         "dz.sh.hidra.modules.alarm.application.service.AlarmSuppressionExpiryOrchestrator",
-                        "dz.sh.hidra.modules.audit.application.contract.alarm.AlarmSuppressionAuditContract"
-                ),
-                "The deliberate Audit suppression contract exported to Alarm must remain allowed."
-        );
+                        "dz.sh.hidra.modules.audit.application.contract.alarm.AlarmSuppressionAuditContract"),
+                "The deliberate Audit suppression contract exported to Alarm must remain allowed.");
     }
 
     @Test
     void simulationTelemetryEvidenceExportKeepsOwnerInternalsPrivate() {
-        String adapter = "dz.sh.hidra.modules.simulation.infrastructure.integration.TelemetryTrustedReadingEvidenceQueryAdapter";
-        assertFalse(isForbiddenCrossModuleDependency(adapter,
-                "dz.sh.hidra.modules.telemetry.application.contract.simulation.SimulationTrustedReadingContract"));
-        assertFalse(isForbiddenCrossModuleDependency(adapter,
-                "dz.sh.hidra.modules.telemetry.application.contract.simulation.SimulationTrustedReadingContract$ReadingEvidence"));
-        assertTrue(isForbiddenCrossModuleDependency(adapter,
-                "dz.sh.hidra.modules.telemetry.domain.model.TrustedTelemetryReading"));
-        assertTrue(isForbiddenCrossModuleDependency(adapter,
-                "dz.sh.hidra.modules.telemetry.infrastructure.persistence.entity.TrustedTelemetryReadingJpaEntity"));
-        assertTrue(isForbiddenCrossModuleDependency(adapter,
-                "dz.sh.hidra.modules.telemetry.application.port.out.TrustedTelemetryReadingRepositoryPort"));
+        String adapter =
+                "dz.sh.hidra.modules.simulation.infrastructure.integration.TelemetryTrustedReadingEvidenceQueryAdapter";
+        assertFalse(
+                isForbiddenCrossModuleDependency(
+                        adapter,
+                        "dz.sh.hidra.modules.telemetry.application.contract.simulation.SimulationTrustedReadingContract"));
+        assertFalse(
+                isForbiddenCrossModuleDependency(
+                        adapter,
+                        "dz.sh.hidra.modules.telemetry.application.contract.simulation.SimulationTrustedReadingContract$ReadingEvidence"));
+        assertTrue(
+                isForbiddenCrossModuleDependency(
+                        adapter,
+                        "dz.sh.hidra.modules.telemetry.domain.model.TrustedTelemetryReading"));
+        assertTrue(
+                isForbiddenCrossModuleDependency(
+                        adapter,
+                        "dz.sh.hidra.modules.telemetry.infrastructure.persistence.entity.TrustedTelemetryReadingJpaEntity"));
+        assertTrue(
+                isForbiddenCrossModuleDependency(
+                        adapter,
+                        "dz.sh.hidra.modules.telemetry.application.port.out.TrustedTelemetryReadingRepositoryPort"));
     }
 
     @Test
     void simulationOwnerEvidenceExportsKeepPrivateTypesClosed() {
-        String custodyAdapter = "dz.sh.hidra.modules.simulation.infrastructure.integration.CustodyProductCandidateEvidenceQueryAdapter";
-        String topologyAdapter = "dz.sh.hidra.modules.simulation.infrastructure.integration.TopologyScopeEvidenceQueryAdapter";
-        assertFalse(isForbiddenCrossModuleDependency(custodyAdapter,
-                "dz.sh.hidra.modules.custody.application.contract.simulation.SimulationProductCandidateContract"));
-        assertFalse(isForbiddenCrossModuleDependency(custodyAdapter,
-                "dz.sh.hidra.modules.custody.application.contract.simulation.SimulationProductCandidateContract$Candidate"));
-        assertFalse(isForbiddenCrossModuleDependency(topologyAdapter,
-                "dz.sh.hidra.modules.topology.application.contract.simulation.SimulationTopologyScopeContract"));
-        assertFalse(isForbiddenCrossModuleDependency(topologyAdapter,
-                "dz.sh.hidra.modules.topology.application.contract.simulation.SimulationTopologyScopeContract$ScopeResolution"));
-        assertTrue(isForbiddenCrossModuleDependency(custodyAdapter,
-                "dz.sh.hidra.modules.custody.infrastructure.persistence.entity.CustodyCatalogEntryJpaEntity"));
-        assertTrue(isForbiddenCrossModuleDependency(custodyAdapter,
-                "dz.sh.hidra.modules.custody.domain.model.CustodyBatch"));
-        assertTrue(isForbiddenCrossModuleDependency(custodyAdapter,
-                "dz.sh.hidra.modules.custody.infrastructure.persistence.repository.CustodyCatalogEntryJpaRepository"));
-        assertTrue(isForbiddenCrossModuleDependency(topologyAdapter,
-                "dz.sh.hidra.modules.topology.domain.model.Pipeline"));
-        assertTrue(isForbiddenCrossModuleDependency(topologyAdapter,
-                "dz.sh.hidra.modules.topology.infrastructure.persistence.entity.PipelineJpaEntity"));
-        assertTrue(isForbiddenCrossModuleDependency(topologyAdapter,
-                "dz.sh.hidra.modules.topology.application.port.out.PipelineRepositoryPort"));
+        String custodyAdapter =
+                "dz.sh.hidra.modules.simulation.infrastructure.integration.CustodyProductCandidateEvidenceQueryAdapter";
+        String topologyAdapter =
+                "dz.sh.hidra.modules.simulation.infrastructure.integration.TopologyScopeEvidenceQueryAdapter";
+        assertFalse(
+                isForbiddenCrossModuleDependency(
+                        custodyAdapter,
+                        "dz.sh.hidra.modules.custody.application.contract.simulation.SimulationProductCandidateContract"));
+        assertFalse(
+                isForbiddenCrossModuleDependency(
+                        custodyAdapter,
+                        "dz.sh.hidra.modules.custody.application.contract.simulation.SimulationProductCandidateContract$Candidate"));
+        assertFalse(
+                isForbiddenCrossModuleDependency(
+                        topologyAdapter,
+                        "dz.sh.hidra.modules.topology.application.contract.simulation.SimulationTopologyScopeContract"));
+        assertFalse(
+                isForbiddenCrossModuleDependency(
+                        topologyAdapter,
+                        "dz.sh.hidra.modules.topology.application.contract.simulation.SimulationTopologyScopeContract$ScopeResolution"));
+        assertTrue(
+                isForbiddenCrossModuleDependency(
+                        custodyAdapter,
+                        "dz.sh.hidra.modules.custody.infrastructure.persistence.entity.CustodyCatalogEntryJpaEntity"));
+        assertTrue(
+                isForbiddenCrossModuleDependency(
+                        custodyAdapter, "dz.sh.hidra.modules.custody.domain.model.CustodyBatch"));
+        assertTrue(
+                isForbiddenCrossModuleDependency(
+                        custodyAdapter,
+                        "dz.sh.hidra.modules.custody.infrastructure.persistence.repository.CustodyCatalogEntryJpaRepository"));
+        assertTrue(
+                isForbiddenCrossModuleDependency(
+                        topologyAdapter, "dz.sh.hidra.modules.topology.domain.model.Pipeline"));
+        assertTrue(
+                isForbiddenCrossModuleDependency(
+                        topologyAdapter,
+                        "dz.sh.hidra.modules.topology.infrastructure.persistence.entity.PipelineJpaEntity"));
+        assertTrue(
+                isForbiddenCrossModuleDependency(
+                        topologyAdapter,
+                        "dz.sh.hidra.modules.topology.application.port.out.PipelineRepositoryPort"));
     }
 
     @Test
@@ -483,26 +506,29 @@ class ArchitectureGuardrailTest {
             }
 
             Table table = type.getAnnotationOfType(Table.class);
-            String tableName = table == null || table.name().isBlank()
-                    ? type.getSimpleName()
-                    : table.name().trim();
+            String tableName =
+                    table == null || table.name().isBlank()
+                            ? type.getSimpleName()
+                            : table.name().trim();
 
-            ownersByTable.computeIfAbsent(tableName, ignored -> new ArrayList<>())
+            ownersByTable
+                    .computeIfAbsent(tableName, ignored -> new ArrayList<>())
                     .add(type.getName());
         }
 
         Map<String, List<String>> duplicates = new HashMap<>();
-        ownersByTable.forEach((tableName, owners) -> {
-            if (owners.size() > 1) {
-                duplicates.put(tableName, owners);
-            }
-        });
+        ownersByTable.forEach(
+                (tableName, owners) -> {
+                    if (owners.size() > 1) {
+                        duplicates.put(tableName, owners);
+                    }
+                });
 
         assertTrue(
                 duplicates.isEmpty(),
-                () -> "JPA table names must be unique across production entities. Duplicates: "
-                        + duplicates
-        );
+                () ->
+                        "JPA table names must be unique across production entities. Duplicates: "
+                                + duplicates);
     }
 
     @Test
@@ -521,52 +547,53 @@ class ArchitectureGuardrailTest {
                 }
 
                 Column column = field.getAnnotationOfType(Column.class);
-                String columnName = column.name().isBlank()
-                        ? field.getName()
-                        : column.name().trim();
+                String columnName =
+                        column.name().isBlank() ? field.getName() : column.name().trim();
 
-                fieldsByColumn.computeIfAbsent(columnName, ignored -> new ArrayList<>())
+                fieldsByColumn
+                        .computeIfAbsent(columnName, ignored -> new ArrayList<>())
                         .add(field.getFullName());
             }
 
-            fieldsByColumn.forEach((columnName, fields) -> {
-                if (fields.size() > 1) {
-                    violations.add(
-                            type.getName() + " maps column " + columnName + " from " + fields
-                    );
-                }
-            });
+            fieldsByColumn.forEach(
+                    (columnName, fields) -> {
+                        if (fields.size() > 1) {
+                            violations.add(
+                                    type.getName()
+                                            + " maps column "
+                                            + columnName
+                                            + " from "
+                                            + fields);
+                        }
+                    });
         }
 
         assertTrue(
                 violations.isEmpty(),
-                () -> "A JPA entity must not map the same column name more than once. Violations: "
-                        + violations
-        );
+                () ->
+                        "A JPA entity must not map the same column name more than once. Violations:"
+                                + " "
+                                + violations);
     }
 
     @Test
     void identityAccessPackageMustNotExist() {
-        boolean identityAccessExists = StreamSupport.stream(
-                        PRODUCTION_CLASSES.spliterator(),
-                        false
-                )
-                .map(JavaClass::getPackageName)
-                .anyMatch(packageName ->
-                        packageName.equals("dz.sh.hidra.modules.identityaccess")
-                                || packageName.startsWith("dz.sh.hidra.modules.identityaccess.")
-                );
+        boolean identityAccessExists =
+                StreamSupport.stream(PRODUCTION_CLASSES.spliterator(), false)
+                        .map(JavaClass::getPackageName)
+                        .anyMatch(
+                                packageName ->
+                                        packageName.equals("dz.sh.hidra.modules.identityaccess")
+                                                || packageName.startsWith(
+                                                        "dz.sh.hidra.modules.identityaccess."));
 
         assertFalse(
                 identityAccessExists,
-                "Use dz.sh.hidra.modules.identity; identityaccess is a forbidden module/package."
-        );
+                "Use dz.sh.hidra.modules.identity; identityaccess is a forbidden module/package.");
     }
 
     private static boolean isForbiddenCrossModuleDependency(
-            String sourceClassName,
-            String targetClassName
-    ) {
+            String sourceClassName, String targetClassName) {
         String sourcePackage = packageName(sourceClassName);
         String targetPackage = packageName(targetClassName);
         String sourceModule = moduleName(sourcePackage);
@@ -591,14 +618,10 @@ class ArchitectureGuardrailTest {
     }
 
     private static boolean isExplicitlyExported(String packageName) {
-        return EXPORTED_CROSS_MODULE_PACKAGE_PREFIXES.stream()
-                .anyMatch(packageName::startsWith);
+        return EXPORTED_CROSS_MODULE_PACKAGE_PREFIXES.stream().anyMatch(packageName::startsWith);
     }
 
-    private static boolean isTransitionallyAllowed(
-            String sourceClassName,
-            String targetClassName
-    ) {
+    private static boolean isTransitionallyAllowed(String sourceClassName, String targetClassName) {
         return TRANSITIONAL_CROSS_MODULE_DEPENDENCIES
                 .getOrDefault(sourceClassName, Set.of())
                 .stream()
@@ -606,8 +629,7 @@ class ArchitectureGuardrailTest {
     }
 
     private static boolean isTargetRoot(String targetClassName, String targetRoot) {
-        return targetClassName.equals(targetRoot)
-                || targetClassName.startsWith(targetRoot + "$");
+        return targetClassName.equals(targetRoot) || targetClassName.startsWith(targetRoot + "$");
     }
 
     private static String moduleName(String packageName) {
@@ -623,5 +645,46 @@ class ArchitectureGuardrailTest {
     private static String packageName(String className) {
         int separator = className.lastIndexOf('.');
         return separator < 0 ? "" : className.substring(0, separator);
+    }
+
+    private static boolean reviewedPlatformJpa(
+            String source, boolean jpa, boolean modulePersistence) {
+        return jpa
+                && !modulePersistence
+                && Set.of(
+                                REVIEWED_GENERIC_PERSISTENCE_READER,
+                                "dz.sh.hidra.platform.persistence.ProtectedJpaTransactionManager",
+                                "dz.sh.hidra.platform.configuration.HidraTransactionConfiguration")
+                        .contains(source);
+    }
+
+    @Test
+    void protectedTransactionJpaExceptionsRemainExactAndTechnical() {
+        for (String name :
+                Set.of(
+                        "dz.sh.hidra.platform.persistence.ProtectedJpaTransactionManager",
+                        "dz.sh.hidra.platform.configuration.HidraTransactionConfiguration")) {
+            assertTrue(reviewedPlatformJpa(name, true, false));
+            assertFalse(reviewedPlatformJpa(name, true, true));
+            assertTrue(
+                    PRODUCTION_CLASSES.get(name).getDirectDependenciesFromSelf().stream()
+                            .noneMatch(
+                                    d ->
+                                            d.getTargetClass()
+                                                    .getPackageName()
+                                                    .startsWith(MODULE_PREFIX)));
+        }
+        assertFalse(
+                reviewedPlatformJpa("dz.sh.hidra.platform.persistence.OtherReader", true, false));
+        assertFalse(
+                reviewedPlatformJpa(
+                        "dz.sh.hidra.platform.persistence.ProtectedOperationDataSource",
+                        true,
+                        false));
+        assertFalse(
+                reviewedPlatformJpa(
+                        "dz.sh.hidra.platform.persistence.ProtectedTransactionExecutor",
+                        true,
+                        false));
     }
 }

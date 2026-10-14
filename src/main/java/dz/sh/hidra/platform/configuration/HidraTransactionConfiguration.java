@@ -7,7 +7,7 @@
  *
  * @Name        : HidraTransactionConfiguration
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-10-14
  *
  * @Type        : Class
  * @Layer       : Platform
@@ -19,9 +19,17 @@
  */
 package dz.sh.hidra.platform.configuration;
 
+import dz.sh.hidra.platform.persistence.ProtectedJpaTransactionManager;
+import dz.sh.hidra.platform.persistence.ProtectedOperationDataSource;
 
+import jakarta.persistence.EntityManagerFactory;
+
+import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import javax.sql.DataSource;
 
 /**
  * Enables explicit transaction management for persistence-backed application services.
@@ -29,4 +37,22 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration(proxyBeanMethods = false)
 @EnableTransactionManagement
 public class HidraTransactionConfiguration {
+    @Bean
+    static BeanPostProcessor protectedOperationDatasource() {
+        return new BeanPostProcessor() {
+            @Override
+            public Object postProcessAfterInitialization(Object bean, String name) {
+                return bean instanceof DataSource ds
+                                && !(bean instanceof ProtectedOperationDataSource)
+                        ? new ProtectedOperationDataSource(ds)
+                        : bean;
+            }
+        };
+    }
+
+    @Bean
+    ProtectedJpaTransactionManager transactionManager(
+            EntityManagerFactory factory, DataSource datasource) {
+        return new ProtectedJpaTransactionManager(factory, datasource);
+    }
 }

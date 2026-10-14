@@ -1,0 +1,186 @@
+/**
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : ProtectedTransactionExecutor
+ * @CreatedOn   : 2025-06-26
+ * @UpdatedOn   : 2026-10-14
+ *
+ * @Type        : Class
+ * @Layer       : Platform
+ * @Module      : platform
+ * @Package     : dz.sh.hidra.platform.persistence
+ *
+ * @Description : Executes one physically committed protected transaction with an enforced final SQL statement.
+ *
+ */
+package dz.sh.hidra.platform.persistence;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.*;
+import org.springframework.transaction.support.*;
+
+import java.math.*;
+import java.util.*;
+import java.util.function.Supplier;
+
+import javax.sql.DataSource;
+
+/** Trusted compiled-owner callbacks only; no permission, protected API or business fence. */
+@Component
+public final class ProtectedTransactionExecutor {
+    public enum Outcome {
+        REJECTED_BEFORE_COMMIT,
+        INDETERMINATE
+    }
+
+    public static final class ExecutionFailure extends RuntimeException {
+        private final Outcome outcome;
+
+        ExecutionFailure(Outcome outcome, Throwable cause) {
+            super("Protected execution " + outcome, cause);
+            this.outcome = outcome;
+        }
+
+        public Outcome outcome() {
+            return outcome;
+        }
+    }
+
+    private final PlatformTransactionManager manager;
+    private final DataSource datasource;
+
+    public ProtectedTransactionExecutor(PlatformTransactionManager manager, DataSource datasource) {
+        this.manager = Objects.requireNonNull(manager);
+        this.datasource = Objects.requireNonNull(datasource);
+    }
+
+    public <T> T execute(Supplier<T> work, Runnable flush, Runnable guard) {
+        var previous = ProtectedOperationDataSource.CURRENT.get();
+        if (previous != null) {
+            previous.reject("nested protected execution");
+            throw new ExecutionFailure(
+                    Outcome.REJECTED_BEFORE_COMMIT,
+                    new IllegalStateException("nested protected execution"));
+        }
+        Objects.requireNonNull(work);
+        Objects.requireNonNull(flush);
+        Objects.requireNonNull(guard);
+        if (TransactionSynchronizationManager.isActualTransactionActive())
+            throw new ExecutionFailure(
+                    Outcome.REJECTED_BEFORE_COMMIT,
+                    new IllegalStateException("ambient transaction"));
+        if (!(manager instanceof ProtectedJpaTransactionManager))
+            throw new ExecutionFailure(
+                    Outcome.REJECTED_BEFORE_COMMIT,
+                    new IllegalStateException("unsupported manager"));
+        var s = new ProtectedOperationDataSource.Scope();
+        TransactionStatus status = null;
+        ProtectedOperationDataSource.CURRENT.set(s);
+        try {
+            if (!datasource.isWrapperFor(ProtectedOperationDataSource.class))
+                throw new IllegalStateException("unsupported datasource");
+            var definition = new DefaultTransactionDefinition();
+            definition.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
+            definition.setReadOnly(false);
+            status = manager.getTransaction(definition);
+            if (!status.isNewTransaction()
+                    || !TransactionSynchronizationManager.isActualTransactionActive())
+                throw new IllegalStateException("not new physical transaction");
+            JdbcTemplate jdbc = new JdbcTemplate(datasource);
+            jdbc.execute("SET LOCAL lock_timeout='250ms'");
+            jdbc.execute("SET LOCAL statement_timeout='750ms'");
+            jdbc.execute("SET LOCAL idle_in_transaction_session_timeout='1000ms'");
+            var image =
+                    jdbc.queryForMap(
+                            "SELECT pg_backend_pid() AS pid, txid_current() AS xid,"
+                                    + " current_setting('transaction_isolation') AS isolation,"
+                                    + " current_setting('transaction_read_only') AS readonly");
+            if (!"read committed".equals(image.get("isolation"))
+                    || !"off".equals(image.get("readonly"))
+                    || s.physical == null)
+                throw new IllegalStateException("invalid actual participation");
+            s.pid = ((Number) image.get("pid")).intValue();
+            s.xid = ((Number) image.get("xid")).longValue();
+            s.started = System.nanoTime();
+            s.phase = ProtectedOperationDataSource.Phase.WORKING;
+            T result = work.get();
+            s.deadline();
+            materialized(result, 0);
+            s.phase = ProtectedOperationDataSource.Phase.FLUSHING;
+            flush.run();
+            s.deadline();
+            s.phase = ProtectedOperationDataSource.Phase.GUARD;
+            guard.run();
+            s.deadline();
+            if (s.phase != ProtectedOperationDataSource.Phase.SEALED
+                    || s.guardExecutions != 1
+                    || s.openGuardResults != 0)
+                throw new IllegalStateException("exactly one closed scalar final guard required");
+            manager.commit(status);
+            s.healthy();
+            if (!s.committed) throw new IllegalStateException("physical commit not observed");
+            return result;
+        } catch (Throwable error) {
+            if (status != null && !status.isCompleted())
+                try {
+                    manager.rollback(status);
+                } catch (Throwable rollback) {
+                    error.addSuppressed(rollback);
+                }
+            Outcome outcome =
+                    s.commitAttempted || s.committed || (status != null && !s.rolledBack)
+                            ? Outcome.INDETERMINATE
+                            : Outcome.REJECTED_BEFORE_COMMIT;
+            if (error instanceof Error fatal) throw fatal;
+            throw new ExecutionFailure(outcome, error);
+        } finally {
+            s.phase = ProtectedOperationDataSource.Phase.FINISHED;
+            ProtectedOperationDataSource.CURRENT.remove();
+        }
+    }
+
+    private static void materialized(Object value, int depth) throws ReflectiveOperationException {
+        if (value == null) return;
+        if (depth > 32) throw new IllegalArgumentException("result nesting unsupported");
+        Class<?> type = value.getClass();
+        if (value instanceof String
+                || value instanceof Boolean
+                || value instanceof Character
+                || value instanceof UUID
+                || value instanceof Enum<?>
+                || type == Byte.class
+                || type == Short.class
+                || type == Integer.class
+                || type == Long.class
+                || type == Float.class
+                || type == Double.class
+                || type == BigInteger.class
+                || type == BigDecimal.class
+                || (type.getPackageName().equals("java.time")
+                        && !(value instanceof java.time.Clock))) return;
+        if (type.isRecord()) {
+            for (var component : type.getRecordComponents())
+                materialized(component.getAccessor().invoke(value), depth + 1);
+            return;
+        }
+        if (type.getName().startsWith("java.util.ImmutableCollections$")) {
+            if (value instanceof Map<?, ?> map) {
+                for (var entry : map.entrySet()) {
+                    materialized(entry.getKey(), depth + 1);
+                    materialized(entry.getValue(), depth + 1);
+                }
+                return;
+            }
+            if (value instanceof Collection<?> list) {
+                for (var item : list) materialized(item, depth + 1);
+                return;
+            }
+        }
+        throw new IllegalArgumentException("result must be immutable materialized data");
+    }
+}

@@ -29,6 +29,16 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-P25-051 proof CI repair, 2026-10-14
+
+Full #684 oracle failed one of 22 real PostgreSQL proof cases at e7c2e1d; Fast #17/Docs
+#289 passed. Owner Fail selects only the four-file proof repair: open each independent
+native writer before acquiring fences and give each negative probe its own owner transaction.
+The 500 ms work budget and all 22 cases remain; no production runtime change is admitted.
+051 remains IN PROGRESS / D2 PROOF REPAIR / CI PENDING. Publish guarded main, observe
+Full/Fast/Docs startup and STOP. Hosted acceptance and production lifecycle/owner inventory/
+exports/038 integration remain open; no 052 or B2/B3 implementation is selected.
+
 ### Current execution checkpoint — HPR-P25-051 isolated proof candidate, 2026-10-14
 
 Docs #288 passed at 97c60fe; accepted B1 runtime remains 81d46bc. The registered single
@@ -381,7 +391,7 @@ aggregate may replace it. D1–D5 are internal gates, never new HPR task IDs.
 | 1 | HPR-CI-003 | Automatic fast suite and equivalent parallel full verification | CI / independent verification | IN PROGRESS / ORACLE RESOURCE CANDIDATE; prior 5x same-SHA equivalence retained; multi-revision/performance OPEN | Accepted 049; this Docs PASS; owner selection | CI-003 closed list | Selection/report/release negative tests; shadow full verification | No lost cases; mandatory gate fail-closed; repeatable timing | CI | `ci: automate fast feedback and preserve full verification gates` |
 | 2 | HPR-P25-047 | Provider/link database security generations | Identity | COMPLETED / CI ACCEPTED | Accepted 046/048/049; existing registration Docs; separate Next | Existing seven-file list, unchanged | Real writers, Flyway fresh/upgrade, native/bulk/race/rollback | Exact implementation Production + Docs SUCCESS | F1 | `feat(identity): enforce provider and link security generations` |
 | 3 | HPR-P25-050 | Immutable operation binding and trusted issuance/reader, staged 050A–050D | Identity; Platform technical wiring | COMPLETED / A–D AND B1 CI ACCEPTED AT 81d46bc | 047; accepted 044/045 design | Exact 050A/B/C/D lists executed; Full #683/Fast #16/Docs #287 SUCCESS | Fresh-schema LOCAL/LDAP/AD/OIDC, expiry, generation, rollback; no deployed-data migration | B1 provenance and storage proof across all four children; no inferred B2/B3 | F1 | Child messages registered below; original message retained by 050D |
-| 4 | HPR-P25-051 | Cross-owner revocation/time/transaction linearization | Identity / Party / Topology; Platform mechanics | IN PROGRESS / D2 PROOF CANDIDATE; CI PENDING | 050; accepted 038/043; D2 | D2 then exact owner/export/fence list | Real PostgreSQL owner/race/expiry/connection tests | B2/B3 and writer ordering + bounded latency PASS | F1 | `feat(security): linearize cross owner protected operations` |
+| 4 | HPR-P25-051 | Cross-owner revocation/time/transaction linearization | Identity / Party / Topology; Platform mechanics | IN PROGRESS / D2 PROOF REPAIR; CI PENDING | 050; accepted 038/043; D2 | D2 then exact owner/export/fence list | Real PostgreSQL owner/race/expiry/connection tests | B2/B3 and writer ordering + bounded latency PASS | F1 | `feat(security): linearize cross owner protected operations` |
 | 5 | HPR-P25-052 | Topology authoring, route/profile and revision publication APIs | Topology; read-only foreign owner contracts | PLANNED / REGISTERED; D3 contract/scope gate | 051; accepted 018/019/020/032/034/036/037/038; D3 | D3 closed authoring/storage/API list | Actual API round trips, epochs/CAS/history/import-export | F1-02/03/04 within explicit supported topology scope | F1 | `feat(topology): expose governed engineering revision workflows` |
 | 6 | HPR-P25-053 | Product/property/method metadata authoring and history | Custody; source approval through Workflow | PLANNED / REGISTERED; D3 contract/scope gate | 051; accepted 018/022 design; D3 | D3 exact Custody/owner-export list | Multi-product metadata, unsupported shape, old GAS replay | F2-01 and product share of F2-03 | F2 | `feat(custody): govern versioned product engineering data` |
 | 7 | HPR-P25-054 | Installed-unit/asset and manufacturer-characteristic history | Topology installed configuration; Assets lifecycle; Party manufacturer; existing Simulation data store | PLANNED / REGISTERED; D3 contract/scope gate | 052; accepted 020/021 design; D3 | D3 exact per-owner list | Nine distinct units; curve/table/units/lifecycle/history | F2-02 and equipment share of F2-03; data only | F2 | `feat(engineering): govern installed units and characteristic revisions` |
@@ -9122,3 +9132,70 @@ Focused compiled JUnit enumeration: 22 cases, 0 failures/errors, 22 SKIPPED with
 no database acceptance/timing claim. Exact 1 CREATE / 3 UPDATE, unchanged other tracked
 blobs, prior case/policy parity, canonical headers and append-only reconciliation checks
 are required before guarded main publication. No production or optimized CI adoption.
+
+
+## 2026-10-14 — HPR-P25-051 CI repair: independent bounded writer probes
+
+Owner Fail selects repair of the published proof at e7c2e1db2152e2656abeae275e0b0995dda558af,
+tree f1f9e36c1bd95f00081e092ee6ccb98b36cda06e. Full #684 (38557167960) is still in
+progress at diagnosis, but its unrestricted Java 21 Maven verification job 115829055197
+has FAILED: 1,922 executed cases, zero failures, one error, zero skips. The new proof
+executed all 22 PostgreSQL cases: 21 passed and one error in
+nativeInsertDeleteUpdateAndPhantomDenyCannotPassHeldRelationFences. The final database
+function correctly raised P0001 / INDETERMINATE: temporal/head guard. Fast #17 and Docs
+#289 SUCCESS; static, unit/architecture, API/dictionary and DB shard0 passed. Shard1 was
+still running and is not claimed accepted. Completion polling is not required for repair
+of this observed failure. Unrelated connection-refused/cleanup log messages are not the
+Surefire error; they are not treated as new production regressions without failed cases.
+
+The harness stacked three deliberately blocking native writer probes plus connection
+establishment within one protected owner transaction. That test then incorrectly expected
+a successful final guard inside the unchanged 500 ms budget. Recorded failed-case elapsed
+time is 1.052 s (whole JUnit invocation, not a fabricated isolated transaction measurement).
+Do not loosen the guard, reduce writer evidence, remove the case or raise the work budget.
+
+Repair only that existing test body: for each INSERT/phantom DENY, DELETE and UPDATE probe,
+establish the independent physical writer/backend first, then acquire the full ordered
+owner relation fences in its own writable READ_COMMITTED transaction. Keep the native
+100 ms lock timeout, observed SQLSTATE 55P03, subsequent aborted-transaction SELECT check,
+explicit writer rollback, same/different backend and owner-order assertions, paired
+sample/interval decision and real final guarded receipt/commit. Post-release native writes
+remain. Three injected waits no longer accumulate in one admitted protected operation,
+and connection setup happens before fences. No retry, sleep race barrier, relaxed guard,
+production source, migration or additional fixture method is introduced. All other 21
+bodies, all 22 case names, ordinary-guard counterexample, commit adversaries and contention
+thresholds stay unchanged. Inventory changes only the new proof class's exact source hash;
+case/lane/Fast/timing/baseline/policy/archive records stay unchanged.
+
+Observed #684 synthetic contention evidence remains diagnostic, not whole-stage acceptance:
+8/8 committed, zero aborts; all eight total times 11.986849–44.062227 ms; acquisition waits,
+holds and commit tails retained in the original job log. Eight post-release admin samples
+0.162525–0.954484 ms (p95=0.954484 at n=8). Runner 4 CPUs, JVM heap 2,147,483,648 bytes,
+fresh fixture/warm Spring, no injected outage in that cohort. No production capacity or
+finite COMMIT/WAL/network hold bound follows. The failed class/oracle still blocks proof
+acceptance, and D2/runtime lifecycle/contributor/export/038 integration remain open.
+
+Registered repair scope: UPDATE only the existing proof test, CI inventory, roadmap and
+append-only reconciliation; CREATE/DELETE none. Repair uses the already registered exact
+message `test(security): prove protected operation temporal fencing`. Validate compilation/
+actual case enumeration, all six unchanged Python policy suites, inventory, canonical docs,
+offline OpenAPI, retained P1 evidence and exact source/case/body preservation. Publish
+main directly with expected head e7c2e1db2152e2656abeae275e0b0995dda558af, verify commit
+parent/tree/blob/path scope, observe automatic Full/Fast/Docs startup on the repair SHA,
+then STOP. No PR/branch, no completion wait, no 052 or production integration selection.
+Local Docker remains absent; skipped PG cases cannot prove this repair or hosted acceptance.
+Gas-first/GZ2, own engine, steady/transient direction, versioned inputs/operator control,
+synthetic development and owner deployment calibration remain; Simulation/P3 stays deferred.
+
+
+Actual repair validation: fresh Java21 focused Maven test lifecycle completed successfully;
+22 cases genuinely enumerated, 0 failures/errors, all 22 SKIPPED locally without Docker.
+No hosted repair/DB acceptance is claimed. Six unchanged Python suites PASS (102 cases),
+canonical docs PASS (98 documents/5,355 links/24 modules/13 P2 rows), offline OpenAPI PASS
+(263 operations/244 paths/231 schemas), P1 consistency PASS and source inventory PASS.
+Inventory SHA-256: `632c0c1991b462640192bc34ea0ae875956277c89f5825a603a017941968c3de`.
+Fast296/unit297/DB37+39/oracle373/historical4 unchanged. Initial local copy filtering
+omitted three tracked files in packages literally named target; they were restored
+byte-identically before final successful compile/docs checks, with no tracked changes.
+Exact four-file/other-21-body/case/policy/header/append-only preservation is checked before
+publication. The server guard, timeout and aggregate work budgets are not relaxed.

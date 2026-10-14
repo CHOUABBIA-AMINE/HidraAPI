@@ -530,44 +530,49 @@ class CrossOwnerOperationTemporalFencePostgresIntegrationTest {
 
     @Test
     void nativeInsertDeleteUpdateAndPhantomDenyCannotPassHeldRelationFences() throws Exception {
-        owner(
-                a -> {
-                    fence(a);
-                    assertThat(a.order)
-                            .containsExactly(
-                                    "public.hidra_identity_user",
-                                    table("identity"),
-                                    table("windows"),
-                                    table("party"),
-                                    table("topology"),
-                                    table("receipt"));
-                    for (String mutation :
-                            List.of(
-                                    "INSERT INTO "
-                                            + table("windows")
-                                            + " VALUES('phantom',clock_timestamp(),clock_timestamp()+interval"
-                                            + " '1 minute',true,true,true)",
-                                    "DELETE FROM " + table("windows") + " WHERE family='rule'",
-                                    "UPDATE " + table("party") + " SET epoch=2")) {
-                        try (Connection c = independent()) {
-                            c.setAutoCommit(false);
-                            sql(c, "SET LOCAL lock_timeout='100ms'");
-                            assertThat(scalar(c, "SELECT pg_backend_pid()")).isNotEqualTo(a.pid);
+        for (String mutation :
+                List.of(
+                        "INSERT INTO "
+                                + table("windows")
+                                + " VALUES('phantom',clock_timestamp(),clock_timestamp()+interval"
+                                + " '1 minute',true,true,true)",
+                        "DELETE FROM " + table("windows") + " WHERE family='rule'",
+                        "UPDATE " + table("party") + " SET epoch=2")) {
+            // Establish the independent backend before retaining owner fences. Each negative
+            // writer probe has its own protected transaction; deliberate waits never stack.
+            try (Connection c = independent()) {
+                c.setAutoCommit(false);
+                sql(c, "SET LOCAL lock_timeout='100ms'");
+                int writerPid = scalar(c, "SELECT pg_backend_pid()");
+                owner(
+                        a -> {
+                            fence(a);
+                            assertThat(a.order)
+                                    .containsExactly(
+                                            "public.hidra_identity_user",
+                                            table("identity"),
+                                            table("windows"),
+                                            table("party"),
+                                            table("topology"),
+                                            table("receipt"));
+                            assertThat(writerPid).isNotEqualTo(a.pid);
                             assertThatThrownBy(() -> sql(c, mutation))
                                     .isInstanceOf(SQLException.class)
                                     .extracting(e -> ((SQLException) e).getSQLState())
                                     .isEqualTo("55P03");
                             assertThatThrownBy(() -> sql(c, "SELECT 1"))
                                     .isInstanceOf(SQLException.class);
-                            c.rollback();
-                        } catch (SQLException e) {
-                            throw new IllegalStateException(e);
-                        }
-                    }
-                    decisions(a);
-                    guard(a);
-                    return null;
-                });
+                            try {
+                                c.rollback();
+                            } catch (SQLException e) {
+                                throw new IllegalStateException(e);
+                            }
+                            decisions(a);
+                            guard(a);
+                            return null;
+                        });
+            }
+        }
         try (Connection c = independent()) {
             sql(c, "UPDATE " + table("party") + " SET epoch=2");
             sql(c, "DELETE FROM " + table("windows") + " WHERE family='rule'");

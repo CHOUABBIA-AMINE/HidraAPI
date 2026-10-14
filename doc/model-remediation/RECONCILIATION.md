@@ -21529,3 +21529,78 @@ mandatory and optimized=false. Gas-first/GZ2, own engine, steady/transient,
 versioned inputs/operator control persist; synthetic development only,
 owner calibration later, Simulation/P3 deferred, no release/deployment.
 
+
+
+## 2026-10-14 — HPR-P25-051B static syntax compiler candidate
+
+Owner Next selects the registered five-path 051B envelope after
+`8a6e304f92a6c4df7c76cd9e4bd95933582be137` and exact-SHA Docs #302 SUCCESS.
+Exact implementation message:
+`feat(identity): compile protected static expression syntax`.
+**051B IN PROGRESS / IMPLEMENTED CANDIDATE / HOSTED CI PENDING.**
+
+Created Identity-domain AuthorizationExpressionStabilityCompiler and its
+12-case behavioral unit test. compile(String) uses the existing bounded
+AuthorizationJson parser and validates exact grammar fields, all six
+operators and all five literal types. It returns immutable sorted fact
+dependencies for SUPPORTED_STATIC_SYNTAX, or UNSUPPORTED with a reason
+and empty dependencies. Null expression is unconditional syntax; JSON
+null, malformed/duplicate fields, empty arguments/lists, unsupported
+operators/types, invalid literals, clock references and unclassified
+facts reject. All/any analyze every branch independently of Boolean
+outcome; unsupported children cannot hide behind a matching sibling.
+DATE/DATETIME validation retains existing text equality semantics,
+including unequal text for equivalent instants.
+
+Only the ten exact adapter fact keys registered for 051B are supported.
+Encoded or nested context.evaluatedAt and subject.attributes.* reject.
+No caller-widened fact allowlist, callback, I/O or mutable parsed AST.
+Compilation construction enforces consistent rejection/dependency state.
+A supported classification is neither PERMIT nor a transaction/owner
+witness or temporal interval; real missing/incorrectly typed evidence
+still yields existing evaluator INDETERMINATE. The component is dormant:
+no ordinary evaluator/adapter/coordinator or public API was changed.
+Later protected integration must independently prove fact freezing,
+full future-event census, common s/u/t and owner head/epoch meaning.
+
+**Exact scope:** two registered Java CREATEs, inventory plus this roadmap
+and append-only reconciliation UPDATEs; no DELETE. Old inventory entries
+retain exact order/content, cases, hashes, lanes, timing, policies and
+historical archives. New genuine class is fast=true, unit-architecture
+and oracle; baseline_seconds=0 explicitly unmeasured. Inventory validates
+Fast298/unit299/PG37+41/oracle377/historical4. Inventory SHA256:
+`d9caee4c1bb0fc81cedc4f883ccd2f81be44e13945402e163a3730e0089e481f`.
+Compiler source SHA256:
+`8bcec30ee05c00157f8594367b664c65e8ae41d68866f0c4ecb0d95877927179`;
+test source SHA256:
+`d9cd68f1af7e30901edc18800f80d91b5fce495d6f41bc2eaf451fe3e8c3db6b`.
+
+**Actual local validation:** found cached Temurin Java21.0.12.1 and Maven
+3.9.11 after default PATH exposed only Java17/no javac/Maven. Reconstructed
+current source from existing local Git plus exact-SHA connector blobs;
+verified Git blob parity before drafting, including restored Windows
+wrapper line endings. Java21 focused offline Maven
+`-Dtest=AuthorizationExpressionStabilityCompilerTest,ArchitectureGuardrailTest test`
+PASS: 12 compiler +16 architecture, zero failures/errors/skips. Independent
+real JUnit-engine execution also passed all12. Reviewed Fast offline Maven
+PASS: 298 classes/1362 tests, zero failures/errors/skips, strict source-linked
+raw-report equality PASS. Initial Fast attempt failed on local Mockito
+self-attachment; rerun supplied existing mockito-core5.23.0 as a command-line
+Java agent, no project dependency/configuration changes. Six unchanged
+Python suites PASS: 102 cases. Canonical docs/offline OpenAPI/P1 and source
+inventory PASS; exact source/case/header/scope/old-entry and append-only
+checks performed. No PostgreSQL test or full hosted acceptance is claimed
+by local unit validation.
+
+Publish directly to expected-head main with the exact child message;
+verify two CREATE/three UPDATE paths, parent/tree/blob scope, observe
+automatic Full/Fast/Docs startup on the actual runtime SHA, then STOP.
+On separate Next/Fail inspect exact-SHA aggregate and regressions before
+051B acceptance or repair. Parent051/D2/B2/B3, writer/privilege completeness,
+global lock ordering, future-event interval compiler, real protected
+Identity/Party/Topology exports and038 head/epoch remain OPEN. 052 is not
+selected. CI-003 oracle/fallback remain mandatory and optimized=false.
+Gas-first/GZ2, own engine, steady/transient, versioned inputs/operator
+control persist; synthetic development, owner calibration later,
+Simulation/P3 deferred; no release/deployment.
+

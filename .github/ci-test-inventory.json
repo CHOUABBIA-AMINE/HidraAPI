@@ -1434,7 +1434,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.0,
+      "baseline_seconds": 0,
       "cases": [
         "exactExternalSubjectAndIssuerKeepBoundaryWhitespaceAndUnicode",
         "explicitNullBranchesAndPositiveGenerationsAreMandatory",
@@ -1709,7 +1709,32 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.0,
+      "baseline_seconds": 0,
+      "cases": [
+        "clockReferenceIsRejectedAtEveryNestingLevel",
+        "dateAndDatetimeConstantsKeepEvaluatorSemantics",
+        "everyInLiteralMustMatchDeclaredType",
+        "jsonResourceBoundsRemainEnforced",
+        "malformedAndDuplicateFieldsAreRejected",
+        "nestedStaticSyntaxCollectsAllDependencies",
+        "nullExpressionIsUnconditionalSyntax",
+        "resultsAreImmutableAndDeterministic",
+        "supportedSyntaxDoesNotOverrideIndeterminateEvaluation",
+        "unclassifiedReferencesCannotBeCallerAdmitted",
+        "unknownOperatorsAndTypesAreRejected",
+        "unsupportedBranchCannotHideBehindBooleanOutcome"
+      ],
+      "class": "dz.sh.hidra.modules.identity.domain.service.AuthorizationExpressionStabilityCompilerTest",
+      "dependency_reason": "Pure Identity static syntax classification using the real bounded JSON codec and evaluator; zero scheduling baseline is unmeasured pending hosted calibration.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationExpressionStabilityCompilerTest.java",
+      "source_sha256": "d9cd68f1af7e30901edc18800f80d91b5fce495d6f41bc2eaf451fe3e8c3db6b",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
       "cases": [
         "activeDirectoryCompletionRetainsActualTypeAndLdapSessionProtocol",
         "actualPostgresqlDeferredCommitFailureReturnsNoResultAndRollsBackEverything",
@@ -1841,7 +1866,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.0,
+      "baseline_seconds": 0,
       "cases": [
         "allFourProvenanceBranchesRoundTripExactSyntheticStructuralTuples",
         "appendWaitingOnNativeTerminationReadsItsCommittedTerminalImage",
@@ -1891,7 +1916,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.0,
+      "baseline_seconds": 0,
       "cases": [
         "actualLocalProducerReceiptOnlyBecomesEligibleAfterCompletionCommit",
         "actualNativeDecoderSkewCannotExtendTheInjectedRealDeadline",
@@ -2217,7 +2242,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.0,
+      "baseline_seconds": 0,
       "cases": [
         "actualNativeIssuerWireIsAcceptedWithoutChangingExistingClaimSchema",
         "afterCommitRegistrationCannotMoveToAnotherTransaction",

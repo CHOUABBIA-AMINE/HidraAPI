@@ -29,6 +29,52 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-P25-051 D2 owner source census, 2026-10-14
+
+Exact main `76b14cda4520f1eff242bd474c02ce4db317d385`: Full #686
+(https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38569456312),
+Fast #19 and Docs #292 all SUCCESS. Full's unrestricted authenticated aggregate:
+375 classes, 1,979 tests, zero failures/errors/skips. Both PostgreSQL shards,
+API/dictionary and all seven Full jobs passed. HPR-P25-051A is COMPLETED /
+CI ACCEPTED as a technical lifecycle prerequisite only. Parent HPR-P25-051
+remains IN PROGRESS / D2 REAL OWNER SCOPE NOT CLOSED; B2/B3 remain OPEN.
+
+Owner Next selects the same-ID 051/D2 source-contributor census and scope
+decision, not 052 or another runtime commit. These observations are verified
+against exact current production files but constitute a PARTIAL inventory,
+not proof that all owner writers, tables and future predicates are enumerated.
+
+| Owner | Exact source | Observed current boundary | Missing protected-operation obligation |
+|---|---|---|---|
+| Identity | `IdentityAuthorizationApplicationService`, `TopologyScopedAccessQueryService` | Permission evaluation uses a fresh `Instant.now()` and separate company CUSTOM and facility FACILITY queries | One common DB time s, complete contributor set and two valid decisions within the same physical fenced transaction |
+| Identity | `JpaAuthorizationEvidenceAdapter`, `AuthorizationExpressionEvaluator` | Filters User/Permission, direct/role/group/membership grants, external mappings, attributes and active policy versions/rules at the selected instant | Enumerate all native writers and relevant inactive/nonmatching future DENY, grant, membership, attribute, version and rule transitions; unsupported expressions fail closed |
+| Identity B1 | `TopologyOperationAuthenticationQueryAdapter`, `OperationAuthenticationQueryApplicationService` | Point-in-time native binding and current owner-state authentication evidence, not a protected participation port | Separate same-connection B1 owner export preserving identity, generation, source-deadline and security invalidation |
+| Party | `TopologyPartyEligibilityQueryService`, `TopologyPartyEligibilityContract` | Current Party repository lookup returns Boolean eligibility | Protected Party row/history state and transfer-sensitive eligibility with native writer enumeration |
+| Topology | `StationRevisionOwnerQueryService`, `FacilityRepositoryPort`, `FacilityJpaEntity` | Sequential Facility.ownerPartyId and Party-eligibility observations, explicitly no ownership epoch or access grant | Authoritative Facility/Party owner, epoch, transfer/hold and concrete 038 head/expected-predecessor/guarded read/write integration |
+| Platform | `ProtectedTransactionExecutor`, `ProtectedOperationDataSource`, `ProtectedJpaTransactionManager` | Accepted 051A provides writable READ_COMMITTED lifecycle, explicit flush, one sealed final SQL and commit-before-result | Real-owner materialized inputs, interval u and scalar final-guard time t/epoch/head predicates; no caller-minted PERMIT |
+
+Before 051 production CREATE/UPDATE authorization, complete an exhaustive
+relation/INSERT/UPDATE/DELETE/transfer and head writer inventory for all
+accepted Identity, Party and Topology contributors, sorted lock order,
+temporal half-open boundaries including inactive/future evidence,
+provider/link/credential A/B/A, policy and source-assertion dependencies.
+Specify same physical backend/transaction owner exports, predicate
+contribution to earliest u, final single DB time t and epoch/head CAS,
+and operation-specific negative/rollback/concurrency tests. Source-verify
+the owner contract and migration/schema before registering the exact runtime
+file allowlist. Missing families, unsupported free-form temporal expressions,
+or uncaptured native writers must return DENY/INDETERMINATE, not earlier
+permission booleans. The current partial census is NOT a D2 closure,
+production implementation, migration, 038 adoption, B2/B3 proof, or 052 gate.
+
+This source-only same-ID 051/D2 amendment uses existing exact registered
+message `docs(security): select operation time fencing proof`.
+UPDATE only this roadmap and append-only reconciliation; CREATE/DELETE none.
+All accepted Java, tests, SQL, workflows, inventory, dictionary, releases,
+version and original history are preserved. CI-003 is still IN PROGRESS
+with mandatory full oracle/fallback; simulation/P3 is DEFERRED.
+After exact-head guarded publication, verify Docs startup and STOP.
+
 ### Current execution checkpoint — HPR-P25-051A implementation candidate, 2026-10-14
 
 Docs #291 passed at ae9f639f; accepted runtime/prototype remains da4ce33e / Full #685.

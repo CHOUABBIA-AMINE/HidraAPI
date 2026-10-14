@@ -21053,3 +21053,30 @@ Exact 5 CREATE / 5 UPDATE / 0 DELETE, 4,823 other unchanged tracked blobs, heade
 case/lane/Fast/timing/archive parity, source hashes and append-only reconciliation are
 verified before publication. No production permission/owner/038 integration or D2 closure
 is claimed. New provider-aware runtime needs exact-SHA hosted Full/Fast/Docs acceptance.
+
+
+## 2026-10-14 — HPR-P25-051 parent D2 source census after 051A acceptance
+
+Authoritative main `76b14cda4520f1eff242bd474c02ce4db317d385` passed Full #686, Fast #19 and Docs #292.
+The unrestricted Full aggregate executed 375 classes / 1,979 tests,
+zero failures, errors and skips. 051A transaction lifecycle is therefore
+CI ACCEPTED. Parent 051/D2, B2/B3 and owner publication remain open.
+
+Owner Next selected a partial source census of live owner boundaries.
+IdentityAuthorizationApplicationService evaluates at separate Instants;
+TopologyScopedAccessQueryService makes sequential CUSTOM/FACILITY queries.
+JpaAuthorizationEvidenceAdapter evaluates user, permission, direct/role/group,
+membership, external-mapping, attribute, policy/version and rule evidence
+filtered at time s, without a complete future transition census.
+TopologyOperationAuthenticationQueryAdapter's B1 is point-in-time, not
+the same-transaction 051 export. Party eligibility is an independent
+repository Boolean; StationRevisionOwnerQueryService independently reads
+Facility ownership and Party status, with no protected epoch. Accepted
+Platform 051A supplies only technical transaction lifecycle, not business
+permission, earliest expiry u or the final head/epoch/time guard.
+
+Before owner integration a complete enumerated relation/native-writer and
+future-event/time inventory, owner participation contracts, ordering,
+guarded head/epoch predicates, and exact runtime allowlist are REQUIRED.
+No runtime, migrations, code, inventory, dictionary or release files were
+changed here. No D2/B2/B3 acceptance or 052 selection is claimed.

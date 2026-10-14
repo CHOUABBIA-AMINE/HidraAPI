@@ -588,6 +588,300 @@ class TrustedAuthenticationVerificationTest {
         }
     }
 
+    @Test
+    void actualNativeIssuerWireIsAcceptedWithoutChangingExistingClaimSchema() {
+        var b = attestLocal();
+        var key = new SecretKeySpec(SECRET.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+        var encoder =
+                org.springframework.security.oauth2.jwt.NimbusJwtEncoder.withSecretKey(key)
+                        .algorithm(org.springframework.security.oauth2.jose.jws.MacAlgorithm.HS256)
+                        .build();
+        var decoder = fixedDecoder();
+        var provider =
+                new org.springframework.beans.factory.support.StaticListableBeanFactory(
+                                java.util.Map.of("decoder", decoder))
+                        .getBeanProvider(org.springframework.security.oauth2.jwt.JwtDecoder.class);
+        var issuer =
+                new HidraAccessTokenIssuer(
+                        encoder,
+                        "hidra-api",
+                        "hidra-api",
+                        "sub",
+                        "roles",
+                        "scope",
+                        600,
+                        provider,
+                        65536);
+        var output = issuer.issue(principal(snapshot("LOCAL", null)), CONTEXT);
+        ambient(output.tokenValue());
+        var h = readerHarness(b, decoder, java.time.Clock.fixed(NOW, java.time.ZoneOffset.UTC));
+        assertThat(h.reader().queryCurrentBoundAuthentication().status()).isEqualTo("ELIGIBLE");
+    }
+
+    @Test
+    void signedReaderUsesActualWireInsteadOfCallerConstructedAmbientClaims() {
+        var b = attestLocal();
+        var h =
+                readerHarness(
+                        b, fixedDecoder(), java.time.Clock.fixed(NOW, java.time.ZoneOffset.UTC));
+        ambient(wire(b, null));
+        assertThat(h.reader().queryCurrentBoundAuthentication().evidence().userId())
+                .isEqualTo(b.userId());
+        org.mockito.Mockito.verify(h.states()).current(b, NOW);
+    }
+
+    @Test
+    void signedRawTypeCoercionAndDuplicateJsonCannotPassNativeReader() {
+        var b = attestLocal();
+        var h =
+                readerHarness(
+                        b, fixedDecoder(), java.time.Clock.fixed(NOW, java.time.ZoneOffset.UTC));
+        for (String change :
+                new String[] {
+                    "numeric-audience",
+                    "fractional-iat",
+                    "string-exp",
+                    "duplicate-sub",
+                    "uppercase-jti"
+                }) {
+            ambient(wire(b, change));
+            assertThat(h.reader().queryCurrentBoundAuthentication().status())
+                    .isEqualTo("ACCESS_DENIED");
+        }
+        org.mockito.Mockito.verifyNoInteractions(h.states());
+    }
+
+    @Test
+    void invalidNativeSignatureDeniesButDecoderInfrastructureFailureIsOperational() {
+        var b = attestLocal();
+        var h =
+                readerHarness(
+                        b,
+                        raw -> {
+                            throw new org.springframework.security.oauth2.jwt.BadJwtException(
+                                    "private-synthetic-bearer");
+                        },
+                        java.time.Clock.fixed(NOW, java.time.ZoneOffset.UTC));
+        ambient(wire(b, null));
+        assertThat(h.reader().queryCurrentBoundAuthentication().evidence()).isNull();
+        h =
+                readerHarness(
+                        b,
+                        raw -> {
+                            throw new org.springframework.security.oauth2.jwt.JwtException(
+                                    "private-synthetic-bearer");
+                        },
+                        java.time.Clock.fixed(NOW, java.time.ZoneOffset.UTC));
+        final var unavailable = h;
+        assertThatThrownBy(() -> unavailable.reader().queryCurrentBoundAuthentication())
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Native authentication verification is unavailable.")
+                .hasNoCause();
+    }
+
+    @Test
+    void elapsedNativeLookupDeniesWithoutAnotherOwnerQueryOrExpiryGrace() {
+        var b = attestLocal();
+        var clock = org.mockito.Mockito.mock(java.time.Clock.class);
+        org.mockito.Mockito.when(clock.instant()).thenReturn(NOW, b.expiresAt());
+        var h = readerHarness(b, fixedDecoder(), clock);
+        ambient(wire(b, null));
+        assertThat(h.reader().queryCurrentBoundAuthentication().status())
+                .isEqualTo("ACCESS_DENIED");
+        org.mockito.Mockito.verify(h.states(), org.mockito.Mockito.times(1)).current(b, NOW);
+    }
+
+    @Test
+    void readerDoesNotTreatStructurallyValidCopiedProducerTagAsAuthority() {
+        var b = attestLocal();
+        var forged =
+                new OperationAuthenticationBinding(
+                        b.bindingId(),
+                        b.formatVersion(),
+                        b.nativeIssuer(),
+                        b.nativeAudience(),
+                        b.jti(),
+                        b.sessionId(),
+                        b.userId(),
+                        b.authenticationType(),
+                        b.sessionProtocol(),
+                        b.providerId(),
+                        b.providerSecurityVersion(),
+                        b.externalIdentityId(),
+                        b.externalSubject(),
+                        b.externalSecurityVersion(),
+                        b.sourceIssuer(),
+                        b.sourceExpiresAt(),
+                        b.credentialId(),
+                        b.credentialSecurityVersion(),
+                        b.issuedAt(),
+                        b.expiresAt(),
+                        new byte[32]);
+        var h =
+                readerHarness(
+                        forged,
+                        fixedDecoder(),
+                        java.time.Clock.fixed(NOW, java.time.ZoneOffset.UTC));
+        ambient(wire(b, null));
+        assertThatThrownBy(() -> h.reader().queryCurrentBoundAuthentication())
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Corrupt persisted authentication provenance.");
+        org.mockito.Mockito.verifyNoInteractions(h.states());
+    }
+
+    @Test
+    void oversizeNativeBearerDeniesBeforeDecoderOrStorageLookup() {
+        var b = attestLocal();
+        var decoder =
+                org.mockito.Mockito.mock(org.springframework.security.oauth2.jwt.JwtDecoder.class);
+        var h = readerHarness(b, decoder, java.time.Clock.fixed(NOW, java.time.ZoneOffset.UTC));
+        ambient("x".repeat(65537));
+        assertThat(h.reader().queryCurrentBoundAuthentication().status())
+                .isEqualTo("ACCESS_DENIED");
+        org.mockito.Mockito.verifyNoInteractions(decoder, h.repo(), h.states());
+    }
+
+    @Test
+    void copiedPublicOidcTokenCannotPromoteCompletedPrivateReceipt() {
+        simulateTransaction();
+        var produced = produce(snapshot("OIDC", " exact source "));
+        var consumed = registry.consume(produced.input());
+        var b = consumed.attest(BINDING, SESSION, SETTINGS, CONTEXT);
+        consumed.publishAfterCommit(b);
+        var h =
+                readerHarness(
+                        b, fixedDecoder(), java.time.Clock.fixed(NOW, java.time.ZoneOffset.UTC));
+        assertThat(h.reader().queryCurrentBoundAuthentication().status())
+                .isEqualTo("ACCESS_DENIED");
+        TransactionSynchronizationManager.getSynchronizations()
+                .forEach(TransactionSynchronization::afterCommit);
+        assertThat(h.reader().queryCurrentBoundAuthentication().status()).isEqualTo("ELIGIBLE");
+        SecurityContextHolder.getContext()
+                .setAuthentication(
+                        new HidraOidcAuthenticationToken(
+                                (HidraPrincipal) produced.actual().getPrincipal()));
+        assertThat(h.reader().queryCurrentBoundAuthentication().evidence()).isNull();
+    }
+
+    private record ReaderHarness(
+            TopologyOperationAuthenticationQueryAdapter reader,
+            dz.sh.hidra.modules.identity.application.port.out
+                            .OperationAuthenticationBindingRepositoryPort
+                    repo,
+            dz.sh.hidra.modules.identity.application.port.out.AuthenticationSecurityStateQueryPort
+                    states) {}
+
+    private ReaderHarness readerHarness(
+            OperationAuthenticationBinding b,
+            org.springframework.security.oauth2.jwt.JwtDecoder decoder,
+            java.time.Clock clock) {
+        var repo =
+                org.mockito.Mockito.mock(
+                        dz.sh.hidra.modules.identity.application.port.out
+                                .OperationAuthenticationBindingRepositoryPort.class);
+        org.mockito.Mockito.when(repo.findByNativeIssuerAndJti(b.nativeIssuer(), b.jti()))
+                .thenReturn(java.util.Optional.of(b));
+        var states =
+                org.mockito.Mockito.mock(
+                        dz.sh.hidra.modules.identity.application.port.out
+                                .AuthenticationSecurityStateQueryPort.class);
+        org.mockito.Mockito.when(
+                        states.current(
+                                org.mockito.ArgumentMatchers.any(),
+                                org.mockito.ArgumentMatchers.any()))
+                .thenReturn(true);
+        var issuer =
+                org.mockito.Mockito.mock(
+                        dz.sh.hidra.modules.identity.application.port.out.AccessTokenIssuerPort
+                                .class);
+        org.mockito.Mockito.when(issuer.settings()).thenReturn(SETTINGS);
+        var provider =
+                new org.springframework.beans.factory.support.StaticListableBeanFactory(
+                                java.util.Map.of("decoder", decoder))
+                        .getBeanProvider(org.springframework.security.oauth2.jwt.JwtDecoder.class);
+        return new ReaderHarness(
+                new TopologyOperationAuthenticationQueryAdapter(
+                        repo,
+                        new dz.sh.hidra.modules.identity.application.service
+                                .OperationAuthenticationQueryApplicationService(states),
+                        provider,
+                        issuer,
+                        registry,
+                        clock,
+                        65536),
+                repo,
+                states);
+    }
+
+    private static org.springframework.security.oauth2.jwt.JwtDecoder fixedDecoder() {
+        var decoder =
+                org.springframework.security.oauth2.jwt.NimbusJwtDecoder.withSecretKey(
+                                new SecretKeySpec(
+                                        SECRET.getBytes(StandardCharsets.UTF_8), "HmacSHA256"))
+                        .macAlgorithm(
+                                org.springframework.security.oauth2.jose.jws.MacAlgorithm.HS256)
+                        .build();
+        // Unit signature proof uses the fixed fixture clock; no hosted timing/DB acceptance claim.
+        decoder.setJwtValidator(
+                jwt ->
+                        org.springframework.security.oauth2.core.OAuth2TokenValidatorResult
+                                .success());
+        return decoder;
+    }
+
+    private static void ambient(String raw) {
+        var jwt =
+                org.springframework.security.oauth2.jwt.Jwt.withTokenValue(raw)
+                        .header("alg", "HS256")
+                        .issuer("forged")
+                        .subject("forged")
+                        .issuedAt(NOW)
+                        .expiresAt(NOW.plusSeconds(1))
+                        .build();
+        var token =
+                new org.springframework.security.oauth2.server.resource.authentication
+                        .JwtAuthenticationToken(jwt, java.util.List.of());
+        token.setAuthenticated(true);
+        SecurityContextHolder.getContext().setAuthentication(token);
+    }
+
+    private static String wire(OperationAuthenticationBinding b, String change) {
+        var json = tools.jackson.databind.json.JsonMapper.builder().build();
+        var fields = new java.util.LinkedHashMap<String, Object>();
+        fields.put("iss", b.nativeIssuer());
+        fields.put("aud", java.util.List.of(b.nativeAudience()));
+        fields.put("sub", b.userId());
+        fields.put("jti", b.jti());
+        fields.put("authentication_type", b.authenticationType());
+        fields.put("identity_provider_id", b.providerId());
+        fields.put("iat", b.issuedAt().getEpochSecond());
+        fields.put("exp", b.expiresAt().getEpochSecond());
+        if ("numeric-audience".equals(change)) fields.put("aud", 123);
+        if ("fractional-iat".equals(change)) fields.put("iat", b.issuedAt().getEpochSecond() + 0.5);
+        if ("string-exp".equals(change))
+            fields.put("exp", String.valueOf(b.expiresAt().getEpochSecond()));
+        if ("uppercase-jti".equals(change))
+            fields.put("jti", "AAAAAAAA-AAAA-4AAA-8AAA-AAAAAAAAAAAA");
+        String payload = json.writeValueAsString(fields);
+        if ("duplicate-sub".equals(change))
+            payload =
+                    payload.substring(0, payload.length() - 1) + ",\"sub\":\"" + b.userId() + "\"}";
+        var b64 = java.util.Base64.getUrlEncoder().withoutPadding();
+        String unsigned =
+                b64.encodeToString("{\"alg\":\"HS256\"}".getBytes(StandardCharsets.UTF_8))
+                        + "."
+                        + b64.encodeToString(payload.getBytes(StandardCharsets.UTF_8));
+        try {
+            Mac m = Mac.getInstance("HmacSHA256");
+            m.init(new SecretKeySpec(SECRET.getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
+            return unsigned
+                    + "."
+                    + b64.encodeToString(m.doFinal(unsigned.getBytes(StandardCharsets.US_ASCII)));
+        } catch (java.security.GeneralSecurityException failure) {
+            throw new IllegalStateException("Synthetic signer unavailable.");
+        }
+    }
+
     private static TrustedAuthenticationVerificationRegistry registry(String secret) {
         return new TrustedAuthenticationVerificationRegistry(secret, "hidra-api", "hidra-api");
     }

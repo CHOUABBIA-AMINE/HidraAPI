@@ -29,6 +29,15 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-P25-050D B1 reader candidate, 2026-10-14
+
+A/B/C are CI accepted; C passed Full #682/Fast #15/Docs #286 on 3facf12. Owner Next selects
+D only. Argument-free native/after-commit B1 reader and fresh joined owner-state query are
+implemented candidates. Focused unit/controller regressions pass; local Docker absence
+skips all required PG cases, including D's new 26. D and parent 050 remain IN PROGRESS /
+CI PENDING; 051/B2/B3 stay blocked. Guarded main publication observes Full/Fast/Docs startup
+then STOP without completion polling. Exact implementation/proofs/limitations below.
+
 ### Current execution checkpoint — HPR-P25-050C candidate, 2026-10-14
 
 050B is CI accepted on 04d6fbc (Full #681/Fast #14/Docs #285 SUCCESS). Owner Next selects
@@ -7932,7 +7941,7 @@ them only within the separately selected stage after validation against current 
 
 ### Execution order, exact messages and acceptance state
 
-Parent HPR-P25-050 remains IN PROGRESS / STAGED; A/B CI accepted, C is a candidate. The following
+Parent HPR-P25-050 remains IN PROGRESS / STAGED; A/B/C CI accepted, D is a candidate. The following
 child IDs are implementation subdivisions of that parent, not new product requirements.
 Dependency order is strict: 050A → 050B → 050C → 050D. No batch is authorized. A separate
 owner Next selects exactly one child after its prerequisite exact-SHA CI is accepted;
@@ -7947,8 +7956,8 @@ An intermediate green child proves only its own bounded deliverable, not complet
 |---|---|---|---|---|
 | HPR-P25-050A | Trusted binding foundations and private verification receipts | accepted 044/045/046/047/049 and this amendment | COMPLETED / CI ACCEPTED | `feat(identity): add trusted authentication binding foundations` |
 | HPR-P25-050B | Fresh-schema binding storage and session guards | CI-accepted HPR-P25-050A | COMPLETED / CI ACCEPTED | `feat(identity): persist immutable authentication bindings` |
-| HPR-P25-050C | Real provider verification and atomic bound issuance | CI-accepted HPR-P25-050B | IN PROGRESS / IMPLEMENTED CANDIDATE; CI PENDING | `feat(identity): complete trusted bound authentication` |
-| HPR-P25-050D | Bound-operation reader and integrated B1 acceptance | CI-accepted HPR-P25-050C | BLOCKED / PREDECESSOR NOT ACCEPTED | `feat(identity): bind protected operations to trusted authentication` |
+| HPR-P25-050C | Real provider verification and atomic bound issuance | CI-accepted HPR-P25-050B | COMPLETED / CI ACCEPTED | `feat(identity): complete trusted bound authentication` |
+| HPR-P25-050D | Bound-operation reader and integrated B1 acceptance | CI-accepted HPR-P25-050C | IN PROGRESS / IMPLEMENTED CANDIDATE; CI PENDING | `feat(identity): bind protected operations to trusted authentication` |
 
 050D retains the original parent implementation message. The original one-commit
 message is not separately executed or used to squash accepted child commits. Parent
@@ -8661,3 +8670,144 @@ mandatory oracle/fallback retained and optimized adoption disabled. HidraAPI is 
 synthetic-data development project, with no production data migration/preservation or
 release/deployment. Gas-first/GZ2, own engine, steady/transient direction, versioned
 inputs/operator control persist. Owner supplies calibration later; Simulation/P3 deferred.
+
+
+## 2026-10-14 — HPR-P25-050D point-in-time B1 reader candidate
+
+Owner Next selects D only after refreshed main 3facf12aef110cb33f0b896398c9b1cee51af5f3,
+tree ac22d8b4649d6b42419f1b8e925b6b06325ae761. Full #682 (38547562367), Fast #15
+(38547562296) and Docs #286 (38547562324) are SUCCESS on that SHA. All seven Full jobs,
+including both PostgreSQL shards, unrestricted oracle, API/dictionary and authenticated
+Full Verification Gate, succeeded. C is COMPLETED / CI ACCEPTED for its real producer/
+atomic completion scope. A/B/C acceptance does not by itself close integrated B1.
+D is IN PROGRESS / IMPLEMENTED CANDIDATE / CI PENDING. Parent 050 remains IN PROGRESS;
+051/B2/B3 and Topology writes remain blocked and unselected. Exact D message:
+`feat(identity): bind protected operations to trusted authentication`.
+
+### Argument-free trusted reader
+
+TopologyOperationAuthenticationQueryAdapter implements the existing JDK-only, zero-argument
+TopologyOperationAuthenticationContract. Only actual ambient authenticated context is
+resolved. The original bounded native bearer is re-decoded by qualified hidraJwtDecoder;
+caller-created wrapper claims/principal/roles/details do not replace its signed wire.
+Invalid signatures/validation deny opaquely. Decoder availability/provenance failures are
+sanitized operational errors, not successful absence. No arbitrary caller token/id/provider/
+callback, source assertion, permission or operation payload is accepted by this export.
+
+After signature validation, a bounded strict JSON parser checks the original header/
+payload and rejects duplicate keys, malformed/trailing JSON, wrong alg/raw types, shortened/
+uppercase UUIDs, malformed Unicode/NUL/boundary whitespace, nonfinite/unrepresentable or
+fractional native times, wrong issuer/audience/sub/jti/type/provider/time readback and
+unsupported types. Raw numeric/array/object identity coercion cannot pass via Jwt conversion.
+The existing Nimbus issuer's RFC7519 singleton STRING audience form is preserved; exactly
+one textual array member is also admitted. Numeric/mixed/multiple audiences deny. A real
+native-issuer unit regression established this wire compatibility before publication;
+no existing claim schema or producer source was changed. Default encoded token envelope
+remains configurable at 65,536 bytes, with native key text limited to 512 UTF-8 bytes.
+
+Native issuer/jti lookup requires the immutable stored binding and private producer tag
+before current state can be promoted. Missing/legacy binding denies without identity;
+zero/copied/arbitrary 32-byte structural tags and corrupted tuples fail operationally.
+In-memory LOCAL/directory/OIDC counterparts require their actual producer-owned completed
+after-commit receipt, plus exact matching persisted private provenance. Converter-before-
+completion, public constructors, copied ordinary tokens and uncompleted contexts deny.
+No claims/cache lookup can reconstruct original external assertion or issue permission.
+
+OperationAuthenticationQueryApplicationService reads one joined Identity owner image
+through the accepted state port in an independent REQUIRES_NEW READ_COMMITTED read-only
+transaction. A cached JPA entity or caller repeatable-read snapshot cannot substitute old
+User/session/provider/link/credential images. Private origin and immutable binding input
+are checked by the adapter before this query. Exact session tuple/references, HUMAN active/
+unlocked User, active generations and real native/source deadlines retain the B predicate.
+Ineligible state denies; impossible references/tuples or storage failures remain operational
+errors. One final clock observation rejects deadlines elapsed during lookup, without a
+second owner query, decoder skew grace, cache promotion or expiry extension. This short
+read transaction is point-in-time B1, not a B2 permission or B3 owner/operation fence.
+
+### Synthetic PostgreSQL and unit proofs
+
+One new OperationAuthenticationQueryPostgresIntegrationTest defines 26 actual JUnit cases
+using PostgreSQL16/Flyway/Spring/JPA/JDBC, real test-key signatures and C's actual LOCAL/
+LDAP/AD/OIDC completion paths. The directory verifier remains deterministic synthetic,
+not a deployment LDAP/AD claim. Tests cover all four bearer evidence paths; ignored ambient
+wrapper data; missing/unauthenticated/public/legacy contexts; signature/algorithm/issuer/
+audience/sub/jti/provider/type/time/UUID/raw-type/duplicate/byte-envelope mismatches; missing
+signed fields; provider/credential/link A/B/A; locked/disabled/nonhuman User and all terminal
+sessions; exact native/source deadline and elapsed-query denial; genuinely fresh read-only
+backend inside a caller transaction; independently committed owner change despite cached
+JPA and repeatable-read images; actual pre/post-commit producer receipts and public copies.
+
+Zero/copied/arbitrary tags are inserted as real structurally valid native binding/session
+rows through ordinary guarded transactions, then rejected as private-origin forgery.
+Differing immutable replay cannot make ambiguous evidence. Impossible row/lookup errors
+are injected at the existing owner/storage ports to prove operational-error propagation;
+these are explicit fault injections, not claims of privileged database corruption or
+successful schema/trigger bypass. Existing B native/JPA/COPY/MERGE/append/delete/TRUNCATE/
+isolation guards and C physical rollback proofs remain mandatory unchanged regressions.
+
+Two D races hold real independent native/JPA writer transactions behind bounded latches;
+another backend observes the actual session row lock via FOR UPDATE NOWAIT / SQLSTATE
+55P03. Reader observes the prior committed ACTIVE MVCC image before writer commit, then
+opaque denial after committed termination. No sleep is race proof and no B2/B3 claim is
+made. The owner read is deliberately not a writer-blocking authorization fence.
+
+Receipt/guardrail tests retain every earlier case and add real unit HS256 wire verification,
+raw normalization/duplicate rejection, actual existing issuer compatibility, signature denial
+versus decoder error/redaction, no second lookup/expiry grace, private-tag forgery rejection,
+oversize early denial and after-commit/public-copy rejection. Architectural export/import
+and actual read-only/RC/new-transaction annotation checks remain within the two scoped tests.
+Unit fixed-clock validators/mocked owner rows/simulated callbacks are labelled unit evidence,
+not real PostgreSQL completion, current-state or hosted signature/clock acceptance.
+
+### Actual validation and limitations
+
+The full originally registered focused Maven list plus LDAP verifier test ran under the
+unchanged Java21 wrapper, offline, with the installed startup Byte Buddy agent. It PASSed
+143 executed unit/controller/ordinary-actor/native-JWT cases, zero failures/errors/skips
+among executed cases. Aggregate 261 includes 118 PostgreSQL cases SKIPPED locally because
+Docker/socket is absent: B37 + C22 + D26 and retained database regressions. These skips are
+NOT acceptance/PASS. Fresh compilation includes every source and all five new classes.
+Initial wire check rejected Nimbus scalar audience; compatibility was corrected as above.
+A formatting-sensitive new annotation assertion was replaced with actual reflection checks.
+Offline `clean test` was attempted but the Maven clean plugin was not cached; it failed
+before execution. Generated classes/test-classes/compiler-status only were cleared locally,
+then the successful existing `test` lifecycle compiled fresh. No source/build/dependency/
+wrapper/plugin change, environment privilege or manufactured report was used.
+
+Actual reviewed Fast run PASS: 296 classes / 1,318 cases, zero failures/errors/skips;
+strict raw-report equality PASS. Original focused/PG-skipped reports remain retained;
+Fast validation selects only its own reviewed reports, never hiding a required DB case.
+All six unchanged Python policy suites PASS (102 cases), canonical docs PASS
+(98 documents/5,355 relative links/24 modules/13 P2 rows), offline OpenAPI PASS
+(263 operations/244 paths/231 schemas), P1 retained evidence consistency PASS and source/
+case inventory validation PASS. Inventory retains 297 unit and four historical archives;
+DB partitions are 37+38 and unrestricted oracle 372. Prior cases/lane/Fast/timing/policy
+records remain unchanged; only the two affected hashes/case sets and D's actual 26-case
+DB entry change. Its zero timing hint truthfully awaits hosted measurement.
+Inventory SHA-256: `89b483d85fb8c483e6fc5b16f17a761245b5fade2e151058383f0eb26fea4217`.
+
+Unchanged reviewed dictionary equality PASS against the genuine #680 catalog/source
+bundle (148 migrations/470 JPA mappings/491 relations, zero unresolved owners); accepted
+#682 API/dictionary also passed. All SQL, JPA mappings, ownership and dictionary remain
+byte-identical. Local unit/catalog success cannot replace new D zero-skip hosted tests.
+D and parent 050 are not marked CI accepted or completed at preparation/publication.
+
+### Exact scope and publication stop
+
+Exact scope: 3 CREATE / 5 UPDATE; DELETE none, the registered D allowlist only. Canonical
+Author/CreatedOn headers, exact known/new paths, all other blobs, prior case/policy parity,
+append-only reconciliation and added-line whitespace are checked. Existing providers,
+completion/issuer, repositories/schema, ordinary actor/authorization/permission exports,
+Topology evaluator/write/API, workflow/build/helper/history/version sources remain unchanged.
+Publish only existing main with expected head 3facf12 and registered message; verify full
+parent/tree/path/blob scope. Observe Full/Fast/Docs startup on the published SHA and STOP
+without waiting for completion or advancing 051. If tools cannot start a required workflow,
+give the owner the named Actions/main dispatch handoff and stop before manual dispatch.
+
+Only a separate Next after D's exact-SHA Full/Fast/Docs success, required zero-skip runtime
+reports, mandatory oracle/partition equivalence, API/dictionary and integrated B1 evidence
+can close parent 050 and select registered 051. Fail repairs D first. CI-003 stays IN
+PROGRESS / shadow-fallback-required, mandatory fallback retained, optimized adoption false.
+Development remains synthetic, with no production/deployed-data migration/preservation or
+release/deployment. Gas-first/GZ2, Hidra's own engine, steady/transient direction, versioned
+inputs/operator control persist; owner supplies calibration later, Simulation/P3 deferred.

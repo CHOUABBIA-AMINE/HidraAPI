@@ -336,6 +336,51 @@ class OperationAuthenticationBoundaryGuardrailTest {
                 .doesNotContain("verificationHandle", "producerAuthenticator", "passwordHash");
     }
 
+    @Test
+    void readerKeepsPrivateNativeVerificationInsideIdentityAndUsesReadOnlyFreshOwnerQuery()
+            throws Exception {
+        var adapter =
+                Files.readString(
+                        IDENTITY.resolve(
+                                "infrastructure/security/TopologyOperationAuthenticationQueryAdapter.java"));
+        assertThat(adapter)
+                .contains(
+                        "queryCurrentBoundAuthentication()",
+                        "hidraJwtDecoder",
+                        "validatePersistentOrigin",
+                        "STRICT_DUPLICATE_DETECTION");
+        var owner =
+                Files.readString(
+                        IDENTITY.resolve(
+                                "application/service/OperationAuthenticationQueryApplicationService.java"));
+        var transaction =
+                dz.sh.hidra.modules.identity.application.service
+                        .OperationAuthenticationQueryApplicationService.class
+                        .getMethod("query", OperationAuthenticationBinding.class, Instant.class)
+                        .getAnnotation(
+                                org.springframework.transaction.annotation.Transactional.class);
+        assertThat(transaction.readOnly()).isTrue();
+        assertThat(transaction.isolation())
+                .isEqualTo(org.springframework.transaction.annotation.Isolation.READ_COMMITTED);
+        assertThat(transaction.propagation())
+                .isEqualTo(org.springframework.transaction.annotation.Propagation.REQUIRES_NEW);
+        assertThat(owner)
+                .doesNotContain(
+                        "Jwt",
+                        "SecurityContextHolder",
+                        "producerAuthenticator",
+                        "passwordHash",
+                        "PERMIT");
+        try (var paths = Files.walk(Path.of("src/main/java/dz/sh/hidra/modules/topology"))) {
+            for (var path : paths.filter(p -> p.toString().endsWith(".java")).toList())
+                assertThat(Files.readString(path))
+                        .doesNotContain(
+                                "OperationAuthenticationQueryApplicationService",
+                                "TopologyOperationAuthenticationQueryAdapter",
+                                "TrustedAuthenticationVerificationRegistry");
+        }
+    }
+
     private static AuthenticationVerificationSnapshot oidc(
             String subject, String issuer, Instant deadline) {
         return new AuthenticationVerificationSnapshot(

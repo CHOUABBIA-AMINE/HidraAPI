@@ -31,6 +31,156 @@ by this planning commit. Current planning commit message:
 
 
 
+
+### Current execution checkpoint — HPR-P25-051 D2 native-owner lock proof test registration, 2026-10-14
+
+**Current source and CI:** Starting main `b0691face7e503d7aa596caff154661c460c9140` has exact-SHA
+Documentation Validation #38581069770 SUCCESS. Runtime baseline
+`76b14cda4520f1eff242bd474c02ce4db317d385` has Full #686,
+Fast #19 and Docs #292 SUCCESS. Same-ID HPR-P25-051 is
+IN PROGRESS; 051A technical lifecycle CI ACCEPTED and B2/B3,
+complete D2 owner scope, 038 runtime head and 052 remain OPEN.
+
+**Decision:** Register a single **test-only real PostgreSQL lock
+collision proof** under the already selected HPR-P25-051 D2 scope.
+This is a concrete future execution selected *after* this exact-head
+Docs CI succeeds and a new user Next; this registration itself
+changes documentation only. The proof shall not authorize a new
+permission, dynamic policy, head write, migration, owner export or
+protected Topology API. It isolates the known collision gate before
+any production integration file list can be registered.
+
+#### Source-anchored risk and test boundary
+
+- `V20261013_001__p25_identity_operation_binding.sql` performs
+  native immutable binding INSERT with Provider -> LOCAL Credential
+  or ExternalIdentity -> User -> LoginSession `FOR UPDATE` order,
+  and bound-session UPDATE/DELETE/TRUNCATE controls.
+- `V20261012_001`, `V20261012_002` use normal-writer
+  credential/provider/external-identity generation triggers;
+  `V20261004_011` has grant/mapping ACTIVE Permission admission
+  triggers. JPA `JpaLoginSessionRepositoryAdapter.findById`
+  takes a PESSIMISTIC_WRITE owner row lock in writable transactions,
+  while `save` flushes synchronously.
+- Accepted `ProtectedTransactionExecutor` opens one writable
+  READ COMMITTED physical transaction, sets 250ms lock timeout,
+  750ms statement timeout, 1000ms idle-in-transaction timeout
+  and bounded 500ms protected-work deadline; it forbids SQL
+  after its exact final guard and delivery before observed COMMIT.
+  `CrossOwnerOperationTemporalFencePostgresIntegrationTest` already
+  proves a *synthetic* 6-relation fence and 22 mechanisms, not the
+  compatibility of these actual Identity normal writers.
+- The full D2 relation list, complete operator write privilege
+  matrix and Party/Facility/038 head writer DAG remain unknown;
+  no universal safe global lock order is selected from this
+  isolated proof.
+
+#### Registered future test-only execution
+
+**Exact same-ID internal commit message:**
+`test(security): prove native owner fence compatibility`.
+
+| Operation | Exact file, exclusive |
+|---|---|
+| CREATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/NativeOwnerFenceCompatibilityPostgresIntegrationTest.java` |
+| UPDATE | `.github/ci-test-inventory.json` |
+| UPDATE | `doc/roadmap/ULTIMATE_ROADMAP.md` |
+| UPDATE | `doc/model-remediation/RECONCILIATION.md` — append-only |
+| DELETE | None |
+
+No other Java, existing test file, SQL/Flyway, datasource,
+Spring configuration, workflow, API, production class, version,
+dependency, dictionary, package or release change is authorized.
+The test class must have the canonical `@Author : Abir MEDJERAB`
+and `@CreatedOn : 2025-06-26` header, Identity Test layer
+and exact matching package. Use real Testcontainers PostgreSQL 16,
+Flyway validate/migrate, JPA validate and explicitly independent
+connections/transactions. Never use a mocked lock/transaction or
+treat a locally skipped PostgreSQL test as acceptance. The
+new class has no public API and makes no runtime security change.
+
+**Required genuine test identities (subject to actual JUnit
+reports, not fabricated successes):**
+
+1. `freshFlywayAndNativeTriggerLockOrderAreReal`: inspect actual
+   migrated triggers/function and valid owner fixture, confirm
+   same backend PID/XID for participating Spring JDBC/Hibernate
+   within a single READ COMMITTED transaction.
+2. `uncontendedNativeBindingWriterCommits`: independent valid
+   normal owner/binding write completes and commits when no fence
+   is held. A fabricated private HMAC or hand-built storage
+   tuple may only be labeled a SQL-trigger fixture and never
+   accepted as producer-origin proof.
+3. `relationFenceBlocksPhantomPermissionWriter`: in a real
+   independent writer transaction, an INSERT into an actual
+   relevant grant relation while SHARE ROW EXCLUSIVE is held
+   cannot overtake the fence. Assert SQLSTATE lock timeout,
+   rollback and positive commit after fence release; seed
+   valid existing User/Permission/PK/ FK identities.
+4. `nativeBindingTriggerAndRelationFenceAbortSafely`: native
+   binding/owner row lock encounter with coarse relation lock
+   and PESSIMISTIC_WRITE session access resolves via bounded
+   commit or fail-closed SQLSTATE; no hanging executor, unsafe
+   resumed protected action or duplicate binding.
+5. `generationRevocationWaitsOrFailsClosed`: Provider/
+   ExternalIdentity or LOCAL Credential security-sensitive
+   UPDATE on independent connection cannot silently pass a
+   protected fence, and database-owned generation changes
+   are observed after release; verify no credential/link
+   deletion or old-generation rebinding.
+6. `lockAbortLeavesNoPartialProtectedWrite`: independent
+   connection collision within protected execution with
+   real JPA provisional write and native SQL abort has
+   zero persisted provisional changes/receipts, no result
+   returned, no recovery inside aborted transaction.
+
+Exact names above are planned source-test labels, not current
+JUnit reports. Require deterministic CountDownLatch barriers,
+strict bounded joins, SQLSTATE inspection, cleanup without
+TRUNCATE of guarded Identity security rows, and positive
+uncontended controls. If an actual acquired-lock graph produces
+deadlock or test instability, record/fix the failing proof
+WITHOUT weakening timeouts, security triggers or known test
+cases. Do not claim general deadlock freedom from these cases.
+
+**Inventory/verification controls:** add just this genuine
+class and its actually executed case identities to the DB lane
+and unrestricted oracle in `.github/ci-test-inventory.json`,
+`fast=false` and actual source SHA-256; preserve old
+baseline, timings, selection/policies, existing case bodies,
+Fast set, skips, archive and all old classes. Record no
+fabricated baseline durations; calculate digest from exact
+committed test source. Run exact focused Java 21 Maven
+compile/test and architecture checks if available, existing
+Python policy/inventory checks, `git diff --check`,
+then publish directly to expected-head `main`. Automatic
+Full/Fast/Docs CI must START on the actual test SHA; STOP.
+On a later turn inspect exact-SHA hosted results including
+genuine zero-skip PostgreSQL executions before considering
+the test complete. No runtime release-readiness claim.
+
+**Selected NEXT after this docs commit:** execute ONLY the
+four-path real-PG test envelope above; not an entire owner
+implementation or additional D2 documentation census.
+If Docs CI fails repair first. Completion of this test
+does NOT close full source writer inventory, temporal
+expression compilation, Identity B1/paired authorization
+and Party/Topology 038 owner exports, global lock graph,
+B2/B3 or 052.
+
+#### Current documentation registration and STOP
+
+CURRENT commit uses existing registered same-ID governance
+message `docs(security): select operation time fencing proof`.
+UPDATE only `doc/roadmap/ULTIMATE_ROADMAP.md` and append-only
+`doc/model-remediation/RECONCILIATION.md`; CREATE/DELETE none.
+Preserve every source, test, migration, current CI inventory,
+history and release artifact. Guard main at `b0691face7e503d7aa596caff154661c460c9140`,
+verify parent, tree and two-file scope, observe automatic Docs
+workflow START then STOP. Do not execute the newly registered
+test slice in this same turn.
+
+
 ### Current execution checkpoint — HPR-P25-051 complete migration lexical census and temporal expression gate, 2026-10-14
 
 **Live gate:** main `89cf1f047b6315295cc15e06c69d0d6eb44935d1` passed exact-SHA

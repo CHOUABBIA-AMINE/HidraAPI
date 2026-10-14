@@ -21218,3 +21218,40 @@ Only two docs files are changed; existing code, migrations, CI inventory
 and past evidence unchanged. Registered message remains
 `docs(security): select operation time fencing proof`. Observe new
 Docs startup then STOP.
+
+
+## 2026-10-14 — HPR-P25-051 D2 real native-owner fence test registration
+
+At main `b0691face7e503d7aa596caff154661c460c9140` Docs #38581069770 SUCCESS. Last production
+`76b14cda4520f1eff242bd474c02ce4db317d385` retains
+Full #686/Fast #19/Docs #292 SUCCESS and HPR-P25-051A lifecycle
+acceptance. A narrow future **TEST-ONLY** HPR-P25-051 D2 native-writer
+compatibility proof is registered, separate from 038/Party/Identity
+business authorization or real publication.
+
+Production source: P25 B1 operation-binding trigger takes Provider ->
+Credential or ExternalIdentity -> User -> LoginSession FOR UPDATE
+locks; B1 generation triggers and writable LoginSession JPA
+PESSIMISTIC_WRITE/saveAndFlush are additional real writer paths.
+The accepted 051A executor sets exact 250/750/1000ms database
+timeouts and 500ms protected work limit. The existing 22-case
+synthetic proof does not resolve real trigger/table-lock ordering.
+
+**Next**, only after this docs SHA passes, ONE test-only commit with
+exact message `test(security): prove native owner fence compatibility`:
+CREATE `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/NativeOwnerFenceCompatibilityPostgresIntegrationTest.java`, UPDATE
+`.github/ci-test-inventory.json`, `doc/roadmap/ULTIMATE_ROADMAP.md`
+and append-only this reconciliation. No production/migration/
+existing tests/workflows/CI baseline changes. Real Testcontainers
+PostgreSQL16/Flyway/JPA/independent-writer tests must verify an
+uncontended positive binding write, relation phantom blocking,
+bounded native trigger/fence interaction, provider/link or
+credential generation revocation, same PID/XID and full rollback.
+The six proposed JUnit names and inclusion rules are recorded in
+the Ultimate Roadmap, not claimed executed.
+
+This registration alone is only two governance-file UPDATEs with
+`docs(security): select operation time fencing proof`. It does
+not close D2, B2/B3, complete writer census, global deadlock
+freedom, temporal grammar, Party/Facility epoch, 038 head,
+HPR-P25-051 or 052. STOP after exact-SHA Docs startup.

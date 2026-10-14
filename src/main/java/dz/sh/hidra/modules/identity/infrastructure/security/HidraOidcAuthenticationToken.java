@@ -7,7 +7,7 @@
  *
  * @Name        : HidraOidcAuthenticationToken
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-06
+ * @UpdatedOn   : 2026-10-14
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -19,33 +19,59 @@
  */
 package dz.sh.hidra.modules.identity.infrastructure.security;
 
-import dz.sh.hidra.modules.identity.domain.model.HidraPrincipal;
-import java.util.Objects;
 import dz.sh.hidra.modules.identity.application.model.VerifiedAuthorizationAssertion;
+import dz.sh.hidra.modules.identity.domain.model.HidraPrincipal;
+
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.authority.AuthorityUtils;
 
+import java.util.Objects;
+
 /**
- * Authenticated Spring Security token carrying the normalized Hidra principal after OIDC validation.
+ * Authenticated Spring Security token carrying the normalized Hidra principal after OIDC
+ * validation.
  */
 public final class HidraOidcAuthenticationToken extends AbstractAuthenticationToken {
 
     private final HidraPrincipal principal;
 
     private final VerifiedAuthorizationAssertion authorizationAssertion;
-    public HidraOidcAuthenticationToken(HidraPrincipal principal) { this(principal,null); }
-    public HidraOidcAuthenticationToken(HidraPrincipal principal,VerifiedAuthorizationAssertion assertion) {
+    private final TrustedAuthenticationVerificationRegistry.Receipt verificationReceipt;
+
+    public HidraOidcAuthenticationToken(HidraPrincipal principal) {
+        this(principal, null);
+    }
+
+    public HidraOidcAuthenticationToken(
+            HidraPrincipal principal, VerifiedAuthorizationAssertion assertion) {
+        this(principal, assertion, null);
+    }
+
+    HidraOidcAuthenticationToken(
+            HidraPrincipal principal,
+            VerifiedAuthorizationAssertion assertion,
+            TrustedAuthenticationVerificationRegistry.Receipt receipt) {
         super(AuthorityUtils.NO_AUTHORITIES);
+        this.verificationReceipt = receipt;
         this.principal = Objects.requireNonNull(principal, "Hidra principal must not be null.");
-        if(assertion!=null && (!principal.userId().equals(assertion.userId())
-                || !Objects.equals(principal.identityProviderId(),assertion.providerId())
-                || !Objects.equals(principal.externalIdentityId(),assertion.externalIdentityId())))
-            throw new IllegalArgumentException("Authorization assertion must belong to the authenticated principal.");
-        this.authorizationAssertion=assertion;
+        if (assertion != null
+                && (!principal.userId().equals(assertion.userId())
+                        || !Objects.equals(principal.identityProviderId(), assertion.providerId())
+                        || !Objects.equals(
+                                principal.externalIdentityId(), assertion.externalIdentityId())))
+            throw new IllegalArgumentException(
+                    "Authorization assertion must belong to the authenticated principal.");
+        this.authorizationAssertion = assertion;
         super.setAuthenticated(true);
     }
 
-    public VerifiedAuthorizationAssertion authorizationAssertion() { return authorizationAssertion; }
+    TrustedAuthenticationVerificationRegistry.Receipt verificationReceipt() {
+        return verificationReceipt;
+    }
+
+    public VerifiedAuthorizationAssertion authorizationAssertion() {
+        return authorizationAssertion;
+    }
 
     @Override
     public Object getCredentials() {

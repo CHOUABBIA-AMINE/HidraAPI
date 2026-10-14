@@ -7,7 +7,7 @@
  *
  * @Name        : AuthenticatedPrincipalInput
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-14
  *
  * @Type        : Record
  * @Layer       : Application
@@ -20,12 +20,11 @@
 package dz.sh.hidra.modules.identity.application.model;
 
 import dz.sh.hidra.modules.identity.domain.value.ProviderType;
+
 import java.util.Objects;
 import java.util.Set;
 
-/**
- * Application input used to complete an already authenticated identity.
- */
+/** Application input used to complete an already authenticated identity. */
 public record AuthenticatedPrincipalInput(
         String userId,
         String username,
@@ -34,19 +33,61 @@ public record AuthenticatedPrincipalInput(
         String identityProviderId,
         Set<String> roles,
         Set<String> permissions,
-        String externalIdentityId
-) {
+        String externalIdentityId,
+        String verificationHandle) {
 
-    public AuthenticatedPrincipalInput(String userId, String username, String displayName, ProviderType authenticationType,
-            String identityProviderId, Set<String> roles, Set<String> permissions) {
-        this(userId, username, displayName, authenticationType, identityProviderId, roles, permissions, null);
+    public AuthenticatedPrincipalInput(
+            String userId,
+            String username,
+            String displayName,
+            ProviderType authenticationType,
+            String identityProviderId,
+            Set<String> roles,
+            Set<String> permissions) {
+        this(
+                userId,
+                username,
+                displayName,
+                authenticationType,
+                identityProviderId,
+                roles,
+                permissions,
+                null,
+                null);
+    }
+
+    public AuthenticatedPrincipalInput(
+            String userId,
+            String username,
+            String displayName,
+            ProviderType authenticationType,
+            String identityProviderId,
+            Set<String> roles,
+            Set<String> permissions,
+            String externalIdentityId) {
+        this(
+                userId,
+                username,
+                displayName,
+                authenticationType,
+                identityProviderId,
+                roles,
+                permissions,
+                externalIdentityId,
+                null);
+    }
+
+    @Override
+    public String toString() {
+        return "AuthenticatedPrincipalInput[REDACTED]";
     }
 
     public AuthenticatedPrincipalInput {
         userId = requireText(userId, "userId");
         username = requireText(username, "username");
         displayName = normalize(displayName);
-        authenticationType = Objects.requireNonNull(authenticationType, "authenticationType must not be null.");
+        authenticationType =
+                Objects.requireNonNull(authenticationType, "authenticationType must not be null.");
         identityProviderId = normalize(identityProviderId);
         externalIdentityId = normalize(externalIdentityId);
         roles = immutableSet(roles);

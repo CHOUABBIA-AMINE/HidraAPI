@@ -1420,7 +1420,8 @@
         "ordinaryIdentityApiDtosMustNotExposePasswordHashes",
         "platformMustNotOwnIdentityUserRolePermissionBusinessMeaning",
         "productionAuthenticationSecretsMustRemainExternalized",
-        "productionSourceMustNotContainEmbeddedPrivateKeys"
+        "productionSourceMustNotContainEmbeddedPrivateKeys",
+        "restControllersMustNotDependOnPrivateBoundAuthenticationTransport"
       ],
       "class": "dz.sh.hidra.modules.identity.AuthenticationArchitectureAndSecretGuardrailTest",
       "dependency_reason": "Candidate included; ArchUnit/JVM/source",
@@ -1428,7 +1429,32 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/AuthenticationArchitectureAndSecretGuardrailTest.java",
-      "source_sha256": "5afb540bca17542eef2ad19d444bc6aec62b9df4da9132fcb3deb7c64faecd68",
+      "source_sha256": "9f8ba4cf820622d6b406328dd993f5daa6c9d0d2327cda8ce0084be01409497a",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0.0,
+      "cases": [
+        "exactExternalSubjectAndIssuerKeepBoundaryWhitespaceAndUnicode",
+        "explicitNullBranchesAndPositiveGenerationsAreMandatory",
+        "foundationsAreJdkOnlyAndProductionReceiptProducersAreStillDormant",
+        "inputLegacyConstructorsKeepNoReceiptAndPrivateTransportIsRedacted",
+        "nativeConfigurationAndIdsRejectBoundaryWhitespaceNulAndMalformedUnicode",
+        "nativeIntervalsRequireFiniteWholeSecondIncreasingInstantsAndCanonicalUuids",
+        "nativeKeysCountUtf8BytesAndOwnerIdsCountPostgresqlCharacters",
+        "restDtosAndOriginalAssertionNeverTransportBindingSecretsOrHandles",
+        "sourceExpiryCapsNativeLifetimeWithoutRoundingUpNanoseconds",
+        "sourceTupleAndTagShapeCannotBeMadeValidByCallerConstruction",
+        "topologyExportHasNoArgumentsAndOpaqueDenialHasNoIdentity",
+        "verificationSnapshotsRejectMalformedSourceAndUnrepresentableDeadlines"
+      ],
+      "class": "dz.sh.hidra.modules.identity.OperationAuthenticationBoundaryGuardrailTest",
+      "dependency_reason": "050A local Java21 unit/architecture evidence; no live service. New timing hint is unmeasured (0), pending hosted baseline; receipt callbacks are simulated, not PostgreSQL/commit proof.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java",
+      "source_sha256": "a5faeaabe276d040499d1934d5ca1aa66b9313da1b7139c368558e4fe6efa510",
       "supports": []
     },
     {
@@ -1777,7 +1803,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraAuthorizationOwnershipTest.java",
-      "source_sha256": "bfd7b74e9d5b3e95f6b258b09f81573a05ea7d9f0b05c57b5453131fe5d95179",
+      "source_sha256": "39d181ec784996eff0cd0dcb86b9209d385edeea0c532393a3da2a719d7d729e",
       "supports": []
     },
     {
@@ -1967,6 +1993,46 @@
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyCurrentActorQueryAdapterTest.java",
       "source_sha256": "b4eebeb196fff651ff705950c2ad2eb70f7d259c8fcaad37b7b3879621d6c649",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0.0,
+      "cases": [
+        "afterCommitRegistrationCannotMoveToAnotherTransaction",
+        "afterCommitRegistrationRejectsChangedBindingAndOriginCleanup",
+        "allFourSyntheticProvenanceBranchesMatchIndependentGoldenTags",
+        "arbitraryZeroTagAndCopiedTagCannotAuthenticateAChangedTuple",
+        "attestationMustAgreeWithExactConfiguredIssuerAudienceAndTtl",
+        "attestationRequiresActiveWritableSynchronizedTransactionAndCannotRetry",
+        "blankNativeKeyDoesNotBreakDormantBeanButCannotAttest",
+        "changedPrincipalPermissionsRejectAndConsumeTheReceipt",
+        "constructorAndGetterCopiesProtectWitnessEqualityAndHashing",
+        "consumedOidcReceiptRequiresItsSameActualAmbientObject",
+        "consumedReceiptCannotOutliveItsDirectInvocation",
+        "directHandleIsOneUseAndNeverStoredInDetailsOrAuthorities",
+        "directReceiptCannotBeConsumedByAnotherThread",
+        "dtoAndGenericAuthenticatedTokenCannotSupplyPrivateVerification",
+        "everyScalarOrTagMutationIsRejectedByTupleValidationOrAuthentication",
+        "hkdfMatchesRfc5869EmptySaltVectorAndRejectsInvalidLength",
+        "hkdfMatchesRfc5869LongVector",
+        "hkdfMatchesRfc5869ShortVector",
+        "malformedAttestationAttemptCannotBeRetriedWithValidIds",
+        "oidcReceiptCannotBeConsumedByAnotherThreadOrForgedContext",
+        "oldPublicOidcConstructorsHaveNoReceiptEvenWithAuthenticatedPrincipal",
+        "persistentWitnessSurvivesRegistryRestartButRejectsAnotherKey",
+        "previousInvocationHandleCannotCrossIntoNewInvocation",
+        "readOnlyTransactionCannotAttest",
+        "simulatedCommitPublishesOnlyAfterCommitAndOnlyOnce",
+        "simulatedRollbackNeverPublishesCompletion",
+        "streamingFrameHandlesMultibyteBufferBoundariesExactly"
+      ],
+      "class": "dz.sh.hidra.modules.identity.infrastructure.security.TrustedAuthenticationVerificationTest",
+      "dependency_reason": "050A local Java21 unit/architecture evidence; no live service. New timing hint is unmeasured (0), pending hosted baseline; receipt callbacks are simulated, not PostgreSQL/commit proof.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationTest.java",
+      "source_sha256": "71cf523f80cd74591f4f2c0f661e44e01ca55811ef3856924b77b418b7440f0f",
       "supports": []
     },
     {
@@ -3560,6 +3626,7 @@
       "supports": []
     },
     {
+      "archived_for_greenfield": true,
       "baseline_seconds": 30.686,
       "cases": [
         "backfillsOnlyUnambiguousLegacyContacts",
@@ -3573,8 +3640,7 @@
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/OrganizationEmployeeContactBackfillMigrationTest.java",
       "source_sha256": "f2501be2637eea4075b793e521e783ddf1cec9eddc9887bd2eb7f87396c936e6",
-      "supports": [],
-      "archived_for_greenfield": true
+      "supports": []
     },
     {
       "baseline_seconds": 19.965,
@@ -3608,6 +3674,7 @@
       "supports": []
     },
     {
+      "archived_for_greenfield": true,
       "baseline_seconds": 31.373,
       "cases": [
         "dropsCompatibilityColumnsOnlyAfterParityIsProven",
@@ -3622,10 +3689,10 @@
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/OrganizationMultilingualCompatibilityRetirementMigrationTest.java",
       "source_sha256": "8818b62dced167349f196a4c41080c72e02faf42c2778341db4b364d60e7ef06",
-      "supports": [],
-      "archived_for_greenfield": true
+      "supports": []
     },
     {
+      "archived_for_greenfield": true,
       "baseline_seconds": 33.779,
       "cases": [
         "backfillsDeterministicUnitTypeTranslationsAndPreservesLegacyColumns",
@@ -3641,10 +3708,10 @@
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/OrganizationMultilingualMigrationTest.java",
       "source_sha256": "7466d1338b3abcefc1aa677d90be3da17974605f8bebeb25fa7e6a8adf2e08a6",
-      "supports": [],
-      "archived_for_greenfield": true
+      "supports": []
     },
     {
+      "archived_for_greenfield": true,
       "baseline_seconds": 45.889,
       "cases": [
         "dropsEmptyLegacyTableForEmbeddedOnlyUnitTypesCreatedAfterCutover",
@@ -3660,8 +3727,7 @@
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/OrganizationMultilingualTableRetirementMigrationTest.java",
       "source_sha256": "5069380a87077cf2c0936236fd2fca106cc616555de0afbda8d01feffe8ab491",
-      "supports": [],
-      "archived_for_greenfield": true
+      "supports": []
     },
     {
       "baseline_seconds": 50.261,
@@ -6618,6 +6684,16 @@
     }
   ],
   "format": 1,
+  "greenfield_policy": {
+    "excluded_classes": [
+      "dz.sh.hidra.modules.organization.infrastructure.persistence.OrganizationEmployeeContactBackfillMigrationTest",
+      "dz.sh.hidra.modules.organization.infrastructure.persistence.OrganizationMultilingualCompatibilityRetirementMigrationTest",
+      "dz.sh.hidra.modules.organization.infrastructure.persistence.OrganizationMultilingualMigrationTest",
+      "dz.sh.hidra.modules.organization.infrastructure.persistence.OrganizationMultilingualTableRetirementMigrationTest"
+    ],
+    "mode": "fresh-schema",
+    "reason": "Owner-directed no-active-production-database development. Retain historical tests in source for manual compatibility verification. No SQL/Flyway changes."
+  },
   "legacy_acceptances": [
     {
       "report_artifact_id": 11807681487,
@@ -6642,15 +6718,5 @@
         "dz.sh.hidra.modules.organization.semantic.ShiftAssignmentSemanticRemediationTest"
       ]
     }
-  ],
-  "greenfield_policy": {
-    "mode": "fresh-schema",
-    "excluded_classes": [
-      "dz.sh.hidra.modules.organization.infrastructure.persistence.OrganizationEmployeeContactBackfillMigrationTest",
-      "dz.sh.hidra.modules.organization.infrastructure.persistence.OrganizationMultilingualCompatibilityRetirementMigrationTest",
-      "dz.sh.hidra.modules.organization.infrastructure.persistence.OrganizationMultilingualMigrationTest",
-      "dz.sh.hidra.modules.organization.infrastructure.persistence.OrganizationMultilingualTableRetirementMigrationTest"
-    ],
-    "reason": "Owner-directed no-active-production-database development. Retain historical tests in source for manual compatibility verification. No SQL/Flyway changes."
-  }
+  ]
 }

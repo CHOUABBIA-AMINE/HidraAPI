@@ -7,7 +7,7 @@
  *
  * @Name        : AuthenticationArchitectureAndSecretGuardrailTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-15
+ * @UpdatedOn   : 2026-10-14
  *
  * @Type        : Class
  * @Layer       : Test
@@ -19,11 +19,17 @@
  */
 package dz.sh.hidra.modules.identity;
 
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.tngtech.archunit.core.domain.Dependency;
 import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
+
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -34,37 +40,29 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.stream.StreamSupport;
 
-import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-/**
- * Authentication-specific guardrails supplement the repository-wide architecture rules.
- */
+/** Authentication-specific guardrails supplement the repository-wide architecture rules. */
 class AuthenticationArchitectureAndSecretGuardrailTest {
 
-    private static final JavaClasses PRODUCTION_CLASSES = new ClassFileImporter()
-            .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-            .importPackages("dz.sh.hidra");
+    private static final JavaClasses PRODUCTION_CLASSES =
+            new ClassFileImporter()
+                    .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+                    .importPackages("dz.sh.hidra");
 
-    private static final Set<String> EXTERNAL_AUTHENTICATION_NORMALIZERS = Set.of(
-            "dz.sh.hidra.modules.identity.infrastructure.security.LdapAuthenticationProvider",
-            "dz.sh.hidra.modules.identity.infrastructure.security.IdentityOidcJwtAuthenticationConverter"
-    );
+    private static final Set<String> EXTERNAL_AUTHENTICATION_NORMALIZERS =
+            Set.of(
+                    "dz.sh.hidra.modules.identity.infrastructure.security.LdapAuthenticationProvider",
+                    "dz.sh.hidra.modules.identity.infrastructure.security.IdentityOidcJwtAuthenticationConverter");
 
     private static final Set<String> IDENTITY_BUSINESS_TYPES = Set.of("User", "Role", "Permission");
 
-    private static final Set<String> EXTERNAL_AUTHORIZATION_MAPPING_TYPES = Set.of(
-            "ExternalGroupMapping",
-            "ExternalRoleMapping",
-            "ExternalPermissionMapping"
-    );
+    private static final Set<String> EXTERNAL_AUTHORIZATION_MAPPING_TYPES =
+            Set.of("ExternalGroupMapping", "ExternalRoleMapping", "ExternalPermissionMapping");
 
-    private static final Set<String> AUTHENTICATION_SECRET_KEYS = Set.of(
-            "hidra.security.bootstrap.password",
-            "hidra.platform.security.jwt.hmac-secret",
-            "hidra.platform.security.ldap.bind-password"
-    );
+    private static final Set<String> AUTHENTICATION_SECRET_KEYS =
+            Set.of(
+                    "hidra.security.bootstrap.password",
+                    "hidra.platform.security.jwt.hmac-secret",
+                    "hidra.platform.security.ldap.bind-password");
 
     @Test
     void identityDomainMustNotDependOnSpringLdapImplementationClasses() {
@@ -74,9 +72,7 @@ class AuthenticationArchitectureAndSecretGuardrailTest {
                 .should()
                 .dependOnClassesThat()
                 .resideInAnyPackage(
-                        "org.springframework.ldap..",
-                        "org.springframework.security.ldap.."
-                )
+                        "org.springframework.ldap..", "org.springframework.security.ldap..")
                 .check(PRODUCTION_CLASSES);
     }
 
@@ -89,8 +85,7 @@ class AuthenticationArchitectureAndSecretGuardrailTest {
                 .dependOnClassesThat()
                 .resideInAnyPackage(
                         "dz.sh.hidra.modules.identity.infrastructure.persistence..",
-                        "org.springframework.data.."
-                )
+                        "org.springframework.data..")
                 .check(PRODUCTION_CLASSES);
     }
 
@@ -98,37 +93,56 @@ class AuthenticationArchitectureAndSecretGuardrailTest {
     void externalAuthenticationNormalizersMustNotDependOnExternalRolePermissionMappings() {
         for (String className : EXTERNAL_AUTHENTICATION_NORMALIZERS) {
             JavaClass normalizer = productionClass(className);
-            List<String> forbiddenDependencies = normalizer.getDirectDependenciesFromSelf().stream()
-                    .map(Dependency::getTargetClass)
-                    .filter(AuthenticationArchitectureAndSecretGuardrailTest::isExternalAuthorizationMappingType)
-                    .map(JavaClass::getName)
-                    .sorted()
-                    .toList();
+            List<String> forbiddenDependencies =
+                    normalizer.getDirectDependenciesFromSelf().stream()
+                            .map(Dependency::getTargetClass)
+                            .filter(
+                                    AuthenticationArchitectureAndSecretGuardrailTest
+                                            ::isExternalAuthorizationMappingType)
+                            .map(JavaClass::getName)
+                            .sorted()
+                            .toList();
 
             assertTrue(
                     forbiddenDependencies.isEmpty(),
-                    () -> className + " must not assign Hidra authorization from external role/group/permission mappings: "
-                            + forbiddenDependencies
-            );
+                    () ->
+                            className
+                                    + " must not assign Hidra authorization from external"
+                                    + " role/group/permission mappings: "
+                                    + forbiddenDependencies);
         }
     }
 
     @Test
     void platformMustNotOwnIdentityUserRolePermissionBusinessMeaning() {
-        List<String> violations = StreamSupport.stream(PRODUCTION_CLASSES.spliterator(), false)
-                .filter(javaClass -> javaClass.getPackageName().startsWith("dz.sh.hidra.platform."))
-                .flatMap(javaClass -> javaClass.getDirectDependenciesFromSelf().stream()
-                        .map(Dependency::getTargetClass)
-                        .filter(AuthenticationArchitectureAndSecretGuardrailTest::isIdentityBusinessType)
-                        .map(target -> javaClass.getName() + " -> " + target.getName()))
-                .sorted()
-                .toList();
+        List<String> violations =
+                StreamSupport.stream(PRODUCTION_CLASSES.spliterator(), false)
+                        .filter(
+                                javaClass ->
+                                        javaClass
+                                                .getPackageName()
+                                                .startsWith("dz.sh.hidra.platform."))
+                        .flatMap(
+                                javaClass ->
+                                        javaClass.getDirectDependenciesFromSelf().stream()
+                                                .map(Dependency::getTargetClass)
+                                                .filter(
+                                                        AuthenticationArchitectureAndSecretGuardrailTest
+                                                                ::isIdentityBusinessType)
+                                                .map(
+                                                        target ->
+                                                                javaClass.getName()
+                                                                        + " -> "
+                                                                        + target.getName()))
+                        .sorted()
+                        .toList();
 
         assertTrue(
                 violations.isEmpty(),
-                () -> "Platform must remain technical security plumbing and must not depend on Identity User/Role/Permission: "
-                        + violations
-        );
+                () ->
+                        "Platform must remain technical security plumbing and must not depend on"
+                            + " Identity User/Role/Permission: "
+                                + violations);
     }
 
     @Test
@@ -138,18 +152,22 @@ class AuthenticationArchitectureAndSecretGuardrailTest {
 
         List<Path> violations;
         try (var paths = Files.walk(apiRoot)) {
-            violations = paths
-                    .filter(Files::isRegularFile)
-                    .filter(path -> path.toString().endsWith(".java"))
-                    .filter(AuthenticationArchitectureAndSecretGuardrailTest::containsPasswordHashTerm)
-                    .sorted()
-                    .toList();
+            violations =
+                    paths.filter(Files::isRegularFile)
+                            .filter(path -> path.toString().endsWith(".java"))
+                            .filter(
+                                    AuthenticationArchitectureAndSecretGuardrailTest
+                                            ::containsPasswordHashTerm)
+                            .sorted()
+                            .toList();
         }
 
         assertTrue(
                 violations.isEmpty(),
-                () -> "Password hashes must never appear in ordinary Identity API request/response DTOs: " + violations
-        );
+                () ->
+                        "Password hashes must never appear in ordinary Identity API"
+                            + " request/response DTOs: "
+                                + violations);
     }
 
     @Test
@@ -159,18 +177,22 @@ class AuthenticationArchitectureAndSecretGuardrailTest {
 
         List<String> violations;
         try (var paths = Files.walk(resourcesRoot)) {
-            violations = paths
-                    .filter(Files::isRegularFile)
-                    .filter(AuthenticationArchitectureAndSecretGuardrailTest::isTextConfigurationFile)
-                    .flatMap(path -> secretViolations(path).stream())
-                    .sorted()
-                    .toList();
+            violations =
+                    paths.filter(Files::isRegularFile)
+                            .filter(
+                                    AuthenticationArchitectureAndSecretGuardrailTest
+                                            ::isTextConfigurationFile)
+                            .flatMap(path -> secretViolations(path).stream())
+                            .sorted()
+                            .toList();
         }
 
         assertTrue(
                 violations.isEmpty(),
-                () -> "Authentication credentials/private keys must not be committed in production resources: " + violations
-        );
+                () ->
+                        "Authentication credentials/private keys must not be committed in"
+                            + " production resources: "
+                                + violations);
     }
 
     @Test
@@ -178,25 +200,46 @@ class AuthenticationArchitectureAndSecretGuardrailTest {
         Path sourceRoot = Path.of("src/main");
         List<Path> violations;
         try (var paths = Files.walk(sourceRoot)) {
-            violations = paths
-                    .filter(Files::isRegularFile)
-                    .filter(AuthenticationArchitectureAndSecretGuardrailTest::isTextSourceFile)
-                    .filter(AuthenticationArchitectureAndSecretGuardrailTest::containsPrivateKeyMarker)
-                    .sorted()
-                    .toList();
+            violations =
+                    paths.filter(Files::isRegularFile)
+                            .filter(
+                                    AuthenticationArchitectureAndSecretGuardrailTest
+                                            ::isTextSourceFile)
+                            .filter(
+                                    AuthenticationArchitectureAndSecretGuardrailTest
+                                            ::containsPrivateKeyMarker)
+                            .sorted()
+                            .toList();
         }
 
         assertFalse(
                 violations.size() > 0,
-                () -> "Private-key PEM material must never be embedded under src/main: " + violations
-        );
+                () ->
+                        "Private-key PEM material must never be embedded under src/main: "
+                                + violations);
+    }
+
+    @Test
+    void restControllersMustNotDependOnPrivateBoundAuthenticationTransport() {
+        noClasses()
+                .that()
+                .resideInAPackage("dz.sh.hidra.modules.identity.api..")
+                .should()
+                .dependOnClassesThat()
+                .haveNameMatching(
+                        ".*(TrustedAuthenticationVerificationPort|TrustedAuthenticationVerificationRegistry"
+                            + "|VerifiedDirectAuthenticationResult|LocalCredentialVerificationState).*")
+                .check(PRODUCTION_CLASSES);
     }
 
     private static JavaClass productionClass(String className) {
         return StreamSupport.stream(PRODUCTION_CLASSES.spliterator(), false)
                 .filter(javaClass -> javaClass.getName().equals(className))
                 .findFirst()
-                .orElseThrow(() -> new AssertionError("Expected production class not found: " + className));
+                .orElseThrow(
+                        () ->
+                                new AssertionError(
+                                        "Expected production class not found: " + className));
     }
 
     private static boolean isExternalAuthorizationMappingType(JavaClass target) {

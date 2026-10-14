@@ -19728,3 +19728,124 @@ existing-data upgrade or preservation proof is selected. Runtime children remain
 Only automatic Docs is required for this exact two-document main push; required startup
 and eventual success must be distinguished. Verify the new head and Docs startup, then
 STOP without waiting or implementing 050A in this same turn.
+
+
+
+## 2026-10-14 — HPR-P25-050A trusted binding foundations implemented; CI pending
+
+### Selected stage and authoritative baseline
+
+Owner Next selects only 050A after amendment Documentation #282 SUCCESS on main
+`545ec4e60a0c92099bedd36892b993ed6df2a4b9`, tree
+`99548201bb8869b00f1b4912e90cdd5d534964f8`. Latest changed runtime/workflow remains
+`e1695a0848e005f3fac272dd80d2a80f03f5ce2c`, Full #678/Fast #11 SUCCESS.
+HidraAPI remains a development project with synthetic data and no production deployment
+or related data to migrate. This stage does not require existing-data preservation.
+Exact message: `feat(identity): add trusted authentication binding foundations`.
+Exact scope is the registered 050A 14 CREATE / 7 UPDATE; DELETE none. Parent 050
+remains IN PROGRESS; 050A is IN PROGRESS / IMPLEMENTED / CI PENDING, not CI accepted.
+
+### Implemented bounded foundations
+
+Adopted and strengthened the five uploaded model/port drafts only in registered paths.
+The immutable 21-field binding includes defensive 32-byte tag copies, array-value
+equality/hash and redacted diagnostics; validates canonical UUIDs, exact native
+issuer/audience <=512 UTF-8 bytes, existing IDs <=80 PostgreSQL characters, explicit
+four-provider NULL/type/protocol branches, positive generations, finite PostgreSQL
+whole-second native intervals and exact representable microsecond source-expiry caps.
+Reject malformed Unicode and PostgreSQL-unrepresentable NUL without normalizing exact
+external subject/issuer whitespace. Snapshot/settings/context constructors validate
+their relevant identities/configuration/deadlines; a constructor is not authentication.
+
+New application-owned state/transport/issuer values and outbound ports establish only
+the internal contracts. TopologyOperationAuthenticationContract is an argument-free
+JDK-only point-in-time B1 export with scalar evidence and identity-free ACCESS_DENIED;
+it exports no raw bearer, tag/key/hash, claims, callback or permission. No reader bean
+implements it in A. The new named clock supplies UTC for later owner wiring.
+
+TrustedAuthenticationVerificationRegistry privately owns unpredictable thread-local
+direct handles, producer receipts and one-use consumed verification. Input identities,
+provider/type/link, normalized principal permissions/roles and actual producer object
+must agree. Consumption/attestation cannot cross thread, invocation or substituted OIDC
+context. Attestation attempts are single-use even after failure, require an active
+writable synchronized transaction and agree with exact configured native keys and
+the supplied trusted TTL/context. A synchronization marker prevents attestation and
+publication from moving to different transactions. Only the registry's afterCommit
+callback publishes a completion receipt; rollback does not publish. Unit callbacks
+are deliberately simulated here; actual physical transaction/commit proof belongs to C.
+
+The persistent witness derives a private 32-byte key using the accepted RFC5869 salt/
+info and identical trimmed UTF-8 effective HS256 signing bytes. It authenticates the
+domain-separated, presence-framed, ordered 20-scalar tuple with HMAC-SHA256 and streaming
+4,096-byte encoding buffers; validates stored tags in constant time. No new secret or
+key/tag diagnostic/export is introduced. Lazy derivation leaves dormant bean startup
+compatible with absent local native-key configuration; trying to attest without a valid
+key fails. Test keys are synthetic only. Four independent format-one golden tags and
+RFC5869 vectors, every-field/tag mutation, wrong-key/restart, NUL/Unicode/byte/time/null
+boundaries, defensive copies, forged contexts, one-use/thread/origin/transaction lifetimes
+and simulated commit/rollback are covered by the new 39 unit cases.
+
+Old seven/eight-argument AuthenticatedPrincipalInput and public OIDC-token constructors
+are retained; they create no private verification receipt. Internal overloads carry
+only the private transport. Redaction hides handles/hashes/tags. Existing authorization
+ownership cases retain their identities/semantics and now also confirm no bound origin;
+architecture adds one API-to-private-transport prohibition. The stage guardrail explicitly
+requires zero production receipt-producer call sites: the registered three producers are
+permitted future owners, not already wired. Provider verification, completion/session
+lifecycle, issuer, JDBC storage, migration and B1 reader sources remain unchanged.
+Ordinary authentication/route behavior is therefore unchanged by this foundation stage.
+
+### Actual validation and limits
+
+Task-local OpenJDK 21.0.12 and the unchanged repository Maven wrapper were used.
+`JAVA_HOME=<task JDK21> bash ./mvnw -B -q -o -DskipTests compile` PASS.
+Focused Java tests PASS: TrustedAuthenticationVerificationTest,
+OperationAuthenticationBoundaryGuardrailTest, HidraAuthorizationOwnershipTest,
+AuthenticationArchitectureAndSecretGuardrailTest and AuthorizationAssertionTrustTest;
+52 cases / zero failures/errors/skips. Initial focused execution hit local Mockito
+self-attachment errors in five existing mock cases; rerun with an explicit installed
+Byte Buddy startup agent passed. No repository POM/Mockito configuration was changed.
+
+Actual final Fast invocation used all 296 concrete current Fast classes from the reviewed
+inventory, with `-DargLine=-javaagent:<installed byte-buddy-agent-1.18.11.jar>` and offline
+Maven. It PASSed 1,302 cases / zero failures/errors/skips. The unchanged inventory helper
+strictly matched the 296-class/1,302-case Fast report set. Original raw/focused XML remains
+retained; Fast report validation uses only the selected Fast output, separating three
+prior non-Fast assertion cases rather than treating stale reports as the new run.
+This is local Java evidence, not hosted full/oracle or database acceptance.
+
+Six unchanged Python policy suites PASS: docs 10 + OpenAPI 10 + dictionary 17 + base
+resolver 14 + inventory 26 + full evidence 25 = 102 cases. Resolver output is synthetic
+fixture evidence. Canonical docs PASS (98 documents / 5,346 relative links / 24 modules /
+13 P2 rows); offline OpenAPI PASS (263 operations / 244 paths / 231 schemas), no live
+capture; P1 retained-evidence consistency PASS, no new operational exercise/closure.
+Inventory validation PASS: 296 Fast / 297 unit-architecture / 37+35 DB / 369 oracle
+classes, with all four historical archive choices and existing lane/timing policies
+retained. New unit classes have an explicitly unmeasured 0 timing hint pending hosted
+baseline; no new DB class or measured CI timing is claimed. Inventory digest:
+`f16b8e3899129352531a4db3af8e0d30876b4d60f6cb7a4543520ad2d081d302`.
+
+Only the registered 21 files differ: 14 new Java values/ports/registry/clock/tests;
+existing input/token, two existing tests, test inventory and two governance documents.
+Reconciliation retains its complete authoritative original prefix. Prior test case sets
+are preserved; new report identities/source hashes are exact. All 147 SQL, database
+ownership/dictionary, other runtime/test files, workflows/helpers/build/API/history/
+version/release and foreign modules remain unchanged. Scope, canonical headers, original
+Git blob parity and added-line whitespace are checked before publication.
+
+No new SQL, PostgreSQL/Flyway/JPA, real four-provider verification, signing/readback,
+physical completion commit or B1 reader test is claimed. Local unit callback simulations
+do not establish those later-stage requirements. B/C/D and parent runtime acceptance
+remain open. CI-003 stays IN PROGRESS with mandatory greenfield oracle, strict full
+same-run gates, shadow fallback and optimized adoption false; P3/simulation stays deferred.
+
+### Publication and next selection
+
+Publish directly to existing main with expected head 545ec4e60a0c92099bedd36892b993ed6df2a4b9;
+verify exact message/parent/tree/21 changed blobs. Automatic Full/Fast/Docs must start
+on the published SHA, then STOP without completion polling or automatic 050B work.
+Hosted exact-SHA SUCCESS is pending at preparation. After all required 050A outcomes
+are accepted, a separate owner Next selects only HPR-P25-050B fresh-schema storage and
+session guards. Failure repairs 050A first; 051 remains blocked until A–D acceptance.
+Gas-first/GZ2, own engine, steady/transient direction, versioned inputs/operator control
+and synthetic development data remain. No PR, branch, image, deployment or release.

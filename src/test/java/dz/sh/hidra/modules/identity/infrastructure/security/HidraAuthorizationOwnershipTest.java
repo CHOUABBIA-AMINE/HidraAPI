@@ -7,7 +7,7 @@
  *
  * @Name        : HidraAuthorizationOwnershipTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-06
+ * @UpdatedOn   : 2026-10-14
  *
  * @Type        : Class
  * @Layer       : Test
@@ -40,13 +40,15 @@ import dz.sh.hidra.modules.identity.infrastructure.persistence.repository.Identi
 import dz.sh.hidra.modules.identity.infrastructure.persistence.repository.UserJpaRepository;
 import dz.sh.hidra.platform.security.HidraEffectivePermissionResolver;
 import dz.sh.hidra.platform.security.LdapAuthenticationToken;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
+
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import org.junit.jupiter.api.Test;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.jwt.Jwt;
 
 class HidraAuthorizationOwnershipTest {
 
@@ -60,88 +62,127 @@ class HidraAuthorizationOwnershipTest {
 
     @Test
     void externalOidcRolesGroupsAndScopesCannotGrantHidraBusinessPermission() {
-        IdentityProviderJpaRepository providerRepository = mock(IdentityProviderJpaRepository.class);
-        ExternalIdentityJpaRepository externalIdentityRepository = mock(ExternalIdentityJpaRepository.class);
+        IdentityProviderJpaRepository providerRepository =
+                mock(IdentityProviderJpaRepository.class);
+        ExternalIdentityJpaRepository externalIdentityRepository =
+                mock(ExternalIdentityJpaRepository.class);
         UserJpaRepository userRepository = mock(UserJpaRepository.class);
-        IdentityAdministrationQueryUseCase queryUseCase = mock(IdentityAdministrationQueryUseCase.class);
+        IdentityAdministrationQueryUseCase queryUseCase =
+                mock(IdentityAdministrationQueryUseCase.class);
         IdentityAdministrationQueryUseCase.PrincipalView authorization =
                 mock(IdentityAdministrationQueryUseCase.PrincipalView.class);
 
         when(providerRepository.findByProviderTypeAndIssuerUri(ProviderType.OIDC, OIDC_ISSUER))
                 .thenReturn(Optional.of(oidcProvider()));
-        when(externalIdentityRepository.findByIdentityProviderIdAndExternalSubject(OIDC_PROVIDER_ID, OIDC_SUBJECT))
-                .thenReturn(Optional.of(externalIdentity("external-oidc-link", OIDC_PROVIDER_ID, OIDC_SUBJECT)));
+        when(externalIdentityRepository.findByIdentityProviderIdAndExternalSubject(
+                        OIDC_PROVIDER_ID, OIDC_SUBJECT))
+                .thenReturn(
+                        Optional.of(
+                                externalIdentity(
+                                        "external-oidc-link", OIDC_PROVIDER_ID, OIDC_SUBJECT)));
         when(userRepository.findById(USER_ID)).thenReturn(Optional.of(activeUser()));
         when(queryUseCase.principal(USER_ID, List.of())).thenReturn(authorization);
         when(authorization.effectivePermissions()).thenReturn(List.of("pipeline:read"));
 
-        IdentityOidcJwtAuthenticationConverter converter = new IdentityOidcJwtAuthenticationConverter(
-                providerRepository,
-                externalIdentityRepository,
-                userRepository,
-                queryUseCase,
-                mock(SpringAuthorizationContextAdapter.class)
-        );
+        IdentityOidcJwtAuthenticationConverter converter =
+                new IdentityOidcJwtAuthenticationConverter(
+                        providerRepository,
+                        externalIdentityRepository,
+                        userRepository,
+                        queryUseCase,
+                        mock(SpringAuthorizationContextAdapter.class));
         Authentication authentication = converter.convert(externalJwtWithPrivilegedClaims());
         HidraPrincipal principal = (HidraPrincipal) authentication.getPrincipal();
-        HidraEffectivePermissionResolver resolver = new HidraEffectivePermissionResolver(List.of(
-                requestedPrincipal -> USER_ID.equals(requestedPrincipal) ? principal.permissions() : Set.of()
-        ));
+        HidraEffectivePermissionResolver resolver =
+                new HidraEffectivePermissionResolver(
+                        List.of(
+                                requestedPrincipal ->
+                                        USER_ID.equals(requestedPrincipal)
+                                                ? principal.permissions()
+                                                : Set.of()));
 
         assertThat(authentication.getAuthorities()).isEmpty();
+        assertThat(
+                        new TrustedAuthenticationVerificationRegistry("", "hidra-api", "hidra-api")
+                                .completed(authentication))
+                .isNull();
         assertThat(principal.roles()).isEmpty();
         assertThat(principal.permissions()).containsExactly("pipeline:read");
         assertThat(resolver.hasPermission(authentication, "pipeline:read")).isTrue();
         assertThat(resolver.hasPermission(authentication, "pipeline:delete")).isFalse();
-        assertThat(resolver.hasPermission(authentication, HidraEffectivePermissionResolver.ALL_PERMISSIONS)).isFalse();
+        assertThat(
+                        resolver.hasPermission(
+                                authentication, HidraEffectivePermissionResolver.ALL_PERMISSIONS))
+                .isFalse();
     }
 
     @Test
     void directoryAuthenticationCannotGrantPermissionsBeyondHidraAuthorization() {
-        LdapCredentialVerificationPort credentialVerificationPort = mock(LdapCredentialVerificationPort.class);
-        IdentityProviderJpaRepository providerRepository = mock(IdentityProviderJpaRepository.class);
-        ExternalIdentityJpaRepository externalIdentityRepository = mock(ExternalIdentityJpaRepository.class);
+        LdapCredentialVerificationPort credentialVerificationPort =
+                mock(LdapCredentialVerificationPort.class);
+        IdentityProviderJpaRepository providerRepository =
+                mock(IdentityProviderJpaRepository.class);
+        ExternalIdentityJpaRepository externalIdentityRepository =
+                mock(ExternalIdentityJpaRepository.class);
         UserJpaRepository userRepository = mock(UserJpaRepository.class);
-        IdentityAdministrationQueryUseCase queryUseCase = mock(IdentityAdministrationQueryUseCase.class);
+        IdentityAdministrationQueryUseCase queryUseCase =
+                mock(IdentityAdministrationQueryUseCase.class);
         IdentityAdministrationQueryUseCase.PrincipalView authorization =
                 mock(IdentityAdministrationQueryUseCase.PrincipalView.class);
 
         when(providerRepository.findAll()).thenReturn(List.of(ldapProvider()));
         when(credentialVerificationPort.verify(USERNAME, "directory-secret"))
-                .thenReturn(Optional.of(new VerifiedDirectoryIdentity(
-                        LDAP_SUBJECT,
-                        USERNAME,
-                        "Directory Administrator",
-                        "authorization.operator@example.invalid",
-                        "CN=Authorization Operator,OU=Domain Admins,DC=example,DC=invalid"
-                )));
-        when(externalIdentityRepository.findByIdentityProviderIdAndExternalSubject(LDAP_PROVIDER_ID, LDAP_SUBJECT))
-                .thenReturn(Optional.of(externalIdentity("external-ldap-link", LDAP_PROVIDER_ID, LDAP_SUBJECT)));
+                .thenReturn(
+                        Optional.of(
+                                new VerifiedDirectoryIdentity(
+                                        LDAP_SUBJECT,
+                                        USERNAME,
+                                        "Directory Administrator",
+                                        "authorization.operator@example.invalid",
+                                        "CN=Authorization Operator,OU=Domain"
+                                            + " Admins,DC=example,DC=invalid")));
+        when(externalIdentityRepository.findByIdentityProviderIdAndExternalSubject(
+                        LDAP_PROVIDER_ID, LDAP_SUBJECT))
+                .thenReturn(
+                        Optional.of(
+                                externalIdentity(
+                                        "external-ldap-link", LDAP_PROVIDER_ID, LDAP_SUBJECT)));
         when(userRepository.findById(USER_ID)).thenReturn(Optional.of(activeUser()));
         when(queryUseCase.principal(USER_ID, List.of())).thenReturn(authorization);
         when(authorization.effectivePermissions()).thenReturn(List.of("alarm:acknowledge"));
 
-        LdapAuthenticationProvider provider = new LdapAuthenticationProvider(
-                credentialVerificationPort,
-                providerRepository,
-                externalIdentityRepository,
-                userRepository,
-                queryUseCase
-        );
-        Authentication authentication = provider.authenticate(
-                LdapAuthenticationToken.unauthenticated(USERNAME, "directory-secret")
-        );
+        LdapAuthenticationProvider provider =
+                new LdapAuthenticationProvider(
+                        credentialVerificationPort,
+                        providerRepository,
+                        externalIdentityRepository,
+                        userRepository,
+                        queryUseCase);
+        Authentication authentication =
+                provider.authenticate(
+                        LdapAuthenticationToken.unauthenticated(USERNAME, "directory-secret"));
         HidraPrincipal principal = (HidraPrincipal) authentication.getPrincipal();
-        HidraEffectivePermissionResolver resolver = new HidraEffectivePermissionResolver(List.of(
-                requestedPrincipal -> USER_ID.equals(requestedPrincipal) ? principal.permissions() : Set.of()
-        ));
+        HidraEffectivePermissionResolver resolver =
+                new HidraEffectivePermissionResolver(
+                        List.of(
+                                requestedPrincipal ->
+                                        USER_ID.equals(requestedPrincipal)
+                                                ? principal.permissions()
+                                                : Set.of()));
 
         assertThat(authentication.getAuthorities()).isEmpty();
+        assertThat(
+                        new TrustedAuthenticationVerificationRegistry("", "hidra-api", "hidra-api")
+                                .completed(authentication))
+                .isNull();
         assertThat(principal.roles()).isEmpty();
         assertThat(principal.permissions()).containsExactly("alarm:acknowledge");
         assertThat(resolver.hasPermission(authentication, "alarm:acknowledge")).isTrue();
         assertThat(resolver.hasPermission(authentication, "identity:users:write")).isFalse();
-        assertThat(resolver.hasPermission(authentication, HidraEffectivePermissionResolver.ALL_PERMISSIONS)).isFalse();
+        assertThat(
+                        resolver.hasPermission(
+                                authentication, HidraEffectivePermissionResolver.ALL_PERMISSIONS))
+                .isFalse();
     }
 
     private static Jwt externalJwtWithPrivilegedClaims() {
@@ -183,8 +224,7 @@ class HidraAuthorizationOwnershipTest {
                 null,
                 null,
                 now,
-                now
-        );
+                now);
     }
 
     private static IdentityProviderJpaEntity ldapProvider() {
@@ -212,11 +252,11 @@ class HidraAuthorizationOwnershipTest {
                 null,
                 null,
                 now,
-                now
-        );
+                now);
     }
 
-    private static ExternalIdentityJpaEntity externalIdentity(String id, String providerId, String subject) {
+    private static ExternalIdentityJpaEntity externalIdentity(
+            String id, String providerId, String subject) {
         Instant now = Instant.parse("2026-09-15T10:00:00Z");
         return new ExternalIdentityJpaEntity(
                 id,
@@ -233,8 +273,7 @@ class HidraAuthorizationOwnershipTest {
                 now,
                 ExternalIdentityStatus.LINKED,
                 now,
-                now
-        );
+                now);
     }
 
     private static UserJpaEntity activeUser() {
@@ -254,7 +293,6 @@ class HidraAuthorizationOwnershipTest {
                 now,
                 null,
                 null,
-                now
-        );
+                now);
     }
 }

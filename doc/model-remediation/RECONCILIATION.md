@@ -21113,3 +21113,36 @@ No production/runtime file is authorized and parent 051/D2/B2/B3 is OPEN;
 052 remains blocked. Update only roadmap plus this append-only reconciliation;
 reuse `docs(security): select operation time fencing proof`, preserve all
 non-governance blobs, require Docs startup then STOP.
+
+
+## 2026-10-14 — HPR-P25-051 D2 relation/writer matrix and owner contract gate
+
+On live main 7b2677809e177733fac3238bd20b9cdff3523d30 the prior Docs #38574215863 is SUCCESS; last
+accepted runtime remains 76b14cda4520f1eff242bd474c02ce4db317d385
+(Full #686, Fast #19, Docs #292). This checkpoint source-reviewed the
+current Identity evidence JPA entity-to-table mappings; observed repository
+save routes, B1 JDBC joined owner-state, native binding writer/trigger and
+generation migration; Party ACTIVE-only eligibility; Facility owner_party_id;
+and immutable station graph revisions. The roadmap now lists the exact
+evaluated relation families, confirmed application writers and explicit
+unresolved bulk/native/phantom/future and cross-module writer coverage.
+A concrete fact is that V20261013_001 row acquisition order is Provider,
+LocalCredential/ExternalIdentity, User, LoginSession, then binding lookup.
+That order is a collision gate against any new relation-fence and transfer
+lock graph; the synthetic six-relation proof is insufficient.
+
+A technical candidate is a single 051A writable READ COMMITTED protected
+transaction with ordered full relation fences, post-fence common database
+clock s, supported future boundary u, materialized Identity B1 and paired
+permission/Party/Facility/head participation, explicit flush, one sealed
+DB-clock t guard and physical commit before result. Neither a complete
+writer/trigger audit nor a proven global lock order, concrete Identity/Party/
+Topology protected owner port, D2 temporal expression grammar, current-head/
+epoch storage contract or zero-skip real-owner PostgreSQL acceptance was
+established. All such items remain blockers, rather than assumed complete.
+
+Parent HPR-P25-051, D2 and B2/B3 remain OPEN and 052 remains BLOCKED.
+This is two-path documentation only using the existing exact message
+`docs(security): select operation time fencing proof`; no CREATE/DELETE,
+runtime code, migrations, CI inventory, APIs or releases. Observe Docs
+startup on exact new SHA and STOP; do not claim startup equals success.

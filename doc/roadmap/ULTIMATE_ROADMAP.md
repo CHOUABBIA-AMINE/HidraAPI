@@ -30,6 +30,143 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-P25-051 D2 relation/writer matrix and protected owner-contract gate, 2026-10-14
+
+**Baseline and boundary.** At exact main `7b2677809e177733fac3238bd20b9cdff3523d30` (tree
+`e2cf988f449d5f8b907edc29cf2845d96b951afd`), Docs run #38574215863 is SUCCESS; runtime anchor
+`76b14cda4520f1eff242bd474c02ce4db317d385` remains Full #686,
+Fast #19 and Docs #292 SUCCESS. This is a bounded SAME-ID 051 D2
+source-and-schema decision; **not** a completed mutation-wide writer audit,
+owner integration, approved physical lock order or runtime implementation scope.
+HPR-P25-051A is CI ACCEPTED, 051/D2/B2/B3 remain IN PROGRESS and 052 is blocked.
+
+#### Exact evaluated relation-to-writer matrix (current production evidence)
+
+The relation spelling below was checked against Identity JPA @Table mappings,
+`JpaAuthorizationEvidenceAdapter`, the native B1 state query, Party/Facility
+JPA mappings and registered Flyway. "JPA save" proves a reachable repository
+write route, **not** all native INSERT/UPDATE/DELETE, bulk, trigger, direct SQL,
+other-module writer or migration paths. "Unresolved" means none is established
+by the targeted code search; it NEVER means the relation is immutable.
+Every mutable row and absent matching row needs a compatible relation/phantom
+fence until physical commit, even when its status is inactive at s.
+
+| Exact database relation(s) | Evaluated evidence / candidate future boundary | Observed application/DB writer or inventory gap |
+|---|---|---|
+| `hidra_identity_user`, `hidra_identity_permission` | ACTIVE, locked_until; permission code/domain/resource and status | `JpaUserRepositoryAdapter.save`, `JpaPermissionRepositoryAdapter.save`; `IdentityAdministrationCommandApplicationService.createPermission`; other writes/native deletes unresolved |
+| `hidra_identity_user_permission_grant` | effect including DENY, status, scope, valid_from/to | `JpaUserPermissionGrantRepositoryAdapter.save` via admin grant; INSERT/UPDATE/DELETE native/phantom census unresolved |
+| `hidra_identity_user_role_grant` | status, role_id, scope, valid_from/to | `JpaUserRoleGrantRepositoryAdapter.save` via admin grant; other writes unresolved |
+| `hidra_identity_role`, `hidra_identity_role_permission_grant` | role status; grant effect, condition_expression, valid_from/to and status | `JpaRoleRepositoryAdapter.save`, `JpaRolePermissionGrantRepositoryAdapter.save` via admin; condition temporal grammar not proven |
+| `hidra_identity_user_group_membership`, `hidra_identity_group`, `hidra_identity_group_role_grant` | Membership status/window and source validity; group status; linked grant window/role | `JpaGroupRoleGrantRepositoryAdapter.save` exists; membership/group native/administration writer coverage unresolved |
+| `hidra_identity_external_group_mapping` | provider/group, status, ASSERTION_ONLY or SYNC_MEMBERSHIP mode and claim mapping | Query path observed; complete writers/absence predicates unresolved |
+| `hidra_identity_external_role_mapping`, `hidra_identity_external_permission_mapping` | DIRECT_GRANT, scope, status, effect, asserted claim | `JpaExternalRoleMappingRepositoryAdapter.save`; permission mapping writes/native writer set unresolved |
+| `hidra_identity_external_identity`, `hidra_identity_provider` | LINKED/ACTIVE, external subject/provider status and generation; issuer/source A/B/A | `JpaIdentityProviderRepositoryAdapter.save`; normal-write generation triggers in `V20261012_002`; remaining link/provider writers unresolved |
+| `hidra_identity_subject_security_attribute`, `hidra_identity_attribute_definition` | subject/source, valid_from/to, ACTIVE definition, type/value; arbitrary expression time dependency | Evidence reader observed; writer families/native DML unresolved |
+| `hidra_identity_authorization_policy`, `hidra_identity_authorization_policy_version`, `hidra_identity_authorization_policy_rule` | Policy ACTIVE, version status/effective_from/to, rule DENY/PERMIT/status/expression | Evidence reader observed; status/version/rule writers and future DENY/phantom paths unresolved |
+| `hidra_identity_login_session`, `hidra_identity_local_credential`, `hidra_identity_operation_binding` | Session started/expires/ended/status, credential security generation, binding identity/issuer/jti/source expiry | `JpaLoginSessionRepositoryAdapter.saveAndFlush`, lifecycle start/logout/revoke/expire; `JpaLocalCredentialRepositoryAdapter.save`, `JdbcOperationAuthenticationBindingRepositoryAdapter.append`; migration `V20261013_001` guards native binding writes |
+| `hidra_party_party` | `Party.selectableForNewReference()` reads precisely status ACTIVE; absent party is ineligible | `JpaPartyRepositoryAdapter.save` via `PartyApplicationService.registerParty`; other transfers/status writes/native DML unresolved |
+| `hidra_party_party_status_history` | Has historical status-change fields, but the current Topology eligibility resolver does **not** read it | Not an established live D2 eligibility predicate; decision needed before admitting history/holds as an authority source |
+| `hidra_topology_facility` | `StationRevisionOwnerQueryService` uses owner_party_id from Facility then separate Party eligibility; Facility status/owner transition to inspect | `JpaFacilityRepositoryAdapter.save` via `FacilityApplicationService.registerFacility`; transfer/head/epoch writer paths unresolved |
+| `hidra_topology_station_graph_revision` | Exact facility_id/revision_id immutable content, not current publish head or owner epoch | `JdbcStationInternalGraphRevisionRepositoryAdapter.append` INSERT; `V20261011_002` rejects UPDATE/DELETE/TRUNCATE. No authenticated current-head CAS established |
+
+**Non-equivalence constraints.** `AuthorizationEvidencePort.load` reads
+at a supplied Instant; `IdentityAuthorizationApplicationService.evaluate`
+currently chooses `Instant.now()` and its separate calls cannot authorize
+a later protected mutation. `TopologyScopedAccessContract.permitted`
+returns one Boolean after sequential CUSTOM/FACILITY checks; it has no
+same-transaction interval or head binding. `TopologyOperationAuthenticationContract`
+is explicitly B1 point-in-time, and `OperationAuthenticationQueryApplicationService`
+is read-only REQUIRES_NEW, so it cannot be invoked inside 051A to mint a
+protected B2 result. Party's Boolean is new-reference eligibility, not a
+company grant. The station-revision repository port expressly disclaims
+predecessor enforcement or publication head CAS.
+
+#### Candidate same-physical-transaction owner contract (NOT yet executable)
+
+1. A trusted, server-compiled Topology coordinator calls the accepted
+   `ProtectedTransactionExecutor.execute(provisionalWork, flush, finalGuard)`.
+   Reject nested/ambient/REQUIRES_NEW, async, unmaterialized evidence, raw
+   JDBC escape, retries and any failed/poisoned statement. No Identity/Party
+   private entity import and no public/caller-supplied permit.
+2. **Before any authority read**, obtain all requisite relation fences in
+   a single globally documented order, including currently absent rows and
+   future inactive/nonmatching DENY inserts. Candidate coarse technique is
+   PostgreSQL `SHARE ROW EXCLUSIVE` on a source-verified, sorted set of
+   relations. The accepted synthetic proof used precisely such relation
+   fences, but its 6 synthetic relations do not prove this real schema list
+   nor runtime writer compatibility.
+3. Check participation on the same PostgreSQL backend PID/XID, writable
+   READ COMMITTED connection for Identity B1 owner row/generation/source
+   evidence, both scoped Identity decisions, Party ACTIVE eligibility and
+   Topology Facility ownership/038 head and epoch. Owner contributions must
+   return immutable scalar evidence and explicit earliest boundaries, not
+   foreign repositories/entities, booleans or cached authority.
+4. Capture database `clock_timestamp()` **after all fences** as shared
+   decision time s; compute a strictly later u from every relevant
+   half-open [from,to) transition (including potential future DENY/
+   activation, provider/link/session/token/source expiry, policy and
+   attribute transitions). If no sound finite u or no complete contributor
+   family exists, DENY/INDETERMINATE. Evaluated expressions containing
+   context.evaluatedAt or unproven temporal semantics must fail closed,
+   not become artificially time-invariant.
+5. Perform bounded provisional action, explicit owner flush and exactly
+   ONE DB scalar final guard, which takes its own DB time t and atomically
+   asserts s <= t < u, observed B1 generations and source validity,
+   Facility/Party epoch/transfer/hold and 038 exact head/expected-predecessor
+   predicates. No application SQL or callbacks after guard before physical
+   commit. Deliver only after actual commit; uncertain acknowledgement is
+   INDETERMINATE, never auto-retry.
+6. Retain existing 051A lock_timeout=250ms, statement_timeout=750ms,
+   idle-in-transaction=1000ms and work budget=500ms without enlargement.
+   Commit/WAL/network tail is measured separately; these limits do not
+   establish deployment throughput or a bounded external commit tail.
+
+**Lock-order collision gate.** Existing
+`V20261013_001__p25_identity_operation_binding.sql` takes FOR UPDATE
+row locks in Provider -> LocalCredential OR ExternalIdentity -> User ->
+LoginSession order, then reads the binding. The future coarse relation
+fence order, writer row-order, any Party/Facility transfer path and
+binding/session triggers must be jointly audited for cycles, not inferred
+safe from lexicographic sorting or proof-fixture acquisition. No global
+lock order is ACCEPTED yet; a candidate will become normative only after
+reproduced native-write lock-wait, phantom, deadlock and abort outcomes on
+actual source migrations.
+
+**Required zero-skip PostgreSQL matrix before any runtime allowlist:**
+native INSERT/UPDATE/DELETE on every participating family, inactive/future
+DENY and policy activation, missing row and phantom creation, role/group
+invalidation, provider/link/credential/user/session A/B/A and source clock
+expiry, attribute/expression time dependencies, transfer/hold/epoch and
+two-company separation, head replay and competing CAS, actual JPA flush
+and JDBC same PID/XID, 250ms lock timeout, independent writer rollback,
+beforeCommit late SQL, full pre-commit rollback, lost commit acknowledgment
+and repeat 8-contender real-owner cohort with admin p95<=1000ms and
+successful bounded work. The accepted prototype's 22 cases and 051A's
+25 provider cases cannot be relabeled real-owner permission coverage.
+
+**Decision: D2 contract remains OPEN / implementation BLOCKED.** The
+table-level evaluated relation set and candidate technical method are now
+documented, but writer coverage of all rows/absence predicates, provider/
+assertion future transitions, physical owner export port signatures,
+strict lock ordering and a concrete 038 head/epoch schema are not closed.
+No exact production CREATE/UPDATE paths, migration filename, code/test
+inventory changes, public API, release or 052 work are authorized.
+Next SAME-ID 051 must perform a complete native/JPA writer and trigger
+census across the listed relation families, decide supported temporal
+predicate grammar and exact owner signatures/038 schema, then register a
+strict file-by-file implementation/DB acceptance scope in another guarded
+governance checkpoint if and only if evidence permits.
+
+This execution UPDATEs ONLY `doc/roadmap/ULTIMATE_ROADMAP.md` and
+appends to `doc/model-remediation/RECONCILIATION.md`; CREATE/DELETE none.
+Retain historical roadmaps and accepted runtime/migrations/tests/inventory
+byte-identically; use exactly
+`docs(security): select operation time fencing proof`.
+Publish with expected HEAD `7b2677809e177733fac3238bd20b9cdff3523d30`, verify commit parent/tree/two-path
+scope and start of automatic Docs CI, then STOP (no polling or manual
+Full/Fast dispatch).
+
+
 ### Current execution checkpoint — HPR-P25-051 D2 expanded contributor/writer census, 2026-10-14
 
 Exact authoritative main `e25116ce1d72091c0410108fe98c9ca535a34005`, tree `cb64183e8cd133dd1f9c75f237f502eef47c473b`: Docs run

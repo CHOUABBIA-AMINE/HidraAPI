@@ -21821,3 +21821,82 @@ oracle/fallback and optimized=false persist. Gas-first/GZ2, own engine,
 steady/transient, versioned inputs/operator control; synthetic development,
 owner calibration later, Simulation/P3 deferred; no release/deployment.
 
+
+
+## 2026-10-14 — HPR-P25-051C supplied temporal boundary compiler candidate
+
+Owner Next selected only the registered six-path envelope after
+`68757afa87d6f58c8609c2aca10185b03df9bdb1` and exact-SHA Docs #305 SUCCESS.
+Exact message: `feat(identity): reduce protected temporal boundaries`.
+**051C IN PROGRESS / IMPLEMENTED CANDIDATE / HOSTED CI PENDING.**
+
+Created AuthorizationTemporalBoundaryCompiler, its twelve-case unit test
+and four-case real PostgreSQL16 timestamp parity test. The pure domain
+compiler snapshots supplied immutable boundary inputs, validates six fixed
+kinds and their required/nullable endpoints, finite PostgreSQL epoch range
+and exact microsecond precision, source identities and duplicate source/kind
+pairs, strict window ordering, count<=1024 and future required B1 expiry.
+It collects BOTH future starts and ends without an active-status filter.
+The result retains the earliest instant strictly after sample and all tied
+contributors sorted by source/kind/endpoint in immutable output.
+Unsupported facts yield a reason with no partial candidate. Empty/past-only
+input yields NO_FUTURE_BOUNDARY without a fabricated infinite horizon.
+No Clock, Instant.now, I/O, caller completeness Boolean or owner witness.
+
+The unit suite proves future inactive-window starts, half-open equality,
+past windows, nullable attribute/lock facts, required fields, expired B1,
+source/grant intersection, invalid/duplicate/oversized input, microsecond
+and finite bounds, deterministic ordering/immutable ties and no unlimited
+authority conclusion. PostgreSQL tests use the actual compiler plus
+independent JDBC connections and parameterized timestamptz SQL, checking
+t==s, t==u and adjacent microseconds, actual microsecond round trips,
+distinct backend PIDs, equivalent offset text across two session timezones,
+and positive/negative database infinity rejection with a finite control.
+No schema migration, Spring replacement, mock clock, sleep, protected owner
+integration or trigger bypass was introduced.
+
+**Actual local validation:** Java21.0.12.1/Maven3.9.11 offline focused
+`-Dtest=AuthorizationTemporalBoundaryCompilerTest,AuthorizationTemporalBoundaryPostgresIntegrationTest,ArchitectureGuardrailTest test`
+PASS for compilation plus 12 unit/16 architecture cases, zero failures/errors.
+All four PostgreSQL identities are genuinely SKIPPED because Docker
+executable/socket is unavailable; no real PG acceptance claimed.
+Reviewed Fast Maven with workspace-only existing Mockito Java agent PASS:
+299 classes/1374 tests, zero failures/errors/skips. Strict Fast report
+equality PASS on its 299 source-selected raw report files. Initial report
+check against the mixed focused/Fast directory rejected the four retained
+PG skips; separate Fast evidence was checked while those focused skip
+reports remain retained. This separation never accepts the DB lane.
+Six unchanged Python policy suites PASS:102 cases; canonical docs/offline
+OpenAPI/P1/source inventory checks PASS. Source Git-blob parity outside the
+registered scope, canonical headers, immutable old inventory cases/order/
+hashes/timings/policies/raw formatting and append-only scope checked.
+
+Inventory adds only these two genuine test classes; unit Fast/unit/oracle,
+PG fast=false/owning PostgreSQL partition/oracle, zero unmeasured timing
+hints explicitly labeled. Fast299/unit300/PG37+42/oracle379/historical4.
+Inventory SHA256:
+`840d209a64a5f9414a09b23e3116cfdc74845fa77fb4e085120b915b878114a8`.
+Production source SHA256:
+`cf8051d005f5551b8f2b7fa5e9c86fb38cd47553be18c544d874a2c7921ff770`;
+unit source SHA256:
+`3d33b43adecd85019e3e51884782e4af877b5522f0eb44a57da2d8ba97299115`;
+PG source SHA256:
+`b4b0967d47e464def98c559240c53035573781b7f6b0eaa84c2e273ff7903b3a`.
+
+Exact 3 Java CREATE/3 inventory-governance UPDATE/0 DELETE. All existing
+production/tests/migrations/workflows/versions and release artifacts remain
+unchanged. Compiler is dormant and supplied-boundary reduction is NOT
+owner-event completeness, permission, fact freezing or final DB authority.
+Parent051/D2/B2/B3, source-specific actual owner collection, writer/privilege
+and global lock graph, protected Identity/Party/Topology exports and038
+head/epoch plus common database s/u/t remain OPEN. 052 is not selected.
+
+Publish directly to expected-head main, verify exact child message,
+parent/tree/six-path blobs, observe automatic Full/Fast/Docs startup
+on actual new runtime SHA, then STOP. Next/Fail requires successful
+exact-SHA aggregate and genuine zero-skip PostgreSQL reports before
+051C acceptance or repair. CI-003 oracle/fallback and optimized=false
+persist. Gas-first/GZ2, own engine, steady/transient, versioned inputs/
+operator control; synthetic development, owner calibration later,
+Simulation/P3 deferred; no release/deployment.
+

@@ -1736,6 +1736,48 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "b1ExpiryAtOrBeforeSampleRejects",
+        "duplicateAndOversizedInputsRejectWithoutPartialPlan",
+        "earliestFutureIncludesInactiveWindowStarts",
+        "futureB1ExpiryIntersectsOtherWindows",
+        "inputOrderingCannotChangeReduction",
+        "noFutureBoundaryIsNotUnlimitedAuthority",
+        "nullableAttributeAndLockBoundariesAreExplicit",
+        "pastWindowsDoNotInventFutureHorizon",
+        "postgresPrecisionAndFiniteRangeAreRequired",
+        "requiredGrantAndPolicyEndpointsAreValidated",
+        "startAndEndEqualityUseHalfOpenSemantics",
+        "tiedContributorsAndResultsAreImmutable"
+      ],
+      "class": "dz.sh.hidra.modules.identity.domain.service.AuthorizationTemporalBoundaryCompilerTest",
+      "dependency_reason": "Pure supplied-boundary reduction without coverage or permission; zero scheduling baseline is unmeasured pending hosted calibration.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationTemporalBoundaryCompilerTest.java",
+      "source_sha256": "3d33b43adecd85019e3e51884782e4af877b5522f0eb44a57da2d8ba97299115",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "postgresHalfOpenEqualityMatchesCompiler",
+        "postgresMicrosecondRoundTripsPreserveCandidate",
+        "postgresRejectsNonfiniteOwnerBoundariesAtCompilerBoundary",
+        "postgresSessionTimeZoneCannotChangeInstantBoundary"
+      ],
+      "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.AuthorizationTemporalBoundaryPostgresIntegrationTest",
+      "dependency_reason": "Real PostgreSQL16 timestamp and half-open boundary parity only; no owner coverage or permission proof. Zero timing hint is unmeasured pending hosted execution.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/AuthorizationTemporalBoundaryPostgresIntegrationTest.java",
+      "source_sha256": "b4b0967d47e464def98c559240c53035573781b7f6b0eaa84c2e273ff7903b3a",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
         "activeDirectoryCompletionRetainsActualTypeAndLdapSessionProtocol",
         "actualPostgresqlDeferredCommitFailureReturnsNoResultAndRollsBackEverything",
         "allOwnerWritesAndSigningObserveOneBackendAndCommitBeforeDelivery",

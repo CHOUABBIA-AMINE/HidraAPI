@@ -29,6 +29,19 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-P25-050 staged development, 2026-10-14
+
+Owner confirms development-only HidraAPI with no production deployment/data and authorizes
+050A–050D subdivisions. The current prospective amendment at the end supersedes older
+single-commit and deployed-data upgrade/preservation requirements. Fresh-schema Flyway,
+database guards, trusted producer/commit and B1 security proof remain mandatory. Parent
+050 is IN PROGRESS / STAGED / NOT IMPLEMENTED IN MAIN; 050A is next after this amendment's
+Docs acceptance and separate owner Next. 050B/C/D and 051 remain blocked on predecessors.
+Current main 3c6361215c3bb72d33993d052f02637e3baebce8 has Docs #281 SUCCESS;
+latest runtime/workflow e1695a0848e005f3fac272dd80d2a80f03f5ce2c has Full #678/Fast #11
+SUCCESS. Uploaded/local candidates are not published runtime evidence. CI-003 stays
+IN PROGRESS; no simulation/P3, deployment or calibration request is selected.
+
 ### Current execution checkpoint — HPR-CI-003 oracle resource candidate, 2026-10-13
 
 Owner returns to CI after the completed >9m feedback and requests analysis/optimization
@@ -309,7 +322,7 @@ aggregate may replace it. D1–D5 are internal gates, never new HPR task IDs.
 |---|---|---|---|---|---|---|---|---|---|---|
 | 1 | HPR-CI-003 | Automatic fast suite and equivalent parallel full verification | CI / independent verification | IN PROGRESS / ORACLE RESOURCE CANDIDATE; prior 5x same-SHA equivalence retained; multi-revision/performance OPEN | Accepted 049; this Docs PASS; owner selection | CI-003 closed list | Selection/report/release negative tests; shadow full verification | No lost cases; mandatory gate fail-closed; repeatable timing | CI | `ci: automate fast feedback and preserve full verification gates` |
 | 2 | HPR-P25-047 | Provider/link database security generations | Identity | COMPLETED / CI ACCEPTED | Accepted 046/048/049; existing registration Docs; separate Next | Existing seven-file list, unchanged | Real writers, Flyway fresh/upgrade, native/bulk/race/rollback | Exact implementation Production + Docs SUCCESS | F1 | `feat(identity): enforce provider and link security generations` |
-| 3 | HPR-P25-050 | Immutable operation binding and trusted issuance/reader | Identity; Platform technical wiring | IN PROGRESS / TRUNCATE COMPATIBILITY CORRECTED; DOCS PENDING / NOT IMPLEMENTED | 047; accepted 044/045 design | D1 then exact Identity list; no code authorization yet | LOCAL/LDAP/AD/OIDC, expiry, generation, rollback | B1 provenance and storage proof; no inferred B2/B3 | F1 | `feat(identity): bind protected operations to trusted authentication` |
+| 3 | HPR-P25-050 | Immutable operation binding and trusted issuance/reader, staged 050A–050D | Identity; Platform technical wiring | IN PROGRESS / STAGED / NOT IMPLEMENTED IN MAIN | 047; accepted 044/045 design | Exact 050A/B/C/D lists in 2026-10-14 amendment; 050A next after Docs acceptance | Fresh-schema LOCAL/LDAP/AD/OIDC, expiry, generation, rollback; no deployed-data migration | B1 provenance and storage proof across all four children; no inferred B2/B3 | F1 | Child messages registered below; original message retained by 050D |
 | 4 | HPR-P25-051 | Cross-owner revocation/time/transaction linearization | Identity / Party / Topology; Platform mechanics | BLOCKED on D2 atomic-time and transaction proof | 050; accepted 038/043; D2 | D2 then exact owner/export/fence list | Real PostgreSQL owner/race/expiry/connection tests | B2/B3 and writer ordering + bounded latency PASS | F1 | `feat(security): linearize cross owner protected operations` |
 | 5 | HPR-P25-052 | Topology authoring, route/profile and revision publication APIs | Topology; read-only foreign owner contracts | PLANNED / REGISTERED; D3 contract/scope gate | 051; accepted 018/019/020/032/034/036/037/038; D3 | D3 closed authoring/storage/API list | Actual API round trips, epochs/CAS/history/import-export | F1-02/03/04 within explicit supported topology scope | F1 | `feat(topology): expose governed engineering revision workflows` |
 | 6 | HPR-P25-053 | Product/property/method metadata authoring and history | Custody; source approval through Workflow | PLANNED / REGISTERED; D3 contract/scope gate | 051; accepted 018/022 design; D3 | D3 exact Custody/owner-export list | Multi-product metadata, unsupported shape, old GAS replay | F2-01 and product share of F2-03 | F2 | `feat(custody): govern versioned product engineering data` |
@@ -7851,3 +7864,318 @@ main SHA. Docs SUCCESS is PENDING at preparation. Verify exact message/parent/tr
 path/blob scope, expected-head ref update and new-head Docs startup, then STOP without
 waiting for completion or advancing. After acceptance, a separate owner Next selects
 050 runtime under the explicitly corrected TRUNCATE contract; all other gates remain open.
+
+
+## 2026-10-14 — Owner-selected HPR-P25-050 staged development implementation
+
+### Current development facts and supersession
+
+Owner explicitly confirms that HidraAPI is a developing project: there is no HidraAPI
+production deployment and no production or related existing dataset to migrate. Development
+fixtures are synthetic; owner supplies eventual deployment calibration. References to the
+historical Production CI workflow are verification labels, not evidence of a deployed system.
+
+Owner authorizes splitting the large 050 implementation into 050A/050B/etc. This same-parent
+amendment registers four independently buildable stages below, retaining the existing
+22 CREATE / 28 UPDATE union. It supersedes the old instruction to implement every B1
+obligation in one 050 commit and removes the 050 requirement to prove an exact-predecessor
+upgrade, preserve deployed/unbound historical data, backfill old tokens or perform an
+existing-data migration. No production dataset, rollout, cutover, live-directory evidence,
+operator migration exercise or calibration request is a prerequisite to these stages.
+Retained historical records describe their original decisions and do not override this
+current prospective amendment.
+
+Fresh disposable PostgreSQL16 schemas must still be reproducible from the actual current
+Flyway inventory. The registered new SQL is schema creation/guard installation, not a
+production-data conversion. Existing applied SQL source files remain unchanged; rewriting
+them would add unrelated scope and is unnecessary for development. No fabricated catalog,
+privileged trigger bypass, skip-as-PASS or invented authentication/transaction evidence is
+permitted. Fresh synthetic unbound-row lifecycle/API regressions protect current software
+behavior; they are not certification of a deployed legacy database or its data preservation.
+
+Refreshed authoritative main: `3c6361215c3bb72d33993d052f02637e3baebce8`, tree
+`a1019207614bff5d134c95ff21226fb6bac878b8`. Documentation #281 SUCCESS on this head.
+Latest runtime/workflow baseline `e1695a0848e005f3fac272dd80d2a80f03f5ce2c` has Full #678,
+Fast #11 and Docs #279 SUCCESS. Earlier Docs #280 failed and is repaired by current #281.
+No 050 runtime source is published. Uploaded five-model drafts and locally prepared
+supporting code are uncommitted candidates, not source or acceptance authority; adopt
+them only within the separately selected stage after validation against current GitHub.
+
+### Execution order, exact messages and acceptance state
+
+Parent HPR-P25-050 remains IN PROGRESS / STAGED / NOT IMPLEMENTED IN MAIN. The following
+child IDs are implementation subdivisions of that parent, not new product requirements.
+Dependency order is strict: 050A → 050B → 050C → 050D. No batch is authorized. A separate
+owner Next selects exactly one child after its prerequisite exact-SHA CI is accepted;
+Fail repairs the failed child first. Full/Fast/Docs startup is observed after a guarded
+main publication, then execution stops without waiting for completion or advancing.
+The documentation-only amendment itself stops after Docs startup; its acceptance and
+the next owner Next select 050A. Every runtime child needs the existing required Full
+Verification Gate, greenfield oracle/partitions, Fast and Docs SUCCESS on its actual SHA.
+An intermediate green child proves only its own bounded deliverable, not complete B1.
+
+| Child | Deliverable | Dependency | Current status | Exact implementation commit message |
+|---|---|---|---|---|
+| HPR-P25-050A | Trusted binding foundations and private verification receipts | accepted 044/045/046/047/049 and this amendment | PLANNED / NEXT AFTER AMENDMENT ACCEPTANCE | `feat(identity): add trusted authentication binding foundations` |
+| HPR-P25-050B | Fresh-schema binding storage and session guards | CI-accepted HPR-P25-050A | BLOCKED / PREDECESSOR NOT ACCEPTED | `feat(identity): persist immutable authentication bindings` |
+| HPR-P25-050C | Real provider verification and atomic bound issuance | CI-accepted HPR-P25-050B | BLOCKED / PREDECESSOR NOT ACCEPTED | `feat(identity): complete trusted bound authentication` |
+| HPR-P25-050D | Bound-operation reader and integrated B1 acceptance | CI-accepted HPR-P25-050C | BLOCKED / PREDECESSOR NOT ACCEPTED | `feat(identity): bind protected operations to trusted authentication` |
+
+050D retains the original parent implementation message. The original one-commit
+message is not separately executed or used to squash accepted child commits. Parent
+050 becomes COMPLETED / CI ACCEPTED only after all four children are accepted and the
+full integrated B1 evidence below is present. HPR-P25-051 stays BLOCKED / UNSELECTED
+until then, followed by its separately selected D2/B2/B3 stage. No Topology write or
+protected-operation API is enabled by the intermediate Identity work.
+
+### Exact per-child scopes
+
+All paths below are concrete, exclusive and within the existing 50-path parent union.
+DELETE none. An A-created receipt/guardrail test may be updated in C/D to add the newly
+available producer/reader cases; earlier cases remain. Only necessary source hashes and
+actual case identities/lane records change in the CI inventory. Roadmap and append-only
+reconciliation accompany each child. No workflow/generator/build/dependency/API/version,
+foreign module, history snapshot, release/deployment or simulation change is admitted.
+Every CREATE must still be absent and every UPDATE present at the selected exact head.
+
+#### HPR-P25-050A — Trusted binding foundations and private verification receipts
+
+Exact scope: 14 CREATE / 7 UPDATE; DELETE none.
+
+| Action | Exact path |
+|---|---|
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/domain/model/OperationAuthenticationBinding.java` |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/model/AuthenticationVerificationSnapshot.java` |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/model/LocalCredentialVerificationState.java` |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/model/VerifiedDirectAuthenticationResult.java` |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/model/AccessTokenIssuerSettings.java` |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/model/AccessTokenIssuanceContext.java` |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/port/out/OperationAuthenticationBindingRepositoryPort.java` |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthenticationSecurityStateQueryPort.java` |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/port/out/TrustedAuthenticationVerificationPort.java` |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyOperationAuthenticationContract.java` |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationRegistry.java` |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityAuthenticationClockConfiguration.java` |
+| CREATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationTest.java` |
+| CREATE | `src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/application/model/AuthenticatedPrincipalInput.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraOidcAuthenticationToken.java` |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraAuthorizationOwnershipTest.java` |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/identity/AuthenticationArchitectureAndSecretGuardrailTest.java` |
+| UPDATE | `.github/ci-test-inventory.json` |
+| UPDATE | `doc/roadmap/ULTIMATE_ROADMAP.md` |
+| UPDATE | `doc/model-remediation/RECONCILIATION.md` |
+
+Acceptance: validated immutable format-one values, strict Unicode/native byte and
+PostgreSQL-representable time/null branches, defensive tag copies/redaction, exact
+invocation-bound one-use receipts, consumed-origin attestation, RFC5869 vectors and
+canonical tuple authentication, transaction-enforced after-commit publication, failure
+cleanup and constructor/DTO/details/roles/correlation rejection. Public old input/OIDC
+constructors remain available but create no trusted receipt. New models/ports/registry
+are dormant foundations: existing providers/completion/issuance and routes are unchanged;
+no SQL, active bound completion or reader adapter is installed in A. Guardrails allow
+only the three registered future receipt producers; zero production callers at A is
+expected, not proof of successful provider authentication. The JDK-only contract contains
+no raw token, tag/key/hash/claims/PERMIT or callback authority. Unit/mocked transaction
+checks are reported as such, never as actual commit/PostgreSQL or four-provider proof.
+
+Focused tests: `TrustedAuthenticationVerificationTest`,
+`OperationAuthenticationBoundaryGuardrailTest`, `HidraAuthorizationOwnershipTest`,
+`AuthenticationArchitectureAndSecretGuardrailTest` and retained original-assertion tests.
+Required full gates additionally establish no regression in unchanged runtime behavior.
+
+#### HPR-P25-050B — Fresh-schema binding storage and session guards
+
+Exact scope: 4 CREATE / 7 UPDATE; DELETE none.
+
+| Action | Exact path |
+|---|---|
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcOperationAuthenticationBindingRepositoryAdapter.java` |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcAuthenticationSecurityStateQueryAdapter.java` |
+| CREATE | `src/main/resources/db/migration/V20261013_001__p25_identity_operation_binding.sql` |
+| CREATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/OperationAuthenticationBindingPostgresIntegrationTest.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaLoginSessionRepositoryAdapter.java` |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/identity/semantic/LoginSessionSemanticRemediationTest.java` |
+| UPDATE | `.github/database-dictionary-ownership.json` |
+| UPDATE | `doc/database/DATA_DICTIONARY.md` |
+| UPDATE | `.github/ci-test-inventory.json` |
+| UPDATE | `doc/roadmap/ULTIMATE_ROADMAP.md` |
+| UPDATE | `doc/model-remediation/RECONCILIATION.md` |
+
+Acceptance: one newly reserved `V20261013_001__p25_identity_operation_binding.sql`
+at Flyway 20261013.001 (refresh collision/inventory before creation); actual PostgreSQL16
+fresh-schema application of every inventoried migration with no pending/failed entries.
+Use the previously registered 21 columns including the private 32-byte producer tag,
+constraints, indexes, three functions, eight triggers and fixed owner lock order.
+Snapshot generations are not version-pair FKs. Binding insert/replay/conflict checks
+use fresh owner rows; UPDATE/DELETE/TRUNCATE reject. Bound-session immutable/terminal
+guards and wrong-isolation rejection apply; session-table TRUNCATE rejects unconditionally.
+Real COPY/MERGE/native/JPA mutation, same/different replay, NULL/type/finite-time/byte
+boundaries and independent-backend observed lock/barrier tests run on synthetic fixtures.
+No sleeps as race proof, no trigger/role/replication escape, no deployed-data upgrade
+proof. SQL tuple validity alone is not trusted producer origin; A's authenticated tag
+is necessary and C/D establish production-path provenance and reader validation.
+
+JPA session adapter uses flush/fresh locking where registered; current ordinary synthetic
+row lifecycle behavior remains covered. Actual current physical dictionary and Identity
+ownership are captured/rendered/checked through the existing catalog policy; there is
+no simulated catalog or generator-policy waiver. If the required physical environment is
+unavailable, record the exact limitation; do not mark B accepted or manufacture metadata.
+There is still no bound completion/reader or new protected API after this stage.
+
+Focused tests: `OperationAuthenticationBindingPostgresIntegrationTest`,
+`LoginSessionSemanticRemediationTest`, `LoginSessionIntegrityMigrationTest` and retained
+046/047/049 PostgreSQL proofs. This stage's binding test owns session append/mutation/
+delete/TRUNCATE/isolation races; D adds the reader-specific races and current-state proof.
+
+#### HPR-P25-050C — Real provider verification and atomic bound issuance
+
+Exact scope: 1 CREATE / 22 UPDATE; DELETE none.
+
+| Action | Exact path |
+|---|---|
+| CREATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/BoundAuthenticationCompletionPostgresIntegrationTest.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/application/model/IssuedAccessToken.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/application/port/out/DirectAuthenticationPort.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AccessTokenIssuerPort.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/application/service/DirectAuthenticationApplicationService.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/application/service/AuthenticationCompletionApplicationService.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/application/service/AuthenticationSessionLifecycleApplicationService.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/LocalAuthenticationProvider.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapAuthenticationProvider.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverter.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/SpringDirectAuthenticationAdapter.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraAccessTokenIssuer.java` |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/LocalAuthenticationProviderTest.java` |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapAuthenticationProviderTest.java` |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverterTest.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/application/model/VerifiedDirectoryIdentity.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapCredentialVerificationAdapter.java` |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapCredentialVerificationAdapterTest.java` |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationTest.java` |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java` |
+| UPDATE | `.github/ci-test-inventory.json` |
+| UPDATE | `doc/roadmap/ULTIMATE_ROADMAP.md` |
+| UPDATE | `doc/model-remediation/RECONCILIATION.md` |
+
+Acceptance: actual successful LOCAL/LDAP/AD/OIDC producers supply private receipts.
+LOCAL verifies the atomic captured credential hash/id/generation, with provider generation
+captured beforehand. Directory uses actual selected LDAP/AD type/configuration and exact
+authenticated-entry subject, followed by atomic link/User/generation capture. The verifier
+must transport the authenticated entry directly; normalized display/profile attributes
+cannot become authority. OIDC captures exact provider/link images before final qualified
+external decoding of the original bounded bearer and checks strict raw identities/deadline;
+existing original-assertion limits/semantics remain. No forged Jwt or public DTO is proof.
+
+Through the real Spring proxy, REQUIRED READ_COMMITTED non-read-only completion generates
+chosen IDs and one whole-second interval, floors the OIDC-capped expiry, flushes the session,
+signs and cryptographically reads back exact raw issuer/audience/sub/jti/type/provider/iat/
+exp, appends binding and non-LOCAL event in one physical owner transaction. Persistent
+attestation is minted only from the consumed producer receipt. Token/receipt delivery is
+after successful commit; save/sign/append/event/commit faults roll back and expose none.
+LOCAL credential-verification outcome keeps its separate established meaning. No fallback
+unbound success on verification failure, no automatic token retry or secret diagnostics.
+Input/output token bounds remain configurable at the accepted default 65,536 bytes.
+
+Real PostgreSQL/JPA/JDBC, test-key native signatures, after-commit callbacks, same backend/
+transaction observations, generation A/B/A and fault rollback are required. A deterministic
+directory port is a synthetic verifier, not a live deployment claim. Existing public API
+result/claims and ordinary route behavior remain; B1 reader is not yet installed and B2/B3
+are still unimplemented. Receipt/guardrail tests now require the exact three real producer
+call sites and retain A's denial/vectors/canonical-frame tests.
+
+Focused tests: `BoundAuthenticationCompletionPostgresIntegrationTest`,
+`LocalAuthenticationIntegrationTest`, `LocalAuthenticationProviderTest`,
+`LdapAuthenticationProviderTest`, `LdapCredentialVerificationAdapterTest`,
+`IdentityOidcJwtAuthenticationConverterTest`, `AuthorizationAssertionTrustTest`,
+all three retained authentication-controller API tests, `HidraUnifiedJwtCompatibilityTest`,
+`HidraAdministratorJwtAuthorizationTest` and A's receipt/guardrail tests.
+
+#### HPR-P25-050D — Bound-operation reader and integrated B1 acceptance
+
+Exact scope: 3 CREATE / 5 UPDATE; DELETE none.
+
+| Action | Exact path |
+|---|---|
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/service/OperationAuthenticationQueryApplicationService.java` |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyOperationAuthenticationQueryAdapter.java` |
+| CREATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/OperationAuthenticationQueryPostgresIntegrationTest.java` |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationTest.java` |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java` |
+| UPDATE | `.github/ci-test-inventory.json` |
+| UPDATE | `doc/roadmap/ULTIMATE_ROADMAP.md` |
+| UPDATE | `doc/model-remediation/RECONCILIATION.md` |
+
+Acceptance: argument-free Identity-owned B1 reader resolves the actual ambient bearer
+through the qualified native decoder, enforces strict signed raw types/UUIDs/issuer/
+audience/sub/jti/provider/iat/exp and validates private persistent producer authentication
+before returning eligible evidence. In-memory identity requires its actual producer-owned
+after-commit receipt. One joined owner query reads current HUMAN/active/unlocked User,
+provider/link/credential generations, exact session/binding tuple and real deadlines.
+Provider/link/credential A/B/A, disabled/locked/ended/expired/unbound contexts deny without
+identity leakage; zero/copied/arbitrary-tag legacy binding forgeries or corrupt tuples
+cannot authenticate. Storage/decoder infrastructure corruption is an operational error,
+not a successful absence. No decoder skew or second lookup extends expiry. This is
+point-in-time B1, not B2/B3 authorization or transaction-valid permission evidence.
+
+`OperationAuthenticationQueryPostgresIntegrationTest` supplies real signature/current-state/
+corruption/expiry/legacy and reader-versus-native/JPA writer race proof, complementing B's
+storage races and C's four-provider/commit proof. Old Topology actor, pair, permission,
+evaluator and write paths remain read-only. The complete original focused regression
+command plus the directory-verifier tests, all five new classes, six Python policy
+suites, actual dictionary, canonical docs/offline OpenAPI/P1 consistency, exact scope and
+existing full same-SHA gates must pass before parent 050 acceptance. Do not replace this
+with A's model smoke checks or an intermediate child's green CI.
+
+### Remaining parent requirements and publication boundary
+
+All earlier 044/045 and corrected D1 security requirements remain in force except the
+explicit existing-data migration/upgrade-preservation waiver and single-commit execution
+replacement above. Persistent-origin HKDF/frame/constant-time validation, exact directory
+subject transport, unconditional session TRUNCATE rejection, real fresh-schema Flyway/JPA,
+four producer paths, original assertion safety and point-in-time B1 proof are retained.
+No future fixed suite/case count is invented. Existing required tests/lane membership,
+four historical archive decisions, greenfield oracle, strict report equality, fallback
+and `optimized_adoption_eligible=false` remain unchanged. CI-003 stays IN PROGRESS.
+
+Current amendment UPDATE scope is only this roadmap and append-only reconciliation;
+CREATE/DELETE none. Exact amendment message:
+`docs(identity): close operation binding implementation scope`.
+No runtime draft, migration, dictionary, ownership/inventory, branch or PR is published
+by this amendment. Runtime child acceptance is PENDING. Main only with an expected-head
+guard; verify parent/tree/message/changed blobs, observe automatic Documentation Validation
+startup on the published SHA and STOP. Docs success is not claimed in advance. If a later
+manual CI dispatch is unsupported, hand off the exact existing workflow before dispatch
+and stop for owner feedback; never create a branch or weaken a gate to obtain evidence.
+
+Simulation/P3 remains deferred. Production-ready engineering and operations are the goal,
+not an assertion of a production deployment. Gas-first/GZ2, Hidra's own engine, steady/
+transient direction, versioned inputs and operator control remain. No deployment data,
+release, calibration collection or new simulator work is selected here.
+
+### Amendment validation
+
+Validation evidence is recorded after executing the unchanged policy tools against the
+pinned clean source with only this two-document amendment. No runtime acceptance claim
+is made by this documentation-only task.
+
+Executed against the pinned clean main source plus exactly these two document edits:
+- Six Python policy suites PASS: docs 10, OpenAPI 10, dictionary 17, base resolver 14,
+  inventory 26 and full evidence 25; 102 tests total. Resolver fixtures are synthetic.
+- Canonical docs PASS: 98 documents / 5,346 relative links / 24 modules / 13 P2 rows.
+- Offline OpenAPI PASS: 263 operations / 244 paths / 231 schemas; no live API capture.
+- P1 retained-evidence consistency PASS; no new operational exercise/closure claimed.
+- CI inventory validation PASS with unchanged digest
+  `eac6f480b432c075e232ff55e91e81e2410473b322df0f243023c6e7963d14cc`.
+- All 4,805 authoritative Git blobs matched before edits (mvnw.cmd archive export
+  normalized); exactly two documents differ afterward. Reconciliation prefix is intact;
+  all 4,803 other blobs, all 147 existing SQL and original history are unchanged.
+- Stage scope union/uniqueness/dependency-aware CREATE/UPDATE existence and added-line
+  whitespace PASS; no source/test/migration/ownership/dictionary/inventory/workflow change.
+
+No Java21, PostgreSQL, directory, JWT, completion/commit or reader runtime test was run
+for this documentation-only amendment. No production data exists or is required; no
+existing-data upgrade or preservation proof is selected. Runtime children remain pending.
+Only automatic Docs is required for this exact two-document main push; required startup
+and eventual success must be distinguished. Verify the new head and Docs startup, then
+STOP without waiting or implementing 050A in this same turn.

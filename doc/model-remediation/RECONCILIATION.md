@@ -21146,3 +21146,38 @@ This is two-path documentation only using the existing exact message
 `docs(security): select operation time fencing proof`; no CREATE/DELETE,
 runtime code, migrations, CI inventory, APIs or releases. Observe Docs
 startup on exact new SHA and STOP; do not claim startup equals success.
+
+
+## 2026-10-14 — HPR-P25-051 native writer/trigger audit, continued
+
+Exact main 16004888feb3fa660694382d16ae4dade61c6a2a and Docs #38577867012
+SUCCESS. Last production head 76b14cda4520f1eff242bd474c02ce4db317d385
+had Full #686/Fast #19/Docs #292 SUCCESS. Prospective 051 row status corrected
+to accepted 051A / D2 owner scope still open; no history rewritten.
+
+Source-confirmed SQL triggers: HMR-011 admission of ACTIVE grant/mapping
+against ACTIVE Permission on four related relations; P25 credential/
+provider/external-link security-generation and normal delete/truncate
+denial; P25 native immutable operation-binding owner row locks in
+Provider -> LocalCredential/ExternalIdentity -> User -> Session order,
+binding and bound-session mutation/terminal guards; immutable station
+graph revisions. RESTRICT FKs and migration-time permission inserts do
+not establish runtime permission/time authority.
+
+Writer routes include Identity administration grant/role/permission JPA
+saves, additional Identity repository saves, session lifecycle saveAndFlush/
+PESSIMISTIC_WRITE, native immutable operation binding append, Party and
+PartyRoleAssignment saves, Facility saves, and native station-graph plus
+physical-network revision append. SpringAuthorizationContextAdapter
+selects current external mapping claim names and extracts JWT claims
+but is not a D2 transaction-bound owner assertion contribution.
+
+Remaining obligations: complete all 148 SQL-file semantics and the whole
+normal/privileged native/JPA writer graph; account for phantoms and future
+DENY/activation, issuer/claims, policy grammar/time upper bound, native
+trigger/owner lock DAG, versioned Facility/Party epoch/head schema and
+immutable owner export ports, and real zero-skip PostgreSQL proof. No
+protected production implementation scope/migration yet, no B2/B3 or 052
+acceptance. Only two governance files change with registered
+\`docs(security): select operation time fencing proof\`; STOP after
+automatic Docs startup on guarded exact new main.

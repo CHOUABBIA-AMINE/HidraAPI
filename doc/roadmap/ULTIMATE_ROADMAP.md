@@ -30,6 +30,75 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-P25-051 native writer and trigger audit, 2026-10-14
+
+**Current evidence.** Main \`16004888feb3fa660694382d16ae4dade61c6a2a\` passed
+Docs #38577867012. Last runtime \`76b14cda4520f1eff242bd474c02ce4db317d385\`
+passed Full #686, Fast #19, Docs #292. Accepted HPR-P25-051A
+was incorrectly still labeled "CI PENDING" in the prospective 051
+status table; that single current-status cell is corrected below.
+HPR-P25-051/D2/B2/B3 remain OPEN; do not select 052.
+
+#### Source-reviewed trigger and writer audit
+
+| Exact production source | Confirmed enforcement or write route | Remaining D2 obligation |
+|---|---|---|
+| \`V20261004_011__hmr_011_identity_permission.sql\` | \`hmr011_require_active_identity_permission()\` BEFORE INSERT/UPDATE OF permission_id,status on \`hidra_identity_role_permission_grant\`, \`hidra_identity_user_permission_grant\`, \`hidra_identity_authorization_delegation_grant\` and \`hidra_identity_external_permission_mapping\` requires ACTIVE referenced permission for an ACTIVE NEW grant/mapping | Trigger tests grant/mapping admission, not reciprocal permission UPDATE, future DENY, expiration, other-column mutation or phantom membership coverage |
+| \`V20261012_001__p25_identity_local_credential_security_generation.sql\` | LOCAL credential BEFORE INSERT/UPDATE database-owned monotonic security generation; DELETE/TRUNCATE rejected for normal writes | No completeness proof for user/grant/owner authority or time interval |
+| \`V20261012_002__p25_identity_provider_link_security_generations.sql\` | Provider and ExternalIdentity BEFORE INSERT/UPDATE increment generation on security-relevant changes; DELETE/TRUNCATE rejected | Mapping/claims, policy, future source deadlines and cross-owner writer fences remain separate |
+| \`V20261013_001__p25_identity_operation_binding.sql\` | Immutable binding INSERT in READ COMMITTED takes FOR UPDATE owner row order Provider -> LocalCredential **or** ExternalIdentity -> User -> LoginSession; binding UPDATE/DELETE/TRUNCATE denied; bound-session INSERT/UPDATE/DELETE isolation and terminal guards | Owner B1 result is not a same-connection protected export; reconcile native row locks and relation fences, test actual deadlocks |
+| \`V20261011_002__p25_topology_station_graph_revisions.sql\` | Immutable station graph revision UPDATE/DELETE/TRUNCATE rejected; JDBC adapter writes INSERT | No authoritative current head, owner epoch, hold or expected-predecessor CAS |
+| \`V20260929_001__enforce_same_module_reference_integrity_a.sql\` | Foreign-key RESTRICT/validation for multiple Identity, Party and Topology owner references | Referential validity is not temporal/permissive authority or a complete absent-row fence |
+| \`V20260929_004__provision_organization_scope_permissions.sql\` | Migration-time INSERTs \`hidra_identity_permission\` rows | Historical data provisioning is not an ongoing runtime writer registry |
+
+**Confirmed application write routes (not an exhaustive inventory).**
+\`IdentityAdministrationCommandApplicationService\` saves Role, Permission,
+UserRoleGrant, RolePermissionGrant, UserPermissionGrant. Additional adapters
+with JPA save paths include User, GroupRoleGrant,
+AuthorizationDelegationGrant, ExternalRoleMapping and IdentityProvider.
+\`AuthenticationSessionLifecycleApplicationService\` writes session
+start/touch/logout/revoke/expire; \`JpaLoginSessionRepositoryAdapter.save\`
+uses saveAndFlush, and its writable findById locks with PESSIMISTIC_WRITE.
+\`AuthenticationCompletionApplicationService\` and
+\`JdbcOperationAuthenticationBindingRepositoryAdapter.append\` perform
+the bound completion/native binding INSERT path. Party/PartyRoleAssignment
+application services call their respective JPA save adapters; Facility
+application registration calls JpaFacilityRepositoryAdapter.save.
+Station graph and physical network JDBC revision adapters each perform
+native INSERT. These observations do not prove all reachable write routes
+or privileged/direct SQL paths.
+
+**Observed assertion-time dependence.** \`SpringAuthorizationContextAdapter\`
+captures authorization mapping claim names from JPA before extracting
+JWT claims; \`currentFor\` also reads external identity or returns
+SecurityContext-carried assertion evidence. Neither is an accepted
+protected same-backend B2 assertion contract. Mapping edits, provider/
+link flips, missing claims and source expiry need explicit owner-side
+participation, future boundary contribution or DENY/INDETERMINATE.
+
+**Gate:** COMPLETE native/JPA/trigger INSERT/UPDATE/DELETE/bulk inventory
+still UNPROVEN for UserGroupMembership, Group, Policy/Version/Rule,
+SubjectSecurityAttribute/AttributeDefinition, external group/permission
+mappings, issuance/source assertion families, Party transfer/status and
+Facility ownership/epoch/head. The 148 current Flyway files are not all
+behaviorally audited by the named-migration review. A source-mapped
+relation and row lock DAG that is compatible with B1 trigger row locks,
+a bounded supported temporal expression grammar, actual immutable
+Identity/Party/Topology protected owner export signatures, versioned
+head/epoch CAS schema, and zero-skip PostgreSQL owner tests must be
+closed **before** an implementation allowlist or migration name is
+authorized. Retain 051A's 250ms lock, 750ms statement, 1000ms idle and
+500ms protected-work budgets; no weakening or inferred capacity.
+
+**Current exact allowed change:** UPDATE ONLY this roadmap (new checkpoint
+and current prospective 051 status) and append-only
+\`doc/model-remediation/RECONCILIATION.md\`. CREATE/DELETE none;
+keep source, tests, Flyway, CI inventory, archives and release unchanged.
+Use registered same-ID message \`docs(security): select operation time fencing proof\`.
+After guarded publication on this SHA, observe automatic Docs startup
+and STOP. No Full/Fast manual dispatch, no 052 and no release.
+
+
 ### Current execution checkpoint — HPR-P25-051 D2 relation/writer matrix and protected owner-contract gate, 2026-10-14
 
 **Baseline and boundary.** At exact main `7b2677809e177733fac3238bd20b9cdff3523d30` (tree
@@ -656,7 +725,7 @@ aggregate may replace it. D1–D5 are internal gates, never new HPR task IDs.
 | 1 | HPR-CI-003 | Automatic fast suite and equivalent parallel full verification | CI / independent verification | IN PROGRESS / ORACLE RESOURCE CANDIDATE; prior 5x same-SHA equivalence retained; multi-revision/performance OPEN | Accepted 049; this Docs PASS; owner selection | CI-003 closed list | Selection/report/release negative tests; shadow full verification | No lost cases; mandatory gate fail-closed; repeatable timing | CI | `ci: automate fast feedback and preserve full verification gates` |
 | 2 | HPR-P25-047 | Provider/link database security generations | Identity | COMPLETED / CI ACCEPTED | Accepted 046/048/049; existing registration Docs; separate Next | Existing seven-file list, unchanged | Real writers, Flyway fresh/upgrade, native/bulk/race/rollback | Exact implementation Production + Docs SUCCESS | F1 | `feat(identity): enforce provider and link security generations` |
 | 3 | HPR-P25-050 | Immutable operation binding and trusted issuance/reader, staged 050A–050D | Identity; Platform technical wiring | COMPLETED / A–D AND B1 CI ACCEPTED AT 81d46bc | 047; accepted 044/045 design | Exact 050A/B/C/D lists executed; Full #683/Fast #16/Docs #287 SUCCESS | Fresh-schema LOCAL/LDAP/AD/OIDC, expiry, generation, rollback; no deployed-data migration | B1 provenance and storage proof across all four children; no inferred B2/B3 | F1 | Child messages registered below; original message retained by 050D |
-| 4 | HPR-P25-051 | Cross-owner revocation/time/transaction linearization | Identity / Party / Topology; Platform mechanics | IN PROGRESS / 051A IMPLEMENTED CANDIDATE; CI PENDING | 050; accepted 038/043; D2 | D2 then exact owner/export/fence list | Real PostgreSQL owner/race/expiry/connection tests | B2/B3 and writer ordering + bounded latency PASS | F1 | `feat(security): linearize cross owner protected operations` |
+| 4 | HPR-P25-051 | Cross-owner revocation/time/transaction linearization | Identity / Party / Topology; Platform mechanics | IN PROGRESS / 051A CI ACCEPTED; D2 OWNER SCOPE OPEN | 050; accepted 038/043; D2 | D2 then exact owner/export/fence list | Real PostgreSQL owner/race/expiry/connection tests | B2/B3 and writer ordering + bounded latency PASS | F1 | `feat(security): linearize cross owner protected operations` |
 | 5 | HPR-P25-052 | Topology authoring, route/profile and revision publication APIs | Topology; read-only foreign owner contracts | PLANNED / REGISTERED; D3 contract/scope gate | 051; accepted 018/019/020/032/034/036/037/038; D3 | D3 closed authoring/storage/API list | Actual API round trips, epochs/CAS/history/import-export | F1-02/03/04 within explicit supported topology scope | F1 | `feat(topology): expose governed engineering revision workflows` |
 | 6 | HPR-P25-053 | Product/property/method metadata authoring and history | Custody; source approval through Workflow | PLANNED / REGISTERED; D3 contract/scope gate | 051; accepted 018/022 design; D3 | D3 exact Custody/owner-export list | Multi-product metadata, unsupported shape, old GAS replay | F2-01 and product share of F2-03 | F2 | `feat(custody): govern versioned product engineering data` |
 | 7 | HPR-P25-054 | Installed-unit/asset and manufacturer-characteristic history | Topology installed configuration; Assets lifecycle; Party manufacturer; existing Simulation data store | PLANNED / REGISTERED; D3 contract/scope gate | 052; accepted 020/021 design; D3 | D3 exact per-owner list | Nine distinct units; curve/table/units/lifecycle/history | F2-02 and equipment share of F2-03; data only | F2 | `feat(engineering): govern installed units and characteristic revisions` |

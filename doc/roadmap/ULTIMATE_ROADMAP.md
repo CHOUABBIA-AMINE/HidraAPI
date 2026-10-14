@@ -29,6 +29,67 @@ by this planning commit. Current planning commit message:
 
 
 
+
+### Current execution checkpoint — HPR-P25-051 D2 expanded contributor/writer census, 2026-10-14
+
+Exact authoritative main `e25116ce1d72091c0410108fe98c9ca535a34005`, tree `cb64183e8cd133dd1f9c75f237f502eef47c473b`: Docs run
+38572318998 SUCCESS (docs-only); last accepted production commit
+`76b14cda4520f1eff242bd474c02ce4db317d385` has Full #686, Fast #19
+and Docs #292 SUCCESS. This is the same-ID 051 source-only continuation;
+051A is accepted, while parent 051, D2, B2/B3 and 052 remain OPEN.
+
+Source-verified candidate contributors and observed mutable boundaries:
+
+| Owner/read-set | Verified current source and effect | Required but not yet evidenced |
+|---|---|---|
+| Identity permission base | `JpaAuthorizationEvidenceAdapter` checks `UserJpaEntity` ACTIVE and `lockedUntil`, one ACTIVE `PermissionJpaEntity` by code/resource/scope | Fence both referenced owner rows and absence/uniqueness predicate; cover state and clock-only changes |
+| Direct and role grants | Same adapter evaluates `UserPermissionGrantJpaEntity`, `UserRoleGrantJpaEntity`, `RoleJpaEntity`, `RolePermissionGrantJpaEntity` with status, validFrom/validTo and scoped matching | Native INSERT/UPDATE/DELETE/phantom DENY, future activation/revocation, role deactivation and grant condition dependencies |
+| Group and external provenance | Same adapter reads `UserGroupMembershipJpaEntity`, `GroupJpaEntity`, `GroupRoleGrantJpaEntity`, `ExternalGroupMappingJpaEntity`, `ExternalRoleMappingJpaEntity`, `ExternalPermissionMappingJpaEntity`; sync membership depends on `IdentityProviderJpaEntity` and `ExternalIdentityJpaEntity` | Source mapping/provider/link flips and A/B/A, inactive/future mappings, grant and membership windows, all corresponding writer routes |
+| Attributes and policy | Same adapter reads `SubjectSecurityAttributeJpaEntity`, `AttributeDefinitionJpaEntity`, `AuthorizationPolicyJpaEntity`, `AuthorizationPolicyVersionJpaEntity` and `AuthorizationPolicyRuleJpaEntity`. `AuthorizationExpressionEvaluator` handles bounded parsed expressions and returns INDETERMINATE for unsupported forms | All referenced attribute/provider/policy transitions; safe earliest-u extraction for temporal expressions, including future DENY/nonmatching evidence, otherwise deny/indeterminate |
+| B1 owner state | `JdbcAuthenticationSecurityStateQueryAdapter.current` joins User, Provider, LoginSession, ExternalIdentity and LocalCredential. `OperationAuthenticationQueryApplicationService.query` uses read-only REQUIRES_NEW | Fresh B1 export in SAME protected backend, bound generations/source expiry and invalidation; do not invoke present REQUIRES_NEW path inside protected 051A |
+| Party owner | `TopologyPartyEligibilityQueryService` calls PartyRepositoryPort.findById; `Party.selectableForNewReference()` is exactly `status == ACTIVE`. `PartyStatusHistoryJpaEntity` stores historical changes but is not queried in this eligibility method | Fence Party current status and all relevant writes/transfers; decide whether history/role/hold participates, with an explicit epoch or fail-closed predicate |
+| Topology ownership | `StationRevisionOwnerQueryService` performs sequential Facility.ownerPartyId then Party eligibility; `FacilityJpaEntity` maps owner_party_id and status; `JpaFacilityRepositoryAdapter.save` is a writer surface | Authoritative Facility/Party owner epoch/hold, transfer writer fencing, sorted cross-owner locks; snapshots cannot establish permission |
+| Revision storage | `JdbcStationInternalGraphRevisionRepositoryAdapter.append` inserts an immutable keyed station graph revision, and `V20261011_002__p25_topology_station_graph_revisions.sql` enforces no UPDATE/DELETE/TRUNCATE | 038 authoritative current head/expected-predecessor CAS, read/write linearization and epoch binding; append-only revision rows are not a publication head |
+
+Additional source-linked writer entry points, NOT a complete writer inventory:
+`IdentityAdministrationCommandApplicationService` saves Role, Permission,
+UserRoleGrant, RolePermissionGrant and UserPermissionGrant;
+`PartyApplicationService` saves Party through its repository;
+`FacilityApplicationService` saves Facility; and
+`JdbcStationInternalGraphRevisionRepositoryAdapter` executes native revision
+INSERT. Existing Flyway `V20261012_001` and `V20261012_002` install
+security-generation guards for local credentials, providers and external
+identities; `V20261013_001` installs native operation-binding constraints
+and ordered writer checks. These guards alone do not fence the above complete
+D2 authorization read-set, and DDL/superuser bypass is outside normal-writer
+coverage.
+
+**Scope decision: NO runtime implementation allowlist is admitted.**
+This census has traced concrete read dependencies and several mutation surfaces,
+but it has NOT enumerated every Identity/Party/Topology writer (including
+administrative, repository, native, bulk, transfer and migration paths), every
+insert/delete phantom, every future activation and source assertion, nor the
+physical same-backend owner contracts and single post-fence DB-clock t guard
+for interval [s,u), epoch and head. A permission computed using the ordinary
+current services cannot be upgraded by calling 051A alone. If any complete
+writer or temporal dependency cannot be fenced, the operation must fail
+closed, not reuse earlier PERMIT booleans.
+
+Next SAME-ID 051 action must complete the table-by-table current/future
+relation-to-writer matrix and explicit owners' physical transaction ports,
+ordered relation/row fences, future-boundary algorithm, head/epoch CAS and
+positive/negative actual PostgreSQL tests BEFORE registering exact production
+CREATE/UPDATE paths. Preserve accepted 051A, B1, 038 proof, Flyway history,
+CI inventory and all existing tests unchanged. Do not select 052, new API,
+release/deployment, or treat this docs-only record as runtime acceptance.
+
+Allowed current amendment: UPDATE ONLY `doc/roadmap/ULTIMATE_ROADMAP.md`
+and append-only `doc/model-remediation/RECONCILIATION.md`;
+CREATE/DELETE none. Exact reused same-ID governance message:
+`docs(security): select operation time fencing proof`.
+Guard main against this expected SHA, verify two-path diff/append-only integrity,
+observe Docs startup and STOP. Full/Fast are not dispatched for docs-only scope.
+
 ### Current execution checkpoint — HPR-P25-051 D2 owner source census, 2026-10-14
 
 Exact main `76b14cda4520f1eff242bd474c02ce4db317d385`: Full #686

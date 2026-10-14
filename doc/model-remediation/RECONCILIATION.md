@@ -21080,3 +21080,36 @@ future-event/time inventory, owner participation contracts, ordering,
 guarded head/epoch predicates, and exact runtime allowlist are REQUIRED.
 No runtime, migrations, code, inventory, dictionary or release files were
 changed here. No D2/B2/B3 acceptance or 052 selection is claimed.
+
+
+## 2026-10-14 — HPR-P25-051 D2 expanded real-owner read/writer census
+
+Docs-only head e25116ce1d72091c0410108fe98c9ca535a34005 passed Documentation
+Validation 38572318998; accepted runtime remains 76b14cda4520f1eff242bd474c02ce4db317d385
+(Full #686, Fast #19, Docs #292). Source-reviewed Identity JPA evidence covers
+User/Permission, direct/role/group grants, source memberships/external mappings,
+provider/link, subject attributes and active policy version/rules. A future-inactive
+DENY, grant, provider, link, policy or attribute transition is NOT captured
+merely by current-at-s filters. Identity B1 current-state query joins provider,
+user, session, link and credential, but its existing application method is
+REQUIRES_NEW/read-only and cannot supply same-transaction protected evidence.
+
+Party eligibility presently reads the Party row and accepts exactly ACTIVE;
+the separate PartyStatusHistory entity is not consulted by that method.
+Topology ownership reads Facility.ownerPartyId followed by a separate Party
+eligibility call; Facility has no observed owner epoch in that entity.
+Station-graph JDBC appends immutable revision rows; the reviewed Flyway
+V20261011_002 prohibits UPDATE/DELETE/TRUNCATE but supplies no authenticated
+current publication head. Confirmed writer surfaces include Identity
+administration Role/Permission/grant saves, Party registration save, Facility
+registration save and native station-graph INSERT. Identity provider/link/
+credential generation triggers and operation-binding native guards are existing
+normal-writer protections, not a complete D2 relation/writer fence.
+
+No exhaustive mutation and future-event census, complete physical owner export
+contract, sorted cross-owner relation fences, earliest u, post-fence clock t,
+head/epoch CAS or real-owner guarded transaction proof was established here.
+No production/runtime file is authorized and parent 051/D2/B2/B3 is OPEN;
+052 remains blocked. Update only roadmap plus this append-only reconciliation;
+reuse `docs(security): select operation time fencing proof`, preserve all
+non-governance blobs, require Docs startup then STOP.

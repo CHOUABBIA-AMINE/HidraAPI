@@ -29,6 +29,34 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-CI-003 resource candidate outcome, 2026-10-14
+
+Selected by owner Next after the latest CI-003 source revision. GitHub main
+`e1695a0848e005f3fac272dd80d2a80f03f5ce2c`: [Full #678](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38466217702),
+Fast #11 and Documentation #279 all concluded SUCCESS on that same SHA.
+The Full verification aggregate reported 367 executable classes / 1,759 cases,
+zero failures/errors/skips, same-run partition/oracle equivalence, required API
+and physical catalog evidence, mandatory greenfield oracle and
+`optimized_adoption_eligible=false`. New resource/fork selection did not
+weaken the acceptance gates.
+
+**Measured result:** Full #678 elapsed 10m04s (604 seconds) versus previous
+Full #677 9m11s (551 seconds). These are different source/workflow revisions,
+single hosted samples, not a statistically qualified benchmark or proof of
+regression caused by the fork count. The 7m target was NOT met. Do not declare
+resource candidate successful on performance or enable optimized-only
+release acceptance. Additional comparable hosted measurements, fork-budget
+evidence and cold-cache/representative-revision qualification remain open.
+Do not delete the oracle, relax DB constraints or increase test exclusions.
+
+This exact documentation-only checkpoint preserves the accepted running
+implementation unchanged while recording the real result before another
+CI resource change. HPR-CI-003 remains IN PROGRESS; HPR-P25-050 is still
+not implemented by this action. No Java, SQL, POM, tests, workflows,
+inventory, version, release or production configuration is modified.
+Docs-only publication triggers Documentation Validation, not Full/Fast.
+Stop after its exact-SHA startup observation.
+
 ### Current execution checkpoint — HPR-CI-003 oracle resource candidate, 2026-10-13
 
 Owner returns to CI after the completed >9m feedback and requests analysis/optimization

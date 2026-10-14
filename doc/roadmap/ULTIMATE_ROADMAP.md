@@ -32,6 +32,56 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-P25-051B CI acceptance, 2026-10-14
+
+Owner Next recovered live main `6c92406a37a132dd4b435c4ba9f36083985c2ad5`,
+parent `8a6e304f92a6c4df7c76cd9e4bd95933582be137`, tree
+`05f75d375b4a57dc498ce8d02ef974c9eeccb566`.
+Exact-SHA [Full #689](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38593746474),
+[Fast #22](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38593746463)
+and [Docs #303](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38593746384)
+are completed SUCCESS. All seven Full jobs, including both PostgreSQL
+partitions, unrestricted oracle, runtime API/dictionary and authenticated
+Full Verification Gate, are SUCCESS.
+
+**HPR-P25-051B COMPLETED / STATIC SYNTAX SLICE CI ACCEPTED.**
+Downloaded this exact attempt's unit-architecture artifact `11909675613`;
+genuine Surefire XML for AuthorizationExpressionStabilityCompilerTest contains
+all12 registered identities, zero failures/errors/skips/flakes, duration
+0.024 seconds. This is hosted report observation, not a changed scheduling
+baseline or production SLO. Authenticated Full aggregate reports 377 classes,
+1997 tests, zero failures/errors/skips, exact source SHA, same-run equivalence
+true and inventory digest
+`d9caee4c1bb0fc81cedc4f883ccd2f81be44e13945402e163a3730e0089e481f`.
+Oracle fallback remains required and optimized_adoption_eligible=false.
+
+The completed compiler classifies syntax only; it remains dormant in the
+ordinary authorization path. This does not establish PERMIT, a same-backend
+owner witness, fact freezing, future transition completeness or a validity
+interval [s,u). Parent051/D2/B2/B3 remain IN PROGRESS/OPEN.
+The next same-ID D2 scope closure must source-register the future-event
+interval contract and its exact implementation/test paths before integration;
+no additional production path or 052 is admitted by this acceptance.
+Real protected Identity/Party/Topology exports, complete writer/privilege and
+global lock graph, common database s/u/t, and038 head/epoch remain OPEN.
+
+Inventory retained all old numeric timing VALUES, entries/order, cases,
+hashes, lanes and policies. The implementation's JSON serialization rendered
+five pre-existing zero durations from `0.0` to `0`; this is a lexical
+representation change only, not new measured timing or baseline calibration.
+No inventory correction or policy change is selected here.
+
+Current action UPDATEs only this roadmap and append-only reconciliation,
+CREATE/DELETE none, with registered same-ID governance message
+`docs(security): select operation time fencing proof`. Preserve every
+source/test/migration/inventory/workflow/history/version/release blob.
+Verify exact two-document append-only scope and parent/tree, publish directly
+to expected-head main, observe automatic exact-SHA Docs startup then STOP.
+Documentation startup is not success; the accepted runtime stays anchored
+to 6c92406. Gas-first/GZ2, own engine, steady/transient, versioned inputs and
+operator control persist; synthetic development, owner calibration later,
+Simulation/P3 deferred; no release/deployment.
+
 ### Current execution checkpoint — HPR-P25-051B static syntax compiler candidate, 2026-10-14
 
 Owner Next selects the registered five-path 051B envelope after

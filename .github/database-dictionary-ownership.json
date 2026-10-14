@@ -79,6 +79,15 @@
     "owner": "identity",
     "purpose": "Identity-owned LOCAL credentials with database-enforced monotonic security generations and retained credential identity; generation alone grants no token/session authority."
   },
+  "public.hidra_identity_operation_binding": {
+    "evidence": [
+      "src/main/java/dz/sh/hidra/modules/identity/domain/model/OperationAuthenticationBinding.java",
+      "src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcOperationAuthenticationBindingRepositoryAdapter.java",
+      "src/main/resources/db/migration/V20261013_001__p25_identity_operation_binding.sql"
+    ],
+    "owner": "identity",
+    "purpose": "Immutable format-one native bearer/session provenance snapshots with private producer authentication; structural SQL validity is not a permission or verified producer receipt."
+  },
   "public.hidra_identity_provider": {
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/IdentityProviderJpaEntity.java",

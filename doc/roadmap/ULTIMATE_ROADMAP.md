@@ -29,6 +29,16 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-P25-050B storage candidate, 2026-10-14
+
+050A is CI accepted at 7f62f72 (Full #679/Fast #12/Docs #283 SUCCESS); owner Next selects
+050B. Fresh schema/JDBC/session guards and 37 PostgreSQL cases are implemented candidates.
+050B is IN PROGRESS / PHYSICAL CATALOG AND CI PENDING; local unit/Fast checks passed,
+but Docker absence skips database cases. Reviewed dictionary is intentionally unchanged
+until a real Actions catalog exists; its drift gate is expected to fail on this candidate
+if reached. Recover genuine always-retained diagnostics in a separately selected Fail;
+do not fabricate metadata or advance C/D/051. Exact scope/results/limitations below.
+
 ### Current execution checkpoint — HPR-P25-050A foundations, 2026-10-14
 
 Owner Next selects 050A after split amendment Docs #282 SUCCESS at 545ec4e60a0c92099bedd36892b993ed6df2a4b9.
@@ -333,7 +343,7 @@ aggregate may replace it. D1–D5 are internal gates, never new HPR task IDs.
 |---|---|---|---|---|---|---|---|---|---|---|
 | 1 | HPR-CI-003 | Automatic fast suite and equivalent parallel full verification | CI / independent verification | IN PROGRESS / ORACLE RESOURCE CANDIDATE; prior 5x same-SHA equivalence retained; multi-revision/performance OPEN | Accepted 049; this Docs PASS; owner selection | CI-003 closed list | Selection/report/release negative tests; shadow full verification | No lost cases; mandatory gate fail-closed; repeatable timing | CI | `ci: automate fast feedback and preserve full verification gates` |
 | 2 | HPR-P25-047 | Provider/link database security generations | Identity | COMPLETED / CI ACCEPTED | Accepted 046/048/049; existing registration Docs; separate Next | Existing seven-file list, unchanged | Real writers, Flyway fresh/upgrade, native/bulk/race/rollback | Exact implementation Production + Docs SUCCESS | F1 | `feat(identity): enforce provider and link security generations` |
-| 3 | HPR-P25-050 | Immutable operation binding and trusted issuance/reader, staged 050A–050D | Identity; Platform technical wiring | IN PROGRESS / 050A IMPLEMENTED; CI PENDING / 050B–D NOT IMPLEMENTED | 047; accepted 044/045 design | Exact 050A/B/C/D lists in 2026-10-14 amendment; 050A next after Docs acceptance | Fresh-schema LOCAL/LDAP/AD/OIDC, expiry, generation, rollback; no deployed-data migration | B1 provenance and storage proof across all four children; no inferred B2/B3 | F1 | Child messages registered below; original message retained by 050D |
+| 3 | HPR-P25-050 | Immutable operation binding and trusted issuance/reader, staged 050A–050D | Identity; Platform technical wiring | IN PROGRESS / 050A CI ACCEPTED; 050B CANDIDATE / 050C–D NOT IMPLEMENTED | 047; accepted 044/045 design | Exact 050A/B/C/D lists in 2026-10-14 amendment; 050A next after Docs acceptance | Fresh-schema LOCAL/LDAP/AD/OIDC, expiry, generation, rollback; no deployed-data migration | B1 provenance and storage proof across all four children; no inferred B2/B3 | F1 | Child messages registered below; original message retained by 050D |
 | 4 | HPR-P25-051 | Cross-owner revocation/time/transaction linearization | Identity / Party / Topology; Platform mechanics | BLOCKED on D2 atomic-time and transaction proof | 050; accepted 038/043; D2 | D2 then exact owner/export/fence list | Real PostgreSQL owner/race/expiry/connection tests | B2/B3 and writer ordering + bounded latency PASS | F1 | `feat(security): linearize cross owner protected operations` |
 | 5 | HPR-P25-052 | Topology authoring, route/profile and revision publication APIs | Topology; read-only foreign owner contracts | PLANNED / REGISTERED; D3 contract/scope gate | 051; accepted 018/019/020/032/034/036/037/038; D3 | D3 closed authoring/storage/API list | Actual API round trips, epochs/CAS/history/import-export | F1-02/03/04 within explicit supported topology scope | F1 | `feat(topology): expose governed engineering revision workflows` |
 | 6 | HPR-P25-053 | Product/property/method metadata authoring and history | Custody; source approval through Workflow | PLANNED / REGISTERED; D3 contract/scope gate | 051; accepted 018/022 design; D3 | D3 exact Custody/owner-export list | Multi-product metadata, unsupported shape, old GAS replay | F2-01 and product share of F2-03 | F2 | `feat(custody): govern versioned product engineering data` |
@@ -7927,8 +7937,8 @@ An intermediate green child proves only its own bounded deliverable, not complet
 
 | Child | Deliverable | Dependency | Current status | Exact implementation commit message |
 |---|---|---|---|---|
-| HPR-P25-050A | Trusted binding foundations and private verification receipts | accepted 044/045/046/047/049 and this amendment | IN PROGRESS / IMPLEMENTED / CI PENDING | `feat(identity): add trusted authentication binding foundations` |
-| HPR-P25-050B | Fresh-schema binding storage and session guards | CI-accepted HPR-P25-050A | BLOCKED / PREDECESSOR NOT ACCEPTED | `feat(identity): persist immutable authentication bindings` |
+| HPR-P25-050A | Trusted binding foundations and private verification receipts | accepted 044/045/046/047/049 and this amendment | COMPLETED / CI ACCEPTED | `feat(identity): add trusted authentication binding foundations` |
+| HPR-P25-050B | Fresh-schema binding storage and session guards | CI-accepted HPR-P25-050A | IN PROGRESS / STORAGE CANDIDATE; CATALOG AND CI PENDING | `feat(identity): persist immutable authentication bindings` |
 | HPR-P25-050C | Real provider verification and atomic bound issuance | CI-accepted HPR-P25-050B | BLOCKED / PREDECESSOR NOT ACCEPTED | `feat(identity): complete trusted bound authentication` |
 | HPR-P25-050D | Bound-operation reader and integrated B1 acceptance | CI-accepted HPR-P25-050C | BLOCKED / PREDECESSOR NOT ACCEPTED | `feat(identity): bind protected operations to trusted authentication` |
 
@@ -8310,3 +8320,145 @@ are accepted, a separate owner Next selects only HPR-P25-050B fresh-schema stora
 session guards. Failure repairs 050A first; 051 remains blocked until A–D acceptance.
 Gas-first/GZ2, own engine, steady/transient direction, versioned inputs/operator control
 and synthetic development data remain. No PR, branch, image, deployment or release.
+
+
+## 2026-10-14 — HPR-P25-050B storage candidate; physical catalog and CI pending
+
+### Selection and accepted prerequisite
+
+Owner Next selects only 050B after Full #679, Fast #12 and Docs #283 SUCCESS on
+`7f62f72f232707d547c2038dbb0f7110834d2a75`, tree
+`187647f713605b8c367644b1baa5ee1e52afe63f`. 050A is now COMPLETED / CI ACCEPTED for
+its dormant foundation scope; it does not establish the parent B1 runtime capability.
+Exact 050B message: `feat(identity): persist immutable authentication bindings`.
+050B is IN PROGRESS / STORAGE CANDIDATE / PHYSICAL CATALOG AND CI PENDING. C/D/051
+remain blocked and unselected. HidraAPI has no production deployment/data; fixtures are
+synthetic and there is no existing-data migration, conversion, backfill or preservation
+exercise. A fresh schema must still reproduce the current Flyway inventory.
+
+### Bounded storage implementation
+
+Added the previously reserved V20261013_001 migration at 20261013.001, after actual
+predecessor 20261012.002. All 147 older SQL files remain byte-identical; current source
+inventory is 148 distinct SQL versions. The migration creates an EMPTY Identity-owned
+21-column format-one binding table with restrictive NOT DEFERRABLE owner FKs, exact
+issuer/jti and session uniqueness, lookup indexes, canonical UUID/native 512-byte and
+existing-ID constraints, explicit nullable provenance branches, positive snapshot
+generations, finite whole-second native intervals, OIDC source cap and private 32-byte
+producer-authenticator shape. Unicode boundary checks use readable PostgreSQL regex
+escapes for Java trim/strip/blank character sets, preserving exact nonblank source text.
+SQL structural validity alone does not authenticate the producer tag or grant permission.
+
+Three VOLATILE SECURITY INVOKER functions with fixed pg_catalog/public search_path
+install eight reserved triggers. Append locks provider, credential/external link, User
+then session; owner row images and binding existence are rechecked after waits under
+READ COMMITTED. Exact 21-field/tag replay suppresses a new row and remains storage-only
+even after termination or security changes; different replay conflicts. Binding UPDATE/
+DELETE statements (including zero-row statements) and TRUNCATE reject unconditionally.
+Potentially bindable session INSERT/UPDATE/DELETE requires READ COMMITTED. Bound session
+identity/metadata/interval fields are immutable; activity and valid ACTIVE-to-terminal
+transitions remain, with finite non-earlier end time and no resurrection/terminal rewrite/
+end-time replacement or deletion. Session TRUNCATE rejects at every binding cardinality,
+including RESTRICT/CASCADE/multitable attempts. Ordinary fresh unbound row mutations/
+deletions and read-only query semantics remain; no role/replication/trigger bypass is used.
+Reference review used PostgreSQL16's trigger/SPI visibility and isolation documentation;
+that review and syntax parsing are not runtime lock/transaction acceptance.
+
+JdbcOperationAuthenticationBindingRepositoryAdapter performs conflict-safe INSERT/readback
+in a real active writable transaction, checks actual server isolation, maps validated
+immutable rows and compares every field/tag. Database failure exceptions discard private
+SQL DETAIL/cause chains instead of exposing stored producer bytes. The fresh state-query
+adapter captures credential hash/id/generation atomically, exact provider and external
+link/User images, and one joined current-state eligibility tuple; no cached JPA version
+is used. There is still no B1 reader or bound completion/provider wiring in B.
+
+JpaLoginSessionRepositoryAdapter flushes saved rows and locks/refreshes mutation reads
+in active writable transactions. Read-only/nontransactional ordinary queries retain
+repository lookup behavior instead of acquiring mutation locks. Existing three semantic
+cases remain; two unit cases verify flush-before-return and read-only compatibility.
+Explicit binding dictionary ownership points only to its actual model/adapter/migration.
+
+### New PostgreSQL tests and actual local validation
+
+OperationAuthenticationBindingPostgresIntegrationTest contains 37 plain JUnit cases
+using disposable PostgreSQL16, Flyway, Spring/JPA/JDBC and independent raw connections.
+Cases cover full dynamic migration inventory, actual catalog/FKs/invoker triggers,
+all four structural branches, replay/tag/scalar conflicts, NULL/type/protocol/byte/time/
+source cap and owner/generation A/B/A rejection, bound/unbound lifecycle, unconditional
+TRUNCATE, wrong isolation, same-transaction bypass, rollback/redaction, fresh SQL images,
+JPA same-backend/refresh/stale merge, COPY/MERGE and fresh-DDL collision rollback.
+Native and JPA writers versus append, reverse termination, exact/different replay and
+provider-credential/link-User-session order use independent backend IDs, bounded latches,
+pg_blocking_pids/NOWAIT observations and timeouts rather than sleep as proof. Test-tag
+fixtures are arbitrary synthetic bytes, explicitly not private producer authentication.
+DDL collision uses a separate empty database, not production upgrade/data preservation.
+
+Actual unchanged-wrapper Java21 commands:
+- `JAVA_HOME=<task OpenJDK21> bash ./mvnw -B -q -o -DskipTests test-compile`: PASS;
+  all source and test classes compile. Initial invalid compound-var declaration was
+  corrected before this successful result; no build/dependency/workflow changes.
+- Focused run with the installed Byte Buddy startup agent: 44 unit cases PASS, zero
+  failures/errors/skips (39 foundation + five session semantic cases). The new 37
+  PostgreSQL cases are SKIPPED because Docker/unix socket is absent. The aggregate
+  command exits successfully, but its skipped database cases are NOT accepted/PASS.
+- Actual Fast run: all 296 reviewed classes / 1,304 cases PASS, zero failures/errors/
+  skips; unchanged strict inventory helper matches every selected class/case. Original
+  raw reports are retained; selected Fast validation excludes the prior skipped PG
+  report, not a test from the Fast selection. Local agent use changes no repository
+  POM/Mockito configuration. This does not establish hosted full/oracle or DB behavior.
+- pglast v8.6 parses all 18 outer SQL statements: syntax-only parser evidence, not
+  PostgreSQL16 execution, PL/pgSQL owner lookup, JPA, constraint or lock acceptance.
+- All six unchanged Python policy suites PASS: 10+10+17+14+26+25 = 102 cases. Canonical
+  docs PASS (98 documents/5,346 relative links/24 modules/13 P2 rows); offline OpenAPI
+  PASS (263 operations/244 paths/231 schemas); P1 retained-evidence consistency PASS.
+  Resolver outputs are synthetic; no new API or operational exercise is claimed.
+- Current inventory validation PASS: 296 Fast / 297 unit-architecture / 37+36 DB /
+  370 oracle classes. All previous case identities and lane/archive/timing/baseline/
+  fallback policies are retained. New DB case names come from actual skipped JUnit
+  enumeration; hosted zero-skip execution and measured timing remain pending (0 hint).
+  Current inventory digest: `73bd84bd1b833bad803c0b27ea3473e46f75fbab9e79d826cc8d1fd14a66df22`.
+
+### Physical dictionary limitation and expected gate outcome
+
+The reviewed `doc/database/DATA_DICTIONARY.md` remains UNCHANGED at its last genuine
+accepted catalog. Its content is not yet current for this newly created table/guards.
+The collector explicitly requires the designated GitHub Actions PostgreSQL service,
+real checkout HEAD/source SHA and actual read-only catalog. Local Docker is absent and
+there is no qualified capture of this unpublished schema; no GITHUB_ACTIONS/source/server
+spoof or synthesized catalog is used. Scope remains the registered 4 CREATE / 7 UPDATE
+envelope; this candidate actually changes 4 CREATE / 6 UPDATE, deferring only the physical
+dictionary update until genuine evidence exists. No schema or acceptance gate is waived.
+
+On publication, the unchanged Full/API/oracle jobs migrate the new schema and capture
+actual `target/database/schema.json`. If execution reaches collection, the existing
+reviewed-dictionary comparison is expected to FAIL for physical/source drift. Their
+existing always-retained diagnostics include target/database, so the real source-linked
+catalog can be recovered from that run even when the dedicated success-only dictionary
+upload is skipped. A selected Fail repairs 050B in its same scope: diagnose any actual
+runtime failures first, then validate/render the genuine captured catalog against the
+unchanged matching source and explicit ownership, update the reviewed dictionary and
+publish guarded main. If schema/source changes, a fresh matching capture is required.
+Do not reuse incompatible source metadata or call this candidate CI accepted.
+
+This candidacy publication is intended to obtain the actual authorized hosted runtime/
+catalog evidence, not to evade an expected failing check. It is expressly recorded as
+incomplete acceptance. Required Full/Fast/Docs outcomes on the eventual accepted B SHA
+must all pass, including zero skipped required PostgreSQL cases, catalog comparison,
+mandatory greenfield oracle/partitions and exact report identities. Unit/grammar results
+cannot substitute for these. The owner receives the known catalog limitation before
+publication and no automatic completion polling or repair is performed in this turn.
+
+### Exact publication boundary
+
+Only the four registered new files, existing session adapter/semantic test, inventory,
+ownership and two governance files change; existing reviewed dictionary stays intact.
+All 147 old SQL, other runtime/provider/completion/issuer/reader/test sources, workflows/
+helpers/build/API/history/version/foreign modules remain unchanged. Reconciliation keeps
+its full authoritative prefix; canonical headers, exact scope, reservations/identifiers
+and added-line whitespace are checked before publication. Main only, expected head
+7f62f72f232707d547c2038dbb0f7110834d2a75; exact message/parent/tree/blobs are verified.
+Observe automatic Full/Fast/Docs starts on the candidate SHA and STOP without waiting.
+Next does not select C while B's actual physical/catalog acceptance remains open; Fail
+repairs B first. Parent 050/051, CI-003 optimization adoption and P3 remain open/deferred.
+Gas-first/GZ2, own engine, steady/transient direction, versioned inputs/operator control
+and synthetic development data persist. No deployment/calibration request, PR or branch.

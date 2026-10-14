@@ -21956,3 +21956,197 @@ Gas-first/GZ2, own engine, steady/transient, versioned inputs/operator
 control persist; synthetic development, owner calibration later,
 Simulation/P3 deferred; no release/deployment.
 
+
+
+## 2026-10-14 — HPR-P25-051D fenced Identity temporal event collector registration
+
+Live main `f27937f5b9d8145e47e46071d8eb8d77f5a4a1a3` has exact-SHA
+Docs #307 SUCCESS. Accepted runtime `f68a729594a9dd2a54911501396394af4eef17c7`
+has Full #690/Fast #23/Docs #306 SUCCESS, with 051C real PostgreSQL4 and
+unit12 accepted. 051A lifecycle, native-writer proof and051B syntax retain
+their accepted scopes. Owner Next selects actual source-based Identity
+event collection scope; this is one future same-ID 051D slice, not052.
+
+#### Current source and chosen bounded strategy
+
+Current JpaAuthorizationEvidenceAdapter.load filters ACTIVE/current windows
+before role/group/mapping/attribute/policy traversal. Its private window uses
+from<=at and at<to; future inactive/nonmatching DENY activation can therefore
+be omitted from a current-evidence list. Existing AuthorizationEvidencePort
+returns current grants/rules/facts only, not future-event coverage. Read these
+exact files plus current temporal entities and V20261013_001 binding schema.
+
+Choose an intentionally conservative **Identity-wide temporal superset**
+for synthetic bounded datasets, rather than prematurely prune a graph by
+current status, effect, claim match, scope or permission. This overcaptures
+unrelated boundaries and may reject large or unsupported estates. That
+availability cost is explicit; it is not a production scalability/readiness
+claim. Query-based graph pruning can be authorized later only after an
+independent coverage proof. No new public endpoint or foreign owner export.
+
+Exact source-confirmed timed columns:
+user_permission_grant(id,valid_from,valid_to) DIRECT_GRANT;
+user_role_grant,group_role_grant,role_permission_grant,
+user_group_membership(id,valid_from,valid_to) GRANT_OR_MEMBERSHIP;
+authorization_policy_version(id,effective_from,effective_to) POLICY_VERSION;
+subject_security_attribute(id,valid_from,valid_to) ATTRIBUTE;
+user(id,locked_until) LOCKED_UNTIL;
+login_session(id,started_at,expires_at) ATTRIBUTE for census purposes;
+operation_binding(binding_id,issued_at,expires_at) DIRECT_GRANT plus
+source_expires_at as an optional ATTRIBUTE boundary with a distinct source.
+All names above have public.hidra_identity_ prefix. The selected binding's
+expires_at and present source_expires_at separately become required
+B1_EXPIRY inputs; unrelated historical sessions/bindings must NOT be treated
+as required current B1 expiries. This maps known temporal columns, not full
+B1 eligibility/producer-origin meaning.
+
+Source-confirmed expression columns: role_permission_grant.condition_expression
+and authorization_policy_rule subject/resource/action/context_expression plus
+obligation_expression. All conditions/rules, including inactive/unmatched rows,
+participate in the syntax gate. Each nonnull predicate must be accepted by the
+actual051B compiler; a nonnull obligation rejects (existing evaluator already
+treats unresolved obligations as indeterminate). Syntax acceptance alone never
+permits the operation. Columns with no clock semantics are guarded against
+writers in the later complete owner integration, not silently declared immutable.
+
+#### Exact future 051D implementation
+
+Eligible on SEPARATE owner Next after this registration Docs SUCCESS.
+Exact message: `feat(identity): collect fenced temporal event candidates`.
+
+| Operation | Exact path |
+|---|---|
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcIdentityTemporalEventCollector.java` |
+| CREATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/IdentityTemporalEventCollectorPostgresIntegrationTest.java` |
+| UPDATE | `.github/ci-test-inventory.json` |
+| UPDATE | `doc/roadmap/ULTIMATE_ROADMAP.md` |
+| UPDATE | `doc/model-remediation/RECONCILIATION.md` — append-only |
+| DELETE | None |
+
+Two CREATE names absent from the exact recursive Git tree. Canonical headers,
+Infrastructure/Identity Test layer and exact package required.
+No old Java/test, port/evaluator/compiler, migrations, workflow/helper,
+transaction component/configuration, dependencies, dictionary, version/history
+or protected business API may change. Identity infrastructure may use its own
+051B/051C domain classes plus existing Spring JDBC/transactions; no foreign
+module internals/JPA import or Platform private attempt-state access.
+
+#### Collector and transaction contract
+
+One private Identity repository component exposes collect(String bindingId).
+Result is a materialized immutable diagnostic Candidate record with sample,
+earliestFuture, backendPid/transactionId and immutable contributor/fact-dependency
+lists. Avoid Optional, unmodifiableSortedSet, JDBC resource, entity or lazy
+data in the returned graph: current051A materialization accepts only supported
+scalars/time/enums/public records and immutable Java collection implementations.
+Candidate construction is not private producer attestation, permission or an
+authenticated owner witness; no caller completeness Boolean/token.
+
+Require an existing writable READ COMMITTED Spring transaction; no ambient
+transaction, read-only or wrong isolation rejects without opening REQUIRES_NEW,
+retry or independent connection. Use MANDATORY propagation and verify actual
+database isolation/read-only setting on the participating JDBC connection.
+Production tests invoke the actual051A bean chain; a matching ordinary writable
+transaction can collect diagnostics but never establishes business authority.
+Do not add a fabricated protected-context marker or stack-trace authorization.
+
+Before any clock sample or owner data read, take SHARE ROW EXCLUSIVE on these
+EXACT eleven relations in lexical table-name order, one fixed reviewed SQL
+sequence: authorization_policy_rule, authorization_policy_version,
+group_role_grant,login_session,operation_binding,role_permission_grant,
+subject_security_attribute,user,user_group_membership,user_permission_grant,
+user_role_grant (all public.hidra_identity_). No row-lock addition in this slice.
+These fences cover the selected temporal/expression rows and insertion phantoms
+until physical transaction completion; they do not prove the entire static
+permission/provider/attribute-definition owner graph or privileged writer DAG.
+Keep accepted051A 250ms lock/750ms statement/1000ms idle/500ms work limits,
+no retries/grace/timeout widening. Any lock/SQL rejection aborts full protected
+execution; swallowed errors cannot yield a candidate or resumed work.
+
+After all selected fences, sample clock_timestamp plus actual backend PID/XID
+ONCE on that same transaction. Retrieve the chosen immutable binding by exact
+ID using parameterized SQL, require exactly one row, finite/microsecond bounds,
+issued_at<=s and required expiry/source-expiry>s. Read only IDs/times/protocol
+needed for bounds; do not expose private producer bytes/issuer/subject in results.
+Do not assert B1 eligibility or origin from a native table tuple.
+
+Read the WHOLE timed relation superset above, without ACTIVE/status/effect/claim/
+scope/current-window filters or caller table names. A fixed bounded UNION ALL
+projection is allowed, with deterministic table/id/endpoint ordering.
+Cap temporal inputs at1024 INCLUDING selected-B1 supplemental inputs;
+use LIMIT1025 and reject excess, never silently truncate. Similarly cap
+expression row census at1024 using LIMIT1025; reject excess and every
+unsupported expression/obligation. SQL is fixed owner-only identifiers;
+source IDs must be unique bounded table-qualified identifiers compatible with
+051C (<=160), with distinct suffixes for source/selected expiries.
+Separate SQL statements at READ COMMITTED are safe only because selected
+relations were already fenced; do not sample before locks or claim a cached
+snapshot captured in a different transaction.
+
+Apply actual051B syntax compiler and051C boundary compiler; reject malformed
+source tuples, unsupported syntax or unsuccessful reduction with no partial
+candidate. Required selected expiry ensures a finite future bound for a
+successful candidate. Include deterministic immutable predicate dependencies
+for later owner evaluation, but never evaluate a PERMIT here. Hold all locks
+through explicit owner flush and the exact single final guard until physical
+commit when called by051A. No SQL after that final guard or out-of-transaction
+delivery; existing lifecycle mechanics remain authoritative.
+
+#### Genuine PostgreSQL acceptance identities
+
+Real PostgreSQL16 Testcontainers/fresh current Flyway/Hibernate validate and
+actual Spring production collector+051A bean chain, independent native writers:
+1. completeTimedEstateIncludesInactiveFutureDeny
+2. roleMembershipPolicyAndAttributeFutureStartsAreRetained
+3. selectedBindingAndSessionExpiryBoundCandidate
+4. staticExpressionGateRejectsHiddenClockAndUnclassifiedAttribute
+5. databaseSampleAndCandidateUseSameBackend
+6. nativeWriterCannotChangeCensusBeforeCommit
+7. missingBindingOrExpiredB1Rejects
+8. oversizedCensusRollsBackWithoutPartialResult
+9. readOnlyAndNoTransactionCallsReject
+10. lateRelationLockFailureRollsBackAndCannotRecover
+
+Names are planned report identities, not execution evidence.
+Valid synthetic SQL-trigger binding fixtures (zero producer tags if needed)
+must stay labeled structural only. Seed valid PK/FK/code/status/window rows;
+preserve Flyway triggers. Prove future DENY/start boundaries even when inactive/
+currently unmatched, current/past/unrelated overcapture, group/role/membership/
+policy/attribute source rows, optional source expiry, actual sample PID/XID and
+microsecond upper bound. Overflow must not contaminate later tests: seed excess
+inside an explicitly rolled-back transaction or use an isolated fresh database;
+never TRUNCATE/DELETE guarded provider/credential/link/binding rows.
+
+Writer/lock tests require CountDownLatch barriers, pg_blocking_pids observation,
+bounded joins, actual55P03 or40P01 fail-closed outcome, complete rollback/no
+partial receipt/candidate and positive commit after release. A test-local
+materialized DB-clock t statement checks s<=t<u once as the final guard;
+no real publication/head/permission claim. Preserve actual operation-binding
+normal trigger behavior and old51A/native-owner tests. Lock graph acceptance
+is only this bounded collector, never universal deadlock freedom. Source
+counts and positive uncontended collection are mandatory.
+
+Inventory adds ONLY this genuine PG class/cases, fast=false PostgreSQL lane/
+oracle, actual source SHA256, zero explicitly unmeasured scheduling hint.
+Old entries/cases/hashes/order/timings/policies/raw formatting/archive unchanged.
+Run focused Java21 new PG + ArchitectureGuardrailTest and retained native-owner/
+051C parity cases; local Docker skips NOT acceptance. Reviewed Fast/report
+equality, six unchanged Python suites, docs/offline OpenAPI/P1/source inventory,
+header/exact2CREATE+3UPDATE/append-only checks. Hosted Full/Fast/Docs must START
+on guarded actual implementation SHA then STOP; later acceptance needs exact-SHA
+success and genuine zero-skip collector cases.
+
+#### Current registration and STOP
+
+051D PLANNED/REGISTERED, not implemented. Current UPDATE only two governance
+files with registered `docs(security): select operation time fencing proof`;
+CREATE/DELETE none. Validate canonical docs and exact append-only/two-file scope,
+guard main at f27937f, verify parent/tree/blobs, observe automatic Docs startup
+then STOP. Next executes only this five-path collector slice after Docs success.
+No external owner port or052 selection. Parent051/D2/B2/B3, complete static
+owner/writer/privilege graph, universal lock ordering, actual paired permission/
+Party/Topology exports and038 head/epoch remain OPEN. CI-003 full oracle/fallback,
+optimized=false persist. Gas-first/GZ2, own engine, steady/transient/versioned
+inputs/operator control; synthetic development, owner calibration later,
+Simulation/P3 deferred; no release/deployment.
+

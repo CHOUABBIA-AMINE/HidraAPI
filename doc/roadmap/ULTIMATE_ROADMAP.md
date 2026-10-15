@@ -32,6 +32,247 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — 051F CI accepted; 051G evidence reader registered, 2026-10-15
+
+Owner continuation recovered exact main `fa87d9f6c7df0a5431a3cdcc1b754d146e7c7366`,
+parent `f7836a21bbb0018ed5f39da79dca21186b93bf2a`, tree
+`7a8d8b58c08af6f6c4aea936b9d8e7936ca9fd62`. Exact-SHA Full #697/run38706785587,
+Fast #30/run38706785599 and Docs #319/run38706785595 are completed SUCCESS.
+**HPR-P25-051F COMPLETED / BOUNDED B1 PARTICIPANT CI ACCEPTED. Parent051 remains
+IN PROGRESS; B2/B3 and global owner/publication integration are NOT complete.**
+
+#### Actual hosted acceptance, not audit-summary inference
+
+Authenticated attempt1 partition1 artifact11958754119 and full evidence bundle
+11959147122 were downloaded. ZIP SHA256 values match current GitHub metadata:
+`d0d3c8ecfc1e07779b9e795ef7877b0e236a7a57b2b247562a73905f956ce445` and
+`6babf3c0d9c7d5b01dfcff0401f8200ae4e00b442eb402548e95b6d534509f33` respectively.
+Both actual ProtectedOperationIdentityParticipantPostgresIntegrationTest XML reports
+contain all twelve exact inventory identities, zero failures/errors/skips/flakes/
+reruns. Suite elapsed22.023s partition /52.728s oracle are observations, not SLOs
+or invented baseline timings. Local Docker-related skips remain recorded as skips.
+
+Independent current verify_full_ci_evidence.aggregate recomputation over the extracted
+bundle equals its gate.json: source fa87d9f6/run38706785587/attempt1/inventory
+`2b7e87be05f37e8292bd7707e30e6979bba10c1fc92fd7e4ca47953034702d42`,383 classes,
+2053 tests, zero failures/errors/skips, required dependencies successful and same-run
+partition/oracle equivalence true. Source/helper/workflow/raw-report hashes, Java21
+clean-verify/package, current/base API and physical dictionary evidence validate.
+Mandatory fallback remains true; optimized adoption false; CI-003 broader closure
+is not inferred. Full697 also preserves the existing B1/completion/origin/architecture
+regressions. No new local Java/PostgreSQL execution is claimed by this acceptance.
+
+This closes F's actual four-producer wire/private receipt origin, complete22-fence
+current B1 at database s/u, physical PID/XID, context/thread/replay rejection,
+independent writer exclusion, expiry, stale-cache rejection, rollback and physical
+commit-before-delivery slice. It grants no evaluated paired permission, complete
+cross-owner fence order, Party eligibility/Facility ownership or038 head/epoch/CAS/
+read/history authority. Current paired evaluation must still be implemented.
+
+#### Recovered next dependency: fresh bounded authorization evidence
+
+Current TopologyScopedAccessQueryService derives eight operation codes but makes
+two sequential EvaluatePermissionUseCase calls. IdentityAuthorizationApplicationService
+chooses Instant.now(), uses the JPA evidence adapter and may persist decisions.
+JpaAuthorizationEvidenceAdapter traverses live grants/roles/groups/policies/attributes
+through EntityManager; its first-level images cannot serve the protected fresh SQL
+boundary. AuthorizationPolicyEvaluator.evaluate(request,evidence,at) is reusable
+pure evaluation with explicit DENY precedence, INDETERMINATE before permit, and no
+clock in that overload; its separate permit/deny convenience methods are not selected.
+Delegation and administrator wildcard semantics are not traversed by this evaluator.
+
+SpringAuthorizationContextAdapter.capture retains only nonempty values for mapping
+claim names seen during capture. It cannot prove signed ABSENCE, completeness after
+a new mapping name, or reconstruct original source claims from a native bearer.
+Public VerifiedAuthorizationAssertion construction is not provenance. The original
+F proof validates B1 only; it must not silently certify claim-based authorization.
+Existing AuthorizationEvidence/Rule nested collection shapes are local evaluator
+inputs, not051A-exportable protected results.
+
+Register one bounded prerequisite **HPR-P25-051G: fresh fenced database authorization
+evidence reader**. A subsequent separately scoped owner participant will invoke the
+actual F participant, invoke G twice and evaluate both scopes at that same physical s/u.
+G is diagnostic/evaluator-input infrastructure only: it introduces no public business
+permission endpoint, PERMIT authority, protected result or Topology consumer. This
+split closes the stale JPA read gap before selecting the coupled owner integration.
+No future participant path or implementation is authorized by naming that dependency.
+
+#### Exact future HPR-P25-051G scope
+
+**PLANNED / REGISTERED / NOT IMPLEMENTED.** Separate owner Next after this commit's
+exact-SHA Docs SUCCESS selects ONE six-path implementation, exact message:
+`feat(identity): load fenced authorization evidence`.
+
+| Operation | Exclusive exact path |
+|---|---|
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java` |
+| CREATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java` |
+| CREATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedAuthorizationEvidencePostgresIntegrationTest.java` |
+| UPDATE | `.github/ci-test-inventory.json` — only two new classes/cases/source hashes |
+| UPDATE | `doc/roadmap/ULTIMATE_ROADMAP.md` |
+| UPDATE | `doc/model-remediation/RECONCILIATION.md` — append-only |
+| DELETE | None |
+
+All three CREATE paths absent at source fa87d9f6. Canonical Identity Infrastructure/
+Test headers/packages required. No changes to existing production/test bodies,
+registry/producer/receipt/tag/assertion capture, F or051A–E, evaluator/JSON/compiler/
+contracts/owner adapters, Topology/Party, migration/schema, dependencies/configuration,
+workflow/CI policy, dictionary/version/release/history. New unit fast=true, PG false;
+explicit0 unmeasured timing hints, every old inventory entry/key preserved.
+
+#### Frozen G contract and limits
+
+One Identity-private Spring repository exposes
+`AuthorizationEvidence load(TopologyOperationAuthenticationContract.Evidence identity,
+AuthorizationEvaluationRequest request, int backendPid, long transactionId)` with
+MANDATORY propagation and direct actual writable READ COMMITTED checks. identity is
+an explicitly untrusted diagnostic input to this reader; constructor validation of
+Evidence/Candidate/Contribution never establishes authority. Only a later actual
+trusted F→G→evaluator owner invocation can use these values for a protected operation.
+No caller-supplied assertion/claim map, eligibility Boolean or deadline is accepted.
+
+Before owner data reads, require current physical JDBC PID/XID equals supplied
+coordinates and all22 actual Identity ShareRowExclusiveLock relation fences remain
+held by that backend, then recheck coordinates before return. No new lock order,
+connection, transaction, wall-clock sample, retries or Platform private state access.
+Use identity.observedAt() as s; reject nonfinite B1 bounds or expiry at/before s, invalid scalar
+identity, request.userId mismatch, resourceType other than STATION_GRAPH_REVISION,
+resource reference not exactly the requested facility, or unsupported scope/code.
+Only CUSTOM topology-company:<exact nonblank companyPartyId> or FACILITY <exact
+facilityId> requests and the existing eight topology:station-revision operation
+codes are admitted. GLOBAL requests are not admitted; eligible GLOBAL stored grants
+retain their current covers semantics. No scope reference proves Party/Facility ownership.
+
+Read projected Identity columns with fresh JDBC only, no SELECT * or sensitive
+password/tag/source-token projection, no cached entity/repository port/old owner
+query. Cover the nineteen existing evidence families: user, provider, external
+identity, permission, user permission/role grants, role and role permission grants,
+group and group role grants, user group membership, external group/role/permission
+mappings, subject security attributes/definitions and authorization policy/version/
+rule. Reproduce current database-backed grant ordering0/1/2, group membership/source
+eligibility, active role/group/provider/permission state, scope coverage and half-open
+windows. Read synced membership provenance fresh through the actual mapping/provider/
+linked-user relations, including provider changes outside the current login provider.
+Resolve USER, eligible GROUP and actual bound EXTERNAL_IDENTITY attributes from fresh
+owner rows; private source claims are never substituted for persisted typed attributes.
+
+Bound fixed-depth graph traversal through projected, parameterized, deterministic SQL;
+no role recursion, per-row N+1 queries, request-unbounded scan or OFFSET continuation.
+Use LIMIT1025 overflow sentinels and a combined maximum1024 fetched owner records per
+load across its bounded queries, including inactive/future candidates needed to avoid
+omitting a potential DENY. Overflow is operational rejection, never partial evidence.
+This is an explicit conservative capacity limit, not a throughput/availability claim;
+existing051D whole temporal census limits and051A500ms work budget remain unchanged.
+No configurable bypass or250/750/1000ms timeout widening. Keep null expression slots
+and reuse current typed attribute semantics and AuthorizationJson bounds8192 chars/
+depth16/nodes256. Invalid/conflicting/unsupported evidence cannot produce eligible
+permission. Check051B supported expression classification; no broadened grammar or
+clock-dependent reference. Preserve explicit database DENY while marking unresolved
+attribute/version/claim evidence EVIDENCE_INDETERMINATE; corrupt/unavailable SQL or
+structural references are sanitized operational errors with no private causes.
+
+**Conservative claim coverage decision:** G accepts NO source assertion. If an ACTIVE
+ASSERTION_ONLY external group mapping or ACTIVE DIRECT_GRANT external role/permission
+mapping exists for the bound provider, its claim applicability is unproven: mark
+EVIDENCE_INDETERMINATE, including newly introduced or empty/missing claim names.
+Do not silently skip these branches, trust captured nonempty maps, stored snapshots,
+wrapper roles or caller assertions. SYNC_MEMBERSHIP is database-owned and evaluated
+through current source eligibility, not treated as a live claim. This conservative
+rule may prevent an otherwise valid database grant when a claim-dependent mapping
+exists; it applies even if the mapping appears unrelated to the requested permission.
+That availability limitation is intentional and explicit until a separately registered
+complete original-claim coverage mechanism is accepted. All four producer types can
+load/evaluate database-only grants when no unsupported claim mapping applies; B1
+acceptance itself is unchanged. No claim-dependent PERMIT acceptance is claimed.
+
+Return existing normalized AuthorizationEvidence for local synchronous domain
+assessment ONLY. Defensively copy nested maps/lists/typed JSON values; no live JDBC/
+JPA resource, original claim/token/tag or mutable backing object escapes. Preserve
+required null rule-expression positions through defensive immutable wrappers where
+List.copyOf cannot do so. Such local wrappers remain deliberately unsupported as
+051A public results; do not return the graph from ProtectedTransactionExecutor.
+No decision persistence, permission Boolean or detached authority/result factory.
+The later paired participant must derive the fixed code from the operation, call
+actual F and G twice, evaluate both with the unchanged domain overload at s, require
+both PERMIT, and export only separately approved scalar evidence/common u/PID/XID.
+Party/global owner gates and final database t still require separately scoped work.
+
+#### Required genuine G tests and acceptance
+
+New unit class, JVM/mocks only, eight exact planned identities:
+`requiresWritableReadCommittedParticipation`;
+`requiresMatchingPhysicalCoordinatesAndCompleteIdentityFences`;
+`rejectsCallerActorResourceAndScopeMismatches`;
+`preservesGrantOrderScopeWindowsAndDenyPrecedence`;
+`rejectsUnknownClaimCoverageInsteadOfAssumingAbsence`;
+`preservesTypedAttributesAndConflicts`;
+`boundsRowsJsonAndUnsupportedEvidence`;
+`hasNoJpaCacheWallClockDecisionPersistenceOrAuthorityExport`.
+
+New PostgreSQL16/Testcontainers/Flyway migrate+validate/JPA validate class, twelve
+exact planned identities:
+`allFourRealBoundActorsLoadDatabaseAuthorityAtFencedSample`;
+`bothCompanyAndFacilityRequireIndependentPermits`;
+`directRoleAndGroupDeniesOverridePermit`;
+`scopeMismatchAndIneligibleOwnersNeverGrant`;
+`synchronizedMembershipSourcesAreReadFresh`;
+`typedAttributesAndPolicyConstraintsUseDatabaseSample`;
+`oidcAndNewClaimMappingsRemainIndeterminateWithoutCoverage`;
+`staleJpaAndEarlierSnapshotsCannotSupplyAuthority`;
+`committedRevocationBeforeFencesRemovesPermit`;
+`writersAfterAdmissionBlockUntilRelease`;
+`futureDenyBoundAndExpiryCannotExtendEvidence`;
+`boundedOverflowMalformedStateAndRollbackStayClosed`.
+
+PG proof must invoke actual F prepare outside051A, actual F contribute and actual G
+inside the real protected transaction, and unchanged actual domain evaluator for
+both company/FACILITY requests at the same s. Verify JdbcTemplate and Hibernate PID/
+XID, physical commit-before-delivery of scalar test observations and genuine final
+s/u/t guard; no graph export or fake authority. Actual LOCAL/LDAP/AD/OIDC producers,
+private HMAC, native issuance/qualified decoder, owner SQL, fences/evaluator and
+transactions are not mocked. Explicit directory/source transport fixtures and real
+synthetic source signing are allowed as in F; test-only failure injection must call
+real storage and assert its exact root, never unrelated setup failure. Cover real
+USER/ROLE/GROUP grant paths, source membership invalidation, explicit DENY with
+unknown evidence, typed conflicts/version ambiguity, both scopes and every fixed
+operation code, no wildcard/delegation shortcut, positive clean recovery after rollback.
+
+Use independent preopened/warmed writer connections, observed pg_blocking_pids/locks,
+latches and bounded joins, no sleeps. Each lock wait receives its own500ms work
+budget; real expiry observation occurs outside it. Future DENY, including currently inactive rows, must cap the
+existing F u and cannot be bypassed by filtering current candidates; no extra G
+wall-clock can extend it. Retain guarded security identities, clean ordinary grants/
+policies/attributes only in FK order; no trigger disabling or source mutation as proof.
+Overflow/malformed input and old-read-only/JPA images cannot yield partial PERMIT.
+
+Java21 compile/focused tests include both new classes, architecture/boundary guards,
+AuthorizationPolicyEvaluator through existing semantic AuthorizationEvidencePostgresTest,
+AuthorizationAssertionTrustTest, TopologyScopedAccessQueryServiceTest, existing
+TopologyScopedAccessPostgresIntegrationTest, all F12/B1 26/completion22 and temporal/
+fence suites unchanged. Run existing Fast selection, six Python suites102 cases,
+inventory/docs/offline API/P1 and exact scope/header/append-only/whitespace gates.
+Local Docker absence/skips remain explicit; mocks never replace hosted acceptance.
+Exact implementation Full/Fast/Docs success and all12 genuine new PG identities with
+zero failures/errors/skips in partition AND unrestricted oracle are required before
+G acceptance. No claimed observed timing for new inventory entries.
+
+#### Current commit scope and STOP
+
+CURRENT execution is F acceptance and this dependency recovery/registration only.
+Exact reused same-ID message: `docs(security): select operation time fencing proof`.
+UPDATE ONLY this roadmap and append-only reconciliation; no CREATE/DELETE or runtime/
+test/inventory/workflow/migration/configuration/release change. Validate source/CI,
+actual artifact hashes/aggregate/raw identities, three absent future paths, docs/
+offline API/P1/inventory/Python and two-path/append-only/whitespace scope. Guard main,
+verify exact parent/tree/two blobs, observe automatic Docs START then STOP; no manual
+Full/Fast and no waiting for CI completion. Separate Next selects G after Docs success.
+HPR-P25-051 remains OPEN; G is not paired authority or global owner integration.
+External audit candidate HPS/HAPI/HWEB mappings and six-document reconstruction are
+not activated. Synthetic development and later owner calibration, gas-first/GZ2,
+own engine, steady/transient direction, versioned inputs/operator control persist;
+Simulation/P3 deferred; no release/deployment.
+
+
 ### Current execution checkpoint — HPR-P25-051F failed CI repair, 2026-10-15
 
 **IN PROGRESS / CI REPAIR CANDIDATE / NOT ACCEPTED.** Owner Fail refreshed live
@@ -3047,7 +3288,7 @@ aggregate may replace it. D1–D5 are internal gates, never new HPR task IDs.
 | 1 | HPR-CI-003 | Automatic fast suite and equivalent parallel full verification | CI / independent verification | IN PROGRESS / ORACLE RESOURCE CANDIDATE; prior 5x same-SHA equivalence retained; multi-revision/performance OPEN | Accepted 049; this Docs PASS; owner selection | CI-003 closed list | Selection/report/release negative tests; shadow full verification | No lost cases; mandatory gate fail-closed; repeatable timing | CI | `ci: automate fast feedback and preserve full verification gates` |
 | 2 | HPR-P25-047 | Provider/link database security generations | Identity | COMPLETED / CI ACCEPTED | Accepted 046/048/049; existing registration Docs; separate Next | Existing seven-file list, unchanged | Real writers, Flyway fresh/upgrade, native/bulk/race/rollback | Exact implementation Production + Docs SUCCESS | F1 | `feat(identity): enforce provider and link security generations` |
 | 3 | HPR-P25-050 | Immutable operation binding and trusted issuance/reader, staged 050A–050D | Identity; Platform technical wiring | COMPLETED / A–D AND B1 CI ACCEPTED AT 81d46bc | 047; accepted 044/045 design | Exact 050A/B/C/D lists executed; Full #683/Fast #16/Docs #287 SUCCESS | Fresh-schema LOCAL/LDAP/AD/OIDC, expiry, generation, rollback; no deployed-data migration | B1 provenance and storage proof across all four children; no inferred B2/B3 | F1 | Child messages registered below; original message retained by 050D |
-| 4 | HPR-P25-051 | Cross-owner revocation/time/transaction linearization | Identity / Party / Topology; Platform mechanics | IN PROGRESS / 051A–E BOUNDED SLICES CI ACCEPTED; D2 OWNER INTEGRATION OPEN | 050; accepted 038/043; D2 | D2 then exact owner/export/fence list | Real PostgreSQL owner/race/expiry/connection tests | B2/B3 and writer ordering + bounded latency PASS | F1 | `feat(security): linearize cross owner protected operations` |
+| 4 | HPR-P25-051 | Cross-owner revocation/time/transaction linearization | Identity / Party / Topology; Platform mechanics | IN PROGRESS / 051A–F BOUNDED SLICES CI ACCEPTED; 051G REGISTERED; D2 OWNER INTEGRATION OPEN | 050; accepted 038/043; D2 | D2 then exact owner/export/fence list | Real PostgreSQL owner/race/expiry/connection tests | B2/B3 and writer ordering + bounded latency PASS | F1 | `feat(security): linearize cross owner protected operations` |
 | 5 | HPR-P25-052 | Topology authoring, route/profile and revision publication APIs | Topology; read-only foreign owner contracts | PLANNED / REGISTERED; D3 contract/scope gate | 051; accepted 018/019/020/032/034/036/037/038; D3 | D3 closed authoring/storage/API list | Actual API round trips, epochs/CAS/history/import-export | F1-02/03/04 within explicit supported topology scope | F1 | `feat(topology): expose governed engineering revision workflows` |
 | 6 | HPR-P25-053 | Product/property/method metadata authoring and history | Custody; source approval through Workflow | PLANNED / REGISTERED; D3 contract/scope gate | 051; accepted 018/022 design; D3 | D3 exact Custody/owner-export list | Multi-product metadata, unsupported shape, old GAS replay | F2-01 and product share of F2-03 | F2 | `feat(custody): govern versioned product engineering data` |
 | 7 | HPR-P25-054 | Installed-unit/asset and manufacturer-characteristic history | Topology installed configuration; Assets lifecycle; Party manufacturer; existing Simulation data store | PLANNED / REGISTERED; D3 contract/scope gate | 052; accepted 020/021 design; D3 | D3 exact per-owner list | Nine distinct units; curve/table/units/lifecycle/history | F2-02 and equipment share of F2-03; data only | F2 | `feat(engineering): govern installed units and characteristic revisions` |

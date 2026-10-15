@@ -32,6 +32,10 @@ by this planning commit. Current planning commit message:
 
 
 
+### CI-003C-HQ1 isolated qualification harness implementation checkpoint — 2026-10-15
+
+This stage adds a manually dispatched, isolated qualification workflow and synthetic-only negative policy assertions. The harness cannot modify the existing Full/Fast/Docs workflows or claim that synthetic cases are real hosted cancellation/artifact failures. The Maven dependency go-offline cold/warm directory exercise is preparatory only: it does not demonstrate controlled setup-java cache miss/hit or equivalent Full test execution. All hosted acceptance, actual negative cases, comparable cache attribution and genuine API-changing representative remain OPEN. CI-003C IN PROGRESS, CI-003D unselected, mandatory unrestricted Full and fallback retained. The new workflow is NOT automatically dispatched or accepted by its existence.
+
 ### CI-003C-HQ1 — owner-authorized hosted qualification registration (2026-10-15)
 
 Status: REGISTERED; implementation and hosted evidence NOT STARTED. Owner authorized one bounded synthetic hosted qualification package. CI-003C remains evidence-blocked; CI-003D unselected; unrestricted Full oracle, PostgreSQL16 fresh-schema Flyway, security checks and fallback_required=true are mandatory.

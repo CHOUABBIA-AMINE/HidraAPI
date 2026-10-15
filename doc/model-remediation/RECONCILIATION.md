@@ -24179,3 +24179,7 @@ Parent CI-003, 051 and 051H statuses are not advanced.
 ## 2026-10-15 — CI-003C-HQ1 owner-approved registration
 
 Owner explicitly approved registering an isolated hosted qualification package. Registration only; no workflow execution or test result claimed. Current roadmap records bounded proposed allowlist, hosted fail-closed negative and cold/warm Maven cache acceptance, required unchanged Full/PostgreSQL/Flyway/security oracle, provenance and synthetic fixture controls. CI-003C remains evidence-blocked, CI-003D unselected, and fallback_required=true. Genuine API-changing representative evidence remains separately gated.
+
+## 2026-10-15 — CI-003C-HQ1 harness source checkpoint
+
+Isolated manual workflow and synthetic-only policy fixture source added. This is not hosted negative-case proof, cache hit/miss evidence, or full CI qualification. No existing production workflow or security/runtime source modified. HQ1 acceptance remains OPEN; unrestricted Full and fallback unchanged.

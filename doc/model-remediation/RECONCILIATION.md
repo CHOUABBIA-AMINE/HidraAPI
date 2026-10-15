@@ -22561,3 +22561,59 @@ Parent051/D2/B2/B3/global owner order/B1 and paired permission/Party/Topology038
 integration remain OPEN;052 unselected. Oracle/fallback mandatory,optimized=false,
 gas-first/GZ2/own engine/steady-transient/versioned inputs/operator control persist;
 synthetic development, later owner calibration; Simulation/P3 deferred, no release.
+
+
+## 2026-10-15 — HPR-P25-051E hosted CI acceptance
+
+Owner Next recovered mainc72eae39cab0b1ec1e20654386fe95ed43b134ab,
+parent19679e90d7e23b7e3cd0fe5829f9e2d929f9b578,
+tree7d35ca97a3829b647dde3501463af02e456238ea.
+Exact-SHA Full695/run38698554941, Fast28/run38698555074 and
+Docs315/run38698555135 are completed SUCCESS. All seven required Full jobs
+succeeded, including both PG partitions, unrestricted oracle and aggregate gate.
+
+HPR-P25-051E COMPLETED / BOUNDED COMPLETE IDENTITY RELATION FENCE CI ACCEPTED.
+Downloaded authenticated attempt1 partition1 artifact11955284622 and full bundle
+11955506471. ZIP digests match GitHub metadata respectively:
+a314706acf2a863c0ab024f50db08560f6ae7bb955907b78499112debef559f1 and
+b01007907ba3632547178a38961a6ff5963a3278bb01625c6d910eeec6adc9fa.
+Actual IdentityAuthorityFencePostgresIntegrationTest XML in partition AND oracle
+has all ten exact registered identities, zero failures/errors/skips/flakes/reruns;
+observed suite13.907s/43.433s, not SLOs or new baseline timings.
+
+Re-extracted bundle and independently recomputed current verify_full_ci_evidence
+aggregate against exact source/raw files: result equals downloaded gate.json.
+Source c72eae3/run38698554941/attempt1/inventory
+cbd9f8f0d952ceef915fa275250871e79fedcc7399832b5d13e341dd86c060db,
+381 classes/2033 tests, zero failures/errors/skips, required dependencies successful,
+same-run equivalence true, fallback required and optimized adoption false. Existing
+verifier checks source/helper/workflow/report hashes, Java21 clean-verify/package,
+raw counts/timings and matching API/base/physical catalog evidence. Earlier local
+PG skips remain accurately recorded; no new local Java/PostgreSQL run is claimed.
+
+Hosted acceptance covers22 full Identity relation fences preceding actual051D
+sample, native/static/JPA writer exclusion, synthetic non-owner privilege/bypass
+checks, real commit ordering and PID/XID, late-prefix rollback/failed recovery,
+invalid participation, exact syntax/overflow failures and immutable result delivery
+after commit. It grants no producer-origin B1, evaluated paired permission,
+Party/Facility/Topology ownership, complete global lock graph or038 head/epoch.
+Deployed privileges are not established by a synthetic role. Parent051/D2/B2/B3
+remain OPEN. Next same-ID action recovers/registers the actual protected Identity
+B1/paired-permission owner contribution and exact envelope/dependencies; no future
+runtime paths, new child code or052 selected by this acceptance.
+
+Current `docs(security): select operation time fencing proof` changes only roadmap
+and append-only reconciliation; no CREATE/DELETE or source/test/inventory/migration/
+workflow/release/history change. Require docs/offline OpenAPI/P1/source inventory/
+Python policy and scope/append-only/whitespace validation, guarded main publication,
+parent/tree/blob verification, automatic Docs startup then STOP. No Full/Fast manual
+dispatch or CI completion wait. Mandatory fallback, optimized=false; gas-first/GZ2/
+own engine/steady-transient/versioned inputs/operator control persist, synthetic
+development and later calibration; Simulation/P3 deferred, no release/deployment.
+
+Validation completed for this acceptance: authenticated aggregate recomputation
+and exact ten-case raw XML checks PASS; canonical docs98/5355 relative links/24
+modules, offline OpenAPI263 operations/244 paths/231 schemas, retained P1 evidence,
+unchanged source inventory and all six Python policy suites102 cases PASS. Two
+document UPDATEs only, append-only reconciliation and whitespace PASS. No new
+local Java/JUnit/PostgreSQL execution or release/deployment was performed.

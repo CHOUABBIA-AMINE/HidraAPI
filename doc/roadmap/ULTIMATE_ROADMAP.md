@@ -32,6 +32,82 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-P25-051G fenced evidence implementation candidate, 2026-10-15
+
+Owner Next recovered authoritative main `5246eb96cd0cac9223033184f642db11ff87a621`,
+parent `5b18ada0599c3b96570ddd8f1f163092b40032b7`, tree
+`443d2248fec19b99f0e3ec66b22456ce32396f6f`. Exact-SHA Full #698/run38733021229
+and Docs #323/run38733021193 are SUCCESS. The independent product-vision addition
+changes no registered G scope. Execute only the existing six-path G registration,
+exact message `feat(identity): load fenced authorization evidence`.
+
+| Stage | Current disposition |
+|---|---|
+| HPR-P25-051G | IN PROGRESS / IMPLEMENTED CANDIDATE / HOSTED ACCEPTANCE PENDING |
+| HPR-P25-051 | IN PROGRESS; A–F accepted; H–M planned; B2/B3/global owner integration open |
+
+Created JdbcProtectedAuthorizationEvidenceReader and its eight-case unit and
+twelve-case PostgreSQL integration classes at the three registered paths. Updated
+only their two inventory entries/source hashes (unit fast=true, PostgreSQL false,
+explicit baseline_seconds=0 unmeasured), this roadmap and append-only reconciliation.
+Every old inventory entry/key and existing production/test body remains unchanged.
+
+The Identity-private MANDATORY reader validates writable physical READ COMMITTED,
+exact supplied PID/XID and all22 existing ShareRowExclusiveLock fences before owner
+reads, then rechecks physical coordinates before return. It accepts only the fixed
+operation codes and matching company CUSTOM/FACILITY request shapes at supplied s.
+Projected parameterized JDBC covers the nineteen reviewed evidence families through
+fixed-depth bounded queries; each LIMIT1025 sentinel and one combined1024 fetched-row
+budget rejects overflow without returning partial evidence. No JPA/cache, new lock,
+clock sample, assertion input, decision persistence or protected authority export.
+
+Normalization retains database grant order0/1/2, current scope/half-open-window and
+source-membership eligibility, explicit DENY precedence, policy/version uncertainty,
+typed persisted attributes and immutable nested JSON/null expression positions.
+ACTIVE bound-provider claim-dependent mappings conservatively mark evidence
+INDETERMINATE even for a new, absent or unrelated claim. Invalid SQL/structural state
+has one sanitized operational error without private causes. Diagnostic input shape
+and returned local evaluator graph establish no B1 origin or permission authority.
+
+The new PostgreSQL tests invoke actual F prepare/contribute, G twice and unchanged
+domain evaluation at the same sample with real LOCAL/LDAP/AD/OIDC producers and
+synthetic signed source transport. They cover both scopes/all eight codes, direct/
+role/group denies, independent membership-provider changes, typed/conflicting and
+ambiguous-version evidence, new claim mappings, stale JPA grant images, committed
+revocation, independently observed writer blocking, inactive future DENY bounds,
+late final-guard rejection, overflow, rollback and clean recovery. Scalar observations
+only leave the executor; physical PID/XID, commit timestamp and final s<=t<u are
+asserted by genuine test code. These are implemented tests, not hosted proof yet.
+
+Local validation: Java21 production and complete test compilation PASS. The initial
+Mockito run failed on this environment's agent self-attachment; explicit Byte Buddy
+-javaagent on the local command resolved it without repository configuration changes.
+Intermittent runner disconnects and an overlapping failed incremental compilation
+attempt are not acceptance evidence; the subsequent serial fast/focused lifecycle
+completed BUILD SUCCESS. New unit8 PASS; exact fast raw-report verifier PASS for
+301 classes/1390 tests/zero failures/errors/skips. Combined fast/focused execution
+1480 tests/zero failures/errors/87 Docker-dependent skips; additional completion/
+transaction/temporal focus69 tests/all69 Docker-dependent skips. New PostgreSQL12
+are explicitly SKIPPED locally because Docker is unavailable; no real local database,
+partition/oracle equivalence, hosted success or observed new timing is claimed.
+
+Six Python policy suites102 cases PASS; inventory, canonical docs99/5356 relative
+links/24 modules, offline API263 operations/244 paths/231 schemas and retained P1
+validation PASS before this checkpoint. Revalidate after its insertion, exact six-path
+scope, headers, append-only reconciliation, old inventory preservation and whitespace
+before guarded publication. Full/Fast/Docs and all12 new genuine PostgreSQL cases with
+zero skips in partition AND unrestricted oracle remain required for G acceptance.
+The existing500ms budget, mandatory fallback and optimized=false remain unchanged.
+
+Guard main at the refreshed expected head, verify published parent/tree/blobs and
+exact six-path scope, observe automatic exact-SHA Full/Fast/Docs startup, then STOP.
+Do not wait for completion or select H. A separate Next/Fail must assess G acceptance
+or repair failures before registering H; no additional implementation is selected.
+Synthetic development data and later owner calibration, gas-first/GZ2, Hidra's own
+engine, steady/transient direction, versioned inputs/operator control persist.
+Simulation/P3, release and deployment remain deferred.
+
+
 ### Current execution checkpoint — remaining parent-task delivery plans, 2026-10-15
 
 Owner requested the same bounded-stage/dependency/exit-criteria treatment for the
@@ -3689,7 +3765,7 @@ aggregate may replace it. D1–D5 are internal gates, never new HPR task IDs.
 | 1 | HPR-CI-003 | Automatic fast suite and equivalent parallel full verification | CI / independent verification | IN PROGRESS / ORACLE RESOURCE CANDIDATE; prior 5x same-SHA equivalence retained; multi-revision/performance OPEN; 4 DELIVERY PACKAGES PLANNED | Accepted 049; this Docs PASS; owner selection | CI-003 closed list | Selection/report/release negative tests; shadow full verification | No lost cases; mandatory gate fail-closed; repeatable timing | CI | `ci: automate fast feedback and preserve full verification gates` |
 | 2 | HPR-P25-047 | Provider/link database security generations | Identity | COMPLETED / CI ACCEPTED | Accepted 046/048/049; existing registration Docs; separate Next | Existing seven-file list, unchanged | Real writers, Flyway fresh/upgrade, native/bulk/race/rollback | Exact implementation Production + Docs SUCCESS | F1 | `feat(identity): enforce provider and link security generations` |
 | 3 | HPR-P25-050 | Immutable operation binding and trusted issuance/reader, staged 050A–050D | Identity; Platform technical wiring | COMPLETED / A–D AND B1 CI ACCEPTED AT 81d46bc | 047; accepted 044/045 design | Exact 050A/B/C/D lists executed; Full #683/Fast #16/Docs #287 SUCCESS | Fresh-schema LOCAL/LDAP/AD/OIDC, expiry, generation, rollback; no deployed-data migration | B1 provenance and storage proof across all four children; no inferred B2/B3 | F1 | Child messages registered below; original message retained by 050D |
-| 4 | HPR-P25-051 | Cross-owner revocation/time/transaction linearization | Identity / Party / Topology; Platform mechanics | IN PROGRESS / 051A–F CI ACCEPTED; G REGISTERED; H–M PLANNED; D2 OWNER INTEGRATION OPEN | 050; accepted 038/043; D2 | D2 then exact owner/export/fence list | Real PostgreSQL owner/race/expiry/connection tests | B2/B3 and writer ordering + bounded latency PASS | F1 | `feat(security): linearize cross owner protected operations` |
+| 4 | HPR-P25-051 | Cross-owner revocation/time/transaction linearization | Identity / Party / Topology; Platform mechanics | IN PROGRESS / 051A–F CI ACCEPTED; G IMPLEMENTED CANDIDATE / CI PENDING; H–M PLANNED; D2 OWNER INTEGRATION OPEN | 050; accepted 038/043; D2 | D2 then exact owner/export/fence list | Real PostgreSQL owner/race/expiry/connection tests | B2/B3 and writer ordering + bounded latency PASS | F1 | `feat(security): linearize cross owner protected operations` |
 | 5 | HPR-P25-052 | Topology authoring, route/profile and revision publication APIs | Topology; read-only foreign owner contracts | PLANNED / REGISTERED; D3 contract/scope gate; 6 DELIVERY PACKAGES PLANNED | 051; accepted 018/019/020/032/034/036/037/038; D3 | D3 closed authoring/storage/API list | Actual API round trips, epochs/CAS/history/import-export | F1-02/03/04 within explicit supported topology scope | F1 | `feat(topology): expose governed engineering revision workflows` |
 | 6 | HPR-P25-053 | Product/property/method metadata authoring and history | Custody; source approval through Workflow | PLANNED / REGISTERED; D3 contract/scope gate; 4 DELIVERY PACKAGES PLANNED | 051; accepted 018/022 design; D3 | D3 exact Custody/owner-export list | Multi-product metadata, unsupported shape, old GAS replay | F2-01 and product share of F2-03 | F2 | `feat(custody): govern versioned product engineering data` |
 | 7 | HPR-P25-054 | Installed-unit/asset and manufacturer-characteristic history | Topology installed configuration; Assets lifecycle; Party manufacturer; existing Simulation data store | PLANNED / REGISTERED; D3 contract/scope gate; 5 DELIVERY PACKAGES PLANNED | 052; accepted 020/021 design; D3 | D3 exact per-owner list | Nine distinct units; curve/table/units/lifecycle/history | F2-02 and equipment share of F2-03; data only | F2 | `feat(engineering): govern installed units and characteristic revisions` |

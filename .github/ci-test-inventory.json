@@ -2045,6 +2045,31 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "allFourRealBoundActorsLoadDatabaseAuthorityAtFencedSample",
+        "bothCompanyAndFacilityRequireIndependentPermits",
+        "boundedOverflowMalformedStateAndRollbackStayClosed",
+        "committedRevocationBeforeFencesRemovesPermit",
+        "directRoleAndGroupDeniesOverridePermit",
+        "futureDenyBoundAndExpiryCannotExtendEvidence",
+        "oidcAndNewClaimMappingsRemainIndeterminateWithoutCoverage",
+        "scopeMismatchAndIneligibleOwnersNeverGrant",
+        "staleJpaAndEarlierSnapshotsCannotSupplyAuthority",
+        "synchronizedMembershipSourcesAreReadFresh",
+        "typedAttributesAndPolicyConstraintsUseDatabaseSample",
+        "writersAfterAdmissionBlockUntilRelease"
+      ],
+      "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.ProtectedAuthorizationEvidencePostgresIntegrationTest",
+      "dependency_reason": "G real PostgreSQL16/Flyway/JPA/F participant, four producers, paired domain assessment and physical fences/commit",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedAuthorizationEvidencePostgresIntegrationTest.java",
+      "source_sha256": "bd7f8809eb93046da04423de4bb2e3cd442c9948be7d3366e83008038e0e4065",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
         "allFourRealProducerBearersParticipateAtDatabaseSample",
         "bindingOwnerGenerationsAndAbaAreReadAfterFences",
         "caughtFailureRollsBackProvisionalJpaAndReceipt",
@@ -2129,6 +2154,27 @@
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProviderLinkSecurityGenerationPostgresIntegrationTest.java",
       "source_sha256": "fa8830a4dd51b3a9ce000e6ef0c659089b4c66ddb2ad3b9aa0568ef9d6be1031",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "boundsRowsJsonAndUnsupportedEvidence",
+        "hasNoJpaCacheWallClockDecisionPersistenceOrAuthorityExport",
+        "preservesGrantOrderScopeWindowsAndDenyPrecedence",
+        "preservesTypedAttributesAndConflicts",
+        "rejectsCallerActorResourceAndScopeMismatches",
+        "rejectsUnknownClaimCoverageInsteadOfAssumingAbsence",
+        "requiresMatchingPhysicalCoordinatesAndCompleteIdentityFences",
+        "requiresWritableReadCommittedParticipation"
+      ],
+      "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcProtectedAuthorizationEvidenceReaderTest",
+      "dependency_reason": "G diagnostic JDBC normalization/transaction checks; mocks and unchanged domain evaluator only",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java",
+      "source_sha256": "799485c2cba83a31e7a0a5b5081055a427d94ef4510730049a17a58fcebd26e1",
       "supports": []
     },
     {

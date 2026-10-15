@@ -23535,3 +23535,80 @@ append-only reconciliation PASS. No runtime/test/inventory/workflow/SQL/configur
 version/acceptance-criteria/attachment change. No new Java/PostgreSQL execution or
 engineering completion claimed. Whitespace checked after this append; guarded main
 publication and automatic Docs startup follow, then STOP with051G still next.
+
+
+## 2026-10-15 — HPR-P25-051G fresh fenced evidence implementation candidate
+
+
+Owner Next recovered authoritative main `5246eb96cd0cac9223033184f642db11ff87a621`,
+parent `5b18ada0599c3b96570ddd8f1f163092b40032b7`, tree
+`443d2248fec19b99f0e3ec66b22456ce32396f6f`. Exact-SHA Full #698/run38733021229
+and Docs #323/run38733021193 are SUCCESS. The independent product-vision addition
+changes no registered G scope. Execute only the existing six-path G registration,
+exact message `feat(identity): load fenced authorization evidence`.
+
+| Stage | Current disposition |
+|---|---|
+| HPR-P25-051G | IN PROGRESS / IMPLEMENTED CANDIDATE / HOSTED ACCEPTANCE PENDING |
+| HPR-P25-051 | IN PROGRESS; A–F accepted; H–M planned; B2/B3/global owner integration open |
+
+Created JdbcProtectedAuthorizationEvidenceReader and its eight-case unit and
+twelve-case PostgreSQL integration classes at the three registered paths. Updated
+only their two inventory entries/source hashes (unit fast=true, PostgreSQL false,
+explicit baseline_seconds=0 unmeasured), this roadmap and append-only reconciliation.
+Every old inventory entry/key and existing production/test body remains unchanged.
+
+The Identity-private MANDATORY reader validates writable physical READ COMMITTED,
+exact supplied PID/XID and all22 existing ShareRowExclusiveLock fences before owner
+reads, then rechecks physical coordinates before return. It accepts only the fixed
+operation codes and matching company CUSTOM/FACILITY request shapes at supplied s.
+Projected parameterized JDBC covers the nineteen reviewed evidence families through
+fixed-depth bounded queries; each LIMIT1025 sentinel and one combined1024 fetched-row
+budget rejects overflow without returning partial evidence. No JPA/cache, new lock,
+clock sample, assertion input, decision persistence or protected authority export.
+
+Normalization retains database grant order0/1/2, current scope/half-open-window and
+source-membership eligibility, explicit DENY precedence, policy/version uncertainty,
+typed persisted attributes and immutable nested JSON/null expression positions.
+ACTIVE bound-provider claim-dependent mappings conservatively mark evidence
+INDETERMINATE even for a new, absent or unrelated claim. Invalid SQL/structural state
+has one sanitized operational error without private causes. Diagnostic input shape
+and returned local evaluator graph establish no B1 origin or permission authority.
+
+The new PostgreSQL tests invoke actual F prepare/contribute, G twice and unchanged
+domain evaluation at the same sample with real LOCAL/LDAP/AD/OIDC producers and
+synthetic signed source transport. They cover both scopes/all eight codes, direct/
+role/group denies, independent membership-provider changes, typed/conflicting and
+ambiguous-version evidence, new claim mappings, stale JPA grant images, committed
+revocation, independently observed writer blocking, inactive future DENY bounds,
+late final-guard rejection, overflow, rollback and clean recovery. Scalar observations
+only leave the executor; physical PID/XID, commit timestamp and final s<=t<u are
+asserted by genuine test code. These are implemented tests, not hosted proof yet.
+
+Local validation: Java21 production and complete test compilation PASS. The initial
+Mockito run failed on this environment's agent self-attachment; explicit Byte Buddy
+-javaagent on the local command resolved it without repository configuration changes.
+Intermittent runner disconnects and an overlapping failed incremental compilation
+attempt are not acceptance evidence; the subsequent serial fast/focused lifecycle
+completed BUILD SUCCESS. New unit8 PASS; exact fast raw-report verifier PASS for
+301 classes/1390 tests/zero failures/errors/skips. Combined fast/focused execution
+1480 tests/zero failures/errors/87 Docker-dependent skips; additional completion/
+transaction/temporal focus69 tests/all69 Docker-dependent skips. New PostgreSQL12
+are explicitly SKIPPED locally because Docker is unavailable; no real local database,
+partition/oracle equivalence, hosted success or observed new timing is claimed.
+
+Six Python policy suites102 cases PASS; inventory, canonical docs99/5356 relative
+links/24 modules, offline API263 operations/244 paths/231 schemas and retained P1
+validation PASS before this checkpoint. Revalidate after its insertion, exact six-path
+scope, headers, append-only reconciliation, old inventory preservation and whitespace
+before guarded publication. Full/Fast/Docs and all12 new genuine PostgreSQL cases with
+zero skips in partition AND unrestricted oracle remain required for G acceptance.
+The existing500ms budget, mandatory fallback and optimized=false remain unchanged.
+
+Guard main at the refreshed expected head, verify published parent/tree/blobs and
+exact six-path scope, observe automatic exact-SHA Full/Fast/Docs startup, then STOP.
+Do not wait for completion or select H. A separate Next/Fail must assess G acceptance
+or repair failures before registering H; no additional implementation is selected.
+Synthetic development data and later owner calibration, gas-first/GZ2, Hidra's own
+engine, steady/transient direction, versioned inputs/operator control persist.
+Simulation/P3, release and deployment remain deferred.

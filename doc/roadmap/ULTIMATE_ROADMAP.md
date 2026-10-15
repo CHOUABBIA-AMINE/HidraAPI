@@ -32,6 +32,10 @@ by this planning commit. Current planning commit message:
 
 
 
+### CI-003C-HQ1 hosted cache-service qualification result — 2026-10-15
+
+Exact SHA 3438448b2eebcccc458f87e772ebdf7c4311dfbe: manually dispatched isolated workflow run 38799812711 SUCCESS, synthetic-policy job 116645592011 SUCCESS and cache-evidence job 116645591673 SUCCESS. Hosted logs show unique cold actions/cache key hidra-hq1-cold-38799812711-1 NOT FOUND; cold Maven dependency go-offline BUILD SUCCESS in 40.484s; exact warm key hidra-hq1-warm-38799812711-1 saved and HIT, approximately 148 MB restored; warm dependency go-offline BUILD SUCCESS in 1.792s. This is genuine hosted cache-service miss/hit evidence for the isolated dependency-preparation exercise, NOT equivalent Full test execution or cross-run benchmark. Production CI run 38799296443 and Documentation Validation run 38799296473 both SUCCESS on the same SHA. Actual hosted negative required-job/artifact injection, genuine independently authorized API-changing representative, Full oracle timing comparability and CI-003D acceptance remain OPEN. The current unrestricted oracle and fallback remain mandatory. Owner concern: no unnecessary repeated tests in eventual partitioned pipeline; inventory union/disjointness and raw-report case evidence required before removal of fallback. No test/migration deletion authorized.
+
 ### CI-003C-HQ1 hosted run evidence and controlled-cache amendment — 2026-10-15
 
 At unchanged source 0cb7d13b6ea180cf85715ad9306dc889279b3e15, isolated qualification run 38798276295 completed SUCCESS: synthetic-policy and maven-cache jobs both successful. Hosted Maven dependency: cold local repository go-offline 46.380s and repeat warm local repository 1.978s. These are NOT controlled actions/cache or setup-java cache miss/hit, Full oracle timing or actual hosted negative job/artifact injection. Full and Docs on that SHA SUCCESS (runs 38772509978 and 38772509819).

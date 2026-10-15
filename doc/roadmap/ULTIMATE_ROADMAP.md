@@ -32,6 +32,14 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-P25-051G CI #699 failed-test repair, 2026-10-15
+
+Exact current implementation head `fa9099f170e0cb78dbfeb4cf6ca19a2ccaada2c2`, [Full #699](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38737078508) FAILED; [Fast #31](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38737077880) and [Docs #324](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38737077918) SUCCESS at the same SHA. Both PostgreSQL shard1 and unrestricted oracle independently ran all12 new G cases and reported the same two genuine test failures: `scopeMismatchAndIneligibleOwnersNeverGrant` (fixture set RoleStatus `INACTIVE`, unsupported by RoleStatus ACTIVE/DISABLED/DEPRECATED) and `futureDenyBoundAndExpiryCannotExtendEvidence` (test guard threw `AssertionFailedError`, a JVM Error rethrown by unchanged ProtectedTransactionExecutor, while the test incorrectly required a wrapped ExecutionFailure).
+
+This same-ID repair changes only the G PostgreSQL integration test, its single `.github/ci-test-inventory.json` source SHA256, this checkpoint, and append-only reconciliation. Role disable fixture now uses the real `DISABLED` enum; the actual SQL interval guard rejects count!=1 using a test-only `IllegalStateException` so the unchanged protected executor rolls back and produces `REJECTED_BEFORE_COMMIT`. The expiry scenario checks this outcome, root exception and unchanged persisted receipt count. All12 original PG test identities, two inventory entries, their fast/postgres lanes and explicit zero timing hints remain unchanged. G production reader, F/A–E, schema, migrations, CI scripts/workflows, permission/transaction semantics and old evidence are preserved.
+
+No local PostgreSQL/Maven execution is claimed: this repair was verified by exact source inspection, CI logs from both failed lanes, enum/executor semantics, deterministic single-file inventory SHA256 regeneration and change-scope assertions. **HPR-P25-051G remains IN PROGRESS / FAILED-SHA ROOT CAUSE IDENTIFIED / REPAIR CANDIDATE; hosted exact-repair-SHA Full/Fast/Docs and all12 genuine zero-skip PG cases in partition and oracle are REQUIRED before acceptance.** Parent051 remains open and H is unselected. Repair commit: `test(identity): repair fenced authorization evidence postgres scenarios`.
+
 ### Current execution checkpoint — HPR-P25-051G fenced evidence implementation candidate, 2026-10-15
 
 Owner Next recovered authoritative main `5246eb96cd0cac9223033184f642db11ff87a621`,

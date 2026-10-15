@@ -234,7 +234,8 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
                         receipts.incrementAndGet(),
                         Timestamp.from(c.evidence().observedAt()),
                         Timestamp.from(c.validUntil()));
-        assertThat(count).isEqualTo(1);
+        if (!Integer.valueOf(1).equals(count))
+            throw new IllegalStateException("Protected temporal guard rejected invalid or expired interval");
     }
 
     private static Connection connection() throws SQLException {
@@ -794,7 +795,7 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
         grant(f, "author", "GRANT", "CUSTOM", "topology-company:other");
         assertThat(assess(f, "author").facility()).isEqualTo(AuthorizationDecisionValue.DENY);
         String role = role(f, "author", "GRANT", true);
-        jdbc.update("UPDATE " + T + "role SET status='INACTIVE' WHERE id=?", role);
+        jdbc.update("UPDATE " + T + "role SET status='DISABLED' WHERE id=?", role);
         assertThat(assess(f, "author").company()).isEqualTo(AuthorizationDecisionValue.DENY);
         both(f, "author");
         var prepared = prepare(f);
@@ -1111,6 +1112,7 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
         long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(5);
         while (dbNow().isBefore(boundary) && System.nanoTime() < deadline) Thread.onSpinWait();
         assertThat(dbNow()).isAfterOrEqualTo(boundary);
+        int committedReceipts = jdbc.queryForObject("SELECT count(*) FROM " + receipt(), Integer.class);
         assertThatThrownBy(
                         () ->
                                 executor.execute(
@@ -1118,7 +1120,13 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
                                         em::flush,
                                         () -> guard(saved.get())))
                 .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class)
-                .hasRootCauseInstanceOf(AssertionError.class);
+                .hasRootCauseInstanceOf(IllegalStateException.class)
+                .hasRootCauseMessage("Protected temporal guard rejected invalid or expired interval")
+                .satisfies(thrown ->
+                        assertThat(((ProtectedTransactionExecutor.ExecutionFailure) thrown).outcome())
+                                .isEqualTo(ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT));
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM " + receipt(), Integer.class))
+                .isEqualTo(committedReceipts);
     }
 
     @Test

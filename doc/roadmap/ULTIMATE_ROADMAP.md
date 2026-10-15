@@ -32,6 +32,16 @@ by this planning commit. Current planning commit message:
 
 
 
+### CI-003C-HQ1 — owner-authorized hosted qualification registration (2026-10-15)
+
+Status: REGISTERED; implementation and hosted evidence NOT STARTED. Owner authorized one bounded synthetic hosted qualification package. CI-003C remains evidence-blocked; CI-003D unselected; unrestricted Full oracle, PostgreSQL16 fresh-schema Flyway, security checks and fallback_required=true are mandatory.
+
+Proposed exact implementation allowlist after source preflight: new isolated .github/workflows/ci-qualification.yml and scripts/ci/qualification/**, plus roadmap/reconciliation evidence. Existing .github/workflows/ci.yml, Java, migrations, Maven, public API, inventory and existing verification scripts excluded. Do not manufacture API changes. Any allowlist mismatch requires explicit reconciliation.
+
+Acceptance: hosted fail-closed negative evidence for cancelled/failed required job, missing/stale/overlapping artifacts and skipped required tests; controlled cold Maven cache miss and warm hit with comparable runner/build inputs and separate container pull timing; exact SHA/run/job provenance, synthetic-only fixtures, credential redaction, no green production Full result from negative cases, and no weakened gates. API-change representative remains OPEN pending a genuine independently approved API revision. No CI-003D performance/adoption claim or release.
+
+Next: preflight workflow and scripts against live main, execute only this bounded registered package with a verified exact commit message, guarded main publication, and exact-SHA CI startup; STOP.
+
 ### Current execution checkpoint — HPR-CI-003 / CI-003C bounded archive sweep completed, 2026-10-15
 
 **Current disposition: CI-003C archival evidence recovery completed within

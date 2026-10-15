@@ -22334,3 +22334,53 @@ Gas-first/GZ2, own engine, steady/transient, versioned inputs/operator control;
 synthetic development, owner calibration later, Simulation/P3 deferred;
 no release/deployment.
 
+
+
+## 2026-10-15 — HPR-P25-051D overflow exception-chain proof repair
+
+Owner Fail selects repair of exact main
+`3f384a7f97eaf494f1b5fe40250c25340ee79008`.
+[Full #693](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38682699331)
+failed; exact-SHA Fast #26 and Docs #311 succeeded. Reviewed PostgreSQL
+partition1 and unrestricted oracle logs identify only
+oversizedCensusRollsBackWithoutPartialResult: overflowObserved remains false.
+The new class reports10 tests, one failure, zero errors/skips; oracle reports
+2023 tests, one failure, zero errors/skips. The other nine collector cases
+passed, but051D acceptance remains failed.
+
+The test catches only direct IllegalStateException inside work, while the
+collector is a Spring @Repository and the transaction executor wraps work
+failures. Repository exception translation is the inferred reason that the
+inner catch was bypassed; the prior generic rejection helper hides the
+underlying chain, so logs do not independently establish that cause.
+Replace that fragile observation with an assertion on the actual escaped
+ExecutionFailure: REJECTED_BEFORE_COMMIT, root IllegalStateException and exact
+message "Temporal census exceeds reviewed bound". This accepts framework
+wrapping without accepting a different SQL, deadline or collector failure.
+It also exposes the actual causal chain in hosted assertion output if the
+inference is wrong. Keep the in-transaction1025-row assertion, provisional
+receipt, no final guard, complete rollback and positive collection afterward.
+All ten identities, original limits, constraints and production code persist.
+
+UPDATE only the new collector test, its inventory source SHA256, this roadmap
+and append-only reconciliation; CREATE/DELETE none. Registered message:
+`feat(identity): collect fenced temporal event candidates`.
+Test source SHA256:
+`d840d669989b0be793e98c3a2b17bcdfc796a06a3bc1ead12f8ac3ea54edae6a`;
+inventory SHA256:
+`2ca62c283288fb23ffe3326742473c4b1f9a8c0ae93679cbe1ff8df90306e2b0`.
+Inventory case/lane/order/timing/policy remains unchanged:
+Fast299/unit300/PG37+43/oracle380/historical4.
+
+Local Java syntax-only parsing and source inventory PASS; canonical docs,
+offline OpenAPI and P1 checks performed. No local Java21 type checking,
+JUnit or PostgreSQL execution is claimed. Guard main at the reviewed SHA,
+verify parent/tree/four-path scope and observe automatic exact-SHA
+Full/Fast/Docs START then STOP. Startup is not success. 051D remains
+IN PROGRESS / REPAIRED CANDIDATE / HOSTED CI PENDING. Separate Next/Fail must
+inspect actual successful aggregate and ten genuine zero-skip collector cases.
+Parent051/D2/B2/B3 and real owner integration remain OPEN;052 unselected.
+CI-003 oracle/fallback and optimized=false persist. Gas-first/GZ2, own engine,
+steady/transient, versioned inputs/operator control; synthetic development,
+owner calibration later, Simulation/P3 deferred; no release/deployment.
+

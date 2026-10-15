@@ -230,23 +230,22 @@ class IdentityTemporalEventCollectorPostgresIntegrationTest {
         assertThat(run(binding.bindingId())).isNotNull();
     }
     @Test void oversizedCensusRollsBackWithoutPartialResult() {
-        String permission=permission(),prefix=id();AtomicBoolean guarded=new AtomicBoolean(),overflowObserved=new AtomicBoolean();
-        rejected(()->executor.execute(()->{
+        String permission=permission(),prefix=id();AtomicBoolean guarded=new AtomicBoolean();
+        assertThatThrownBy(()->executor.execute(()->{
             jdbc.update("INSERT INTO "+table("user_permission_grant")
                 +"(id,user_id,permission_id,effect,grant_reason,emergency_access,valid_from,valid_to,status,created_at)"
                 +" SELECT ?||'-'||g,?,?,'DENY','synthetic overflow',false,clock_timestamp(),clock_timestamp()+interval '1 hour','REVOKED',clock_timestamp()"
                 +" FROM generate_series(1,1025) AS g",prefix,binding.userId(),permission);
             assertThat(jdbc.queryForObject("SELECT count(*) FROM "+table("user_permission_grant")+" WHERE id LIKE ?",Integer.class,prefix+"%")).isEqualTo(1025);
             jdbc.update("INSERT INTO "+receipt()+" VALUES(99)");
-            try { return collector.collect(binding.bindingId()); }
-            catch(IllegalStateException e) {
-                assertThat(e).hasMessage("Temporal census exceeds reviewed bound");
-                overflowObserved.set(true);
-                throw e;
-            }
-        },em::flush,()->{guarded.set(true);jdbc.queryForObject("SELECT 1",Integer.class);}));
+            return collector.collect(binding.bindingId());
+        },em::flush,()->{guarded.set(true);jdbc.queryForObject("SELECT 1",Integer.class);}))
+                .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class)
+                .hasRootCauseInstanceOf(IllegalStateException.class)
+                .hasRootCauseMessage("Temporal census exceeds reviewed bound")
+                .satisfies(e -> assertThat(((ProtectedTransactionExecutor.ExecutionFailure)e).outcome())
+                        .isEqualTo(ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT));
         assertThat(guarded).isFalse();
-        assertThat(overflowObserved).isTrue();
         assertThat(jdbc.queryForObject("SELECT count(*) FROM "+table("user_permission_grant")+" WHERE id LIKE ?",Integer.class,prefix+"%")).isZero();
         assertThat(jdbc.queryForObject("SELECT count(*) FROM "+receipt(),Integer.class)).isZero();
         assertThat(run(binding.bindingId())).isNotNull();

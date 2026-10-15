@@ -22443,3 +22443,70 @@ stays anchored to d14c44f. Gas-first/GZ2, own engine, steady/transient,
 versioned inputs/operator control persist; synthetic development, owner
 calibration later, Simulation/P3 deferred; no release/deployment.
 
+
+
+## 2026-10-15 — HPR-P25-051E complete Identity dependency fence registration
+
+Live main785b0eb203c5ea62e0ee992d910a2e93a4e3968a has Docs313 SUCCESS;
+runtime d14c44fc527ea1115ad87baafa21a3264bf6950c has Full694/Fast27/Docs312
+SUCCESS. Source recovery traced JpaAuthorizationEvidenceAdapter.load and every
+helper to19 current entity mappings/repositories, unioned051D's11 relation fences
+and B1 credential/session/binding state:22 exact schema-qualified relations.
+Ten previously unfenced evaluator relations plus LOCAL Credential are additions;
+they are not eleven new temporal projections. The full ordered list, graph edges,
+normal inherited JPA/native/phantom writer capabilities, bootstrap/admin/login/
+session/binding routes, generation/admission triggers and privilege limitations
+are recorded in the roadmap. No adapter/REST route absence implies immutability.
+
+Existing scoped-access service uses sequential company/facility decisions and
+wall-clock evaluation; B1 query is REQUIRES_NEW/read-only. They cannot be relabeled
+as a same-transaction protected owner. Future owner contribution must independently
+resolve ambient verified origin, fresh fenced B1 generations and paired fixed
+permission scopes at common database s/u and bind immutable evidence to request/
+physical transaction. Delegation and technical '*' sources are not traversed by
+the reviewed evaluator and cannot silently widen protected authority. Complete
+Party/Topology global lock DAG, owner exports,038 head/epoch and final t guard
+remain open. External datasource username does not establish deployed privileges;
+normal DML versus privileged DDL/ownership bypass is explicitly separated, with
+no production role/configuration provisioning or deployment-data prerequisite.
+
+Register ONE future HPR-P25-051E after this exact-SHA Docs success and separate
+owner Next: exact message `feat(identity): fence complete authority dependency relations`.
+CREATE JdbcIdentityAuthorityFence.java under existing Identity persistence adapter
+package and IdentityAuthorityFencePostgresIntegrationTest.java under Identity
+persistence tests; UPDATE CI inventory, roadmap and append-only reconciliation.
+The exact five paths and ten required JUnit identities are in the roadmap.
+The Identity-private MANDATORY writable READ COMMITTED component validates binding,
+acquires/verifies all22 fixed sorted whole-relation fences BEFORE calling existing
+051D, then returns its unchanged diagnostic Candidate. No PERMIT, producer proof,
+public business export, secret/entity/live resource, row write, arbitrary relation
+input, retry, nested transaction or new time sample. Fixed051A time limits persist.
+
+Require genuine PostgreSQL16/Flyway/JPA, same backend/XID, complete lock inventory,
+formerly unfenced representative native DML and phantom blocking, real session/
+binding writers, synthetic non-owner privileges/bypass denial, late-prefix rollback,
+syntax/overflow exact causes, positive commits after release and materialized
+commit-before-delivery. Preserve existing tests, generation/constraint guards,
+inventory baseline/policies/timings and workflows. Hosted zero-skip partition AND
+oracle plus exact-SHA Full/Fast/Docs are required for acceptance; planned test
+identities are not current reports. No Java/JUnit/PostgreSQL execution is claimed
+by this documentation registration;051E is PLANNED/REGISTERED/NOT IMPLEMENTED.
+
+CURRENT UPDATE only roadmap and this append-only reconciliation with registered
+`docs(security): select operation time fencing proof`. Canonical docs/offline
+OpenAPI/P1, Python policies/current inventory, source mapping/path collision,
+exact two-file append-only and whitespace checks are required before guarded main
+publication. Verify parent/tree/blobs, observe automatic Docs START then STOP.
+No manual Full/Fast dispatch or release. Parent051/D2/B2/B3 remains open,052
+unselected; mandatory oracle/fallback, optimized=false, gas-first/GZ2/own engine/
+steady-transient/versioned inputs/operator control persist, Simulation/P3 deferred.
+
+Validation for this registration completed: canonical documentation98 documents/
+5355 relative links/24 modules PASS; offline OpenAPI263 operations/244 paths/231
+schemas PASS (no generated runtime schema claim); retained P1 evidence PASS;
+all six Python policy suites102 cases PASS; exact-source inventory digest
+2ca62c283288fb23ffe3326742473c4b1f9a8c0ae93679cbe1ff8df90306e2b0 unchanged
+(Fast299/unit300/PG37+43/oracle380/historical4). Source-derived nineteen-entity/
+22-relation union and absent future CREATE paths checked. Two-document scope,
+append-only reconciliation and git diff --check PASS. No Java/JUnit/PostgreSQL
+execution was needed or claimed for this documentation-only registration.

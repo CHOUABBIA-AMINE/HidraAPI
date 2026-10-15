@@ -32,6 +32,293 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-P25-051 complete Identity dependency fence registration, 2026-10-15
+
+Owner Next selects the source/contract recovery required by the accepted051D
+checkpoint. Live main `785b0eb203c5ea62e0ee992d910a2e93a4e3968a`, tree
+`d4b524187e066fce5f9101a505997a12d2bc5e85`, has Docs #313 SUCCESS.
+Last runtime `d14c44fc527ea1115ad87baafa21a3264bf6950c` has exact-SHA
+Full #694/Fast #27/Docs #312 SUCCESS. 051A–D retain their bounded acceptance.
+This is ONE documentation registration under051; it implements no runtime file.
+
+#### Source-complete graph for the reviewed current Identity evaluator
+
+Recovered `JpaAuthorizationEvidenceAdapter.load`, its eligible,
+membershipSourceEligible, group, role and attributes helpers; the nineteen
+referenced JPA entity mappings and their nineteen Spring Data repositories;
+`JdbcIdentityTemporalEventCollector`, `JdbcAuthenticationSecurityStateQueryAdapter`,
+`JdbcOperationAuthenticationBindingRepositoryAdapter`, the B1 query/security
+adapters, current scoped-access service, administrator source and writer services.
+The following is the exact read dependency set for that evaluator, not a claim
+that every Identity entity or possible future authorization mode participates:
+
+| Current JPA entity | Exact public relation |
+|---|---|
+| `AttributeDefinitionJpaEntity` | `public.hidra_identity_attribute_definition` |
+| `AuthorizationPolicyJpaEntity` | `public.hidra_identity_authorization_policy` |
+| `AuthorizationPolicyRuleJpaEntity` | `public.hidra_identity_authorization_policy_rule` |
+| `AuthorizationPolicyVersionJpaEntity` | `public.hidra_identity_authorization_policy_version` |
+| `ExternalGroupMappingJpaEntity` | `public.hidra_identity_external_group_mapping` |
+| `ExternalIdentityJpaEntity` | `public.hidra_identity_external_identity` |
+| `ExternalPermissionMappingJpaEntity` | `public.hidra_identity_external_permission_mapping` |
+| `ExternalRoleMappingJpaEntity` | `public.hidra_identity_external_role_mapping` |
+| `GroupJpaEntity` | `public.hidra_identity_group` |
+| `GroupRoleGrantJpaEntity` | `public.hidra_identity_group_role_grant` |
+| `IdentityProviderJpaEntity` | `public.hidra_identity_provider` |
+| `PermissionJpaEntity` | `public.hidra_identity_permission` |
+| `RoleJpaEntity` | `public.hidra_identity_role` |
+| `RolePermissionGrantJpaEntity` | `public.hidra_identity_role_permission_grant` |
+| `SubjectSecurityAttributeJpaEntity` | `public.hidra_identity_subject_security_attribute` |
+| `UserGroupMembershipJpaEntity` | `public.hidra_identity_user_group_membership` |
+| `UserJpaEntity` | `public.hidra_identity_user` |
+| `UserPermissionGrantJpaEntity` | `public.hidra_identity_user_permission_grant` |
+| `UserRoleGrantJpaEntity` | `public.hidra_identity_user_role_grant` |
+
+Edges, with each list retaining phantom INSERT/DELETE/rekey coverage:
+User -> direct Permission grants; User -> role grants -> ACTIVE Role -> role
+Permission grants; User -> memberships -> ACTIVE Group -> group role grants ->
+Role -> Permission; external assertion -> ACTIVE Provider/LINKED ExternalIdentity
+and active external Group/Role/Permission mappings; sync membership -> Provider,
+ExternalGroupMapping and an eligible linked ExternalIdentity. USER/GROUP/external
+subject attributes -> AttributeDefinition and optional source Provider. Permission
+code/resource/domain -> ACTIVE Policy -> uniquely active in-window PolicyVersion
+-> active PolicyRules. Role grant conditions and all policy predicate/obligation
+columns are already included in051D's conservative expression census. Null/missing/
+conflicting typed values, multiple policy versions and unresolved syntax cannot be
+promoted to PERMIT. Inactive and nonmatching future rows remain in the temporal
+superset; pruning by the current winner/status is not authorized.
+
+All nineteen repositories inherit JpaRepository save/delete/batch capabilities;
+no @Modifying/@Query declaration was matched in these nineteen source files.
+Absence of a dedicated adapter or current REST mutation does NOT imply an immutable
+relation. Concrete ordinary save adapters exist for User, Role, Permission,
+UserRoleGrant, UserPermissionGrant, RolePermissionGrant, GroupRoleGrant,
+IdentityProvider and ExternalRoleMapping; LocalCredential is an additional B1
+writer. LoginSession saveAndFlush plus writable find/refresh PESSIMISTIC_WRITE,
+and the native immutable binding INSERT are distinct writer paths. Administration
+creates roles/permissions/grants; local bootstrap, user registration and local
+login outcome services save user/role/credential/grant state; authentication
+completion/session lifecycle saves sessions. No generic inherited native SQL,
+batch/delete, external client or future repository writer is assumed absent.
+
+`JdbcAuthenticationSecurityStateQueryAdapter.current` adds LOCAL Credential and
+LoginSession to the nineteen evaluator relations; immutable operation binding
+lookup adds the twenty-second relation. Provider, ExternalIdentity and User are
+already in the evaluator set. Therefore the reviewed complete Identity fence
+union is **22**, eleven more than051D's temporal/expression set. It is not eleven
+additional timed relations and does not change051D's current temporal projections.
+
+#### Mutation, privilege and lock-order disposition
+
+| Writer class | Source-confirmed effect | Required treatment |
+|---|---|---|
+| Normal JPA save/flush, inherited batch/delete, native INSERT/UPDATE/DELETE/MERGE/COPY FROM | May create/remove/change/rekey any eligible dependency; no current adapter is required for the capability to exist | Whole-relation SHARE ROW EXCLUSIVE fences block ordinary RowExclusive acquisition, including phantoms; prove real PostgreSQL modes and actual representative DML |
+| Native binding trigger | V20261013_001 takes Provider -> LOCAL Credential or ExternalIdentity -> User -> LoginSession row locks after binding INSERT acquisition | Preserve trigger order; acquire all relation fences before Identity owner reads; no new Identity row mutation/row-lock upgrade in the protected reader |
+| Session lifecycle | Writable session port takes row locks; saveAndFlush takes normal DML locks; bound-session guard reads immutable binding | Test pre-existing row-lock and later DML interactions; bounded abort/rollback, no unsafe continuation |
+| Generation triggers | V20261012_001/002 own credential/provider/link generation and prohibit normal identity deletion/truncation | Keep triggers/generations unchanged; no disable/re-enable/backfill bypass |
+| Permission-admission trigger | V20261004_011 checks ACTIVE Permission on role/direct/delegation/external Permission grant writes | Include Permission fence; this trigger is not reciprocal revocation or future PERMIT protection |
+| Normal TRUNCATE/DDL lock requests | Conflict with the held relation fences; existing security guards may reject independently | Never use guarded TRUNCATE as cleanup or weaken guards; no new DDL privilege is granted |
+| Superuser, table/function owner, role membership, trigger disable, session_replication_role, DDL/schema replacement, SECURITY DEFINER/dynamic SQL | Production datasource username is external; source does not establish deployed catalog grants or role ownership | Do not claim a complete deployed privilege audit. Prove a synthetic non-owner DML role in the new test; privilege/DDL bypass remains excluded from runtime authorization acceptance |
+
+All148 migration files remain unchanged. Reviewed generation, binding/session,
+Permission admission and FK constraints supplement the read graph; they do not
+make an arbitrary future trigger/function or privileged writer safe by assertion.
+No production role provisioning SQL is authorized here and no deployment data
+or calibration is needed for the synthetic proof.
+
+**Identity lock order selected for051E:** one fixed, schema-qualified ascending
+relation list, not caller-selected names or a prefiltered grant path:
+
+1. `public.hidra_identity_attribute_definition`
+2. `public.hidra_identity_authorization_policy`
+3. `public.hidra_identity_authorization_policy_rule`
+4. `public.hidra_identity_authorization_policy_version`
+5. `public.hidra_identity_external_group_mapping`
+6. `public.hidra_identity_external_identity`
+7. `public.hidra_identity_external_permission_mapping`
+8. `public.hidra_identity_external_role_mapping`
+9. `public.hidra_identity_group`
+10. `public.hidra_identity_group_role_grant`
+11. `public.hidra_identity_local_credential`
+12. `public.hidra_identity_login_session`
+13. `public.hidra_identity_operation_binding`
+14. `public.hidra_identity_permission`
+15. `public.hidra_identity_provider`
+16. `public.hidra_identity_role`
+17. `public.hidra_identity_role_permission_grant`
+18. `public.hidra_identity_subject_security_attribute`
+19. `public.hidra_identity_user`
+20. `public.hidra_identity_user_group_membership`
+21. `public.hidra_identity_user_permission_grant`
+22. `public.hidra_identity_user_role_grant`
+
+Acquire that entire set before delegating to051D, before any owner-state read or
+its database clock/PID/XID sample. Reacquiring051D's eleven already-held locks on
+the same physical transaction cannot introduce a new relation acquisition.
+Verify granted ShareRowExclusiveLock for all22 on that backend; never infer it
+from a caller flag, constructed Candidate, successful partial prefix or pool
+connection identity. Do not call051D first and then append static fences: that
+would preserve a sample taken before protection of the complete read graph.
+Retain250ms lock/750ms statement/1000ms idle/500ms work limits. No retries,
+suspension, independent connection, timeout widening or arbitrary SQL callback.
+
+This is the complete ORDER FOR THIS IDENTITY-ONLY technical slice, NOT a proven
+global Party/Facility/Topology/native-trigger deadlock-free DAG. Future integration
+must recover all other owner relation families, acquire its complete globally
+ordered set before the common sample, and prove interacting writers in PostgreSQL.
+No protected engineering write or grant decision may rely on an Identity-only
+order or a prior standalone point-in-time result.
+
+#### Protected owner/export contract boundary
+
+Existing `TopologyScopedAccessContract.Request` fixes operation/company/facility
+references without accepting an actor. Its service obtains a current actor but
+performs sequential company and facility evaluations. Existing evaluation chooses
+Instant.now and may persist a decision; it is not a common-sample protected owner
+contribution. B1's query service uses REQUIRES_NEW/read-only and the security
+adapter uses wall-clock postchecks; calling it inside051A is forbidden and is not
+same-transaction B1. Existing AuthorizationEvidence contains nested unmodifiable
+and possibly mutable collection shapes: it is not assumed compatible with051A's
+strict materialization or a trusted completeness witness.
+
+The future protected Identity export MUST resolve the ambient verified native
+bearer or committed trusted receipt itself, validate private persistent origin,
+load current bound owner generations/eligibility after all fences, derive the
+fixed operation permission code owner-side, evaluate BOTH company and facility
+scopes at the SAME database sample s, account for the conservative u, and return
+only deep immutable bounded owner-owned evidence tied to binding/PID/XID/s/u and
+the exact request. Neither a caller userId/permission/deadline, imported boolean,
+constructed record, token snapshot, '*' authority nor prior PERMIT is authority.
+No delegation authority or administrator wildcard is inferred by this graph:
+current JpaAuthorizationEvidenceAdapter does not traverse delegation and the
+separate administrator/technical permission source uses another wall-clock path.
+A protected export cannot silently widen to either path. Claims captured at an
+earlier mapping state need owner verification/recovery, never database snapshots.
+
+That business export and its exact runtime path list are STILL GATED;051E supplies
+the missing complete Identity fence before their implementation can be selected.
+It must not implement a partial permission API. Party eligibility, Facility owner
+epoch, paired owner exports, common final s/u/t guard and038 head/CAS/read/history
+remain separately scoped parent051 obligations, with no new child codes invented
+for them in this registration.
+
+#### Exact future HPR-P25-051E implementation
+
+**PLANNED / REGISTERED / NOT IMPLEMENTED.** Separate owner Next after this
+registration's exact-SHA Docs SUCCESS selects ONE five-path implementation.
+Exact message: `feat(identity): fence complete authority dependency relations`.
+
+| Operation | Exclusive exact path |
+|---|---|
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcIdentityAuthorityFence.java` |
+| CREATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/IdentityAuthorityFencePostgresIntegrationTest.java` |
+| UPDATE | `.github/ci-test-inventory.json` |
+| UPDATE | `doc/roadmap/ULTIMATE_ROADMAP.md` |
+| UPDATE | `doc/model-remediation/RECONCILIATION.md` — append-only |
+| DELETE | None |
+
+Both CREATE paths are absent from the reviewed Git tree. Canonical headers,
+Identity Infrastructure/Test layers and exact packages required. No changes to
+existing Java/tests,051D collector, ports/evaluators/compilers, Platform transaction
+components, Flyway, dependencies/configuration, workflows, dictionaries, versions,
+release or history. No cross-module internals or raw Platform attempt state.
+
+One Identity-private Spring repository component exposes `collect(String bindingId)`
+returning the existing `JdbcIdentityTemporalEventCollector.Candidate`, with no
+new owner/export/permission result type. Validate canonical binding id, require
+MANDATORY participating writable READ COMMITTED Spring/physical transaction,
+acquire all22 fixed fences, verify their actual backend ownership/mode, and then
+invoke the existing injected051D collector in that transaction. Return its exact
+materialized temporal candidate without recalculating/overriding clock or bound.
+No binding tag/password/secret/claims export, no authorization decision/evaluator,
+no row writes, no row-lock upgrade, no arbitrary caller-supplied relation list.
+Ordinary writable transaction participation is diagnostic only; it cannot certify
+051A admission or producer-origin completeness. A constructed Candidate is still
+untrusted diagnostic data. A later protected owner must establish its own trusted
+call path; this public Java method is not an authenticated authority boundary.
+
+**Ten required genuine JUnit identities (planned, not reported executed):**
+
+1. `freshFlywayJpaAndCompleteDependencyInventoryMatch`: real PostgreSQL16,
+   Flyway validate/migrate, actual current migration inventory, JPA validate and
+   exact entity/table/collector union=22; additions/omissions fail the source check.
+2. `allIdentityFencesPrecedeTemporalSampleOnOneBackend`: independently hold a
+   formerly unfenced static relation, observe acquisition wait, release/commit a
+   valid change, then prove returned sample follows release and PID/XID matches
+   Spring JDBC/Hibernate; no fabricated before-lock sample or split transaction.
+3. `allTwentyTwoRelationsHoldReviewedModes`: actual pg_locks granted set/mode
+   contains every fixed relation on that backend, and locks release at completion.
+4. `addedStaticRelationsBlockNativeDmlUntilRelease`: each of the eleven additions
+   gets a separate bounded protected attempt and independent normal DML conflict;
+   assert SQLSTATE55P03/rollback and positive control after release. Use genuine
+   valid fixtures/actual row changes for representative role, Permission, Provider,
+   external mapping and attribute-definition paths. Lock-mode-only probes must be
+   labeled as such, never accepted instead of these actual DML controls.
+5. `nativeBindingAndSessionWritersAbortSafely`: valid unbound tuple native INSERT
+   and real writable JPA session-port/flush writer encounter the full fence; use
+   deterministic independent barriers, actual observed waits, bounded completion,
+   rollback/no duplicate, and positive writes after release. Retain generation and
+   bound-session constraints; hand-built tags prove SQL-trigger fixtures only.
+6. `nonOwnerDmlPrivilegesCannotBypassFences`: synthetic non-superuser/non-owner
+   DML role with explicit minimum table privileges; inspect effective role flags/
+   owner membership/grants, prove normal DML conflict, reject trigger-disable and
+   session_replication_role bypass. This is not a deployed privilege audit.
+7. `lateFenceFailureRollsBackPrefixAndProvisionalJpaWrite`: hold a late fixed
+   relation independently; a genuine provisional JPA write/test receipt made for
+   the rollback probe cannot persist after lock abort; no result, final guard or
+   retry; no prefix locks survive, and a later clean attempt succeeds.
+8. `missingReadOnlyAndWrongIsolationReject`: MANDATORY/no transaction, read-only,
+   incompatible physical isolation and malformed/missing binding fail closed;
+   no fallback transaction, datasource connection or successful partial result.
+9. `temporalSyntaxAndOverflowFailuresRemainFailClosed`: prove delegation to the
+   actual051D collector with real unsupported syntax/overflow roots, valid fixtures
+   and full rollback; unrelated SQL/setup errors must not satisfy expected failure.
+10. `materializedCandidateContainsNoAuthorityOrSecrets`: actual051A commit before
+    candidate delivery, supported immutable result shapes, no live resource/entity/
+    secret or PERMIT/B1/export claim, and no retained fence after completion.
+
+Use CountDownLatch/barriers, observed pg_blocking_pids/locks, strictly bounded
+joins and real SQLSTATE/cause assertions, never sleeps or mocked lock behavior.
+Preopen/warm independent connections outside protected admission. Do not stack
+multiple250ms waits inside one500ms work budget. No guarded security-row DELETE/
+TRUNCATE or trigger bypass for cleanup; retain identities in the disposable DB.
+If the real writer graph rejects this order, repair/reject the proof within051E
+without weakening constraints/timeouts or claiming general deadlock freedom.
+
+Inventory adds only the new class, its actual source hash and genuine case
+identities to the PostgreSQL lane and unrestricted oracle, fast=false. Preserve
+all prior entries/cases/hashes/baseline/timings/policies/archive. An unmeasured zero
+scheduling hint must be explicitly labeled, never a fabricated duration. Run
+Java21 focused test/compile with ArchitectureGuardrailTest if available; disclose
+missing toolchain/Docker without claiming execution. Existing Python policy,
+inventory/docs/offline OpenAPI/P1/scope/whitespace checks remain required. Hosted
+actual-SHA Full/Fast/Docs and zero-skip new PG cases in both owning partition and
+oracle must pass before051E acceptance. Publish guarded main, observe automatic
+CI START, then STOP without completion polling or advancement.
+
+#### This registration: validation and STOP
+
+Validation for this registration completed: canonical documentation98 documents/
+5355 relative links/24 modules PASS; offline OpenAPI263 operations/244 paths/231
+schemas PASS (no generated runtime schema claim); retained P1 evidence PASS;
+all six Python policy suites102 cases PASS; exact-source inventory digest
+2ca62c283288fb23ffe3326742473c4b1f9a8c0ae93679cbe1ff8df90306e2b0 unchanged
+(Fast299/unit300/PG37+43/oracle380/historical4). Source-derived nineteen-entity/
+22-relation union and absent future CREATE paths checked. Two-document scope,
+append-only reconciliation and git diff --check PASS. No Java/JUnit/PostgreSQL
+execution was needed or claimed for this documentation-only registration.
+
+CURRENT message remains `docs(security): select operation time fencing proof`.
+UPDATE ONLY roadmap and append-only reconciliation; no CREATE/DELETE or runtime
+changes now. Record source-recovery, canonical docs/offline OpenAPI/P1, policy/
+inventory and exact two-file append-only/whitespace checks truthfully. Guard main
+at785b0eb, verify parent/tree/blobs, observe exact-SHA automatic Docs START then
+STOP. No Full/Fast manual dispatch for this docs-only scope. Parent051/D2/B2/B3
+remain IN PROGRESS/OPEN;051E awaits separate Next after Docs success. 052 remains
+unselected. CI-003 oracle/fallback required, optimized=false. Gas-first/GZ2, own
+engine, steady/transient, versioned inputs/operator control, synthetic development
+and later owner calibration persist; Simulation/P3 deferred; no release/deployment.
+
 ### Current execution checkpoint — HPR-P25-051D CI acceptance, 2026-10-15
 
 Owner Next recovered live main `d14c44fc527ea1115ad87baafa21a3264bf6950c`,

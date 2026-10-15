@@ -23924,3 +23924,50 @@ Current previous-roadmap bytes preserved and this reconciliation appended
 without modifying prior entries. Same exact HPR-CI-003 message:
 `ci: automate fast feedback and preserve full verification gates`.
 Only two documentation UPDATE files; automatic Docs startup then STOP.
+
+## 2026-10-15 — HPR-CI-003 / CI-003B bounded no-change decision
+
+After the CI-003A source-linked measurement acceptance, owner `Next`
+selects one registered HPR-CI-003 B decision stage. Current
+`main` was `b6a180c23a6a523c25009792f5c63f719d6d4ca4`, tree `72a2feec057c52db3ef2e13f63861a8352fb35aa`, parent
+`3f5d7f333e034685bf439e1c733140d471fbfa29`;
+exact-HEAD Docs #329 SUCCESS. Latest accepted unchanged
+implementation source `6ca63efdff3eebf277523222d07587d9101e401e`
+has Full #700, Fast #32 and Docs #325 SUCCESS.
+No newer runtime change or unresolved exact-head CI failure
+was observed.
+
+**Decision: CI-003B COMPLETED through the expressly registered
+"otherwise record no code needed" alternative.** Source review
+confirmed existing Full CI's unrestricted oracle is mandatory,
+its four reused forks are already bounded by the observed
+four CPUs / 15989MiB, and its 8m55s clean verify step alone
+exceeds the seven-minute performance target. PostgreSQL
+shards run in parallel and cannot remove that critical path
+through rebalancing. A fork/runner change has no supported
+safe speedup/cost evidence; test drops, missing-case masking,
+unrestricted-oracle bypass, target/DB cache tricks and
+permission/schema shortcuts are disallowed. Therefore there
+is **no justified code correction in B's frozen scope**.
+No specific speedup is claimed; Full #700 remains 11m50s
+overall. The previous A's class/case/raw equality and
+zero-skip source evidence are unchanged, not rerun here.
+
+This is a no-change *decision* rather than Full target
+acceptance or general CI-003 closure. CI-003C remains
+planned/unselected with representative code/security,
+migration and API proof, cold/warm and hosted negative gates.
+CI-003D remains dependency pending with five-comparable-run
+and cost/median gates. Full unrestricted oracle, shadow
+fallback and `optimized_adoption_eligible=false` persist.
+051G remains Completed, parent051 In Progress, 051H
+Planned/Unselected, simulation/P3 deferred.
+
+Exact message is existing HPR-CI-003
+`ci: automate fast feedback and preserve full verification gates`.
+This same-ID decision commit changes only the roadmap
+by insertion and this reconciliation by append. Two UPDATE,
+zero CREATE/DELETE, no CI source/test/production changes.
+Documentation validation startup must be observed on the
+exact new SHA, then STOP. No local Java, Docker, PostgreSQL,
+full GitHub Actions or new perf benchmark is claimed.

@@ -32,6 +32,108 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-CI-003 / CI-003B no-code-needed disposition, 2026-10-15
+
+**One-stage disposition: CI-003B COMPLETED — NO CODE NEEDED under its registered
+alternative, not an optimized CI acceptance.** The canonical four-package
+HPR-CI-003 contract says B may apply only an evidence-justified bounded
+scheduling/resource/evidence correction, **otherwise record no code needed**.
+The accepted CI-003A evidence does not justify a safe implementation within
+the frozen CI scope. This entry closes B's *decision-only, no-change path*;
+it does not claim the seven-minute Full target, close HPR-CI-003, amend
+the package's performance targets or select CI-003C/D.
+
+**Preflight and admissible scope.** Refreshed HidraAPI `main`
+`b6a180c23a6a523c25009792f5c63f719d6d4ca4` (tree `72a2feec057c52db3ef2e13f63861a8352fb35aa`, parent
+`3f5d7f333e034685bf439e1c733140d471fbfa29`);
+[Documentation #329](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38755849509)
+completed SUCCESS. HidraWEB remains
+`46676deb70fd38b906bdb370f020f609d0a16c98`.
+The implementation/test/OpenAPI baseline remains
+`6ca63efdff3eebf277523222d07587d9101e401e`, with
+[Full #700](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38739988227),
+[Fast #32](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38739988169)
+and Docs #325 SUCCESS at that exact SHA. No new application,
+database, security, migration or test revisions have advanced.
+Read current `AGENTS.md`, canonical roadmap, reconciliation,
+`.github/workflows/ci.yml`, `ci-fast-feedback.yml`,
+`docs.yml`, `.github/ci-test-inventory.json`,
+`.github/scripts/verify_ci_test_inventory.py`,
+`.github/scripts/verify_full_ci_evidence.py` and `pom.xml`
+at the preflight SHA.
+
+**Measured causal boundary, not a speculative optimization:**
+Full #700 completed in 11m50s; the mandatory unrestricted
+Java/Maven oracle job was 11m25s, with its own `clean verify`
+step taking 8m55s. Unit/architecture and PostgreSQL0/1 shards
+ran in parallel with the oracle; PostgreSQL1's job was 8m51s,
+PostgreSQL0's 5m53s and the final dependent gate 17s.
+The verified oracle had 385 classes/2073 tests; its suite-time
+sum 1846.527s is a *parallel-fork cumulative measure*, not
+serial wall duration. Source-linked partition/oracle case
+equality, zero failure/error/skip and PostgreSQL evidence were
+already verified under A and Full #700.
+
+**Source-checked alternatives and selection:**
+
+1. **Rebalance or add PostgreSQL shards — REJECT for B.** The
+   oracle remains slower than every existing parallel partition.
+   Moving tests between shards cannot reduce its measured
+   clean-verify duration and the added runner cost/isolation and
+   scheduling effects are unqualified. No test, shard, or
+   inventory reassignment is registered.
+2. **Increase oracle test forks/runner resources — NOT JUSTIFIED.**
+   Current `oracle_forks(cpu_count, memory_mib)` deliberately uses
+   `min(4, cpu_count, (memory_mib - 3072) // 2048)` with a
+   memory minimum; accepted #700 logged 4 CPUs, 15989MiB,
+   4 reused forks, 2048MiB heap per fork and 1024MiB Maven heap.
+   An increased fork cap on the same four-CPU runner has no
+   measured benefit, and a different runner requires separately
+   validated resource/cost/isolation evidence. Neither is selected.
+3. **Remove or abbreviate unrestricted oracle, use target/SQL
+   caches, skip migrations, relax case equality or negative checks
+   — PROHIBITED.** Doing so would break current fail-closed
+   acceptance or greenfield PostgreSQL proof, not optimize it.
+4. **Change Maven build, tests, JVM/ORM fixtures or application
+   source — OUTSIDE B's closed scope.** Expensive synthetic
+   integration classes are evidence for a separately registered
+   owning-module analysis, not license for unrelated refactoring.
+5. **Keep current Fast + partitioned shadow + mandatory oracle
+   and provenance gate — SELECTED NO-CODE OPTION.** Existing Fast
+   #32 was 1m34s; it remains fast feedback rather than release
+   qualification. No additional hosted workflow is needed for
+   a documentation-only negative scheduling decision.
+
+**Acceptance and limitations:** B records the conservative
+no-change decision with exact source constraints and intact
+required case identities. It does **not** pass the originally
+targeted Full median <=7m (even the single #700 oracle
+`clean verify` step exceeds it), validate a new scheduling
+configuration, establish cold-cache performance, or exercise
+failure/negative gates. CI-003C remains PLANNED / NOT SELECTED:
+representative naturally authorized code/security, migration and
+API revisions; cold/warm evidence and fail-closed negative-case
+qualification still need separate scope/selection.
+CI-003D remains DEPENDENCY_PENDING: five comparable samples per
+configuration, runner-minute accounting and adoption decision
+are open. HPR-CI-003 remains IN PROGRESS; mandatory
+`shadow-fallback-required`/unrestricted oracle,
+`fallback_required=true` and
+`optimized_adoption_eligible=false` are preserved.
+
+**Publication contract for this B no-code disposition:** existing
+exact task message `ci: automate fast feedback and preserve full verification gates`.
+Only UPDATE `doc/roadmap/ULTIMATE_ROADMAP.md` (prepend this
+checkpoint without removing previous content) and append to
+`doc/model-remediation/RECONCILIATION.md`; CREATE/DELETE none.
+No CI workflow, inventory, script, Java, POM, test, SQL,
+OpenAPI, frontend, security or runtime behavior modification.
+Apply expected-head guard and verify parent/tree/two-file diff;
+observe automatic exact-SHA `HidraAPI Documentation Validation`
+startup, then STOP without completion wait or other stage.
+HPR-P25-051G stays accepted, parent051 remains In Progress,
+051H remains Planned/Unselected and numerical simulation/P3 deferred.
+
 ### Current execution checkpoint — HPR-CI-003 / CI-003A bounded measurement accepted, 2026-10-15
 
 **Stage disposition: CI-003A COMPLETED (evidence analysis only).** This continuation is

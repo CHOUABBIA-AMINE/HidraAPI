@@ -2045,6 +2045,31 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "allFourRealProducerBearersParticipateAtDatabaseSample",
+        "bindingOwnerGenerationsAndAbaAreReadAfterFences",
+        "caughtFailureRollsBackProvisionalJpaAndReceipt",
+        "committedDirectAndOidcReceiptsParticipateWithoutCallerClaims",
+        "expiryBetweenPrepareAndContributionAborts",
+        "immutableContributionCommitsBeforeDeliveryAndDoesNotGrantPermission",
+        "incompatibleTransactionsAndAmbientPreparationReject",
+        "opaqueHandleReplayContextSwapAndCrossThreadReject",
+        "rawWireForgeryAndZeroOrCopiedTagsReject",
+        "revocationBeforeFenceAdmissionDeniesWithoutResult",
+        "staleJpaImagesCannotRelabelFreshOwnerState",
+        "writerAfterAdmissionCannotPassTheContributionFence"
+      ],
+      "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.ProtectedOperationIdentityParticipantPostgresIntegrationTest",
+      "dependency_reason": "HPR-P25-051F new class; unmeasured timing hint (0), not a baseline observation; genuine PostgreSQL16/Flyway/JPA and real native producer proof; synthetic transport only",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedOperationIdentityParticipantPostgresIntegrationTest.java",
+      "source_sha256": "9fafa9137ac953c5484ae2767612a9600c27c9b079b9070b435de3b2f90a41fe",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
         "aggregateElapsedBudgetAbortsWholeWorkWithoutRetry",
         "ambientReadOnlyAndSerializableTransactionsRejectBeforeWork",
         "batchAndStreamingAttemptsPoisonCaughtErrors",
@@ -2270,6 +2295,27 @@
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/LocalAuthenticationProviderTest.java",
       "source_sha256": "7fb7726644229bc79c5364cf29f2237fda99aafb01f3588ec5ff9cb30cad1d7a",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "contributionHasOnlyImmutableScalarEvidenceAndNoPermission",
+        "handlesAreSingleUseAndBoundToThreadAndAmbientIdentity",
+        "nativeParserReuseAndReceiptProducerAllowlistRemainClosed",
+        "preparationRefusesAmbientTransaction",
+        "preparedHandleHasNoPublicConstructorOrSensitiveText",
+        "publicAndLegacyContextsCannotCreatePreparedHandle",
+        "unavailableStorageDecoderAndCorruptOriginRemainErrors",
+        "wireAndDecodedOwnerClaimsMustAgree"
+      ],
+      "class": "dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipantTest",
+      "dependency_reason": "HPR-P25-051F new class; unmeasured timing hint (0), not a baseline observation; mocked JVM mechanics only",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipantTest.java",
+      "source_sha256": "a72ce219251298d95877655bb3a1bd30f0161396f98a221ebc79b71c2f5309ef",
       "supports": []
     },
     {

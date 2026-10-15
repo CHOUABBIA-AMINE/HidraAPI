@@ -7,7 +7,7 @@
  *
  * @Name        : TopologyOperationAuthenticationQueryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-14
+ * @UpdatedOn   : 2026-10-15
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -154,7 +154,7 @@ public final class TopologyOperationAuthenticationQueryAdapter
         return result;
     }
 
-    private record RawClaims(
+    record RawClaims(
             String issuer,
             String audience,
             String subject,
@@ -176,7 +176,7 @@ public final class TopologyOperationAuthenticationQueryAdapter
     }
 
     /** Parse only the signature-validated original wire, retaining raw JSON types/duplicates. */
-    private static RawClaims rawClaims(String raw) {
+    static RawClaims rawClaims(String raw) {
         try {
             String[] parts = raw.split("\\.", -1);
             if (parts.length != 3) return null;

@@ -22690,3 +22690,93 @@ and all six Python policy suites102 cases PASS. Inventory stays Fast299/unit300/
 PG37+44/oracle381/historical4. Two-document scope, append-only reconciliation and
 whitespace PASS. No new Java/JUnit/PostgreSQL execution, implementation or deployment
 is claimed for this documentation-only task.
+
+
+## 2026-10-15 — HPR-P25-051F protected bound authentication implementation candidate
+
+**IN PROGRESS / IMPLEMENTED CANDIDATE / HOSTED CI PENDING.** Owner Next selected
+051F after registration main `cda31df33f880d984f529561b49eb202e1b323c7`, tree
+`54cbcda37aec10a8f8026ca03db5c1a7baf94cb1`, exact-SHA Docs #317 SUCCESS.
+Runtime baseline `c72eae39cab0b1ec1e20654386fe95ed43b134ab` retains accepted
+Full #695 / Fast #28 / Docs #315. No later child, paired permission or052 selected.
+Exact implementation commit: `feat(identity): contribute protected bound authentication`.
+
+The seven registered paths below are the complete mutation envelope: three new
+participant/unit/PG sources, parser visibility/header-only reader change, inventory,
+this roadmap and append-only reconciliation. Existing test bodies and reader flow
+are unchanged; no schema, workflow, configuration, registry/producer, public
+contract, owner-state/fence, evaluator, Topology/Party or release changes.
+
+The actual component prepares only a nonauthoritative private-constructor locator,
+using the qualified native decoder, shared strict original-wire parser, stored
+private HMAC origin and exact wire/owner tuple, or a genuine completed private
+receipt. NEVER propagation and direct transaction checks keep this preparation
+outside the protected budget. The thread/context-bound atomic handle permits one
+attempt. MANDATORY writable physical READ COMMITTED participation acquires the
+actual complete051E fences before re-reading origin/tuple/receipt/settings and
+calling fresh joined owner state at the collector's database sample. It verifies
+the finite B1-capped deadline and actual JDBC PID/XID, then rechecks the actual
+context. Missing/ineligible state denies; unavailable/corrupt infrastructure stays
+a sanitized operational error. Existing syntax/census/deadline failures remain
+fail-closed. No wall-clock eligibility, REQUIRES_NEW, retry, private Platform state,
+permission decision or detached authority is introduced.
+
+The only result is immutable existing sampled Evidence, validUntil, backendPid and
+transactionId. Canonical validation checks scalar/coordinate/deadline/branch
+invariants. Public construction is not attestation; the future coordinator must
+invoke the actual owner, establish all other owner fences/common sample and final
+s/u/t guard, and observe physical commit before delivery. F alone cannot certify
+051A admission, Party/Facility eligibility, paired company/FACILITY permission or
+the global writer DAG/038 head/epoch/CAS/read/history gates.
+
+Eight new JVM identities and twelve new PostgreSQL identities match the registered
+list below. PG tests use actual four producer paths, completion/private origin,
+native signing/qualified decoder, fresh owner state,22 fences and transactions.
+Directory transport is synthetic; the source OIDC transport delegates real synthetic
+signing/verification. A LOCAL producer spy captures the actual returned object while
+calling its real method; no origin/state/fence/native decoder/transaction is mocked.
+Tests cover committed receipts/rollback, malformed wire/wrong signatures/zero and
+copied tags, generation ABA, observed independent writer exclusion and recovery,
+real database expiry outside the500ms budget, replay/context/thread/transaction
+misuse, stale JPA images, provisional JPA/receipt rollback, and physical commit
+before immutable result delivery. Structural forgery rows use distinct real sessions
+and never mint a private tag; guarded security rows remain in the disposable DB.
+
+Validation: Java21 Maven test compilation and focused regressions PASS:74 executable
+cases, zero failures/errors;60 PostgreSQL cases SKIPPED locally (new12 + existing
+B1 26 + bound completion/issuance22) because Docker/socket is unavailable. Initial
+local Mockito self-attachment was unavailable; the successful rerun supplies the
+existing Mockito5.23.0 jar via command-line -javaagent, with no POM/config change.
+The later Fast selection includes the final unit source:300 classes/1382 tests,
+zero failures/errors/skips, strict raw-report identity validation PASS. Six existing
+Python policy suites102 cases PASS. Source inventory, canonical docs, offline API,
+P1 and scope/append-only/header/whitespace checks are required before publication.
+No local PG success, observed baseline timing, hosted acceptance or deployment is
+claimed. The new PG class is recompiled/invoked after its expiry-wait adjustment;
+all12 remain explicitly skipped locally.
+
+Inventory adds only the two actual classes/case lists/source SHA256 values, unit
+fast=true/PG false,0 explicitly unmeasured timing hints; every existing entry,
+baseline/archive/policy remains unchanged. Totals Fast300/unit301/PG37+45/oracle383/
+historical4. Exact current inventory digest and validation totals are recorded in
+reconciliation. Prior registration below is retained as historical selection evidence.
+
+Publish directly to existing main using expected-head guard; verify exact parent,
+tree and all seven blobs; observe automatic Full/Fast/Docs START on the published
+SHA and STOP. Hosted acceptance requires a separate Next/Fail, green exact-SHA
+Full/Fast/Docs and all12 new PG identities with zero skips/failures/errors in BOTH
+partition and unrestricted oracle. Parent051/D2/B2/B3 remains OPEN; paired Identity
+permission recovery is subsequent, not automatic. Mandatory oracle/fallback and
+optimized=false persist. Gas-first/GZ2, Hidra's engine, steady/transient direction,
+versioned inputs/operator control, synthetic development and later owner calibration
+persist; Simulation/P3 deferred; no release/deployment.
+
+Final validation: exact seven-path CREATE/UPDATE envelope, unchanged parser bodies/
+old reader flow and every old inventory entry/key, canonical Java headers and
+append-only reconciliation PASS. Canonical docs98/5355 relative links/24 modules,
+offline OpenAPI263 operations/244 paths/231 schemas and retained P1 PASS. Inventory
+SHA2563031b71c4842f01f5167a2546bdb386fdc0829423ee68cf205b62f1bd03ce4d5.
+Fast strict raw reports300 classes/1382 cases/zero failures/errors/skips PASS; final
+PG-only recompile/invocation completed with12 skips, zero failures/errors, Docker
+unavailable. All six Python policy suites102 PASS. Whitespace is checked again
+after this append. Hosted CI remains pending; no PostgreSQL acceptance is claimed.

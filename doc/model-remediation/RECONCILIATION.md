@@ -22510,3 +22510,54 @@ all six Python policy suites102 cases PASS; exact-source inventory digest
 22-relation union and absent future CREATE paths checked. Two-document scope,
 append-only reconciliation and git diff --check PASS. No Java/JUnit/PostgreSQL
 execution was needed or claimed for this documentation-only registration.
+
+
+## 2026-10-15 — HPR-P25-051E complete Identity fence implementation candidate
+
+Owner Next after19679e90d7e23b7e3cd0fe5829f9e2d929f9b578 and Docs314 SUCCESS
+selects exact `feat(identity): fence complete authority dependency relations`.
+Created JdbcIdentityAuthorityFence and IdentityAuthorityFencePostgresIntegrationTest
+at the two registered paths; updated only inventory, roadmap and append-only this
+record. Every existing Java/test, migration, workflow, dependency/configuration,
+dictionary, version/history and previous inventory case/timing/policy is unchanged.
+
+Production component validates canonical binding/MANDATORY writable READ COMMITTED
+participation, acquires/verifies all22 fixed granted relation fences before actual
+051D collection, and checks returned PID/XID against the same physical transaction.
+No new clock/bound, row mutation, row-lock upgrade, secret export, owner/permission
+API, retries, nested/independent transaction or caller-selected relations. Candidate
+is the exact immutable diagnostic051D result, not an authentication or PERMIT witness.
+
+Ten genuine source identities cover current Flyway/JPA/entity-to-catalog union,
+all22 actual lock modes/release, independent pre-sample static writer with actual
+PG commit timestamp (test-container track_commit_timestamp only), eleven real
+static row UPDATE conflicts in separate protected budgets, native binding plus
+JPA session saveAndFlush races, synthetic non-owner DML grants and bypass denial,
+late-prefix provisional JPA/receipt rollback and failed recovery, invalid transaction/
+binding contexts, exact syntax and1025-row overflow roots, materialized result and
+commit before delivery. Independent latch barriers, observed pg_blocking_pids,
+real SQLSTATE55P03/42501 and positive post-release controls are asserted, with no
+sleep/guard bypass/security-row DELETE/TRUNCATE or timeout widening. Zero tag tuples
+are SQL fixtures only; privilege assertions are not a deployed role audit.
+
+Java21 compile/focused Maven PASS:16 architecture cases actually executed; all ten
+new PG cases SKIPPED because Docker executable/socket absent. No PostgreSQL proof
+or executed runtime assertion is claimed locally. Workspace-only Java21/proxy/trust
+setup changed no repository config. Python policy suites102 PASS; inventory/docs/
+offline OpenAPI/P1, exact five paths, append-only, unchanged old inventory/header/
+whitespace checks PASS. Inventory SHA256
+cbd9f8f0d952ceef915fa275250871e79fedcc7399832b5d13e341dd86c060db,
+Fast299/unit300/PG37+44/oracle381/historical4; new class fast=false and zero timing
+explicitly unmeasured. Production source SHA256
+2cb15b8001970d8778b4bfd47427de310eb3de667f68e2efacdc909e4fd7e6d7;
+test source SHA256
+d2ed257ea0e411869a52eef70be3c26f5036fe9687de0a00b9fbb30dfe0e06e4.
+
+051E IN PROGRESS/IMPLEMENTED CANDIDATE/HOSTED CI PENDING. Guard existing main,
+verify actual parent/tree/five blobs, observe automatic Full/Fast/Docs START on
+published SHA then STOP. Require actual-SHA green Full and all ten zero-skip PG
+cases in partition AND oracle on a separate Next/Fail before acceptance/repair.
+Parent051/D2/B2/B3/global owner order/B1 and paired permission/Party/Topology038
+integration remain OPEN;052 unselected. Oracle/fallback mandatory,optimized=false,
+gas-first/GZ2/own engine/steady-transient/versioned inputs/operator control persist;
+synthetic development, later owner calibration; Simulation/P3 deferred, no release.

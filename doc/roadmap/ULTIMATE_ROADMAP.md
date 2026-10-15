@@ -32,6 +32,89 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-P25-051E complete Identity fence candidate, 2026-10-15
+
+Owner Next selects registered051E after exact main
+`19679e90d7e23b7e3cd0fe5829f9e2d929f9b578` and Docs #314 SUCCESS.
+Accepted runtime baseline remains d14c44f (Full694/Fast27/Docs312 SUCCESS).
+Exact message: `feat(identity): fence complete authority dependency relations`.
+
+**051E IN PROGRESS / IMPLEMENTED CANDIDATE / HOSTED CI PENDING.**
+JdbcIdentityAuthorityFence requires a MANDATORY writable READ COMMITTED Spring
+and actual database transaction and a canonical binding id. It acquires the
+registered22 fixed sorted schema-qualified SHARE ROW EXCLUSIVE relation fences,
+verifies their granted pg_locks ownership/mode on the current backend, THEN calls
+the unchanged051D temporal collector. Its exact Candidate is returned only after
+checking the delegate PID/XID still matches the current physical transaction.
+Lock verification sorts names in Java to avoid locale-dependent catalog ordering.
+There is no new sample/bound, row write/row-lock upgrade, secret export, public
+business contract, retry, nested transaction or arbitrary relation/callback input.
+Existing051A limits250/750/1000ms and500ms remain unchanged.
+
+Created exactly IdentityAuthorityFencePostgresIntegrationTest with all ten
+registered identities. Real PostgreSQL16/Testcontainers/Flyway/JPA setup and
+source-to-catalog dependency union are required. The sample-order proof enables
+track_commit_timestamp ONLY in its disposable container, observes an independent
+static-relation writer wait/release, and compares the returned sample with the
+actual PostgreSQL commit timestamp, alongside JDBC/Hibernate PID/XID. Real
+pg_locks verifies all22 modes and their release. Each of the eleven added static
+relations gets its own bounded independent actual row UPDATE, SQLSTATE55P03,
+rollback and positive post-release commit; representative mapping/definition/
+role/Permission/Provider/Credential rows are valid synthetic fixtures.
+
+Separate native binding INSERT and actual JPA session-port/saveAndFlush writers
+must abort behind the fence and commit after release, without duplicate bindings.
+A synthetic NOLOGIN/non-superuser/non-owner DML role verifies effective flags,
+owner membership, SELECT/UPDATE grants and absent TRUNCATE/schema CREATE, actual
+DML blocking and positive commit, plus42501 trigger-disable/replication-role
+bypass denial. This test role is not deployed privilege evidence. Late-prefix
+lock failure must roll back a real provisional User JPA flush and receipt, return
+nothing, skip final guard, reject recovery and release prefix locks. Missing/
+read-only/wrong-isolation/bad binding, exact syntax and1025-row census overflow
+causes, immutable candidate/no-secret shape and commit-before-delivery are also
+asserted. No sleeps, trigger weakening or guarded identity deletion/TRUNCATE.
+Ordinary fixture grant/mapping/policy rows alone are cleaned in FK order.
+
+All these are test SOURCE ASSERTIONS until hosted execution: no local PostgreSQL
+success is inferred. Zero tags and Candidate construction remain SQL-trigger/
+diagnostic data only, not producer-origin B1, permission or complete owner proof.
+Identity-only fences do not close the global Party/Topology writer DAG.
+
+**Exact scope:** two CREATEs (registered production component and PG test), three
+UPDATEs (inventory, roadmap and append-only reconciliation); DELETE none. No
+existing Java/test,051D implementation, migration, workflow, dependency/config,
+dictionary, version/release/history changed. Every old inventory entry, timing,
+case/hash, baseline, policy/archive and Fast set is preserved. New class only:
+fast=false, PostgreSQL lane and unrestricted oracle, ten report/source identities;
+zero scheduling hint explicitly unmeasured. Inventory SHA256
+`cbd9f8f0d952ceef915fa275250871e79fedcc7399832b5d13e341dd86c060db`:
+Fast299/unit300/PG37+44/oracle381/historical4. Production source SHA256
+`2cb15b8001970d8778b4bfd47427de310eb3de667f68e2efacdc909e4fd7e6d7`;
+test source SHA256
+`d2ed257ea0e411869a52eef70be3c26f5036fe9687de0a00b9fbb30dfe0e06e4`.
+
+**Local validation:** Java21 production compilation PASS, followed by
+`bash ./mvnw -o -B -q -Dtest=IdentityAuthorityFencePostgresIntegrationTest,ArchitectureGuardrailTest test`
+PASS for source/test compilation and16 actual architecture cases, zero failures/
+errors. All TEN new PostgreSQL cases SKIPPED because Docker executable/socket is
+absent; runtime assertions above were NOT executed. Java21 and workspace-only
+Maven proxy/trust settings were prepared without repository build/config changes.
+Six Python policy suites102 PASS; current-source inventory, canonical docs98/5355
+links/24 modules, offline OpenAPI263 operations/244 paths/231 schemas and retained
+P1 evidence PASS. Exact five-path/append-only/old-inventory/canonical-header and
+whitespace checks PASS. No production performance, generated runtime API or
+PostgreSQL acceptance claimed from these local results.
+
+Publish directly to expected-head main, verify parent/tree/five blobs and observe
+automatic Full/Fast/Docs START on the published SHA, then STOP. Separate Next/Fail
+must inspect exact-SHA hosted Full gates and all ten genuine zero-skip reports in
+both owning partition and oracle before acceptance/repair. No automatic parent
+integration or052 selection. Parent051/D2/B2/B3, private B1/paired permission
+owner exports, common s/u/t, Party/Facility ownership epoch and038 head remain
+OPEN. CI-003 oracle/fallback required, optimized=false; gas-first/GZ2/own engine/
+steady-transient/versioned inputs/operator control persist. Synthetic development,
+later owner calibration, Simulation/P3 deferred; no release/deployment.
+
 ### Current execution checkpoint — HPR-P25-051 complete Identity dependency fence registration, 2026-10-15
 
 Owner Next selects the source/contract recovery required by the accepted051D
@@ -2458,7 +2541,7 @@ aggregate may replace it. D1–D5 are internal gates, never new HPR task IDs.
 | 1 | HPR-CI-003 | Automatic fast suite and equivalent parallel full verification | CI / independent verification | IN PROGRESS / ORACLE RESOURCE CANDIDATE; prior 5x same-SHA equivalence retained; multi-revision/performance OPEN | Accepted 049; this Docs PASS; owner selection | CI-003 closed list | Selection/report/release negative tests; shadow full verification | No lost cases; mandatory gate fail-closed; repeatable timing | CI | `ci: automate fast feedback and preserve full verification gates` |
 | 2 | HPR-P25-047 | Provider/link database security generations | Identity | COMPLETED / CI ACCEPTED | Accepted 046/048/049; existing registration Docs; separate Next | Existing seven-file list, unchanged | Real writers, Flyway fresh/upgrade, native/bulk/race/rollback | Exact implementation Production + Docs SUCCESS | F1 | `feat(identity): enforce provider and link security generations` |
 | 3 | HPR-P25-050 | Immutable operation binding and trusted issuance/reader, staged 050A–050D | Identity; Platform technical wiring | COMPLETED / A–D AND B1 CI ACCEPTED AT 81d46bc | 047; accepted 044/045 design | Exact 050A/B/C/D lists executed; Full #683/Fast #16/Docs #287 SUCCESS | Fresh-schema LOCAL/LDAP/AD/OIDC, expiry, generation, rollback; no deployed-data migration | B1 provenance and storage proof across all four children; no inferred B2/B3 | F1 | Child messages registered below; original message retained by 050D |
-| 4 | HPR-P25-051 | Cross-owner revocation/time/transaction linearization | Identity / Party / Topology; Platform mechanics | IN PROGRESS / 051A–051D BOUNDED SLICES CI ACCEPTED; D2 OWNER SCOPE OPEN | 050; accepted 038/043; D2 | D2 then exact owner/export/fence list | Real PostgreSQL owner/race/expiry/connection tests | B2/B3 and writer ordering + bounded latency PASS | F1 | `feat(security): linearize cross owner protected operations` |
+| 4 | HPR-P25-051 | Cross-owner revocation/time/transaction linearization | Identity / Party / Topology; Platform mechanics | IN PROGRESS / 051A–D ACCEPTED; 051E CANDIDATE CI PENDING; D2 OWNER SCOPE OPEN | 050; accepted 038/043; D2 | D2 then exact owner/export/fence list | Real PostgreSQL owner/race/expiry/connection tests | B2/B3 and writer ordering + bounded latency PASS | F1 | `feat(security): linearize cross owner protected operations` |
 | 5 | HPR-P25-052 | Topology authoring, route/profile and revision publication APIs | Topology; read-only foreign owner contracts | PLANNED / REGISTERED; D3 contract/scope gate | 051; accepted 018/019/020/032/034/036/037/038; D3 | D3 closed authoring/storage/API list | Actual API round trips, epochs/CAS/history/import-export | F1-02/03/04 within explicit supported topology scope | F1 | `feat(topology): expose governed engineering revision workflows` |
 | 6 | HPR-P25-053 | Product/property/method metadata authoring and history | Custody; source approval through Workflow | PLANNED / REGISTERED; D3 contract/scope gate | 051; accepted 018/022 design; D3 | D3 exact Custody/owner-export list | Multi-product metadata, unsupported shape, old GAS replay | F2-01 and product share of F2-03 | F2 | `feat(custody): govern versioned product engineering data` |
 | 7 | HPR-P25-054 | Installed-unit/asset and manufacturer-characteristic history | Topology installed configuration; Assets lifecycle; Party manufacturer; existing Simulation data store | PLANNED / REGISTERED; D3 contract/scope gate | 052; accepted 020/021 design; D3 | D3 exact per-owner list | Nine distinct units; curve/table/units/lifecycle/history | F2-02 and equipment share of F2-03; data only | F2 | `feat(engineering): govern installed units and characteristic revisions` |

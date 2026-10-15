@@ -1846,6 +1846,29 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "addedStaticRelationsBlockNativeDmlUntilRelease",
+        "allIdentityFencesPrecedeTemporalSampleOnOneBackend",
+        "allTwentyTwoRelationsHoldReviewedModes",
+        "freshFlywayJpaAndCompleteDependencyInventoryMatch",
+        "lateFenceFailureRollsBackPrefixAndProvisionalJpaWrite",
+        "materializedCandidateContainsNoAuthorityOrSecrets",
+        "missingReadOnlyAndWrongIsolationReject",
+        "nativeBindingAndSessionWritersAbortSafely",
+        "nonOwnerDmlPrivilegesCannotBypassFences",
+        "temporalSyntaxAndOverflowFailuresRemainFailClosed"
+      ],
+      "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.IdentityAuthorityFencePostgresIntegrationTest",
+      "dependency_reason": "051E real PostgreSQL16/Flyway/JPA 22-relation fence and normal-writer proof; local Docker absent, ten cases skipped, not accepted. Zero is an explicitly unmeasured scheduling hint; hosted zero-skip partition/oracle acceptance pending.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/IdentityAuthorityFencePostgresIntegrationTest.java",
+      "source_sha256": "d2ed257ea0e411869a52eef70be3c26f5036fe9687de0a00b9fbb30dfe0e06e4",
+      "supports": []
+    },
+    {
       "baseline_seconds": 11.047,
       "cases": [
         "downstreamFailureAfterFlushedChangesRollsBackBothOwners",

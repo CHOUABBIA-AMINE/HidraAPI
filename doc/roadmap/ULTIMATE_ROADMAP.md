@@ -32,6 +32,12 @@ by this planning commit. Current planning commit message:
 
 
 
+### CI-003C-HQ1 hosted run evidence and controlled-cache amendment — 2026-10-15
+
+At unchanged source 0cb7d13b6ea180cf85715ad9306dc889279b3e15, isolated qualification run 38798276295 completed SUCCESS: synthetic-policy and maven-cache jobs both successful. Hosted Maven dependency: cold local repository go-offline 46.380s and repeat warm local repository 1.978s. These are NOT controlled actions/cache or setup-java cache miss/hit, Full oracle timing or actual hosted negative job/artifact injection. Full and Docs on that SHA SUCCESS (runs 38772509978 and 38772509819).
+
+This bounded HQ1 amendment changes only the isolated manually dispatched workflow to assert a unique per-run actions/cache miss and exact-key warm hit, with the same Maven dependency exercise. The unique per-run key does not establish comparable cross-run warm/cold Full test timings. No production workflow, Java, SQL, API or verifier changes. HQ1 remains IN PROGRESS; hosted real negative scenarios and genuine API representative OPEN; CI-003D unselected, mandatory Full/fallback unchanged. Hosted cache result is pending manual dispatch and must not be claimed until observed.
+
 ### CI-003C-HQ1 isolated qualification harness implementation checkpoint — 2026-10-15
 
 This stage adds a manually dispatched, isolated qualification workflow and synthetic-only negative policy assertions. The harness cannot modify the existing Full/Fast/Docs workflows or claim that synthetic cases are real hosted cancellation/artifact failures. The Maven dependency go-offline cold/warm directory exercise is preparatory only: it does not demonstrate controlled setup-java cache miss/hit or equivalent Full test execution. All hosted acceptance, actual negative cases, comparable cache attribution and genuine API-changing representative remain OPEN. CI-003C IN PROGRESS, CI-003D unselected, mandatory unrestricted Full and fallback retained. The new workflow is NOT automatically dispatched or accepted by its existence.

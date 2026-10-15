@@ -11,24 +11,50 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - name: Synthetic fail-closed evidence checks
-        run: python3 scripts/ci/qualification/verify.py
-  maven-cache:
+    - uses: actions/checkout@v4
+    - name: Synthetic fail-closed evidence checks
+      run: python3 scripts/ci/qualification/verify.py
+  cache-evidence:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '21'
-      - name: Controlled cold Maven repository
-        run: |
-          set -euo pipefail
-          chmod +x mvnw
-          bash ./mvnw -B -ntp -Dmaven.repo.local="${{ runner.temp }}/hidra-qualification-cold" dependency:go-offline
-      - name: Controlled warm Maven repository
-        run: bash ./mvnw -B -ntp -Dmaven.repo.local="${{ runner.temp }}/hidra-qualification-cold" dependency:go-offline
-      - name: Qualification scope notice
-        run: echo 'Dependency-cache preparation only; no Full CI acceptance or controlled setup-java cache hit/miss claim.'
+    - uses: actions/checkout@v4
+    - uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: '21'
+    - name: Controlled isolated Maven cache miss
+      id: cold
+      uses: actions/cache/restore@v4
+      with:
+        path: ${{ runner.temp }}/hidra-hq1-m2
+        key: hidra-hq1-cold-${{ github.run_id }}-${{ github.run_attempt }}
+        lookup-only: true
+    - name: Assert isolated cache miss
+      env:
+        HIT: ${{ steps.cold.outputs.cache-hit }}
+      run: test "${HIT}" != true
+    - name: Prepare dependency repository (cold)
+      run: |
+        set -euo pipefail
+        chmod +x mvnw
+        bash ./mvnw -B -ntp -Dmaven.repo.local="${{ runner.temp }}/hidra-hq1-m2" dependency:go-offline
+    - name: Save isolated cache
+      uses: actions/cache/save@v4
+      with:
+        path: ${{ runner.temp }}/hidra-hq1-m2
+        key: hidra-hq1-warm-${{ github.run_id }}-${{ github.run_attempt }}
+    - name: Restore controlled warm cache
+      id: warm
+      uses: actions/cache/restore@v4
+      with:
+        path: ${{ runner.temp }}/hidra-hq1-m2
+        key: hidra-hq1-warm-${{ github.run_id }}-${{ github.run_attempt }}
+    - name: Assert warm cache hit
+      env:
+        HIT: ${{ steps.warm.outputs.cache-hit }}
+      run: test "${HIT}" = true
+    - name: Prepare dependency repository (warm)
+      run: bash ./mvnw -B -ntp -Dmaven.repo.local="${{ runner.temp }}/hidra-hq1-m2" dependency:go-offline
+    - name: Evidence scope
+      run: echo 'Controlled actions/cache identity only; not Full oracle test timing or production setup-java cache proof.'

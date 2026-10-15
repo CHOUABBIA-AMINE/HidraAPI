@@ -24183,3 +24183,7 @@ Owner explicitly approved registering an isolated hosted qualification package. 
 ## 2026-10-15 — CI-003C-HQ1 harness source checkpoint
 
 Isolated manual workflow and synthetic-only policy fixture source added. This is not hosted negative-case proof, cache hit/miss evidence, or full CI qualification. No existing production workflow or security/runtime source modified. HQ1 acceptance remains OPEN; unrestricted Full and fallback unchanged.
+
+## 2026-10-15 — CI-003C-HQ1 hosted evidence and cache amendment
+
+Hosted isolated run 38798276295 SUCCESS for synthetic-policy and dependency preparation; cold directory 46.380s, warm repeat 1.978s, not cache-service hit/miss proof. Isolated workflow updated for unique-key actions/cache miss and exact-key warm hit checks, pending hosted dispatch. Full/Docs SUCCESS on baseline. No existing Full/Fast/Docs workflow or runtime changes. Actual hosted negative injection, comparable Full cache performance and genuine API representative remain OPEN. CI-003D unselected.

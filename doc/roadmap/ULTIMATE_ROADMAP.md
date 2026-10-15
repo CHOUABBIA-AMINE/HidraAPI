@@ -32,6 +32,282 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-P25-051F protected B1 participant registration, 2026-10-15
+
+Owner Next selects the Identity B1/paired-permission contract recovery required by
+accepted051E. Live main `998ced3b93450c6265e7ca83d0ca53937cb59eb1`, tree
+`65abd5923949d97192abb22bb834d829fdeece56`, has Docs #316 SUCCESS. Runtime
+`c72eae39cab0b1ec1e20654386fe95ed43b134ab` has exact-SHA Full695/Fast28/Docs315
+SUCCESS;051A–E retain their bounded acceptance. No failed CI is outstanding.
+Current action changes only roadmap and append-only reconciliation.
+
+#### Recovered source and the actual missing boundary
+
+| Current source | Observed behavior | Protected contribution consequence |
+|---|---|---|
+| TopologyOperationAuthenticationQueryAdapter | Argument-free ambient authentication; qualified hidraJwtDecoder, strict original-wire parsing, persistent-origin tag and exact binding match | Reuse its exact parser; a prepared lookup is only a locator until fenced re-read |
+| OperationAuthenticationQueryApplicationService.query | REQUIRES_NEW/read-only READ COMMITTED; states.current at caller-supplied wall clock | Preserve unchanged. Cannot participate in051A or supply common database s |
+| TrustedAuthenticationVerificationRegistry | Exactly LOCAL/LDAP-AD/OIDC producers mint private receipts; completed(actual) checks private token/receipt, authentication and original thread; persistent HMAC validates the entire stored tuple | Consume genuine committed ambient origin or reverified native wire, never public principal/roles/details or a caller record |
+| JdbcOperationAuthenticationBindingRepositoryAdapter | Fresh JDBC immutable tuple lookup by native issuer/JTI; sanitized storage errors | Locator lookup may happen before admission; fresh lookup and origin/match validation MUST repeat after all22 fences |
+| JdbcAuthenticationSecurityStateQueryAdapter.current | Joined fresh User/Provider/Session/Link/Credential eligibility, original generations, exact tuple, source deadline and lock/status at supplied instant | Reuse directly at051E's database sample, without the REQUIRES_NEW query service or stale JPA entities |
+| JdbcIdentityAuthorityFence/temporal collector | Complete22 Identity fences before common sample and conservative u; diagnostic Candidate alone grants nothing | This is the physical base for owner B1 participation, not a bearer verification substitute |
+| TopologyScopedAccessQueryService | Derives permission from operation, then evaluates company CUSTOM and FACILITY scopes sequentially | Future paired contributor must use a single s/u and one actual bound actor, rather than reuse this standalone service |
+| IdentityAuthorizationApplicationService/JpaAuthorizationEvidenceAdapter | Own Instant.now, optional decision persistence, JPA find/query traversal and current-status filtering | Not an admitted protected contributor. Fresh bounded evidence must avoid first-level cache and preserve future DENY coverage |
+| SpringAuthorizationContextAdapter.capture/HidraOidcAuthenticationToken | Captures selected mapping claim names into a filtered immutable assertion; public token constructors can carry an assertion without a private receipt | Assertion type alone proves no origin or completeness; changed mapping claim names need a separate coverage proof |
+
+Receipt snapshot fields include original provider/link/credential generations and
+source expiry, not a full raw external claim set. Native issued bearer claims do
+not preserve every original external claim. The current assertion map stores
+nonempty extracted values, not an attested set of every attempted claim name;
+absent and never-captured names cannot be treated as the same proof. This matters
+for external DENY mappings as well as PERMIT: omitting an unresolvable mapping
+cannot authorize another path. F below establishes B1 for all four producers;
+it does NOT evaluate any permission or reuse an incomplete assertion as authority.
+
+#### Chosen bounded sequence and paired owner contract
+
+Register051F as the concrete **same-transaction trusted B1 participant**, not
+another synthetic relation census. Preparation performs potentially expensive
+native cryptographic verification BEFORE051A admission and its500ms work budget.
+Participation revalidates actual private origin and fresh joined eligibility at
+the already fenced database s/u. The next dependent scope will recover/register
+paired authorization evidence/evaluation only after F is CI accepted; it has no
+new code/path list here. This splits the already selected owner-contribution work
+without waiving B2/B3 or selecting052.
+
+Frozen requirements for that later paired Identity owner contribution:
+- Resolve the user exclusively through the actual F participant on the trusted
+  owner call path. Caller user ids, deadlines, permission booleans, constructed
+  Contributions/Candidates, generic '*' authorities and prior standalone PERMIT
+  never establish authority.
+- Input remains an owner-validated fixed operation plus companyPartyId/facilityId,
+  as current TopologyScopedAccessContract.Request. Derive the existing eight
+  topology:station-revision operation codes owner-side; no arbitrary permission
+  code override. Resource type remains STATION_GRAPH_REVISION.
+- Evaluate CUSTOM `topology-company:<companyPartyId>` AND FACILITY `<facilityId>`
+  using exactly the same fenced database s and physical PID/XID; both decisions
+  must be PERMIT. Explicit DENY wins; indeterminate/missing/corrupt/unsupported
+  evidence never becomes permission. A company/facility reference alone does not
+  establish Party eligibility or current Facility ownership.
+- Read fresh bounded Identity state after the complete fences, account for051B
+  expression syntax and051C/D future boundaries including inactive future DENY,
+  and avoid cached JPA entities. Existing AuthorizationEvidence nested mutable/
+  unmodifiable collection shapes are not silently exported through051A.
+- Prove original assertion origin AND current mapping/claim-name coverage. A native
+  OIDC bearer does not reconstruct original external claims. Any required unknown
+  claim evidence must fail closed; no inference from stale snapshots or empty maps.
+  Preserve valid LOCAL/LDAP/AD/OIDC B1, without claiming all claim-based permission
+  branches are implemented by F. Do not add delegation or administrator wildcard
+  semantics that the current evaluator does not traverse.
+- Combine Identity/Party/Facility/Topology owner bounds into a common u and final
+  database t with s<=t<u; hold all proven global relation/owner/head fences through
+  physical commit. No lazy materialization, post-guard SQL, permission decision
+  persistence after guard, retry, or result before observed COMMIT. Actual038
+  head/epoch/CAS/read/history and global native writer DAG remain separate gates.
+
+This contract is not a new callable cross-module API or completed global lock
+order. The existing public contracts and nonprotected authentication/authorization
+behavior remain unchanged until separately scoped integration is accepted.
+
+#### Exact future HPR-P25-051F scope
+
+**PLANNED / REGISTERED / NOT IMPLEMENTED.** Separate owner Next after this exact-SHA
+Docs SUCCESS selects one seven-path implementation. Exact message:
+`feat(identity): contribute protected bound authentication`.
+
+| Operation | Exclusive exact path |
+|---|---|
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipant.java` |
+| CREATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipantTest.java` |
+| CREATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedOperationIdentityParticipantPostgresIntegrationTest.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyOperationAuthenticationQueryAdapter.java` |
+| UPDATE | `.github/ci-test-inventory.json` |
+| UPDATE | `doc/roadmap/ULTIMATE_ROADMAP.md` |
+| UPDATE | `doc/model-remediation/RECONCILIATION.md` — append-only |
+| DELETE | None |
+
+All three CREATE paths are absent from this tree. Canonical headers and exact
+Identity Infrastructure/Test packages required. The existing reader UPDATE is
+STRICTLY limited to making its nested RawClaims record and rawClaims(String)
+method package-private static helpers (record is implicitly static), plus header
+UpdatedOn. Keep their bodies, matching, decoder/wire rules and old reader flow
+byte-identical. Do not make either helper public or move it into an exported
+contract. This shares parsing without duplicating cryptographic acceptance logic.
+No existing test body changes. No registry producer/receipt/tag format change,
+owner query/state adapter change,051A–E change, evaluator/assertion/public contract,
+Topology/Party source, migration, dependency/config/property, workflow, dictionary,
+version/release/history or protected business endpoint change.
+
+#### Participant protocol: concrete implementation contract
+
+One Identity-private security Spring component has `Prepared prepare()` and
+`Contribution contribute(Prepared prepared)`:
+
+1. prepare uses NEVER propagation plus a direct no-active-transaction check. It
+   resolves the current authenticated object, native issuer/audience settings and
+   existing byte envelope. For a native JwtAuthenticationToken, decode the ORIGINAL
+   bounded raw wire with qualified hidraJwtDecoder, require exact decoded wire,
+   use the shared strict rawClaims parser, lookup issuer/JTI binding, validate
+   persistent origin and exact issuer/audience/user/type/provider/JTI/issued/expiry
+   correspondence through current HidraAccessTokenIssuer.exactClaims. Wrapper
+   claims/principal/authorities/details never override signed wire.
+2. For non-native contexts accept ONLY registry.completed(actual) from a genuine
+   after-commit direct or OIDC receipt; require fresh storage equality and private
+   persistent-origin validation. Public username-password/HidraOidc tokens without
+   the private completed receipt, legacy/unbound tokens and absent/unauthenticated
+   contexts deny. No attempt to consume a producer verification receipt twice or
+   mint/attest/publish a new binding in this participant.
+3. Return an opaque nested Prepared final class with PRIVATE constructor, private
+   final state, originating Thread and exact Authentication object identity, and
+   one-use atomic consumption. No public constructor/factory, getters for raw token/
+   tag/key, serialization endpoint or sensitive toString. It may hold only the
+   private verified-wire/receipt locator state needed by the participant. The
+   preliminary binding lookup is explicitly NONAUTHORITATIVE: no identity result
+   or permission is delivered by prepare.
+4. contribute is MANDATORY and requires actual writable READ COMMITTED participation.
+   Reject absent/foreign-thread/replayed/swapped-context handles and auth objects
+   that are no longer authenticated. A failed consumed attempt cannot retry with
+   that handle. Handle/context checks repeat before returning. No ambient external
+   userId, clock, permission, binding tuple or caller-supplied eligibility Boolean.
+5. Use the private locator binding id to call the actual051E fence component.
+   After all22 fences and its sample, re-read the binding by exact issuer/JTI,
+   require original binding id/tuple/private-origin correspondence, and revalidate
+   issuer settings and wire or committed receipt against the CURRENT row. Read
+   states.current(binding,candidate.sampledAt()) using the actual existing fresh
+   joined owner adapter. Missing/ineligible state denies; corrupt origin/tuple,
+   unavailable decoder/storage/key and backend mismatch remain sanitized operational
+   errors, never relabeled as successful absence or eligible evidence.
+6. Require sampledAt within issued/expiry and present source-expiry, a finite
+   earliestFuture after sampledAt capped by both B1 deadlines, and actual current
+   JDBC PID/XID matching the candidate before return. No Instant.now/Clock eligibility
+   substitution, REQUIRES_NEW, independent connection, cached JPA state or retry.
+   Cryptographic preparation can conservatively reject an expired native bearer;
+   only fenced DB s determines successful current B1 participation.
+7. Return a public immutable nested Contribution record containing ONLY the existing
+   JDK-only TopologyOperationAuthenticationContract.Evidence sampled at s, finite
+   validUntil=u, backendPid and transactionId. Canonical construction checks the
+   scalar/coordinate/deadline invariants. Its public record constructor is NOT an
+   attestation; only an actual participant invocation on the trusted same-transaction
+   path contributes authority. It is not a detached permit or portable proof for a
+   later transaction. Do not return Prepared itself, raw JWT/assertion/claims/tag,
+   credential, EntityManager/entity, lazy/JDBC resource or arbitrary collection.
+8. No new controller, integration consumer, permission evaluator call or permission
+   result in F. Its contribution may be exercised inside051A and a genuine final
+   DB s/u/t guard by tests. A future coordinator must call this actual owner inside
+   the accepted transaction and establish all other owner fences before its common
+   sample; F alone cannot certify051A admission or a global owner graph.
+
+AccessDeniedException is the new participant's internal denial signal; unavailable/
+corrupt infrastructure remains sanitized IllegalStateException without private
+SQL/tag/key details. No HTTP behavior is selected. Preserve the old reader's
+existing Result.denied/error behavior exactly. Existing250/750/1000ms and500ms
+limits remain unchanged; no configurable bypass, timeout widening or async handle.
+Existing051E syntax/census/deadline failures propagate fail-closed; never catch/retry
+them as a missing row or fabricate a contribution. An expiry that causes the
+unchanged collector to reject may surface its existing failure rather than a new
+denial classification. HTTP/error mapping remains unselected; no availability
+claim is made by translating an unresolved collector failure.
+
+#### Required genuine future tests and regression gates
+
+New unit class (JVM/mocks only, not PostgreSQL/provenance acceptance): eight planned
+JUnit identities:
+`preparedHandleHasNoPublicConstructorOrSensitiveText`;
+`preparationRefusesAmbientTransaction`;
+`wireAndDecodedOwnerClaimsMustAgree`;
+`publicAndLegacyContextsCannotCreatePreparedHandle`;
+`unavailableStorageDecoderAndCorruptOriginRemainErrors`;
+`handlesAreSingleUseAndBoundToThreadAndAmbientIdentity`;
+`contributionHasOnlyImmutableScalarEvidenceAndNoPermission`;
+`nativeParserReuseAndReceiptProducerAllowlistRemainClosed`.
+Test the state/proxy contract and denial/error separation without claiming mocked
+origin verification is producer proof. Keep the three existing producer call sites
+exclusive, shared parser package-private and foreign module internals closed.
+
+New PostgreSQL16/Testcontainers/Flyway validate/migrate/JPA validate class: twelve
+planned JUnit identities, each requiring genuine execution reports:
+
+1. `allFourRealProducerBearersParticipateAtDatabaseSample`: actual LOCAL/LDAP/AD/
+   OIDC production producer, completion, private HMAC, signed native issuance and
+   qualified decoder, fresh fenced JDBC eligibility at s; same Spring/Hibernate
+   backend/XID, original generations and finite deadline. Existing directory/external
+   identity transport may use explicitly labeled synthetic fixtures/real synthetic
+   source signing, but states/fences/registry/native signing/decoder/transactions
+   may not be mocked as the acceptance proof.
+2. `committedDirectAndOidcReceiptsParticipateWithoutCallerClaims`: real after-commit
+   private receipts succeed; public lookalike tokens/assertions and uncommitted
+   completion cannot create a contribution.
+3. `rawWireForgeryAndZeroOrCopiedTagsReject`: strict byte/type/duplicate/audience/
+   issuer/algorithm/owner/deadline bounds and wrong signature; zero/copied/arbitrary
+   tags in real structural rows never become origin. No test-side private tag mint.
+4. `bindingOwnerGenerationsAndAbaAreReadAfterFences`: Provider/Credential/Link ABA
+   and session/user revocation after prepare invalidate the captured locator.
+5. `revocationBeforeFenceAdmissionDeniesWithoutResult`: independent actual writer
+   commits before admission; contribution sees the fresh revoked state despite a
+   previously valid bearer/receipt/Prepared handle.
+6. `writerAfterAdmissionCannotPassTheContributionFence`: observed independent owner
+   UPDATE waits,55P03/rollback while protected and a positive commit after release;
+   no stale handle or captured result reused as authority.
+7. `expiryBetweenPrepareAndContributionAborts`: observe real DB expiry outside the
+   work budget, no sleep/fake DB clock; selected B1/source deadline cannot extend.
+8. `opaqueHandleReplayContextSwapAndCrossThreadReject`: one-use and exact ambient
+   identity/thread checks; a caught replay inside the transaction still cannot
+   commit a successful result/provisional write, and no asynchronous handle escape.
+9. `incompatibleTransactionsAndAmbientPreparationReject`: prepare inside a transaction
+   and contribute without/wrong/read-only participation reject; no nested fallback.
+10. `staleJpaImagesCannotRelabelFreshOwnerState`: deliberately primed JPA images or
+    earlier read-only snapshot do not replace current generation/eligibility rows.
+11. `caughtFailureRollsBackProvisionalJpaAndReceipt`: genuine provisional JPA flush
+    and test receipt roll back on contribution failure; no result/final guard/retry,
+    exact root cause and positive independent clean operation afterward.
+12. `immutableContributionCommitsBeforeDeliveryAndDoesNotGrantPermission`: actual
+    physical commit before result, supported immutable shape/no secrets/permission,
+    common s/u/t final guard, and no SQL after the guard.
+
+Use independent preopened/warmed connections, CountDownLatch/barriers, observed
+pg_blocking_pids/locks and bounded joins. Each wait has its own protected500ms
+budget. Never sleep, disable triggers, remove guarded security rows, fake timing,
+weaken constraints or accept unrelated setup/SQL errors as expected rejection.
+No production/deployment data prerequisite. Exact focused Java21 compile/test
+includes both new classes, ArchitectureGuardrailTest, existing OperationAuthenticationBoundaryGuardrailTest, TrustedAuthenticationVerificationTest, all26 existing
+OperationAuthenticationQueryPostgresIntegrationTest cases and existing real bound
+completion/issuance tests. Run the Fast selection and existing Python policy/
+inventory/docs/offline OpenAPI/P1/scope/whitespace checks. Missing local Java/Docker
+must be stated; skips/mocks are never hosted PostgreSQL acceptance.
+
+Inventory admits only the two new classes and actual case identities/source hashes;
+new unit fast=true, new PG fast=false; preserve all old cases/source hashes, timing/
+baseline/policies/archive and old Fast members. Explicitly label unmeasured timing
+hints, never invent durations. Hosted exact-SHA Full/Fast/Docs plus all12 genuine
+zero-skip new PG cases in partition AND oracle are required, along with unchanged
+existing B1/issuer/architecture regressions. Publish guarded existing main, observe
+all required automatic CI START, then STOP until separate Next/Fail.
+
+#### Current registration scope and STOP
+
+Validation completed for this registration: current source/CI, three absent future
+CREATE paths and the exact existing helper declarations checked; canonical docs98/
+5355 relative links/24 modules, offline OpenAPI263 operations/244 paths/231 schemas,
+retained P1 evidence, unchanged inventory cbd9f8f0d952ceef915fa275250871e79fedcc7399832b5d13e341dd86c060db
+and all six Python policy suites102 cases PASS. Inventory stays Fast299/unit300/
+PG37+44/oracle381/historical4. Two-document scope, append-only reconciliation and
+whitespace PASS. No new Java/JUnit/PostgreSQL execution, implementation or deployment
+is claimed for this documentation-only task.
+
+
+Exact current message remains `docs(security): select operation time fencing proof`.
+UPDATE ONLY roadmap and append-only reconciliation; CREATE/DELETE none. No code,
+test, inventory, workflow, migration or release change in this registration.
+Recover/check future path collisions, current source/CI, canonical docs/offline
+OpenAPI/P1, source inventory/Python policies and exact two-file append-only/
+whitespace scope; record truthful results. Guard main at998ced3, verify parent/
+tree/blobs, observe actual automatic Docs START then STOP. No manual Full/Fast
+or implementation in this turn. Parent051/D2/B2/B3 and paired permission/global
+Party/Facility/Topology038 integration remain OPEN;052 unselected. CI-003 full
+oracle/fallback mandatory, optimized=false. Gas-first/GZ2, own engine, steady/
+transient, versioned inputs/operator control persist; synthetic development and
+later owner calibration; Simulation/P3 deferred; no release/deployment.
+
 ### Current execution checkpoint — HPR-P25-051E CI acceptance, 2026-10-15
 
 Owner Next recovered live main `c72eae39cab0b1ec1e20654386fe95ed43b134ab`,

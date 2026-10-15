@@ -22617,3 +22617,76 @@ modules, offline OpenAPI263 operations/244 paths/231 schemas, retained P1 eviden
 unchanged source inventory and all six Python policy suites102 cases PASS. Two
 document UPDATEs only, append-only reconciliation and whitespace PASS. No new
 local Java/JUnit/PostgreSQL execution or release/deployment was performed.
+
+
+## 2026-10-15 — HPR-P25-051F protected Identity B1 participant registration
+
+Live998ced3b93450c6265e7ca83d0ca53937cb59eb1/Docs316 SUCCESS; runtime
+c72eae39cab0b1ec1e20654386fe95ed43b134ab/Full695/Fast28/Docs315 SUCCESS.
+Recovered old reader strict native wire/qualified decoder and private persistent
+origin, REQUIRES_NEW owner-state boundary, joined fresh JDBC state, immutable
+binding repository, private completed receipt/producer scopes, current scoped
+company/facility permission service and filtered source assertion capture.
+
+Concrete gap: standalone B1 is not051A participation; sequential wall-clock paired
+permissions are not common s/u. Original external claim-name capture is incomplete
+for newly selected mapping names, and native bearer does not preserve the complete
+source claim set. Missing claim proof cannot silently omit a DENY path. Current
+registration freezes the later paired owner contract but selects no permission API:
+fixed operation-derived code, true ambient B1 actor, both company CUSTOM and
+FACILITY scopes at same physical s/u, fresh bounded evidence, DENY/unknown fail
+closed, explicit claim coverage, no delegated/admin wildcard inference, future
+Party/ownership/global DAG and038 head/epoch/final t guard still required.
+
+Register ONE future051F after registration Docs SUCCESS and separate owner Next:
+`feat(identity): contribute protected bound authentication`. Exact seven paths are
+in roadmap: CREATE ProtectedOperationIdentityParticipant security component plus
+new unit and PG tests; UPDATE existing TopologyOperationAuthenticationQueryAdapter
+ONLY for package-private RawClaims/rawClaims parser visibility and UpdatedOn,
+CI inventory, roadmap and append-only reconciliation. Three CREATE paths absent.
+No old test bodies, original reader behavior, registry/producer/tag changes, owner
+query/state/fence/evaluator/assertion/public contracts, migration/config/workflow/
+dictionary/version/history or engineering API changes admitted.
+
+Participant prepare() NEVER/no ambient tx performs qualified native wire/private
+receipt validation before the protected budget and returns a private-constructor,
+thread/context-bound one-use opaque Prepared locator, never B1 authority. MANDATORY
+writable READ COMMITTED contribute(handle) acquires actual051E fences/sample,
+re-reads exact current binding/origin, calls fresh states.current at database s,
+checks true PID/XID and B1-capped u, rechecks handle/context and returns only immutable
+sampled Evidence/u/PID/XID. No caller actor/deadline/binding/claims/permission input,
+REQUIRES_NEW/retry/independent connection, cached JPA or secret/resource export.
+AccessDeniedException versus sanitized operational IllegalStateException preserves
+denial/error separation. Detached result records remain untrusted constructions;
+future action requires trusted owner invocation and all-owner transaction/guard.
+
+Eight named JVM cases and twelve named genuine PostgreSQL16/Flyway/JPA cases are
+registered, including all four real producers/signing/private tag/fresh owner reads,
+committed receipts, forged raw claims/tags, ABA and revocation races, real expiry,
+one-use/context/thread misuse, incompatible transactions, cache independence,
+full rollback and commit-before-delivery. Directory/source transport fixtures must
+be labeled; origin/state/fence/transaction proof cannot be mocked. Keep existing
+26 B1 cases, issuer/completion and boundary/architecture regressions unchanged.
+Inventory adds only two new classes/identities/hashes, unit fast=true/PG false,
+explicit unmeasured hints, no old baseline/policy/timing/case changes. Hosted exact-
+SHA full/fast/docs plus12 zero-skip new PG identities in partition AND oracle are
+required before acceptance. No new Java/JUnit/PostgreSQL execution is claimed now.
+
+CURRENT docs registration changes ONLY roadmap and append-only this record with
+`docs(security): select operation time fencing proof`. Validate docs/offline API/
+P1/inventory/Python policies and exact two paths/append-only/whitespace, guarded
+main publication, verify parent/tree/blobs, observe automatic Docs startup then
+STOP. No code or manual Full/Fast in this turn. Parent051/D2/B2/B3 and paired
+permission/global owner/Party/Topology038 remain OPEN;052 unselected. Oracle/
+fallback mandatory,optimized=false; gas-first/GZ2/own engine/steady-transient/
+versioned inputs/operator control persist; synthetic development,later calibration;
+Simulation/P3 deferred,no release/deployment.
+
+Validation completed for this registration: current source/CI, three absent future
+CREATE paths and the exact existing helper declarations checked; canonical docs98/
+5355 relative links/24 modules, offline OpenAPI263 operations/244 paths/231 schemas,
+retained P1 evidence, unchanged inventory cbd9f8f0d952ceef915fa275250871e79fedcc7399832b5d13e341dd86c060db
+and all six Python policy suites102 cases PASS. Inventory stays Fast299/unit300/
+PG37+44/oracle381/historical4. Two-document scope, append-only reconciliation and
+whitespace PASS. No new Java/JUnit/PostgreSQL execution, implementation or deployment
+is claimed for this documentation-only task.

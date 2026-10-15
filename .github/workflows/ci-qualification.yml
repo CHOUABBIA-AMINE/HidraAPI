@@ -58,3 +58,29 @@ jobs:
       run: bash ./mvnw -B -ntp -Dmaven.repo.local="${{ runner.temp }}/hidra-hq1-m2" dependency:go-offline
     - name: Evidence scope
       run: echo 'Controlled actions/cache identity only; not Full oracle test timing or production setup-java cache proof.'
+
+  hosted-negative-probes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+    - name: Deliberately fail isolated required-step probe
+      id: failed
+      continue-on-error: true
+      run: exit 17
+    - name: Deliberately fail missing artifact upload
+      id: missing
+      continue-on-error: true
+      uses: actions/upload-artifact@v4
+      with:
+        name: hidra-hq1-intentionally-missing-${{ github.run_id }}
+        path: ${{ runner.temp }}/hidra-hq1-no-such-artifact-expected
+        if-no-files-found: error
+    - name: Assert both hosted probes really failed
+      env:
+        FAILED_OUTCOME: ${{ steps.failed.outcome }}
+        MISSING_OUTCOME: ${{ steps.missing.outcome }}
+      run: |
+        set -euo pipefail
+        test "${FAILED_OUTCOME}" = failure
+        test "${MISSING_OUTCOME}" = failure
+        echo 'Isolated hosted negative step and missing upload rejected as expected; no production gate exercised.'

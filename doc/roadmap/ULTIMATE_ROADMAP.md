@@ -32,6 +32,63 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-P25-051D CI acceptance, 2026-10-15
+
+Owner Next recovered live main `d14c44fc527ea1115ad87baafa21a3264bf6950c`,
+parent `3f384a7f97eaf494f1b5fe40250c25340ee79008`, tree
+`27566e32016820fe6981e2dc008b24bdc75f23cf`.
+Exact-SHA [Full #694](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38689504851),
+[Fast #27](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38689504754)
+and [Docs #312](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38689504756)
+are completed SUCCESS. All seven Full jobs, including both PostgreSQL
+partitions, unrestricted oracle, API/dictionary and authenticated Full
+Verification Gate, are SUCCESS.
+
+**HPR-P25-051D COMPLETED / BOUNDED IDENTITY TEMPORAL COLLECTOR CI ACCEPTED.**
+Downloaded exact attempt1 PostgreSQL partition1 artifact `11952107804`
+and authenticated full evidence bundle `11951448256`. Genuine Surefire XML
+for IdentityTemporalEventCollectorPostgresIntegrationTest contains all ten
+registered identities in BOTH partition1 and oracle: zero failures, errors,
+skips or flakes. Suite durations14.502s and24.115s are observations, not
+production SLOs or new inventory scheduling baselines. The overflow case now
+proves the exact reviewed-cap root cause,1025 provisional rows and rollback;
+hosted acceptance also covers inactive future DENY, selected expiry/sample,
+expression gate, independent writer fencing and late-lock failure recovery.
+
+Authenticated gate.json binds source SHA to d14c44f, run38689504851/attempt1,
+inventory `2ca62c283288fb23ffe3326742473c4b1f9a8c0ae93679cbe1ff8df90306e2b0`,
+380 classes/2023 tests, zero failures/errors/skips and same-run equivalence
+true. Full oracle/fallback remains required; optimized_adoption_eligible=false.
+Live production collector/test and CI workflow were recovered before accepting
+this evidence. No local Java21 or PostgreSQL execution is represented by this
+checkpoint; these are genuine hosted Java21/PostgreSQL16 acceptance results.
+
+Acceptance covers the bounded Identity-wide temporal/expression superset,
+fixed eleven-relation fences before database clock/PID/XID sampling, actual
+051B syntax and051C reduction, and protected051A rollback/commit behavior.
+The collector remains a private diagnostic candidate. It establishes no
+producer-origin authentication, B1 eligibility, evaluated PERMIT or complete
+static authority graph. A constructed Candidate cannot grant authority.
+
+Parent051/D2/B2/B3 remain IN PROGRESS/OPEN. Next same-ID work must recover and
+register the complete Identity static authority dependency and mutation/
+privilege graph, actual protected owner/export contract and global lock order
+before connecting permission decisions. Party/Topology paired exports,
+common database s/u/t and038 publication head/epoch remain unimplemented
+integration obligations. No future runtime path or052 is selected here.
+
+This acceptance action uses registered same-ID governance message
+`docs(security): select operation time fencing proof`.
+UPDATE only roadmap and append-only reconciliation; CREATE/DELETE none.
+Historical failed-attempt entries remain intact. Preserve runtime source,
+tests, inventory, Flyway migrations, workflows, release/version/history.
+Validate canonical docs/offline OpenAPI/P1 and exact two-path append-only
+scope, publish guarded main, verify parent/tree/blobs, observe exact-SHA
+automatic Docs START then STOP. Startup is not success; accepted runtime
+stays anchored to d14c44f. Gas-first/GZ2, own engine, steady/transient,
+versioned inputs/operator control persist; synthetic development, owner
+calibration later, Simulation/P3 deferred; no release/deployment.
+
 ### Current execution checkpoint — HPR-P25-051D overflow exception-chain proof repair, 2026-10-15
 
 Owner Fail selects repair of exact main
@@ -2114,7 +2171,7 @@ aggregate may replace it. D1–D5 are internal gates, never new HPR task IDs.
 | 1 | HPR-CI-003 | Automatic fast suite and equivalent parallel full verification | CI / independent verification | IN PROGRESS / ORACLE RESOURCE CANDIDATE; prior 5x same-SHA equivalence retained; multi-revision/performance OPEN | Accepted 049; this Docs PASS; owner selection | CI-003 closed list | Selection/report/release negative tests; shadow full verification | No lost cases; mandatory gate fail-closed; repeatable timing | CI | `ci: automate fast feedback and preserve full verification gates` |
 | 2 | HPR-P25-047 | Provider/link database security generations | Identity | COMPLETED / CI ACCEPTED | Accepted 046/048/049; existing registration Docs; separate Next | Existing seven-file list, unchanged | Real writers, Flyway fresh/upgrade, native/bulk/race/rollback | Exact implementation Production + Docs SUCCESS | F1 | `feat(identity): enforce provider and link security generations` |
 | 3 | HPR-P25-050 | Immutable operation binding and trusted issuance/reader, staged 050A–050D | Identity; Platform technical wiring | COMPLETED / A–D AND B1 CI ACCEPTED AT 81d46bc | 047; accepted 044/045 design | Exact 050A/B/C/D lists executed; Full #683/Fast #16/Docs #287 SUCCESS | Fresh-schema LOCAL/LDAP/AD/OIDC, expiry, generation, rollback; no deployed-data migration | B1 provenance and storage proof across all four children; no inferred B2/B3 | F1 | Child messages registered below; original message retained by 050D |
-| 4 | HPR-P25-051 | Cross-owner revocation/time/transaction linearization | Identity / Party / Topology; Platform mechanics | IN PROGRESS / 051A CI ACCEPTED; D2 OWNER SCOPE OPEN | 050; accepted 038/043; D2 | D2 then exact owner/export/fence list | Real PostgreSQL owner/race/expiry/connection tests | B2/B3 and writer ordering + bounded latency PASS | F1 | `feat(security): linearize cross owner protected operations` |
+| 4 | HPR-P25-051 | Cross-owner revocation/time/transaction linearization | Identity / Party / Topology; Platform mechanics | IN PROGRESS / 051A–051D BOUNDED SLICES CI ACCEPTED; D2 OWNER SCOPE OPEN | 050; accepted 038/043; D2 | D2 then exact owner/export/fence list | Real PostgreSQL owner/race/expiry/connection tests | B2/B3 and writer ordering + bounded latency PASS | F1 | `feat(security): linearize cross owner protected operations` |
 | 5 | HPR-P25-052 | Topology authoring, route/profile and revision publication APIs | Topology; read-only foreign owner contracts | PLANNED / REGISTERED; D3 contract/scope gate | 051; accepted 018/019/020/032/034/036/037/038; D3 | D3 closed authoring/storage/API list | Actual API round trips, epochs/CAS/history/import-export | F1-02/03/04 within explicit supported topology scope | F1 | `feat(topology): expose governed engineering revision workflows` |
 | 6 | HPR-P25-053 | Product/property/method metadata authoring and history | Custody; source approval through Workflow | PLANNED / REGISTERED; D3 contract/scope gate | 051; accepted 018/022 design; D3 | D3 exact Custody/owner-export list | Multi-product metadata, unsupported shape, old GAS replay | F2-01 and product share of F2-03 | F2 | `feat(custody): govern versioned product engineering data` |
 | 7 | HPR-P25-054 | Installed-unit/asset and manufacturer-characteristic history | Topology installed configuration; Assets lifecycle; Party manufacturer; existing Simulation data store | PLANNED / REGISTERED; D3 contract/scope gate | 052; accepted 020/021 design; D3 | D3 exact per-owner list | Nine distinct units; curve/table/units/lifecycle/history | F2-02 and equipment share of F2-03; data only | F2 | `feat(engineering): govern installed units and characteristic revisions` |

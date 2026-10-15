@@ -29,6 +29,7 @@ import dz.sh.hidra.modules.identity.application.port.in.*;
 import dz.sh.hidra.modules.identity.application.port.out.*;
 import dz.sh.hidra.modules.identity.domain.model.*;
 import dz.sh.hidra.modules.identity.domain.value.*;
+import dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcIdentityAuthorityFence;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.entity.UserJpaEntity;
 import dz.sh.hidra.modules.identity.infrastructure.security.*;
 import dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipant.*;
@@ -117,6 +118,9 @@ class ProtectedOperationIdentityParticipantPostgresIntegrationTest {
     @Autowired jakarta.persistence.EntityManager em;
     @Autowired Flyway flyway;
     @Autowired ProtectedOperationIdentityParticipant participant;
+    @Autowired JdbcIdentityAuthorityFence fence;
+    // Failure injection only: real event persistence and real owner transaction still execute.
+    @MockitoSpyBean AuthenticationEventRepositoryPort events;
     @Autowired ProtectedTransactionExecutor executor;
     @Autowired PlatformTransactionManager manager;
     @Autowired AuthenticateDirectUserUseCase direct;
@@ -331,15 +335,52 @@ class ProtectedOperationIdentityParticipantPostgresIntegrationTest {
                 .setAuthentication(
                         new HidraOidcAuthenticationToken((HidraPrincipal) actual.getPrincipal()));
         assertThatThrownBy(participant::prepare).isInstanceOf(AccessDeniedException.class);
-        // A real completion rolled back before afterCommit never publishes a receipt.
-        var rolled = fixture("LOCAL");
-        var verified = directPort.verify(ProviderType.LOCAL, rolled.user(), "synthetic-password");
-        SecurityContextHolder.getContext().setAuthentication(captured.get());
-        tx().executeWithoutResult(
-                        s -> {
-                            complete(verified);
-                            s.setRollbackOnly();
-                        });
+        // Completion must own its transaction. Inject a real before-commit failure after
+        // genuine OIDC completion has persisted its event and registered receipt publication.
+        var rolled = fixture("OIDC");
+        var beforeCommit = new AtomicBoolean();
+        doAnswer(
+                        i -> {
+                            Object event = i.callRealMethod();
+                            TransactionSynchronizationManager.registerSynchronization(
+                                    new TransactionSynchronization() {
+                                        @Override
+                                        public void beforeCommit(boolean readOnly) {
+                                            beforeCommit.set(true);
+                                            throw new IllegalStateException(
+                                                    "Synthetic completion before-commit failure.");
+                                        }
+                                    });
+                            return event;
+                        })
+                .when(events)
+                .save(any());
+        try {
+            assertThatThrownBy(
+                            () ->
+                                    completeOidc(
+                                            rolled,
+                                            Instant.now()
+                                                    .plusSeconds(300)
+                                                    .truncatedTo(ChronoUnit.SECONDS)))
+                    .isInstanceOf(IllegalStateException.class)
+                    .hasMessage("Synthetic completion before-commit failure.");
+        } finally {
+            doCallRealMethod().when(events).save(any());
+        }
+        assertThat(beforeCommit).isTrue();
+        assertThat(
+                        jdbc.queryForObject(
+                                "SELECT count(*) FROM " + S + " WHERE user_id=?",
+                                Integer.class,
+                                rolled.user()))
+                .isZero();
+        assertThat(
+                        jdbc.queryForObject(
+                                "SELECT count(*) FROM " + B + " WHERE user_id=?",
+                                Integer.class,
+                                rolled.user()))
+                .isZero();
         assertThatThrownBy(participant::prepare).isInstanceOf(AccessDeniedException.class);
     }
 
@@ -475,6 +516,16 @@ class ProtectedOperationIdentityParticipantPostgresIntegrationTest {
                 // Status is generation-relevant; restore the same visible value (ABA).
                 jdbc.update("UPDATE " + P + " SET status='INACTIVE' WHERE id=?", id);
                 jdbc.update("UPDATE " + P + " SET status='ACTIVE' WHERE id=?", id);
+            } else if (branch.equals("session")) {
+                // The bound-session guard requires a real terminal time with terminal status.
+                assertThat(
+                                jdbc.update(
+                                        "UPDATE "
+                                                + S
+                                                + " SET status='LOGGED_OUT',ended_at=clock_timestamp()"
+                                                + " WHERE id=?",
+                                        id))
+                        .isEqualTo(1);
             } else {
                 jdbc.update("UPDATE " + table + " SET " + column + "=? WHERE id=?", away, id);
                 if (back != null)
@@ -594,10 +645,30 @@ class ProtectedOperationIdentityParticipantPostgresIntegrationTest {
             sample = jdbc.queryForObject("SELECT clock_timestamp()", Timestamp.class).toInstant();
         } while (sample.isBefore(expires) && System.nanoTime() < stop);
         assertThat(sample).isAfterOrEqualTo(expires);
+        // Prove the exact collector rejection independently, so an unrelated JDBC/setup
+        // failure cannot satisfy the participant's intentionally sanitized error assertion.
+        var b = binding(r);
+        assertThatThrownBy(() -> tx().execute(status -> fence.collect(b.bindingId())))
+                .satisfies(
+                        error -> {
+                            Throwable root = error;
+                            while (root.getCause() != null) root = root.getCause();
+                            assertThat(root)
+                                    .isInstanceOf(IllegalStateException.class)
+                                    .hasMessage("Unsupported temporal census");
+                        });
+        int before = countReceipts();
         assertThatThrownBy(() -> run(p))
                 .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class)
                 .hasRootCauseInstanceOf(IllegalStateException.class)
-                .hasStackTraceContaining("Unsupported temporal census");
+                .satisfies(
+                        error ->
+                                assertThat(error.getCause())
+                                        .hasMessage(
+                                                "Protected authentication infrastructure is"
+                                                    + " unavailable or corrupt.")
+                                        .hasNoCause());
+        assertThat(countReceipts()).isEqualTo(before);
     }
 
     @Test

@@ -22780,3 +22780,85 @@ Fast strict raw reports300 classes/1382 cases/zero failures/errors/skips PASS; f
 PG-only recompile/invocation completed with12 skips, zero failures/errors, Docker
 unavailable. All six Python policy suites102 PASS. Whitespace is checked again
 after this append. Hosted CI remains pending; no PostgreSQL acceptance is claimed.
+
+
+## 2026-10-15 — HPR-P25-051F failed PostgreSQL scenario repair
+
+**IN PROGRESS / CI REPAIR CANDIDATE / NOT ACCEPTED.** Owner Fail refreshed live
+main `f7836a21bbb0018ed5f39da79dca21186b93bf2a`, tree
+`59cbdd36fc0c3112f916cb318e28052c42561464`. Exact-SHA Full #696/run38704445668
+FAILED; Fast #29 and Docs #318 SUCCESS. The PostgreSQL1 partition and unrestricted
+oracle report the same three failures in the new051F PG class: one assertion
+failure and two fixture errors. Oracle ran2053 cases with zero skips; PG1 ran384
+with zero skips. Nine of the twelve new cases passed in both, but051F is NOT accepted.
+Unit/architecture, static, PostgreSQL0 and API/dictionary jobs succeeded. Missing
+successful failed-lane artifacts and the aggregate failure are downstream effects;
+no CI selector, fallback/oracle, timeout or gate weakening is selected.
+
+One same-ID repair commit is registered and executed:
+`test(identity): repair protected participant postgres scenarios`.
+Exclusive UPDATE scope: the existing
+`src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedOperationIdentityParticipantPostgresIntegrationTest.java`,
+`.github/ci-test-inventory.json` (only that class's source SHA256), this roadmap,
+and append-only `doc/model-remediation/RECONCILIATION.md`. No CREATE/DELETE or
+production, old test, migration, registry, workflow/configuration, dependency,
+version/history, paired permission or later-stage changes are authorized here.
+
+Root causes and bounded repairs:
+- The rollback fixture attempted completion inside a caller transaction, which
+  correctly rejects without owning a new physical transaction. Use genuine OIDC
+  completion with its own transaction and a beforeCommit fault registered AFTER
+  actual event persistence. The event repository spy calls its real implementation;
+  it injects only the test failure and is restored in finally. Assert the exact
+  injected failure, actual beforeCommit entry, rolled-back Session/Binding rows,
+  and denial of the actual unpublished private receipt. Native crypto, private
+  origin, owner state, fences and transaction machinery remain real.
+- The session branch changed terminal status without ended_at; the existing bound
+  session guard correctly rejected the invalid fixture. Supply the genuine database
+  terminal timestamp in the same UPDATE and assert exactly one row affected before
+  asking the participant to deny the revoked session.
+- The expiry test required a private collector message through the participant's
+  sanitized error boundary. Current Spring ORM converts repository IllegalStateException
+  to InvalidDataAccessApiUsageException, which the participant sanitizes as designed.
+  Preserve production behavior. After observed real database expiry, directly call
+  the actual fence in a separate writable RC transaction and require the EXACT root
+  IllegalStateException/Unsupported temporal census. Then invoke the actual participant
+  with the prepared one-use handle, require its exact sanitized operational error
+  with no nested private cause, and verify no receipt/result committed. An unrelated
+  SQL/setup failure cannot satisfy the direct root-cause assertion. No sleeps,
+  forged time, permissive error matching, retries or timeout widening.
+
+All twelve registered PG identities remain unchanged; only the three failed bodies
+and their fault-injection wiring change. Other nine bodies and every other source/
+case/timing/baseline/policy/selector remain unchanged. Inventory totals remain
+Fast300/unit301/PG37+45/oracle383/historical4. Updated inventory SHA256:
+`2b7e87be05f37e8292bd7707e30e6979bba10c1fc92fd7e4ca47953034702d42`.
+
+Validation: Java21 Maven focused test goal (including compilation), participant JVM8,
+Architecture16, boundary13 and trusted verification37 PASS:74 executable cases,
+zero failures/errors. New PG12, existing B1 26 and completion/issuance22 are explicitly
+SKIPPED locally, total60, because Docker/socket is unavailable. The existing Mockito
+jar is supplied as a command-line javaagent for this environment; no project config
+change. Spring ORM7.0.9 local bytecode independently confirms the exception translation.
+No new local PostgreSQL pass or hosted repair acceptance is claimed. Existing Fast29
+success belongs only to the failed parent SHA; it is not repair-SHA acceptance.
+Required static/policy/inventory/docs/offline API/P1 and four-path/unchanged-nine-
+bodies/append-only/header/whitespace validation is recorded in reconciliation.
+
+Publish the repair directly to existing main with expected-head guard; verify actual
+parent/tree/four blobs and automatic Full/Fast/Docs START, then STOP. A separate
+Next/Fail must inspect exact repair-SHA CI and all12 genuine zero-skip PG identities
+in BOTH partition and oracle before acceptance. Parent051/D2/B2/B3, paired Identity
+permission, Party/Facility/global DAG and Topology038 remain OPEN;052 unselected.
+Gas-first/GZ2/own engine/steady-transient/versioned inputs/operator control persist;
+synthetic development,later owner calibration; Simulation/P3 deferred,no deployment.
+
+Repair validation completed: all six Python policy suites102 cases PASS; docs98/
+5355 relative links/24 modules, offline API263 operations/244 paths/231 schemas,
+retained P1 and exact source inventory PASS. Four UPDATEs only, no CREATE/DELETE,
+append-only reconciliation, canonical header, exact12 preserved case identities,
+byte-identical other nine test bodies and all inventory values except the target
+source hash PASS. Java21 focused134 cases:74 pass/60 Docker-related skips/zero
+failures/errors. Production source, CI policy and timeouts remain unchanged.
+Whitespace checked after this append; guarded main publication and CI startup
+observation follow; hosted repair results remain pending.

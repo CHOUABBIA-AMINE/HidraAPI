@@ -32,6 +32,72 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-CI-003 / CI-003A measured-evidence registration, 2026-10-15
+
+**Selected bounded continuation:** owner instruction authorizes one permitted stage. Of the
+remaining packages, the independently selectable evidence-only CI-003A is the sole
+READY_FOR_REGISTRATION candidate in the 44-package review; this action registers and
+selects CI-003A **for read-only CI timing/resource analysis only** under existing
+`HPR-CI-003`. It does **not** create a new HPR task, execute CI-003B/C/D,
+approve optimized-only adoption, select 051H or change D2/D3/D4/D5 policy.
+CI-003A is **SELECTED / EVIDENCE COLLECTION IN PROGRESS**, not completed.
+
+**Exact checked main before registration:** `f8ca520a4aa8061885519d6861c79d5c29fd9f53`, tree
+`354492ccca7793bc2ae8459e335f14e31807dcc1`, parent
+`c3908b2b2a6c02335ca79f884ec91e3d6093cacb`. Its exact-HEAD
+[Documentation #327](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38745740253)
+was SUCCESS; HidraWEB remained at `46676deb70fd38b906bdb370f020f609d0a16c98`
+with [Documentation #39](https://github.com/CHOUABBIA-AMINE/HidraWEB/actions/runs/38702999823)
+SUCCESS. Source runtime baseline for the measurements is accepted G SHA
+`6ca63efdff3eebf277523222d07587d9101e401e`, [Full #700](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38739988227)
+and [Fast #32](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38739988169),
+both SUCCESS, not a new code run on this documentation-only head.
+
+**First observed GitHub Actions timestamps on the accepted runtime SHA**
+(UTC, GitHub-run/job/step metadata; duration rounded to whole seconds):
+
+| Measurement | Exact observation | Interpretation |
+|---|---|---|
+| Full #700 workflow | 13:06:57–13:18:47, 11m50s | End-to-end elapsed; not equal to critical-path test time |
+| Unrestricted oracle job | 13:07:01–13:18:26, 11m25s | Longest work lane; mandatory and retained |
+| Oracle clean verification step | 13:07:39–13:16:34, 8m55s | Full clean verification remains a principal cost |
+| PostgreSQL shard0 / shard1 jobs | 5m53s / 8m51s | Wall times, not summed raw test-class times |
+| API contract/dictionary job | 2m57s | Parallel work, not the bottleneck on this sample |
+| Full aggregate gate job | 13:18:29–13:18:46, 17s | Must follow all prerequisite lane artifacts |
+| Fast #32 workflow | 13:06:57–13:08:31, 1m34s | Single successful sample, no five-run acceptance |
+| Fast reviewed-test step | 13:07:14–13:08:22, 1m08s | Excludes startup, upload and other steps |
+
+These observations are **not** five comparable configurations, verified runner
+CPU/RAM/fork/cache conditions, per-class raw Surefire timings, cold-cache evidence,
+negative gate exercises or proven optimization. The original five-sample
+2026-10-13 baseline stays dated; no sampled speedup or regression is inferred.
+The current `.github/workflows/ci.yml`, `.github/workflows/ci-fast-feedback.yml`,
+`.github/ci-test-inventory.json`, `.github/scripts/verify_ci_test_inventory.py`
+and `.github/scripts/verify_full_ci_evidence.py` were inspected read-only at
+the same head. The current oracle/fallback and source-linked verification are
+mandatory; `optimized_adoption_eligible=false` stays unchanged.
+
+**CI-003A completion evidence still to collect (no CI dispatch in this commit):**
+same-run raw `TEST-*.xml` class-duration distribution with verified class
+identities, runner CPU/RAM/fork configuration, Maven/cache hit/miss and warm/cold
+classification, queue/job/critical-path attribution and sufficiently comparable
+completed runs. Record methodology and unqualified data separately; assess
+whether the oracle, Testcontainers, compilation, or schedule dominates without
+dropping/weakening any source-linked cases. A separate selected CI action is
+required for new hosted benchmark or failure-mode workflows. B/C/D remain
+independently gated. No application code, SQL or production fixtures are changed.
+
+**Exclusive publication contract for this registration:**
+UPDATE only `doc/roadmap/ULTIMATE_ROADMAP.md` (insert this checkpoint,
+preserve all prior bytes) and append-only `doc/model-remediation/RECONCILIATION.md`;
+CREATE/DELETE none. Use the existing exact HPR-CI-003 commit message
+`ci: automate fast feedback and preserve full verification gates`.
+No changes to test inventory, workflows, Maven, security, OpenAPI, migrations,
+release, frontend or runtime source. Verify guarded main parent/tree/two-path diff;
+observe automatic exact-SHA Documentation Validation startup and STOP without
+waiting. No Full/Fast dispatch on documentation-only registration. HPR-P25-051G
+remains accepted, parent051 open, 051H unselected, numerical simulation/P3 deferred.
+
 ### Current execution checkpoint — HPR-P25-051G formally accepted, 2026-10-15
 
 **Authoritative documentation head before acceptance:** `c3908b2b2a6c02335ca79f884ec91e3d6093cacb` (documentation-only

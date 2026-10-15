@@ -23849,3 +23849,33 @@ zero CREATE/DELETE. No Java, tests, inventory, migrations, workflows, API,
 security runtime, release or deployment changes were selected. Old roadmap
 bytes and reconciliation history are preserved. Automatic Docs startup
 must be observed at the new SHA, then STOP; no automatic H implementation.
+
+## 2026-10-15 — HPR-CI-003 / CI-003A evidence-only measurement registration
+
+Owner's one-stage continuation selects the reviewed READY_FOR_REGISTRATION CI-003A
+inside existing HPR-CI-003, only for evidence collection. This is not adoption
+of the external 44-package proposal, a new HPR identity, CI optimization,
+execution of B/C/D or acceptance of any security claim-provenance policy.
+The stage is SELECTED / EVIDENCE COLLECTION IN PROGRESS.
+
+Source: main `f8ca520a4aa8061885519d6861c79d5c29fd9f53` tree `354492ccca7793bc2ae8459e335f14e31807dcc1`, Documentation #327 SUCCESS;
+accepted unchanged runtime source `6ca63efdff3eebf277523222d07587d9101e401e`.
+Exact-runtime Full #700 and Fast #32 SUCCESS. GitHub Actions timestamps show
+Full end-to-end 11m50s; unrestricted oracle job 11m25s with its clean-verify
+step 8m55s; PostgreSQL shard jobs 5m53s / 8m51s; Fast workflow 1m34s.
+These are preliminary job-level observations, not source-linked raw class,
+runner-resource, cache/cold-warm or multi-configuration acceptance proof.
+
+Further evidence collection must preserve greenfield unrestricted oracle,
+partition/raw-report identity, source-linked zero-skip gates, API/dictionary,
+Flyway integrity and full fallback. `optimized_adoption_eligible=false`
+and all prior CI-003 acceptance and chronology remain unchanged. No new
+benchmark is dispatched, no stored historical evidence revised, and no
+new production, Java, PostgreSQL or frontend validation is claimed.
+051G Completed, parent051 In Progress, 051H Planned/Unselected.
+
+This one documentation-only same-ID registration uses existing exact message
+`ci: automate fast feedback and preserve full verification gates`. Its sole
+UPDATE paths are the roadmap checkpoint and this append-only entry; no
+CREATE/DELETE, no changed CI execution logic. Only automatic exact-SHA
+Documentation Validation startup is expected; observe it and STOP.

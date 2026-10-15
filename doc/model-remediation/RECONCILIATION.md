@@ -23621,3 +23621,190 @@ Exact-head candidate `fa9099f170e0cb78dbfeb4cf6ca19a2ccaada2c2` failed Full #699
 2. `futureDenyBoundAndExpiryCannotExtendEvidence` correctly observed the bounded future inactive DENY expiry, then exercised an expired physical SQL guard returning zero inserted receipts. Its guard used AssertJ's `AssertionFailedError`, which extends Error; unchanged `ProtectedTransactionExecutor` deliberately rethrows JVM Errors, so expecting sanitized `ExecutionFailure` was wrong. The test-only physical guard now raises a RuntimeException on a rejected count, enabling the unchanged executor's rollback and `REJECTED_BEFORE_COMMIT` contract. The test also asserts the root cause and no additional committed receipt after expiry.
 
 Repair write set: UPDATE only `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedAuthorizationEvidencePostgresIntegrationTest.java`, `.github/ci-test-inventory.json` (only the single G PG class source_sha256), `doc/roadmap/ULTIMATE_ROADMAP.md` (this checkpoint), and this append-only reconciliation. CREATE/DELETE none. No production code, schema, existing test class/case identities, Docker/runner configuration, protected budgets, permission behavior, CI workflow, release, or next-stage H selection is authorized. Exact commit: `test(identity): repair fenced authorization evidence postgres scenarios`. G and parent051 stay IN PROGRESS until the repaired exact SHA passes required Full/Fast/Docs, owning PG partition and unrestricted oracle, with all12 raw G cases zero skip/error/failure. CI-003 remains independent and open.
+
+
+## 2026-10-15 — 44-package specification review results recorded
+
+Owner requested recording the completed read-only review. This documentation-only
+update uses the planning commit message registered above. It does not register
+candidate runtime scopes, approve policy, select a next package or change accepted
+implementation contracts. The following pinned review findings and per-package
+readiness dispositions supplement the prospective register; they are not execution
+status changes or approved CREATE/UPDATE allowlists.
+
+**Live refresh before this update:** API main remains
+`6ca63efdff3eebf277523222d07587d9101e401e`, tree
+`237f782c2de31aaa2ebd42ecfcaab53e608624e7`. Exact-SHA
+[Full #700](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38739988227),
+[Fast #32](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38739988169) and
+[Docs #325](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38739988260)
+are now SUCCESS. This supersedes the review's historical observation of Full700
+IN PROGRESS below. Workflow success alone is not this update's verification of the
+required raw G partition/oracle evidence. **G and parent051 remain IN PROGRESS;
+H is unselected.** A separate authorized continuation must assess G acceptance
+before registering H. No runtime acceptance is granted here.
+
+#### Pinned review findings
+
+| Repository | Exact source HEAD | Tree |
+|---|---|---|
+| HidraAPI | `6ca63efdff3eebf277523222d07587d9101e401e` | `237f782c2de31aaa2ebd42ecfcaab53e608624e7` |
+| HidraWEB | `46676deb70fd38b906bdb370f020f609d0a16c98` | `19e14dea9e82b523095fc43fa31f9b6ff9bc219e` |
+
+Inspection began at backend `fa9099f170e0cb78dbfeb4cf6ca19a2ccaada2c2`. Main advanced externally with G's two PostgreSQL test repairs. The review adopted the new head, reread the changed governance/test/inventory evidence and regenerated all affected identities. The G production reader and original registered G contract were byte-checked unchanged. G is an immutable dependency reference, excluded from44 dossiers.
+
+At the repaired-source CI observation, Fast32 and Docs325 were successful; Full700 was in progress. Current roadmap records failed Full699 on the earlier candidate. No G acceptance is inferred and no running workflow was waited on to advance development. Runtime OpenAPI was actually downloaded from successful Full698/source5246eb96, ZIP digest authenticated, and compared to canonical content excluding only source provenance. It is retained as prior runtime evidence, not claimed as a new exact-source700 artifact.
+
+445 selected backend/frontend source blobs and348 proposed path classifications were checked against authenticated complete GitHub trees. The review reads148 applied migration files and preserves their normalized identities/checksums. Full inventories and exact declarations/SQL/controller evidence accompany the dossiers.
+
+#### Final required verdict
+
+| Measure | Result |
+|---|---|
+| Expected remaining packages |44; G excluded |
+| Individual dossiers, all16 sections |44 |
+| Fully closed proposed scopes |3, all evidence-only: CI-003A, CI-003D, HPR-P25-031 |
+| READY_FOR_REGISTRATION |1: CI-003A; still requires separate authorized registration/selection |
+| DEPENDENCY_PENDING |2: CI-003D and031 |
+| BLOCKED_SPECIFICATION |28 |
+| REQUIRES_OWNER_DECISION |13 |
+| Candidate exact file-operation rows |348:203 CREATE,145 UPDATE,0 DELETE |
+| Dependency audit |44 nodes,99 edges, no detected cycle; only050/G external references |
+| File collisions |4 shared candidate files, explicitly sequenced; no duplicate CREATE paths |
+| Proposed API operations |62; no normalized route or operationId collisions detected |
+| Proposed named test/audit identities |173; all packages mapped; none implemented/executed here |
+| Parent051 obligation mapping |14 explicit obligation rows with future test references |
+| Full executable quality gate |FAIL: essential contracts/DDL/permissions/fixtures/writer graphs remain open |
+| Formal owner review |YES, as a proposal/blocker review |
+| Formal registration of all44 |NO |
+
+The203 new filenames are **candidate allocations verified absent**, not approved or implementation-ready classes. The145 UPDATE rows are candidate operations on inspected existing files, often common roadmap/reconciliation/inventory files. Missing migration/export/child-schema paths are explicit scope gaps; the count does not imply complete exact executable allowlists. Migration filenames are deliberately unreserved because actual live-main/parallel-work reservation is a future authorized registration step.
+
+#### Findings that materially prevent executable readiness
+
+1. H needs coherent trusted original-claim coverage across producer/issuance/native bearer/reader paths. G's generic EVIDENCE_INDETERMINATE cannot simply be cleared after claim capture because attribute/version uncertainty may also exist. Minimal data retention and new-mapping reauthentication policy remain explicit.
+2. J/K require a source-complete row/relation/FK/trigger/native/JPA writer DAG before adding owner locks. The included lexical census is useful evidence, not proof. K must fix F's current sampling point so every participating owner fence precedes one common s.
+3. L needs complete compatible owner/head/event/request DDL and guarded CAS SQL. Existing station storage only appends immutable bytes; it does not enforce an authoritative head, predecessor, epoch or publication history.
+4. D3 packages require supported company/network ownership, survey/CRS/datum/precision, product metadata, installed identity and manufacturer-data contracts. Existing Custody GAS and Simulation specialized characteristic formats must not be broadened silently.
+5. D4 requires configured source-principal/binding-effective semantics, temporal assessment, richer Monitoring evidence and allowed human-action/Workflow/Audit targets. No actual industrial data or numerical calibration is a prerequisite.
+6. D5 cannot freeze final integrated JSON/API fixtures and acceptance cases before the owner contracts are accepted. Canonical PLATFORM A–I and historical foundation A–G remain distinct namespaces.
+
+These limitations mean the request for44 fully implementation-ready scopes has **not** been met. The complete confirmed work, concrete proposals and exact STOP points are retained per package instead of guessing missing facts or issuing a blanket READY verdict.
+
+#### Owner decisions
+
+These decisions concern supported behavior/semantics. Routine implementation naming is proposed separately; no need to provide deployment measurements or calibration data now.
+
+| Package | Decision | Accountable authority |
+|---|---|---|
+| HPR-P25-051H | Approve minimal captured-claim retention and whether mapping-catalog changes require fresh authentication rather than retaining complete source claims. | Business/security data owner for policy; accountable bounded-context owner and independent architecture/database reviewer for technical registration |
+| HPR-P25-052A | Confirm whether one network can have multiple company engineering contexts and how network ownership transfer relates to facility publication epochs. | Business/security data owner for policy; accountable bounded-context owner and independent architecture/database reviewer for technical registration |
+| HPR-P25-052C | Approve representational CRS/datum and chainage conventions to support; deployment coordinates and calibration values are not required. | Business/security data owner for policy; accountable bounded-context owner and independent architecture/database reviewer for technical registration |
+| HPR-P25-053A | Select supported metadata classifications and whether company-local products reference or extend existing shared catalog identity. | Business/security data owner for policy; accountable bounded-context owner and independent architecture/database reviewer for technical registration |
+| HPR-P25-053B | Choose representational property/composition families to support as metadata, keeping numerical qualification explicitly unsupported. | Business/security data owner for policy; accountable bounded-context owner and independent architecture/database reviewer for technical registration |
+| HPR-P25-054A | Confirm canonical identity relationship among Topology Equipment, physical installed unit, manufacturer model/serial and optional MaintainableAsset. | Business/security data owner for policy; accountable bounded-context owner and independent architecture/database reviewer for technical registration |
+| HPR-P25-054C | Approve supported supplied characteristic shapes and certification/approval terminology; numerical interpolation and real calibration remain deferred. | Business/security data owner for policy; accountable bounded-context owner and independent architecture/database reviewer for technical registration |
+| HPR-P25-055D | Select whether aggregate import may create missing owner revisions atomically or accepts pre-existing published sources only; dry run and current authorization remain mandatory. | Business/security data owner for policy; accountable bounded-context owner and independent architecture/database reviewer for technical registration |
+| HPR-P25-056A | Approve source-principal authority and event-time versus ingestion-time binding selection for ambiguous/late observations; no deployment sensor data required. | Business/security data owner for policy; accountable bounded-context owner and independent architecture/database reviewer for technical registration |
+| HPR-P25-056C | Approve handling policy choices for late/out-of-order/future-skew data; numerical deployment thresholds remain configurable owner input. | Business/security data owner for policy; accountable bounded-context owner and independent architecture/database reviewer for technical registration |
+| HPR-P25-057A | Select supported monitored condition/target families and approved configurable threshold policy; do not require real measurements or assume causality. | Business/security data owner for policy; accountable bounded-context owner and independent architecture/database reviewer for technical registration |
+| HPR-P25-057B | Approve supported human declaration/action targets and whether approval precedes declared execution for each; no autonomous action is introduced. | Business/security data owner for policy; accountable bounded-context owner and independent architecture/database reviewer for technical registration |
+| HPR-P25-057C | Select factual outcome statuses and correlation/confounder policy; UNKNOWN must remain available without inferring industrial causality. | Business/security data owner for policy; accountable bounded-context owner and independent architecture/database reviewer for technical registration |
+
+#### Historical and frontend preservation
+
+The historical map retains accepted P0/P1/P2/HMRs and018–030/038–050/051A–G obligations without reopening completed features. Numerical Simulation/P3, industrial calibration/SITE commissioning, release/deployment and autonomous OT actuation remain deferred. Gas-first/GZ2, Hidra's own engine, steady/transient direction, versioned inputs and operator control are preserved.
+
+HidraWEB ENG-001–012 are mapped to their actual documented F-stage consumers. Both F02 physical graph authoring and F03 survey/profile authoring are currently source-recorded BLOCKED. Existing visualization/readers and supported commands are preserved. No proposed API unlocks a frontend until accepted runtime OpenAPI/DTO/permission/error evidence is handed off. Independently supported editors need not wait for unrelated product/baseline/solver work.
+
+#### Package coverage
+
+| Package | Specification disposition | Subject |
+|---|---|---|
+| HPR-P25-051H | REQUIRES_OWNER_DECISION | Trusted authorization-claim provenance and coverage |
+| HPR-P25-051I | BLOCKED_SPECIFICATION | Paired protected Identity authorization |
+| HPR-P25-051J | BLOCKED_SPECIFICATION | Party eligibility and Facility ownership participation |
+| HPR-P25-051K | BLOCKED_SPECIFICATION | Global admission, fences and common database time |
+| HPR-P25-051L | BLOCKED_SPECIFICATION | Protected internal Topology head and operation boundary |
+| HPR-P25-051M | BLOCKED_SPECIFICATION | Integrated adversarial, concurrency and latency qualification |
+| CI-003A | READY_FOR_REGISTRATION | Measured critical path and execution analysis |
+| CI-003B | BLOCKED_SPECIFICATION | Evidence-justified CI scheduling correction |
+| CI-003C | BLOCKED_SPECIFICATION | Equivalence and negative acceptance gates |
+| CI-003D | DEPENDENCY_PENDING | Timing, runner cost and adoption decision |
+| HPR-P25-052A | REQUIRES_OWNER_DECISION | Company/network-owned engineering drafts |
+| HPR-P25-052B | BLOCKED_SPECIFICATION | Physical network and station incidence authoring |
+| HPR-P25-052C | REQUIRES_OWNER_DECISION | Survey, CRS, profile and pipe-section authoring |
+| HPR-P25-052D | BLOCKED_SPECIFICATION | Public governed revision publication and history |
+| HPR-P25-052E | BLOCKED_SPECIFICATION | Typed local engineering exchange and capabilities |
+| HPR-P25-052F | BLOCKED_SPECIFICATION | Topology operator/API/history qualification |
+| HPR-P25-053A | REQUIRES_OWNER_DECISION | Product identity and metadata drafts |
+| HPR-P25-053B | REQUIRES_OWNER_DECISION | Supplied composition, properties and methods |
+| HPR-P25-053C | BLOCKED_SPECIFICATION | Product publication, history and owner exports |
+| HPR-P25-053D | BLOCKED_SPECIFICATION | Multi-product ownership/API compatibility qualification |
+| HPR-P25-054A | REQUIRES_OWNER_DECISION | Independent installed-unit identity and references |
+| HPR-P25-054B | BLOCKED_SPECIFICATION | Effective station configuration and connectivity |
+| HPR-P25-054C | REQUIRES_OWNER_DECISION | Supplied manufacturer maps, tables and limits |
+| HPR-P25-054D | BLOCKED_SPECIFICATION | Versioned installed-unit/characteristic links |
+| HPR-P25-054E | BLOCKED_SPECIFICATION | Installed-equipment consumer qualification |
+| HPR-P25-055A | BLOCKED_SPECIFICATION | Baseline manifest drafts and completeness |
+| HPR-P25-055B | BLOCKED_SPECIFICATION | Atomic authoritative baseline freeze |
+| HPR-P25-055C | BLOCKED_SPECIFICATION | Exact baseline read, compare and reconstruction |
+| HPR-P25-055D | REQUIRES_OWNER_DECISION | Aggregate typed engineering exchange |
+| HPR-P25-055E | BLOCKED_SPECIFICATION | Multi-owner baseline and exchange qualification |
+| HPR-P25-056A | REQUIRES_OWNER_DECISION | Configured telemetry source and effective bindings |
+| HPR-P25-056B | BLOCKED_SPECIFICATION | Authorized ingestion and immutable raw provenance |
+| HPR-P25-056C | REQUIRES_OWNER_DECISION | Configured quality, freshness and ordering assessment |
+| HPR-P25-056D | BLOCKED_SPECIFICATION | Deterministic telemetry history, replay and recovery |
+| HPR-P25-056E | BLOCKED_SPECIFICATION | Telemetry API/security/monitoring qualification |
+| HPR-P25-057A | REQUIRES_OWNER_DECISION | Monitoring conditions and observation evidence |
+| HPR-P25-057B | REQUIRES_OWNER_DECISION | Authenticated human action declarations and Workflow |
+| HPR-P25-057C | REQUIRES_OWNER_DECISION | Observation/outcome correlation and recovery |
+| HPR-P25-057D | BLOCKED_SPECIFICATION | Cross-owner operational action/observation qualification |
+| HPR-P25-058A | BLOCKED_SPECIFICATION | Versioned PLATFORM fixture and criterion matrix |
+| HPR-P25-058B | BLOCKED_SPECIFICATION | Operator/API/security/history end-to-end qualification |
+| HPR-P25-058C | BLOCKED_SPECIFICATION | Integrated concurrency, replay and operational evidence |
+| HPR-P25-058D | BLOCKED_SPECIFICATION | Exact-source PLATFORM evidence and disposition |
+| HPR-P25-031 | DEPENDENCY_PENDING | Independent engineering foundation closure |
+
+#### Review artifact identities and publication boundary
+
+The external review ZIP contains92 members, including44 dossiers,10 volume indexes,
+registers, source evidence, validator and manifest. SHA256 identities:
+
+| Delivered artifact | Bytes | SHA256 |
+|---|---|---|
+| HidraAPI_44_Package_Specification_Review_2026-10-15.zip |1333862 | `6ce132cc9c21f086ff4d51510a650e6423928ad13ccec82481081055c57a8869` |
+| REVIEW_SUMMARY.md |15840 | `10b4e76a225ce3927238b745f1cd28b2386e2e521912078d1d875a4a561b9258` |
+| validation-report.json |14733 | `950b7321add117c6e00434576314b42d178b30b7f42489ae34cb6de999fe7789` |
+| artifact-manifest.json |18443 | `c7f86802aa8b86b9eb18fd8462987c34d46b87e21bea958e305848621d938039` |
+
+These are external delivered artifacts, not repository files. Candidate operations
+span217 unique paths; missing schema/export paths remain scope gaps. Four shared
+candidate files (roadmap, reconciliation, inventory, ArchitectureGuardrailTest) need
+serialized publication; ordering does not prove semantic compatibility. Proposed
+API collision checks do not close DTO/security/error/runtime contracts. No migration
+filename/version is reserved; later registration must rescan live main. The lexical
+writer census is not proof of the complete row/relation/FK/trigger/native/JPA DAG.
+F currently samples after Identity fences and before later owners; the future common
+sample must follow every participating owner fence. Monitoring's existing trusted
+reading reference contains only id, pointId and trustLevel, not the richer proposed
+export contract. Independent CI-003A is not automatically selected by its readiness.
+
+Review structural validation PASS; all44 executable-ready quality gate FAIL.
+The validator checks delivered artifacts, not Java, SQL, PostgreSQL or hosted CI.
+No production data migration or actual plant data is required: synthetic fresh-schema
+development fixtures suffice; owner supplies later deployment calibration. Prior
+runtime API evidence is Full698/source5246eb96, not exact-6ca/Full700 acceptance.
+
+Preserve all previous roadmap bytes and append reconciliation only. No source,
+inventory, workflow, migration, version, Master Product Vision, new governance file,
+registration allowlist or task status change is authorized here. Validate the exact
+two-document scope and required documentation checks, publish directly to existing
+main with an expected-head guard, confirm automatic exact-SHA Docs startup, then
+STOP. Do not dispatch Full/Fast, wait for CI completion or advance a stage.
+
+Documentation-update validation: six Python policy suites102 cases PASS; canonical
+docs99/5356 relative links/24 modules/13 P2 rows, offline OpenAPI263 operations/
+244 paths/231 schemas and retained P1 checks PASS. No new Java/PostgreSQL execution
+is claimed. Inventory, exact two-path scope, previous roadmap byte preservation,
+append-only reconciliation and whitespace are checked before guarded publication.

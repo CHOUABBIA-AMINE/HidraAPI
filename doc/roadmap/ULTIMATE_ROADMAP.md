@@ -32,6 +32,113 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-CI-003 / CI-003C bounded archive sweep completed, 2026-10-15
+
+**Current disposition: CI-003C archival evidence recovery completed within
+its selected read-only scope; full CI-003C acceptance BLOCKED BY
+SPECIFIC MISSING EVIDENCE.** This is not a source-code completion,
+CI-003D selection, CI adoption or new benchmark authorization.
+Stop repeating documentation-only archival checkpoints until the
+missing representative source or an independently authorized
+hosted qualification package provides genuinely new evidence.
+
+**Verified preflight:** HidraAPI main
+`ca0d2aed0077857277883deef79fee83adc4fc61`, tree
+`c96638756687267563a8379ea48f819a7669e530`, parent
+`3aa9a359800e9070969e28ee1a42f550fbe8871f`.
+Exact-SHA [Documentation #332](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38758857912)
+completed SUCCESS. No newer accepted implementation source replaces
+`6ca63efdff3eebf277523222d07587d9101e401e`,
+[Full #700](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38739988227)
+and [Fast #32](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38739988169)
+SUCCESS. HidraWEB main remains
+`46676deb70fd38b906bdb370f020f609d0a16c98`.
+
+**Exhaustive bounded post-shadow API-change check:** GitHub
+`compare/d4a3d99d0840a8791eb79e5b25f86bd377470b54...6ca63efdff3eebf277523222d07587d9101e401e`
+returned `ahead`, 56 commits and 83 changed file paths
+across the current partition-shadow validation window.
+There were 43 `src/main/` paths, one new
+`src/main/resources/db/migration/V20261013_001__p25_identity_operation_binding.sql`,
+and **zero paths identifying a modified REST controller,
+API DTO or OpenAPI contract source** in that comparison.
+The compared change set is primarily Identity/application,
+security, transaction and persistence infrastructure;
+internal interfaces must not be silently represented as
+published REST contract changes. No naturally occurring
+API-changing revision qualified in this checked window.
+Do not create an artificial API change solely for CI scoring.
+
+**Controlled-cache evidence classification:** independently
+reviewed the original unrestricted oracle GitHub-hosted job
+logs for successful Full #669 (job115276381207),
+#681 (job115779856567), #683 (job115813388718)
+and #700 (job116438851669). Each printed the same primary
+Maven setup-java cache key beginning
+`setup-java-Linux-x64-maven-8b5a79fc`, an explicit
+`Cache hit for:`, `Cache restored successfully`, and
+a final primary-key hit without replacement.
+Observed runner OS Ubuntu24.04; #681/683/700 reported
+four bounded reused forks on four CPUs. Therefore all
+four samples are **Maven warm-cache runs**, and none
+is controlled `cache miss`/cold-cache CI qualification.
+PostgreSQL Testcontainers image availability/pulls are
+distinct from Maven dependency cache and are not proof of
+a cold Maven build.
+
+**Remaining CI-003C gate decision:**
+
+| Gate | Admission state |
+|---|---|
+| Identity/security natural code revision | PASS bounded Full #700 same-run source/partition/unrestricted oracle, 385 classes/2073 cases |
+| Fresh-schema SQL migration-containing revision | PASS bounded Full #681, authenticated artifact, 370 classes/1838 cases, identical SQL blob |
+| Real failed required job denies aggregate | PASS bounded Full #699 failed PG1/oracle with fail-closed Full gate |
+| Actual published-API-changing revision under shadow CI | OPEN: none identified in checked 56-commit post-shadow window |
+| Live hosted omitted/skipped/overlap/stale/cancelled negative cases | OPEN: existing Python fixtures do not equal hosted evidence |
+| Controlled cold-cache and repeatable warm/cold attribution | OPEN: all four inspected oracle logs show primary Maven cache HIT |
+| Five comparable samples, runner minutes and <=7m full critical path | OUTSIDE THIS STAGE: separate unselected CI-003D gate |
+
+**Explicit empty-database development policy:** there is
+no populated production/operational database or live OT
+installation in this scope. Continue using disposable
+fresh PostgreSQL16 schemas with all immutable Flyway
+migrations and synthetic auth/company/topology fixtures
+to prove structure, isolation and authorization. No
+real-data backfill, deployed-data conversion, external
+calibration or migration against a populated operational
+database is required. This policy does not excuse
+fresh-schema Flyway, PostgreSQL integration or exact
+same-run source/case checks.
+
+**Next permitted action, not executed:** secure a separate
+owner/roadmap-registered exact allowlist and acceptance
+for an isolated hosted synthetic negative and cache
+qualification campaign, or acquire real representative
+API-change CI evidence when an authorized API stage is
+actually implemented. Until then CI-003C remains
+`IN PROGRESS / EVIDENCE BLOCKED`; there is no
+basis to declare full acceptance or launch a generic
+workflow_dispatch. CI-003D remains unselected;
+HPR-CI-003 remains IN PROGRESS and
+`mode=shadow-fallback-required`,
+`fallback_required=true`,
+`optimized_adoption_eligible=false` persist.
+HPR-P25-051G is Completed; parent051 In Progress;
+051H Planned/Unselected; simulator numerical/P3 deferred.
+
+**Exclusive no-runtime-change publication:** record the
+bounded archival result in this current roadmap by
+inserting without removal, and append to
+`doc/model-remediation/RECONCILIATION.md`;
+exact existing HPR-CI-003 message
+`ci: automate fast feedback and preserve full verification gates`.
+Two UPDATE paths, no CREATE/DELETE. All Java,
+SQL, API, security, Maven, inventory, CI workflows,
+tests and prior evidence remain byte-identical.
+Guard existing main HEAD and verify parent, tree, file diff.
+Observe automatic Documentation Validation queued/started
+on the exact commit and STOP without waiting or advancing.
+
 ### Current execution checkpoint — HPR-CI-003 / CI-003C authenticated historical evidence recovery, 2026-10-15
 
 **Stage: CI-003C SELECTED / PARTIAL EVIDENCE VERIFIED; acceptance OPEN.**

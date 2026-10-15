@@ -24101,3 +24101,77 @@ Commit under exact existing message
 Only roadmap INSERT and reconciliation APPEND;
 two UPDATE files, zero CREATE/DELETE, preserve all
 previous bytes. Automatic Docs startup, then STOP.
+
+## 2026-10-15 — HPR-CI-003 / CI-003C archival window exhausted; qualification blocked
+
+Owner `Next` continued the already-selected read-only
+CI-003C evidence sweep. Head before change was
+`ca0d2aed0077857277883deef79fee83adc4fc61` (tree
+`c96638756687267563a8379ea48f819a7669e530`), and its exact-HEAD
+Documentation #332 SUCCESS. Accepted runtime remains
+`6ca63efdff3eebf277523222d07587d9101e401e`;
+Full #700 and Fast #32 SUCCESS. No newer runtime
+code or unresolved HEAD CI failure was found.
+
+**Bounded archive-recovery work complete, CI-003C full
+qualification NOT complete.** GitHub comparison from
+post-shadow baseline
+`d4a3d99d0840a8791eb79e5b25f86bd377470b54`
+to current accepted runtime returned56 commits/
+83 changed file paths/43 `src/main/` paths, including
+immutable-binding migration
+`V20261013_001__p25_identity_operation_binding.sql`
+but no changed REST controller, API DTO or
+OpenAPI contract source. An ordinary internal
+Identity Java contract does not count as a public
+API compatibility representative. The API-changing
+CI-003C gate remains OPEN; do not manufacture changes.
+
+Original successful unrestricted oracle job logs:
+Full#669/job115276381207,
+Full#681/job115779856567,
+Full#683/job115813388718,
+Full#700/job116438851669 all reported
+the same primary setup-java Maven cache key, cache
+hit, successful restoration and no cache replacement.
+Thus none is authenticated cold Maven cache proof.
+Unrestricted PostgreSQL/SQL fixture startup and
+Docker image pulls are a separate timing dimension.
+
+Previously established CI-003C evidence remains
+authenticated and unmodified: accepted #700 G
+security-source 385/2073 same-run equivalence,
+fresh-schema migration-containing #681 370/1838
+equivalence, and actual failed required-job
+aggregate denial #699. The 25+ synthetic Python
+negative policy fixtures do not independently prove
+hosted cancellation, stale/missing/overlapping
+artifact and skipped-test scenarios. Controlled
+cold/warm, a naturally authorized published API
+change and other hosted negative acceptance cases
+still require separately scoped and selected work.
+CI-003D performance/cost/adoption not selected;
+seven-minute Full critical path not met; mandatory
+unrestricted oracle/fallback and
+`optimized_adoption_eligible=false` remain.
+
+Owner confirms database **contains no operational data**.
+Keep fresh-schema PostgreSQL16 / all historical Flyway
+migrations intact, synthetic-only authorization and
+network fixtures, and zero deployed-data migration,
+backfill or engineering calibration prerequisite.
+This clarification does not authorize dropping
+existing fresh-schema/database/security tests.
+
+Only roadmap insertion and reconciliation append
+are authorized by this same-ID archival checkpoint.
+The exact existing HPR-CI-003 commit message is
+`ci: automate fast feedback and preserve full verification gates`.
+No CI workflow, script, inventory, Java, SQL, tests,
+REST, API or frontend edits. Guarded direct main,
+check parent/tree and two-file diff, observe
+Documentation startup and STOP. The next permissible
+active qualification requires its own explicit
+source-linked hosted-fixture campaign registration
+or actual approved API implementation evidence.
+Parent CI-003, 051 and 051H statuses are not advanced.

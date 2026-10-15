@@ -32,6 +32,58 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-P25-051D direct-grant fixture repair, 2026-10-15
+
+Owner Fail selects repair of exact main
+`cb9cd9c9f97c1ec74493687a50f1d3694bc38fd0`.
+[Full #692](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38679687575)
+failed; Fast #25 and Docs #310 succeeded. Java compilation and unit/
+architecture now passed. Reviewed PostgreSQL partition1 and unrestricted
+oracle logs identify two errors in the new collector class:
+completeTimedEstateIncludesInactiveFutureDeny and
+nativeWriterCannotChangeCensusBeforeCommit violate ck_hmr088_status.
+Oracle reports2023 tests, zero assertion failures, two errors and zero skips;
+this is failed acceptance, not a successful collector proof.
+
+Read immutable V20261006_013__hmr_088_direct_permission_bounds.sql:
+direct UserPermissionGrant status allows ACTIVE/REVOKED/EXPIRED, while
+SUSPENDED remains valid for other grant families. Replace SUSPENDED with
+REVOKED ONLY in the three direct-grant fixture statements: future inactive
+DENY, independent writer and overflow. Keep all role/membership fixture
+statuses, production source, SQL constraints and existing migrations unchanged.
+
+Also repair a latent false-positive in oversizedCensusRollsBackWithoutPartialResult:
+an invalid overflow INSERT could previously satisfy generic transaction
+rejection before the collector ran. Assert that1025 rows really exist inside
+the provisional transaction, record the collector's exact reviewed-cap
+rejection, and require that observation after rollback. Thus an INSERT failure
+or unrelated early rejection cannot pass the census-cap proof. Retain full
+rollback/no partial receipt/no final guard and positive collection after
+release. All ten case identities, deadlines and security guarantees persist.
+
+UPDATE only new collector test, its exact inventory source hash, this roadmap
+and append-only reconciliation. CREATE/DELETE none. Same registered message:
+`feat(identity): collect fenced temporal event candidates`.
+No production, migration, dependency, workflow or unrelated test change.
+New test source SHA256:
+`794abcafdee37fbdce227a8e4a11797f5c678218722f166702846b3295ff5898`;
+inventory digest:
+`a443ca1f8ff18c160150dcf98c6a36e8c6b2e5e692873b3d6cab2d97257dfa04`.
+Old case/lane/order/policy/timing inventory is unchanged.
+
+Local syntax-only Java parsing and source inventory PASS; migrated status
+contract and all targeted statements audited. Canonical docs/offline OpenAPI/
+P1, exact four-path scope and append-only checks performed. No local Java21/
+JUnit/PostgreSQL success is claimed. Publish guarded main, verify parent/
+tree/blobs, observe actual exact-SHA Full/Fast/Docs START then STOP.
+Separate Next/Fail must inspect actual aggregate and ten zero-skip PG cases
+before051D acceptance. 051D remains IN PROGRESS / REPAIRED CANDIDATE /
+HOSTED CI PENDING; parent051/D2/B2/B3 and real owner integration remain OPEN,
+052 unselected. CI-003 oracle/fallback and optimized=false retained.
+Gas-first/GZ2, own engine, steady/transient, versioned inputs/operator control;
+synthetic development, owner calibration later, Simulation/P3 deferred;
+no release/deployment.
+
 ### Current execution checkpoint — HPR-P25-051D assertion import repair, 2026-10-15
 
 Owner Fail selects repair of exact main

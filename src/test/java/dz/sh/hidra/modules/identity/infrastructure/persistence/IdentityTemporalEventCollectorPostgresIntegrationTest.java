@@ -117,7 +117,7 @@ class IdentityTemporalEventCollectorPostgresIntegrationTest {
         Instant from=dbNow().plusSeconds(5),to=from.plusSeconds(100);
         seed("user_permission_grant",grant,
                 "id,user_id,permission_id,effect,grant_reason,emergency_access,valid_from,valid_to,status,created_at",
-                "?,?,?,'DENY','future unmatched synthetic',false,?,?,'SUSPENDED',clock_timestamp()",
+                "?,?,?,'DENY','future unmatched synthetic',false,?,?,'REVOKED',clock_timestamp()",
                 grant,binding.userId(),permission,Timestamp.from(from),Timestamp.from(to));
         Candidate c=run(binding.bindingId());
         assertThat(c.earliestFuture()).isEqualTo(from);
@@ -202,7 +202,7 @@ class IdentityTemporalEventCollectorPostgresIntegrationTest {
         String insert="INSERT INTO "+table("user_permission_grant")
                 +"(id,user_id,permission_id,effect,grant_reason,emergency_access,valid_from,valid_to,status,created_at)"
                 +" VALUES ('"+grant+"','"+binding.userId()+"','"+permission+"','DENY','synthetic',false,"
-                +"clock_timestamp()+interval '5 minutes',clock_timestamp()+interval '10 minutes','SUSPENDED',clock_timestamp())";
+                +"clock_timestamp()+interval '5 minutes',clock_timestamp()+interval '10 minutes','REVOKED',clock_timestamp())";
         AtomicReference<Candidate> captured=new AtomicReference<>();
         try(Writer writer=new Writer(c->sql(c,insert))) {
             Candidate result=executor.execute(()->{
@@ -230,20 +230,23 @@ class IdentityTemporalEventCollectorPostgresIntegrationTest {
         assertThat(run(binding.bindingId())).isNotNull();
     }
     @Test void oversizedCensusRollsBackWithoutPartialResult() {
-        String permission=permission(),prefix=id();AtomicBoolean guarded=new AtomicBoolean();
+        String permission=permission(),prefix=id();AtomicBoolean guarded=new AtomicBoolean(),overflowObserved=new AtomicBoolean();
         rejected(()->executor.execute(()->{
             jdbc.update("INSERT INTO "+table("user_permission_grant")
                 +"(id,user_id,permission_id,effect,grant_reason,emergency_access,valid_from,valid_to,status,created_at)"
-                +" SELECT ?||'-'||g,?,?,'DENY','synthetic overflow',false,clock_timestamp(),clock_timestamp()+interval '1 hour','SUSPENDED',clock_timestamp()"
+                +" SELECT ?||'-'||g,?,?,'DENY','synthetic overflow',false,clock_timestamp(),clock_timestamp()+interval '1 hour','REVOKED',clock_timestamp()"
                 +" FROM generate_series(1,1025) AS g",prefix,binding.userId(),permission);
+            assertThat(jdbc.queryForObject("SELECT count(*) FROM "+table("user_permission_grant")+" WHERE id LIKE ?",Integer.class,prefix+"%")).isEqualTo(1025);
             jdbc.update("INSERT INTO "+receipt()+" VALUES(99)");
             try { return collector.collect(binding.bindingId()); }
             catch(IllegalStateException e) {
                 assertThat(e).hasMessage("Temporal census exceeds reviewed bound");
+                overflowObserved.set(true);
                 throw e;
             }
         },em::flush,()->{guarded.set(true);jdbc.queryForObject("SELECT 1",Integer.class);}));
         assertThat(guarded).isFalse();
+        assertThat(overflowObserved).isTrue();
         assertThat(jdbc.queryForObject("SELECT count(*) FROM "+table("user_permission_grant")+" WHERE id LIKE ?",Integer.class,prefix+"%")).isZero();
         assertThat(jdbc.queryForObject("SELECT count(*) FROM "+receipt(),Integer.class)).isZero();
         assertThat(run(binding.bindingId())).isNotNull();

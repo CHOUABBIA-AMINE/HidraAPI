@@ -32,6 +32,57 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-P25-051G formally accepted, 2026-10-15
+
+**Authoritative documentation head before acceptance:** `c3908b2b2a6c02335ca79f884ec91e3d6093cacb` (documentation-only
+commit after the repaired implementation). **Accepted runtime/test SHA:**
+`6ca63efdff3eebf277523222d07587d9101e401e`, tree `237f782c2de31aaa2ebd42ecfcaab53e608624e7`.
+The documentation-only intervening commit changed only this roadmap and append-only
+reconciliation. No newer implementation SHA supersedes the accepted G repair.
+
+| Registered stage | Evidence-based current status |
+|---|---|
+| HPR-P25-051G | **Completed** — accepted bounded Identity fenced authorization evidence reader and test repair at `6ca63efdff3eebf277523222d07587d9101e401e` |
+| HPR-P25-051 (D2/B2/B3 and 038) | **In Progress** — H–M, complete owner coordination, paired authority, publication head and global integration remain open |
+| HPR-P25-051H | **Planned / Unselected** — requires separate owner decision, exact contract and scoped registration before any implementation |
+
+Exact repaired-SHA CI [Full #700](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38739988227)
+(run38739988227), [Fast #32](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38739988169)
+and [Docs #325](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38739988260)
+all completed SUCCESS. The post-runtime documentation-only head passed
+[Docs #326](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38743507142).
+In Full #700, PostgreSQL shard1 verified46 classes/396 tests and unrestricted
+PostgreSQL16 oracle verified385 classes/2073 tests; **each reports zero failures,
+errors or skips**. The CI source-linked raw-report verifier passed the complete
+selected source inventory, including G's registered12 PostgreSQL identities;
+the authenticated aggregate verified same-run partition/oracle equivalence,
+exact runtime source SHA, six lane identities, 385 classes/2073 tests with
+zero failures/errors/skips. Successful Full gate included clean Java21 verification,
+API/dictionary and immutable Flyway checks. This is hosted evidence, not a claim
+that local PostgreSQL tests were run for this governance action. The full evidence
+bundle was published as artifact11975533583 with SHA256
+`3ca8926f9fb425ec13bc046dcf84eb84d726beccc7c8015ca1b89d0624e99e20`.
+
+This closes **only** the registered G internal Identity evidence-reader slice.
+The proven bounded fresh JDBC/evaluator-input path and its conservative unknown-claim
+behavior do not authorize an external caller, grant a public protected permission,
+replace authentic claim provenance, or establish Identity+Party+Topology publication
+semantics. H must separately decide minimal claim retention and whether mapping
+changes require fresh authentication, and register a coherent producer/issuance/
+native bearer/reader/evaluator contract and exact file allowlists before code changes.
+No H policy is approved or H runtime work selected by this acceptance. Parent051,
+CI-003 and all dependent D3/D4/D5/052–058 work retain their independent gates;
+mandatory unrestricted oracle/fallback and optimized_adoption_eligible=false remain.
+
+**This same-ID governance acceptance updates only** `doc/roadmap/ULTIMATE_ROADMAP.md`
+and append-only `doc/model-remediation/RECONCILIATION.md`, using previously registered
+message `docs(security): select operation time fencing proof`. CREATE/DELETE none.
+Production, tests, inventory, migration, CI/workflows, schema, dependencies, policies,
+version/releases, historical dashboard and all older roadmap passages are preserved.
+Only automatic exact-SHA Documentation validation is expected for this documentation
+commit; do not dispatch runtime Full/Fast, wait for completion or register H here.
+Observe new Docs startup and STOP. No deployment, release, solver/P3 or SITE claim.
+
 ### Current execution checkpoint — 44-package specification review results, 2026-10-15
 
 Owner requested recording the completed read-only review. This documentation-only

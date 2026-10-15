@@ -23808,3 +23808,44 @@ docs99/5356 relative links/24 modules/13 P2 rows, offline OpenAPI263 operations/
 244 paths/231 schemas and retained P1 checks PASS. No new Java/PostgreSQL execution
 is claimed. Inventory, exact two-path scope, previous roadmap byte preservation,
 append-only reconciliation and whitespace are checked before guarded publication.
+
+
+## 2026-10-15 — HPR-P25-051G repaired implementation accepted against exact-SHA CI #700
+
+This separately selected same-ID governance continuation recovered main
+`c3908b2b2a6c02335ca79f884ec91e3d6093cacb` and accepted the unchanged runtime candidate
+`6ca63efdff3eebf277523222d07587d9101e401e` after source-linked hosted evidence review. The intervening
+main change was documentation-only and changed no registered G production,
+unit, PostgreSQL integration or inventory content.
+
+Full CI #700/run38739988227, Fast #32 and Docs #325 passed at the exact
+runtime SHA; current documentation head Docs #326 passed. Full's PostgreSQL
+partition1 recorded46 classes/396 tests, and unrestricted PostgreSQL16 oracle
+385 classes/2073 tests; both recorded zero failures, zero errors and zero skips.
+The selected raw report and authenticated Full aggregate gates passed,
+preserving all12 registered G PostgreSQL identities in both required lanes
+with same-run/source/inventory equality. Aggregate result:385 classes,
+2073 tests, zero failures/errors/skips, source_sha=6ca63efdff3eebf277523222d07587d9101e401e,
+same_run_equivalence=true, fallback_required=true,
+optimized_adoption_eligible=false. Full evidence artifact11975533583 has
+SHA256 `3ca8926f9fb425ec13bc046dcf84eb84d726beccc7c8015ca1b89d0624e99e20`.
+The preceding Full #699 failure and test-only repairs remain historical
+evidence; they are not rewritten or misrepresented as successes.
+
+**Acceptance:** HPR-P25-051G Completed, bounded Identity-private fenced
+authorization-evidence loader only. Parent HPR-P25-051 remains In Progress;
+H–M, paired protected authority, Party/Facility global fences, authoritative
+Topology publication/CAS/epoch, and integrated B2/B3/038 gates remain open.
+The conservative unresolved original-claim mapping condition remains
+EVIDENCE_INDETERMINATE: this acceptance does not admit any new claim-derived
+permission. H is planned/unselected; minimal claim retention and fresh
+authentication on catalog evolution require owner decision and a separate
+source-complete, exact-scope registration.
+
+Documentation-only acceptance uses the existing same-ID governance message
+`docs(security): select operation time fencing proof`; two UPDATE paths
+(`doc/roadmap/ULTIMATE_ROADMAP.md`, this append-only reconciliation) and
+zero CREATE/DELETE. No Java, tests, inventory, migrations, workflows, API,
+security runtime, release or deployment changes were selected. Old roadmap
+bytes and reconciliation history are preserved. Automatic Docs startup
+must be observed at the new SHA, then STOP; no automatic H implementation.

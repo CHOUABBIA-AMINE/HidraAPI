@@ -32,6 +32,144 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — owner-approved 051G–051M finalization sequence, 2026-10-15
+
+Owner requested document alignment with the reviewed seven-stage proposal before
+executing G. Live main `f6460b2c198279a1b426836e6bbd12c3bb3464c3`, tree
+`c3efea9fabb95671e22d89badf440db17ebe950f`, has exact-SHA Docs #320 SUCCESS.
+Latest runtime remains `fa87d9f6c7df0a5431a3cdcc1b754d146e7c7366`, accepted
+Full #697/Fast #30/Docs #319. 051A–F retain their bounded acceptance. Parent051,
+D2 and B2/B3 are IN PROGRESS. No failed CI is outstanding at this checkpoint.
+
+**Approved delivery sequence: G through M, seven remaining work packages including
+G and six after G.** This is not a promise of seven commits or a batch execution
+envelope. Each stage includes its own focused/unit/PostgreSQL proof and CI acceptance;
+large stages may be subdivided A/B only after explicit source-backed path/dependency/
+message registration. Final qualification does not postpone earlier-stage testing.
+
+Only **051G** currently has an executable six-path allowlist, exact implementation
+message and named acceptance cases in the retained registration below. Its contract,
+CREATE/UPDATE list,8 unit/12 PG identities and inventory rules remain byte-identical.
+H–M are now PLANNED delivery stages with bounded objectives/dependencies below;
+they have NO executable path list, migration filename, selected code, exact runtime
+commit message or implicit permission to alter an accepted stage. Before each stage,
+recover current source/CI and register its precise contract/files/messages/tests.
+No legacy task IDs are renamed and no HPS/HAPI/HWEB audit mapping is activated.
+
+#### Remaining stage register
+
+| Stage | Deliverable and owner | Prerequisite / scope boundary | Required result before bounded acceptance |
+|---|---|---|---|
+| HPR-P25-051G | Fresh fenced authorization evidence; Identity | 051F accepted; existing exact six-path registration. Remains the next implementation selection. | Fresh bounded JDBC direct/role/group/policy/attribute evidence at supplied fenced s; correct scopes/windows, explicit DENY and INDETERMINATE, no cached authority or partial permit. |
+| HPR-P25-051H | Trusted authorization-claim provenance and coverage; Identity | G accepted; source/issuance/reader contract and exact H scope must be registered together. | Distinguish known absence, malformed and unknown evidence; bind immutable coverage to genuine authentication/issuance, provider/link generations and source expiry, including native bearer use. New mapping names cannot silently bypass DENY. |
+| HPR-P25-051I | Paired protected Identity authorization; Identity | G/H accepted; actual F→G→evaluator owner path, not constructed evidence. | Derive one of eight fixed operation codes and require company CUSTOM plus FACILITY PERMIT at the same physical s/u; DENY wins, unknown never permits; export only approved immutable scalar evidence. |
+| HPR-P25-051J | Party eligibility and Facility ownership participation; Party/Topology | I accepted for integrated use; reviewed global ordering contract before any new cross-owner acquisition. | Fresh Party/Facility owner contributions, actual company–facility relationship, owner epoch/generation and applicable transfer/hold predicates, with normal writer/phantom/ABA exclusion. Current Boolean queries and cached references remain insufficient. |
+| HPR-P25-051K | Global admission/fences and common time; trusted coordinator with owner contracts, Platform technical mechanics | G–J accepted; source-complete native/JPA/bulk/trigger relation/row DAG; exact integration scope. | All participating fences precede one common DB s; conservative common u covers every owner/future boundary. Compatible writer ordering, one physical RC backend/XID and fences held through commit. Resolve F's sampling position explicitly. |
+| HPR-P25-051L | Protected internal Topology operation boundary; Topology | K accepted; exact038 head/epoch/predecessor schema and owner contract registered. | Atomic provisional operation plus authoritative head/epoch/CAS, protected current/history access and exactly one final database guard s<=t<u with required current head/owner predicates. No SQL after guard; result after observed physical commit; uncertain acknowledgement remains INDETERMINATE without automatic retry. |
+| HPR-P25-051M | Integrated adversarial/concurrency/latency qualification and parent closure; independent verification | All G–L accepted and complete residual051 obligation matrix; exact current source evidence. | Real-owner positive/negative/race/expiry/rollback/CAS/transfer/two-company tests, exact-SHA full/fast/docs and zero-skip partition+oracle proof, contention/latency criteria and formal reconciliation. Close051 only when every supported B1/B2/B3/038 obligation is evidenced. |
+
+#### G analysis retained as implementation constraints
+
+G closes the stale JPA read gap, not authenticated authority or full publication.
+Its public diagnostic Evidence/request/PID/XID inputs can be constructed: successful
+reader validation cannot certify actor origin. I must invoke actual F and G itself;
+no endpoint or later owner may accept a caller-created Contribution/Candidate or
+prior permission Boolean as authority.
+
+G's conservative claim rule remains active for G implementation: unsupported active
+live claim mappings produce INDETERMINATE, including new/missing/empty names, even
+when a database grant would otherwise permit. All four producer types retain B1
+and database-only supported permission paths. This safe interim limitation is NOT
+full claim-dependent authorization completion. H must register and implement the
+producer/provenance/storage-or-private-handoff/reader/evaluator coverage extension
+as one coherent contract; capture/storage alone cannot close the limitation while
+G still rejects all live-claim branches. No arbitrary public assertion input is
+admitted. Unknown or changed coverage remains fail-closed and may require fresh
+authentication under the accepted H policy; no inference from stale claim snapshots.
+
+G's combined1024-record limit is a fail-closed capacity limit, not proof of acceptable
+service capacity. Measure the two loads plus existing census, evaluation, provisional
+work and explicit flush within ONE shared500ms work budget; neither scope receives
+a fresh independent budget. Use bounded parameterized queries, no N+1 traversal or
+pagination around the bound. A shared immutable fenced snapshot may be considered
+only through a separately registered contract amendment; no current G API change is
+selected by this analysis. Preserve all existing250/750/1000ms settings and distinguish
+protected work from measured commit/network tail. No deployment throughput claim.
+
+#### Ordering and common-sample decision gate
+
+The global writer/lock-order contract must be source-reviewed and fixed BEFORE
+implementing new cross-owner acquisitions in J/K, and before any H/I change that
+adds participating relations or changes writer behavior. K is runtime integration,
+not permission to postpone global ordering design until after incompatible owner
+locks have shipped. Include binding-trigger row order, FK/trigger/native/bulk/JPA
+writers, new claim-evidence relations, owner transfers, future/absent DENY rows and
+publication-head CAS. Lexically sorting table names alone does not prove a safe DAG.
+Every stage's registration must identify its additions to this graph and test them.
+
+F currently samples after its complete Identity fences, before Party/Topology fences
+exist in that isolated path. K must arrange ALL required owner fences before the
+common sample, either through a proven compatible admission order or explicitly
+registered changes separating admission from sample-bound owner reads. Do not graft
+later Party/Facility checks onto an already sampled permission and call it atomic.
+An accepted local slice may need a scoped integration extension; it cannot silently
+retain an incompatible sample or connection while claiming global correctness.
+
+J must resolve current supported Party eligibility and Facility ownership meaning
+from real source and038 policy; no invented company grants, future hold tables or
+status-history-as-live-authority. If a new epoch/hold/transfer schema is required,
+register that exact fresh-development migration and affected writers before code.
+L provides internal protected operation foundations; public graph/survey/engineering
+REST workflows remain052. Do not use L to implement052 early or relabel existing
+append-only revision storage as an authoritative publication head.
+
+#### Parent051 exit criteria (all required, no slice substitution)
+
+1. Actual current authenticated origin, both scoped permissions, Party eligibility
+   and Facility ownership participate in one physical writable RC transaction and
+   the same valid s/u interval; all owner fences precede s.
+2. Current head, expected predecessor and ownership epoch are enforced atomically;
+   no unnoticed publication or ownership change, cross-company metadata leakage,
+   portable permit, cached image or caller-supplied actor/claims/decision.
+3. Revocation, credential/provider/link/user/session ABA, source/token expiry,
+   future/inactive DENY, membership/policy/attribute changes, absent-row/phantom
+   inserts, transfer/hold and competing CAS have genuine positive and negative
+   native/JPA/trigger writer coverage across every participating family.
+4. Provisional work, explicit flush and one final scalar DB guard enforce s<=t<u
+   and required owner/head predicates; no SQL after guard. Pre-commit faults fully
+   roll back; caught failure cannot recover authority. Deliver only after observed
+   physical commit; uncertain acknowledgement is INDETERMINATE with no auto-retry.
+5. Existing protected-work/lock/statement/idle limits are retained; reproduce the
+   registered8-contender actual-owner cohort and admin p95<=1000ms criterion with
+   bounded successful work. Record environment/observations and commit-tail limits;
+   no synthetic clock, sleep-based race or assumed production SLO/capacity.
+6. Exact-source Full/Fast/Docs success, mandatory unrestricted oracle and genuine
+   partition/oracle cases without skips/failures/errors/reruns; raw hashes, source
+   inventory and dependency/owner obligation matrix reconciled. Independent M review
+   closes051; an individual stage's green CI cannot close the parent automatically.
+
+Synthetic development fixtures remain sufficient. There is no deployed HidraAPI data
+migration/backfill prerequisite; later owner calibration and site acceptance remain
+separate. Preserve gas-first/GZ2, Hidra's own engine, steady/transient direction,
+versioned inputs/operator control. Simulation/P3 remains deferred; CI-003 broader
+performance/equivalence closure and052–058/031 retain their independent scope.
+
+#### Current authorized document alignment and STOP
+
+Owner-approved scope of THIS commit: UPDATE ONLY this roadmap and append-only
+`doc/model-remediation/RECONCILIATION.md`; CREATE/DELETE none. Reuse existing same-ID
+message `docs(security): select operation time fencing proof`. Record the G–M plan,
+G caveats, dependencies and parent closure criteria; leave runtime, exact G registration,
+tests/inventory/migrations/workflows/configuration/version/history and attached audits
+unchanged. No H–M implementation selected and no additional structural governance files.
+
+Validate current head/CI, docs/offline API/P1/inventory, existing Python policies,
+exact two-path/append-only/G-registration-preservation and whitespace. Publish directly
+to existing main with expected-head guard, verify parent/tree/two blobs and automatic
+Docs START, then STOP without CI completion polling or manual Full/Fast. Next after
+Docs success remains051G under its existing exact scope; Fail repairs CI first.
+
+
 ### Current execution checkpoint — 051F CI accepted; 051G evidence reader registered, 2026-10-15
 
 Owner continuation recovered exact main `fa87d9f6c7df0a5431a3cdcc1b754d146e7c7366`,
@@ -3288,7 +3426,7 @@ aggregate may replace it. D1–D5 are internal gates, never new HPR task IDs.
 | 1 | HPR-CI-003 | Automatic fast suite and equivalent parallel full verification | CI / independent verification | IN PROGRESS / ORACLE RESOURCE CANDIDATE; prior 5x same-SHA equivalence retained; multi-revision/performance OPEN | Accepted 049; this Docs PASS; owner selection | CI-003 closed list | Selection/report/release negative tests; shadow full verification | No lost cases; mandatory gate fail-closed; repeatable timing | CI | `ci: automate fast feedback and preserve full verification gates` |
 | 2 | HPR-P25-047 | Provider/link database security generations | Identity | COMPLETED / CI ACCEPTED | Accepted 046/048/049; existing registration Docs; separate Next | Existing seven-file list, unchanged | Real writers, Flyway fresh/upgrade, native/bulk/race/rollback | Exact implementation Production + Docs SUCCESS | F1 | `feat(identity): enforce provider and link security generations` |
 | 3 | HPR-P25-050 | Immutable operation binding and trusted issuance/reader, staged 050A–050D | Identity; Platform technical wiring | COMPLETED / A–D AND B1 CI ACCEPTED AT 81d46bc | 047; accepted 044/045 design | Exact 050A/B/C/D lists executed; Full #683/Fast #16/Docs #287 SUCCESS | Fresh-schema LOCAL/LDAP/AD/OIDC, expiry, generation, rollback; no deployed-data migration | B1 provenance and storage proof across all four children; no inferred B2/B3 | F1 | Child messages registered below; original message retained by 050D |
-| 4 | HPR-P25-051 | Cross-owner revocation/time/transaction linearization | Identity / Party / Topology; Platform mechanics | IN PROGRESS / 051A–F BOUNDED SLICES CI ACCEPTED; 051G REGISTERED; D2 OWNER INTEGRATION OPEN | 050; accepted 038/043; D2 | D2 then exact owner/export/fence list | Real PostgreSQL owner/race/expiry/connection tests | B2/B3 and writer ordering + bounded latency PASS | F1 | `feat(security): linearize cross owner protected operations` |
+| 4 | HPR-P25-051 | Cross-owner revocation/time/transaction linearization | Identity / Party / Topology; Platform mechanics | IN PROGRESS / 051A–F CI ACCEPTED; G REGISTERED; H–M PLANNED; D2 OWNER INTEGRATION OPEN | 050; accepted 038/043; D2 | D2 then exact owner/export/fence list | Real PostgreSQL owner/race/expiry/connection tests | B2/B3 and writer ordering + bounded latency PASS | F1 | `feat(security): linearize cross owner protected operations` |
 | 5 | HPR-P25-052 | Topology authoring, route/profile and revision publication APIs | Topology; read-only foreign owner contracts | PLANNED / REGISTERED; D3 contract/scope gate | 051; accepted 018/019/020/032/034/036/037/038; D3 | D3 closed authoring/storage/API list | Actual API round trips, epochs/CAS/history/import-export | F1-02/03/04 within explicit supported topology scope | F1 | `feat(topology): expose governed engineering revision workflows` |
 | 6 | HPR-P25-053 | Product/property/method metadata authoring and history | Custody; source approval through Workflow | PLANNED / REGISTERED; D3 contract/scope gate | 051; accepted 018/022 design; D3 | D3 exact Custody/owner-export list | Multi-product metadata, unsupported shape, old GAS replay | F2-01 and product share of F2-03 | F2 | `feat(custody): govern versioned product engineering data` |
 | 7 | HPR-P25-054 | Installed-unit/asset and manufacturer-characteristic history | Topology installed configuration; Assets lifecycle; Party manufacturer; existing Simulation data store | PLANNED / REGISTERED; D3 contract/scope gate | 052; accepted 020/021 design; D3 | D3 exact per-owner list | Nine distinct units; curve/table/units/lifecycle/history | F2-02 and equipment share of F2-03; data only | F2 | `feat(engineering): govern installed units and characteristic revisions` |

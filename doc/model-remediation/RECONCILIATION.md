@@ -23971,3 +23971,63 @@ zero CREATE/DELETE, no CI source/test/production changes.
 Documentation validation startup must be observed on the
 exact new SHA, then STOP. No local Java, Docker, PostgreSQL,
 full GitHub Actions or new perf benchmark is claimed.
+
+## 2026-10-15 — HPR-CI-003 / CI-003C selected evidence-only qualification preflight
+
+The latest previous main `b17fcf28d0b04a2ab2e176ccf32b350a57e7ed25`, tree
+`66f9b17e2ce36f615104fd2308084996364ccde4`, parent
+`b6a180c23a6a523c25009792f5c63f719d6d4ca4`
+has exact-HEAD Documentation #330 SUCCESS; no newer backend
+implementation supersedes accepted Identity G source
+`6ca63efdff3eebf277523222d07587d9101e401e`
+(Full #700 and Fast #32 SUCCESS). HidraWEB remains at
+`46676deb70fd38b906bdb370f020f609d0a16c98`.
+Owner `Next` selects **only the C archival evidence preflight**,
+not current-format hosted fault injection, a performance campaign
+or the following CI-003D adoption decision.
+
+Selected stage CI-003C: **READ-ONLY EVIDENCE RECOVERY IN PROGRESS;
+NOT ACCEPTED.** Full #700 reports exact-source same-run
+partition/unrestricted-oracle equivalence on385 classes/2073
+cases, zero failures/errors/skips, for the accepted Identity
+code/security revision. Earlier Full #668 succeeded at
+`c1f25af77f2568c49db4fc740e3f502d3b43e6dc`
+under an older CI format: it provides historical 047
+migration/security context, NOT current-format oracle
+equivalence on a representative migration revision.
+Full #700 has current/base OpenAPI checks, but no
+separately demonstrated API-changing revision qualifies here.
+
+Existing `.github/scripts/test_verify_full_ci_evidence.py`
+contains25 negative/policy fixtures, including skipped/
+missing/overlapping/stale/forged test evidence, wrong
+SHA/attempt/failed/cancelled lane, mismatched catalog,
+untrusted archive and release lookup; inventory fixtures
+similarly deny incorrect classification and missing cases.
+Docs #330 ran the repository Python validation suite.
+Those are synthetic helper-policy tests, not real
+cancelled or negative GitHub Actions jobs. A's Full
+#700 cache hits and runner heterogeneity provide no
+cold-cache or five-comparable-run qualification.
+
+No new source, CI tests, scripts, workflow, storage,
+OpenAPI or security contract changes are justified
+for this registration; no live negative injection or
+manual benchmark is dispatched. Future C completion
+needs naturally authorized distinct current-format
+security/code, migration and API source revisions with
+same-run class/case/API/catalog proof; suitable bounded
+approved hosted negative/cold/warm evidence, without
+creating application changes solely for benchmarking.
+CI-003D, runner-minute cost, seven-minute Full
+critical-path median, optimized adoption and parent
+CI-003 closure all remain OPEN. Mandatory oracle,
+full fallback, `optimized_adoption_eligible=false`,
+G acceptance, 051H unselected and P3 deferral persist.
+
+Existing task commit message:
+`ci: automate fast feedback and preserve full verification gates`.
+Exclusive scope: roadmap INSERT and reconciliation APPEND;
+two UPDATE, zero CREATE/DELETE, all old bytes preserved.
+Observe only the automatic exact-head Documentation
+Validation startup, then STOP without waiting.

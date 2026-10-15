@@ -32,6 +32,86 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-CI-003 / CI-003C evidence preflight registration, 2026-10-15
+
+**Selected one permitted bounded continuation:** under existing HPR-CI-003,
+CI-003C is **SELECTED / READ-ONLY EVIDENCE RECOVERY IN PROGRESS**, not
+completed, performance-qualified or approved for hosted fault injection.
+Owner `Next` selects this first archival-review/acceptance-matrix
+package only. CI-003B's prior no-code-needed decision remains complete;
+CI-003D remains dependent and unselected. New hosted benchmarks, cancelled/
+failure-mode jobs and arbitrary application changes are not selected here.
+No new HPR identity, alternate implementation scope, CI adoption or
+release activity is created.
+
+**Live source/CI preflight:** HidraAPI main `b17fcf28d0b04a2ab2e176ccf32b350a57e7ed25`,
+tree `66f9b17e2ce36f615104fd2308084996364ccde4`, parent
+`b6a180c23a6a523c25009792f5c63f719d6d4ca4`, exact
+[Documentation #330](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38756816887)
+SUCCESS. HidraWEB main
+`46676deb70fd38b906bdb370f020f609d0a16c98`.
+Latest accepted runtime is `6ca63efdff3eebf277523222d07587d9101e401e`
+with [Full #700](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38739988227)
+and [Fast #32](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38739988169)
+SUCCESS. Reviewed current AGENTS, roadmap/reconciliation and the
+exact-head Full, Fast and Release workflows, full-evidence and
+test-inventory helpers, their Python negative-policy tests,
+TEST_STRATEGY and CI_CD_RELEASE_GUIDE. No newer implementation
+commit or unresolved latest-HEAD CI failure was observed.
+
+**Selected C evidence matrix, conservative admission rules:**
+
+| Registered C obligation | Current observable evidence | Disposition |
+|---|---|---|
+| Same-run exact security/source and partition-oracle equivalence | Accepted repaired Identity G runtime SHA, Full #700; unrestricted 385 classes/2073 tests, disjoint selected partitions and same-run source/catalog/API gate, zero failure/error/skip | PASS for **this single qualified source/revision only** |
+| Representative migration revision | [Full #668](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38386171892) SUCCESS on `c1f25af77f2568c49db4fc740e3f502d3b43e6dc`, historical accepted 047 schema/security-generation work; this run preceded current partition-shadow format | HISTORICAL baseline only; NOT current-format same-run equivalence qualification |
+| Representative API revision | Full #700 includes required OpenAPI/current-base compatibility, but no separately identified **API-changing revision** with its own accepted full shadow evidence in this preflight | OPEN; no invented change or API mutation to generate evidence |
+| Negative gate cases in shipped policy | `.github/scripts/test_verify_full_ci_evidence.py` has 25 exact negative/policy fixture tests for omitted/duplicated/skipped/failed/cancelled/stale/wrong-SHA/run-attempt/API/catalog/release/artifact conditions; `test_verify_ci_test_inventory.py` checks missing/new/wrong-lane and runtime resource constraints | Existing synthetic policy fixtures, exercised by Docs #330; NOT proof of hosted workflow cancellation/failure tests |
+| Cold/warm reproducibility | A's accepted Full #700 logs recorded primary-key Maven cache hits, four oracle forks/4 CPUs, and heterogeneous Ubuntu runner image revisions | One current warm-cache sample; verified cold-cache and five comparable samples OPEN |
+| Exact release fail-closed handling | Current `release.yml` calls trusted `verify_full_ci_evidence.py release` against exact candidate SHA; source tests prohibit stale/fast/partial/failed artifact substitution | Source-verified and unit-fixture-covered; no production dispatch, release or real hosted malicious evidence exercise claimed |
+
+**Bounded C continuation and acceptance boundary:** read-only recovery of
+naturally occurring approved security, real migration and API-changing
+source revisions and their actual run IDs, attempt IDs, lane artifacts
+and full aggregate reports; require current-format same-source
+disjoint/oracle verification, source/test-case and migration/API catalog
+identity, no failing/errored/skipped execution, provenance, release
+lookup and archived immutable digests. Treat old format and
+documentation-only full runs as historical, never manufactured
+representative proof. The existing 25 negative tests are policy
+fixtures, **not** actual failed/cancelled GitHub Actions qualification.
+A future separately selected, exact-scoped and non-production
+hosted negative/cold-cache campaign is necessary for C closure;
+registration here is not an instruction to run that campaign.
+Do not perturb authenticated releases, production databases,
+prior SHA artifacts, real plant systems or working pipelines
+to simulate failures.
+
+**CI-003C acceptance status: OPEN.** Distinct current-format representative
+security/code, migration and API revisions, cold/warm classification and
+real hosted fail-closed omissions/failures/skips/duplicates/stale runs/
+cancellations remain to be proven as permitted. CI-003D still requires
+five comparable measurements per configuration and runner-minute
+cost/median decision. Parent HPR-CI-003 remains IN PROGRESS with
+`mode=shadow-fallback-required`, mandatory clean unrestricted
+PostgreSQL oracle and `optimized_adoption_eligible=false`.
+No shortening of release checks, acceptance thresholds, or scope
+has been authorized. This preflight does not select CI-003D,
+051H, release/deployment or deferred simulation/P3.
+
+**Exact publication envelope for this selected preflight only:**
+UPDATE `doc/roadmap/ULTIMATE_ROADMAP.md` by insertion preserving
+all previous content, and append to
+`doc/model-remediation/RECONCILIATION.md`; CREATE/DELETE none.
+The registered HPR-CI-003 exact message remains
+`ci: automate fast feedback and preserve full verification gates`.
+No workflow, Python validator, inventory, Java, Maven, test,
+database/migration, OpenAPI, API/security or frontend mutations.
+Require guarded main update, verify exact parent/tree/two-path scope,
+then observe automatic exact-SHA Documentation Validation startup
+and STOP without waiting or advancing. HPR-P25-051G remains
+Completed; parent051 In Progress; 051H Planned/Unselected.
+
 ### Current execution checkpoint — HPR-CI-003 / CI-003B no-code-needed disposition, 2026-10-15
 
 **One-stage disposition: CI-003B COMPLETED — NO CODE NEEDED under its registered

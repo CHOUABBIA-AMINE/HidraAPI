@@ -25,6 +25,7 @@ Documentation authority follows the repository governance and the owner/decision
 | Canonical area | Current register status | Authority / applicability | Next canonicalization work |
 |---|---|---|---|
 | `doc/README.md` | CURRENT | Repository documentation entry point and precedence/navigation control | Maintain as domains are added |
+| `doc/vision/**` | TARGET | Sonatrach / TRC product-stewardship vision; strategic product intent, not implementation verification or execution authority | The enduring product vision is maintained independently; legacy source preserved in `docs/vision/**` |
 | `doc/governance/**` | CURRENT | Documentation governance, lifecycle, status and register controls | HPR-P2-001 complete |
 | `doc/roadmap/ULTIMATE_ROADMAP.md` | CURRENT | Sole platform-finalization execution authority | Maintain per executed HPR |
 | `doc/roadmap/gaps.md` | CURRENT | Module-by-module functional review findings; not execution authorization | Update after verified reviews |

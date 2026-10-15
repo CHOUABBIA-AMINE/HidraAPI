@@ -12,6 +12,8 @@ The legacy `docs/` tree is preserved for historical, audit, semantic-review, ADR
 
 ## Start Here
 
+[Hidra — Master Product Vision](vision/HIDRA_MASTER_PRODUCT_VISION.md) — enduring product purpose, capabilities, and guiding principles; independent of implementation tracking.
+
 1. `doc/roadmap/ULTIMATE_ROADMAP.md` — single source of truth for platform-finalization sequencing, task codes and phase disposition.
 2. `doc/governance/README.md` — canonical documentation governance entry point.
 3. `doc/governance/DOCUMENT_REGISTER.md` — canonical domain/status register and P2 documentation readiness map.

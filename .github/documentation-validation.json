@@ -674,11 +674,19 @@
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
       "status": "CURRENT"
+    },
+    "doc/vision/HIDRA_MASTER_PRODUCT_VISION.md": {
+      "metadata_from": [
+        "doc/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "TARGET"
     }
   },
   "format_version": 1,
   "indexes": {
     "doc/README.md": [
+      "doc/vision/HIDRA_MASTER_PRODUCT_VISION.md",
       "doc/governance/README.md",
       "doc/domain/README.md",
       "doc/modules/README.md",
@@ -882,7 +890,8 @@
     "doc/data/**": "CURRENT",
     "doc/governance/**": "CURRENT",
     "doc/modules/**": "CURRENT",
-    "doc/testing/**": "CURRENT"
+    "doc/testing/**": "CURRENT",
+    "doc/vision/**": "TARGET"
   },
   "roadmap": "doc/roadmap/ULTIMATE_ROADMAP.md",
   "historical_roadmap": "doc/roadmap/history/ULTIMATE_ROADMAP_HISTORY.md",

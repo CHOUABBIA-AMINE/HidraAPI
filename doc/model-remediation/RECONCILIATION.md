@@ -24031,3 +24031,73 @@ Exclusive scope: roadmap INSERT and reconciliation APPEND;
 two UPDATE, zero CREATE/DELETE, all old bytes preserved.
 Observe only the automatic exact-head Documentation
 Validation startup, then STOP without waiting.
+
+## 2026-10-15 — HPR-CI-003 / CI-003C current-format migration and real failure evidence recovered
+
+This is a bounded same-ID historical archive review under
+already-selected CI-003C; C remains **IN PROGRESS / PARTIAL
+EVIDENCE VERIFIED**, not completed. Latest main before
+this entry `3aa9a359800e9070969e28ee1a42f550fbe8871f`, tree `5374294b5aa428ad8fd2b4f2e18b7cf495448903`,
+parent `b17fcf28d0b04a2ab2e176ccf32b350a57e7ed25`;
+exact-HEAD Docs #331 SUCCESS. No newer runtime
+implementation supersedes accepted G SHA
+`6ca63efdff3eebf277523222d07587d9101e401e`,
+Full #700/Fast #32 SUCCESS. No deployment/release,
+CI experiment or source mutation was dispatched.
+
+**Representative migration proof improved:** Full #681
+(run38542323342/attempt1, exact SHA
+`04d6fbc6f290873b1b25cbda8f7860c582568ea0`)
+completed SUCCESS on the natural HPR-P25-050B
+authentication-binding schema revision.
+`V20261013_001__p25_identity_operation_binding.sql`
+is present in that candidate and its Git blob
+`96c5634c936bb4c31f4539db032397e49c9576fa`
+matches its initial source `778dd05c422ae655322bdc8232e7a5eeefe86875`
+and today's main. Downloaded current-format Full
+aggregate artifact11883057916 has matching GitHub ZIP
+SHA256 `922b57eb22f72af9fb6d457de19d11ebef66064d643257fe001642b39c0e5e12`.
+Its `gate.json` reports `partition-shadow-v1`,
+correct source/run/attempt, six lanes and five
+successful dependencies, same-run equivalence true,
+fallback required and optimized eligibility false.
+Independent XML parse confirms 370 unrestricted suites,
+1838 invocations, 0 failure/error/skip; disjoint
+297 unit+37 PG0+36 PG1 suites cover exactly the same
+(test class, invocation-name) multiset as the oracle.
+This is authentic same-source PostgreSQL16 migration
+and immutable-binding test evidence, not live-data
+calibration or an industrial proof.
+
+**Genuine negative gate occurrence:** Full #699
+(run38737078508/attempt1, SHA
+`fa9099f170e0cb78dbfeb4cf6ca19a2ccaada2c2`)
+completed FAILURE with failing PostgreSQL1 and
+oracle jobs; Full Verification Gate job116433558649
+also failed, with exact log statement:
+`Full CI evidence FAILED: Mandatory dependency failed, skipped, cancelled or absent`.
+No successful aggregate receipt appeared among that
+run's listed artifacts. This proves one actual
+failed-dependency denial, not all planned negative
+cases, and does not change repaired Full #700 acceptance.
+
+C now has authenticated current-format code/security
+Full #700 and migration-containing Full #681
+evidence, plus a real failed-job denial Full #699.
+A distinct API-changing representative run has
+not been qualified, and cold-cache, omitted/overlap/
+skip/stale/cancelled hosted negative exercises remain
+OPEN. Existing25 synthetic policy tests do not replace
+those exercises. No artificial schema/API/security
+commit, workflow dispatch or production failure
+injection was performed. CI-003D timing/cost/adoption
+is not selected; HPR-CI-003 remains IN PROGRESS with
+mandatory oracle, full fallback and
+`optimized_adoption_eligible=false`.
+051G accepted, parent051 open, 051H unselected, P3 deferred.
+
+Commit under exact existing message
+`ci: automate fast feedback and preserve full verification gates`.
+Only roadmap INSERT and reconciliation APPEND;
+two UPDATE files, zero CREATE/DELETE, preserve all
+previous bytes. Automatic Docs startup, then STOP.

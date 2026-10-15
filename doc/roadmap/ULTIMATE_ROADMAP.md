@@ -32,6 +32,122 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-CI-003 / CI-003C authenticated historical evidence recovery, 2026-10-15
+
+**Stage: CI-003C SELECTED / PARTIAL EVIDENCE VERIFIED; acceptance OPEN.**
+This bounded continuation reviews existing naturally occurring GitHub Actions
+revisions and artifacts only, under already-selected C archival recovery.
+No new hosted benchmark, failure injection, workflow, source, security
+change, release or CI-003D adoption decision is selected.
+
+**Current repository preflight:** HidraAPI main
+`3aa9a359800e9070969e28ee1a42f550fbe8871f`, tree `5374294b5aa428ad8fd2b4f2e18b7cf495448903`,
+parent `b17fcf28d0b04a2ab2e176ccf32b350a57e7ed25`;
+[Documentation #331](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38757705821)
+completed SUCCESS on this exact SHA. HidraWEB main remains
+`46676deb70fd38b906bdb370f020f609d0a16c98`.
+Accepted runtime source `6ca63efdff3eebf277523222d07587d9101e401e`
+still has [Full #700](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38739988227)
+and [Fast #32](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38739988169)
+SUCCESS. Existing `AGENTS.md`, roadmap, reconciliation,
+`.github/workflows/ci.yml`, inventory, Full verifier,
+selected acceptance tests and migration source were inspected.
+The read-only archive search examined historical Full #669–700
+head SHAs, results, exact commit diffs and successful/failed
+gate metadata. These earlier results are historical CI observations,
+not a newly dispatched run on this documentation-only HEAD.
+
+**New authenticated representative migration evidence:**
+[Full #681](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38542323342),
+run ID38542323342/attempt1, SUCCESS on SHA
+`04d6fbc6f290873b1b25cbda8f7860c582568ea0`.
+The natural HPR-P25-050B source revision introduced
+`src/main/resources/db/migration/V20261013_001__p25_identity_operation_binding.sql`
+in the preceding `778dd05c422ae655322bdc8232e7a5eeefe86875`
+(candidate Full #680 failed), and kept the SQL unchanged in
+the repaired, accepted Full #681 source. Git blob
+`96c5634c936bb4c31f4539db032397e49c9576fa`
+is identical at introduction, #681 and present HEAD.
+This is fresh-schema immutable authentication-binding
+development SQL, not deployed-data/backfill or real OT evidence.
+
+Downloaded #681 authenticated Full aggregate artifact
+ID`11883057916`; its downloaded ZIP SHA-256 equals the
+GitHub artifact digest
+`922b57eb22f72af9fb6d457de19d11ebef66064d643257fe001642b39c0e5e12`.
+Parsed `gate.json`: format `partition-shadow-v1`,
+source SHA `04d6fbc6f290873b1b25cbda8f7860c582568ea0`,
+run ID38542323342/attempt1,
+`same_run_equivalence=true`,
+`fallback_required=true`,
+`optimized_adoption_eligible=false`, five mandatory
+dependency results SUCCESS, six lane receipt hashes and
+physical PostgreSQL16.15/catalog plus current/base OpenAPI
+provenance. Independently parsed the ZIP's original Surefire
+XML: oracle370 distinct suites /1838 test invocations,
+zero failures/errors/skips. Partition union297 unit/architecture
+(1348 invocations),37 PostgreSQL0 (243 invocations)
+and36 PostgreSQL1 (247 invocations) is exactly the same
+370 suites/1838 (class,name) invocation multiset as the
+unrestricted oracle, with no extra/missing identity. Thus
+**one representative migration-containing revision now has
+verified current-format same-run shadow equivalence**.
+This specifically supersedes C preflight's statement that only
+historical pre-shadow #668 migration evidence was identified,
+without editing or erasing that dated earlier preflight.
+
+**New real fail-closed observation, limited claim:**
+[Full #699](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38737078508),
+run ID38737078508/attempt1/source
+`fa9099f170e0cb78dbfeb4cf6ca19a2ccaada2c2`,
+completed FAILURE: PostgreSQL shard1 and unrestricted
+Java21 oracle jobs failed, and Full Verification Gate
+(job116433558649) completed FAILURE. Its gate log explicitly
+reported `Full CI evidence FAILED: Mandatory dependency failed, skipped, cancelled or absent`
+and exited1; no successful aggregate receipt is listed
+among #699 artifacts. Subsequent repaired #700 success
+does not retroactively qualify #699. This is one **actual
+failed-required-job denial** (not artificially induced),
+not proof of cancellation, stale/forged archive, missing
+suite/overlap, skipped test or cold-cache denial on hosted CI.
+
+**Updated bounded C matrix:**
+
+| Obligation | Current result |
+|---|---|
+| Security/code current-format representative | PASS limited to accepted G runtime Full #700, 385/2073 |
+| Migration-containing current-format representative | PASS limited to authenticated 050B Full #681, 370/1838, SQL unchanged |
+| API-changing representative | OPEN: existing OpenAPI compatibility jobs do not demonstrate a separately qualified API-mutating revision |
+| Real hosted negative gate | PARTIAL: Full #699 failed-lane denial proven; distinct omitted/skipped/overlap/stale/cancelled/failure-mode exercises OPEN |
+| Policy-unit negative fixtures | Existing25 aggregate/release tests and inventory cases provide bounded synthetic assertions, not hosted negative scenarios |
+| Cold/warm source/control proof | OPEN: Full #700 cache-hit observations; no controlled cold-cache or configuration-matched campaign |
+| Adoption/cost/performance | OUT OF C / CI-003D DEPENDENT; >=5 comparable per configuration, Full median<=7m and runner minutes still unqualified |
+
+CI-003C remains IN PROGRESS and **not qualified for full acceptance**.
+Only existing approved natural revision evidence was used.
+Do not mutate production databases or manufactured code solely
+for a benchmark. Any new hosted negative/cold-cache exercise
+requires a separately selected, exact-scoped CI campaign.
+Mandatory unrestricted PostgreSQL oracle, clean-verification
+and API/dictionary equality, release denial gates and
+`optimized_adoption_eligible=false` persist. Parent
+HPR-CI-003 is IN PROGRESS; CI-003D not selected;
+HPR-P25-051G Completed, parent051 In Progress, 051H
+Planned/Unselected, numerical simulation/P3 deferred.
+
+**This one archival continuation's exclusive publication scope:**
+UPDATE `doc/roadmap/ULTIMATE_ROADMAP.md` by inserting
+this immutable historical finding without removing prior
+content; APPEND only to
+`doc/model-remediation/RECONCILIATION.md`;
+zero CREATE/DELETE. Use existing exact HPR-CI-003 message
+`ci: automate fast feedback and preserve full verification gates`.
+Do not modify workflow, test inventory, scripts, Java,
+migrations, Maven, security or frontend. Verify guarded
+main, exact parent/tree and two-path diff; observe
+automatic exact-SHA Documentation Validation startup
+then STOP without waiting or selecting the next stage.
+
 ### Current execution checkpoint — HPR-CI-003 / CI-003C evidence preflight registration, 2026-10-15
 
 **Selected one permitted bounded continuation:** under existing HPR-CI-003,

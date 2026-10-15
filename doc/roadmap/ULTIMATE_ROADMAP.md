@@ -32,6 +32,269 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — remaining parent-task delivery plans, 2026-10-15
+
+Owner requested the same bounded-stage/dependency/exit-criteria treatment for the
+other remaining roadmap tasks after approving051G–M. Authoritative main is
+`aaa1c43765fe48873b67ee44247b8f3c20a20ed9`, tree
+`acbc3ebcb7b7b42fb9c2038634b93397729221cd`, exact-SHA Docs #321 SUCCESS.
+Runtime baseline remains `fa87d9f6c7df0a5431a3cdcc1b754d146e7c7366`, accepted
+Full #697/Fast #30/Docs #319. Source and CI were refreshed before this amendment.
+
+Coverage is the complete unfinished Part A parent set other than051: **HPR-CI-003,
+HPR-P25-052–058 and HPR-P25-031, nine parents**. The plan below contains38 remaining
+work packages (4+6+4+5+5+5+4+4+1), not38 new features, executable tasks or promised
+commits. Accepted047/050/P0/P1/P2/remediation work is not reopened. Deferred mixed
+simulation parents retain their original incomplete/deferred disposition; their
+independent engineering obligations are already assigned052–058. P3 and industrial
+solver work stay deferred. The existing051G–M plan and G's exact registration are
+unchanged; next implementation remains051G after this Docs success, not052 orCI-003.
+
+Lettered labels below reserve planning identities only; no collisions were found
+for052A–058E or031 child references in current source roadmap before insertion.
+Only the existing parent IDs/registered scopes and messages govern execution.
+Each child needs its exact CREATE/UPDATE/DELETE/PRESERVE paths, supported contract,
+unique forward migration if needed, command/test inventory and exact commit message
+registered after source recovery and before mutation. No filenames, new endpoint
+names, SQL versions, policies or implicit broad module write permissions are guessed
+here. CI-003's existing scope is preserved and must be refreshed for current file
+existence before any continuation.031 keeps its exact existing two-document scope.
+These packages are not a batch envelope. Large packages may split A/B under the same
+parent after registration; predictable discovery/repair does not invent a new parent.
+
+#### Common stage and parent completion rules
+
+Each implementation package delivers a usable bounded increment plus its own actual
+owner/API/filter/storage/negative/concurrency tests as applicable; final packages add
+cross-slice qualification, not deferred testing. D3/D4/D5 remain internal decisions
+of their parent, not additional standalone preflight chains. Routine source-backed
+choices are resolved by the responsible owner; genuinely new business policy remains
+explicitly unresolved until decided. No fabricated completion from directories, DTOs,
+source presence, a queued run or a successful unrelated CI badge.
+
+Protected new operations reuse accepted051 contracts and guarantees. Revalidate current
+authority before resource/existence/count/export disclosure; validate current vs historical
+access separately. Preserve existing wire aliases, V1/V2 immutable bytes/readers and
+accepted storage constraints. New DTOs/permissions/errors/pagination/capabilities must be
+in the exact runtime OpenAPI. Claim unsupported or incomplete states explicitly, never
+invent engineering values. Existing migrations/checksums remain preserved; use synthetic
+fresh-development fixtures, not a deployed-data conversion/backfill requirement. Retain
+applicable genuine migration compatibility/JPA/dictionary and old-format read proof.
+
+Every runtime acceptance requires exact-SHA Full/Fast/Docs with required genuine PG
+cases zero-skip in their partition and unrestricted oracle, raw source/report/artifact
+identity and complete owner-obligation mapping. Existing24-module non-regression is
+preserved. No automatic optimized-only CI adoption, release, deployment or SITE claim.
+Per-slice supported APIs and contracts may be consumed independently after acceptance;
+there is no requirement that all engineering APIs ship together.
+
+#### HPR-CI-003 — four remaining qualification packages
+
+Existing automatic Fast, partitioned Full, unrestricted oracle, aggregate and release
+proof machinery are implemented. The five older same-SHA successes and recent Full697
+do not automatically prove the outstanding representative-change/cold-cache/performance
+campaign. Keep current shadow-fallback-required and optimized_adoption_eligible=false
+until the complete registered transition criteria are met.
+
+| Planning stage | Remaining delivery | Evidence / exit criterion |
+|---|---|---|
+| CI-003A | Refresh current job/step/raw-class timings, runner CPU/RAM/forks, cache and scheduling context. | Identify the actual critical path on comparable successful runs, account for source/test growth; distinguish suite sums, job wall time, queue and workflow elapsed. Preserve old measurements as dated evidence. |
+| CI-003B | Apply only a justified bounded scheduling/resource/evidence correction if measurements require one; otherwise record no code needed. | Existing exact CI scope, unchanged required class/case identities, isolated containers and complete clean-verify/API/dictionary/release behavior. No skipped tests, unsafe target/report/DB caches or speculative extra shards. |
+| CI-003C | Complete representative code/security, migration and API revision equivalence, cold/warm and negative acceptance proof. | Same-run exact source/lifecycle/report/API/catalog equality; omitted/failed/skipped/overlapping/stale/cancelled evidence denies acceptance. Use naturally authorized representative revisions, not artificial application changes for benchmarks. |
+| CI-003D | Evaluate repeatable timing/cost and make the independent adoption/closure decision. | At least five comparable samples per configuration, warm Fast median<=3m and Full critical-path median<=7m targets, cold-cache/failure/flake limits and runner-minute accounting. Unmet target means CI-003 remains open with fallback; no favorable single-run or assumed speedup. |
+
+Collect existing completed evidence first. Any new benchmark/failure workflow exercise
+requires its separately selected authorized CI action and normal startup-and-STOP rule;
+this plan does not dispatch a campaign, wait for runs or bypass owner feedback.
+Failure injections use isolated approved validation fixtures, never production tampering.
+An optimized-only transition requires its exact same-ID amendment and release-gate proof;
+full fallback remains available. CI-003 can proceed independently when separately selected
+and does not block G or existing supported operational maintenance.
+
+#### HPR-P25-052 — six topology/operator delivery packages
+
+Prerequisites: accepted051 and the retained018/019/020/032/034/036/037/038 scopes;
+D3 closes exact draft/published schemas, supported geometry, permissions, CRUD/API/
+errors/export packages and source paths before each relevant implementation. Existing
+SpringTopologyController creates systems/facilities, and immutable revision stores exist;
+neither is the missing complete editor. Reuse051's internal publication/CAS/epoch boundary
+instead of implementing a competing security/head mechanism.
+
+| Planning stage | Remaining delivery | Evidence / exit criterion |
+|---|---|---|
+| HPR-P25-052A | Company/network-owned drafts and bounded create/read/update/validate lifecycle. | Actual protected API round trips, optimistic draft conflict, incomplete draft diagnostics, owner isolation and action-specific permissions. No incomplete draft presented as published. |
+| HPR-P25-052B | Physical network/branch/station/port graph authoring and incidence validation. | Persist/reload supported serial/parallel graphs; reject dangling/wrong-owner/wrong-kind references; retain exact source identities and graph precision. Installed-unit completion remains054. |
+| HPR-P25-052C | Survey/CRS/vertical datum/chainage/elevation/profile and pipe-section authoring. | Preserve intermediate elevations/section boundaries, declared units/precision/source/evidence across revisions; reject unsupported/wrong/missing metadata, no browser/default elevation or PostGIS/physics assumption. |
+| HPR-P25-052D | Public protected publish/exact read/current/history/effective/list lifecycle over051. | Expected predecessor and owner/head epoch, one CAS winner, identical/conflicting replay, withdrawal/reactivation/transfer-hold semantics, exact old formats and history cursors; denied paths reveal no foreign metadata. |
+| HPR-P25-052E | Supported local typed import/export and per-editor capability/completeness closure. | Versioned bounded packages, dry-run without writes, lossless precision/provenance, atomic admitted import and explicit unsupported states. Aggregate multi-owner exchange remains055. |
+| HPR-P25-052F | Cross-slice operator/API/security/history qualification and consumer-ready contract. | Real configured API/filter path across two companies/networks and station graphs, rollback/concurrency/corruption tests; exact runtime OpenAPI/permissions/DTOs and relevant consumer handoff, no new frontend implementation in this repo. |
+
+Publish truthful capabilities with each accepted increment, not only at E. E closes
+remaining local exchange/capability obligations. Source authoring pins only existing
+eligible owner revisions; it never requires a future055 baseline. Accepted052 slices
+may unblock relevant HidraWEB F02/F03 work independently; no claim of live paired E2E.
+
+#### HPR-P25-053 — four product/composition/method packages
+
+Prerequisites:051, retained018/022 design and D3's supported supplied-metadata/owner
+contract. This is Custody-owned engineering data, not new fluid computation. Existing
+GAS exact sum/codec/history and qualified use retain their original meaning; do not
+loosen a GAS type to claim qualified H2/liquid/arbitrary-mixture physics.
+
+| Planning stage | Remaining delivery | Evidence / exit criterion |
+|---|---|---|
+| HPR-P25-053A | Company-owned product identity/classification and versioned metadata drafts. | Actual authorized create/read/revise, explicit completeness and supported representation, two-company isolation; no invented properties or source. |
+| HPR-P25-053B | Supplied composition/property/reference-basis/units/method applicability and evidence. | Exact supplied-fact round trip; invalid fraction/basis/unit/method/absent evidence rejected or incomplete. Preserve old GAS behavior; no EOS, normalization or solver. |
+| HPR-P25-053C | Governed publish/withdrawal/current/history/effective selection and scalar owner exports. | Immutable revisions/digests/source/approval preserved, current eligibility separate from historical access, concurrency/replay/rollback; usable downstream source authoring without055. |
+| HPR-P25-053D | Multi-product owner/API/compatibility qualification and consumer-ready contract. | Explicit synthetic supported definitions, old GAS exact replay, denied read/publish/export, unsupported shapes and source corruption; exact API/dictionary/full evidence, no numerical qualification claim. |
+
+053 can progress after its own051/D3 prerequisites independently of052 implementation.
+Frontend product editing consumes only accepted exact DTO/permission contracts.
+
+#### HPR-P25-054 — five installed-unit/manufacturer-data packages
+
+Prerequisites:052 source ownership and retained020/021 design, with D3's per-owner
+contracts. Topology owns installed configuration; Assets owns maintainability; Party
+owns manufacturer identity/role; existing Simulation stores retain accepted characteristic
+bytes even while numerical development stays deferred. No ownership relocation implied.
+
+| Planning stage | Remaining delivery | Evidence / exit criterion |
+|---|---|---|
+| HPR-P25-054A | Independent installed-unit identity, model/serial/lifecycle and correct source-owner references. | Distinguish installed units from maintainable assets, validate manufacturer identity/role/kind and company ownership, preserve existing Assets interfaces. |
+| HPR-P25-054B | Effective facility/station configuration membership and series/parallel installed incidence. | Nine distinct units across three synthetic stations, install/retire/time/conflict cases, no shared identity or dangling incidence, authorized reload/history. |
+| HPR-P25-054C | Supplied manufacturer maps/tables/limits/axes/units/reference conditions and source evidence. | Immutable source revisions retain exact supplied facts; unsupported/missing curve/axis/unit/evidence stays incomplete, no interpolation engine or invented vendor data. |
+| HPR-P25-054D | Versioned installed-unit to characteristic links, approval and current/historical read. | Pin exact owner revisions/digests, changed source cannot mutate old station/baseline content, cross-owner failure rolls back; no implicit simulator qualification. |
+| HPR-P25-054E | Owner/API/security/compatibility and consumer-ready qualification. | Actual save/read/revise across all owners, nine independent unit/source fixtures, malformed maps, denial, race/idempotency/rollback and old-format decode; exact accepted contracts for F04/F05. |
+
+Manufacturer data is reusable engineering evidence; do not force general vendor facts
+into synthetic formulas or make it depend on a future solver run or baseline.
+
+#### HPR-P25-055 — five authoritative-baseline/exchange packages
+
+Prerequisites:accepted052/053/054, retained028 design and D3. Topology coordinates
+references; each source owner remains authoritative. Reuse actual051 protected owner
+contracts and Workflow approval; no implicit distributed transaction or competing masters.
+
+| Planning stage | Remaining delivery | Evidence / exit criterion |
+|---|---|---|
+| HPR-P25-055A | Versioned manifest identity/draft and exact owner-reference/completeness validation. | Pin route/profile/sections/stations/units/characteristics/products/method/source/effective/approval IDs and digests; incomplete capture diagnoses missing facts and cannot freeze. |
+| HPR-P25-055B | Atomic authoritative freeze/publication and idempotent conflict handling. | All source/approval/permission/current predicates checked under accepted participation, one expected-head/CAS result, complete rollback on missing/corrupt/unavailable owner; no half baseline. |
+| HPR-P25-055C | Authorized exact read/history/effective selection, compare and reconstruction. | Reconstruct an old baseline after every source revises; preserve units/precision/provenance; separate withdrawn/current-ineligible from authorized historical facts; opaque cross-company denial. |
+| HPR-P25-055D | Supported aggregate engineering import/export, dry-run and conflict-safe replay. | Version/size/type/digest/source/permission limits, lossless semantic round trip and dry-run without writes; admitted multi-owner writes use explicit atomic coordination, no generic document-upload substitute. |
+| HPR-P25-055E | Multi-owner freeze/replay/rollback/concurrency and API/consumer qualification. | Same/different-content retries, stale head, corruption/outage/restricted packages and partial-capture faults cannot yield an authoritative baseline; exact contracts for F07/F09 and full evidence. |
+
+No baseline->source-authoring prerequisite is introduced. Exchange packages state their
+supported types and exclusions; unsupported source references cannot be repaired by defaults.
+
+#### HPR-P25-056 — five telemetry-trust/quality/replay packages
+
+Prerequisites:051/052, retained029 independent scope and D4. Current trusted monitoring
+export exposes reading id/point/trust only; existing source/point/readings and Integration
+jobs are preserved. No live SCADA, fixed protocol, real sensor or OT command prerequisite.
+
+| Planning stage | Remaining delivery | Evidence / exit criterion |
+|---|---|---|
+| HPR-P25-056A | Configured source identity and versioned effective point/tag/asset/unit bindings. | Company/network/source authority, wrong-owner/wrong-kind references and overlapping/rebind windows validated; history records exact attribution without imposing universal current-ACTIVE rules. |
+| HPR-P25-056B | Authorized ingest with immutable raw provenance and idempotency/conflict semantics. | Source and actor cannot spoof another company; source time vs ingest time and units remain distinct; same identity/same content replay vs changed content conflict, all-or-nothing persistence. |
+| HPR-P25-056C | Configured quality, freshness, clock-skew and late/out-of-order assessment. | Trusted projection only after valid quality, stale/missing/unsupported data stays UNKNOWN; no hardcoded industrial thresholds or implied physical truth. |
+| HPR-P25-056D | Deterministic history/replay and source outage/recovery/dead-letter behavior. | Rebind/effective revisions reproduce original attribution/quality, duplicate/loss/late/recovery cases remain explainable; no failed ingest promoted to a trusted reading. |
+| HPR-P25-056E | Actual API/DB/monitoring export security and consumer qualification. | Two isolated companies/sources, actual ingest/filter/storage/query path, rollback/concurrent ingest and wrong time/units/binding denial; exact trusted source/time/quality contract for057/F08. |
+
+D4 fixes configurable synthetic freshness/clock/units policies and exact files before
+code. Owner supplies actual deployment calibration; policy configurability is required,
+real-world data collection is not a blocker to these software tests.
+
+#### HPR-P25-057 — four observation/action/outcome packages
+
+Prerequisites:050/051/056, retained029 design and D4's target/action/observation policy.
+Monitoring, Workflow and Audit retain their own semantics; Analytics consumes explicit
+facts. Existing scalar deviation and Workflow transition interfaces do not prove outcomes.
+
+| Planning stage | Remaining delivery | Evidence / exit criterion |
+|---|---|---|
+| HPR-P25-057A | Monitoring conditions and measured/declared/estimated/UNKNOWN observation evidence. | Eligible source/quality/time window and configurable threshold provenance, authorized current/history; stale/unknown/confounded input never becomes certainty. |
+| HPR-P25-057B | Authenticated operator action declaration and actual supported Workflow target transitions. | Actor/target/operation authority server-owned, allowed/denied transitions and idempotency/commit-uncertainty behavior, no caller permission/identity promotion. |
+| HPR-P25-057C | Subsequent observation/outcome correlation, factual audit/query and recovery. | Action requested/declaration distinct from physical action observed; missing/delayed/confounded observation explicit, action-without-outcome and observation-without-action supported. No unsupported causality or OT execution. |
+| HPR-P25-057D | Cross-owner action/observation security, rollback and consumer qualification. | Withdrawn permission, spoofed actor, duplicate event, missing outcome, denied cross-company history and downstream failure fully covered through actual APIs/owners; no automatic learning promotion or solver prerequisite. |
+
+Record outcomes supported by observed data only. Retain existing Alarm/Incident/HSE/Risk
+lifecycle behavior and do not fabricate business-event publishers from configured transport.
+
+#### HPR-P25-058 — four integrated PLATFORM qualification packages
+
+Prerequisites:accepted052–057, CI-003 closure, retained030 design and D5. The canonical
+PLATFORM_ACCEPTANCE criteria remain PLANNED until actual exact-case evidence accepts
+them. Current A–I and historical foundation A–G are different namespaces, not aliases.
+
+| Planning stage | Remaining delivery | Evidence / exit criterion |
+|---|---|---|
+| HPR-P25-058A | Freeze versioned supported fixture/case/contract/namespace matrix and exact test scope. | Map every historical/current criterion to concrete accepted owner APIs, permissions, input/expected result and test identity; unsupported entries remain open/excluded explicitly. No inferred acceptance. |
+| HPR-P25-058B | Actual operator/API/security/history end-to-end software qualification. | Two companies/networks, multiple supported products, three stations/nine units, independent survey/section/manufacturer revisions; real filter/API/storage path, not SQL seeding as the sole operator proof. |
+| HPR-P25-058C | Integrated concurrency/replay/reference/rollback and observation/action qualification. | Empty/incomplete/UNKNOWN inputs, trusted/untrusted data, current/revoked/historical access, stale CAS, partial failures and owner races preserve atomicity and supported evidence. |
+| HPR-P25-058D | Exact-SHA full database/contract/dictionary/24-module evidence and PLATFORM decision. | Java21/Postgres16/retained18/Flyway/JPA, raw zero-skip tests and exact runtime API/security/base compatibility; source/fixture/report/artifact mapping, limitations and all criteria reconciled. No SITE or numerical accuracy certification. |
+
+D5 may admit PLATFORM_ACCEPTANCE updates with exact test paths; this planning task does
+not edit that criteria file or mark any row passed. Production corrections require exact
+same-ID defect scope; no new unrelated business features under an acceptance-test label.
+
+#### HPR-P25-031 — one independent closure package
+
+After058 and explicit owner-supported-scope acceptance, perform one read-only independent
+audit of actual052–058/051/CI evidence and issue PASS/CLOSED or BLOCKED with every residual
+obligation/exclusion. Preserve the existing exact message
+`docs(roadmap): audit engineering foundation acceptance` and two-document allowlist;
+no new031 child code, runtime source or migration is needed to report an honest verdict.
+
+Verify the audited runtime SHA and each source/CI/artifact/raw test identity, not a
+successful earlier parent or the later documentation SHA. Any specifically required full
+verification on a docs-only candidate follows its explicit dispatch/startup protocol,
+never an invented runtime PASS or an automatic wait. No dangling owner contract, hidden
+partial publication, fake/default fact, current/historical access confusion or absent/
+cancelled/stale gate may be silently closed. A blocked audit assigns concrete residual
+work to its existing owner/parent rather than reopening all accepted foundations.
+Closure is supported engineering PLATFORM scope only; it does not close deferred
+simulator/P3, create a release, authorize deployment or claim calibrated SITE acceptance.
+
+#### Dependency, handoff and scope preservation
+
+- 051 remains first on the selected engineering path.052 and053 can progress after
+  their own051/D3 acceptance independently; 054 depends on supported052 sources;
+  055 requires052/053/054.056 requires051/052 and can run independently of055;
+  057 requires050/051/056.058 joins052–057 plusCI-003, then031 audits the result.
+- Source publication precedes baseline freezing. No cyclic baseline prerequisite,
+  frontend editor prerequisite to backend owner authoring, or deferred solver prerequisite.
+- After each accepted API slice, retain an exact OpenAPI artifact/digest/permission/
+  DTO/error contract for the relevant HidraWEB consumer. #695 vs #697 pin comparison
+  remains a separate read-only verification need, not presumed incompatibility. This
+  HidraAPI planning update does not mutate HidraWEB, repin its clients, promise mock
+  tests as live E2E or change its own F-task scope.
+- Avoid duplicate ownership between052 local exchange and055 aggregate exchange,
+  052 station incidence and054 installed data,053 product facts and054 vendor facts,
+  051 protected head/CAS foundation and052 public API,056 quality and057 observations.
+  Each exact stage scope must identify reused predecessors and residual obligations.
+- Optional SITE commissioning, deployment calibration, industrial numerical algorithms,
+  external engine integration, autonomous OT commands and P3 remain separate/deferred.
+  Preserve gas-first/GZ2, own engine, steady/transient direction and versioned inputs/
+  operator control without implementing those deferred capabilities now.
+
+#### Current authorized document update and STOP
+
+THIS task updates ONLY `doc/roadmap/ULTIMATE_ROADMAP.md` and append-only
+`doc/model-remediation/RECONCILIATION.md`; CREATE/DELETE none. Exact existing planning
+message reused: `docs(roadmap): consolidate development baseline and ci verification plan`.
+Retain the complete prior051G–M plan/G registration, Part B parent contracts/exact
+messages/CI scope, accepted/deferred history and acceptance criteria byte-identically.
+Part A current status cells may identify staged planning without claiming completion.
+No code/test/inventory/SQL/workflow/configuration/version/release/attachment change,
+new governance file or implementation selection is authorized by this plan.
+
+Validate head/CI, docs/offline API/P1/inventory, all six Python policy suites, exact
+nine-parent38-package coverage/dependency preservation and two-path/append-only/prior-
+contract preservation/whitespace. Guarded direct-main publication, parent/tree/two-blob
+verification and automatic Docs START then STOP. No manual Full/Fast, benchmark dispatch,
+completion waiting or automatic next stage. Next remains051G; Fail repairs CI first.
+
+
 ### Current execution checkpoint — owner-approved 051G–051M finalization sequence, 2026-10-15
 
 Owner requested document alignment with the reviewed seven-stage proposal before
@@ -3423,18 +3686,18 @@ aggregate may replace it. D1–D5 are internal gates, never new HPR task IDs.
 
 | Order | Code | Task | Module / owner | Status | Dependencies | Files | Testing | Acceptance | Track | Commit |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | HPR-CI-003 | Automatic fast suite and equivalent parallel full verification | CI / independent verification | IN PROGRESS / ORACLE RESOURCE CANDIDATE; prior 5x same-SHA equivalence retained; multi-revision/performance OPEN | Accepted 049; this Docs PASS; owner selection | CI-003 closed list | Selection/report/release negative tests; shadow full verification | No lost cases; mandatory gate fail-closed; repeatable timing | CI | `ci: automate fast feedback and preserve full verification gates` |
+| 1 | HPR-CI-003 | Automatic fast suite and equivalent parallel full verification | CI / independent verification | IN PROGRESS / ORACLE RESOURCE CANDIDATE; prior 5x same-SHA equivalence retained; multi-revision/performance OPEN; 4 DELIVERY PACKAGES PLANNED | Accepted 049; this Docs PASS; owner selection | CI-003 closed list | Selection/report/release negative tests; shadow full verification | No lost cases; mandatory gate fail-closed; repeatable timing | CI | `ci: automate fast feedback and preserve full verification gates` |
 | 2 | HPR-P25-047 | Provider/link database security generations | Identity | COMPLETED / CI ACCEPTED | Accepted 046/048/049; existing registration Docs; separate Next | Existing seven-file list, unchanged | Real writers, Flyway fresh/upgrade, native/bulk/race/rollback | Exact implementation Production + Docs SUCCESS | F1 | `feat(identity): enforce provider and link security generations` |
 | 3 | HPR-P25-050 | Immutable operation binding and trusted issuance/reader, staged 050A–050D | Identity; Platform technical wiring | COMPLETED / A–D AND B1 CI ACCEPTED AT 81d46bc | 047; accepted 044/045 design | Exact 050A/B/C/D lists executed; Full #683/Fast #16/Docs #287 SUCCESS | Fresh-schema LOCAL/LDAP/AD/OIDC, expiry, generation, rollback; no deployed-data migration | B1 provenance and storage proof across all four children; no inferred B2/B3 | F1 | Child messages registered below; original message retained by 050D |
 | 4 | HPR-P25-051 | Cross-owner revocation/time/transaction linearization | Identity / Party / Topology; Platform mechanics | IN PROGRESS / 051A–F CI ACCEPTED; G REGISTERED; H–M PLANNED; D2 OWNER INTEGRATION OPEN | 050; accepted 038/043; D2 | D2 then exact owner/export/fence list | Real PostgreSQL owner/race/expiry/connection tests | B2/B3 and writer ordering + bounded latency PASS | F1 | `feat(security): linearize cross owner protected operations` |
-| 5 | HPR-P25-052 | Topology authoring, route/profile and revision publication APIs | Topology; read-only foreign owner contracts | PLANNED / REGISTERED; D3 contract/scope gate | 051; accepted 018/019/020/032/034/036/037/038; D3 | D3 closed authoring/storage/API list | Actual API round trips, epochs/CAS/history/import-export | F1-02/03/04 within explicit supported topology scope | F1 | `feat(topology): expose governed engineering revision workflows` |
-| 6 | HPR-P25-053 | Product/property/method metadata authoring and history | Custody; source approval through Workflow | PLANNED / REGISTERED; D3 contract/scope gate | 051; accepted 018/022 design; D3 | D3 exact Custody/owner-export list | Multi-product metadata, unsupported shape, old GAS replay | F2-01 and product share of F2-03 | F2 | `feat(custody): govern versioned product engineering data` |
-| 7 | HPR-P25-054 | Installed-unit/asset and manufacturer-characteristic history | Topology installed configuration; Assets lifecycle; Party manufacturer; existing Simulation data store | PLANNED / REGISTERED; D3 contract/scope gate | 052; accepted 020/021 design; D3 | D3 exact per-owner list | Nine distinct units; curve/table/units/lifecycle/history | F2-02 and equipment share of F2-03; data only | F2 | `feat(engineering): govern installed units and characteristic revisions` |
-| 8 | HPR-P25-055 | Authoritative baseline freeze/read/compare and supported exchange | Topology coordinator; source owners retain authority | PLANNED / REGISTERED; D3 contract/scope gate | 052/053/054; accepted 028 design; D3 | D3 exact baseline/contracts/schema/test list | Frozen references, incomplete drafts, lossless exchange | F2-04; complete supported historical reconstruction | F2 | `feat(topology): freeze authoritative engineering baselines` |
-| 9 | HPR-P25-056 | Telemetry sources/bindings, trust, temporal quality and replay | Telemetry; Integration transport; Topology reference | PLANNED / REGISTERED; D4 source/policy/scope gate | 051/052; accepted 029 design; D4 | D4 exact binding/ingest/history/API list | Duplicates, late/stale/unknown, source loss, tenant denial | F3-01/02; no real SCADA prerequisite | F3 | `feat(telemetry): govern source bindings quality and replay` |
-| 10 | HPR-P25-057 | Monitoring observations and authenticated human action/outcome evidence | Monitoring / Workflow / Audit; Analytics consumer | PLANNED / REGISTERED; D4 observation/scope gate | 050/051/056; accepted 029 design; D4 | D4 exact per-owner evidence/API list | UNKNOWN/freshness, action vs observation, retry/rollback | F3-03/04; no causality/solver/OT inference | F3 | `feat(operations): separate observations actions and outcomes` |
-| 11 | HPR-P25-058 | Synthetic integrated PLATFORM matrix and verification | Independent testing; all 24 module owners | PLANNED / REGISTERED; D5 exact test-scope gate | CI-003; 052–057; accepted 030 design; D5 | D5 concrete operator/API/test paths | Both acceptance namespaces; Java21/Postgres/OpenAPI/security | F4-01/02 actual cases, exact-SHA raw evidence | F4 | `test(platform): verify engineering and operational acceptance` |
-| 12 | HPR-P25-031 | Independent engineering foundation closure audit | Independent governance; accountable source owners | PLANNED / REGISTERED; existing ID retained | 058; accepted F1–F3 scopes; explicit owner scope acceptance | Existing roadmap + append-only reconciliation | Read-only evidence audit; full CI on audited runtime SHA | F4-03 PASS/CLOSED only within proven foundation scope | F4 | `docs(roadmap): audit engineering foundation acceptance` |
+| 5 | HPR-P25-052 | Topology authoring, route/profile and revision publication APIs | Topology; read-only foreign owner contracts | PLANNED / REGISTERED; D3 contract/scope gate; 6 DELIVERY PACKAGES PLANNED | 051; accepted 018/019/020/032/034/036/037/038; D3 | D3 closed authoring/storage/API list | Actual API round trips, epochs/CAS/history/import-export | F1-02/03/04 within explicit supported topology scope | F1 | `feat(topology): expose governed engineering revision workflows` |
+| 6 | HPR-P25-053 | Product/property/method metadata authoring and history | Custody; source approval through Workflow | PLANNED / REGISTERED; D3 contract/scope gate; 4 DELIVERY PACKAGES PLANNED | 051; accepted 018/022 design; D3 | D3 exact Custody/owner-export list | Multi-product metadata, unsupported shape, old GAS replay | F2-01 and product share of F2-03 | F2 | `feat(custody): govern versioned product engineering data` |
+| 7 | HPR-P25-054 | Installed-unit/asset and manufacturer-characteristic history | Topology installed configuration; Assets lifecycle; Party manufacturer; existing Simulation data store | PLANNED / REGISTERED; D3 contract/scope gate; 5 DELIVERY PACKAGES PLANNED | 052; accepted 020/021 design; D3 | D3 exact per-owner list | Nine distinct units; curve/table/units/lifecycle/history | F2-02 and equipment share of F2-03; data only | F2 | `feat(engineering): govern installed units and characteristic revisions` |
+| 8 | HPR-P25-055 | Authoritative baseline freeze/read/compare and supported exchange | Topology coordinator; source owners retain authority | PLANNED / REGISTERED; D3 contract/scope gate; 5 DELIVERY PACKAGES PLANNED | 052/053/054; accepted 028 design; D3 | D3 exact baseline/contracts/schema/test list | Frozen references, incomplete drafts, lossless exchange | F2-04; complete supported historical reconstruction | F2 | `feat(topology): freeze authoritative engineering baselines` |
+| 9 | HPR-P25-056 | Telemetry sources/bindings, trust, temporal quality and replay | Telemetry; Integration transport; Topology reference | PLANNED / REGISTERED; D4 source/policy/scope gate; 5 DELIVERY PACKAGES PLANNED | 051/052; accepted 029 design; D4 | D4 exact binding/ingest/history/API list | Duplicates, late/stale/unknown, source loss, tenant denial | F3-01/02; no real SCADA prerequisite | F3 | `feat(telemetry): govern source bindings quality and replay` |
+| 10 | HPR-P25-057 | Monitoring observations and authenticated human action/outcome evidence | Monitoring / Workflow / Audit; Analytics consumer | PLANNED / REGISTERED; D4 observation/scope gate; 4 DELIVERY PACKAGES PLANNED | 050/051/056; accepted 029 design; D4 | D4 exact per-owner evidence/API list | UNKNOWN/freshness, action vs observation, retry/rollback | F3-03/04; no causality/solver/OT inference | F3 | `feat(operations): separate observations actions and outcomes` |
+| 11 | HPR-P25-058 | Synthetic integrated PLATFORM matrix and verification | Independent testing; all 24 module owners | PLANNED / REGISTERED; D5 exact test-scope gate; 4 DELIVERY PACKAGES PLANNED | CI-003; 052–057; accepted 030 design; D5 | D5 concrete operator/API/test paths | Both acceptance namespaces; Java21/Postgres/OpenAPI/security | F4-01/02 actual cases, exact-SHA raw evidence | F4 | `test(platform): verify engineering and operational acceptance` |
+| 12 | HPR-P25-031 | Independent engineering foundation closure audit | Independent governance; accountable source owners | PLANNED / REGISTERED; existing ID retained; 1 DELIVERY PACKAGES PLANNED | 058; accepted F1–F3 scopes; explicit owner scope acceptance | Existing roadmap + append-only reconciliation | Read-only evidence audit; full CI on audited runtime SHA | F4-03 PASS/CLOSED only within proven foundation scope | F4 | `docs(roadmap): audit engineering foundation acceptance` |
 
 047 is COMPLETED / CI ACCEPTED at c1f25af, Production #668 and Docs #268 SUCCESS. Owner Next selects CI-003 from the closed eligible sequence; no 050 code is selected.
 CI-003 is scheduled early, and may be selected first after this registration Docs PASS

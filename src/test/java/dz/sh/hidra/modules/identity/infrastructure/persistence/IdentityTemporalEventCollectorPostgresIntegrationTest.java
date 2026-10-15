@@ -20,7 +20,6 @@
 package dz.sh.hidra.modules.identity.infrastructure.persistence;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import dz.sh.hidra.HidraApplication;
 import dz.sh.hidra.modules.identity.domain.model.OperationAuthenticationBinding;
 import dz.sh.hidra.modules.identity.domain.service.AuthorizationTemporalBoundaryCompiler.*;

@@ -32,6 +32,48 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-P25-051D assertion import repair, 2026-10-15
+
+Owner Fail selects repair of exact main
+`20a215807ce87d7bf1ee7021219e8bf4a1b0c835`, not a later task.
+[Full #691](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38633902694)
+and Fast #24 failed; Docs #309 succeeded. Reviewed unit/architecture,
+PostgreSQL partition1 and unrestricted oracle logs show the same Java
+test-compilation error: four unqualified fail(String) calls are ambiguous
+between wildcard imports from AssertJ and JUnit Assertions. Report/evidence
+and aggregate errors follow that compilation failure; no collector runtime
+acceptance or successful PostgreSQL execution is inferred.
+
+Remove ONLY the unused JUnit Assertions static wildcard import from
+IdentityTemporalEventCollectorPostgresIntegrationTest. Its assertion calls
+now resolve to the existing AssertJ import. All ten test identities, bodies,
+timeouts, guards, native fixtures, production collector and acceptance
+requirements remain unchanged. Update only its inventory source SHA256
+plus this roadmap and append-only reconciliation. Same registered message:
+`feat(identity): collect fenced temporal event candidates`.
+CREATE/DELETE none; no workflow, dependency, migration or production change.
+
+Local Java syntax parsing PASS, source import/use audit PASS and source
+inventory validation PASS. These are not Java21 type checking or JUnit/
+PostgreSQL execution; hosted verification is required. Canonical docs/
+offline OpenAPI/P1 and exact four-path/append-only checks performed.
+New test source SHA256:
+`e3a8c684b6611288452415134741502e6ddce677c9a107812dadb8b3b2e02552`.
+Inventory SHA256:
+`273bf38a011886b1c930742b7ba8a9e65f2064a2ca5c54d63279efe718c4c77c`;
+Fast299/unit300/PG37+43/oracle380/historical4 unchanged.
+
+Publish directly to expected-head main, verify parent/tree/four-path scope,
+observe automatic exact-SHA Full/Fast/Docs startup then STOP. Startup is not
+success. 051D remains IN PROGRESS / REPAIRED CANDIDATE / HOSTED CI PENDING.
+Separate Next/Fail must review successful exact-SHA aggregate and ten genuine
+zero-skip PG cases before acceptance. Parent051/D2/B2/B3, static owner/
+privilege/writer graph, universal lock ordering, paired permission/Party/
+Topology exports and038 head/epoch remain OPEN; 052 unselected. CI-003
+oracle/fallback and optimized=false persist. Gas-first/GZ2, own engine,
+steady/transient, versioned inputs/operator control; synthetic development,
+owner calibration later, Simulation/P3 deferred; no release/deployment.
+
 ### Current execution checkpoint — HPR-P25-051D fenced Identity event collector candidate, 2026-10-14
 
 Owner Next selected only the five-path registered envelope after main

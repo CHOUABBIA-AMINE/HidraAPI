@@ -23879,3 +23879,48 @@ This one documentation-only same-ID registration uses existing exact message
 UPDATE paths are the roadmap checkpoint and this append-only entry; no
 CREATE/DELETE, no changed CI execution logic. Only automatic exact-SHA
 Documentation Validation startup is expected; observe it and STOP.
+
+## 2026-10-15 — HPR-CI-003 / CI-003A source-linked measurement reviewed
+
+Follow-up on the previous selected A registration at main `3f5d7f333e034685bf439e1c733140d471fbfa29`
+(tree `ebc42a1271de723c270cf44d7afcce3221d3f2f6`), Documentation #328 SUCCESS.
+**CI-003A COMPLETED as bounded measurement analysis only.** This does not
+complete parent HPR-CI-003, select/approve CI-003B, authorize performance
+changes or supersede any accepted source/CI result.
+
+Read existing exact-run Full#700 source `6ca63efdff3eebf277523222d07587d9101e401e`
+raw oracle XML artifact11975438337 and Full unit / PostgreSQL0 / PostgreSQL1
+evidence artifacts11976365967/11975082557/11975453029; Fast#32 artifact
+11975271628. Independently matched the full disjoint union of302+37+46
+selected XML suites to all385 unrestricted oracle suites and their2073
+testcase identities. All selected lanes and unrestricted oracle report
+zero failures, errors or skips, with source/inventory identities intact.
+
+Raw `testsuite time` totals (seconds) are oracle1846.527,
+unit30.904, PostgreSQL0 291.054, PostgreSQL1 450.822 and Fast30.619.
+Parallel oracle suite sums are NOT job wall time: Full workflow11m50s,
+oracle job11m25s, oracle clean verify8m55s, two PostgreSQL job walls
+5m53s/8m51s, independent Fast workflow1m34s. Oracle log confirms
+4 CPUs/15989MiB,4 reused forks,2048MiB heap/fork and1024MiB Maven heap.
+All five inspected jobs had Maven cache hits; older/newer runner image
+versions occurred in the same run, hence no controlled cold-cache claim.
+
+The dated five-run historical source `d4a3d99d0840a8791eb79e5b25f86bd377470b54`
+was371 classes/1776 cases with recorded oracle median10m55s.
+Current accepted runtime includes14 additional classes and297 cases;
+its single warm-cache11m25s oracle wall time is not an estimated
+regression, validated optimization or full five-sample campaign.
+Full mandatory oracle remains critical path and must not be removed.
+No source-level calibration, new CI runner, workflow, test or database
+experiment is claimed in this documentation-only step.
+
+CI-003B stays BLOCKED_SPECIFICATION (justify exact bounded correction
+separately, or record no code necessary). CI-003C/D keep three
+representative revision types, negative failure modes, cold/warm,
+five comparable samples per configuration, cost and <=7m critical-path
+median OPEN. Parent HPR-CI-003 remains IN PROGRESS, fallback required,
+`optimized_adoption_eligible=false`. 051G Completed; 051H unselected.
+Current previous-roadmap bytes preserved and this reconciliation appended
+without modifying prior entries. Same exact HPR-CI-003 message:
+`ci: automate fast feedback and preserve full verification gates`.
+Only two documentation UPDATE files; automatic Docs startup then STOP.

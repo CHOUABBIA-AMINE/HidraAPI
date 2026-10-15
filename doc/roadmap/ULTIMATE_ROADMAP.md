@@ -32,6 +32,102 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-CI-003 / CI-003A bounded measurement accepted, 2026-10-15
+
+**Stage disposition: CI-003A COMPLETED (evidence analysis only).** This continuation is
+under existing `HPR-CI-003`, after the previous A registration. Refreshed main
+`3f5d7f333e034685bf439e1c733140d471fbfa29`, tree `ebc42a1271de723c270cf44d7afcce3221d3f2f6`, parent
+`f8ca520a4aa8061885519d6861c79d5c29fd9f53`; exact-HEAD
+[Documentation #328](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38754399554)
+completed SUCCESS. HidraWEB remains `46676deb70fd38b906bdb370f020f609d0a16c98`.
+The accepted runtime source is still `6ca63efdff3eebf277523222d07587d9101e401e`;
+no application or CI execution logic was changed by this review.
+
+**Source-linked, independently re-examined raw measurement:** downloaded existing
+[Full #700](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38739988227)
+run-attempt1 oracle Surefire artifact11975438337 and lane evidence artifacts
+11976365967 (unit),11975082557 (PostgreSQL0),11975453029 (PostgreSQL1);
+[Fast #32](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38739988169)
+artifact11975271628. Each evidence.json lane reports the accepted source SHA,
+its run ID, exact lane and common inventory SHA256
+`372a4b431b3b383e641b033d210d18421aa57e17e9a88732668cb9728770f95e`.
+The 385 oracle XML suite names and all their testcase(class,name) identities
+were independently matched **exactly** to the disjoint union of302 unit,
+37 PostgreSQL0 and46 PostgreSQL1 XML reports:385 unique classes,2073 tests,
+zero failures/errors/skips. No source inventory, tests, assertions or migrations
+were revised. Retained Full aggregate same-run verification remains mandatory.
+
+| Verified #700/#32 source lane | Classes / cases | Sum of Surefire suite times (s) | Workflow-level elapsed context |
+|---|---:|---:|---|
+| Full unrestricted oracle |385 /2073 |1846.527 | Oracle job11m25s; clean verify step8m55s |
+| Full unit/architecture |302 /1434 |30.904 | Job1m29s |
+| Full PostgreSQL shard0 |37 /243 |291.054 | Job5m53s |
+| Full PostgreSQL shard1 |46 /396 |450.822 | Job8m51s |
+| Independent Fast |301 /1390 |30.619 | Workflow1m34s; test step1m08s |
+
+**Timing semantics:** root `testsuite time` values are additive *reported class
+durations*, not critical-path wall times; the oracle's four reusable forks
+execute concurrently and its cumulative1846.527s **must not** be compared as a
+serial elapsed duration. Full workflow lasted11m50s, with oracle on the
+critical path and the final aggregate gate17s. PostgreSQL0/1 clean verification
+steps ran5m35s/8m38s respectively; class totals do not include every build,
+setup or artifact cost.
+
+**High-cost raw oracle classes (seconds / cases):**
+`SimulationEquipmentParameterRevisionPostgresIntegrationTest`108.863/11,
+`OrganizationOperationalScopeSchemaMigrationTest`89.200/5,
+`QualifiedFluidEquipmentDeliveryIntegrationTest`73.303/2,
+`ProtectedTransactionLifecyclePostgresIntegrationTest`71.070/25,
+`IdentityProviderLinkJsonbPostgresIntegrationTest`69.324/9.
+These are prioritization measurements, not permission to weaken SQL/security
+coverage, suppress retries or infer which internal setup phase caused each cost.
+
+**Actual hosted resource/scheduling observations:** Full oracle log shows
+Ubuntu24.04.5, runner image20261004.327.1,4 reported CPUs,15989MiB RAM,
+4 reused Surefire forks,2048MiB Java heap/fork and1024MiB Maven heap.
+PostgreSQL0/1 and unit jobs explicitly use one reused fork; their logs
+do not establish an independent CPU allotment. The PostgreSQL1 runner
+also used image20261004.327.1, but PostgreSQL0, unit and Fast used
+20261012.334.1. All examined Maven setup-java jobs reported primary-key
+**cache hits**; they do **not** qualify as cold-cache observations. Hosted
+Testcontainers1.21.4 / PostgreSQL16 startup appears in DB/oracle logs,
+but complete per-class setup/teardown versus useful SQL-work attribution
+is not yet independently measured. Queue/wait and image heterogeneity
+prevent treating this single new run as a controlled benchmark.
+
+**Cross-sample context:** prior roadmap authenticated five successful
+same-source runs Full#669–673 / Fast#2–6 on older
+`d4a3d99d0840a8791eb79e5b25f86bd377470b54` (371 oracle classes/
+1776 cases, reported oracle-job median10m55s), whereas accepted Full#700
+has385/2073 (+14 classes/+297 cases) and an 11m25s oracle job.
+This is a **descriptive different-source comparison, not a regression,
+performance effect or same-configuration five-run measurement**.
+Current-source Full#700 is one warm-cache successful sample only.
+
+**Bounded A acceptance:** existing hosted five-run baseline plus
+current source, raw-class, resource, cache and critical-path analysis
+is sufficient to identify the mandatory oracle as the observed
+bottleneck and record the source/test growth. A is completed strictly
+as a read-only measurement package; **no optimization is accepted**.
+CI-003B remains BLOCKED_SPECIFICATION pending an independently scoped,
+source-backed scheduling/resource decision; CI-003C and CI-003D keep
+representative code/security/migration/API revisions, hosted negative-case
+proof, cold/warm, five comparable samples *per proposed configuration*,
+runner-minute cost and Full median<=7m gates OPEN. In particular,
+`shadow-fallback-required`, unrestricted clean PostgreSQL oracle,
+source-linked coverage and `optimized_adoption_eligible=false` remain.
+
+**Same-ID evidence publication only:** existing HPR-CI-003 message
+`ci: automate fast feedback and preserve full verification gates`;
+UPDATE `doc/roadmap/ULTIMATE_ROADMAP.md` (prepend this checkpoint,
+all old bytes preserved) and append only
+`doc/model-remediation/RECONCILIATION.md`; CREATE/DELETE none.
+No source, tests, workflows, inventory, Maven, migrations, security,
+OpenAPI, API permissions or frontend mutations; no CI dispatch.
+Verify exact expected-head guarded main commit and automatic exact-SHA
+Documentation Validation startup, then STOP. 051G Completed, parent051
+In Progress, 051H Planned/Unselected, numerical simulation/P3 deferred.
+
 ### Current execution checkpoint — HPR-CI-003 / CI-003A measured-evidence registration, 2026-10-15
 
 **Selected bounded continuation:** owner instruction authorizes one permitted stage. Of the

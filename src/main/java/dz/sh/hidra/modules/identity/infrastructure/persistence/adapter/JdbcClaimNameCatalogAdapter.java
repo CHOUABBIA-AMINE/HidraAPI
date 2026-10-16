@@ -148,6 +148,106 @@ public class JdbcClaimNameCatalogAdapter implements ClaimNameCatalogPort {
         }
     }
 
+
+    /**
+     * One READ COMMITTED statement yields both candidate names and their committed generation.
+     * VersionedSelection is advisory: it never certifies external claim values or permissions.
+     */
+    private static final String VERSIONED_SQL =
+            SQL.substring(0, SQL.indexOf("SELECT family,state,mode,claim FROM (")) + """
+        , eligible AS (
+            SELECT id FROM public.hidra_identity_provider WHERE id=? AND status='ACTIVE'
+        ), privilege_guard AS (
+            SELECT COALESCE(bool_or(pg_has_role(current_user,
+                   pg_get_userbyid(c.relowner), 'MEMBER')), false) AS owner_power
+            FROM pg_catalog.pg_class c
+            WHERE c.oid IN (
+                'public.hidra_identity_external_mapping_generation'::regclass,
+                'public.hidra_identity_external_group_mapping'::regclass,
+                'public.hidra_identity_external_role_mapping'::regclass,
+                'public.hidra_identity_external_permission_mapping'::regclass)
+        ), elevated AS (
+            SELECT (r.rolsuper OR r.rolbypassrls
+                 OR has_schema_privilege(current_user, 'public', 'CREATE')
+                 OR has_table_privilege(current_user,
+                    'public.hidra_identity_external_mapping_generation','UPDATE')
+                 OR privilege_guard.owner_power) AS unsafe
+            FROM pg_catalog.pg_roles r CROSS JOIN privilege_guard
+            WHERE r.rolname = current_user
+        ), provider_generation AS (
+            SELECT g.generation, elevated.unsafe
+            FROM public.hidra_identity_external_mapping_generation g
+            JOIN eligible e ON e.id=g.provider_id
+            CROSS JOIN elevated
+        )
+        SELECT choice.family,choice.state,choice.mode,choice.claim,
+               provider_generation.generation,provider_generation.unsafe
+        FROM (
+            SELECT 'PROVIDER'::text AS family,'ACTIVE'::text AS state,
+                   NULL::text AS mode,NULL::text AS claim FROM eligible
+            UNION ALL
+            SELECT family,state,mode,claim FROM bounded
+        ) choice CROSS JOIN provider_generation
+        ORDER BY choice.family,choice.state,choice.mode,choice.claim NULLS FIRST
+        """;
+
+    @Override
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
+    public VersionedSelection selectVersioned(String providerId) {
+        try {
+            validProviderId(providerId);
+            List<VersionedMappingRow> rows = jdbc.query(VERSIONED_SQL,
+                (rs, rowNum) -> new VersionedMappingRow(
+                    new MappingRow(rs.getString(1), rs.getString(2),
+                                   rs.getString(3), rs.getString(4)),
+                    rs.getLong(5), rs.getBoolean(6)),
+                providerId, providerId, providerId, providerId);
+            if (rows.isEmpty() || rows.size() > MAX_MAPPING_ROWS + 1) throw invalid();
+            long generation = rows.getFirst().generation();
+            if (generation <= 0) throw invalid();
+            boolean hasProvider = false;
+            TreeSet<String> names = new TreeSet<>();
+            for (VersionedMappingRow versioned : rows) {
+                if (versioned.unsafe() || versioned.generation() != generation)
+                    throw invalid();
+                MappingRow row = versioned.row();
+                if ("PROVIDER".equals(row.family())) {
+                    if (hasProvider || !"ACTIVE".equals(row.state())
+                            || row.mode() != null || row.claim() != null) throw invalid();
+                    hasProvider = true;
+                    continue;
+                }
+                ExternalMappingStatus status = ExternalMappingStatus.valueOf(
+                    Objects.requireNonNull(row.state()));
+                if (status == ExternalMappingStatus.CONFLICT) throw invalid();
+                ExternalMappingMode mode = ExternalMappingMode.valueOf(
+                    Objects.requireNonNull(row.mode()));
+                boolean relevant = switch (row.family()) {
+                    case "GROUP" -> {
+                        if (mode == ExternalMappingMode.DIRECT_GRANT) throw invalid();
+                        yield mode == ExternalMappingMode.ASSERTION_ONLY;
+                    }
+                    case "ROLE", "PERMISSION" -> {
+                        if (mode == ExternalMappingMode.ASSERTION_ONLY
+                                || mode == ExternalMappingMode.SYNC_MEMBERSHIP) throw invalid();
+                        yield mode == ExternalMappingMode.DIRECT_GRANT;
+                    }
+                    default -> throw invalid();
+                };
+                if (status == ExternalMappingStatus.ACTIVE && relevant) {
+                    names.add(row.claim() == null ? "" : row.claim());
+                    if (names.size() > 64) throw invalid();
+                }
+            }
+            if (!hasProvider) throw invalid();
+            return new VersionedSelection(new Selection(new ArrayList<>(names)), generation);
+        } catch (RuntimeException failure) {
+            throw invalid();
+        }
+    }
+
+    private record VersionedMappingRow(MappingRow row, long generation, boolean unsafe) {}
+
     private static void validProviderId(String id) {
         if (id == null || id.isBlank() || id.length() > 80
                 || id.getBytes(StandardCharsets.UTF_8).length > 320)

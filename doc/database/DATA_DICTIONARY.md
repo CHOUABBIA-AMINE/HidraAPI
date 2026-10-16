@@ -1,5 +1,16 @@
 # HidraAPI Physical Data Dictionary
 
+## HPR-P25-051H-B2 — capture gate
+
+The previously captured PostgreSQL 16 dictionary below predates
+`V20261016_001__p25_identity_external_mapping_generations.sql`.
+The new Identity-owned generation relation and mapping triggers are introduced
+in source, but their PostgreSQL catalog attributes have **not** been recaptured
+or approved here. The existing physical catalog entries and provenance below
+remain unchanged. Full CI's real-catalog equality check MUST be satisfied
+before B2 may be called CI-accepted. This is NOT a fabricated regenerated
+database dictionary.
+
 ## Status
 
 CURRENT

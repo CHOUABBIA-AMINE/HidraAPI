@@ -38,6 +38,21 @@ public interface ClaimNameCatalogPort {
      */
     Selection select(String providerId);
 
+    /** Atomic, non-authoritative mapping name/generation hint. Not verified identity evidence. */
+    VersionedSelection selectVersioned(String providerId);
+
+    record VersionedSelection(Selection selection, long generation) {
+        public VersionedSelection {
+            Objects.requireNonNull(selection, "selection");
+            if (generation <= 0) throw new IllegalArgumentException("Invalid mapping generation");
+        }
+
+        @Override public String toString() {
+            return "VersionedSelection[claimCount=" + selection.names().size()
+                    + ", names=<redacted>, generation=<redacted>, authority=none]";
+        }
+    }
+
     /** Immutable sorted, distinct exact names, with no values and no authority to grant access. */
     record Selection(List<String> names) {
         public Selection {

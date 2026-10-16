@@ -71,6 +71,14 @@
     "owner": "identity",
     "purpose": "External identity link with database-owned monotonic security generation and ordinary-writer mutation guards; generation is not token, session or permission authority."
   },
+  "public.hidra_identity_external_mapping_generation": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261016_001__p25_identity_external_mapping_generations.sql",
+      "src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java"
+    ],
+    "owner": "identity",
+    "purpose": "Database-owned per-provider committed external mapping generation; not an OIDC/LDAP claim attestation or authorization grant."
+  },
   "public.hidra_identity_local_credential": {
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/LocalCredentialJpaEntity.java",

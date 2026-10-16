@@ -101,7 +101,17 @@ class ProviderLinkSecurityGenerationPostgresIntegrationTest {
         assertEquals(0, jdbc.queryForObject("SELECT count(*) FROM flyway_schema_history WHERE NOT success", Integer.class));
         assertEquals(1, jdbc.queryForObject("SELECT count(*) FROM flyway_schema_history WHERE version='20261012.002' AND success", Integer.class));
         for (String table : List.of(PROVIDER, LINK)) {
-            assertEquals(3, jdbc.queryForObject("SELECT count(*) FROM pg_trigger WHERE tgrelid=?::regclass AND NOT tgisinternal", Integer.class, table));
+            var actualTriggers = jdbc.queryForList(
+                    "SELECT tgname FROM pg_trigger WHERE tgrelid=?::regclass AND NOT tgisinternal ORDER BY tgname",
+                    String.class, table);
+            var expectedTriggers = table.equals(PROVIDER)
+                    ? List.of("trg_p25_external_mapping_provider_initialize",
+                            "trg_p25_provider_security_delete", "trg_p25_provider_security_truncate",
+                            "trg_p25_provider_security_write")
+                    : List.of("trg_p25_external_identity_security_delete",
+                            "trg_p25_external_identity_security_truncate",
+                            "trg_p25_external_identity_security_write");
+            assertThat(actualTriggers).containsExactlyElementsOf(expectedTriggers);
             assertEquals(1L, version(table, table.equals(PROVIDER) ? provider() : link()));
         }
     }

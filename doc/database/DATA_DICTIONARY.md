@@ -1,26 +1,15 @@
 # HidraAPI Physical Data Dictionary
 
-## HPR-P25-051H-B2 — capture gate
-
-The previously captured PostgreSQL 16 dictionary below predates
-`V20261016_001__p25_identity_external_mapping_generations.sql`.
-The new Identity-owned generation relation and mapping triggers are introduced
-in source, but their PostgreSQL catalog attributes have **not** been recaptured
-or approved here. The existing physical catalog entries and provenance below
-remain unchanged. Full CI's real-catalog equality check MUST be satisfied
-before B2 may be called CI-accepted. This is NOT a fabricated regenerated
-database dictionary.
-
 ## Status
 
 CURRENT
 
 ## Generation basis
 
-Captured source SHA: `778dd05c422ae655322bdc8232e7a5eeefe86875`
+Captured source SHA: `412fd724dfd002edcf75bbcf30bb03dbaf912532`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `36bf5c60a41229ce66c7cbf8fd3cd401b8652f6baadb666ebd702feac8f8c214`.
-Migrations: 148; JPA mappings: 470; catalog relations: 491; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `cf302bf8131d9f5ce6d515ddac1cbc1f570e83adbea2394a4b5b1b1b466454d7`.
+Migrations: 149; JPA mappings: 470; catalog relations: 492; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -8561,6 +8550,7 @@ Persisted ExternalGroupMappingJpaEntity state; semantic authority remains with i
 - Evidence: [ExternalGroupMappingJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/ExternalGroupMappingJpaEntity.java)
 - Migration mention (not inferred introduction): [V20260611_001__create_identity_tables.sql](../../src/main/resources/db/migration/V20260611_001__create_identity_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
+- Migration mention (not inferred introduction): [V20261016_001__p25_identity_external_mapping_generations.sql](../../src/main/resources/db/migration/V20261016_001__p25_identity_external_mapping_generations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8606,7 +8596,12 @@ Persisted ExternalGroupMappingJpaEntity state; semantic authority remains with i
 
 #### Triggers
 
-None captured in this catalog category.
+- `trg_p25_group_mapping_generation`: CREATE TRIGGER trg_p25_group_mapping_generation AFTER INSERT OR DELETE OR UPDATE ON hidra_identity_external_group_mapping FOR EACH ROW EXECUTE FUNCTION hidra_identity_external_mapping_write_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_identity_external_mapping_write_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_identity_external_mapping_write_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>DECLARE old_provider varchar(80); new_provider varchar(80);<br>BEGIN<br>    IF TG_OP='TRUNCATE' THEN<br>        RAISE EXCEPTION 'Mapping TRUNCATE forbidden' USING ERRCODE='23514';<br>    END IF;<br>    IF TG_OP IN ('UPDATE','DELETE') THEN old_provider := OLD.identity_provider_id; END IF;<br>    IF TG_OP IN ('UPDATE','INSERT') THEN new_provider := NEW.identity_provider_id; END IF;<br>    IF old_provider IS NOT NULL AND new_provider IS NOT NULL<br>       AND old_provider &lt;&gt; new_provider THEN<br>        IF old_provider &lt; new_provider THEN<br>            PERFORM public.hidra_identity_external_mapping_increment(old_provider);<br>            PERFORM public.hidra_identity_external_mapping_increment(new_provider);<br>        ELSE<br>            PERFORM public.hidra_identity_external_mapping_increment(new_provider);<br>            PERFORM public.hidra_identity_external_mapping_increment(old_provider);<br>        END IF;<br>    ELSE<br>        PERFORM public.hidra_identity_external_mapping_increment(<br>            COALESCE(old_provider,new_provider));<br>    END IF;<br>    RETURN NULL;<br>END;<br>$function$<br>
+- `trg_p25_group_mapping_truncate`: CREATE TRIGGER trg_p25_group_mapping_truncate BEFORE TRUNCATE ON hidra_identity_external_group_mapping FOR EACH STATEMENT EXECUTE FUNCTION hidra_identity_external_mapping_write_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_identity_external_mapping_write_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_identity_external_mapping_write_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>DECLARE old_provider varchar(80); new_provider varchar(80);<br>BEGIN<br>    IF TG_OP='TRUNCATE' THEN<br>        RAISE EXCEPTION 'Mapping TRUNCATE forbidden' USING ERRCODE='23514';<br>    END IF;<br>    IF TG_OP IN ('UPDATE','DELETE') THEN old_provider := OLD.identity_provider_id; END IF;<br>    IF TG_OP IN ('UPDATE','INSERT') THEN new_provider := NEW.identity_provider_id; END IF;<br>    IF old_provider IS NOT NULL AND new_provider IS NOT NULL<br>       AND old_provider &lt;&gt; new_provider THEN<br>        IF old_provider &lt; new_provider THEN<br>            PERFORM public.hidra_identity_external_mapping_increment(old_provider);<br>            PERFORM public.hidra_identity_external_mapping_increment(new_provider);<br>        ELSE<br>            PERFORM public.hidra_identity_external_mapping_increment(new_provider);<br>            PERFORM public.hidra_identity_external_mapping_increment(old_provider);<br>        END IF;<br>    ELSE<br>        PERFORM public.hidra_identity_external_mapping_increment(<br>            COALESCE(old_provider,new_provider));<br>    END IF;<br>    RETURN NULL;<br>END;<br>$function$<br>
 
 ### public.hidra_identity_external_identity
 
@@ -8680,6 +8675,43 @@ External identity link with database-owned monotonic security generation and ord
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_identity_external_identity_security_guard()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_identity_external_identity_security_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'public'<br>AS $function$<br>BEGIN<br>    IF TG_OP IN ('DELETE', 'TRUNCATE') THEN<br>        RAISE EXCEPTION 'external_identity identity must be retained; disable instead of deleting or truncating'<br>            USING ERRCODE = '23514';<br>    END IF;<br>    IF TG_OP = 'INSERT' THEN<br>        IF NEW.security_version IS DISTINCT FROM 1::bigint THEN<br>            RAISE EXCEPTION 'Initial external_identity security generation must be 1'<br>                USING ERRCODE = '23514';<br>        END IF;<br>        RETURN NEW;<br>    END IF;<br>    IF NEW.id IS DISTINCT FROM OLD.id<br>        OR NEW.created_at IS DISTINCT FROM OLD.created_at THEN<br>        RAISE EXCEPTION 'external_identity identity and creation evidence are immutable'<br>            USING ERRCODE = '23514';<br>    END IF;<br>    IF NEW.security_version IS DISTINCT FROM OLD.security_version THEN<br>        RAISE EXCEPTION 'external_identity security generation is database-owned'<br>            USING ERRCODE = '23514';<br>    END IF;<br>    IF NEW.user_id IS DISTINCT FROM OLD.user_id<br>        OR NEW.identity_provider_id IS DISTINCT FROM OLD.identity_provider_id<br>        OR NEW.external_subject IS DISTINCT FROM OLD.external_subject<br>        OR NEW.external_immutable_id IS DISTINCT FROM OLD.external_immutable_id<br>        OR NEW.external_username IS DISTINCT FROM OLD.external_username<br>        OR NEW.external_distinguished_name IS DISTINCT FROM OLD.external_distinguished_name<br>        OR NEW.status IS DISTINCT FROM OLD.status THEN<br>        IF OLD.security_version = 9223372036854775807::bigint THEN<br>            RAISE EXCEPTION 'external_identity security generation is exhausted'<br>                USING ERRCODE = '22003';<br>        END IF;<br>        NEW.security_version := OLD.security_version + 1;<br>    ELSE<br>        NEW.security_version := OLD.security_version;<br>    END IF;<br>    RETURN NEW;<br>END;<br>$function$<br>
 
+### public.hidra_identity_external_mapping_generation
+
+Owner: **identity**; relation kind: `r`.
+
+Database-owned per-provider committed external mapping generation; not an OIDC/LDAP claim attestation or authorization grant.
+
+- Evidence: [V20261016_001__p25_identity_external_mapping_generations.sql](../../src/main/resources/db/migration/V20261016_001__p25_identity_external_mapping_generations.sql)
+- Evidence: [ClaimNameCatalogPort.java](../../src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java)
+- Migration mention (not inferred introduction): [V20261016_001__p25_identity_external_mapping_generations.sql](../../src/main/resources/db/migration/V20261016_001__p25_identity_external_mapping_generations.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| provider_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| generation | bigint | False | 1; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `ck_p25_external_mapping_generation_positive`: CHECK (generation &gt; 0)
+  - Catalog attributes: {"columns": ["generation"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_identity_external_mapping_generation_pkey`: PRIMARY KEY (provider_id)
+  - Catalog attributes: {"columns": ["provider_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_identity_external_mapping_generation_provider_id_fkey`: FOREIGN KEY (provider_id) REFERENCES hidra_identity_provider(id) ON UPDATE RESTRICT ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["provider_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "r", "schema": "public", "table": "hidra_identity_provider"}, "type": "f", "validated": true}
+
+#### Indexes
+
+- `hidra_identity_external_mapping_generation_pkey`: CREATE UNIQUE INDEX hidra_identity_external_mapping_generation_pkey ON public.hidra_identity_external_mapping_generation USING btree (provider_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `trg_p25_external_mapping_generation_truncate`: CREATE TRIGGER trg_p25_external_mapping_generation_truncate BEFORE TRUNCATE ON hidra_identity_external_mapping_generation FOR EACH STATEMENT EXECUTE FUNCTION hidra_identity_external_mapping_generation_deny_truncate()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_identity_external_mapping_generation_deny_truncate()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_identity_external_mapping_generation_deny_truncate()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Mapping generation TRUNCATE forbidden' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
+comment: "Identity-owned committed mapping revision; neither source claims nor authorization."
+
 ### public.hidra_identity_external_permission_mapping
 
 Owner: **identity**; relation kind: `r`.
@@ -8690,6 +8722,7 @@ Persisted ExternalPermissionMappingJpaEntity state; semantic authority remains w
 - Migration mention (not inferred introduction): [V20260611_001__create_identity_tables.sql](../../src/main/resources/db/migration/V20260611_001__create_identity_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261004_011__hmr_011_identity_permission.sql](../../src/main/resources/db/migration/V20261004_011__hmr_011_identity_permission.sql)
+- Migration mention (not inferred introduction): [V20261016_001__p25_identity_external_mapping_generations.sql](../../src/main/resources/db/migration/V20261016_001__p25_identity_external_mapping_generations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8733,6 +8766,12 @@ Persisted ExternalPermissionMappingJpaEntity state; semantic authority remains w
 - `trg_hmr011_external_permission_mapping_active`: CREATE TRIGGER trg_hmr011_external_permission_mapping_active BEFORE INSERT OR UPDATE OF permission_id, status ON hidra_identity_external_permission_mapping FOR EACH ROW EXECUTE FUNCTION hmr011_require_active_identity_permission()
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hmr011_require_active_identity_permission()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.hmr011_require_active_identity_permission()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    IF NEW.permission_id IS NOT NULL<br>       AND NEW.status = 'ACTIVE'<br>       AND NOT EXISTS (<br>           SELECT 1<br>           FROM hidra_identity_permission p<br>           WHERE p.id = NEW.permission_id<br>             AND p.status = 'ACTIVE'<br>       ) THEN<br>        RAISE EXCEPTION<br>            'Active authorization grant/mapping requires an ACTIVE Permission: %',<br>            NEW.permission_id<br>            USING ERRCODE = '23514';<br>    END IF;<br>    RETURN NEW;<br>END;<br>$function$<br>
+- `trg_p25_permission_mapping_generation`: CREATE TRIGGER trg_p25_permission_mapping_generation AFTER INSERT OR DELETE OR UPDATE ON hidra_identity_external_permission_mapping FOR EACH ROW EXECUTE FUNCTION hidra_identity_external_mapping_write_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_identity_external_mapping_write_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_identity_external_mapping_write_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>DECLARE old_provider varchar(80); new_provider varchar(80);<br>BEGIN<br>    IF TG_OP='TRUNCATE' THEN<br>        RAISE EXCEPTION 'Mapping TRUNCATE forbidden' USING ERRCODE='23514';<br>    END IF;<br>    IF TG_OP IN ('UPDATE','DELETE') THEN old_provider := OLD.identity_provider_id; END IF;<br>    IF TG_OP IN ('UPDATE','INSERT') THEN new_provider := NEW.identity_provider_id; END IF;<br>    IF old_provider IS NOT NULL AND new_provider IS NOT NULL<br>       AND old_provider &lt;&gt; new_provider THEN<br>        IF old_provider &lt; new_provider THEN<br>            PERFORM public.hidra_identity_external_mapping_increment(old_provider);<br>            PERFORM public.hidra_identity_external_mapping_increment(new_provider);<br>        ELSE<br>            PERFORM public.hidra_identity_external_mapping_increment(new_provider);<br>            PERFORM public.hidra_identity_external_mapping_increment(old_provider);<br>        END IF;<br>    ELSE<br>        PERFORM public.hidra_identity_external_mapping_increment(<br>            COALESCE(old_provider,new_provider));<br>    END IF;<br>    RETURN NULL;<br>END;<br>$function$<br>
+- `trg_p25_permission_mapping_truncate`: CREATE TRIGGER trg_p25_permission_mapping_truncate BEFORE TRUNCATE ON hidra_identity_external_permission_mapping FOR EACH STATEMENT EXECUTE FUNCTION hidra_identity_external_mapping_write_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_identity_external_mapping_write_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_identity_external_mapping_write_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>DECLARE old_provider varchar(80); new_provider varchar(80);<br>BEGIN<br>    IF TG_OP='TRUNCATE' THEN<br>        RAISE EXCEPTION 'Mapping TRUNCATE forbidden' USING ERRCODE='23514';<br>    END IF;<br>    IF TG_OP IN ('UPDATE','DELETE') THEN old_provider := OLD.identity_provider_id; END IF;<br>    IF TG_OP IN ('UPDATE','INSERT') THEN new_provider := NEW.identity_provider_id; END IF;<br>    IF old_provider IS NOT NULL AND new_provider IS NOT NULL<br>       AND old_provider &lt;&gt; new_provider THEN<br>        IF old_provider &lt; new_provider THEN<br>            PERFORM public.hidra_identity_external_mapping_increment(old_provider);<br>            PERFORM public.hidra_identity_external_mapping_increment(new_provider);<br>        ELSE<br>            PERFORM public.hidra_identity_external_mapping_increment(new_provider);<br>            PERFORM public.hidra_identity_external_mapping_increment(old_provider);<br>        END IF;<br>    ELSE<br>        PERFORM public.hidra_identity_external_mapping_increment(<br>            COALESCE(old_provider,new_provider));<br>    END IF;<br>    RETURN NULL;<br>END;<br>$function$<br>
 
 ### public.hidra_identity_external_role_mapping
 
@@ -8743,6 +8782,7 @@ Persisted ExternalRoleMappingJpaEntity state; semantic authority remains with id
 - Evidence: [ExternalRoleMappingJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/ExternalRoleMappingJpaEntity.java)
 - Migration mention (not inferred introduction): [V20260611_001__create_identity_tables.sql](../../src/main/resources/db/migration/V20260611_001__create_identity_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
+- Migration mention (not inferred introduction): [V20261016_001__p25_identity_external_mapping_generations.sql](../../src/main/resources/db/migration/V20261016_001__p25_identity_external_mapping_generations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8787,7 +8827,12 @@ Persisted ExternalRoleMappingJpaEntity state; semantic authority remains with id
 
 #### Triggers
 
-None captured in this catalog category.
+- `trg_p25_role_mapping_generation`: CREATE TRIGGER trg_p25_role_mapping_generation AFTER INSERT OR DELETE OR UPDATE ON hidra_identity_external_role_mapping FOR EACH ROW EXECUTE FUNCTION hidra_identity_external_mapping_write_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_identity_external_mapping_write_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_identity_external_mapping_write_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>DECLARE old_provider varchar(80); new_provider varchar(80);<br>BEGIN<br>    IF TG_OP='TRUNCATE' THEN<br>        RAISE EXCEPTION 'Mapping TRUNCATE forbidden' USING ERRCODE='23514';<br>    END IF;<br>    IF TG_OP IN ('UPDATE','DELETE') THEN old_provider := OLD.identity_provider_id; END IF;<br>    IF TG_OP IN ('UPDATE','INSERT') THEN new_provider := NEW.identity_provider_id; END IF;<br>    IF old_provider IS NOT NULL AND new_provider IS NOT NULL<br>       AND old_provider &lt;&gt; new_provider THEN<br>        IF old_provider &lt; new_provider THEN<br>            PERFORM public.hidra_identity_external_mapping_increment(old_provider);<br>            PERFORM public.hidra_identity_external_mapping_increment(new_provider);<br>        ELSE<br>            PERFORM public.hidra_identity_external_mapping_increment(new_provider);<br>            PERFORM public.hidra_identity_external_mapping_increment(old_provider);<br>        END IF;<br>    ELSE<br>        PERFORM public.hidra_identity_external_mapping_increment(<br>            COALESCE(old_provider,new_provider));<br>    END IF;<br>    RETURN NULL;<br>END;<br>$function$<br>
+- `trg_p25_role_mapping_truncate`: CREATE TRIGGER trg_p25_role_mapping_truncate BEFORE TRUNCATE ON hidra_identity_external_role_mapping FOR EACH STATEMENT EXECUTE FUNCTION hidra_identity_external_mapping_write_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_identity_external_mapping_write_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_identity_external_mapping_write_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>DECLARE old_provider varchar(80); new_provider varchar(80);<br>BEGIN<br>    IF TG_OP='TRUNCATE' THEN<br>        RAISE EXCEPTION 'Mapping TRUNCATE forbidden' USING ERRCODE='23514';<br>    END IF;<br>    IF TG_OP IN ('UPDATE','DELETE') THEN old_provider := OLD.identity_provider_id; END IF;<br>    IF TG_OP IN ('UPDATE','INSERT') THEN new_provider := NEW.identity_provider_id; END IF;<br>    IF old_provider IS NOT NULL AND new_provider IS NOT NULL<br>       AND old_provider &lt;&gt; new_provider THEN<br>        IF old_provider &lt; new_provider THEN<br>            PERFORM public.hidra_identity_external_mapping_increment(old_provider);<br>            PERFORM public.hidra_identity_external_mapping_increment(new_provider);<br>        ELSE<br>            PERFORM public.hidra_identity_external_mapping_increment(new_provider);<br>            PERFORM public.hidra_identity_external_mapping_increment(old_provider);<br>        END IF;<br>    ELSE<br>        PERFORM public.hidra_identity_external_mapping_increment(<br>            COALESCE(old_provider,new_provider));<br>    END IF;<br>    RETURN NULL;<br>END;<br>$function$<br>
 
 ### public.hidra_identity_group
 
@@ -9206,6 +9251,7 @@ Identity provider with database-owned monotonic security generation and ordinary
 - Migration mention (not inferred introduction): [V20261004_010__hmr_010_identity_identity_provider.sql](../../src/main/resources/db/migration/V20261004_010__hmr_010_identity_identity_provider.sql)
 - Migration mention (not inferred introduction): [V20261012_002__p25_identity_provider_link_security_generations.sql](../../src/main/resources/db/migration/V20261012_002__p25_identity_provider_link_security_generations.sql)
 - Migration mention (not inferred introduction): [V20261013_001__p25_identity_operation_binding.sql](../../src/main/resources/db/migration/V20261013_001__p25_identity_operation_binding.sql)
+- Migration mention (not inferred introduction): [V20261016_001__p25_identity_external_mapping_generations.sql](../../src/main/resources/db/migration/V20261016_001__p25_identity_external_mapping_generations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9268,6 +9314,9 @@ Identity provider with database-owned monotonic security generation and ordinary
 
 #### Triggers
 
+- `trg_p25_external_mapping_provider_initialize`: CREATE TRIGGER trg_p25_external_mapping_provider_initialize AFTER INSERT ON hidra_identity_provider FOR EACH ROW EXECUTE FUNCTION hidra_identity_external_mapping_provider_initialize()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_identity_external_mapping_provider_initialize()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_identity_external_mapping_provider_initialize()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    INSERT INTO public.hidra_identity_external_mapping_generation(provider_id,generation)<br>    VALUES (NEW.id,1);<br>    RETURN NULL;<br>END;<br>$function$<br>
 - `trg_p25_provider_security_delete`: CREATE TRIGGER trg_p25_provider_security_delete BEFORE DELETE ON hidra_identity_provider FOR EACH ROW EXECUTE FUNCTION hidra_identity_provider_security_guard()
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_identity_provider_security_guard()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_identity_provider_security_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'public'<br>AS $function$<br>BEGIN<br>    IF TG_OP IN ('DELETE', 'TRUNCATE') THEN<br>        RAISE EXCEPTION 'provider identity must be retained; disable instead of deleting or truncating'<br>            USING ERRCODE = '23514';<br>    END IF;<br>    IF TG_OP = 'INSERT' THEN<br>        IF NEW.security_version IS DISTINCT FROM 1::bigint THEN<br>            RAISE EXCEPTION 'Initial provider security generation must be 1'<br>                USING ERRCODE = '23514';<br>        END IF;<br>        RETURN NEW;<br>    END IF;<br>    IF NEW.id IS DISTINCT FROM OLD.id<br>        OR NEW.created_at IS DISTINCT FROM OLD.created_at THEN<br>        RAISE EXCEPTION 'provider identity and creation evidence are immutable'<br>            USING ERRCODE = '23514';<br>    END IF;<br>    IF NEW.security_version IS DISTINCT FROM OLD.security_version THEN<br>        RAISE EXCEPTION 'provider security generation is database-owned'<br>            USING ERRCODE = '23514';<br>    END IF;<br>    IF NEW.code IS DISTINCT FROM OLD.code<br>        OR NEW.provider_type IS DISTINCT FROM OLD.provider_type<br>        OR NEW.issuer_uri IS DISTINCT FROM OLD.issuer_uri<br>        OR NEW.authorization_endpoint IS DISTINCT FROM OLD.authorization_endpoint<br>        OR NEW.token_endpoint IS DISTINCT FROM OLD.token_endpoint<br>        OR NEW.jwks_uri IS DISTINCT FROM OLD.jwks_uri<br>        OR NEW.directory_base_dn IS DISTINCT FROM OLD.directory_base_dn<br>        OR NEW.user_search_base IS DISTINCT FROM OLD.user_search_base<br>        OR NEW.group_search_base IS DISTINCT FROM OLD.group_search_base<br>        OR NEW.username_attribute IS DISTINCT FROM OLD.username_attribute<br>        OR NEW.email_attribute IS DISTINCT FROM OLD.email_attribute<br>        OR NEW.display_name_attribute IS DISTINCT FROM OLD.display_name_attribute<br>        OR NEW.external_id_attribute IS DISTINCT FROM OLD.external_id_attribute<br>        OR NEW.group_membership_attribute IS DISTINCT FROM OLD.group_membership_attribute<br>        OR NEW.sync_enabled IS DISTINCT FROM OLD.sync_enabled<br>        OR NEW.just_in_time_provisioning_enabled IS DISTINCT FROM OLD.just_in_time_provisioning_enabled<br>        OR NEW.status IS DISTINCT FROM OLD.status<br>        OR NEW.metadata IS DISTINCT FROM OLD.metadata<br>        OR NEW.secret_reference IS DISTINCT FROM OLD.secret_reference THEN<br>        IF OLD.security_version = 9223372036854775807::bigint THEN<br>            RAISE EXCEPTION 'provider security generation is exhausted'<br>                USING ERRCODE = '22003';<br>        END IF;<br>        NEW.security_version := OLD.security_version + 1;<br>    ELSE<br>        NEW.security_version := OLD.security_version;<br>    END IF;<br>    RETURN NEW;<br>END;<br>$function$<br>

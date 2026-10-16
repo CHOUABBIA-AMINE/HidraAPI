@@ -100,8 +100,8 @@ class ClaimNameCatalogPostgresIntegrationTest {
                 role, role);
         jdbc.update(
                 "INSERT INTO " + PREFIX + "permission "
-                        + "(id,code,permission_domain,action,sensitive,status,created_at,updated_at)"
-                        + " VALUES (?,?,'TOPOLOGY','read',false,'ACTIVE',now(),now())",
+                        + "(id,code,permission_domain,resource_type,action,sensitive,status,created_at,updated_at)"
+                        + " VALUES (?,?,'TOPOLOGY','TOPOLOGY','read',false,'ACTIVE',now(),now())",
                 permission, permission);
     }
 

@@ -1858,7 +1858,7 @@
       "lane": "postgres-integration",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ClaimNameCatalogPostgresIntegrationTest.java",
-      "source_sha256": "08eb60a3d1d20ae8e62eacba20ec83fed79b188337fe728bc69103042342ba3d",
+      "source_sha256": "7281e3a100587ca2f74fe01995a341ebecc9c3e5ebd73ca80ebc2f8e532b6f7d",
       "supports": []
     },
     {

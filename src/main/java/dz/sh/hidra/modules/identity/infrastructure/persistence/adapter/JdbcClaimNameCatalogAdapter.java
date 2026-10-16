@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.TreeSet;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,7 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
  * epoch and actual source-verification-to-issuance proof are mandatory before any use for
  * authorization. A single SQL statement supplies one READ COMMITTED snapshot.
  */
-@Repository
+@Component
 public class JdbcClaimNameCatalogAdapter implements ClaimNameCatalogPort {
     private static final int MAX_MAPPING_ROWS = 1024;
     private static final String UNAVAILABLE = "External claim-name catalog unavailable.";

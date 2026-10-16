@@ -102,7 +102,7 @@ class ClaimNameCatalogPostgresIntegrationTest {
                 "INSERT INTO " + PREFIX + "permission "
                         + "(id,code,permission_domain,resource_type,action,sensitive,status,created_at,updated_at)"
                         + " VALUES (?,?,'TOPOLOGY','TOPOLOGY','read',false,'ACTIVE',now(),now())",
-                permission, permission);
+                permission, "identity:catalog:" + permission);
     }
 
     private static String key() {

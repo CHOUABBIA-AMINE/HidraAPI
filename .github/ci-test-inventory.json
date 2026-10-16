@@ -112,20 +112,6 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.285,
-      "cases": [
-        "generatedMappersPreserveAllRemainingExactBoundaryContracts"
-      ],
-      "class": "dz.sh.hidra.modules.GeneratedBoundaryMapperContractTest",
-      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
-      "fast": true,
-      "lane": "unit-architecture",
-      "owner": "architecture",
-      "path": "src/test/java/dz/sh/hidra/modules/GeneratedBoundaryMapperContractTest.java",
-      "source_sha256": "3114e6cde5286e40d82864375e6f34de968bfde61c4d7a0fcc7641300715d681",
-      "supports": []
-    },
-    {
       "baseline_seconds": 0.001,
       "cases": [
         "mapsSuppressionConflictToHttp409"
@@ -1027,6 +1013,22 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0.035,
+      "cases": [
+        "rejectsEveryTruncationTrailingUnknownMagicAndInvalidUtf8",
+        "retainsNegativeScaleAndRejectsAllocationExpandingScale",
+        "roundTripsCompleteFactsAndKnownIndependentHash"
+      ],
+      "class": "dz.sh.hidra.modules.custody.infrastructure.persistence.adapter.CustodyGasFluidRevisionCodecTest",
+      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "custody",
+      "path": "src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/CustodyGasFluidRevisionCodecTest.java",
+      "source_sha256": "cfa41123910c5399c132b5ea2b8f497ae59c89d9a3c8cc1c70080ae6b2400bb8",
+      "supports": []
+    },
+    {
       "baseline_seconds": 27.317,
       "cases": [
         "actualWorkflowQualifiesOnlyItsExactRevisionAndWithdrawalIsReattested",
@@ -1060,22 +1062,6 @@
       "owner": "custody",
       "path": "src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/CustodyTransferTicketSemanticPostgresIntegrationTest.java",
       "source_sha256": "f7fbc1e5b29c4f515dc5390ba0974fc60aae07cbce858e509e2b72d628380a22",
-      "supports": []
-    },
-    {
-      "baseline_seconds": 0.035,
-      "cases": [
-        "rejectsEveryTruncationTrailingUnknownMagicAndInvalidUtf8",
-        "retainsNegativeScaleAndRejectsAllocationExpandingScale",
-        "roundTripsCompleteFactsAndKnownIndependentHash"
-      ],
-      "class": "dz.sh.hidra.modules.custody.infrastructure.persistence.adapter.CustodyGasFluidRevisionCodecTest",
-      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
-      "fast": true,
-      "lane": "unit-architecture",
-      "owner": "custody",
-      "path": "src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/CustodyGasFluidRevisionCodecTest.java",
-      "source_sha256": "cfa41123910c5399c132b5ea2b8f497ae59c89d9a3c8cc1c70080ae6b2400bb8",
       "supports": []
     },
     {
@@ -1317,6 +1303,20 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0.285,
+      "cases": [
+        "generatedMappersPreserveAllRemainingExactBoundaryContracts"
+      ],
+      "class": "dz.sh.hidra.modules.GeneratedBoundaryMapperContractTest",
+      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "architecture",
+      "path": "src/test/java/dz/sh/hidra/modules/GeneratedBoundaryMapperContractTest.java",
+      "source_sha256": "3114e6cde5286e40d82864375e6f34de968bfde61c4d7a0fcc7641300715d681",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0.141,
       "cases": [
         "listsAndLoadsCapas",
@@ -1410,53 +1410,6 @@
       "owner": "hse",
       "path": "src/test/java/dz/sh/hidra/modules/hse/semantic/HseCorrectivePreventiveActionSemanticRemediationTest.java",
       "source_sha256": "761fb63deffd9f18c9af62bf160a0e277d74dfada29b713a83563438fe98670c",
-      "supports": []
-    },
-    {
-      "baseline_seconds": 7.253,
-      "cases": [
-        "externalAuthenticationNormalizersMustNotDependOnExternalRolePermissionMappings",
-        "identityControllersMustNotQueryPersistenceRepositoriesDirectly",
-        "identityDomainMustNotDependOnSpringLdapImplementationClasses",
-        "ordinaryIdentityApiDtosMustNotExposePasswordHashes",
-        "platformMustNotOwnIdentityUserRolePermissionBusinessMeaning",
-        "productionAuthenticationSecretsMustRemainExternalized",
-        "productionSourceMustNotContainEmbeddedPrivateKeys",
-        "restControllersMustNotDependOnPrivateBoundAuthenticationTransport"
-      ],
-      "class": "dz.sh.hidra.modules.identity.AuthenticationArchitectureAndSecretGuardrailTest",
-      "dependency_reason": "Candidate included; ArchUnit/JVM/source",
-      "fast": true,
-      "lane": "unit-architecture",
-      "owner": "identity",
-      "path": "src/test/java/dz/sh/hidra/modules/identity/AuthenticationArchitectureAndSecretGuardrailTest.java",
-      "source_sha256": "9f8ba4cf820622d6b406328dd993f5daa6c9d0d2327cda8ce0084be01409497a",
-      "supports": []
-    },
-    {
-      "baseline_seconds": 0,
-      "cases": [
-        "exactExternalSubjectAndIssuerKeepBoundaryWhitespaceAndUnicode",
-        "explicitNullBranchesAndPositiveGenerationsAreMandatory",
-        "foundationsAreJdkOnlyAndProductionReceiptProducersAreStillDormant",
-        "inputLegacyConstructorsKeepNoReceiptAndPrivateTransportIsRedacted",
-        "nativeConfigurationAndIdsRejectBoundaryWhitespaceNulAndMalformedUnicode",
-        "nativeIntervalsRequireFiniteWholeSecondIncreasingInstantsAndCanonicalUuids",
-        "nativeKeysCountUtf8BytesAndOwnerIdsCountPostgresqlCharacters",
-        "readerKeepsPrivateNativeVerificationInsideIdentityAndUsesReadOnlyFreshOwnerQuery",
-        "restDtosAndOriginalAssertionNeverTransportBindingSecretsOrHandles",
-        "sourceExpiryCapsNativeLifetimeWithoutRoundingUpNanoseconds",
-        "sourceTupleAndTagShapeCannotBeMadeValidByCallerConstruction",
-        "topologyExportHasNoArgumentsAndOpaqueDenialHasNoIdentity",
-        "verificationSnapshotsRejectMalformedSourceAndUnrepresentableDeadlines"
-      ],
-      "class": "dz.sh.hidra.modules.identity.OperationAuthenticationBoundaryGuardrailTest",
-      "dependency_reason": "050A local Java21 unit/architecture evidence; no live service. New timing hint is unmeasured (0), pending hosted baseline; receipt callbacks are simulated, not PostgreSQL/commit proof.",
-      "fast": true,
-      "lane": "unit-architecture",
-      "owner": "identity",
-      "path": "src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java",
-      "source_sha256": "287e739d26824ad9e2e33182b6407231892e0fc8a283a60cddf9806892438b82",
       "supports": []
     },
     {
@@ -1709,6 +1662,27 @@
       "supports": []
     },
     {
+      "baseline_seconds": 7.253,
+      "cases": [
+        "externalAuthenticationNormalizersMustNotDependOnExternalRolePermissionMappings",
+        "identityControllersMustNotQueryPersistenceRepositoriesDirectly",
+        "identityDomainMustNotDependOnSpringLdapImplementationClasses",
+        "ordinaryIdentityApiDtosMustNotExposePasswordHashes",
+        "platformMustNotOwnIdentityUserRolePermissionBusinessMeaning",
+        "productionAuthenticationSecretsMustRemainExternalized",
+        "productionSourceMustNotContainEmbeddedPrivateKeys",
+        "restControllersMustNotDependOnPrivateBoundAuthenticationTransport"
+      ],
+      "class": "dz.sh.hidra.modules.identity.AuthenticationArchitectureAndSecretGuardrailTest",
+      "dependency_reason": "Candidate included; ArchUnit/JVM/source",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/AuthenticationArchitectureAndSecretGuardrailTest.java",
+      "source_sha256": "9f8ba4cf820622d6b406328dd993f5daa6c9d0d2327cda8ce0084be01409497a",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0,
       "cases": [
         "clockReferenceIsRejectedAtEveryNestingLevel",
@@ -1756,6 +1730,55 @@
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationTemporalBoundaryCompilerTest.java",
       "source_sha256": "3d33b43adecd85019e3e51884782e4af877b5522f0eb44a57da2d8ba97299115",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "allNonPresentStatesHaveNoValues",
+        "claimCoverageHasNoPermissionAuthority",
+        "combinedPayloadEnvelopeIsLimited",
+        "constructorRejectsDuplicateClaimNames",
+        "entryCountIsLimited",
+        "invalidControlAndUnicodeRejected",
+        "knownAbsenceDoesNotInventValues",
+        "mapInputIsDefensivelyCopied",
+        "nameLimitsEnforceCodePointsAndUtf8Bytes",
+        "nullBlankAndMalformedStateInputsRejected",
+        "nullMapsAndEntriesReject",
+        "presentValuesRetainExactCaseAndStableOrdering",
+        "unrequestedNamesAreUnknownNotAbsent",
+        "valueLimitsEnforceUtf8ByteEnvelope",
+        "valuesPerNameAreLimited"
+      ],
+      "class": "dz.sh.hidra.modules.identity.domain.value.ClaimCoverageTest",
+      "dependency_reason": "Pure Identity claim-coverage value invariants; no Spring, database, external verification, authorization or adapter dependencies. Zero scheduling baseline is unmeasured pending exact-SHA hosted calibration.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/domain/value/ClaimCoverageTest.java",
+      "source_sha256": "f29db50be94ebcbb1a1772854c05d099ac9e9dcccf755d3f39393f0ba432c4fc",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "boundsRowsJsonAndUnsupportedEvidence",
+        "hasNoJpaCacheWallClockDecisionPersistenceOrAuthorityExport",
+        "preservesGrantOrderScopeWindowsAndDenyPrecedence",
+        "preservesTypedAttributesAndConflicts",
+        "rejectsCallerActorResourceAndScopeMismatches",
+        "rejectsUnknownClaimCoverageInsteadOfAssumingAbsence",
+        "requiresMatchingPhysicalCoordinatesAndCompleteIdentityFences",
+        "requiresWritableReadCommittedParticipation"
+      ],
+      "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcProtectedAuthorizationEvidenceReaderTest",
+      "dependency_reason": "G diagnostic JDBC normalization/transaction checks; mocks and unchanged domain evaluator only",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java",
+      "source_sha256": "799485c2cba83a31e7a0a5b5081055a427d94ef4510730049a17a58fcebd26e1",
       "supports": []
     },
     {
@@ -2157,27 +2180,6 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0,
-      "cases": [
-        "boundsRowsJsonAndUnsupportedEvidence",
-        "hasNoJpaCacheWallClockDecisionPersistenceOrAuthorityExport",
-        "preservesGrantOrderScopeWindowsAndDenyPrecedence",
-        "preservesTypedAttributesAndConflicts",
-        "rejectsCallerActorResourceAndScopeMismatches",
-        "rejectsUnknownClaimCoverageInsteadOfAssumingAbsence",
-        "requiresMatchingPhysicalCoordinatesAndCompleteIdentityFences",
-        "requiresWritableReadCommittedParticipation"
-      ],
-      "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcProtectedAuthorizationEvidenceReaderTest",
-      "dependency_reason": "G diagnostic JDBC normalization/transaction checks; mocks and unchanged domain evaluator only",
-      "fast": true,
-      "lane": "unit-architecture",
-      "owner": "identity",
-      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java",
-      "source_sha256": "799485c2cba83a31e7a0a5b5081055a427d94ef4510730049a17a58fcebd26e1",
-      "supports": []
-    },
-    {
       "baseline_seconds": 0.113,
       "cases": [
         "assertionMustBeAuthenticatedAndBelongToEvaluatedUser",
@@ -2469,6 +2471,32 @@
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationTest.java",
       "source_sha256": "ee892ee4edd20acf3d921117db5749810f7e88ad4422f4f485c21e6780805953",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "exactExternalSubjectAndIssuerKeepBoundaryWhitespaceAndUnicode",
+        "explicitNullBranchesAndPositiveGenerationsAreMandatory",
+        "foundationsAreJdkOnlyAndProductionReceiptProducersAreStillDormant",
+        "inputLegacyConstructorsKeepNoReceiptAndPrivateTransportIsRedacted",
+        "nativeConfigurationAndIdsRejectBoundaryWhitespaceNulAndMalformedUnicode",
+        "nativeIntervalsRequireFiniteWholeSecondIncreasingInstantsAndCanonicalUuids",
+        "nativeKeysCountUtf8BytesAndOwnerIdsCountPostgresqlCharacters",
+        "readerKeepsPrivateNativeVerificationInsideIdentityAndUsesReadOnlyFreshOwnerQuery",
+        "restDtosAndOriginalAssertionNeverTransportBindingSecretsOrHandles",
+        "sourceExpiryCapsNativeLifetimeWithoutRoundingUpNanoseconds",
+        "sourceTupleAndTagShapeCannotBeMadeValidByCallerConstruction",
+        "topologyExportHasNoArgumentsAndOpaqueDenialHasNoIdentity",
+        "verificationSnapshotsRejectMalformedSourceAndUnrepresentableDeadlines"
+      ],
+      "class": "dz.sh.hidra.modules.identity.OperationAuthenticationBoundaryGuardrailTest",
+      "dependency_reason": "050A local Java21 unit/architecture evidence; no live service. New timing hint is unmeasured (0), pending hosted baseline; receipt callbacks are simulated, not PostgreSQL/commit proof.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java",
+      "source_sha256": "287e739d26824ad9e2e33182b6407231892e0fc8a283a60cddf9806892438b82",
       "supports": []
     },
     {
@@ -3400,97 +3428,6 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.016,
-      "cases": [
-        "currentInventoryRecordsGreenfieldClosure",
-        "legacyAssessmentSqlRemainsReadOnly",
-        "legacyOperationalScopeCompatibilityConsumersAreRetired"
-      ],
-      "class": "dz.sh.hidra.modules.organization.OperationalScopeEvidenceInventoryTest",
-      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
-      "fast": true,
-      "lane": "unit-architecture",
-      "owner": "organization",
-      "path": "src/test/java/dz/sh/hidra/modules/organization/OperationalScopeEvidenceInventoryTest.java",
-      "source_sha256": "c8f6132cf9f2ad2ee17b4eadcb1a75edcd18d7e90351fbde83065d4eeea5b407",
-      "supports": []
-    },
-    {
-      "baseline_seconds": 2.262,
-      "cases": [
-        "canonicalDomainModelsExposeCompleteArabicFrenchEnglishTriplets",
-        "canonicalJpaEntitiesPersistCompleteArabicFrenchEnglishTriplets",
-        "existingOrganizationUnitApplicationAndApiContractsExposeAllThreeNames",
-        "migrationsAfterOrg039MustNotReintroduceTheRetiredTranslationTable",
-        "organizationProductionCodeMustNotContainSeparateTranslationTypesOrJpaTables"
-      ],
-      "class": "dz.sh.hidra.modules.organization.OrganizationEmbeddedMultilingualIntegrityTest",
-      "dependency_reason": "Candidate included; ArchUnit/JVM/source",
-      "fast": true,
-      "lane": "unit-architecture",
-      "owner": "organization",
-      "path": "src/test/java/dz/sh/hidra/modules/organization/OrganizationEmbeddedMultilingualIntegrityTest.java",
-      "source_sha256": "007e95550b19daade171fdc3630f26b80e105fcb57415c9ced45ef0c76199589",
-      "supports": []
-    },
-    {
-      "baseline_seconds": 0.009,
-      "cases": [
-        "effectiveDatedModelsMustRetainHalfOpenIntervalGuards",
-        "employeeContactAndDisplayDuplicatesMustRemainCompatibilityOnly",
-        "employeePersonalBirthShapeMustRemainCanonical",
-        "polymorphicReferencesAndScopeIdentityMustRemainTyped",
-        "retiredOperationalScopeCompatibilityMethodsMustNotReturn",
-        "retiredOperationalScopeStateMustNotReturnToCanonicalMembershipRecords",
-        "retiredTranslationModelMustNotReturn"
-      ],
-      "class": "dz.sh.hidra.modules.organization.OrganizationModelValueIntegrityTest",
-      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
-      "fast": true,
-      "lane": "unit-architecture",
-      "owner": "organization",
-      "path": "src/test/java/dz/sh/hidra/modules/organization/OrganizationModelValueIntegrityTest.java",
-      "source_sha256": "7819aa1cf82402343f8ba08e770fd1163405fef2abfe54c3345465434f07da53",
-      "supports": []
-    },
-    {
-      "baseline_seconds": 0.005,
-      "cases": [
-        "birthFieldsMustRemainMappedToExpectedColumns",
-        "compatibilityComponentsRemainMappedUntilTheirApprovedCutover",
-        "detectorRejectsRepresentativeUnmappedCanonicalComponent",
-        "employeeJpaShapeMustNotGainUnrecordedDomainDrift",
-        "employeeMapperMustNotSilentlyDropAdditionalDomainComponents"
-      ],
-      "class": "dz.sh.hidra.modules.organization.OrganizationPersistenceDriftGuardrailTest",
-      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
-      "fast": true,
-      "lane": "unit-architecture",
-      "owner": "organization",
-      "path": "src/test/java/dz/sh/hidra/modules/organization/OrganizationPersistenceDriftGuardrailTest.java",
-      "source_sha256": "18f5aa1eedd358a601735302f48a548eff5a6916000b0dcaac6b1f212480a988",
-      "supports": []
-    },
-    {
-      "baseline_seconds": 0.05,
-      "cases": [
-        "canonicalJpaDiscriminatorsMustRemainEnumsStoredAsStrings",
-        "canonicalPolymorphicDomainStateMustRemainTyped",
-        "org046InternalReferenceIntegrityContractMustRemainPresent",
-        "organizationMigrationsMustNotOwnOtherModulesThroughForeignKeys",
-        "retiredMultilingualStructuresMustRemainRetired",
-        "textualCompatibilityBridgesMustRemainDeprecatedForRemoval"
-      ],
-      "class": "dz.sh.hidra.modules.organization.OrganizationTypedDependencyIntegrityTest",
-      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
-      "fast": true,
-      "lane": "unit-architecture",
-      "owner": "organization",
-      "path": "src/test/java/dz/sh/hidra/modules/organization/OrganizationTypedDependencyIntegrityTest.java",
-      "source_sha256": "38d6d27ddcbdb7c138a0452b74581e962ecdbce7945c672a23b296035932f6e2",
-      "supports": []
-    },
-    {
       "baseline_seconds": 0.656,
       "cases": [
         "apiRequestsCannotCarryActorPermissionOrCorrelationSecurityFields",
@@ -4033,6 +3970,79 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0.002,
+      "cases": [
+        "createsUnpersistedEntityWithoutInventingRegistryId",
+        "mapsPersistedEntityToCanonicalDomainIdentity"
+      ],
+      "class": "dz.sh.hidra.modules.organization.infrastructure.persistence.mapper.OperationalScopePersistenceMapperTest",
+      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "organization",
+      "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/mapper/OperationalScopePersistenceMapperTest.java",
+      "source_sha256": "56e74dc7e65df3576af9d16ae9ff42219f062f425aa427ee9d9e837fef044190",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0.001,
+      "cases": [
+        "roundTripsTypedOrganizationUnitTarget"
+      ],
+      "class": "dz.sh.hidra.modules.organization.infrastructure.persistence.mapper.OrganizationContactPointPersistenceMapperTest",
+      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "organization",
+      "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/mapper/OrganizationContactPointPersistenceMapperTest.java",
+      "source_sha256": "d9595cedf8645a4fc0c445c5298c69dcb738e8af82ea5736f058518bd2efc0c7",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0.003,
+      "cases": [
+        "mapsOrganizationUnitTypeEmbeddedLanguages",
+        "mapsPositionEmbeddedDescriptions",
+        "mapsShiftEmbeddedNamesAfterCompatibilityColumnRetirement"
+      ],
+      "class": "dz.sh.hidra.modules.organization.infrastructure.persistence.mapper.OrganizationEmbeddedMultilingualPersistenceMapperTest",
+      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "organization",
+      "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/mapper/OrganizationEmbeddedMultilingualPersistenceMapperTest.java",
+      "source_sha256": "07f7211dd5a2f960229a221637e1408b490f2910e1de44cea93baeba2457f97f",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0.007,
+      "cases": [
+        "employeeRoundTripPreservesBirthAndCompatibilityState"
+      ],
+      "class": "dz.sh.hidra.modules.organization.infrastructure.persistence.mapper.OrganizationPersistenceMapperEmployeeTest",
+      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "organization",
+      "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/mapper/OrganizationPersistenceMapperEmployeeTest.java",
+      "source_sha256": "9a79b986410976120bdc705245180039a2cc2410a077b6fa3433b5f56a9a5049",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0.002,
+      "cases": [
+        "roundTripsCatalogTypeAndTypedEmployeeToPositionReportingSubjects"
+      ],
+      "class": "dz.sh.hidra.modules.organization.infrastructure.persistence.mapper.ReportingLinePersistenceMapperTest",
+      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "organization",
+      "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/mapper/ReportingLinePersistenceMapperTest.java",
+      "source_sha256": "1ebe3d08099a948ae536d8a02878b6b9ea8933f2f6a79e97f6c526bda1ca153e",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0.008,
       "cases": [
         "genericMapperNoLongerDependsOnUnitOrEmployeeLegacyScopeState",
@@ -4202,79 +4212,6 @@
     {
       "baseline_seconds": 0.002,
       "cases": [
-        "createsUnpersistedEntityWithoutInventingRegistryId",
-        "mapsPersistedEntityToCanonicalDomainIdentity"
-      ],
-      "class": "dz.sh.hidra.modules.organization.infrastructure.persistence.mapper.OperationalScopePersistenceMapperTest",
-      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
-      "fast": true,
-      "lane": "unit-architecture",
-      "owner": "organization",
-      "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/mapper/OperationalScopePersistenceMapperTest.java",
-      "source_sha256": "56e74dc7e65df3576af9d16ae9ff42219f062f425aa427ee9d9e837fef044190",
-      "supports": []
-    },
-    {
-      "baseline_seconds": 0.001,
-      "cases": [
-        "roundTripsTypedOrganizationUnitTarget"
-      ],
-      "class": "dz.sh.hidra.modules.organization.infrastructure.persistence.mapper.OrganizationContactPointPersistenceMapperTest",
-      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
-      "fast": true,
-      "lane": "unit-architecture",
-      "owner": "organization",
-      "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/mapper/OrganizationContactPointPersistenceMapperTest.java",
-      "source_sha256": "d9595cedf8645a4fc0c445c5298c69dcb738e8af82ea5736f058518bd2efc0c7",
-      "supports": []
-    },
-    {
-      "baseline_seconds": 0.003,
-      "cases": [
-        "mapsOrganizationUnitTypeEmbeddedLanguages",
-        "mapsPositionEmbeddedDescriptions",
-        "mapsShiftEmbeddedNamesAfterCompatibilityColumnRetirement"
-      ],
-      "class": "dz.sh.hidra.modules.organization.infrastructure.persistence.mapper.OrganizationEmbeddedMultilingualPersistenceMapperTest",
-      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
-      "fast": true,
-      "lane": "unit-architecture",
-      "owner": "organization",
-      "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/mapper/OrganizationEmbeddedMultilingualPersistenceMapperTest.java",
-      "source_sha256": "07f7211dd5a2f960229a221637e1408b490f2910e1de44cea93baeba2457f97f",
-      "supports": []
-    },
-    {
-      "baseline_seconds": 0.007,
-      "cases": [
-        "employeeRoundTripPreservesBirthAndCompatibilityState"
-      ],
-      "class": "dz.sh.hidra.modules.organization.infrastructure.persistence.mapper.OrganizationPersistenceMapperEmployeeTest",
-      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
-      "fast": true,
-      "lane": "unit-architecture",
-      "owner": "organization",
-      "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/mapper/OrganizationPersistenceMapperEmployeeTest.java",
-      "source_sha256": "9a79b986410976120bdc705245180039a2cc2410a077b6fa3433b5f56a9a5049",
-      "supports": []
-    },
-    {
-      "baseline_seconds": 0.002,
-      "cases": [
-        "roundTripsCatalogTypeAndTypedEmployeeToPositionReportingSubjects"
-      ],
-      "class": "dz.sh.hidra.modules.organization.infrastructure.persistence.mapper.ReportingLinePersistenceMapperTest",
-      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
-      "fast": true,
-      "lane": "unit-architecture",
-      "owner": "organization",
-      "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/mapper/ReportingLinePersistenceMapperTest.java",
-      "source_sha256": "1ebe3d08099a948ae536d8a02878b6b9ea8933f2f6a79e97f6c526bda1ca153e",
-      "supports": []
-    },
-    {
-      "baseline_seconds": 0.002,
-      "cases": [
         "delegatesOwnerValidityWithoutInventingMembershipRequirement"
       ],
       "class": "dz.sh.hidra.modules.organization.infrastructure.query.PlanningResponsibleUnitQueryAdapterTest",
@@ -4298,6 +4235,97 @@
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/reference/JpaAnalyticsOrganizationScopeContractAdapterTest.java",
       "source_sha256": "68f8ef461479408820da45eecc1cf0799e23a381abae165c11cc73b536c2f131",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0.016,
+      "cases": [
+        "currentInventoryRecordsGreenfieldClosure",
+        "legacyAssessmentSqlRemainsReadOnly",
+        "legacyOperationalScopeCompatibilityConsumersAreRetired"
+      ],
+      "class": "dz.sh.hidra.modules.organization.OperationalScopeEvidenceInventoryTest",
+      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "organization",
+      "path": "src/test/java/dz/sh/hidra/modules/organization/OperationalScopeEvidenceInventoryTest.java",
+      "source_sha256": "c8f6132cf9f2ad2ee17b4eadcb1a75edcd18d7e90351fbde83065d4eeea5b407",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 2.262,
+      "cases": [
+        "canonicalDomainModelsExposeCompleteArabicFrenchEnglishTriplets",
+        "canonicalJpaEntitiesPersistCompleteArabicFrenchEnglishTriplets",
+        "existingOrganizationUnitApplicationAndApiContractsExposeAllThreeNames",
+        "migrationsAfterOrg039MustNotReintroduceTheRetiredTranslationTable",
+        "organizationProductionCodeMustNotContainSeparateTranslationTypesOrJpaTables"
+      ],
+      "class": "dz.sh.hidra.modules.organization.OrganizationEmbeddedMultilingualIntegrityTest",
+      "dependency_reason": "Candidate included; ArchUnit/JVM/source",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "organization",
+      "path": "src/test/java/dz/sh/hidra/modules/organization/OrganizationEmbeddedMultilingualIntegrityTest.java",
+      "source_sha256": "007e95550b19daade171fdc3630f26b80e105fcb57415c9ced45ef0c76199589",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0.009,
+      "cases": [
+        "effectiveDatedModelsMustRetainHalfOpenIntervalGuards",
+        "employeeContactAndDisplayDuplicatesMustRemainCompatibilityOnly",
+        "employeePersonalBirthShapeMustRemainCanonical",
+        "polymorphicReferencesAndScopeIdentityMustRemainTyped",
+        "retiredOperationalScopeCompatibilityMethodsMustNotReturn",
+        "retiredOperationalScopeStateMustNotReturnToCanonicalMembershipRecords",
+        "retiredTranslationModelMustNotReturn"
+      ],
+      "class": "dz.sh.hidra.modules.organization.OrganizationModelValueIntegrityTest",
+      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "organization",
+      "path": "src/test/java/dz/sh/hidra/modules/organization/OrganizationModelValueIntegrityTest.java",
+      "source_sha256": "7819aa1cf82402343f8ba08e770fd1163405fef2abfe54c3345465434f07da53",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0.005,
+      "cases": [
+        "birthFieldsMustRemainMappedToExpectedColumns",
+        "compatibilityComponentsRemainMappedUntilTheirApprovedCutover",
+        "detectorRejectsRepresentativeUnmappedCanonicalComponent",
+        "employeeJpaShapeMustNotGainUnrecordedDomainDrift",
+        "employeeMapperMustNotSilentlyDropAdditionalDomainComponents"
+      ],
+      "class": "dz.sh.hidra.modules.organization.OrganizationPersistenceDriftGuardrailTest",
+      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "organization",
+      "path": "src/test/java/dz/sh/hidra/modules/organization/OrganizationPersistenceDriftGuardrailTest.java",
+      "source_sha256": "18f5aa1eedd358a601735302f48a548eff5a6916000b0dcaac6b1f212480a988",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0.05,
+      "cases": [
+        "canonicalJpaDiscriminatorsMustRemainEnumsStoredAsStrings",
+        "canonicalPolymorphicDomainStateMustRemainTyped",
+        "org046InternalReferenceIntegrityContractMustRemainPresent",
+        "organizationMigrationsMustNotOwnOtherModulesThroughForeignKeys",
+        "retiredMultilingualStructuresMustRemainRetired",
+        "textualCompatibilityBridgesMustRemainDeprecatedForRemoval"
+      ],
+      "class": "dz.sh.hidra.modules.organization.OrganizationTypedDependencyIntegrityTest",
+      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "organization",
+      "path": "src/test/java/dz/sh/hidra/modules/organization/OrganizationTypedDependencyIntegrityTest.java",
+      "source_sha256": "38d6d27ddcbdb7c138a0452b74581e962ecdbce7945c672a23b296035932f6e2",
       "supports": []
     },
     {
@@ -4585,20 +4613,6 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.004,
-      "cases": [
-        "mapsRevisionConflictToStable409ProblemCode"
-      ],
-      "class": "dz.sh.hidra.modules.planning.api.rest.PlanningRevisionApiExceptionHandlerTest",
-      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
-      "fast": true,
-      "lane": "unit-architecture",
-      "owner": "planning",
-      "path": "src/test/java/dz/sh/hidra/modules/planning/api/rest/PlanningRevisionApiExceptionHandlerTest.java",
-      "source_sha256": "bdd3573de4e55c3bce6ce9924329326366b6d43c501cadbf8e2bde7d2413731b",
-      "supports": []
-    },
-    {
       "baseline_seconds": 0.003,
       "cases": [
         "mapsApplicationRevisionResultWithoutDomainRepresentation"
@@ -4613,6 +4627,20 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0.004,
+      "cases": [
+        "mapsRevisionConflictToStable409ProblemCode"
+      ],
+      "class": "dz.sh.hidra.modules.planning.api.rest.PlanningRevisionApiExceptionHandlerTest",
+      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "planning",
+      "path": "src/test/java/dz/sh/hidra/modules/planning/api/rest/PlanningRevisionApiExceptionHandlerTest.java",
+      "source_sha256": "bdd3573de4e55c3bce6ce9924329326366b6d43c501cadbf8e2bde7d2413731b",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0.005,
       "cases": [
         "historicalRevisionsRemainLinkableAndMissingUnknownTypesDeny"
@@ -4624,22 +4652,6 @@
       "owner": "planning",
       "path": "src/test/java/dz/sh/hidra/modules/planning/application/service/DocumentsPlanningTargetLookupTest.java",
       "source_sha256": "705e4f3ebc7772b8c1484b1a0c54a888d5ae7819eb8bc18e3b158a816584a7c7",
-      "supports": []
-    },
-    {
-      "baseline_seconds": 0.124,
-      "cases": [
-        "rejectsRevisionThatIsNoLongerCurrentWithoutSaving",
-        "rejectsStaleExpectedTokenWithoutSaving",
-        "updatesCurrentRevisionWhenExpectedTokenMatchesAndReturnsApplicationResult"
-      ],
-      "class": "dz.sh.hidra.modules.planning.application.service.PlanRevisionUpdateApplicationServiceTest",
-      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
-      "fast": true,
-      "lane": "unit-architecture",
-      "owner": "planning",
-      "path": "src/test/java/dz/sh/hidra/modules/planning/application/service/PlanRevisionUpdateApplicationServiceTest.java",
-      "source_sha256": "8fb55efc7535d704edb4145b86e628d4e46bbf300f5456c45e89bfdda58d5cdd",
       "supports": []
     },
     {
@@ -4676,6 +4688,22 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0.124,
+      "cases": [
+        "rejectsRevisionThatIsNoLongerCurrentWithoutSaving",
+        "rejectsStaleExpectedTokenWithoutSaving",
+        "updatesCurrentRevisionWhenExpectedTokenMatchesAndReturnsApplicationResult"
+      ],
+      "class": "dz.sh.hidra.modules.planning.application.service.PlanRevisionUpdateApplicationServiceTest",
+      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "planning",
+      "path": "src/test/java/dz/sh/hidra/modules/planning/application/service/PlanRevisionUpdateApplicationServiceTest.java",
+      "source_sha256": "8fb55efc7535d704edb4145b86e628d4e46bbf300f5456c45e89bfdda58d5cdd",
+      "supports": []
+    },
+    {
       "baseline_seconds": 22.811,
       "cases": [
         "actualOwnerProvidersSaveCanonicalPartyAndRollbackTheFlushedRecord",
@@ -4702,6 +4730,28 @@
       "supports": []
     },
     {
+      "baseline_seconds": 5.204,
+      "cases": [
+        "approvedEvidenceCannotBeChangedDeletedOrTruncated",
+        "competingPlanCodesHaveExactlyOneWinner",
+        "competingRevisionNumbersHaveExactlyOneWinner",
+        "exactActiveReasonFamilyRequiredOnWrites",
+        "legacyCrossPlanPointerAbortsWithoutReassignment",
+        "legacyInvalidNumbersAbortWithoutRenumbering",
+        "planNameScopeTypeAndActiveTypeFamilyEnforced",
+        "planPointersMustExistAndBelongToSamePlan",
+        "positiveUniqueNumbersAndNullableBaseLineage"
+      ],
+      "class": "dz.sh.hidra.modules.planning.infrastructure.persistence.PlanningSemanticPostgresTest",
+      "dependency_reason": "Excluded; actual DB/container/transaction",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "planning",
+      "path": "src/test/java/dz/sh/hidra/modules/planning/infrastructure/persistence/PlanningSemanticPostgresTest.java",
+      "source_sha256": "8b016d30ba83d502aca1bf4ae32073e0fd2db9f4e509ef38e628bc7d5845842e",
+      "supports": []
+    },
+    {
       "baseline_seconds": 9.232,
       "cases": [
         "approvedRevisionImmutabilityIsRetainedWhenTargetIntegrityIsInstalled",
@@ -4722,28 +4772,6 @@
       "owner": "planning",
       "path": "src/test/java/dz/sh/hidra/modules/planning/infrastructure/persistence/PlanTargetSemanticPostgresIntegrationTest.java",
       "source_sha256": "d0b5140aea62b5e1da13c1913b9f7f40d2e19e72d5d56ee8306c44fdd13ecf12",
-      "supports": []
-    },
-    {
-      "baseline_seconds": 5.204,
-      "cases": [
-        "approvedEvidenceCannotBeChangedDeletedOrTruncated",
-        "competingPlanCodesHaveExactlyOneWinner",
-        "competingRevisionNumbersHaveExactlyOneWinner",
-        "exactActiveReasonFamilyRequiredOnWrites",
-        "legacyCrossPlanPointerAbortsWithoutReassignment",
-        "legacyInvalidNumbersAbortWithoutRenumbering",
-        "planNameScopeTypeAndActiveTypeFamilyEnforced",
-        "planPointersMustExistAndBelongToSamePlan",
-        "positiveUniqueNumbersAndNullableBaseLineage"
-      ],
-      "class": "dz.sh.hidra.modules.planning.infrastructure.persistence.PlanningSemanticPostgresTest",
-      "dependency_reason": "Excluded; actual DB/container/transaction",
-      "fast": false,
-      "lane": "postgres-integration",
-      "owner": "planning",
-      "path": "src/test/java/dz/sh/hidra/modules/planning/infrastructure/persistence/PlanningSemanticPostgresTest.java",
-      "source_sha256": "8b016d30ba83d502aca1bf4ae32073e0fd2db9f4e509ef38e628bc7d5845842e",
       "supports": []
     },
     {
@@ -4806,6 +4834,27 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0.057,
+      "cases": [
+        "closedPeriodDoesNotAllowNewPlanRevisions",
+        "defaultsBlankTimeZoneToAfricaAlgiers",
+        "migrationEnforcesUniqueCodeAndStrictInterval",
+        "rejectsBlankFrenchName",
+        "rejectsDuplicateCodeBeforeSave",
+        "rejectsInvalidIanaTimeZone",
+        "rejectsPeriodTypeOutsideActivePeriodTypeFamily",
+        "rejectsZeroLengthPeriod"
+      ],
+      "class": "dz.sh.hidra.modules.planning.semantic.PlanningPeriodSemanticRemediationTest",
+      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "planning",
+      "path": "src/test/java/dz/sh/hidra/modules/planning/semantic/PlanningPeriodSemanticRemediationTest.java",
+      "source_sha256": "b3410791c70fe3c30652a4310e519536b956a1d91e67dc9b7f87b06ae95b293b",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0.004,
       "cases": [
         "approvedMetadataRejectedBeforeAnySaveOrCatalogLookup",
@@ -4840,27 +4889,6 @@
       "owner": "planning",
       "path": "src/test/java/dz/sh/hidra/modules/planning/semantic/PlanTargetSemanticRemediationTest.java",
       "source_sha256": "857eb528bcbb2e7c907feafb01b3bf4a2a348a35aa6e982e495abc23e60f8f25",
-      "supports": []
-    },
-    {
-      "baseline_seconds": 0.057,
-      "cases": [
-        "closedPeriodDoesNotAllowNewPlanRevisions",
-        "defaultsBlankTimeZoneToAfricaAlgiers",
-        "migrationEnforcesUniqueCodeAndStrictInterval",
-        "rejectsBlankFrenchName",
-        "rejectsDuplicateCodeBeforeSave",
-        "rejectsInvalidIanaTimeZone",
-        "rejectsPeriodTypeOutsideActivePeriodTypeFamily",
-        "rejectsZeroLengthPeriod"
-      ],
-      "class": "dz.sh.hidra.modules.planning.semantic.PlanningPeriodSemanticRemediationTest",
-      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
-      "fast": true,
-      "lane": "unit-architecture",
-      "owner": "planning",
-      "path": "src/test/java/dz/sh/hidra/modules/planning/semantic/PlanningPeriodSemanticRemediationTest.java",
-      "source_sha256": "b3410791c70fe3c30652a4310e519536b956a1d91e67dc9b7f87b06ae95b293b",
       "supports": []
     },
     {
@@ -5504,6 +5532,25 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0.501,
+      "cases": [
+        "completeAggregateAndBothCharacteristicsRoundTrip",
+        "independentCanonicalPrefixAndProvenanceDigestSensitivity",
+        "independentCurveDigestFixtureAndNegativeScaleZeroArePreserved",
+        "independentFrozenLegacyAndRegulatorHashesRemainExact",
+        "regulatorAndAggregateRejectTruncationTrailingBytesAndRelabeledHeaders",
+        "strictTruncatedTrailingMalformedUtf8AndLengthReject"
+      ],
+      "class": "dz.sh.hidra.modules.simulation.infrastructure.persistence.adapter.SimulationEquipmentParameterRevisionCodecTest",
+      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "simulation",
+      "path": "src/test/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/SimulationEquipmentParameterRevisionCodecTest.java",
+      "source_sha256": "bc47aeed2c6028fb7cfd0eeb414ca87ba3f42f37645778ba4dbf5e0bd8750e0c",
+      "supports": []
+    },
+    {
       "baseline_seconds": 37.226,
       "cases": [
         "appendOnlySqlAndForgedQualificationCorruptionCannotQualify",
@@ -5546,25 +5593,6 @@
       "owner": "simulation",
       "path": "src/test/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/SimulationSemanticPostgresIntegrationTest.java",
       "source_sha256": "2cb10578d5b9b9e06cd9a6657fc9f71fcef1d09a58f76ac1c21a007bfdbde169",
-      "supports": []
-    },
-    {
-      "baseline_seconds": 0.501,
-      "cases": [
-        "completeAggregateAndBothCharacteristicsRoundTrip",
-        "independentCanonicalPrefixAndProvenanceDigestSensitivity",
-        "independentCurveDigestFixtureAndNegativeScaleZeroArePreserved",
-        "independentFrozenLegacyAndRegulatorHashesRemainExact",
-        "regulatorAndAggregateRejectTruncationTrailingBytesAndRelabeledHeaders",
-        "strictTruncatedTrailingMalformedUtf8AndLengthReject"
-      ],
-      "class": "dz.sh.hidra.modules.simulation.infrastructure.persistence.adapter.SimulationEquipmentParameterRevisionCodecTest",
-      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
-      "fast": true,
-      "lane": "unit-architecture",
-      "owner": "simulation",
-      "path": "src/test/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/SimulationEquipmentParameterRevisionCodecTest.java",
-      "source_sha256": "bc47aeed2c6028fb7cfd0eeb414ca87ba3f42f37645778ba4dbf5e0bd8750e0c",
       "supports": []
     },
     {
@@ -6148,56 +6176,6 @@
       "supports": []
     },
     {
-      "baseline_seconds": 18.684,
-      "cases": [
-        "blankAndNullIdentitiesFailRatherThanReturnAbsence",
-        "canonicalPermutationReplaysWithoutMutatingExactHistoryOrAnotherStation",
-        "concurrentConflictingAppendsHaveOneWinner",
-        "concurrentIdenticalAppendsCommitExactlyOneRow",
-        "contentConflictsAndOuterFailuresRollBackAtomically",
-        "databaseFailuresPropagateAndRollBackPriorAppends",
-        "draftAndVerifiedDeclarationsRemainDeclarationsWithoutMasterDataOrPublication",
-        "failedTransactionalMigrationLeavesNoPartialTableOrTriggers",
-        "freshFullFlywayChainCreatesEmptyStoreWithValidatedHistory",
-        "hashConsistentMalformedNoncanonicalAndWrongIdentityPayloadsFailOnRead",
-        "readsRejectPrivilegedDigestAndFormatConstraintBypass",
-        "serialAndParallelRevisionsPreserveAllSuppliedFieldsAndNanoseconds",
-        "sqlRejectsInvalidKeysPayloadFormatDigestAndAllMutations",
-        "upgradeFromActualPredecessorPreservesPhysicalV1V2BytesAndChecksums"
-      ],
-      "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.StationInternalGraphRevisionPostgresIntegrationTest",
-      "dependency_reason": "Excluded; actual DB/container/transaction",
-      "fast": false,
-      "lane": "postgres-integration",
-      "owner": "topology",
-      "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/StationInternalGraphRevisionPostgresIntegrationTest.java",
-      "source_sha256": "666039aa967b9d5231c52a8d89935b467345085fcabe440334468340f2795752",
-      "supports": []
-    },
-    {
-      "baseline_seconds": 23.648,
-      "cases": [
-        "concurrentConflictingReplayHasExactlyOneWinner",
-        "concurrentIdenticalReplayCommitsOneRowThroughRealTransactionProxies",
-        "databaseRejectsDuplicatesInvalidIdentityFormatDigestAndEveryMutation",
-        "forwardMigrationCreatesEmptyStoreAndPreservesExistingSentinel",
-        "fullFlywayChainProvidesExactSourceCatalogForReviewedDictionaryRegeneration",
-        "ownerReadsRejectHashConsistentMalformedPayloadAndMismatchedRowIdentity",
-        "ownerReadsVerifyDigestEvenWhenAdministrativeConstraintBypassHasOccurred",
-        "persistsTwoExactRevisionsAndExportsEveryOrderedFieldWithoutChangingOriginal",
-        "rejectsConflictingContentAtomicallyAndRollsBackOuterTransaction",
-        "versionedMigrationPreservesV1RowsAndAddsOnlyV2RegulatorCapability"
-      ],
-      "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.TopologyPhysicalNetworkRevisionPostgresIntegrationTest",
-      "dependency_reason": "Excluded; actual DB/container/transaction",
-      "fast": false,
-      "lane": "postgres-integration",
-      "owner": "topology",
-      "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/TopologyPhysicalNetworkRevisionPostgresIntegrationTest.java",
-      "source_sha256": "92ce54f42084c09d38e5ef94a50ed8885f3cfffee9a1eb087cc836e88dead58a",
-      "supports": []
-    },
-    {
       "baseline_seconds": 0.108,
       "cases": [
         "bytesAreDefensivelyOwned",
@@ -6245,6 +6223,56 @@
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/TopologyPhysicalNetworkRevisionCodecTest.java",
       "source_sha256": "b21ced9979b8d636b279ee31906e41450c6be3e09f53f064cc0cc0056948b372",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 18.684,
+      "cases": [
+        "blankAndNullIdentitiesFailRatherThanReturnAbsence",
+        "canonicalPermutationReplaysWithoutMutatingExactHistoryOrAnotherStation",
+        "concurrentConflictingAppendsHaveOneWinner",
+        "concurrentIdenticalAppendsCommitExactlyOneRow",
+        "contentConflictsAndOuterFailuresRollBackAtomically",
+        "databaseFailuresPropagateAndRollBackPriorAppends",
+        "draftAndVerifiedDeclarationsRemainDeclarationsWithoutMasterDataOrPublication",
+        "failedTransactionalMigrationLeavesNoPartialTableOrTriggers",
+        "freshFullFlywayChainCreatesEmptyStoreWithValidatedHistory",
+        "hashConsistentMalformedNoncanonicalAndWrongIdentityPayloadsFailOnRead",
+        "readsRejectPrivilegedDigestAndFormatConstraintBypass",
+        "serialAndParallelRevisionsPreserveAllSuppliedFieldsAndNanoseconds",
+        "sqlRejectsInvalidKeysPayloadFormatDigestAndAllMutations",
+        "upgradeFromActualPredecessorPreservesPhysicalV1V2BytesAndChecksums"
+      ],
+      "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.StationInternalGraphRevisionPostgresIntegrationTest",
+      "dependency_reason": "Excluded; actual DB/container/transaction",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/StationInternalGraphRevisionPostgresIntegrationTest.java",
+      "source_sha256": "666039aa967b9d5231c52a8d89935b467345085fcabe440334468340f2795752",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 23.648,
+      "cases": [
+        "concurrentConflictingReplayHasExactlyOneWinner",
+        "concurrentIdenticalReplayCommitsOneRowThroughRealTransactionProxies",
+        "databaseRejectsDuplicatesInvalidIdentityFormatDigestAndEveryMutation",
+        "forwardMigrationCreatesEmptyStoreAndPreservesExistingSentinel",
+        "fullFlywayChainProvidesExactSourceCatalogForReviewedDictionaryRegeneration",
+        "ownerReadsRejectHashConsistentMalformedPayloadAndMismatchedRowIdentity",
+        "ownerReadsVerifyDigestEvenWhenAdministrativeConstraintBypassHasOccurred",
+        "persistsTwoExactRevisionsAndExportsEveryOrderedFieldWithoutChangingOriginal",
+        "rejectsConflictingContentAtomicallyAndRollsBackOuterTransaction",
+        "versionedMigrationPreservesV1RowsAndAddsOnlyV2RegulatorCapability"
+      ],
+      "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.TopologyPhysicalNetworkRevisionPostgresIntegrationTest",
+      "dependency_reason": "Excluded; actual DB/container/transaction",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/TopologyPhysicalNetworkRevisionPostgresIntegrationTest.java",
+      "source_sha256": "92ce54f42084c09d38e5ef94a50ed8885f3cfffee9a1eb087cc836e88dead58a",
       "supports": []
     },
     {

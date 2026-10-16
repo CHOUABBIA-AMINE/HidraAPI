@@ -1836,6 +1836,34 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "activeClaimDependentMappingWithoutClaimNameFailsClosed",
+        "activeGroupRoleAndPermissionProvideOnlyNames",
+        "aggregateNameBytesCannotBypassTheDomainEnvelope",
+        "blankClaimNameFailsClosedWithoutLoggingTheValue",
+        "committedMappingChangeProducesDifferentNonAuthoritativeSelection",
+        "conflictStatusFailsClosedEvenIfAnotherNameIsValid",
+        "distinctNameLimitRejectsOver64Names",
+        "exactCaseAndDeduplicatedNamesAreSortedAndImmutable",
+        "freshFlywayChainAndSelectedAdapterExist",
+        "inactiveAndNonClaimDependentMappingsRemainIrrelevant",
+        "missingAndInactiveProvidersFailClosedIdentically",
+        "noValuesTokensOrAuthorizationAreReturned",
+        "rawRowLimitRejectsDuplicatesRatherThanTruncating",
+        "unsupportedFamilyModeFailsClosed",
+        "unsupportedStatusAndModeFailClosed"
+      ],
+      "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.ClaimNameCatalogPostgresIntegrationTest",
+      "dependency_reason": "Real Spring Boot PostgreSQL 16 Testcontainers and Flyway integration proving single-statement read-only mapping-name selection with synthetic bounded fixtures. Unmeasured scheduling baseline pending exact-SHA hosted calibration.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ClaimNameCatalogPostgresIntegrationTest.java",
+      "source_sha256": "08eb60a3d1d20ae8e62eacba20ec83fed79b188337fe728bc69103042342ba3d",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
         "beforeCommitWriteAndCallbackEvaluationCannotFollowGuard",
         "declaredStatementTimeoutOutageAbortsEveryProvisionalEffect",
         "deferredCommitFailureHasObservedRollbackAndNoDeliveryOrRetry",

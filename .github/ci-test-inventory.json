@@ -2436,6 +2436,34 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "aggregateEnvelopeCannotBeBypassedAcrossSelectedNames",
+        "duplicateListValuesAreRefusedNotSilentlyDeduplicated",
+        "emptySelectionDoesNotInspectOrExposeUnrequestedClaims",
+        "exactCasePreservedWithOrderedDistinctStringList",
+        "excessivePerNameValueCountIsRejected",
+        "invalidIntermediateNodeAndEmptyPathSegmentAreMalformed",
+        "invalidUnicodeAndOversizeValuesRefuseTheWholeProjection",
+        "literalDottedKeyRetainsExactTopLevelValue",
+        "missingSelectedPathIsAbsentButUnrequestedIsUnknown",
+        "nestedDottedPathTraversesExactSegments",
+        "nullBlankAndEmptySelectedValuesAreMalformed",
+        "nullSourcesAndInvalidRevisionFailWithNoSensitiveText",
+        "numberBooleanMapAndMixedArraysNeverBecomeStringAssertions",
+        "projectionIsImmutableAgainstSubsequentSourceMutation",
+        "resultDoesNotImplyAuthenticatedClaimsOrPermissions"
+      ],
+      "class": "dz.sh.hidra.modules.identity.infrastructure.security.OidcClaimCoverageProjectorTest",
+      "dependency_reason": "HPR-P25-051H-C1 pure JVM synthetic OIDC-shaped source-tree projection: non-authoritative bounded names, paths, malformed/absent distinction, duplicates, UTF-8/aggregate envelopes, immutability and redaction. No Spring, network, database or external IdP. Unmeasured hosted duration baseline.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/OidcClaimCoverageProjectorTest.java",
+      "source_sha256": "eab16eb1ddc6a3d253c1002e2ac98c0436f3e466ef3f660b505a9110db681d50",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
         "contributionHasOnlyImmutableScalarEvidenceAndNoPermission",
         "handlesAreSingleUseAndBoundToThreadAndAmbientIdentity",
         "nativeParserReuseAndReceiptProducerAllowlistRemainClosed",

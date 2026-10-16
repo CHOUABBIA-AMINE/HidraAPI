@@ -37,6 +37,7 @@ import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.nio.ByteBuffer;
+import java.time.Instant;
 import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CodingErrorAction;
@@ -76,16 +77,44 @@ public final class TrustedAuthenticationVerificationRegistry
         this.nativeAudience = nativeAudience;
     }
 
+    /** Private bounded source evidence; never a public grant or native token claim. */
+    record OidcSourceEvidence(String providerId, String issuer, String subject,
+            Instant sourceExpiresAt, OidcClaimCoverageProjector.Projection projection) {
+        OidcSourceEvidence {
+            Objects.requireNonNull(providerId);
+            Objects.requireNonNull(issuer);
+            Objects.requireNonNull(subject);
+            Objects.requireNonNull(sourceExpiresAt);
+            Objects.requireNonNull(projection);
+            if (providerId.isBlank() || issuer.isBlank() || subject.isBlank()
+                    || !Instant.now().isBefore(sourceExpiresAt)) throw denied();
+        }
+        @Override public String toString() {
+            return "OidcSourceEvidence[claims=<redacted>, provenance=<redacted>]";
+        }
+    }
+
     static final class Receipt {
         private final AuthenticationVerificationSnapshot snapshot;
         private final HidraPrincipal principal;
+        private final OidcSourceEvidence oidcEvidence;
         private final long thread = Thread.currentThread().threadId();
         private final AtomicBoolean consumed = new AtomicBoolean();
         private volatile OperationAuthenticationBinding completed;
 
         private Receipt(AuthenticationVerificationSnapshot snapshot, HidraPrincipal principal) {
+            this(snapshot, principal, null);
+        }
+
+        private Receipt(AuthenticationVerificationSnapshot snapshot, HidraPrincipal principal,
+                OidcSourceEvidence oidcEvidence) {
             this.snapshot = Objects.requireNonNull(snapshot);
             this.principal = Objects.requireNonNull(principal);
+            this.oidcEvidence = oidcEvidence;
+        }
+
+        OidcSourceEvidence oidcEvidence() {
+            return oidcEvidence;
         }
     }
 
@@ -139,6 +168,21 @@ public final class TrustedAuthenticationVerificationRegistry
     // Exactly the successful qualified-decoder OIDC converter may call this producer method.
     Receipt verifiedOidc(AuthenticationVerificationSnapshot snapshot, HidraPrincipal principal) {
         return new Receipt(snapshot, principal);
+    }
+
+    Receipt verifiedOidc(AuthenticationVerificationSnapshot snapshot, HidraPrincipal principal,
+            OidcSourceEvidence evidence) {
+        if (snapshot == null || principal == null || evidence == null
+                || !"OIDC".equals(snapshot.authenticationType())
+                || !Objects.equals(snapshot.providerId(), evidence.providerId())
+                || !Objects.equals(snapshot.sourceIssuer(), evidence.issuer())
+                || !Objects.equals(snapshot.externalSubject(), evidence.subject())
+                || !Objects.equals(snapshot.sourceExpiresAt(), evidence.sourceExpiresAt())
+                || !Objects.equals(principal.identityProviderId(), evidence.providerId())
+                || !Objects.equals(principal.userId(), snapshot.userId())
+                || !Objects.equals(principal.externalIdentityId(), snapshot.externalIdentityId())
+                || !Instant.now().isBefore(evidence.sourceExpiresAt())) throw denied();
+        return new Receipt(snapshot, principal, evidence);
     }
 
     @Override

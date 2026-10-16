@@ -1,5 +1,14 @@
 # HidraAPI — Ultimate Universal Platform Roadmap
 
+### HPR-P25-051H-C2A — original-source OIDC bounded claim receipt, 2026-10-16
+
+**One registered implementation commit:** Owner requested Next with no further subdivisions and no documentation-only preflight commits. Exact commit message `feat(identity): capture verified oidc claim receipt`. Starting source `aea3e497502c3e83a49fe4b7b2070b984d846bb0` (tree `8e78f3bc20c7eb16ae4fa10db2a927dc2d6df66c`, Documentation Validation #357 SUCCESS). This stage changes only the eight files already registered for C2A: two production Identity security classes, one new and two existing synthetic JVM tests, source-linked CI test inventory, the roadmap and append-only reconciliation. One CREATE / seven UPDATE / zero DELETE.
+
+**Delivered source intent:** Existing OIDC converter's original-token qualified decoder path is preserved. New `hidra.identity.oidc-verified-claim-receipt.enabled` opt-in defaults to false; when enabled, the converter selects a versioned claim-name snapshot before original decoding, projects only the verified decoder output into C1 bounded coverage, compares selection generation after decoding, and attaches source issuer/subject/expiry, provider and immutable projection privately to a one-use registry receipt. Any unavailable or owner-privileged selector, changed source identity/deadline, invalid claims or decoder failure fails closed, with no legacy JPA assertion fallback in opt-in mode. Legacy, default-off behavior and the existing direct/LDAP receipt remain unchanged. No raw token or sensitive source secret is persisted or exported, and no authorization grant follows from the new projection.
+
+**Tests and limits:** New `OidcVerifiedClaimReceiptTest` has seven synthetic cases for original decoded data, default-off preservation, decoder failure, changed mapping generation, privilege/unavailable refusal, wrong verified subject and one-consumption/forgery refusal. Existing converter and trusted registry tests are extended without dropping historical cases; CI inventory includes their actual source SHA-256 and case names. Source/hash inventory were checked, but no live Java21/Maven, PostgreSQL, IdP, held owner transaction or runtime OpenAPI execution was available locally for this submission. Exact-SHA Full/Fast/Docs results remain **REQUIRED**, not assumed passed. This stage does not implement C2B immutable native JTI/session binding of claims, C2C authenticated LDAP attributes, H-C3 fenced decision evaluation, production role separation, claim-based protected PERMIT, or production/site acceptance. Parent H/051 stays IN PROGRESS; P3 deferred. No further C2A subdivision or unregistered implementation.
+
+
 ## Development consolidation — authoritative prospective register, 2026-10-13
 
 **Source baseline:** `8c173f4942371b377f9155e7d99af4e4c5fc288c`, tree

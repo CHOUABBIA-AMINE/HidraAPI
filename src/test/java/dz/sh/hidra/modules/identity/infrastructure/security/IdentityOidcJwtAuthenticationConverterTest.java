@@ -315,6 +315,20 @@ class IdentityOidcJwtAuthenticationConverterTest {
                         org.mockito.ArgumentMatchers.anyList());
     }
 
+    @Test
+    void legacyConstructorStaysDefaultOffAndCannotMintVerifiedClaimEvidence() {
+        var legacy = new IdentityOidcJwtAuthenticationConverter(
+                identityProviderRepository, externalIdentityRepository, userRepository,
+                queryUseCase, mock(SpringAuthorizationContextAdapter.class));
+        arrangeLinkedIdentity(user(UserStatus.ACTIVE));
+        var principal = mock(IdentityAdministrationQueryUseCase.PrincipalView.class);
+        when(queryUseCase.principal(USER_ID, List.of())).thenReturn(principal);
+        when(principal.effectivePermissions()).thenReturn(List.of());
+        var token = (HidraOidcAuthenticationToken) legacy.convert(jwt());
+        assertThat(token.verificationReceipt()).isNull();
+        assertThat(token.getPrincipal().identityProviderId()).isEqualTo(PROVIDER_ID);
+    }
+
     private void arrangeLinkedIdentity(UserJpaEntity mappedUser) {
         when(identityProviderRepository.findByProviderTypeAndIssuerUri(ProviderType.OIDC, ISSUER))
                 .thenReturn(Optional.of(oidcProvider(IdentityProviderStatus.ACTIVE)));

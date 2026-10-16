@@ -2341,6 +2341,7 @@
       "baseline_seconds": 0.008,
       "cases": [
         "ignoresExternalRoleAndGroupClaimsForHidraAuthorization",
+        "legacyConstructorStaysDefaultOffAndCannotMintVerifiedClaimEvidence",
         "normalizesLinkedOidcIdentityAndUsesOnlyHidraPermissions",
         "rejectsLinkedIdentityWhoseHidraUserNoLongerExists",
         "rejectsLockedAndDisabledMappedHidraUser",
@@ -2354,7 +2355,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverterTest.java",
-      "source_sha256": "8bf1bc53a72f28124e18779390b2ad3f6d7a3fe01de6498f3fe5f15b2283ef95",
+      "source_sha256": "2412addccfe9a0262d2da050fb3b5e902d42df9100a300fb5fef9bc70289d4d0",
       "supports": []
     },
     {
@@ -2459,6 +2460,26 @@
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/OidcClaimCoverageProjectorTest.java",
       "source_sha256": "eab16eb1ddc6a3d253c1002e2ac98c0436f3e466ef3f660b505a9110db681d50",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "changedSourceSubjectDoesNotBecomeTrustedEvidence",
+        "decoderFailureRejectsWithRedactedErrorAndWithoutLegacyFallback",
+        "defaultDisabledNeverSelectsNamesOrRetainsClaimEvidence",
+        "mappingGenerationChangeDuringDecodingRejectsReceipt",
+        "optInUsesOnlyTheOriginalDecodedSourceAndRetainsBoundedPrivateEvidence",
+        "plainOidcTokenCannotForgeReceiptAndRealReceiptIsSingleUse",
+        "privilegedOrUnavailableSelectorFailsClosedWithoutSensitiveDetails"
+      ],
+      "class": "dz.sh.hidra.modules.identity.infrastructure.security.OidcVerifiedClaimReceiptTest",
+      "dependency_reason": "HPR-P25-051H-C2A pure JVM synthetic verified OIDC decoder/selector, fail-closed mapping source and single-use private evidence; hosted duration unmeasured.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/OidcVerifiedClaimReceiptTest.java",
+      "source_sha256": "4f0cb2ce0a1c4af010bed1786d0516fbb6b8c782e3c30828278f4b1430448a1d",
       "supports": []
     },
     {
@@ -2569,6 +2590,7 @@
         "nativeReadbackRequiresExactSingletonRawAudienceAndTypedOwnerClaims",
         "oidcReceiptCannotBeConsumedByAnotherThreadOrForgedContext",
         "oldPublicOidcConstructorsHaveNoReceiptEvenWithAuthenticatedPrincipal",
+        "originalNonOptInOidcProducerNeverReceivesPrivateClaimEvidence",
         "oversizeNativeBearerDeniesBeforeDecoderOrStorageLookup",
         "persistentWitnessSurvivesRegistryRestartButRejectsAnotherKey",
         "previousInvocationHandleCannotCrossIntoNewInvocation",
@@ -2586,7 +2608,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationTest.java",
-      "source_sha256": "ee892ee4edd20acf3d921117db5749810f7e88ad4422f4f485c21e6780805953",
+      "source_sha256": "6c83e960005a56ea5b2ac509c4c2dfad476efb3e4ab6febcf7bbc78e565e492f",
       "supports": []
     },
     {

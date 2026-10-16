@@ -341,6 +341,13 @@ class TrustedAuthenticationVerificationTest {
     }
 
     @Test
+    void originalNonOptInOidcProducerNeverReceivesPrivateClaimEvidence() {
+        var snapshot = snapshot("OIDC", "sub");
+        var principal = principal(snapshot);
+        assertThat(registry.verifiedOidc(snapshot, principal).oidcEvidence()).isNull();
+    }
+
+    @Test
     void oldPublicOidcConstructorsHaveNoReceiptEvenWithAuthenticatedPrincipal() {
         var principal = principal(snapshot("OIDC", "sub"));
         var token = new HidraOidcAuthenticationToken(principal);

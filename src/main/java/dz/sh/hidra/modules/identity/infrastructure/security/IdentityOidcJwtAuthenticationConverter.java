@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.identity.infrastructure.security;
 
 import dz.sh.hidra.modules.identity.application.port.in.IdentityAdministrationQueryUseCase;
+import dz.sh.hidra.modules.identity.application.port.out.ClaimNameCatalogPort;
 import dz.sh.hidra.modules.identity.domain.model.HidraPrincipal;
 import dz.sh.hidra.modules.identity.domain.value.ExternalIdentityStatus;
 import dz.sh.hidra.modules.identity.domain.value.IdentityProviderStatus;
@@ -60,6 +61,8 @@ public final class IdentityOidcJwtAuthenticationConverter
                     org.springframework.security.oauth2.jwt.JwtDecoder>
             decoder;
     private final int maxTokenBytes;
+    private final ClaimNameCatalogPort claimCatalog;
+    private final boolean verifiedClaimReceiptEnabled;
     private final IdentityProviderJpaRepository identityProviderRepository;
     private final ExternalIdentityJpaRepository externalIdentityRepository;
     private final UserJpaRepository userRepository;
@@ -74,6 +77,20 @@ public final class IdentityOidcJwtAuthenticationConverter
             IdentityAdministrationQueryUseCase query,
             SpringAuthorizationContextAdapter assertions) {
         this(providers, links, users, query, assertions, null, null, null, 65536);
+    }
+
+    public IdentityOidcJwtAuthenticationConverter(
+            IdentityProviderJpaRepository providers,
+            ExternalIdentityJpaRepository links,
+            UserJpaRepository users,
+            IdentityAdministrationQueryUseCase query,
+            SpringAuthorizationContextAdapter assertions,
+            dz.sh.hidra.modules.identity.application.port.out.AuthenticationSecurityStateQueryPort states,
+            TrustedAuthenticationVerificationRegistry verification,
+            org.springframework.beans.factory.ObjectProvider<org.springframework.security.oauth2.jwt.JwtDecoder> decoder,
+            int maxTokenBytes) {
+        this(providers, links, users, query, assertions, states, verification, decoder,
+                maxTokenBytes, null, false);
     }
 
     @org.springframework.beans.factory.annotation.Autowired
@@ -92,7 +109,13 @@ public final class IdentityOidcJwtAuthenticationConverter
                             decoder,
             @org.springframework.beans.factory.annotation.Value(
                             "${hidra.identity.bound-authentication.max-token-bytes:65536}")
-                    int maxTokenBytes) {
+                    int maxTokenBytes,
+            ClaimNameCatalogPort claimCatalog,
+            @org.springframework.beans.factory.annotation.Value(
+                    "${hidra.identity.oidc-verified-claim-receipt.enabled:false}")
+                    boolean verifiedClaimReceiptEnabled) {
+        this.claimCatalog = claimCatalog;
+        this.verifiedClaimReceiptEnabled = verifiedClaimReceiptEnabled;
         this.states = states;
         this.verification = verification;
         this.decoder = decoder;
@@ -125,6 +148,20 @@ public final class IdentityOidcJwtAuthenticationConverter
                                         new BadCredentialsException(
                                                 "OIDC identity provider is not available."));
 
+        // Select before original source verification, outside protected owner transactions.
+        ClaimNameCatalogPort.VersionedSelection selected = null;
+        if (verifiedClaimReceiptEnabled) {
+            if (states == null || verification == null || decoder == null || claimCatalog == null
+                    || org.springframework.transaction.support.TransactionSynchronizationManager
+                            .isActualTransactionActive())
+                throw new BadCredentialsException("OIDC verified claim evidence unavailable.");
+            try {
+                selected = claimCatalog.selectVersioned(provider.id());
+                if (selected == null) throw new IllegalStateException();
+            } catch (RuntimeException ignored) {
+                throw new BadCredentialsException("OIDC verified claim evidence unavailable.");
+            }
+        }
         dz.sh.hidra.modules.identity.application.model.AuthenticationVerificationSnapshot snapshot =
                 null;
         Jwt verified = jwt;
@@ -150,6 +187,16 @@ public final class IdentityOidcJwtAuthenticationConverter
                     || !Objects.equals(verified.getClaims().get("exp"), deadline)
                     || !Instant.now().isBefore(deadline))
                 throw new BadCredentialsException("OIDC source identity or deadline changed.");
+        }
+        OidcClaimCoverageProjector.Projection projection = null;
+        if (verifiedClaimReceiptEnabled) {
+            try {
+                var fresh = claimCatalog.selectVersioned(provider.id());
+                if (fresh == null || !fresh.equals(selected)) throw new IllegalStateException();
+                projection = OidcClaimCoverageProjector.project(verified.getClaims(), selected);
+            } catch (RuntimeException ignored) {
+                throw new BadCredentialsException("OIDC verified claim evidence unavailable.");
+            }
         }
         ExternalIdentityJpaEntity externalIdentity =
                 externalIdentityRepository
@@ -196,6 +243,14 @@ public final class IdentityOidcJwtAuthenticationConverter
         if (verification == null)
             return new HidraOidcAuthenticationToken(
                     principal, authorizationContext.capture(principal, verified));
+        if (verifiedClaimReceiptEnabled) {
+            if (snapshot == null || projection == null)
+                throw new BadCredentialsException("OIDC verified claim evidence unavailable.");
+            var evidence = new TrustedAuthenticationVerificationRegistry.OidcSourceEvidence(
+                    provider.id(), issuer, subject, verified.getExpiresAt(), projection);
+            return new HidraOidcAuthenticationToken(
+                    principal, null, verification.verifiedOidc(snapshot, principal, evidence));
+        }
         return new HidraOidcAuthenticationToken(
                 principal,
                 authorizationContext.capture(principal, verified),

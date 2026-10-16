@@ -84,3 +84,17 @@ jobs:
         test "${FAILED_OUTCOME}" = failure
         test "${MISSING_OUTCOME}" = failure
         echo 'Isolated hosted negative step and missing upload rejected as expected; no production gate exercised.'
+
+  aggregate-policy-fixtures:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+    - uses: actions/checkout@v4
+    - name: Execute actual production aggregate verifier negative fixtures (isolated)
+      env:
+        PYTHONPATH: .github/scripts
+      run: |
+        set -euo pipefail
+        python3 .github/scripts/test_verify_full_ci_evidence.py -v
+    - name: Qualification boundary
+      run: echo 'Real aggregate-verifier unit fixtures executed on hosted runner; no injected failure in production Full workflow.'

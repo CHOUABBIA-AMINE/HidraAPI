@@ -521,7 +521,7 @@ class LdapVerifiedClaimReceiptTest {
     void namingEnumerationFailureClosesItAndDoesNotDiscloseSourceException() throws Exception {
         var attrs = mock(Attributes.class);
         NamingEnumeration<Attribute> enumeration = mock(NamingEnumeration.class);
-        when(attrs.getAll()).thenReturn(enumeration);
+        doReturn(enumeration).when(attrs).getAll();
         when(enumeration.hasMore()).thenThrow(new NamingException("private-source-secret"));
         assertThatThrownBy(() -> LdapClaimCoverageProjector.project(attrs, selection("groups")))
                 .hasMessage("Invalid bounded directory claim projection")

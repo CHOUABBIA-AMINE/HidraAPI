@@ -187,13 +187,17 @@ class BoundAuthenticationCompletionPostgresIntegrationTest {
                         })
                 .when(claimCatalog)
                 .selectVersioned(anyString());
-        doAnswer(
-                        i -> {
-                            jdbc.execute("SET LOCAL ROLE " + role);
-                            return i.callRealMethod();
-                        })
-                .when(claimFence)
-                .prepare(anyString(), any());
+        // The transactional proxy enforces MANDATORY even while Mockito configures its spy.
+        new TransactionTemplate(manager)
+                .executeWithoutResult(
+                        status ->
+                                doAnswer(
+                                                i -> {
+                                                    jdbc.execute("SET LOCAL ROLE " + role);
+                                                    return i.callRealMethod();
+                                                })
+                                        .when(claimFence)
+                                        .prepare(anyString(), any()));
         ReflectionTestUtils.setField(oidc, "verifiedClaimReceiptEnabled", true);
     }
 
@@ -276,7 +280,9 @@ class BoundAuthenticationCompletionPostgresIntegrationTest {
     void defaultOffOidcNeverInvokesClaimFenceOrCompanionStorage() {
         var f = fixture("OIDC");
         authenticate(f);
-        verify(claimFence, never()).prepare(anyString(), any());
+        new TransactionTemplate(manager)
+                .executeWithoutResult(
+                        status -> verify(claimFence, never()).prepare(anyString(), any()));
         verify(sourceClaims, never()).append(any());
     }
 

@@ -49,7 +49,7 @@ class BoundSourceClaimEvidencePostgresIntegrationTest {
     private JdbcOperationAuthenticationBindingRepositoryAdapter bindings;
     private ClaimNameCatalogPort catalog;
     private TransactionTemplate tx;
-    private String user, provider, link, role;
+    private String user, provider, link, role, issuer;
 
     @BeforeAll
     static void migratedNonownerDatabase() {
@@ -83,6 +83,7 @@ class BoundSourceClaimEvidencePostgresIntegrationTest {
         tx.setTimeout(10);
         user = id();
         provider = id();
+        issuer = "https://source.invalid/" + provider;
         link = id();
         role = id();
         owner.update(
@@ -98,9 +99,10 @@ class BoundSourceClaimEvidencePostgresIntegrationTest {
                         + "provider"
                         + " (id,code,name,provider_type,issuer_uri,sync_enabled,just_in_time_provisioning_enabled,status,created_at,updated_at)"
                         + " VALUES"
-                        + " (?,?,'Synthetic','OIDC','https://source.invalid',false,false,'ACTIVE',now(),now())",
+                        + " (?,?,'Synthetic','OIDC',?,false,false,'ACTIVE',now(),now())",
                 provider,
-                provider);
+                provider,
+                issuer);
         owner.update(
                 "INSERT INTO "
                         + P
@@ -137,7 +139,7 @@ class BoundSourceClaimEvidencePostgresIntegrationTest {
                         link,
                         "synthetic-subject",
                         1L,
-                        "https://source.invalid",
+                        issuer,
                         at.plusSeconds(300),
                         null,
                         null,

@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `412fd724dfd002edcf75bbcf30bb03dbaf912532`
+Captured source SHA: `ebec5369d63b616c65dd085e75dd538c902f6a02`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `cf302bf8131d9f5ce6d515ddac1cbc1f570e83adbea2394a4b5b1b1b466454d7`.
-Migrations: 149; JPA mappings: 470; catalog relations: 492; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `879a09c47a83bb86ed1573d2a1eafec35098e65b5539e1e8b400c5b251309523`.
+Migrations: 150; JPA mappings: 470; catalog relations: 493; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -8189,6 +8189,7 @@ Persisted AttributeDefinitionJpaEntity state; semantic authority remains with id
 - Evidence: [AttributeDefinitionJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/AttributeDefinitionJpaEntity.java)
 - Migration mention (not inferred introduction): [V20260611_001__create_identity_tables.sql](../../src/main/resources/db/migration/V20260611_001__create_identity_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
+- Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8414,6 +8415,7 @@ Persisted AuthorizationPolicyJpaEntity state; semantic authority remains with id
 - Evidence: [AuthorizationPolicyJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/AuthorizationPolicyJpaEntity.java)
 - Migration mention (not inferred introduction): [V20260611_001__create_identity_tables.sql](../../src/main/resources/db/migration/V20260611_001__create_identity_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
+- Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8457,6 +8459,7 @@ Persisted AuthorizationPolicyRuleJpaEntity state; semantic authority remains wit
 - Evidence: [AuthorizationPolicyRuleJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/AuthorizationPolicyRuleJpaEntity.java)
 - Migration mention (not inferred introduction): [V20260611_001__create_identity_tables.sql](../../src/main/resources/db/migration/V20260611_001__create_identity_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
+- Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8504,6 +8507,7 @@ Persisted AuthorizationPolicyVersionJpaEntity state; semantic authority remains 
 - Evidence: [AuthorizationPolicyVersionJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/AuthorizationPolicyVersionJpaEntity.java)
 - Migration mention (not inferred introduction): [V20260611_001__create_identity_tables.sql](../../src/main/resources/db/migration/V20260611_001__create_identity_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
+- Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8541,6 +8545,61 @@ Persisted AuthorizationPolicyVersionJpaEntity state; semantic authority remains 
 
 None captured in this catalog category.
 
+### public.hidra_identity_bound_source_claim_evidence
+
+Owner: **identity**; relation kind: `r`.
+
+Immutable bounded original OIDC claim coverage accompanying native issuance; structural persistence grants no producer or permission authority.
+
+- Evidence: [BoundSourceClaimEvidence.java](../../src/main/java/dz/sh/hidra/modules/identity/domain/value/BoundSourceClaimEvidence.java)
+- Evidence: [JdbcBoundSourceClaimEvidenceRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcBoundSourceClaimEvidenceRepositoryAdapter.java)
+- Evidence: [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
+- Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| binding_id | character varying(36) | False | None; identity=; generated= | No current mapped Java column | — |
+| evidence_format | smallint | False | None; identity=; generated= | No current mapped Java column | — |
+| mapping_generation | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| issuance_transaction_id | bigint | False | None; identity=; generated= | No current mapped Java column | Full issuance transaction ID, authenticated in the private tag; not a durable identity or permission. |
+| coverage_payload | bytea | False | None; identity=; generated= | No current mapped Java column | Bounded canonical format-one claim names, explicit coverage states and exact values; no raw JWT or complete source document. |
+| producer_authenticator | bytea | False | None; identity=; generated= | No current mapped Java column | Domain-separated private HMAC-SHA256 bound to the existing format-one authentication witness; structural SQL validity does not authenticate this tag. |
+
+#### Constraints
+
+- `hidra_identity_bound_source_claim__producer_authenticator_check`: CHECK (octet_length(producer_authenticator) = 32)
+  - Catalog attributes: {"columns": ["producer_authenticator"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_identity_bound_source_claim_evid_mapping_generation_check`: CHECK (mapping_generation &gt; 0)
+  - Catalog attributes: {"columns": ["mapping_generation"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_identity_bound_source_claim_eviden_coverage_payload_check`: CHECK (octet_length(coverage_payload) &gt;= 4 AND octet_length(coverage_payload) &lt;= 98304)
+  - Catalog attributes: {"columns": ["coverage_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_identity_bound_source_claim_evidenc_evidence_format_check`: CHECK (evidence_format = 1)
+  - Catalog attributes: {"columns": ["evidence_format"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_identity_bound_source_claim_evidence_pkey`: PRIMARY KEY (binding_id)
+  - Catalog attributes: {"columns": ["binding_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_identity_bound_source_claim_issuance_transaction_id_check`: CHECK (issuance_transaction_id &gt; 0)
+  - Catalog attributes: {"columns": ["issuance_transaction_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `p25_bound_claim_binding_fk`: FOREIGN KEY (binding_id) REFERENCES hidra_identity_operation_binding(binding_id) ON UPDATE RESTRICT ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["binding_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["binding_id"], "match": "s", "on_delete": "r", "on_update": "r", "schema": "public", "table": "hidra_identity_operation_binding"}, "type": "f", "validated": true}
+- `p25_bound_claim_binding_uuid`: CHECK (binding_id::text ~ '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'::text)
+  - Catalog attributes: {"columns": ["binding_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_identity_bound_source_claim_evidence_pkey`: CREATE UNIQUE INDEX hidra_identity_bound_source_claim_evidence_pkey ON public.hidra_identity_bound_source_claim_evidence USING btree (binding_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `trg_p25_bound_source_claim_immutable`: CREATE TRIGGER trg_p25_bound_source_claim_immutable BEFORE DELETE OR UPDATE OR TRUNCATE ON hidra_identity_bound_source_claim_evidence FOR EACH STATEMENT EXECUTE FUNCTION hidra_identity_bound_source_claim_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_identity_bound_source_claim_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_identity_bound_source_claim_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>DECLARE<br>    previous public.hidra_identity_bound_source_claim_evidence%ROWTYPE;<br>    origin public.hidra_identity_operation_binding%ROWTYPE;<br>    inserted_xid bigint;<br>    captured_epoch bigint;<br>    fence_count integer;<br>    observed timestamptz;<br>BEGIN<br>    IF TG_OP &lt;&gt; 'INSERT' THEN<br>        RAISE EXCEPTION 'Immutable source-claim evidence cannot be mutated' USING ERRCODE='23514';<br>    END IF;<br>    SELECT * INTO previous FROM public.hidra_identity_bound_source_claim_evidence<br>        WHERE binding_id=NEW.binding_id;<br>    IF FOUND THEN<br>        IF previous IS DISTINCT FROM NEW THEN<br>            RAISE EXCEPTION 'Conflicting source-claim evidence' USING ERRCODE='23514';<br>        END IF;<br>        RETURN NULL; -- Exact historical storage replay issues no receipt or token.<br>    END IF;<br>    IF current_setting('transaction_isolation') &lt;&gt; 'read committed'<br>            OR current_setting('transaction_read_only') &lt;&gt; 'off' THEN<br>        RAISE EXCEPTION 'Source-claim issuance transaction unavailable' USING ERRCODE='23514';<br>    END IF;<br>    SELECT count(DISTINCT l.relation) INTO fence_count FROM pg_catalog.pg_locks l<br>        WHERE l.pid=pg_backend_pid() AND l.granted AND l.locktype='relation'<br>        AND l.mode='ShareRowExclusiveLock' AND l.relation IN (<br>        'public.hidra_identity_attribute_definition'::regclass,<br>        'public.hidra_identity_authorization_policy'::regclass,<br>        'public.hidra_identity_authorization_policy_rule'::regclass,<br>        'public.hidra_identity_authorization_policy_version'::regclass,<br>        'public.hidra_identity_external_group_mapping'::regclass,<br>        'public.hidra_identity_external_identity'::regclass,<br>        'public.hidra_identity_external_permission_mapping'::regclass,<br>        'public.hidra_identity_external_role_mapping'::regclass,<br>        'public.hidra_identity_group'::regclass,<br>        'public.hidra_identity_group_role_grant'::regclass,<br>        'public.hidra_identity_local_credential'::regclass,<br>        'public.hidra_identity_login_session'::regclass,<br>        'public.hidra_identity_operation_binding'::regclass,<br>        'public.hidra_identity_permission'::regclass,<br>        'public.hidra_identity_provider'::regclass,<br>        'public.hidra_identity_role'::regclass,<br>        'public.hidra_identity_role_permission_grant'::regclass,<br>        'public.hidra_identity_subject_security_attribute'::regclass,<br>        'public.hidra_identity_user'::regclass,<br>        'public.hidra_identity_user_group_membership'::regclass,<br>        'public.hidra_identity_user_permission_grant'::regclass,<br>        'public.hidra_identity_user_role_grant'::regclass<br>        );<br>    IF fence_count &lt;&gt; 22 OR NOT EXISTS (<br>        SELECT 1 FROM pg_catalog.pg_locks WHERE pid=pg_backend_pid() AND granted<br>        AND locktype='relation' AND mode='AccessShareLock'<br>        AND relation='public.hidra_identity_external_mapping_generation'::regclass) THEN<br>        RAISE EXCEPTION 'Source-claim issuance fence unavailable' USING ERRCODE='23514';<br>    END IF;<br>    SELECT * INTO origin FROM public.hidra_identity_operation_binding WHERE binding_id=NEW.binding_id;<br>    IF NOT FOUND OR origin.authentication_type &lt;&gt; 'OIDC' THEN<br>        RAISE EXCEPTION 'Source-claim binding unavailable' USING ERRCODE='23514';<br>    END IF;<br>    SELECT b.xmin::text::bigint INTO inserted_xid FROM public.hidra_identity_operation_binding b<br>        WHERE b.binding_id=NEW.binding_id;<br>    IF NEW.issuance_transaction_id &lt;&gt; txid_current()<br>            OR inserted_xid &lt;&gt; mod(txid_current(),4294967296) THEN<br>        RAISE EXCEPTION 'Source-claims must accompany original issuance' USING ERRCODE='23514';<br>    END IF;<br>    SELECT generation INTO captured_epoch FROM public.hidra_identity_external_mapping_generation<br>        WHERE provider_id=origin.provider_id;<br>    observed := clock_timestamp();<br>    IF captured_epoch IS NULL OR captured_epoch &lt;&gt; NEW.mapping_generation<br>            OR origin.source_expires_at IS NULL OR observed &gt;= origin.source_expires_at<br>            OR observed &gt;= origin.expires_at THEN<br>        RAISE EXCEPTION 'Source-claim evidence is stale or unavailable' USING ERRCODE='23514';<br>    END IF;<br>    RETURN NEW;<br>END;<br>$function$<br>
+- `trg_p25_bound_source_claim_insert`: CREATE TRIGGER trg_p25_bound_source_claim_insert BEFORE INSERT ON hidra_identity_bound_source_claim_evidence FOR EACH ROW EXECUTE FUNCTION hidra_identity_bound_source_claim_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_identity_bound_source_claim_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_identity_bound_source_claim_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>DECLARE<br>    previous public.hidra_identity_bound_source_claim_evidence%ROWTYPE;<br>    origin public.hidra_identity_operation_binding%ROWTYPE;<br>    inserted_xid bigint;<br>    captured_epoch bigint;<br>    fence_count integer;<br>    observed timestamptz;<br>BEGIN<br>    IF TG_OP &lt;&gt; 'INSERT' THEN<br>        RAISE EXCEPTION 'Immutable source-claim evidence cannot be mutated' USING ERRCODE='23514';<br>    END IF;<br>    SELECT * INTO previous FROM public.hidra_identity_bound_source_claim_evidence<br>        WHERE binding_id=NEW.binding_id;<br>    IF FOUND THEN<br>        IF previous IS DISTINCT FROM NEW THEN<br>            RAISE EXCEPTION 'Conflicting source-claim evidence' USING ERRCODE='23514';<br>        END IF;<br>        RETURN NULL; -- Exact historical storage replay issues no receipt or token.<br>    END IF;<br>    IF current_setting('transaction_isolation') &lt;&gt; 'read committed'<br>            OR current_setting('transaction_read_only') &lt;&gt; 'off' THEN<br>        RAISE EXCEPTION 'Source-claim issuance transaction unavailable' USING ERRCODE='23514';<br>    END IF;<br>    SELECT count(DISTINCT l.relation) INTO fence_count FROM pg_catalog.pg_locks l<br>        WHERE l.pid=pg_backend_pid() AND l.granted AND l.locktype='relation'<br>        AND l.mode='ShareRowExclusiveLock' AND l.relation IN (<br>        'public.hidra_identity_attribute_definition'::regclass,<br>        'public.hidra_identity_authorization_policy'::regclass,<br>        'public.hidra_identity_authorization_policy_rule'::regclass,<br>        'public.hidra_identity_authorization_policy_version'::regclass,<br>        'public.hidra_identity_external_group_mapping'::regclass,<br>        'public.hidra_identity_external_identity'::regclass,<br>        'public.hidra_identity_external_permission_mapping'::regclass,<br>        'public.hidra_identity_external_role_mapping'::regclass,<br>        'public.hidra_identity_group'::regclass,<br>        'public.hidra_identity_group_role_grant'::regclass,<br>        'public.hidra_identity_local_credential'::regclass,<br>        'public.hidra_identity_login_session'::regclass,<br>        'public.hidra_identity_operation_binding'::regclass,<br>        'public.hidra_identity_permission'::regclass,<br>        'public.hidra_identity_provider'::regclass,<br>        'public.hidra_identity_role'::regclass,<br>        'public.hidra_identity_role_permission_grant'::regclass,<br>        'public.hidra_identity_subject_security_attribute'::regclass,<br>        'public.hidra_identity_user'::regclass,<br>        'public.hidra_identity_user_group_membership'::regclass,<br>        'public.hidra_identity_user_permission_grant'::regclass,<br>        'public.hidra_identity_user_role_grant'::regclass<br>        );<br>    IF fence_count &lt;&gt; 22 OR NOT EXISTS (<br>        SELECT 1 FROM pg_catalog.pg_locks WHERE pid=pg_backend_pid() AND granted<br>        AND locktype='relation' AND mode='AccessShareLock'<br>        AND relation='public.hidra_identity_external_mapping_generation'::regclass) THEN<br>        RAISE EXCEPTION 'Source-claim issuance fence unavailable' USING ERRCODE='23514';<br>    END IF;<br>    SELECT * INTO origin FROM public.hidra_identity_operation_binding WHERE binding_id=NEW.binding_id;<br>    IF NOT FOUND OR origin.authentication_type &lt;&gt; 'OIDC' THEN<br>        RAISE EXCEPTION 'Source-claim binding unavailable' USING ERRCODE='23514';<br>    END IF;<br>    SELECT b.xmin::text::bigint INTO inserted_xid FROM public.hidra_identity_operation_binding b<br>        WHERE b.binding_id=NEW.binding_id;<br>    IF NEW.issuance_transaction_id &lt;&gt; txid_current()<br>            OR inserted_xid &lt;&gt; mod(txid_current(),4294967296) THEN<br>        RAISE EXCEPTION 'Source-claims must accompany original issuance' USING ERRCODE='23514';<br>    END IF;<br>    SELECT generation INTO captured_epoch FROM public.hidra_identity_external_mapping_generation<br>        WHERE provider_id=origin.provider_id;<br>    observed := clock_timestamp();<br>    IF captured_epoch IS NULL OR captured_epoch &lt;&gt; NEW.mapping_generation<br>            OR origin.source_expires_at IS NULL OR observed &gt;= origin.source_expires_at<br>            OR observed &gt;= origin.expires_at THEN<br>        RAISE EXCEPTION 'Source-claim evidence is stale or unavailable' USING ERRCODE='23514';<br>    END IF;<br>    RETURN NEW;<br>END;<br>$function$<br>
+
+comment: "Identity-owned immutable minimal claim coverage; private producer verification and current fenced interpretation are independently required."
+
 ### public.hidra_identity_external_group_mapping
 
 Owner: **identity**; relation kind: `r`.
@@ -8551,6 +8610,7 @@ Persisted ExternalGroupMappingJpaEntity state; semantic authority remains with i
 - Migration mention (not inferred introduction): [V20260611_001__create_identity_tables.sql](../../src/main/resources/db/migration/V20260611_001__create_identity_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261016_001__p25_identity_external_mapping_generations.sql](../../src/main/resources/db/migration/V20261016_001__p25_identity_external_mapping_generations.sql)
+- Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8615,6 +8675,7 @@ External identity link with database-owned monotonic security generation and ord
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261012_002__p25_identity_provider_link_security_generations.sql](../../src/main/resources/db/migration/V20261012_002__p25_identity_provider_link_security_generations.sql)
 - Migration mention (not inferred introduction): [V20261013_001__p25_identity_operation_binding.sql](../../src/main/resources/db/migration/V20261013_001__p25_identity_operation_binding.sql)
+- Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8684,6 +8745,7 @@ Database-owned per-provider committed external mapping generation; not an OIDC/L
 - Evidence: [V20261016_001__p25_identity_external_mapping_generations.sql](../../src/main/resources/db/migration/V20261016_001__p25_identity_external_mapping_generations.sql)
 - Evidence: [ClaimNameCatalogPort.java](../../src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java)
 - Migration mention (not inferred introduction): [V20261016_001__p25_identity_external_mapping_generations.sql](../../src/main/resources/db/migration/V20261016_001__p25_identity_external_mapping_generations.sql)
+- Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8723,6 +8785,7 @@ Persisted ExternalPermissionMappingJpaEntity state; semantic authority remains w
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261004_011__hmr_011_identity_permission.sql](../../src/main/resources/db/migration/V20261004_011__hmr_011_identity_permission.sql)
 - Migration mention (not inferred introduction): [V20261016_001__p25_identity_external_mapping_generations.sql](../../src/main/resources/db/migration/V20261016_001__p25_identity_external_mapping_generations.sql)
+- Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8783,6 +8846,7 @@ Persisted ExternalRoleMappingJpaEntity state; semantic authority remains with id
 - Migration mention (not inferred introduction): [V20260611_001__create_identity_tables.sql](../../src/main/resources/db/migration/V20260611_001__create_identity_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261016_001__p25_identity_external_mapping_generations.sql](../../src/main/resources/db/migration/V20261016_001__p25_identity_external_mapping_generations.sql)
+- Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8843,6 +8907,7 @@ Persisted GroupJpaEntity state; semantic authority remains with identity.
 - Evidence: [GroupJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/GroupJpaEntity.java)
 - Migration mention (not inferred introduction): [V20260611_001__create_identity_tables.sql](../../src/main/resources/db/migration/V20260611_001__create_identity_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
+- Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8891,6 +8956,7 @@ Persisted GroupRoleGrantJpaEntity state; semantic authority remains with identit
 - Evidence: [GroupRoleGrantJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/GroupRoleGrantJpaEntity.java)
 - Migration mention (not inferred introduction): [V20260611_001__create_identity_tables.sql](../../src/main/resources/db/migration/V20260611_001__create_identity_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
+- Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8948,6 +9014,7 @@ Identity-owned LOCAL credentials with database-enforced monotonic security gener
 - Migration mention (not inferred introduction): [V20260915_001__create_identity_local_credential.sql](../../src/main/resources/db/migration/V20260915_001__create_identity_local_credential.sql)
 - Migration mention (not inferred introduction): [V20261012_001__p25_identity_local_credential_security_generation.sql](../../src/main/resources/db/migration/V20261012_001__p25_identity_local_credential_security_generation.sql)
 - Migration mention (not inferred introduction): [V20261013_001__p25_identity_operation_binding.sql](../../src/main/resources/db/migration/V20261013_001__p25_identity_operation_binding.sql)
+- Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9005,6 +9072,7 @@ Persisted LoginSessionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261006_012__hmr_087_login_session_evidence.sql](../../src/main/resources/db/migration/V20261006_012__hmr_087_login_session_evidence.sql)
 - Migration mention (not inferred introduction): [V20261013_001__p25_identity_operation_binding.sql](../../src/main/resources/db/migration/V20261013_001__p25_identity_operation_binding.sql)
+- Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9071,6 +9139,7 @@ Immutable format-one native bearer/session provenance snapshots with private pro
 - Evidence: [JdbcOperationAuthenticationBindingRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcOperationAuthenticationBindingRepositoryAdapter.java)
 - Evidence: [V20261013_001__p25_identity_operation_binding.sql](../../src/main/resources/db/migration/V20261013_001__p25_identity_operation_binding.sql)
 - Migration mention (not inferred introduction): [V20261013_001__p25_identity_operation_binding.sql](../../src/main/resources/db/migration/V20261013_001__p25_identity_operation_binding.sql)
+- Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9189,6 +9258,7 @@ Persisted PermissionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20260929_004__provision_organization_scope_permissions.sql](../../src/main/resources/db/migration/V20260929_004__provision_organization_scope_permissions.sql)
 - Migration mention (not inferred introduction): [V20261004_011__hmr_011_identity_permission.sql](../../src/main/resources/db/migration/V20261004_011__hmr_011_identity_permission.sql)
 - Migration mention (not inferred introduction): [V20261006_011__hmr_086_delegation_contract.sql](../../src/main/resources/db/migration/V20261006_011__hmr_086_delegation_contract.sql)
+- Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9252,6 +9322,7 @@ Identity provider with database-owned monotonic security generation and ordinary
 - Migration mention (not inferred introduction): [V20261012_002__p25_identity_provider_link_security_generations.sql](../../src/main/resources/db/migration/V20261012_002__p25_identity_provider_link_security_generations.sql)
 - Migration mention (not inferred introduction): [V20261013_001__p25_identity_operation_binding.sql](../../src/main/resources/db/migration/V20261013_001__p25_identity_operation_binding.sql)
 - Migration mention (not inferred introduction): [V20261016_001__p25_identity_external_mapping_generations.sql](../../src/main/resources/db/migration/V20261016_001__p25_identity_external_mapping_generations.sql)
+- Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9338,6 +9409,7 @@ Persisted RoleJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261004_007__hmr_007_identity_role.sql](../../src/main/resources/db/migration/V20261004_007__hmr_007_identity_role.sql)
 - Migration mention (not inferred introduction): [V20261006_011__hmr_086_delegation_contract.sql](../../src/main/resources/db/migration/V20261006_011__hmr_086_delegation_contract.sql)
+- Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9386,6 +9458,7 @@ Persisted RolePermissionGrantJpaEntity state; semantic authority remains with id
 - Migration mention (not inferred introduction): [V20260611_001__create_identity_tables.sql](../../src/main/resources/db/migration/V20260611_001__create_identity_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261004_011__hmr_011_identity_permission.sql](../../src/main/resources/db/migration/V20261004_011__hmr_011_identity_permission.sql)
+- Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9436,6 +9509,7 @@ Persisted SubjectSecurityAttributeJpaEntity state; semantic authority remains wi
 - Evidence: [SubjectSecurityAttributeJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/SubjectSecurityAttributeJpaEntity.java)
 - Migration mention (not inferred introduction): [V20260611_001__create_identity_tables.sql](../../src/main/resources/db/migration/V20260611_001__create_identity_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
+- Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9585,6 +9659,7 @@ Persisted UserJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261006_010__hmr_063_identity_user_uniqueness.sql](../../src/main/resources/db/migration/V20261006_010__hmr_063_identity_user_uniqueness.sql)
 - Migration mention (not inferred introduction): [V20261013_001__p25_identity_operation_binding.sql](../../src/main/resources/db/migration/V20261013_001__p25_identity_operation_binding.sql)
+- Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9645,6 +9720,7 @@ Persisted UserGroupMembershipJpaEntity state; semantic authority remains with id
 - Evidence: [UserGroupMembershipJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/UserGroupMembershipJpaEntity.java)
 - Migration mention (not inferred introduction): [V20260611_001__create_identity_tables.sql](../../src/main/resources/db/migration/V20260611_001__create_identity_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
+- Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9703,6 +9779,7 @@ Persisted UserPermissionGrantJpaEntity state; semantic authority remains with id
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261004_011__hmr_011_identity_permission.sql](../../src/main/resources/db/migration/V20261004_011__hmr_011_identity_permission.sql)
 - Migration mention (not inferred introduction): [V20261006_013__hmr_088_direct_permission_bounds.sql](../../src/main/resources/db/migration/V20261006_013__hmr_088_direct_permission_bounds.sql)
+- Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9769,6 +9846,7 @@ Persisted UserRoleGrantJpaEntity state; semantic authority remains with identity
 - Evidence: [UserRoleGrantJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/UserRoleGrantJpaEntity.java)
 - Migration mention (not inferred introduction): [V20260611_001__create_identity_tables.sql](../../src/main/resources/db/migration/V20260611_001__create_identity_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
+- Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

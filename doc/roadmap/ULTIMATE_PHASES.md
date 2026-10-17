@@ -172,7 +172,7 @@ Cross-phase prerequisites in the approved task graph: No additional cross-phase 
 | [HAPI-572](ULTIMATE_TASKS.md#hapi-572) | fence complete authority dependency relations | fence complete authority dependency relations | P2 | HAPI-571 | VERIFIED | COMPLETED |
 | [HAPI-573](ULTIMATE_TASKS.md#hapi-573) | contribute protected bound authentication | contribute protected bound authentication | P2 | HAPI-572 | VERIFIED | COMPLETED |
 | [HAPI-574](ULTIMATE_TASKS.md#hapi-574) | load fenced authorization evidence | Fresh fenced authorization evidence; Identity | P2 | HAPI-573 | VERIFIED | COMPLETED |
-| [HAPI-575](ULTIMATE_TASKS.md#hapi-575) | select operation time fencing proof | Trusted authorization-claim provenance and coverage; Identity | P0 | HAPI-574, HAPI-580 | PARTIAL | IN_PROGRESS |
+| [HAPI-575](ULTIMATE_TASKS.md#hapi-575) | select operation time fencing proof | Trusted authorization-claim provenance and coverage; Identity | P0 | HAPI-574, HAPI-580 | VERIFIED | COMPLETED |
 | [HAPI-576](ULTIMATE_TASKS.md#hapi-576) | define bounded claim coverage semantics | define bounded claim coverage semantics | P2 | HAPI-574 | VERIFIED | COMPLETED |
 | [HAPI-577](ULTIMATE_TASKS.md#hapi-577) | preserve claim catalog fail-closed exception | preserve claim catalog fail-closed exception | P2 | HAPI-576 | VERIFIED | COMPLETED |
 | [HAPI-578](ULTIMATE_TASKS.md#hapi-578) | project bounded oidc claim coverage | project bounded oidc claim coverage | P2 | HAPI-577 | VERIFIED | COMPLETED |

@@ -750,18 +750,43 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
         var appCatalog =
                 new dz.sh.hidra.modules.identity.infrastructure.persistence.adapter
                         .JdbcClaimNameCatalogAdapter(appJdbc);
+        // Authentication's source-name hint is selected on a real non-owner connection.
+        // During the issuance fence the identical selected generation must be rechecked
+        // on the native physical transaction, after taking the non-owner identity.
         doAnswer(i -> {
-                    if (TransactionSynchronizationManager.isActualTransactionActive())
+                    if (TransactionSynchronizationManager.isActualTransactionActive()
+                            && Boolean.TRUE.equals(jdbc.queryForObject(
+                                    "SELECT current_user=?", Boolean.class, role)))
                         return i.callRealMethod();
                     return appCatalog.selectVersioned(i.getArgument(0));
                 })
                 .when(claimCatalog).selectVersioned(anyString());
-        new TransactionTemplate(manager).executeWithoutResult(
-                status -> doAnswer(i -> {
-                    jdbc.execute("SET LOCAL ROLE " + role);
+        doAnswer(i -> {
+                    c3SelectRestrictedRole();
                     return i.callRealMethod();
-                }).when(claimIssuanceFence).prepare(anyString(), any()));
+                }).when(claimIssuanceFence).prepare(anyString(), any());
+        // The final guarded fixture insert must also be performed without owner rights.
+        jdbc.execute("GRANT USAGE ON SCHEMA " + schema + " TO " + role);
+        jdbc.execute("GRANT INSERT ON " + receipt() + " TO " + role);
         ReflectionTestUtils.setField(oidc, "verifiedClaimReceiptEnabled", true);
+    }
+
+    /**
+     * Only this synthetic fixture switches the PostgreSQL current role. The protected
+     * transaction still rejects SET/RESET SQL statements; no production escape hatch
+     * or alternate authorization implementation is installed. The setting is LOCAL
+     * to the physical transaction and automatically resets on completion.
+     */
+    private void c3SelectRestrictedRole() {
+        assertThat(jdbc.queryForObject(
+                "SELECT set_config('role',?,true)", String.class, "c3_source_claim_app"))
+                .isEqualTo("c3_source_claim_app");
+        assertThat(jdbc.queryForObject(
+                "SELECT current_user='c3_source_claim_app' "
+                        + "AND NOT has_schema_privilege(current_user,'public','CREATE') "
+                        + "AND NOT has_table_privilege(current_user,"
+                        + "'public.hidra_identity_external_mapping_generation','UPDATE')",
+                Boolean.class)).isTrue();
     }
 
     private void c3PermissionMapping(Fixture f, String op, String effect) {
@@ -782,10 +807,10 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
         var request = request(f, "author", false);
         executor.execute(
                 () -> {
+                    c3SelectRestrictedRole();
                     var sealed = participant.qualifyClaims(prepared, request);
-                    jdbc.execute("SET LOCAL ROLE c3_source_claim_app");
                     var evidence = reader.loadQualified(sealed, request);
-                    jdbc.execute("RESET ROLE");
+
                     assertThat(evidence.failure()).isNull();
                     assertThat(new AuthorizationPolicyEvaluator()
                             .evaluate(request, evidence,
@@ -812,10 +837,10 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
         var request = request(f, "author", false);
         executor.execute(
                 () -> {
+                    c3SelectRestrictedRole();
                     var sealed = participant.qualifyClaims(prepared, request);
-                    jdbc.execute("SET LOCAL ROLE c3_source_claim_app");
                     var result = reader.loadQualified(sealed, request);
-                    jdbc.execute("RESET ROLE");
+
                     assertThat(result.failure()).isEqualTo("EVIDENCE_INDETERMINATE");
                     assertThat(new AuthorizationPolicyEvaluator()
                             .evaluate(request, result,

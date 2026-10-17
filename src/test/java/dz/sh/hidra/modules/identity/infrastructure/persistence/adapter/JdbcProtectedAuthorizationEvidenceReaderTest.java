@@ -605,6 +605,6 @@ class JdbcProtectedAuthorizationEvidenceReaderTest {
                                                 .getDeclaredMethods())
                                 .filter(m -> java.lang.reflect.Modifier.isPublic(m.getModifiers())))
                 .extracting(java.lang.reflect.Method::getName)
-                .containsExactly("load");
+                .containsExactlyInAnyOrder("load", "loadQualified");
     }
 }

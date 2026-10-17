@@ -278,10 +278,12 @@ class BoundAuthenticationCompletionPostgresIntegrationTest {
     void companionAppendFailureRollsBackNativeSessionBindingAndSuccessEvent() {
         var f = fixture("OIDC");
         enableSyntheticNonownerCapture();
-        doThrow(new IllegalStateException("Synthetic companion refusal"))
-                .when(sourceClaimsTarget())
-                .append(any());
-        assertThatThrownBy(() -> capturedOidc(f)).isInstanceOf(IllegalStateException.class);
+        var refusal = new IllegalStateException("Synthetic companion refusal");
+        doThrow(refusal).when(sourceClaimsTarget()).append(any());
+        // The repository proxy translates the injected failure before it leaves the owner call.
+        assertThatThrownBy(() -> capturedOidc(f))
+                .isInstanceOf(org.springframework.dao.InvalidDataAccessApiUsageException.class)
+                .hasCause(refusal);
         assertNoOwnerSuccess(f);
         Object completed =
                 ReflectionTestUtils.invokeMethod(

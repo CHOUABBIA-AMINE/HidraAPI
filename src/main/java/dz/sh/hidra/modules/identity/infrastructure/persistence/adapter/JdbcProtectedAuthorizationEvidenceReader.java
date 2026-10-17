@@ -187,6 +187,9 @@ public class JdbcProtectedAuthorizationEvidenceReader {
                 throw invalid();
             coordinates(pid, xid);
             heldClaims();
+            // The final catalog query and lock checks also cross adapter boundaries.
+            // Reconfirm the genuine caller after them, without replaying a consumed handle.
+            participant.requireCurrentClaims(credential, request);
             return result;
         } catch (RuntimeException failure) {
             throw invalid();

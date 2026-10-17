@@ -833,6 +833,49 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
     }
 
     @Test
+    void c3AuthenticationReplacedDuringFinalCatalogReadRejectsBeforeCommitGuard() {
+        var f = fixture("OIDC");
+        c3NonownerCapture();
+        c3PermissionMapping(f, "author", "GRANT");
+        var prepared = prepare(f);
+        var request = request(f, "author", false);
+        AtomicInteger catalogReads = new AtomicInteger();
+        AtomicBoolean finalCatalogRead = new AtomicBoolean();
+        AtomicBoolean guardCalled = new AtomicBoolean();
+
+        // Only the already verified source/issuance path may create the handle.
+        // Corrupt the actual context after the reader's first post-graph check.
+        doAnswer(invocation -> {
+                    var selection = invocation.callRealMethod();
+                    if (catalogReads.incrementAndGet() == 2) {
+                        finalCatalogRead.set(true);
+                        SecurityContextHolder.clearContext();
+                    }
+                    return selection;
+                })
+                .when(claimCatalog).selectVersioned(anyString());
+
+        assertThatThrownBy(
+                        () -> executor.execute(
+                                () -> {
+                                    c3SelectRestrictedRole();
+                                    var sealed = participant.qualifyClaims(prepared, request);
+                                    reader.loadQualified(sealed, request);
+                                    return "replaced-after-graph";
+                                },
+                                em::flush,
+                                () -> guardCalled.set(true)))
+                .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class)
+                .satisfies(error ->
+                        assertThat(((ProtectedTransactionExecutor.ExecutionFailure) error)
+                                        .outcome())
+                                .isEqualTo(ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT));
+        assertThat(finalCatalogRead).isTrue();
+        assertThat(catalogReads.get()).isEqualTo(2);
+        assertThat(guardCalled).isFalse();
+    }
+
+    @Test
     void c3SameTransactionMappingEditAfterClaimSelectionRejectsBeforeCommitGuard() {
         var f = fixture("OIDC");
         c3NonownerCapture();

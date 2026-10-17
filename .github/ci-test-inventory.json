@@ -2205,6 +2205,7 @@
         "bothCompanyAndFacilityRequireIndependentPermits",
         "boundedOverflowMalformedStateAndRollbackStayClosed",
         "c3ActualAuthenticationReplacedDuringQualifiedReadRejectsBeforeCommitGuard",
+        "c3AuthenticationReplacedDuringFinalCatalogReadRejectsBeforeCommitGuard",
         "c3ConsumedClaimCredentialCannotBeReplayedInAnotherPhysicalTransaction",
         "c3CrossThreadClaimConsumeFailsWithDistinctTransactionAndCannotBeReused",
         "c3LegacyOidcWithoutCompanionCannotPromotePotentialUnknownDeny",
@@ -2233,7 +2234,7 @@
       "lane": "postgres-integration",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedAuthorizationEvidencePostgresIntegrationTest.java",
-      "source_sha256": "8adbd412ba4ca1f816da411f0689f83194eee23d2da6bf41077c8c2f6f74ae2e",
+      "source_sha256": "ad6fb183c8da72afc4cd7027a5a0f8624042f88a31ac17a2529a4f3498b8e183",
       "supports": []
     },
     {

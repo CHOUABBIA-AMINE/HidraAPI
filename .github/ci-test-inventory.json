@@ -2204,7 +2204,9 @@
         "allFourRealBoundActorsLoadDatabaseAuthorityAtFencedSample",
         "bothCompanyAndFacilityRequireIndependentPermits",
         "boundedOverflowMalformedStateAndRollbackStayClosed",
+        "c3MappingGenerationMutationInvalidatesAlreadyIssuedOidcClaimReceipt",
         "c3LegacyOidcWithoutCompanionCannotPromotePotentialUnknownDeny",
+        "c3VerifiedOriginalOidcDenyOverridesIndependentDirectPermit",
         "c3VerifiedOriginalOidcSourceCanMatchCurrentPermissionWithoutPublicAssertion",
         "committedRevocationBeforeFencesRemovesPermit",
         "directRoleAndGroupDeniesOverridePermit",
@@ -2222,7 +2224,7 @@
       "lane": "postgres-integration",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedAuthorizationEvidencePostgresIntegrationTest.java",
-      "source_sha256": "1a2c58eaa9dc5b3d2eed046dc0e8a7b0d641cb81025d9879547d5f3235ab4650",
+      "source_sha256": "d0d7cf97f45ccdd617e77dc9ea07b46568117a456a448dc8693490d046a4a636",
       "supports": []
     },
     {

@@ -850,6 +850,97 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
     }
 
     @Test
+    void c3VerifiedOriginalOidcDenyOverridesIndependentDirectPermit() {
+        var f = fixture("OIDC");
+        c3NonownerCapture();
+        c3PermissionMapping(f, "author", "DENY");
+        grant(f, "author", "GRANT", "FACILITY", FACILITY);
+        var prepared = prepare(f);
+        var request = request(f, "author", false);
+        executor.execute(
+                () -> {
+                    c3SelectRestrictedRole();
+                    var sealed = participant.qualifyClaims(prepared, request);
+                    var evidence = reader.loadQualified(sealed, request);
+                    assertThat(evidence.failure()).isNull();
+                    assertThat(evidence.grants())
+                            .extracting(AuthorizationEvidence.Grant::order)
+                            .contains(0, 5);
+                    assertThat(
+                                    new AuthorizationPolicyEvaluator()
+                                            .evaluate(
+                                                    request,
+                                                    evidence,
+                                                    Instant.parse(
+                                                            (String)
+                                                                    evidence.attributes()
+                                                                            .get("context.evaluatedAt")))
+                                            .decision())
+                            .isEqualTo(AuthorizationDecisionValue.DENY);
+                    return "verified-deny";
+                },
+                em::flush,
+                () -> assertThat(jdbc.queryForObject("SELECT 1", Integer.class)).isEqualTo(1));
+    }
+
+    @Test
+    void c3MappingGenerationMutationInvalidatesAlreadyIssuedOidcClaimReceipt() {
+        var f = fixture("OIDC");
+        c3NonownerCapture();
+        c3PermissionMapping(f, "author", "DENY");
+        grant(f, "author", "GRANT", "FACILITY", FACILITY);
+        var prepared = prepare(f);
+        var request = request(f, "author", false);
+        Long issuedGeneration =
+                jdbc.queryForObject(
+                        "SELECT generation FROM public.hidra_identity_external_mapping_generation"
+                                + " WHERE provider_id=?",
+                        Long.class,
+                        f.provider());
+        assertThat(issuedGeneration).isPositive();
+        assertThat(
+                        jdbc.update(
+                                "UPDATE public.hidra_identity_external_permission_mapping"
+                                        + " SET status='INACTIVE',updated_at=clock_timestamp()"
+                                        + " WHERE identity_provider_id=?",
+                                f.provider()))
+                .isEqualTo(1);
+        assertThat(
+                        jdbc.queryForObject(
+                                "SELECT generation"
+                                        + " FROM public.hidra_identity_external_mapping_generation"
+                                        + " WHERE provider_id=?",
+                                Long.class,
+                                f.provider()))
+                .isGreaterThan(issuedGeneration);
+
+        AtomicBoolean reachedQualifiedReader = new AtomicBoolean();
+        assertThatThrownBy(
+                        () ->
+                                executor.execute(
+                                        () -> {
+                                            c3SelectRestrictedRole();
+                                            var sealed = participant.qualifyClaims(prepared, request);
+                                            reachedQualifiedReader.set(true);
+                                            reader.loadQualified(sealed, request);
+                                            return "stale-claim-accepted";
+                                        },
+                                        em::flush,
+                                        () -> fail("Stale source claims must never reach the commit guard")))
+                .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class)
+                .satisfies(
+                        error ->
+                                assertThat(
+                                                ((ProtectedTransactionExecutor.ExecutionFailure)
+                                                                error)
+                                                        .outcome())
+                                        .isEqualTo(
+                                                ProtectedTransactionExecutor.Outcome
+                                                        .REJECTED_BEFORE_COMMIT));
+        assertThat(reachedQualifiedReader).isTrue();
+    }
+
+    @Test
     void c3LegacyOidcWithoutCompanionCannotPromotePotentialUnknownDeny() {
         var f = fixture("OIDC");
         c3NonownerCapture();

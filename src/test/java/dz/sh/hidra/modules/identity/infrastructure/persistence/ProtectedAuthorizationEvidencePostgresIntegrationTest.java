@@ -820,11 +820,33 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
                             .isEqualTo(AuthorizationDecisionValue.PERMIT);
                     assertThat(evidence.grants()).extracting(AuthorizationEvidence.Grant::order)
                             .contains(5);
-                    assertThatThrownBy(() -> reader.loadQualified(sealed, request))
-                            .isInstanceOf(IllegalStateException.class);
                     return "qualified";
                 }, em::flush,
                 () -> assertThat(jdbc.queryForObject("SELECT 1", Integer.class)).isEqualTo(1));
+        // A replay is a distinct protected operation: Spring correctly marks its physical
+        // transaction rollback-only when the once-consumed credential is rejected.
+        // Keep the successful qualified read committed above, and prove that a replay
+        // cannot reach the mandatory final commit guard.
+        var replayPrepared = prepare(f);
+        assertThatThrownBy(
+                        () -> executor.execute(
+                                () -> {
+                                    c3SelectRestrictedRole();
+                                    var replay = participant.qualifyClaims(replayPrepared, request);
+                                    assertThat(reader.loadQualified(replay, request).failure()).isNull();
+                                    reader.loadQualified(replay, request);
+                                    return "replayed";
+                                },
+                                em::flush,
+                                () -> fail("Claim replay must not reach the commit guard")))
+                .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class)
+                .hasCauseInstanceOf(org.springframework.dao.InvalidDataAccessApiUsageException.class)
+                .satisfies(
+                        error -> assertThat(
+                                        ((ProtectedTransactionExecutor.ExecutionFailure) error)
+                                                .outcome())
+                                .isEqualTo(
+                                        ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT));
     }
 
     @Test

@@ -1,21 +1,11 @@
 /**
- *
- * @Project     : HidraAPI
- * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
- * @Author      : Abir MEDJERAB
- * @Owner       : Sonatrach / TRC : Digitalization Initiative
- *
- * @Name        : TrustedAuthenticationVerificationTest
- * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-14
- *
- * @Type        : Class
- * @Layer       : Test
- * @Module      : identity
- * @Package     : dz.sh.hidra.modules.identity.infrastructure.security
- *
- * @Description : Verifies private receipt lifetimes, format-one cryptographic vectors and simulated transaction publication without claiming runtime database proof.
- *
+ * @Project : HidraAPI @Product : Hidra - Hydrocarbon Intelligence for Data, Risk, and
+ * Analytics @Author : Abir MEDJERAB @Owner : Sonatrach / TRC : Digitalization Initiative @Name :
+ * TrustedAuthenticationVerificationTest @CreatedOn : 2025-06-26 @UpdatedOn : 2026-10-17 @Type :
+ * Class @Layer : Test @Module : identity @Package :
+ * dz.sh.hidra.modules.identity.infrastructure.security @Description : Verifies private receipt
+ * lifetimes, format-one cryptographic vectors and simulated transaction publication without
+ * claiming runtime database proof.
  */
 package dz.sh.hidra.modules.identity.infrastructure.security;
 
@@ -71,6 +61,230 @@ class TrustedAuthenticationVerificationTest {
         registry.close();
         SecurityContextHolder.clearContext();
         TransactionSynchronizationManager.clear();
+    }
+
+    private record ClaimsFixture(
+            TrustedAuthenticationVerificationRegistry owner,
+            dz.sh.hidra.modules.identity.application.port.out.BoundSourceClaimIssuanceFencePort
+                    fence,
+            dz.sh.hidra.modules.identity.application.port.out.BoundSourceClaimEvidenceRepositoryPort
+                    repository,
+            dz.sh.hidra.modules.identity.application.port.out.TrustedAuthenticationVerificationPort
+                            .Verification
+                    verification,
+            Authentication actual,
+            AccessTokenIssuanceContext context) {}
+
+    private ClaimsFixture claimsFixture(boolean wired) {
+        var fence =
+                org.mockito.Mockito.mock(
+                        dz.sh.hidra.modules.identity.application.port.out
+                                .BoundSourceClaimIssuanceFencePort.class);
+        var repo =
+                org.mockito.Mockito.mock(
+                        dz.sh.hidra.modules.identity.application.port.out
+                                .BoundSourceClaimEvidenceRepositoryPort.class);
+        var owner =
+                wired
+                        ? new TrustedAuthenticationVerificationRegistry(
+                                SECRET, "hidra-api", "hidra-api", fence, repo)
+                        : new TrustedAuthenticationVerificationRegistry(
+                                SECRET, "hidra-api", "hidra-api");
+        var now = Instant.now().truncatedTo(java.time.temporal.ChronoUnit.SECONDS);
+        var s =
+                new AuthenticationVerificationSnapshot(
+                        "user",
+                        "OIDC",
+                        "provider",
+                        1,
+                        "link",
+                        "source-subject",
+                        1L,
+                        "https://source.invalid",
+                        now.plusSeconds(300),
+                        null,
+                        null);
+        var principal = principal(s);
+        var coverage =
+                dz.sh.hidra.modules.identity.domain.value.ClaimCoverage.of(
+                        java.util.Map.of(
+                                "groups",
+                                        dz.sh.hidra.modules.identity.domain.value.ClaimCoverage
+                                                .Entry.present(Set.of("private-original-value")),
+                                "missing",
+                                        dz.sh.hidra.modules.identity.domain.value.ClaimCoverage
+                                                .Entry.absent()));
+        var evidence =
+                new TrustedAuthenticationVerificationRegistry.OidcSourceEvidence(
+                        "provider",
+                        s.sourceIssuer(),
+                        s.externalSubject(),
+                        s.sourceExpiresAt(),
+                        new OidcClaimCoverageProjector.Projection(coverage, 7));
+        var actual =
+                new HidraOidcAuthenticationToken(
+                        principal, null, owner.verifiedOidc(s, principal, evidence));
+        SecurityContextHolder.getContext().setAuthentication(actual);
+        org.mockito.Mockito.when(
+                        fence.prepare(
+                                org.mockito.ArgumentMatchers.eq("provider"),
+                                org.mockito.ArgumentMatchers.any()))
+                .thenReturn(
+                        new dz.sh.hidra.modules.identity.application.port.out
+                                .BoundSourceClaimIssuanceFencePort.FenceStamp(10, 42));
+        simulateTransaction();
+        return new ClaimsFixture(
+                owner,
+                fence,
+                repo,
+                owner.consume(input(principal, null)),
+                actual,
+                new AccessTokenIssuanceContext(JTI, now, now.plusSeconds(60)));
+    }
+
+    @Test
+    void wrongThreadClaimAttemptsAreConsumedAndCannotBeRetriedByOriginThread() throws Exception {
+        var preparation = claimsFixture(true);
+        try (var executor = Executors.newSingleThreadExecutor()) {
+            executor.submit(
+                            () ->
+                                    assertThatThrownBy(
+                                                    () ->
+                                                            preparation
+                                                                    .verification()
+                                                                    .prepareSourceClaims())
+                                            .isInstanceOf(BadCredentialsException.class))
+                    .get(3, TimeUnit.SECONDS);
+        }
+        assertThatThrownBy(() -> preparation.verification().prepareSourceClaims())
+                .isInstanceOf(BadCredentialsException.class);
+        var sealing = claimsFixture(true);
+        sealing.verification().prepareSourceClaims();
+        var binding = sealing.verification().attest(BINDING, SESSION, SETTINGS, sealing.context());
+        try (var executor = Executors.newSingleThreadExecutor()) {
+            executor.submit(
+                            () ->
+                                    assertThatThrownBy(
+                                                    () ->
+                                                            sealing.verification()
+                                                                    .attestSourceClaims(binding))
+                                            .isInstanceOf(BadCredentialsException.class))
+                    .get(3, TimeUnit.SECONDS);
+        }
+        assertThatThrownBy(() -> sealing.verification().attestSourceClaims(binding))
+                .isInstanceOf(BadCredentialsException.class);
+    }
+
+    @Test
+    void capturedClaimsAreSealedToExactBindingAndPublishOnlyAfterPersistedCommit() {
+        var f = claimsFixture(true);
+        assertThat(f.verification().prepareSourceClaims()).isTrue();
+        var binding = f.verification().attest(BINDING, SESSION, SETTINGS, f.context());
+        var evidence = f.verification().attestSourceClaims(binding).orElseThrow();
+        assertThat(evidence.coverage().state("missing"))
+                .isEqualTo(dz.sh.hidra.modules.identity.domain.value.ClaimCoverage.State.ABSENT);
+        f.owner().validatePersistentSourceClaimOrigin(binding, evidence);
+        org.mockito.Mockito.when(f.repository().findByBindingId(BINDING))
+                .thenReturn(java.util.Optional.of(evidence));
+        f.verification().publishAfterCommit(binding);
+        assertThat(f.owner().completed(f.actual())).isNull();
+        TransactionSynchronizationManager.getSynchronizations()
+                .forEach(TransactionSynchronization::afterCommit);
+        assertThat(f.owner().completed(f.actual())).isEqualTo(binding);
+        org.mockito.Mockito.verify(f.fence(), org.mockito.Mockito.atLeast(3))
+                .requireCurrent(org.mockito.ArgumentMatchers.any());
+    }
+
+    @Test
+    void missingCompanionPreventsPublicationAndNeverCompletesReceipt() {
+        var f = claimsFixture(true);
+        f.verification().prepareSourceClaims();
+        var binding = f.verification().attest(BINDING, SESSION, SETTINGS, f.context());
+        f.verification().attestSourceClaims(binding);
+        org.mockito.Mockito.when(f.repository().findByBindingId(BINDING))
+                .thenReturn(java.util.Optional.empty());
+        assertThatThrownBy(() -> f.verification().publishAfterCommit(binding))
+                .isInstanceOf(BadCredentialsException.class);
+        TransactionSynchronizationManager.getSynchronizations()
+                .forEach(TransactionSynchronization::afterCommit);
+        assertThat(f.owner().completed(f.actual())).isNull();
+    }
+
+    @Test
+    void capturedReceiptCannotSkipPreparationOrUseMissingPorts() {
+        var f = claimsFixture(true);
+        assertThatThrownBy(() -> f.verification().attest(BINDING, SESSION, SETTINGS, f.context()))
+                .isInstanceOf(BadCredentialsException.class);
+        var missing = claimsFixture(false);
+        assertThatThrownBy(() -> missing.verification().prepareSourceClaims())
+                .isInstanceOf(BadCredentialsException.class);
+    }
+
+    @Test
+    void claimPreparationAndAttestationCannotBeRepeatedOrMovedAcrossTransactions() {
+        var f = claimsFixture(true);
+        f.verification().prepareSourceClaims();
+        assertThatThrownBy(() -> f.verification().prepareSourceClaims())
+                .isInstanceOf(BadCredentialsException.class);
+        var binding = f.verification().attest(BINDING, SESSION, SETTINGS, f.context());
+        f.verification().attestSourceClaims(binding);
+        assertThatThrownBy(() -> f.verification().attestSourceClaims(binding))
+                .isInstanceOf(BadCredentialsException.class);
+        simulateTransaction();
+        assertThatThrownBy(() -> f.verification().publishAfterCommit(binding))
+                .isInstanceOf(BadCredentialsException.class);
+    }
+
+    @Test
+    void tamperedClaimGenerationPayloadOrCopiedTagNeverValidatesAsProducerEvidence() {
+        var f = claimsFixture(true);
+        f.verification().prepareSourceClaims();
+        var binding = f.verification().attest(BINDING, SESSION, SETTINGS, f.context());
+        var e = f.verification().attestSourceClaims(binding).orElseThrow();
+        var wrong =
+                new dz.sh.hidra.modules.identity.domain.value.BoundSourceClaimEvidence(
+                        e.bindingId(),
+                        e.evidenceFormat(),
+                        e.mappingGeneration() + 1,
+                        e.issuanceTransactionId(),
+                        e.coverage(),
+                        e.producerAuthenticator());
+        assertThatThrownBy(() -> f.owner().validatePersistentSourceClaimOrigin(binding, wrong))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Corrupt persisted source-claim provenance.")
+                .hasNoCause();
+        var fake =
+                new dz.sh.hidra.modules.identity.domain.value.BoundSourceClaimEvidence(
+                        e.bindingId(),
+                        e.evidenceFormat(),
+                        e.mappingGeneration(),
+                        e.issuanceTransactionId(),
+                        e.coverage(),
+                        binding.producerAuthenticator());
+        assertThatThrownBy(() -> f.owner().validatePersistentSourceClaimOrigin(binding, fake))
+                .isInstanceOf(IllegalStateException.class);
+        var payload =
+                new dz.sh.hidra.modules.identity.domain.value.BoundSourceClaimEvidence(
+                        e.bindingId(),
+                        e.evidenceFormat(),
+                        e.mappingGeneration(),
+                        e.issuanceTransactionId(),
+                        dz.sh.hidra.modules.identity.domain.value.ClaimCoverage.empty(),
+                        e.producerAuthenticator());
+        assertThatThrownBy(() -> f.owner().validatePersistentSourceClaimOrigin(binding, payload))
+                .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    void lostPhysicalFenceCannotDowngradeCapturedReceiptToNoClaims() {
+        var f = claimsFixture(true);
+        f.verification().prepareSourceClaims();
+        org.mockito.Mockito.doThrow(new IllegalStateException("Synthetic fence lost"))
+                .when(f.fence())
+                .requireCurrent(org.mockito.ArgumentMatchers.any());
+        assertThatThrownBy(() -> f.verification().attest(BINDING, SESSION, SETTINGS, f.context()))
+                .isInstanceOf(IllegalStateException.class);
+        assertThat(f.owner().completed(f.actual())).isNull();
     }
 
     @Test

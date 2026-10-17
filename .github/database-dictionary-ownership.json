@@ -63,6 +63,15 @@
     "owner": "hse",
     "purpose": "HSE-owned field-role to approved catalog-family metadata, intentionally unseeded by its migration."
   },
+  "public.hidra_identity_bound_source_claim_evidence": {
+    "evidence": [
+      "src/main/java/dz/sh/hidra/modules/identity/domain/value/BoundSourceClaimEvidence.java",
+      "src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcBoundSourceClaimEvidenceRepositoryAdapter.java",
+      "src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql"
+    ],
+    "owner": "identity",
+    "purpose": "Immutable bounded original OIDC claim coverage accompanying native issuance; structural persistence grants no producer or permission authority."
+  },
   "public.hidra_identity_external_identity": {
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/ExternalIdentityJpaEntity.java",

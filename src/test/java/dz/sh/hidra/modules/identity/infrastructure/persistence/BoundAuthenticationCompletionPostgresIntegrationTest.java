@@ -1,21 +1,11 @@
 /**
- *
- * @Project     : HidraAPI
- * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
- * @Author      : Abir MEDJERAB
- * @Owner       : Sonatrach / TRC : Digitalization Initiative
- *
- * @Name        : BoundAuthenticationCompletionPostgresIntegrationTest
- * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-14
- *
- * @Type        : Class
- * @Layer       : Identity Test
- * @Module      : identity
- * @Package     : dz.sh.hidra.modules.identity.infrastructure.persistence
- *
- * @Description : Proves real four-provider verification, signed bound completion and physical owner-transaction commit/rollback on synthetic PostgreSQL fixtures.
- *
+ * @Project : HidraAPI @Product : Hidra - Hydrocarbon Intelligence for Data, Risk, and
+ * Analytics @Author : Abir MEDJERAB @Owner : Sonatrach / TRC : Digitalization Initiative @Name :
+ * BoundAuthenticationCompletionPostgresIntegrationTest @CreatedOn : 2025-06-26 @UpdatedOn :
+ * 2026-10-17 @Type : Class @Layer : Identity Test @Module : identity @Package :
+ * dz.sh.hidra.modules.identity.infrastructure.persistence @Description : Proves real four-provider
+ * verification, signed bound completion and physical owner-transaction commit/rollback on synthetic
+ * PostgreSQL fixtures.
  */
 package dz.sh.hidra.modules.identity.infrastructure.persistence;
 
@@ -125,6 +115,10 @@ class BoundAuthenticationCompletionPostgresIntegrationTest {
     @MockitoSpyBean AccessTokenIssuerPort issuer;
     @MockitoSpyBean OperationAuthenticationBindingRepositoryPort bindings;
     @MockitoSpyBean AuthenticationEventRepositoryPort events;
+    @MockitoSpyBean BoundSourceClaimEvidenceRepositoryPort sourceClaims;
+    @MockitoSpyBean BoundSourceClaimIssuanceFencePort claimFence;
+    @MockitoSpyBean ClaimNameCatalogPort claimCatalog;
+
     private final JwtEncoder sourceEncoder =
             NimbusJwtEncoder.withSecretKey(
                             new SecretKeySpec(KEY.getBytes(StandardCharsets.UTF_8), "HmacSHA256"))
@@ -146,6 +140,7 @@ class BoundAuthenticationCompletionPostgresIntegrationTest {
 
     @BeforeEach
     void prepare() {
+        ReflectionTestUtils.setField(oidc, "verifiedClaimReceiptEnabled", false);
         SecurityContextHolder.clearContext();
         jdbc.update("UPDATE " + P + " SET status='INACTIVE' WHERE status='ACTIVE'");
         when(externalDecoder.decode(anyString()))
@@ -154,8 +149,135 @@ class BoundAuthenticationCompletionPostgresIntegrationTest {
 
     @AfterEach
     void cleanInvocation() {
+        ReflectionTestUtils.setField(oidc, "verifiedClaimReceiptEnabled", false);
         directPort.finishVerification();
         SecurityContextHolder.clearContext();
+    }
+
+    private void enableSyntheticNonownerCapture() {
+        String role = "completion_claim_app";
+        if (!Boolean.TRUE.equals(
+                jdbc.queryForObject(
+                        "SELECT EXISTS(SELECT 1 FROM pg_roles WHERE rolname=?)",
+                        Boolean.class,
+                        role))) {
+            jdbc.execute(
+                    "CREATE ROLE " + role + " LOGIN PASSWORD 'synthetic-completion-claims-only'");
+            jdbc.execute("REVOKE CREATE ON SCHEMA public FROM PUBLIC");
+            jdbc.execute("GRANT USAGE ON SCHEMA public TO " + role);
+            jdbc.execute(
+                    "GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA public TO " + role);
+            jdbc.execute(
+                    "REVOKE ALL ON public.hidra_identity_external_mapping_generation FROM " + role);
+            jdbc.execute(
+                    "GRANT SELECT ON public.hidra_identity_external_mapping_generation TO " + role);
+        }
+        var appJdbc =
+                new JdbcTemplate(
+                        new org.springframework.jdbc.datasource.DriverManagerDataSource(
+                                POSTGRES.getJdbcUrl(), role, "synthetic-completion-claims-only"));
+        var appCatalog =
+                new dz.sh.hidra.modules.identity.infrastructure.persistence.adapter
+                        .JdbcClaimNameCatalogAdapter(appJdbc);
+        doAnswer(
+                        i -> {
+                            if (TransactionSynchronizationManager.isActualTransactionActive())
+                                return i.callRealMethod();
+                            return appCatalog.selectVersioned(i.getArgument(0));
+                        })
+                .when(claimCatalog)
+                .selectVersioned(anyString());
+        doAnswer(
+                        i -> {
+                            jdbc.execute("SET LOCAL ROLE " + role);
+                            return i.callRealMethod();
+                        })
+                .when(claimFence)
+                .prepare(anyString(), any());
+        ReflectionTestUtils.setField(oidc, "verifiedClaimReceiptEnabled", true);
+    }
+
+    private void addCaptureMapping(Fixture f, String claim) {
+        String role = UUID.randomUUID().toString();
+        jdbc.update(
+                "INSERT INTO public.hidra_identity_role"
+                    + " (id,code,role_type,status,created_at,updated_at) VALUES"
+                    + " (?,?,'EXTERNAL_MAPPED','ACTIVE',now(),now())",
+                role,
+                role);
+        jdbc.update(
+                "INSERT INTO public.hidra_identity_external_role_mapping"
+                    + " (id,identity_provider_id,role_id,external_role_code,claim_name,mapping_mode,status,created_at,updated_at)"
+                    + " VALUES (?,?,?,?,?,'DIRECT_GRANT','ACTIVE',now(),now())",
+                UUID.randomUUID().toString(),
+                f.provider(),
+                role,
+                claim,
+                claim);
+    }
+
+    private AuthenticationResult capturedOidc(Fixture f) {
+        var signed =
+                sourceEncoder.encode(
+                        JwtEncoderParameters.from(
+                                JwtClaimsSet.builder()
+                                        .issuer(SOURCE)
+                                        .subject(f.subject())
+                                        .audience(List.of("hidra-api"))
+                                        .issuedAt(Instant.now().minusSeconds(1))
+                                        .expiresAt(
+                                                Instant.now()
+                                                        .plusSeconds(300)
+                                                        .truncatedTo(ChronoUnit.SECONDS))
+                                        .claim("groups", List.of("private-original-group"))
+                                        .build()));
+        var actual = oidc.convert(realExternal.decode(signed.getTokenValue()));
+        SecurityContextHolder.getContext().setAuthentication(actual);
+        return completion.complete(
+                input((HidraPrincipal) actual.getPrincipal(), null), null, null, null);
+    }
+
+    @Test
+    void optInOriginalOidcClaimsPersistWithNativeBindingUnderNonownerRole() {
+        var f = fixture("OIDC");
+        enableSyntheticNonownerCapture();
+        addCaptureMapping(f, "groups");
+        addCaptureMapping(f, "missing");
+        var result = capturedOidc(f);
+        var binding = bindings.findByNativeIssuerAndJti("hidra-api", result.jti()).orElseThrow();
+        var claims = sourceClaims.findByBindingId(binding.bindingId()).orElseThrow();
+        registry.validatePersistentSourceClaimOrigin(binding, claims);
+        assertThat(claims.coverage().values("groups")).containsExactly("private-original-group");
+        assertThat(claims.coverage().state("missing")).isEqualTo(ClaimCoverage.State.ABSENT);
+        assertThat(claims.mappingGeneration()).isEqualTo(3);
+        assertThat(nativeDecoder.decode(result.accessToken()).getClaims())
+                .doesNotContainKeys("groups", "missing");
+        verifyStored(f, result);
+    }
+
+    @Test
+    void companionAppendFailureRollsBackNativeSessionBindingAndSuccessEvent() {
+        var f = fixture("OIDC");
+        enableSyntheticNonownerCapture();
+        doThrow(new IllegalStateException("Synthetic companion refusal"))
+                .when(sourceClaims)
+                .append(any());
+        assertThatThrownBy(() -> capturedOidc(f)).isInstanceOf(IllegalStateException.class);
+        assertNoOwnerSuccess(f);
+        Object completed =
+                ReflectionTestUtils.invokeMethod(
+                        registry,
+                        "completed",
+                        SecurityContextHolder.getContext().getAuthentication());
+        assertThat(completed).isNull();
+    }
+
+    @Test
+    void defaultOffOidcNeverInvokesClaimFenceOrCompanionStorage() {
+        var f = fixture("OIDC");
+        authenticate(f);
+        verify(claimFence, never()).prepare(anyString(), any());
+        verify(sourceClaims, never()).append(any());
     }
 
     @Test
@@ -304,7 +426,7 @@ class BoundAuthenticationCompletionPostgresIntegrationTest {
                             Object result = i.callRealMethod();
                             jdbc.execute(
                                     "CREATE TEMP TABLE synthetic_commit_fault(owner_id varchar(80)"
-                                        + " REFERENCES "
+                                            + " REFERENCES "
                                             + U
                                             + "(id) DEFERRABLE INITIALLY DEFERRED)");
                             jdbc.update(
@@ -602,8 +724,8 @@ class BoundAuthenticationCompletionPostgresIntegrationTest {
             assertThat(
                             jdbc.queryForObject(
                                     "SELECT count(*) FROM"
-                                        + " public.hidra_identity_authentication_event WHERE"
-                                        + " user_id=? AND event_type='LOGIN_SUCCESS'",
+                                            + " public.hidra_identity_authentication_event WHERE"
+                                            + " user_id=? AND event_type='LOGIN_SUCCESS'",
                                     Integer.class,
                                     f.user()))
                     .isZero();
@@ -652,7 +774,7 @@ class BoundAuthenticationCompletionPostgresIntegrationTest {
         assertThat(
                         jdbc.queryForObject(
                                 "SELECT count(*) FROM public.hidra_identity_authentication_event"
-                                    + " WHERE user_id=? AND event_type='LOGIN_SUCCESS'",
+                                        + " WHERE user_id=? AND event_type='LOGIN_SUCCESS'",
                                 Integer.class,
                                 f.user()))
                 .isEqualTo(1);

@@ -1,21 +1,10 @@
 /**
- *
- * @Project     : HidraAPI
- * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
- * @Author      : Abir MEDJERAB
- * @Owner       : Sonatrach / TRC : Digitalization Initiative
- *
- * @Name        : TrustedAuthenticationVerificationRegistry
- * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-14
- *
- * @Type        : Class
- * @Layer       : Infrastructure
- * @Module      : identity
- * @Package     : dz.sh.hidra.modules.identity.infrastructure.security
- *
- * @Description : Owns invocation-bound producer receipts and authenticates immutable binding tuples with a private derived key.
- *
+ * @Project : HidraAPI @Product : Hidra - Hydrocarbon Intelligence for Data, Risk, and
+ * Analytics @Author : Abir MEDJERAB @Owner : Sonatrach / TRC : Digitalization Initiative @Name :
+ * TrustedAuthenticationVerificationRegistry @CreatedOn : 2025-06-26 @UpdatedOn : 2026-10-17 @Type :
+ * Class @Layer : Infrastructure @Module : identity @Package :
+ * dz.sh.hidra.modules.identity.infrastructure.security @Description : Owns invocation-bound
+ * producer receipts and authenticates immutable binding tuples with a private derived key.
  */
 package dz.sh.hidra.modules.identity.infrastructure.security;
 
@@ -23,9 +12,14 @@ import dz.sh.hidra.modules.identity.application.model.AccessTokenIssuanceContext
 import dz.sh.hidra.modules.identity.application.model.AccessTokenIssuerSettings;
 import dz.sh.hidra.modules.identity.application.model.AuthenticatedPrincipalInput;
 import dz.sh.hidra.modules.identity.application.model.AuthenticationVerificationSnapshot;
+import dz.sh.hidra.modules.identity.application.port.out.BoundSourceClaimEvidenceRepositoryPort;
+import dz.sh.hidra.modules.identity.application.port.out.BoundSourceClaimIssuanceFencePort;
+import dz.sh.hidra.modules.identity.application.port.out.ClaimNameCatalogPort;
 import dz.sh.hidra.modules.identity.application.port.out.TrustedAuthenticationVerificationPort;
 import dz.sh.hidra.modules.identity.domain.model.HidraPrincipal;
 import dz.sh.hidra.modules.identity.domain.model.OperationAuthenticationBinding;
+import dz.sh.hidra.modules.identity.domain.value.BoundSourceClaimEvidence;
+import dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.BoundSourceClaimEvidenceCodec;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -37,14 +31,15 @@ import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.nio.ByteBuffer;
-import java.time.Instant;
 import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
+import java.time.Instant;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -62,34 +57,62 @@ public final class TrustedAuthenticationVerificationRegistry
                     .getBytes(StandardCharsets.UTF_8);
     private static final byte[] DOMAIN =
             "Hidra/identity/operation-binding/format-1/tuple".getBytes(StandardCharsets.UTF_8);
+    private static final byte[] CLAIM_SALT =
+            "Hidra/identity/bound-source-claims/format-1/key".getBytes(StandardCharsets.UTF_8);
+    private static final byte[] CLAIM_INFO =
+            "Hidra/identity/bound-source-claims/format-1/authenticator"
+                    .getBytes(StandardCharsets.UTF_8);
+    private static final byte[] CLAIM_DOMAIN =
+            "Hidra/identity/bound-source-claims/format-1/tuple".getBytes(StandardCharsets.UTF_8);
+    private final BoundSourceClaimIssuanceFencePort claimFence;
+    private final BoundSourceClaimEvidenceRepositoryPort sourceClaims;
     private final String signingSecret;
     private final String nativeIssuer;
     private final String nativeAudience;
     private volatile byte[] key;
     private final ThreadLocal<Invocation> invocation = new ThreadLocal<>();
 
+    /** Legacy no-capture construction; captured receipts fail closed without owner ports. */
+    public TrustedAuthenticationVerificationRegistry(
+            String signingSecret, String nativeIssuer, String nativeAudience) {
+        this(signingSecret, nativeIssuer, nativeAudience, null, null);
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
     public TrustedAuthenticationVerificationRegistry(
             @Value("${hidra.platform.security.jwt.hmac-secret:}") String signingSecret,
             @Value("${hidra.platform.security.jwt.token-issuer:hidra-api}") String nativeIssuer,
-            @Value("${hidra.platform.security.jwt.audience:hidra-api}") String nativeAudience) {
+            @Value("${hidra.platform.security.jwt.audience:hidra-api}") String nativeAudience,
+            BoundSourceClaimIssuanceFencePort claimFence,
+            BoundSourceClaimEvidenceRepositoryPort sourceClaims) {
         this.signingSecret = signingSecret;
         this.nativeIssuer = nativeIssuer;
         this.nativeAudience = nativeAudience;
+        this.claimFence = claimFence;
+        this.sourceClaims = sourceClaims;
     }
 
     /** Private bounded source evidence; never a public grant or native token claim. */
-    record OidcSourceEvidence(String providerId, String issuer, String subject,
-            Instant sourceExpiresAt, OidcClaimCoverageProjector.Projection projection) {
+    record OidcSourceEvidence(
+            String providerId,
+            String issuer,
+            String subject,
+            Instant sourceExpiresAt,
+            OidcClaimCoverageProjector.Projection projection) {
         OidcSourceEvidence {
             Objects.requireNonNull(providerId);
             Objects.requireNonNull(issuer);
             Objects.requireNonNull(subject);
             Objects.requireNonNull(sourceExpiresAt);
             Objects.requireNonNull(projection);
-            if (providerId.isBlank() || issuer.isBlank() || subject.isBlank()
+            if (providerId.isBlank()
+                    || issuer.isBlank()
+                    || subject.isBlank()
                     || !Instant.now().isBefore(sourceExpiresAt)) throw denied();
         }
-        @Override public String toString() {
+
+        @Override
+        public String toString() {
             return "OidcSourceEvidence[claims=<redacted>, provenance=<redacted>]";
         }
     }
@@ -106,7 +129,9 @@ public final class TrustedAuthenticationVerificationRegistry
             this(snapshot, principal, null);
         }
 
-        private Receipt(AuthenticationVerificationSnapshot snapshot, HidraPrincipal principal,
+        private Receipt(
+                AuthenticationVerificationSnapshot snapshot,
+                HidraPrincipal principal,
                 OidcSourceEvidence oidcEvidence) {
             this.snapshot = Objects.requireNonNull(snapshot);
             this.principal = Objects.requireNonNull(principal);
@@ -170,9 +195,13 @@ public final class TrustedAuthenticationVerificationRegistry
         return new Receipt(snapshot, principal);
     }
 
-    Receipt verifiedOidc(AuthenticationVerificationSnapshot snapshot, HidraPrincipal principal,
+    Receipt verifiedOidc(
+            AuthenticationVerificationSnapshot snapshot,
+            HidraPrincipal principal,
             OidcSourceEvidence evidence) {
-        if (snapshot == null || principal == null || evidence == null
+        if (snapshot == null
+                || principal == null
+                || evidence == null
                 || !"OIDC".equals(snapshot.authenticationType())
                 || !Objects.equals(snapshot.providerId(), evidence.providerId())
                 || !Objects.equals(snapshot.sourceIssuer(), evidence.issuer())
@@ -237,6 +266,11 @@ public final class TrustedAuthenticationVerificationRegistry
         private TransactionSynchronization attestationTransaction;
         private OperationAuthenticationBinding attested;
         private final AtomicBoolean publication = new AtomicBoolean();
+        private final AtomicBoolean claimPreparation = new AtomicBoolean();
+        private final AtomicBoolean claimAttestation = new AtomicBoolean();
+        private BoundSourceClaimIssuanceFencePort.FenceStamp claimStamp;
+        private TransactionSynchronization preparationTransaction;
+        private BoundSourceClaimEvidence attestedClaims;
 
         private Consumed(Receipt receipt, Invocation directOrigin, Authentication oidcOrigin) {
             this.receipt = receipt;
@@ -261,6 +295,86 @@ public final class TrustedAuthenticationVerificationRegistry
         }
 
         @Override
+        public boolean prepareSourceClaims() {
+            if (receipt.oidcEvidence == null) {
+                requireOrigin();
+                return false;
+            }
+            if (!claimPreparation.compareAndSet(false, true)) throw denied();
+            requireOrigin();
+            if (attestationAttempt.get()
+                    || claimFence == null
+                    || sourceClaims == null
+                    || !TransactionSynchronizationManager.isActualTransactionActive()
+                    || TransactionSynchronizationManager.isCurrentTransactionReadOnly()
+                    || !TransactionSynchronizationManager.isSynchronizationActive()) throw denied();
+            var evidence = receipt.oidcEvidence;
+            if (!Instant.now().isBefore(evidence.sourceExpiresAt())) throw denied();
+            var selected =
+                    new ClaimNameCatalogPort.VersionedSelection(
+                            new ClaimNameCatalogPort.Selection(
+                                    java.util.List.copyOf(
+                                            evidence.projection().coverage().entries().keySet())),
+                            evidence.projection().mappingGeneration());
+            claimStamp = claimFence.prepare(evidence.providerId(), selected);
+            if (claimStamp == null || !Instant.now().isBefore(evidence.sourceExpiresAt()))
+                throw denied();
+            preparationTransaction = new TransactionSynchronization() {};
+            TransactionSynchronizationManager.registerSynchronization(preparationTransaction);
+            return true;
+        }
+
+        private void currentClaims() {
+            requireOrigin();
+            if (claimStamp == null
+                    || claimFence == null
+                    || sourceClaims == null
+                    || !TransactionSynchronizationManager.isActualTransactionActive()
+                    || TransactionSynchronizationManager.isCurrentTransactionReadOnly()
+                    || !TransactionSynchronizationManager.isSynchronizationActive()
+                    || !TransactionSynchronizationManager.getSynchronizations()
+                            .contains(preparationTransaction)
+                    || !Instant.now().isBefore(receipt.oidcEvidence.sourceExpiresAt()))
+                throw denied();
+            claimFence.requireCurrent(claimStamp);
+        }
+
+        @Override
+        public Optional<BoundSourceClaimEvidence> attestSourceClaims(
+                OperationAuthenticationBinding binding) {
+            if (receipt.oidcEvidence == null) {
+                requireOrigin();
+                return Optional.empty();
+            }
+            if (!claimAttestation.compareAndSet(false, true)) throw denied();
+            requireOrigin();
+            currentClaims();
+            if (attested == null
+                    || !attested.equals(binding)
+                    || !TransactionSynchronizationManager.getSynchronizations()
+                            .contains(attestationTransaction)
+                    || !Instant.now().isBefore(binding.expiresAt())) throw denied();
+            var projection = receipt.oidcEvidence.projection();
+            var unsigned =
+                    new BoundSourceClaimEvidence(
+                            binding.bindingId(),
+                            (short) 1,
+                            projection.mappingGeneration(),
+                            claimStamp.transactionId(),
+                            projection.coverage(),
+                            new byte[32]);
+            attestedClaims =
+                    new BoundSourceClaimEvidence(
+                            unsigned.bindingId(),
+                            unsigned.evidenceFormat(),
+                            unsigned.mappingGeneration(),
+                            unsigned.issuanceTransactionId(),
+                            unsigned.coverage(),
+                            sourceClaimTag(binding, unsigned));
+            return Optional.of(attestedClaims);
+        }
+
+        @Override
         public OperationAuthenticationBinding attest(
                 String bindingId,
                 String sessionId,
@@ -277,6 +391,7 @@ public final class TrustedAuthenticationVerificationRegistry
                     || !settings.audience().equals(nativeAudience)) throw denied();
             if (context.expiresAt().getEpochSecond() - context.issuedAt().getEpochSecond()
                     > settings.ttlSeconds()) throw denied();
+            if (receipt.oidcEvidence != null) currentClaims();
             var s = receipt.snapshot;
             String protocol =
                     s.authenticationType().equals("ACTIVE_DIRECTORY")
@@ -323,6 +438,14 @@ public final class TrustedAuthenticationVerificationRegistry
                     || TransactionSynchronizationManager.isCurrentTransactionReadOnly()
                     || !TransactionSynchronizationManager.getSynchronizations()
                             .contains(attestationTransaction)) throw denied();
+            if (receipt.oidcEvidence != null) {
+                currentClaims();
+                if (attestedClaims == null
+                        || !Optional.of(attestedClaims)
+                                .equals(sourceClaims.findByBindingId(binding.bindingId())))
+                    throw denied();
+                validatePersistentSourceClaimOrigin(binding, attestedClaims);
+            }
             // The registry itself enforces after-commit publication. Caller timing cannot promote
             // an uncommitted receipt.
             TransactionSynchronizationManager.registerSynchronization(
@@ -356,6 +479,57 @@ public final class TrustedAuthenticationVerificationRegistry
     public void validatePersistentOrigin(OperationAuthenticationBinding binding) {
         if (!MessageDigest.isEqual(tag(binding), binding.producerAuthenticator()))
             throw new IllegalStateException("Corrupt persisted authentication provenance.");
+    }
+
+    /** Persistent origin only; never current mapping authority or a permission. */
+    public void validatePersistentSourceClaimOrigin(
+            OperationAuthenticationBinding binding, BoundSourceClaimEvidence evidence) {
+        try {
+            if (binding == null
+                    || evidence == null
+                    || !"OIDC".equals(binding.authenticationType())
+                    || !binding.bindingId().equals(evidence.bindingId())) throw denied();
+            validatePersistentOrigin(binding);
+            if (!MessageDigest.isEqual(
+                    sourceClaimTag(binding, evidence), evidence.producerAuthenticator()))
+                throw denied();
+        } catch (RuntimeException failure) {
+            throw new IllegalStateException("Corrupt persisted source-claim provenance.");
+        }
+    }
+
+    private byte[] sourceClaimTag(
+            OperationAuthenticationBinding binding, BoundSourceClaimEvidence evidence) {
+        validatePersistentOrigin(binding);
+        if (!binding.bindingId().equals(evidence.bindingId())
+                || !"OIDC".equals(binding.authenticationType())) throw denied();
+        byte[] effective = null, derived = null;
+        try {
+            if (signingSecret == null || signingSecret.isBlank()) throw denied();
+            effective = signingSecret.trim().getBytes(StandardCharsets.UTF_8);
+            if (effective.length < 32) throw denied();
+            derived = hkdf(effective, CLAIM_SALT, CLAIM_INFO, 32);
+            var m = Mac.getInstance("HmacSHA256");
+            m.init(new SecretKeySpec(derived, "HmacSHA256"));
+            m.update(CLAIM_DOMAIN);
+            m.update((byte) 0);
+            small(m, evidence.evidenceFormat());
+            byte[] id = evidence.bindingId().getBytes(StandardCharsets.UTF_8);
+            m.update(ByteBuffer.allocate(4).putInt(id.length).array());
+            m.update(id);
+            m.update(binding.producerAuthenticator());
+            m.update(ByteBuffer.allocate(8).putLong(evidence.mappingGeneration()).array());
+            m.update(ByteBuffer.allocate(8).putLong(evidence.issuanceTransactionId()).array());
+            byte[] payload = BoundSourceClaimEvidenceCodec.encode(evidence.coverage());
+            m.update(ByteBuffer.allocate(4).putInt(payload.length).array());
+            m.update(payload);
+            return m.doFinal();
+        } catch (GeneralSecurityException failure) {
+            throw new IllegalStateException("Private source-claim authenticator is unavailable.");
+        } finally {
+            if (effective != null) java.util.Arrays.fill(effective, (byte) 0);
+            if (derived != null) java.util.Arrays.fill(derived, (byte) 0);
+        }
     }
 
     private byte[] attestationKey() {

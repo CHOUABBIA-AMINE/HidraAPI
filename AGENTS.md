@@ -414,6 +414,33 @@ Do not invent validation results.
 
 Do not say validation passed unless the command actually completed successfully.
 
+### 11.1 Owner-approved CI-first execution — 2026-10-17
+
+The owner explicitly directs that agents are not obliged to prepare a complete local environment
+just to test code. GitHub workflows provide the authoritative test feedback after publication.
+
+1. Run useful checks with tooling already available. Do not install/provision a complete Java,
+   Maven, Docker, PostgreSQL or other service environment merely to reproduce hosted CI locally.
+2. Missing local dependencies or skipped service tests are not, by themselves, blockers to
+   committing the authorized, reviewed task scope. Report exactly what passed, failed or skipped;
+   source inspection and skipped cases are never passing runtime evidence.
+3. Commit the bounded changes directly to main using the existing expected-HEAD guard and
+   registered commit message. Preserve file-scope controls, migration history and repository
+   protections. This policy does not authorize unrelated work or knowingly conceal failures.
+4. Let the applicable GitHub workflows execute the full verification. Confirm their creation,
+   queueing or startup on the published SHA, report actual links/state, then stop without waiting
+   for completion or automatically starting another task.
+5. Use subsequent CI feedback to repair the responsible task before advancing dependent work.
+   Keep implementation, CI acceptance, engineering acceptance and deployment readiness distinct.
+6. Database-derived artifacts must remain truthful. If an actual migrated catalog is unavailable
+   locally, preserve the existing dictionary, record its pending regeneration explicitly and use
+   the hosted catalog artifact for the follow-up. Do not invent physical metadata or label an
+   inferred schema as newly verified. Such missing local evidence does not prevent the initial
+   CI-first commit; it remains an acceptance/follow-up obligation.
+
+This owner instruction supersedes local-environment publication holds. It does not remove
+required tests, weaken workflows or waive green-CI requirements for release/deployment.
+
 ---
 
 ## 12. Roadmap Update Rules

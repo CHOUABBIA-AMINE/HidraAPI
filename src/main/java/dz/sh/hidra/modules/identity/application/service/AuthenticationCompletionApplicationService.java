@@ -1,21 +1,10 @@
 /**
- *
- * @Project     : HidraAPI
- * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
- * @Author      : Abir MEDJERAB
- * @Owner       : Sonatrach / TRC : Digitalization Initiative
- *
- * @Name        : AuthenticationCompletionApplicationService
- * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-14
- *
- * @Type        : Class
- * @Layer       : Application
- * @Module      : identity
- * @Package     : dz.sh.hidra.modules.identity.application.service
- *
- * @Description : Completes normalized authentication by issuing the unified Hidra token and creating the logical login session.
- *
+ * @Project : HidraAPI @Product : Hidra - Hydrocarbon Intelligence for Data, Risk, and
+ * Analytics @Author : Abir MEDJERAB @Owner : Sonatrach / TRC : Digitalization Initiative @Name :
+ * AuthenticationCompletionApplicationService @CreatedOn : 2025-06-26 @UpdatedOn : 2026-10-17 @Type
+ * : Class @Layer : Application @Module : identity @Package :
+ * dz.sh.hidra.modules.identity.application.service @Description : Completes normalized
+ * authentication by issuing the unified Hidra token and creating the logical login session.
  */
 package dz.sh.hidra.modules.identity.application.service;
 
@@ -46,6 +35,7 @@ public class AuthenticationCompletionApplicationService
     private final OperationAuthenticationBindingRepositoryPort bindings;
     private final AuthenticationSecurityStateQueryPort states;
     private final Clock clock;
+    private final BoundSourceClaimEvidenceRepositoryPort sourceClaims;
 
     public AuthenticationCompletionApplicationService(
             AccessTokenIssuerPort issuer,
@@ -54,12 +44,25 @@ public class AuthenticationCompletionApplicationService
             OperationAuthenticationBindingRepositoryPort bindings,
             AuthenticationSecurityStateQueryPort states,
             @Qualifier("identityAuthenticationClock") Clock clock) {
+        this(issuer, lifecycle, verification, bindings, states, clock, null);
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public AuthenticationCompletionApplicationService(
+            AccessTokenIssuerPort issuer,
+            AuthenticationSessionLifecycleApplicationService lifecycle,
+            TrustedAuthenticationVerificationPort verification,
+            OperationAuthenticationBindingRepositoryPort bindings,
+            AuthenticationSecurityStateQueryPort states,
+            @Qualifier("identityAuthenticationClock") Clock clock,
+            BoundSourceClaimEvidenceRepositoryPort sourceClaims) {
         this.issuer = Objects.requireNonNull(issuer);
         this.lifecycle = Objects.requireNonNull(lifecycle);
         this.verification = Objects.requireNonNull(verification);
         this.bindings = Objects.requireNonNull(bindings);
         this.states = Objects.requireNonNull(states);
         this.clock = Objects.requireNonNull(clock);
+        this.sourceClaims = sourceClaims;
     }
 
     @Override
@@ -77,6 +80,9 @@ public class AuthenticationCompletionApplicationService
                         .isNewTransaction())
             throw new IllegalStateException("Bound completion requires an owner transaction.");
         var trusted = verification.consume(Objects.requireNonNull(input));
+        boolean capturedClaims = trusted.prepareSourceClaims();
+        if (capturedClaims && sourceClaims == null)
+            throw new IllegalStateException("Bound source-claim persistence is unavailable.");
         var snapshot = trusted.snapshot();
         var settings = issuer.settings();
         Instant issued = clock.instant().truncatedTo(ChronoUnit.SECONDS),
@@ -125,6 +131,10 @@ public class AuthenticationCompletionApplicationService
             throw new IllegalStateException(
                     "Issued native token does not match its authenticated tuple.");
         bindings.append(binding);
+        var evidence = trusted.attestSourceClaims(binding);
+        if (capturedClaims != evidence.isPresent())
+            throw new IllegalStateException("Bound source-claim capture is inconsistent.");
+        if (capturedClaims) sourceClaims.append(evidence.orElseThrow());
         lifecycle.recordBoundSuccess(principal, session);
         if (!clock.instant().isBefore(expires))
             throw new IllegalStateException("Completion deadline elapsed.");

@@ -1759,6 +1759,22 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0.058,
+      "cases": [
+        "arraysAndCoverageAreDefensiveAndStructuralEqualityIsStable",
+        "exactVersionUuidGenerationsAndTagLengthAreRequired",
+        "structurallyValidConstructionDoesNotCreateProducerAuthority"
+      ],
+      "class": "dz.sh.hidra.modules.identity.domain.value.BoundSourceClaimEvidenceTest",
+      "dependency_reason": "C2B local Java21 JVM value/codec tests passed; local elapsed timing only, not exact-SHA hosted CI acceptance.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/domain/value/BoundSourceClaimEvidenceTest.java",
+      "source_sha256": "2f7912ae4697d0338778a03132f8b91add84879412a764062aa9ba4b5361cff7",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0,
       "cases": [
         "allNonPresentStatesHaveNoValues",
@@ -1812,8 +1828,10 @@
         "beforeCommitFaultCannotPublishOidcReceiptOrDeliverSignedResult",
         "bindingAppendFailureRollsBackSignedSessionAndExposesNoBearer",
         "changedAtomicCredentialDuringPasswordVerificationCannotRelabelSuccess",
+        "companionAppendFailureRollsBackNativeSessionBindingAndSuccessEvent",
         "completionInsideCallerTransactionRejectsDeliveryBeforeOuterCommit",
         "credentialAbaAfterVerificationRejectsTheOriginalHashGeneration",
+        "defaultOffOidcNeverInvokesClaimFenceOrCompanionStorage",
         "directoryLinkAbaAfterRealVerificationRejectsOriginalReceipt",
         "externalEventFailureRollsBackSessionBindingAndPublication",
         "forgedOidcJwtCannotBypassQualifiedCryptographicReadback",
@@ -1822,6 +1840,7 @@
         "localCompletionHasRealCapturedCredentialAndSignedPersistentOrigin",
         "nativeCryptographicReadbackFailureIsSanitizedAndRollsBack",
         "oidcCompletionUsesOriginalSignedBearerAndFloorsItsSourceCap",
+        "optInOriginalOidcClaimsPersistWithNativeBindingUnderNonownerRole",
         "providerAbaAfterVerificationCannotCreateAnUnboundSuccess",
         "realDirectoryVerificationDenialCannotFallBackToUnboundCompletion",
         "repeatedOidcReceiptCannotCreateASecondSession",
@@ -1835,7 +1854,27 @@
       "lane": "postgres-integration",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/BoundAuthenticationCompletionPostgresIntegrationTest.java",
-      "source_sha256": "93c491f61732b48d3dcb9f48910f4925a951367b648ae6bf8148731fdef98d38",
+      "source_sha256": "f4d0315bb69f3f0d2499a119fff1e00ce29c69d0051e7ce911484dafb4772dfa",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0.0,
+      "cases": [
+        "changedCatalogAndSavepointBindingCannotBePromoted",
+        "fixedFencePrefixMatchesExistingDiagnosticFence",
+        "freshSchemaAndNonownerEpochSelectOnlyAreRequired",
+        "noFenceAndDelayedAttachmentRejectAndRollback",
+        "preparedPrefixBlocksMappingWriterUntilPhysicalCommit",
+        "sameTransactionAppendReadbackReplayAndAllMutationsAreGuarded",
+        "sameTransactionMappingMutationInvalidatesPreparedCaptureAndRollsBack"
+      ],
+      "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.BoundSourceClaimEvidencePostgresIntegrationTest",
+      "dependency_reason": "New C2B source-defined PostgreSQL cases; local Docker unavailable; zero is unqualified timing, not passing execution evidence.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/BoundSourceClaimEvidencePostgresIntegrationTest.java",
+      "source_sha256": "20ba960bed562135fd2bec1cd017b435ca0bc9fe145af06cf8dcd94f893a69dd",
       "supports": []
     },
     {
@@ -2247,6 +2286,24 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0.021,
+      "cases": [
+        "allStatesExactUnicodeDottedNamesAndSortedValuesRoundTrip",
+        "emptySelectionHasCanonicalFourBytePayload",
+        "invalidUtf8ControlsDuplicateAndUnsortedEntriesReject",
+        "semanticAndEncodedLimitsAreIndependentAndBoundedBeforeAllocation",
+        "truncationTrailingCountsAndUnsupportedStatesRejectWithoutPayloadDiagnostics"
+      ],
+      "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.BoundSourceClaimEvidenceCodecTest",
+      "dependency_reason": "C2B local Java21 JVM value/codec tests passed; local elapsed timing only, not exact-SHA hosted CI acceptance.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/BoundSourceClaimEvidenceCodecTest.java",
+      "source_sha256": "858b4b13ff5c0eedeff0ec928112b6fc9374462c8bdfc00f3ceda8106c5a682c",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0,
       "cases": [
         "boundsRowsJsonAndUnsupportedEvidence",
@@ -2572,7 +2629,10 @@
         "attestationRequiresActiveWritableSynchronizedTransactionAndCannotRetry",
         "blankNativeKeyDoesNotBreakDormantBeanButCannotAttest",
         "boundIssuerCryptographicReadbackRejectsFakeBearerWithoutSecretDiagnostics",
+        "capturedClaimsAreSealedToExactBindingAndPublishOnlyAfterPersistedCommit",
+        "capturedReceiptCannotSkipPreparationOrUseMissingPorts",
         "changedPrincipalPermissionsRejectAndConsumeTheReceipt",
+        "claimPreparationAndAttestationCannotBeRepeatedOrMovedAcrossTransactions",
         "constructorAndGetterCopiesProtectWitnessEqualityAndHashing",
         "consumedOidcReceiptRequiresItsSameActualAmbientObject",
         "consumedReceiptCannotOutliveItsDirectInvocation",
@@ -2586,7 +2646,9 @@
         "hkdfMatchesRfc5869LongVector",
         "hkdfMatchesRfc5869ShortVector",
         "invalidNativeSignatureDeniesButDecoderInfrastructureFailureIsOperational",
+        "lostPhysicalFenceCannotDowngradeCapturedReceiptToNoClaims",
         "malformedAttestationAttemptCannotBeRetriedWithValidIds",
+        "missingCompanionPreventsPublicationAndNeverCompletesReceipt",
         "nativeReadbackRequiresExactSingletonRawAudienceAndTypedOwnerClaims",
         "oidcReceiptCannotBeConsumedByAnotherThreadOrForgedContext",
         "oldPublicOidcConstructorsHaveNoReceiptEvenWithAuthenticatedPrincipal",
@@ -2600,7 +2662,9 @@
         "signedReaderUsesActualWireInsteadOfCallerConstructedAmbientClaims",
         "simulatedCommitPublishesOnlyAfterCommitAndOnlyOnce",
         "simulatedRollbackNeverPublishesCompletion",
-        "streamingFrameHandlesMultibyteBufferBoundariesExactly"
+        "streamingFrameHandlesMultibyteBufferBoundariesExactly",
+        "tamperedClaimGenerationPayloadOrCopiedTagNeverValidatesAsProducerEvidence",
+        "wrongThreadClaimAttemptsAreConsumedAndCannotBeRetriedByOriginThread"
       ],
       "class": "dz.sh.hidra.modules.identity.infrastructure.security.TrustedAuthenticationVerificationTest",
       "dependency_reason": "050A local Java21 unit/architecture evidence; no live service. New timing hint is unmeasured (0), pending hosted baseline; receipt callbacks are simulated, not PostgreSQL/commit proof.",
@@ -2608,7 +2672,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationTest.java",
-      "source_sha256": "6c83e960005a56ea5b2ac509c4c2dfad476efb3e4ab6febcf7bbc78e565e492f",
+      "source_sha256": "39164f1cd7e59feb77f5700474c5ef12fced1ce33e0837938e713b260a0f0463",
       "supports": []
     },
     {

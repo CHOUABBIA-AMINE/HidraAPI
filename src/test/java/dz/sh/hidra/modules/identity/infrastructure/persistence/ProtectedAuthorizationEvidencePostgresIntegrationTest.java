@@ -1311,6 +1311,66 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
         assertThat(guardCalled).isFalse();
     }
 
+    /**
+     * Negative repository-read fault injection only: the native binding, receipt MAC
+     * and secured physical transaction are genuine. No new producer authentication
+     * is minted and the protected commit guard must never be reached.
+     */
+    private void c3CorruptClaimCompanionRejectedBeforeCommitGuard(boolean corruptMac) {
+        var f = fixture("OIDC");
+        c3NonownerCapture();
+        c3PermissionMapping(f, "author", "GRANT");
+        var prepared = prepare(f);
+        var request = request(f, "author", false);
+        AtomicBoolean substituted = new AtomicBoolean();
+        AtomicBoolean guardCalled = new AtomicBoolean();
+
+        doAnswer(invocation -> {
+                    var stored = (Optional<?>) invocation.callRealMethod();
+                    var authentic = (BoundSourceClaimEvidence) stored.orElseThrow();
+                    byte[] authenticator = authentic.producerAuthenticator();
+                    String bindingId = authentic.bindingId();
+                    if (corruptMac) authenticator[0] ^= 1;
+                    else bindingId = id();
+                    substituted.set(true);
+                    return Optional.of(new BoundSourceClaimEvidence(
+                            bindingId,
+                            authentic.evidenceFormat(),
+                            authentic.mappingGeneration(),
+                            authentic.issuanceTransactionId(),
+                            authentic.coverage(),
+                            authenticator));
+                })
+                .when(claimCompanions).findByBindingId(anyString());
+
+        assertThatThrownBy(() -> executor.execute(
+                        () -> {
+                            c3SelectRestrictedRole();
+                            var sealed = participant.qualifyClaims(prepared, request);
+                            reader.loadQualified(sealed, request);
+                            return "unverified-companion";
+                        },
+                        em::flush,
+                        () -> guardCalled.set(true)))
+                .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class)
+                .satisfies(error ->
+                        assertThat(((ProtectedTransactionExecutor.ExecutionFailure) error)
+                                        .outcome())
+                                .isEqualTo(ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT));
+        assertThat(substituted).isTrue();
+        assertThat(guardCalled).isFalse();
+    }
+
+    @Test
+    void c3TamperedCompanionMacRejectsBeforeCommitGuard() {
+        c3CorruptClaimCompanionRejectedBeforeCommitGuard(true);
+    }
+
+    @Test
+    void c3SwappedCompanionBindingRejectsBeforeCommitGuard() {
+        c3CorruptClaimCompanionRejectedBeforeCommitGuard(false);
+    }
+
     @Test
     void allFourRealBoundActorsLoadDatabaseAuthorityAtFencedSample() {
         for (String type : List.of("LOCAL", "LDAP", "ACTIVE_DIRECTORY", "OIDC")) {

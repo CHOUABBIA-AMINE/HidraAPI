@@ -2213,6 +2213,8 @@
         "c3OriginalOidcGroupAndRoleClaimsRequireFencedCurrentMappings",
         "c3QualifiedCredentialRefusesAlternateScopeBeforeCommitGuard",
         "c3SameTransactionMappingEditAfterClaimSelectionRejectsBeforeCommitGuard",
+        "c3SwappedCompanionBindingRejectsBeforeCommitGuard",
+        "c3TamperedCompanionMacRejectsBeforeCommitGuard",
         "c3VerifiedOriginalOidcDenyOverridesIndependentDirectPermit",
         "c3VerifiedOriginalOidcSourceCanMatchCurrentPermissionWithoutPublicAssertion",
         "committedRevocationBeforeFencesRemovesPermit",
@@ -2231,7 +2233,7 @@
       "lane": "postgres-integration",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedAuthorizationEvidencePostgresIntegrationTest.java",
-      "source_sha256": "4ba40f1b964f0f1eaa14d745de81a00a8ef6df19aa9ad7418d6d33ff7f1b3ed5",
+      "source_sha256": "8adbd412ba4ca1f816da411f0689f83194eee23d2da6bf41077c8c2f6f74ae2e",
       "supports": []
     },
     {

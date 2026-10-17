@@ -761,10 +761,11 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
                     return appCatalog.selectVersioned(i.getArgument(0));
                 })
                 .when(claimCatalog).selectVersioned(anyString());
-        doAnswer(i -> {
+        new TransactionTemplate(manager).executeWithoutResult(
+                status -> doAnswer(i -> {
                     c3SelectRestrictedRole();
                     return i.callRealMethod();
-                }).when(claimIssuanceFence).prepare(anyString(), any());
+                }).when(claimIssuanceFence).prepare(anyString(), any()));
         // The final guarded fixture insert must also be performed without owner rights.
         jdbc.execute("GRANT USAGE ON SCHEMA " + schema + " TO " + role);
         jdbc.execute("GRANT INSERT ON " + receipt() + " TO " + role);

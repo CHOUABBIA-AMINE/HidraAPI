@@ -941,6 +941,91 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
     }
 
     @Test
+    void c3NewMappingClaimRequiresFreshOidcAuthenticationBeforeDirectPermit() {
+        var f = fixture("OIDC");
+        c3NonownerCapture();
+        c3PermissionMapping(f, "author", "GRANT");
+        grant(f, "author", "GRANT", "FACILITY", FACILITY);
+        var stale = prepare(f);
+        var request = request(f, "author", false);
+        Long previousGeneration =
+                jdbc.queryForObject(
+                        "SELECT generation FROM public.hidra_identity_external_mapping_generation"
+                                + " WHERE provider_id=?",
+                        Long.class,
+                        f.provider());
+        assertThat(previousGeneration).isPositive();
+        assertThat(
+                        jdbc.update(
+                                "INSERT INTO public.hidra_identity_external_permission_mapping"
+                                        + "(id,identity_provider_id,permission_id,external_permission_code,"
+                                        + "claim_name,mapping_mode,effect,status,created_at,updated_at)"
+                                        + " VALUES (?,?,?,'unobserved-deny','new-claim-name',"
+                                        + "'DIRECT_GRANT','DENY','ACTIVE',now(),now())",
+                                id(),
+                                f.provider(),
+                                permission("author")))
+                .isEqualTo(1);
+        assertThat(
+                        jdbc.queryForObject(
+                                "SELECT generation FROM public.hidra_identity_external_mapping_generation"
+                                        + " WHERE provider_id=?",
+                                Long.class,
+                                f.provider()))
+                .isGreaterThan(previousGeneration);
+
+        // Current direct grants cannot upgrade an older claim-coverage generation.
+        assertThatThrownBy(
+                        () ->
+                                executor.execute(
+                                        () -> {
+                                            c3SelectRestrictedRole();
+                                            var sealed = participant.qualifyClaims(stale, request);
+                                            reader.loadQualified(sealed, request);
+                                            return "stale-coverage";
+                                        },
+                                        em::flush,
+                                        () -> fail("Changed claim catalog must reject before commit")))
+                .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class)
+                .satisfies(
+                        thrown ->
+                                assertThat(
+                                                ((ProtectedTransactionExecutor.ExecutionFailure)
+                                                                thrown)
+                                                        .outcome())
+                                        .isEqualTo(
+                                                ProtectedTransactionExecutor.Outcome
+                                                        .REJECTED_BEFORE_COMMIT));
+
+        // Fresh verified source captures the new name as ABSENT; it is not a DENY.
+        var fresh = prepare(f);
+        executor.execute(
+                () -> {
+                    c3SelectRestrictedRole();
+                    var sealed = participant.qualifyClaims(fresh, request);
+                    var evidence = reader.loadQualified(sealed, request);
+                    assertThat(evidence.failure()).isNull();
+                    assertThat(evidence.grants())
+                            .extracting(AuthorizationEvidence.Grant::order)
+                            .contains(0, 5);
+                    assertThat(
+                                    new AuthorizationPolicyEvaluator()
+                                            .evaluate(
+                                                    request,
+                                                    evidence,
+                                                    Instant.parse(
+                                                            (String)
+                                                                    evidence.attributes()
+                                                                            .get("context.evaluatedAt")))
+                                            .decision())
+                            .isEqualTo(AuthorizationDecisionValue.PERMIT);
+                    return "fresh-coverage";
+                },
+                em::flush,
+                () -> assertThat(jdbc.queryForObject("SELECT 1", Integer.class)).isEqualTo(1));
+    }
+
+    @Test
     void c3LegacyOidcWithoutCompanionCannotPromotePotentialUnknownDeny() {
         var f = fixture("OIDC");
         c3NonownerCapture();

@@ -2206,6 +2206,7 @@
         "boundedOverflowMalformedStateAndRollbackStayClosed",
         "c3MappingGenerationMutationInvalidatesAlreadyIssuedOidcClaimReceipt",
         "c3LegacyOidcWithoutCompanionCannotPromotePotentialUnknownDeny",
+        "c3NewMappingClaimRequiresFreshOidcAuthenticationBeforeDirectPermit",
         "c3VerifiedOriginalOidcDenyOverridesIndependentDirectPermit",
         "c3VerifiedOriginalOidcSourceCanMatchCurrentPermissionWithoutPublicAssertion",
         "committedRevocationBeforeFencesRemovesPermit",
@@ -2224,7 +2225,7 @@
       "lane": "postgres-integration",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedAuthorizationEvidencePostgresIntegrationTest.java",
-      "source_sha256": "d0d7cf97f45ccdd617e77dc9ea07b46568117a456a448dc8693490d046a4a636",
+      "source_sha256": "6fabf3e0a43660ee325be03674097c916a9fe9b999c9d395ea7b1ac7c2bda4d0",
       "supports": []
     },
     {

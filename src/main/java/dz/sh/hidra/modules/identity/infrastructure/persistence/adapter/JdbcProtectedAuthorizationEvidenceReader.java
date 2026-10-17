@@ -162,8 +162,9 @@ public class JdbcProtectedAuthorizationEvidenceReader {
                     || !Objects.equals(original.sourceExpiresAt(), evidence.sourceExpiresAt()))
                 throw invalid();
             QualifiedClaims qualified = null;
+            ClaimNameCatalogPort.VersionedSelection selected = null;
             if (!"LOCAL".equals(original.authenticationType())) {
-                var selected = catalog.selectVersioned(original.providerId());
+                selected = catalog.selectVersioned(original.providerId());
                 var companion = companions.findByBindingId(original.bindingId());
                 if (companion.isPresent()) {
                     BoundSourceClaimEvidence proof = companion.orElseThrow();
@@ -180,6 +181,10 @@ public class JdbcProtectedAuthorizationEvidenceReader {
                 }
             }
             AuthorizationEvidence result = read(evidence, request, new Rows(), qualified);
+            // Recheck actual origin and claim generation after the complete graph load.
+            participant.requireCurrentClaims(credential, request);
+            if (selected != null && !selected.equals(catalog.selectVersioned(original.providerId())))
+                throw invalid();
             coordinates(pid, xid);
             heldClaims();
             return result;

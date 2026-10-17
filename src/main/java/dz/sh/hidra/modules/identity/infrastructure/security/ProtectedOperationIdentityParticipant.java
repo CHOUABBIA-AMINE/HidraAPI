@@ -299,6 +299,48 @@ public class ProtectedOperationIdentityParticipant {
         }
     }
 
+
+    /**
+     * Check the same already-consumed qualified credential after the full JDBC graph read.
+     * This cannot mint a new credential or reset its one-shot state.
+     */
+    @Transactional(propagation = Propagation.MANDATORY)
+    public void requireCurrentClaims(
+            QualifiedClaimRead qualified, AuthorizationEvaluationRequest request) {
+        if (qualified == null || !qualified.used.get()
+                || qualified.owner != this
+                || qualified.origin != Thread.currentThread()
+                || qualified.actual != SecurityContextHolder.getContext().getAuthentication()
+                || !qualified.actual.isAuthenticated()
+                || request == null || !qualified.request.equals(request)
+                || !TransactionSynchronizationManager.isActualTransactionActive()
+                || TransactionSynchronizationManager.isCurrentTransactionReadOnly()
+                || connectionResource() == null
+                || connectionResource() != qualified.transactionResource) throw denied();
+        try {
+            Contribution contribution = qualified.contribution;
+            Evidence e = contribution.evidence();
+            if (!e.bindingId().equals(qualified.locator.bindingId())
+                    || !e.sessionId().equals(qualified.locator.sessionId())
+                    || !e.jti().equals(qualified.locator.jti())
+                    || !e.userId().equals(request.userId())
+                    || !Boolean.TRUE.equals(
+                            jdbc.queryForObject(
+                                    "SELECT pg_backend_pid()=? AND txid_current()=?"
+                                            + " AND current_setting('transaction_isolation')='read committed'"
+                                            + " AND current_setting('transaction_read_only')='off'",
+                                    Boolean.class,
+                                    contribution.backendPid(),
+                                    contribution.transactionId()))) throw unavailable();
+            if (qualified.actual != SecurityContextHolder.getContext().getAuthentication())
+                throw denied();
+        } catch (AccessDeniedException denial) {
+            throw denial;
+        } catch (RuntimeException fault) {
+            throw unavailable();
+        }
+    }
+
     private Object connectionResource() {
         if (!TransactionSynchronizationManager.isActualTransactionActive()
                 || jdbc.getDataSource() == null) return null;

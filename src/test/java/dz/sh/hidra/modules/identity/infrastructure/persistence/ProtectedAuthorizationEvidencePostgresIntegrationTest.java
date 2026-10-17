@@ -138,6 +138,7 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
     @Autowired LoginSessionRepositoryPort sessions;
     @MockitoSpyBean ClaimNameCatalogPort claimCatalog;
     @MockitoSpyBean BoundSourceClaimIssuanceFencePort claimIssuanceFence;
+    @MockitoSpyBean BoundSourceClaimEvidenceRepositoryPort claimCompanions;
 
     @Autowired
     @Qualifier("hidraJwtDecoder")
@@ -797,6 +798,73 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
                         + "mapping_mode,effect,status,created_at,updated_at)"
                         + " VALUES (?,?,?,'private-original-group','groups','DIRECT_GRANT',?,'ACTIVE',now(),now())",
                 id(), f.provider(), permission(op), effect);
+    }
+
+
+    @Test
+    void c3ActualAuthenticationReplacedDuringQualifiedReadRejectsBeforeCommitGuard() {
+        var f = fixture("OIDC");
+        c3NonownerCapture();
+        c3PermissionMapping(f, "author", "GRANT");
+        var prepared = prepare(f);
+        var request = request(f, "author", false);
+        AtomicBoolean companionRead = new AtomicBoolean();
+        AtomicBoolean guardCalled = new AtomicBoolean();
+        doAnswer(invocation -> {
+                    var proof = invocation.callRealMethod();
+                    companionRead.set(true);
+                    SecurityContextHolder.clearContext();
+                    return proof;
+                })
+                .when(claimCompanions).findByBindingId(anyString());
+        assertThatThrownBy(
+                        () -> executor.execute(
+                                () -> {
+                                    c3SelectRestrictedRole();
+                                    var sealed = participant.qualifyClaims(prepared, request);
+                                    reader.loadQualified(sealed, request);
+                                    return "unfenced-origin";
+                                }, em::flush,
+                                () -> guardCalled.set(true)))
+                .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class)
+                .hasRootCauseInstanceOf(IllegalStateException.class);
+        assertThat(companionRead).isTrue();
+        assertThat(guardCalled).isFalse();
+    }
+
+    @Test
+    void c3SameTransactionMappingEditAfterClaimSelectionRejectsBeforeCommitGuard() {
+        var f = fixture("OIDC");
+        c3NonownerCapture();
+        c3PermissionMapping(f, "author", "GRANT");
+        var prepared = prepare(f);
+        var request = request(f, "author", false);
+        AtomicBoolean altered = new AtomicBoolean();
+        AtomicBoolean guardCalled = new AtomicBoolean();
+        doAnswer(invocation -> {
+                    var proof = invocation.callRealMethod();
+                    assertThat(jdbc.update(
+                            "UPDATE public.hidra_identity_external_permission_mapping "
+                                    + "SET status='INACTIVE',updated_at=clock_timestamp() "
+                                    + "WHERE identity_provider_id=?",
+                            f.provider())).isEqualTo(1);
+                    altered.set(true);
+                    return proof;
+                })
+                .when(claimCompanions).findByBindingId(anyString());
+        assertThatThrownBy(
+                        () -> executor.execute(
+                                () -> {
+                                    c3SelectRestrictedRole();
+                                    var sealed = participant.qualifyClaims(prepared, request);
+                                    reader.loadQualified(sealed, request);
+                                    return "stale-epoch";
+                                }, em::flush,
+                                () -> guardCalled.set(true)))
+                .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class)
+                .hasRootCauseInstanceOf(IllegalStateException.class);
+        assertThat(altered).isTrue();
+        assertThat(guardCalled).isFalse();
     }
 
     @Test

@@ -49,6 +49,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.test.context.*;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.context.bean.override.mockito.*;
 import org.springframework.transaction.*;
 import org.springframework.transaction.support.*;
@@ -135,6 +136,8 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
     @Autowired OperationAuthenticationBindingRepositoryPort bindings;
     @Autowired PasswordEncoder passwords;
     @Autowired LoginSessionRepositoryPort sessions;
+    @MockitoSpyBean ClaimNameCatalogPort claimCatalog;
+    @MockitoSpyBean BoundSourceClaimIssuanceFencePort claimIssuanceFence;
 
     @Autowired
     @Qualifier("hidraJwtDecoder")
@@ -176,6 +179,7 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
     @BeforeEach
     void initialize() {
         SecurityContextHolder.clearContext();
+        ReflectionTestUtils.setField(oidc, "verifiedClaimReceiptEnabled", false);
         cleanEvidence();
         flyway.validate();
         assertThat(flyway.info().pending()).isEmpty();
@@ -192,6 +196,7 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
 
     @AfterEach
     void clear() {
+        ReflectionTestUtils.setField(oidc, "verifiedClaimReceiptEnabled", false);
         directPort.finishVerification();
         SecurityContextHolder.clearContext();
         // Guarded provenance/security rows are retained; only this test's disposable receipt is
@@ -322,6 +327,7 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
                                         .audience(List.of("hidra-api"))
                                         .issuedAt(Instant.now().minusSeconds(1))
                                         .expiresAt(deadline)
+                                        .claim("groups", List.of("private-original-group"))
                                         .build()));
         var actual = oidc.convert(realExternal.decode(signed.getTokenValue()));
         SecurityContextHolder.getContext().setAuthentication(actual);
@@ -719,6 +725,106 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
                 effect,
                 context);
         return p;
+    }
+
+    /**
+     * The original source verification runs outside a transaction, but the actual
+     * issuance/claim replay and subsequent selection must be exercised under a
+     * non-owner whose generation relation is SELECT-only.
+     */
+    private void c3NonownerCapture() {
+        String role = "c3_source_claim_app";
+        if (!Boolean.TRUE.equals(jdbc.queryForObject(
+                "SELECT EXISTS(SELECT 1 FROM pg_roles WHERE rolname=?)",
+                Boolean.class, role))) {
+            jdbc.execute("CREATE ROLE " + role + " LOGIN PASSWORD 'synthetic-c3-test-only'");
+            jdbc.execute("REVOKE CREATE ON SCHEMA public FROM PUBLIC");
+            jdbc.execute("GRANT USAGE ON SCHEMA public TO " + role);
+            jdbc.execute("GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA public TO " + role);
+            jdbc.execute("REVOKE ALL ON public.hidra_identity_external_mapping_generation FROM " + role);
+            jdbc.execute("GRANT SELECT ON public.hidra_identity_external_mapping_generation TO " + role);
+        }
+        var appJdbc = new JdbcTemplate(
+                new org.springframework.jdbc.datasource.DriverManagerDataSource(
+                        POSTGRES.getJdbcUrl(), role, "synthetic-c3-test-only"));
+        var appCatalog =
+                new dz.sh.hidra.modules.identity.infrastructure.persistence.adapter
+                        .JdbcClaimNameCatalogAdapter(appJdbc);
+        doAnswer(i -> {
+                    if (TransactionSynchronizationManager.isActualTransactionActive())
+                        return i.callRealMethod();
+                    return appCatalog.selectVersioned(i.getArgument(0));
+                })
+                .when(claimCatalog).selectVersioned(anyString());
+        new TransactionTemplate(manager).executeWithoutResult(
+                status -> doAnswer(i -> {
+                    jdbc.execute("SET LOCAL ROLE " + role);
+                    return i.callRealMethod();
+                }).when(claimIssuanceFence).prepare(anyString(), any()));
+        ReflectionTestUtils.setField(oidc, "verifiedClaimReceiptEnabled", true);
+    }
+
+    private void c3PermissionMapping(Fixture f, String op, String effect) {
+        jdbc.update(
+                "INSERT INTO public.hidra_identity_external_permission_mapping"
+                        + "(id,identity_provider_id,permission_id,external_permission_code,claim_name,"
+                        + "mapping_mode,effect,status,created_at,updated_at)"
+                        + " VALUES (?,?,?,'private-original-group','groups','DIRECT_GRANT',?,'ACTIVE',now(),now())",
+                id(), f.provider(), permission(op), effect);
+    }
+
+    @Test
+    void c3VerifiedOriginalOidcSourceCanMatchCurrentPermissionWithoutPublicAssertion() {
+        var f = fixture("OIDC");
+        c3NonownerCapture();
+        c3PermissionMapping(f, "author", "GRANT");
+        var prepared = prepare(f);
+        var request = request(f, "author", false);
+        executor.execute(
+                () -> {
+                    var sealed = participant.qualifyClaims(prepared, request);
+                    jdbc.execute("SET LOCAL ROLE c3_source_claim_app");
+                    var evidence = reader.loadQualified(sealed, request);
+                    jdbc.execute("RESET ROLE");
+                    assertThat(evidence.failure()).isNull();
+                    assertThat(new AuthorizationPolicyEvaluator()
+                            .evaluate(request, evidence,
+                                    Instant.parse((String) evidence.attributes()
+                                            .get("context.evaluatedAt"))).decision())
+                            .isEqualTo(AuthorizationDecisionValue.PERMIT);
+                    assertThat(evidence.grants()).extracting(AuthorizationEvidence.Grant::order)
+                            .contains(5);
+                    assertThatThrownBy(() -> reader.loadQualified(sealed, request))
+                            .isInstanceOf(IllegalStateException.class);
+                    return "qualified";
+                }, em::flush,
+                () -> assertThat(jdbc.queryForObject("SELECT 1", Integer.class)).isEqualTo(1));
+    }
+
+    @Test
+    void c3LegacyOidcWithoutCompanionCannotPromotePotentialUnknownDeny() {
+        var f = fixture("OIDC");
+        c3NonownerCapture();
+        ReflectionTestUtils.setField(oidc, "verifiedClaimReceiptEnabled", false);
+        c3PermissionMapping(f, "author", "DENY");
+        grant(f, "author", "GRANT", "FACILITY", FACILITY);
+        var prepared = prepare(f);
+        var request = request(f, "author", false);
+        executor.execute(
+                () -> {
+                    var sealed = participant.qualifyClaims(prepared, request);
+                    jdbc.execute("SET LOCAL ROLE c3_source_claim_app");
+                    var result = reader.loadQualified(sealed, request);
+                    jdbc.execute("RESET ROLE");
+                    assertThat(result.failure()).isEqualTo("EVIDENCE_INDETERMINATE");
+                    assertThat(new AuthorizationPolicyEvaluator()
+                            .evaluate(request, result,
+                                    Instant.parse((String) result.attributes()
+                                            .get("context.evaluatedAt"))).decision())
+                            .isEqualTo(AuthorizationDecisionValue.INDETERMINATE);
+                    return "fail-closed";
+                }, em::flush,
+                () -> assertThat(jdbc.queryForObject("SELECT 1", Integer.class)).isEqualTo(1));
     }
 
     @Test

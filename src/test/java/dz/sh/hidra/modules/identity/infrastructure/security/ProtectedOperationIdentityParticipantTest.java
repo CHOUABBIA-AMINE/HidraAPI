@@ -174,6 +174,22 @@ class ProtectedOperationIdentityParticipantTest {
     }
 
     @Test
+    void c3ClaimCredentialCannotBeConstructedOrReusedWithoutAPhysicalTransaction() {
+        var type = ProtectedOperationIdentityParticipant.QualifiedClaimRead.class;
+        assertThat(type.getConstructors()).isEmpty();
+        assertThat(Modifier.isFinal(type.getModifiers())).isTrue();
+        assertThat(Arrays.stream(type.getDeclaredConstructors())
+                .allMatch(c -> Modifier.isPrivate(c.getModifiers()))).isTrue();
+        assertThat(Arrays.stream(type.getDeclaredFields())
+                .allMatch(f -> Modifier.isPrivate(f.getModifiers())
+                        && Modifier.isFinal(f.getModifiers()))).isTrue();
+        assertThat(type.getDeclaredMethods()).extracting(java.lang.reflect.Method::getName)
+                .contains("toString");
+        assertThatThrownBy(() -> participant.consumeClaims(null, null))
+                .isInstanceOf(AccessDeniedException.class);
+    }
+
+    @Test
     void preparedHandleHasNoPublicConstructorOrSensitiveText() {
         var p = participant.prepare();
         assertThat(p.getClass().getConstructors()).isEmpty();

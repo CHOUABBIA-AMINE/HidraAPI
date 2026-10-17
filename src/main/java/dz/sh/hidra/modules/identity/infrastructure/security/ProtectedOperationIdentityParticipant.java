@@ -24,6 +24,7 @@ import dz.sh.hidra.modules.identity.application.port.out.AccessTokenIssuerPort;
 import dz.sh.hidra.modules.identity.application.port.out.AuthenticationSecurityStateQueryPort;
 import dz.sh.hidra.modules.identity.application.port.out.OperationAuthenticationBindingRepositoryPort;
 import dz.sh.hidra.modules.identity.domain.model.OperationAuthenticationBinding;
+import dz.sh.hidra.modules.identity.domain.policy.AuthorizationEvaluationRequest;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcIdentityAuthorityFence;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcIdentityTemporalEventCollector.Candidate;
 
@@ -48,6 +49,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -211,6 +213,124 @@ public class ProtectedOperationIdentityParticipant {
             throw denial;
         } catch (RuntimeException fault) {
             throw unavailable();
+        }
+    }
+
+
+    /**
+     * Consume genuine prepared authentication once and bind the result to the actual caller
+     * transaction and exact request. This is Identity-private diagnostic evidence, not PERMIT.
+     */
+    @Transactional(propagation = Propagation.MANDATORY)
+    public QualifiedClaimRead qualifyClaims(Prepared prepared, AuthorizationEvaluationRequest request) {
+        if (request == null || request.scope() == null) throw denied();
+        Contribution contribution = contribute(prepared);
+        try {
+            Object transactionResource = connectionResource();
+            if (transactionResource == null) throw unavailable();
+            if (!prepared.locator.bindingId().equals(contribution.evidence().bindingId())
+                    || !prepared.locator.sessionId().equals(contribution.evidence().sessionId())
+                    || !prepared.locator.userId().equals(request.userId()))
+                throw unavailable();
+            context(prepared);
+            return new QualifiedClaimRead(
+                    this, prepared.actual, prepared.locator, request,
+                    contribution, transactionResource);
+        } catch (RuntimeException failure) {
+            throw unavailable();
+        }
+    }
+
+    /**
+     * The private-constructor object, not the returned structural Contribution, authenticates
+     * this entry. A failed or repeated consume irreversibly invalidates its one use.
+     */
+    @Transactional(propagation = Propagation.MANDATORY)
+    public Contribution consumeClaims(QualifiedClaimRead qualified, AuthorizationEvaluationRequest request) {
+        if (qualified == null || !qualified.used.compareAndSet(false, true)) throw denied();
+        if (qualified.owner != this
+                || qualified.origin != Thread.currentThread()
+                || qualified.actual != SecurityContextHolder.getContext().getAuthentication()
+                || !qualified.actual.isAuthenticated()
+                || request == null || !qualified.request.equals(request)
+                || !TransactionSynchronizationManager.isActualTransactionActive()
+                || TransactionSynchronizationManager.isCurrentTransactionReadOnly()
+                || connectionResource() != qualified.transactionResource) throw denied();
+        try {
+            Contribution contribution = qualified.contribution;
+            Evidence e = contribution.evidence();
+            if (!e.bindingId().equals(qualified.locator.bindingId())
+                    || !e.sessionId().equals(qualified.locator.sessionId())
+                    || !e.jti().equals(qualified.locator.jti())
+                    || !e.issuer().equals(qualified.locator.nativeIssuer())
+                    || !e.userId().equals(request.userId())
+                    || !Boolean.TRUE.equals(
+                            jdbc.queryForObject(
+                                    "SELECT pg_backend_pid()=? AND txid_current()=? AND "
+                                      + "current_setting('transaction_isolation')='read committed' AND "
+                                      + "current_setting('transaction_read_only')='off'",
+                                    Boolean.class, contribution.backendPid(), contribution.transactionId())))
+                throw unavailable();
+            OperationAuthenticationBinding stored =
+                    bindings.findByNativeIssuerAndJti(e.issuer(), e.jti())
+                            .orElseThrow(ProtectedOperationIdentityParticipant::denied);
+            registry.validatePersistentOrigin(stored);
+            if (!stored.equals(qualified.locator)
+                    || !stored.bindingId().equals(e.bindingId())
+                    || !stored.userId().equals(e.userId())
+                    || !stored.sessionId().equals(e.sessionId())
+                    || !stored.providerId().equals(e.providerId())
+                    || !stored.authenticationType().equals(e.authenticationType())
+                    || stored.providerSecurityVersion() != e.providerGeneration()
+                    || !Objects.equals(stored.externalIdentityId(), e.externalIdentityId())
+                    || !Objects.equals(stored.externalSecurityVersion(), e.externalGeneration())
+                    || !Objects.equals(stored.credentialId(), e.credentialId())
+                    || !Objects.equals(stored.credentialSecurityVersion(), e.credentialGeneration())
+                    || !Objects.equals(stored.expiresAt(), e.expiresAt())
+                    || !Objects.equals(stored.sourceExpiresAt(), e.sourceExpiresAt())
+                    || !states.current(stored, e.observedAt())) throw unavailable();
+            if (SecurityContextHolder.getContext().getAuthentication() != qualified.actual)
+                throw denied();
+            return contribution;
+        } catch (AccessDeniedException denial) {
+            throw denial;
+        } catch (RuntimeException fault) {
+            throw unavailable();
+        }
+    }
+
+    private Object connectionResource() {
+        if (!TransactionSynchronizationManager.isActualTransactionActive()
+                || jdbc.getDataSource() == null) return null;
+        return TransactionSynchronizationManager.getResource(jdbc.getDataSource());
+    }
+
+    /** Opaque one-shot claim-read credential. No public factory and no authority via fields. */
+    public static final class QualifiedClaimRead {
+        private final ProtectedOperationIdentityParticipant owner;
+        private final Thread origin = Thread.currentThread();
+        private final Authentication actual;
+        private final OperationAuthenticationBinding locator;
+        private final AuthorizationEvaluationRequest request;
+        private final Contribution contribution;
+        private final Object transactionResource;
+        private final AtomicBoolean used = new AtomicBoolean();
+
+        private QualifiedClaimRead(
+                ProtectedOperationIdentityParticipant owner, Authentication actual,
+                OperationAuthenticationBinding locator, AuthorizationEvaluationRequest request,
+                Contribution contribution, Object transactionResource) {
+            this.owner = owner;
+            this.actual = actual;
+            this.locator = locator;
+            this.request = request;
+            this.contribution = contribution;
+            this.transactionResource = transactionResource;
+        }
+
+        @Override
+        public String toString() {
+            return "QualifiedClaimRead[opaque]";
         }
     }
 

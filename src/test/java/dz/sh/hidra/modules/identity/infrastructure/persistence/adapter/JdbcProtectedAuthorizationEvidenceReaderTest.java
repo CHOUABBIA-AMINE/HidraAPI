@@ -180,6 +180,25 @@ class JdbcProtectedAuthorizationEvidenceReaderTest {
         TransactionSynchronizationManager.clear();
     }
 
+    @Test
+    void c3QualifiedOverloadCannotBeReachedFromPublicStructuralEvidence() {
+        assertThatThrownBy(() -> reader.loadQualified(null, request))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Protected authorization evidence is unavailable or corrupt.");
+        assertThat(
+                        Arrays.stream(
+                                        JdbcProtectedAuthorizationEvidenceReader.class
+                                                .getDeclaredMethods())
+                                .filter(m -> m.getName().equals("loadQualified"))
+                                .toList())
+                .hasSize(1)
+                .allSatisfy(m -> assertThat(m.getParameterTypes()[0])
+                        .isEqualTo(
+                                dz.sh.hidra.modules.identity.infrastructure.security
+                                        .ProtectedOperationIdentityParticipant.QualifiedClaimRead.class));
+        assertThat(decision(load())).isEqualTo(AuthorizationDecisionValue.PERMIT);
+    }
+
     private Map<String, Object> direct(
             String id, String effect, Instant from, Instant to, String scope, String ref) {
         return row(

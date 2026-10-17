@@ -210,6 +210,57 @@ class IdentityAuthorityFencePostgresIntegrationTest {
     }
 
     @Test
+    void claimTailLocksPrecedeSampleAndBlockIndependentCompanionWriters() throws Exception {
+        var binding = fixture("LOCAL", 300);
+        AtomicReference<Candidate> sampled = new AtomicReference<>();
+        executor.execute(
+                () -> {
+                    var c = fence.collect(binding.bindingId());
+                    sampled.set(c);
+                    assertThat(jdbc.queryForObject(
+                            """
+                            SELECT count(*) FROM pg_locks
+                            WHERE pid=pg_backend_pid() AND granted AND locktype='relation'
+                              AND ((relation='public.hidra_identity_external_mapping_generation'::regclass
+                                    AND mode='AccessShareLock')
+                                OR (relation='public.hidra_identity_bound_source_claim_evidence'::regclass
+                                    AND mode='ShareLock'))
+                            """, Integer.class)).isEqualTo(2);
+                    verifySameBackend(c);
+                    try (var opposing = connection()) {
+                        opposing.setAutoCommit(false);
+                        try (var statement = opposing.createStatement()) {
+                            statement.execute("SET lock_timeout='150ms'");
+                            assertThatThrownBy(() -> statement.execute(
+                                    "LOCK TABLE public.hidra_identity_bound_source_claim_evidence"
+                                            + " IN ROW EXCLUSIVE MODE"))
+                                    .isInstanceOf(SQLException.class)
+                                    .satisfies(failure -> assertThat(
+                                            ((SQLException) failure).getSQLState())
+                                            .isEqualTo("55P03"));
+                        } finally {
+                            opposing.rollback();
+                        }
+                    } catch (SQLException failure) {
+                        throw new AssertionError("Independent physical fence proof failed", failure);
+                    }
+                    return c;
+                },
+                em::flush,
+                () -> guard(sampled.get()));
+        try (var after = connection()) {
+            after.setAutoCommit(false);
+            try (var statement = after.createStatement()) {
+                statement.execute("SET lock_timeout='1000ms'");
+                statement.execute("LOCK TABLE public.hidra_identity_bound_source_claim_evidence"
+                        + " IN ROW EXCLUSIVE MODE");
+            } finally {
+                after.rollback();
+            }
+        }
+    }
+
+    @Test
     void freshFlywayJpaAndCompleteDependencyInventoryMatch() throws Exception {
         flyway.validate();
         assertThat(flyway.info().pending()).isEmpty();

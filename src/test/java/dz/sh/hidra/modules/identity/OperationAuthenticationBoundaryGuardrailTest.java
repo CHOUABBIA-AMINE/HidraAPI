@@ -71,6 +71,29 @@ class OperationAuthenticationBoundaryGuardrailTest {
     }
 
     @Test
+    void c3OpaqueCredentialCannotBeCallerConstructedOrPromotedByDiagnosticReader() throws Exception {
+        var qualified =
+                dz.sh.hidra.modules.identity.infrastructure.security
+                        .ProtectedOperationIdentityParticipant.QualifiedClaimRead.class;
+        assertThat(qualified.getConstructors()).isEmpty();
+        assertThat(Arrays.stream(qualified.getDeclaredConstructors())
+                .allMatch(c -> java.lang.reflect.Modifier.isPrivate(c.getModifiers()))).isTrue();
+        var reader =
+                dz.sh.hidra.modules.identity.infrastructure.persistence.adapter
+                        .JdbcProtectedAuthorizationEvidenceReader.class;
+        var methods = Arrays.stream(reader.getDeclaredMethods())
+                .filter(m -> m.getName().equals("loadQualified")).toList();
+        assertThat(methods).hasSize(1);
+        assertThat(methods.getFirst().getParameterTypes()[0]).isEqualTo(qualified);
+        var legacy = Arrays.stream(reader.getDeclaredMethods())
+                .filter(m -> m.getName().equals("load"))
+                .toList();
+        assertThat(legacy).hasSize(1);
+        assertThat(legacy.getFirst().getParameterTypes()[0]).isEqualTo(
+                TopologyOperationAuthenticationContract.Evidence.class);
+    }
+
+    @Test
     void nativeKeysCountUtf8BytesAndOwnerIdsCountPostgresqlCharacters() {
         assertThat(new AccessTokenIssuerSettings("é".repeat(256), "a".repeat(512), 1).ttlSeconds())
                 .isEqualTo(1);

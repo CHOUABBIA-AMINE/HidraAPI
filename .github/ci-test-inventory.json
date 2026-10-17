@@ -1436,6 +1436,7 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "c3OpaqueCredentialCannotBeCallerConstructedOrPromotedByDiagnosticReader",
         "directoryCaptureEntryPointsRemainPrivateAndHaveOnlyReviewedCallers",
         "exactExternalSubjectAndIssuerKeepBoundaryWhitespaceAndUnicode",
         "explicitNullBranchesAndPositiveGenerationsAreMandatory",
@@ -1457,7 +1458,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java",
-      "source_sha256": "c6c2349c676997d62c085d5cd3223475d255498ba2e0c806906e67c258b96ce3",
+      "source_sha256": "7b0c933f35be2b8a2dd2f8e939245ed41c10f203a26628d681c67826494bedad",
       "supports": []
     },
     {
@@ -1760,6 +1761,25 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "directoryPositiveObservationsDoNotConferCompleteSetSemantics",
+        "invalidUnrequestedOrEmptyExpectedValuesAreUncertain",
+        "localOrUnsupportedSourceNeverProvesExternalMembership",
+        "oidcAuthenticatedAbsentAndCompleteNonmatchAreNegative",
+        "oidcExactPresentCanMatchWithoutNormalization",
+        "unknownAndMalformedCannotBeUsedAsNegativeProof"
+      ],
+      "class": "dz.sh.hidra.modules.identity.domain.service.ExternalClaimMatchEvaluatorTest",
+      "dependency_reason": "HAPI-575 C3 domain-only exact claim comparison; 0 is unmeasured scheduling weight and not database execution evidence.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/domain/service/ExternalClaimMatchEvaluatorTest.java",
+      "source_sha256": "a82cba38339da2c479204c99fe505079da7eeca984673e1c214db6098f36583f",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0.058,
       "cases": [
         "arraysAndCoverageAreDefensiveAndStructuralEqualityIsStable",
@@ -1986,6 +2006,7 @@
         "addedStaticRelationsBlockNativeDmlUntilRelease",
         "allIdentityFencesPrecedeTemporalSampleOnOneBackend",
         "allTwentyTwoRelationsHoldReviewedModes",
+        "claimTailLocksPrecedeSampleAndBlockIndependentCompanionWriters",
         "freshFlywayJpaAndCompleteDependencyInventoryMatch",
         "lateFenceFailureRollsBackPrefixAndProvisionalJpaWrite",
         "materializedCandidateContainsNoAuthorityOrSecrets",
@@ -2000,7 +2021,7 @@
       "lane": "postgres-integration",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/IdentityAuthorityFencePostgresIntegrationTest.java",
-      "source_sha256": "d2ed257ea0e411869a52eef70be3c26f5036fe9687de0a00b9fbb30dfe0e06e4",
+      "source_sha256": "1fcb03bf785f46f993d93bb251d5e1c10a10f877cbd88626fe247810cd7eced9",
       "supports": []
     },
     {
@@ -2183,6 +2204,8 @@
         "allFourRealBoundActorsLoadDatabaseAuthorityAtFencedSample",
         "bothCompanyAndFacilityRequireIndependentPermits",
         "boundedOverflowMalformedStateAndRollbackStayClosed",
+        "c3LegacyOidcWithoutCompanionCannotPromotePotentialUnknownDeny",
+        "c3VerifiedOriginalOidcSourceCanMatchCurrentPermissionWithoutPublicAssertion",
         "committedRevocationBeforeFencesRemovesPermit",
         "directRoleAndGroupDeniesOverridePermit",
         "futureDenyBoundAndExpiryCannotExtendEvidence",
@@ -2199,7 +2222,7 @@
       "lane": "postgres-integration",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedAuthorizationEvidencePostgresIntegrationTest.java",
-      "source_sha256": "0774f434d44baff35e365135fd9ea655e5b0f9d5023bf73d4760616ae3b5437b",
+      "source_sha256": "8c7fce7b83c0808e73287e8565e03361bc539e38ef74e18a4a37d14cf4f83ad0",
       "supports": []
     },
     {
@@ -2313,6 +2336,7 @@
       "baseline_seconds": 0,
       "cases": [
         "boundsRowsJsonAndUnsupportedEvidence",
+        "c3QualifiedOverloadCannotBeReachedFromPublicStructuralEvidence",
         "hasNoJpaCacheWallClockDecisionPersistenceOrAuthorityExport",
         "preservesGrantOrderScopeWindowsAndDenyPrecedence",
         "preservesTypedAttributesAndConflicts",
@@ -2327,7 +2351,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java",
-      "source_sha256": "799485c2cba83a31e7a0a5b5081055a427d94ef4510730049a17a58fcebd26e1",
+      "source_sha256": "bf5d6cc4031688e111248874aeac0e797209d43e3bc12f4b05cf703ac770e727",
       "supports": []
     },
     {
@@ -2576,6 +2600,7 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "c3ClaimCredentialCannotBeConstructedOrReusedWithoutAPhysicalTransaction",
         "contributionHasOnlyImmutableScalarEvidenceAndNoPermission",
         "directoryCaptureEntryPointsRemainPrivateAndHaveOnlyReviewedCallers",
         "handlesAreSingleUseAndBoundToThreadAndAmbientIdentity",
@@ -2592,7 +2617,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipantTest.java",
-      "source_sha256": "04eb77b0539f694965349e98893da82ba6f1088fcbccecfae4855afb2e373830",
+      "source_sha256": "10a6ca8b337df0551a16033d8a9855cf5c6f5ce8c3c276eb3012a68900f7a1b6",
       "supports": []
     },
     {

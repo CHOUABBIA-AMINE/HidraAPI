@@ -22,8 +22,17 @@ package dz.sh.hidra.modules.identity.infrastructure.persistence.adapter;
 import dz.sh.hidra.modules.identity.application.contract.topology.TopologyOperationAuthenticationContract.Evidence;
 import dz.sh.hidra.modules.identity.domain.policy.*;
 import dz.sh.hidra.modules.identity.domain.service.AuthorizationExpressionStabilityCompiler;
+import dz.sh.hidra.modules.identity.domain.service.ExternalClaimMatchEvaluator;
+import dz.sh.hidra.modules.identity.application.port.out.BoundSourceClaimEvidenceRepositoryPort;
+import dz.sh.hidra.modules.identity.application.port.out.ClaimNameCatalogPort;
+import dz.sh.hidra.modules.identity.application.port.out.OperationAuthenticationBindingRepositoryPort;
+import dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipant;
+import dz.sh.hidra.modules.identity.infrastructure.security.TrustedAuthenticationVerificationRegistry;
+import dz.sh.hidra.modules.identity.domain.model.OperationAuthenticationBinding;
+import dz.sh.hidra.modules.identity.domain.value.BoundSourceClaimEvidence;
 import dz.sh.hidra.modules.identity.domain.value.*;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -85,11 +94,113 @@ public class JdbcProtectedAuthorizationEvidenceReader {
                     "reactivate",
                     "transfer");
     private final JdbcTemplate jdbc;
+    private final ProtectedOperationIdentityParticipant participant;
+    private final OperationAuthenticationBindingRepositoryPort bindings;
+    private final BoundSourceClaimEvidenceRepositoryPort companions;
+    private final ClaimNameCatalogPort catalog;
+    private final TrustedAuthenticationVerificationRegistry registry;
     private final AuthorizationExpressionStabilityCompiler syntax =
             new AuthorizationExpressionStabilityCompiler();
+    private final ExternalClaimMatchEvaluator match = new ExternalClaimMatchEvaluator();
 
+    /** Existing one-argument constructor remains for conservative diagnostic unit fixtures. */
     public JdbcProtectedAuthorizationEvidenceReader(JdbcTemplate jdbc) {
+        this(jdbc, null, null, null, null, null);
+    }
+
+    @Autowired
+    public JdbcProtectedAuthorizationEvidenceReader(
+            JdbcTemplate jdbc,
+            ProtectedOperationIdentityParticipant participant,
+            OperationAuthenticationBindingRepositoryPort bindings,
+            BoundSourceClaimEvidenceRepositoryPort companions,
+            ClaimNameCatalogPort catalog,
+            TrustedAuthenticationVerificationRegistry registry) {
         this.jdbc = Objects.requireNonNull(jdbc);
+        this.participant = participant;
+        this.bindings = bindings;
+        this.companions = companions;
+        this.catalog = catalog;
+        this.registry = registry;
+    }
+
+    private record QualifiedClaims(ClaimCoverage coverage, String type) {}
+
+    /**
+     * The only claim-capable overload accepts an opaque issuer- and transaction-bound entry.
+     * It must not delegate to the public, structural diagnostic overload.
+     */
+    @Transactional(propagation = Propagation.MANDATORY)
+    public AuthorizationEvidence loadQualified(
+            ProtectedOperationIdentityParticipant.QualifiedClaimRead credential,
+            AuthorizationEvaluationRequest request) {
+        try {
+            if (participant == null || bindings == null || companions == null
+                    || registry == null || catalog == null) throw invalid();
+            var contribution = participant.consumeClaims(credential, request);
+            Evidence evidence = contribution.evidence();
+            int pid = contribution.backendPid();
+            long xid = contribution.transactionId();
+            validate(evidence, request, pid, xid);
+            coordinates(pid, xid);
+            heldClaims();
+            OperationAuthenticationBinding original =
+                    bindings.findByNativeIssuerAndJti(evidence.issuer(), evidence.jti())
+                            .orElseThrow(JdbcProtectedAuthorizationEvidenceReader::invalid);
+            registry.validatePersistentOrigin(original);
+            if (!original.bindingId().equals(evidence.bindingId())
+                    || !original.sessionId().equals(evidence.sessionId())
+                    || !original.userId().equals(evidence.userId())
+                    || !original.providerId().equals(evidence.providerId())
+                    || !original.authenticationType().equals(evidence.authenticationType())
+                    || original.providerSecurityVersion() != evidence.providerGeneration()
+                    || !Objects.equals(original.externalIdentityId(), evidence.externalIdentityId())
+                    || !Objects.equals(original.externalSecurityVersion(), evidence.externalGeneration())
+                    || !Objects.equals(original.credentialId(), evidence.credentialId())
+                    || !Objects.equals(original.credentialSecurityVersion(), evidence.credentialGeneration())
+                    || !original.expiresAt().equals(evidence.expiresAt())
+                    || !Objects.equals(original.sourceExpiresAt(), evidence.sourceExpiresAt()))
+                throw invalid();
+            QualifiedClaims qualified = null;
+            if (!"LOCAL".equals(original.authenticationType())) {
+                var selected = catalog.selectVersioned(original.providerId());
+                var companion = companions.findByBindingId(original.bindingId());
+                if (companion.isPresent()) {
+                    BoundSourceClaimEvidence proof = companion.orElseThrow();
+                    registry.validatePersistentSourceClaimOrigin(original, proof);
+                    if (proof.evidenceFormat() != 1
+                            || proof.mappingGeneration() != selected.generation()
+                            || !proof.coverage().entries().keySet()
+                                    .equals(new TreeSet<>(selected.selection().names()))
+                            || !evidence.observedAt().isBefore(original.expiresAt())
+                            || (original.sourceExpiresAt() != null
+                                && !evidence.observedAt().isBefore(original.sourceExpiresAt())))
+                        throw invalid();
+                    qualified = new QualifiedClaims(proof.coverage(), original.authenticationType());
+                }
+            }
+            AuthorizationEvidence result = read(evidence, request, new Rows(), qualified);
+            coordinates(pid, xid);
+            heldClaims();
+            return result;
+        } catch (RuntimeException failure) {
+            throw invalid();
+        }
+    }
+
+    private void heldClaims() {
+        if (!RELATIONS.stream().map(PREFIX::concat).toList()
+                    .equals(jdbc.queryForList(HELD, String.class))) throw invalid();
+        if (!Boolean.TRUE.equals(
+                jdbc.queryForObject(
+                        """
+                        SELECT EXISTS (SELECT 1 FROM pg_locks WHERE pid=pg_backend_pid()
+                            AND relation='public.hidra_identity_external_mapping_generation'::regclass
+                            AND granted AND locktype='relation' AND mode='AccessShareLock')
+                         AND EXISTS (SELECT 1 FROM pg_locks WHERE pid=pg_backend_pid()
+                            AND relation='public.hidra_identity_bound_source_claim_evidence'::regclass
+                            AND granted AND locktype='relation' AND mode='ShareLock')
+                        """, Boolean.class))) throw invalid();
     }
 
     @Transactional(propagation = Propagation.MANDATORY)
@@ -182,6 +293,11 @@ public class JdbcProtectedAuthorizationEvidenceReader {
     }
 
     private AuthorizationEvidence read(Evidence i, AuthorizationEvaluationRequest r, Rows q) {
+        return read(i, r, q, null);
+    }
+
+    private AuthorizationEvidence read(
+            Evidence i, AuthorizationEvaluationRequest r, Rows q, QualifiedClaims verified) {
         Instant at = i.observedAt();
         Row user = one(q.get("user", "id,user_type,status,locked_until", "id=?", i.userId()));
         Row provider = one(q.get("provider", "id,status", "id=?", i.providerId()));
@@ -231,48 +347,48 @@ public class JdbcProtectedAuthorizationEvidenceReader {
                         "id,group_id,membership_type,source_provider_id,source_mapping_id,status,valid_from,valid_to",
                         "user_id=?",
                         i.userId());
-        List<Row> groups = q.in("group", "id,status", "id", ids(members, "group_id"));
+        Set<String> mapIds = ids(members, "source_mapping_id");
+        List<Row> gm =
+                q.getIn(
+                        "external_group_mapping",
+                        "id,identity_provider_id,group_id,mapping_mode,status,claim_name,"
+                          + "external_group_id,external_group_name,external_group_dn",
+                        "id", mapIds, " OR identity_provider_id=?", i.providerId());
+        List<Row> rm =
+                q.get(
+                        "external_role_mapping",
+                        "id,identity_provider_id,role_id,external_role_code,claim_name,"
+                          + "mapping_mode,status,scope_type,scope_reference_id",
+                        "identity_provider_id=?", i.providerId());
+        List<Row> pm =
+                q.get(
+                        "external_permission_mapping",
+                        "id,identity_provider_id,permission_id,external_permission_code,"
+                          + "claim_name,effect,mapping_mode,status",
+                        "identity_provider_id=?", i.providerId());
+        Set<String> groupIds = ids(members, "group_id");
+        groupIds.addAll(ids(gm, "group_id"));
+        List<Row> groups = q.in("group", "id,status", "id", groupIds);
         List<Row> gr =
                 q.in(
                         "group_role_grant",
                         "id,group_id,role_id,scope_type,scope_reference_id,status,valid_from,valid_to",
-                        "group_id",
-                        ids(members, "group_id"));
+                        "group_id", groupIds);
         Set<String> roleIds = ids(ur, "role_id");
         roleIds.addAll(ids(gr, "role_id"));
+        roleIds.addAll(ids(rm, "role_id"));
         List<Row> roles = q.in("role", "id,status", "id", roleIds);
         List<Row> rp =
                 q.getIn(
                         "role_permission_grant",
                         "id,role_id,permission_id,effect,condition_expression::text AS"
                             + " condition_expression,status,valid_from,valid_to",
-                        "role_id",
-                        roleIds,
-                        " AND permission_id=?",
-                        p.s("id"));
-        Set<String> mapIds = ids(members, "source_mapping_id");
-        List<Row> gm =
-                q.getIn(
-                        "external_group_mapping",
-                        "id,identity_provider_id,group_id,mapping_mode,status",
-                        "id",
-                        mapIds,
-                        " OR identity_provider_id=?",
-                        i.providerId());
-        List<Row> rm =
-                q.get(
-                        "external_role_mapping",
-                        "id,mapping_mode,status",
-                        "identity_provider_id=?",
-                        i.providerId());
-        List<Row> pm =
-                q.get(
-                        "external_permission_mapping",
-                        "id,mapping_mode,status",
-                        "identity_provider_id=?",
-                        i.providerId());
+                        "role_id", roleIds, " AND permission_id=?", p.s("id"));
         Set<String> subjects = new TreeSet<>(Set.of(i.userId()));
         subjects.addAll(ids(members, "group_id"));
+        // Include referenced assertion targets before the qualified matching pass.
+        // Attributes are applied only after a source-qualified group is eligible.
+        subjects.addAll(ids(gm, "group_id"));
         if (i.externalIdentityId() != null) subjects.add(i.externalIdentityId());
         List<Row> attrs =
                 q.in(
@@ -315,6 +431,8 @@ public class JdbcProtectedAuthorizationEvidenceReader {
         // Missing referenced rows are storage corruption, not a silent absence of DENY.
         requireRefs(ur, "role_id", roles);
         requireRefs(members, "group_id", groups);
+        requireRefs(gm, "group_id", groups);
+        requireRefs(rm, "role_id", roles);
         requireRefs(gr, "role_id", roles);
         requireRefs(members, "source_mapping_id", gm);
         requireRefs(attrs, "attribute_definition_id", defs);
@@ -322,16 +440,31 @@ public class JdbcProtectedAuthorizationEvidenceReader {
         requireRefs(attrs, "source_provider_id", sources);
         List<AuthorizationEvidence.Grant> grants = new ArrayList<>();
         boolean unresolved = false;
+        // The legacy diagnostic path is always unqualified: never interpret a caller
+        // supplied claim, missing companion or ordinary assertion DTO as authority.
         for (Row m : gm)
             if (i.providerId().equals(m.s("identity_provider_id"))
                     && active(m, ExternalMappingStatus.class)
-                    && mode(m, "ASSERTION_ONLY")) unresolved = true;
+                    && mode(m, "ASSERTION_ONLY") && verified == null) unresolved = true;
         for (Row m : rm)
-            if (active(m, ExternalMappingStatus.class) && mode(m, "DIRECT_GRANT"))
+            if (active(m, ExternalMappingStatus.class) && mode(m, "DIRECT_GRANT")
+                    && verified == null && covers(m, r)) unresolved = true;
+        for (Row m : pm)
+            if (active(m, ExternalMappingStatus.class) && mode(m, "DIRECT_GRANT")
+                    && verified == null) unresolved = true;
+        // Never silently drop an active unsupported mapping mode.
+        for (Row m : gm)
+            if (i.providerId().equals(m.s("identity_provider_id"))
+                    && active(m, ExternalMappingStatus.class)
+                    && !mode(m, "ASSERTION_ONLY") && !mode(m, "SYNC_MEMBERSHIP"))
+                unresolved = true;
+        for (Row m : rm)
+            if (active(m, ExternalMappingStatus.class) && !mode(m, "DIRECT_GRANT"))
                 unresolved = true;
         for (Row m : pm)
-            if (active(m, ExternalMappingStatus.class) && mode(m, "DIRECT_GRANT"))
-                unresolved = true;
+            if (active(m, ExternalMappingStatus.class)
+                    && p.s("id").equals(m.s("permission_id"))
+                    && !mode(m, "DIRECT_GRANT")) unresolved = true;
         for (Row g : direct)
             if (active(g, GrantStatus.class) && window(g, at) && covers(g, r))
                 grants.add(grant(0, g, List.of(g.s("id")), List.of()));
@@ -374,6 +507,66 @@ public class JdbcProtectedAuthorizationEvidenceReader {
                             2,
                             append(chain, g.s("id")),
                             proof);
+        }
+        // Positive source observations only. Never coerce LDAP/AD incomplete
+        // membership to absence or allow unknown potential DENY to be ignored.
+        if (verified != null) {
+            for (Row m : gm) {
+                if (!i.providerId().equals(m.s("identity_provider_id"))
+                        || !active(m, ExternalMappingStatus.class)
+                        || !mode(m, "ASSERTION_ONLY")) continue;
+                List<String> candidates =
+                        Arrays.stream(new String[] {
+                            m.s("external_group_id"), m.s("external_group_name"),
+                            m.s("external_group_dn") })
+                        .filter(Objects::nonNull).distinct().toList();
+                var result = match.match(verified.coverage(), verified.type(),
+                        m.s("claim_name"), candidates);
+                if (result == ExternalClaimMatchEvaluator.Outcome.INDETERMINATE) {
+                    unresolved = true;
+                    continue;
+                }
+                if (result != ExternalClaimMatchEvaluator.Outcome.MATCH) continue;
+                String groupId = m.s("group_id");
+                if (!active(find(groups, groupId), GroupStatus.class)) continue;
+                eligibleGroups.add(groupId);
+                for (Row g : gr) {
+                    if (!groupId.equals(g.s("group_id"))
+                            || !active(g, GrantStatus.class) || !window(g, at)
+                            || !covers(g, r)) continue;
+                    addRole(grants, g.s("role_id"), roles, rp, at, 3,
+                            List.of(m.s("id"), g.s("id")), List.of(
+                                    Map.of("providerId", i.providerId(),
+                                            "mappingId", m.s("id"), "source", "BOUND_CLAIM")));
+                }
+            }
+            for (Row m : rm) {
+                if (!active(m, ExternalMappingStatus.class)
+                        || !mode(m, "DIRECT_GRANT") || !covers(m, r)) continue;
+                var result = match.match(verified.coverage(), verified.type(),
+                        m.s("claim_name"), List.of(m.s("external_role_code")));
+                if (result == ExternalClaimMatchEvaluator.Outcome.INDETERMINATE)
+                    unresolved = true;
+                else if (result == ExternalClaimMatchEvaluator.Outcome.MATCH)
+                    addRole(grants, m.s("role_id"), roles, rp, at, 4,
+                            List.of(m.s("id")), List.of(Map.of(
+                                    "providerId", i.providerId(),
+                                    "mappingId", m.s("id"), "source", "BOUND_CLAIM")));
+            }
+            for (Row m : pm) {
+                if (!active(m, ExternalMappingStatus.class)
+                        || !mode(m, "DIRECT_GRANT")
+                        || !p.s("id").equals(m.s("permission_id"))) continue;
+                var result = match.match(verified.coverage(), verified.type(),
+                        m.s("claim_name"), List.of(m.s("external_permission_code")));
+                if (result == ExternalClaimMatchEvaluator.Outcome.INDETERMINATE)
+                    unresolved = true;
+                else if (result == ExternalClaimMatchEvaluator.Outcome.MATCH)
+                    grants.add(new AuthorizationEvidence.Grant(
+                            5, GrantEffect.valueOf(m.s("effect")), List.of(m.s("id")),
+                            null, List.of(Map.of("providerId", i.providerId(),
+                                    "mappingId", m.s("id"), "source", "BOUND_CLAIM"))));
+            }
         }
         Map<String, Object> facts = new TreeMap<>();
         facts.put("subject.id", i.userId());

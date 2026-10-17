@@ -98,6 +98,29 @@ public class JdbcIdentityAuthorityFence {
         jdbc.execute(LOCKS);
         if (!RELATIONS.equals(jdbc.queryForList(HELD, String.class).stream().sorted().toList()))
             throw invalid("Complete Identity relation fences required");
+        // Prefix first, then the committed epoch and companion row fence, then DB time.
+        // AccessShare protects schema epoch while Share conflicts with companion DML.
+        jdbc.execute(
+                "LOCK TABLE public.hidra_identity_external_mapping_generation"
+                        + " IN ACCESS SHARE MODE");
+        jdbc.execute(
+                "LOCK TABLE public.hidra_identity_bound_source_claim_evidence IN SHARE MODE");
+        if (!Boolean.TRUE.equals(
+                jdbc.queryForObject(
+                        """
+                        SELECT EXISTS (
+                            SELECT 1 FROM pg_catalog.pg_locks
+                            WHERE pid=pg_backend_pid() AND granted AND locktype='relation'
+                              AND relation='public.hidra_identity_external_mapping_generation'::regclass
+                              AND mode='AccessShareLock'
+                        ) AND EXISTS (
+                            SELECT 1 FROM pg_catalog.pg_locks
+                            WHERE pid=pg_backend_pid() AND granted AND locktype='relation'
+                              AND relation='public.hidra_identity_bound_source_claim_evidence'::regclass
+                              AND mode='ShareLock'
+                        )
+                        """,
+                        Boolean.class))) throw invalid("Identity claim tail fences unavailable");
         Candidate candidate = collector.collect(bindingId);
         if (candidate == null
                 || !Boolean.TRUE.equals(

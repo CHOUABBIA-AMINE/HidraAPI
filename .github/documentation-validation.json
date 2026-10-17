@@ -681,6 +681,20 @@
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
       "status": "TARGET"
+    },
+    "doc/roadmap/ULTIMATE_PHASES.md": {
+      "status": "CURRENT",
+      "metadata_from": [
+        "doc/roadmap/ULTIMATE_PHASES.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ]
+    },
+    "doc/roadmap/ULTIMATE_TASKS.md": {
+      "status": "CURRENT",
+      "metadata_from": [
+        "doc/roadmap/ULTIMATE_TASKS.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ]
     }
   },
   "format_version": 1,

@@ -63,6 +63,123 @@ class TrustedAuthenticationVerificationTest {
         TransactionSynchronizationManager.clear();
     }
 
+    /** A real Spring proxy verifies test-fixture mechanics without pretending to execute SQL. */
+    static class TransactionProbe {
+        @org.springframework.transaction.annotation.Transactional(readOnly = true)
+        public String select() {
+            return "owner";
+        }
+
+        @org.springframework.transaction.annotation.Transactional(
+                propagation = org.springframework.transaction.annotation.Propagation.MANDATORY)
+        public void append(String value) {}
+    }
+
+    private static class ProbeTransactionManager
+            extends org.springframework.transaction.support.AbstractPlatformTransactionManager {
+        private static class State
+                implements org.springframework.transaction.support.SmartTransactionObject {
+            boolean active;
+            boolean rollbackOnly;
+
+            @Override
+            public boolean isRollbackOnly() {
+                return rollbackOnly;
+            }
+        }
+
+        private final ThreadLocal<State> current = new ThreadLocal<>();
+
+        @Override
+        protected Object doGetTransaction() {
+            return current.get() == null ? new State() : current.get();
+        }
+
+        @Override
+        protected boolean isExistingTransaction(Object transaction) {
+            return ((State) transaction).active;
+        }
+
+        @Override
+        protected void doBegin(
+                Object transaction,
+                org.springframework.transaction.TransactionDefinition definition) {
+            State state = (State) transaction;
+            state.active = true;
+            current.set(state);
+        }
+
+        @Override
+        protected void doCommit(
+                org.springframework.transaction.support.DefaultTransactionStatus status) {}
+
+        @Override
+        protected void doRollback(
+                org.springframework.transaction.support.DefaultTransactionStatus status) {}
+
+        @Override
+        protected void doSetRollbackOnly(
+                org.springframework.transaction.support.DefaultTransactionStatus status) {
+            ((State) status.getTransaction()).rollbackOnly = true;
+        }
+
+        @Override
+        protected void doCleanupAfterCompletion(Object transaction) {
+            ((State) transaction).active = false;
+            current.remove();
+        }
+    }
+
+    @Test
+    void proxySpyTargetsSeparateReadOnlySelectionFromWritableOwnerAndPreserveMandatoryAdvice() {
+        var manager = new ProbeTransactionManager();
+        var spy = org.mockito.Mockito.spy(new TransactionProbe());
+        var advice = new org.springframework.transaction.interceptor.TransactionInterceptor();
+        advice.setTransactionManager(manager);
+        advice.setTransactionAttributeSource(
+                new org.springframework.transaction.annotation
+                        .AnnotationTransactionAttributeSource());
+        var factory = new org.springframework.aop.framework.ProxyFactory(spy);
+        factory.setProxyTargetClass(true);
+        factory.addAdvice(advice);
+        var proxy = (TransactionProbe) factory.getProxy();
+        TransactionProbe target =
+                org.springframework.test.util.AopTestUtils.getUltimateTargetObject(proxy);
+        assertThat(target).isSameAs(spy);
+        org.mockito.Mockito.doAnswer(
+                        call ->
+                                TransactionSynchronizationManager.isCurrentTransactionReadOnly()
+                                        ? "source"
+                                        : call.callRealMethod())
+                .when(target)
+                .select();
+        org.mockito.Mockito.doThrow(new IllegalStateException("Synthetic append refusal"))
+                .when(target)
+                .append(org.mockito.ArgumentMatchers.anyString());
+        assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isFalse();
+        assertThat(proxy.select()).isEqualTo("source");
+        var owner = new org.springframework.transaction.support.TransactionTemplate(manager);
+        String ownerSelection =
+                owner.execute(
+                        status -> {
+                            assertThat(
+                                            TransactionSynchronizationManager
+                                                    .isCurrentTransactionReadOnly())
+                                    .isFalse();
+                            return proxy.select();
+                        });
+        assertThat(ownerSelection).isEqualTo("owner");
+        assertThatThrownBy(() -> owner.executeWithoutResult(status -> proxy.append("write")))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Synthetic append refusal");
+        assertThatThrownBy(() -> proxy.append("unowned"))
+                .isInstanceOf(
+                        org.springframework.transaction.IllegalTransactionStateException.class);
+        org.mockito.Mockito.verify(target).append("write");
+        org.mockito.Mockito.verify(target, org.mockito.Mockito.never()).append("unowned");
+        assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isFalse();
+    }
+
     private record ClaimsFixture(
             TrustedAuthenticationVerificationRegistry owner,
             dz.sh.hidra.modules.identity.application.port.out.BoundSourceClaimIssuanceFencePort

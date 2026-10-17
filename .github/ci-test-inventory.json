@@ -1854,7 +1854,7 @@
       "lane": "postgres-integration",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/BoundAuthenticationCompletionPostgresIntegrationTest.java",
-      "source_sha256": "d69e79c57792d54d448616d84234705677ad9fe2f11970d5c252912932dcc5e4",
+      "source_sha256": "fc21c2830fdfda341807527110111bb846ac8fc41aaf8977c863951bceb1a4a7",
       "supports": []
     },
     {
@@ -2656,6 +2656,7 @@
         "oversizeNativeBearerDeniesBeforeDecoderOrStorageLookup",
         "persistentWitnessSurvivesRegistryRestartButRejectsAnotherKey",
         "previousInvocationHandleCannotCrossIntoNewInvocation",
+        "proxySpyTargetsSeparateReadOnlySelectionFromWritableOwnerAndPreserveMandatoryAdvice",
         "readOnlyTransactionCannotAttest",
         "readerDoesNotTreatStructurallyValidCopiedProducerTagAsAuthority",
         "signedRawTypeCoercionAndDuplicateJsonCannotPassNativeReader",
@@ -2672,7 +2673,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationTest.java",
-      "source_sha256": "39164f1cd7e59feb77f5700474c5ef12fced1ce33e0837938e713b260a0f0463",
+      "source_sha256": "e2a24c08ca900920b160578cefc28e297e15f1c5a7c18d4e05d066d32006f9a6",
       "supports": []
     },
     {

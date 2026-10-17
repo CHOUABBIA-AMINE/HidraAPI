@@ -31,6 +31,7 @@ import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.test.context.*;
 import org.springframework.test.context.bean.override.mockito.*;
+import org.springframework.test.util.AopTestUtils;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.*;
 import org.springframework.transaction.support.*;
@@ -154,6 +155,18 @@ class BoundAuthenticationCompletionPostgresIntegrationTest {
         SecurityContextHolder.clearContext();
     }
 
+    private BoundSourceClaimEvidenceRepositoryPort sourceClaimsTarget() {
+        return AopTestUtils.getUltimateTargetObject(sourceClaims);
+    }
+
+    private BoundSourceClaimIssuanceFencePort claimFenceTarget() {
+        return AopTestUtils.getUltimateTargetObject(claimFence);
+    }
+
+    private ClaimNameCatalogPort claimCatalogTarget() {
+        return AopTestUtils.getUltimateTargetObject(claimCatalog);
+    }
+
     private void enableSyntheticNonownerCapture() {
         String role = "completion_claim_app";
         if (!Boolean.TRUE.equals(
@@ -181,23 +194,25 @@ class BoundAuthenticationCompletionPostgresIntegrationTest {
                         .JdbcClaimNameCatalogAdapter(appJdbc);
         doAnswer(
                         i -> {
-                            if (TransactionSynchronizationManager.isActualTransactionActive())
+                            // Source selection has its own read-only transaction from the proxy.
+                            // Issuance participates in the existing writable owner transaction.
+                            if (TransactionSynchronizationManager.isActualTransactionActive()
+                                    && !TransactionSynchronizationManager
+                                            .isCurrentTransactionReadOnly())
                                 return i.callRealMethod();
                             return appCatalog.selectVersioned(i.getArgument(0));
                         })
-                .when(claimCatalog)
+                .when(claimCatalogTarget())
                 .selectVersioned(anyString());
-        // The transactional proxy enforces MANDATORY even while Mockito configures its spy.
-        new TransactionTemplate(manager)
-                .executeWithoutResult(
-                        status ->
-                                doAnswer(
-                                                i -> {
-                                                    jdbc.execute("SET LOCAL ROLE " + role);
-                                                    return i.callRealMethod();
-                                                })
-                                        .when(claimFence)
-                                        .prepare(anyString(), any()));
+        // Configure the underlying spy without invoking transactional advice during setup.
+        // Runtime calls still enter the original Spring proxy and its MANDATORY boundary.
+        doAnswer(
+                        i -> {
+                            jdbc.execute("SET LOCAL ROLE " + role);
+                            return i.callRealMethod();
+                        })
+                .when(claimFenceTarget())
+                .prepare(anyString(), any());
         ReflectionTestUtils.setField(oidc, "verifiedClaimReceiptEnabled", true);
     }
 
@@ -205,8 +220,8 @@ class BoundAuthenticationCompletionPostgresIntegrationTest {
         String role = UUID.randomUUID().toString();
         jdbc.update(
                 "INSERT INTO public.hidra_identity_role"
-                    + " (id,code,role_type,status,created_at,updated_at) VALUES"
-                    + " (?,?,'EXTERNAL_MAPPED','ACTIVE',now(),now())",
+                        + " (id,code,role_type,status,created_at,updated_at) VALUES"
+                        + " (?,?,'EXTERNAL_MAPPED','ACTIVE',now(),now())",
                 role,
                 role);
         jdbc.update(
@@ -264,7 +279,7 @@ class BoundAuthenticationCompletionPostgresIntegrationTest {
         var f = fixture("OIDC");
         enableSyntheticNonownerCapture();
         doThrow(new IllegalStateException("Synthetic companion refusal"))
-                .when(sourceClaims)
+                .when(sourceClaimsTarget())
                 .append(any());
         assertThatThrownBy(() -> capturedOidc(f)).isInstanceOf(IllegalStateException.class);
         assertNoOwnerSuccess(f);
@@ -280,10 +295,8 @@ class BoundAuthenticationCompletionPostgresIntegrationTest {
     void defaultOffOidcNeverInvokesClaimFenceOrCompanionStorage() {
         var f = fixture("OIDC");
         authenticate(f);
-        new TransactionTemplate(manager)
-                .executeWithoutResult(
-                        status -> verify(claimFence, never()).prepare(anyString(), any()));
-        verify(sourceClaims, never()).append(any());
+        verify(claimFenceTarget(), never()).prepare(anyString(), any());
+        verify(sourceClaimsTarget(), never()).append(any());
     }
 
     @Test

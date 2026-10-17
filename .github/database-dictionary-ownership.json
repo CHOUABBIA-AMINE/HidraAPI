@@ -67,10 +67,11 @@
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/identity/domain/value/BoundSourceClaimEvidence.java",
       "src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcBoundSourceClaimEvidenceRepositoryAdapter.java",
-      "src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql"
+      "src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql",
+      "src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql"
     ],
     "owner": "identity",
-    "purpose": "Immutable bounded original OIDC claim coverage accompanying native issuance; structural persistence grants no producer or permission authority."
+    "purpose": "Immutable bounded original OIDC or authenticated LDAP/AD attribute observations accompanying native issuance; structural persistence grants no producer, completeness or permission authority."
   },
   "public.hidra_identity_external_identity": {
     "evidence": [

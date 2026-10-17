@@ -1,21 +1,10 @@
 /**
- *
- * @Project     : HidraAPI
- * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
- * @Author      : Abir MEDJERAB
- * @Owner       : Sonatrach / TRC : Digitalization Initiative
- *
- * @Name        : LdapCredentialVerificationAdapterTest
- * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-14
- *
- * @Type        : Class
- * @Layer       : Test
- * @Module      : identity
- * @Package     : dz.sh.hidra.modules.identity.infrastructure.security
- *
- * @Description : Verifies LDAP search escaping and stable directory identity attribute normalization without external authorization mapping.
- *
+ * @Project : HidraAPI @Product : Hidra - Hydrocarbon Intelligence for Data, Risk, and
+ * Analytics @Author : Abir MEDJERAB @Owner : Sonatrach / TRC : Digitalization Initiative @Name :
+ * LdapCredentialVerificationAdapterTest @CreatedOn : 2025-06-26 @UpdatedOn : 2026-10-14 @Type :
+ * Class @Layer : Test @Module : identity @Package :
+ * dz.sh.hidra.modules.identity.infrastructure.security @Description : Verifies LDAP search escaping
+ * and stable directory identity attribute normalization without external authorization mapping.
  */
 package dz.sh.hidra.modules.identity.infrastructure.security;
 
@@ -39,6 +28,46 @@ import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
 
 class LdapCredentialVerificationAdapterTest {
+
+    @Test
+    void callbackAttributeFailureCannotReturnAnIdentityOrExposeNamingDetails() throws Exception {
+        var adapter = adapter("(uid={0})");
+        var template = mock(org.springframework.ldap.core.LdapTemplate.class);
+        org.springframework.test.util.ReflectionTestUtils.setField(
+                adapter, "ldapTemplate", template);
+        var context = mock(javax.naming.directory.DirContext.class);
+        org.mockito.Mockito.when(
+                        context.getAttributes(
+                                org.mockito.ArgumentMatchers.any(javax.naming.Name.class),
+                                org.mockito.ArgumentMatchers.any(String[].class)))
+                .thenThrow(new javax.naming.NamingException("private-directory-value"));
+        org.mockito.Mockito.when(
+                        template.authenticate(
+                                org.mockito.ArgumentMatchers.anyString(),
+                                org.mockito.ArgumentMatchers.anyString(),
+                                org.mockito.ArgumentMatchers.anyString(),
+                                org.mockito.ArgumentMatchers.any(
+                                        org.springframework.ldap.core
+                                                .AuthenticatedLdapEntryContextCallback.class)))
+                .thenAnswer(
+                        i -> {
+                            ((org.springframework.ldap.core.AuthenticatedLdapEntryContextCallback)
+                                            i.getArgument(3))
+                                    .executeWithContext(
+                                            context,
+                                            new org.springframework.ldap.core
+                                                    .LdapEntryIdentification(
+                                                    new javax.naming.ldap.LdapName(
+                                                            "uid=operator,dc=synthetic"),
+                                                    new javax.naming.ldap.LdapName(
+                                                            "uid=operator")));
+                            return true;
+                        });
+        assertThatThrownBy(() -> adapter.verify("operator", "synthetic-password"))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Authenticated directory identity is unavailable.")
+                .hasNoCause();
+    }
 
     @Test
     void escapesSubmittedPrincipalBeforeBuildingDirectorySearchFilter() throws Exception {

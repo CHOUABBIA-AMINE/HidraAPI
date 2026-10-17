@@ -1,21 +1,10 @@
 /**
- *
- * @Project     : HidraAPI
- * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
- * @Author      : Abir MEDJERAB
- * @Owner       : Sonatrach / TRC : Digitalization Initiative
- *
- * @Name        : ProtectedOperationIdentityParticipantTest
- * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-15
- *
- * @Type        : Class
- * @Layer       : Identity Test
- * @Module      : identity
- * @Package     : dz.sh.hidra.modules.identity.infrastructure.security
- *
- * @Description : Checks mocked participant mechanics without asserting real PostgreSQL or producer provenance.
- *
+ * @Project : HidraAPI @Product : Hidra - Hydrocarbon Intelligence for Data, Risk, and
+ * Analytics @Author : Abir MEDJERAB @Owner : Sonatrach / TRC : Digitalization Initiative @Name :
+ * ProtectedOperationIdentityParticipantTest @CreatedOn : 2025-06-26 @UpdatedOn : 2026-10-15 @Type :
+ * Class @Layer : Identity Test @Module : identity @Package :
+ * dz.sh.hidra.modules.identity.infrastructure.security @Description : Checks mocked participant
+ * mechanics without asserting real PostgreSQL or producer provenance.
  */
 package dz.sh.hidra.modules.identity.infrastructure.security;
 
@@ -47,7 +36,9 @@ import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.*;
 
-/** All infrastructure here is mocked; real provenance and transaction proof lives in the PG suite. */
+/**
+ * All infrastructure here is mocked; real provenance and transaction proof lives in the PG suite.
+ */
 class ProtectedOperationIdentityParticipantTest {
     private final OperationAuthenticationBindingRepositoryPort bindings =
             mock(OperationAuthenticationBindingRepositoryPort.class);
@@ -145,6 +136,41 @@ class ProtectedOperationIdentityParticipantTest {
     void clean() {
         SecurityContextHolder.clearContext();
         TransactionSynchronizationManager.clear();
+    }
+
+    @Test
+    void directoryCaptureEntryPointsRemainPrivateAndHaveOnlyReviewedCallers() throws Exception {
+        Path root = Path.of("src/main/java/dz/sh/hidra/modules/identity/infrastructure/security");
+        var expected =
+                java.util.Map.of(
+                        ".beginDirectoryCapture(",
+                        "LdapAuthenticationProvider.java",
+                        ".directoryCaptureSelection(",
+                        "LdapCredentialVerificationAdapter.java",
+                        ".captureDirectory(",
+                        "LdapCredentialVerificationAdapter.java");
+        for (var seam : expected.entrySet()) {
+            var callers = new java.util.ArrayList<String>();
+            try (var paths = java.nio.file.Files.list(root)) {
+                for (var path : paths.filter(p -> p.toString().endsWith(".java")).toList())
+                    if (!path.getFileName()
+                                    .toString()
+                                    .equals("TrustedAuthenticationVerificationRegistry.java")
+                            && java.nio.file.Files.readString(path).contains(seam.getKey()))
+                        callers.add(path.getFileName().toString());
+            }
+            assertThat(callers).containsExactly(seam.getValue());
+        }
+        var registry =
+                Class.forName(
+                        "dz.sh.hidra.modules.identity.infrastructure.security.TrustedAuthenticationVerificationRegistry");
+        for (var method : registry.getDeclaredMethods())
+            if (java.util.Set.of(
+                            "beginDirectoryCapture",
+                            "directoryCaptureSelection",
+                            "captureDirectory")
+                    .contains(method.getName()))
+                assertThat(java.lang.reflect.Modifier.isPublic(method.getModifiers())).isFalse();
     }
 
     @Test

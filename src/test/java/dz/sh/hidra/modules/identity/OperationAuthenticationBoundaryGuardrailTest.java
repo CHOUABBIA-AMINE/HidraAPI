@@ -1,21 +1,10 @@
 /**
- *
- * @Project     : HidraAPI
- * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
- * @Author      : Abir MEDJERAB
- * @Owner       : Sonatrach / TRC : Digitalization Initiative
- *
- * @Name        : OperationAuthenticationBoundaryGuardrailTest
- * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-14
- *
- * @Type        : Class
- * @Layer       : Test
- * @Module      : identity
- * @Package     : dz.sh.hidra.modules.identity
- *
- * @Description : Protects strict binding values, opaque JDK-only exports and exclusive real-producer receipt transport boundaries.
- *
+ * @Project : HidraAPI @Product : Hidra - Hydrocarbon Intelligence for Data, Risk, and
+ * Analytics @Author : Abir MEDJERAB @Owner : Sonatrach / TRC : Digitalization Initiative @Name :
+ * OperationAuthenticationBoundaryGuardrailTest @CreatedOn : 2025-06-26 @UpdatedOn :
+ * 2026-10-14 @Type : Class @Layer : Test @Module : identity @Package :
+ * dz.sh.hidra.modules.identity @Description : Protects strict binding values, opaque JDK-only
+ * exports and exclusive real-producer receipt transport boundaries.
  */
 package dz.sh.hidra.modules.identity;
 
@@ -45,6 +34,41 @@ import java.util.UUID;
 class OperationAuthenticationBoundaryGuardrailTest {
     private static final Instant NOW = Instant.parse("2026-10-14T07:00:00Z");
     private static final Path IDENTITY = Path.of("src/main/java/dz/sh/hidra/modules/identity");
+
+    @Test
+    void directoryCaptureEntryPointsRemainPrivateAndHaveOnlyReviewedCallers() throws Exception {
+        Path root = Path.of("src/main/java/dz/sh/hidra/modules/identity/infrastructure/security");
+        var expected =
+                java.util.Map.of(
+                        ".beginDirectoryCapture(",
+                        "LdapAuthenticationProvider.java",
+                        ".directoryCaptureSelection(",
+                        "LdapCredentialVerificationAdapter.java",
+                        ".captureDirectory(",
+                        "LdapCredentialVerificationAdapter.java");
+        for (var seam : expected.entrySet()) {
+            var callers = new java.util.ArrayList<String>();
+            try (var paths = java.nio.file.Files.list(root)) {
+                for (var path : paths.filter(p -> p.toString().endsWith(".java")).toList())
+                    if (!path.getFileName()
+                                    .toString()
+                                    .equals("TrustedAuthenticationVerificationRegistry.java")
+                            && java.nio.file.Files.readString(path).contains(seam.getKey()))
+                        callers.add(path.getFileName().toString());
+            }
+            assertThat(callers).containsExactly(seam.getValue());
+        }
+        var registry =
+                Class.forName(
+                        "dz.sh.hidra.modules.identity.infrastructure.security.TrustedAuthenticationVerificationRegistry");
+        for (var method : registry.getDeclaredMethods())
+            if (java.util.Set.of(
+                            "beginDirectoryCapture",
+                            "directoryCaptureSelection",
+                            "captureDirectory")
+                    .contains(method.getName()))
+                assertThat(java.lang.reflect.Modifier.isPublic(method.getModifiers())).isFalse();
+    }
 
     @Test
     void nativeKeysCountUtf8BytesAndOwnerIdsCountPostgresqlCharacters() {

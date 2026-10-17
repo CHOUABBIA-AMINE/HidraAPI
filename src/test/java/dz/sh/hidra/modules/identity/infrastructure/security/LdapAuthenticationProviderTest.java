@@ -1,21 +1,10 @@
 /**
- *
- * @Project     : HidraAPI
- * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
- * @Author      : Abir MEDJERAB
- * @Owner       : Sonatrach / TRC : Digitalization Initiative
- *
- * @Name        : LdapAuthenticationProviderTest
- * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-14
- *
- * @Type        : Class
- * @Layer       : Test
- * @Module      : identity
- * @Package     : dz.sh.hidra.modules.identity.infrastructure.security
- *
- * @Description : Verifies LDAP/Active Directory authentication, Hidra identity linkage, account state, and authorization ownership.
- *
+ * @Project : HidraAPI @Product : Hidra - Hydrocarbon Intelligence for Data, Risk, and
+ * Analytics @Author : Abir MEDJERAB @Owner : Sonatrach / TRC : Digitalization Initiative @Name :
+ * LdapAuthenticationProviderTest @CreatedOn : 2025-06-26 @UpdatedOn : 2026-10-14 @Type :
+ * Class @Layer : Test @Module : identity @Package :
+ * dz.sh.hidra.modules.identity.infrastructure.security @Description : Verifies LDAP/Active
+ * Directory authentication, Hidra identity linkage, account state, and authorization ownership.
  */
 package dz.sh.hidra.modules.identity.infrastructure.security;
 
@@ -137,6 +126,22 @@ class LdapAuthenticationProviderTest {
                                 null,
                                 null,
                                 null));
+    }
+
+    @Test
+    void enabledCaptureWithoutCatalogCannotFallBackToIdentityOnlyAuthentication() {
+        arrangeSuccessfulAuthentication(
+                ProviderType.LDAP, ExternalIdentityStatus.LINKED, UserStatus.ACTIVE);
+        org.springframework.test.util.ReflectionTestUtils.setField(
+                provider, "verifiedClaimReceiptEnabled", true);
+        assertThatThrownBy(
+                        () ->
+                                provider.authenticate(
+                                        LdapAuthenticationToken.unauthenticated(
+                                                USERNAME, PASSWORD)))
+                .isInstanceOf(BadCredentialsException.class)
+                .hasMessage("Directory verified claim evidence unavailable.");
+        verify(credentialVerificationPort, never()).verify(USERNAME, PASSWORD);
     }
 
     @Test

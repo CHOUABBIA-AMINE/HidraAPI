@@ -71,6 +71,7 @@ public final class TrustedAuthenticationVerificationRegistry
     private final String nativeAudience;
     private volatile byte[] key;
     private final ThreadLocal<Invocation> invocation = new ThreadLocal<>();
+    private final ThreadLocal<DirectoryCaptureScope> directoryCapture = new ThreadLocal<>();
 
     /** Legacy no-capture construction; captured receipts fail closed without owner ports. */
     public TrustedAuthenticationVerificationRegistry(
@@ -117,25 +118,160 @@ public final class TrustedAuthenticationVerificationRegistry
         }
     }
 
+    private record SourceEvidence(
+            String providerId,
+            String type,
+            String subject,
+            Instant deadline,
+            dz.sh.hidra.modules.identity.domain.value.ClaimCoverage coverage,
+            long mappingGeneration) {
+        @Override
+        public String toString() {
+            return "SourceEvidence[<redacted>]";
+        }
+    }
+
+    final class DirectoryCaptureScope implements AutoCloseable {
+        private final Invocation owner;
+        private final long thread = Thread.currentThread().threadId();
+        private final String providerId, type;
+        private final ClaimNameCatalogPort.VersionedSelection selection;
+        private final Instant deadline;
+        private boolean recorded, transferred, closed;
+        private dz.sh.hidra.modules.identity.application.model.VerifiedDirectoryIdentity identity;
+        private LdapClaimCoverageProjector.Projection projection;
+
+        private DirectoryCaptureScope(
+                Invocation owner,
+                String providerId,
+                String type,
+                ClaimNameCatalogPort.VersionedSelection selection,
+                int age) {
+            this.owner = owner;
+            this.providerId = providerId;
+            this.type = type;
+            this.selection = selection;
+            this.deadline = Instant.now().plusSeconds(age);
+        }
+
+        private void requireActive() {
+            if (closed
+                    || thread != Thread.currentThread().threadId()
+                    || invocation.get() != owner
+                    || directoryCapture.get() != this
+                    || owner.token != null
+                    || !Instant.now().isBefore(deadline)) throw denied();
+        }
+
+        @Override
+        public void close() {
+            if (thread != Thread.currentThread().threadId()) throw denied();
+            closed = true;
+            identity = null;
+            projection = null;
+            if (directoryCapture.get() == this) directoryCapture.remove();
+        }
+
+        @Override
+        public String toString() {
+            return "DirectoryCaptureScope[<redacted>]";
+        }
+    }
+
+    DirectoryCaptureScope beginDirectoryCapture(
+            String providerId,
+            String type,
+            ClaimNameCatalogPort.VersionedSelection selected,
+            int maxAgeSeconds) {
+        var owner = invocation.get();
+        if (owner == null
+                || owner.token != null
+                || directoryCapture.get() != null
+                || providerId == null
+                || providerId.isBlank()
+                || !directoryType(type)
+                || maxAgeSeconds < 1
+                || maxAgeSeconds > 300) throw denied();
+        LdapClaimCoverageProjector.validateSelection(selected);
+        var scope = new DirectoryCaptureScope(owner, providerId, type, selected, maxAgeSeconds);
+        directoryCapture.set(scope);
+        return scope;
+    }
+
+    ClaimNameCatalogPort.VersionedSelection directoryCaptureSelection() {
+        var scope = directoryCapture.get();
+        if (scope == null) return null;
+        scope.requireActive();
+        if (scope.recorded) throw denied();
+        return scope.selection;
+    }
+
+    void captureDirectory(
+            dz.sh.hidra.modules.identity.application.model.VerifiedDirectoryIdentity identity,
+            LdapClaimCoverageProjector.Projection projection) {
+        var scope = directoryCapture.get();
+        if (scope == null) throw denied();
+        scope.requireActive();
+        if (scope.recorded
+                || identity == null
+                || projection == null
+                || projection.mappingGeneration() != scope.selection.generation()
+                || !java.util.List.copyOf(projection.coverage().entries().keySet())
+                        .equals(scope.selection.selection().names())) throw denied();
+        scope.recorded = true;
+        scope.identity = identity;
+        scope.projection = projection;
+    }
+
+    private static boolean directoryType(String type) {
+        return "LDAP".equals(type) || "ACTIVE_DIRECTORY".equals(type);
+    }
+
+    private static boolean supportedClaimType(String type) {
+        return "OIDC".equals(type) || directoryType(type);
+    }
+
     static final class Receipt {
         private final AuthenticationVerificationSnapshot snapshot;
         private final HidraPrincipal principal;
         private final OidcSourceEvidence oidcEvidence;
+        private final SourceEvidence sourceEvidence;
         private final long thread = Thread.currentThread().threadId();
         private final AtomicBoolean consumed = new AtomicBoolean();
         private volatile OperationAuthenticationBinding completed;
 
         private Receipt(AuthenticationVerificationSnapshot snapshot, HidraPrincipal principal) {
-            this(snapshot, principal, null);
+            this(snapshot, principal, (OidcSourceEvidence) null);
         }
 
         private Receipt(
                 AuthenticationVerificationSnapshot snapshot,
                 HidraPrincipal principal,
                 OidcSourceEvidence oidcEvidence) {
+            this(
+                    snapshot,
+                    principal,
+                    oidcEvidence,
+                    oidcEvidence == null
+                            ? null
+                            : new SourceEvidence(
+                                    oidcEvidence.providerId(),
+                                    "OIDC",
+                                    oidcEvidence.subject(),
+                                    oidcEvidence.sourceExpiresAt(),
+                                    oidcEvidence.projection().coverage(),
+                                    oidcEvidence.projection().mappingGeneration()));
+        }
+
+        private Receipt(
+                AuthenticationVerificationSnapshot snapshot,
+                HidraPrincipal principal,
+                OidcSourceEvidence oidcEvidence,
+                SourceEvidence sourceEvidence) {
             this.snapshot = Objects.requireNonNull(snapshot);
             this.principal = Objects.requireNonNull(principal);
             this.oidcEvidence = oidcEvidence;
+            this.sourceEvidence = sourceEvidence;
         }
 
         OidcSourceEvidence oidcEvidence() {
@@ -166,6 +302,8 @@ public final class TrustedAuthenticationVerificationRegistry
     }
 
     void close() {
+        var scope = directoryCapture.get();
+        if (scope != null) scope.close();
         invocation.remove();
     }
 
@@ -179,6 +317,7 @@ public final class TrustedAuthenticationVerificationRegistry
     // method.
     Authentication verifiedDirect(
             Authentication actual, AuthenticationVerificationSnapshot snapshot) {
+        if (directoryCapture.get() != null) throw denied();
         if (!actual.isAuthenticated() || !(actual.getPrincipal() instanceof HidraPrincipal p))
             throw denied();
         var token = new DirectToken(actual, new Receipt(snapshot, p));
@@ -187,6 +326,43 @@ public final class TrustedAuthenticationVerificationRegistry
             if (i.token != null) throw denied();
             i.token = token;
         }
+        return token;
+    }
+
+    Authentication verifiedDirect(
+            Authentication actual,
+            AuthenticationVerificationSnapshot snapshot,
+            dz.sh.hidra.modules.identity.application.model.VerifiedDirectoryIdentity identity) {
+        var scope = directoryCapture.get();
+        if (scope == null) throw denied();
+        scope.requireActive();
+        if (scope.transferred) throw denied();
+        scope.transferred = true;
+        if (!scope.recorded
+                || scope.identity != identity
+                || !actual.isAuthenticated()
+                || !(actual.getPrincipal() instanceof HidraPrincipal p)
+                || snapshot == null
+                || !directoryType(snapshot.authenticationType())
+                || !scope.type.equals(snapshot.authenticationType())
+                || !p.authenticationType().name().equals(scope.type)
+                || !scope.providerId.equals(snapshot.providerId())
+                || !scope.providerId.equals(p.identityProviderId())
+                || !identity.subject().equals(snapshot.externalSubject())
+                || !p.userId().equals(snapshot.userId())
+                || !Objects.equals(p.externalIdentityId(), snapshot.externalIdentityId())
+                || snapshot.sourceIssuer() != null
+                || snapshot.sourceExpiresAt() != null) throw denied();
+        var evidence =
+                new SourceEvidence(
+                        scope.providerId,
+                        scope.type,
+                        identity.subject(),
+                        scope.deadline,
+                        scope.projection.coverage(),
+                        scope.projection.mappingGeneration());
+        var token = new DirectToken(actual, new Receipt(snapshot, p, null, evidence));
+        scope.owner.token = token;
         return token;
     }
 
@@ -296,7 +472,7 @@ public final class TrustedAuthenticationVerificationRegistry
 
         @Override
         public boolean prepareSourceClaims() {
-            if (receipt.oidcEvidence == null) {
+            if (receipt.sourceEvidence == null) {
                 requireOrigin();
                 return false;
             }
@@ -308,17 +484,15 @@ public final class TrustedAuthenticationVerificationRegistry
                     || !TransactionSynchronizationManager.isActualTransactionActive()
                     || TransactionSynchronizationManager.isCurrentTransactionReadOnly()
                     || !TransactionSynchronizationManager.isSynchronizationActive()) throw denied();
-            var evidence = receipt.oidcEvidence;
-            if (!Instant.now().isBefore(evidence.sourceExpiresAt())) throw denied();
+            var evidence = receipt.sourceEvidence;
+            if (!Instant.now().isBefore(evidence.deadline())) throw denied();
             var selected =
                     new ClaimNameCatalogPort.VersionedSelection(
                             new ClaimNameCatalogPort.Selection(
-                                    java.util.List.copyOf(
-                                            evidence.projection().coverage().entries().keySet())),
-                            evidence.projection().mappingGeneration());
+                                    java.util.List.copyOf(evidence.coverage().entries().keySet())),
+                            evidence.mappingGeneration());
             claimStamp = claimFence.prepare(evidence.providerId(), selected);
-            if (claimStamp == null || !Instant.now().isBefore(evidence.sourceExpiresAt()))
-                throw denied();
+            if (claimStamp == null || !Instant.now().isBefore(evidence.deadline())) throw denied();
             preparationTransaction = new TransactionSynchronization() {};
             TransactionSynchronizationManager.registerSynchronization(preparationTransaction);
             return true;
@@ -334,15 +508,14 @@ public final class TrustedAuthenticationVerificationRegistry
                     || !TransactionSynchronizationManager.isSynchronizationActive()
                     || !TransactionSynchronizationManager.getSynchronizations()
                             .contains(preparationTransaction)
-                    || !Instant.now().isBefore(receipt.oidcEvidence.sourceExpiresAt()))
-                throw denied();
+                    || !Instant.now().isBefore(receipt.sourceEvidence.deadline())) throw denied();
             claimFence.requireCurrent(claimStamp);
         }
 
         @Override
         public Optional<BoundSourceClaimEvidence> attestSourceClaims(
                 OperationAuthenticationBinding binding) {
-            if (receipt.oidcEvidence == null) {
+            if (receipt.sourceEvidence == null) {
                 requireOrigin();
                 return Optional.empty();
             }
@@ -354,7 +527,7 @@ public final class TrustedAuthenticationVerificationRegistry
                     || !TransactionSynchronizationManager.getSynchronizations()
                             .contains(attestationTransaction)
                     || !Instant.now().isBefore(binding.expiresAt())) throw denied();
-            var projection = receipt.oidcEvidence.projection();
+            var projection = receipt.sourceEvidence;
             var unsigned =
                     new BoundSourceClaimEvidence(
                             binding.bindingId(),
@@ -391,7 +564,7 @@ public final class TrustedAuthenticationVerificationRegistry
                     || !settings.audience().equals(nativeAudience)) throw denied();
             if (context.expiresAt().getEpochSecond() - context.issuedAt().getEpochSecond()
                     > settings.ttlSeconds()) throw denied();
-            if (receipt.oidcEvidence != null) currentClaims();
+            if (receipt.sourceEvidence != null) currentClaims();
             var s = receipt.snapshot;
             String protocol =
                     s.authenticationType().equals("ACTIVE_DIRECTORY")
@@ -438,7 +611,7 @@ public final class TrustedAuthenticationVerificationRegistry
                     || TransactionSynchronizationManager.isCurrentTransactionReadOnly()
                     || !TransactionSynchronizationManager.getSynchronizations()
                             .contains(attestationTransaction)) throw denied();
-            if (receipt.oidcEvidence != null) {
+            if (receipt.sourceEvidence != null) {
                 currentClaims();
                 if (attestedClaims == null
                         || !Optional.of(attestedClaims)
@@ -487,7 +660,7 @@ public final class TrustedAuthenticationVerificationRegistry
         try {
             if (binding == null
                     || evidence == null
-                    || !"OIDC".equals(binding.authenticationType())
+                    || !supportedClaimType(binding.authenticationType())
                     || !binding.bindingId().equals(evidence.bindingId())) throw denied();
             validatePersistentOrigin(binding);
             if (!MessageDigest.isEqual(
@@ -502,7 +675,7 @@ public final class TrustedAuthenticationVerificationRegistry
             OperationAuthenticationBinding binding, BoundSourceClaimEvidence evidence) {
         validatePersistentOrigin(binding);
         if (!binding.bindingId().equals(evidence.bindingId())
-                || !"OIDC".equals(binding.authenticationType())) throw denied();
+                || !supportedClaimType(binding.authenticationType())) throw denied();
         byte[] effective = null, derived = null;
         try {
             if (signingSecret == null || signingSecret.isBlank()) throw denied();

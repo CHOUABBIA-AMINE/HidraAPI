@@ -131,6 +131,98 @@ class TrustedAuthenticationVerificationTest {
     }
 
     @Test
+    void directoryCompanionTagsBindBothActualTypesAndPublishOnlyAfterCommit() {
+        for (String type : java.util.List.of("LDAP", "ACTIVE_DIRECTORY")) {
+            var fence =
+                    org.mockito.Mockito.mock(
+                            dz.sh.hidra.modules.identity.application.port.out
+                                    .BoundSourceClaimIssuanceFencePort.class);
+            var repo =
+                    org.mockito.Mockito.mock(
+                            dz.sh.hidra.modules.identity.application.port.out
+                                    .BoundSourceClaimEvidenceRepositoryPort.class);
+            var owner =
+                    new TrustedAuthenticationVerificationRegistry(
+                            SECRET, "hidra-api", "hidra-api", fence, repo);
+            owner.begin();
+            var selected =
+                    new dz.sh.hidra.modules.identity.application.port.out.ClaimNameCatalogPort
+                            .VersionedSelection(
+                            new dz.sh.hidra.modules.identity.application.port.out
+                                    .ClaimNameCatalogPort.Selection(java.util.List.of("memberOf")),
+                            7);
+            var s = snapshot(type, " exact-directory-subject ");
+            var p = principal(s);
+            var identity =
+                    new dz.sh.hidra.modules.identity.application.model.VerifiedDirectoryIdentity(
+                            s.externalSubject(), "operator", null, null, null);
+            var coverage =
+                    dz.sh.hidra.modules.identity.domain.value.ClaimCoverage.of(
+                            java.util.Map.of(
+                                    "memberOf",
+                                    dz.sh.hidra.modules.identity.domain.value.ClaimCoverage.Entry
+                                            .present(Set.of("exact-group"))));
+            Authentication actual;
+            try (var scope = owner.beginDirectoryCapture("provider", type, selected, 60)) {
+                owner.captureDirectory(
+                        identity, new LdapClaimCoverageProjector.Projection(coverage, 7));
+                actual =
+                        owner.verifiedDirect(
+                                UsernamePasswordAuthenticationToken.authenticated(
+                                        p, null, java.util.List.of()),
+                                s,
+                                identity);
+            }
+            var v = owner.consume(input(p, owner.verifiedHandle(actual)));
+            org.mockito.Mockito.when(fence.prepare("provider", selected))
+                    .thenReturn(
+                            new dz.sh.hidra.modules.identity.application.port.out
+                                    .BoundSourceClaimIssuanceFencePort.FenceStamp(11, 42));
+            simulateTransaction();
+            assertThat(v.prepareSourceClaims()).isTrue();
+            var at = Instant.now().truncatedTo(java.time.temporal.ChronoUnit.SECONDS);
+            var b =
+                    v.attest(
+                            BINDING,
+                            SESSION,
+                            SETTINGS,
+                            new AccessTokenIssuanceContext(JTI, at, at.plusSeconds(60)));
+            var e = v.attestSourceClaims(b).orElseThrow();
+            owner.validatePersistentSourceClaimOrigin(b, e);
+            assertThat(b.authenticationType()).isEqualTo(type);
+            assertThat(b.sessionProtocol()).isEqualTo("LDAP");
+            assertThat(b.sourceExpiresAt()).isNull();
+            var changed =
+                    new dz.sh.hidra.modules.identity.domain.value.BoundSourceClaimEvidence(
+                            e.bindingId(),
+                            e.evidenceFormat(),
+                            8,
+                            e.issuanceTransactionId(),
+                            e.coverage(),
+                            e.producerAuthenticator());
+            assertThatThrownBy(() -> owner.validatePersistentSourceClaimOrigin(b, changed))
+                    .isInstanceOf(IllegalStateException.class);
+            org.mockito.Mockito.when(repo.findByBindingId(BINDING))
+                    .thenReturn(java.util.Optional.of(e));
+            v.publishAfterCommit(b);
+            assertThat(
+                            (Object)
+                                    org.springframework.test.util.ReflectionTestUtils.invokeMethod(
+                                            owner, "completed", actual))
+                    .isNull();
+            for (var synchronization : TransactionSynchronizationManager.getSynchronizations())
+                synchronization.afterCommit();
+            assertThat(
+                            (Object)
+                                    org.springframework.test.util.ReflectionTestUtils.invokeMethod(
+                                            owner, "completed", actual))
+                    .isEqualTo(b);
+            owner.close();
+            TransactionSynchronizationManager.clear();
+        }
+    }
+
+    @Test
     void proxySpyTargetsSeparateReadOnlySelectionFromWritableOwnerAndPreserveMandatoryAdvice() {
         var manager = new ProbeTransactionManager();
         var spy = org.mockito.Mockito.spy(new TransactionProbe());

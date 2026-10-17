@@ -99,6 +99,7 @@ class BoundAuthenticationCompletionPostgresIntegrationTest {
     @Autowired CompleteAuthenticatedPrincipalUseCase completion;
     @Autowired DirectAuthenticationPort directPort;
     @Autowired IdentityOidcJwtAuthenticationConverter oidc;
+    @Autowired LdapAuthenticationProvider ldap;
     @Autowired TrustedAuthenticationVerificationRegistry registry;
     @MockitoSpyBean PasswordEncoder passwords;
     @Autowired PlatformTransactionManager manager;
@@ -142,6 +143,7 @@ class BoundAuthenticationCompletionPostgresIntegrationTest {
     @BeforeEach
     void prepare() {
         ReflectionTestUtils.setField(oidc, "verifiedClaimReceiptEnabled", false);
+        ReflectionTestUtils.setField(ldap, "verifiedClaimReceiptEnabled", false);
         SecurityContextHolder.clearContext();
         jdbc.update("UPDATE " + P + " SET status='INACTIVE' WHERE status='ACTIVE'");
         when(externalDecoder.decode(anyString()))
@@ -151,6 +153,7 @@ class BoundAuthenticationCompletionPostgresIntegrationTest {
     @AfterEach
     void cleanInvocation() {
         ReflectionTestUtils.setField(oidc, "verifiedClaimReceiptEnabled", false);
+        ReflectionTestUtils.setField(ldap, "verifiedClaimReceiptEnabled", false);
         directPort.finishVerification();
         SecurityContextHolder.clearContext();
     }
@@ -254,6 +257,151 @@ class BoundAuthenticationCompletionPostgresIntegrationTest {
         SecurityContextHolder.getContext().setAuthentication(actual);
         return completion.complete(
                 input((HidraPrincipal) actual.getPrincipal(), null), null, null, null);
+    }
+
+    private AuthenticationResult capturedDirectory(Fixture f, Runnable afterBind) {
+        var properties =
+                new dz.sh.hidra.platform.configuration.HidraLdapSecurityProperties(
+                        true,
+                        "ldap://synthetic.invalid:389",
+                        "dc=synthetic,dc=invalid",
+                        "ou=people",
+                        "(uid={0})",
+                        null,
+                        null,
+                        null,
+                        null);
+        var adapter =
+                new LdapCredentialVerificationAdapter(
+                        mock(org.springframework.ldap.core.support.LdapContextSource.class),
+                        properties,
+                        registry);
+        var template = mock(org.springframework.ldap.core.LdapTemplate.class);
+        ReflectionTestUtils.setField(adapter, "ldapTemplate", template);
+        var context = mock(javax.naming.directory.DirContext.class);
+        var attrs = new javax.naming.directory.BasicAttributes(true);
+        attrs.put("entryUUID", f.subject());
+        attrs.put("uid", f.user());
+        attrs.put("memberOf", " private-original-directory-group ");
+        try {
+            when(context.getAttributes(any(javax.naming.Name.class), any(String[].class)))
+                    .thenReturn(attrs);
+            when(template.authenticate(
+                            anyString(),
+                            anyString(),
+                            anyString(),
+                            any(
+                                    org.springframework.ldap.core
+                                            .AuthenticatedLdapEntryContextCallback.class)))
+                    .thenAnswer(
+                            i -> {
+                                ((org.springframework.ldap.core
+                                                        .AuthenticatedLdapEntryContextCallback)
+                                                i.getArgument(3))
+                                        .executeWithContext(
+                                                context,
+                                                new org.springframework.ldap.core
+                                                        .LdapEntryIdentification(
+                                                        new javax.naming.ldap.LdapName(
+                                                                "uid=synthetic,ou=people,dc=synthetic,dc=invalid"),
+                                                        new javax.naming.ldap.LdapName(
+                                                                "uid=synthetic,ou=people")));
+                                afterBind.run();
+                                return true;
+                            });
+        } catch (javax.naming.NamingException impossible) {
+            throw new IllegalStateException(impossible);
+        }
+        doAnswer(i -> adapter.verify(i.getArgument(0), i.getArgument(1)))
+                .when(directory)
+                .verify(f.user(), "synthetic-password");
+        return authenticate(f);
+    }
+
+    private void enableDirectoryCapture() {
+        enableSyntheticNonownerCapture();
+        ReflectionTestUtils.setField(ldap, "verifiedClaimReceiptEnabled", true);
+    }
+
+    @Test
+    void bothDirectoryTypesPersistOriginalObservationsWithNullSourceExpiryAndNativeBinding() {
+        for (String type : List.of("LDAP", "ACTIVE_DIRECTORY")) {
+            var f = fixture(type);
+            enableDirectoryCapture();
+            addCaptureMapping(f, "memberOf");
+            addCaptureMapping(f, "missing");
+            var result = capturedDirectory(f, () -> {});
+            var b = bindings.findByNativeIssuerAndJti("hidra-api", result.jti()).orElseThrow();
+            var evidence = sourceClaims.findByBindingId(b.bindingId()).orElseThrow();
+            registry.validatePersistentSourceClaimOrigin(b, evidence);
+            assertThat(evidence.coverage().values("memberOf"))
+                    .containsExactly(" private-original-directory-group ");
+            assertThat(evidence.coverage().state("missing")).isEqualTo(ClaimCoverage.State.UNKNOWN);
+            assertThat(b.sourceIssuer()).isNull();
+            assertThat(b.sourceExpiresAt()).isNull();
+            assertThat(b.sessionProtocol()).isEqualTo("LDAP");
+            assertThat(nativeDecoder.decode(result.accessToken()).getClaims())
+                    .doesNotContainKeys("memberOf", "missing");
+            verifyStored(f, result);
+        }
+    }
+
+    @Test
+    void directoryCatalogMutationAfterBindRequiresFreshAuthentication() {
+        var f = fixture("LDAP");
+        enableDirectoryCapture();
+        addCaptureMapping(f, "memberOf");
+        assertThatThrownBy(() -> capturedDirectory(f, () -> addCaptureMapping(f, "later")))
+                .isInstanceOf(RuntimeException.class);
+        assertNoOwnerSuccess(f);
+        var result = capturedDirectory(f, () -> {});
+        verifyStored(f, result);
+        var b = bindings.findByNativeIssuerAndJti("hidra-api", result.jti()).orElseThrow();
+        assertThat(
+                        sourceClaims
+                                .findByBindingId(b.bindingId())
+                                .orElseThrow()
+                                .coverage()
+                                .state("later"))
+                .isEqualTo(ClaimCoverage.State.UNKNOWN);
+    }
+
+    @Test
+    void directoryCompanionRefusalRollsBackWholeCompletion() {
+        var f = fixture("ACTIVE_DIRECTORY");
+        enableDirectoryCapture();
+        addCaptureMapping(f, "memberOf");
+        var refusal = new IllegalStateException("Synthetic directory companion refusal");
+        doThrow(refusal).when(sourceClaimsTarget()).append(any());
+        assertThatThrownBy(() -> capturedDirectory(f, () -> {}))
+                .isInstanceOf(org.springframework.dao.InvalidDataAccessApiUsageException.class)
+                .hasCause(refusal);
+        assertNoOwnerSuccess(f);
+    }
+
+    @Test
+    void directoryBeforeCommitFaultCannotDeliverSuccessOrRetainNativeRows() {
+        var f = fixture("LDAP");
+        enableDirectoryCapture();
+        addCaptureMapping(f, "memberOf");
+        doAnswer(
+                        i -> {
+                            var result = i.callRealMethod();
+                            TransactionSynchronizationManager.registerSynchronization(
+                                    new TransactionSynchronization() {
+                                        @Override
+                                        public void beforeCommit(boolean readOnly) {
+                                            throw new IllegalStateException(
+                                                    "Synthetic directory before-commit refusal");
+                                        }
+                                    });
+                            return result;
+                        })
+                .when(AopTestUtils.<LoginSessionRepositoryPort>getUltimateTargetObject(sessions))
+                .save(any());
+        assertThatThrownBy(() -> capturedDirectory(f, () -> {}))
+                .isInstanceOf(RuntimeException.class);
+        assertNoOwnerSuccess(f);
     }
 
     @Test

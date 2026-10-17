@@ -1,21 +1,10 @@
 /**
- *
- * @Project     : HidraAPI
- * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
- * @Author      : Abir MEDJERAB
- * @Owner       : Sonatrach / TRC : Digitalization Initiative
- *
- * @Name        : LdapAuthenticationProvider
- * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-14
- *
- * @Type        : Class
- * @Layer       : Infrastructure
- * @Module      : identity
- * @Package     : dz.sh.hidra.modules.identity.infrastructure.security
- *
- * @Description : Authenticates LDAP/Active Directory requests and normalizes linked identities to a Hidra principal.
- *
+ * @Project : HidraAPI @Product : Hidra - Hydrocarbon Intelligence for Data, Risk, and
+ * Analytics @Author : Abir MEDJERAB @Owner : Sonatrach / TRC : Digitalization Initiative @Name :
+ * LdapAuthenticationProvider @CreatedOn : 2025-06-26 @UpdatedOn : 2026-10-17 @Type : Class @Layer :
+ * Infrastructure @Module : identity @Package :
+ * dz.sh.hidra.modules.identity.infrastructure.security @Description : Authenticates LDAP/Active
+ * Directory requests and normalizes linked identities to a Hidra principal.
  */
 package dz.sh.hidra.modules.identity.infrastructure.security;
 
@@ -52,9 +41,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-/**
- * Database-linked LDAP/Active Directory authentication strategy.
- */
+/** Database-linked LDAP/Active Directory authentication strategy. */
 @Component
 @ConditionalOnProperty(
         prefix = "hidra.platform.security.ldap",
@@ -72,8 +59,15 @@ public final class LdapAuthenticationProvider implements AuthenticationProvider 
     private final ExternalIdentityJpaRepository externalIdentityRepository;
     private final UserJpaRepository userRepository;
     private final IdentityAdministrationQueryUseCase queryUseCase;
+    private final dz.sh.hidra.modules.identity.application.port.out.ClaimNameCatalogPort
+            claimCatalog;
+    private final boolean verifiedClaimReceiptEnabled;
+    private final int maxCaptureAgeSeconds;
 
-    /** Legacy constructor preserves ordinary principal/assertion tests; it produces no bound receipt. */
+    /**
+     * Legacy constructor preserves ordinary principal/assertion tests; it produces no bound
+     * receipt.
+     */
     public LdapAuthenticationProvider(
             LdapCredentialVerificationPort verifier,
             IdentityProviderJpaRepository providers,
@@ -81,6 +75,30 @@ public final class LdapAuthenticationProvider implements AuthenticationProvider 
             UserJpaRepository users,
             IdentityAdministrationQueryUseCase query) {
         this(verifier, providers, links, users, query, null, null, null);
+    }
+
+    public LdapAuthenticationProvider(
+            LdapCredentialVerificationPort credentialVerificationPort,
+            IdentityProviderJpaRepository identityProviderRepository,
+            ExternalIdentityJpaRepository externalIdentityRepository,
+            UserJpaRepository userRepository,
+            IdentityAdministrationQueryUseCase queryUseCase,
+            dz.sh.hidra.modules.identity.application.port.out.AuthenticationSecurityStateQueryPort
+                    states,
+            TrustedAuthenticationVerificationRegistry verification,
+            dz.sh.hidra.platform.configuration.HidraLdapSecurityProperties properties) {
+        this(
+                credentialVerificationPort,
+                identityProviderRepository,
+                externalIdentityRepository,
+                userRepository,
+                queryUseCase,
+                states,
+                verification,
+                properties,
+                null,
+                false,
+                60);
     }
 
     @org.springframework.beans.factory.annotation.Autowired
@@ -93,7 +111,19 @@ public final class LdapAuthenticationProvider implements AuthenticationProvider 
             dz.sh.hidra.modules.identity.application.port.out.AuthenticationSecurityStateQueryPort
                     states,
             TrustedAuthenticationVerificationRegistry verification,
-            dz.sh.hidra.platform.configuration.HidraLdapSecurityProperties properties) {
+            dz.sh.hidra.platform.configuration.HidraLdapSecurityProperties properties,
+            dz.sh.hidra.modules.identity.application.port.out.ClaimNameCatalogPort claimCatalog,
+            @org.springframework.beans.factory.annotation.Value(
+                            "${hidra.identity.ldap-verified-claim-receipt.enabled:false}")
+                    boolean enabled,
+            @org.springframework.beans.factory.annotation.Value(
+                            "${hidra.identity.ldap-verified-claim-receipt.max-capture-age-seconds:60}")
+                    int maxCaptureAgeSeconds) {
+        if (maxCaptureAgeSeconds < 1 || maxCaptureAgeSeconds > 300)
+            throw new IllegalArgumentException("Invalid directory capture age.");
+        this.claimCatalog = claimCatalog;
+        this.verifiedClaimReceiptEnabled = enabled;
+        this.maxCaptureAgeSeconds = maxCaptureAgeSeconds;
         this.states = states;
         this.verification = verification;
         this.properties = properties;
@@ -133,6 +163,39 @@ public final class LdapAuthenticationProvider implements AuthenticationProvider 
                                 capturedProvider.userSearchBase(), properties.userSearchBase())))
             throw new AuthenticationServiceException(
                     "Selected directory configuration disagrees with its verifier.");
+        if (!verifiedClaimReceiptEnabled)
+            return authenticateVerified(
+                    ldapRequest, principal, credentials, directoryProvider, capturedProvider);
+        if (states == null
+                || verification == null
+                || claimCatalog == null
+                || org.springframework.transaction.support.TransactionSynchronizationManager
+                        .isActualTransactionActive())
+            throw new BadCredentialsException("Directory verified claim evidence unavailable.");
+        try {
+            var selected = claimCatalog.selectVersioned(directoryProvider.id());
+            try (var capture =
+                    verification.beginDirectoryCapture(
+                            directoryProvider.id(),
+                            directoryProvider.providerType().name(),
+                            selected,
+                            maxCaptureAgeSeconds)) {
+                return authenticateVerified(
+                        ldapRequest, principal, credentials, directoryProvider, capturedProvider);
+            }
+        } catch (RuntimeException failure) {
+            throw new BadCredentialsException("Directory verified claim evidence unavailable.");
+        }
+    }
+
+    private Authentication authenticateVerified(
+            LdapAuthenticationToken ldapRequest,
+            String principal,
+            String credentials,
+            IdentityProviderJpaEntity directoryProvider,
+            dz.sh.hidra.modules.identity.application.port.out.AuthenticationSecurityStateQueryPort
+                            .ProviderState
+                    capturedProvider) {
         VerifiedDirectoryIdentity verifiedIdentity =
                 credentialVerificationPort
                         .verify(principal, credentials)
@@ -150,7 +213,7 @@ public final class LdapAuthenticationProvider implements AuthenticationProvider 
                                 () ->
                                         new BadCredentialsException(
                                                 "Verified directory identity is not linked to"
-                                                    + " Hidra."));
+                                                        + " Hidra."));
         if (externalIdentity.status() != ExternalIdentityStatus.LINKED) {
             throw new DisabledException("External directory identity is not linked and active.");
         }
@@ -186,6 +249,8 @@ public final class LdapAuthenticationProvider implements AuthenticationProvider 
                 UsernamePasswordAuthenticationToken.authenticated(
                         hidraPrincipal, null, AuthorityUtils.NO_AUTHORITIES);
         result.setDetails(ldapRequest.getDetails());
+        if (verifiedClaimReceiptEnabled)
+            return verification.verifiedDirect(result, snapshot, verifiedIdentity);
         return verification == null ? result : verification.verifiedDirect(result, snapshot);
     }
 

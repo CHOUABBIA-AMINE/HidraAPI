@@ -57,6 +57,13 @@ class BoundSourceClaimEvidencePostgresIntegrationTest {
                 new DriverManagerDataSource(
                         POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword());
         owner = new JdbcTemplate(ds);
+        Flyway.configure().dataSource(ds).target("20261017.001").load().migrate();
+        assertThat(
+                        owner.queryForObject(
+                                "SELECT"
+                                    + " pg_get_functiondef('public.hidra_identity_bound_source_claim_guard()'::regprocedure)",
+                                String.class))
+                .contains("origin.authentication_type <> 'OIDC'");
         flyway = Flyway.configure().dataSource(ds).load();
         flyway.migrate();
         owner.execute("CREATE ROLE " + APP + " LOGIN PASSWORD 'synthetic-claims-fixture-only'");
@@ -98,8 +105,7 @@ class BoundSourceClaimEvidencePostgresIntegrationTest {
                         + P
                         + "provider"
                         + " (id,code,name,provider_type,issuer_uri,sync_enabled,just_in_time_provisioning_enabled,status,created_at,updated_at)"
-                        + " VALUES"
-                        + " (?,?,'Synthetic','OIDC',?,false,false,'ACTIVE',now(),now())",
+                        + " VALUES (?,?,'Synthetic','OIDC',?,false,false,'ACTIVE',now(),now())",
                 provider,
                 provider,
                 issuer);
@@ -122,6 +128,10 @@ class BoundSourceClaimEvidencePostgresIntegrationTest {
     }
 
     private OperationAuthenticationBinding bind() {
+        return bind("OIDC");
+    }
+
+    private OperationAuthenticationBinding bind(String type) {
         var at = Instant.now().truncatedTo(java.time.temporal.ChronoUnit.SECONDS);
         var b =
                 new OperationAuthenticationBinding(
@@ -132,15 +142,18 @@ class BoundSourceClaimEvidencePostgresIntegrationTest {
                         id(),
                         id(),
                         user,
-                        "OIDC",
-                        "OIDC",
+                        type,
+                        type.equals("OIDC") ? "OIDC" : "LDAP",
                         provider,
-                        1,
+                        owner.queryForObject(
+                                "SELECT security_version FROM " + P + "provider WHERE id=?",
+                                Long.class,
+                                provider),
                         link,
                         "synthetic-subject",
                         1L,
-                        issuer,
-                        at.plusSeconds(300),
+                        type.equals("OIDC") ? issuer : null,
+                        type.equals("OIDC") ? at.plusSeconds(300) : null,
                         null,
                         null,
                         at,
@@ -151,13 +164,14 @@ class BoundSourceClaimEvidencePostgresIntegrationTest {
                         + P
                         + "login_session"
                         + " (id,user_id,identity_provider_id,external_identity_id,started_at,expires_at,status,session_type)"
-                        + " VALUES (?,?,?,?,?,?,'ACTIVE','OIDC')",
+                        + " VALUES (?,?,?,?,?,?,'ACTIVE',?)",
                 b.sessionId(),
                 user,
                 provider,
                 link,
                 Timestamp.from(at),
-                Timestamp.from(b.expiresAt()));
+                Timestamp.from(b.expiresAt()),
+                type.equals("OIDC") ? "OIDC" : "LDAP");
         bindings.append(b);
         return b;
     }
@@ -183,6 +197,52 @@ class BoundSourceClaimEvidencePostgresIntegrationTest {
                 provider,
                 role,
                 claim);
+    }
+
+    @Test
+    void additiveGuardSupportsBothDirectoryTypesWithExistingFenceAndReplayRules() {
+        for (String type : List.of("LDAP", "ACTIVE_DIRECTORY")) {
+            owner.update(
+                    "UPDATE "
+                            + P
+                            + "provider SET"
+                            + " provider_type=?,issuer_uri=NULL,directory_base_dn='dc=synthetic',user_search_base='ou=people'"
+                            + " WHERE id=?",
+                    type,
+                    provider);
+            var selection = catalog.selectVersioned(provider);
+            tx.executeWithoutResult(
+                    status -> {
+                        var stamp = fence.prepare(provider, selection);
+                        var b = bind(type);
+                        var e = evidence(b, stamp.transactionId(), selection.generation());
+                        claims.append(e);
+                        claims.append(e);
+                        assertThat(claims.findByBindingId(b.bindingId())).contains(e);
+                        assertThat(b.sourceExpiresAt()).isNull();
+                    });
+        }
+        assertThat(
+                        owner.queryForObject(
+                                "SELECT NOT prosecdef AND provolatile='v' FROM pg_proc WHERE"
+                                    + " oid='public.hidra_identity_bound_source_claim_guard()'::regprocedure",
+                                Boolean.class))
+                .isTrue();
+        assertThat(
+                        owner.queryForObject(
+                                "SELECT has_function_privilege(?,"
+                                        + " 'public.hidra_identity_bound_source_claim_guard()',"
+                                        + " 'EXECUTE')",
+                                Boolean.class,
+                                APP))
+                .isFalse();
+        assertThat(
+                        owner.queryForObject(
+                                "SELECT count(*) FROM pg_trigger WHERE"
+                                    + " tgrelid='public.hidra_identity_bound_source_claim_evidence'::regclass"
+                                    + " AND NOT tgisinternal",
+                                Integer.class))
+                .isEqualTo(2);
     }
 
     @Test

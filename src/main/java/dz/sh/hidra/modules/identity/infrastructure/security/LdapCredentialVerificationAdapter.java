@@ -1,21 +1,10 @@
 /**
- *
- * @Project     : HidraAPI
- * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
- * @Author      : Abir MEDJERAB
- * @Owner       : Sonatrach / TRC : Digitalization Initiative
- *
- * @Name        : LdapCredentialVerificationAdapter
- * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-14
- *
- * @Type        : Class
- * @Layer       : Infrastructure
- * @Module      : identity
- * @Package     : dz.sh.hidra.modules.identity.infrastructure.security
- *
- * @Description : Verifies LDAP/Active Directory credentials and returns normalized external directory identity attributes.
- *
+ * @Project : HidraAPI @Product : Hidra - Hydrocarbon Intelligence for Data, Risk, and
+ * Analytics @Author : Abir MEDJERAB @Owner : Sonatrach / TRC : Digitalization Initiative @Name :
+ * LdapCredentialVerificationAdapter @CreatedOn : 2025-06-26 @UpdatedOn : 2026-10-17 @Type :
+ * Class @Layer : Infrastructure @Module : identity @Package :
+ * dz.sh.hidra.modules.identity.infrastructure.security @Description : Verifies LDAP/Active
+ * Directory credentials and returns normalized external directory identity attributes.
  */
 package dz.sh.hidra.modules.identity.infrastructure.security;
 
@@ -37,9 +26,7 @@ import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 
-/**
- * Spring LDAP implementation of the directory credential-verification port.
- */
+/** Spring LDAP implementation of the directory credential-verification port. */
 @Component
 @ConditionalOnProperty(
         prefix = "hidra.platform.security.ldap",
@@ -61,10 +48,20 @@ public final class LdapCredentialVerificationAdapter implements LdapCredentialVe
     };
 
     private final LdapTemplate ldapTemplate;
+    private final TrustedAuthenticationVerificationRegistry verification;
     private final HidraLdapSecurityProperties properties;
 
     public LdapCredentialVerificationAdapter(
             LdapContextSource contextSource, HidraLdapSecurityProperties properties) {
+        this(contextSource, properties, null);
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public LdapCredentialVerificationAdapter(
+            LdapContextSource contextSource,
+            HidraLdapSecurityProperties properties,
+            TrustedAuthenticationVerificationRegistry verification) {
+        this.verification = verification;
         this.ldapTemplate = new LdapTemplate(Objects.requireNonNull(contextSource));
         this.properties = Objects.requireNonNull(properties);
     }
@@ -77,10 +74,20 @@ public final class LdapCredentialVerificationAdapter implements LdapCredentialVe
         }
 
         String filter = userFilter(normalizedPrincipal);
-        // The callback's DN is the exact entry whose bind succeeded. A preceding profile search
-        // cannot substitute another row's subject between search and authentication.
-        java.util.concurrent.atomic.AtomicReference<DirectoryEntry> authenticated =
+        var selected = verification == null ? null : verification.directoryCaptureSelection();
+        String[] requested = IDENTITY_ATTRIBUTES;
+        if (selected != null) {
+            java.util.Map<String, String> names = new java.util.LinkedHashMap<>();
+            for (String name : IDENTITY_ATTRIBUTES)
+                names.put(name.toLowerCase(java.util.Locale.ROOT), name);
+            for (String name : selected.selection().names())
+                names.putIfAbsent(name.toLowerCase(java.util.Locale.ROOT), name);
+            requested = names.values().toArray(String[]::new);
+        }
+        final String[] attributesToRead = requested;
+        java.util.concurrent.atomic.AtomicReference<VerifiedDirectoryIdentity> authenticated =
                 new java.util.concurrent.atomic.AtomicReference<>();
+        var callbackAttempts = new java.util.concurrent.atomic.AtomicInteger();
         boolean success =
                 ldapTemplate.authenticate(
                         searchBase(),
@@ -89,44 +96,51 @@ public final class LdapCredentialVerificationAdapter implements LdapCredentialVe
                         (org.springframework.ldap.core.AuthenticatedLdapEntryContextCallback)
                                 (context, entry) -> {
                                     try {
-                                        authenticated.set(
-                                                mapEntry(
-                                                        context.getAttributes(
-                                                                entry.getRelativeName(),
-                                                                IDENTITY_ATTRIBUTES)));
-                                    } catch (NamingException failure) {
-                                        throw new IllegalStateException(
-                                                "Authenticated directory identity is unavailable.");
+                                        if (callbackAttempts.incrementAndGet() != 1
+                                                || authenticated.get() != null) throw unavailable();
+                                        Attributes attributes =
+                                                context.getAttributes(
+                                                        entry.getRelativeName(), attributesToRead);
+                                        VerifiedDirectoryIdentity identity =
+                                                identity(mapEntry(attributes), normalizedPrincipal);
+                                        if (selected != null)
+                                            verification.captureDirectory(
+                                                    identity,
+                                                    LdapClaimCoverageProjector.project(
+                                                            attributes, selected));
+                                        if (!authenticated.compareAndSet(null, identity))
+                                            throw unavailable();
+                                    } catch (NamingException | RuntimeException failure) {
+                                        throw unavailable();
                                     }
                                 });
         if (!success) return Optional.empty();
-        DirectoryEntry entry = authenticated.get();
-        if (entry == null)
-            throw new IllegalStateException("Authenticated directory identity is unavailable.");
+        VerifiedDirectoryIdentity result = authenticated.get();
+        if (result == null || callbackAttempts.get() != 1) throw unavailable();
+        return Optional.of(result);
+    }
+
+    private static VerifiedDirectoryIdentity identity(DirectoryEntry entry, String principal) {
         String username =
                 firstNonBlank(
-                        entry.userPrincipalName(),
-                        entry.samAccountName(),
-                        entry.uid(),
-                        normalizedPrincipal);
+                        entry.userPrincipalName(), entry.samAccountName(), entry.uid(), principal);
         String subject =
                 firstExact(
                         entry.objectGuid(),
                         entry.entryUuid(),
                         entry.userPrincipalName(),
                         entry.distinguishedName());
-        if (subject == null) {
-            throw new IllegalStateException(
-                    "Verified LDAP identity does not expose a stable external subject.");
-        }
+        if (subject == null) throw unavailable();
+        return new VerifiedDirectoryIdentity(
+                subject,
+                username,
+                firstNonBlank(entry.displayName(), entry.commonName()),
+                entry.mail(),
+                entry.distinguishedName());
+    }
 
-        return Optional.of(
-                new VerifiedDirectoryIdentity(
-                        subject,
-                        username,
-                        firstNonBlank(entry.displayName(), entry.commonName()),
-                        entry.mail(),
-                        entry.distinguishedName()));
+    private static IllegalStateException unavailable() {
+        return new IllegalStateException("Authenticated directory identity is unavailable.");
     }
 
     private String userFilter(String principal) {

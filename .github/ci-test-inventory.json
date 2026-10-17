@@ -1436,6 +1436,7 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "directoryCaptureEntryPointsRemainPrivateAndHaveOnlyReviewedCallers",
         "exactExternalSubjectAndIssuerKeepBoundaryWhitespaceAndUnicode",
         "explicitNullBranchesAndPositiveGenerationsAreMandatory",
         "foundationsAreJdkOnlyAndProductionReceiptProducersAreStillDormant",
@@ -1456,7 +1457,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java",
-      "source_sha256": "287e739d26824ad9e2e33182b6407231892e0fc8a283a60cddf9806892438b82",
+      "source_sha256": "c6c2349c676997d62c085d5cd3223475d255498ba2e0c806906e67c258b96ce3",
       "supports": []
     },
     {
@@ -1827,11 +1828,15 @@
         "allOwnerWritesAndSigningObserveOneBackendAndCommitBeforeDelivery",
         "beforeCommitFaultCannotPublishOidcReceiptOrDeliverSignedResult",
         "bindingAppendFailureRollsBackSignedSessionAndExposesNoBearer",
+        "bothDirectoryTypesPersistOriginalObservationsWithNullSourceExpiryAndNativeBinding",
         "changedAtomicCredentialDuringPasswordVerificationCannotRelabelSuccess",
         "companionAppendFailureRollsBackNativeSessionBindingAndSuccessEvent",
         "completionInsideCallerTransactionRejectsDeliveryBeforeOuterCommit",
         "credentialAbaAfterVerificationRejectsTheOriginalHashGeneration",
         "defaultOffOidcNeverInvokesClaimFenceOrCompanionStorage",
+        "directoryBeforeCommitFaultCannotDeliverSuccessOrRetainNativeRows",
+        "directoryCatalogMutationAfterBindRequiresFreshAuthentication",
+        "directoryCompanionRefusalRollsBackWholeCompletion",
         "directoryLinkAbaAfterRealVerificationRejectsOriginalReceipt",
         "externalEventFailureRollsBackSessionBindingAndPublication",
         "forgedOidcJwtCannotBypassQualifiedCryptographicReadback",
@@ -1854,12 +1859,13 @@
       "lane": "postgres-integration",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/BoundAuthenticationCompletionPostgresIntegrationTest.java",
-      "source_sha256": "6ef7217ae7cbdcd305b32b45ae77d67cb266f533bb3db3ab8ea4cc1c0113c955",
+      "source_sha256": "e9f3fbcac076db53a4f3f7a4ea58ae5ee86d39a095b0101b9c822fd972cdfffc",
       "supports": []
     },
     {
       "baseline_seconds": 0.0,
       "cases": [
+        "additiveGuardSupportsBothDirectoryTypesWithExistingFenceAndReplayRules",
         "changedCatalogAndSavepointBindingCannotBePromoted",
         "fixedFencePrefixMatchesExistingDiagnosticFence",
         "freshSchemaAndNonownerEpochSelectOnlyAreRequired",
@@ -1874,7 +1880,7 @@
       "lane": "postgres-integration",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/BoundSourceClaimEvidencePostgresIntegrationTest.java",
-      "source_sha256": "1db45dc97e5dfa02c04201bbbddbe03fef4db0d1de9a54aa2c6f46ffde91f7ed",
+      "source_sha256": "67ae1c7858161c59f8f8580f52b976666127edd494eb2ef9c3404d9536d1dce1",
       "supports": []
     },
     {
@@ -2420,6 +2426,7 @@
       "cases": [
         "authenticatesLinkedLdapIdentityAndUsesOnlyHidraPermissions",
         "directoryOutageFailsClosedWithoutResolvingHidraIdentity",
+        "enabledCaptureWithoutCatalogCannotFallBackToIdentityOnlyAuthentication",
         "preservesActiveDirectoryProviderTypeAfterSuccessfulDirectoryAuthentication",
         "rejectsInactiveExternalIdentity",
         "rejectsInvalidDirectoryCredentialsBeforeIdentityLinkage",
@@ -2434,7 +2441,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapAuthenticationProviderTest.java",
-      "source_sha256": "9ec1016518856a4c5f6e3adddcb745be28283ef917e19818f602586c763ddf7e",
+      "source_sha256": "3ac5d63d569f176eb8b8ee12871c3b8fbeddc9d978f61e3558a4f07cda020845",
       "supports": []
     },
     {
@@ -2442,6 +2449,7 @@
       "cases": [
         "authenticatedBindCallbackTransportsExactEntrySubjectRatherThanEarlierProfileSearch",
         "blankPrincipalOrCredentialsFailClosedBeforeDirectoryAccess",
+        "callbackAttributeFailureCannotReturnAnIdentityOrExposeNamingDetails",
         "escapesSubmittedPrincipalBeforeBuildingDirectorySearchFilter",
         "normalizesActiveDirectoryAttributesToStableObjectGuidSubject",
         "rejectsSearchFilterWithoutPrincipalPlaceholder",
@@ -2453,7 +2461,33 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapCredentialVerificationAdapterTest.java",
-      "source_sha256": "43b24eca235929c32ae07964497603a9b4ad54dbc4ecb6a753676ee2b5b13b3d",
+      "source_sha256": "f5e3b2f676bb5ec71b555163ba864bd9a9e602c722d52327c6989f3143d43d61",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0.0,
+      "cases": [
+        "attributeReadAndSelectionFailuresStayRedactedAndClearScope",
+        "callbackAbsenceFalseResultAndDuplicateCallbackCannotMintReceipt",
+        "defaultOffDoesNotSelectOrRequestClaims",
+        "existingOwnerTransactionAndUnsupportedNamesRefuseBeforeBind",
+        "genuineCallbackTransfersBothDirectoryTypesAndSelectsBeforeBind",
+        "malformedTypesEmptyAndInvalidUnicodeAreNotStringCoerced",
+        "namesAliasesAndOidEnvelopeAreCheckedBeforeProjection",
+        "namingEnumerationFailureClosesItAndDoesNotDiscloseSourceException",
+        "noScopeAndCopiedIdentityCannotManufactureProducerAuthority",
+        "rangeAndOptionVariantsDiscardEvenAnOtherwisePresentValue",
+        "rawCountsDuplicateValuesAggregateAndReturnedIdentifierLimitsReject",
+        "scopeRejectsNestedWrongThreadExpiredAndClosedUse",
+        "valuesAreExactCaseInsensitiveObservationsAndOmissionsAreUnknown"
+      ],
+      "class": "dz.sh.hidra.modules.identity.infrastructure.security.LdapVerifiedClaimReceiptTest",
+      "dependency_reason": "New source-classified JVM producer/projection suite with simulated LDAP transport; no service dependency. Zero is an unmeasured scheduling weight, not a measured duration.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapVerifiedClaimReceiptTest.java",
+      "source_sha256": "09039761a996902e79fead598cc50e8526f638a07fff539a128c278443041bf0",
       "supports": []
     },
     {
@@ -2543,6 +2577,7 @@
       "baseline_seconds": 0,
       "cases": [
         "contributionHasOnlyImmutableScalarEvidenceAndNoPermission",
+        "directoryCaptureEntryPointsRemainPrivateAndHaveOnlyReviewedCallers",
         "handlesAreSingleUseAndBoundToThreadAndAmbientIdentity",
         "nativeParserReuseAndReceiptProducerAllowlistRemainClosed",
         "preparationRefusesAmbientTransaction",
@@ -2557,7 +2592,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipantTest.java",
-      "source_sha256": "a72ce219251298d95877655bb3a1bd30f0161396f98a221ebc79b71c2f5309ef",
+      "source_sha256": "04eb77b0539f694965349e98893da82ba6f1088fcbccecfae4855afb2e373830",
       "supports": []
     },
     {
@@ -2639,6 +2674,7 @@
         "copiedPublicOidcTokenCannotPromoteCompletedPrivateReceipt",
         "directHandleIsOneUseAndNeverStoredInDetailsOrAuthorities",
         "directReceiptCannotBeConsumedByAnotherThread",
+        "directoryCompanionTagsBindBothActualTypesAndPublishOnlyAfterCommit",
         "dtoAndGenericAuthenticatedTokenCannotSupplyPrivateVerification",
         "elapsedNativeLookupDeniesWithoutAnotherOwnerQueryOrExpiryGrace",
         "everyScalarOrTagMutationIsRejectedByTupleValidationOrAuthentication",
@@ -2673,7 +2709,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationTest.java",
-      "source_sha256": "e2a24c08ca900920b160578cefc28e297e15f1c5a7c18d4e05d066d32006f9a6",
+      "source_sha256": "45ee5b8ac1f48f8b4e7f8f8a031b0c46e2d461dc3e4a648ecfc142609140ca25",
       "supports": []
     },
     {

@@ -1120,6 +1120,133 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
     }
 
     @Test
+    void c3OriginalOidcGroupAndRoleClaimsRequireFencedCurrentMappings() {
+        var f = fixture("OIDC");
+        c3NonownerCapture();
+        String roleId = id(), groupId = id();
+        jdbc.update(
+                "INSERT INTO " + T + "role(id,code,role_type,status,created_at,updated_at)"
+                        + " VALUES (?,?,'BUSINESS','ACTIVE',now(),now())",
+                roleId, roleId);
+        jdbc.update(
+                "INSERT INTO " + T
+                        + "role_permission_grant(id,role_id,permission_id,effect,valid_from,status,created_at)"
+                        + " VALUES (?,?,?,'GRANT',now()-interval '1 hour','ACTIVE',now())",
+                id(), roleId, permission("author"));
+        jdbc.update(
+                "INSERT INTO " + T + "group(id,code,group_type,status,created_at,updated_at)"
+                        + " VALUES (?,?,'LOCAL','ACTIVE',now(),now())",
+                groupId, groupId);
+        jdbc.update(
+                "INSERT INTO " + T
+                        + "group_role_grant(id,group_id,role_id,valid_from,status,created_at)"
+                        + " VALUES (?,?,?,now()-interval '1 hour','ACTIVE',now())",
+                id(), groupId, roleId);
+        jdbc.update(
+                "INSERT INTO " + T
+                        + "external_group_mapping(id,identity_provider_id,group_id,external_group_name,"
+                        + "claim_name,mapping_mode,auto_create_membership,status,created_at,updated_at)"
+                        + " VALUES (?,?,?,'private-original-group','groups','ASSERTION_ONLY',false,"
+                        + "'ACTIVE',now(),now())",
+                id(), f.provider(), groupId);
+        jdbc.update(
+                "INSERT INTO " + T
+                        + "external_role_mapping(id,identity_provider_id,role_id,external_role_code,"
+                        + "claim_name,mapping_mode,status,created_at,updated_at)"
+                        + " VALUES (?,?,?,'private-original-group','groups','DIRECT_GRANT',"
+                        + "'ACTIVE',now(),now())",
+                id(), f.provider(), roleId);
+        var request = request(f, "author", false);
+        var prepared = prepare(f);
+        executor.execute(
+                () -> {
+                    c3SelectRestrictedRole();
+                    var qualified = participant.qualifyClaims(prepared, request);
+                    var evidence = reader.loadQualified(qualified, request);
+                    assertThat(evidence.failure()).isNull();
+                    assertThat(evidence.grants())
+                            .extracting(AuthorizationEvidence.Grant::order)
+                            .contains(3, 4)
+                            .doesNotContain(0, 1, 2, 5);
+                    assertThat(new AuthorizationPolicyEvaluator()
+                                    .evaluate(
+                                            request, evidence,
+                                            Instant.parse((String) evidence.attributes()
+                                                    .get("context.evaluatedAt")))
+                                    .decision())
+                            .isEqualTo(AuthorizationDecisionValue.PERMIT);
+                    return "mapped-group-and-role";
+                },
+                em::flush,
+                () -> assertThat(jdbc.queryForObject("SELECT 1", Integer.class)).isEqualTo(1));
+    }
+
+    @Test
+    void c3QualifiedCredentialRefusesAlternateScopeBeforeCommitGuard() {
+        var f = fixture("OIDC");
+        c3NonownerCapture();
+        c3PermissionMapping(f, "author", "GRANT");
+        var prepared = prepare(f);
+        var request = request(f, "author", false);
+        AtomicBoolean qualified = new AtomicBoolean(), guardCalled = new AtomicBoolean();
+        assertThatThrownBy(
+                        () -> executor.execute(
+                                () -> {
+                                    c3SelectRestrictedRole();
+                                    var sealed = participant.qualifyClaims(prepared, request);
+                                    qualified.set(true);
+                                    reader.loadQualified(sealed, request(f, "author", true));
+                                    return "wrong-scope";
+                                },
+                                em::flush,
+                                () -> guardCalled.set(true)))
+                .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class)
+                .satisfies(error ->
+                        assertThat(((ProtectedTransactionExecutor.ExecutionFailure) error)
+                                        .outcome())
+                                .isEqualTo(ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT));
+        assertThat(qualified).isTrue();
+        assertThat(guardCalled).isFalse();
+    }
+
+    @Test
+    void c3ConsumedClaimCredentialCannotBeReplayedInAnotherPhysicalTransaction() {
+        var f = fixture("OIDC");
+        c3NonownerCapture();
+        c3PermissionMapping(f, "author", "GRANT");
+        var prepared = prepare(f);
+        var request = request(f, "author", false);
+        AtomicReference<QualifiedClaimRead> consumed = new AtomicReference<>();
+        executor.execute(
+                () -> {
+                    c3SelectRestrictedRole();
+                    var qualified = participant.qualifyClaims(prepared, request);
+                    assertThat(reader.loadQualified(qualified, request).failure()).isNull();
+                    consumed.set(qualified);
+                    return "first-transaction";
+                },
+                em::flush,
+                () -> assertThat(jdbc.queryForObject("SELECT 1", Integer.class)).isEqualTo(1));
+
+        AtomicBoolean guardCalled = new AtomicBoolean();
+        assertThatThrownBy(
+                        () -> executor.execute(
+                                () -> {
+                                    c3SelectRestrictedRole();
+                                    reader.loadQualified(consumed.get(), request);
+                                    return "reused-in-new-transaction";
+                                },
+                                em::flush,
+                                () -> guardCalled.set(true)))
+                .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class)
+                .satisfies(error ->
+                        assertThat(((ProtectedTransactionExecutor.ExecutionFailure) error)
+                                        .outcome())
+                                .isEqualTo(ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT));
+        assertThat(guardCalled).isFalse();
+    }
+
+    @Test
     void allFourRealBoundActorsLoadDatabaseAuthorityAtFencedSample() {
         for (String type : List.of("LOCAL", "LDAP", "ACTIVE_DIRECTORY", "OIDC")) {
             var f = fixture(type);

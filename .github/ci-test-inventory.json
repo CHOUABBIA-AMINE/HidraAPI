@@ -1883,7 +1883,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.0,
+      "baseline_seconds": 0,
       "cases": [
         "additiveGuardSupportsBothDirectoryTypesWithExistingFenceAndReplayRules",
         "changedCatalogAndSavepointBindingCannotBePromoted",
@@ -2205,9 +2205,12 @@
         "bothCompanyAndFacilityRequireIndependentPermits",
         "boundedOverflowMalformedStateAndRollbackStayClosed",
         "c3ActualAuthenticationReplacedDuringQualifiedReadRejectsBeforeCommitGuard",
-        "c3MappingGenerationMutationInvalidatesAlreadyIssuedOidcClaimReceipt",
+        "c3ConsumedClaimCredentialCannotBeReplayedInAnotherPhysicalTransaction",
         "c3LegacyOidcWithoutCompanionCannotPromotePotentialUnknownDeny",
+        "c3MappingGenerationMutationInvalidatesAlreadyIssuedOidcClaimReceipt",
         "c3NewMappingClaimRequiresFreshOidcAuthenticationBeforeDirectPermit",
+        "c3OriginalOidcGroupAndRoleClaimsRequireFencedCurrentMappings",
+        "c3QualifiedCredentialRefusesAlternateScopeBeforeCommitGuard",
         "c3SameTransactionMappingEditAfterClaimSelectionRejectsBeforeCommitGuard",
         "c3VerifiedOriginalOidcDenyOverridesIndependentDirectPermit",
         "c3VerifiedOriginalOidcSourceCanMatchCurrentPermissionWithoutPublicAssertion",
@@ -2227,7 +2230,7 @@
       "lane": "postgres-integration",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedAuthorizationEvidencePostgresIntegrationTest.java",
-      "source_sha256": "b675209054a6c509c96bf4f06070c4bc7423029ddaf2f81da1840d02f7e44534",
+      "source_sha256": "f448c3a483d38f7609b9c37f57fa9b928b06625357202a16bede408d71a79223",
       "supports": []
     },
     {
@@ -2494,7 +2497,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.0,
+      "baseline_seconds": 0,
       "cases": [
         "attributeReadAndSelectionFailuresStayRedactedAndClearScope",
         "callbackAbsenceFalseResultAndDuplicateCallbackCannotMintReceipt",

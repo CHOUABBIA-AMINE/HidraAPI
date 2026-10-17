@@ -2206,6 +2206,7 @@
         "boundedOverflowMalformedStateAndRollbackStayClosed",
         "c3ActualAuthenticationReplacedDuringQualifiedReadRejectsBeforeCommitGuard",
         "c3ConsumedClaimCredentialCannotBeReplayedInAnotherPhysicalTransaction",
+        "c3CrossThreadClaimConsumeFailsWithDistinctTransactionAndCannotBeReused",
         "c3LegacyOidcWithoutCompanionCannotPromotePotentialUnknownDeny",
         "c3MappingGenerationMutationInvalidatesAlreadyIssuedOidcClaimReceipt",
         "c3NewMappingClaimRequiresFreshOidcAuthenticationBeforeDirectPermit",
@@ -2230,7 +2231,7 @@
       "lane": "postgres-integration",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedAuthorizationEvidencePostgresIntegrationTest.java",
-      "source_sha256": "f448c3a483d38f7609b9c37f57fa9b928b06625357202a16bede408d71a79223",
+      "source_sha256": "4ba40f1b964f0f1eaa14d745de81a00a8ef6df19aa9ad7418d6d33ff7f1b3ed5",
       "supports": []
     },
     {

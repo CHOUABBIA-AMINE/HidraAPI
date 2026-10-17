@@ -1210,6 +1210,71 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
     }
 
     @Test
+    void c3CrossThreadClaimConsumeFailsWithDistinctTransactionAndCannotBeReused() {
+        var f = fixture("OIDC");
+        c3NonownerCapture();
+        c3PermissionMapping(f, "author", "GRANT");
+        var prepared = prepare(f);
+        var request = request(f, "author", false);
+        var actual = SecurityContextHolder.getContext().getAuthentication();
+        AtomicBoolean wrongThreadAttempted = new AtomicBoolean();
+        AtomicBoolean wrongThreadRefused = new AtomicBoolean();
+        AtomicBoolean guardCalled = new AtomicBoolean();
+
+        assertThatThrownBy(
+                        () -> executor.execute(
+                                () -> {
+                                    c3SelectRestrictedRole();
+                                    var sealed = participant.qualifyClaims(prepared, request);
+                                    int ownerPid =
+                                            jdbc.queryForObject("SELECT pg_backend_pid()", Integer.class);
+                                    var worker = Executors.newSingleThreadExecutor();
+                                    try {
+                                        Future<Boolean> attempt = worker.submit(() -> {
+                                            SecurityContextHolder.getContext().setAuthentication(actual);
+                                            try {
+                                                assertThatThrownBy(() -> tx().execute(status -> {
+                                                            assertThat(jdbc.queryForObject(
+                                                                            "SELECT pg_backend_pid()",
+                                                                            Integer.class))
+                                                                    .isNotEqualTo(ownerPid);
+                                                            wrongThreadAttempted.set(true);
+                                                            return participant.consumeClaims(sealed, request);
+                                                        }))
+                                                        .isInstanceOf(AccessDeniedException.class);
+                                                wrongThreadRefused.set(true);
+                                                return true;
+                                            } finally {
+                                                SecurityContextHolder.clearContext();
+                                            }
+                                        });
+                                        assertThat(attempt.get(10, TimeUnit.SECONDS)).isTrue();
+                                    } catch (InterruptedException interrupted) {
+                                        Thread.currentThread().interrupt();
+                                        throw new AssertionError(interrupted);
+                                    } catch (ExecutionException | TimeoutException failure) {
+                                        throw new AssertionError(failure);
+                                    } finally {
+                                        worker.shutdownNow();
+                                    }
+                                    // Failed cross-thread consumption burns the one-shot handle:
+                                    // it cannot be promoted in its original physical transaction.
+                                    reader.loadQualified(sealed, request);
+                                    return "cross-thread-credential-reused";
+                                },
+                                em::flush,
+                                () -> guardCalled.set(true)))
+                .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class)
+                .satisfies(error ->
+                        assertThat(((ProtectedTransactionExecutor.ExecutionFailure) error)
+                                        .outcome())
+                                .isEqualTo(ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT));
+        assertThat(wrongThreadAttempted).isTrue();
+        assertThat(wrongThreadRefused).isTrue();
+        assertThat(guardCalled).isFalse();
+    }
+
+    @Test
     void c3ConsumedClaimCredentialCannotBeReplayedInAnotherPhysicalTransaction() {
         var f = fixture("OIDC");
         c3NonownerCapture();

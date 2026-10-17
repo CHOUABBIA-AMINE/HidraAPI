@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedAuthorizationEvidencePostgresIntegrationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-15
+ * @UpdatedOn   : 2026-10-17
  *
  * @Type        : Class
  * @Layer       : Identity Test
@@ -49,8 +49,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.test.context.*;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.context.bean.override.mockito.*;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.*;
 import org.springframework.transaction.support.*;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -133,7 +133,9 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
     @Autowired CompleteAuthenticatedPrincipalUseCase completion;
     @Autowired DirectAuthenticationPort directPort;
     @Autowired IdentityOidcJwtAuthenticationConverter oidc;
-    @Autowired OperationAuthenticationBindingRepositoryPort bindings;
+    @Autowired LdapAuthenticationProvider ldap;
+    @Autowired TrustedAuthenticationVerificationRegistry verificationRegistry;
+    @MockitoSpyBean OperationAuthenticationBindingRepositoryPort bindings;
     @Autowired PasswordEncoder passwords;
     @Autowired LoginSessionRepositoryPort sessions;
     @MockitoSpyBean ClaimNameCatalogPort claimCatalog;
@@ -181,6 +183,7 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
     void initialize() {
         SecurityContextHolder.clearContext();
         ReflectionTestUtils.setField(oidc, "verifiedClaimReceiptEnabled", false);
+        ReflectionTestUtils.setField(ldap, "verifiedClaimReceiptEnabled", false);
         cleanEvidence();
         flyway.validate();
         assertThat(flyway.info().pending()).isEmpty();
@@ -198,6 +201,7 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
     @AfterEach
     void clear() {
         ReflectionTestUtils.setField(oidc, "verifiedClaimReceiptEnabled", false);
+        ReflectionTestUtils.setField(ldap, "verifiedClaimReceiptEnabled", false);
         directPort.finishVerification();
         SecurityContextHolder.clearContext();
         // Guarded provenance/security rows are retained; only this test's disposable receipt is
@@ -241,7 +245,8 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
                         Timestamp.from(c.evidence().observedAt()),
                         Timestamp.from(c.validUntil()));
         if (!Integer.valueOf(1).equals(count))
-            throw new IllegalStateException("Protected temporal guard rejected invalid or expired interval");
+            throw new IllegalStateException(
+                    "Protected temporal guard rejected invalid or expired interval");
     }
 
     private static Connection connection() throws SQLException {
@@ -319,6 +324,10 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
     }
 
     private AuthenticationResult completeOidc(Fixture f, Instant deadline) {
+        return completeOidc(f, deadline, List.of("private-original-group"));
+    }
+
+    private AuthenticationResult completeOidc(Fixture f, Instant deadline, Object groups) {
         Jwt signed =
                 sourceEncoder.encode(
                         JwtEncoderParameters.from(
@@ -328,7 +337,7 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
                                         .audience(List.of("hidra-api"))
                                         .issuedAt(Instant.now().minusSeconds(1))
                                         .expiresAt(deadline)
-                                        .claim("groups", List.of("private-original-group"))
+                                        .claim("groups", groups)
                                         .build()));
         var actual = oidc.convert(realExternal.decode(signed.getTokenValue()));
         SecurityContextHolder.getContext().setAuthentication(actual);
@@ -735,38 +744,52 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
      */
     private void c3NonownerCapture() {
         String role = "c3_source_claim_app";
-        if (!Boolean.TRUE.equals(jdbc.queryForObject(
-                "SELECT EXISTS(SELECT 1 FROM pg_roles WHERE rolname=?)",
-                Boolean.class, role))) {
+        if (!Boolean.TRUE.equals(
+                jdbc.queryForObject(
+                        "SELECT EXISTS(SELECT 1 FROM pg_roles WHERE rolname=?)",
+                        Boolean.class,
+                        role))) {
             jdbc.execute("CREATE ROLE " + role + " LOGIN PASSWORD 'synthetic-c3-test-only'");
             jdbc.execute("REVOKE CREATE ON SCHEMA public FROM PUBLIC");
             jdbc.execute("GRANT USAGE ON SCHEMA public TO " + role);
-            jdbc.execute("GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA public TO " + role);
-            jdbc.execute("REVOKE ALL ON public.hidra_identity_external_mapping_generation FROM " + role);
-            jdbc.execute("GRANT SELECT ON public.hidra_identity_external_mapping_generation TO " + role);
+            jdbc.execute(
+                    "GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA public TO " + role);
+            jdbc.execute(
+                    "REVOKE ALL ON public.hidra_identity_external_mapping_generation FROM " + role);
+            jdbc.execute(
+                    "GRANT SELECT ON public.hidra_identity_external_mapping_generation TO " + role);
         }
-        var appJdbc = new JdbcTemplate(
-                new org.springframework.jdbc.datasource.DriverManagerDataSource(
-                        POSTGRES.getJdbcUrl(), role, "synthetic-c3-test-only"));
+        var appJdbc =
+                new JdbcTemplate(
+                        new org.springframework.jdbc.datasource.DriverManagerDataSource(
+                                POSTGRES.getJdbcUrl(), role, "synthetic-c3-test-only"));
         var appCatalog =
                 new dz.sh.hidra.modules.identity.infrastructure.persistence.adapter
                         .JdbcClaimNameCatalogAdapter(appJdbc);
         // Authentication's source-name hint is selected on a real non-owner connection.
         // During the issuance fence the identical selected generation must be rechecked
         // on the native physical transaction, after taking the non-owner identity.
-        doAnswer(i -> {
-                    if (TransactionSynchronizationManager.isActualTransactionActive()
-                            && Boolean.TRUE.equals(jdbc.queryForObject(
-                                    "SELECT current_user=?", Boolean.class, role)))
-                        return i.callRealMethod();
-                    return appCatalog.selectVersioned(i.getArgument(0));
-                })
-                .when(claimCatalog).selectVersioned(anyString());
-        new TransactionTemplate(manager).executeWithoutResult(
-                status -> doAnswer(i -> {
-                    c3SelectRestrictedRole();
-                    return i.callRealMethod();
-                }).when(claimIssuanceFence).prepare(anyString(), any()));
+        doAnswer(
+                        i -> {
+                            if (TransactionSynchronizationManager.isActualTransactionActive()
+                                    && Boolean.TRUE.equals(
+                                            jdbc.queryForObject(
+                                                    "SELECT current_user=?", Boolean.class, role)))
+                                return i.callRealMethod();
+                            return appCatalog.selectVersioned(i.getArgument(0));
+                        })
+                .when(claimCatalog)
+                .selectVersioned(anyString());
+        new TransactionTemplate(manager)
+                .executeWithoutResult(
+                        status ->
+                                doAnswer(
+                                                i -> {
+                                                    c3SelectRestrictedRole();
+                                                    return i.callRealMethod();
+                                                })
+                                        .when(claimIssuanceFence)
+                                        .prepare(anyString(), any()));
         // The final guarded fixture insert must also be performed without owner rights.
         jdbc.execute("GRANT USAGE ON SCHEMA " + schema + " TO " + role);
         jdbc.execute("GRANT INSERT ON " + receipt() + " TO " + role);
@@ -780,15 +803,20 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
      * to the physical transaction and automatically resets on completion.
      */
     private void c3SelectRestrictedRole() {
-        assertThat(jdbc.queryForObject(
-                "SELECT set_config('role',?,true)", String.class, "c3_source_claim_app"))
+        assertThat(
+                        jdbc.queryForObject(
+                                "SELECT set_config('role',?,true)",
+                                String.class,
+                                "c3_source_claim_app"))
                 .isEqualTo("c3_source_claim_app");
-        assertThat(jdbc.queryForObject(
-                "SELECT current_user='c3_source_claim_app' "
-                        + "AND NOT has_schema_privilege(current_user,'public','CREATE') "
-                        + "AND NOT has_table_privilege(current_user,"
-                        + "'public.hidra_identity_external_mapping_generation','UPDATE')",
-                Boolean.class)).isTrue();
+        assertThat(
+                        jdbc.queryForObject(
+                                "SELECT current_user='c3_source_claim_app' "
+                                        + "AND NOT has_schema_privilege(current_user,'public','CREATE') "
+                                        + "AND NOT has_table_privilege(current_user,"
+                                        + "'public.hidra_identity_external_mapping_generation','UPDATE')",
+                                Boolean.class))
+                .isTrue();
     }
 
     private void c3PermissionMapping(Fixture f, String op, String effect) {
@@ -797,9 +825,849 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
                         + "(id,identity_provider_id,permission_id,external_permission_code,claim_name,"
                         + "mapping_mode,effect,status,created_at,updated_at)"
                         + " VALUES (?,?,?,'private-original-group','groups','DIRECT_GRANT',?,'ACTIVE',now(),now())",
-                id(), f.provider(), permission(op), effect);
+                id(),
+                f.provider(),
+                permission(op),
+                effect);
     }
 
+    private Prepared c3DirectoryPrepared(Fixture f, String attributeName) {
+        var properties =
+                new dz.sh.hidra.platform.configuration.HidraLdapSecurityProperties(
+                        true,
+                        "ldap://synthetic.invalid:389",
+                        "dc=synthetic,dc=invalid",
+                        "ou=people",
+                        "(uid={0})",
+                        null,
+                        null,
+                        null,
+                        null);
+        var adapter =
+                new LdapCredentialVerificationAdapter(
+                        mock(org.springframework.ldap.core.support.LdapContextSource.class),
+                        properties,
+                        verificationRegistry);
+        var template = mock(org.springframework.ldap.core.LdapTemplate.class);
+        ReflectionTestUtils.setField(adapter, "ldapTemplate", template);
+        var context = mock(javax.naming.directory.DirContext.class);
+        var attrs = new javax.naming.directory.BasicAttributes(true);
+        attrs.put("entryUUID", f.subject());
+        attrs.put("uid", f.user());
+        if ("binary".equals(attributeName)) attrs.put("memberOf", new byte[] {1, 2});
+        else if (attributeName != null)
+            attrs.put(attributeName, " private-original-directory-group ");
+        try {
+            when(context.getAttributes(any(javax.naming.Name.class), any(String[].class)))
+                    .thenReturn(attrs);
+            when(template.authenticate(
+                            anyString(),
+                            anyString(),
+                            anyString(),
+                            any(
+                                    org.springframework.ldap.core
+                                            .AuthenticatedLdapEntryContextCallback.class)))
+                    .thenAnswer(
+                            i -> {
+                                ((org.springframework.ldap.core
+                                                        .AuthenticatedLdapEntryContextCallback)
+                                                i.getArgument(3))
+                                        .executeWithContext(
+                                                context,
+                                                new org.springframework.ldap.core
+                                                        .LdapEntryIdentification(
+                                                        new javax.naming.ldap.LdapName(
+                                                                "uid=synthetic,ou=people,dc=synthetic,dc=invalid"),
+                                                        new javax.naming.ldap.LdapName(
+                                                                "uid=synthetic,ou=people")));
+                                return true;
+                            });
+        } catch (javax.naming.NamingException impossible) {
+            throw new IllegalStateException(impossible);
+        }
+        doAnswer(i -> adapter.verify(i.getArgument(0), i.getArgument(1)))
+                .when(directory)
+                .verify(f.user(), "synthetic-password");
+        ReflectionTestUtils.setField(ldap, "verifiedClaimReceiptEnabled", true);
+        return prepare(f);
+    }
+
+    private String c3RoleMapping(
+            Fixture f, boolean grouped, String effect, String claim, String value) {
+        String role = role(f, "author", effect, false);
+        jdbc.update("DELETE FROM " + T + "user_role_grant WHERE user_id=?", f.user());
+        if (!grouped) {
+            jdbc.update(
+                    "INSERT INTO "
+                            + T
+                            + "external_role_mapping"
+                            + "(id,identity_provider_id,role_id,external_role_code,claim_name,mapping_mode,scope_type,scope_reference_id,status,created_at,updated_at)"
+                            + " VALUES"
+                            + " (?,?,?,?,?,'DIRECT_GRANT','FACILITY',?,'ACTIVE',now(),now())",
+                    id(),
+                    f.provider(),
+                    role,
+                    value,
+                    claim,
+                    FACILITY);
+            return role;
+        }
+        String group = id();
+        jdbc.update(
+                "INSERT INTO "
+                        + T
+                        + "group(id,code,group_type,status,created_at,updated_at)"
+                        + " VALUES (?,?,'LOCAL','ACTIVE',now(),now())",
+                group,
+                group);
+        jdbc.update(
+                "INSERT INTO "
+                        + T
+                        + "group_role_grant"
+                        + "(id,group_id,role_id,scope_type,scope_reference_id,valid_from,status,created_at)"
+                        + " VALUES (?,?,?,'FACILITY',?,now()-interval '1 hour','ACTIVE',now())",
+                id(),
+                group,
+                role,
+                FACILITY);
+        jdbc.update(
+                "INSERT INTO "
+                        + T
+                        + "external_group_mapping"
+                        + "(id,identity_provider_id,group_id,external_group_name,claim_name,mapping_mode,auto_create_membership,status,created_at,updated_at)"
+                        + " VALUES (?,?,?,?,?,'ASSERTION_ONLY',false,'ACTIVE',now(),now())",
+                id(),
+                f.provider(),
+                group,
+                value,
+                claim);
+        attribute("GROUP", group, "qualified-flag", "BOOLEAN", "true");
+        jdbc.update(
+                "UPDATE "
+                        + T
+                        + "role_permission_grant SET condition_expression=?::jsonb WHERE role_id=?",
+                "{\"op\":\"in\",\"attribute\":\"subject.groupIds\",\"type\":\"STRING\",\"value\":[\""
+                        + group
+                        + "\"]}",
+                role);
+        return group;
+    }
+
+    private AuthorizationDecisionValue c3Decision(
+            Prepared prepared,
+            AuthorizationEvaluationRequest request,
+            Runnable afterQualification) {
+        return executor.execute(
+                () -> {
+                    c3SelectRestrictedRole();
+                    var sealed = participant.qualifyClaims(prepared, request);
+                    afterQualification.run();
+                    var evidence = reader.loadQualified(sealed, request);
+                    if (evidence.grants().stream().anyMatch(g -> g.order() == 3))
+                        assertThat(evidence.attributes().get("subject.attributes.qualified-flag"))
+                                .isEqualTo(true);
+                    assertThat(evidence.toString())
+                            .doesNotContain(
+                                    "private-original-group", "private-original-directory-group");
+                    return new AuthorizationPolicyEvaluator()
+                            .evaluate(
+                                    request,
+                                    evidence,
+                                    Instant.parse(
+                                            (String)
+                                                    evidence.attributes()
+                                                            .get("context.evaluatedAt")))
+                            .decision();
+                },
+                em::flush,
+                () -> assertThat(jdbc.queryForObject("SELECT 1", Integer.class)).isEqualTo(1));
+    }
+
+    private void c3Rejected(Runnable action) {
+        assertThatThrownBy(action::run)
+                .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class)
+                .satisfies(
+                        e ->
+                                assertThat(
+                                                ((ProtectedTransactionExecutor.ExecutionFailure) e)
+                                                        .outcome())
+                                        .isEqualTo(
+                                                ProtectedTransactionExecutor.Outcome
+                                                        .REJECTED_BEFORE_COMMIT));
+    }
+
+    private void c3AttemptBlockedIssuance(
+            Fixture f,
+            ClaimNameCatalogPort.VersionedSelection selected,
+            AtomicInteger writerPid,
+            CountDownLatch started) {
+        var transaction = new TransactionTemplate(manager);
+        assertThatThrownBy(
+                        () ->
+                                transaction.executeWithoutResult(
+                                        status -> {
+                                            c3SelectRestrictedRole();
+                                            jdbc.execute("SET LOCAL lock_timeout='250ms'");
+                                            writerPid.set(backend());
+                                            started.countDown();
+                                            claimIssuanceFence.prepare(f.provider(), selected);
+                                        }))
+                .isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    void c3QualifiedDirectoryAllMappingFamiliesPreservePositiveAndDenySemantics() {
+        for (String type : List.of("LDAP", "ACTIVE_DIRECTORY")) {
+            for (String family : List.of("permission", "role", "group")) {
+                for (String effect : List.of("GRANT", "DENY")) {
+                    cleanEvidence();
+                    var f = fixture(type);
+                    c3NonownerCapture();
+                    if (family.equals("permission")) {
+                        c3PermissionMapping(f, "author", effect);
+                        jdbc.update(
+                                "UPDATE "
+                                        + T
+                                        + "external_permission_mapping SET"
+                                        + " claim_name='memberOf',external_permission_code=? WHERE"
+                                        + " identity_provider_id=?",
+                                " private-original-directory-group ",
+                                f.provider());
+                    } else
+                        c3RoleMapping(
+                                f,
+                                family.equals("group"),
+                                effect,
+                                "memberOf",
+                                " private-original-directory-group ");
+                    if (effect.equals("DENY")) grant(f, "author", "GRANT", "FACILITY", FACILITY);
+                    var prepared = c3DirectoryPrepared(f, "memberOf");
+                    assertThat(c3Decision(prepared, request(f, "author", false), () -> {}))
+                            .as(type + "/" + family + "/" + effect)
+                            .isEqualTo(
+                                    effect.equals("DENY")
+                                            ? AuthorizationDecisionValue.DENY
+                                            : AuthorizationDecisionValue.PERMIT);
+                }
+            }
+        }
+    }
+
+    @Test
+    void c3QualifiedDirectoryNonmatchOmissionAndRangeCannotErasePotentialDeny() {
+        for (String type : List.of("LDAP", "ACTIVE_DIRECTORY")) {
+            for (String family : List.of("permission", "role", "group")) {
+                for (String variant :
+                        List.of("nonmatch", "omitted", "ranged", "option", "binary")) {
+                    cleanEvidence();
+                    var f = fixture(type);
+                    c3NonownerCapture();
+                    if (family.equals("permission")) {
+                        c3PermissionMapping(f, "author", "DENY");
+                        jdbc.update(
+                                "UPDATE "
+                                        + T
+                                        + "external_permission_mapping"
+                                        + " SET claim_name='memberOf',external_permission_code='unobserved-deny'"
+                                        + " WHERE identity_provider_id=?",
+                                f.provider());
+                    } else {
+                        c3RoleMapping(
+                                f, family.equals("group"), "DENY", "memberOf", "unobserved-deny");
+                    }
+                    grant(f, "author", "GRANT", "FACILITY", FACILITY);
+                    String attributeName =
+                            switch (variant) {
+                                case "omitted" -> null;
+                                case "ranged" -> "memberOf;range=0-1499";
+                                case "option" -> "memberOf;binary";
+                                case "binary" -> "binary";
+                                default -> "memberOf";
+                            };
+                    var prepared = c3DirectoryPrepared(f, attributeName);
+                    assertThat(c3Decision(prepared, request(f, "author", false), () -> {}))
+                            .as(type + "/" + family + "/" + variant)
+                            .isEqualTo(AuthorizationDecisionValue.INDETERMINATE);
+                }
+            }
+        }
+    }
+
+    @Test
+    void c3QualifiedRoleScopeAndGroupWindowCannotGrantOutsideTheirBounds() {
+        for (boolean grouped : List.of(false, true)) {
+            cleanEvidence();
+            var f = fixture("OIDC");
+            c3NonownerCapture();
+            c3RoleMapping(f, grouped, "GRANT", "groups", "private-original-group");
+            if (grouped)
+                jdbc.update(
+                        "UPDATE " + T + "group_role_grant SET valid_to=now()-interval '1 minute'");
+            else
+                jdbc.update(
+                        "UPDATE "
+                                + T
+                                + "external_role_mapping SET scope_reference_id='other-facility'"
+                                + " WHERE identity_provider_id=?",
+                        f.provider());
+            assertThat(c3Decision(prepare(f), request(f, "author", false), () -> {}))
+                    .isEqualTo(AuthorizationDecisionValue.DENY);
+        }
+    }
+
+    @Test
+    void c3QualifiedMalformedOidcClaimNeverOverridesPotentialDeny() {
+        var f = fixture("OIDC");
+        c3NonownerCapture();
+        c3PermissionMapping(f, "author", "DENY");
+        grant(f, "author", "GRANT", "FACILITY", FACILITY);
+        var result =
+                completeOidc(
+                        f,
+                        Instant.now().plusSeconds(300).truncatedTo(ChronoUnit.SECONDS),
+                        Map.of("unsupported", "value"));
+        ambient(result.accessToken());
+        assertThat(c3Decision(participant.prepare(), request(f, "author", false), () -> {}))
+                .isEqualTo(AuthorizationDecisionValue.INDETERMINATE);
+    }
+
+    @Test
+    void c3QualifiedGraphKeepsCombinedRowBudgetAndUncertainConditionsFailClosed() {
+        for (boolean overflow : List.of(false, true)) {
+            cleanEvidence();
+            var f = fixture("OIDC");
+            c3NonownerCapture();
+            String role = c3RoleMapping(f, false, "GRANT", "groups", "private-original-group");
+            if (overflow) {
+                jdbc.update(
+                        "INSERT INTO "
+                                + T
+                                + "external_permission_mapping"
+                                + "(id,identity_provider_id,permission_id,external_permission_code,claim_name,mapping_mode,effect,status,created_at,updated_at)"
+                                + " SELECT ? || '-' ||"
+                                + " n,?,?,'other','groups','DIRECT_GRANT','GRANT','ACTIVE',now(),now()"
+                                + " FROM generate_series(1,1020) n",
+                        id(),
+                        f.provider(),
+                        permission("author"));
+            } else
+                jdbc.update(
+                        "UPDATE "
+                                + T
+                                + "role_permission_grant SET condition_expression=?::jsonb WHERE"
+                                + " role_id=?",
+                        "{\"op\":\"eq\",\"attribute\":\"subject.attributes.missing\",\"type\":\"BOOLEAN\",\"value\":true}",
+                        role);
+            // Unclassified attribute conditions are rejected by the real temporal census;
+            // do not weaken its static grammar merely to obtain a diagnostic decision.
+            c3Rejected(() -> c3Decision(prepare(f), request(f, "author", false), () -> {}));
+        }
+    }
+
+    @Test
+    void c3RealMappingWriterWaitsThenOldClaimsRefuseUntilFreshAuthentication() {
+        var f = fixture("OIDC");
+        c3NonownerCapture();
+        c3PermissionMapping(f, "author", "GRANT");
+        var prepared = prepare(f);
+        String raw =
+                ((org.springframework.security.oauth2.server.resource.authentication
+                                        .JwtAuthenticationToken)
+                                SecurityContextHolder.getContext().getAuthentication())
+                        .getToken()
+                        .getTokenValue();
+        assertThat(
+                        c3Decision(
+                                prepared,
+                                request(f, "author", false),
+                                () -> {
+                                    try (var other = connection()) {
+                                        other.setAutoCommit(false);
+                                        try (var statement =
+                                                other.prepareStatement(
+                                                        "UPDATE "
+                                                                + T
+                                                                + "external_permission_mapping SET"
+                                                                + " external_permission_code=external_permission_code"
+                                                                + " || '-changed' WHERE"
+                                                                + " identity_provider_id=?")) {
+                                            try (var settings = other.createStatement()) {
+                                                settings.execute("SET LOCAL lock_timeout='100ms'");
+                                            }
+                                            statement.setString(1, f.provider());
+                                            assertThatThrownBy(statement::executeUpdate)
+                                                    .isInstanceOf(SQLException.class)
+                                                    .satisfies(
+                                                            e ->
+                                                                    assertThat(
+                                                                                    ((SQLException)
+                                                                                                    e)
+                                                                                            .getSQLState())
+                                                                            .isEqualTo("55P03"));
+                                        } finally {
+                                            other.rollback();
+                                        }
+                                    } catch (SQLException failure) {
+                                        throw new AssertionError(failure);
+                                    }
+                                }))
+                .isEqualTo(AuthorizationDecisionValue.PERMIT);
+        assertThat(
+                        jdbc.update(
+                                "UPDATE "
+                                        + T
+                                        + "external_permission_mapping SET"
+                                        + " external_permission_code=external_permission_code ||"
+                                        + " '-changed' WHERE identity_provider_id=?",
+                                f.provider()))
+                .isEqualTo(1);
+        ambient(raw);
+        var stale = participant.prepare();
+        c3Rejected(() -> c3Decision(stale, request(f, "author", false), () -> {}));
+        assertThat(c3Decision(prepare(f), request(f, "author", false), () -> {}))
+                .isEqualTo(AuthorizationDecisionValue.DENY);
+        jdbc.update(
+                "UPDATE "
+                        + T
+                        + "external_permission_mapping SET"
+                        + " external_permission_code='private-original-group' WHERE"
+                        + " identity_provider_id=?",
+                f.provider());
+        assertThat(c3Decision(prepare(f), request(f, "author", false), () -> {}))
+                .isEqualTo(AuthorizationDecisionValue.PERMIT);
+    }
+
+    @Test
+    void c3AcceptedIssuanceFenceCannotInvertTheQualifiedReaderPrefix() {
+        var f = fixture("OIDC");
+        c3NonownerCapture();
+        c3PermissionMapping(f, "author", "GRANT");
+        var prepared = prepare(f);
+        var selected = claimCatalog.selectVersioned(f.provider());
+        var pool = Executors.newSingleThreadExecutor();
+        try {
+            var result =
+                    c3Decision(
+                            prepared,
+                            request(f, "author", false),
+                            () -> {
+                                var started = new CountDownLatch(1);
+                                var writerPid = new AtomicInteger();
+                                var writer =
+                                        pool.submit(
+                                                () ->
+                                                        c3AttemptBlockedIssuance(
+                                                                f, selected, writerPid, started));
+                                await(started);
+                                int readerPid = backend();
+                                boolean observed = false;
+                                long until = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(200);
+                                while (!observed && System.nanoTime() < until) {
+                                    observed =
+                                            Boolean.TRUE.equals(
+                                                    jdbc.queryForObject(
+                                                            "SELECT ?=ANY(pg_blocking_pids(?))",
+                                                            Boolean.class,
+                                                            readerPid,
+                                                            writerPid.get()));
+                                }
+                                assertThat(observed)
+                                        .as("Actual issuance fence waits on this reader")
+                                        .isTrue();
+                                assertThat(writerPid.get()).isNotEqualTo(readerPid);
+                                join(writer);
+                            });
+            assertThat(result).isEqualTo(AuthorizationDecisionValue.PERMIT);
+            new TransactionTemplate(manager)
+                    .executeWithoutResult(
+                            status -> {
+                                c3SelectRestrictedRole();
+                                var stamp = claimIssuanceFence.prepare(f.provider(), selected);
+                                claimIssuanceFence.requireCurrent(stamp);
+                            });
+        } finally {
+            pool.shutdownNow();
+        }
+    }
+
+    @Test
+    void c3CoverageGenerationAndIssuanceXidCannotBorrowAnOriginalCompanionMac() {
+        for (String change : List.of("coverage", "generation", "xid")) {
+            cleanEvidence();
+            var f = fixture("OIDC");
+            c3NonownerCapture();
+            c3PermissionMapping(f, "author", "GRANT");
+            var prepared = prepare(f);
+            doAnswer(
+                            i -> {
+                                @SuppressWarnings("unchecked")
+                                Optional<BoundSourceClaimEvidence> actual =
+                                        (Optional<BoundSourceClaimEvidence>) i.callRealMethod();
+                                var e = actual.orElseThrow();
+                                byte[] mac = e.producerAuthenticator();
+                                if (change.equals("mac")) mac[0] ^= 1;
+                                return Optional.of(
+                                        new BoundSourceClaimEvidence(
+                                                change.equals("binding") ? id() : e.bindingId(),
+                                                e.evidenceFormat(),
+                                                e.mappingGeneration()
+                                                        + (change.equals("generation") ? 1 : 0),
+                                                e.issuanceTransactionId()
+                                                        + (change.equals("xid") ? 1 : 0),
+                                                change.equals("coverage")
+                                                        ? ClaimCoverage.empty()
+                                                        : e.coverage(),
+                                                mac));
+                            })
+                    .when(claimCompanions)
+                    .findByBindingId(anyString());
+            c3Rejected(() -> c3Decision(prepared, request(f, "author", false), () -> {}));
+            reset(claimCompanions);
+        }
+    }
+
+    @Test
+    void c3UnusedQualifiedHandleCannotMoveToANewTransactionOnItsOriginalThread() {
+        var f = fixture("OIDC");
+        c3NonownerCapture();
+        c3PermissionMapping(f, "author", "GRANT");
+        var prepared = prepare(f);
+        var request = request(f, "author", false);
+        var unused = new AtomicReference<QualifiedClaimRead>();
+        var xid = new AtomicLong();
+        executor.execute(
+                () -> {
+                    c3SelectRestrictedRole();
+                    unused.set(participant.qualifyClaims(prepared, request));
+                    xid.set(jdbc.queryForObject("SELECT txid_current()", Long.class));
+                    return "qualified-only";
+                },
+                em::flush,
+                () -> assertThat(jdbc.queryForObject("SELECT 1", Integer.class)).isEqualTo(1));
+        c3Rejected(
+                () ->
+                        executor.execute(
+                                () -> {
+                                    c3SelectRestrictedRole();
+                                    assertThat(
+                                                    jdbc.queryForObject(
+                                                            "SELECT txid_current()", Long.class))
+                                            .isNotEqualTo(xid.get());
+                                    reader.loadQualified(unused.get(), request);
+                                    return "transplanted";
+                                },
+                                em::flush,
+                                () ->
+                                        fail(
+                                                "Unused handle from another physical transaction cannot publish")));
+    }
+
+    @Test
+    void c3GenuineQualifiedHandleRejectsAnotherParticipantBeforeAnyOwnerPortCall() {
+        var f = fixture("OIDC");
+        c3NonownerCapture();
+        c3PermissionMapping(f, "author", "GRANT");
+        var prepared = prepare(f);
+        var request = request(f, "author", false);
+        // Only the wrong owner instance is synthetic; the attempted handle was genuinely
+        // produced in the native owner transaction. Its ports must not even be consulted.
+        var foreignStates = mock(AuthenticationSecurityStateQueryPort.class);
+        var foreignIssuer = mock(AccessTokenIssuerPort.class);
+        @SuppressWarnings("unchecked")
+        var foreignDecoder =
+                (org.springframework.beans.factory.ObjectProvider<JwtDecoder>)
+                        mock(org.springframework.beans.factory.ObjectProvider.class);
+        var other =
+                new ProtectedOperationIdentityParticipant(
+                        bindings,
+                        foreignStates,
+                        foreignDecoder,
+                        foreignIssuer,
+                        verificationRegistry,
+                        fence,
+                        jdbc,
+                        65536);
+        c3Rejected(
+                () ->
+                        executor.execute(
+                                () -> {
+                                    c3SelectRestrictedRole();
+                                    var q = participant.qualifyClaims(prepared, request);
+                                    other.consumeClaims(q, request);
+                                    return "foreign-owner";
+                                },
+                                em::flush,
+                                () -> fail("Foreign owner must not reach commit guard")));
+        verifyNoInteractions(foreignStates, foreignIssuer, foreignDecoder);
+    }
+
+    private OperationAuthenticationBinding c3AlterBinding(
+            OperationAuthenticationBinding b, String field) {
+        return new OperationAuthenticationBinding(
+                field.equals("binding") ? id() : b.bindingId(),
+                b.formatVersion(),
+                field.equals("issuer") ? "other-native" : b.nativeIssuer(),
+                field.equals("audience") ? "other-audience" : b.nativeAudience(),
+                field.equals("jti") ? id() : b.jti(),
+                field.equals("session") ? id() : b.sessionId(),
+                field.equals("user") ? id() : b.userId(),
+                b.authenticationType(),
+                b.sessionProtocol(),
+                field.equals("provider") ? id() : b.providerId(),
+                b.providerSecurityVersion() + (field.equals("provider-generation") ? 1 : 0),
+                field.equals("link") ? id() : b.externalIdentityId(),
+                b.externalSubject(),
+                b.externalSecurityVersion() + (field.equals("link-generation") ? 1 : 0),
+                field.equals("source-issuer") ? "https://other-source.invalid" : b.sourceIssuer(),
+                field.equals("source-expiry")
+                        ? b.sourceExpiresAt().plusSeconds(1)
+                        : b.sourceExpiresAt(),
+                b.credentialId(),
+                b.credentialSecurityVersion(),
+                b.issuedAt(),
+                field.equals("native-expiry") ? b.expiresAt().minusSeconds(1) : b.expiresAt(),
+                b.producerAuthenticator());
+    }
+
+    @Test
+    void c3QualifiedReadCannotBorrowTheOriginalNativeAuthenticatorForAnotherTuple() {
+        for (String field :
+                List.of(
+                        "binding",
+                        "issuer",
+                        "audience",
+                        "jti",
+                        "session",
+                        "user",
+                        "provider",
+                        "provider-generation",
+                        "link",
+                        "link-generation",
+                        "source-issuer",
+                        "source-expiry",
+                        "native-expiry")) {
+            cleanEvidence();
+            var f = fixture("OIDC");
+            c3NonownerCapture();
+            c3PermissionMapping(f, "author", "GRANT");
+            var prepared = prepare(f);
+            c3Rejected(
+                    () ->
+                            c3Decision(
+                                    prepared,
+                                    request(f, "author", false),
+                                    () -> {
+                                        doAnswer(
+                                                        i -> {
+                                                            var actual =
+                                                                    (Optional<?>)
+                                                                            i.callRealMethod();
+                                                            return Optional.of(
+                                                                    c3AlterBinding(
+                                                                            (OperationAuthenticationBinding)
+                                                                                    actual
+                                                                                            .orElseThrow(),
+                                                                            field));
+                                                        })
+                                                .when(bindings)
+                                                .findByNativeIssuerAndJti(anyString(), anyString());
+                                    }));
+            reset(bindings);
+        }
+    }
+
+    @Test
+    void c3ProviderReassignmentAdvancesOldEpochAndRequiresFreshAuthentication() {
+        var target = fixture("OIDC");
+        var f = fixture("OIDC");
+        c3NonownerCapture();
+        c3PermissionMapping(f, "author", "GRANT");
+        var prepared = prepare(f);
+        Long generation =
+                jdbc.queryForObject(
+                        "SELECT generation FROM "
+                                + T
+                                + "external_mapping_generation WHERE provider_id=?",
+                        Long.class,
+                        f.provider());
+        assertThat(
+                        jdbc.update(
+                                "UPDATE "
+                                        + T
+                                        + "external_permission_mapping SET identity_provider_id=? WHERE identity_provider_id=?",
+                                target.provider(),
+                                f.provider()))
+                .isEqualTo(1);
+        assertThat(
+                        jdbc.queryForObject(
+                                "SELECT generation FROM "
+                                        + T
+                                        + "external_mapping_generation WHERE provider_id=?",
+                                Long.class,
+                                f.provider()))
+                .isGreaterThan(generation);
+        var reached = new AtomicBoolean();
+        c3Rejected(
+                () -> c3Decision(prepared, request(f, "author", false), () -> reached.set(true)));
+        assertThat(reached).isTrue();
+        jdbc.update(
+                "UPDATE "
+                        + T
+                        + "external_permission_mapping SET identity_provider_id=? WHERE identity_provider_id=?",
+                f.provider(),
+                target.provider());
+        assertThat(c3Decision(prepare(f), request(f, "author", false), () -> {}))
+                .isEqualTo(AuthorizationDecisionValue.PERMIT);
+    }
+
+    @Test
+    void c3PreparedOriginalSourceCannotExtendItsRealPersistedDeadline() throws Exception {
+        var f = fixture("OIDC");
+        c3NonownerCapture();
+        c3PermissionMapping(f, "author", "GRANT");
+        var result = completeOidc(f, dbNow().plusSeconds(6).truncatedTo(ChronoUnit.SECONDS));
+        ambient(result.accessToken());
+        var prepared = participant.prepare();
+        Instant sourceExpiry =
+                jdbc.queryForObject(
+                        "SELECT source_expires_at FROM " + B + " WHERE user_id=?",
+                        (row, n) -> row.getTimestamp(1).toInstant(),
+                        f.user());
+        Instant nativeExpiry =
+                jdbc.queryForObject(
+                        "SELECT expires_at FROM " + B + " WHERE user_id=?",
+                        (row, n) -> row.getTimestamp(1).toInstant(),
+                        f.user());
+        assertThat(nativeExpiry).isBeforeOrEqualTo(sourceExpiry);
+        long bound = System.nanoTime() + TimeUnit.SECONDS.toNanos(8);
+        // Outside every protected transaction/budget. Observe real database time;
+        // do not alter the server clock, MAC, receipt or native binding.
+        while (dbNow().isBefore(sourceExpiry) && System.nanoTime() < bound) Thread.sleep(25);
+        assertThat(dbNow()).isAfterOrEqualTo(sourceExpiry);
+        c3Rejected(() -> c3Decision(prepared, request(f, "author", false), () -> {}));
+    }
+
+    @Test
+    void c3QualifiedUserPermissionAndResourceMustRemainExactlyTheOriginalRequest() {
+        for (String field : List.of("user", "permission", "resource")) {
+            cleanEvidence();
+            var f = fixture("OIDC");
+            c3NonownerCapture();
+            c3PermissionMapping(f, "author", "GRANT");
+            var prepared = prepare(f);
+            var original = request(f, "author", false);
+            var changed =
+                    new AuthorizationEvaluationRequest(
+                            field.equals("user") ? id() : original.userId(),
+                            field.equals("permission")
+                                    ? "topology:station-revision:publish"
+                                    : original.permissionCode(),
+                            original.resourceType(),
+                            field.equals("resource")
+                                    ? "other-facility"
+                                    : original.resourceReferenceId(),
+                            original.scope());
+            c3Rejected(
+                    () ->
+                            executor.execute(
+                                    () -> {
+                                        c3SelectRestrictedRole();
+                                        var q = participant.qualifyClaims(prepared, original);
+                                        reader.loadQualified(q, changed);
+                                        return "substituted-request";
+                                    },
+                                    em::flush,
+                                    () -> fail("Changed request cannot publish")));
+        }
+    }
+
+    @Test
+    void c3InactiveMappedTargetsDoNotConferDenyAuthorityOrGroupFacts() {
+        for (boolean grouped : List.of(false, true)) {
+            cleanEvidence();
+            var f = fixture("OIDC");
+            c3NonownerCapture();
+            String target = c3RoleMapping(f, grouped, "DENY", "groups", "private-original-group");
+            jdbc.update(
+                    "UPDATE "
+                            + T
+                            + (grouped
+                                    ? "group SET status='INACTIVE'"
+                                    : "role SET status='DISABLED'")
+                            + " WHERE id=?",
+                    target);
+            grant(f, "author", "GRANT", "FACILITY", FACILITY);
+            assertThat(c3Decision(prepare(f), request(f, "author", false), () -> {}))
+                    .isEqualTo(AuthorizationDecisionValue.PERMIT);
+        }
+    }
+
+    @Test
+    void c3MappedTargetDeleteIsExcludedDuringReadAndReferencedTargetCannotDisappear() {
+        var f = fixture("OIDC");
+        c3NonownerCapture();
+        String role = c3RoleMapping(f, false, "GRANT", "groups", "private-original-group");
+        assertThat(
+                        c3Decision(
+                                prepare(f),
+                                request(f, "author", false),
+                                () -> {
+                                    try (var other = connection()) {
+                                        other.setAutoCommit(false);
+                                        try (var statement =
+                                                other.prepareStatement(
+                                                        "DELETE FROM " + T + "role WHERE id=?")) {
+                                            try (var settings = other.createStatement()) {
+                                                settings.execute("SET LOCAL lock_timeout='100ms'");
+                                            }
+                                            statement.setString(1, role);
+                                            assertThatThrownBy(statement::executeUpdate)
+                                                    .isInstanceOf(SQLException.class)
+                                                    .satisfies(
+                                                            e ->
+                                                                    assertThat(
+                                                                                    ((SQLException)
+                                                                                                    e)
+                                                                                            .getSQLState())
+                                                                            .isEqualTo("55P03"));
+                                        } finally {
+                                            other.rollback();
+                                        }
+                                    } catch (SQLException failure) {
+                                        throw new AssertionError(failure);
+                                    }
+                                }))
+                .isEqualTo(AuthorizationDecisionValue.PERMIT);
+        try (var other = connection();
+                var statement = other.prepareStatement("DELETE FROM " + T + "role WHERE id=?")) {
+            statement.setString(1, role);
+            assertThatThrownBy(statement::executeUpdate)
+                    .isInstanceOf(SQLException.class)
+                    .satisfies(
+                            e -> assertThat(((SQLException) e).getSQLState()).isEqualTo("23503"));
+        } catch (SQLException failure) {
+            throw new AssertionError(failure);
+        }
+    }
+
+    @Test
+    void c3UnsupportedLiveMappingCannotFallBackToAnIndependentDirectGrant() {
+        var f = fixture("OIDC");
+        c3NonownerCapture();
+        c3PermissionMapping(f, "author", "GRANT");
+        ReflectionTestUtils.setField(oidc, "verifiedClaimReceiptEnabled", false);
+        grant(f, "author", "GRANT", "FACILITY", FACILITY);
+        var prepared = prepare(f);
+        jdbc.update(
+                "UPDATE "
+                        + T
+                        + "external_permission_mapping SET mapping_mode='UNSUPPORTED' WHERE identity_provider_id=?",
+                f.provider());
+        var reached = new AtomicBoolean();
+        c3Rejected(
+                () -> c3Decision(prepared, request(f, "author", false), () -> reached.set(true)));
+        assertThat(reached).isTrue();
+    }
 
     @Test
     void c3ActualAuthenticationReplacedDuringQualifiedReadRejectsBeforeCommitGuard() {
@@ -810,22 +1678,27 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
         var request = request(f, "author", false);
         AtomicBoolean companionRead = new AtomicBoolean();
         AtomicBoolean guardCalled = new AtomicBoolean();
-        doAnswer(invocation -> {
-                    var proof = invocation.callRealMethod();
-                    companionRead.set(true);
-                    SecurityContextHolder.clearContext();
-                    return proof;
-                })
-                .when(claimCompanions).findByBindingId(anyString());
+        doAnswer(
+                        invocation -> {
+                            var proof = invocation.callRealMethod();
+                            companionRead.set(true);
+                            SecurityContextHolder.clearContext();
+                            return proof;
+                        })
+                .when(claimCompanions)
+                .findByBindingId(anyString());
         assertThatThrownBy(
-                        () -> executor.execute(
-                                () -> {
-                                    c3SelectRestrictedRole();
-                                    var sealed = participant.qualifyClaims(prepared, request);
-                                    reader.loadQualified(sealed, request);
-                                    return "unfenced-origin";
-                                }, em::flush,
-                                () -> guardCalled.set(true)))
+                        () ->
+                                executor.execute(
+                                        () -> {
+                                            c3SelectRestrictedRole();
+                                            var sealed =
+                                                    participant.qualifyClaims(prepared, request);
+                                            reader.loadQualified(sealed, request);
+                                            return "unfenced-origin";
+                                        },
+                                        em::flush,
+                                        () -> guardCalled.set(true)))
                 .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class)
                 .hasRootCauseInstanceOf(IllegalStateException.class);
         assertThat(companionRead).isTrue();
@@ -845,31 +1718,40 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
 
         // Only the already verified source/issuance path may create the handle.
         // Corrupt the actual context after the reader's first post-graph check.
-        doAnswer(invocation -> {
-                    var selection = invocation.callRealMethod();
-                    if (catalogReads.incrementAndGet() == 2) {
-                        finalCatalogRead.set(true);
-                        SecurityContextHolder.clearContext();
-                    }
-                    return selection;
-                })
-                .when(claimCatalog).selectVersioned(anyString());
+        doAnswer(
+                        invocation -> {
+                            var selection = invocation.callRealMethod();
+                            if (catalogReads.incrementAndGet() == 2) {
+                                finalCatalogRead.set(true);
+                                SecurityContextHolder.clearContext();
+                            }
+                            return selection;
+                        })
+                .when(claimCatalog)
+                .selectVersioned(anyString());
 
         assertThatThrownBy(
-                        () -> executor.execute(
-                                () -> {
-                                    c3SelectRestrictedRole();
-                                    var sealed = participant.qualifyClaims(prepared, request);
-                                    reader.loadQualified(sealed, request);
-                                    return "replaced-after-graph";
-                                },
-                                em::flush,
-                                () -> guardCalled.set(true)))
+                        () ->
+                                executor.execute(
+                                        () -> {
+                                            c3SelectRestrictedRole();
+                                            var sealed =
+                                                    participant.qualifyClaims(prepared, request);
+                                            reader.loadQualified(sealed, request);
+                                            return "replaced-after-graph";
+                                        },
+                                        em::flush,
+                                        () -> guardCalled.set(true)))
                 .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class)
-                .satisfies(error ->
-                        assertThat(((ProtectedTransactionExecutor.ExecutionFailure) error)
-                                        .outcome())
-                                .isEqualTo(ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT));
+                .satisfies(
+                        error ->
+                                assertThat(
+                                                ((ProtectedTransactionExecutor.ExecutionFailure)
+                                                                error)
+                                                        .outcome())
+                                        .isEqualTo(
+                                                ProtectedTransactionExecutor.Outcome
+                                                        .REJECTED_BEFORE_COMMIT));
         assertThat(finalCatalogRead).isTrue();
         assertThat(catalogReads.get()).isEqualTo(2);
         assertThat(guardCalled).isFalse();
@@ -884,26 +1766,33 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
         var request = request(f, "author", false);
         AtomicBoolean altered = new AtomicBoolean();
         AtomicBoolean guardCalled = new AtomicBoolean();
-        doAnswer(invocation -> {
-                    var proof = invocation.callRealMethod();
-                    assertThat(jdbc.update(
-                            "UPDATE public.hidra_identity_external_permission_mapping "
-                                    + "SET status='INACTIVE',updated_at=clock_timestamp() "
-                                    + "WHERE identity_provider_id=?",
-                            f.provider())).isEqualTo(1);
-                    altered.set(true);
-                    return proof;
-                })
-                .when(claimCompanions).findByBindingId(anyString());
+        doAnswer(
+                        invocation -> {
+                            var proof = invocation.callRealMethod();
+                            assertThat(
+                                            jdbc.update(
+                                                    "UPDATE public.hidra_identity_external_permission_mapping "
+                                                            + "SET status='INACTIVE',updated_at=clock_timestamp() "
+                                                            + "WHERE identity_provider_id=?",
+                                                    f.provider()))
+                                    .isEqualTo(1);
+                            altered.set(true);
+                            return proof;
+                        })
+                .when(claimCompanions)
+                .findByBindingId(anyString());
         assertThatThrownBy(
-                        () -> executor.execute(
-                                () -> {
-                                    c3SelectRestrictedRole();
-                                    var sealed = participant.qualifyClaims(prepared, request);
-                                    reader.loadQualified(sealed, request);
-                                    return "stale-epoch";
-                                }, em::flush,
-                                () -> guardCalled.set(true)))
+                        () ->
+                                executor.execute(
+                                        () -> {
+                                            c3SelectRestrictedRole();
+                                            var sealed =
+                                                    participant.qualifyClaims(prepared, request);
+                                            reader.loadQualified(sealed, request);
+                                            return "stale-epoch";
+                                        },
+                                        em::flush,
+                                        () -> guardCalled.set(true)))
                 .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class)
                 .hasRootCauseInstanceOf(IllegalStateException.class);
         assertThat(altered).isTrue();
@@ -924,15 +1813,24 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
                     var evidence = reader.loadQualified(sealed, request);
 
                     assertThat(evidence.failure()).isNull();
-                    assertThat(new AuthorizationPolicyEvaluator()
-                            .evaluate(request, evidence,
-                                    Instant.parse((String) evidence.attributes()
-                                            .get("context.evaluatedAt"))).decision())
+                    assertThat(
+                                    new AuthorizationPolicyEvaluator()
+                                            .evaluate(
+                                                    request,
+                                                    evidence,
+                                                    Instant.parse(
+                                                            (String)
+                                                                    evidence.attributes()
+                                                                            .get(
+                                                                                    "context.evaluatedAt")))
+                                            .decision())
                             .isEqualTo(AuthorizationDecisionValue.PERMIT);
-                    assertThat(evidence.grants()).extracting(AuthorizationEvidence.Grant::order)
+                    assertThat(evidence.grants())
+                            .extracting(AuthorizationEvidence.Grant::order)
                             .contains(5);
                     return "qualified";
-                }, em::flush,
+                },
+                em::flush,
                 () -> assertThat(jdbc.queryForObject("SELECT 1", Integer.class)).isEqualTo(1));
         // A replay is a distinct protected operation: Spring correctly marks its physical
         // transaction rollback-only when the once-consumed credential is rejected.
@@ -940,24 +1838,34 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
         // cannot reach the mandatory final commit guard.
         var replayPrepared = prepare(f);
         assertThatThrownBy(
-                        () -> executor.execute(
-                                () -> {
-                                    c3SelectRestrictedRole();
-                                    var replay = participant.qualifyClaims(replayPrepared, request);
-                                    assertThat(reader.loadQualified(replay, request).failure()).isNull();
-                                    reader.loadQualified(replay, request);
-                                    return "replayed";
-                                },
-                                em::flush,
-                                () -> fail("Claim replay must not reach the commit guard")))
+                        () ->
+                                executor.execute(
+                                        () -> {
+                                            c3SelectRestrictedRole();
+                                            var replay =
+                                                    participant.qualifyClaims(
+                                                            replayPrepared, request);
+                                            assertThat(
+                                                            reader.loadQualified(replay, request)
+                                                                    .failure())
+                                                    .isNull();
+                                            reader.loadQualified(replay, request);
+                                            return "replayed";
+                                        },
+                                        em::flush,
+                                        () -> fail("Claim replay must not reach the commit guard")))
                 .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class)
-                .hasCauseInstanceOf(org.springframework.dao.InvalidDataAccessApiUsageException.class)
+                .hasCauseInstanceOf(
+                        org.springframework.dao.InvalidDataAccessApiUsageException.class)
                 .satisfies(
-                        error -> assertThat(
-                                        ((ProtectedTransactionExecutor.ExecutionFailure) error)
-                                                .outcome())
-                                .isEqualTo(
-                                        ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT));
+                        error ->
+                                assertThat(
+                                                ((ProtectedTransactionExecutor.ExecutionFailure)
+                                                                error)
+                                                        .outcome())
+                                        .isEqualTo(
+                                                ProtectedTransactionExecutor.Outcome
+                                                        .REJECTED_BEFORE_COMMIT));
     }
 
     @Test
@@ -985,7 +1893,8 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
                                                     Instant.parse(
                                                             (String)
                                                                     evidence.attributes()
-                                                                            .get("context.evaluatedAt")))
+                                                                            .get(
+                                                                                    "context.evaluatedAt")))
                                             .decision())
                             .isEqualTo(AuthorizationDecisionValue.DENY);
                     return "verified-deny";
@@ -1031,13 +1940,16 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
                                 executor.execute(
                                         () -> {
                                             c3SelectRestrictedRole();
-                                            var sealed = participant.qualifyClaims(prepared, request);
+                                            var sealed =
+                                                    participant.qualifyClaims(prepared, request);
                                             reachedQualifiedReader.set(true);
                                             reader.loadQualified(sealed, request);
                                             return "stale-claim-accepted";
                                         },
                                         em::flush,
-                                        () -> fail("Stale source claims must never reach the commit guard")))
+                                        () ->
+                                                fail(
+                                                        "Stale source claims must never reach the commit guard")))
                 .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class)
                 .satisfies(
                         error ->
@@ -1096,7 +2008,9 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
                                             return "stale-coverage";
                                         },
                                         em::flush,
-                                        () -> fail("Changed claim catalog must reject before commit")))
+                                        () ->
+                                                fail(
+                                                        "Changed claim catalog must reject before commit")))
                 .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class)
                 .satisfies(
                         thrown ->
@@ -1127,7 +2041,8 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
                                                     Instant.parse(
                                                             (String)
                                                                     evidence.attributes()
-                                                                            .get("context.evaluatedAt")))
+                                                                            .get(
+                                                                                    "context.evaluatedAt")))
                                             .decision())
                             .isEqualTo(AuthorizationDecisionValue.PERMIT);
                     return "fresh-coverage";
@@ -1152,13 +2067,21 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
                     var result = reader.loadQualified(sealed, request);
 
                     assertThat(result.failure()).isEqualTo("EVIDENCE_INDETERMINATE");
-                    assertThat(new AuthorizationPolicyEvaluator()
-                            .evaluate(request, result,
-                                    Instant.parse((String) result.attributes()
-                                            .get("context.evaluatedAt"))).decision())
+                    assertThat(
+                                    new AuthorizationPolicyEvaluator()
+                                            .evaluate(
+                                                    request,
+                                                    result,
+                                                    Instant.parse(
+                                                            (String)
+                                                                    result.attributes()
+                                                                            .get(
+                                                                                    "context.evaluatedAt")))
+                                            .decision())
                             .isEqualTo(AuthorizationDecisionValue.INDETERMINATE);
                     return "fail-closed";
-                }, em::flush,
+                },
+                em::flush,
                 () -> assertThat(jdbc.queryForObject("SELECT 1", Integer.class)).isEqualTo(1));
     }
 
@@ -1168,37 +2091,55 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
         c3NonownerCapture();
         String roleId = id(), groupId = id();
         jdbc.update(
-                "INSERT INTO " + T + "role(id,code,role_type,status,created_at,updated_at)"
+                "INSERT INTO "
+                        + T
+                        + "role(id,code,role_type,status,created_at,updated_at)"
                         + " VALUES (?,?,'BUSINESS','ACTIVE',now(),now())",
-                roleId, roleId);
+                roleId,
+                roleId);
         jdbc.update(
-                "INSERT INTO " + T
+                "INSERT INTO "
+                        + T
                         + "role_permission_grant(id,role_id,permission_id,effect,valid_from,status,created_at)"
                         + " VALUES (?,?,?,'GRANT',now()-interval '1 hour','ACTIVE',now())",
-                id(), roleId, permission("author"));
+                id(),
+                roleId,
+                permission("author"));
         jdbc.update(
-                "INSERT INTO " + T + "group(id,code,group_type,status,created_at,updated_at)"
+                "INSERT INTO "
+                        + T
+                        + "group(id,code,group_type,status,created_at,updated_at)"
                         + " VALUES (?,?,'LOCAL','ACTIVE',now(),now())",
-                groupId, groupId);
+                groupId,
+                groupId);
         jdbc.update(
-                "INSERT INTO " + T
+                "INSERT INTO "
+                        + T
                         + "group_role_grant(id,group_id,role_id,valid_from,status,created_at)"
                         + " VALUES (?,?,?,now()-interval '1 hour','ACTIVE',now())",
-                id(), groupId, roleId);
+                id(),
+                groupId,
+                roleId);
         jdbc.update(
-                "INSERT INTO " + T
+                "INSERT INTO "
+                        + T
                         + "external_group_mapping(id,identity_provider_id,group_id,external_group_name,"
                         + "claim_name,mapping_mode,auto_create_membership,status,created_at,updated_at)"
                         + " VALUES (?,?,?,'private-original-group','groups','ASSERTION_ONLY',false,"
                         + "'ACTIVE',now(),now())",
-                id(), f.provider(), groupId);
+                id(),
+                f.provider(),
+                groupId);
         jdbc.update(
-                "INSERT INTO " + T
+                "INSERT INTO "
+                        + T
                         + "external_role_mapping(id,identity_provider_id,role_id,external_role_code,"
                         + "claim_name,mapping_mode,status,created_at,updated_at)"
                         + " VALUES (?,?,?,'private-original-group','groups','DIRECT_GRANT',"
                         + "'ACTIVE',now(),now())",
-                id(), f.provider(), roleId);
+                id(),
+                f.provider(),
+                roleId);
         var request = request(f, "author", false);
         var prepared = prepare(f);
         executor.execute(
@@ -1211,12 +2152,17 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
                             .extracting(AuthorizationEvidence.Grant::order)
                             .contains(3, 4)
                             .doesNotContain(0, 1, 2, 5);
-                    assertThat(new AuthorizationPolicyEvaluator()
-                                    .evaluate(
-                                            request, evidence,
-                                            Instant.parse((String) evidence.attributes()
-                                                    .get("context.evaluatedAt")))
-                                    .decision())
+                    assertThat(
+                                    new AuthorizationPolicyEvaluator()
+                                            .evaluate(
+                                                    request,
+                                                    evidence,
+                                                    Instant.parse(
+                                                            (String)
+                                                                    evidence.attributes()
+                                                                            .get(
+                                                                                    "context.evaluatedAt")))
+                                            .decision())
                             .isEqualTo(AuthorizationDecisionValue.PERMIT);
                     return "mapped-group-and-role";
                 },
@@ -1233,21 +2179,29 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
         var request = request(f, "author", false);
         AtomicBoolean qualified = new AtomicBoolean(), guardCalled = new AtomicBoolean();
         assertThatThrownBy(
-                        () -> executor.execute(
-                                () -> {
-                                    c3SelectRestrictedRole();
-                                    var sealed = participant.qualifyClaims(prepared, request);
-                                    qualified.set(true);
-                                    reader.loadQualified(sealed, request(f, "author", true));
-                                    return "wrong-scope";
-                                },
-                                em::flush,
-                                () -> guardCalled.set(true)))
+                        () ->
+                                executor.execute(
+                                        () -> {
+                                            c3SelectRestrictedRole();
+                                            var sealed =
+                                                    participant.qualifyClaims(prepared, request);
+                                            qualified.set(true);
+                                            reader.loadQualified(
+                                                    sealed, request(f, "author", true));
+                                            return "wrong-scope";
+                                        },
+                                        em::flush,
+                                        () -> guardCalled.set(true)))
                 .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class)
-                .satisfies(error ->
-                        assertThat(((ProtectedTransactionExecutor.ExecutionFailure) error)
-                                        .outcome())
-                                .isEqualTo(ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT));
+                .satisfies(
+                        error ->
+                                assertThat(
+                                                ((ProtectedTransactionExecutor.ExecutionFailure)
+                                                                error)
+                                                        .outcome())
+                                        .isEqualTo(
+                                                ProtectedTransactionExecutor.Outcome
+                                                        .REJECTED_BEFORE_COMMIT));
         assertThat(qualified).isTrue();
         assertThat(guardCalled).isFalse();
     }
@@ -1265,53 +2219,87 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
         AtomicBoolean guardCalled = new AtomicBoolean();
 
         assertThatThrownBy(
-                        () -> executor.execute(
-                                () -> {
-                                    c3SelectRestrictedRole();
-                                    var sealed = participant.qualifyClaims(prepared, request);
-                                    int ownerPid =
-                                            jdbc.queryForObject("SELECT pg_backend_pid()", Integer.class);
-                                    var worker = Executors.newSingleThreadExecutor();
-                                    try {
-                                        Future<Boolean> attempt = worker.submit(() -> {
-                                            SecurityContextHolder.getContext().setAuthentication(actual);
+                        () ->
+                                executor.execute(
+                                        () -> {
+                                            c3SelectRestrictedRole();
+                                            var sealed =
+                                                    participant.qualifyClaims(prepared, request);
+                                            int ownerPid =
+                                                    jdbc.queryForObject(
+                                                            "SELECT pg_backend_pid()",
+                                                            Integer.class);
+                                            var worker = Executors.newSingleThreadExecutor();
                                             try {
-                                                assertThatThrownBy(() -> tx().execute(status -> {
-                                                            assertThat(jdbc.queryForObject(
-                                                                            "SELECT pg_backend_pid()",
-                                                                            Integer.class))
-                                                                    .isNotEqualTo(ownerPid);
-                                                            wrongThreadAttempted.set(true);
-                                                            return participant.consumeClaims(sealed, request);
-                                                        }))
-                                                        .isInstanceOf(AccessDeniedException.class);
-                                                wrongThreadRefused.set(true);
-                                                return true;
+                                                Future<Boolean> attempt =
+                                                        worker.submit(
+                                                                () -> {
+                                                                    SecurityContextHolder
+                                                                            .getContext()
+                                                                            .setAuthentication(
+                                                                                    actual);
+                                                                    try {
+                                                                        assertThatThrownBy(
+                                                                                        () ->
+                                                                                                tx().execute(
+                                                                                                                status -> {
+                                                                                                                    assertThat(
+                                                                                                                                    jdbc
+                                                                                                                                            .queryForObject(
+                                                                                                                                                    "SELECT pg_backend_pid()",
+                                                                                                                                                    Integer
+                                                                                                                                                            .class))
+                                                                                                                            .isNotEqualTo(
+                                                                                                                                    ownerPid);
+                                                                                                                    wrongThreadAttempted
+                                                                                                                            .set(
+                                                                                                                                    true);
+                                                                                                                    return participant
+                                                                                                                            .consumeClaims(
+                                                                                                                                    sealed,
+                                                                                                                                    request);
+                                                                                                                }))
+                                                                                .isInstanceOf(
+                                                                                        AccessDeniedException
+                                                                                                .class);
+                                                                        wrongThreadRefused.set(
+                                                                                true);
+                                                                        return true;
+                                                                    } finally {
+                                                                        SecurityContextHolder
+                                                                                .clearContext();
+                                                                    }
+                                                                });
+                                                assertThat(attempt.get(10, TimeUnit.SECONDS))
+                                                        .isTrue();
+                                            } catch (InterruptedException interrupted) {
+                                                Thread.currentThread().interrupt();
+                                                throw new AssertionError(interrupted);
+                                            } catch (ExecutionException
+                                                    | TimeoutException failure) {
+                                                throw new AssertionError(failure);
                                             } finally {
-                                                SecurityContextHolder.clearContext();
+                                                worker.shutdownNow();
                                             }
-                                        });
-                                        assertThat(attempt.get(10, TimeUnit.SECONDS)).isTrue();
-                                    } catch (InterruptedException interrupted) {
-                                        Thread.currentThread().interrupt();
-                                        throw new AssertionError(interrupted);
-                                    } catch (ExecutionException | TimeoutException failure) {
-                                        throw new AssertionError(failure);
-                                    } finally {
-                                        worker.shutdownNow();
-                                    }
-                                    // Failed cross-thread consumption burns the one-shot handle:
-                                    // it cannot be promoted in its original physical transaction.
-                                    reader.loadQualified(sealed, request);
-                                    return "cross-thread-credential-reused";
-                                },
-                                em::flush,
-                                () -> guardCalled.set(true)))
+                                            // Failed cross-thread consumption burns the one-shot
+                                            // handle:
+                                            // it cannot be promoted in its original physical
+                                            // transaction.
+                                            reader.loadQualified(sealed, request);
+                                            return "cross-thread-credential-reused";
+                                        },
+                                        em::flush,
+                                        () -> guardCalled.set(true)))
                 .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class)
-                .satisfies(error ->
-                        assertThat(((ProtectedTransactionExecutor.ExecutionFailure) error)
-                                        .outcome())
-                                .isEqualTo(ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT));
+                .satisfies(
+                        error ->
+                                assertThat(
+                                                ((ProtectedTransactionExecutor.ExecutionFailure)
+                                                                error)
+                                                        .outcome())
+                                        .isEqualTo(
+                                                ProtectedTransactionExecutor.Outcome
+                                                        .REJECTED_BEFORE_COMMIT));
         assertThat(wrongThreadAttempted).isTrue();
         assertThat(wrongThreadRefused).isTrue();
         assertThat(guardCalled).isFalse();
@@ -1338,19 +2326,25 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
 
         AtomicBoolean guardCalled = new AtomicBoolean();
         assertThatThrownBy(
-                        () -> executor.execute(
-                                () -> {
-                                    c3SelectRestrictedRole();
-                                    reader.loadQualified(consumed.get(), request);
-                                    return "reused-in-new-transaction";
-                                },
-                                em::flush,
-                                () -> guardCalled.set(true)))
+                        () ->
+                                executor.execute(
+                                        () -> {
+                                            c3SelectRestrictedRole();
+                                            reader.loadQualified(consumed.get(), request);
+                                            return "reused-in-new-transaction";
+                                        },
+                                        em::flush,
+                                        () -> guardCalled.set(true)))
                 .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class)
-                .satisfies(error ->
-                        assertThat(((ProtectedTransactionExecutor.ExecutionFailure) error)
-                                        .outcome())
-                                .isEqualTo(ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT));
+                .satisfies(
+                        error ->
+                                assertThat(
+                                                ((ProtectedTransactionExecutor.ExecutionFailure)
+                                                                error)
+                                                        .outcome())
+                                        .isEqualTo(
+                                                ProtectedTransactionExecutor.Outcome
+                                                        .REJECTED_BEFORE_COMMIT));
         assertThat(guardCalled).isFalse();
     }
 
@@ -1368,38 +2362,49 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
         AtomicBoolean substituted = new AtomicBoolean();
         AtomicBoolean guardCalled = new AtomicBoolean();
 
-        doAnswer(invocation -> {
-                    var stored = (Optional<?>) invocation.callRealMethod();
-                    var authentic = (BoundSourceClaimEvidence) stored.orElseThrow();
-                    byte[] authenticator = authentic.producerAuthenticator();
-                    String bindingId = authentic.bindingId();
-                    if (corruptMac) authenticator[0] ^= 1;
-                    else bindingId = id();
-                    substituted.set(true);
-                    return Optional.of(new BoundSourceClaimEvidence(
-                            bindingId,
-                            authentic.evidenceFormat(),
-                            authentic.mappingGeneration(),
-                            authentic.issuanceTransactionId(),
-                            authentic.coverage(),
-                            authenticator));
-                })
-                .when(claimCompanions).findByBindingId(anyString());
+        doAnswer(
+                        invocation -> {
+                            var stored = (Optional<?>) invocation.callRealMethod();
+                            var authentic = (BoundSourceClaimEvidence) stored.orElseThrow();
+                            byte[] authenticator = authentic.producerAuthenticator();
+                            String bindingId = authentic.bindingId();
+                            if (corruptMac) authenticator[0] ^= 1;
+                            else bindingId = id();
+                            substituted.set(true);
+                            return Optional.of(
+                                    new BoundSourceClaimEvidence(
+                                            bindingId,
+                                            authentic.evidenceFormat(),
+                                            authentic.mappingGeneration(),
+                                            authentic.issuanceTransactionId(),
+                                            authentic.coverage(),
+                                            authenticator));
+                        })
+                .when(claimCompanions)
+                .findByBindingId(anyString());
 
-        assertThatThrownBy(() -> executor.execute(
-                        () -> {
-                            c3SelectRestrictedRole();
-                            var sealed = participant.qualifyClaims(prepared, request);
-                            reader.loadQualified(sealed, request);
-                            return "unverified-companion";
-                        },
-                        em::flush,
-                        () -> guardCalled.set(true)))
+        assertThatThrownBy(
+                        () ->
+                                executor.execute(
+                                        () -> {
+                                            c3SelectRestrictedRole();
+                                            var sealed =
+                                                    participant.qualifyClaims(prepared, request);
+                                            reader.loadQualified(sealed, request);
+                                            return "unverified-companion";
+                                        },
+                                        em::flush,
+                                        () -> guardCalled.set(true)))
                 .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class)
-                .satisfies(error ->
-                        assertThat(((ProtectedTransactionExecutor.ExecutionFailure) error)
-                                        .outcome())
-                                .isEqualTo(ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT));
+                .satisfies(
+                        error ->
+                                assertThat(
+                                                ((ProtectedTransactionExecutor.ExecutionFailure)
+                                                                error)
+                                                        .outcome())
+                                        .isEqualTo(
+                                                ProtectedTransactionExecutor.Outcome
+                                                        .REJECTED_BEFORE_COMMIT));
         assertThat(substituted).isTrue();
         assertThat(guardCalled).isFalse();
     }
@@ -1805,7 +2810,8 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
         long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(5);
         while (dbNow().isBefore(boundary) && System.nanoTime() < deadline) Thread.onSpinWait();
         assertThat(dbNow()).isAfterOrEqualTo(boundary);
-        int committedReceipts = jdbc.queryForObject("SELECT count(*) FROM " + receipt(), Integer.class);
+        int committedReceipts =
+                jdbc.queryForObject("SELECT count(*) FROM " + receipt(), Integer.class);
         assertThatThrownBy(
                         () ->
                                 executor.execute(
@@ -1814,10 +2820,17 @@ public class ProtectedAuthorizationEvidencePostgresIntegrationTest {
                                         () -> guard(saved.get())))
                 .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class)
                 .hasRootCauseInstanceOf(IllegalStateException.class)
-                .hasRootCauseMessage("Protected temporal guard rejected invalid or expired interval")
-                .satisfies(thrown ->
-                        assertThat(((ProtectedTransactionExecutor.ExecutionFailure) thrown).outcome())
-                                .isEqualTo(ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT));
+                .hasRootCauseMessage(
+                        "Protected temporal guard rejected invalid or expired interval")
+                .satisfies(
+                        thrown ->
+                                assertThat(
+                                                ((ProtectedTransactionExecutor.ExecutionFailure)
+                                                                thrown)
+                                                        .outcome())
+                                        .isEqualTo(
+                                                ProtectedTransactionExecutor.Outcome
+                                                        .REJECTED_BEFORE_COMMIT));
         assertThat(jdbc.queryForObject("SELECT count(*) FROM " + receipt(), Integer.class))
                 .isEqualTo(committedReceipts);
     }

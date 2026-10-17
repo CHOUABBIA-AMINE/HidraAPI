@@ -7,7 +7,7 @@
  *
  * @Name        : IdentityAuthorityFencePostgresIntegrationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-15
+ * @UpdatedOn   : 2026-10-17
  *
  * @Type        : Class
  * @Layer       : Identity Test
@@ -180,10 +180,10 @@ class IdentityAuthorityFencePostgresIntegrationTest {
         return jdbc
                 .queryForList(
                         "SELECT n.nspname||'.'||c.relname FROM pg_locks l JOIN pg_class c ON"
-                            + " c.oid=l.relation JOIN pg_namespace n ON n.oid=c.relnamespace WHERE"
-                            + " l.pid=? AND l.locktype='relation' AND l.granted AND"
-                            + " l.mode='ShareRowExclusiveLock' AND n.nspname='public' AND c.relname"
-                            + " LIKE 'hidra_identity_%'",
+                                + " c.oid=l.relation JOIN pg_namespace n ON n.oid=c.relnamespace WHERE"
+                                + " l.pid=? AND l.locktype='relation' AND l.granted AND"
+                                + " l.mode='ShareRowExclusiveLock' AND n.nspname='public' AND c.relname"
+                                + " LIKE 'hidra_identity_%'",
                         String.class, pid)
                 .stream()
                 .sorted()
@@ -217,32 +217,41 @@ class IdentityAuthorityFencePostgresIntegrationTest {
                 () -> {
                     var c = fence.collect(binding.bindingId());
                     sampled.set(c);
-                    assertThat(jdbc.queryForObject(
-                            """
+                    assertThat(
+                                    jdbc.queryForObject(
+                                            """
                             SELECT count(*) FROM pg_locks
                             WHERE pid=pg_backend_pid() AND granted AND locktype='relation'
                               AND ((relation='public.hidra_identity_external_mapping_generation'::regclass
                                     AND mode='AccessShareLock')
                                 OR (relation='public.hidra_identity_bound_source_claim_evidence'::regclass
                                     AND mode='ShareLock'))
-                            """, Integer.class)).isEqualTo(2);
+                            """,
+                                            Integer.class))
+                            .isEqualTo(2);
                     verifySameBackend(c);
                     try (var opposing = connection()) {
                         opposing.setAutoCommit(false);
                         try (var statement = opposing.createStatement()) {
                             statement.execute("SET lock_timeout='150ms'");
-                            assertThatThrownBy(() -> statement.execute(
-                                    "LOCK TABLE public.hidra_identity_bound_source_claim_evidence"
-                                            + " IN ROW EXCLUSIVE MODE"))
+                            assertThatThrownBy(
+                                            () ->
+                                                    statement.execute(
+                                                            "LOCK TABLE public.hidra_identity_bound_source_claim_evidence"
+                                                                    + " IN ROW EXCLUSIVE MODE"))
                                     .isInstanceOf(SQLException.class)
-                                    .satisfies(failure -> assertThat(
-                                            ((SQLException) failure).getSQLState())
-                                            .isEqualTo("55P03"));
+                                    .satisfies(
+                                            failure ->
+                                                    assertThat(
+                                                                    ((SQLException) failure)
+                                                                            .getSQLState())
+                                                            .isEqualTo("55P03"));
                         } finally {
                             opposing.rollback();
                         }
                     } catch (SQLException failure) {
-                        throw new AssertionError("Independent physical fence proof failed", failure);
+                        throw new AssertionError(
+                                "Independent physical fence proof failed", failure);
                     }
                     return c;
                 },
@@ -252,8 +261,65 @@ class IdentityAuthorityFencePostgresIntegrationTest {
             after.setAutoCommit(false);
             try (var statement = after.createStatement()) {
                 statement.execute("SET lock_timeout='1000ms'");
-                statement.execute("LOCK TABLE public.hidra_identity_bound_source_claim_evidence"
-                        + " IN ROW EXCLUSIVE MODE");
+                statement.execute(
+                        "LOCK TABLE public.hidra_identity_bound_source_claim_evidence"
+                                + " IN ROW EXCLUSIVE MODE");
+            } finally {
+                after.rollback();
+            }
+        }
+    }
+
+    @Test
+    void claimCompanionInsertAndTruncateWaitForReaderRollbackThenKeepImmutableGuards()
+            throws Exception {
+        var transaction = new TransactionTemplate(manager);
+        transaction.executeWithoutResult(
+                status -> {
+                    var c = fence.collect(binding.bindingId());
+                    for (String sql :
+                            List.of(
+                                    "INSERT INTO public.hidra_identity_bound_source_claim_evidence"
+                                            + "(binding_id,evidence_format,mapping_generation,issuance_transaction_id,coverage_payload,producer_authenticator)"
+                                            + " VALUES ('"
+                                            + binding.bindingId()
+                                            + "',1,1,1,decode('00','hex'),decode(repeat('00',32),'hex'))",
+                                    "TRUNCATE public.hidra_identity_bound_source_claim_evidence")) {
+                        try (var opposing = connection()) {
+                            opposing.setAutoCommit(false);
+                            try (var statement = opposing.createStatement()) {
+                                statement.execute("SET LOCAL lock_timeout='100ms'");
+                                assertThat(scalar(opposing, "SELECT pg_backend_pid()"))
+                                        .isNotEqualTo(c.backendPid());
+                                assertThatThrownBy(() -> statement.execute(sql))
+                                        .isInstanceOf(SQLException.class)
+                                        .satisfies(
+                                                e ->
+                                                        assertThat(((SQLException) e).getSQLState())
+                                                                .isEqualTo("55P03"));
+                            } finally {
+                                opposing.rollback();
+                            }
+                        } catch (SQLException failure) {
+                            throw new AssertionError(failure);
+                        }
+                    }
+                    status.setRollbackOnly();
+                });
+        try (var after = connection()) {
+            after.setAutoCommit(false);
+            try (var statement = after.createStatement()) {
+                statement.execute("SET LOCAL lock_timeout='1000ms'");
+                assertThatThrownBy(
+                                () ->
+                                        statement.execute(
+                                                "TRUNCATE"
+                                                        + " public.hidra_identity_bound_source_claim_evidence"))
+                        .isInstanceOf(SQLException.class)
+                        .satisfies(
+                                e ->
+                                        assertThat(((SQLException) e).getSQLState())
+                                                .isEqualTo("23514"));
             } finally {
                 after.rollback();
             }
@@ -348,7 +414,7 @@ class IdentityAuthorityFencePostgresIntegrationTest {
                                     try (var p =
                                             holder.prepareStatement(
                                                     "SELECT"
-                                                        + " pg_xact_commit_timestamp(?::text::xid)")) {
+                                                            + " pg_xact_commit_timestamp(?::text::xid)")) {
                                         p.setString(1, Long.toString(xid));
                                         try (var r = p.executeQuery()) {
                                             assertThat(r.next()).isTrue();
@@ -498,7 +564,7 @@ class IdentityAuthorityFencePostgresIntegrationTest {
                                                                 "SET LOCAL lock_timeout='250ms'");
                                                         jdbc.execute(
                                                                 "SET LOCAL"
-                                                                    + " statement_timeout='750ms'");
+                                                                        + " statement_timeout='750ms'");
                                                         writerPid.set(
                                                                 jdbc.queryForObject(
                                                                         "SELECT pg_backend_pid()",
@@ -772,7 +838,7 @@ class IdentityAuthorityFencePostgresIntegrationTest {
                 grant,
                 "id,role_id,permission_id,effect,condition_expression,valid_from,valid_to,status,created_at",
                 "?,?,?,'DENY','{\"op\":\"exists\",\"attribute\":\"context.evaluatedAt\"}'::jsonb,clock_timestamp()-interval"
-                    + " '1 hour',clock_timestamp()+interval '1 hour','SUSPENDED',clock_timestamp()",
+                        + " '1 hour',clock_timestamp()+interval '1 hour','SUSPENDED',clock_timestamp()",
                 grant,
                 role,
                 permission);

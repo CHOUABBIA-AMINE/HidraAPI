@@ -1,7 +1,7 @@
 /**
  * @Project : HidraAPI @Product : Hidra - Hydrocarbon Intelligence for Data, Risk, and
  * Analytics @Author : Abir MEDJERAB @Owner : Sonatrach / TRC : Digitalization Initiative @Name :
- * ProtectedOperationIdentityParticipantTest @CreatedOn : 2025-06-26 @UpdatedOn : 2026-10-15 @Type :
+ * ProtectedOperationIdentityParticipantTest @CreatedOn : 2025-06-26 @UpdatedOn : 2026-10-17 @Type :
  * Class @Layer : Identity Test @Module : identity @Package :
  * dz.sh.hidra.modules.identity.infrastructure.security @Description : Checks mocked participant
  * mechanics without asserting real PostgreSQL or producer provenance.
@@ -15,6 +15,9 @@ import static org.mockito.Mockito.*;
 import dz.sh.hidra.modules.identity.application.model.AccessTokenIssuerSettings;
 import dz.sh.hidra.modules.identity.application.port.out.*;
 import dz.sh.hidra.modules.identity.domain.model.OperationAuthenticationBinding;
+import dz.sh.hidra.modules.identity.domain.policy.AuthorizationEvaluationRequest;
+import dz.sh.hidra.modules.identity.domain.value.AuthorizationScope;
+import dz.sh.hidra.modules.identity.domain.value.ScopeType;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcIdentityAuthorityFence;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcIdentityTemporalEventCollector.Candidate;
 
@@ -49,6 +52,7 @@ class ProtectedOperationIdentityParticipantTest {
             mock(TrustedAuthenticationVerificationRegistry.class);
     private final JdbcIdentityAuthorityFence fence = mock(JdbcIdentityAuthorityFence.class);
     private final JdbcTemplate jdbc = mock(JdbcTemplate.class);
+    private final javax.sql.DataSource claimDataSource = mock(javax.sql.DataSource.class);
     private final JwtDecoder decoder = mock(JwtDecoder.class);
 
     @SuppressWarnings("unchecked")
@@ -107,6 +111,7 @@ class ProtectedOperationIdentityParticipantTest {
                         .expiresAt(b.expiresAt())
                         .build();
         when(provider.getObject()).thenReturn(decoder);
+        when(jdbc.getDataSource()).thenReturn(claimDataSource);
         doReturn(verified).when(decoder).decode(raw);
         when(issuer.settings())
                 .thenReturn(new AccessTokenIssuerSettings("hidra-api", "hidra-api", 600));
@@ -134,8 +139,70 @@ class ProtectedOperationIdentityParticipantTest {
 
     @AfterEach
     void clean() {
+        if (TransactionSynchronizationManager.hasResource(claimDataSource))
+            TransactionSynchronizationManager.unbindResource(claimDataSource);
         SecurityContextHolder.clearContext();
         TransactionSynchronizationManager.clear();
+    }
+
+    private AuthorizationEvaluationRequest claimRequest() {
+        return new AuthorizationEvaluationRequest(
+                b.userId(),
+                "topology:station-revision:author",
+                "STATION_GRAPH_REVISION",
+                "facility",
+                new AuthorizationScope(ScopeType.FACILITY, "facility", null));
+    }
+
+    private ProtectedOperationIdentityParticipant.QualifiedClaimRead qualifiedClaim() {
+        TransactionSynchronizationManager.setActualTransactionActive(false);
+        var prepared = participant.prepare();
+        TransactionSynchronizationManager.setActualTransactionActive(true);
+        TransactionSynchronizationManager.bindResource(claimDataSource, new Object());
+        return participant.qualifyClaims(prepared, claimRequest());
+    }
+
+    @Test
+    void claimOwnerConnectionResourceCannotBeReplacedBeforeFirstConsumption() {
+        var qualified = qualifiedClaim();
+        TransactionSynchronizationManager.unbindResource(claimDataSource);
+        TransactionSynchronizationManager.bindResource(claimDataSource, new Object());
+        assertThatThrownBy(() -> participant.consumeClaims(qualified, claimRequest()))
+                .isInstanceOf(AccessDeniedException.class);
+    }
+
+    @Test
+    void claimQualificationRejectsNativeDeadlineEqualityOrFutureIssuedSample() {
+        for (Instant sample : List.of(b.expiresAt(), b.issuedAt().minusSeconds(1))) {
+            TransactionSynchronizationManager.setActualTransactionActive(false);
+            var prepared = participant.prepare();
+            TransactionSynchronizationManager.setActualTransactionActive(true);
+            when(fence.collect(b.bindingId()))
+                    .thenReturn(
+                            new Candidate(
+                                    sample,
+                                    b.expiresAt().plusSeconds(1),
+                                    13,
+                                    42L,
+                                    List.of(),
+                                    List.of(),
+                                    1,
+                                    0));
+            assertThatThrownBy(() -> participant.qualifyClaims(prepared, claimRequest()))
+                    .isInstanceOf(AccessDeniedException.class);
+        }
+    }
+
+    @Test
+    void postReadValidationRefusesUnconsumedHandleAndReplacedActualContext() {
+        var qualified = qualifiedClaim();
+        assertThatThrownBy(() -> participant.requireCurrentClaims(qualified, claimRequest()))
+                .isInstanceOf(AccessDeniedException.class);
+        participant.consumeClaims(qualified, claimRequest());
+        participant.requireCurrentClaims(qualified, claimRequest());
+        SecurityContextHolder.clearContext();
+        assertThatThrownBy(() -> participant.requireCurrentClaims(qualified, claimRequest()))
+                .isInstanceOf(AccessDeniedException.class);
     }
 
     @Test
@@ -178,12 +245,19 @@ class ProtectedOperationIdentityParticipantTest {
         var type = ProtectedOperationIdentityParticipant.QualifiedClaimRead.class;
         assertThat(type.getConstructors()).isEmpty();
         assertThat(Modifier.isFinal(type.getModifiers())).isTrue();
-        assertThat(Arrays.stream(type.getDeclaredConstructors())
-                .allMatch(c -> Modifier.isPrivate(c.getModifiers()))).isTrue();
-        assertThat(Arrays.stream(type.getDeclaredFields())
-                .allMatch(f -> Modifier.isPrivate(f.getModifiers())
-                        && Modifier.isFinal(f.getModifiers()))).isTrue();
-        assertThat(type.getDeclaredMethods()).extracting(java.lang.reflect.Method::getName)
+        assertThat(
+                        Arrays.stream(type.getDeclaredConstructors())
+                                .allMatch(c -> Modifier.isPrivate(c.getModifiers())))
+                .isTrue();
+        assertThat(
+                        Arrays.stream(type.getDeclaredFields())
+                                .allMatch(
+                                        f ->
+                                                Modifier.isPrivate(f.getModifiers())
+                                                        && Modifier.isFinal(f.getModifiers())))
+                .isTrue();
+        assertThat(type.getDeclaredMethods())
+                .extracting(java.lang.reflect.Method::getName)
                 .contains("toString");
         assertThatThrownBy(() -> participant.consumeClaims(null, null))
                 .isInstanceOf(AccessDeniedException.class);

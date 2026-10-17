@@ -2,7 +2,7 @@
  * @Project : HidraAPI @Product : Hidra - Hydrocarbon Intelligence for Data, Risk, and
  * Analytics @Author : Abir MEDJERAB @Owner : Sonatrach / TRC : Digitalization Initiative @Name :
  * OperationAuthenticationBoundaryGuardrailTest @CreatedOn : 2025-06-26 @UpdatedOn :
- * 2026-10-14 @Type : Class @Layer : Test @Module : identity @Package :
+ * 2026-10-17 @Type : Class @Layer : Test @Module : identity @Package :
  * dz.sh.hidra.modules.identity @Description : Protects strict binding values, opaque JDK-only
  * exports and exclusive real-producer receipt transport boundaries.
  */
@@ -71,26 +71,52 @@ class OperationAuthenticationBoundaryGuardrailTest {
     }
 
     @Test
-    void c3OpaqueCredentialCannotBeCallerConstructedOrPromotedByDiagnosticReader() throws Exception {
+    void c3OpaqueCredentialCannotBeCallerConstructedOrPromotedByDiagnosticReader()
+            throws Exception {
         var qualified =
                 dz.sh.hidra.modules.identity.infrastructure.security
                         .ProtectedOperationIdentityParticipant.QualifiedClaimRead.class;
         assertThat(qualified.getConstructors()).isEmpty();
-        assertThat(Arrays.stream(qualified.getDeclaredConstructors())
-                .allMatch(c -> java.lang.reflect.Modifier.isPrivate(c.getModifiers()))).isTrue();
+        assertThat(
+                        Arrays.stream(qualified.getDeclaredConstructors())
+                                .allMatch(
+                                        c ->
+                                                java.lang.reflect.Modifier.isPrivate(
+                                                        c.getModifiers())))
+                .isTrue();
         var reader =
                 dz.sh.hidra.modules.identity.infrastructure.persistence.adapter
                         .JdbcProtectedAuthorizationEvidenceReader.class;
-        var methods = Arrays.stream(reader.getDeclaredMethods())
-                .filter(m -> m.getName().equals("loadQualified")).toList();
+        var methods =
+                Arrays.stream(reader.getDeclaredMethods())
+                        .filter(m -> m.getName().equals("loadQualified"))
+                        .toList();
         assertThat(methods).hasSize(1);
         assertThat(methods.getFirst().getParameterTypes()[0]).isEqualTo(qualified);
-        var legacy = Arrays.stream(reader.getDeclaredMethods())
-                .filter(m -> m.getName().equals("load"))
-                .toList();
+        var legacy =
+                Arrays.stream(reader.getDeclaredMethods())
+                        .filter(m -> m.getName().equals("load"))
+                        .toList();
         assertThat(legacy).hasSize(1);
-        assertThat(legacy.getFirst().getParameterTypes()[0]).isEqualTo(
-                TopologyOperationAuthenticationContract.Evidence.class);
+        assertThat(legacy.getFirst().getParameterTypes()[0])
+                .isEqualTo(TopologyOperationAuthenticationContract.Evidence.class);
+    }
+
+    @Test
+    void qualifiedConsumptionAndPostReadValidationHaveOnlyTheReviewedReaderCaller()
+            throws Exception {
+        var root = java.nio.file.Path.of("src/main/java");
+        for (String name : java.util.List.of("consumeClaims", "requireCurrentClaims")) {
+            var callers = new java.util.ArrayList<String>();
+            try (var files = java.nio.file.Files.walk(root)) {
+                for (var file : files.filter(p -> p.toString().endsWith(".java")).toList())
+                    if (java.nio.file.Files.readString(file).contains("." + name + "("))
+                        callers.add(root.relativize(file).toString().replace('\\', '/'));
+            }
+            assertThat(callers)
+                    .containsExactly(
+                            "dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java");
+        }
     }
 
     @Test

@@ -22,6 +22,7 @@ package dz.sh.hidra.modules.topology.infrastructure.persistence.adapter;
 import dz.sh.hidra.modules.topology.application.port.out.StationGraphProtectedPublicationPort;
 import dz.sh.hidra.modules.topology.domain.model.*;
 import dz.sh.hidra.platform.persistence.ProtectedTransactionExecutor;
+import jakarta.persistence.EntityManager;
 import java.sql.Connection;
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -37,7 +38,7 @@ import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Repository
-public final class JdbcStationGraphProtectedPublicationAdapter implements StationGraphProtectedPublicationPort {
+public class JdbcStationGraphProtectedPublicationAdapter implements StationGraphProtectedPublicationPort {
     private static final String REV_INS="INSERT INTO public.hidra_topology_station_graph_revision (facility_id,revision_id,payload_format,canonical_payload,sha256) VALUES (?,?,?,?,?)";
     private static final String EVT_INS="INSERT INTO public.hidra_topology_station_graph_operation_event (event_id,facility_id,event_kind,resulting_epoch,prior_revision_id,resulting_revision_id,actor_binding_id,actor_session_id,actor_user_id,company_party_id,party_generation,facility_generation,sampled_at,valid_until,backend_pid,transaction_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     private static final String HEAD_INS="INSERT INTO public.hidra_topology_station_graph_head (facility_id,revision_id,head_epoch,state,last_event_id) VALUES (?,?,?,?,?)";
@@ -59,14 +60,15 @@ public final class JdbcStationGraphProtectedPublicationAdapter implements Statio
           AND (?::uuid IS NULL OR EXISTS(SELECT 1 FROM public.hidra_topology_station_graph_operation_event e
              WHERE e.facility_id=? AND e.event_id=?::uuid))
         """;
+    private final EntityManager em;
     private final JdbcTemplate jdbc;
     private final DataSource source;
     private final ProtectedTransactionExecutor executor;
     private final StationInternalGraphRevisionCodec codec=new StationInternalGraphRevisionCodec();
 
-    public JdbcStationGraphProtectedPublicationAdapter(JdbcTemplate jdbc,ProtectedTransactionExecutor executor){
+    public JdbcStationGraphProtectedPublicationAdapter(JdbcTemplate jdbc,ProtectedTransactionExecutor executor,EntityManager em){
         this.jdbc=Objects.requireNonNull(jdbc);source=Objects.requireNonNull(jdbc.getDataSource());
-        this.executor=Objects.requireNonNull(executor);
+        this.executor=Objects.requireNonNull(executor);this.em=Objects.requireNonNull(em);
     }
     private final class Ticket implements Admission,TransactionSynchronization {
         final String facility,role; final ConnectionHolder holder;final Connection physical;
@@ -118,6 +120,8 @@ public final class JdbcStationGraphProtectedPublicationAdapter implements Statio
         }catch(RuntimeException e){executor.rejectAdmission();throw e;}
     }
     @Override public Set<String> mutationSql(){return MUTATIONS;}
+    @Override @Transactional(propagation=Propagation.MANDATORY)
+    public void flush(){em.flush();}
     @Override @Transactional(propagation=Propagation.MANDATORY)
     public Optional<StationGraphPublicationHead> head(Admission a){
         Ticket t=observed(a);

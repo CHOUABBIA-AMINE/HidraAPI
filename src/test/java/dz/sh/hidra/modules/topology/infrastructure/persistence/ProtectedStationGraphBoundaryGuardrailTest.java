@@ -34,6 +34,13 @@ class ProtectedStationGraphBoundaryGuardrailTest {
         assertFalse(port.contains("modules.identity.infrastructure"));
         assertFalse(port.contains("modules.party.infrastructure"));
         assertFalse(port.contains("modules.topology.application.service"));
+        String service=source("modules/topology/application/service/ProtectedStationGraphOperationService.java");
+        String adapter=source("modules/topology/infrastructure/persistence/adapter/JdbcStationGraphProtectedPublicationAdapter.java");
+        assertFalse(service.contains("jakarta.persistence"));
+        assertTrue(service.contains("publication.flush()"));
+        assertTrue(adapter.contains("void flush(){em.flush();}"));
+        assertFalse(service.contains("final class ProtectedStationGraphOperationService"));
+        assertFalse(adapter.contains("final class JdbcStationGraphProtectedPublicationAdapter"));
     }
     @Test void onlyReviewedCoordinatorCanOpenBoundedProvisionalPhase() throws IOException{
         String coordinator=source("modules/topology/application/service/ProtectedStationAdmissionCoordinator.java");

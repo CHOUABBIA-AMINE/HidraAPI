@@ -25,7 +25,6 @@ import dz.sh.hidra.modules.topology.application.port.in.ProtectedStationGraphOpe
 import dz.sh.hidra.modules.topology.application.port.out.StationGraphProtectedPublicationPort;
 import dz.sh.hidra.modules.topology.domain.model.*;
 import dz.sh.hidra.platform.persistence.ProtectedTransactionExecutor;
-import jakarta.persistence.EntityManager;
 import java.time.Instant;
 import java.util.*;
 import java.util.function.Supplier;
@@ -40,7 +39,6 @@ class ProtectedStationGraphOperationServiceTest {
     ProtectedStationAdmissionCoordinator coordinator;
     StationGraphProtectedPublicationPort publication;
     ProtectedTransactionExecutor executor;
-    EntityManager em;
     ProtectedStationGraphOperationService service;
     ProtectedStationAdmissionCoordinator.Prepared prepared;
     ProtectedStationAdmissionCoordinator.Admission admitted;
@@ -54,11 +52,10 @@ class ProtectedStationGraphOperationServiceTest {
         coordinator=mock(ProtectedStationAdmissionCoordinator.class);
         publication=mock(StationGraphProtectedPublicationPort.class);
         executor=mock(ProtectedTransactionExecutor.class);
-        em=mock(EntityManager.class);
         prepared=mock(ProtectedStationAdmissionCoordinator.Prepared.class);
         admitted=mock(ProtectedStationAdmissionCoordinator.Admission.class);
         ticket=mock(StationGraphProtectedPublicationPort.Admission.class);
-        service=new ProtectedStationGraphOperationService(coordinator,publication,executor,em);
+        service=new ProtectedStationGraphOperationService(coordinator,publication,executor);
         when(coordinator.prepare()).thenReturn(prepared);
         when(coordinator.acquire(eq(prepared),any(Request.class))).thenReturn(admitted);
         when(coordinator.collect(admitted)).thenReturn(evidence);
@@ -113,12 +110,13 @@ class ProtectedStationGraphOperationServiceTest {
     @Test void materializesResultsOnlyAfterObservedPhysicalCommit(){
         var result=service.execute(command(Kind.READ_CURRENT));
         assertTrue(result.observedCommit());assertNull(result.revision());
-        InOrder order=inOrder(executor,coordinator,publication,em);
+        InOrder order=inOrder(executor,coordinator,publication);
         order.verify(executor).execute(any(),any(),any());
         order.verify(coordinator).acquire(eq(prepared),any(Request.class));
         order.verify(publication).acquire("facility");
         order.verify(coordinator).collect(admitted);
-        order.verify(em).flush();
+        order.verify(coordinator).requireCurrent(admitted);
+        order.verify(publication).flush();
         order.verify(publication).finalGuard(eq(ticket),eq(sampled),any(Instant.class),
             eq("company"),eq(1L),eq(2L),isNull(),isNull());
     }

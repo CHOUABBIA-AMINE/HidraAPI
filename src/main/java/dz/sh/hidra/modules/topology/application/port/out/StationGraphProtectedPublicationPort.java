@@ -36,6 +36,8 @@ public interface StationGraphProtectedPublicationPort {
     List<StationGraphPublicationEvent> history(Admission ticket,int limit);
     /** Exact constant reviewed SQL texts, not caller-provided templates. */
     Set<String> mutationSql();
+    /** Flush managed persistence changes before the final protected guard. */
+    void flush();
     void append(Admission ticket,StationInternalGraphRevision revision,
                 StationGraphPublicationEvent event);
     StationGraphPublicationHead change(Admission ticket,StationGraphPublicationHead next,

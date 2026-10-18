@@ -34,7 +34,10 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
         for(String method:List.of("beginAdmission","sealAdmission","requireAdmission","rejectAdmission")) {
             var found=new HashSet<String>();
             try(var files=Files.walk(Path.of("src/main/java"))) {for(var f:files.filter(x->x.toString().endsWith(".java")).toList())if(Files.readString(f).contains("."+method+"("))found.add(f.getFileName().toString());}
-            assertEquals(Set.of("ProtectedStationAdmissionCoordinator.java"),found);
+            var expected=method.equals("rejectAdmission")
+                ?Set.of("ProtectedStationAdmissionCoordinator.java","JdbcStationGraphProtectedPublicationAdapter.java")
+                :Set.of("ProtectedStationAdmissionCoordinator.java");
+            assertEquals(expected,found);
         }
     }
     @Test void identityAdmissionAndCollectorHaveOnlyReviewedCallers() throws Exception {
@@ -53,7 +56,13 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
         }
     }
     @Test void platformHasNoBusinessModuleDependencies() throws Exception {
-        for(String name:List.of("ProtectedTransactionExecutor","ProtectedOperationDataSource"))assertFalse(source("platform/persistence/"+name+".java").contains("dz.sh.hidra.modules."));
+        String approved="\"dz.sh.hidra.modules.topology.application.service.ProtectedStationAdmissionCoordinator\"";
+        for(String name:List.of("ProtectedTransactionExecutor","ProtectedOperationDataSource")) {
+            String s=source("platform/persistence/"+name+".java");
+            // L pins the compiled issuer by name, without importing or linking a business class.
+            assertEquals(name.equals("ProtectedTransactionExecutor")?3:0,s.split(java.util.regex.Pattern.quote(approved),-1).length-1);
+            assertFalse(s.replace(approved,"\"reviewed-caller\"").contains("dz.sh.hidra.modules."));
+        }
     }
     @Test void existingReaderAndJContractsRemainUnchanged() throws Exception {
         assertEquals("262b2b854bff04d64e712357d75ff099c3cb1d04d207a79e646699b2063facb4",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(Path.of("src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java")))));

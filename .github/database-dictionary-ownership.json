@@ -292,5 +292,21 @@
     ],
     "owner": "topology",
     "purpose": "Topology-owned immutable station graph declarations with canonical byte integrity and exact history; storage does not establish company authorization or authenticated publication."
+  },
+  "public.hidra_topology_station_graph_head": {
+    "owner": "topology",
+    "purpose": "Topology-owned current station graph publication selection with monotone epoch and immutable event reference.",
+    "evidence": [
+      "src/main/resources/db/migration/V20261018_003__p25_topology_protected_station_graph_operations.sql",
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationGraphProtectedPublicationAdapter.java"
+    ]
+  },
+  "public.hidra_topology_station_graph_operation_event": {
+    "owner": "topology",
+    "purpose": "Topology-owned immutable station graph operation provenance; not evidence of operational acceptance.",
+    "evidence": [
+      "src/main/resources/db/migration/V20261018_003__p25_topology_protected_station_graph_operations.sql",
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationGraphProtectedPublicationAdapter.java"
+    ]
   }
 }

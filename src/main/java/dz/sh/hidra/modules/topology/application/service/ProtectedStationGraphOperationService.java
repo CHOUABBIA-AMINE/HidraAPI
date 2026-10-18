@@ -25,7 +25,6 @@ import dz.sh.hidra.modules.topology.application.port.in.ProtectedStationGraphOpe
 import dz.sh.hidra.modules.topology.application.port.out.StationGraphProtectedPublicationPort;
 import dz.sh.hidra.modules.topology.domain.model.*;
 import dz.sh.hidra.platform.persistence.ProtectedTransactionExecutor;
-import jakarta.persistence.EntityManager;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import org.springframework.stereotype.Service;
@@ -34,15 +33,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 /** No REST endpoint, implicit permission, cross-module persistence write or user callback. */
 @Service
-public final class ProtectedStationGraphOperationService implements ProtectedStationGraphOperationUseCase {
+public class ProtectedStationGraphOperationService implements ProtectedStationGraphOperationUseCase {
     private final ProtectedStationAdmissionCoordinator coordinator;
     private final StationGraphProtectedPublicationPort publication;
     private final ProtectedTransactionExecutor executor;
-    private final EntityManager em;
     public ProtectedStationGraphOperationService(ProtectedStationAdmissionCoordinator c,
-            StationGraphProtectedPublicationPort p,ProtectedTransactionExecutor e,EntityManager em){
+            StationGraphProtectedPublicationPort p,ProtectedTransactionExecutor e){
         coordinator=Objects.requireNonNull(c);publication=Objects.requireNonNull(p);
-        executor=Objects.requireNonNull(e);this.em=Objects.requireNonNull(em);
+        executor=Objects.requireNonNull(e);
     }
     private static IllegalStateException invalid(){return new IllegalStateException("Protected station operation unavailable");}
     private static Operation operation(Kind k){
@@ -144,7 +142,7 @@ public final class ProtectedStationGraphOperationService implements ProtectedSta
             coordinator.requireCurrent(admission);
             return new Result(resultHead.get(),revision,history,false);
         },()->{
-            em.flush();coordinator.requireCurrent(auth.get());
+            publication.flush();
         },()->{
             var e=evidence.get();
             if(e==null || !publication.finalGuard(ticket.get(),e.sampledAt(),e.validUntil(),

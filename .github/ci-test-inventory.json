@@ -4906,6 +4906,64 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0.0,
+      "timing_status": "unmeasured-new-suite",
+      "cases": [
+        "actualJpaSaveAndFlushBumpsWitnessAndRollbackRestoresIt",
+        "admissionRetainsRelationFencesAndExcludesWritersUntilCompletion",
+        "deleteReinsertRenameAndRollbackPreserveTombstones",
+        "disabledAlteredTriggersFunctionsAndRlsInvalidateAdmission",
+        "earlierSearchPathCannotShadowCatalogAuthorityChecks",
+        "elevatedOwnerAndReplicaModeAreRejected",
+        "fkChildInsertAndPlanningStyleRowShareRemainCompatible",
+        "independentIdentitiesAndPhysicalCoordinatesDoNotSubstitute",
+        "inheritanceAndUnknownOwnerStateCannotProduceEvidence",
+        "inheritedMutationAndSchemaCreatePrivilegeInvalidateAdmission",
+        "lostFenceAfterSavepointRollbackInvalidatesTicket",
+        "migrationRefusesNonemptyMasterAndRegistryHasExactPositiveConstraint",
+        "missingNonliveCorruptAndExhaustedWitnessesFailClosed",
+        "multirowFailureRollsBackEveryRootAndGeneration",
+        "onlyRealOwnerSemanticsAreExported",
+        "relevantAbaCannotRestoreRetainedWitness",
+        "relevantNoopUnrelatedAndBulkUpdatesRespectGenerationRules",
+        "suspensionAndCrossThreadCannotReuseAdmission",
+        "swallowedFailureCannotCommitPartialWork",
+        "transactionContextAndConsumedOrForeignTicketsFailClosed",
+        "truncateCascadeAndWitnessForgeryAreRejected",
+        "writerFirstMakesAdmissionFailNowaitForExistingAndAbsentRows"
+      ],
+      "class": "dz.sh.hidra.modules.party.infrastructure.persistence.ProtectedPartyEligibilityPostgresIntegrationTest",
+      "dependency_reason": "New CI-first suite; timing unmeasured (0 placeholder). Real PostgreSQL16/Flyway/JDBC/JPA and two-connection fences.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "party",
+      "path": "src/test/java/dz/sh/hidra/modules/party/infrastructure/persistence/ProtectedPartyEligibilityPostgresIntegrationTest.java",
+      "source_sha256": "6eb69e061190d0c0d7c5bfbfdbe4f7832154fc8bd3a8a7cccb3f00fd619c25f2",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0.0,
+      "timing_status": "unmeasured-new-suite",
+      "cases": [
+        "acquisitionRequiresAnActualBoundTransaction",
+        "fabricatedAdmissionCannotReachOwnerRowsAndMarksRollback",
+        "failedFirstFencePropagatesAndNeverAcquiresTheTail",
+        "invalidIdentitiesNeverQueryTheDatabase",
+        "nullAdmissionFailsClosed",
+        "readOnlyContextFailsBeforeAnyOwnerQuery",
+        "scalarConstructionIsValidatedAndDoesNotMintAnAdmission",
+        "unavailableCatalogAfterBothFencesRollsBackWithoutEvidence"
+      ],
+      "class": "dz.sh.hidra.modules.party.infrastructure.persistence.adapter.JdbcTopologyProtectedPartyEligibilityAdapterTest",
+      "dependency_reason": "New CI-first suite; timing unmeasured (0 placeholder). Deterministic JVM/Mockito/source contract checks; no live service.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "party",
+      "path": "src/test/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JdbcTopologyProtectedPartyEligibilityAdapterTest.java",
+      "source_sha256": "1361df809f842fd9de208297cd93560c64b042ae1f937c5766a2d259de357d37",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0.005,
       "cases": [
         "migrationUsesConcurrencySafePartialUniqueIndex",
@@ -6165,6 +6223,23 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0.0,
+      "timing_status": "unmeasured-new-suite",
+      "cases": [
+        "catalogFunctionFingerprintsMatchBothActualMigrationBodies",
+        "eachAdapterUsesOnlyItsOwnerAndParticipatesWithoutNewTransactionOrClock",
+        "exportedContractsContainOnlyJdkScalarsAndOpaqueAdmission"
+      ],
+      "class": "dz.sh.hidra.modules.topology.ProtectedOwnerWitnessBoundaryGuardrailTest",
+      "dependency_reason": "New CI-first suite; timing unmeasured (0 placeholder). Deterministic JVM/Mockito/source contract checks; no live service.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/ProtectedOwnerWitnessBoundaryGuardrailTest.java",
+      "source_sha256": "df7704b61c681f5746fc5293af842a670ac292e19b01453d6313e2aa976ae9ee",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0.051,
       "cases": [
         "acceptsExactEnumsAndNormalizesIdentitiesWithoutChangingScalars",
@@ -6500,6 +6575,43 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0.0,
+      "timing_status": "unmeasured-new-suite",
+      "cases": [
+        "actualJpaSaveAndFlushBumpsWitnessAndRollbackRestoresIt",
+        "admissionRetainsRelationFencesAndExcludesWritersUntilCompletion",
+        "deleteReinsertRenameAndRollbackPreserveTombstones",
+        "disabledAlteredTriggersFunctionsAndRlsInvalidateAdmission",
+        "earlierSearchPathCannotShadowCatalogAuthorityChecks",
+        "elevatedOwnerAndReplicaModeAreRejected",
+        "fkChildInsertAndPlanningStyleRowShareRemainCompatible",
+        "independentIdentitiesAndPhysicalCoordinatesDoNotSubstitute",
+        "inheritanceAndUnknownOwnerStateCannotProduceEvidence",
+        "inheritedMutationAndSchemaCreatePrivilegeInvalidateAdmission",
+        "lostFenceAfterSavepointRollbackInvalidatesTicket",
+        "migrationRefusesNonemptyMasterAndRegistryHasExactPositiveConstraint",
+        "missingNonliveCorruptAndExhaustedWitnessesFailClosed",
+        "multirowFailureRollsBackEveryRootAndGeneration",
+        "onlyRealOwnerSemanticsAreExported",
+        "ownerSnapshotCannotReplaceMissingLiveOwner",
+        "relevantAbaCannotRestoreRetainedWitness",
+        "relevantNoopUnrelatedAndBulkUpdatesRespectGenerationRules",
+        "suspensionAndCrossThreadCannotReuseAdmission",
+        "swallowedFailureCannotCommitPartialWork",
+        "transactionContextAndConsumedOrForeignTicketsFailClosed",
+        "truncateCascadeAndWitnessForgeryAreRejected",
+        "writerFirstMakesAdmissionFailNowaitForExistingAndAbsentRows"
+      ],
+      "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.ProtectedFacilityOwnershipPostgresIntegrationTest",
+      "dependency_reason": "New CI-first suite; timing unmeasured (0 placeholder). Real PostgreSQL16/Flyway/JDBC/JPA and two-connection fences.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedFacilityOwnershipPostgresIntegrationTest.java",
+      "source_sha256": "151d6719ef580a280ddb5792db4a51d3b3292043078509300b6c38e25c78b948",
+      "supports": []
+    },
+    {
       "baseline_seconds": 18.684,
       "cases": [
         "blankAndNullIdentitiesFailRatherThanReturnAbsence",
@@ -6547,6 +6659,28 @@
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/TopologyPhysicalNetworkRevisionPostgresIntegrationTest.java",
       "source_sha256": "92ce54f42084c09d38e5ef94a50ed8885f3cfffee9a1eb087cc836e88dead58a",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0.0,
+      "timing_status": "unmeasured-new-suite",
+      "cases": [
+        "acquisitionRequiresAnActualBoundTransaction",
+        "fabricatedAdmissionCannotReachOwnerRowsAndMarksRollback",
+        "failedFirstFencePropagatesAndNeverAcquiresTheTail",
+        "invalidIdentitiesNeverQueryTheDatabase",
+        "nullAdmissionFailsClosed",
+        "readOnlyContextFailsBeforeAnyOwnerQuery",
+        "scalarConstructionIsValidatedAndDoesNotMintAnAdmission",
+        "unavailableCatalogAfterBothFencesRollsBackWithoutEvidence"
+      ],
+      "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.JdbcStationProtectedFacilityOwnershipAdapterTest",
+      "dependency_reason": "New CI-first suite; timing unmeasured (0 placeholder). Deterministic JVM/Mockito/source contract checks; no live service.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationProtectedFacilityOwnershipAdapterTest.java",
+      "source_sha256": "e56aa14d9f82044a80ec55f8963e325b10c38d5a9fa12c530bd93a4dfacb3615",
       "supports": []
     },
     {

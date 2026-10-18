@@ -484,9 +484,12 @@ jobs:
         # compete with their PostgreSQL containers on this same runner.
         # Keep the complete oracle serial; do not relax deadlines or retry tests.
         forks=1
-        printf 'Oracle resources: %s CPUs, %s MiB RAM; capacity %s forks, executing %s reused fork, 2048 MiB heap, 1024 MiB Maven heap.\n' "${cpus}" "${memory_mib}" "${capacity_forks}" "${forks}" | tee -a "${GITHUB_STEP_SUMMARY}"
+        # A single JVM owns the entire oracle: bound retained Spring contexts
+        # and reserve 4 GiB heap plus at least 3 GiB for Maven/native/database work.
+        test "${memory_mib}" -ge 7168
+        printf 'Oracle resources: %s CPUs, %s MiB RAM; 2GiB capacity %s forks, executing %s reused fork, 4096 MiB heap, context cache 2, 1024 MiB Maven heap.\n' "${cpus}" "${memory_mib}" "${capacity_forks}" "${forks}" | tee -a "${GITHUB_STEP_SUMMARY}"
         ./mvnw -B -q clean verify "-DforkCount=${forks}" -DreuseForks=true \
-          '-DargLine=-Xmx2048m' -Djunit.jupiter.execution.parallel.enabled=false "-Dtest=${classes}"
+          '-DargLine=-Xmx4096m -Dspring.test.context.cache.maxSize=2' -Djunit.jupiter.execution.parallel.enabled=false "-Dtest=${classes}"
     - name: Require every selected raw test report
       if: always()
       run: python3 .github/scripts/verify_ci_test_inventory.py --select oracle --reports target/surefire-reports --evidence target/ci/oracle/evidence.json

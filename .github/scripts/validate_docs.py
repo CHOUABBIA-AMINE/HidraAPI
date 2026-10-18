@@ -210,6 +210,82 @@ def primary_p2(text):
     return rows
 
 
+def task_register_payload(text):
+    start = '<!-- task-register:payload:start -->\n'
+    end = '<!-- task-register:payload:end -->\n'
+    if text.count(start) != 1 or text.count(end) != 1:
+        raise ValueError('Task register payload boundaries missing/duplicated')
+    return text.split(start, 1)[1].rsplit(end, 1)[0]
+
+
+def validate_task_register(texts, config):
+    """Protect navigation, membership and status agreement without freezing mutable tasks."""
+    index = texts[config['index']]
+    if len(index.encode('utf-8')) > 256 * 1024:
+        raise ValueError('Task register index exceeds 256 KiB; move detail to its phase')
+    tasks = {}
+    for phase, path in config['phases'].items():
+        text = texts[path]
+        if len(text.encode('utf-8')) > 4 * 1024 * 1024:
+            raise ValueError('Task register phase exceeds 4 MiB')
+        clean = without_fences(task_register_payload(text))
+        records = list(re.finditer(r'^<a id="(hapi-\d{3})"></a>\n## (HAPI-\d{3}) — [^\n]+\n', clean, re.M))
+        if not records:
+            raise ValueError('Task register phase has no task definitions')
+        for i, record in enumerate(records):
+            task = record[2]
+            if record[1] != task.lower() or task in tasks:
+                raise ValueError('Task register duplicate/mismatched task identity')
+            body = clean[record.end():records[i + 1].start() if i + 1 < len(records) else len(clean)]
+            fields = {}
+            for field in ('Phase', 'Implementation Status', 'Planning Status'):
+                matches = re.findall(r'^' + re.escape(field) + r': ([^\n]+)$', body, re.M)
+                if len(matches) != 1:
+                    raise ValueError('Task register missing/duplicate metadata: ' + task)
+                fields[field] = matches[0]
+            if fields['Phase'].split(' — ', 1)[0] != phase:
+                raise ValueError('Task register task in wrong phase: ' + task)
+            if fields['Implementation Status'] not in {'VERIFIED', 'IMPLEMENTED', 'PARTIAL', 'INTERNAL_ONLY',
+                                                        'NOT_IMPLEMENTED', 'DEFECTIVE', 'NOT_VERIFIABLE'} or \
+                    fields['Planning Status'] not in {'COMPLETED', 'IN_PROGRESS', 'REGISTERED_PENDING',
+                                                      'BLOCKED', 'DEFERRED', 'SUPERSEDED'}:
+                raise ValueError('Task register invalid task status: ' + task)
+            tasks[task] = (phase, path, fields['Implementation Status'], fields['Planning Status'])
+    if set(tasks) != {f'HAPI-{i:03}' for i in range(1, config['task_count'] + 1)}:
+        raise ValueError('Task register missing/unregistered task identity')
+    directory = re.findall(r'^<a id="(hapi-\d{3})"></a>\n\[(HAPI-\d{3})\]\(([^)]+)\)', index, re.M)
+    if len(directory) != len(tasks) or len({row[1] for row in directory}) != len(tasks):
+        raise ValueError('Task register compatibility directory missing/duplicate entries')
+    for anchor, task, destination in directory:
+        if task not in tasks or anchor != task.lower() or destination != Path(tasks[task][1]).name + '#' + anchor:
+            raise ValueError('Task register compatibility target mismatch')
+    for table_path in config['tables']:
+        rows = {}
+        for line in texts[table_path].splitlines():
+            if not line.startswith('|'):
+                continue
+            match = re.search(r'\[(HAPI-\d{3})\]\(([^)]+)\)', line)
+            if not match:
+                continue
+            task, target = match.groups()
+            if task not in tasks or task in rows:
+                raise ValueError('Task register table missing/duplicate identity')
+            phase, path, implementation, planning = tasks[task]
+            cells = [c.strip() for c in line.strip('|').split('|')]
+            if target != Path(path).name + '#' + task.lower() or cells[-2:] != [implementation, planning]:
+                raise ValueError('Task register table target/status disagreement: ' + task)
+            if cells[0].startswith('HPS-') and cells[0] != phase:
+                raise ValueError('Task register table phase disagreement: ' + task)
+            rows[task] = True
+        if set(rows) != set(tasks):
+            raise ValueError('Task register table task-set disagreement')
+    for path, expected in config['archives'].items():
+        payload = task_register_payload(texts[path])
+        if hashlib.sha256(payload.encode('utf-8')).hexdigest() != expected:
+            raise ValueError('Task register immutable archive changed: ' + path)
+    return {'tasks': len(tasks), 'phases': len(config['phases'])}
+
+
 def validate(root, manifest):
     root = Path(root).resolve()
     inventory = manifest['documents']
@@ -297,7 +373,10 @@ def validate(root, manifest):
     required = 'CURRENT' if rows['HPR-P2-012'] == 'COMPLETED' else 'PARTIAL'
     if len(register_rows) != 1 or register_rows[0].split('|')[2].strip() != required:
         raise ValueError('Documentation CI register disagrees with P2 task')
-    return {'documents': len(actual), 'relative_links': link_count, 'modules': len(modules), 'p2_rows': len(rows)}
+    result = {'documents': len(actual), 'relative_links': link_count, 'modules': len(modules), 'p2_rows': len(rows)}
+    if 'task_register' in manifest:
+        result.update(validate_task_register(texts, manifest['task_register']))
+    return result
 
 
 def main():

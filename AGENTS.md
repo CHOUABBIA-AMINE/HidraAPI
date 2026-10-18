@@ -1,5 +1,19 @@
 # HidraAPI Agent Instructions
 
+## Canonical task-register navigation — owner-approved 2026-10-18
+
+`doc/roadmap/ULTIMATE_TASKS.md` is the compact task index and execution pointer.
+Read the selected task's full definition and append technical evidence in its owning
+`doc/roadmap/TASKS_HPS-XXX.md` file. The index links all25 phase files and preserves
+all921 legacy `#hapi-XXX` entry points. Registered governance writes to the former
+monolithic task file follow the same task into its phase file; this relocation adds
+no runtime scope. ROADMAP/PHASES remain the frozen registry and status baseline.
+`ULTIMATE_TASKS_BASELINE.md` and `ULTIMATE_TASKS_EVIDENCE.md` retain immutable
+historical payloads; former execution pointers there do not select current work.
+Keep task detail out of the index. The documentation validator checks phase/task
+membership, table statuses/targets, compatibility links, archive integrity and file
+size bounds. This owner-approved layout migration changes no task ID or status.
+
 ## 1. Project Identity
 
 | Field | Value |

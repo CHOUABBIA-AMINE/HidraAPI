@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Validate real miniature estates, broken navigation and governance mutations."""
 import copy
+import hashlib
 import sys
 import tempfile
 import unittest
@@ -147,6 +148,90 @@ class DocumentationTests(unittest.TestCase):
             self.check()
         self.write_roadmap(closed=True, missing=11)
         with self.assertRaisesRegex(ValueError, 'closure'):
+            self.check()
+
+
+class TaskRegisterTests(unittest.TestCase):
+    def setUp(self):
+        self.start = '<!-- task-register:payload:start -->\n'
+        self.end = '<!-- task-register:payload:end -->\n'
+        self.config = {'index': 'index.md', 'task_count': 3,
+                       'phases': {'HPS-001': 'TASKS_HPS-001.md', 'HPS-002': 'TASKS_HPS-002.md'},
+                       'tables': ['roadmap.md', 'phases.md'],
+                       'archives': {'archive.md': hashlib.sha256(b'original history\n').hexdigest()}}
+        self.texts = {'index.md': '', 'roadmap.md': '', 'phases.md': '',
+                      'TASKS_HPS-001.md': self.start, 'TASKS_HPS-002.md': self.start,
+                      'archive.md': self.start + 'original history\n' + self.end}
+        for i in range(1, 4):
+            phase = 'HPS-001' if i < 3 else 'HPS-002'
+            task, anchor, path = f'HAPI-{i:03}', f'hapi-{i:03}', f'TASKS_{phase}.md'
+            self.texts[path] += (f'<a id="{anchor}"></a>\n## {task} — Fixture\n\n'
+                                 f'Phase: {phase} — Fixture\nImplementation Status: PARTIAL\nPlanning Status: BLOCKED\n\n')
+            self.texts['index.md'] += f'<a id="{anchor}"></a>\n[{task}]({path}#{anchor})\n\n'
+            for table in self.config['tables']:
+                self.texts[table] += f'| {phase} | [{task}]({path}#{anchor}) | PARTIAL | BLOCKED |\n'
+        for path in self.config['phases'].values():
+            self.texts[path] += self.end
+
+    def check(self):
+        return validator.validate_task_register(self.texts, self.config)
+
+    def test_split_registry_accepts_evidence_and_synchronized_status_updates(self):
+        self.assertEqual(self.check(), {'tasks': 3, 'phases': 2})
+        path = 'TASKS_HPS-001.md'
+        self.texts[path] = self.texts[path].replace(self.end, 'New owner evidence.\n' + self.end)
+        self.check()
+        for path in ['TASKS_HPS-001.md', 'TASKS_HPS-002.md', 'roadmap.md', 'phases.md']:
+            self.texts[path] = self.texts[path].replace('PARTIAL', 'VERIFIED').replace('BLOCKED', 'COMPLETED')
+        self.check()
+
+    def test_missing_duplicate_and_wrong_phase_task_rejected(self):
+        path, original = 'TASKS_HPS-002.md', self.texts['TASKS_HPS-002.md']
+        for changed in (self.start + self.end, original.replace('003', '001'),
+                        original.replace('Phase: HPS-002', 'Phase: HPS-001')):
+            with self.subTest(changed=changed), self.assertRaisesRegex(ValueError, 'Task register'):
+                self.texts[path] = changed
+                self.check()
+        self.texts[path] = original
+
+    def test_legacy_anchor_directory_missing_duplicate_and_wrong_target_rejected(self):
+        original = self.texts['index.md']
+        for changed in ('', original + original, original.replace('hapi-001)', 'hapi-003)', 1)):
+            with self.subTest(changed=changed), self.assertRaisesRegex(ValueError, 'compatibility'):
+                self.texts['index.md'] = changed
+                self.check()
+
+    def test_table_target_status_phase_and_membership_drift_rejected(self):
+        original = self.texts['roadmap.md']
+        for changed in (original.replace('PARTIAL', 'VERIFIED', 1),
+                        original.replace('TASKS_HPS-001.md', 'TASKS_HPS-002.md', 1),
+                        original.replace('| HPS-001 |', '| HPS-002 |', 1),
+                        original + original, ''):
+            with self.subTest(changed=changed), self.assertRaisesRegex(ValueError, 'table'):
+                self.texts['roadmap.md'] = changed
+                self.check()
+
+    def test_immutable_history_and_payload_boundary_mutation_rejected(self):
+        original = self.texts['archive.md']
+        for changed in (original.replace('original', 'rewritten'), original + self.end, 'no boundaries'):
+            with self.subTest(changed=changed), self.assertRaisesRegex(ValueError, 'archive|boundaries'):
+                self.texts['archive.md'] = changed
+                self.check()
+
+    def test_index_and_phase_size_regression_rejected(self):
+        original = self.texts['index.md']
+        self.texts['index.md'] += 'x' * (256 * 1024)
+        with self.assertRaisesRegex(ValueError, 'index exceeds'):
+            self.check()
+        self.texts['index.md'] = original
+        self.texts['TASKS_HPS-001.md'] += 'x' * (4 * 1024 * 1024)
+        with self.assertRaisesRegex(ValueError, 'phase exceeds'):
+            self.check()
+
+    def test_unknown_status_is_rejected_even_if_tables_agree(self):
+        for path in ['TASKS_HPS-001.md', 'TASKS_HPS-002.md', 'roadmap.md', 'phases.md']:
+            self.texts[path] = self.texts[path].replace('BLOCKED', 'MAGIC')
+        with self.assertRaisesRegex(ValueError, 'invalid task status'):
             self.check()
 
 

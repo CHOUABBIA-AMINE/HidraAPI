@@ -1,0 +1,9978 @@
+# HPS-002 — Authorization and Access Control: task definitions
+
+## Status
+
+CURRENT — owner-authorized task-register split, 2026-10-18. Source `2148b270a863cee5f0b42d458508cd9327567591`; all task definitions and evidence retained without edits. TARGET/DEFERRED and unknown acceptance stay explicit.
+
+[Task index and execution rules](ULTIMATE_TASKS.md) · [Phase baseline](ULTIMATE_PHASES.md)
+
+<!-- task-register:payload:start -->
+# HPS-002 — Authorization and Access Control
+
+<a id="hapi-019"></a>
+## HAPI-019 — normalize existing oidc authentication
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: AUTH-007
+
+Priority: P2
+
+Implementation Status: IMPLEMENTED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Preserve working OIDC flow while mapping successful identities to Hidra User/HidraPrincipal and Hidra authorization
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `docs/roadmap/authentication.md`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/HidraPrincipal.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/IdentityProvider.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/ExternalIdentityJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/IdentityProviderJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraOidcAuthenticationToken.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverter.java`
+- `src/main/java/dz/sh/hidra/platform/configuration/HidraSecurityConfiguration.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/identity/domain/model/HidraPrincipal.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/model/IdentityProvider.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/ExternalIdentityJpaRepository.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/IdentityProviderJpaRepository.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraOidcAuthenticationToken.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverter.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `docs/roadmap/authentication.md`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/HidraPrincipal.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/IdentityProvider.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/ExternalIdentityJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/IdentityProviderJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraOidcAuthenticationToken.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverter.java`
+- `src/main/java/dz/sh/hidra/platform/configuration/HidraSecurityConfiguration.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+### AUTH-007 — Normalize existing OIDC authentication
+
+Commit:
+
+```text
+refactor(authentication): normalize existing oidc authentication
+```
+
+Preserve current browser OIDC authorization-code + PKCE behavior and HidraAPI resource-server validation.
+
+Add only missing mapping from validated external OIDC identity to:
+
+```text
+IdentityProvider / ExternalIdentity
+Hidra User
+Hidra account state
+Hidra authorization
+HidraPrincipal
+```
+
+Do not collect external provider passwords and do not replace working OIDC configuration unnecessarily.
+
+Status:
+
+```text
+Completed — the existing resource-server JWT validation remains intact, but its post-validation converter is now Identity-owned. A validated JWT is normalized by issuer + subject through an ACTIVE OIDC IdentityProvider and LINKED ExternalIdentity to an ACTIVE, unlocked Hidra User. The resulting Spring Authentication carries HidraPrincipal with stable Hidra user ID and Hidra-owned effective permissions. External IdP roles/claims are not promoted into Hidra business authorization. Existing browser authorization-code + PKCE behavior and GET /api/v1/security/oidc are unchanged.
+```
+
+Validation:
+
+```bash
+mvn -q test
+```
+
+Result:
+
+```text
+PASS — pull-request CI run 118 completed the repository test check and the acceptance `mvn -q test` step successfully for AUTH-007 implementation commit 93cd247d83e9ed519554df69b6835ab8d1dfe622.
+```
+
+---
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `7cb4dca5461413f758fdde78d5a9c136c909f907` — exact registered-message commit; surviving paths matched to current tree.
+- `903dc2f5c13787b50941883922a28f5cffdb0c0a` — exact registered-message commit; surviving paths matched to current tree.
+- `cdf0e060175fbf496ca3f445043b5c54845c62d6` — exact registered-message commit; surviving paths matched to current tree.
+- `f04828ebca24c440310b9cc13344efe30ccc9116` — exact registered-message commit; surviving paths matched to current tree.
+- `ce8b1111aa63fd3aaf1f5d883a9d54381c8f93dd` — exact registered-message commit; surviving paths matched to current tree.
+- `45ec823c40fe4d3352ef15db7b5f06404d429cbe` — exact registered-message commit; surviving paths matched to current tree.
+- `93cd247d83e9ed519554df69b6835ab8d1dfe622` — exact registered-message commit; surviving paths matched to current tree.
+- `d6616f834259fb692c52067745fb8ddde1d93d05` — exact registered-message commit; surviving paths matched to current tree.
+- `dba5bc922da6f2172c5cc99e8f60bae5ee549529` — exact registered-message commit; surviving paths matched to current tree.
+- `52e4bcfdd17f5ffa99ca0bb3cf88a4acb60450ea` — exact registered-message commit; surviving paths matched to current tree.
+- `7fa995fa5e42462cc28d149770250263b4f12ff4` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/authentication.md:1405](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/authentication.md#L1405)
+- [docs/roadmap/authentication.md:1602](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/authentication.md#L1602)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/authentication.md:1405 | AUTH-007 | refactor(authentication): normalize existing oidc authentication | Preserve working OIDC flow while mapping successful identities to Hidra User/HidraPrincipal and Hidra authorization | Completed — validated JWT issuer+subject now resolves through active OIDC provider and linked ExternalIdentity to active Hidra User/HidraPrincipal with Hidra-owned effective permissions; `mvn -q test` passed in PR CI run 118
+~~~~~~~~
+
+<a id="hapi-031"></a>
+## HAPI-031 — standardize protected api bearer authentication
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: AUTH-019
+
+Priority: P2
+
+Implementation Status: IMPLEMENTED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Make protected APIs consume the unified Hidra JWT while preserving authorization behavior
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `docs/roadmap/authentication.md`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverter.java`
+- `src/main/java/dz/sh/hidra/platform/configuration/HidraJwtDecoderConfiguration.java`
+- `src/main/java/dz/sh/hidra/platform/configuration/HidraSecurityConfiguration.java`
+- `src/main/java/dz/sh/hidra/platform/security/HidraJwtGrantedAuthoritiesConverter.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverter.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `docs/roadmap/authentication.md`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverter.java`
+- `src/main/java/dz/sh/hidra/platform/configuration/HidraJwtDecoderConfiguration.java`
+- `src/main/java/dz/sh/hidra/platform/configuration/HidraSecurityConfiguration.java`
+- `src/main/java/dz/sh/hidra/platform/security/HidraJwtGrantedAuthoritiesConverter.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+### AUTH-019 — Standard protected-API bearer authentication
+
+Commit:
+
+```text
+refactor(security): standardize protected api bearer authentication
+```
+
+Protected APIs should consume the standardized Hidra bearer JWT irrespective of original auth source.
+
+Preserve current permission/interceptor semantics.
+
+Status:
+
+```text
+Completed — security is now split by bearer trust boundary. The higher-priority OIDC completion SecurityFilterChain matches only /api/v1/identity/authentication/oidc/complete and validates external OIDC JWTs with the existing IdentityOidcJwtAuthenticationConverter. The general protected-API chain validates only Hidra-issued HS256 JWTs through hidraJwtDecoder and reconstructs authorities with the existing HidraJwtGrantedAuthoritiesConverter, preserving current role/scope and permission/interceptor semantics. The decoder configuration now exposes separate Hidra and external-OIDC decoders. Missing external OIDC issuer/JWK configuration no longer blocks unrelated application modes from starting; attempted OIDC completion instead fails closed. In-memory LOCAL/bootstrap behavior was not changed because AUTH-020 owns that work.
+```
+
+Validation:
+
+```bash
+mvn -q clean verify
+```
+
+Result:
+
+```text
+PASS — PR CI run 213 completed repository and acceptance clean verification successfully for AUTH-019 implementation commit e33cb9ca93b5ce09f4a471c445a80046becf4795. Earlier runs 211 and 212 correctly blocked a missing import and eager unconfigured OIDC decoder startup respectively; both issues were corrected before validation passed.
+```
+
+---
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `f156a497e5272c8a9e88b06d648a94fd121a7fb8` — exact registered-message commit; surviving paths matched to current tree.
+- `173c170304f7df080efa8ddca2689f05f90d6a10` — exact registered-message commit; surviving paths matched to current tree.
+- `28d97d6fc62d530f78b192d969149aab23101e64` — exact registered-message commit; surviving paths matched to current tree.
+- `083206c13bdf567db92dfc749c5a707df9be2f40` — exact registered-message commit; surviving paths matched to current tree.
+- `b6fecb03927372bb6035196387a606ed327d8695` — exact registered-message commit; surviving paths matched to current tree.
+- `146525f0507e551259a7eb2d10635645e1ae8cd2` — exact registered-message commit; surviving paths matched to current tree.
+- `e33cb9ca93b5ce09f4a471c445a80046becf4795` — exact registered-message commit; surviving paths matched to current tree.
+- `2a5f0975faa96c82b7adc16256b97d2e239a4f42` — exact registered-message commit; surviving paths matched to current tree.
+- `5252164e0738979918ce11c51226afa619d52fa1` — exact registered-message commit; surviving paths matched to current tree.
+- `895101d1ed3e6894191fb7871c8434742bbad70c` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/authentication.md:1417](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/authentication.md#L1417)
+- [docs/roadmap/authentication.md:2053](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/authentication.md#L2053)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/authentication.md:1417 | AUTH-019 | refactor(security): standardize protected api bearer authentication | Make protected APIs consume the unified Hidra JWT while preserving authorization behavior | Completed — ordinary JWT-protected APIs now accept only standardized Hidra-issued HS256 access tokens through the Hidra JWT decoder/authorities converter, while a higher-priority path-scoped chain isolates external OIDC bearer validation to the secured completion bridge; existing permission/interceptor semantics are preserved and unconfigured OIDC fails closed on use; `mvn -q clean verify` passed in PR CI run 213
+~~~~~~~~
+
+<a id="hapi-037"></a>
+## HAPI-037 — cover oidc normalization
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: AUTH-025
+
+Priority: P2
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Protect existing OIDC behavior and prove Hidra principal/authorization normalization
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `docs/roadmap/authentication.md`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/HidraPrincipal.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/IdentityProvider.java`
+- `src/test/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityAuthenticationControllerOidcApiTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverterTest.java`
+- `src/test/java/dz/sh/hidra/platform/security/HidraOidcContractControllerTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/identity/domain/model/HidraPrincipal.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/model/IdentityProvider.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverterTest.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `docs/roadmap/authentication.md`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/HidraPrincipal.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/IdentityProvider.java`
+- `src/test/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityAuthenticationControllerOidcApiTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverterTest.java`
+- `src/test/java/dz/sh/hidra/platform/security/HidraOidcContractControllerTest.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+### AUTH-025 — OIDC normalization proof
+
+Commit:
+
+```text
+test(authentication): cover oidc normalization
+```
+
+Status:
+
+```text
+Completed — IdentityOidcJwtAuthenticationConverterTest proves already-validated external OIDC JWTs normalize by issuer + subject through an ACTIVE OIDC IdentityProvider and LINKED ExternalIdentity to an ACTIVE Hidra User/HidraPrincipal, while missing issuer/subject, unavailable/inactive providers, unmapped/inactive external identities, missing users, locked users, and disabled users fail closed before Hidra authorization is loaded. The test also proves external roles, groups, and scope claims are ignored for Hidra business authorization and only Identity-owned effective permissions populate HidraPrincipal. IdentityAuthenticationControllerOidcApiTest proves the secured OIDC completion boundary accepts only an OIDC HidraPrincipal, forwards client metadata to the provider-neutral completion use case, never re-enters direct credential authentication, and returns the same normalized Hidra session/token/principal response shape. Existing HidraOidcContractControllerTest continues to protect the authorization-code + PKCE browser contract and external-IdP dependency signaling. No production behavior or AUTH-026+ unified-JWT/authorization-ownership proof scope was added.
+```
+
+Validation:
+
+```bash
+mvn -q test
+```
+
+Result:
+
+```text
+PASS — PR CI run 270 completed repository `mvn -q test` successfully for AUTH-025 implementation commit 63f5d39084ae8604a53bff1fcb926c33d4a171c1. The same run also passed repository compile/full verification, acceptance compile/tests/clean verify, deterministic OpenAPI publication, and artifact upload with no corrective production changes required.
+```
+
+---
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityAuthenticationControllerOidcApiTest.java` — exact-head oracle suite 2 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverterTest.java` — exact-head oracle suite 8 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/platform/security/HidraOidcContractControllerTest.java` — exact-head oracle suite 2 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `f9d1ee576cb58a2433633a56977fd354b406fc52` — exact registered-message commit; surviving paths matched to current tree.
+- `c6dcbe861ccec0f7df57150e1f6b14b241d1a698` — exact registered-message commit; surviving paths matched to current tree.
+- `11dc109634bc659467f3f4f84567594bc20ea335` — exact registered-message commit; surviving paths matched to current tree.
+- `e006be033f66db72dbc70014b9823254e61c37c4` — exact registered-message commit; surviving paths matched to current tree.
+- `766c7a19ca8ba3267dfdc65f1ab241a369d9ac37` — exact registered-message commit; surviving paths matched to current tree.
+- `541d87bd18c533da8af9243b082fe97776eb3cba` — exact registered-message commit; surviving paths matched to current tree.
+- `63f5d39084ae8604a53bff1fcb926c33d4a171c1` — exact registered-message commit; surviving paths matched to current tree.
+- `0e02e2f3ca5c0d357ea8767b949acaeebff06cb9` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/authentication.md:1423](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/authentication.md#L1423)
+- [docs/roadmap/authentication.md:2240](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/authentication.md#L2240)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/authentication.md:1423 | AUTH-025 | test(authentication): cover oidc normalization | Protect existing OIDC behavior and prove Hidra principal/authorization normalization | Completed — validated issuer+subject normalization, active provider/linkage/account-state enforcement, Hidra-owned permission resolution, external role/group/scope isolation, and secured OIDC completion API convergence are covered; existing OIDC PKCE/browser contract regression tests remain intact; `mvn -q test` passed in PR CI run 270
+~~~~~~~~
+
+<a id="hapi-038"></a>
+## HAPI-038 — verify unified jwt compatibility
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: AUTH-026
+
+Priority: P2
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Verify all providers produce tokens accepted by current security filters and permission enforcement
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `docs/roadmap/authentication.md`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/HidraPrincipal.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraAccessTokenIssuer.java`
+- `src/main/java/dz/sh/hidra/platform/configuration/HidraJwtEncoderConfiguration.java`
+- `src/test/java/dz/sh/hidra/platform/configuration/HidraUnifiedJwtCompatibilityTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/identity/domain/model/HidraPrincipal.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraAccessTokenIssuer.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `docs/roadmap/authentication.md`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/HidraPrincipal.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraAccessTokenIssuer.java`
+- `src/main/java/dz/sh/hidra/platform/configuration/HidraJwtEncoderConfiguration.java`
+- `src/test/java/dz/sh/hidra/platform/configuration/HidraUnifiedJwtCompatibilityTest.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+### AUTH-026 — Unified Hidra JWT compatibility proof
+
+Commit:
+
+```text
+test(authentication): verify unified jwt compatibility
+```
+
+Status:
+
+```text
+Completed — HidraUnifiedJwtCompatibilityTest issues real Hidra JWTs from normalized LOCAL, LDAP, ACTIVE_DIRECTORY, and OIDC HidraPrincipal values through the production HidraAccessTokenIssuer/HidraJwtEncoderConfiguration, validates them through the production hidraJwtDecoder used by ordinary protected APIs, and reconstructs authorities through the production Hidra JWT authentication converter. The proof verifies stable Hidra subject, issuer/audience/JTI, authentication-source metadata, optional provider linkage, deterministic Hidra-owned roles/scope claims, ROLE_/SCOPE_ authority reconstruction, and the framework FACTOR_BEARER authentication factor for every provider source. No production behavior or AUTH-027+ authorization-ownership scope was added.
+```
+
+Validation:
+
+```bash
+mvn -q test
+```
+
+Result:
+
+```text
+PASS — PR CI run 279 completed repository `mvn -q test` successfully for AUTH-026 corrected implementation commit 9669ff803b1132127bbc78f320a33f83e2e250fc. The same run also passed repository compile/full verification, acceptance compile/tests/clean verify, deterministic OpenAPI publication, and artifact upload. Earlier runs 277 and 278 exposed only test expectation mismatches around Spring's typed issuer accessor for the configured non-URL issuer string and the framework-added FACTOR_BEARER authority; both were corrected without changing production behavior.
+```
+
+---
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/platform/configuration/HidraUnifiedJwtCompatibilityTest.java` — exact-head oracle suite 4 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `8b783c8861e0e0f51e482079518f988c602b6e55` — exact registered-message commit; surviving paths matched to current tree.
+- `5d6d9aeed18f6371753cb9c09ad6d0659f326b9c` — exact registered-message commit; surviving paths matched to current tree.
+- `0851e9d10b1b43a80306653249cf49dbd6230d57` — exact registered-message commit; surviving paths matched to current tree.
+- `9040c042c885f0116b40d05fc2d5e69846492143` — exact registered-message commit; surviving paths matched to current tree.
+- `965ce0823a9e5b967d43496d2cabeadb8e3aaee8` — exact registered-message commit; surviving paths matched to current tree.
+- `2299c720d5314b15c1927dfe6b3fcbddc9026dd2` — exact registered-message commit; surviving paths matched to current tree.
+- `9669ff803b1132127bbc78f320a33f83e2e250fc` — exact registered-message commit; surviving paths matched to current tree.
+- `8be912340dc58da42872043387b1eef5f76c583e` — exact registered-message commit; surviving paths matched to current tree.
+- `a45ade0994e2f267246ab1106bbcbf88339914ef` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/authentication.md:1424](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/authentication.md#L1424)
+- [docs/roadmap/authentication.md:2268](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/authentication.md#L2268)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/authentication.md:1424 | AUTH-026 | test(authentication): verify unified jwt compatibility | Verify all providers produce tokens accepted by current security filters and permission enforcement | Completed — real production issuer/encoder -> Hidra decoder -> protected-API authentication conversion is proven for LOCAL, LDAP, ACTIVE_DIRECTORY, and OIDC, including stable subject/issuer/audience/JTI, provider metadata, Hidra roles/scopes, ROLE_/SCOPE_ reconstruction, and FACTOR_BEARER; `mvn -q test` passed in PR CI run 279
+~~~~~~~~
+
+<a id="hapi-039"></a>
+## HAPI-039 — protect hidra authorization ownership
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: AUTH-027
+
+Priority: P2
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Prove external groups/claims do not bypass Hidra role/permission decisions
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `docs/roadmap/authentication.md`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/HidraPrincipal.java`
+- `src/main/java/dz/sh/hidra/platform/security/HidraEffectivePermissionResolver.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraAuthorizationOwnershipTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/identity/domain/model/HidraPrincipal.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraAuthorizationOwnershipTest.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `docs/roadmap/authentication.md`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/HidraPrincipal.java`
+- `src/main/java/dz/sh/hidra/platform/security/HidraEffectivePermissionResolver.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraAuthorizationOwnershipTest.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+### AUTH-027 — Hidra authorization ownership proof
+
+Commit:
+
+```text
+test(authentication): protect hidra authorization ownership
+```
+
+Status:
+
+```text
+Completed — HidraAuthorizationOwnershipTest exercises the production OIDC normalization converter, LDAP AuthenticationProvider, and HidraEffectivePermissionResolver. Privileged external OIDC roles, groups, scopes, permissions, wildcard-like values, and administrator claims remain non-authoritative: the normalized authentication carries no external business authorities, HidraPrincipal contains only Identity-owned effective permissions, Hidra-granted permissions are accepted, and externally asserted permissions/wildcard access remain denied. LDAP directory verification and identity/DN context likewise authenticate and link identity only; only Hidra Identity-owned effective permissions can satisfy authorization. No production behavior or AUTH-028+ deployment/runbook scope was added.
+```
+
+Validation:
+
+```bash
+mvn -q test
+```
+
+Result:
+
+```text
+PASS — PR CI run 286 completed repository `mvn -q test` successfully for AUTH-027 implementation commit 2623511d894c2a4a7692f1203d5dc57a3e02f83d. The same run also passed repository compile/full verification, acceptance compile/tests/clean verify, deterministic OpenAPI publication, and artifact upload with no production changes required.
+```
+
+---
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraAuthorizationOwnershipTest.java` — exact-head oracle suite 2 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `c42fd99c31c7dae0c979a7b48b2e8b1af154586b` — exact registered-message commit; surviving paths matched to current tree.
+- `ef7f500ac61e63ef9f10803e8a864ab4c1cd74cc` — exact registered-message commit; surviving paths matched to current tree.
+- `6f38348a5af63aa7b4f0013d31363c9b3cdfea51` — exact registered-message commit; surviving paths matched to current tree.
+- `c98452bf4edaa47bcc6dfa52cda4088f3dd3b5ec` — exact registered-message commit; surviving paths matched to current tree.
+- `77c632319316d9510fd53149e85f00aceae6fea5` — exact registered-message commit; surviving paths matched to current tree.
+- `2796fef152e7e4d1acc36b936712564df74a1142` — exact registered-message commit; surviving paths matched to current tree.
+- `2623511d894c2a4a7692f1203d5dc57a3e02f83d` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/authentication.md:1425](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/authentication.md#L1425)
+- [docs/roadmap/authentication.md:2296](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/authentication.md#L2296)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/authentication.md:1425 | AUTH-027 | test(authentication): protect hidra authorization ownership | Prove external groups/claims do not bypass Hidra role/permission decisions | Completed — dedicated OIDC and LDAP authorization-ownership proof shows external roles/groups/scopes/permissions and directory identity context cannot grant business permissions, wildcard access, or admin authority beyond Hidra Identity-owned effective permissions; `mvn -q test` passed in PR CI run 286
+~~~~~~~~
+
+<a id="hapi-181"></a>
+## HAPI-181 — remediate semantic review Role
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HMR-007
+
+Priority: P2
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+remediate semantic review Role
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `docs/roadmap/identity.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ExternalRoleMappingRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/GroupRoleGrantRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RoleRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/UserRoleGrantRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/ExternalRoleMapping.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/GroupRoleGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/Role.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/RolePermissionGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserRoleGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/RoleStatus.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/RoleType.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaExternalRoleMappingRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaGroupRoleGrantRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaRolePermissionGrantRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaRoleRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaUserRoleGrantRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/ExternalRoleMappingJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/GroupRoleGrantJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/RoleJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/RolePermissionGrantJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/UserRoleGrantJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/mapper/IdentityPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/ExternalRoleMappingJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/GroupRoleGrantJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/RoleJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/RolePermissionGrantJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/UserRoleGrantJpaRepository.java`
+- `src/main/resources/db/migration/V20261004_007__hmr_007_identity_role.sql`
+- `src/test/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/RoleSemanticRemediationTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/identity/domain/model/ExternalRoleMapping.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/model/GroupRoleGrant.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/model/Role.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/model/RolePermissionGrant.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ExternalRoleMappingRepositoryPort.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/out/GroupRoleGrantRepositoryPort.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RoleRepositoryPort.java`.
+- Application services: `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationService.java`, `src/test/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationServiceTest.java`.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaExternalRoleMappingRepositoryAdapter.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaGroupRoleGrantRepositoryAdapter.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaRolePermissionGrantRepositoryAdapter.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaRoleRepositoryAdapter.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `docs/roadmap/identity.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ExternalRoleMappingRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/GroupRoleGrantRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RoleRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/UserRoleGrantRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/ExternalRoleMapping.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/GroupRoleGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/Role.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/RolePermissionGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserRoleGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/RoleStatus.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/RoleType.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaExternalRoleMappingRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaGroupRoleGrantRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaRolePermissionGrantRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaRoleRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaUserRoleGrantRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/ExternalRoleMappingJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/GroupRoleGrantJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/RoleJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/RolePermissionGrantJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/UserRoleGrantJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/mapper/IdentityPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/ExternalRoleMappingJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/GroupRoleGrantJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/RoleJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/RolePermissionGrantJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/UserRoleGrantJpaRepository.java`
+- `src/main/resources/db/migration/V20261004_007__hmr_007_identity_role.sql`
+- `src/test/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/RoleSemanticRemediationTest.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+#### HMR-007 — identity.Role
+
+- Source review: `HMSR-007`
+- Exact commit: `fix(identity): remediate semantic review Role`
+- Status: **Completed** — the general create-role application path normalizes the requested code, fails fast when `RoleRepositoryPort.findByCode` already resolves it, the focused application-service test proves no save occurs on duplicates, and additive Flyway enforces race-safe uniqueness on `hidra_identity_role(code)`.
+- SCC: —
+- Recorded upstream HMS dependencies: —
+- HMSR correction count: 1
+- Additive Flyway: `src/main/resources/db/migration/V20261004_007__hmr_007_identity_role.sql`
+- Owner-contract prerequisite: No cross-module owner-contract prerequisite recorded by this HMSR correction.
+- Exact write allowlist:
+  - `docs/data definition/Identity.md`
+  - `docs/roadmap/identity.md`
+  - `docs/roadmap/model-semantic-remediation.md`
+  - `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ExternalRoleMappingRepositoryPort.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/application/port/out/GroupRoleGrantRepositoryPort.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RoleRepositoryPort.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/application/port/out/UserRoleGrantRepositoryPort.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationService.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/domain/model/ExternalRoleMapping.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/domain/model/GroupRoleGrant.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/domain/model/Role.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/domain/model/RolePermissionGrant.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserRoleGrant.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/domain/value/RoleStatus.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/domain/value/RoleType.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaExternalRoleMappingRepositoryAdapter.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaGroupRoleGrantRepositoryAdapter.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaRolePermissionGrantRepositoryAdapter.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaRoleRepositoryAdapter.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaUserRoleGrantRepositoryAdapter.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/ExternalRoleMappingJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/GroupRoleGrantJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/RoleJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/RolePermissionGrantJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/UserRoleGrantJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/mapper/IdentityPersistenceMapper.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/ExternalRoleMappingJpaRepository.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/GroupRoleGrantJpaRepository.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/RoleJpaRepository.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/RolePermissionGrantJpaRepository.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/UserRoleGrantJpaRepository.java`
+  - `src/main/resources/db/migration/V20261004_007__hmr_007_identity_role.sql`
+  - `src/test/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationServiceTest.java`
+  - `src/test/java/dz/sh/hidra/modules/identity/semantic/RoleSemanticRemediationTest.java`
+- Exact validation:
+  - `./mvnw -q -DskipTests compile`
+  - `./mvnw -q -Dtest=RoleSemanticRemediationTest test`
+  - `./mvnw -q test`
+  - `./mvnw -q clean verify`
+- HMSR obligations:
+  1. **Unique Role code:** the Identity DDD explicitly defines `Role.code` as unique and recommends `uk_identity_role_code`. The live Flyway schema has only a non-unique index `ix_hidra_identity_role_code`; no later unique constraint was found. The general create-role application path does not call `RoleRepositoryPort.findByCode` before save. `RoleJpaRepository.findFirstByCode` also tolerates duplicate rows rather than making duplicates impossible.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationServiceTest.java` — exact-head oracle suite 4 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/RoleSemanticRemediationTest.java` — exact-head oracle suite 1 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `ec5e15cac733d8c9f6d3590b79407ba919a3cfea` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/model-semantic-remediation.md:153](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-remediation.md#L153)
+- [docs/roadmap/model-semantic-remediation.md:626](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-remediation.md#L626)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Retained completed semantic remediation; legacy Planned/Blocked text is superseded by canonical reconciliation and current regression evidence. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/model-semantic-remediation.md:153 | HMR-007 | HMSR-007 | identity | Role | — | — | fix(identity): remediate semantic review Role | **Completed**
+~~~~~~~~
+
+<a id="hapi-182"></a>
+## HAPI-182 — amend Role uniqueness remediation scope
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HMR-007A
+
+Priority: P2
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+amend Role uniqueness remediation scope
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RoleRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationService.java`
+- `src/test/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationServiceTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. It is a documentation/review/preflight outcome; broader application functionality remains separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RoleRepositoryPort.java`.
+- Application services: `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationService.java`, `src/test/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationServiceTest.java`.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RoleRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationService.java`
+- `src/test/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationServiceTest.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+#### HMR-007A — identity Role uniqueness application scope amendment
+
+- Source: HMR-007 / HMSR-007.
+- Exact commit: `docs(model-remediation): amend Role uniqueness remediation scope`
+- Status: **Completed**
+- Type: documentation-only scope correction; no production mutation.
+- Evidence:
+  - `IdentityAdministrationCommandApplicationService#createRole` is the general create-role path and currently saves without checking `RoleRepositoryPort.findByCode`.
+  - `IdentityAdministrationCommandApplicationServiceTest` is the existing focused unit test for that path.
+- HMR-007 exact write allowlist is amended to additionally authorize:
+  - `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationService.java`
+  - `src/test/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationServiceTest.java`
+- Acceptance:
+  1. HMR-007 must fail fast in the application path when `Role.code` already exists;
+  2. HMR-007 must still add race-safe database uniqueness on `hidra_identity_role(code)`;
+  3. HMR-007 must not broaden into unrelated Identity role/grant semantics.
+
+
+~~~~~~~~
+
+### 7. API Contracts
+
+No new API is part of this bounded documentation/historical outcome. Existing owner operations are listed in the runtime contract inventory below; no proposed endpoint is relabeled as implemented.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationServiceTest.java` — exact-head oracle suite 4 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `42f4e726b05d6b3482a04a6dca4ea9943f9ad542` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/model-semantic-remediation.md:680](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-remediation.md#L680)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent. Doc/preflight completion is not completion of the associated application workflow.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+<a id="hapi-188"></a>
+## HAPI-188 — remediate semantic review Permission
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HMR-011
+
+Priority: P2
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+remediate semantic review Permission
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `docs/data definition/Identity.md`
+- `docs/roadmap/identity.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/request/EvaluatePermissionRequest.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/response/PermissionDecisionResponse.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/dto/PermissionDecisionDto.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/EvaluatePermissionUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/PermissionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/UserPermissionGrantRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/query/EvaluatePermissionQuery.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/Permission.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/RolePermissionGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserPermissionGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/PermissionStatus.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaPermissionRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaRolePermissionGrantRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaUserPermissionGrantRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/ExternalPermissionMappingJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/PermissionJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/RolePermissionGrantJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/UserPermissionGrantJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/mapper/IdentityPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/ExternalPermissionMappingJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/PermissionJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/RolePermissionGrantJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/UserPermissionGrantJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityEffectivePermissionSourceAdapter.java`
+- `src/main/resources/db/migration/V20261004_011__hmr_011_identity_permission.sql`
+- `src/test/java/dz/sh/hidra/modules/identity/api/rest/controller/SpringIdentityControllerPermissionScopeApiTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/api/rest/mapper/IdentityRestMapperPermissionScopeTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/PermissionSemanticRemediationTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/identity/domain/model/Permission.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/model/RolePermissionGrant.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserPermissionGrant.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/value/PermissionStatus.java`.
+- Inbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/in/EvaluatePermissionUseCase.java`.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/out/PermissionRepositoryPort.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/out/UserPermissionGrantRepositoryPort.java`.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaPermissionRepositoryAdapter.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaRolePermissionGrantRepositoryAdapter.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaUserPermissionGrantRepositoryAdapter.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/ExternalPermissionMappingJpaEntity.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `docs/data definition/Identity.md`
+- `docs/roadmap/identity.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/request/EvaluatePermissionRequest.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/response/PermissionDecisionResponse.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/dto/PermissionDecisionDto.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/EvaluatePermissionUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/PermissionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/UserPermissionGrantRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/query/EvaluatePermissionQuery.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/Permission.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/RolePermissionGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserPermissionGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/PermissionStatus.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaPermissionRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaRolePermissionGrantRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaUserPermissionGrantRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/ExternalPermissionMappingJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/PermissionJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/RolePermissionGrantJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/UserPermissionGrantJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/mapper/IdentityPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/ExternalPermissionMappingJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/PermissionJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/RolePermissionGrantJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/UserPermissionGrantJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityEffectivePermissionSourceAdapter.java`
+- `src/main/resources/db/migration/V20261004_011__hmr_011_identity_permission.sql`
+- `src/test/java/dz/sh/hidra/modules/identity/api/rest/controller/SpringIdentityControllerPermissionScopeApiTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/api/rest/mapper/IdentityRestMapperPermissionScopeTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/PermissionSemanticRemediationTest.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+#### HMR-011 — identity.Permission
+
+- Source review: `HMSR-011`
+- Exact commit: `fix(identity): remediate semantic review Permission`
+- Status: **Completed** — permission code uniqueness is enforced before persistence and by database index; canonical three-part lower-case codes and required domain/resource/action/timestamps are intrinsic invariants; `resourceType` is required consistently; only ACTIVE permissions contribute to effective grants or receive new active grants/delegations/mappings; disabled/deprecated permissions affect new resolutions and newly issued tokens, while already-issued stateless JWTs expire under the configured token TTL.
+- SCC: —
+- Recorded upstream HMS dependencies: —
+- HMSR correction count: 7
+- Additive Flyway: `src/main/resources/db/migration/V20261004_011__hmr_011_identity_permission.sql`
+- Owner-contract prerequisite: No cross-module owner-contract prerequisite recorded by this HMSR correction.
+- Exact write allowlist:
+  - `docs/data definition/Identity.md`
+  - `docs/roadmap/identity.md`
+  - `docs/roadmap/model-semantic-remediation.md`
+  - `src/main/java/dz/sh/hidra/modules/identity/api/rest/request/EvaluatePermissionRequest.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/api/rest/response/PermissionDecisionResponse.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/application/dto/PermissionDecisionDto.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/application/port/in/EvaluatePermissionUseCase.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/application/port/out/PermissionRepositoryPort.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/application/port/out/UserPermissionGrantRepositoryPort.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/application/query/EvaluatePermissionQuery.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/domain/model/Permission.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/domain/model/RolePermissionGrant.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserPermissionGrant.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/domain/value/PermissionStatus.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaPermissionRepositoryAdapter.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaRolePermissionGrantRepositoryAdapter.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaUserPermissionGrantRepositoryAdapter.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/ExternalPermissionMappingJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/PermissionJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/RolePermissionGrantJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/UserPermissionGrantJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/mapper/IdentityPersistenceMapper.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/ExternalPermissionMappingJpaRepository.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/PermissionJpaRepository.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/RolePermissionGrantJpaRepository.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/UserPermissionGrantJpaRepository.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityEffectivePermissionSourceAdapter.java`
+  - `src/main/resources/db/migration/V20261004_011__hmr_011_identity_permission.sql`
+  - `src/test/java/dz/sh/hidra/modules/identity/api/rest/controller/SpringIdentityControllerPermissionScopeApiTest.java`
+  - `src/test/java/dz/sh/hidra/modules/identity/api/rest/mapper/IdentityRestMapperPermissionScopeTest.java`
+  - `src/test/java/dz/sh/hidra/modules/identity/semantic/PermissionSemanticRemediationTest.java`
+- Exact validation:
+  - `./mvnw -q -DskipTests compile`
+  - `./mvnw -q -Dtest=PermissionSemanticRemediationTest test`
+  - `./mvnw -q test`
+  - `./mvnw -q clean verify`
+- HMSR obligations:
+  1. **Unique permission code:** enforce the DDD-defined global uniqueness of `Permission.code` at the application/database boundary.
+  2. **Permission lifecycle enforcement:** effective authorization must not continue treating `DISABLED` or `DEPRECATED` permissions as active merely because their grants remain active.
+  3. **Grant-time lifecycle validation:** define whether new grants/delegations may target non-ACTIVE permissions and enforce that rule consistently.
+  4. **Permission-code documentation reconciliation:** update stale uppercase/dot and two-part Identity DDD examples to the live three-part lower-case colon standard, or explicitly change the live standard through an authorized decision.
+  5. **`resourceType` contract reconciliation:** resolve the current DDD/schema optionality versus the live administration/route naming requirement for a non-empty resource component.
+  6. **Required domain fields:** retain an explicit enforcement boundary for `permissionDomain`, `action`, `createdAt`, and `updatedAt` so alternate callers cannot persist semantically invalid Permission state.
+  7. **Issued-token lifecycle policy:** define the expected effect of disabling/deprecating a permission on already-issued Hidra JWT scope claims; any immediate-revocation requirement must be implemented deliberately rather than assumed.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/modules/identity/api/rest/controller/SpringIdentityControllerPermissionScopeApiTest.java` — exact-head oracle suite 1 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/api/rest/mapper/IdentityRestMapperPermissionScopeTest.java` — exact-head oracle suite 4 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/PermissionSemanticRemediationTest.java` — exact-head oracle suite 5 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `6b12b4fe1059a072ba752f9be3c42cf2e9c49595` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/data definition/Identity.md:347](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/data definition/Identity.md#L347)
+- [docs/roadmap/model-semantic-remediation.md:157](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-remediation.md#L157)
+- [docs/roadmap/model-semantic-remediation.md:867](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-remediation.md#L867)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Retained completed semantic remediation; legacy Planned/Blocked text is superseded by canonical reconciliation and current regression evidence. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/model-semantic-remediation.md:157 | HMR-011 | HMSR-011 | identity | Permission | — | — | fix(identity): remediate semantic review Permission | **Completed**
+~~~~~~~~
+
+<a id="hapi-279"></a>
+## HAPI-279 — remediate semantic review AuthorizationDecision
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HMR-085
+
+Priority: P2
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+remediate semantic review AuthorizationDecision
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `docs/data definition/Identity.md`
+- `docs/roadmap/identity.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityOidcAuthorizationController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/model/VerifiedAuthorizationAssertion.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationAssertionPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationDecisionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationDecisionSettingsPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationEvidencePort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAuthorizationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/AuthorizationDecision.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/policy/AuthorizationEvidence.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/policy/AuthorizationJson.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationExpressionEvaluator.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationPolicyEvaluator.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/AuthorizationDecisionValue.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaAuthorizationDecisionRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaAuthorizationEvidenceAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/AuthorizationDecisionJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/mapper/IdentityPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/AuthorizationDecisionJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraOidcAuthenticationToken.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/SpringAuthorizationContextAdapter.java`
+- `src/main/java/dz/sh/hidra/platform/configuration/HidraOpenApiSecurityConfiguration.java`
+- `src/main/java/dz/sh/hidra/platform/configuration/HidraSecurityConfiguration.java`
+- `src/test/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityOidcAuthorizationControllerTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/AuthorizationAssertionTrustTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraAuthorizationOwnershipTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverterTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/AuthorizationDecisionSemanticRemediationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/AuthorizationEvidencePostgresTest.java`
+- `src/test/java/dz/sh/hidra/platform/configuration/HidraOpenApiSecurityConfigurationTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Existing gate retained; no reopening/selection; future scope needs owner authorization
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/identity/domain/model/AuthorizationDecision.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/policy/AuthorizationEvidence.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/policy/AuthorizationJson.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationExpressionEvaluator.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationAssertionPort.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationDecisionRepositoryPort.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationDecisionSettingsPort.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationEvidencePort.java`.
+- Application services: `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAuthorizationApplicationService.java`.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaAuthorizationDecisionRepositoryAdapter.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaAuthorizationEvidenceAdapter.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/AuthorizationDecisionJpaEntity.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/mapper/IdentityPersistenceMapper.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `docs/data definition/Identity.md`
+- `docs/roadmap/identity.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityOidcAuthorizationController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/model/VerifiedAuthorizationAssertion.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationAssertionPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationDecisionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationDecisionSettingsPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationEvidencePort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAuthorizationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/AuthorizationDecision.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/policy/AuthorizationEvidence.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/policy/AuthorizationJson.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationExpressionEvaluator.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationPolicyEvaluator.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/AuthorizationDecisionValue.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaAuthorizationDecisionRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaAuthorizationEvidenceAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/AuthorizationDecisionJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/mapper/IdentityPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/AuthorizationDecisionJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraOidcAuthenticationToken.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/SpringAuthorizationContextAdapter.java`
+- `src/main/java/dz/sh/hidra/platform/configuration/HidraOpenApiSecurityConfiguration.java`
+- `src/main/java/dz/sh/hidra/platform/configuration/HidraSecurityConfiguration.java`
+- `src/test/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityOidcAuthorizationControllerTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/AuthorizationAssertionTrustTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraAuthorizationOwnershipTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverterTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/AuthorizationDecisionSemanticRemediationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/AuthorizationEvidencePostgresTest.java`
+- `src/test/java/dz/sh/hidra/platform/configuration/HidraOpenApiSecurityConfigurationTest.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+#### HMR-085 — identity.AuthorizationDecision
+
+- Source review: `HMSR-100`
+- Exact commit: `fix(identity): remediate semantic review AuthorizationDecision`
+- Status: **Completed** — graph/policy evaluation, verified external evidence and optional persistence implemented; exact-head CI pending.
+- SCC: —
+- Recorded upstream HMS dependencies: identity.User
+- HMSR correction count: 3
+- Additive Flyway: not pre-authorized by HMR-002
+- Owner-contract prerequisite: No cross-module owner-contract prerequisite recorded by this HMSR correction.
+- Exact write allowlist:
+  - `docs/data definition/Identity.md`
+  - `docs/roadmap/identity.md`
+  - `docs/roadmap/model-semantic-remediation.md`
+  - `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationDecisionRepositoryPort.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/domain/model/AuthorizationDecision.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/domain/value/AuthorizationDecisionValue.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaAuthorizationDecisionRepositoryAdapter.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/AuthorizationDecisionJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/mapper/IdentityPersistenceMapper.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/AuthorizationDecisionJpaRepository.java`
+  - `src/test/java/dz/sh/hidra/modules/identity/semantic/AuthorizationDecisionSemanticRemediationTest.java`
+- Exact validation:
+  - `./mvnw -q -DskipTests compile`
+  - `./mvnw -q -Dtest=AuthorizationDecisionSemanticRemediationTest test`
+  - `./mvnw -q test`
+  - `./mvnw -q clean verify`
+- HMSR obligations:
+  1. **Replace the unconditional `NO_GRANT_MATCHED` decision path with the governing Identity authorization evaluation order**, including direct/inherited grants, mapped external authority where allowed, scope/time validity, ABAC policy, and explicit deny precedence.
+  2. **Populate applicable decision-explanation evidence** (`reasonCode`/`reasonMessage`, matched grants/policy rules/external claims as appropriate) so persisted high-risk decisions are truthful and explainable.
+  3. **Honor the established optional authorization-decision persistence policy/configuration** rather than unconditionally persisting every evaluated request if `authorizationDecisionPersistenceEnabled` remains the authoritative switch.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityOidcAuthorizationControllerTest.java` — exact-head oracle suite 2 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/AuthorizationAssertionTrustTest.java` — exact-head oracle suite 3 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraAuthorizationOwnershipTest.java` — exact-head oracle suite 2 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverterTest.java` — exact-head oracle suite 8 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/AuthorizationDecisionSemanticRemediationTest.java` — exact-head oracle suite 10 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/AuthorizationEvidencePostgresTest.java` — exact-head oracle suite 9 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/platform/configuration/HidraOpenApiSecurityConfigurationTest.java` — exact-head oracle suite 4 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `03db23c4a95bc0075db5c757522f99f446534ea1` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [doc/model-remediation/RECONCILIATION.md:120](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L120)
+- [doc/model-remediation/RECONCILIATION.md:524](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L524)
+- [doc/model-remediation/RECONCILIATION.md:539](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L539)
+- [doc/model-remediation/RECONCILIATION.md:13732](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L13732)
+- [doc/roadmap/history/ULTIMATE_ROADMAP_HISTORY.md:15472](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/history/ULTIMATE_ROADMAP_HISTORY.md#L15472)
+- [doc/testing/REQUIREMENTS_TRACEABILITY.md:119](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/testing/REQUIREMENTS_TRACEABILITY.md#L119)
+- [docs/roadmap/model-semantic-remediation.md:256](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-remediation.md#L256)
+- [docs/roadmap/model-semantic-remediation.md:4456](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-remediation.md#L4456)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Retained completed semantic remediation; legacy Planned/Blocked text is superseded by canonical reconciliation and current regression evidence. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/model-semantic-remediation.md:256 | HMR-085 | HMSR-100 | identity | AuthorizationDecision | — | identity.User | fix(identity): remediate semantic review AuthorizationDecision | Completed
+doc/model-remediation/RECONCILIATION.md:120 | HMR-085 | HMSR-100 | identity.AuthorizationDecision | COMPLETED — CI #579 PASSED | Transactional graph, bounded ABAC, verified mappings, deterministic evidence and configurable persistence; Batch 6 implementation below.
+doc/model-remediation/RECONCILIATION.md:13732 | HMR-085 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization
+doc/testing/REQUIREMENTS_TRACEABILITY.md:119 | HMR-085 | HMSR-100 | [identity.AuthorizationDecision](../domain/SEMANTIC_DECISIONS.md#identity-authorizationdecision) | [AuthorizationDecisionSemanticRemediationTest](../../src/test/java/dz/sh/hidra/modules/identity/semantic/AuthorizationDecisionSemanticRemediationTest.java) | No dedicated subject migration in current chain; see decision | E1
+doc/roadmap/history/ULTIMATE_ROADMAP_HISTORY.md:15472 | HMR-085 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization
+~~~~~~~~
+
+<a id="hapi-280"></a>
+## HAPI-280 — remediate semantic review AuthorizationDelegationGrant
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HMR-086
+
+Priority: P2
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+remediate semantic review AuthorizationDelegationGrant
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `doc/model-remediation/RECONCILIATION.md`
+- `docs/data definition/Identity.md`
+- `docs/roadmap/identity.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationDelegationGrantRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/AuthorizationDelegationGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/Permission.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/DelegationStatus.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaAuthorizationDelegationGrantRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/AuthorizationDelegationGrantJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/mapper/IdentityPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/AuthorizationDelegationGrantJpaRepository.java`
+- `src/main/resources/db/migration/V20261006_011__hmr_086_delegation_contract.sql`
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/AuthorizationDelegationGrantIntegrityMigrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/AuthorizationDelegationGrantSemanticRemediationTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Existing gate retained; no reopening/selection; future scope needs owner authorization
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/identity/domain/model/AuthorizationDelegationGrant.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/model/Permission.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/value/DelegationStatus.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationDelegationGrantRepositoryPort.java`.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaAuthorizationDelegationGrantRepositoryAdapter.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/AuthorizationDelegationGrantJpaEntity.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/mapper/IdentityPersistenceMapper.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/AuthorizationDelegationGrantJpaRepository.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `doc/model-remediation/RECONCILIATION.md`
+- `docs/data definition/Identity.md`
+- `docs/roadmap/identity.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationDelegationGrantRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/AuthorizationDelegationGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/Permission.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/DelegationStatus.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaAuthorizationDelegationGrantRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/AuthorizationDelegationGrantJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/mapper/IdentityPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/AuthorizationDelegationGrantJpaRepository.java`
+- `src/main/resources/db/migration/V20261006_011__hmr_086_delegation_contract.sql`
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/AuthorizationDelegationGrantIntegrityMigrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/AuthorizationDelegationGrantSemanticRemediationTest.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+#### HMR-086 — identity.AuthorizationDelegationGrant
+
+- Source review: `HMSR-101`
+- Exact commit: `fix(identity): remediate semantic review AuthorizationDelegationGrant`
+- Status: **Completed — Batch 5; final CI pending**
+- SCC: —
+- Recorded upstream HMS dependencies: identity.Permission, identity.Role, identity.User
+- HMSR correction count: 4
+- Additive Flyway: `src/main/resources/db/migration/V20261006_011__hmr_086_delegation_contract.sql`
+- Owner-contract prerequisite: No cross-module owner-contract prerequisite recorded by this HMSR correction.
+- Exact write allowlist:
+  - `docs/data definition/Identity.md`
+  - `docs/roadmap/identity.md`
+  - `docs/roadmap/model-semantic-remediation.md`
+  - `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationDelegationGrantRepositoryPort.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/domain/model/AuthorizationDelegationGrant.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaAuthorizationDelegationGrantRepositoryAdapter.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/AuthorizationDelegationGrantJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/mapper/IdentityPersistenceMapper.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/AuthorizationDelegationGrantJpaRepository.java`
+  - `src/main/resources/db/migration/V20261006_011__hmr_086_delegation_contract.sql`
+  - `src/test/java/dz/sh/hidra/modules/identity/semantic/AuthorizationDelegationGrantSemanticRemediationTest.java`
+- Exact validation:
+  - `./mvnw -q -DskipTests compile`
+  - `./mvnw -q -Dtest=AuthorizationDelegationGrantSemanticRemediationTest test`
+  - `./mvnw -q test`
+  - `./mvnw -q clean verify`
+- HMSR obligations:
+  1. **Add the DDD-required delegation `reason` to the canonical target model and persistence/application contracts.**
+  2. **Make `validTo` mandatory for delegation grants** while retaining `validFrom <= validTo`.
+  3. **Reconcile the unsupported `SUSPENDED` delegation status** against the governing Identity DDD; do not rely on it without an explicit contract.
+  4. **Fail closed for supplied optional `roleId`/`permissionId` references** through Identity-owned application validation and appropriate same-module persistence integrity, without inventing an XOR/at-least-one rule absent from the DDD.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/AuthorizationDelegationGrantIntegrityMigrationTest.java` — exact-head oracle suite 2 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/AuthorizationDelegationGrantSemanticRemediationTest.java` — exact-head oracle suite 2 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `dcdd1c0229390a6cc4b6c20e008f889d713f6767` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [doc/model-remediation/RECONCILIATION.md:121](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L121)
+- [doc/model-remediation/RECONCILIATION.md:13733](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L13733)
+- [doc/roadmap/history/ULTIMATE_ROADMAP_HISTORY.md:15473](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/history/ULTIMATE_ROADMAP_HISTORY.md#L15473)
+- [doc/testing/REQUIREMENTS_TRACEABILITY.md:120](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/testing/REQUIREMENTS_TRACEABILITY.md#L120)
+- [docs/data definition/Identity.md:1423](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/data definition/Identity.md#L1423)
+- [docs/roadmap/model-semantic-remediation.md:257](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-remediation.md#L257)
+- [docs/roadmap/model-semantic-remediation.md:4488](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-remediation.md#L4488)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Retained completed semantic remediation; legacy Planned/Blocked text is superseded by canonical reconciliation and current regression evidence. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/model-semantic-remediation.md:257 | HMR-086 | HMSR-101 | identity | AuthorizationDelegationGrant | — | identity.Permission, identity.Role, identity.User | fix(identity): remediate semantic review AuthorizationDelegationGrant | Completed — Batch 5; final CI pending
+doc/model-remediation/RECONCILIATION.md:121 | HMR-086 | HMSR-101 | identity.AuthorizationDelegationGrant | COMPLETED — HPR-P2-008 | Required nonblank delegation reason and validTo carried through domain/JPA/mapper; DelegationStatus narrowed to ACTIVE/REVOKED/EXPIRED; optional Role and Permission validated with nullable same-module FKs; no XOR rule; V20261006_011 fails closed on legacy evidence; focused tests added; final CI #604 passed.
+doc/model-remediation/RECONCILIATION.md:13733 | HMR-086 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization
+doc/testing/REQUIREMENTS_TRACEABILITY.md:120 | HMR-086 | HMSR-101 | [identity.AuthorizationDelegationGrant](../domain/SEMANTIC_DECISIONS.md#identity-authorizationdelegationgrant) | [AuthorizationDelegationGrantSemanticRemediationTest](../../src/test/java/dz/sh/hidra/modules/identity/semantic/AuthorizationDelegationGrantSemanticRemediationTest.java) | [V20261006_011__hmr_086_delegation_contract](../../src/main/resources/db/migration/V20261006_011__hmr_086_delegation_contract.sql) | E1
+doc/roadmap/history/ULTIMATE_ROADMAP_HISTORY.md:15473 | HMR-086 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization
+~~~~~~~~
+
+<a id="hapi-282"></a>
+## HAPI-282 — remediate semantic review UserPermissionGrant
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HMR-088
+
+Priority: P2
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+remediate semantic review UserPermissionGrant
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `doc/model-remediation/RECONCILIATION.md`
+- `docs/data definition/Identity.md`
+- `docs/roadmap/identity.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/UserPermissionGrantRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/Permission.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserPermissionGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/GrantStatus.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaUserPermissionGrantRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/UserPermissionGrantJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/mapper/IdentityPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/UserPermissionGrantJpaRepository.java`
+- `src/main/resources/db/migration/V20261006_013__hmr_088_direct_permission_bounds.sql`
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/UserPermissionGrantIntegrityMigrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/UserPermissionGrantSemanticRemediationTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Existing gate retained; no reopening/selection; future scope needs owner authorization
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/identity/domain/model/Permission.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserPermissionGrant.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/value/GrantStatus.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/out/UserPermissionGrantRepositoryPort.java`.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaUserPermissionGrantRepositoryAdapter.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/UserPermissionGrantJpaEntity.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/mapper/IdentityPersistenceMapper.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/UserPermissionGrantJpaRepository.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `doc/model-remediation/RECONCILIATION.md`
+- `docs/data definition/Identity.md`
+- `docs/roadmap/identity.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/UserPermissionGrantRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/Permission.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserPermissionGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/GrantStatus.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaUserPermissionGrantRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/UserPermissionGrantJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/mapper/IdentityPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/UserPermissionGrantJpaRepository.java`
+- `src/main/resources/db/migration/V20261006_013__hmr_088_direct_permission_bounds.sql`
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/UserPermissionGrantIntegrityMigrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/UserPermissionGrantSemanticRemediationTest.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+#### HMR-088 — identity.UserPermissionGrant
+
+- Source review: `HMSR-105`
+- Exact commit: `fix(identity): remediate semantic review UserPermissionGrant`
+- Status: **Completed — Batch 5; final CI pending**
+- SCC: —
+- Recorded upstream HMS dependencies: identity.Permission, identity.User
+- HMSR correction count: 3
+- Additive Flyway: not pre-authorized by HMR-002
+- Owner-contract prerequisite: No cross-module owner-contract prerequisite recorded by this HMSR correction.
+- Exact write allowlist:
+  - `docs/data definition/Identity.md`
+  - `docs/roadmap/identity.md`
+  - `docs/roadmap/model-semantic-remediation.md`
+  - `src/main/java/dz/sh/hidra/modules/identity/application/port/out/UserPermissionGrantRepositoryPort.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserPermissionGrant.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaUserPermissionGrantRepositoryAdapter.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/UserPermissionGrantJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/mapper/IdentityPersistenceMapper.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/UserPermissionGrantJpaRepository.java`
+  - `src/test/java/dz/sh/hidra/modules/identity/semantic/UserPermissionGrantSemanticRemediationTest.java`
+- Exact validation:
+  - `./mvnw -q -DskipTests compile`
+  - `./mvnw -q -Dtest=UserPermissionGrantSemanticRemediationTest test`
+  - `./mvnw -q test`
+  - `./mvnw -q clean verify`
+- HMSR obligations:
+  1. **Enforce nonblank `grantReason` before persistence**, matching the DDD-required reason contract.
+  2. **Require a bounded `validTo` for direct UserPermissionGrant records**, including emergency/break-glass grants, while retaining `validFrom <= validTo`.
+  3. **Reconcile the unsupported `SUSPENDED` state for UserPermissionGrant** against the governing Identity DDD; do not rely on that state without an explicit contract.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/UserPermissionGrantIntegrityMigrationTest.java` — exact-head oracle suite 2 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/UserPermissionGrantSemanticRemediationTest.java` — exact-head oracle suite 2 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `7a7ec4701de19ebb56a49a80c2bce2689bed022d` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [doc/model-remediation/RECONCILIATION.md:123](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L123)
+- [doc/model-remediation/RECONCILIATION.md:13735](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L13735)
+- [doc/roadmap/history/ULTIMATE_ROADMAP_HISTORY.md:15475](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/history/ULTIMATE_ROADMAP_HISTORY.md#L15475)
+- [doc/testing/REQUIREMENTS_TRACEABILITY.md:122](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/testing/REQUIREMENTS_TRACEABILITY.md#L122)
+- [docs/data definition/Identity.md:1431](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/data definition/Identity.md#L1431)
+- [docs/roadmap/model-semantic-remediation.md:259](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-remediation.md#L259)
+- [docs/roadmap/model-semantic-remediation.md:4553](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-remediation.md#L4553)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Retained completed semantic remediation; legacy Planned/Blocked text is superseded by canonical reconciliation and current regression evidence. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/model-semantic-remediation.md:259 | HMR-088 | HMSR-105 | identity | UserPermissionGrant | — | identity.Permission, identity.User | fix(identity): remediate semantic review UserPermissionGrant | Completed — Batch 5; final CI pending
+doc/model-remediation/RECONCILIATION.md:123 | HMR-088 | HMSR-105 | identity.UserPermissionGrant | COMPLETED — HPR-P2-008 | Domain and PostgreSQL enforce nonblank grantReason, bounded validTo and ACTIVE/REVOKED/EXPIRED for direct permission grants including emergency records; shared GrantStatus and optional role-grant reason/end remain unchanged; V20261006_013 and focused tests added; final CI #604 passed.
+doc/model-remediation/RECONCILIATION.md:13735 | HMR-088 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization
+doc/testing/REQUIREMENTS_TRACEABILITY.md:122 | HMR-088 | HMSR-105 | [identity.UserPermissionGrant](../domain/SEMANTIC_DECISIONS.md#identity-userpermissiongrant) | [UserPermissionGrantSemanticRemediationTest](../../src/test/java/dz/sh/hidra/modules/identity/semantic/UserPermissionGrantSemanticRemediationTest.java) | [V20261006_013__hmr_088_direct_permission_bounds](../../src/main/resources/db/migration/V20261006_013__hmr_088_direct_permission_bounds.sql) | E1
+doc/roadmap/history/ULTIMATE_ROADMAP_HISTORY.md:15475 | HMR-088 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization
+~~~~~~~~
+
+<a id="hapi-283"></a>
+## HAPI-283 — remediate semantic review UserRoleGrant
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HMR-089
+
+Priority: P2
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+remediate semantic review UserRoleGrant
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `doc/model-remediation/RECONCILIATION.md`
+- `docs/data definition/Identity.md`
+- `docs/roadmap/identity.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/UserRoleGrantRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserRoleGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaUserRoleGrantRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/UserRoleGrantJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/mapper/IdentityPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/UserRoleGrantJpaRepository.java`
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/UserRoleGrantSemanticRemediationTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Existing gate retained; no reopening/selection; future scope needs owner authorization
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserRoleGrant.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/out/UserRoleGrantRepositoryPort.java`.
+- Application services: `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationService.java`.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaUserRoleGrantRepositoryAdapter.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/UserRoleGrantJpaEntity.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/mapper/IdentityPersistenceMapper.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/UserRoleGrantJpaRepository.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `doc/model-remediation/RECONCILIATION.md`
+- `docs/data definition/Identity.md`
+- `docs/roadmap/identity.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/UserRoleGrantRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserRoleGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaUserRoleGrantRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/UserRoleGrantJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/mapper/IdentityPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/UserRoleGrantJpaRepository.java`
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/UserRoleGrantSemanticRemediationTest.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+#### HMR-089 — identity.UserRoleGrant
+
+- Source review: `HMSR-106`
+- Exact commit: `fix(identity): remediate semantic review UserRoleGrant`
+- Status: **Completed — Batch 5; final CI pending**
+- SCC: —
+- Recorded upstream HMS dependencies: identity.Role, identity.User
+- HMSR correction count: 1
+- Additive Flyway: not pre-authorized by HMR-002
+- Owner-contract prerequisite: No cross-module owner-contract prerequisite recorded by this HMSR correction.
+- Exact write allowlist:
+  - `docs/data definition/Identity.md`
+  - `docs/roadmap/identity.md`
+  - `docs/roadmap/model-semantic-remediation.md`
+  - `src/main/java/dz/sh/hidra/modules/identity/application/port/out/UserRoleGrantRepositoryPort.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserRoleGrant.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaUserRoleGrantRepositoryAdapter.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/UserRoleGrantJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/mapper/IdentityPersistenceMapper.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/UserRoleGrantJpaRepository.java`
+  - `src/test/java/dz/sh/hidra/modules/identity/semantic/UserRoleGrantSemanticRemediationTest.java`
+- Exact validation:
+  - `./mvnw -q -DskipTests compile`
+  - `./mvnw -q -Dtest=UserRoleGrantSemanticRemediationTest test`
+  - `./mvnw -q test`
+  - `./mvnw -q clean verify`
+- HMSR obligations:
+  1. **Enforce the DDD active-user grant eligibility rule in the authoritative UserRoleGrant creation flow.** Ordinary role grants must require an ACTIVE User; any emergency/break-glass exception must be an explicitly controlled flow supported by repository policy rather than an implicit bypass.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/UserRoleGrantSemanticRemediationTest.java` — exact-head oracle suite 2 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `2cee25a5c333dfe8d63f949c002746ac1fe2025e` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [doc/model-remediation/RECONCILIATION.md:124](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L124)
+- [doc/model-remediation/RECONCILIATION.md:13736](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L13736)
+- [doc/roadmap/history/ULTIMATE_ROADMAP_HISTORY.md:15476](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/history/ULTIMATE_ROADMAP_HISTORY.md#L15476)
+- [doc/testing/REQUIREMENTS_TRACEABILITY.md:123](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/testing/REQUIREMENTS_TRACEABILITY.md#L123)
+- [docs/data definition/Identity.md:1435](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/data definition/Identity.md#L1435)
+- [docs/roadmap/model-semantic-remediation.md:260](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-remediation.md#L260)
+- [docs/roadmap/model-semantic-remediation.md:4584](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-remediation.md#L4584)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Retained completed semantic remediation; legacy Planned/Blocked text is superseded by canonical reconciliation and current regression evidence. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/model-semantic-remediation.md:260 | HMR-089 | HMSR-106 | identity | UserRoleGrant | — | identity.Role, identity.User | fix(identity): remediate semantic review UserRoleGrant | Completed — Batch 5; final CI pending
+doc/model-remediation/RECONCILIATION.md:124 | HMR-089 | HMSR-106 | identity.UserRoleGrant | COMPLETED — HPR-P2-008 | Authoritative ordinary role-grant application flow requires ACTIVE User before Role lookup/save; inactive states reject without implicit emergency bypass; optional reason/end and shared SUSPENDED role status preserved; focused tests added; no migration required; final CI #604 passed.
+doc/model-remediation/RECONCILIATION.md:13736 | HMR-089 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization
+doc/testing/REQUIREMENTS_TRACEABILITY.md:123 | HMR-089 | HMSR-106 | [identity.UserRoleGrant](../domain/SEMANTIC_DECISIONS.md#identity-userrolegrant) | [UserRoleGrantSemanticRemediationTest](../../src/test/java/dz/sh/hidra/modules/identity/semantic/UserRoleGrantSemanticRemediationTest.java) | No dedicated subject migration in current chain; see decision | E1
+doc/roadmap/history/ULTIMATE_ROADMAP_HISTORY.md:15476 | HMR-089 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization
+~~~~~~~~
+
+<a id="hapi-317"></a>
+## HAPI-317 — review identity Role
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HMSR-007
+
+Priority: P2
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+review identity Role
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `docs/roadmap/model-semantic-review.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RoleRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/AuthorizationDelegationGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/ExternalRoleMapping.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/GroupRoleGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/RolePermissionGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserRoleGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/RoleStatus.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/RoleJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/party/domain/model/PartyRoleAssignment.java`
+- `src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/PartyRoleJpaEntity.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. It is a documentation/review/preflight outcome; broader application functionality remains separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/identity/domain/model/AuthorizationDelegationGrant.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/model/ExternalRoleMapping.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/model/GroupRoleGrant.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/model/RolePermissionGrant.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RoleRepositoryPort.java`.
+- Application services: `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationService.java`.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/RoleJpaRepository.java`, `src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/PartyRoleJpaEntity.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `docs/roadmap/model-semantic-review.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RoleRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/AuthorizationDelegationGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/ExternalRoleMapping.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/GroupRoleGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/RolePermissionGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserRoleGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/RoleStatus.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/RoleJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/party/domain/model/PartyRoleAssignment.java`
+- `src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/PartyRoleJpaEntity.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+## 20. HMSR-007 — identity.Role review
+
+**Decision:** REVISE  
+**Review code:** HMSR-007  
+**Dependency level:** 0  
+**Bounded context:** identity  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct dependents:** 5 — `identity.ExternalRoleMapping`, `identity.GroupRoleGrant`, `identity.RolePermissionGrant`, `identity.AuthorizationDelegationGrant`, `identity.UserRoleGrant`  
+**Transitive dependents:** 5  
+**Unresolved/non-subject references:** 0
+
+### 20.1 Semantic role and ordering rationale
+
+`Role` is the Identity-owned reusable authorization package that groups permissions for assignment to users, groups, external mappings and delegation paths. It is a security/authorization concept, not an Organization position/responsibility and not a Party business role.
+
+It remains Level 0 because it has no upstream HMS subject-model dependency. Its five confirmed subject dependents all consume the role identity through explicit Identity-owned grant/mapping relationships.
+
+The Identity boundary remains:
+
+- Identity owns users, security groups, roles, permissions, grants, provider mappings and authorization decisions;
+- Organization owns employees, positions, units and reporting structures;
+- Party owns external counterparties and **PartyRole** business classifications;
+- Workflow may approve sensitive grants but does not own Role;
+- Audit records evidence but does not own Role truth.
+
+### 20.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable Identity Role identifier and persistence primary key. |
+| `code` | `String` | Mandatory | Stable unique role business/security code. |
+| `nameAr` | `String` | Optional | Arabic display label. |
+| `nameFr` | `String` | Optional | French display label. |
+| `nameEn` | `String` | Optional | English display label. |
+| `description` | `String` | Optional | Human-readable role purpose. |
+| `roleType` | `RoleType` | Mandatory | Identity role classification: `BUSINESS`, `SYSTEM`, `ADMIN`, `EXTERNAL_MAPPED`, or `BREAK_GLASS`. |
+| `status` | `RoleStatus` | Mandatory | Role lifecycle: `ACTIVE`, `DISABLED`, or `DEPRECATED`. |
+| `createdAt` | `Instant` | Mandatory in persistence | Creation audit timestamp. |
+| `updatedAt` | `Instant` | Mandatory in persistence | Last-update audit timestamp. |
+
+The domain constructor already rejects blank `id` and `code`, rejects null `roleType` and `status`, trims labels/description, and converts blank optional text to `null`.
+
+The current Identity DDD explicitly marks all three localized names optional. HMSR-007 therefore does not invent a mandatory French-name rule for Role.
+
+### 20.3 Role type and lifecycle semantics
+
+`RoleType` is a stable Identity authorization classification and is correctly modeled as an enum in the current target:
+
+- `BUSINESS` — reusable business authorization role;
+- `SYSTEM` — platform/system role;
+- `ADMIN` — administrative authority package;
+- `EXTERNAL_MAPPED` — internally governed role intended for explicit external-claim mapping;
+- `BREAK_GLASS` — emergency/high-governance role classification.
+
+`RoleStatus` separates lifecycle availability from role type. Current administrator security evidence explicitly requires the persisted `HIDRA_ADMIN` role to be `ACTIVE` and of type `ADMIN` before it can enable an administrator grant.
+
+HMSR-007 found no repository evidence requiring a different enum/catalog representation for these role/status values.
+
+### 20.4 Confirmed downstream dependency evidence
+
+The corrected subject graph retains five direct Role dependents:
+
+- `ExternalRoleMapping.roleId -> identity.Role`;
+- `GroupRoleGrant.roleId -> identity.Role`;
+- `RolePermissionGrant.roleId -> identity.Role`;
+- `AuthorizationDelegationGrant.roleId -> identity.Role` when role-based delegation is used;
+- `UserRoleGrant.roleId -> identity.Role`.
+
+These are Identity-owned authorization relationships and remain valid subject edges.
+
+### 20.5 Late graph correction — Party business role is not Identity Role
+
+HMSR-007 found a false cross-module edge that survived HMS-004:
+
+```text
+party.PartyRoleAssignment.roleId -> identity.Role
+```
+
+Stronger repository evidence disproves it:
+
+- the Party DDD explicitly owns `PartyRole` and `PartyRoleAssignment`;
+- the Party DDD explicitly says Identity `Role` remains in Identity and Party is not Identity;
+- `PartyRoleJpaEntity` persists the Party-owned role catalog in `hidra_party_role`;
+- HRA-111 installs `fk_hra111_party_023` from `hidra_party_role_assignment.role_id` to `hidra_party_role(id)`;
+- the Party assignment application service accepts the Party role ID without any Identity contract/repository dependency.
+
+Therefore `PartyRoleAssignment.roleId` is a **Party-owned value/catalog dependency**, not a cross-module dependency on `identity.Role`.
+
+This HMSR task corrects the roadmap classification, removes that validated-edge row, updates `HMSR-049` to depend only on `party.Party`, and updates Role's direct/transitive dependent counts from 6 to 5.
+
+The fixed edge does not change the frozen HMSR task codes or dependency levels: `identity.Role` remains Level 0 and `PartyRoleAssignment` remains Level 1 because it still depends on `party.Party`. HMS-006 must nevertheless recompute/reconcile final graph totals; the current reconciled count is 180 subject edges, with 122 same-module and 58 cross-module edges.
+
+### 20.6 Persistence and application consistency
+
+The live Role domain and JPA models agree on all 10 declared components.
+
+The base Identity migration makes `id`, `code`, `role_type`, `status`, `created_at`, and `updated_at` non-null; localized names and description are nullable.
+
+`RoleRepositoryPort` exposes:
+
+```text
+save
+findById
+findByCode
+```
+
+and the Spring Data repository implements code lookup through `findFirstByCode`.
+
+The controlled local-administrator bootstrap uses `findByCode("HIDRA_ADMIN")` before creating the bootstrap administrator role and refuses an existing non-ACTIVE administrator role.
+
+However, the general `IdentityAdministrationCommandApplicationService.createRole` path constructs and saves a new Role without checking `findByCode`.
+
+### 20.7 Required revision
+
+The Role model is otherwise semantically coherent, but one active Identity DDD invariant is not consistently enforced:
+
+1. **Unique Role code:** the Identity DDD explicitly defines `Role.code` as unique and recommends `uk_identity_role_code`. The live Flyway schema has only a non-unique index `ix_hidra_identity_role_code`; no later unique constraint was found. The general create-role application path does not call `RoleRepositoryPort.findByCode` before save. `RoleJpaRepository.findFirstByCode` also tolerates duplicate rows rather than making duplicates impossible.
+
+Global uniqueness belongs at the application/database boundary; it must not be implemented as a repository lookup inside the domain record constructor.
+
+HMSR-007 does not change production Java, JPA, Flyway, application/API contracts, tests, or database data.
+
+### 20.8 Authorization and operational interpretation
+
+For Hidra/SONATRACH TRC, Identity Role represents a governed authorization package such as an operational reviewer, administrator, telemetry approver or emergency-access role. It must remain distinct from:
+
+- an Organization position such as department head or dispatcher;
+- a Party business role such as supplier, manufacturer, owner or shipper;
+- a Workflow assignment rule;
+- an operational responsibility/scope record.
+
+Authorization must be based on role/permission/grant semantics and current scope/status validity rather than hard-coded role-name checks. External provider claims must map explicitly into internal Identity roles; they do not become authoritative roles by themselves.
+
+### 20.9 Review conclusion
+
+**REVISE.** `identity.Role` has the correct bounded-context ownership, fields, type/status vocabulary and five true subject dependents. HMSR-007 also removes one false Party-to-Identity role edge. The remaining blocker to APPROVED is the repository-defined unique Role-code invariant, which is not enforced consistently by the live create path and database schema.
+
+HMS reconciliation must retain the Role-code uniqueness correction and the late graph correction until an explicitly authorized Identity implementation task resolves the uniqueness invariant and HMS-006 recomputes the final dependency totals.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+No new API is part of this bounded documentation/historical outcome. Existing owner operations are listed in the runtime contract inventory below; no proposed endpoint is relabeled as implemented.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `74f8d6da16b3627f0ec681cb8f68a1a0c25c7902` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [doc/domain/SEMANTIC_DECISIONS.md:59](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/domain/SEMANTIC_DECISIONS.md#L59)
+- [docs/roadmap/model-semantic-review.md:202](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-review.md#L202)
+- [docs/roadmap/model-semantic-review.md:3787](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-review.md#L3787)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Completed semantic review is documentation work; APPROVED/REVISE is the historical model verdict, not application completeness. Current implementation/planning states above are independent. Doc/preflight completion is not completion of the associated application workflow.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/model-semantic-review.md:202 | HMSR-007 | 0 | identity | Role | — | — | 5 | 5 | 0 | REVISE | Completed | docs(model-review): review identity Role
+doc/domain/SEMANTIC_DECISIONS.md:59 | HMSR-007 | [identity.Role](#identity-role) | REVISE | HMR-007
+~~~~~~~~
+
+<a id="hapi-321"></a>
+## HAPI-321 — review identity Permission
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HMSR-011
+
+Priority: P2
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+review identity Permission
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `docs/roadmap/model-semantic-review.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/PermissionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/AuthorizationDelegationGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/Permission.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/RolePermissionGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserPermissionGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/PermissionStatus.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/RoleStatus.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/PermissionJpaEntity.java`
+- `src/main/java/dz/sh/hidra/platform/permissions/HidraRoutePermissionCatalogService.java`
+- `src/main/java/dz/sh/hidra/platform/permissions/HidraRoutePermissionNaming.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. It is a documentation/review/preflight outcome; broader application functionality remains separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/identity/domain/model/AuthorizationDelegationGrant.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/model/Permission.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/model/RolePermissionGrant.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserPermissionGrant.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/out/PermissionRepositoryPort.java`.
+- Application services: `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationService.java`.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/PermissionJpaEntity.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `docs/roadmap/model-semantic-review.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/PermissionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/AuthorizationDelegationGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/Permission.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/RolePermissionGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserPermissionGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/PermissionStatus.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/RoleStatus.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/PermissionJpaEntity.java`
+- `src/main/java/dz/sh/hidra/platform/permissions/HidraRoutePermissionCatalogService.java`
+- `src/main/java/dz/sh/hidra/platform/permissions/HidraRoutePermissionNaming.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+## 24. HMSR-011 — identity.Permission review
+
+**Decision:** REVISE  
+**Review code:** HMSR-011  
+**Dependency level:** 0  
+**Bounded context:** identity  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct dependents:** 3 — `identity.RolePermissionGrant`, `identity.AuthorizationDelegationGrant`, `identity.UserPermissionGrant`  
+**Transitive dependents:** 3  
+**Unresolved/non-subject references:** 0
+
+### 24.1 Semantic role and ordering rationale
+
+`Permission` is the Identity-owned atomic business authorization capability. Roles, direct user grants, delegation and policy evaluation may reference a Permission, but no other bounded context owns or redefines the permission truth.
+
+It is Level 0 because it has no upstream HMS subject-model dependency. Its three direct HMS dependents consume the permission identity through Identity-owned grant/delegation models.
+
+The platform route-security layer derives required permission codes, but that technical layer does not own Permission business meaning. Identity remains the authority for persisted permission lifecycle and effective grants.
+
+### 24.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable Permission identifier and persistence primary key. |
+| `code` | `String` | Mandatory | Stable unique authorization code. Current live Identity architecture standard is lower-case `<context>:<resource>:<action>`. |
+| `nameAr` | `String` | Optional | Arabic display label. |
+| `nameFr` | `String` | Optional | French display label. |
+| `nameEn` | `String` | Optional | English display label. |
+| `description` | `String` | Optional | Human-readable explanation of the capability. |
+| `permissionDomain` | `String` | Mandatory | Identity permission context/module token, aligned with the first code component. |
+| `resourceType` | `String` | Current live create-path mandatory | Resource/business capability token aligned with the second code component. |
+| `action` | `String` | Mandatory | Action token aligned with the third code component. |
+| `sensitive` | `boolean` | Mandatory persisted state | Marks capabilities requiring stronger grant/approval governance. |
+| `status` | `PermissionStatus` | Mandatory | Permission lifecycle: `ACTIVE`, `DISABLED`, or `DEPRECATED`. |
+| `createdAt` | `Instant` | Mandatory in persistence | Creation timestamp. |
+| `updatedAt` | `Instant` | Mandatory in persistence | Last-update timestamp. |
+
+The current domain constructor rejects blank `id` and `code` and null `status`, trims textual values and normalizes blank optional text to `null`.
+
+### 24.3 Canonical permission-code standard
+
+The live Identity roadmap defines the current permission code contract as:
+
+```text
+<context>:<resource>:<action>
+```
+
+with exactly three non-empty lower-case parts and hyphens allowed inside multi-word parts.
+
+This convention is independently confirmed by:
+
+- `IdentityAdministrationCommandApplicationService`, which validates exactly three lower-case colon-separated parts;
+- `HidraRoutePermissionNaming`, which derives `<module>:<resource>:<action>` for backend route enforcement;
+- `HidraRoutePermissionCatalogService`, which publishes `permissionFormat = <module>:<resource>:<action>`;
+- `V20260929_004__provision_organization_scope_permissions.sql`, which provisions codes such as `organization:operational-scope:register`.
+
+The older Identity data-definition examples using uppercase dot notation such as `TOPOLOGY.FACILITY.CREATE`, plus two-part examples such as `ALARM.ACKNOWLEDGE` and `INCIDENT.OPEN`, are inconsistent with the current live Identity roadmap/runtime standard. Data provisioning must not use those examples as the canonical format without reconciliation.
+
+### 24.4 `resourceType` semantic conflict
+
+The current live create path requires `permissionDomain`, `resourceType`, and `action`, consistent with the mandatory three-part permission-code policy.
+
+However, `docs/data definition/Identity.md` still marks `resourceType` optional and illustrates permissions with only two semantic parts. JPA/schema also currently allow `resource_type` to be null.
+
+This is a target-model documentation/persistence contradiction. HMSR-011 does not guess whether future permissions may intentionally be resource-less. The final baseline must explicitly choose one rule and align the Identity DDD, application command validation, route naming, schema nullability and provisioning data.
+
+### 24.5 Persistence and uniqueness consistency
+
+The live domain and JPA models agree on all 13 declared components.
+
+The base Identity migration makes `id`, `code`, `permission_domain`, `action`, `sensitive`, `status`, `created_at`, and `updated_at` non-null; labels, description and `resource_type` remain nullable.
+
+The Identity DDD explicitly requires `Permission.code` uniqueness and recommends `uk_identity_permission_code`. The live schema currently has only non-unique `ix_hidra_identity_permission_code`.
+
+`PermissionRepositoryPort` exposes only `save` and `findById`, and the Spring Data repository exposes no code lookup/uniqueness method. The current create path therefore has no demonstrated application-level duplicate-code guard.
+
+### 24.6 Permission lifecycle and effective authorization
+
+`PermissionStatus` is intentionally distinct from `RoleStatus` even though both currently expose `ACTIVE`, `DISABLED`, and `DEPRECATED`. The repository's duplicate-enum review explicitly keeps them separate because permission and role lifecycle semantics may evolve independently.
+
+The live effective-permission query currently does **not** apply `Permission.status`:
+
+- it loads every `PermissionJpaEntity` row into an ID-to-code map;
+- it filters grant rows by grant status/time only;
+- active `UserPermissionGrant` and `RolePermissionGrant` rows can therefore contribute the code of a `DISABLED` or `DEPRECATED` Permission;
+- grant creation's `requirePermission` verifies only that the permission ID exists, not that the Permission is ACTIVE.
+
+This makes the stored Permission lifecycle ineffective at the current authorization-resolution boundary. Because Hidra-issued JWTs also carry the resolved permission codes as scope claims, the final correction must define how permission disable/deprecation interacts with already-issued access tokens and token TTL/revalidation policy; HMSR-011 does not invent an immediate-revocation design.
+
+### 24.7 Domain/application required-field consistency
+
+`permissionDomain` and `action` are required by the active Identity DDD and are non-null in persistence. The current administration create path enforces both before constructing the model, but the domain constructor itself accepts blank/null values and normalizes them to `null`.
+
+That is not necessarily a requirement to move repository/application validation into the record constructor. The final correction must simply establish one deliberate authoritative enforcement boundary so invalid Permission state cannot be created through alternate domain callers.
+
+`createdAt` and `updatedAt` are likewise persistence-required and are supplied by the current administration service but not guarded by the record constructor.
+
+### 24.8 Sensitive-permission interpretation
+
+`sensitive = true` classifies a capability as requiring stronger governance when it is granted or exercised. It does not itself grant access and must not be treated as a replacement for Workflow approval, scoped grants, expiry, explicit deny, or Audit evidence.
+
+For SONATRACH/TRC operations, examples may include high-impact capabilities such as approving trusted telemetry, changing operational plans, acknowledging critical alarms, authorizing integrity actions, or administering security. Permission identity remains an authorization capability, not an Organization responsibility, Workflow task, or operational asset.
+
+### 24.9 Required revisions
+
+The target baseline cannot be APPROVED until these evidence-backed issues are reconciled:
+
+1. **Unique permission code:** enforce the DDD-defined global uniqueness of `Permission.code` at the application/database boundary.
+2. **Permission lifecycle enforcement:** effective authorization must not continue treating `DISABLED` or `DEPRECATED` permissions as active merely because their grants remain active.
+3. **Grant-time lifecycle validation:** define whether new grants/delegations may target non-ACTIVE permissions and enforce that rule consistently.
+4. **Permission-code documentation reconciliation:** update stale uppercase/dot and two-part Identity DDD examples to the live three-part lower-case colon standard, or explicitly change the live standard through an authorized decision.
+5. **`resourceType` contract reconciliation:** resolve the current DDD/schema optionality versus the live administration/route naming requirement for a non-empty resource component.
+6. **Required domain fields:** retain an explicit enforcement boundary for `permissionDomain`, `action`, `createdAt`, and `updatedAt` so alternate callers cannot persist semantically invalid Permission state.
+7. **Issued-token lifecycle policy:** define the expected effect of disabling/deprecating a permission on already-issued Hidra JWT scope claims; any immediate-revocation requirement must be implemented deliberately rather than assumed.
+
+HMSR-011 does not change production Java, JPA, Flyway, security runtime, API/application contracts, tests, permission rows, grants or token configuration.
+
+### 24.10 Review conclusion
+
+**REVISE.** `identity.Permission` is the correct foundational Identity authorization capability and its three subject dependency directions are sound. The current three-part lower-case permission naming standard is well supported by live roadmap/runtime/provisioning evidence.
+
+The target baseline cannot mark Permission APPROVED while code uniqueness is unenforced, Permission lifecycle status is ignored by effective authorization, and the DDD/schema remain inconsistent with the current three-part/resource-required permission standard. HMS reconciliation must retain these obligations until an explicitly authorized Identity correction task resolves them or the target semantics are explicitly changed.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+No new API is part of this bounded documentation/historical outcome. Existing owner operations are listed in the runtime contract inventory below; no proposed endpoint is relabeled as implemented.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `216b67e236a362cc78ef750cc7ed04f8d0f5f155` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [doc/domain/SEMANTIC_DECISIONS.md:63](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/domain/SEMANTIC_DECISIONS.md#L63)
+- [docs/roadmap/model-semantic-review.md:206](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-review.md#L206)
+- [docs/roadmap/model-semantic-review.md:4278](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-review.md#L4278)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Completed semantic review is documentation work; APPROVED/REVISE is the historical model verdict, not application completeness. Current implementation/planning states above are independent. Doc/preflight completion is not completion of the associated application workflow.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/model-semantic-review.md:206 | HMSR-011 | 0 | identity | Permission | — | — | 3 | 3 | 0 | REVISE | Completed | docs(model-review): review identity Permission
+doc/domain/SEMANTIC_DECISIONS.md:63 | HMSR-011 | [identity.Permission](#identity-permission) | REVISE | HMR-011
+~~~~~~~~
+
+<a id="hapi-356"></a>
+## HAPI-356 — review identity GroupRoleGrant
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HMSR-046
+
+Priority: P2
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+review identity GroupRoleGrant
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `docs/roadmap/model-semantic-review.md`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/GroupRoleGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/AuthorizationScope.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/GrantStatus.java`
+- `src/main/java/dz/sh/hidra/modules/organization/domain/model/OrganizationUnit.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/domain/model/WorkflowInstance.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. It is a documentation/review/preflight outcome; broader application functionality remains separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/identity/domain/model/GroupRoleGrant.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/value/AuthorizationScope.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/value/GrantStatus.java`, `src/main/java/dz/sh/hidra/modules/organization/domain/model/OrganizationUnit.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `docs/roadmap/model-semantic-review.md`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/GroupRoleGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/AuthorizationScope.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/GrantStatus.java`
+- `src/main/java/dz/sh/hidra/modules/organization/domain/model/OrganizationUnit.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/domain/model/WorkflowInstance.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+## 59. HMSR-046 — identity.GroupRoleGrant review
+
+**Decision:** APPROVED  
+**Review code:** HMSR-046  
+**Dependency level:** 1  
+**Bounded context:** identity  
+**Confirmed upstream subject dependencies:** `identity.Role` through mandatory `roleId`  
+**Confirmed same-module non-HMS dependency:** retained `identity.Group` through mandatory `groupId`  
+**Unresolved/non-subject references:** `approvedByWorkflowId` is resolved as an optional cross-module Workflow approval reference; scoped targets remain neutral/polymorphic
+
+### 59.1 Semantic role and ordering rationale
+
+`GroupRoleGrant` assigns one Identity Role to one Identity security Group, optionally within a neutral authorization scope and effective interval.
+
+Users inherit role permissions through group membership. A security Group is not an OrganizationUnit, and scoped references do not transfer Organization or Topology ownership into Identity.
+
+It is Level 1 because `roleId` references the already-reviewed HMS subject `Role`. `Group` is a retained Identity persistence/read model outside the 123 HMS subject set.
+
+### 59.2 Field semantics
+
+| Field | Type | Reviewed meaning |
+|---|---|---|
+| `id` | `String` | Mandatory stable grant identity. |
+| `groupId` | `String` | Mandatory same-module reference to Identity Group. |
+| `roleId` | `String` | Mandatory same-module reference to Identity Role. |
+| `scope` | `AuthorizationScope` | Optional neutral authorization scope, flattened in persistence. |
+| `grantReason` | `String` | Optional explanatory reason. |
+| `approvedByWorkflowId` | `String` | Optional cross-module Workflow approval reference. |
+| `validFrom` | `Instant` | Mandatory effective start. |
+| `validTo` | `Instant` | Optional effective end. |
+| `status` | `GrantStatus` | Mandatory grant lifecycle state. |
+| `createdAt` | `Instant` | Persistence-required creation timestamp. |
+
+The canonical constructor requires nonblank ID, Group ID and Role ID; requires non-null `validFrom` and status; and rejects `validTo < validFrom`.
+
+### 59.3 Group and Role reference integrity
+
+The final schema requires both `group_id` and `role_id`.
+
+HRA-111 installs and validates:
+
+```text
+group_id -> hidra_identity_group.id
+role_id  -> hidra_identity_role.id
+```
+
+Therefore both mandatory same-module references are fail-closed at persistence.
+
+HMSR-046 resolves `groupId` from the former generic/unresolved classification to the retained Identity Group model without adding a false HMS graph edge.
+
+### 59.4 Authorization scope boundary
+
+The domain uses `AuthorizationScope`; persistence flattens it to scope type/reference/snapshot columns through the Identity mapper.
+
+Scope targets remain neutral references. Organization units and Topology assets stay owned by their respective bounded contexts and must not receive cross-module database FKs from Identity.
+
+No concrete HMS graph edge is manufactured from the polymorphic scope.
+
+### 59.5 Workflow approval reference
+
+The Identity DDD explicitly defines `approvedByWorkflowId` as optional.
+
+HMSR-046 resolves it semantically to Workflow approval/WorkflowInstance identity, but no cross-module FK is appropriate.
+
+Current evidence does not state that every GroupRoleGrant requires approval, nor that any particular grant status requires a non-null workflow reference. No such rule is invented.
+
+### 59.6 Validity and lifecycle semantics
+
+The DDD requires `validFrom`, optional `validTo`, and grant status.
+
+The canonical constructor enforces the documented temporal invariant `validFrom <= validTo` when an end exists.
+
+The broader authorization evaluation rules require time-valid grants at decision time, which is compatible with this effective-dated representation.
+
+Current evidence does not define duplicate/overlap uniqueness, automatic expiration mutation, active-Group/active-Role creation eligibility, or a complete transition matrix. HMSR-046 does not invent those rules.
+
+### 59.7 Domain/JPA/Flyway alignment
+
+The domain model has 10 components; persistence flattens `AuthorizationScope` into three columns while preserving the same semantic content.
+
+Required business fields align:
+
+```text
+id
+groupId
+roleId
+validFrom
+status
+```
+
+and persistence requires `createdAt` as audit metadata.
+
+Both mandatory same-module references have validated FK protection and chronology is enforced in the domain.
+
+### 59.8 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, GroupRoleGrant supports enterprise RBAC by assigning internal Hidra roles to Identity security groups, including groups synchronized from enterprise IDM sources.
+
+This keeps authorization grouping separate from organizational hierarchy: membership in an Identity Group can confer role permissions without making that Group an OrganizationUnit or granting ownership of pipeline assets.
+
+Neutral scopes allow authorization to be constrained to operational areas while preserving bounded-context ownership.
+
+### 59.9 Review conclusion
+
+**APPROVED.** `GroupRoleGrant` has coherent Group/Role dependencies, validated same-module FK protection, correct effective-period ordering, optional Workflow approval reference, neutral scoped authorization semantics, and clean separation between Identity security groups and organizational/physical structures.
+
+No evidence-backed production correction obligation remains for HMSR-046.
+
+HMSR-046 does not modify production Java, JPA, Flyway, application/API contracts, tests, grants, Groups, Roles, Workflow records, or provisioned data.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+No new API is part of this bounded documentation/historical outcome. Existing owner operations are listed in the runtime contract inventory below; no proposed endpoint is relabeled as implemented.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `f9c879106c08b285b6966da565cbd989332c89c3` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [doc/domain/SEMANTIC_DECISIONS.md:98](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/domain/SEMANTIC_DECISIONS.md#L98)
+- [docs/roadmap/model-semantic-review.md:241](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-review.md#L241)
+- [docs/roadmap/model-semantic-review.md:9964](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-review.md#L9964)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Completed semantic review is documentation work; APPROVED/REVISE is the historical model verdict, not application completeness. Current implementation/planning states above are independent. Doc/preflight completion is not completion of the associated application workflow.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/model-semantic-review.md:241 | HMSR-046 | 1 | identity | GroupRoleGrant | — | identity.Role | 0 | 0 | 2 | APPROVED | Completed | docs(model-review): review identity GroupRoleGrant
+doc/domain/SEMANTIC_DECISIONS.md:98 | HMSR-046 | [identity.GroupRoleGrant](#identity-grouprolegrant) | APPROVED | —
+~~~~~~~~
+
+<a id="hapi-357"></a>
+## HAPI-357 — review identity RolePermissionGrant
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HMSR-047
+
+Priority: P2
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+review identity RolePermissionGrant
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `docs/roadmap/model-semantic-review.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/Permission.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/RolePermissionGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/GrantEffect.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/GrantStatus.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. It is a documentation/review/preflight outcome; broader application functionality remains separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/identity/domain/model/Permission.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/model/RolePermissionGrant.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/value/GrantEffect.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/value/GrantStatus.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationService.java`.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `docs/roadmap/model-semantic-review.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/Permission.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/RolePermissionGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/GrantEffect.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/GrantStatus.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+## 60. HMSR-047 — identity.RolePermissionGrant review
+
+**Decision:** APPROVED  
+**Review code:** HMSR-047  
+**Dependency level:** 1  
+**Bounded context:** identity  
+**Confirmed upstream subject dependencies:** `identity.Permission`, `identity.Role`  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject references:** 0
+
+### 60.1 Semantic role and ordering rationale
+
+`RolePermissionGrant` assigns one Identity Permission to one Identity Role with an explicit GRANT/DENY effect, optional ABAC condition and effective interval.
+
+It is Level 1 because both parent identities — `Role` and `Permission` — are already-reviewed HMS subjects.
+
+The model is Identity-owned authorization state. It does not represent Organization responsibility or physical-asset ownership.
+
+### 60.2 Field semantics
+
+| Field | Type | Reviewed meaning |
+|---|---|---|
+| `id` | `String` | Mandatory stable grant identity. |
+| `roleId` | `String` | Mandatory same-module reference to Role. |
+| `permissionId` | `String` | Mandatory same-module reference to Permission. |
+| `effect` | `GrantEffect` | Mandatory authorization effect; DDD defines `GRANT` or `DENY`. |
+| `conditionExpression` | `String` persisted as JSONB | Optional ABAC condition attached to the grant. |
+| `validFrom` | `Instant` | Mandatory effective start. |
+| `validTo` | `Instant` | Optional effective end. |
+| `status` | `GrantStatus` | Mandatory grant lifecycle state. |
+| `createdAt` | `Instant` | Persistence-required creation timestamp. |
+
+The canonical constructor requires nonblank ID, Role ID and Permission ID; non-null effect, validFrom and status; and rejects `validTo < validFrom`.
+
+### 60.3 Role and Permission reference integrity
+
+The final schema requires:
+
+```text
+role_id NOT NULL
+permission_id NOT NULL
+```
+
+HRA-111 installs and validates:
+
+```text
+role_id       -> hidra_identity_role.id
+permission_id -> hidra_identity_permission.id
+```
+
+The authoritative `IdentityAdministrationCommandApplicationService.grantPermissionToRole()` also resolves both Role and Permission before constructing and saving the grant.
+
+Therefore both HMS dependencies are fail-closed in the active write path and at persistence.
+
+### 60.4 Effect and ABAC condition semantics
+
+The Identity DDD defines RolePermissionGrant effect as:
+
+```text
+GRANT
+DENY
+```
+
+and identifies `conditionExpression` as an optional ABAC condition.
+
+The domain requires a non-null `GrantEffect`; the application parses the command value through the enum boundary before construction.
+
+Current DDD evidence does not require every grant to carry a condition, does not define a condition-expression schema beyond JSON, and does not require one effect to be paired with a condition. HMSR-047 does not invent those rules.
+
+### 60.5 Validity and lifecycle semantics
+
+`validFrom` is mandatory and `validTo` optional.
+
+The canonical domain enforces:
+
+```text
+validFrom <= validTo
+```
+
+when an end exists.
+
+The active administration service validates the same chronology before construction, defaults an omitted start to the current instant, and creates the grant as `GrantStatus.ACTIVE`.
+
+The Identity authorization query path filters grants by status and effective interval before applying allow/deny decisions, which is consistent with the DDD time-validity rule.
+
+Current evidence does not define duplicate/overlap uniqueness, automatic expiration mutation, or a richer status-transition matrix. None are invented.
+
+### 60.6 Target lifecycle eligibility deliberately not invented
+
+The active application service proves Role and Permission existence through their repositories before save.
+
+Current Identity DDD evidence reviewed for HMSR-047 does not explicitly state that only ACTIVE Roles or ACTIVE Permissions may receive a RolePermissionGrant, nor does it define automatic revocation if either target later changes lifecycle state.
+
+HMSR-047 therefore does not elevate lifecycle eligibility into a correction obligation without explicit supporting evidence.
+
+### 60.7 Domain/JPA/Flyway/application alignment
+
+Domain and JPA agree on all nine semantic components.
+
+Persistence requires:
+
+```text
+id
+role_id
+permission_id
+effect
+valid_from
+status
+created_at
+```
+
+with nullable condition expression and valid-to timestamp.
+
+The domain enforces all required business fields other than the audit timestamp, which is intentionally persistence/application metadata.
+
+Both references have application-level existence checks and validated same-module FK protection.
+
+### 60.8 Rules deliberately not invented
+
+HMSR-047 does not infer:
+
+- uniqueness of Role/Permission grants;
+- overlap prohibition for multiple effective grants;
+- mandatory Workflow approval;
+- mandatory grant reason;
+- active Role/Permission eligibility absent an explicit rule;
+- mandatory ABAC condition;
+- a condition-expression grammar beyond the documented JSON payload;
+- automatic status mutation on expiration;
+- precedence rules beyond the existing authorization evaluation implementation.
+
+### 60.9 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, RolePermissionGrant is a core RBAC relationship determining which Hidra capabilities an internal role can permit or deny.
+
+Its Role and Permission identities must be trustworthy, and effective dates/status must be respected during authorization evaluation. The current write and persistence boundaries provide those guarantees without coupling Identity to Organization or Topology master data.
+
+Optional ABAC conditions allow permissions to be constrained when required without making every role-permission relation conditional.
+
+### 60.10 Review conclusion
+
+**APPROVED.** `RolePermissionGrant` has coherent Role/Permission dependencies, authoritative existence validation, validated same-module FK protection, explicit GRANT/DENY semantics, optional ABAC condition support, correctly enforced effective-period ordering, and runtime time/status filtering.
+
+No evidence-backed production correction obligation remains for HMSR-047.
+
+HMSR-047 does not modify production Java, JPA, Flyway, application/API contracts, tests, roles, permissions, grants, or provisioned data.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+No new API is part of this bounded documentation/historical outcome. Existing owner operations are listed in the runtime contract inventory below; no proposed endpoint is relabeled as implemented.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `c959d05889b4b2d4034e5640e494ab2c46363e02` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [doc/domain/SEMANTIC_DECISIONS.md:99](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/domain/SEMANTIC_DECISIONS.md#L99)
+- [docs/roadmap/model-semantic-review.md:242](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-review.md#L242)
+- [docs/roadmap/model-semantic-review.md:10074](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-review.md#L10074)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Completed semantic review is documentation work; APPROVED/REVISE is the historical model verdict, not application completeness. Current implementation/planning states above are independent. Doc/preflight completion is not completion of the associated application workflow.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/model-semantic-review.md:242 | HMSR-047 | 1 | identity | RolePermissionGrant | — | identity.Permission, identity.Role | 0 | 0 | 0 | APPROVED | Completed | docs(model-review): review identity RolePermissionGrant
+doc/domain/SEMANTIC_DECISIONS.md:99 | HMSR-047 | [identity.RolePermissionGrant](#identity-rolepermissiongrant) | APPROVED | —
+~~~~~~~~
+
+<a id="hapi-410"></a>
+## HAPI-410 — review identity AuthorizationDecision
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HMSR-100
+
+Priority: P2
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+review identity AuthorizationDecision
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `docs/roadmap/model-semantic-review.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAuthorizationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/AuthorizationDecision.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/policy/AuthorizationEvaluationRequest.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/AuthorizationDecisionValue.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/AuthorizationScope.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/configuration/IdentityModuleConfiguration.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. It is a documentation/review/preflight outcome; broader application functionality remains separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/identity/domain/model/AuthorizationDecision.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/policy/AuthorizationEvaluationRequest.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/value/AuthorizationDecisionValue.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/value/AuthorizationScope.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAuthorizationApplicationService.java`.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/identity/infrastructure/configuration/IdentityModuleConfiguration.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `docs/roadmap/model-semantic-review.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAuthorizationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/AuthorizationDecision.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/policy/AuthorizationEvaluationRequest.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/AuthorizationDecisionValue.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/AuthorizationScope.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/configuration/IdentityModuleConfiguration.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+## 113. HMSR-100 — identity.AuthorizationDecision review
+
+**Decision:** REVISE  
+**Review code:** HMSR-100  
+**Dependency level:** 5  
+**Bounded context:** identity  
+**Confirmed upstream subject dependencies:** mandatory `identity.User`; neutral resource/scope references  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject reference count:** 2
+
+### 113.1 Semantic role
+
+`AuthorizationDecision` is Identity-owned evidence of an authorization evaluation result.
+
+The governing Identity DDD explicitly makes persistence optional, with persisted decisions intended for high-risk operations or forwarding to Audit. The model therefore represents explainable decision evidence, not merely an API response wrapper.
+
+### 113.2 Required decision core
+
+The DDD requires:
+
+```text
+id
+userId
+permissionCode
+decision
+evaluatedAt
+```
+
+The live domain constructor rejects missing values for all five.
+
+JPA/Flyway persist the corresponding core columns as non-null.
+
+The model's required structural core is therefore aligned with the DDD.
+
+### 113.3 Decision vocabulary
+
+`AuthorizationDecisionValue` contains:
+
+```text
+PERMIT
+DENY
+NOT_APPLICABLE
+INDETERMINATE
+```
+
+This exactly matches the DDD and represents stable technical authorization semantics. No catalog conversion is required.
+
+### 113.4 Neutral resource and scope references
+
+`resourceType`, `resourceReferenceId`, and `AuthorizationScope` are neutral references.
+
+The DDD explicitly states that Identity stores scope type/reference/snapshot only and must not import Organization or Topology entities.
+
+The current `AuthorizationScope` preserves this architecture, including `GLOBAL` as a neutral scope with no external reference.
+
+HMSR-100 does not authorize cross-module database FKs for scope/resource targets.
+
+### 113.5 Explainability fields
+
+The DDD includes:
+
+```text
+reasonCode
+reasonMessage
+matchedGrantIds
+matchedPolicyRuleIds
+externalClaimsUsed
+```
+
+as optional evidence fields.
+
+Their optionality is appropriate at the record level because not every decision path necessarily has all evidence classes.
+
+However, the governing Identity business rules also require authorization decisions to be explainable and external mappings used in authorization to be included in the authorization explanation.
+
+Therefore application evaluation must populate the applicable evidence rather than persist structurally valid but semantically empty explanations when grants/policies/mappings actually participated.
+
+### 113.6 Canonical application-evaluation defect
+
+The Identity DDD requires authorization evaluation across the supported paths:
+
+```text
+direct user role
+direct user permission
+group-role inheritance
+external group/role/permission mappings
+scope validity
+time validity
+ABAC policy
+decision explanation
+```
+
+The live `IdentityAuthorizationApplicationService.evaluate(...)` does not evaluate those paths.
+
+It constructs an `AuthorizationEvaluationRequest` and immediately invokes:
+
+```text
+authorizationPolicyEvaluator.deny(
+    request,
+    "NO_GRANT_MATCHED",
+    "No active grant matched the requested permission."
+)
+```
+
+The result is then persisted.
+
+Thus the application currently records `NO_GRANT_MATCHED` without first proving that no direct grant, inherited grant, external mapping, scope, validity window, or policy permits the requested operation.
+
+This is semantically incompatible with the DDD evaluation model and makes persisted `AuthorizationDecision` evidence misleading.
+
+### 113.7 Persistence configurability
+
+`IdentityModuleConfiguration` exposes `authorizationDecisionPersistenceEnabled`, and the DDD states that persisted authorization decisions are optional.
+
+The reviewed `IdentityAuthorizationApplicationService` unconditionally calls `authorizationDecisionRepositoryPort.save(decision)` and does not consult the configuration flag.
+
+The future production correction must align persistence behavior with the established optional-persistence contract where that configuration remains authoritative.
+
+HMSR-100 does not invent which operations are high-risk; that remains policy/configuration driven.
+
+### 113.8 User ownership
+
+`userId` is mandatory because this model records a resolved authorization evaluation for an internal Hidra user.
+
+Identity owns the User aggregate, so application evaluation must fail closed if an authorization request references an invalid/non-resolvable user when the use case requires repository-backed evaluation.
+
+HMSR-100 does not require historical decision rows to be deleted or relationally cascaded if a user is later retired.
+
+### 113.9 Required revisions
+
+Three evidence-backed production obligations remain:
+
+1. **Replace the unconditional `NO_GRANT_MATCHED` decision path with the governing Identity authorization evaluation order**, including direct/inherited grants, mapped external authority where allowed, scope/time validity, ABAC policy, and explicit deny precedence.
+2. **Populate applicable decision-explanation evidence** (`reasonCode`/`reasonMessage`, matched grants/policy rules/external claims as appropriate) so persisted high-risk decisions are truthful and explainable.
+3. **Honor the established optional authorization-decision persistence policy/configuration** rather than unconditionally persisting every evaluated request if `authorizationDecisionPersistenceEnabled` remains the authoritative switch.
+
+HMSR-100 does not modify production Java, JPA, Flyway, API/application contracts, tests, Identity/Audit data, or provisioned data.
+
+### 113.10 Review conclusion
+
+**REVISE.** The `AuthorizationDecision` record itself has a sound structural model and correct neutral-reference architecture, but the canonical live application path does not perform the authorization evaluation that the DDD says the decision represents.
+
+Persisting an unconditional `DENY / NO_GRANT_MATCHED` result without evaluating supported grants, mappings, scopes, validity, and policy cannot be considered semantically approved decision evidence.
+
+HMS reconciliation must retain these obligations until explicitly authorized Identity production corrections resolve them or stronger repository evidence changes the governing Identity authorization contract.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+No new API is part of this bounded documentation/historical outcome. Existing owner operations are listed in the runtime contract inventory below; no proposed endpoint is relabeled as implemented.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `8a1415654418e3470345fc71e774af77f2120cd8` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [doc/domain/SEMANTIC_DECISIONS.md:152](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/domain/SEMANTIC_DECISIONS.md#L152)
+- [docs/roadmap/model-semantic-review.md:295](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-review.md#L295)
+- [docs/roadmap/model-semantic-review.md:17634](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-review.md#L17634)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Completed semantic review is documentation work; APPROVED/REVISE is the historical model verdict, not application completeness. Current implementation/planning states above are independent. Doc/preflight completion is not completion of the associated application workflow.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/model-semantic-review.md:295 | HMSR-100 | 5 | identity | AuthorizationDecision | — | identity.User | 0 | 0 | 2 | REVISE | Completed | docs(model-review): review identity AuthorizationDecision
+doc/domain/SEMANTIC_DECISIONS.md:152 | HMSR-100 | [identity.AuthorizationDecision](#identity-authorizationdecision) | REVISE | HMR-085
+~~~~~~~~
+
+<a id="hapi-411"></a>
+## HAPI-411 — review identity AuthorizationDelegationGrant
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HMSR-101
+
+Priority: P2
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+review identity AuthorizationDelegationGrant
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `docs/roadmap/model-semantic-review.md`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/AuthorizationDelegationGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/Permission.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/AuthorizationScope.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. It is a documentation/review/preflight outcome; broader application functionality remains separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/identity/domain/model/AuthorizationDelegationGrant.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/model/Permission.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/value/AuthorizationScope.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `docs/roadmap/model-semantic-review.md`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/AuthorizationDelegationGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/Permission.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/AuthorizationScope.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+## 114. HMSR-101 — identity.AuthorizationDelegationGrant review
+
+**Decision:** REVISE  
+**Review code:** HMSR-101  
+**Dependency level:** 5  
+**Bounded context:** identity  
+**Confirmed upstream subject dependencies:** mandatory delegator/delegate `identity.User`; optional `identity.Permission`; optional `identity.Role`; optional Workflow-owned approval reference  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject reference count:** 3
+
+### 114.1 Semantic role
+
+`AuthorizationDelegationGrant` is Identity-owned authorization delegation state allowing one Hidra user to grant limited authority to another user for a bounded period and scope.
+
+Identity owns the delegator/delegate identities and the delegated Role/Permission references. Workflow owns any approval process referenced by `approvedByWorkflowId`.
+
+### 114.2 Mandatory user references
+
+`delegatorUserId` and `delegateUserId` are mandatory same-module references.
+
+The live domain constructor rejects blanks and HRA-111 protects both against `hidra_identity_user.id`.
+
+No further basic existence correction is required for those mandatory user references.
+
+The governing DDD does not explicitly forbid delegator and delegate being the same user, so HMSR-101 does not invent a self-delegation rule.
+
+### 114.3 Missing required reason
+
+The Identity DDD explicitly defines:
+
+```text
+reason | TEXT | Yes | Delegation reason.
+```
+
+The live `AuthorizationDelegationGrant` domain record and JPA entity have no `reason` field at all.
+
+This is a direct target-model mismatch rather than a validation-only gap.
+
+Future production reconciliation must add/preserve the delegation reason across domain, persistence, application/API contracts, migrations, tests, and data handling as appropriate.
+
+### 114.4 Bounded validity mismatch
+
+The DDD marks both `validFrom` and `validTo` required.
+
+The live domain requires `validFrom`, but permits `validTo == null`; JPA also makes `valid_to` nullable.
+
+The existing temporal guard correctly rejects `validTo < validFrom` when both values are present, matching the repository's classified temporal rule. However, that does not resolve the DDD's stronger semantic requirement that a delegation has a defined end.
+
+The target model therefore requires a non-null `validTo` at the authoritative write boundary and persistence contract unless the governing DDD is explicitly revised.
+
+### 114.5 Created-at classification
+
+The DDD marks `createdAt` required and the database persists it as `NOT NULL`.
+
+Repository invariant architecture classifies generic `createdAt`/audit timestamps as persistence-only audit metadata rather than automatically promoting every DB `NOT NULL` timestamp into a domain constructor invariant.
+
+HMSR-101 therefore does not create a new domain-level `createdAt` rule merely from the database constraint.
+
+### 114.6 Delegation status vocabulary
+
+The DDD defines delegation status values:
+
+```text
+ACTIVE
+REVOKED
+EXPIRED
+```
+
+The live `DelegationStatus` enum additionally contains:
+
+```text
+SUSPENDED
+```
+
+No reviewed DDD evidence defines suspended delegation semantics, transition rules, or authorization behavior.
+
+The target baseline must either remove that unsupported state or explicitly update the governing Identity contract before production code relies on it. HMSR-101 does not invent suspension semantics.
+
+### 114.7 Optional Role and Permission references
+
+`roleId` and `permissionId` are optional in the DDD.
+
+The DDD does not explicitly state that exactly one must be populated, that both may be populated, or that at least one is mandatory. HMSR-101 therefore does not invent an XOR/at-least-one invariant.
+
+However, when either optional identifier is supplied it denotes a real Identity-owned `Role` or `Permission`.
+
+The current HRA-111 mandatory-reference migration does not protect these nullable fields, and repository search found no application service validating them on a delegation write path.
+
+Future authorized production work should fail closed for supplied same-module Role/Permission identifiers and may add appropriate nullable same-module FK protection consistent with repository architecture.
+
+### 114.8 Scope ownership
+
+`AuthorizationScope` correctly keeps scope as neutral `scopeType + scopeReferenceId + snapshot` data.
+
+Identity must not import Organization or Topology aggregates merely because a delegation is scoped to an external business object.
+
+No cross-module database FK should be introduced for scope references.
+
+### 114.9 Workflow approval ownership
+
+`approvedByWorkflowId` is optional and Workflow-owned.
+
+Identity must preserve it as a scalar cross-module reference. Where delegation policy requires approval, validation belongs through a Workflow-owned application/reference contract rather than a database FK.
+
+HMSR-101 does not invent which roles/permissions require workflow approval.
+
+### 114.10 Revocation field
+
+The live model contains optional `revokedAt`, while the reviewed DDD section does not list that field.
+
+Because `REVOKED` is an explicit DDD lifecycle state, `revokedAt` is not intrinsically contradictory, but the DDD does not define when it is mandatory.
+
+HMSR-101 therefore records no new conditional revoked-timestamp rule and leaves that reconciliation to future lifecycle work if needed.
+
+### 114.11 Required revisions
+
+Four evidence-backed production obligations remain:
+
+1. **Add the DDD-required delegation `reason` to the canonical target model and persistence/application contracts.**
+2. **Make `validTo` mandatory for delegation grants** while retaining `validFrom <= validTo`.
+3. **Reconcile the unsupported `SUSPENDED` delegation status** against the governing Identity DDD; do not rely on it without an explicit contract.
+4. **Fail closed for supplied optional `roleId`/`permissionId` references** through Identity-owned application validation and appropriate same-module persistence integrity, without inventing an XOR/at-least-one rule absent from the DDD.
+
+HMSR-101 does not modify production Java, JPA, Flyway, API/application contracts, tests, Identity/Workflow data, or provisioned data.
+
+### 114.12 Review conclusion
+
+**REVISE.** The delegation model has correct Identity ownership, protected mandatory delegator/delegate references, correct neutral scope architecture, and an evidence-backed validity ordering rule.
+
+The target baseline cannot mark it APPROVED while the DDD-required `reason` is missing entirely, `validTo` is optional despite the DDD requiring a bounded end, the live enum exposes an unsupported `SUSPENDED` state, and optional delegated Role/Permission references are not fail-closed when supplied.
+
+HMS reconciliation must retain these obligations until explicitly authorized Identity production corrections resolve them or stronger repository evidence changes the governing Identity contract.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+No new API is part of this bounded documentation/historical outcome. Existing owner operations are listed in the runtime contract inventory below; no proposed endpoint is relabeled as implemented.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `d7b088422b9e64d7fc24524fc58035f05ab73cd4` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [doc/domain/SEMANTIC_DECISIONS.md:153](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/domain/SEMANTIC_DECISIONS.md#L153)
+- [docs/roadmap/model-semantic-review.md:296](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-review.md#L296)
+- [docs/roadmap/model-semantic-review.md:17781](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-review.md#L17781)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Completed semantic review is documentation work; APPROVED/REVISE is the historical model verdict, not application completeness. Current implementation/planning states above are independent. Doc/preflight completion is not completion of the associated application workflow.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/model-semantic-review.md:296 | HMSR-101 | 5 | identity | AuthorizationDelegationGrant | — | identity.Permission, identity.Role, identity.User | 0 | 0 | 3 | REVISE | Completed | docs(model-review): review identity AuthorizationDelegationGrant
+doc/domain/SEMANTIC_DECISIONS.md:153 | HMSR-101 | [identity.AuthorizationDelegationGrant](#identity-authorizationdelegationgrant) | REVISE | HMR-086
+~~~~~~~~
+
+<a id="hapi-415"></a>
+## HAPI-415 — review identity UserPermissionGrant
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HMSR-105
+
+Priority: P2
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+review identity UserPermissionGrant
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `docs/roadmap/model-semantic-review.md`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/Permission.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserPermissionGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/AuthorizationScope.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/GrantEffect.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/GrantStatus.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. It is a documentation/review/preflight outcome; broader application functionality remains separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/identity/domain/model/Permission.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserPermissionGrant.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/value/AuthorizationScope.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/value/GrantEffect.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `docs/roadmap/model-semantic-review.md`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/Permission.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserPermissionGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/AuthorizationScope.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/GrantEffect.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/GrantStatus.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+## 118. HMSR-105 — identity.UserPermissionGrant review
+
+**Decision:** REVISE  
+**Review code:** HMSR-105  
+**Dependency level:** 5  
+**Bounded context:** identity  
+**Confirmed upstream subject dependencies:** mandatory `identity.User`; mandatory `identity.Permission`; optional Workflow-owned approval reference; neutral external scope reference  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject reference count:** 1
+
+### 118.1 Semantic role
+
+`UserPermissionGrant` is the Identity-owned direct permission grant/deny record for controlled exceptions, temporary access, break-glass access, and explicit direct denial.
+
+The governing Identity DDD places this entity in the direct-user authorization path and explicitly gives direct user `DENY` precedence over inherited grants.
+
+### 118.2 Mandatory same-module references
+
+`userId` and `permissionId` are mandatory Identity-owned references.
+
+The live domain rejects blanks for both, the administration application service resolves both before creating a grant, and HRA-111 protects them with:
+
+```text
+hidra_identity_user_permission_grant.user_id
+  -> hidra_identity_user.id
+
+hidra_identity_user_permission_grant.permission_id
+  -> hidra_identity_permission.id
+```
+
+No further basic same-module existence correction is required.
+
+### 118.3 Grant effect
+
+The DDD defines:
+
+```text
+GRANT
+DENY
+```
+
+and the live `GrantEffect` enum matches that vocabulary exactly.
+
+The application command path also parses the supplied effect into the canonical enum before persistence.
+
+No catalog conversion is required.
+
+### 118.4 Required grant reason
+
+The DDD explicitly marks:
+
+```text
+grantReason | TEXT | Yes | Required reason.
+```
+
+The JPA entity/database column is non-null, but the live domain only normalizes `grantReason` and does not reject blank/null values.
+
+The administration application service passes `command.reason()` through without a required-text guard.
+
+Therefore a DDD-invalid direct grant can reach persistence and fail late or rely only on database nullability.
+
+The authoritative write boundary must fail fast for a nonblank grant reason.
+
+### 118.5 Direct-grant validity bound
+
+The DDD states:
+
+```text
+validTo | TIMESTAMP | No | End. Should be required for emergency/direct grants.
+```
+
+`UserPermissionGrant` is, by definition, the direct-user permission-grant model.
+
+The current domain and application flow allow `validTo == null`, including when `emergencyAccess == true`.
+
+The target semantic baseline therefore requires direct UserPermissionGrant creation to be time-bounded with a defined `validTo`, unless the governing Identity DDD is explicitly revised.
+
+The existing invariant `validFrom <= validTo` is already enforced when `validTo` is present and should be retained.
+
+### 118.6 Grant status vocabulary
+
+The DDD defines UserPermissionGrant status as:
+
+```text
+ACTIVE
+REVOKED
+EXPIRED
+```
+
+The live shared `GrantStatus` enum additionally includes:
+
+```text
+SUSPENDED
+```
+
+No reviewed UserPermissionGrant DDD evidence defines suspension semantics for this grant type.
+
+The target baseline must not rely on `SUSPENDED` for UserPermissionGrant without an explicit Identity contract. Production reconciliation may either constrain this entity to its DDD-supported states or update the governing DDD if suspension is intentionally required.
+
+### 118.7 Scope ownership
+
+The DDD uses the shared neutral authorization scope model.
+
+Identity stores only:
+
+```text
+scopeType
+scopeReferenceId
+scopeCodeSnapshot
+```
+
+and explicitly must not import Organization or Topology entities.
+
+The live `AuthorizationScope` shape is consistent with that boundary.
+
+No cross-module database FK should be introduced for scope references.
+
+### 118.8 Workflow approval reference
+
+`approvedByWorkflowId` is optional and Workflow-owned.
+
+The DDD does not state that every direct permission grant requires workflow approval, so HMSR-105 does not invent a blanket approval rule.
+
+Where policy requires approval for a sensitive/emergency grant, validation should occur through a Workflow-owned application/reference contract rather than a cross-module database FK.
+
+### 118.9 Emergency-access semantics
+
+`emergencyAccess` is DDD-required as a boolean flag identifying break-glass access.
+
+The reviewed DDD does not define additional mandatory workflow, reason taxonomy, maximum duration, or auto-revocation rules beyond the direct/emergency validity guidance already captured above.
+
+HMSR-105 therefore does not invent those controls.
+
+### 118.10 Created/revoked timestamps
+
+`createdAt` is database-required, while `revokedAt` is optional.
+
+Repository invariant architecture classifies generic creation/audit timestamps as persistence-only metadata rather than automatically turning every database-required timestamp into a constructor invariant.
+
+The DDD does not state a conditional rule that `revokedAt` must be non-null whenever status is `REVOKED`. HMSR-105 does not invent one.
+
+### 118.11 Required revisions
+
+Three evidence-backed production obligations remain:
+
+1. **Enforce nonblank `grantReason` before persistence**, matching the DDD-required reason contract.
+2. **Require a bounded `validTo` for direct UserPermissionGrant records**, including emergency/break-glass grants, while retaining `validFrom <= validTo`.
+3. **Reconcile the unsupported `SUSPENDED` state for UserPermissionGrant** against the governing Identity DDD; do not rely on that state without an explicit contract.
+
+HMSR-105 does not modify production Java, JPA, Flyway, API/application contracts, tests, Identity/Workflow data, or provisioned data.
+
+### 118.12 Review conclusion
+
+**REVISE.** `UserPermissionGrant` has correct Identity ownership, protected mandatory User/Permission references, correct GRANT/DENY semantics, neutral scope architecture, and the repository's expected temporal ordering invariant.
+
+The target baseline cannot mark it APPROVED while a DDD-required grant reason is not fail-fast enforced, direct/emergency grants remain potentially unbounded despite the DDD's explicit guidance, and the live shared status enum exposes `SUSPENDED` although this entity's DDD vocabulary does not.
+
+HMS reconciliation must retain these obligations until explicitly authorized Identity production corrections resolve them or stronger repository evidence changes the governing Identity contract.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+No new API is part of this bounded documentation/historical outcome. Existing owner operations are listed in the runtime contract inventory below; no proposed endpoint is relabeled as implemented.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `f46da427fff42b1b00a8fa193a60144c35c29a95` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [doc/domain/SEMANTIC_DECISIONS.md:157](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/domain/SEMANTIC_DECISIONS.md#L157)
+- [docs/roadmap/model-semantic-review.md:300](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-review.md#L300)
+- [docs/roadmap/model-semantic-review.md:18266](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-review.md#L18266)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Completed semantic review is documentation work; APPROVED/REVISE is the historical model verdict, not application completeness. Current implementation/planning states above are independent. Doc/preflight completion is not completion of the associated application workflow.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/model-semantic-review.md:300 | HMSR-105 | 5 | identity | UserPermissionGrant | — | identity.Permission, identity.User | 0 | 0 | 1 | REVISE | Completed | docs(model-review): review identity UserPermissionGrant
+doc/domain/SEMANTIC_DECISIONS.md:157 | HMSR-105 | [identity.UserPermissionGrant](#identity-userpermissiongrant) | REVISE | HMR-088
+~~~~~~~~
+
+<a id="hapi-416"></a>
+## HAPI-416 — review identity UserRoleGrant
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HMSR-106
+
+Priority: P2
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+review identity UserRoleGrant
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `docs/roadmap/model-semantic-review.md`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserPermissionGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserRoleGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/AuthorizationScope.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/GrantStatus.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/UserStatus.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. It is a documentation/review/preflight outcome; broader application functionality remains separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserPermissionGrant.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserRoleGrant.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/value/AuthorizationScope.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/value/GrantStatus.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `docs/roadmap/model-semantic-review.md`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserPermissionGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserRoleGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/AuthorizationScope.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/GrantStatus.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/UserStatus.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+## 119. HMSR-106 — identity.UserRoleGrant review
+
+**Decision:** REVISE  
+**Review code:** HMSR-106  
+**Dependency level:** 5  
+**Bounded context:** identity  
+**Confirmed upstream subject dependencies:** mandatory `identity.User`; mandatory `identity.Role`; optional Workflow-owned approval reference; neutral external scope reference  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject reference count:** 1
+
+### 119.1 Semantic role
+
+`UserRoleGrant` is the Identity-owned direct assignment of an Identity Role to an Identity User, optionally constrained by a neutral authorization scope, workflow approval reference, and validity interval.
+
+It is an authorization relationship. It is not an Organization position/assignment, Party role, Workflow task, or Topology ownership record.
+
+### 119.2 Mandatory same-module references
+
+`userId` and `roleId` are mandatory same-module references.
+
+The live domain rejects blanks, the general administration application service resolves both before save, and HRA-111 protects both persistence references:
+
+```text
+hidra_identity_user_role_grant.user_id
+  -> hidra_identity_user.id
+
+hidra_identity_user_role_grant.role_id
+  -> hidra_identity_role.id
+```
+
+No further basic existence/FK correction is required.
+
+### 119.3 Scope and workflow boundaries
+
+The DDD defines the scope as optional and neutral:
+
+```text
+scopeType
+scopeReferenceId
+scopeCodeSnapshot
+```
+
+The live `AuthorizationScope` mapping preserves that boundary. Organization/Topology scope targets remain external references and must not acquire cross-module database foreign keys.
+
+`approvedByWorkflowId` is optional and Workflow-owned. The DDD does not require workflow approval for every direct role grant, so HMSR-106 does not invent a blanket approval rule. Where policy requires approval, validation belongs through a Workflow-owned application/reference contract rather than a cross-module FK.
+
+### 119.4 Grant reason and validity
+
+For `UserRoleGrant`, the DDD explicitly makes `grantReason` and `validTo` optional.
+
+The live domain therefore correctly permits a missing reason and an open-ended grant. It already enforces mandatory `validFrom` and the established temporal invariant:
+
+```text
+validFrom <= validTo
+```
+
+when `validTo` is present.
+
+No UserPermissionGrant-style mandatory-reason or mandatory-end rule should be copied into this model.
+
+### 119.5 Grant lifecycle
+
+The DDD defines the UserRoleGrant lifecycle as:
+
+```text
+ACTIVE
+SUSPENDED
+REVOKED
+EXPIRED
+```
+
+and the shared `GrantStatus` enum matches it exactly.
+
+The duplicate-enum review also retains `GrantStatus` as an Identity grant lifecycle vocabulary. No catalog conversion or status narrowing is required for UserRoleGrant.
+
+`revokedAt` and `revokedReason` remain optional because the governing DDD does not define an additional constructor-level conditional invariant for them.
+
+### 119.6 Active-user grant eligibility gap
+
+The governing Identity DDD explicitly states:
+
+```text
+Only active users should receive new grants, except controlled emergency/break-glass flows.
+```
+
+HMSR-075 correctly deferred this rule to downstream grant write paths rather than placing it inside the User constructor.
+
+The live general `grantRoleToUser(...)` path currently calls `requireUser(userId)`, but `requireUser` checks only that the User exists. It does not require `UserStatus.ACTIVE` and does not identify a controlled emergency/break-glass exception.
+
+Therefore the authoritative UserRoleGrant creation path can create a new ACTIVE role grant for REGISTERED, SUSPENDED, DISABLED, or LOCKED users, contrary to the DDD assignment rule.
+
+The local-administrator bootstrap is not evidence that the general path is safe: that bootstrap creates/uses an ACTIVE user through its own controlled flow.
+
+### 119.7 Role status
+
+The DDD defines Role lifecycle values `ACTIVE`, `DISABLED`, and `DEPRECATED`, but the reviewed UserRoleGrant section does not explicitly state that grant creation must reject non-ACTIVE roles.
+
+HMSR-106 therefore does not invent a new role-status assignment invariant. Existing authorization/runtime code may still ignore inactive roles where already defined.
+
+### 119.8 Required revision
+
+One evidence-backed production obligation remains:
+
+1. **Enforce the DDD active-user grant eligibility rule in the authoritative UserRoleGrant creation flow.** Ordinary role grants must require an ACTIVE User; any emergency/break-glass exception must be an explicitly controlled flow supported by repository policy rather than an implicit bypass.
+
+This belongs at the application/domain authorization boundary, not as a cross-table database constraint and not as a repository lookup inside the immutable record constructor.
+
+HMSR-106 does not modify production Java, JPA, Flyway, API/application contracts, tests, Identity/Workflow/Organization/Topology data, or provisioned data.
+
+### 119.9 Review conclusion
+
+**REVISE.** `UserRoleGrant` has correct Identity ownership, protected User/Role references, neutral cross-context scope semantics, optional workflow approval, DDD-consistent optional reason/end fields, correct grant-status vocabulary, and the established validity ordering invariant.
+
+The target baseline cannot mark it APPROVED while the general creation flow permits new grants to non-ACTIVE users despite the governing DDD's explicit assignment rule.
+
+HMS reconciliation must retain this obligation until explicitly authorized Identity production work enforces active-user grant eligibility or stronger repository evidence changes the governing contract.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+No new API is part of this bounded documentation/historical outcome. Existing owner operations are listed in the runtime contract inventory below; no proposed endpoint is relabeled as implemented.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `c2474c0bc456b1284f19013b9016a078691044cb` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [doc/domain/SEMANTIC_DECISIONS.md:158](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/domain/SEMANTIC_DECISIONS.md#L158)
+- [docs/roadmap/model-semantic-review.md:301](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-review.md#L301)
+- [docs/roadmap/model-semantic-review.md:18426](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-review.md#L18426)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Completed semantic review is documentation work; APPROVED/REVISE is the historical model verdict, not application completeness. Current implementation/planning states above are independent. Doc/preflight completion is not completion of the associated application workflow.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/model-semantic-review.md:301 | HMSR-106 | 5 | identity | UserRoleGrant | — | identity.Role, identity.User | 0 | 0 | 1 | REVISE | Completed | docs(model-review): review identity UserRoleGrant
+doc/domain/SEMANTIC_DECISIONS.md:158 | HMSR-106 | [identity.UserRoleGrant](#identity-userrolegrant) | REVISE | HMR-089
+~~~~~~~~
+
+<a id="hapi-552"></a>
+## HAPI-552 — HPR-P25-040 historical bounded obligation
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HPR-P25-040
+
+Priority: P2
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `platform` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+HPR-P25-040 historical bounded obligation
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `platform`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [doc/roadmap/ULTIMATE_ROADMAP.md:6131](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L6131)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:8405](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L8405)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+Original bounded record status: COMPLETED / ACCEPTED (recorded bounded scope).
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+doc/roadmap/ULTIMATE_ROADMAP.md:6131 | HPR-P25-040 | COMPLETED / ACCEPTED (recorded bounded scope) | 049 directly confirmed #666/#266; other accepted subsets retain original source/CI limits
+doc/roadmap/ULTIMATE_ROADMAP.md:8405 | HPR-P25-040 | Completed — Production #656 / Docs #242 SUCCESS | Retain trusted human actor-only boundary
+~~~~~~~~
+
+<a id="hapi-553"></a>
+## HAPI-553 — HPR-P25-041 historical bounded obligation
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HPR-P25-041
+
+Priority: P2
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `platform` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+HPR-P25-041 historical bounded obligation
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `platform`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [doc/model-remediation/RECONCILIATION.md:15436](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L15436)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:6132](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L6132)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:8653](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L8653)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+Original bounded record status: COMPLETED / ACCEPTED (recorded bounded scope).
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+doc/roadmap/ULTIMATE_ROADMAP.md:6132 | HPR-P25-041 | COMPLETED / ACCEPTED (recorded bounded scope) | 049 directly confirmed #666/#266; other accepted subsets retain original source/CI limits
+doc/roadmap/ULTIMATE_ROADMAP.md:8653 | HPR-P25-041 | Completed — Production #657 / Docs #244 SUCCESS | Retain paired owner-query-only evidence scope
+doc/model-remediation/RECONCILIATION.md:15436 | HPR-P25-041 | Completed — Production #657 / Docs #244 SUCCESS | Retain paired owner-query-only evidence scope
+~~~~~~~~
+
+<a id="hapi-555"></a>
+## HAPI-555 — HPR-P25-043 historical bounded obligation
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HPR-P25-043
+
+Priority: P2
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `platform` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+HPR-P25-043 historical bounded obligation
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `platform`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [doc/model-remediation/RECONCILIATION.md:16171](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L16171)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:6134](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L6134)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:9388](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L9388)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+Original bounded record status: DESIGN COMPLETE.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+doc/roadmap/ULTIMATE_ROADMAP.md:6134 | HPR-P25-043 | DESIGN COMPLETE | Future runtime assigned 050–058; design is not executable completion
+doc/roadmap/ULTIMATE_ROADMAP.md:9388 | HPR-P25-043 | Completed design — Docs #253 SUCCESS | Persisted-state fence direction only; runtime B1/B2/B3 remain OPEN
+doc/model-remediation/RECONCILIATION.md:16171 | HPR-P25-043 | Completed design — Docs #253 SUCCESS | Persisted-state fence direction only; runtime B1/B2/B3 remain OPEN
+~~~~~~~~
+
+<a id="hapi-567"></a>
+## HAPI-567 — Integrated closure: Revocation, operation time and physical transaction fence
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HPR-P25-051
+
+Priority: P0
+
+Implementation Status: PARTIAL
+
+Planning Status: IN_PROGRESS
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: HAPI-585
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Independently reconcile and accept the complete child-deliverable matrix for HPR-P25-051; child tasks own implementation. Revocation, operation time and physical transaction fence
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityAdministrationCommandController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityOidcAuthorizationController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/AuthenticateDirectUserUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/EvaluatePermissionUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/IdentityAdministrationQueryUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationAssertionPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/CustodyTransferTicketActorReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/DirectAuthenticationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAuthorizationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/LocalAuthenticationOutcomeApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/MaintenanceWorkOrderActorReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessQueryService.java`
+- `src/main/java/dz/sh/hidra/platform/configuration/HidraTransactionConfiguration.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+Finish paired permissions, Party/Facility participation, common transaction/time fences, CAS publication and adversarial qualification. Prove organization-to-station monitoring isolation. The exact bounded remaining delivery is: Independently reconcile and accept the complete child-deliverable matrix for HPR-P25-051; child tasks own implementation. Revocation, operation time and physical transaction fence.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/in/AuthenticateDirectUserUseCase.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/in/EvaluatePermissionUseCase.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/in/IdentityAdministrationQueryUseCase.java`.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationAssertionPort.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`.
+- Application services: `src/main/java/dz/sh/hidra/modules/identity/application/service/CustodyTransferTicketActorReferenceQueryService.java`, `src/main/java/dz/sh/hidra/modules/identity/application/service/DirectAuthenticationApplicationService.java`, `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAuthorizationApplicationService.java`, `src/main/java/dz/sh/hidra/modules/identity/application/service/LocalAuthenticationOutcomeApplicationService.java`.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY:** DISCOVERY_REQUIRED for implementation; no executable source allowlist inferred from this historical or integration scope.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityAdministrationCommandController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityOidcAuthorizationController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/AuthenticateDirectUserUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/EvaluatePermissionUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/IdentityAdministrationQueryUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationAssertionPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/CustodyTransferTicketActorReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/DirectAuthenticationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAuthorizationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/LocalAuthenticationOutcomeApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/MaintenanceWorkOrderActorReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessQueryService.java`
+- `src/main/java/dz/sh/hidra/platform/configuration/HidraTransactionConfiguration.java`
+
+**DELETE:** none.
+
+First recover this bounded objective's exact acceptance/replacement from the pinned references, inspect only its current owner seams and decide whether a source change is still needed. If fulfilled, record evidence and status without rewriting working code. If a genuine successor is necessary, absorb it in its existing unfinished owner package or propose PENDING_BASELINE_APPROVAL.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+#### HPR-P25-051 — Revocation, operation time and physical transaction fence
+
+Source: accepted 043 coarse persisted-state fencing and 038 head-write linearization;
+`IdentityAuthorizationApplicationService` currently selects separate Instants;
+`TopologyScopedAccessQueryService` supplies paired evidence, not atomic validity proof;
+`HidraTransactionConfiguration` merely enables transactions. Existing Identity/Party/
+Topology exports are scalar owner observations, not transaction-bound authorization.
+
+Deliverable: ordered owner fences covering inserts/deletes/updates/phantom DENY evidence;
+one actual READ COMMITTED non-read-only physical transaction; fresh post-fence owner reads;
+bound authentication and owner epoch; company+facility decisions valid at the guarded
+write/read linearization point. No async, REQUIRES_NEW, partial-savepoint continuation,
+cached permit, second-level evidence or private foreign JPA import. DB failures abort.
+
+D2 must select/prove the time technique. A Java reread, transaction-start timestamp or
+two earlier PERMITs is explicitly insufficient. Check all relevant future rule/DENY/
+grant/membership/attribute/assertion/token boundaries; unsupported temporal predicates
+deny/indeterminate. No grace interval is manufactured. Same backend/transaction/connection
+and fence lifetime must be observed through actual JPA/JDBC providers and rollback.
+Choose explicit timeout, maximum protected-work duration and synthetic contention
+threshold before accepting coarse writer-blocking costs; production capacity is unproven.
+
+CREATE/UPDATE exact paths are blocked pending D2 method/export/transaction design;
+candidate anchors are current Identity/Party/Topology contracts/services and Platform
+transaction mechanics. DELETE none. New DB fences/epoch storage only under exact forward
+schema scope; no alterations to unrelated security/retention policy. Tests cover revocation
+before/after fence, provider/link/User/grant/DENY insert/remove/A/B/A, clock-only expiry/
+activation during work, owner transfer, two-company opacity, actual lock waits/barriers,
+backend connection identity, lock timeout/deadlock/serialization and full rollback.
+DoD: B2+B3 and source-state ordering independently proven, with bounded synthetic lock
+hold/wait/auth-admin latency; unproven algorithm/participation blocks dependent APIs.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+- Prove the real owner/API/persistence path and negative cases; record exact source, actual executed and skipped cases and accepted contract artifact.
+- Required transactions roll back fully; historical exact reads remain reproducible after source revision.
+- Missing policy, unregistered file placement or unavailable authority is explicitly blocked rather than fabricated.
+- Applicable Full/Fast/Docs acceptance succeeds on the implementation SHA; software acceptance remains separate from SITE commissioning.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: HAPI-585. A dependency edge does not select implementation. Resolve only the task-specific exact path/policy/source contract gaps described here before code; real deployment data is not a software-contract blocker.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. For implementation, deliver only the admitted CREATE/MODIFY set, public API evidence where required, fresh-schema proof where applicable and preserved historical behavior.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [doc/model-remediation/RECONCILIATION.md:23553](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L23553)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:1140](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L1140)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:5065](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L5065)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+doc/roadmap/ULTIMATE_ROADMAP.md:1140 | HPR-P25-051 | IN PROGRESS; A–F accepted; H–M planned; B2/B3/global owner integration open
+doc/model-remediation/RECONCILIATION.md:23553 | HPR-P25-051 | IN PROGRESS; A–F accepted; H–M planned; B2/B3/global owner integration open
+~~~~~~~~
+
+<a id="hapi-568"></a>
+## HAPI-568 — enforce protected transaction lifecycle
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HPR-P25-051A
+
+Priority: P2
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+enforce protected transaction lifecycle
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `.github/ci-test-inventory.json`
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `src/main/java/dz/sh/hidra/platform/configuration/HidraTransactionConfiguration.java`
+- `src/main/java/dz/sh/hidra/platform/persistence/ProtectedJpaTransactionManager.java`
+- `src/main/java/dz/sh/hidra/platform/persistence/ProtectedOperationDataSource.java`
+- `src/main/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutor.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedTransactionLifecyclePostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedTransactionLifecyclePostgresIntegrationTest.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `.github/ci-test-inventory.json`
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `src/main/java/dz/sh/hidra/platform/configuration/HidraTransactionConfiguration.java`
+- `src/main/java/dz/sh/hidra/platform/persistence/ProtectedJpaTransactionManager.java`
+- `src/main/java/dz/sh/hidra/platform/persistence/ProtectedOperationDataSource.java`
+- `src/main/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutor.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedTransactionLifecyclePostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+### Current execution checkpoint — HPR-P25-051A implementation candidate, 2026-10-14
+
+Docs #291 passed at ae9f639f; accepted runtime/prototype remains da4ce33e / Full #685.
+Owner Next selects only 051A's registered 5 CREATE / 5 UPDATE envelope. Production
+coordinator, datasource sealing and provider completion control are implemented candidates,
+with exact technical JPA exceptions and new behavioral/real-provider tests. Local actual
+unit/static validation is recorded below; PostgreSQL skips never establish acceptance.
+051A and parent 051 remain IN PROGRESS / CI PENDING. Actual owner permission/contributor/
+export/038 integration and final D2/B2/B3 remain gated. Publish guarded main, observe
+Full/Fast/Docs startup and STOP; no 052 or additional owner implementation is selected.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` — exact-head oracle suite 16 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedTransactionLifecyclePostgresIntegrationTest.java` — exact-head oracle suite 25 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java` — exact-head oracle suite 31 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `76b14cda4520f1eff242bd474c02ce4db317d385` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [doc/roadmap/ULTIMATE_ROADMAP.md:4478](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L4478)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:4489](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L4489)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:13739](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L13739)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:13808](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L13808)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Source-backed bounded stage accepted; current exact-SHA raw regression reports independently recovered. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+<a id="hapi-569"></a>
+## HAPI-569 — compile protected static expression syntax
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HPR-P25-051B
+
+Priority: P2
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: HAPI-568
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+compile protected static expression syntax
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `.github/ci-test-inventory.json`
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/policy/AuthorizationJson.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationExpressionEvaluator.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationExpressionStabilityCompiler.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationPolicyEvaluator.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaAuthorizationEvidenceAdapter.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationExpressionStabilityCompilerTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/identity/domain/policy/AuthorizationJson.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationExpressionEvaluator.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationExpressionStabilityCompiler.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationPolicyEvaluator.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaAuthorizationEvidenceAdapter.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `.github/ci-test-inventory.json`
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/policy/AuthorizationJson.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationExpressionEvaluator.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationExpressionStabilityCompiler.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationPolicyEvaluator.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaAuthorizationEvidenceAdapter.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationExpressionStabilityCompilerTest.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+### Current execution checkpoint — HPR-P25-051B CI acceptance, 2026-10-14
+
+Owner Next recovered live main `6c92406a37a132dd4b435c4ba9f36083985c2ad5`,
+parent `8a6e304f92a6c4df7c76cd9e4bd95933582be137`, tree
+`05f75d375b4a57dc498ce8d02ef974c9eeccb566`.
+Exact-SHA [Full #689](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38593746474),
+[Fast #22](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38593746463)
+and [Docs #303](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38593746384)
+are completed SUCCESS. All seven Full jobs, including both PostgreSQL
+partitions, unrestricted oracle, runtime API/dictionary and authenticated
+Full Verification Gate, are SUCCESS.
+
+**HPR-P25-051B COMPLETED / STATIC SYNTAX SLICE CI ACCEPTED.**
+Downloaded this exact attempt's unit-architecture artifact `11909675613`;
+genuine Surefire XML for AuthorizationExpressionStabilityCompilerTest contains
+all12 registered identities, zero failures/errors/skips/flakes, duration
+0.024 seconds. This is hosted report observation, not a changed scheduling
+baseline or production SLO. Authenticated Full aggregate reports 377 classes,
+1997 tests, zero failures/errors/skips, exact source SHA, same-run equivalence
+true and inventory digest
+`d9caee4c1bb0fc81cedc4f883ccd2f81be44e13945402e163a3730e0089e481f`.
+Oracle fallback remains required and optimized_adoption_eligible=false.
+
+The completed compiler classifies syntax only; it remains dormant in the
+ordinary authorization path. This does not establish PERMIT, a same-backend
+owner witness, fact freezing, future transition completeness or a validity
+interval [s,u). Parent051/D2/B2/B3 remain IN PROGRESS/OPEN.
+The next same-ID D2 scope closure must source-register the future-event
+interval contract and its exact implementation/test paths before integration;
+no additional production path or 052 is admitted by this acceptance.
+Real protected Identity/Party/Topology exports, complete writer/privilege and
+global lock graph, common database s/u/t, and038 head/epoch remain OPEN.
+
+Inventory retained all old numeric timing VALUES, entries/order, cases,
+hashes, lanes and policies. The implementation's JSON serialization rendered
+five pre-existing zero durations from `0.0` to `0`; this is a lexical
+representation change only, not new measured timing or baseline calibration.
+No inventory correction or policy change is selected here.
+
+Current action UPDATEs only this roadmap and append-only reconciliation,
+CREATE/DELETE none, with registered same-ID governance message
+`docs(security): select operation time fencing proof`. Preserve every
+source/test/migration/inventory/workflow/history/version/release blob.
+Verify exact two-document append-only scope and parent/tree, publish directly
+to expected-head main, observe automatic exact-SHA Docs startup then STOP.
+Documentation startup is not success; the accepted runtime stays anchored
+to 6c92406. Gas-first/GZ2, own engine, steady/transient, versioned inputs and
+operator control persist; synthetic development, owner calibration later,
+Simulation/P3 deferred; no release/deployment.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` — exact-head oracle suite 16 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationExpressionStabilityCompilerTest.java` — exact-head oracle suite 12 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: HAPI-568. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `6c92406a37a132dd4b435c4ba9f36083985c2ad5` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [doc/roadmap/ULTIMATE_ROADMAP.md:3491](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L3491)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:3541](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L3541)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:3614](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L3614)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Source-backed bounded stage accepted; current exact-SHA raw regression reports independently recovered. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+<a id="hapi-570"></a>
+## HAPI-570 — reduce protected temporal boundaries
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HPR-P25-051C
+
+Priority: P2
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: HAPI-569
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+reduce protected temporal boundaries
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `.github/ci-test-inventory.json`
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/OperationAuthenticationBinding.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationTemporalBoundaryCompiler.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcAuthenticationSecurityStateQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/AuthorizationPolicyVersionJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/GroupRoleGrantJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/LoginSessionJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/RolePermissionGrantJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/SubjectSecurityAttributeJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/UserGroupMembershipJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/UserJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/UserPermissionGrantJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/UserRoleGrantJpaEntity.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationTemporalBoundaryCompilerTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/AuthorizationTemporalBoundaryPostgresIntegrationTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/identity/domain/model/OperationAuthenticationBinding.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationTemporalBoundaryCompiler.java`, `src/test/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationTemporalBoundaryCompilerTest.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcAuthenticationSecurityStateQueryAdapter.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/AuthorizationPolicyVersionJpaEntity.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/GroupRoleGrantJpaEntity.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/LoginSessionJpaEntity.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `.github/ci-test-inventory.json`
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/OperationAuthenticationBinding.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationTemporalBoundaryCompiler.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcAuthenticationSecurityStateQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/AuthorizationPolicyVersionJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/GroupRoleGrantJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/LoginSessionJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/RolePermissionGrantJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/SubjectSecurityAttributeJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/UserGroupMembershipJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/UserJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/UserPermissionGrantJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/UserRoleGrantJpaEntity.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationTemporalBoundaryCompilerTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/AuthorizationTemporalBoundaryPostgresIntegrationTest.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+### Current execution checkpoint — HPR-P25-051C CI acceptance, 2026-10-14
+
+Owner Next recovered live main `f68a729594a9dd2a54911501396394af4eef17c7`,
+parent `68757afa87d6f58c8609c2aca10185b03df9bdb1`, tree
+`c87fb4528fdbbea33d0959856014b3dfef9e0e86`.
+Exact-SHA [Full #690](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38600369907),
+[Fast #23](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38600369794)
+and [Docs #306](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38600370035)
+are completed SUCCESS. All seven Full jobs, including both PostgreSQL
+partitions, unrestricted oracle, runtime API/dictionary and authenticated
+Full Verification Gate, are SUCCESS.
+
+**HPR-P25-051C COMPLETED / SUPPLIED BOUNDARY REDUCTION CI ACCEPTED.**
+Downloaded this exact attempt's unit-architecture artifact `11913183217`
+and PostgreSQL partition-1 artifact `11912464814`. Genuine Surefire XML
+contains all12 AuthorizationTemporalBoundaryCompilerTest identities and
+all4 AuthorizationTemporalBoundaryPostgresIntegrationTest identities;
+each suite has zero failures/errors/skips/flakes. Reported durations
+0.020s and2.382s are observations, not scheduling baseline changes or
+production latency SLOs. The formerly locally skipped PostgreSQL cases
+now have actual hosted zero-skip evidence on this runtime SHA.
+
+Authenticated aggregate:379 classes/2013 tests, zero failures/errors/skips,
+same-run equivalence true, source SHA matching f68a729, inventory digest
+`840d209a64a5f9414a09b23e3116cfdc74845fa77fb4e085120b915b878114a8`.
+Oracle fallback remains required; optimized_adoption_eligible=false.
+The current runtime/compiler source, inventory and migrations remain
+unchanged by this acceptance checkpoint.
+
+Acceptance covers pure reduction of supplied facts and real PostgreSQL
+half-open/microsecond/timezone/infinity parity only. The dormant compiler
+does not collect the owner event set, certify coverage, freeze authority
+facts or grant permission. Parent051/D2/B2/B3 remain IN PROGRESS/OPEN.
+The next same-ID source/scope closure must register actual Identity-owned
+event collection from the complete graph (including future inactive/
+nonmatching DENY, grant/membership/policy/attribute/B1 boundaries) and
+its exact implementation/test paths. Do not substitute current-at-s JPA
+filters or a caller completeness Boolean. No new runtime path or052
+is admitted by this checkpoint. Global writer/privilege/lock ordering,
+real protected Identity/Party/Topology exports, same database s/u/t
+and038 publication head/epoch remain OPEN.
+
+Current action uses registered same-ID governance message
+`docs(security): select operation time fencing proof`; UPDATE only
+roadmap and append-only reconciliation, CREATE/DELETE none. Preserve
+all source/tests/inventory/migrations/workflows/history/version/release
+blobs. Validate exact two-path append-only scope and canonical docs,
+publish directly to expected-head main, verify parent/tree/blobs, observe
+automatic exact-SHA Docs startup then STOP. Startup is not success;
+accepted runtime stays anchored to f68a729.
+Gas-first/GZ2, own engine, steady/transient, versioned inputs/operator
+control persist; synthetic development, owner calibration later,
+Simulation/P3 deferred; no release/deployment.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` — exact-head oracle suite 16 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationTemporalBoundaryCompilerTest.java` — exact-head oracle suite 12 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/AuthorizationTemporalBoundaryPostgresIntegrationTest.java` — exact-head oracle suite 4 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: HAPI-569. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `f68a729594a9dd2a54911501396394af4eef17c7` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [doc/roadmap/ULTIMATE_ROADMAP.md:3197](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L3197)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:3251](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L3251)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:3328](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L3328)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Source-backed bounded stage accepted; current exact-SHA raw regression reports independently recovered. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+<a id="hapi-571"></a>
+## HAPI-571 — collect fenced temporal event candidates
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HPR-P25-051D
+
+Priority: P2
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: HAPI-570
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+collect fenced temporal event candidates
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `.github/ci-test-inventory.json`
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationEvidencePort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserPermissionGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcIdentityTemporalEventCollector.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaAuthorizationEvidenceAdapter.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/IdentityTemporalEventCollectorPostgresIntegrationTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserPermissionGrant.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationEvidencePort.java`.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcIdentityTemporalEventCollector.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaAuthorizationEvidenceAdapter.java`, `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/IdentityTemporalEventCollectorPostgresIntegrationTest.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `.github/ci-test-inventory.json`
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationEvidencePort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserPermissionGrant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcIdentityTemporalEventCollector.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaAuthorizationEvidenceAdapter.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/IdentityTemporalEventCollectorPostgresIntegrationTest.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+### Current execution checkpoint — HPR-P25-051D CI acceptance, 2026-10-15
+
+Owner Next recovered live main `d14c44fc527ea1115ad87baafa21a3264bf6950c`,
+parent `3f384a7f97eaf494f1b5fe40250c25340ee79008`, tree
+`27566e32016820fe6981e2dc008b24bdc75f23cf`.
+Exact-SHA [Full #694](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38689504851),
+[Fast #27](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38689504754)
+and [Docs #312](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38689504756)
+are completed SUCCESS. All seven Full jobs, including both PostgreSQL
+partitions, unrestricted oracle, API/dictionary and authenticated Full
+Verification Gate, are SUCCESS.
+
+**HPR-P25-051D COMPLETED / BOUNDED IDENTITY TEMPORAL COLLECTOR CI ACCEPTED.**
+Downloaded exact attempt1 PostgreSQL partition1 artifact `11952107804`
+and authenticated full evidence bundle `11951448256`. Genuine Surefire XML
+for IdentityTemporalEventCollectorPostgresIntegrationTest contains all ten
+registered identities in BOTH partition1 and oracle: zero failures, errors,
+skips or flakes. Suite durations14.502s and24.115s are observations, not
+production SLOs or new inventory scheduling baselines. The overflow case now
+proves the exact reviewed-cap root cause,1025 provisional rows and rollback;
+hosted acceptance also covers inactive future DENY, selected expiry/sample,
+expression gate, independent writer fencing and late-lock failure recovery.
+
+Authenticated gate.json binds source SHA to d14c44f, run38689504851/attempt1,
+inventory `2ca62c283288fb23ffe3326742473c4b1f9a8c0ae93679cbe1ff8df90306e2b0`,
+380 classes/2023 tests, zero failures/errors/skips and same-run equivalence
+true. Full oracle/fallback remains required; optimized_adoption_eligible=false.
+Live production collector/test and CI workflow were recovered before accepting
+this evidence. No local Java21 or PostgreSQL execution is represented by this
+checkpoint; these are genuine hosted Java21/PostgreSQL16 acceptance results.
+
+Acceptance covers the bounded Identity-wide temporal/expression superset,
+fixed eleven-relation fences before database clock/PID/XID sampling, actual
+051B syntax and051C reduction, and protected051A rollback/commit behavior.
+The collector remains a private diagnostic candidate. It establishes no
+producer-origin authentication, B1 eligibility, evaluated PERMIT or complete
+static authority graph. A constructed Candidate cannot grant authority.
+
+Parent051/D2/B2/B3 remain IN PROGRESS/OPEN. Next same-ID work must recover and
+register the complete Identity static authority dependency and mutation/
+privilege graph, actual protected owner/export contract and global lock order
+before connecting permission decisions. Party/Topology paired exports,
+common database s/u/t and038 publication head/epoch remain unimplemented
+integration obligations. No future runtime path or052 is selected here.
+
+This acceptance action uses registered same-ID governance message
+`docs(security): select operation time fencing proof`.
+UPDATE only roadmap and append-only reconciliation; CREATE/DELETE none.
+Historical failed-attempt entries remain intact. Preserve runtime source,
+tests, inventory, Flyway migrations, workflows, release/version/history.
+Validate canonical docs/offline OpenAPI/P1 and exact two-path append-only
+scope, publish guarded main, verify parent/tree/blobs, observe exact-SHA
+automatic Docs START then STOP. Startup is not success; accepted runtime
+stays anchored to d14c44f. Gas-first/GZ2, own engine, steady/transient,
+versioned inputs/operator control persist; synthetic development, owner
+calibration later, Simulation/P3 deferred; no release/deployment.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` — exact-head oracle suite 16 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/IdentityTemporalEventCollectorPostgresIntegrationTest.java` — exact-head oracle suite 10 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: HAPI-570. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `d14c44fc527ea1115ad87baafa21a3264bf6950c` — exact registered-message commit; surviving paths matched to current tree.
+- `3f384a7f97eaf494f1b5fe40250c25340ee79008` — exact registered-message commit; surviving paths matched to current tree.
+- `cb9cd9c9f97c1ec74493687a50f1d3694bc38fd0` — exact registered-message commit; surviving paths matched to current tree.
+- `20a215807ce87d7bf1ee7021219e8bf4a1b0c835` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [doc/roadmap/ULTIMATE_ROADMAP.md:2722](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L2722)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:2779](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L2779)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:2827](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L2827)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:2879](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L2879)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:2921](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L2921)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:3005](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L3005)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Source-backed bounded stage accepted; current exact-SHA raw regression reports independently recovered. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+<a id="hapi-572"></a>
+## HAPI-572 — fence complete authority dependency relations
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HPR-P25-051E
+
+Priority: P2
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: HAPI-571
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+fence complete authority dependency relations
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `.github/ci-test-inventory.json`
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/Permission.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcIdentityAuthorityFence.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/IdentityAuthorityFencePostgresIntegrationTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/identity/domain/model/Permission.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcIdentityAuthorityFence.java`, `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/IdentityAuthorityFencePostgresIntegrationTest.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `.github/ci-test-inventory.json`
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/Permission.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcIdentityAuthorityFence.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/IdentityAuthorityFencePostgresIntegrationTest.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+### Current execution checkpoint — HPR-P25-051E CI acceptance, 2026-10-15
+
+Owner Next recovered live main `c72eae39cab0b1ec1e20654386fe95ed43b134ab`,
+parent `19679e90d7e23b7e3cd0fe5829f9e2d929f9b578`, tree
+`7d35ca97a3829b647dde3501463af02e456238ea`.
+Exact-SHA [Full #695](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38698554941),
+[Fast #28](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38698555074)
+and [Docs #315](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38698555135)
+are completed SUCCESS. All seven Full jobs, including both PostgreSQL partitions,
+unrestricted Java21 clean-verify oracle, API/dictionary and Full Verification Gate,
+are SUCCESS. The production component, ten-case test and current workflow were
+recovered at this exact source before accepting the evidence.
+
+**HPR-P25-051E COMPLETED / BOUNDED COMPLETE IDENTITY RELATION FENCE CI ACCEPTED.**
+Downloaded PostgreSQL partition1 artifact11955284622 and full evidence bundle
+11955506471 from run38698554941/attempt1, authenticated through the GitHub connector.
+Their ZIP SHA256 digests match GitHub metadata:
+`a314706acf2a863c0ab024f50db08560f6ae7bb955907b78499112debef559f1`
+and `b01007907ba3632547178a38961a6ff5963a3278bb01625c6d910eeec6adc9fa`.
+Raw IdentityAuthorityFencePostgresIntegrationTest XML contains every one of the
+ten registered case identities in BOTH owning partition and unrestricted oracle,
+zero failures/errors/skips/flakes/reruns. Observed suite durations are13.907s
+(partition) and43.433s (oracle); these include suite overhead and are neither a
+production latency SLO nor new inventory scheduling baseline.
+
+Independently re-extracted the authenticated full bundle and called the current
+`verify_full_ci_evidence.aggregate` against this exact source, inventory and raw
+files. The recomputed result equals downloaded gate.json EXACTLY: source c72eae3,
+run38698554941/attempt1, inventory
+`cbd9f8f0d952ceef915fa275250871e79fedcc7399832b5d13e341dd86c060db`,
+381 classes/2033 tests, zero failures/errors/skips, successful required dependencies
+and same-run partition/oracle equivalence. Mandatory oracle/fallback remains true;
+optimized_adoption_eligible=false. Java21/clean-verify/package, hashed report payload,
+workflow/helper identity, API/base and physical catalog agreement are checked by
+that existing verifier, not inferred from the workflow badge alone.
+
+Accepted scope: the reviewed22 Identity relations are fenced and verified before
+051D's actual temporal sample; native/static/JPA writers, effective synthetic
+non-owner DML privileges and bypass denial, actual pre-sample commit ordering,
+late-prefix provisional-write rollback, invalid transaction/binding contexts,
+syntax/overflow exact roots and materialized commit-before-delivery passed hosted
+real PostgreSQL16. The earlier local ten skips remain historical local limitations;
+this checkpoint claims genuine HOSTED executions only, not new local PostgreSQL
+or Java execution. Production/test source and existing limits are unchanged.
+
+The result remains an Identity-private diagnostic Candidate. It establishes no
+private producer-origin B1 eligibility, paired evaluated PERMIT, Party/Facility
+ownership contribution, global cross-owner lock graph or038 publication head/epoch.
+Synthetic non-owner role assertions do not establish deployed grants/ownership or
+administrative bypass resistance. Parent051/D2/B2/B3 remain IN PROGRESS/OPEN.
+
+**Next same-ID work:** recover and register the protected Identity owner contribution
+for ambient verified-origin B1 and paired company/facility permission at the common
+fenced database sample/bound, with the exact source/test/export envelope and
+remaining Party/Topology/global-order dependencies explicit. Existing standalone
+B1 REQUIRES_NEW and sequential wall-clock scoped decisions cannot substitute.
+No next runtime file list, new child code, permission API or052 is selected by
+this acceptance action; source/contract registration must precede implementation.
+
+Validation completed for this acceptance: authenticated aggregate recomputation
+and exact ten-case raw XML checks PASS; canonical docs98/5355 relative links/24
+modules, offline OpenAPI263 operations/244 paths/231 schemas, retained P1 evidence,
+unchanged source inventory and all six Python policy suites102 cases PASS. Two
+document UPDATEs only, append-only reconciliation and whitespace PASS. No new
+local Java/JUnit/PostgreSQL execution or release/deployment was performed.
+
+Current registered governance message:
+`docs(security): select operation time fencing proof`.
+UPDATE only this roadmap and append-only reconciliation; CREATE/DELETE none.
+Preserve every runtime/test/inventory/migration/workflow/version/history blob.
+Canonical docs/offline OpenAPI/P1, source inventory, Python policies and exact
+append-only/two-path/whitespace checks are required before publication. Guard main
+atc72eae3, verify parent/tree/two blobs, observe exact-SHA automatic Docs START,
+then STOP without completion polling or selecting another stage. No manual Full/
+Fast dispatch for this docs-only acceptance. Gas-first/GZ2, own engine, steady/
+transient, versioned inputs/operator control persist; synthetic development and
+later owner calibration, Simulation/P3 deferred; no release/deployment.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` — exact-head oracle suite 16 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/IdentityAuthorityFencePostgresIntegrationTest.java` — exact-head oracle suite 10 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: HAPI-571. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `c72eae39cab0b1ec1e20654386fe95ed43b134ab` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [doc/roadmap/ULTIMATE_ROADMAP.md:2274](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L2274)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:2352](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L2352)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Source-backed bounded stage accepted; current exact-SHA raw regression reports independently recovered. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+<a id="hapi-573"></a>
+## HAPI-573 — contribute protected bound authentication
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HPR-P25-051F
+
+Priority: P2
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: HAPI-572
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+contribute protected bound authentication
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `.github/ci-test-inventory.json`
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyOperationAuthenticationContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyScopedAccessContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/model/VerifiedAuthorizationAssertion.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/EvaluatePermissionUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAuthorizationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/OperationAuthenticationQueryApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/policy/AuthorizationEvaluationRequest.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/policy/AuthorizationEvidence.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/policy/AuthorizationJson.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationPolicyEvaluator.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcAuthenticationSecurityStateQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcIdentityAuthorityFence.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcOperationAuthenticationBindingRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaAuthorizationEvidenceAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraAccessTokenIssuer.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraOidcAuthenticationToken.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/SpringAuthorizationContextAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyOperationAuthenticationQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationRegistry.java`
+- `src/main/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutor.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessQueryServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/OperationAuthenticationQueryPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedAuthorizationEvidencePostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedOperationIdentityParticipantPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/AuthorizationAssertionTrustTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipantTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/AuthorizationEvidencePostgresTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/identity/domain/policy/AuthorizationEvaluationRequest.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/policy/AuthorizationEvidence.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/policy/AuthorizationJson.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationPolicyEvaluator.java`.
+- Inbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/in/EvaluatePermissionUseCase.java`.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAuthorizationApplicationService.java`, `src/main/java/dz/sh/hidra/modules/identity/application/service/OperationAuthenticationQueryApplicationService.java`, `src/main/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessQueryService.java`, `src/test/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessPostgresIntegrationTest.java`.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcAuthenticationSecurityStateQueryAdapter.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcIdentityAuthorityFence.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcOperationAuthenticationBindingRepositoryAdapter.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `.github/ci-test-inventory.json`
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyOperationAuthenticationContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyScopedAccessContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/model/VerifiedAuthorizationAssertion.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/EvaluatePermissionUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAuthorizationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/OperationAuthenticationQueryApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/policy/AuthorizationEvaluationRequest.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/policy/AuthorizationEvidence.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/policy/AuthorizationJson.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationPolicyEvaluator.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcAuthenticationSecurityStateQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcIdentityAuthorityFence.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcOperationAuthenticationBindingRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaAuthorizationEvidenceAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraAccessTokenIssuer.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraOidcAuthenticationToken.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/SpringAuthorizationContextAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyOperationAuthenticationQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationRegistry.java`
+- `src/main/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutor.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessQueryServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/OperationAuthenticationQueryPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedAuthorizationEvidencePostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedOperationIdentityParticipantPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/AuthorizationAssertionTrustTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipantTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/AuthorizationEvidencePostgresTest.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+### Current execution checkpoint — 051F CI accepted; 051G evidence reader registered, 2026-10-15
+
+Owner continuation recovered exact main `fa87d9f6c7df0a5431a3cdcc1b754d146e7c7366`,
+parent `f7836a21bbb0018ed5f39da79dca21186b93bf2a`, tree
+`7a8d8b58c08af6f6c4aea936b9d8e7936ca9fd62`. Exact-SHA Full #697/run38706785587,
+Fast #30/run38706785599 and Docs #319/run38706785595 are completed SUCCESS.
+**HPR-P25-051F COMPLETED / BOUNDED B1 PARTICIPANT CI ACCEPTED. Parent051 remains
+IN PROGRESS; B2/B3 and global owner/publication integration are NOT complete.**
+
+#### Actual hosted acceptance, not audit-summary inference
+
+Authenticated attempt1 partition1 artifact11958754119 and full evidence bundle
+11959147122 were downloaded. ZIP SHA256 values match current GitHub metadata:
+`d0d3c8ecfc1e07779b9e795ef7877b0e236a7a57b2b247562a73905f956ce445` and
+`6babf3c0d9c7d5b01dfcff0401f8200ae4e00b442eb402548e95b6d534509f33` respectively.
+Both actual ProtectedOperationIdentityParticipantPostgresIntegrationTest XML reports
+contain all twelve exact inventory identities, zero failures/errors/skips/flakes/
+reruns. Suite elapsed22.023s partition /52.728s oracle are observations, not SLOs
+or invented baseline timings. Local Docker-related skips remain recorded as skips.
+
+Independent current verify_full_ci_evidence.aggregate recomputation over the extracted
+bundle equals its gate.json: source fa87d9f6/run38706785587/attempt1/inventory
+`2b7e87be05f37e8292bd7707e30e6979bba10c1fc92fd7e4ca47953034702d42`,383 classes,
+2053 tests, zero failures/errors/skips, required dependencies successful and same-run
+partition/oracle equivalence true. Source/helper/workflow/raw-report hashes, Java21
+clean-verify/package, current/base API and physical dictionary evidence validate.
+Mandatory fallback remains true; optimized adoption false; CI-003 broader closure
+is not inferred. Full697 also preserves the existing B1/completion/origin/architecture
+regressions. No new local Java/PostgreSQL execution is claimed by this acceptance.
+
+This closes F's actual four-producer wire/private receipt origin, complete22-fence
+current B1 at database s/u, physical PID/XID, context/thread/replay rejection,
+independent writer exclusion, expiry, stale-cache rejection, rollback and physical
+commit-before-delivery slice. It grants no evaluated paired permission, complete
+cross-owner fence order, Party eligibility/Facility ownership or038 head/epoch/CAS/
+read/history authority. Current paired evaluation must still be implemented.
+
+#### Recovered next dependency: fresh bounded authorization evidence
+
+Current TopologyScopedAccessQueryService derives eight operation codes but makes
+two sequential EvaluatePermissionUseCase calls. IdentityAuthorizationApplicationService
+chooses Instant.now(), uses the JPA evidence adapter and may persist decisions.
+JpaAuthorizationEvidenceAdapter traverses live grants/roles/groups/policies/attributes
+through EntityManager; its first-level images cannot serve the protected fresh SQL
+boundary. AuthorizationPolicyEvaluator.evaluate(request,evidence,at) is reusable
+pure evaluation with explicit DENY precedence, INDETERMINATE before permit, and no
+clock in that overload; its separate permit/deny convenience methods are not selected.
+Delegation and administrator wildcard semantics are not traversed by this evaluator.
+
+SpringAuthorizationContextAdapter.capture retains only nonempty values for mapping
+claim names seen during capture. It cannot prove signed ABSENCE, completeness after
+a new mapping name, or reconstruct original source claims from a native bearer.
+Public VerifiedAuthorizationAssertion construction is not provenance. The original
+F proof validates B1 only; it must not silently certify claim-based authorization.
+Existing AuthorizationEvidence/Rule nested collection shapes are local evaluator
+inputs, not051A-exportable protected results.
+
+Register one bounded prerequisite **HPR-P25-051G: fresh fenced database authorization
+evidence reader**. A subsequent separately scoped owner participant will invoke the
+actual F participant, invoke G twice and evaluate both scopes at that same physical s/u.
+G is diagnostic/evaluator-input infrastructure only: it introduces no public business
+permission endpoint, PERMIT authority, protected result or Topology consumer. This
+split closes the stale JPA read gap before selecting the coupled owner integration.
+No future participant path or implementation is authorized by naming that dependency.
+
+#### Exact future HPR-P25-051G scope
+
+**PLANNED / REGISTERED / NOT IMPLEMENTED.** Separate owner Next after this commit's
+exact-SHA Docs SUCCESS selects ONE six-path implementation, exact message:
+`feat(identity): load fenced authorization evidence`.
+
+| Operation | Exclusive exact path |
+|---|---|
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java` |
+| CREATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java` |
+| CREATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedAuthorizationEvidencePostgresIntegrationTest.java` |
+| UPDATE | `.github/ci-test-inventory.json` — only two new classes/cases/source hashes |
+| UPDATE | `doc/roadmap/ULTIMATE_ROADMAP.md` |
+| UPDATE | `doc/model-remediation/RECONCILIATION.md` — append-only |
+| DELETE | None |
+
+All three CREATE paths absent at source fa87d9f6. Canonical Identity Infrastructure/
+Test headers/packages required. No changes to existing production/test bodies,
+registry/producer/receipt/tag/assertion capture, F or051A–E, evaluator/JSON/compiler/
+contracts/owner adapters, Topology/Party, migration/schema, dependencies/configuration,
+workflow/CI policy, dictionary/version/release/history. New unit fast=true, PG false;
+explicit0 unmeasured timing hints, every old inventory entry/key preserved.
+
+#### Frozen G contract and limits
+
+One Identity-private Spring repository exposes
+`AuthorizationEvidence load(TopologyOperationAuthenticationContract.Evidence identity,
+AuthorizationEvaluationRequest request, int backendPid, long transactionId)` with
+MANDATORY propagation and direct actual writable READ COMMITTED checks. identity is
+an explicitly untrusted diagnostic input to this reader; constructor validation of
+Evidence/Candidate/Contribution never establishes authority. Only a later actual
+trusted F→G→evaluator owner invocation can use these values for a protected operation.
+No caller-supplied assertion/claim map, eligibility Boolean or deadline is accepted.
+
+Before owner data reads, require current physical JDBC PID/XID equals supplied
+coordinates and all22 actual Identity ShareRowExclusiveLock relation fences remain
+held by that backend, then recheck coordinates before return. No new lock order,
+connection, transaction, wall-clock sample, retries or Platform private state access.
+Use identity.observedAt() as s; reject nonfinite B1 bounds or expiry at/before s, invalid scalar
+identity, request.userId mismatch, resourceType other than STATION_GRAPH_REVISION,
+resource reference not exactly the requested facility, or unsupported scope/code.
+Only CUSTOM topology-company:<exact nonblank companyPartyId> or FACILITY <exact
+facilityId> requests and the existing eight topology:station-revision operation
+codes are admitted. GLOBAL requests are not admitted; eligible GLOBAL stored grants
+retain their current covers semantics. No scope reference proves Party/Facility ownership.
+
+Read projected Identity columns with fresh JDBC only, no SELECT * or sensitive
+password/tag/source-token projection, no cached entity/repository port/old owner
+query. Cover the nineteen existing evidence families: user, provider, external
+identity, permission, user permission/role grants, role and role permission grants,
+group and group role grants, user group membership, external group/role/permission
+mappings, subject security attributes/definitions and authorization policy/version/
+rule. Reproduce current database-backed grant ordering0/1/2, group membership/source
+eligibility, active role/group/provider/permission state, scope coverage and half-open
+windows. Read synced membership provenance fresh through the actual mapping/provider/
+linked-user relations, including provider changes outside the current login provider.
+Resolve USER, eligible GROUP and actual bound EXTERNAL_IDENTITY attributes from fresh
+owner rows; private source claims are never substituted for persisted typed attributes.
+
+Bound fixed-depth graph traversal through projected, parameterized, deterministic SQL;
+no role recursion, per-row N+1 queries, request-unbounded scan or OFFSET continuation.
+Use LIMIT1025 overflow sentinels and a combined maximum1024 fetched owner records per
+load across its bounded queries, including inactive/future candidates needed to avoid
+omitting a potential DENY. Overflow is operational rejection, never partial evidence.
+This is an explicit conservative capacity limit, not a throughput/availability claim;
+existing051D whole temporal census limits and051A500ms work budget remain unchanged.
+No configurable bypass or250/750/1000ms timeout widening. Keep null expression slots
+and reuse current typed attribute semantics and AuthorizationJson bounds8192 chars/
+depth16/nodes256. Invalid/conflicting/unsupported evidence cannot produce eligible
+permission. Check051B supported expression classification; no broadened grammar or
+clock-dependent reference. Preserve explicit database DENY while marking unresolved
+attribute/version/claim evidence EVIDENCE_INDETERMINATE; corrupt/unavailable SQL or
+structural references are sanitized operational errors with no private causes.
+
+**Conservative claim coverage decision:** G accepts NO source assertion. If an ACTIVE
+ASSERTION_ONLY external group mapping or ACTIVE DIRECT_GRANT external role/permission
+mapping exists for the bound provider, its claim applicability is unproven: mark
+EVIDENCE_INDETERMINATE, including newly introduced or empty/missing claim names.
+Do not silently skip these branches, trust captured nonempty maps, stored snapshots,
+wrapper roles or caller assertions. SYNC_MEMBERSHIP is database-owned and evaluated
+through current source eligibility, not treated as a live claim. This conservative
+rule may prevent an otherwise valid database grant when a claim-dependent mapping
+exists; it applies even if the mapping appears unrelated to the requested permission.
+That availability limitation is intentional and explicit until a separately registered
+complete original-claim coverage mechanism is accepted. All four producer types can
+load/evaluate database-only grants when no unsupported claim mapping applies; B1
+acceptance itself is unchanged. No claim-dependent PERMIT acceptance is claimed.
+
+Return existing normalized AuthorizationEvidence for local synchronous domain
+assessment ONLY. Defensively copy nested maps/lists/typed JSON values; no live JDBC/
+JPA resource, original claim/token/tag or mutable backing object escapes. Preserve
+required null rule-expression positions through defensive immutable wrappers where
+List.copyOf cannot do so. Such local wrappers remain deliberately unsupported as
+051A public results; do not return the graph from ProtectedTransactionExecutor.
+No decision persistence, permission Boolean or detached authority/result factory.
+The later paired participant must derive the fixed code from the operation, call
+actual F and G twice, evaluate both with the unchanged domain overload at s, require
+both PERMIT, and export only separately approved scalar evidence/common u/PID/XID.
+Party/global owner gates and final database t still require separately scoped work.
+
+#### Required genuine G tests and acceptance
+
+New unit class, JVM/mocks only, eight exact planned identities:
+`requiresWritableReadCommittedParticipation`;
+`requiresMatchingPhysicalCoordinatesAndCompleteIdentityFences`;
+`rejectsCallerActorResourceAndScopeMismatches`;
+`preservesGrantOrderScopeWindowsAndDenyPrecedence`;
+`rejectsUnknownClaimCoverageInsteadOfAssumingAbsence`;
+`preservesTypedAttributesAndConflicts`;
+`boundsRowsJsonAndUnsupportedEvidence`;
+`hasNoJpaCacheWallClockDecisionPersistenceOrAuthorityExport`.
+
+New PostgreSQL16/Testcontainers/Flyway migrate+validate/JPA validate class, twelve
+exact planned identities:
+`allFourRealBoundActorsLoadDatabaseAuthorityAtFencedSample`;
+`bothCompanyAndFacilityRequireIndependentPermits`;
+`directRoleAndGroupDeniesOverridePermit`;
+`scopeMismatchAndIneligibleOwnersNeverGrant`;
+`synchronizedMembershipSourcesAreReadFresh`;
+`typedAttributesAndPolicyConstraintsUseDatabaseSample`;
+`oidcAndNewClaimMappingsRemainIndeterminateWithoutCoverage`;
+`staleJpaAndEarlierSnapshotsCannotSupplyAuthority`;
+`committedRevocationBeforeFencesRemovesPermit`;
+`writersAfterAdmissionBlockUntilRelease`;
+`futureDenyBoundAndExpiryCannotExtendEvidence`;
+`boundedOverflowMalformedStateAndRollbackStayClosed`.
+
+PG proof must invoke actual F prepare outside051A, actual F contribute and actual G
+inside the real protected transaction, and unchanged actual domain evaluator for
+both company/FACILITY requests at the same s. Verify JdbcTemplate and Hibernate PID/
+XID, physical commit-before-delivery of scalar test observations and genuine final
+s/u/t guard; no graph export or fake authority. Actual LOCAL/LDAP/AD/OIDC producers,
+private HMAC, native issuance/qualified decoder, owner SQL, fences/evaluator and
+transactions are not mocked. Explicit directory/source transport fixtures and real
+synthetic source signing are allowed as in F; test-only failure injection must call
+real storage and assert its exact root, never unrelated setup failure. Cover real
+USER/ROLE/GROUP grant paths, source membership invalidation, explicit DENY with
+unknown evidence, typed conflicts/version ambiguity, both scopes and every fixed
+operation code, no wildcard/delegation shortcut, positive clean recovery after rollback.
+
+Use independent preopened/warmed writer connections, observed pg_blocking_pids/locks,
+latches and bounded joins, no sleeps. Each lock wait receives its own500ms work
+budget; real expiry observation occurs outside it. Future DENY, including currently inactive rows, must cap the
+existing F u and cannot be bypassed by filtering current candidates; no extra G
+wall-clock can extend it. Retain guarded security identities, clean ordinary grants/
+policies/attributes only in FK order; no trigger disabling or source mutation as proof.
+Overflow/malformed input and old-read-only/JPA images cannot yield partial PERMIT.
+
+Java21 compile/focused tests include both new classes, architecture/boundary guards,
+AuthorizationPolicyEvaluator through existing semantic AuthorizationEvidencePostgresTest,
+AuthorizationAssertionTrustTest, TopologyScopedAccessQueryServiceTest, existing
+TopologyScopedAccessPostgresIntegrationTest, all F12/B1 26/completion22 and temporal/
+fence suites unchanged. Run existing Fast selection, six Python suites102 cases,
+inventory/docs/offline API/P1 and exact scope/header/append-only/whitespace gates.
+Local Docker absence/skips remain explicit; mocks never replace hosted acceptance.
+Exact implementation Full/Fast/Docs success and all12 genuine new PG identities with
+zero failures/errors/skips in partition AND unrestricted oracle are required before
+G acceptance. No claimed observed timing for new inventory entries.
+
+#### Current commit scope and STOP
+
+CURRENT execution is F acceptance and this dependency recovery/registration only.
+Exact reused same-ID message: `docs(security): select operation time fencing proof`.
+UPDATE ONLY this roadmap and append-only reconciliation; no CREATE/DELETE or runtime/
+test/inventory/workflow/migration/configuration/release change. Validate source/CI,
+actual artifact hashes/aggregate/raw identities, three absent future paths, docs/
+offline API/P1/inventory/Python and two-path/append-only/whitespace scope. Guard main,
+verify exact parent/tree/two blobs, observe automatic Docs START then STOP; no manual
+Full/Fast and no waiting for CI completion. Separate Next selects G after Docs success.
+HPR-P25-051 remains OPEN; G is not paired authority or global owner integration.
+External audit candidate HPS/HAPI/HWEB mappings and six-document reconstruction are
+not activated. Synthetic development and later owner calibration, gas-first/GZ2,
+own engine, steady/transient direction, versioned inputs/operator control persist;
+Simulation/P3 deferred; no release/deployment.
+
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` — exact-head oracle suite 16 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java` — exact-head oracle suite 13 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessPostgresIntegrationTest.java` — exact-head oracle suite 11 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessQueryServiceTest.java` — exact-head oracle suite 34 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/OperationAuthenticationQueryPostgresIntegrationTest.java` — exact-head oracle suite 26 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedAuthorizationEvidencePostgresIntegrationTest.java` — exact-head oracle suite 12 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedOperationIdentityParticipantPostgresIntegrationTest.java` — exact-head oracle suite 12 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java` — exact-head oracle suite 8 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/AuthorizationAssertionTrustTest.java` — exact-head oracle suite 3 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipantTest.java` — exact-head oracle suite 8 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationTest.java` — exact-head oracle suite 38 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/AuthorizationEvidencePostgresTest.java` — exact-head oracle suite 9 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: HAPI-572. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `f7836a21bbb0018ed5f39da79dca21186b93bf2a` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [doc/roadmap/ULTIMATE_ROADMAP.md:1605](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L1605)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:1846](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L1846)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:1918](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L1918)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:1998](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L1998)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Source-backed bounded stage accepted; current exact-SHA raw regression reports independently recovered. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+<a id="hapi-574"></a>
+## HAPI-574 — load fenced authorization evidence
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HPR-P25-051G
+
+Priority: P2
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: HAPI-573
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Fresh fenced authorization evidence; Identity
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `.github/ci-test-inventory.json`
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedAuthorizationEvidencePostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Fresh bounded JDBC direct/role/group/policy/attribute evidence at supplied fenced s; correct scopes/windows, explicit DENY and INDETERMINATE, no cached authority or partial permit.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java`, `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedAuthorizationEvidencePostgresIntegrationTest.java`, `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `.github/ci-test-inventory.json`
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedAuthorizationEvidencePostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedAuthorizationEvidencePostgresIntegrationTest.java` — exact-head oracle suite 12 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java` — exact-head oracle suite 8 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: HAPI-573. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `fa9099f170e0cb78dbfeb4cf6ca19a2ccaada2c2` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [doc/model-remediation/RECONCILIATION.md:23145](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L23145)
+- [doc/model-remediation/RECONCILIATION.md:23552](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L23552)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:893](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L893)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:1139](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L1139)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:1495](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L1495)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Source-backed bounded stage accepted; current exact-SHA raw regression reports independently recovered. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+doc/roadmap/ULTIMATE_ROADMAP.md:893 | HPR-P25-051G | **Completed** — accepted bounded Identity fenced authorization evidence reader and test repair at `6ca63efdff3eebf277523222d07587d9101e401e
+doc/roadmap/ULTIMATE_ROADMAP.md:1139 | HPR-P25-051G | IN PROGRESS / IMPLEMENTED CANDIDATE / HOSTED ACCEPTANCE PENDING
+doc/roadmap/ULTIMATE_ROADMAP.md:1495 | HPR-P25-051G | Fresh fenced authorization evidence; Identity | 051F accepted; existing exact six-path registration. Remains the next implementation selection. | Fresh bounded JDBC direct/role/group/policy/attribute evidence at supplied fenced s; correct scopes/windows, explicit DENY and INDETERMINATE, no cached authority or partial permit.
+doc/model-remediation/RECONCILIATION.md:23145 | HPR-P25-051G | Fresh fenced authorization evidence; Identity | 051F accepted; existing exact six-path registration. Remains the next implementation selection. | Fresh bounded JDBC direct/role/group/policy/attribute evidence at supplied fenced s; correct scopes/windows, explicit DENY and INDETERMINATE, no cached authority or partial permit.
+doc/model-remediation/RECONCILIATION.md:23552 | HPR-P25-051G | IN PROGRESS / IMPLEMENTED CANDIDATE / HOSTED ACCEPTANCE PENDING
+~~~~~~~~
+
+<a id="hapi-575"></a>
+## HAPI-575 — select operation time fencing proof
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HPR-P25-051H
+
+Priority: P0
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: HAPI-574, HAPI-580
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Trusted authorization-claim provenance and coverage; Identity
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `AGENTS.md`
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityAdministrationCommandController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityOidcAuthorizationController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/model/VerifiedAuthorizationAssertion.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/model/VerifiedDirectoryIdentity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/AuthenticateDirectUserUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/EvaluatePermissionUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/IdentityAdministrationQueryUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationAssertionPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/LdapCredentialVerificationPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/TrustedAuthenticationVerificationPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/AuthenticationCompletionApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/CustodyTransferTicketActorReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/DirectAuthenticationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/LocalAuthenticationOutcomeApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/MaintenanceWorkOrderActorReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/ExternalRoleMapping.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/OperationAuthenticationBinding.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcIdentityAuthorityFence.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcOperationAuthenticationBindingRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraAccessTokenIssuer.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapCredentialVerificationAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationRegistry.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/BoundAuthenticationCompletionPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedAuthorizationEvidencePostgresIntegrationTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+Finish paired permissions, Party/Facility participation, common transaction/time fences, CAS publication and adversarial qualification. Prove organization-to-station monitoring isolation. The exact bounded remaining delivery is: Trusted authorization-claim provenance and coverage; Identity.
+
+### 4. Functional Requirements
+
+Finish the minimal original-claim-to-native-binding-to-fenced-reader trust chain. PRESENT/ABSENT/MALFORMED/UNKNOWN remain distinct. Only genuinely verified source capture may establish absence; altered mapping generation forces fresh authentication. Retain source provider/link/catalog generations, issuer/subject/deadline and sealed minimal evidence bound to native JTI/session. LDAP reads occur inside the genuine bind-verification callback. Preserve no-claim direct Hidra grants and deny precedence; no permission follows from a transient receipt alone.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/identity/domain/model/ExternalRoleMapping.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/model/OperationAuthenticationBinding.java`.
+- Inbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/in/AuthenticateDirectUserUseCase.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/in/EvaluatePermissionUseCase.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/in/IdentityAdministrationQueryUseCase.java`.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationAssertionPort.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/out/LdapCredentialVerificationPort.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`.
+- Application services: `src/main/java/dz/sh/hidra/modules/identity/application/service/AuthenticationCompletionApplicationService.java`, `src/main/java/dz/sh/hidra/modules/identity/application/service/CustodyTransferTicketActorReferenceQueryService.java`, `src/main/java/dz/sh/hidra/modules/identity/application/service/DirectAuthenticationApplicationService.java`, `src/main/java/dz/sh/hidra/modules/identity/application/service/LocalAuthenticationOutcomeApplicationService.java`.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcIdentityAuthorityFence.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcOperationAuthenticationBindingRepositoryAdapter.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraAccessTokenIssuer.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE — PROPOSED:**
+
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/BoundSourceClaimEvidence.java` — minimal immutable trusted claim coverage bound to original verification, source expiry and mapping epoch; reuse existing ClaimCoverage.
+
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/BoundSourceClaimEvidencePostgresIntegrationTest.java` — issuance/reader, mutation, epoch, privilege and rollback proof.
+
+**MODIFY — existing verified integration seams:**
+
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationRegistry.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/AuthenticationCompletionApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/OperationAuthenticationBinding.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedAuthorizationEvidencePostgresIntegrationTest.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapCredentialVerificationAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcOperationAuthenticationBindingRepositoryAdapter.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/BoundAuthenticationCompletionPostgresIntegrationTest.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/TrustedAuthenticationVerificationPort.java`
+
+The native-issuance continuation consumes only the real private receipt, persists immutable minimal claim evidence with JTI/session/binding and provider/link/catalog generations, and publishes after commit. Later authenticated LDAP projection and fenced evaluator integration stay distinct bounded H subpackages. Public constructors/DTOs must not manufacture evidence. Do not relax the elevated-database-login refusal.
+
+**DELETE:** none.
+
+**PRESERVE / REUSE:** C2A opt-in default false, ClaimCoverage, versioned selector, source decoder, private receipt one-use/thread binding, F/G fences and all previous native issuance behavior.
+
+**DISCOVERY_REQUIRED:** unique forward migration filename, physical storage shape/HMAC inputs, exact writer-DAG and C2B/C2C/C3 packages/commit messages. No raw token/full claim map retention. This is the next H continuation, not authorization to implement all H packages in one step.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+### HPR-P25-051H owner-approved minimum-claim and reauthentication policy — 2026-10-16
+
+**Owner policy decision APPROVED; H runtime NOT IMPLEMENTED or SELECTED.** Owner approval in this development continuation adopts minimal necessary **verified** source-claim retention and **mandatory fresh authentication after any authorization-mapping-catalog change** that affects source-claim interpretation. It does not approve broad raw IdP token/claim storage, re-label H as CI-accepted, select I–M, weaken the protected transaction boundary, or release/deploy. This is a bounded **HPR-P25-051 same-ID governance/policy checkpoint**; H retains its separate exact contract, source/test/migration allowlist and implementation commit-message admission gate. Parent051 and CI-003 remain IN PROGRESS; G remains COMPLETED; CI-003D is unselected; simulator/P3 deferred.
+
+**Exact source/CI preflight:** main `a581c9383cbf42219bac80a01234819c5a4008c4`, tree `50a4768aeb1c0ef1815c325e418a4889b4f97198`, parent `97ff6081e2f95bb9d89a284719bfaed2d2f2bfe0`. Documentation Validation #341 SUCCESS on main; Production CI #704 and isolated Qualification #4 SUCCESS on parent runtime SHA `97ff6081e2f95bb9d89a284719bfaed2d2f2bfe0`. No runtime Full/Fast is claimed on the documentation-only main SHA. Inspected current `AGENTS.md`, this roadmap, append-only reconciliation, Identity authentication completion and verification provenance, LOCAL/LDAP/OIDC producers, native JWT issuance, operation binding, fenced B1 participant, protected authorization reader, integration test and CI workflow. Existing `JdbcProtectedAuthorizationEvidenceReader` deliberately flags unsupported live external claim mappings as `EVIDENCE_INDETERMINATE`; no verified H source-claim coverage implementation is established.
+
+**Approved H claim policy and invariants:**
+
+1. Trust begins only at the actual LOCAL/LDAP/OIDC source-verification and bound native issuance path. Neither REST input, caller-built `VerifiedAuthorizationAssertion`, unverified role/group tokens, an assertion DTO, nor cached native permissions create claim authority. Native JWT remains Hidra-issued and owner-bound; external role/group data never becomes an automatic Hidra grant.
+2. Retain the **minimum explicit mapping-relevant** normalized claim names and exact verified values, their authoritative known-presence/known-absence coverage, source type, provider/link identity and security generations, authentication/binding identity, verified source expiry (if supplied), and the applicable mapping-catalog revision. Do **not** retain original OIDC JWTs, LDAP passwords, complete provider claim documents, extraneous personal claims or raw transport credentials. Define hard cardinality/byte and lifetime envelopes and privacy-safe failure/audit surfaces in the executable contract.
+3. Distinguish `PRESENT`, verified `ABSENT`, `MALFORMED` and `UNKNOWN/UNAVAILABLE` per approved claim name, rather than interpreting a parser/issuer/connector failure or unseen newly configured name as absence. Malformed/unknown/inconsistent/stale evidence cannot yield `ALLOW`; retain explicit DENY precedence and otherwise `INDETERMINATE`. LOCAL has no external-claim authority; established direct Hidra grants remain governed by their independent B1 checks.
+4. **Mapping mutation requires fresh authentication:** an activation, edit, disablement, replacement, name/semantic change, or provider mapping revision that changes interpretation makes prior claimed coverage unusable for any new claim-dependent protected decision. Check the captured immutable mapping revision against fenced current mapping authority before admission; existing native tokens/sessions are not retrospectively upgraded. Refresh can occur only through verified authentication and newly bound issuance. Treat missing comparable revision or racing writer as `INDETERMINATE`/deny, never a silent grace period.
+5. Bind saved minimal evidence irreversibly to the actual authenticated source, owner user/provider/link and security generation, native issuance JTI/binding, issue/expiry and source deadline. Keep captured values immutable and prevent forged/replayed/stale replacements; no failure path may retain a partial authoritative claim snapshot. The existing protected transaction, PostgreSQL fence, read-committed physical backend/XID, common-time and authorization-before-disclosure rules remain mandatory. Claim capture alone does not close paired Identity authority, Party/Topology fencing, F-to-G evaluator integration, or final publication/CAS.
+6. Preserve supported mapped `DENY` precedence and current dynamic Identity eligibility. An absent group/value is not a grant, a changed catalog must not bypass DENY, and no default company, topology resource, installed equipment or industrial process value is invented. No new SCADA/OT actuator, solver, public auth endpoint or production-data migration is authorized.
+
+**H technical admission, NOT yet an implementation allowlist:** reconcile actual LDAP `LdapCredentialVerificationPort`/`VerifiedDirectoryIdentity` source attributes, the OIDC original verified JWT path in `IdentityOidcJwtAuthenticationConverter`, `TrustedAuthenticationVerificationRegistry`/its snapshot, `AuthenticationCompletionApplicationService`, `HidraAccessTokenIssuer`, `OperationAuthenticationBinding`, `JdbcIdentityAuthorityFence`, `JdbcProtectedAuthorizationEvidenceReader` and current `ExternalRoleMapping`/external-group/external-permission persistence writers. Register together a minimal source projection and claim-coverage port, issuance/reader protocol, mapping change-generation and writer fencing, exact identity-owned persistence/immutability and rollback scheme, global relation/lock ordering, actual Java/test UPDATE/CREATE paths, collision-scanned forward Flyway filename (only if justified), exact H implementation message and performance evidence. The names above are existing reviewed anchors, **not** permission to modify them. No structural/scheme choice, migration number or implementation test identity is pre-approved by this policy record.
+
+**Required synthetic acceptance for the separately registered H implementation:** authentic LOCAL and LDAP/OIDC producer positive/negative cases; known absent versus unknown/malformed source claims; unauthorized client assertion injection; original source-token mismatch, verified issuer/expiry and native JTI/binding linkage; mapping new-name activation, edits, deactivation and replay causing stale coverage rejection until reauthentication; provider/link generation changes; DENY-over-ALLOW, no implicit fallback, unchanged supported B1 grants; same-transaction competing mapping writer, rollback/commit, expiry and source-claim redaction; actual PostgreSQL16 fresh-schema/Flyway constraints and race proof, architecture tests, source inventory, zero skipped required cases and exact-SHA Full/Fast/Docs + same-run partition/oracle evidence. Any unresolved mapping-writer DAG or producer attribute contract blocks code admission rather than weakening security.
+
+**This owner-policy publication only:** UPDATE this roadmap by insertion and APPEND reconciliation; zero CREATE/DELETE. Reuse the existing HPR-P25-051 same-ID documentation message `docs(security): select operation time fencing proof`. Do not mutate Java, tests, migrations, OpenAPI, dependencies, inventory, workflows, frontend or recorded historical evidence. After guarded direct-main publication verify parent/tree/two blobs and automatic exact-SHA `HidraAPI Documentation Validation` creation/start, then STOP without CI completion wait. Next must close H's exact technical registration and owner-scoped allowlist before any H runtime implementation; it cannot execute I, another CI qualification, or numerical simulation.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+No new API is part of this bounded documentation/historical outcome. Existing owner operations are listed in the runtime contract inventory below; no proposed endpoint is relabeled as implemented.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Finish the minimal original-claim-to-native-binding-to-fenced-reader trust chain. PRESENT/ABSENT/MALFORMED/UNKNOWN remain distinct. Only genuinely verified source capture may establish absence; altered mapping generation forces fresh authentication. Retain source provider/link/catalog generations, issuer/subject/deadline and sealed minimal evidence bound to native JTI/session. LDAP reads occur inside the genuine bind-verification callback. Preserve no-claim direct Hidra grants and deny precedence; no permission follows from a transient receipt alone.
+- Prove the real owner/API/persistence path and negative cases; record exact source, actual executed and skipped cases and accepted contract artifact.
+- Required transactions roll back fully; historical exact reads remain reproducible after source revision.
+- Missing policy, unregistered file placement or unavailable authority is explicitly blocked rather than fabricated.
+- Applicable Full/Fast/Docs acceptance succeeds on the implementation SHA; software acceptance remains separate from SITE commissioning.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: HAPI-574, HAPI-580. A dependency edge does not select implementation. Resolve only the task-specific exact path/policy/source contract gaps described here before code; real deployment data is not a software-contract blocker.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. For implementation, deliver only the admitted CREATE/MODIFY set, public API evidence where required, fresh-schema proof where applicable and preserved historical behavior.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `aea3e497502c3e83a49fe4b7b2070b984d846bb0` — exact registered-message commit; surviving paths matched to current tree.
+- `ba68f394784985819a013ba4481fb2c5e4feb962` — exact registered-message commit; surviving paths matched to current tree.
+- `7fba3d7ac2ae9abde423030b0d34d5a5a2dc543a` — exact registered-message commit; surviving paths matched to current tree.
+- `75874eaa1a2b053d2ab441bfeae9a68fa6c910f4` — exact registered-message commit; surviving paths matched to current tree.
+- `467b1a69421274847ad8d3102a1a1dfd7eb51ffc` — exact registered-message commit; surviving paths matched to current tree.
+- `4c5e3803d09eebbef5112bd85b87c78d7397fa48` — exact registered-message commit; surviving paths matched to current tree.
+- `5196e2d981c400671a2cabc1e2ce106d7d7c617b` — exact registered-message commit; surviving paths matched to current tree.
+- `e27b8e110352801260cfe50ba473179f80dd22bc` — exact registered-message commit; surviving paths matched to current tree.
+- `f8ca520a4aa8061885519d6861c79d5c29fd9f53` — exact registered-message commit; surviving paths matched to current tree.
+- `aaa1c43765fe48873b67ee44247b8f3c20a20ed9` — exact registered-message commit; surviving paths matched to current tree.
+- `f6460b2c198279a1b426836e6bbd12c3bb3464c3` — exact registered-message commit; surviving paths matched to current tree.
+- `cda31df33f880d984f529561b49eb202e1b323c7` — exact registered-message commit; surviving paths matched to current tree.
+- `998ced3b93450c6265e7ca83d0ca53937cb59eb1` — exact registered-message commit; surviving paths matched to current tree.
+- `19679e90d7e23b7e3cd0fe5829f9e2d929f9b578` — exact registered-message commit; surviving paths matched to current tree.
+- `785b0eb203c5ea62e0ee992d910a2e93a4e3968a` — exact registered-message commit; surviving paths matched to current tree.
+- `f8da655277de327edf8782996d16095500bd74e7` — exact registered-message commit; surviving paths matched to current tree.
+- `f27937f5b9d8145e47e46071d8eb8d77f5a4a1a3` — exact registered-message commit; surviving paths matched to current tree.
+- `68757afa87d6f58c8609c2aca10185b03df9bdb1` — exact registered-message commit; surviving paths matched to current tree.
+- `ab2dbaee705325a7dfdc5406af58038022549227` — exact registered-message commit; surviving paths matched to current tree.
+- `8a6e304f92a6c4df7c76cd9e4bd95933582be137` — exact registered-message commit; surviving paths matched to current tree.
+- `83c58e975392befdd34392378843b43879effe44` — exact registered-message commit; surviving paths matched to current tree.
+- `f5f8776075ab287f8fa9890a5a6926a617082a03` — exact registered-message commit; surviving paths matched to current tree.
+- `b0691face7e503d7aa596caff154661c460c9140` — exact registered-message commit; surviving paths matched to current tree.
+- `89cf1f047b6315295cc15e06c69d0d6eb44935d1` — exact registered-message commit; surviving paths matched to current tree.
+- `16004888feb3fa660694382d16ae4dade61c6a2a` — exact registered-message commit; surviving paths matched to current tree.
+- `7b2677809e177733fac3238bd20b9cdff3523d30` — exact registered-message commit; surviving paths matched to current tree.
+- `e25116ce1d72091c0410108fe98c9ca535a34005` — exact registered-message commit; surviving paths matched to current tree.
+- `97c60fed8aabafda71a63ccbd2c772ba484c4739` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [doc/model-remediation/RECONCILIATION.md:23146](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L23146)
+- [doc/model-remediation/RECONCILIATION.md:23700](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L23700)
+- [doc/model-remediation/RECONCILIATION.md:23724](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L23724)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:255](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L255)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:895](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L895)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:1008](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L1008)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:1032](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L1032)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:1496](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L1496)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent. Doc/preflight completion is not completion of the associated application workflow.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+#### C2B technical admission — 2026-10-17
+
+**Bounded continuation of HAPI-575 / HPR-P25-051H; CONTRACT REGISTERED, runtime NOT IMPLEMENTED by this entry.** This record closes the C2B-specific discovery items in section 6. Its narrower file list and protocol govern C2B; section 6's broader candidate list remains historical scope for the H umbrella, not a combined C2B/C2C/C3 implementation allowlist. HAPI-575 remains **PARTIAL / IN_PROGRESS**. No new HAPI identity, phase membership, priority or dependency is introduced. C2A (HAPI-580) is accepted and must not be repeated. C2C genuine LDAP attribute capture and C3 current-fenced claim interpretation remain separate, unselected continuations.
+
+**Source and CI baseline.** Main `ffc1a6314a39cb9f31a82c240e5a6c1ec47eea5e`, parent `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`, tree `cce75d92aab11ce9cefe76020c6ef499d8dcda26`. Exact-head [HidraAPI CI #714](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39008237591) and [Documentation Validation #359](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39008237594) are SUCCESS. These cumulative runs establish the accepted starting point, not execution of any proposed C2B test. No Fast run is claimed for this documentation head. Recheck the actual main head and required green implementation evidence before code execution.
+
+##### A. Source finding and independently verifiable outcome
+
+`IdentityOidcJwtAuthenticationConverter` already projects only selected names from the original decoder-verified source JWT when `hidra.identity.oidc-verified-claim-receipt.enabled` is true; its default remains false. `OidcClaimCoverageProjector.Projection` carries `ClaimCoverage` plus a mapping generation. `TrustedAuthenticationVerificationRegistry.OidcSourceEvidence` retains that projection in a private, one-use, same-thread receipt with exact provider/issuer/subject/deadline checks. Its `Consumed.attest` currently seals only the existing format-one `OperationAuthenticationBinding`; `AuthenticationCompletionApplicationService.complete` writes that binding and session, and publishes receipt completion after physical commit. No durable minimal-claim companion or claim-dependent protected permission follows from C2A.
+
+C2B's outcome is **immutable, privately authenticated original OIDC claim coverage atomically persisted with the actual native binding/session/JTI**, after confirming that the selected mapping catalog has not changed. A newly constructed domain value, public assertion DTO, native JWT claim, database row or repository read is structural data, never producer authority. No raw JWT, password, complete claim document, new public API, automatic role grant, numerical engine or OT write is added.
+
+##### B. Domain and outbound contracts — PROPOSED
+
+1. Add pure-Java `BoundSourceClaimEvidence`: canonical binding UUID; evidence format `1`; positive mapping generation; positive issuance transaction ID; immutable `ClaimCoverage`; defensive 32-byte producer authenticator. Validate all fields, implement byte-array value equality/hash and redact `toString`. Source/user/provider/link identity, security generations, issuer/subject/deadline, native issuer/audience/JTI/session and interval remain the immutable referenced binding's responsibility. Do not duplicate these as independently editable master data or change format-one binding fields, tags or serialization.
+2. Add `BoundSourceClaimIssuanceFencePort.prepare(String providerId, ClaimNameCatalogPort.VersionedSelection expected)`, returning a structural `FenceStamp(int backendPid, long transactionId)`. Add `requireCurrent(FenceStamp)` to reject a changed backend/transaction or lost fences. The expected selection is exactly the captured projection's names and generation, reconstructed internally by the real receipt holder. Caller construction of a selection or stamp confers no trust.
+3. Extend `TrustedAuthenticationVerificationPort.Verification` with `boolean prepareSourceClaims()` and `Optional<BoundSourceClaimEvidence> attestSourceClaims(OperationAuthenticationBinding binding)`. Compatibility defaults may return false/empty for existing no-claim implementations; the real private `Consumed` MUST override both. A receipt containing C2A evidence cannot take a no-claim fallback. Preparation and source-claim attestation are each single-attempt, same-origin/same-thread and same physical transaction; failure consumes the attempt. Attestation requires the exact binding previously produced by that same `Consumed`, current source deadline and the prepared fence stamp.
+4. Add `BoundSourceClaimEvidenceRepositoryPort.append(BoundSourceClaimEvidence)` and `Optional<BoundSourceClaimEvidence> findByBindingId(String)`. Append/readback equality is storage integrity only. The JDBC adapter must use the participating writable READ COMMITTED transaction, parameterized SQL and bounded codec, and redact database exceptions. The registry adds `validatePersistentSourceClaimOrigin(binding, evidence)` for private-origin verification, first validating the old binding tag and exact binding identity. This verifier does not check current authorization or grant permission; C3 must add current fenced interpretation later.
+5. Keep existing constructors used by no-claim tests/callers through delegating overloads where necessary. The actual Spring-managed service/registry must receive the new required ports. If a captured receipt reaches an instance without them, fail before session DML. Never silently downgrade captured evidence because of absent wiring, privilege failure, malformed storage or catalog mismatch.
+
+##### C. Canonical payload and private producer authentication — PROPOSED
+
+Use one bounded binary codec for persistence and MAC input. All integers are big-endian. Encode: int32 name count; for each Java-natural-order sorted name, int32 strict-UTF-8 byte length plus name bytes, one explicit state byte (`PRESENT=1`, `ABSENT=2`, `MALFORMED=3`, `UNKNOWN=4`), int32 value count, then sorted values each as int32 byte length plus strict-UTF-8 bytes. Only PRESENT has nonempty values. Zero selected names is a valid four-byte payload. Do not trim, case-fold or Unicode-normalize exact source values. Never use enum ordinals or Java object serialization.
+
+Retain all current `ClaimCoverage` limits: 64 names, 120 code points / 480 UTF-8 bytes per name, 256 values per name, 1,024 bytes per value and 16,384 total semantic name/value bytes. Set a separate **98,304-byte encoded payload ceiling**, accounting for framing as well as semantic content. Bound allocation/counts before reading; reject malformed UTF-8, duplicate/unsorted names or values, unsupported state/version, invalid state/value combinations, truncation, trailing bytes and limit overflow. Decode through existing domain validation and require encode(decode(payload)) byte equality. Preserve ABSENT/MALFORMED/UNKNOWN exactly; unseen names remain UNKNOWN through `ClaimCoverage`, never implicit ABSENT.
+
+Use the existing effective native signing-secret bytes and existing HKDF-HMAC-SHA256 primitive, with separate UTF-8 labels: salt `Hidra/identity/bound-source-claims/format-1/key`, info `Hidra/identity/bound-source-claims/format-1/authenticator`, domain `Hidra/identity/bound-source-claims/format-1/tuple`. Derive a separate 32-byte key; do not alter the existing operation-binding salt/info/domain, key derivation or tag. The new HMAC message is domain bytes followed by zero separator; int16 evidence version; int32 binding-ID byte length plus strict UTF-8 binding ID; exact 32-byte existing binding producer authenticator; int64 mapping generation; int64 issuance transaction ID; int32 canonical payload length plus payload. Validating the old binding tag before sealing/verifying binds the complete original authentication tuple transitively. Use constant-time tag comparison and defensive arrays. Public construction or replay of an unvalidated old tag cannot mint a new valid companion. A persistent evidence verifier must never return raw claim material in errors or logs.
+
+##### D. Physical schema, migration and atomicity — PROPOSED
+
+Collision scan at the baseline found **149 versioned Flyway files**, latest `V20261016_001__p25_identity_external_mapping_generations.sql`, and no `V20261017` version. Reserve **PROPOSED** `src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql` for C2B. Recheck both its exact path and Flyway version before implementation; a collision or intervening schema dependency requires task-record correction before code, never overwrite/rename an applied migration.
+
+Add Identity-owned **PROPOSED** `public.hidra_identity_bound_source_claim_evidence` with NOT NULL columns: `binding_id varchar(36)` primary key and nondeferrable foreign key to `public.hidra_identity_operation_binding(binding_id)` ON DELETE/UPDATE RESTRICT; `evidence_format smallint CHECK (=1)`; `mapping_generation bigint CHECK (>0)`; `issuance_transaction_id bigint CHECK (>0)`; `coverage_payload bytea CHECK (octet_length BETWEEN 4 AND 98304)`; `producer_authenticator bytea CHECK (octet_length=32)`. Canonical UUID validation must match the existing binding contract. No JSON/full-source shadow table and no new JPA entity are needed. Do not make a live epoch change cascade into historical evidence.
+
+Install a fresh-insert guard, fixed `pg_catalog, pg_temp` search path and fully qualified relations. Require writable READ COMMITTED; the complete prepared relation fence below; a corresponding OIDC binding; matching current provider mapping generation; and source/native deadlines still live at insertion. Enforce same physical issuance transaction: the sealed `issuance_transaction_id` equals `txid_current()`, and the referenced binding row's `xmin::text::bigint` equals that ID modulo `4294967296`. Here xmin is used only to reject later attachment to an already committed binding, never as a durable unique identity or authenticity proof. The supported owner path has no nested/savepoint binding insertion; an incompatible subtransaction must fail closed rather than widen this check. Long transaction ID, genuine receipt, binding tag, new MAC and physical transaction marker remain independently mandatory.
+
+Reject UPDATE, DELETE and TRUNCATE, including statement-level attempted mutation. An exact already-existing companion may be recognized as idempotent storage replay by full tuple equality before fresh-insert eligibility checks; it creates no row, receipt, JWT or permission. Any conflicting replay fails with a redacted integrity error. Native SQL can satisfy structural constraints but cannot manufacture the private MAC; a later trusted read always verifies origin. Privileged DDL owners/superusers remain outside ordinary-writer protection, with no newly claimed deployment guarantee. Revoke PUBLIC table/function privileges as appropriate and grant no epoch UPDATE privilege. PostgreSQL16 is the admitted implementation; no MySQL equivalence is asserted.
+
+##### E. Writer dependency order and bounded fence — PROPOSED
+
+Preparation runs immediately after consuming the real receipt and **before session/owner DML or row locks**. For captured OIDC evidence, the new JDBC fence takes the exact same sorted 22-relation prefix and SHARE ROW EXCLUSIVE mode as the existing diagnostic `JdbcIdentityAuthorityFence`, in this order:
+
+~~~~~~~~text
+public.hidra_identity_attribute_definition
+public.hidra_identity_authorization_policy
+public.hidra_identity_authorization_policy_rule
+public.hidra_identity_authorization_policy_version
+public.hidra_identity_external_group_mapping
+public.hidra_identity_external_identity
+public.hidra_identity_external_permission_mapping
+public.hidra_identity_external_role_mapping
+public.hidra_identity_group
+public.hidra_identity_group_role_grant
+public.hidra_identity_local_credential
+public.hidra_identity_login_session
+public.hidra_identity_operation_binding
+public.hidra_identity_permission
+public.hidra_identity_provider
+public.hidra_identity_role
+public.hidra_identity_role_permission_grant
+public.hidra_identity_subject_security_attribute
+public.hidra_identity_user
+public.hidra_identity_user_group_membership
+public.hidra_identity_user_permission_grant
+public.hidra_identity_user_role_grant
+~~~~~~~~
+
+Check granted relation locks through `pg_locks`; record `pg_backend_pid()` and `txid_current()` on the participating connection. After the common prefix, acquire ACCESS SHARE on `public.hidra_identity_external_mapping_generation` and compare `ClaimNameCatalogPort.selectVersioned(providerId)` with the captured complete selection/generation. The ordinary login must have epoch SELECT, **not epoch UPDATE**, no owner-role membership, superuser/BYPASSRLS or public-schema CREATE; retain every existing `JdbcClaimNameCatalogAdapter` privilege refusal. Strong locks on the 22 ordinary owner tables require their corresponding PostgreSQL privileges, which the synthetic nonowner fixture must grant explicitly. Do not use epoch SELECT FOR SHARE or a strong epoch table lock that would require relaxing the existing epoch-UPDATE refusal.
+
+The mapping tables' DML locks are excluded by the prefix before reading their epoch; their existing triggers remain the sole ordinary generation writers. Do not take an epoch row lock and then acquire provider/session rows. Preserve the binding trigger's existing **provider -> credential-or-external-link -> user -> session** row-lock order after the relation prefix. Append the binding before its companion; companion insertion checks already-held fences without reacquiring earlier owner row locks in a conflicting order. Hold all fences through physical commit/rollback, and recheck backend/XID at attestation, companion append and publication. The current diagnostic path shares the common prefix; do not change it into an authorization API.
+
+Supported contention proofs must include mapping writers starting before and after preparation, rollback/commit, provider moves and existing owner writers. Arbitrary bulk/native transactions can still encounter PostgreSQL deadlock/timeout; fail and roll back without transparent receipt reuse or token-issuance retry. This registration does not claim universal deadlock freedom or a latency improvement. C3 must separately add the companion/epoch to its complete protected-read dependency set before consuming them; C2B leaves `JdbcProtectedAuthorizationEvidenceReader`'s external-claim INDETERMINATE behavior intact.
+
+PostgreSQL16 reference basis: [LOCK privileges/order](https://www.postgresql.org/docs/16/sql-lock.html), [inserting transaction system column](https://www.postgresql.org/docs/16/ddl-system-columns.html), and [transaction ID functions](https://www.postgresql.org/docs/16/functions-info.html). These explain the proposed PostgreSQL mechanics; they are not evidence that the future C2B implementation has passed tests.
+
+##### F. Completion sequence and failure semantics — PROPOSED
+
+The existing writable READ COMMITTED/new-owner-transaction check remains mandatory. Execute: consume genuine receipt -> prepare source claims/fence before owner DML -> existing snapshot/settings/deadline calculation -> original format-one binding attestation -> existing bound-session creation/current-state check/native token issuance and exact-token-tuple check -> binding append -> source-claim attestation and companion append/readback -> success audit -> deadline/current physical transaction checks -> existing after-commit publication. Require `prepareSourceClaims()`'s true/false result to match actual optional evidence presence. A captured receipt must produce exactly one matching companion, including when the selected-name set is empty; only a genuine no-capture receipt may produce none.
+
+The registry's captured branch must verify exact persisted companion equality and private origin through the new repository before accepting publication, as well as the same prepared backend/XID and original attestation synchronization marker. All checks run before registering completion. Receipt completion remains exclusively after commit; a failed append, changed catalog/source/owner generation, source expiry, MAC/codec failure, privilege refusal, token mismatch, late constraint failure or transaction failure leaves no durable session/binding/companion/success audit and no successful login response or completed receipt. Do not add REQUIRES_NEW persistence, an outbox repair, an attachment endpoint or a post-commit claim-enrichment path.
+
+LOCAL, LDAP/AD and OIDC default-off/no-capture receipts retain the existing completion protocol and do not access the new claim repository/fence. Preserve their existing token fields, binding format, grants, session lifecycle and owner generation checks. Capturing OIDC evidence is not a new public feature flag and does not change the current flag's default. LDAP/AD claims must not be inferred from existing public directory/assertion DTOs.
+
+##### G. Exact future C2B file allowlist — PROPOSED, not files changed by this registration
+
+**CREATE — 10 proposed paths, all absent at the source baseline:**
+
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/BoundSourceClaimEvidence.java` — immutable structural evidence and validation; no framework imports or public trust factory.
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/BoundSourceClaimEvidenceRepositoryPort.java` — append/exact lookup storage contract, explicitly nonauthoritative.
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/BoundSourceClaimIssuanceFencePort.java` — preparation/current physical transaction contract and stamp.
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/BoundSourceClaimEvidenceCodec.java` — canonical bounded strict binary codec reused by registry and JDBC storage; infrastructure implementation detail.
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcBoundSourceClaimEvidenceRepositoryAdapter.java` — same-transaction append/readback and bounded structural lookup.
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcBoundSourceClaimIssuanceFence.java` — fixed relation-prefix locks, role/selection verification and physical stamp checks.
+- `src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql` — additive companion schema and insert/immutability guards; version collision recheck mandatory.
+- `src/test/java/dz/sh/hidra/modules/identity/domain/value/BoundSourceClaimEvidenceTest.java` — value invariants, defensive copying, equality and redaction.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/BoundSourceClaimEvidenceCodecTest.java` — deterministic bytes, complete state/Unicode/size boundaries and malformed encodings.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/BoundSourceClaimEvidencePostgresIntegrationTest.java` — actual PostgreSQL16 schema, nonowner privilege, same-transaction, epoch and competing-writer proof.
+
+**MODIFY — 9 existing verified paths:**
+
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/TrustedAuthenticationVerificationPort.java` — bounded preparation/attestation additions and no-capture compatibility contract.
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/AuthenticationCompletionApplicationService.java` — early preparation, same-transaction companion append and mandatory captured/no-capture consistency; preserve old issuance ordering otherwise.
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationRegistry.java` — genuine-receipt-only state machine, separate MAC, same-transaction origin verification and persisted-evidence publication prerequisite; preserve old MAC/receipt behavior.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationTest.java` — real consumed-receipt positive/negative/reuse/wrong-thread/wrong-transaction/tag/publication tests.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/BoundAuthenticationCompletionPostgresIntegrationTest.java` — actual opt-in OIDC producer -> native/session/binding/companion pipeline, rollback and no-capture regression proof.
+- `.github/ci-test-inventory.json` — register actual added/modified test cases and source hashes after they exist, preserving required partition/oracle rules; never invent method counts or evidence.
+- `.github/database-dictionary-ownership.json` — source-backed Identity ownership for the new JDBC-only relation.
+- `doc/database/DATA_DICTIONARY.md` — regenerate from actual freshly migrated PostgreSQL16 catalog through the existing generator and reviewed ownership metadata; no fabricated physical snapshot.
+- `doc/roadmap/ULTIMATE_TASKS.md` — append actual implementation/validation/CI reconciliation here, preserving historical records and overall H status until the umbrella is accepted.
+
+**DELETE: 0. Total future implementation envelope: 19 files.** No wildcard allowance. Other changes, unanticipated API/schema dependencies or extra files require a bounded task-record amendment before code. Future tests may exercise existing classes without changing them.
+
+**PRESERVE / REUSE unchanged in C2B:** `OperationAuthenticationBinding.java`, `JdbcOperationAuthenticationBindingRepositoryAdapter.java`, `ClaimCoverage.java`, `ClaimNameCatalogPort.java`, `JdbcClaimNameCatalogAdapter.java`, `OidcClaimCoverageProjector.java`, `IdentityOidcJwtAuthenticationConverter.java`, `LdapCredentialVerificationAdapter.java`, `JdbcIdentityAuthorityFence.java`, `JdbcProtectedAuthorizationEvidenceReader.java`, the existing mapping-generation and binding migrations, native JWT contracts, security/runtime configuration, existing OpenAPI snapshots, all workflow YAML and `pom.xml`. These abbreviated filenames refer to existing full paths already listed above or in the source ownership inventory; no alternate paths are implied. `ULTIMATE_ROADMAP.md` and `ULTIMATE_PHASES.md` remain structurally and status unchanged for this C2B continuation.
+
+##### H. Required implementation verification and acceptance
+
+- Domain/codec: all four states, empty selection, exact dotted/case-sensitive names and Unicode values, defensive arrays/collections, every count/UTF-8/semantic/encoded ceiling, duplicate/ordering/state/version/trailing-byte failures, stable canonical bytes and privacy-safe errors. Payload limits are validated before allocation; malformed bytes never become trusted absence.
+- Genuine producer: actual opt-in original decoded OIDC receipt successfully binds/persists; fake assertions/DTOs, source-token replacement, provider/link/issuer/subject/deadline mismatch, alternate native JTI/session/binding, forged/copied/tampered tags, wrong thread, reused receipt, preparation/attestation repetition and changed physical backend/XID all fail. Swapping valid evidence between bindings fails MAC verification. Existing format-one tag behavior remains byte-compatible.
+- Persistence: fresh complete Flyway chain validates; exact table constraints, restricted reference, immutable row/statement mutation guards, bounded payload and equality replay are exercised. Prove binding plus companion inserted in the same top-level physical transaction; delayed attachment after binding commit and unsupported savepoint insertion fail closed. Every failure path rolls back all newly created issuance artifacts and success events. Native SQL structural inserts cannot pass private-origin verification.
+- Catalog and concurrency: use separate migration/DDL owner and ordinary nonowner application role. Prove positive issuance with epoch SELECT only, no epoch UPDATE/owner membership/public CREATE/superuser/BYPASSRLS, and negative privileged-login cases without weakening existing checks. Observe actual blocking with independent connections and bounded latches/timeouts, not sleeps as evidence. Cover group/role/permission insertion/edit/disable/delete, changed selected names, provider moves, generation exhaustion/unavailability, writer commit/rollback, same-generation exact selection, stale capture rejection until fresh authentication, owner-generation revocation and source expiry while waiting. Compare the new fence's fixed prefix/order/mode against the surviving diagnostic fence in a source/behavior guard test. Demonstrate the real completion path takes it before session writes.
+- Compatibility: authentic LOCAL and LDAP/AD and default-off OIDC still complete without a companion or claim-fence access. Native JWT/API/OpenAPI behavior and no-claim Hidra grants remain unchanged. No external claim becomes a permission; current protected reader still refuses unsupported claim-dependent evidence. Source values, tokens, subjects and secrets stay absent from diagnostic/error/log surfaces.
+- Execute focused domain/codec/registry/completion/PostgreSQL suites, the existing operation-boundary and C2A regression suites, and applicable architecture tests. Use actual Java21/Maven/PostgreSQL16 capability; report unavailable tooling explicitly. No skipped database case counts as proof. Update inventory from real test discovery and verify it. Regenerate/check the actual physical dictionary; run canonical documentation and OpenAPI validators. Do not introduce a new test runner, workflow or dependency.
+- Exact implementation SHA requires successful applicable Full/Fast/Docs and same-run partition/oracle evidence before C2B is recorded as CI-accepted. Record real case counts, skips, reports and run/attempt identifiers then; none is claimed now. Synthetic software acceptance is distinct from SITE deployment or real provider commissioning. Performance reporting must include measured fixture/contention behavior and explicitly scoped limits, without an invented SLA.
+
+##### I. Execution, publication and next-stage boundary
+
+This registration changes **only** `doc/roadmap/ULTIMATE_TASKS.md` by insertion into HAPI-575 section 15: **1 MODIFY / 0 CREATE / 0 DELETE**. It preserves all canonical statuses, registry rows, historical source and the existing manifest. Use the registered same-ID documentation message **`docs(security): select operation time fencing proof`**. Validate the embedded 921-task consistency/fingerprint check, canonical documentation validator and its tests, exact section-only diff and unchanged roadmap/phase bytes. Recheck live main HEAD/parent/tree; use guarded expected-HEAD direct-main advancement with no branch/PR. Confirm the automatic exact-SHA Documentation Validation run is created/started, record its real URL and STOP without awaiting completion.
+
+The **next eligible bounded execution**, after the applicable main CI baseline is green, is C2B implementation under HAPI-575 using the exact future 19-file envelope above and registered implementation message **`feat(identity): bind verified source claims to native issuance`**. This is a technical refinement of the existing task, not approval to implement it during this documentation operation. It does not complete HAPI-575, select LDAP C2C, integrate C3 authorization, execute I–M or qualify another CI package. If implementation reveals a wider dependency/lock-order/owner contract problem, record the specific blocker here and stop before expanding scope; retain fail-closed behavior.
+
+
+#### C2B local implementation checkpoint — 2026-10-17 — NOT PUBLISHED / NOT CI-ACCEPTED
+
+Owner continuation selected the admitted C2B implementation and then explicitly narrowed execution to **complete this subtask and stop**. LDAP C2C, protected interpretation C3 and later parent work were not implemented. This is a local worktree checkpoint, not a claim that these files exist on published main or that HAPI-575 is complete. Canonical status remains **PARTIAL / IN_PROGRESS**.
+
+**Live starting point:** `08262b32c9fc9b06926cc6c8f0549c70a407f1b1`, parent `ffc1a6314a39cb9f31a82c240e5a6c1ec47eea5e`, tree `e243934d36ab65ac7f211b25afe817f213f17c58`; exact-head Documentation #360 SUCCESS. No new Full/Fast acceptance is asserted on that documentation-only head. The inherited runtime source remains the previously accepted baseline. Uploaded project-pack handover is an older reference; it did not replace live governance.
+
+**Prepared local source:** immutable bounded value, two outbound ports, strict canonical codec, JDBC issuance fence, JDBC companion adapter, additive reserved migration, real private-receipt sealing/validation and completion orchestration. Format-one operation binding and its original MAC remain unchanged. Preparation precedes owner DML; the companion is appended before success audit/publication. Persisted exact equality and private origin are checked before the existing after-commit completion marker. No new API/JWT claims, runtime flag/configuration, LDAP capture, grants, protected reader/evaluator or existing migration was modified.
+
+**Security refinement within the registered contracts:** the new fence stores provider/selection/stamp only as transaction-bound infrastructure state, cleans it after physical completion and rechecks the versioned selection at every `requireCurrent`. This detects a same-transaction mapping writer as well as excluded competing writers. Captured preparation/sealing attempts are consumed before origin checking, including a rejected wrong-thread attempt; no retry may upgrade it to trusted evidence. These refinements do not expand the file list or public API.
+
+**Actual local validation:** Java21 production compile and full test-source compilation succeeded. The final focused Maven invocation selected `ArchitectureGuardrailTest`, `BoundSourceClaimEvidenceTest`, `BoundSourceClaimEvidenceCodecTest`, `TrustedAuthenticationVerificationTest`, `OidcVerifiedClaimReceiptTest`, `OidcClaimCoverageProjectorTest` and `OperationAuthenticationBoundaryGuardrailTest`: **104 tests, 0 failures, 0 errors, 0 skips**. The test invocation used the existing Byte Buddy agent as an explicit JVM `-javaagent` because local self-attachment was unavailable; no POM/workflow/test weakening was made. Source and fixture formatting used a scratch-only formatter. The local test reports are not exact-SHA hosted CI evidence.
+
+**Database execution is NOT established:** invoking `BoundSourceClaimEvidencePostgresIntegrationTest` and `BoundAuthenticationCompletionPostgresIntegrationTest` discovered **32 cases and skipped all 32** through the existing `disabledWithoutDocker` policy. Testcontainers reported no `/var/run/docker.sock` or valid Docker runtime. No PostgreSQL server or physical catalog was available. These skips are not migration, constraint, role-separation, race, rollback or original-source-to-database proof. The new source-defined database cases remain unqualified; their CI inventory timing `0.0` is explicitly an unqualified placeholder, not an observed passing database duration. Existing historical timings/evidence are not rewritten.
+
+**Publication blocker:** `doc/database/DATA_DICTIONARY.md` is required to be regenerated from an actual freshly migrated PostgreSQL16 catalog. It remains byte-identical to the published baseline because no qualifying catalog could be collected. Do not fabricate table metadata, relabel an inferred schema as CURRENT or publish a knowingly stale dictionary as a completed C2B package. Eighteen of the nineteen admitted file paths have local preparation; the dictionary is the outstanding file. No branch, PR, release, remote commit/ref update or new CI run was created by this checkpoint.
+
+**Required next execution to finish this same C2B subtask:** use a Docker-capable PostgreSQL16 verification environment; run the two prepared suites plus the relevant existing mapping-generation, authentication and architecture regressions; resolve actual failures and complete the admitted adversarial cases without treating skip/source coverage as proof. Capture the real migrated catalog with its genuine provenance through the existing approved CI collection path, regenerate/review the physical dictionary and verify ownership/source-bundle consistency. Revalidate the source-defined case inventory and all canonical/documentation/OpenAPI controls. Recheck live main/parent/tree and exact nineteen-file envelope, then publish with the already registered implementation message and expected-HEAD guard. Observe applicable exact-SHA CI creation/start and stop; later acceptance must inspect the real Full/Fast/Docs and partition/oracle evidence. C2B is not accepted, and HAPI-575 must not be marked completed, before those remaining gates are established.
+
+#### C2B CI-first publication instruction — 2026-10-17
+
+**Owner-authorized protocol update:** the owner explicitly instructed: agents are not obliged to prepare the whole local testing environment; commit the code and use GitHub workflow feedback. This instruction is now persisted in `AGENTS.md` section 11.1 for future sessions. It supersedes the local-environment publication hold in the preceding checkpoint, without converting any skipped test into passing evidence or accepting the H umbrella.
+
+**Current bounded publication scope:** the eighteen prepared C2B files plus the explicitly requested `AGENTS.md` instruction update: **19 files, 10 CREATE / 9 MODIFY / 0 DELETE**. This is a specific owner-authorized addition to the earlier nineteen-file implementation envelope, whose unmodified dictionary remains pending genuine catalog regeneration. No other file or workflow change is admitted. Preserve the existing C2B implementation message `feat(identity): bind verified source claims to native issuance`. Do not change frozen roadmap/phase structures or statuses; HAPI-575 remains PARTIAL / IN_PROGRESS.
+
+**Validation carried forward:** Java21 production/test compilation and the final 104 focused JVM/architecture cases passed with zero failures/errors/skips. Both selected PostgreSQL suites discovered 32 cases and skipped all 32 because Docker was unavailable. Documentation, offline OpenAPI, source-linked CI inventory and the frozen 921-task consistency controls passed. No new environment provisioning or repeated full local suite is required for this publication.
+
+**Hosted verification and remaining evidence:** publish the reviewed source with the expected-main guard, then observe applicable exact-SHA Full/Fast/Docs workflow creation/queueing/start and stop. CI conclusions, partition/oracle reports, PostgreSQL migration/constraint/concurrency/provenance cases and the actual migrated catalog remain pending until those runs produce evidence. The physical dictionary is unchanged, refers to the prior baseline and does not yet describe the new companion table; the hosted dictionary drift gate may therefore report a failure. Use the real resulting catalog artifact to regenerate it in the responsible follow-up; do not fabricate it or suppress that gate. A failing run selects repair of this same C2B package before LDAP C2C, evaluator C3 or other dependent development.
+
+This record authorizes CI-first publication of C2B, not completed HAPI-575 acceptance, release, deployment, LDAP capture or protected permission expansion. Record the actual publication SHA and run links in the task completion response; no CI result is invented here.
+
+#### C2B Full CI #716 repair — 2026-10-17
+
+**Selected by owner Fail; bounded test-harness repair, not a new feature.** Live main `844d8dfd585cb7d3457fcfde5034ef0577f21ffe`, parent `ebec5369d63b616c65dd085e75dd538c902f6a02`, tree `55d2cc6d024ae5583c4e1abdb1cf5b33ad11fd25`. Preserve that intervening four-file follow-up: unique OIDC fixture issuers, the existing transaction-aware fixture correction, source inventory and the actual-catalog dictionary update. Exact-head Docs #362 and Fast #43 are SUCCESS. [Full #716](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39024978423) FAILED; API/dictionary, unit/architecture and PostgreSQL shard 0 succeeded. The repair must use this current baseline rather than replay the already-addressed #715 failures.
+
+**Recovered failure evidence:** PostgreSQL shard 1 job `117374084789` and unrestricted oracle job `117374084785` both report three errors in the 25-case `BoundAuthenticationCompletionPostgresIntegrationTest`. The opt-in positive case fails in converter selection with `OIDC verified claim evidence unavailable`; the companion-failure case configures a Mockito stub through an AOP proxy whose append method requires MANDATORY, raising `IllegalTransactionStateException` before stubbing completes. The leftover stub/matchers cause the third, subsequent before-commit test's `UnfinishedStubbing` error. The failing logs are evidence of these failures, not accepted C2B behavior.
+
+**Root causes and correction:** Spring's catalog proxy opens a read-only transaction even for the original-source selector, so checking only `isActualTransactionActive()` incorrectly routes the source query to the privileged shared owner connection. The fixture must route an active **writable** owner transaction through the original catalog; independent/read-only source selection must query using the existing separate nonowner JDBC catalog. Configure and verify Mockito spies using `AopTestUtils.getUltimateTargetObject` so setup/verification does not invoke transactional advice. Actual application calls keep the original Spring proxies and all MANDATORY, privilege and fencing checks. Apply this to catalog, issuance fence and companion repository; do not disable transactional advice, loosen elevated-role refusal, mock the whole source-to-issuance path or remove any failing database test.
+
+**Exact repair allowlist — 4 MODIFY / 0 CREATE / 0 DELETE:**
+
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/BoundAuthenticationCompletionPostgresIntegrationTest.java` — unwrap spy targets for setup/verification, distinguish read-only source selection from writable issuance; preserve all 25 existing cases and their original real database assertions.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationTest.java` — add one independent JVM regression using real Spring transaction/AOP proxies around a Mockito spy. Prove target configuration requires no transaction, external selector calls are read-only, owner calls retain a writable transaction and runtime MANDATORY advice still rejects unowned append. This proves the proxy-fixture mechanics only, not PostgreSQL behavior.
+- `.github/ci-test-inventory.json` — update only these two source hashes and register the actual added JVM case; preserve existing classifications and historical timing evidence.
+- `doc/roadmap/ULTIMATE_TASKS.md` — this append-only diagnosis, scope and actual available validation. No frozen registry/status changes; HAPI-575 remains PARTIAL / IN_PROGRESS.
+
+Production Java, ports, security rules, migrations, dictionary, ownership metadata, OpenAPI, workflows, dependencies, AGENTS.md, roadmap/phase documents and historical reconciliation stay unchanged. Reuse the registered C2B message `feat(identity): bind verified source claims to native issuance`. Run focused available JVM regression/compile and documentation/inventory consistency checks, record their actual result, and rely on exact-SHA GitHub Full/Fast/Docs for database feedback under AGENTS section 11.1. Guard main's expected parent/tree and exact four-file scope, publish directly to main and stop after new CI creation/start without waiting or advancing to C2C/C3.
+
+**Available local verification:** Java 21/Maven compiled all test sources and ran `TrustedAuthenticationVerificationTest`: **46 tests, 0 failures, 0 errors, 0 skipped** (Surefire XML), including the new real-proxy regression. Existing tooling only; no PostgreSQL/Docker environment was provisioned and the 25 completion database cases were not executed locally. Their acceptance remains pending exact-SHA GitHub Full CI. Inventory timing/classification evidence is preserved.
+
+**Governance verification:** documentation validator and its 10 tests PASS; offline OpenAPI snapshot validator PASS (263 operations, 244 paths, 231 schemas); CI inventory validation PASS; embedded canonical validation PASS (921 unique consistent tasks, one primary phase each, synchronized statuses, acyclic dependencies and unchanged frozen table fingerprint); `git diff --check` PASS. Mutation checks preserve every prior task-record byte and roadmap/phase/dictionary bytes; inventory changes are limited to the two hashes and one added case, retaining all historical timings/classifications. Exact publication scope is the four MODIFY paths above.
+
+#### C2B Full CI #717 exception-translation repair — 2026-10-17
+
+**Owner Continue selects the remaining responsible C2B repair before dependent work.** Live main `891dc90e669892f590bf2b7740b791d8be9de767`, parent `844d8dfd585cb7d3457fcfde5034ef0577f21ffe`, tree `6454345742b7650afc8f88bf9d61e715500f4a77`. Exact-head [Docs #363](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39027430170) and [Fast #44](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39027430176) SUCCESS; [Full #717](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39027430209) FAILURE. Main has not advanced. The prior read-only selector and spy-target corrections are retained.
+
+**Recovered evidence and cause:** PostgreSQL shard 1 job `117381076206` reports 442 cases / 1 failure / 0 errors / 0 skips; unrestricted oracle job `117381076200` reports 2174 / 1 / 0 / 0. Both identify only `BoundAuthenticationCompletionPostgresIntegrationTest.companionAppendFailureRollsBackNativeSessionBindingAndSuccessEvent`, within its 25-case suite (1 failure / 0 errors / 0 skips). Its injected `IllegalStateException("Synthetic companion refusal")` reaches the real `@Repository` proxy and is translated by Spring's JPA exception translator into `InvalidDataAccessApiUsageException`. The assertion incorrectly expects the untranslated exception; it aborts before the existing rollback/publication checks. Unit/architecture, PostgreSQL shard 0, API/dictionary and static lanes succeeded. The aggregate gate failure follows the required failed lanes; this is not accepted C2B evidence.
+
+**Exact bounded repair — 3 MODIFY / 0 CREATE / 0 DELETE:**
+
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/BoundAuthenticationCompletionPostgresIntegrationTest.java` — retain the injected failure instance; require the exact translated `InvalidDataAccessApiUsageException` type and that same injected cause. Preserve actual proxy execution, all 25 cases, no-session/no-binding/no-success-event assertions and the unpublished completion-receipt check. Do not accept arbitrary runtime failures, bypass exception translation or alter the production rollback behavior.
+- `.github/ci-test-inventory.json` — update only this test source SHA-256; preserve every case identity, lane, classification and historical timing.
+- `doc/roadmap/ULTIMATE_TASKS.md` — append this diagnosis, scope and actual validation evidence. Preserve prior task history and HAPI-575 PARTIAL / IN_PROGRESS; no frozen registry or phase changes.
+
+No production Java, migration, dictionary, configuration, security control, OpenAPI, workflow, dependency or AGENTS change. Reuse the registered message `feat(identity): bind verified source claims to native issuance`; verify the expected main parent/tree and exact three-file scope before publication. Apply AGENTS section 11.1: use available tooling, do not provision a database environment, confirm new exact-SHA Full/Fast/Docs creation/start after guarded direct-main publication, then stop. Full database acceptance remains pending; LDAP C2C and protected interpretation C3 are not selected by this repair.
+
+**Validation actually available:** documentation validator and its 10 tests PASS; offline OpenAPI snapshot PASS (263 operations, 244 paths, 231 schemas); source inventory PASS; embedded canonical validation PASS (921 unique synchronized tasks, valid phase ownership, acyclic dependencies and unchanged frozen task-table structure); `git diff --check` PASS. The mutation guard confirms only the three MODIFY paths above, unchanged historical task bytes, frozen roadmap/phase documents, dictionary and AGENTS, and only one inventory source-hash change with all 25 case identities and measured timings preserved. The focused offline Maven command (`bash ./mvnw -o -B -q` with `-Dtest=TrustedAuthenticationVerificationTest test` and the previously available explicit agent argument) was attempted but stopped during POM resolution: `spring-boot-starter-parent:4.1.1` is absent from the current local cache. No Java compilation or tests ran in this repair session; no dependencies or database service were provisioned. The earlier 46-test result belongs to the prior repair, not this commit. Exact-SHA GitHub runtime/database verification remains pending, as required by the owner-approved CI-first policy.
+
+#### C2B exact-source CI acceptance — 2026-10-17
+
+**SOURCE IMPLEMENTED / CI ACCEPTED for the existing C2B implementation and its recorded synthetic cases; HAPI-575 remains PARTIAL / IN_PROGRESS.** Live main `3cb09e350fc969aa40fb44328046ec1e073e47cc`, parent `891dc90e669892f590bf2b7740b791d8be9de767`, tree `168a49191e4a1a59b8ba91a8125f391bbc9d2d17`. [Full #718](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39032805885), [Fast #45](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39032805855) and [Docs #364](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39032805872) completed SUCCESS on that exact SHA. All seven Full jobs succeeded, including Full Verification Gate job `117398256259`.
+
+Full evidence artifact `12100862378`, `hidra-full-ci-evidence-3cb09e350fc969aa40fb44328046ec1e073e47cc-39032805885-1`, was downloaded and its ZIP SHA256 independently matched GitHub's digest `0cf9191af6737a7a0252d54043f526b4650164f37270a75009a2d2f275f8e733`. The repository's actual `verify_full_ci_evidence.aggregate` revalidated the extracted raw reports, file hashes, source-linked inventory, Java21 clean-verify/package lifecycle, same-run lane identities and API/catalog provenance against the unchanged source checkout. Its result equals the authenticated `gate.json`: **393 classes / 2174 tests / 0 failures / 0 errors / 0 skips**, run `39032805885`, attempt `1`, `same_run_equivalence=true`, `fallback_required=true`, `optimized_adoption_eligible=false`; inventory SHA256 `76c98036e9e0c24398b927a5155b8e032aed1ba5a42ccbc673a1a165a4df6b8a`. The 25-case completion suite and seven-case source-claim PostgreSQL suite both report zero failures/errors/skips in their owning shard and unrestricted oracle. This resolves the previously reported #715–717 CI failures without waiving future acceptance requirements.
+
+The gate also verifies matching API-contract/oracle physical catalog SHA256 `40258275389821dfb4bed992dc3bf08cbd5b8cea7be1783925439b5be4f1ebac`, source-bundle SHA256 `879a09c47a83bb86ed1573d2a1eafec35098e65b5539e1e8b400c5b251309523` and PostgreSQL `16.15 (Debian 16.15-1.pgdg13+2)`. The intervening actual-catalog dictionary correction is retained. No dictionary regeneration is performed by this acceptance record. This is bounded synthetic software/CI acceptance, not proof of every originally proposed adversarial permutation, a latency SLA, production database role rollout, real IdP/LDAP commissioning, integrated H acceptance or deployment. Remaining integrated qualification stays with H's existing acceptance scope; the unrestricted fallback is not retired.
+
+#### C2C technical admission — 2026-10-17
+
+**Owner Continue selects this one source-backed registration checkpoint under HAPI-575 / HPR-P25-051H. CONTRACT REGISTERED; C2C RUNTIME NOT IMPLEMENTED by this entry.** The next implementation is one coherent LDAP/Active Directory authenticated-attribute-to-native-companion outcome, conditional on this checkpoint's successful Documentation CI and a subsequent owner Next/Continue. Do not repeat C2A/C2B, implement C3, change canonical task membership/statuses, or treat the whole H umbrella as selected. Exact implementation message: **`feat(identity): capture verified ldap claim receipt`**. This is a refinement of existing H scope, not a new HAPI task or structural baseline revision.
+
+##### A. Existing implementation, gap and ownership
+
+The source baseline above was inspected together with AGENTS, the canonical roadmap/task register, historical reconciliation, security/trust-boundary documentation, current authentication tests and CI workflows. Identity owns this private trust transition. `LdapCredentialVerificationPort.verify(String,String)` returns the application-level `VerifiedDirectoryIdentity`, which is public structural identity data and contains no mapping-claim authority. `LdapCredentialVerificationAdapter.verify` already calls `LdapTemplate.authenticate` with `AuthenticatedLdapEntryContextCallback` and reads `entry.getRelativeName()` on that callback's context. It requests only the existing nine identity attributes. Preserve that successful-bind/exact-subject behavior and its configured escaping, base/filter, transport/timeouts and stable-subject selection.
+
+`LdapAuthenticationProvider.authenticate` resolves exactly one active LDAP/AD provider, captures its actual type/configuration, verifies credentials, reads the exact linked subject's security snapshot, checks the Hidra account and calls the registry's existing `verifiedDirect` producer. `SpringDirectAuthenticationAdapter.verify` establishes the opaque same-thread direct invocation and `finishVerification` clears it. The completion service already prepares captured claims before session writes and atomically stores the native binding and companion before success/publication. Reuse those application ports/services unchanged.
+
+Two actual OIDC-only gates prevent simply attaching LDAP attributes: `TrustedAuthenticationVerificationRegistry` stores `OidcSourceEvidence` and rejects non-OIDC types in persistent source-claim validation/MAC input; `V20261017_001__p25_identity_bound_source_claim_evidence.sql` rejects non-OIDC origins and requires a nonnull source expiry. LDAP/AD snapshots and format-one bindings deliberately require null source issuer/expiry and retain actual ACTIVE_DIRECTORY type with LDAP session protocol. Therefore C2C needs a narrowly additive trigger-function extension and private receipt generalization, not a fabricated LDAP issuer/expiry, replacement binding format or duplicate table.
+
+##### B. Supported source contract and private protocol — TARGET
+
+1. Add independent opt-in `hidra.identity.ldap-verified-claim-receipt.enabled:false` using constructor-injected `@Value` in the Identity provider; leave the existing platform properties record and runtime YAML unchanged. Add `hidra.identity.ldap-verified-claim-receipt.max-capture-age-seconds:60`, validated within 1–300 seconds. These are **proposed** software safeguards, not existing configuration or deployment values. The age window runs from opening the producer attempt through precommit publication registration. It bounds in-process verification/issuance delay only; it is not a directory-supplied expiry or a new native token lifetime. Native LDAP binding source fields remain null and existing native TTL rules remain unchanged.
+2. With capture disabled, preserve the exact old verifier/producer route: no mapping selector, capture scope, new attribute request, companion or issuance-fence invocation. Legacy constructors delegate with capture disabled. With capture enabled, missing registry/state/catalog wiring, an existing database owner transaction or selection failure must fail closed before remote verification; no fallback to identity-only issuance. Select `ClaimNameCatalogPort.selectVersioned` for the already-resolved actual LDAP/AD provider before bind and outside completion/owner fences, using the existing nonowner/elevated-role checks. Do not relax those checks for development fixtures or production.
+3. Keep `LdapCredentialVerificationPort` and `VerifiedDirectoryIdentity` unchanged. Use a private registry-owned, same-thread scoped handshake entirely inside the Identity infrastructure security package. Proposed package-private seams are `beginDirectoryCapture(providerId, providerType, selected, maxAgeSeconds)`, `directoryCaptureSelection()`, `captureDirectory(identity, projection)` and the `verifiedDirect(actual,snapshot,verifiedIdentity)` overload. `DirectoryCaptureScope` is a nested opaque `AutoCloseable`, with private construction, one active attempt per thread and one consumption. Opening requires the existing active direct-verification invocation; it cannot independently create an invocation or reuse a closed handle. Only `LdapAuthenticationProvider` opens/transfers the scope; only `LdapCredentialVerificationAdapter` reads its requested selection and records the authenticated callback result. Existing LOCAL/OIDC receipt producers remain the only other producer paths. No public capture factory, reusable registry map, request-details transport, static cache, callback supplied by an API client or application-layer LDAP import is allowed.
+4. The adapter obtains the requested selection from that exact active scope, requests a bounded de-duplicated union of existing identity attributes and selected attribute names, and reads it **once inside the successful-bind callback on the exact authenticated entry**. Build the identity and bounded projection from that same returned `Attributes` object. Record the exact returned `VerifiedDirectoryIdentity` object identity in the scope; a later equal-valued copy or a verifier returning a hand-built profile cannot substitute it. Never do a prior/profile/post-bind lookup, referral follow-up, unbounded group expansion, DN rewrite or second bind to create claim evidence. Failed bind, callback absence, multiple callbacks, attribute-read/enumeration error or a callback followed by authenticate=false invalidates the attempt.
+5. Transfer the captured evidence only after the provider validates the same actual provider ID/type, stable exact subject, active linked Hidra user and original provider/link security snapshot. The private `verifiedDirect` overload checks the exact captured identity instance, same invocation/thread and age, then mints the existing private direct receipt containing minimal immutable coverage and mapping generation. Public structural identity/projection/snapshot objects alone cannot mint that receipt. Provider scope close must clear pending capture on success, failure, Error and unsupported/ambiguous providers; registry `close()` also clears leftover capture. Nested, stale, wrong-thread and replayed scopes deny. No receipt/capture data goes into `Authentication.details`, REST, native claims, logs or errors.
+6. Generalize only the registry's internal captured-source state to carry actual source type/provider/subject, immutable coverage, mapping generation and verification deadline. Preserve the existing `OidcSourceEvidence` construction/access seam used by current converter/tests and every OIDC issuer/expiry check. OIDC still requires the exact original verified source expiry; LDAP/AD uses only the local producer deadline through issuance. Do not infer source expiry from directory passwords, account flags, `pwdLastSet`, tokenGroups, a fabricated issuer or native JWT values. Preserve existing direct invocation/one-use receipts, same physical transaction markers and after-commit publication.
+
+##### C. Bounded LDAP projection and completeness policy — TARGET
+
+Create package-private pure projection utility `LdapClaimCoverageProjector` in the existing infrastructure security package; it consumes JNDI `Attributes` plus the versioned selection and returns a package-private immutable `Projection(ClaimCoverage coverage,long mappingGeneration)`. This structural projection is never an authentication or permission. Reuse existing `ClaimCoverage` envelopes: at most 64 names, 120 code points/480 UTF-8 bytes per name, 256 raw values per name, 1024 UTF-8 bytes per value and 16384 aggregate name/value bytes. Bound enumeration before copying; inspect at most `2 * (ClaimCoverage.MAX_NAMES + 9)` returned attribute identifiers (146 for the current identity request), each within the name envelope, and abort beyond that cap without scanning further. Do not enumerate unselected attribute values. Close JNDI enumerations and redact original exceptions.
+
+For this first executable subset, selected names must be a bare ASCII descriptor `[A-Za-z][A-Za-z0-9-]*` or a valid dotted numeric LDAP OID with non-leading-zero number components. Reject wildcard selectors, empty/invalid names, attribute options, OIDC-style nested paths, case-equivalent duplicate selections and binary-transfer requests before bind. Preserve exact mapping keys in coverage, but match returned LDAP attribute identifiers case-insensitively using locale-independent ASCII handling. Reject duplicate/ambiguous returned identifiers for a selected name. Existing identity-attribute overlap may be requested once; that does not authorize retaining unrelated identity attributes as claims.
+
+Only actual nonblank strict-Unicode String values may be retained, exactly as returned: no trim, case folding, DN canonicalization, numeric/boolean/binary conversion or object `toString`. Bound raw count before deduplication; duplicate values and envelope overflow reject the capture. A returned selected attribute with empty/invalid scalar values is MALFORMED. An omitted selected attribute is **UNKNOWN**, never authoritative ABSENT merely because an access-controlled response omitted it. A selected attribute returned with range/option variants, partial enumeration or otherwise ambiguous completeness is UNKNOWN (discard partial values); a read/protocol exception aborts the capture. C2C does not fetch additional ranges or infer transitive memberships. Exact successful returned values may be PRESENT as positive observations; they are not proof that every server-side value was disclosed. In particular, nonmembership, unmatched DENY and known absence cannot be inferred from that observation. C3 must retain this source-specific completeness limitation and fail closed for any permission decision requiring stronger coverage. No LDAP authoritative ABSENT or complete-authorization-set claim is admitted without a separately evidenced provider contract recorded in this same task.
+
+Reference basis for the supported subset and fail-closed treatment: [RFC4512 section 2.5](https://www.rfc-editor.org/rfc/rfc4512.html#section-2.5) defines attribute descriptions/options and case-insensitive identifiers; [Microsoft ADTS range retrieval](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-adts/e27b48db-6f82-44cd-9038-2e54f790cc1f) documents ranged multivalue responses. The conservative completeness policy above is this proposed Hidra contract, not a claim that LDAP provides a completeness attestation.
+
+##### D. Native issuance, persistence, writer DAG and security — TARGET
+
+Use the existing `BoundSourceClaimEvidence`, binary codec, ports, JDBC adapters and format-one HMAC bytes. Expand the registry's narrow supported-source check to exactly OIDC, LDAP and ACTIVE_DIRECTORY; LOCAL and unknown types remain refused. The existing authenticated binding already seals actual type/protocol/provider/link/subject/security generations/native JTI/session/expiry, so its tag remains part of the unchanged companion MAC input. Do not alter existing OIDC tags or introduce unauthenticated supplemental fields. Readback/tag verification is private producer integrity only; protected permissions remain INDETERMINATE under the unchanged current reader.
+
+Source scan found 150 versioned Flyway files, latest `V20261017_001__p25_identity_bound_source_claim_evidence.sql`, and no `V20261017_002` version. Reserve **PROPOSED** `src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql`. Recheck filename/version before implementation. It must `CREATE OR REPLACE` only `public.hidra_identity_bound_source_claim_guard()` to admit the explicit LDAP/AD branches while preserving existing trigger attachments, security-invoker/search-path/volatility settings and PUBLIC revocation. Never edit the applied _001 migration.
+
+Preserve exact replay/conflicting replay semantics, immutable UPDATE/DELETE/TRUNCATE behavior, READ COMMITTED writable transaction requirement, 22 granted SHARE ROW EXCLUSIVE relations plus epoch ACCESS SHARE, binding existence, binding insertion xmin/full current XID, matching provider mapping generation and native expiry checks. OIDC retains its original nonnull/future source expiry checks; LDAP/AD requires null source issuer/expiry and LDAP protocol with the actual original authentication type. Write explicit NULL-safe branches; no weakened `OR` condition may admit LOCAL or unknown origins. The current native binding guards independently enforce their original tuple invariants. Existing snapshots/tags are not backfilled or upgraded.
+
+The writer DAG remains **fixed sorted 22-relation prefix -> epoch ACCESS SHARE -> existing session/binding writes -> immutable companion -> success event -> after-commit receipt publication**. Remote LDAP work and selection finish before that prefix. The new function reads only the same binding/epoch/lock catalog; it adds no relation or cross-module writer. Mapping-generation triggers and ownership/writer contracts stay unchanged. C2B's prepare/requireCurrent and real physical backend/XID checks apply unchanged to LDAP/AD. Any stale selection/provider/link, conflicting writer, timeout, privilege refusal or insert/publication failure rolls back the whole completion; no automatic token retry or receipt reuse. There is no claim of universal deadlock freedom.
+
+PostgreSQL16 is the sole target. No MySQL migration, new public API, frontend/HWEB dependency, engine, release/deployment, live OT access or external claim-to-role grant is part of C2C. Directory TLS/configuration and real server schema/ACL interoperability remain deployment/qualification concerns, not an assumed result of synthetic callbacks.
+
+##### E. Exact future implementation envelope — PROPOSED, not files changed now
+
+**CREATE — 3 absent proposed paths:**
+
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapClaimCoverageProjector.java` — bounded source-specific projection and structural result; no trust/permission factory.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapVerifiedClaimReceiptTest.java` — provider plus real adapter callback/scoped-receipt positive and adversarial protocol tests; simulated transport explicitly labelled.
+- `src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql` — narrow additive guard-function extension described above.
+
+**MODIFY — 14 verified existing paths:**
+
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapCredentialVerificationAdapter.java` — registry-aware constructor with legacy delegation; exact callback-local identity/projection capture; preserve default-off behavior and identity semantics.
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapAuthenticationProvider.java` — constructor-compatible opt-in/age/catalog wiring, scope lifecycle and genuine identity-instance receipt transfer; preserve account/provider/link checks and Hidra-only authorization ownership.
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationRegistry.java` — private scoped directory handshake, source-neutral internal evidence and narrow LDAP/AD MAC support; preserve all OIDC/direct origin, one-use, transaction and publication guarantees.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapCredentialVerificationAdapterTest.java` — exact same-entry/one-read callback checks and projection/attribute-error/bounds cases; preserve six historical tests.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapAuthenticationProviderTest.java` — default-off and constructor compatibility, early selection refusal, provider ambiguity/mismatch and missing real callback refusal; preserve all nine existing cases.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationTest.java` — LDAP/AD origin, copy/replay/type-swap/thread/age/MAC and precommit-publication negatives; retain prior 46 cases and the Spring proxy regression.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/BoundAuthenticationCompletionPostgresIntegrationTest.java` — real provider/adapter callback code to actual native/session/binding/companion path on PostgreSQL, stale generation and rollback proof; retain all 25 cases and translated-exception cause assertion. The directory-port test double may delegate to the real adapter with simulated `LdapTemplate` transport; a hand-built successful identity alone is never the capture fixture.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/BoundSourceClaimEvidencePostgresIntegrationTest.java` — actual forward migration, LDAP/AD branch/NULL/type/expiry guards, immutable replay and mandatory fence/XID invariants; preserve seven existing cases and OIDC checks.
+- `src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java` — retain exactly the three final receipt producer implementations; assert each new directory scope/capture entry point has only its specified provider/adapter caller and remains nonpublic.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipantTest.java` — retain closed producer allowlist and protected parser/participant boundaries; add source-specific scope/callback entry-point checks without new public consumers.
+- `.github/ci-test-inventory.json` — register only actual new tests/cases and source hashes after code exists, preserving timing provenance, required partitions and unrestricted fallback.
+- `.github/database-dictionary-ownership.json` — update the existing companion's OIDC-only purpose/evidence to include the actual additive LDAP/AD guard; keep Identity ownership and existing evidence.
+- `doc/database/DATA_DICTIONARY.md` — regenerate/check only through the existing actual migrated PostgreSQL catalog path; no inferred function/schema metadata. Apply AGENTS11.1 truthfully if the catalog must first be obtained from hosted CI.
+- `doc/roadmap/ULTIMATE_TASKS.md` — actual source/validation/limitations/CI reconciliation and remaining acceptance here; no frozen registry change.
+
+**DELETE: 0. Total future C2C implementation: 17 files (3 CREATE / 14 MODIFY).** Confirm the listed historical counts against the accepted source/raw reports before extending suites; never replace old cases. Other paths require a bounded same-task amendment before code.
+
+**PRESERVE / REUSE unchanged:** application/domain models and ports (including `VerifiedDirectoryIdentity`, `AuthenticationVerificationSnapshot`, `LdapCredentialVerificationPort`, `TrustedAuthenticationVerificationPort` and `ClaimCoverage`); `AuthenticationCompletionApplicationService`; `SpringDirectAuthenticationAdapter`; existing OIDC converter/projector/receipt tests; both source-claim JDBC adapters and codec; existing binding/session/native-token contracts; all applied migrations, mapping-generation triggers, protected authorization reader and Identity authority fence; platform properties/configuration, dependencies, workflows, OpenAPI, AGENTS, historical reconciliation, canonical ROADMAP/PHASES and every unrelated module. No source file is renamed merely to generalize the private receipt.
+
+##### F. Required verification and acceptance — TARGET
+
+- Projection: exact scalar/multivalue strings, Unicode/whitespace preservation, descriptor/OID matching, case-equivalent names, missing/empty/binary/nonstring/duplicate/oversize values, range/option/partial results, enumeration-close/error handling, zero selected names and all envelope boundaries. Prove unselected attributes are not retained and no diagnostics reveal names/values/subjects/credentials. Known absence is not fabricated.
+- Authenticated producer: select before bind; request only bounded identity/selected union; use callback's exact entry/context; one attributes read; no pre/post-search substitution; correct LDAP and AD provider/config/subject; callback-less/false/double/read-failing bind refusal; public identity/projection forgery, equal copied identity, missing scope, wrong invocation/type/thread, expired/nested/replayed scope and failure cleanup. Default-off produces no catalog/capture access. Do not label a mocked transport as a real server bind or AD interoperability test.
+- Real PostgreSQL16: fresh full chain plus forward _001-to-_002 migration; original migration bytes unchanged; OIDC branch preserved; positive LDAP and AD companions with exact original values/generation/native binding; source expiry/issuer remain NULL and AD protocol remains LDAP. Use the existing genuine nonowner role pattern and retain elevated-login refusal. Demonstrate selection mutation between bind and issuance rejects before success until a fresh authentication; hold/release an actual competing mapping writer with bounded latches, not sleeps as evidence. Preserve same transaction/backend/XID, immutable storage/replay, wrong type/NULL branches and no delayed companion attachment.
+- Rollback/publication: injected companion refusal and before-commit failure leave no native session, binding, companion, success event or published receipt/delivered token. Assert the actual repository-translated exception and original cause. Preserve source origin/TAG/type-swap failures. Retain OIDC/default-off/LOCAL compatibility and the unchanged protected reader's refusal to grant claim-dependent permission.
+- CI: use actual class/case/source-hash discovery, documentation/inventory/architecture controls and applicable Full/Fast/Docs. Use already available local tooling; do not provision a complete environment under AGENTS11.1. Unavailable/skipped database tests are non-proof. CI acceptance requires successful exact-implementation-SHA Full/Fast/Docs plus authenticated same-run raw partition/oracle evidence and truthful physical dictionary. Preserve fallback; no workflow optimization or invented test count/SLA. Synthetic tests qualify the software path only; real directory schema/ACL/TLS/AD commissioning and integrated H acceptance remain explicitly separate.
+
+##### G. This checkpoint, publication and next action
+
+**Current checkpoint allowlist: only `doc/roadmap/ULTIMATE_TASKS.md`, 1 MODIFY / 0 CREATE / 0 DELETE.** Insert the dated current-continuation pointer above the retained baseline scheduling paragraph and append these acceptance/admission records to HAPI-575 section15; preserve every previous byte otherwise. Do not implement the proposed 17-file package in this documentation checkpoint. HAPI-575 remains PARTIAL / IN_PROGRESS; no canonical identity, phase, priority, dependency, task row/status, manifest or frozen ROADMAP/PHASES change. This registration supersedes C2B as the next implementation selection without erasing its original admission/repair history.
+
+Use the already registered same-ID documentation message **`docs(security): select operation time fencing proof`**. Validate exact two-insertion mutation, canonical 921-task/status/DAG/frozen-table consistency, documentation validator and its tests, offline OpenAPI and unchanged inventory. Recheck live main/parent/tree and only this changed path; publish directly to main with expected-HEAD guard, no branch/PR. Observe exact-SHA Documentation Validation creation/start, report actual commit and run, then STOP without waiting. After its Docs acceptance, the next owner Next/Continue selects **C2C implementation** under the exact 17-file envelope and message above, not another full audit, C3, I–M or a new CI package.
+
+**Checkpoint validation actually completed:** documentation validator and its 10 tests PASS; offline OpenAPI snapshot PASS (263 operations / 244 paths / 231 schemas); unchanged CI inventory PASS; embedded canonical checker PASS (921 unique tasks, synchronized statuses, valid phase membership, acyclic dependencies and unchanged frozen task-table structure); `git diff --check` PASS. Source inventory confirms existing suite case counts: adapter6, LDAP provider9, registry46, completion25, companion PostgreSQL7. Path/mutation guards verify all three proposed CREATE paths are absent, all fourteen MODIFY paths exist and the current diff contains only the two authorized insertions in this one task document, preserving every previous byte. No new Java, LDAP or database test was run or invented for this documentation checkpoint; C2B acceptance above comes from the independently verified exact-source hosted artifact. No new C2C runtime claim follows from this registration.
+
+#### C2C source implementation and CI-first publication — 2026-10-17
+
+**Owner Continue/Next selects the admitted implementation, not C3. SOURCE IMPLEMENTED; CI/INTEGRATED ACCEPTANCE PENDING.** Starting main `c1910f341b65c8c425ccc4d1ef961e2a671ec689`, parent `3cb09e350fc969aa40fb44328046ec1e073e47cc`, tree `7f496d54dd88c2e3289ad46fa6f330217392f0cc`; exact-head [Docs #365](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39034546376) SUCCESS. The preceding C2B runtime baseline remains the independently verified Full718/Fast45/Docs364 record above; no Full/Fast result is invented for the documentation-only admission SHA. HAPI-575 stays PARTIAL / IN_PROGRESS and C3 remains separate.
+
+**Implemented behavior:** the provider's independent opt-in defaults false, validates its 1–300 second producer-age envelope (default60), selects the actual provider's versioned names before remote verification and requires an existing direct invocation. The private registry scope permits only one authenticated callback identity instance and one receipt transfer on the same thread/invocation. The real LDAP adapter requests the bounded identity/selected-attribute union and reads the exact authenticated entry once inside the existing successful-bind callback. Returned identity copies, missing/multiple/false/error callbacks, bad selection, missing wiring, old scopes and wrong origin cannot become captured receipts. A callback counter also rejects a repeated callback even if a transport suppresses its exception. Cleanup clears pending capture on normal/failure exits; application ports and public identity records remain unchanged.
+
+The independent package-private projector retains exact selected String observations under the existing domain count/Unicode/byte budgets, bounds returned identifiers/raw enumeration, rejects aliases/unsupported selected descriptions/overflow/duplicates and closes enumerations. Omitted and ranged/option-only claims remain UNKNOWN; invalid scalars are MALFORMED. No LDAP absence/completeness, transitive membership, raw credential storage or permission is inferred. The registry internally generalizes captured-source evidence while preserving the existing OIDC evidence facade and format-one cryptographic input. LDAP/AD companion MACs include the authenticated native binding's original actual type, provider/link/security tuple, JTI/session and validity through the existing binding tag. LDAP source issuer/expiry remain null; the local age bounds only producer-to-issuance delay. Default-off LDAP and existing LOCAL/OIDC paths remain supported.
+
+**Persistence:** added only `V20261017_002__p25_identity_directory_claim_evidence.sql`; all 150 previous migration files are byte-identical. It replaces the existing trigger function in place with explicit OIDC/LDAP/ACTIVE_DIRECTORY branches. OIDC source expiry rules are preserved; directory branches require LDAP protocol and null source issuer/expiry. Existing exact replay, immutable writes, READ COMMITTED writable owner transaction, sorted 22-relation fence plus epoch lock, same binding insertion transaction/XID, catalog generation and native expiry requirements remain. There is no backfill, replacement table, altered trigger attachment, new writer/relation dependency or MySQL implementation. Protected reader behavior remains unchanged; claim-dependent permission is not enabled.
+
+**Actual publication envelope under AGENTS11.1: 16 files, 3 CREATE / 13 MODIFY / 0 DELETE**, all within sectionE's registered 17-file envelope. The three CREATE paths are the actual projector, producer test and additive migration listed there. The thirteen MODIFY paths are its three production security classes, seven existing test classes, CI inventory, dictionary ownership and this task document. `doc/database/DATA_DICTIONARY.md` is the sole deferred path and remains byte-identical to the accepted previous physical snapshot. No qualifying newly migrated PostgreSQL catalog is available locally; do not fabricate metadata, relabel that old catalog as a new one or suppress the dictionary gate. The companion ownership/purpose evidence now references the actual directory extension. Retrieve the new hosted catalog artifact and regenerate/review the dictionary in the responsible follow-up; API/dictionary CI may report drift until then. This known pending artifact does not hold the bounded CI-first commit under AGENTS11.1.
+
+**Verification artifacts prepared, not claimed executed by Maven:** `LdapVerifiedClaimReceiptTest` has 13 new JVM cases for real production provider/adapter logic with explicitly simulated LDAP transport, callback sequencing/origin/refusal and projection limits. Existing suites retain every historical case: adapter6->7; LDAP provider9->10; registry46->47; completion PostgreSQL25->29; companion PostgreSQL7->8; operation-boundary guard13->14; protected participant8->9. These are source/inventory counts, not passing execution totals. Together they register 23 added cases. The PostgreSQL suites include actual _001-to-_002 forward migration, both directory type branches, native binding/private MAC storage, stale mapping rejection until fresh authentication, rollback and before-commit refusal, preserving the translated failure cause. Source guardrails retain the three final receipt producers and constrain new private scope/capture seams to the specified provider/adapter callers. Existing physical competing-writer tests are retained. These synthetic tests do not commission a real LDAP/AD server or prove all eventual H adversarial permutations.
+
+**Actual local verification:** the available Java21 compiler compiled the real `ClaimCoverage`, `ClaimNameCatalogPort` and new `LdapClaimCoverageProjector`; a scratch-only probe executed 12 positive/negative assertions for exact values, omitted/ranged UNKNOWN, malformed binary, selection aliases, raw count/duplicate/aggregate/returned-identifier limits and OID selection: PASS. Google Java Format parsed/formatted all changed/new Java sources; this is syntax tooling, not a full dependency/type-check claim. The focused offline Maven command for the producer/adapter/provider/registry and two guardrail suites was attempted, but stopped before compilation/tests because `spring-boot-starter-parent:4.1.1` is absent from the local cache. No dependency/service environment was provisioned, no PostgreSQL case was executed locally and no Maven passing/skipped count is invented. The new JVM class uses a zero *unmeasured scheduling weight*, explicitly labelled as such; existing measured class timings/classifications are preserved.
+
+Publish with registered message **`feat(identity): capture verified ldap claim receipt`** after documentation/inventory/canonical/source-scope checks. Guard live main/parent/tree and all changed blobs; no branches/PRs. Confirm exact-published-SHA Full/Fast/Docs creation/start, report actual SHA/run links and STOP without waiting. Next must inspect those results, repair responsible failures and finish genuine dictionary regeneration before C2C CI acceptance; only then consider the separately unselected C3 admission. No release, deployment, numerical solver, frontend work or OT operation is selected.
+
+**Prepublication controls completed:** documentation validator and its 10 tests PASS; offline OpenAPI snapshot PASS (263 operations / 244 paths / 231 schemas); source-linked CI inventory PASS; embedded canonical checker PASS (921 unique tasks, synchronized statuses, primary phase ownership, acyclic dependencies and unchanged frozen table structure); `git diff --check` PASS. File/scope verification confirms 3 CREATE / 13 MODIFY inside the registered envelope, all 150 old migration bytes and the exact original lock-relation prefix preserved, all historical case identities and measured timing/classification fields retained, and only the new class marked with an unmeasured scheduling weight. The current task record is a single append-only insertion; ROADMAP/PHASES, AGENTS, historical reconciliation, public contracts and the old physical dictionary are unchanged. Java-format verification required one additional normalization pass on the companion PostgreSQL test, then passed; its inventory hash was refreshed from the actual bytes. These controls do not substitute for pending Java/Spring/PostgreSQL exact-SHA CI.
+
+#### C2C Full #719 / Fast #46 repair — 2026-10-17
+
+**Owner Fail selects only the responsible C2C repair.** Live main `4bb52d9585288dfdbfa43b44c6f9ecea82eb883e`, parent `c1910f341b65c8c425ccc4d1ef961e2a671ec689`, tree `6525c057dbf48ac8bafda568b6cc1c9a94ca5b3e`. The exact 16-file C2C publication is verified; [Docs #366](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39036236728) SUCCESS, [Fast #46](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39036236745) FAILURE and [Full #719](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39036236724) FAILURE. No C2C CI acceptance or test-execution total is established by this failed run.
+
+**Exact failure recovery:** Fast job `117406461345` and all four Full Java test lanes (`117406461197`, `117406461299`, `117406461316`, `117406461327`) stop at the same testCompile error in `LdapVerifiedClaimReceiptTest` line524: Mockito `thenReturn(NamingEnumeration<Attribute>)` cannot satisfy the captured `NamingEnumeration<? extends Attribute>` return type of `Attributes.getAll()`. Missing Surefire/lane artifacts and the Full aggregate failure follow this compilation stop. Replace that one stub with `doReturn(enumeration).when(attrs).getAll()`; retain its actual naming-error and enumeration-close assertions and all thirteen case definitions. This changes mock configuration only, not the production projector or the meaning of its test.
+
+API-contract job `117406461344` builds the production application, publishes/equality-checks its runtime OpenAPI, runs the actual migration chain and collects the physical catalog, then fails with `Physical dictionary drift; review regenerated metadata/content`. This is the explicitly pending dictionary step from the initial publication, not accepted database/authorization behavior. Static validation succeeded; no missing-report follow-up is treated as an independent product defect.
+
+**Actual hosted catalog recovery:** diagnostics artifact `12102187916`, `hidra-ci-diagnostics-4bb52d9585288dfdbfa43b44c6f9ecea82eb883e-39036236724-1-api-contract`, contains the genuine `database/schema.json`, failed-verification text and runtime OpenAPI/log. Its downloaded ZIP SHA256 matches GitHub metadata: `d3ee4db15d666a5e124144079faa8948ae5d67f3031ba2ed858cae335fa5f797`. The existing generator validates exact source SHA, every captured source bundle/migration/mapping identity and current ownership evidence before rendering. Regenerated `doc/database/DATA_DICTIONARY.md` from that input, then reran the same generator with `--check`: PASS; **151 migrations / 470 JPA mappings / 493 catalog relations / 0 unresolved owners**, PostgreSQL `16.15 (Debian 16.15-1.pgdg13+2)`. Catalog SHA256 `1aad042fa01ae868ef5cb7408180c980e9d848caf937384d8d066b1842827365`; source-bundle SHA256 `9d87dbf4d4eeffbdd3da55a629210e23e68216c58a223f78ee5c39fc060fa23f`; rendered dictionary SHA256 `b7f843903ca26e344f3b0360a9c31311caa70e2399ce8088b79a6c1c1dd15117`. Provenance remains the real captured implementation SHA, not the future repair SHA. No local database, invented schema or relabelled old catalog is used. This resolves the pending dictionary artifact without claiming that the failed Java suites ran.
+
+**Exact repair allowlist: 4 MODIFY / 0 CREATE / 0 DELETE:**
+
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapVerifiedClaimReceiptTest.java` — wildcard-safe stub only; preserve thirteen tests and error/close assertions.
+- `.github/ci-test-inventory.json` — only this test's actual source SHA256; no case, timing, lane, classification or selection change.
+- `doc/database/DATA_DICTIONARY.md` — actual-catalog regeneration described above; review provenance, source references and the existing companion's OIDC/LDAP/AD purpose.
+- `doc/roadmap/ULTIMATE_TASKS.md` — append this diagnosis and actual verification evidence; preserve all prior bytes/statuses.
+
+No production Java, applied migration (all151), security rule, public contract, ownership override, configuration, workflow, dependency, AGENTS, ROADMAP/PHASES or historical reconciliation changes. HAPI-575 remains PARTIAL / IN_PROGRESS. Reuse `feat(identity): capture verified ldap claim receipt`, recheck expected main/parent/tree and four-file scope, publish guarded directly to main, observe exact-SHA Full/Fast/Docs startup and stop. The earlier missing local Maven parent is not provisioned merely to reproduce CI under AGENTS11.1; this repair's full Java/Spring test compile and runtime/database acceptance remain pending GitHub feedback. Do not start C3.
+
+**Repair validation completed:** actual-catalog generator render and independent `--check` PASS; documentation validator and its 10 tests PASS; offline OpenAPI PASS (263 operations / 244 paths / 231 schemas); inventory PASS; embedded 921-task/status/phase/DAG/frozen-table checker PASS; Java format/syntax check and `git diff --check` PASS. Mutation guards verify exactly four MODIFY paths, exactly one mock-stub line and its inventory hash change, every prior task-record byte retained and all production files/151 migrations unchanged. All thirteen producer-case identities and historical timing/classification fields are preserved. No new Java/Spring or database execution result is claimed before the next GitHub run.
+
+#### C2C exact-source CI acceptance and C3 admission — 2026-10-17
+
+**Owner Next selects one documentation-only registration. C2C is SOURCE / CI ACCEPTED within the synthetic scope below; C3 implementation is not performed by this checkpoint.** Live main `efd337bb7187a89cf9f5d5cbf91c86773eeb093c`, parent `4bb52d9585288dfdbfa43b44c6f9ecea82eb883e`, tree `5f233ace9eab807a7ca20e80c9f3e523527e4fa7`; the four-file repair is present. Exact-source [Full #720](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39036809102), [Fast #47](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39036809117) and [Docs #367](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39036809086) are SUCCESS. All seven Full jobs succeeded, including runtime OpenAPI, actual PostgreSQL16/Flyway/dictionary, both database shards, unrestricted oracle and aggregate gate.
+
+**Independent raw evidence:** Full artifact `12102561940`, `hidra-full-ci-evidence-efd337bb7187a89cf9f5d5cbf91c86773eeb093c-39036809102-1`, downloaded ZIP SHA256 `fad046843849074ce71651ac9c8728440d6c016ea98d23ea5052e99b3e9bad6b`, matches GitHub metadata. Safe extraction and the actual checked-in Full verifier independently reconstruct `gate.json` exactly: **394 classes / 2197 tests / 0 failures / 0 errors / 0 skips**, run39036809102 attempt1, exact source SHA, `same_run_equivalence=true`, `fallback_required=true`, `optimized_adoption_eligible=false`. Producer13, authentication-completion29 and companion8 cases are present and successful in their assigned lane and oracle; these are executed counts, distinct from the earlier source counts. Runtime API SHA256 `29b23f199b8c4c9d57c755a84c50d38bc931bd200a97ef48f3c89f3bb618838b`; accepted comparison source `3cb09e350fc969aa40fb44328046ec1e073e47cc`, base API SHA256 `94bd46f021029606f2edfc7bde18af584240b781ed052267cf20e96ac007bb15`; catalog SHA256 `2e47459e9a1efbef70ed23bec85e6b65384649758678831340a6ee0d46dbeadb`; source-bundle SHA256 `9d87dbf4d4eeffbdd3da55a629210e23e68216c58a223f78ee5c39fc060fa23f`; PostgreSQL `16.15 (Debian 16.15-1.pgdg13+2)`. The failed #719 record remains historical evidence. This accepts the bounded C2C repair and real software/database execution with simulated directory transport; it proves neither real LDAP/AD interoperability nor complete directory membership, production separation of duties, industrial acceptance or protected operation permission.
+
+##### A. C3 objective, source finding and boundary
+
+Register **one independently verifiable Identity-private fenced source-claim interpretation outcome** within HAPI-575 / HPR-P25-051H. Existing `JdbcProtectedAuthorizationEvidenceReader.load` reads bounded, fresh direct/synchronized grants and normalized policies under the sorted22 Identity fence, but marks active ASSERTION_ONLY group and DIRECT_GRANT role/permission mappings `EVIDENCE_INDETERMINATE`. It does not load the new companion, check its MAC/current mapping generation or interpret coverage. Its public `Evidence` and `Contribution` inputs are structural diagnostics; holding SQL locks cannot promote caller-built records into authentication authority. `TrustedAuthenticationVerificationRegistry.validatePersistentSourceClaimOrigin` already verifies the native binding MAC and companion MAC; reuse it without adding a new producer or key. Existing source coverage/repository/codec are immutable structural contracts, not authorization credentials. The ordinary JPA adapter's caller-supplied `VerifiedAuthorizationAssertion` path is not a provenance fallback.
+
+The future C3 path must qualify the actual prepared B1 authentication, reload its exact persisted native binding and companion in the same fenced physical transaction, verify private origin and current catalog/identity eligibility, and produce bounded evidence for the existing pure domain evaluator. No REST contract, public permission facade, paired resource/company authorization, Party/Topology participant, global admission, publication/CAS or final commit guard is activated. Those remain HAPI-581 through HAPI-585 / I–M. A domain PERMIT observation in a synthetic Identity diagnostic is not operation authorization. HAPI-575 remains **PARTIAL / IN_PROGRESS** in all three canonical documents; no new HAPI identity or frozen table mutation is admitted.
+
+##### B. Qualified entry and exact physical fence — PROPOSED
+
+1. Preserve `ProtectedOperationIdentityParticipant.prepare()` outside the owner transaction, including original native-token decoding and actual SecurityContext provenance. Add a claim-read qualification method consuming its existing opaque `Prepared` inside a writable READ COMMITTED participating transaction. It must run the existing one-shot `contribute` validation, then mint a nested opaque claim-read object with a private constructor. Bind that object to its owner participant instance, original actual Authentication identity, origin thread, exact immutable request, contribution/common DB sample and backend/full-XID, current transaction synchronization identity and one-use state. No public factory, caller-built `Contribution`, `Evidence`, claim map, assertion DTO or database row may mint it. Constructor accessibility and allowed callers require guardrail tests.
+2. The reader's new qualified overload consumes this object through owner validation; it cannot accept a public structural record as a substitute. Consume before risky reads; reject replay, alternate request/resource/scope, replaced SecurityContext, transaction suspension/new transaction, wrong participant/thread, already-used Prepared and failure reuse. Recheck actual origin, transaction coordinates and held locks before returning. Exact new method/type names may be chosen within the existing participant/reader files; their private-constructor/one-use semantics are mandatory. Preserve the existing diagnostic `load(Evidence, request, pid, xid)` signature and conservative external-mapping behavior; it must never acquire claim authority from an optional field or overload fallback.
+3. Extend `JdbcIdentityAuthorityFence.collect` in this fixed order: existing byte-preserved sorted22 relation prefix in SHARE ROW EXCLUSIVE; `public.hidra_identity_external_mapping_generation` ACCESS SHARE; `public.hidra_identity_bound_source_claim_evidence` SHARE; verify every required granted relation/mode for this backend; only then invoke the existing temporal collector/common `clock_timestamp()` sample. Keep its finite earliest deadline and original binding/native/source windows. Reentrant prefix locks in the collector remain compatible. Do not sample wall-clock time before the additive tail or resample independently per decision.
+4. Writer compatibility: C2B/C2C issuance already takes the same22 prefix then epoch ACCESS SHARE before binding/companion INSERT. Mapping INSERT/UPDATE/DELETE/reassignment must obtain one of those22 relation locks before epoch row updates; mapping TRUNCATE remains denied. Companion DML/TRUNCATE requires a conflicting lock against reader SHARE, and epoch DDL/TRUNCATE conflicts with ACCESS SHARE. The common22 prefix serializes these owner paths before either tail; do not reorder issuance or migration guards. Verify the actual writer DAG with two physical connections and bounded waits, not only a lock-list string test. This is an Identity-local order; no new global lock order is claimed.
+5. Under those fences, reload the exact binding by its canonical bindingId and compare every prepared/contributed identity, provider/link/credential/security-generation, issuer/audience, authentication type, JTI/session and issued/native/source-deadline field. Reuse private binding/companion MAC validation; storage equality alone is insufficient. Use `ClaimNameCatalogPort.selectVersioned(actualProvider)` under the same transaction/fences; require positive exact generation equality and exact selected-name coverage. Preserve its elevated-role refusal; do not replace it with an unguarded epoch query. Local and legacy external bindings lacking companions are not upgraded.
+6. Reject malformed, extra/missing, mismatched, unsupported-format, corrupt, future-issued, stale-epoch, revoked or expired source evidence generically and without partial authoritative results. Distinguish the companion's historical issuance XID (MAC-bound to the original issuance) from the current reader's XID; they need not be equal. The issuer's original same-transaction insertion/xmin guard remains unchanged. A current same-transaction mapping change must invalidate generation equality; a different transaction cannot change fenced mappings until reader completion. No catalog mutation means no new lifetime: source/native deadlines and current dynamic eligibility apply at the common sample. Exiting C3 does not attest future commit validity; I–M retain that obligation.
+
+##### C. Coverage and current mapping interpretation — PROPOSED
+
+Use an Identity-owned, framework-free pure domain match helper with explicit MATCH / NO_MATCH / INDETERMINATE output. It interprets supplied values only and must never claim producer verification. Infrastructure qualifies provenance first and loads the current bounded mapping/target graph. Preserve exact case-sensitive claim/value semantics; no trimming, substring membership, LDAP DN canonicalization, nested/transitive group expansion, wildcard privilege or provider fallback.
+
+- OIDC: verified PRESENT can match exact values; authenticated ABSENT and a verified complete supported PRESENT set with no exact match can yield NO_MATCH. UNKNOWN, MALFORMED, unrequested or unsupported representation yields INDETERMINATE. An untrusted caller-built ABSENT is never admitted to this branch.
+- LDAP / ACTIVE_DIRECTORY: C2C authenticates positive returned observations but does not prove a complete server-side multivalue set. Exact positively observed matches may yield MATCH; a PRESENT set without the requested value, omission, option/ranged attribute, ABSENT representation or connector uncertainty yields INDETERMINATE, never a negative membership conclusion. Do not convert this gap into a fabricated complete-set flag or weaken producer semantics.
+- LOCAL has no external claim authority. Preserve its existing direct/local and independently supported synchronized grant behavior. A LOCAL identity cannot borrow another provider's companion or mapping. Missing companion on an external legacy binding leaves relevant claim-dependent work indeterminate; no active external claim mapping requires no invented companion merely to preserve supported direct behavior.
+- Load only current actual-provider mapping candidates, with actual status/mode, exact configured claim name/value selector, target group/role/permission, grant effect and scope. Extend the existing bounded query graph to include assertion target groups, their grants and roles before validating references; do not evaluate targets absent from the original membership-only graph. Preserve the combined1024-row budget including inactive/future candidates, deterministic ordering and no per-mapping query loop. Oversize/invalid enum or missing referenced rows fails closed.
+- Group ASSERTION_ONLY mappings may contribute only through a verified matching observation, active mapped group and current scoped/windowed group-role and role-permission chains. DIRECT_GRANT role mappings require active target role and matching scope; permission mappings require the exact requested active permission and valid effect/scope. Retain direct orders0/1 and synchronized order2; use existing ordinary semantics' assertion group3/role4/permission5 orders deterministically without copying its unsafe empty-set fallback. Unsupported active mapping modes cannot silently disappear.
+- Exclude a candidate only on a proven structural mismatch, inactive state, permission/scope mismatch or authenticated NO_MATCH. Any unresolved applicable mapping, including a potential DENY, keeps `EVIDENCE_INDETERMINATE`; a separate direct PERMIT cannot override it. Existing supported matching DENY retains precedence over unknown and PERMIT in `AuthorizationPolicyEvaluator`. A supported matching PERMIT becomes eligible only after every applicable uncertainty and policy condition is resolved. Unknown/malformed relevant source values must not be laundered through `subject.groupIds` or policy facts as known negatives; unsafe group-dependent expressions remain indeterminate.
+- Preserve existing condition syntax/stability classification, scoped policy filtering, user/provider/link status, temporal windows and domain evaluator precedence. Use `evaluate(request, evidence, contribution.observedAt())`; do not use convenience methods that call `Instant.now()`. Returned proof may include bounded mapping/provider/binding identifiers needed internally, but no raw claim values, bearer tokens, directory credentials, source payloads or guessable value hashes in diagnostics, errors, logs or public DTOs. Do not copy the ordinary adapter's valueHash proof surface.
+
+##### D. Exact future C3 implementation envelope — PROPOSED, not files changed now
+
+**2 CREATE / 10 MODIFY / 0 DELETE.** All existing paths below were verified at the accepted main tree; both CREATE names are proposed and absent. No directory-wide wildcard authorizes additional changes.
+
+CREATE — PROPOSED:
+
+- `src/main/java/dz/sh/hidra/modules/identity/domain/service/ExternalClaimMatchEvaluator.java` — pure bounded provider-aware coverage/value interpretation with explicit uncertainty; no Spring, JDBC, JWT, provenance authority or time source.
+- `src/test/java/dz/sh/hidra/modules/identity/domain/service/ExternalClaimMatchEvaluatorTest.java` — independent positive/negative OIDC/LDAP/AD/LOCAL coverage matrices and exact-value behavior.
+
+MODIFY — existing verified paths:
+
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipant.java` — opaque request/actual-origin/physical-transaction-bound one-use qualification and owner consumption checks; preserve existing prepare/contribute and all B1 refusal semantics.
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcIdentityAuthorityFence.java` — additive epoch/companion tail before the existing DB sample and held-lock proof; preserve original22 prefix and candidate semantics.
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java` — qualified overload, real binding/companion/MAC/versioned-catalog verification and bounded current external mapping/target graph interpretation; preserve legacy diagnostic overload and all existing direct/synchronized/policy behavior. Inject existing owner infrastructure/ports without a reverse domain dependency or new public application authorization API.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipantTest.java` — qualification provenance, one-shot, request/origin/thread/transaction refusal with retained existing cases.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java` — graph/budget/query/scope/condition and conservative legacy-overload regression coverage, retained historical cases.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/IdentityAuthorityFencePostgresIntegrationTest.java` — actual additive held-lock order, competing writer blocking/release and common-time proof, preserving original22 behavior.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedAuthorizationEvidencePostgresIntegrationTest.java` — real producer-to-issuance-to-qualified-reader/MAC/epoch/evaluator end-to-end cases and two-connection concurrency, preserving the existing private diagnostic transaction fixture and all cases.
+- `src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java` — qualified entry/mint caller restrictions and no public assertion/legacy bypass; preserve three final producers and existing private scope boundaries.
+- `.github/ci-test-inventory.json` — source hashes and exact new pure-domain test registration under current schema/lane rules; preserve every existing case, measured timing, classification and oracle requirement. Unmeasured scheduling weights must be explicitly labelled, never called measured performance.
+- `doc/roadmap/ULTIMATE_TASKS.md` — append actual implementation, verification/limitations and current next pointer only; preserve every historical record and canonical statuses.
+
+DELETE: none. PRESERVE / REUSE unchanged: `TrustedAuthenticationVerificationRegistry.java` and its existing public verification methods in the same security package; `BoundSourceClaimEvidenceRepositoryPort.java` and `ClaimNameCatalogPort.java` under `application/port/out`; `BoundSourceClaimEvidence.java` and `ClaimCoverage.java` under `domain/value`; `JdbcBoundSourceClaimEvidenceRepositoryAdapter.java`, `BoundSourceClaimEvidenceCodec.java`, `JdbcOperationAuthenticationBindingRepositoryAdapter.java`, `JdbcClaimNameCatalogAdapter.java`, `JdbcBoundSourceClaimIssuanceFence.java` and `JdbcIdentityTemporalEventCollector.java` under the same persistence/adapter package; `AuthorizationPolicyEvaluator.java`, `AuthorizationExpressionEvaluator.java` and `AuthorizationExpressionStabilityCompiler.java` under the same domain/service package. These shorthand filenames identify those verified owner-relative paths only. All151 applied Flyway files, native binding/companion formats and MAC inputs, source producers, public contracts, config/default-off flags, ordinary JPA adapter, architecture/CI workflows, ownership/dictionary files, AGENTS, ROADMAP/PHASES and legacy RECONCILIATION remain byte-identical. No CREATE migration filename is admitted; no MySQL implementation is inferred. If an additional file/schema/writer/API dependency is unavoidable, record it here and stop for a separate scope admission rather than silently widening the envelope.
+
+##### E. Required independent verification and acceptance — TARGET
+
+Pure-domain cases must cover all four coverage states and authentication types, positive and negative exact comparisons, incomplete LDAP PRESENT without a match, malformed/unknown handling and immutable inputs. Existing domain policy tests remain unchanged and must pass. Unit tests must prove inaccessible opaque construction/caller restrictions, replay and same-thread wrong-transaction refusal, swapped actual Authentication, alternate scope/resource/request, failure consumption, redaction, no caller-assertion or structural-record upgrade, row-budget overflow/missing targets and preservation of legacy external indeterminacy.
+
+PostgreSQL16 tests must use the real migration chain, native authentication/private receipt and actual repositories/MACs/fences, not manually inserted caller-authenticated coverage. Directory transport and IdP signature fixture may remain explicitly synthetic; native token verification, generation, transaction and database behavior must execute. Use a test-only non-owner role with actual catalog privileges satisfying the existing versioned selector; assert owner/elevated role refusal rather than disabling it. Verify OIDC group/role/permission positive and DENY cases; actual LDAP and AD positive observations plus nonmatch UNKNOWN; old binding/no companion; tampered/other binding/provider/link/JTI/session/format/coverage/MAC; stale mapping edit/new-name/disable/reassignment and ABA until fresh authentication; same-transaction mutation; dynamic provider/link/user/session revocation; native/source expiry equality and future issuance; row budget; exact scoped request; and unchanged LOCAL/default-off paths. An absent/unknown applicable DENY must block a supported direct PERMIT; a supported matching DENY must prevail over uncertainty.
+
+At least two real physical connections must show a mapping writer and companion INSERT/TRUNCATE conflict blocked until reader rollback/commit, no lock upgrade inversion against the accepted issuance prefix, and a fresh qualifying transaction observing the committed epoch while the old companion remains unusable. Prove tail lock presence before the common DB sample, same backend/full-XID across qualification/load/evaluation, retained finite source/native deadlines and cleanup after failure. A statement snapshot/mock alone is insufficient. Do not claim exhaustive race permutations or latency/SLA without measurements; broader paired-owner/global/final-CAS/commit-time adversarial qualification stays I–M.
+
+Measurable C3 acceptance: no publicly constructible structure creates qualified claim evidence; private MACs/current epoch/exact selected-name coverage and current dynamic identity are checked under all required physical locks; both supported mappings and explicit DENY work with exact scope/time; incomplete coverage cannot yield permission; direct/synchronized/policy regressions remain green; no raw claims escape; no migration/public contract change; inventory/architecture/document/OpenAPI checks pass. Under AGENTS11.1 run useful available local checks without provisioning a full environment, report unexecuted cases honestly, publish the bounded implementation, and require exact-SHA Full/Fast/Docs plus independently verified same-run raw evidence with required cases unskipped before C3 CI acceptance. CI-003C unrestricted fallback remains mandatory. C3 acceptance alone does not mark HAPI-575 complete or unblock I automatically without its own reviewed selection.
+
+##### F. This checkpoint and registered next execution
+
+This checkpoint changes **only `doc/roadmap/ULTIMATE_TASKS.md`** by this insertion and a dated scheduling pointer. It records C2C's actual acceptance and admits the future12-file C3 package, not application code. Documentation publication message: **`docs(security): select operation time fencing proof`**. Guard exact live main/parent/tree, verify one-file scope and history/status preservation, commit directly to main without branches/PRs, verify the resulting commit/tree/blob and automatic exact-SHA Documentation Validation startup, then STOP without waiting.
+
+After this checkpoint's Docs acceptance and a subsequent owner Next/Continue, implement the whole registered C3 package in one bounded stage using exact message **`feat(identity): qualify fenced source claim evidence`**. Recover live main and the actual files before code changes; no repeat whole-platform audit or new preflight-only decomposition is required unless source/governance changes expose a real conflict. C2C must not be reimplemented. C3 is REGISTERED for later execution, not runtime implemented or CI-accepted by this document; HAPI-575 canonical statuses remain PARTIAL / IN_PROGRESS. No release, deployment, numerical solver, HidraWEB change or OT operation is selected.
+
+**Admission validation completed:** documentation validator and all10 tests PASS; offline OpenAPI snapshot PASS (263 operations / 244 paths / 231 schemas); unchanged source-linked CI inventory PASS; embedded canonical checker PASS (921 unique tasks, synchronized statuses, one primary phase each, acyclic dependencies and frozen table structure); `git diff --check` PASS. Both proposed CREATE paths are absent and all nine existing source/inventory allowlist paths exist, plus this verified task document. Exact two-insertion reversal reconstructs every prior task-record byte. Only this file changes; ROADMAP/PHASES, legacy history, production/tests, all151 migrations and inventory remain unchanged. Full720 raw aggregate was independently recomputed against current source and equals its gate exactly. No C3 Java/database test is claimed executed by this registration.
+
+#### C3 Full #727 evidence reconciliation — 2026-10-17
+
+**Owner Next selects exact-source evidence reconciliation after concurrent main advancement. C3 has implemented, CI-verified bounded behavior; its complete registered acceptance is NOT established.** The prior registration SHA `577e530d37315347482f06ce0f11664936f4fe5f` passed Docs368. Live main is now `ee9ad0d1102585f85fc3361d394f89da5f6a6569`, parent `fd427ce4fbd1638c880986514f0eea93feb3ae2b`, tree `e528b468af4650af901df718f24413550126c166`. This continuation explicitly recovered that new baseline before mutation; no earlier head was overwritten and no C3 implementation was duplicated. HAPI-575 stays **PARTIAL / IN_PROGRESS**; HAPI-581 through HAPI-585 remain blocked. Source/CI verification of a tested slice does not satisfy unimplemented or untested acceptance criteria for the whole task.
+
+##### A. Exact commit history and actual scope
+
+Recovered all seven descendants of the C3 admission, preserving their original SHAs/messages:
+
+- `99d0717a9faffd897be45d5579c9218366a5dbfe` — original C3 implementation: pure domain match helper, opaque qualified read, additive Identity fence tail, bounded external mapping graph, tests and inventory.
+- `e78d4fb3ee4fdf32a0d6118a5b2c822955e3c66d` — existing reader surface assertion updated to require both `load` and `loadQualified`; actual test-source inventory hash updated.
+- `9a6f2149c4d161651217ed85c0ddaa33ceacc3b2` — PostgreSQL fixture non-owner source/issuance/read role coordination and disposable receipt privileges; source selection remains actual catalog SQL and the production transaction rules remain unchanged.
+- `7ae91287a04c5db0022300d5128af5fe5c70c7d0` — register the fixture's MANDATORY issuance-fence spy within a transaction, retaining its real-method delegation.
+- `eea8ab1eb7ccd3f7f1a9bb022db1209124a58002` — replay refusal verified through a separate rejected protected execution, including Spring rollback-only/exception translation and failure-before-commit-guard assertions.
+- `fd427ce4fbd1638c880986514f0eea93feb3ae2b` — additional real OIDC mapped DENY versus direct PERMIT and stale-generation disablement cases.
+- `ee9ad0d1102585f85fc3361d394f89da5f6a6569` — new claim-name activation rejects older coverage until fresh OIDC authentication; freshly authenticated ABSENT is independently distinguished from unknown evidence.
+
+All seven use the registered `feat(identity): qualify fenced source claim evidence` message. Aggregate source scope is **11 paths: 2 CREATE / 9 MODIFY / 0 DELETE**, within the previously admitted12-file envelope. The omitted twelfth path was this task document; no C3 implementation/evidence entry had been added here. This one-file reconciliation fills that history gap. All151 migrations, production configuration, dependencies, native binding/companion formats/MACs, source producers, public OpenAPI files, workflows, dictionary/ownership files, AGENTS, legacy RECONCILIATION and frozen ROADMAP/PHASES are byte-identical to the admission. No earlier commit or CI record is rewritten; no failing intermediate CI outcome is inferred merely from a repair-like diff.
+
+##### B. Independent exact-SHA hosted evidence
+
+At `ee9ad0d1102585f85fc3361d394f89da5f6a6569`, [Full #727](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39053631879), [Fast #54](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39053631804) and [Docs #375](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39053631850) are SUCCESS. All seven Full jobs succeeded, including actual Java21 clean-verify execution, both PostgreSQL shards, unrestricted oracle, API/dictionary and aggregate. Full's raw artifact `12108384140`, `hidra-full-ci-evidence-ee9ad0d1102585f85fc3361d394f89da5f6a6569-39053631879-1`, has downloaded ZIP SHA256 **`fc4183198782bfd58a077d18b26dafb1e7c25c8b00b3d7af9e18d6f2b80f4b00`**, matching GitHub metadata. ZIP integrity/safe extraction passed (810 entries). The actual checked-in verifier independently reconstructs its gate exactly from all six source-linked lane bundles and raw XML reports: **395 classes / 2212 tests / 0 failures / 0 errors / 0 skips**. Run39053631879 attempt1; exact source and inventory SHA256 `6118b25ddd519c9f10512acc3e48b89ebd2e50806be374509298be19e106a6ee`; `same_run_equivalence=true`, `fallback_required=true`, `optimized_adoption_eligible=false`. Zero skips refers to executed registered cases; it does not prove that every required scenario has been authored.
+
+Runtime API SHA256 `13354c4c2e003fa762fa82cff59db6985b97071fdd805ffb1aff6afdce00b20f`; comparison source `fd427ce4fbd1638c880986514f0eea93feb3ae2b`, base API SHA256 `94bd46f021029606f2edfc7bde18af584240b781ed052267cf20e96ac007bb15`; compatibility/snapshot gates succeeded. Catalog SHA256 `ae445c953a0926596535f04af5c8bd10ba52186af9cb7f73812c17c7ea06a9d6`; source-bundle SHA256 `9d87dbf4d4eeffbdd3da55a629210e23e68216c58a223f78ee5c39fc060fa23f`; PostgreSQL `16.15 (Debian 16.15-1.pgdg13+2)`. These are genuine hosted artifacts, not a locally inferred schema or new production qualification.
+
+All six directly affected suites have matching successful assigned-lane/oracle raw reports (failures/errors/skips all0): `ExternalClaimMatchEvaluatorTest`6; `ProtectedAuthorizationEvidencePostgresIntegrationTest`17; `IdentityAuthorityFencePostgresIntegrationTest`11; `ProtectedOperationIdentityParticipantTest`10; `OperationAuthenticationBoundaryGuardrailTest`15; `JdbcProtectedAuthorizationEvidenceReaderTest`9. Their full owner-relative paths remain the verified paths in the C3 envelope above. The baseline2197-to-current2212 difference is15 added executed cases, including six helper tests, five protected PostgreSQL C3 cases and one each for fence, participant, boundary and reader. No historical test method is replaced by a new scenario count.
+
+##### C. Behavior actually established and limits
+
+Current source implements `qualifyClaims(Prepared, request)` / private-constructor `QualifiedClaimRead` / one-use `consumeClaims`; it binds the actual authenticated instance, thread, exact immutable request, persisted native binding, physical connection resource, backend/full-XID and sampled contribution. The qualified reader independently revalidates the actual binding and source companion MAC, current positive versioned selection/generation and exact selected-name coverage. Legacy `load(Evidence,...)` remains a structural diagnostic without claim interpretation. Active external mappings are loaded with target groups/roles and bounded current grant/policy/attribute dependencies; direct/synchronized chains and new assertion orders3/4/5 are preserved. Pure matching preserves exact values and incomplete LDAP/AD semantics. Supported DENY precedes unknown and PERMIT through the existing domain evaluator. Source inspection establishes the sorted22-prefix -> epoch ACCESS SHARE -> companion SHARE -> existing collector/sample order.
+
+The five new real-database C3 cases prove: verified-original OIDC source can produce a matching permission-mapping observation; replay refuses before the commit guard; verified mapped DENY defeats an independent direct PERMIT; deactivating a mapping invalidates the old generation; a newly configured claim name rejects old coverage even with a direct PERMIT, while fresh OIDC authentication captures its actual ABSENT state; and a legacy OIDC binding without a companion leaves a potential mapped DENY indeterminate. Source JWT signing/decoding, native issuance/verification, persistence/MAC/epoch checks and protected PostgreSQL transaction execute. Directory transport remains mocked; the helper's LDAP/AD matrix alone does not execute directory receipt-to-qualified-reader integration. The non-owner fixture uses a real restricted role and guarded SQL, with test-only spies switching role/delegating catalog calls; it is not evidence of independently provisioned production role separation.
+
+The new two-connection fence test establishes granted tail locks after `collect`, a conflicting companion ROW EXCLUSIVE lock timing out with55P03, and acquisition after reader commit. Existing fence tests continue passing. This does not by itself prove actual companion INSERT/TRUNCATE, concurrent issuance progress, reader rollback release, every mapping-writer interleaving or independent observation of tail acquisition before the clock sample. Test names are not stronger evidence than their assertions. No protected public endpoint/global owner coordination, final publication permission, latency SLA, real IdP/directory commissioning or industrial/deployment acceptance is established.
+
+##### D. Remaining C3 reconciliation findings — existing task obligations, not new tasks
+
+**C3-REM-001 — HIGH / source-contract gap / Identity HPS-002:** `JdbcProtectedAuthorizationEvidenceReader.loadQualified` consumes and validates actual origin before JDBC graph reads, then finishes with only `coordinates` and `heldClaims`. It does not recheck the actual Authentication/qualified-owner context after those reads, nor re-read the versioned catalog/selection at that boundary. Other-transaction mapping writes are fenced; a same-transaction mutation is a distinct obligation. The registration explicitly requires actual-origin recheck before return and current-generation refusal for same-transaction mutation. Source demonstrates a missing defensive postcondition, not an executed permission-bypass exploit. Within the admitted participant/reader files, add an owner-controlled post-read validation that cannot remint or replay a consumed credential, verifies the original actual context and physical transaction, and requires the same versioned selection/generation after graph loading. Preserve old binding issuance-XID semantics and common-time eligibility. Test actual context replacement and same-transaction catalog mutation injected between initial validation and final return, plus unchanged successful reads. This is an internal evidence boundary; I–M still own the final commit guard and wider owner state.
+
+**C3-REM-002 — HIGH / verification gap / Identity HPS-002:** no added C3 PostgreSQL case executes qualified LDAP or ACTIVE_DIRECTORY claim evidence, assertion-group chains or DIRECT_GRANT role mapping. Current end-to-end positives are OIDC permission mappings. Complete the registered source->issuance->reader->evaluator matrix for both directory types and all three mapping families, including exact matching, directory nonmatch/omission/ranged UNKNOWN, mapped DENY versus direct PERMIT, and scoped/windowed role/group targets and group-owned attributes. Reuse the real provider/registry/adapter callback design already exercised in `BoundAuthenticationCompletionPostgresIntegrationTest`, with simulated transport explicitly labelled. That fixture is a read-only reference; its file is not newly authorized for modification. No caller-built authoritative coverage or direct-MAC minting fixture is acceptable.
+
+**C3-REM-003 — HIGH / verification gap / Identity HPS-002:** private constructor reflection and null-input refusal are present, but no genuine qualified-handle negative matrix establishes wrong actual Authentication, thread, participant, alternate request/resource/scope, suspended/replaced transaction, failed consumption/reuse or before-return origin change. Add genuine handles and negative/concurrency cases to the admitted participant/protected PostgreSQL/guardrail tests; check refusal happens before a positive evidence result or commit guard and that cleanup remains sound. Caller/constructor visibility checks remain necessary and are not sufficient runtime proof.
+
+**C3-REM-004 — HIGH / verification gap / Identity HPS-002:** C2B/C2C suites verify several MAC/issuance/source invariants independently, but those cases cannot automatically qualify the new C3 reader. Add reader-route corrupt/swapped binding/provider/link/session/JTI/format/MAC/coverage, same-transaction generation mutation, ABA/reassignment and native/source expiry-boundary/revocation cases. Preserve actual MAC verification and test-only non-owner catalog privilege refusal. Reauthentication is the only way to refresh stale mapping-bound coverage; no disabling of the role guard, fallback to an assertion DTO or source-expiry extension is allowed.
+
+**C3-REM-005 — MEDIUM / concurrency evidence gap / Identity HPS-002:** complete the registered two-connection writer DAG evidence for mapping changes, actual companion INSERT/TRUNCATE attempts, issuance-prefix contention, reader rollback as well as commit release and the next reader observing committed generation. Keep bounded waits, distinct physical backend/XIDs and original22 prefix; do not claim lock-mode compatibility alone proves an entire SQL operation or all possible races. For immutable-companion TRUNCATE, distinguish lock blocking while the reader holds SHARE from trigger refusal after it releases; do not disable the immutable trigger to obtain a positive write.
+
+**C3-REM-006 — MEDIUM / verification and traceability gap / Identity HPS-002:** qualified graph budget/invalid-target/unsupported-mode/condition/group-fact privacy cases and exact mint/consume caller restrictions require meaningful tests on the new entry. Existing diagnostic graph tests and signatures alone do not establish these new paths. Exercise exact combined1024-row refusal, unsupported scopes/modes and negative policy facts without logging source values; preserve all old cases and measured inventory fields. All further source details/results belong in this section, not the frozen global or phase tables.
+
+These findings preserve the original acceptance criteria and existing owner scope. Their absence from the current tests is NOT evidence that their underlying behaviors are all absent or defective. C3-REM-001 separately records the demonstrated source postcondition gap. None adds a canonical task, duplicates a legacy obligation, changes accepted source producers or reopens completed HAPI-574/576–580. The current safe refusal paths and bounded passing behaviors remain valid progress.
+
+##### E. Next bounded execution and publication controls
+
+**Next eligible work is completion of the existing registered HAPI-575 C3 package**, priorityP0, before considering I/HAPI-581. After this documentation checkpoint's Docs acceptance and a subsequent owner Next/Continue, implement C3-REM-001 and complete the registered assurance matrix C3-REM-002 through006 in one bounded implementation continuation using **`feat(identity): qualify fenced source claim evidence`**. The existing12-path C3 envelope remains the maximum scope, now with both originally proposed CREATE paths already present and reusable; no extra creation, deletion, migration, public API or separate canonical task is admitted. Modify the participant/reader, appropriate admitted tests, actual source-linked inventory and this task's evidence as required; preserve the accepted producers and existing behavior. No additional documentation-only preflight is needed unless live source changes expose an actual new prerequisite outside that envelope. Keep CI-first publication under AGENTS11.1; unavailable local Maven/PostgreSQL is not a mandate to provision a full environment, nor passing runtime evidence. Verify exact published-SHA Full/Fast/Docs startup and stop; later raw CI acceptance must be scoped to tests actually present/executed.
+
+**This checkpoint is documentation only: 1 MODIFY / 0 CREATE / 0 DELETE in the repository**, `doc/roadmap/ULTIMATE_TASKS.md`. Append this record and a dated next pointer while preserving all old bytes, task definitions/IDs/statuses, frozen tables and history. Reuse **`docs(security): select operation time fencing proof`**; guard expected live main `ee9ad0d1102585f85fc3361d394f89da5f6a6569`, its parent/tree and one-file blob/tree, publish directly without branches/PRs, verify automatic exact-SHA Docs startup and STOP without waiting. Do not advance I–M, mark HAPI-575 completed, change any application/test/migration file or claim production readiness during this reconciliation.
+
+**Reconciliation validation completed:** documentation validator and its10 tests PASS; offline OpenAPI snapshot PASS (263 operations / 244 paths / 231 schemas); unchanged exact-source CI inventory PASS (395 active oracle classes, four separately retained historical classes); embedded canonical checker PASS (921 unique tasks, synchronized status/phase ownership, acyclic dependencies, frozen table structure); whitespace/scope/history guards PASS. Exact reversal of the two new insertion regions reproduces the prior task document byte-for-byte. Only this task document changes; all source/tests, inventory and151 migrations remain unchanged. Independent Full727 gate reconstruction against the recovered current source equals the hosted gate exactly. No new Java/database execution is claimed for this documentation checkpoint.
+
+#### C3 Full #733 live-source reconciliation — 2026-10-17
+
+**Owner Next explicitly recovers the new live baseline after the changed-HEAD stop.** Main `14e32abcd8b0de3f48f48389eddaf1fdd2b35416`, parent `3ddbb251c5c2958b655909dc87e81f4bb3cc8ddb`, tree `b3ce9a3b8c80dfa7d8cb2b16f8d35c2288f802d1`. Current source, AGENTS11.1, canonical governance, retained legacy reconciliation, all six subsequent commits, exact-SHA workflow jobs and raw artifact were inspected before this documentation mutation. This record supersedes the dated Full727 findings only to the extent established below; all older text and valid implementation progress remain historical evidence. HAPI-575 remains **PARTIAL / IN_PROGRESS**; I/HAPI-581 through M/HAPI-585 remain blocked. Complete C3 acceptance is not inferred from a green test suite with incomplete scenario coverage.
+
+##### A. Published source history and scope
+
+Six commits after `7001066db5a5679c8e09dc822067f4cd0e278c8b`, all with registered message `feat(identity): qualify fenced source claim evidence`, are preserved:
+
+- `294addf86f640657f7af95cf4189a728e95ec275` — participant `requireCurrentClaims`, reader post-graph origin/catalog validation, and actual-context/same-transaction mapping fault cases.
+- `1433e1eafc4ddd9e67399e624471ad6d25e0c3d2` — inventory registration of the first two added case identities.
+- `2ea9096c0a0746ce3724181bbfb881c5ad160613` — OIDC group/role chain, alternate-scope and consumed-handle/new-transaction verification.
+- `89779aa1dd285edf292fae09772a13d1b045012a` — genuine cross-thread consume attempt in a distinct physical transaction and failure/reuse refusal.
+- `3ddbb251c5c2958b655909dc87e81f4bb3cc8ddb` — corrupt companion-MAC and substituted bindingId rejection, using the real persisted receipt and private verifier.
+- `14e32abcd8b0de3f48f48389eddaf1fdd2b35416` — final actual-context check after the last catalog/lock observations, with a final-catalog context-replacement case.
+
+Actual aggregate scope is **4 MODIFY / 0 CREATE / 0 DELETE**: existing `JdbcProtectedAuthorizationEvidenceReader.java` in Identity infrastructure/persistence/adapter; existing `ProtectedOperationIdentityParticipant.java` in Identity infrastructure/security; existing `ProtectedAuthorizationEvidencePostgresIntegrationTest.java` in Identity infrastructure/persistence tests; `.github/ci-test-inventory.json`. These are the exact full paths already admitted in the C3 envelope. No TASKS entry accompanied those six commits; this checkpoint supplies it. No application/test content is changed by this reconciliation. All151 migrations, persistence mapping/schema files, private producer/codec/repository implementations, configuration, public API snapshots, dictionary/ownership files, workflows, AGENTS, legacy RECONCILIATION and frozen ROADMAP/PHASES are unchanged from the preceding checkpoint. Two inventory zero scheduling values were serialized from0.0 to0, numerically unchanged; no timing measurement or lane/classification change is inferred. Earlier unpublished local preparations or discussed tests are not delivered source or CI evidence and are not counted here.
+
+##### B. Independently verified exact-SHA CI
+
+[Full #733](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39068541341), [Fast #60](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39068541181) and [Docs #382](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39068541182) are SUCCESS on the exact current SHA. All seven Full jobs succeeded: static validation, unit/architecture, both PostgreSQL shards, unrestricted Java21 clean-verify oracle, API/dictionary and aggregate. Raw artifact `12114297633`, `hidra-full-ci-evidence-14e32abcd8b0de3f48f48389eddaf1fdd2b35416-39068541341-1`, downloaded ZIP SHA256 **`d56bcdd151a953a8ce4af9cde60cbe891a1b3663fe3dad02702c8acf9d90ee28`**, matches GitHub metadata. ZIP integrity and safe extraction passed (810 entries). The actual checked-in verifier independently reconstructs `gate.json` exactly against this recovered source: **395 classes / 2221 tests / 0 failures / 0 errors / 0 skips**, run39068541341 attempt1. Inventory SHA256 `baea65566997afddca6ba6f24872fed1ba0744da2278bacb4862100fd1e33a5f`; `same_run_equivalence=true`, `fallback_required=true`, `optimized_adoption_eligible=false`. The unrestricted fallback remains mandatory.
+
+Runtime API SHA256 `5181896da07053ff541a59261a1cf7ef6011fd8caa0ad6b5248fcf65f982556e`; comparison source `3ddbb251c5c2958b655909dc87e81f4bb3cc8ddb`, base API SHA256 `94bd46f021029606f2edfc7bde18af584240b781ed052267cf20e96ac007bb15`; snapshot/compatibility gates succeeded. Catalog SHA256 `572c89e73d4fa781956a616ac612c7c869b4768a964d40f5b23dcdc393316aeb`; captured source-bundle SHA256 `9d87dbf4d4eeffbdd3da55a629210e23e68216c58a223f78ee5c39fc060fa23f`; PostgreSQL `16.15 (Debian 16.15-1.pgdg13+2)`. No local schema was invented, old dictionary relabelled or runtime API byte identity inferred merely from unchanged source snapshots.
+
+Raw reports show the protected PostgreSQL suite **17->26** tests, all passing in PostgreSQL shard1 and oracle. Its9 additional methods account exactly for the2212-to2221 total increase; all earlier identities remain. Unchanged suites also pass in their assigned lane and oracle: participant10, authority fence11, match helper6 and operation boundary15. These are actual executed counts, not counts of planned scenarios. No skipped required registered case is hidden, but a scenario not authored is not included in that zero-skip result.
+
+##### C. Bounded behavior accepted from actual source and reports
+
+The existing opaque `QualifiedClaimRead` remains minted only after a genuine `Prepared` contribution and one-shot consumed at qualified entry. `requireCurrentClaims` is a context/transaction postcondition for an already consumed object: same participant, original thread and actual authenticated object, exact request, actual writable participating connection resource, backend/full-XID and isolation. It does not mint/reset a credential or grant operation authority. `loadQualified` invokes it after loading the graph, compares a second real `VersionedSelection` against the initial one, verifies coordinates/held locks, and invokes it again after those final adapter observations. The public structural diagnostic overload remains conservative. No replacement credential lifecycle, new producer, signing key, persistence schema or application authorization API is introduced.
+
+The9 new successful methods are:
+
+- `c3ActualAuthenticationReplacedDuringQualifiedReadRejectsBeforeCommitGuard` — replace the actual context while the genuine companion read returns; no commit guard is reached.
+- `c3AuthenticationReplacedDuringFinalCatalogReadRejectsBeforeCommitGuard` — replace it during catalog observation2, after the first post-graph check; the last owner check refuses it. The second observation and refusal are asserted.
+- `c3SameTransactionMappingEditAfterClaimSelectionRejectsBeforeCommitGuard` — a real mapping UPDATE between initial selection and graph return makes the catalog generation stale and prevents publication.
+- `c3OriginalOidcGroupAndRoleClaimsRequireFencedCurrentMappings` — both assertion-group order3 and mapped-role order4 appear, while direct/synchronized/permission orders0/1/2/5 are absent, with an OIDC-backed PERMIT observation at the shared sampled time. This proves both observed chains in that fixture, not all independent target/scope/negative combinations.
+- `c3QualifiedCredentialRefusesAlternateScopeBeforeCommitGuard` — a genuinely qualified facility request cannot be substituted with the company request.
+- `c3CrossThreadClaimConsumeFailsWithDistinctTransactionAndCannotBeReused` — the actual authentication is copied to another thread, a distinct PostgreSQL backend is asserted, consumption is refused, and retry in the original thread cannot reach the guard.
+- `c3ConsumedClaimCredentialCannotBeReplayedInAnotherPhysicalTransaction` — an already used credential cannot be replayed after the successful first transaction.
+- `c3TamperedCompanionMacRejectsBeforeCommitGuard` — one bit of the genuine persisted companion MAC is changed in a repository-read fault fixture; actual private-origin verification rejects it.
+- `c3SwappedCompanionBindingRejectsBeforeCommitGuard` — substitute a structural bindingId while retaining the original evidence/MAC; it is rejected.
+
+These tests exercise real source JWT signing/decoding, native bound issuance/verification, private receipt and MAC, actual PostgreSQL/Flyway/fences and the existing protected executor. Fault spies are explicitly injection seams, not alternate authority: corrupted structural copies never acquire valid producer tags and are not written through immutable storage. The existing source/capture tests retain their own scope. The new group/role case uses OIDC; no current C3 case executes actual LDAP/AD receipt-to-qualified-graph interpretation. A helper's pure directory matching matrix and the older all-four-actor diagnostic test do not substitute for that missing integration proof.
+
+##### D. Updated disposition of existing C3 findings
+
+**C3-REM-001 — bounded source correction and CI acceptance established.** Both actual-origin windows and same-transaction catalog change now have source enforcement and passing adversarial tests. Preserve `requireCurrentClaims` and the second catalog equality; do not reimplement a superseded missing-postcondition plan. The helper is not a full reread of binding/MAC/dynamic state after every graph query. Initial binding/eligibility checks and physical fences retain their role; final multi-owner/commit-time authority still belongs to I–M. No broader final authorization freshness or permission-bypass claim is made.
+
+**C3-REM-002 — PARTIAL, genuine remaining integration obligation.** OIDC group/role positive chains join the previously verified permission and DENY cases. LDAP/ACTIVE_DIRECTORY qualified evaluation remains NOT_VERIFIABLE end-to-end. Complete the existing receipt->native issuance->reader/evaluator matrix for both directory types and all three mapping families; retain positive-only directory semantics for unmatched/omitted/option/ranged attributes, unknown potential DENY versus independent direct PERMIT, inactive/expired targets and exact scoped chains/group-owned facts. Reuse the existing real adapter callback fixture pattern from `BoundAuthenticationCompletionPostgresIntegrationTest` as read-only reference; its file/producers are not newly authorized for modification. Do not author a second source producer or falsely attest complete directory membership.
+
+**C3-REM-003 — PARTIAL, preserve verified negatives.** Alternate scope, cross-thread consumption with distinct backend, burned retry and already-consumed new-transaction replay are now verified. They do not independently prove an unused qualified handle transplanted to a new/suspended transaction on the same thread, an alternate participant, every user/resource/permission substitution or every failure/cleanup branch. Complete meaningful remaining negatives in the existing admitted participant/protected PostgreSQL/guardrail suites. Preserve private construction and restrict production use of `consumeClaims`/`requireCurrentClaims` to the reviewed owner path. Do not weaken one-use semantics or duplicate the nine now-established cases.
+
+**C3-REM-004 — PARTIAL.** MAC corruption and companion binding substitution have new reader-route proof; retain Full727's stale generation/new-name/fresh-authentication and producer/storage proofs. Other reader-route swapped native/provider/link/JTI/session/generation/coverage/XID/format, same-transaction revocation, ABA/reassignment, and native/source expiry-boundary cases require an explicit source-and-report mapping. Reuse completed immutable binding/private-origin/component verification where it actually satisfies an invariant; do not reopen completed producer work solely to add a consumer. Record a limitation when a tested component does not establish the new route or a full scenario. Never treat absent evidence as a demonstrated missing safeguard or manufacture elapsed-deadline proof from a supplied-time mock.
+
+**C3-REM-005 — existing physical-writer assurance still pending.** The authority-fence suite remains11 cases. Its earlier tail test proves a conflicting ROW EXCLUSIVE relation lock waits and is obtainable after reader commit; it does not execute actual companion INSERT/TRUNCATE, reader rollback release or full concurrent source issuance. Complete the registered bounded two-connection mapping/companion/issuance-fence order and next-reader/current-generation observations. Immutable trigger refusal after release is distinct from lock exclusion while held. Preserve the sorted22 prefix and actual common-time sampling; I–M keep wider global/concurrency/latency qualification.
+
+**C3-REM-006 — existing qualified-graph assurance still pending.** Boundary suite remains15, participant10, helper6. Add targeted qualified-route combined row-budget, missing target/unsupported mode/condition, source-value redaction and exact current consumer restrictions rather than relying solely on legacy diagnostic graph or signature/reflection tests. The new successful OIDC group/role fixture is legitimate progress but not proof of every independent chain, eligibility/window or policy-fact case. Keep every old case and historical timing/classification. These are remaining deliverables of the existing HAPI-575 task, not new canonical work.
+
+##### E. Next eligible execution and this checkpoint
+
+**Next eligible development remains HAPI-575 C3's residual assurance package**, P0, with C3-REM-002's genuine LDAP/AD qualified integration first and the remaining registered003–006 matrix completed together where dependency-safe. Existing HAPI-574/580 and accepted C2B/C2C components remain satisfied. Extend the live `requireCurrentClaims`/reader design only when a reproduced current failure or original acceptance requirement requires it; do not replace the architecture or replay completed corrections. Use the existing12-path C3 envelope and exact implementation message **`feat(identity): qualify fenced source claim evidence`**; all12 named files now exist, so no extra CREATE/DELETE, migration, producer, public API or canonical task is admitted. No new documentation-only preflight is needed for already registered tests/corrections. After this checkpoint's Docs acceptance and a subsequent owner Next/Continue, implement the remaining coherent package, preserve historical cases/weights, run useful available checks under AGENTS11.1, publish guarded, observe exact-SHA Full/Fast/Docs startup and stop. Accept only results actually executed on that source. HAPI-581 and later stages remain blocked until C3's registered evidence is sufficient and their own selection is reviewed.
+
+This is **1 MODIFY / 0 CREATE / 0 DELETE in the repository**, only `doc/roadmap/ULTIMATE_TASKS.md`: append this current-source/raw-evidence reconciliation and a dated next pointer; reverse those two insertions to reproduce the prior file byte-for-byte. No source/test/inventory or applied migration changes. Canonical IDs, statuses, priorities, phase membership, dependencies, frozen table structure and previous history remain intact. Publish using registered **`docs(security): select operation time fencing proof`**, expected main `14e32abcd8b0de3f48f48389eddaf1fdd2b35416`, verify parent/tree/blob/one-file scope and automatic exact-SHA Documentation Validation startup, then STOP without waiting. No branch/PR, deployment, production role qualification, real directory commissioning, HidraWEB change, solver or OT action is selected.
+
+**Checkpoint validation completed:** documentation validator and its10 tests PASS; offline OpenAPI snapshot PASS (263 operations /244 paths /231 schemas); source-linked inventory PASS (395 active oracle classes; four retained historical classes); embedded canonical checker PASS (921 unique tasks, synchronized statuses, one primary phase, acyclic dependencies and frozen task-table structure); whitespace, one-file scope and history-reversal guards PASS. Only TASKS changes, by two insertion regions; all prior bytes, source/tests/inventory and151 migration files remain intact. Independent raw Full733 reconstruction equals the hosted gate exactly. No new Java, database or directory test was executed or claimed by this documentation checkpoint.
+
+### C3 residual assurance implementation submission — 2026-10-17
+
+**Selection and baseline:** owner Next selects the already registered C3-REM-002 through006 assurance obligations, not a new task or architecture. Accepted main `6ff51f170c8467c0616f3e52bd56c0209ea9e5ae`, parent `14e32abcd8b0de3f48f48389eddaf1fdd2b35416`, tree `a4f632b22e63943258a660285cf709de722bcdfd`; Documentation Validation383 succeeded. Last accepted runtime remains Full733 / Fast60 on14e32ab:395 classes,2221 tests, zero failures/errors/skips, as independently reconstructed above. Those results do not execute this submission.
+
+**Exact bounded implementation:**6 MODIFY /0 CREATE /0 DELETE, within the existing12-path C3 envelope:
+
+* `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedAuthorizationEvidencePostgresIntegrationTest.java`:26 to43 source test methods.
+* `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/IdentityAuthorityFencePostgresIntegrationTest.java`:11 to12.
+* `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipantTest.java`:10 to13.
+* `src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java`:15 to16.
+* `.github/ci-test-inventory.json`: additive22 case identities and the four actual source hashes only; retain395 active classes, historical identities, measured weights, lane ownership and support classifications.
+* `doc/roadmap/ULTIMATE_TASKS.md`: this technical submission record and dated scheduling pointer only; reverse these insertions to reproduce its accepted parent bytes.
+
+**Submitted verification sources, not executed results:** real directory credential adapter, verification registry, provider capture, native completion, producer MAC, qualified reader and domain evaluation are composed in the PostgreSQL fixture; only LDAP transport/context are simulated. Positive and deny cases cover permission, mapped-role and assertion-only group families for both supported directory connection types. Exact/nonmatching, omitted, ranged, option-bearing and binary attribute evidence cannot erase a potential deny. No complete-negative LDAP inference or production directory commissioning is claimed. OIDC malformed original claims, inactive mapped targets, scoped/expired grants, combined graph row budget and uncertain/unsupported conditions exercise the current fail-closed design without adding authority from legacy/direct grants.
+
+Genuine qualified handles are tested unused across transactions, against another participant, and against changed user/permission/resource requests. Thirteen altered native-binding tuple variants retain the original authenticator and must be refused; companion coverage, mapping-generation and issuance-XID corruption likewise cannot borrow an original MAC. These are negative fault copies after genuine qualification, not additional trusted producers. Existing C3-REM-001 actual-context/catalog checks and accepted Full733 cases remain intact.
+
+The deadline case waits outside the protected transaction until actual database time reaches the genuinely persisted source deadline; it checks the native deadline is capped by that source and that the old prepared original source cannot extend it. It is elapsed PostgreSQL deadline evidence when CI executes it, not an exact-equality clock claim. Separate mocked participant unit cases cover supplied-candidate deadline equality/future-issued samples, connection-resource replacement and unconsumed/replaced-context postconditions; those unit cases are explicitly not real producer/database proofs.
+
+Real mapping writer contention, provider reassignment epoch invalidation/fresh authentication, target deletion exclusion and retained foreign-key rejection use existing PostgreSQL fixtures. Companion INSERT/TRUNCATE contention is checked during reader rollback followed by the existing immutable trigger. A second transaction invokes the real issuance-fence prepare path and verifies blocker/release ordering; this is not a fully concurrent second authenticated-source issuance or a universal latency guarantee. Existing lock-mode/commit-release and producer component proofs remain accepted. Source caller enforcement confines consume/post-read claims validation to the reviewed reader.
+
+**Architecture preservation and reconciliation:** production `requireCurrentClaims` and its current reader integration are reused unchanged; no alternative handle state machine, permission semantics, producers, public APIs, workflows, configuration, source classes or151 applied migrations change. No ROADMAP/PHASES, AGENTS, legacy reconciliation or dictionary mutation. C3-REM-001 remains accepted; C3-REM-002 through006 now have submitted verification sources, with execution/acceptance PENDING exact-publication-SHA GitHub feedback. This submission neither closes all HAPI-575 nor reopens completed producer/component tasks. Canonical statuses remain PARTIAL / IN_PROGRESS; I–M and HAPI-581–585 remain blocked.
+
+**Validation and publication contract:** CI-first AGENTS11.1 applies. Focused offline Maven could not resolve cached `org.springframework.boot:spring-boot-starter-parent:pom:4.1.1` and stopped before compilation/tests; no environment provisioning or Java/runtime pass is claimed. Java21 formatter parsing/style, source-linked inventory, documentation validator and its10 tests, offline OpenAPI snapshot, canonical identity/status/phase/DAG/frozen-table checks, exact six-file scope/history preservation and whitespace checks must pass before publication. Source method counts above are not passing-test totals. Publish with exact registered message **`feat(identity): qualify fenced source claim evidence`**, expected main6ff51f1, verified parent/tree/blobs and compare-and-swap main update; observe exact-SHA Full/Fast/Docs startup and STOP without waiting. Subsequent Next/Fail is exact-SHA feedback/reconciliation or bounded repair, not automatic stage-I advancement.
+
+### HAPI-575 closure — fixed acceptance review, 2026-10-17
+
+**Decision: VERIFIED / COMPLETED for trusted authorization-claim provenance and coverage (HPR-P25-051H).** The owner requested a sprint finish with a fixed acceptance boundary after the final22-case assurance submission. This review closes the registered H outcome using current source and executed evidence. Further optional variants do not extend this task; only a reproduced regression against its accepted requirements can require corrective work. Existing completed C1/C2A/C2B/C2C and C3 implementations remain preserved.
+
+**Accepted implementation baseline:** main `57c4b820ba158bab52d16174f5dbbd9cea37ffda`, parent `6ff51f170c8467c0616f3e52bd56c0209ea9e5ae`, tree `e30e0f1a87fb09c72e2ecd5085af19964ac16362`. [Full734](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39072586688), [Fast61](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39072586774) and [Docs384](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39072586709) completed SUCCESS on that SHA. Full aggregate artifact `12115019917`, ZIP SHA256 `dd062e1dce9c523b299dfdfb8043db6af3f41e1a569d040f0623b9e335880473`, matches GitHub metadata. The existing source verifier independently reconstructed all six lane envelopes, hashed raw XML, source selection, lifecycle and contract/catalog provenance and reproduced hosted gate.json exactly: **395 classes /2243 tests /0 failures /0 errors /0 skips**. Same-run partition/oracle equivalence is true; unrestricted fallback remains required and optimized adoption remains false. The final22 source cases are now executed evidence.
+
+**Fixed acceptance checklist and evidence:**
+
+| Accepted H requirement | Current implementation / executed verification |
+|---|---|
+| Only verified original source observations create claim authority; public assertions cannot mint it | Existing `TrustedAuthenticationVerificationRegistry`, `IdentityOidcJwtAuthenticationConverter`, `LdapCredentialVerificationAdapter` and `AuthenticationCompletionApplicationService`; `OidcVerifiedClaimReceiptTest`7, `LdapVerifiedClaimReceiptTest`13 and `BoundAuthenticationCompletionPostgresIntegrationTest`29 cases all pass. Real adapter/callback/registry/native completion paths execute; directory transport is simulated. |
+| Minimal bounded coverage distinguishes PRESENT/ABSENT/MALFORMED/UNKNOWN without retaining original secrets | `ClaimCoverageTest`15, `BoundSourceClaimEvidenceTest`3, `BoundSourceClaimEvidenceCodecTest`5, `OidcClaimCoverageProjectorTest`15 and `ExternalClaimMatchEvaluatorTest`6 pass. Qualified directory nonmatch/omission/range/option/binary and malformed OIDC cases retain potential-deny uncertainty. |
+| Immutable evidence is bound to actual native identity/session/JTI, source deadline and mapping generation | `BoundSourceClaimEvidencePostgresIntegrationTest`8, `OperationAuthenticationBindingPostgresIntegrationTest`37, `ExternalMappingGenerationPostgresIntegrationTest`21 and `ClaimNameCatalogPostgresIntegrationTest`15 pass, with issuance/commit rollback, immutable storage, provider/link ABA and catalog mutation coverage. Qualified-reader tuple/MAC/coverage/XID swaps, reassignment, fresh authentication and real persisted deadline expiry cases pass. |
+| Interpretation requires the current qualified Identity participant, physical transaction, fences, exact request and current authority | `ProtectedOperationIdentityParticipantTest`13, `IdentityAuthorityFencePostgresIntegrationTest`12 and `OperationAuthenticationBoundaryGuardrailTest`16 pass. Unused cross-transaction handles, foreign participants, changed requests/resources, connection replacement and actual-context postconditions are refused. Original writer/lock/rollback cases remain green. |
+| Supported current permission/role/group mappings preserve DENY, scope/time, eligibility and independent direct/synchronized grants | `ProtectedAuthorizationEvidencePostgresIntegrationTest`43 pass: original OIDC and both directory types exercise the qualified route, all mapping families, positive/deny/uncertain outcomes, bounded graph, supported policy facts, inactive targets, writer contention and refreshed epochs. Diagnostic-only readers remain unable to manufacture qualified claims. |
+| Privacy, architecture, actual PostgreSQL/Flyway and compatibility gates remain accepted | Full734 requires source-linked inventory, architecture tests, migrated PostgreSQL16 constraints/dictionary and runtime OpenAPI equality/compatibility; all succeed. Existing after-commit publication and failure rollback tests execute. No public endpoint or migration was added by C3. |
+
+All class names refer to existing source tests and raw reports in Full734, not new deliverables. The same aggregate re-verifies the accepted producer/storage components on the final implementation tree. C3-REM-001 remains accepted from Full733 and is re-executed; C3-REM-002 through006 are satisfied for the fixed registered H acceptance by the source-to-report mapping above. No newly found application defect or unmet original H acceptance blocker was established in this closure review.
+
+**Evidence fingerprints:** inventory `cb98cc929010b0ea1724dd046fe0117aa4aa9b7999d63b4936ec004115519c19`; current runtime OpenAPI `25bbcb9a16dafa0fe0ab0f303640ec429368604ceda3fe85d1a3003b42336fe4`; compatibility base14e32ab /API `94bd46f021029606f2edfc7bde18af584240b781ed052267cf20e96ac007bb15`; actual catalog `c91a9507808ffd45a31824c1fe8e9ba2c5ee548a6321e6e16525e0be3a0f8583`; database source bundle `9d87dbf4d4eeffbdd3da55a629210e23e68216c58a223f78ee5c39fc060fa23f`; PostgreSQL16.15 (Debian16.15-1.pgdg13+2). Runtime artifacts include execution provenance; these hashes are not substituted for the preserved older snapshot applicability.
+
+**Acceptance boundaries:** this completes H's software contract and synthetic qualification. Directory transport/provider commissioning, production deployment, unrestricted whole-platform authorization and universal latency are not established. The expiry integration test uses real elapsed database time; exact equality remains a supplied-candidate unit case. Issuance contention executes the real fence preparation path; a complete second concurrent authenticated-source issuance and wider scheduling/latency permutations remain within existing integrated qualification HAPI-585 when selected. These limitations do not add new H obligations. Source opt-ins retain their configured defaults. No client-facing workflow is claimed complete merely from this internal owner capability.
+
+**Ownership and next task:** generic inherited wording in sections2/3 about paired permission, Party/Facility, global fences and final CAS describes the wider program. The original pinned H policy explicitly excludes closing those successor outcomes. They remain respectively HAPI-581, HAPI-582, HAPI-583, HAPI-584 and HAPI-585 with unchanged identities, dependencies and scope. HAPI-575's dependency is now satisfied for HAPI-581. HAPI-581 remains planning-BLOCKED pending its own bounded technical selection/contract review; no I implementation is selected by this closure. Next development selection is HAPI-581, P0, after this documentation commit's acceptance. No extra H preflight, optional improvement task or new canonical ID is registered.
+
+**Governance mutation:** exactly3 MODIFY /0 CREATE /0 DELETE: `doc/roadmap/ULTIMATE_TASKS.md` records this closure, a dated scheduling pointer and HAPI-575's two current status fields; `ULTIMATE_ROADMAP.md` and `ULTIMATE_PHASES.md` change only that task's Implementation Status to VERIFIED and Planning Status to COMPLETED. All task names, memberships, priorities, dependencies, table ordering, structural fingerprint and historical evidence remain unchanged. Publish with registered same-ID documentation message **`docs(security): select operation time fencing proof`**, expected main57c4b82, verify parent/tree/blobs and scope, observe Documentation Validation startup and STOP without waiting. No new local Java/database execution is claimed by this documentation closure.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+doc/roadmap/ULTIMATE_ROADMAP.md:895 | HPR-P25-051H | **Planned / Unselected** — requires separate owner decision, exact contract and scoped registration before any implementation
+doc/roadmap/ULTIMATE_ROADMAP.md:1008 | HPR-P25-051H | Approve minimal captured-claim retention and whether mapping-catalog changes require fresh authentication rather than retaining complete source claims. | Business/security data owner for policy; accountable bounded-context owner and independent architecture/database reviewer for technical registration
+doc/roadmap/ULTIMATE_ROADMAP.md:1032 | HPR-P25-051H | REQUIRES_OWNER_DECISION | Trusted authorization-claim provenance and coverage
+doc/roadmap/ULTIMATE_ROADMAP.md:1496 | HPR-P25-051H | Trusted authorization-claim provenance and coverage; Identity | G accepted; source/issuance/reader contract and exact H scope must be registered together. | Distinguish known absence, malformed and unknown evidence; bind immutable coverage to genuine authentication/issuance, provider/link generations and source expiry, including native bearer use. New mapping names cannot silently bypass DENY.
+doc/model-remediation/RECONCILIATION.md:23146 | HPR-P25-051H | Trusted authorization-claim provenance and coverage; Identity | G accepted; source/issuance/reader contract and exact H scope must be registered together. | Distinguish known absence, malformed and unknown evidence; bind immutable coverage to genuine authentication/issuance, provider/link generations and source expiry, including native bearer use. New mapping names cannot silently bypass DENY.
+doc/model-remediation/RECONCILIATION.md:23700 | HPR-P25-051H | Approve minimal captured-claim retention and whether mapping-catalog changes require fresh authentication rather than retaining complete source claims. | Business/security data owner for policy; accountable bounded-context owner and independent architecture/database reviewer for technical registration
+doc/model-remediation/RECONCILIATION.md:23724 | HPR-P25-051H | REQUIRES_OWNER_DECISION | Trusted authorization-claim provenance and coverage
+~~~~~~~~
+
+<a id="hapi-576"></a>
+## HAPI-576 — define bounded claim coverage semantics
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HPR-P25-051H-A
+
+Priority: P2
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: HAPI-574
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+define bounded claim coverage semantics
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `.github/ci-test-inventory.json`
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/model/AuthenticationVerificationSnapshot.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/model/VerifiedAuthorizationAssertion.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/model/VerifiedDirectoryIdentity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/LdapCredentialVerificationPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/AuthenticationCompletionApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/OperationAuthenticationBinding.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/ClaimCoverage.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcIdentityAuthorityFence.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaAuthorizationEvidenceAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/ExternalGroupMappingJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/ExternalPermissionMappingJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/ExternalRoleMappingJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapCredentialVerificationAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationRegistry.java`
+- `src/test/java/dz/sh/hidra/modules/identity/domain/value/ClaimCoverageTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/identity/domain/model/OperationAuthenticationBinding.java`, `src/main/java/dz/sh/hidra/modules/identity/domain/value/ClaimCoverage.java`, `src/test/java/dz/sh/hidra/modules/identity/domain/value/ClaimCoverageTest.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/out/LdapCredentialVerificationPort.java`.
+- Application services: `src/main/java/dz/sh/hidra/modules/identity/application/service/AuthenticationCompletionApplicationService.java`.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcIdentityAuthorityFence.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaAuthorizationEvidenceAdapter.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/ExternalGroupMappingJpaEntity.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `.github/ci-test-inventory.json`
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/model/AuthenticationVerificationSnapshot.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/model/VerifiedAuthorizationAssertion.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/model/VerifiedDirectoryIdentity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/LdapCredentialVerificationPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/AuthenticationCompletionApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/OperationAuthenticationBinding.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/ClaimCoverage.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcIdentityAuthorityFence.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaAuthorizationEvidenceAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/ExternalGroupMappingJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/ExternalPermissionMappingJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/ExternalRoleMappingJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapCredentialVerificationAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationRegistry.java`
+- `src/test/java/dz/sh/hidra/modules/identity/domain/value/ClaimCoverageTest.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+### HPR-P25-051H-A bounded claim coverage source implementation — 2026-10-16
+
+**One registered stage executed, SOURCE COMMITTED / CI ACCEPTANCE PENDING.** Parent registration at main `5196e2d981c400671a2cabc1e2ce106d7d7c617b` is accepted by Documentation CI #343 SUCCESS; owner-selected Next authorizes exactly HPR-P25-051H-A under its existing five-path scope and implementation message `feat(identity): define bounded claim coverage semantics`. H remains IN PROGRESS, 051G accepted, H-B/H-C and I–M unselected. This checkpoint describes a bounded data-value implementation only, not a trusted verifier, authorization evaluator, claim issuer, PostgreSQL data proof, industrial deployment or numerical simulation.
+
+**Exact five-path implementation envelope:** CREATE `src/main/java/dz/sh/hidra/modules/identity/domain/value/ClaimCoverage.java` and `src/test/java/dz/sh/hidra/modules/identity/domain/value/ClaimCoverageTest.java`; UPDATE `.github/ci-test-inventory.json`, `doc/roadmap/ULTIMATE_ROADMAP.md`; APPEND `doc/model-remediation/RECONCILIATION.md`. No files outside the 2 CREATE / 3 UPDATE envelope and zero deletes. Existing migration inventory and checksums, HTTP/OpenAPI, Spring/JPA adapters, protected Identity B1 fences, production CI workflow and unrestricted Full fallback are unchanged.
+
+**Code behavior:** the Java-standard-library-only immutable `ClaimCoverage` representation distinguishes `PRESENT`, `ABSENT`, `MALFORMED`, `UNKNOWN`; an unrequested/missing name is UNKNOWN; only PRESENT has nonempty exact values. Validates strict Unicode/control characters, preserves case/exact names and values, rejects duplicate names via collection constructor, and enforces 64 names, 120 codepoints/480 UTF-8 bytes per name, 256 values/name, 1024 UTF-8 bytes/value and 16384 bytes combined. Defensive lexicographically sorted immutable contents; redacted `toString`. `ClaimCoverage` itself is caller-constructible and explicitly NON-AUTHORITATIVE: only future authentic source verification, issuance and fenced evaluation may confer authority. Existing conservative `JdbcProtectedAuthorizationEvidenceReader` indeterminate behavior stays in effect.
+
+**Actual test inventory:** one new `unit-architecture`, `fast=true` class `dz.sh.hidra.modules.identity.domain.value.ClaimCoverageTest`, `source_sha256=f29db50be94ebcbb1a1772854c05d099ac9e9dcccf755d3f39393f0ba432c4fc`, with 15 direct non-parameterized JUnit case identities:
+`allNonPresentStatesHaveNoValues`, `claimCoverageHasNoPermissionAuthority`, `combinedPayloadEnvelopeIsLimited`, `constructorRejectsDuplicateClaimNames`, `entryCountIsLimited`, `invalidControlAndUnicodeRejected`, `knownAbsenceDoesNotInventValues`, `mapInputIsDefensivelyCopied`, `nameLimitsEnforceCodePointsAndUtf8Bytes`, `nullBlankAndMalformedStateInputsRejected`, `nullMapsAndEntriesReject`, `presentValuesRetainExactCaseAndStableOrdering`, `unrequestedNamesAreUnknownNotAbsent`, `valueLimitsEnforceUtf8ByteEnvelope`, `valuesPerNameAreLimited`. The new inventory `baseline_seconds=0` explicitly means **unmeasured**, not a measured zero-time test or speed improvement. All 389 existing class records and top-level classifier fields are preserved. Current compiler/static shape, source-name/case consistency and JSON preservation were preflight checked; hosted Java21 Maven, ArchUnit, full PostgreSQL fresh-schema oracle and documentation/fast CI on the new SHA are **PENDING** until Actions results exist. No runtime execution proof is asserted by this source commit.
+
+**Security and acceptance gates unchanged:** no source IdP claim capture, mapping generation epoch, private binding receipt, protected reader changes, permission grant, operator action, migration or API can be inferred from H-A. H-B/H-C require separate coherent source/issuance/reader, writer DAG, rollback and PostgreSQL schema registration. CI-003C remains IN PROGRESS, CI-003D remains unselected; `fallback_required=true`, `optimized_adoption_eligible=false`, unrestricted Full oracle and no unnecessary test duplication removal without evidence. Check guarded parent/tree/five paths, exact-SHA triggered Documentation/Fast/Full CI START, then STOP without awaiting outcomes.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/modules/identity/domain/value/ClaimCoverageTest.java` — exact-head oracle suite 15 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: HAPI-574. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `1edce2736a8093abbf258933821d4f8bc29caa02` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [doc/roadmap/ULTIMATE_ROADMAP.md:217](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L217)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:230](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L230)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Source-backed bounded stage accepted; current exact-SHA raw regression reports independently recovered. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+<a id="hapi-577"></a>
+## HAPI-577 — preserve claim catalog fail-closed exception
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HPR-P25-051H-B1
+
+Priority: P2
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: HAPI-576
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+preserve claim catalog fail-closed exception
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `.github/ci-test-inventory.json`
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/ClaimCoverage.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcClaimNameCatalogAdapter.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ClaimNameCatalogPostgresIntegrationTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/identity/domain/value/ClaimCoverage.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcClaimNameCatalogAdapter.java`, `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ClaimNameCatalogPostgresIntegrationTest.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `.github/ci-test-inventory.json`
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/ClaimCoverage.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcClaimNameCatalogAdapter.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ClaimNameCatalogPostgresIntegrationTest.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+### HPR-P25-051H-B1 — CI #709 acceptance checkpoint, 2026-10-16
+
+**CI ACCEPTED (bounded B1 only).** Source main `09a8e197f1b314d0f84561a8d1c9826ac18387d8`, tree `2028628dc18751914a9d38ee10f0b802c16eca3d`, parent `a212cc17e3eeca8436ece03b26a0fa9ca7d6e85e`, commit `fix(identity): preserve claim catalog fail-closed exception`. The exact current Identity-private `ClaimNameCatalogPort` and `JdbcClaimNameCatalogAdapter` provide bounded non-authoritative read-only provider mapping-name selection, not verified source claim values or protected authorization. The adapter has `@Component` (no `@Repository` exception translation) and `@Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)`; the existing 15 real PostgreSQL JUnit cases and their expectations are unchanged by the last repair.
+
+**Exact-SHA hosted proof:** [Production CI #709](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38882742820) completed SUCCESS, including all seven required jobs (static validation, Java21 Maven oracle, API/dictionary, PostgreSQL shards 0/1, unit/architecture and Full Verification Gate). The actual source-linked PostgreSQL shard 1 reports **47 classes / 411 tests / 0 failures / 0 errors / 0 skipped**; unrestricted oracle reports **387 classes / 2,103 tests / 0 failures / 0 errors / 0 skipped**. Authenticated aggregate verifies the source SHA, six lane reports and `same_run_equivalence=true`, with `fallback_required=true` and `optimized_adoption_eligible=false`. Full evidence [artifact 12038473175](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38882742820/artifacts/12038473175), SHA256 `21589e53f6318abd27f6f1bd594d6382ec57f1616f4d4cd7ca89e57401c35094`. [Fast Feedback #37](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38882742955) and [Documentation Validation #349](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38882742966) SUCCESS at the same SHA. Expected negative test-path diagnostics in hosted logs do not override source-linked zero-failure reports; no SITE, external IdP or deployed-security acceptance is inferred.
+
+**Boundaries and next stage:** HPR-P25-051H-B1 is **SOURCE IMPLEMENTED / CI ACCEPTED**. Parent H/051 remain **IN PROGRESS**. H-B2 mapping-generation/writer epoch and ABA/rollback proof and H-C verified LDAP/OIDC source-projection/issuance/private reader/evaluator are **UNSELECTED / NOT IMPLEMENTED**; a single coherent source-backed trust contract, exact scope, lock/writer DAG, migrations/tests and messages must be registered before further runtime mutation. H-I–M and 052–058 retain their independent prerequisites. Current G conservative `INDETERMINATE`, Identity authority, DENY precedence and protected transactions remain in force. CI-003C is in progress; unrestricted Full fallback remains mandatory and CI-003D is not selected. Simulation/P3, real calibration and OT/production deployment remain deferred.
+
+**One same-ID governance acceptance checkpoint only:** insert this section into `doc/roadmap/ULTIMATE_ROADMAP.md` and append reconciliation; **0 CREATE / 2 UPDATE / 0 DELETE**, preserving all prior text, tests, inventory, Java, Flyway, workflow, OpenAPI and security implementation bytes. Reuse exact HPR-P25-051 governance commit message `docs(security): select operation time fencing proof`. Guard direct-main publication, verify parent/tree/two blobs, observe automatic new Documentation Validation CREATED/STARTED and STOP; do not run Full or start B2 automatically.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ClaimNameCatalogPostgresIntegrationTest.java` — exact-head oracle suite 15 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: HAPI-576. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `09a8e197f1b314d0f84561a8d1c9826ac18387d8` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [doc/roadmap/ULTIMATE_ROADMAP.md:153](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L153)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:163](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L163)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:171](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L171)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:179](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L179)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:185](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L185)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Source-backed bounded stage accepted; current exact-SHA raw regression reports independently recovered. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+<a id="hapi-578"></a>
+## HAPI-578 — project bounded oidc claim coverage
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HPR-P25-051H-B2
+
+Priority: P2
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: HAPI-577
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+project bounded oidc claim coverage
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `.github/ci-test-inventory.json`
+- `.github/database-dictionary-ownership.json`
+- `doc/database/DATA_DICTIONARY.md`
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/model/VerifiedDirectoryIdentity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/AuthenticationCompletionApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/ClaimCoverage.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcClaimNameCatalogAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcIdentityAuthorityFence.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaExternalRoleMappingRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapCredentialVerificationAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/OidcClaimCoverageProjector.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/SpringAuthorizationContextAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationRegistry.java`
+- `src/main/resources/db/migration/V20261016_001__p25_identity_external_mapping_generations.sql`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ExternalMappingGenerationPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProviderLinkSecurityGenerationPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/OidcClaimCoverageProjectorTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/AuthorizationEvidencePostgresTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/identity/domain/value/ClaimCoverage.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`.
+- Application services: `src/main/java/dz/sh/hidra/modules/identity/application/service/AuthenticationCompletionApplicationService.java`.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcClaimNameCatalogAdapter.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcIdentityAuthorityFence.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaExternalRoleMappingRepositoryAdapter.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `.github/ci-test-inventory.json`
+- `.github/database-dictionary-ownership.json`
+- `doc/database/DATA_DICTIONARY.md`
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/model/VerifiedDirectoryIdentity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/AuthenticationCompletionApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/ClaimCoverage.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcClaimNameCatalogAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcIdentityAuthorityFence.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaExternalRoleMappingRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapCredentialVerificationAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/OidcClaimCoverageProjector.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/SpringAuthorizationContextAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationRegistry.java`
+- `src/main/resources/db/migration/V20261016_001__p25_identity_external_mapping_generations.sql`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ExternalMappingGenerationPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProviderLinkSecurityGenerationPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/OidcClaimCoverageProjectorTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/AuthorizationEvidencePostgresTest.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+### HPR-P25-051H-B2 CI #711 acceptance and H-C1 source-only admission — 2026-10-16
+
+**Verified predecessor:** main `91a17ef9e6761e7ef7543d73bff2e469d54a668e` (parent `412fd724dfd002edcf75bbcf30bb03dbaf912532`, tree `604def75d7bb8efa2d9553af9176374a25a86b2d`) is the B2 same-stage correction. [Production CI #711](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38939498960) SUCCESS with all seven required jobs (static, unit/architecture, PostgreSQL shards 0/1, API/database dictionary, unrestricted Java21 oracle and Full Verification Gate). [Fast Feedback #39](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38939499211) and [Documentation Validation #354](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38939499054) SUCCESS on that same exact SHA. The B2 Identity mapping-generation source and repaired dictionary/trigger inventory are **CI ACCEPTED within exercised synthetic coverage**, not deployed separation-of-duty, exhaustive concurrency evidence, or operational authorization. Parent H/051 remains IN PROGRESS; no protected claim-dependent PERMIT has been enabled.
+
+**Current source observations controlling the next slice:** Existing `ClaimCoverage` supplies 64-name/16KiB total immutable bounded PRESENT/ABSENT/MALFORMED/UNKNOWN values but has no origin authority. `ClaimNameCatalogPort.VersionedSelection` and `JdbcClaimNameCatalogAdapter.selectVersioned` return one non-authoritative atomic source-name/generation observation and reject elevated database roles. `IdentityOidcJwtAuthenticationConverter` can re-decode an original external JWT through `externalOidcJwtDecoder` for the fully configured producer before returning a private verification receipt; `SpringAuthorizationContextAdapter.capture` currently performs ad-hoc JPA mapping-name sampling, retains only nonempty strings and cannot prove ABSENT, malformed, mapping generation, or issuance coverage. `VerifiedDirectoryIdentity` and `LdapCredentialVerificationAdapter` currently expose verified identity fields only, NOT dynamic mapping-relevant LDAP claim attributes. `TrustedAuthenticationVerificationRegistry` owns thread/one-consumption/transaction-bound producer attestation; `AuthenticationCompletionApplicationService` binds native JTI/session/expiry, checks generations, persists an immutable binding and publishes only after commit. `JdbcProtectedAuthorizationEvidenceReader` remains conservative for unsupported claim mappings. No source-qualified claim-coverage-to-native-JTI/reader proof exists yet.
+
+**Selected source-bounded next implementation, ONE H-C1 package within existing HPR-P25-051H (NOT H-C completion):** A testable, package-private **non-authoritative OIDC claim projection** from a supplied JWT claims tree and previously selected exact mapping claim names/revision into the existing `ClaimCoverage`. The helper must never fetch provider claims, accept arbitrary public authorization assertions, issue/store credentials, mutate mapping state, create a claim-trust marker or authorize a grant. It may parse only names requested in an immutable `VersionedSelection`, retain exact source strings and sorted immutable values, distinguish missing path from malformed scalar/list/nested path, reject duplicates and over-limit values via existing domain rules, and preserve the selected generation only as a nontrusted hint. Source JWT validity is NOT certified by a helper's arguments or name; later H-C2 must call it exclusively after the original-source decoder/LDAP bind in the actual verified producer and bind its output privately to issuance. C1 should never call legacy JPA name collection; source-origin binding, fresh-auth mapping revision check and reader/evaluator admission are deferred to separately registered H-C2/C3 packages.
+
+**H-C1 exact one-commit allowlist and message after this documentation checkpoint's Docs PASS:**
+- CREATE `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/OidcClaimCoverageProjector.java`: package-private bounded pure claim-tree projection, no Spring bean or public API, no source-authority claim.
+- CREATE `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/OidcClaimCoverageProjectorTest.java`: synthetic original-claims-shaped fixtures, no network or real external IdP; test correct exact case, dotted paths, absent versus unknown/malformed, mixed-value rejection, duplicate and source envelope refusal, invariant preservation, redaction and immutable revision propagation.
+- UPDATE `.github/ci-test-inventory.json`: add only this exact new unit/architecture fast=true class with actual method IDs and SHA-256 after implementation, zero unmeasured baseline; preserve all 392 previously registered classes and their test cases.
+- UPDATE `doc/roadmap/ULTIMATE_ROADMAP.md` (insert truthful source/acceptance result).
+- APPEND `doc/model-remediation/RECONCILIATION.md`.
+- CREATE **2**, UPDATE **3**, DELETE **0**. Exact H-C1 implementation message: `feat(identity): project bounded oidc claim coverage`.
+
+**C1 admission and H-C residual:** Verify Java21 focused unit/architecture cases, source inventory, clean compilation, exact-SHA Full/Fast/Docs (including unrestricted fallback), preservation of all B1/B2/source-verification and protected Identity tests. Positive parsing cases remain NON-AUTHORITATIVE. The next independently registered H-C2 must resolve genuine OIDC decoder invocation/identity, LDAP verified attribute exposure, source expiry, private consumed receipt, generation comparison, persistent immutable minimum claim evidence and authenticated native JTI/binding; H-C3 must resolve PostgreSQL reader and evaluator DENY/INDETERMINATE under the existing 22-relation fence and global lock DAG before claim-dependent permission is permitted. No H-C2/C3 source file scope, migration or future commit is authorized here. No second provider-verification boundary, no public API/permission change, no production database, no calibration and no P3 execution. Underlying B2 untested concurrency/JPA combinations remain a later independent audit caveat, not automatically proved by CI green.
+
+**This Next's only authorized publication:** HPR-P25-051 existing governance message `docs(security): select operation time fencing proof`; UPDATE only this roadmap by insertion and APPEND only `doc/model-remediation/RECONCILIATION.md`. Existing history and source/CI/SQL/test/security/governance content preserved. No new task ID outside the existing 051H split. Direct `main` expected-head guard; verify exact parent/tree and 2-path diff, confirm exact-SHA Documentation Validation created/started, then STOP without waiting for completion or automatically implementing C1.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ExternalMappingGenerationPostgresIntegrationTest.java` — exact-head oracle suite 21 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProviderLinkSecurityGenerationPostgresIntegrationTest.java` — exact-head oracle suite 13 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/OidcClaimCoverageProjectorTest.java` — exact-head oracle suite 15 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/AuthorizationEvidencePostgresTest.java` — exact-head oracle suite 9 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: HAPI-577. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `ddfb7bb7c6789bf30de3779e428bca88fce792af` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [doc/roadmap/ULTIMATE_ROADMAP.md:82](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L82)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:102](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L102)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:108](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L108)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:112](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L112)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:137](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L137)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Source-backed bounded stage accepted; current exact-SHA raw regression reports independently recovered. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+<a id="hapi-579"></a>
+## HAPI-579 — project bounded oidc claim coverage
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HPR-P25-051H-C1
+
+Priority: P2
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: HAPI-578
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+project bounded oidc claim coverage
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `.github/ci-test-inventory.json`
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/model/AuthenticatedPrincipalInput.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/model/VerifiedDirectoryIdentity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/TrustedAuthenticationVerificationPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/AuthenticationCompletionApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/ClaimCoverage.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcClaimNameCatalogAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapCredentialVerificationAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/OidcClaimCoverageProjector.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/SpringAuthorizationContextAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationRegistry.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverterTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/OidcClaimCoverageProjectorTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/OidcVerifiedClaimReceiptTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/identity/domain/value/ClaimCoverage.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/out/TrustedAuthenticationVerificationPort.java`.
+- Application services: `src/main/java/dz/sh/hidra/modules/identity/application/service/AuthenticationCompletionApplicationService.java`.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcClaimNameCatalogAdapter.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverter.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapCredentialVerificationAdapter.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/OidcClaimCoverageProjector.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `.github/ci-test-inventory.json`
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/model/AuthenticatedPrincipalInput.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/model/VerifiedDirectoryIdentity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/TrustedAuthenticationVerificationPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/AuthenticationCompletionApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/value/ClaimCoverage.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcClaimNameCatalogAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapCredentialVerificationAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/OidcClaimCoverageProjector.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/SpringAuthorizationContextAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationRegistry.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverterTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/OidcClaimCoverageProjectorTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/OidcVerifiedClaimReceiptTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationTest.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+### HPR-P25-051H-C1 CI #712 accepted; H-C2 source/issuance contract and C2A scope registered — 2026-10-16
+
+**Verified source:** Current `main` `ddfb7bb7c6789bf30de3779e428bca88fce792af` (tree `29d390ba8bc509306f55cc53d0bbe8e5a5547e1e`, parent `ba68f394784985819a013ba4481fb2c5e4feb962`) holds H-C1 `feat(identity): project bounded oidc claim coverage` as a five-file implementation. [Full CI #712](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38946973390), [Fast #40](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38946973534), and [Documentation #356](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38946973251) all completed **SUCCESS on this exact SHA**. Therefore C1 is **SOURCE IMPLEMENTED / CI ACCEPTED for its non-authoritative JVM projection**, not an authenticated OIDC claim authority, native issuance binding, LDAP attribute capture, verified mapping epoch or protected PERMIT. B2 #711 and all previously accepted stages remain unchanged. H/051 IN PROGRESS; H-C3 and H-I–M unselected; CI-003C unrestricted Full fallback remains required; P3 deferred.
+
+**Source-backed H-C2 engineering boundary:** `OidcClaimCoverageProjector.project(Map, VersionedSelection)` returns immutable `ClaimCoverage` and the *untrusted* selected generation only. `IdentityOidcJwtAuthenticationConverter.convert` currently checks provider/issuer/subject/deadline and, in the configured bound verification path, re-decodes the original external JWT with `externalOidcJwtDecoder`; that is the only acceptable original-source OIDC verification event. Its subsequent `authorizationContext.capture(principal,verified)` nevertheless performs legacy JPA name sampling, ignores ABSENT/MALFORMED coverage and cannot bind a catalog epoch. `TrustedAuthenticationVerificationRegistry.verifiedOidc(snapshot,principal)` creates an opaque same-thread, single-consumption `Receipt` containing only authentication provenance and principal; `AuthenticationCompletionApplicationService.complete` consumes it in its owner transaction, attests an immutable operation binding, issues a native token with JTI/session/lifetime, rechecks security generations, persists binding and publishes only after commit. The `TrustedAuthenticationVerificationPort.Verification` API currently exposes no private claim-coverage evidence. LDAP `LdapCredentialVerificationAdapter` maps only `IDENTITY_ATTRIBUTES` in the actual authenticated bind callback; `VerifiedDirectoryIdentity` has identity fields only. `SpringAuthorizationContextAdapter.currentFor` is legacy contextual authorization data, NOT a trusted claim-source/issuer reader.
+
+**Selected next bounded H-C2A package: original verified OIDC source and transient receipt, not H-C2 closure.** On a fully configured OIDC original-source-verification path, collect the Identity-owned `ClaimNameCatalogPort.selectVersioned(providerId)` snapshot **before external decoding and outside all protected/owner transactions and locks**. Re-decode the exact original token with the qualified decoder, recheck issuer, subject, expiration and linked principal *after* decoding, project **only** `verified.getClaims()` through the C1 helper using the *previously chosen* selection; reject mismatches, invalid source/coverage, stale or unavailable generations with a redacted error; no JPA-derived claim source. A private producer-bound receipt may retain only the immutable bounded projection, selected provider, source issuer/subject/expiry and mapping revision alongside existing owner snapshot; never full original tokens/secrets, and never widen `AuthenticatedPrincipalInput`, public token contents, REST responses or authorization. Keep fresh-auth behavior fail-closed: if mapping generation changes before issuance, the later owner-transaction validation MUST reject the receipt; H-C2A alone must not claim this issuance guarantee and must not allow a claim-dependent PERMIT. Provide explicit tests proving the receipt cannot be fabricated/replayed from public contexts, legacy constructor or non-original JWT; decoder failure/claim malformed/expired or changed source must not fall back to an unverified branch.
+
+**Mandatory privilege/sequence issue to resolve within implementation:** B2 `JdbcClaimNameCatalogAdapter.selectVersioned` intentionally rejects table-owner/superuser/elevated runtime connections. The current default application and hosted Flyway use the shared `hidra` database login; they are **not** usable as positive runtime credential-separation proof. H-C2A cannot silently bypass this by using legacy `select()`, trusting a caller-supplied epoch, weakening owner checks or substituting a mocked selector for all hosted acceptance. For synthetic PostgreSQL acceptance, provision a separate non-owner role with read-only provider/generation/mapping access and no owner/CREATE/TRIGGER/UPDATE-generation power; inject a dedicated application query datasource only if repository security wiring allows it. If that needs additional configuration files or connection/wiring changes, close and register their exact scope **before** any runtime write. Elevated shared-login execution must remain fail-closed; it is not proof of a secure deployment role. A missing field role or production calibration is not a prerequisite.
+
+**Exact next H-C2A code package, REGISTERED but not executed in this docs checkpoint:** Preserve the existing authentication route and implement an **explicitly default-disabled**, Identity-private OIDC verified-source projection attached only to the legitimate one-shot producer receipt. The feature gate must have a safe default, and on opt-in any unavailable/owner-privileged generation selector, decoder, temporal mismatch, invalid coverage or mismatched principal MUST fail closed without legacy JPA fallback. No external network interaction while an Identity owner transaction or relation fence is held. At source verification, select mapping names/revision only through `ClaimNameCatalogPort.selectVersioned`, decode the original source JWT once through `externalOidcJwtDecoder` (the converter's existing qualified path), bind the C1 projection privately to the receipt, and never expose the claims in public tokens, `AuthenticatedPrincipalInput` or authorization decisions. Do not claim issuer validation from the projector. Tests must exercise the opted-in producer using synthetic verified JWT/selector mocks, legacy-constructor default-off compatibility, privilege/decoder failure and one-consumption receipt behavior. The original-source verified decoding route must not be replaced by caller-selected JWT data.
+
+**C2A registered exclusive future scope, 1 CREATE / 7 UPDATE / 0 DELETE:**
+- UPDATE `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverter.java`: additive opt-in constructor/wiring and single real original-source OIDC projection path; existing legacy and default-off behavior retained.
+- UPDATE `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationRegistry.java`: package-private producer-only immutable projection receipt, same-thread/one-use and existing owner binding guarantees intact; no public claim authority.
+- CREATE `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/OidcVerifiedClaimReceiptTest.java`: pure synthetic JVM producer/receipt, replay/forgery, source/epoch mismatch, owner privilege and fallback-negative cases; exact cases registered from actual methods.
+- UPDATE `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverterTest.java` and `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationTest.java`: preserve all existing cases and extend explicit feature-gate/producer regressions.
+- UPDATE `.github/ci-test-inventory.json`: actual SHA-256/method identities of three affected classes; no dropped cases, no invented baseline, unit-architecture/fast for new pure-JVM class.
+- UPDATE `doc/roadmap/ULTIMATE_ROADMAP.md`; APPEND `doc/model-remediation/RECONCILIATION.md`: truthful source and acceptance evidence.
+- **Exact implementation commit message** `feat(identity): capture verified oidc claim receipt`, publish guarded directly on `main` only after this checkpoint's Documentation CI succeeds. No Flyway, generated physical dictionary, LDAP, REST/OpenAPI, public permission, production secrets or CI-workflow change. Full/Fast/Docs CI and architecture/test inventory mandatory; any skipped PostgreSQL tests remain non-proof. Implementation is accepted only to tested **private transient producer evidence**; native issuance persistent binding and read-time authorization require C2B/C3. No production role migration is part of C2A; enabled-mode role guard must remain fail closed until separate runtime credentials exist. **C2B** must bind actual selected revision, source expiry/coverage and original trusted receipt privately to immutable native JTI/session issuance with current provider/revision recheck under the existing Identity owner transaction; exact minimal persistence and tag changes are not authorized without a separate closed source-backed design. **C2C** must expose verified *LDAP/AD attributes from the authenticated entry*, never a prior search or identity-only profile; exact attributes and provider-specific rules require a separate source-backed registration. **H-C3** must add read-time qualified evidence/decision proof under the 22-relation fence with DENY/INDETERMINATE and company/resource scoping before claim-dependent PERMIT. None of these later packages may be claimed from C2A or C1.
+
+**Current selected one-commit documentation decision:** Existing HPR-P25-051 governance exact message `docs(security): select operation time fencing proof`; UPDATE ONLY `doc/roadmap/ULTIMATE_ROADMAP.md` (insert this decision) and APPEND ONLY `doc/model-remediation/RECONCILIATION.md`. **0 CREATE / 2 UPDATE / 0 DELETE.** Preserve prior roadmap and reconciliation bytes, all migration checksums, existing B1/B2/C1 sources/tests/inventory, production CI, and authorization. Direct `main` with exact-head expected-SHA guard; verify parent/tree and exact-two-path commit, observe exact-SHA Documentation Validation CREATED/STARTED, then STOP. No automatic C2A implementation or subsequent stage; no production database, live OT, IdP or numerical simulation.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverterTest.java` — exact-head oracle suite 8 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/OidcClaimCoverageProjectorTest.java` — exact-head oracle suite 15 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/OidcVerifiedClaimReceiptTest.java` — exact-head oracle suite 7 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationTest.java` — exact-head oracle suite 38 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: HAPI-578. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `ddfb7bb7c6789bf30de3779e428bca88fce792af` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [doc/roadmap/ULTIMATE_ROADMAP.md:44](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L44)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:67](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L67)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Source-backed bounded stage accepted; current exact-SHA raw regression reports independently recovered. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+<a id="hapi-580"></a>
+## HAPI-580 — capture verified oidc claim receipt
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HPR-P25-051H-C2A
+
+Priority: P2
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: HAPI-579
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+capture verified oidc claim receipt
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `.github/ci-test-inventory.json`
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationRegistry.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverterTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/OidcVerifiedClaimReceiptTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverter.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationRegistry.java`, `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverterTest.java`, `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/OidcVerifiedClaimReceiptTest.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `.github/ci-test-inventory.json`
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationRegistry.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverterTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/OidcVerifiedClaimReceiptTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationTest.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+### HPR-P25-051H-C2A — original-source OIDC bounded claim receipt, 2026-10-16
+
+**One registered implementation commit:** Owner requested Next with no further subdivisions and no documentation-only preflight commits. Exact commit message `feat(identity): capture verified oidc claim receipt`. Starting source `aea3e497502c3e83a49fe4b7b2070b984d846bb0` (tree `8e78f3bc20c7eb16ae4fa10db2a927dc2d6df66c`, Documentation Validation #357 SUCCESS). This stage changes only the eight files already registered for C2A: two production Identity security classes, one new and two existing synthetic JVM tests, source-linked CI test inventory, the roadmap and append-only reconciliation. One CREATE / seven UPDATE / zero DELETE.
+
+**Delivered source intent:** Existing OIDC converter's original-token qualified decoder path is preserved. New `hidra.identity.oidc-verified-claim-receipt.enabled` opt-in defaults to false; when enabled, the converter selects a versioned claim-name snapshot before original decoding, projects only the verified decoder output into C1 bounded coverage, compares selection generation after decoding, and attaches source issuer/subject/expiry, provider and immutable projection privately to a one-use registry receipt. Any unavailable or owner-privileged selector, changed source identity/deadline, invalid claims or decoder failure fails closed, with no legacy JPA assertion fallback in opt-in mode. Legacy, default-off behavior and the existing direct/LDAP receipt remain unchanged. No raw token or sensitive source secret is persisted or exported, and no authorization grant follows from the new projection.
+
+**Tests and limits:** New `OidcVerifiedClaimReceiptTest` has seven synthetic cases for original decoded data, default-off preservation, decoder failure, changed mapping generation, privilege/unavailable refusal, wrong verified subject and one-consumption/forgery refusal. Existing converter and trusted registry tests are extended without dropping historical cases; CI inventory includes their actual source SHA-256 and case names. Source/hash inventory were checked, but no live Java21/Maven, PostgreSQL, IdP, held owner transaction or runtime OpenAPI execution was available locally for this submission. Exact-SHA Full/Fast/Docs results remain **REQUIRED**, not assumed passed. This stage does not implement C2B immutable native JTI/session binding of claims, C2C authenticated LDAP attributes, H-C3 fenced decision evaluation, production role separation, claim-based protected PERMIT, or production/site acceptance. Parent H/051 stays IN PROGRESS; P3 deferred. No further C2A subdivision or unregistered implementation.
+
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverterTest.java` — exact-head oracle suite 8 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/OidcVerifiedClaimReceiptTest.java` — exact-head oracle suite 7 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationTest.java` — exact-head oracle suite 38 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: HAPI-579. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [doc/roadmap/ULTIMATE_ROADMAP.md:3](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L3)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Source-backed bounded stage accepted; current exact-SHA raw regression reports independently recovered. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+<a id="hapi-581"></a>
+## HAPI-581 — Paired protected Identity authorization
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HPR-P25-051I
+
+Priority: P0
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: HAPI-575
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Paired protected Identity authorization; Identity
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `src/main/java/dz/sh/hidra/modules/identity/IdentityModule.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/IdentityApi.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/IdentityRestApi.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityAdministrationCommandController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityAdministrationQueryController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityAuthenticationController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityOidcAuthorizationController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/SpringIdentityController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/mapper/IdentityAuthenticationWebMapper.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/mapper/IdentityGeneratedRestMapper.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/mapper/IdentityRestMapper.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/request/IdentityAdministrationRequests.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/IdentityApplicationServiceRegistry.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/command/IdentityAdministrationCommands.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/mapper/IdentityApplicationMapper.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/model/VerifiedDirectoryIdentity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/AuthenticateDirectUserUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/EvaluatePermissionUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/IdentityAdministrationCommandUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/IdentityAdministrationQueryUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationAssertionPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/IdentityProviderRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/CustodyTransferTicketActorReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/DirectAuthenticationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/LocalAuthenticationOutcomeApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/MaintenanceWorkOrderActorReferenceQueryService.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+Finish paired permissions, Party/Facility participation, common transaction/time fences, CAS publication and adversarial qualification. Prove organization-to-station monitoring isolation. The exact bounded remaining delivery is: Paired protected Identity authorization; Identity.
+
+### 4. Functional Requirements
+
+Derive one of eight fixed operation codes and require company CUSTOM plus FACILITY PERMIT at the same physical s/u; DENY wins, unknown never permits; export only approved immutable scalar evidence.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/in/AuthenticateDirectUserUseCase.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/in/EvaluatePermissionUseCase.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/in/IdentityAdministrationCommandUseCase.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/in/IdentityAdministrationQueryUseCase.java`.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationAssertionPort.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/out/IdentityProviderRepositoryPort.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`.
+- Application services: `src/main/java/dz/sh/hidra/modules/identity/application/service/CustodyTransferTicketActorReferenceQueryService.java`, `src/main/java/dz/sh/hidra/modules/identity/application/service/DirectAuthenticationApplicationService.java`, `src/main/java/dz/sh/hidra/modules/identity/application/service/LocalAuthenticationOutcomeApplicationService.java`, `src/main/java/dz/sh/hidra/modules/identity/application/service/MaintenanceWorkOrderActorReferenceQueryService.java`.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY:** DISCOVERY_REQUIRED for implementation; no executable source allowlist inferred from this historical or integration scope.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `src/main/java/dz/sh/hidra/modules/identity/IdentityModule.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/IdentityApi.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/IdentityRestApi.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityAdministrationCommandController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityAdministrationQueryController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityAuthenticationController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityOidcAuthorizationController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/SpringIdentityController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/mapper/IdentityAuthenticationWebMapper.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/mapper/IdentityGeneratedRestMapper.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/mapper/IdentityRestMapper.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/request/IdentityAdministrationRequests.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/IdentityApplicationServiceRegistry.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/command/IdentityAdministrationCommands.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/mapper/IdentityApplicationMapper.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/model/VerifiedDirectoryIdentity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/AuthenticateDirectUserUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/EvaluatePermissionUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/IdentityAdministrationCommandUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/IdentityAdministrationQueryUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationAssertionPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/IdentityProviderRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/CustodyTransferTicketActorReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/DirectAuthenticationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/LocalAuthenticationOutcomeApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/MaintenanceWorkOrderActorReferenceQueryService.java`
+
+**DELETE:** none.
+
+First recover this bounded objective's exact acceptance/replacement from the pinned references, inspect only its current owner seams and decide whether a source change is still needed. If fulfilled, record evidence and status without rewriting working code. If a genuine successor is necessary, absorb it in its existing unfinished owner package or propose PENDING_BASELINE_APPROVAL.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Derive one of eight fixed operation codes and require company CUSTOM plus FACILITY PERMIT at the same physical s/u; DENY wins, unknown never permits; export only approved immutable scalar evidence.
+- Prove the real owner/API/persistence path and negative cases; record exact source, actual executed and skipped cases and accepted contract artifact.
+- Required transactions roll back fully; historical exact reads remain reproducible after source revision.
+- Missing policy, unregistered file placement or unavailable authority is explicitly blocked rather than fabricated.
+- Applicable Full/Fast/Docs acceptance succeeds on the implementation SHA; software acceptance remains separate from SITE commissioning.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: HAPI-575. A dependency edge does not select implementation. Resolve only the task-specific exact path/policy/source contract gaps described here before code; real deployment data is not a software-contract blocker.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. For implementation, deliver only the admitted CREATE/MODIFY set, public API evidence where required, fresh-schema proof where applicable and preserved historical behavior.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [doc/model-remediation/RECONCILIATION.md:23147](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L23147)
+- [doc/model-remediation/RECONCILIATION.md:23725](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L23725)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:1033](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L1033)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:1497](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L1497)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+### HAPI-581 bounded technical registration — 2026-10-18
+
+**Selected stage:** the owner's Next selects the local technical contract review required by this task's existing BLOCKED specification. HAPI-575 is closed; do not add optional H variants. This registration resolves I's exact owner seam, input/export contract, implementation paths and finite acceptance. It is documentation only: HAPI-581 remains implementation-PARTIAL and becomes planning-REGISTERED_PENDING. Registration acceptance awaits this commit's Documentation Validation. No I runtime or downstream J–M implementation is claimed or executed here.
+
+**Exact recovered baseline:** main `caae1b5f4b2bd9f44518f0493f44e2f5d875ecc5`, parent `57c4b820ba158bab52d16174f5dbbd9cea37ffda`, tree `49b6ae5b6f4a67b7ffc92fa3eaa0771e685f9078`. [Documentation Validation](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39073745342) SUCCESS on main. The preceding accepted implementation has [Full734](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39072586688), [Fast61](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39072586774), and [Docs384](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39072586709) SUCCESS. Run conclusions were refreshed; the raw aggregate was not downloaded again in this registration. H's recorded 2243-case closure retains its original applicability. The downloaded exact-SHA source archive reconstructed the complete Git tree above, including the unmodified historical reconciliation; large-file connector responses containing empty content were not treated as file contents.
+
+**Current source findings / reuse:**
+
+| Exact current source under `src/main/java/dz/sh/hidra/modules/identity/` | Verified seam and bounded consequence |
+|---|---|
+| `application/contract/topology/TopologyScopedAccessContract.java` | Defines the eight operations and validated company/facility references. Reuse its Request and Operation; no new client permission selector. |
+| `application/service/TopologyScopedAccessQueryService.java` | Derives all eight `topology:station-revision:*` codes, then calls the ordinary evaluator twice. Preserve it for its current standalone contract; this Boolean is not protected paired authority. |
+| `infrastructure/security/ProtectedOperationIdentityParticipant.java` | `prepare()` uses actual ambient authentication; `contribute()` consumes Prepared once, freshly validates the native binding and returns its fenced s/u and PID/XID. `qualifyClaims()` binds exactly one request to a private one-use credential; invoking it twice cannot produce a valid pair. |
+| `infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java` | `loadQualified()` consumes that credential and checks actual transaction/context, mapping generation, retained coverage and all held Identity fences. Its public structural diagnostic overload grants no authority. Reuse the qualified checks and graph-loading logic; never adapt the diagnostic overload into a permission source. |
+| `domain/service/AuthorizationPolicyEvaluator.java` | Pure Java `evaluate(request,evidence,at)` already evaluates at supplied time, gives DENY precedence and prevents INDETERMINATE from permitting. Reuse it unchanged; no wall-clock evaluator or optional decision persistence on the protected path. |
+
+**Binding paired contract:** add Identity-owned `TopologyProtectedAuthorizationContract` in the existing public contract package and its infrastructure implementation `ProtectedTopologyAuthorizationParticipant`. This is a synchronous trusted owner contribution, with no REST endpoint or replacement of the standalone scoped-access query. Contract methods are `Prepared prepare()` and `Contribution contribute(Prepared prepared, TopologyScopedAccessContract.Request request)`. Prepared is an opaque contract marker; its concrete implementation has a private constructor, retains the issuing participant, genuine F Prepared, actual Authentication/thread and one-use state. Reject foreign implementations/instances, repeated use, changed ambient authentication, changed physical transaction and asynchronous transfer. A caller-supplied marker, record, principal, user id or prior PERMIT cannot establish origin. Expensive native verification remains before admission through F.prepare; contribution requires the existing writable physical READ COMMITTED transaction and all existing fences. No REQUIRES_NEW, nested transaction or caller-controlled s/u is admitted.
+
+Extend the existing F participant with an opaque `QualifiedClaimPair` prepared from one genuine Prepared and the exact Request. Resolve user identity only from the actual F contribution. Derive both AuthorizationEvaluationRequests internally, with the same actor, permission, `STATION_GRAPH_REVISION` resource type and facility resource reference; company scope is CUSTOM `topology-company:<companyPartyId>`, facility scope is FACILITY `<facilityId>`. Map AUTHOR, PUBLISH, READ_CURRENT, READ_HISTORY, LIST_HISTORY, WITHDRAW, REACTIVATE and TRANSFER to the existing suffixes author, publish, read-current, read-history, list-history, withdraw, reactivate and transfer. No arbitrary code, wildcard, scope, resource type, context attributes or actor override is accepted.
+
+Pair creation calls F.contribute exactly once, preserving one database s, finite conservative u, backend PID and XID. The pair owns both exact requests and the same genuine binding/context/transaction resource. Add `loadQualifiedPair(pair, request)` to the existing reader; consume the pair once, validate both canonical requests and all existing origin/catalog/fence rules, load two fresh bounded graphs in this same transaction, then recheck actual context, catalog and transaction before returning to the trusted adapter. Factor existing private qualified-loading checks where necessary; retain the original one-request entry and its one-shot semantics. Do not manufacture two public Contributions or call qualifyClaims twice. SQL/storage/catalog/coverage failures abort the pair and never expose a partial successful result. Evaluate both graphs synchronously at the captured s using the existing pure evaluator. Both must be PERMIT: an explicit DENY in either result wins over the other result; otherwise any INDETERMINATE is non-permitting; otherwise a missing grant/other DENY remains DENY. No successful Boolean is returned from a partially evaluated pair. Hold all locks to physical commit; this internal contribution itself does not commit or publish a client result.
+
+The exported immutable scalar Contribution contains only bindingId, sessionId, userId, operation, derived permissionCode, companyPartyId, facilityId, companyDecision, facilityDecision, combinedDecision, sampledAt, validUntil, backendPid and transactionId. Use contract-local decision enums PERMIT/DENY/INDETERMINATE and the existing Operation; no domain aggregate, JPA entity, AuthorizationEvidence, grants/rules/attribute maps, raw claims, token, issuer/JTI, credential/link details or free-text diagnostic crosses the module boundary. Validate non-null identity/references and s<u on construction; no mutable collections. A constructible scalar export is data, not a transferable attestation. Future K must call the actual configured trusted contributor and revalidate its own coordinator context; never accept caller-constructed Contribution as authority. I exports Identity's bound only, not a complete multi-owner u or final publication permit.
+
+**Exact future implementation allowlist — nine paths, 4 CREATE / 5 MODIFY / 0 DELETE:**
+
+| Action | Path | Required outcome |
+|---|---|---|
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyProtectedAuthorizationContract.java` | Pure Java opaque preparation interface and immutable scalar request/result boundary as specified above. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedTopologyAuthorizationParticipant.java` | Trusted contract implementation; genuine one-use preparation, pair owner invocation, pure evaluation and sanitized scalar export. |
+| MODIFY | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipant.java` | Private-constructor paired credential, exact actor/request/physical-context checks and irreversible single consumption; preserve accepted single-request path. |
+| MODIFY | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java` | Fresh qualified pair loading and postconditions; preserve diagnostic restrictions and current graph semantics. |
+| CREATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedTopologyAuthorizationParticipantTest.java` | Fixed operation/result truth table, opaque origin/replay checks, scalar/export boundary and failure behavior. |
+| CREATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedTopologyAuthorizationPostgresIntegrationTest.java` | Actual migrated PostgreSQL owner-path pair, same physical sample and transaction, real permissions and negative/rollback proof. |
+| MODIFY | `src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java` | Register approved contract export and prevent infrastructure/domain/diagnostic/ordinary Boolean authority bypasses. |
+| MODIFY | `.github/ci-test-inventory.json` | Only actual new/changed class identities and source hashes; preserve lane/oracle membership and zero-skip requirements. |
+| MODIFY | `doc/roadmap/ULTIMATE_TASKS.md` | Actual implementation and verification evidence/limitations under this task; no historical edits. |
+
+This list supersedes this task's earlier DISCOVERY_REQUIRED implementation path statement only for this finite I package. Check actual existence before execution: all four CREATE paths must still be absent and all five MODIFY paths must still exist. Source review found no new schema, permission catalog entry, endpoint, bean configuration or dependency requirement: use the existing Spring component conventions, permissions and evaluator. No migration, dictionary, OpenAPI snapshot, workflow, Party/Facility code, standalone Boolean service, existing source-claim producer/storage or other task is in scope. An actual newly found out-of-envelope prerequisite must be reported, not silently added. Runtime message is **`feat(identity): contribute paired protected authorization`**.
+
+**Fixed acceptance / no open-ended assurance expansion:**
+
+1. Exercise all eight owner-derived operations, exact resource and both scopes; reject invalid/foreign inputs and prove callers cannot select actor/permission/s/u. Unit decision truth table covers all nine PERMIT/DENY/INDETERMINATE combinations; no one-sided PERMIT.
+2. Real PostgreSQL fixtures invoke actual authentication completion/native verification, F, qualified paired reader and evaluator. For LOCAL, OIDC, LDAP and ACTIVE_DIRECTORY, demonstrate actual company-plus-facility PERMIT and failure when either grant is removed or a matching explicit DENY exists. Simulated directory transport remains explicit. Reuse existing fixture conventions and genuine producers; no constructed credential/evidence as the positive authority path.
+3. Capture both request evaluations at exactly one database s/u and PID/XID, without a second temporal collection. Test no transaction, read-only/wrong isolation, connection/transaction replacement, foreign participant, repeated preparation/pair use, request/context mutation before and during reads, catalog drift and unknown claim coverage. Existing H tests retain the detailed claim/MAC/expiry permutations; do not duplicate H's entire suite.
+4. Use real direct/role/group and supported policy fixtures to show evaluator reuse, DENY/unknown handling and future-boundary retention. Prove a matching supported deny blocks either side, an unresolved deny prevents an unrelated permit, ordinary stale Boolean permission/diagnostic evidence cannot enter the qualified path and graph-read failure produces no partial export. Preserve current direct/synchronized grants and expression semantics.
+5. A real concurrent mapping/grant writer must block behind held fences until transaction completion; verify rollback releases locks and no permission decision/audit/result is persisted or published by this read-only owner contribution. This does not claim final cross-owner CAS, global ordering or post-commit API results. Check scalar whitelist and ordinary authorization compatibility with architecture tests.
+6. Run available source/inventory/architecture/OpenAPI/documentation checks, focused new unit/PostgreSQL suites when the existing environment supports them, then mandatory hosted Full/Fast/Docs on the actual implementation SHA. New PostgreSQL cases must execute without skips in the accepted Full partition/oracle evidence. CI-first AGENTS11.1 applies; no complete environment provisioning or invented local pass. Finite acceptance closes only I; residual integrated races/latency and cross-owner qualification remain HAPI-585.
+
+**Preserved successor boundaries:** HAPI-582 owns Party eligibility and Facility ownership/epoch participation; HAPI-583 owns global admission/lock ordering and a common sample after all owner fences; HAPI-584 owns protected Topology publication/head/CAS and final database guard; HAPI-585 owns integrated adversarial closure. Existing F's Identity-only sample is not relabeled a global sample, and no caller-supplied future global context is admitted here. A later global coordinator change requires its own selected task and exact integration scope. HAPI-567 remains PARTIAL/IN_PROGRESS. No simulation, HWEB, release or deployment is selected; no new canonical task or structural change is introduced.
+
+**This documentation publication:** exactly3 MODIFY /0 CREATE /0 DELETE: this task register plus status-only HAPI-581 Planning Status BLOCKED to REGISTERED_PENDING in ROADMAP and PHASES. All other status fields, task identities, dependencies, priorities, membership, titles, ordering and frozen historical bytes remain unchanged. Exact registration message **`docs(identity): register paired protected authorization`** is admitted here under the canonical execution rule2; it has no competing registered I message. Publish on expected main caae1b5 with verified parent/tree/blobs and guarded main advancement, observe Documentation Validation creation/startup and stop. After successful documentation feedback, the next separately selected execution is the single nine-path implementation above. No further preflight is required absent a concrete new prerequisite. Local validation completed: the documentation validator passed (101 documents, 7215 relative links, 24 modules, 13 retained P2 rows); its 10 unit tests passed; offline OpenAPI validation passed (244 paths, 263 operations, 231 schemas). Exact three-file scope, whitespace, frozen table fields/unrelated statuses, historical suffix preservation and all nine future path actions/existence checks passed. These checks establish documentation consistency only; no Java/PostgreSQL or runtime pair behavior was executed. The applicable new exact-SHA documentation CI remains pending publication.
+
+### HAPI-581 implementation submission — 2026-10-18
+
+**Owner selection and evidence:** Next selects the registered paired Identity implementation after [Documentation Validation386](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39095838570) SUCCESS on `d5c589c617f708910689dafd7cd0691024a1e262`, parent `caae1b5f4b2bd9f44518f0493f44e2f5d875ecc5`, tree `a080b51ef62be0aeee3b337040e9adc8c2c39d39`. The local source tree matches that Git tree before edits. HAPI-575's accepted implementation is preserved. This is a source submission pending exact-SHA Full/Fast/Docs and raw executed evidence; it does not close I, parent051 or any successor. Canonical status fields remain PARTIAL/REGISTERED_PENDING until the separate acceptance reconciliation.
+
+**Necessary bounded scope amendment, reported before publication:** the current `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java` explicitly permits exactly the public reader methods load and loadQualified. The registered loadQualifiedPair method therefore requires updating that existing exact method inventory. Admit this one additional MODIFY path under the same I implementation, for a total **10 paths:4 CREATE /6 MODIFY /0 DELETE**. Preserve every existing test case and restriction; enumerate exactly the three reviewed methods and assert the paired method accepts only QualifiedClaimPair and the fixed owner Request, returning only Identity-private PairedAuthorizationEvidence. This is the unavoidable test adaptation for the already registered public seam, not an open-ended allowlist or weaker passing gate. No other behavioral scope or canonical structure changes. This amendment supersedes only the earlier nine-path count.
+
+**Actual implementation:** `TopologyProtectedAuthorizationContract` is pure Java and exports one opaque preparation marker plus the approved immutable scalar Contribution. `ProtectedTopologyAuthorizationParticipant` implements it using actual F.prepare, one F.qualifyPair, the real qualified graph pair and unchanged pure AuthorizationPolicyEvaluator at the same database sample. No caller user/code/scope/deadline is an input. Prepared entries retain private issuing instance, actual Authentication, original thread and irreversible single-attempt state. Permission codes are derived from the eight fixed operations. Two PERMITs are mandatory; DENY wins, otherwise INDETERMINATE cannot permit. The scalar constructor rejects inconsistent derived codes, decisions, invalid references and non-increasing bounds. Logging strings omit the identity scalars.
+
+The existing F participant adds a private-constructor QualifiedClaimPair: one genuine contribution creates the two exact canonical requests and two internally created one-use credentials sharing the identical Contribution, context and transaction resource. Reader consumePair unwraps only a genuine pair once. loadQualifiedPair calls the preserved loadQualified checks for each child, then checks both consumed credentials and actual physical context again; the trusted adapter repeats that postcondition after pure evaluation. This reuses the accepted origin/MAC/coverage/generation/eligibility/lock/PID/XID rules rather than inventing a structural diagnostic PERMIT. No second temporal collection, wall-clock evaluator, decision persistence, extra connection or independent transaction is introduced. Existing method bodies and the standalone scoped-access Boolean service are preserved. A record constructed by another caller remains data and is never an authorization input.
+
+**Actual finite verification sources:**12 new methods in ProtectedTopologyAuthorizationParticipantTest cover all8 mappings, all9 decision combinations, one-pair scalar export, foreign/null markers, foreign participant, success/failure replay, changed/missing/cross-thread Authentication, missing request, graph context mutation and incoherent scalar construction.11 new methods in ProtectedTopologyAuthorizationPostgresIntegrationTest exercise all8 operations with exact request scopes and one collected s, actual PID/XID checks, genuine LOCAL/OIDC/LDAP/ACTIVE_DIRECTORY issuance/native verification, both required grants, removal/denial of either side, direct/role/group/policy semantics, future DENY bounds, malformed/unknown external DENY, catalog generation drift, pair replay/request/transaction substitution, context mutation during the second graph, second-graph failure, rollback/no decision persistence, incompatible transactions, and a real concurrent writer lock timeout with lock release after commit/rollback. Directory network/attributes and original external provider transport remain synthetic; actual native cryptography, private producers, PostgreSQL rows, fences and evaluator execute when hosted CI runs. No externally calibrated or live directory result is claimed.
+
+OperationAuthenticationBoundaryGuardrailTest adds3 source cases fixing the scalar whitelist/pure contract, private pair construction, exact reviewed production callers and NEVER/MANDATORY transaction boundary. The existing reader guard remains present with its expanded exact3-method inventory and paired parameter/return types. The source-linked CI inventory includes both new classes in their proper unit/PostgreSQL lanes and unrestricted oracle, all actual new method identities and the4 changed test source hashes. New class timing0 is explicitly an unmeasured initial shard estimate, not a measured duration. Greenfield archive policy, zero-skip/equivalence requirements, fallback and optimized-adoption disposition are unchanged.
+
+**Local checks actually completed:** Java21 parser checks pass for all8 changed/new Java sources. The pure public contract and existing pure evaluator compile with the already available JDK21; an isolated executable smoke check verifies all8 fixed mappings and all9 pairs through that actual evaluator at a supplied common time. This does not compile or execute the Spring adapters or JUnit/PostgreSQL suites. The CI inventory validator passes (397 active oracle classes, including both new classes), with26 inventory-validator unit tests passing. Documentation-validator and OpenAPI-validator unit suites pass10 each; offline OpenAPI remains244 paths/263 operations/231 schemas. Documentation/link validation passed (101 documents,7215 relative links,24 modules,13 retained P2 rows). Exact10-path scope (4 CREATE/6 MODIFY), old production method-body preservation, frozen canonical statuses/tables, unchanged historical reconciliation/suffix and whitespace checks passed. Inventory SHA256 is `b688889e6c087ef80afc2f349a8fa16b9eb6299e8238610629fd855dbd3a32de`.
+
+**Runtime test limitation / CI-first:** `./mvnw -o -B -q -Dtest=ProtectedTopologyAuthorizationParticipantTest,OperationAuthenticationBoundaryGuardrailTest test` did not launch: the repository's wrapper is not executable in this recovered source and no Maven executable/cached distribution was located. No chmod, complete environment provisioning or Maven/Docker/PostgreSQL installation was performed. The23 new JUnit unit/integration methods and3 added guardrail methods are source cases, not local passing execution counts. Full source compilation, Spring wiring, actual PostgreSQL cases, existing architecture/regression suites and exact raw zero-skip evidence remain hosted acceptance obligations under AGENTS11.1. No known runtime test failure is concealed as a pass.
+
+**Publication and next gate:** exact implementation message **`feat(identity): contribute paired protected authorization`**, guarded expected main d5c589c, verified parent/tree/blob/scope and existing main only. Observe Full/Fast/Docs creation/queue/startup on the resulting SHA and STOP without waiting. Next/Fail must first recover actual CI feedback and repair this bounded package if needed, then reconcile I's fixed acceptance; no optional H or I variant is added merely to extend the sprint. Only after I's acceptance is HAPI-582's own registered Party/Facility contract review eligible. HAPI-583 global fences/common time, HAPI-584 final Topology guard/CAS and HAPI-585 integrated qualification remain separate and unselected. No migration, public HTTP/OpenAPI, source-claim producer/storage, Party/Topology, workflow, release, deployment or numerical simulation change is made.
+
+### HAPI-581 failed-CI repair — INSERT-only synthetic guard, 2026-10-18
+
+**Owner Fail / exact recovery:** live main `0f69ab35c0d3be77cac232e649bb181a25b71ea6`, parent `d5c589c617f708910689dafd7cd0691024a1e262`, tree `acc1b2c90ae5bd4f4aa1947f3db8feface00f63c`. [Fast62](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39097512384) and [Docs387](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39097512438) SUCCESS. [Full735](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39097512496) FAILED: PostgreSQL shard1 and unrestricted oracle report the same7 errors in ProtectedTopologyAuthorizationPostgresIntegrationTest. Static validation, unit/architecture, PostgreSQL shard0 and API contract/dictionary jobs succeeded. Oracle log reports2269 tests /0 assertion failures /7 errors /0 skips; shard1 reports491 /0 /7 /0. These are retrieved job-log figures, not a newly verified passing raw aggregate or I acceptance.
+
+**Root cause:** failed job logs117586902158 and117586902196 identify PostgreSQL `permission denied for table receipt` in the test helper's final guarded CTE. The synthetic restricted role has INSERT on its disposable receipt table, deliberately without SELECT. `INSERT ... RETURNING id` reads a table column and requires that missing privilege. Thus the success-path cases fail at the fixture guard after owner work; the same tests fail in both selections. Other logged expected-exception/container-shutdown warnings are not substituted for this concrete7-error cause. No production authorization defect is established by this failure.
+
+**Exact repair scope —3 MODIFY /0 CREATE /0 DELETE:** `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedTopologyAuthorizationPostgresIntegrationTest.java` changes only the final guard's RETURNING expression from id to constant1 and adds a setup assertion under the actual restricted role that INSERT is allowed and SELECT on id is denied. The CTE still counts exactly one inserted sentinel only for database s<=t<u; the same final guard, observed-commit requirement, rollback/lock checks and all11 test identities remain. No SELECT privilege is granted. `.github/ci-test-inventory.json` updates only this test's source hash; all classes, cases, lanes, timing estimates and acceptance requirements are preserved. This ULTIMATE_TASKS record/pointer appends truthful failure/repair evidence. Production code, migrations, public API, security privileges, workflows, canonical status tables and historical reconciliation remain byte-identical to the failed SHA.
+
+**Actual available checks:** Java21 formatter parser accepts the repaired source; source-linked inventory validation passes with397 active oracle classes and unchanged partitions; all26 inventory-validator unit tests pass; whitespace checks pass. Full Java compilation and unit/architecture execution succeeded on the failed upstream SHA, but the repaired PostgreSQL fixture has not been executed locally. Documentation/link consistency and exact3-file scope/historical preservation are checked before publication. No environment provisioning, runtime pass, skipped-case waiver or CI-success claim is introduced. The INSERT-only setup assertion and guarded success paths must execute in the replacement hosted Full/oracle run.
+
+**Publication / stop:** retain the registered exact message **`feat(identity): contribute paired protected authorization`** for this responsible-scope correction, expected main0f69ab3 with verified parent/tree/blobs and guarded main update. Observe exact-SHA Full/Fast/Docs creation/queue/startup and STOP. HAPI-581 remains unaccepted and its canonical statuses are retained pending successful hosted feedback plus evidence reconciliation; HAPI-582 and later work remain unselected. Do not rerun the unchanged failed SHA or broaden privilege/workflow limits to hide this error.
+
+### HAPI-581 fixed acceptance closure — 2026-10-18
+
+**Decision: VERIFIED / COMPLETED for paired protected Identity authorization (HPR-P25-051I).** The owner Next selects the evidence reconciliation following the bounded guard-fixture repair. This review accepts the fixed I contract and its registered implementation; it does not select additional assurance variants or close any successor or parent obligation. No new runtime code or test is added by this closure.
+
+**Accepted exact source:** `97c51525ffcfd55017cbe7bc24320a5510181b76`, parent `0f69ab35c0d3be77cac232e649bb181a25b71ea6`, tree `96623c914cb0d86bcadb48a9afd3666b5429c68a`. The freshly recovered source archive reconstructs exactly that Git tree. Live main and applicable governance/source were refreshed. [Full736](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39098676711), [Fast63](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39098676718) and [Docs388](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39098676636) are completed SUCCESS on this SHA; all7 required Full jobs succeeded. Full735 remains a failed historical submission; its7 receipt-privilege errors were corrected by returning a constant sentinel while preserving the restricted role's INSERT-only access.
+
+**Independent raw verification:** downloaded Full aggregate artifact12125857793 (11,900,357 bytes), ZIP SHA256 `bd4a6738adb042b90a3aa96873f4b29488e4af64e9b83faddfb6c53e3731a69d`, matches authenticated GitHub artifact metadata. ZIP integrity passes. The exact-source `.github/scripts/verify_full_ci_evidence.py` independently reconstructs all6 lane envelopes, hashes their raw files/XML, validates source-linked inventory, Java21 clean-verify lifecycle and runtime API/migrated PostgreSQL catalog provenance, then reproduces hosted gate.json exactly: **397 classes /2269 tests /0 failures /0 errors /0 skips**, run39098676711 attempt1. Same-run partition/oracle equivalence is true. Mandatory unrestricted fallback remains required and optimized_adoption_eligible remains false. No new local Maven/database test execution is claimed by reaggregating these hosted reports.
+
+**Fixed checklist and executed evidence:**
+
+| Accepted bounded I requirement | Current source and exact-source raw report evidence |
+|---|---|
+| Eight owner-derived operation codes, canonical company CUSTOM and facility FACILITY requests; no client actor/permission/time override | TopologyProtectedAuthorizationContract, ProtectedOperationIdentityParticipant.qualifyPair and ProtectedTopologyAuthorizationParticipant derive both requests from one genuine contribution. ProtectedTopologyAuthorizationParticipantTest12 and ProtectedTopologyAuthorizationPostgresIntegrationTest11 execute all8 operation mappings, all9 result combinations, exact scopes/resource/actor and physical PID/XID checks. |
+| Two eligible PERMITs are required, with DENY precedence and INDETERMINATE non-permitting | The unchanged pure AuthorizationPolicyEvaluator is used twice at the one captured sample. Actual pair fixtures exercise separate grant removal/explicit denial on either side for all4 producer types, direct/role/group authority, supported policy DENY, malformed policy refusal, future DENY bounds and unknown external DENY despite unrelated direct permits. |
+| Real F-to-qualified-reader-to-evaluator path with trusted authentication and claim freshness | Actual LOCAL/OIDC/LDAP/ACTIVE_DIRECTORY completion/native verification invokes the real paired owner, F and qualified reader on migrated PostgreSQL. The11-case PostgreSQL report has no skip. Mapping-generation drift rejects the complete pair. Existing G/H origin, coverage, MAC, writer and synchronized-membership suites re-execute in the same verified397-class aggregate; their accepted reader method bodies were preserved, not replaced by constructed test evidence. |
+| One physical transaction and one s/u; replay, origin, request and context failures cannot export partial authority | Private preparation/paired credentials bind actual Authentication, issuing instance, thread, exact requests and transaction resource. Both child credentials share the identical F contribution; no second temporal collection occurs. New cases exercise foreign markers/participants, repeated/failed use, cross-thread or missing/changed Authentication, alternate operation/request, another transaction, read-only/no/wrong-isolation transaction, graph context mutation and second-graph failure. Inherited child connection-resource and origin checks remain executed in existing H suites. |
+| Fences persist through transaction completion; failed contribution rolls back without decision persistence | The pair PostgreSQL suite executes a real separate writer connection blocked by held grant fences, checks release after commit/rollback, and verifies no authorization_decision or fixture sentinel survives failed graph work. Successful fixture guard executes database s<=t<u with exactly one inserted constant and observed physical commit; setup verifies the actual synthetic role has INSERT and lacks SELECT on receipt.id. Production privileges and executor limits were not broadened. |
+| Only approved immutable scalars leave Identity; architecture and compatibility are preserved | OperationAuthenticationBoundaryGuardrailTest19 and JdbcProtectedAuthorizationEvidenceReaderTest9 pass, including scalar whitelist, pure contract, opaque constructors, exact reviewed callers, NEVER/MANDATORY boundary and exact3-method reader inventory. Same-run architecture, runtime OpenAPI and actual PostgreSQL16 dictionary checks pass. No new endpoint, migration or full Topology workflow is inferred from the internal contract. |
+
+Counts above are actual oracle raw XML suite totals on the accepted SHA: new unit12, new PostgreSQL11, boundary guard19 and reader unit9, all with0 failures/errors/skips. They are included in2269, not added to it. The26 newly introduced source methods (12+11+3 boundary additions) have executed evidence; prior guard/reader cases remain present. Tests with loops exercise multiple operation/provider combinations within their named JUnit case; no fabricated parameterized invocation count is claimed. This is acceptance of the finite registered I scope and reusable accepted checks, not proof of every possible adversarial scheduling permutation.
+
+**Evidence fingerprints:** inventory `c7de5bdc97c8593d957a9a1a9fb6fd790277fdadc6f1960b52c3933d90dbd389`; current runtime OpenAPI `b82dc3702913413588a8d56ad4a4f454be56b97ff1a43007168f79e57b9ce232`; compatibility base57c4b820 /base API `94bd46f021029606f2edfc7bde18af584240b781ed052267cf20e96ac007bb15`; actual catalog `df8f423360541ace3e0d6690502aa6449e93ff90b4bf15827d76ff7f27face50`; database source bundle `9d87dbf4d4eeffbdd3da55a629210e23e68216c58a223f78ee5c39fc060fa23f`; PostgreSQL16.15 (Debian16.15-1.pgdg13+2). Runtime artifact hashes include provenance and do not relabel the preserved offline snapshot as newly generated.
+
+**Limits and next ownership:** I is an internal trusted Identity contribution. Its scalar record is data, not a bearer attestation; it does not establish Party eligibility or company–Facility ownership, a global multi-owner sample/bound, final publication authority, CAS/head stability, industrial calibration or deployment readiness. Directory/source transport in fixtures remains synthetic. The47.056-second PostgreSQL suite duration includes setup and multiple operations and is not a per-operation industrial latency claim. HAPI-582 retains Party/Facility participation, HAPI-583 global admission/fences/common time, HAPI-584 protected Topology/CAS/final guard and HAPI-585 integrated adversarial/latency qualification. HAPI-567 remains PARTIAL/IN_PROGRESS. Wider integrated connection/scheduling and owner-path qualification stay with those original successors; no new I improvement task is registered.
+
+**Exact closure scope/publication:**3 MODIFY /0 CREATE /0 DELETE. This register appends the accepted evidence/checklist, updates only HAPI-581's current Implementation/Planning status fields and adds the current scheduling pointer. ULTIMATE_ROADMAP.md and ULTIMATE_PHASES.md change only HAPI-581 from PARTIAL/REGISTERED_PENDING to VERIFIED/COMPLETED. All identities, titles, dependencies, priority, phase membership, order, other task states, historical rows and immutable reconciliation remain unchanged. Reuse the admitted same-ID documentation message **`docs(identity): register paired protected authorization`**, expected main97c5152, exact parent/tree/blobs and guarded main update. Local documentation validation passed (101 documents/7215 relative links/24 modules/13 retained P2 rows); all10 documentation-validator unit tests passed; offline OpenAPI validation passed (244 paths/263 operations/231 schemas). Exact3-file scope, frozen table/status consistency, preserved historical suffix/reconciliation/runtime inventory and whitespace checks passed. Observe this documentation commit's exact-SHA Documentation Validation creation/queue/start and STOP. No new runtime verification is required solely for this documentation change.
+
+**Next registered selection:** HAPI-582, P0, after this closure's documentation acceptance and a subsequent owner Next. Its I dependency is now satisfied, but its planning status remains BLOCKED pending its own bounded Party/Facility technical contract review; no J runtime or later-stage implementation is selected by this closure. Simulation/P3, HWEB, release, deployment and autonomous control remain unselected.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+doc/roadmap/ULTIMATE_ROADMAP.md:1033 | HPR-P25-051I | BLOCKED_SPECIFICATION | Paired protected Identity authorization
+doc/roadmap/ULTIMATE_ROADMAP.md:1497 | HPR-P25-051I | Paired protected Identity authorization; Identity | G/H accepted; actual F→G→evaluator owner path, not constructed evidence. | Derive one of eight fixed operation codes and require company CUSTOM plus FACILITY PERMIT at the same physical s/u; DENY wins, unknown never permits; export only approved immutable scalar evidence.
+doc/model-remediation/RECONCILIATION.md:23147 | HPR-P25-051I | Paired protected Identity authorization; Identity | G/H accepted; actual F→G→evaluator owner path, not constructed evidence. | Derive one of eight fixed operation codes and require company CUSTOM plus FACILITY PERMIT at the same physical s/u; DENY wins, unknown never permits; export only approved immutable scalar evidence.
+doc/model-remediation/RECONCILIATION.md:23725 | HPR-P25-051I | BLOCKED_SPECIFICATION | Paired protected Identity authorization
+~~~~~~~~
+
+<a id="hapi-582"></a>
+## HAPI-582 — Party eligibility and Facility ownership participation
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HPR-P25-051J
+
+Priority: P0
+
+Implementation Status: PARTIAL
+
+Planning Status: REGISTERED_PENDING
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: HAPI-581
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Party eligibility and Facility ownership participation; Party/Topology
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityAdministrationCommandController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityOidcAuthorizationController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyCurrentActorContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyOperationAuthenticationContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyScopedAccessContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/AuthenticateDirectUserUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/EvaluatePermissionUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/IdentityAdministrationQueryUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationAssertionPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/CustodyTransferTicketActorReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/DirectAuthenticationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/LocalAuthenticationOutcomeApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/MaintenanceWorkOrderActorReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyCurrentActorQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyOperationAuthenticationQueryAdapter.java`
+- `src/test/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessQueryServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyCurrentActorQueryAdapterTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+Finish paired permissions, Party/Facility participation, common transaction/time fences, CAS publication and adversarial qualification. Prove organization-to-station monitoring isolation. The exact bounded remaining delivery is: Party eligibility and Facility ownership participation; Party/Topology.
+
+### 4. Functional Requirements
+
+Fresh Party/Facility owner contributions, actual company–facility relationship, owner epoch/generation and applicable transfer/hold predicates, with normal writer/phantom/ABA exclusion. Current Boolean queries and cached references remain insufficient.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/in/AuthenticateDirectUserUseCase.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/in/EvaluatePermissionUseCase.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/in/IdentityAdministrationQueryUseCase.java`.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationAssertionPort.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`.
+- Application services: `src/main/java/dz/sh/hidra/modules/identity/application/service/CustodyTransferTicketActorReferenceQueryService.java`, `src/main/java/dz/sh/hidra/modules/identity/application/service/DirectAuthenticationApplicationService.java`, `src/main/java/dz/sh/hidra/modules/identity/application/service/LocalAuthenticationOutcomeApplicationService.java`, `src/main/java/dz/sh/hidra/modules/identity/application/service/MaintenanceWorkOrderActorReferenceQueryService.java`.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyCurrentActorQueryAdapter.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyOperationAuthenticationQueryAdapter.java`, `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyCurrentActorQueryAdapterTest.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY:** DISCOVERY_REQUIRED for implementation; no executable source allowlist inferred from this historical or integration scope.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityAdministrationCommandController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityOidcAuthorizationController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyCurrentActorContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyOperationAuthenticationContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyScopedAccessContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/AuthenticateDirectUserUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/EvaluatePermissionUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/IdentityAdministrationQueryUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationAssertionPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/CustodyTransferTicketActorReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/DirectAuthenticationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/LocalAuthenticationOutcomeApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/MaintenanceWorkOrderActorReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyCurrentActorQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyOperationAuthenticationQueryAdapter.java`
+- `src/test/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessQueryServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyCurrentActorQueryAdapterTest.java`
+
+**DELETE:** none.
+
+First recover this bounded objective's exact acceptance/replacement from the pinned references, inspect only its current owner seams and decide whether a source change is still needed. If fulfilled, record evidence and status without rewriting working code. If a genuine successor is necessary, absorb it in its existing unfinished owner package or propose PENDING_BASELINE_APPROVAL.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessPostgresIntegrationTest.java` — exact-head oracle suite 11 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessQueryServiceTest.java` — exact-head oracle suite 34 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyCurrentActorQueryAdapterTest.java` — exact-head oracle suite 44 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Fresh Party/Facility owner contributions, actual company–facility relationship, owner epoch/generation and applicable transfer/hold predicates, with normal writer/phantom/ABA exclusion. Current Boolean queries and cached references remain insufficient.
+- Prove the real owner/API/persistence path and negative cases; record exact source, actual executed and skipped cases and accepted contract artifact.
+- Required transactions roll back fully; historical exact reads remain reproducible after source revision.
+- Missing policy, unregistered file placement or unavailable authority is explicitly blocked rather than fabricated.
+- Applicable Full/Fast/Docs acceptance succeeds on the implementation SHA; software acceptance remains separate from SITE commissioning.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: HAPI-581. A dependency edge does not select implementation. Resolve only the task-specific exact path/policy/source contract gaps described here before code; real deployment data is not a software-contract blocker.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. For implementation, deliver only the admitted CREATE/MODIFY set, public API evidence where required, fresh-schema proof where applicable and preserved historical behavior.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [doc/model-remediation/RECONCILIATION.md:23148](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L23148)
+- [doc/model-remediation/RECONCILIATION.md:23726](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L23726)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:1034](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L1034)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:1498](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L1498)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+### HAPI-582 source-backed owner-contract review — 2026-10-18
+
+**Selected result:** owner Next selects the bounded Party/Facility contract review after [Docs389](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39109412697) SUCCESS. Live main `cb09e5fb6893598bcf269f04f9c3c7122935c1cd`, parent `97c51525ffcfd55017cbe7bc24320a5510181b76`, tree `1ef187cabde08320349589fd5301975cfded3bb4`; the recovered local tree matches before this edit. HAPI-581 is VERIFIED/COMPLETED on the accepted Full736/Fast63/Docs388 implementation and its accepted closure. HAPI-582's dependency is satisfied, but its implementation remains PARTIAL and planning remains BLOCKED for the specific technical gaps below. This review completes its documentation deliverable only. No runtime owner lock, schema, API, test or successor implementation is authorized or claimed by this publication.
+
+**Correct bounded-context ownership:** Party owns Party identity and active-reference eligibility; Topology owns live Facility ownership and station publication binding/epoch semantics. Identity supplies the accepted actual actor and paired permissions through HAPI-581. This technical allocation refines the historical generic `identity` template in this task; it does not change frozen phase membership, priority, title, dependency or registry structure. Do not move Party/Facility business meaning into Identity or Platform.
+
+**Exact source findings:**
+
+| Recovered existing path | Verified behavior / required preservation |
+|---|---|
+| `src/main/java/dz/sh/hidra/modules/party/domain/model/Party.java`, `domain/value/PartyStatus.java` | selectableForNewReference is exactly ACTIVE. DRAFT/SUSPENDED/BLOCKED/RETIRED are not eligible; presence is distinct from eligibility. No company-type catalog classification or organizational membership is inferred. |
+| `src/main/java/dz/sh/hidra/modules/party/application/contract/topology/TopologyPartyEligibilityContract.java`, `application/service/TopologyPartyEligibilityQueryService.java` | Boolean active-reference lookup through PartyRepositoryPort, with exact identity and error propagation. It is not a transaction-bound permission/owner attestation. |
+| `src/main/java/dz/sh/hidra/modules/topology/application/service/StationRevisionOwnerQueryService.java` | Sequential FacilityRepositoryPort lookup followed by Party eligibility; returns exact live Facility.id/ownerPartyId, rejects invalid references, never uses owner code/name snapshots as identity. Its own documentation excludes atomic publication binding/epoch. |
+| `src/test/java/dz/sh/hidra/modules/topology/application/service/StationRevisionOwnerQueryServiceTest.java` | Explicitly verifies that every FacilityStatus and FacilityKind can supply a reference; this resolver introduces no lifecycle/type permission rule. Preserve that behavior rather than silently restricting authoring or history to ACTIVE facilities. |
+| `src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JpaPartyRepositoryAdapter.java`, `repository/PartyJpaRepository.java`; Topology equivalents `JpaFacilityRepositoryAdapter.java`, `FacilityJpaRepository.java` | Ordinary JPA save/find and inherited JpaRepository writers. Party findByIdForShare is a PESSIMISTIC_READ row-lock precedent used by PlanningPartyReferenceQueryAdapter under MANDATORY, not by the Topology eligibility resolver. Facility has no corresponding protected owner method. Cached/JPA equality or updatedAt is not a monotone ownership witness. |
+| `src/main/resources/db/migration/V20260611_003__create_party_tables.sql`, `V20260611_004__create_topology_tables.sql`; PartyJpaEntity/FacilityJpaEntity | Party and Facility master rows contain status/updated_at; Facility has nullable owner_party_id and owner display snapshots. These entity sources declare no @Version and these DDL definitions contain no ownership/publication epoch or hold state. Master schemas do not establish atomic current publication ownership. |
+| `src/main/resources/db/migration/V20261011_002__p25_topology_station_graph_revisions.sql`; `src/main/java/dz/sh/hidra/modules/topology/application/port/out/StationInternalGraphRevisionRepositoryPort.java`, `infrastructure/persistence/adapter/JdbcStationInternalGraphRevisionRepositoryAdapter.java` | Append-only canonical V1 bytes with digest/identity checking and UPDATE/DELETE/TRUNCATE rejection. The port explicitly disclaims head/predecessor/approval/withdrawal/CAS publication. Neither predecessor intent nor immutable payload provenance establishes a live ownership epoch. Preserve every existing stored byte and historical digest. |
+
+All shortened paths in the table are relative to their named module or the same migration directory; no proposed class is represented as an existing artifact. Initial discovery was corrected to the actual topology DDL filename `V20260611_004`; no missing filename is evidence of a runtime defect.
+
+**Resolved compatibility contract:** preserve exact ACTIVE Party eligibility and case-sensitive identities after existing bounded normalization. Existence, a company permission grant, a Party code/name snapshot and a caller's claimed company are independent facts. A Facility owner observation must use its actual owner_party_id and an eligible Party in the same protected physical transaction; missing/malformed/mismatched identity, unavailable owner data or unknown required predicates cannot grant authority. Owner-reference resolution alone does not enforce Facility operating availability, Kind, commissioning or retirement policy; such operation lifecycle decisions must be explicit at their existing owner boundary. No new universal ACTIVE-Facility condition or invented company subtype is adopted here.
+
+**Concrete blockers / source-backed disposition:**
+
+1. **J-ORDER:** no source-complete Party/Facility relation/row/FK/trigger/native/bulk/JPA writer DAG has yet been established. `V20260929_001` supplies existing same-module FK/RESTRICT edges, Party/Facility repositories expose inherited mutation paths, and Planning's Party row lock adds a genuine participant. A lexical table list is insufficient. Before adding owner locks, trace actual transaction acquisition/flush paths, inbound/outbound FK and trigger side effects, insert/delete/reinsert, provider/authentication writers already fenced by I and new owner/version writers; specify incompatible sequences, bounded conflict handling and required row/table modes. The old design's Identity→Party→Topology order is historical intent, not proof that a new graph is safe. Do not claim unrelated ORM or arbitrary SQL writers participate in a merely cooperative advisory lock.
+2. **J-VERSION:** no current source supplies the ownership epoch/generation and applicable mismatch/hold witness required by this task. Do not use updatedAt, a cached object, PostgreSQL xmin, a caller-supplied scalar or a revision's predecessor as a durable epoch. The exact semantic lifetime must be settled first: live master stability while fences are held versus persistent publication ownership across operations, including delete/reinsert ABA and old-company disclosure. A new counter is not automatically the correct publication epoch. Recover the HPR-P25-038 contract and define the minimal compatible Party/Topology witnesses, ownership-change/rollback behavior, privilege model and relation lifecycle. Register an exact additive fresh-development migration and every affected writer if schema is required; no migration filename is reserved by this review.
+3. **J-COMMON:** accepted F/I currently samples after Identity fences, with no Party/Topology fences in that isolated call path. J cannot read later owners at a different clock and label the result atomic. Define the owner acquisition/read split now; K owns the separately selected runtime coordinator/admission change so all required fences precede one common database s and conservative u. J owner contracts must be consumable by that design without calling REQUIRES_NEW, copying a caller record into authority or reopening I with optional variants. HAPI-583 retains runtime integration; this compatibility design is a prerequisite to J code, not a reversed runtime dependency.
+
+**Publication-binding boundary:** Topology must compare live owner with its accepted persisted binding/epoch when that binding is implemented; mismatch requires fail-closed hold rather than silently adopting a new owner or disclosing the old company's history. The actual head/epoch/CAS/final-guard runtime remains HAPI-584. No hypothetical hold table is asserted to exist, and no new transfer/first-binding policy is silently selected. J's future scalar export may carry only owner-issued exact identities, supported status/eligibility, a defined owner version and physical-context/stability coordinates; no Party/Facility aggregate, JPA entity, lazy collection or constructible record is a transferable permit. HAPI-581's scalar permissions are likewise data until obtained through the actual trusted configured contributor.
+
+**One finite next design/registration delivery under this same HAPI-582:** produce together (a) the source-complete writer/lock/FK/trigger DAG with exact participating relations and failure ordering, (b) the Party/Facility version and publication-binding compatibility contract, including who creates/changes the epoch, how mismatch is represented and how K/L consume it without a dependency cycle, (c) exact CREATE/MODIFY paths, additive migration reservation/privilege/constraint SQL if needed, scalar interfaces and method/error shapes, and (d) the fixed executable fixture matrix and acceptance commands. It is routine source-backed engineering; no deployment measurements or plant calibration are needed. Absorb this work in the existing task and reuse existing owner semantics; do not create additional canonical IDs or repeat the entire platform audit. Only after these outputs are coherent may one bounded runtime package be REGISTERED_PENDING. This review itself creates no executable source allowlist; candidates remain unregistered until that gate is met.
+
+The future fixed fixture matrix must cover ACTIVE versus every other Party status; every FacilityStatus/Kind's preserved reference meaning; two independent companies/facilities; exact live owner mismatch and snapshot substitution; persisted version/epoch mismatch and delete/reinsert ABA; concurrent Party status/Facility owner/native/JPA/bulk writers with rollback; missing/unknown/corrupt owner/version state; one physical RC backend/XID and common s/u; no unauthorized existence/count/history export; and preservation of I plus immutable V1 revisions. Constructing a synthetic Contribution without the real owner call path is never the positive oracle. PostgreSQL skips are not proof. J's eventual complete acceptance must establish its owner witnesses, not only a Boolean lookup or documentation completion.
+
+**This publication and checks:** exactly1 MODIFY /0 CREATE /0 DELETE: `doc/roadmap/ULTIMATE_TASKS.md` appends this review and the scheduling pointer. All canonical statuses/tables, source/tests/migrations/workflows, previous accepted I evidence and historical reconciliation remain unchanged. Admit/reuse this task's documentation message **`docs(topology): define protected owner participation`** under canonical execution rule2; it conflicts with no existing J commit message. Local validation passed:101 documents/7215 relative links/24 modules/13 retained P2 rows, all10 documentation-validator unit tests, exact1-file scope, preserved current status fields and all later-task/historical bytes, and whitespace checks. Publish on expected main cb09e5f with parent/tree/blob verification and guarded main update; observe exact-SHA Documentation Validation creation/queue/start, then STOP. No new Java/PostgreSQL execution or runtime readiness is claimed. Next is the single combined J-ORDER/J-VERSION/J-COMMON design/registration delivery above, not J runtime, K/L implementation or optional I enhancement.
+
+### HAPI-582 combined owner design and executable registration — 2026-10-18
+
+**Disposition:** main `d35d1e9cbeb1fc15a6809c09df8ea781826b110a`, tree `8cc1e0a30b9499b32319725560f29273c1ecbf17`, [Docs390](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39109852002) SUCCESS; code-equivalent to accepted Full736. This closes J-ORDER/J-VERSION/J-COMMON specification gates for the exact package below, superseding earlier DISCOVERY_REQUIRED/no-allowlist pointers. PARTIAL/REGISTERED_PENDING; runtime remains unimplemented. Preserve all earlier evidence, compatibility rules and frozen task identity. K/L remain separately blocked.
+
+**J-VERSION:** recover HPR-P25-038 policy from RECONCILIATION's2026-10-11 entry: explicit publication epochs, separately authorized transfer, no inherited history/draft adoption, immutable V1. Select distinct witnesses:
+
+| Witness | Meaning |
+|---|---|
+| Party eligibility generation | Positive monotone per exact Party.id, tombstone retained. INSERT/DELETE/UPDATE OF id,status (including same-value assignments) advance; unrelated fields do not. ACTIVE remains the sole eligibility predicate, never membership/publication epoch. |
+| Facility ownership generation | Positive monotone per exact Facility.id, tombstone retained. INSERT/DELETE/UPDATE OF id,owner_party_id (including same-value assignments) advance; snapshots/coordinates/Kind/FacilityStatus alone do not. Detects owner A→B→A and delete/reinsert ABA. |
+| Publication epoch/head generation | Distinct L-owned state absent today. Authorized initial publication stores live owner AND Facility generation under all fences. Separately authorized transfer increments epoch/head. Owner OR generation mismatch holds disclosure/replay/mutation; no auto-rebind/history inheritance. L registers its DDL/protocol separately. |
+
+Party suspension/resumption changes eligibility, not ownership epoch. Preserve all FacilityStatus/Kind reference semantics and actual owner_party_id. J neither clears holds nor grants history. Missing/corrupt/unknown state fails closed. Test witness mismatch without inventing L tables.
+
+**J-ORDER — bounded source/catalog graph:** reviewed all production repository references, scalar entities/mappers, migrations and Full736 catalog. Located writers: PartyApplicationService→PartyRepositoryPort→JpaPartyRepositoryAdapter→PartyJpaRepository.save; FacilityApplicationService→FacilityRepositoryPort→JpaFacilityRepositoryAdapter→FacilityJpaRepository.save. Neither service establishes cross-owner atomicity. No current native/bulk root writer, custom root trigger, association/cascade or @Version; inherited/native/bulk DML is still covered. Other reviewed reference/visualization routes only read roots.
+
+| Route | Edges / interaction |
+|---|---|
+| `public.hidra_party_party` | Root ROW EXCLUSIVE→tuple/FK to hidra_party_type→selected AFTER trigger→own generation. J root SHARE ROW EXCLUSIVE NOWAIT→registry ACCESS SHARE NOWAIT excludes all ordinary root DML, including missing-ID phantoms. |
+| `public.hidra_topology_facility` | Same, FK to hidra_topology_facility_type, own generation; scalar owner_party_id has no Party FK. Trigger/reader never reaches Party. |
+| Party incoming24 FKs | `hidra_party_` address, bank_reference, certification, compliance_status, contact_person, contact_point, contractor_qualification, document_reference, external_reference, legal_profile, manufacturer_profile, operator_profile, owner_profile, qualification, registration, risk_snapshot, role_assignment, status_history, supplier_qualification, tax_identifier, vendor_qualification use party_id; ownership_link uses owner_party_id; relationship uses source_party_id AND target_party_id. All DELETE RESTRICT/UPDATE NO ACTION. Child→root KEY SHARE/ROW SHARE is compatible; children do not define ACTIVE. |
+| Facility incoming4 FKs | `hidra_topology_` equipment, facility_attribute_value, facility_node_binding, pipeline_system_facility reference facility_id; all RESTRICT/NO ACTION. Same compatibility; children do not define owner. |
+| Planning | JpaNominationRepositoryAdapter.save transaction: nomination FOR UPDATE→revision/scenario/catalog FOR SHARE→product/unit contracts→sorted fresh Party IDs through MANDATORY PlanningPartyReferenceQueryAdapter/findByIdForShare→Topology ordinary lookup→saveAndFlush. J touches no Planning/child/tuple, so adds no reverse tuple wait. |
+| Global target | Unchanged JdbcIdentityAuthorityFence exact22-base constant/order→external_mapping_generation ACCESS SHARE→bound_source_claim_evidence SHARE→Party base/tail→Facility base/tail→publication fences→common sample. No owner FK/trigger reaches Identity. |
+
+J locks only its schema-qualified base SHARE ROW EXCLUSIVE NOWAIT then registry ACCESS SHARE NOWAIT through completion; no tuples/DML/upgrades/releases/retries. Admission precedes mutation/flush; K rejects prior cross-owner DML. Conflicts55P03, deadlocks40P01 or SQL/context/invariant failures roll back the whole operation; no savepoint recovery/partial authority. This serializes protected reads and adds no waiting acquisition under earlier locks. Ordinary writers can still deadlock/rollback; no administrator/latency guarantee. This is a design inference from PostgreSQL16 [LOCK](https://www.postgresql.org/docs/16/sql-lock.html), [CREATE TRIGGER](https://www.postgresql.org/docs/16/sql-createtrigger.html), [CREATE FUNCTION](https://www.postgresql.org/docs/16/sql-createfunction.html), pending real concurrency proof.
+
+**Selected DDL/privileges:** reserve absent V20261018_001/_002. Each asserts empty master (reviewed fresh-development chain), rejecting nonempty initialization; no backfill/seed/old-migration rewrite or role creation. Tables: `public.hidra_party_eligibility_generation(party_id varchar(80) PRIMARY KEY,generation bigint NOT NULL CHECK(generation>0),present boolean NOT NULL)` and `public.hidra_topology_facility_owner_generation(facility_id varchar(80) PRIMARY KEY,generation bigint NOT NULL CHECK(generation>0),present boolean NOT NULL)`. No master FK; tombstones survive DELETE.
+
+AFTER INSERT initializes1/live or advances a consistent tombstone; DELETE increments/tombstones; UPDATE OF selected columns increments, including no-op. ID rename updates old/new lifetimes in `COLLATE "C"` order. Missing UPDATE/DELETE witness, inconsistent live state or overflow at9223372036854775807 raises23514; never recreate at1. Bulk changes/rollback affect root+registry atomically. BEFORE TRUNCATE root/registry guards reject CASCADE/reset. All native/bulk/JPA flush paths fire triggers; no Java writer callbacks.
+
+Owner-prefixed SECURITY DEFINER trigger functions use `SET search_path=pg_catalog,pg_temp`, qualified references and exact TG_RELID/TG_NAME/TG_OP checks. Revoke PUBLIC table/function access transactionally. Migration owner owns registries/functions; runtime role has registry SELECT and sufficient root UPDATE for fences, never registry DML/function execution. No broad GRANT. Admission/read rejects superuser/BYPASSRLS, inherited relation/function ownership, schemaCREATE/replacement or registry mutation authority, non-origin replication, inheritance/partitioning/RLS and missing/altered/disabled constraints/triggers/functions. Check effective membership privileges and exact reviewed definitions. Administrators remain outside runtime trust.
+
+**J-COMMON / interfaces:** pure Party `TopologyProtectedPartyEligibilityContract` and Topology `StationProtectedFacilityOwnershipContract`: `Admission acquire(String exactId)` then `Contribution read(Admission)`. Opaque marker accepted only as issuing adapter's private ticket; no caller clocks/generations/connections/claims/epochs. Trim/nonblank/max80 ID, preserve case. Scalar exports: exact IDs, positive generation, actual backend PID/XID; Party only ACTIVE, Facility only live facilityId/ownerPartyId. K compares actual owner to Party and real paired Identity request before disclosure. Constructed Contributions are data, never provenance/permits.
+
+Malformed input IllegalArgumentException; missing/ineligible/mismatched/corrupt evidence non-disclosing IllegalStateException; SQL/context failures propagate/mark full rollback. Configured JDBC adapters require existing bound DataSource/resource/connection, MANDATORY writable RC, same issuer/thread/backend/XID, retained lock census and completion invalidation. Ticket is consumed before fresh master/registry SQL; reject fake/foreign/null/reused/completed/suspended/REQUIRES_NEW/cross-thread or changed resource/context. No unwrapping/replacing/closing resources, JPA cache or synthetic clock.
+
+K must separately register/implement Identity acquisition/collection split: FULL Identity prefix→J Party/Facility→publication fences BEFORE single database s/conservative u, then trusted Identity evaluation/J reads with all fences held. Today's coupled F/I collect cannot precede late J locks and become atomic by labeling. J edits no F/I/Platform files. J predicates have no time-driven transition; fenced values observed after s remain stable. K verifies real resource/PID/XID and I s/u/expiry/final guard; caller scalar matching, REQUIRES_NEW or second I evaluation is insufficient. No dependency cycle or completed K proof is claimed.
+
+**One next runtime commit:** **`feat(topology): add protected party and facility witnesses`**. CREATE exactly11:
+
+1. `src/main/resources/db/migration/V20261018_001__p25_party_eligibility_generations.sql`
+2. `src/main/resources/db/migration/V20261018_002__p25_topology_facility_owner_generations.sql`
+3. `src/main/java/dz/sh/hidra/modules/party/application/contract/topology/TopologyProtectedPartyEligibilityContract.java`
+4. `src/main/java/dz/sh/hidra/modules/topology/application/contract/station/StationProtectedFacilityOwnershipContract.java`
+5. `src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JdbcTopologyProtectedPartyEligibilityAdapter.java`
+6. `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationProtectedFacilityOwnershipAdapter.java`
+7. `src/test/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JdbcTopologyProtectedPartyEligibilityAdapterTest.java`
+8. `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationProtectedFacilityOwnershipAdapterTest.java`
+9. `src/test/java/dz/sh/hidra/modules/party/infrastructure/persistence/ProtectedPartyEligibilityPostgresIntegrationTest.java`
+10. `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedFacilityOwnershipPostgresIntegrationTest.java`
+11. `src/test/java/dz/sh/hidra/modules/topology/ProtectedOwnerWitnessBoundaryGuardrailTest.java`
+
+MODIFY exactly3: `.github/ci-test-inventory.json` (actual5 classes/cases/source hashes; PostgreSQL lane and unit-architecture), `.github/database-dictionary-ownership.json` (two registries/source links), `doc/roadmap/ULTIMATE_TASKS.md` (evidence). DELETE none. Preserve all existing source/workflows/build/seeds/migrations/V1; register scope expansion first.
+
+**Same-task follow-up:** **`docs(topology): record protected owner witness evidence`** admits actual-catalog regeneration of `doc/database/DATA_DICTIONARY.md` via existing generator, TASKS and justified status-only HAPI-582 ROADMAP/PHASES. AGENTS11.1 permits initially retaining old dictionary explicitly pending; use hosted catalog next. Dictionary failure requires repair/green replacement CI, never invented metadata. No K/enhancement scope.
+
+**Fixed executable tests:** real configured adapters/migrated PostgreSQL/nonowner roles. Unit suites cover ID/tickets/failures; guard enforces pure exports/boundaries. PostgreSQL suites establish:
+
+| Family | Required fixtures |
+|---|---|
+| Semantics | ACTIVE succeeds/all4 other Party statuses fail; every FacilityStatus/Kind; two companies/facilities, owner mismatch/snapshot substitution, invalid/nonexact IDs. |
+| Versions | INSERT1, no-op relevant UPDATE, unrelated UPDATE unchanged, DELETE/reinsert, A→B→A, rename, native bulk/JPA saveAndFlush, rollback, missing/corrupt/nonlive state, exhaustion; retained-old versus actual-new witness mismatch, no invented L table. |
+| Concurrency | Two connections/barriers: committed/rolled-back status/owner/native/bulk/phantom/JPA writers. Writer-first admission55P03; admission-first exclusion until completion; actual pg_locks/no root tuple lock. Bounded lock/statement timeouts and joined/cleaned workers; no sleep-only oracle. |
+| DDL/security | FK child and Party FOR SHARE compatibility; root/registry TRUNCATE/CASCADE denial; ordinary root DML/registry SELECT allowed, witness forgery/function calls denied; inherited/elevated/schemaCREATE roles, replication, changed/disabled functions/triggers, RLS/inheritance/shape rejection; empty migration success/nonempty rejection. |
+| Lifetime | No tx/read-only/wrong isolation; fake/foreign/reused/completed/suspended/new-tx/cross-thread tickets, PID/XID/resource mismatch/lost fence fail; full rollback and retained locks. |
+| Preservation | Existing Party eligibility/StationRevisionOwner, immutable V1 and accepted I suites pass. No J permit/existence/history API. Common I/J s/u and publication hold/CAS remain K/L/M obligations. |
+
+Focused command: `./mvnw -B -q -Dtest=JdbcTopologyProtectedPartyEligibilityAdapterTest,JdbcStationProtectedFacilityOwnershipAdapterTest,ProtectedPartyEligibilityPostgresIntegrationTest,ProtectedFacilityOwnershipPostgresIntegrationTest,ProtectedOwnerWitnessBoundaryGuardrailTest,TopologyPartyEligibilityQueryServiceTest,StationRevisionOwnerQueryServiceTest test`. Also compile/documentation/inventory/dictionary and applicable Full/Fast/Docs per CI-first policy. Skips are non-proof. Accept actual class/case/source hashes/catalog/fence results from raw hosted artifacts; finish pending dictionary repair with green replacement CI. No new Java/PostgreSQL pass here.
+
+**This publication:**3 MODIFY/0 CREATE/0 DELETE: TASKS appends design/pointer and changes HAPI-582 planning; ROADMAP/PHASES only that planning cell. Reuse **`docs(topology): define protected owner participation`**. Local PASS:10 documentation-validator tests;101 docs/7215 links/24 modules/13 P2 rows; offline OpenAPI244 paths/263 operations/231 schemas; exact scope/absent11 CREATE paths/preserved J history/later bytes/whitespace. Guard main d35d1e9, verify blobs/tree/parent, observe Docs startup, STOP. Next selects J runtime after Docs acceptance.
+
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+doc/roadmap/ULTIMATE_ROADMAP.md:1034 | HPR-P25-051J | BLOCKED_SPECIFICATION | Party eligibility and Facility ownership participation
+doc/roadmap/ULTIMATE_ROADMAP.md:1498 | HPR-P25-051J | Party eligibility and Facility ownership participation; Party/Topology | I accepted for integrated use; reviewed global ordering contract before any new cross-owner acquisition. | Fresh Party/Facility owner contributions, actual company–facility relationship, owner epoch/generation and applicable transfer/hold predicates, with normal writer/phantom/ABA exclusion. Current Boolean queries and cached references remain insufficient.
+doc/model-remediation/RECONCILIATION.md:23148 | HPR-P25-051J | Party eligibility and Facility ownership participation; Party/Topology | I accepted for integrated use; reviewed global ordering contract before any new cross-owner acquisition. | Fresh Party/Facility owner contributions, actual company–facility relationship, owner epoch/generation and applicable transfer/hold predicates, with normal writer/phantom/ABA exclusion. Current Boolean queries and cached references remain insufficient.
+doc/model-remediation/RECONCILIATION.md:23726 | HPR-P25-051J | BLOCKED_SPECIFICATION | Party eligibility and Facility ownership participation
+~~~~~~~~
+
+<a id="hapi-583"></a>
+## HAPI-583 — Global admission, fences and common database time
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HPR-P25-051K
+
+Priority: P0
+
+Implementation Status: PARTIAL
+
+Planning Status: BLOCKED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: HAPI-582
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Global admission/fences and common time; trusted coordinator with owner contracts, Platform technical mechanics
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityAdministrationCommandController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityOidcAuthorizationController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/AuthenticateDirectUserUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/EvaluatePermissionUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/IdentityAdministrationQueryUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationAssertionPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/CustodyTransferTicketActorReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/DirectAuthenticationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/LocalAuthenticationOutcomeApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/MaintenanceWorkOrderActorReferenceQueryService.java`
+- `src/test/java/dz/sh/hidra/modules/identity/AuthenticationArchitectureAndSecretGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+Finish paired permissions, Party/Facility participation, common transaction/time fences, CAS publication and adversarial qualification. Prove organization-to-station monitoring isolation. The exact bounded remaining delivery is: Global admission/fences and common time; trusted coordinator with owner contracts, Platform technical mechanics.
+
+### 4. Functional Requirements
+
+All participating fences precede one common DB s; conservative common u covers every owner/future boundary. Compatible writer ordering, one physical RC backend/XID and fences held through commit. Resolve F's sampling position explicitly.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/in/AuthenticateDirectUserUseCase.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/in/EvaluatePermissionUseCase.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/in/IdentityAdministrationQueryUseCase.java`.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationAssertionPort.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`.
+- Application services: `src/main/java/dz/sh/hidra/modules/identity/application/service/CustodyTransferTicketActorReferenceQueryService.java`, `src/main/java/dz/sh/hidra/modules/identity/application/service/DirectAuthenticationApplicationService.java`, `src/main/java/dz/sh/hidra/modules/identity/application/service/LocalAuthenticationOutcomeApplicationService.java`, `src/main/java/dz/sh/hidra/modules/identity/application/service/MaintenanceWorkOrderActorReferenceQueryService.java`.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY:** DISCOVERY_REQUIRED for implementation; no executable source allowlist inferred from this historical or integration scope.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityAdministrationCommandController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityOidcAuthorizationController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/AuthenticateDirectUserUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/EvaluatePermissionUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/IdentityAdministrationQueryUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationAssertionPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/CustodyTransferTicketActorReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/DirectAuthenticationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/LocalAuthenticationOutcomeApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/MaintenanceWorkOrderActorReferenceQueryService.java`
+- `src/test/java/dz/sh/hidra/modules/identity/AuthenticationArchitectureAndSecretGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java`
+
+**DELETE:** none.
+
+First recover this bounded objective's exact acceptance/replacement from the pinned references, inspect only its current owner seams and decide whether a source change is still needed. If fulfilled, record evidence and status without rewriting working code. If a genuine successor is necessary, absorb it in its existing unfinished owner package or propose PENDING_BASELINE_APPROVAL.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/modules/identity/AuthenticationArchitectureAndSecretGuardrailTest.java` — exact-head oracle suite 8 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java` — exact-head oracle suite 13 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- All participating fences precede one common DB s; conservative common u covers every owner/future boundary. Compatible writer ordering, one physical RC backend/XID and fences held through commit. Resolve F's sampling position explicitly.
+- Prove the real owner/API/persistence path and negative cases; record exact source, actual executed and skipped cases and accepted contract artifact.
+- Required transactions roll back fully; historical exact reads remain reproducible after source revision.
+- Missing policy, unregistered file placement or unavailable authority is explicitly blocked rather than fabricated.
+- Applicable Full/Fast/Docs acceptance succeeds on the implementation SHA; software acceptance remains separate from SITE commissioning.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: HAPI-582. A dependency edge does not select implementation. Resolve only the task-specific exact path/policy/source contract gaps described here before code; real deployment data is not a software-contract blocker.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. For implementation, deliver only the admitted CREATE/MODIFY set, public API evidence where required, fresh-schema proof where applicable and preserved historical behavior.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [doc/model-remediation/RECONCILIATION.md:23149](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L23149)
+- [doc/model-remediation/RECONCILIATION.md:23727](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L23727)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:1035](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L1035)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:1499](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L1499)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+doc/roadmap/ULTIMATE_ROADMAP.md:1035 | HPR-P25-051K | BLOCKED_SPECIFICATION | Global admission, fences and common database time
+doc/roadmap/ULTIMATE_ROADMAP.md:1499 | HPR-P25-051K | Global admission/fences and common time; trusted coordinator with owner contracts, Platform technical mechanics | G–J accepted; source-complete native/JPA/bulk/trigger relation/row DAG; exact integration scope. | All participating fences precede one common DB s; conservative common u covers every owner/future boundary. Compatible writer ordering, one physical RC backend/XID and fences held through commit. Resolve F's sampling position explicitly.
+doc/model-remediation/RECONCILIATION.md:23149 | HPR-P25-051K | Global admission/fences and common time; trusted coordinator with owner contracts, Platform technical mechanics | G–J accepted; source-complete native/JPA/bulk/trigger relation/row DAG; exact integration scope. | All participating fences precede one common DB s; conservative common u covers every owner/future boundary. Compatible writer ordering, one physical RC backend/XID and fences held through commit. Resolve F's sampling position explicitly.
+doc/model-remediation/RECONCILIATION.md:23727 | HPR-P25-051K | BLOCKED_SPECIFICATION | Global admission, fences and common database time
+~~~~~~~~
+
+<a id="hapi-584"></a>
+## HAPI-584 — Protected internal Topology head and operation boundary
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HPR-P25-051L
+
+Priority: P0
+
+Implementation Status: PARTIAL
+
+Planning Status: BLOCKED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: HAPI-583
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Protected internal Topology operation boundary; Topology
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityAdministrationCommandController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityOidcAuthorizationController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyCurrentActorContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyOperationAuthenticationContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyScopedAccessContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/AuthenticateDirectUserUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/EvaluatePermissionUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/IdentityAdministrationQueryUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationAssertionPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/CustodyTransferTicketActorReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/DirectAuthenticationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/LocalAuthenticationOutcomeApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/MaintenanceWorkOrderActorReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyCurrentActorQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyOperationAuthenticationQueryAdapter.java`
+- `src/test/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessQueryServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedAuthorizationEvidencePostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedOperationIdentityParticipantPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedTransactionLifecyclePostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipantTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyCurrentActorQueryAdapterTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+Finish paired permissions, Party/Facility participation, common transaction/time fences, CAS publication and adversarial qualification. Prove organization-to-station monitoring isolation. The exact bounded remaining delivery is: Protected internal Topology operation boundary; Topology.
+
+### 4. Functional Requirements
+
+Atomic provisional operation plus authoritative head/epoch/CAS, protected current/history access and exactly one final database guard s<=t<u with required current head/owner predicates. No SQL after guard; result after observed physical commit; uncertain acknowledgement remains INDETERMINATE without automatic retry.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/in/AuthenticateDirectUserUseCase.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/in/EvaluatePermissionUseCase.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/in/IdentityAdministrationQueryUseCase.java`.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationAssertionPort.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`.
+- Application services: `src/main/java/dz/sh/hidra/modules/identity/application/service/CustodyTransferTicketActorReferenceQueryService.java`, `src/main/java/dz/sh/hidra/modules/identity/application/service/DirectAuthenticationApplicationService.java`, `src/main/java/dz/sh/hidra/modules/identity/application/service/LocalAuthenticationOutcomeApplicationService.java`, `src/main/java/dz/sh/hidra/modules/identity/application/service/MaintenanceWorkOrderActorReferenceQueryService.java`.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipant.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyCurrentActorQueryAdapter.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyOperationAuthenticationQueryAdapter.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY:** DISCOVERY_REQUIRED for implementation; no executable source allowlist inferred from this historical or integration scope.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityAdministrationCommandController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityOidcAuthorizationController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyCurrentActorContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyOperationAuthenticationContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyScopedAccessContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/AuthenticateDirectUserUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/EvaluatePermissionUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/IdentityAdministrationQueryUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationAssertionPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/CustodyTransferTicketActorReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/DirectAuthenticationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/LocalAuthenticationOutcomeApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/MaintenanceWorkOrderActorReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyCurrentActorQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyOperationAuthenticationQueryAdapter.java`
+- `src/test/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessQueryServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedAuthorizationEvidencePostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedOperationIdentityParticipantPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedTransactionLifecyclePostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipantTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyCurrentActorQueryAdapterTest.java`
+
+**DELETE:** none.
+
+First recover this bounded objective's exact acceptance/replacement from the pinned references, inspect only its current owner seams and decide whether a source change is still needed. If fulfilled, record evidence and status without rewriting working code. If a genuine successor is necessary, absorb it in its existing unfinished owner package or propose PENDING_BASELINE_APPROVAL.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessPostgresIntegrationTest.java` — exact-head oracle suite 11 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessQueryServiceTest.java` — exact-head oracle suite 34 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedAuthorizationEvidencePostgresIntegrationTest.java` — exact-head oracle suite 12 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedOperationIdentityParticipantPostgresIntegrationTest.java` — exact-head oracle suite 12 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedTransactionLifecyclePostgresIntegrationTest.java` — exact-head oracle suite 25 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java` — exact-head oracle suite 8 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipantTest.java` — exact-head oracle suite 8 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyCurrentActorQueryAdapterTest.java` — exact-head oracle suite 44 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Atomic provisional operation plus authoritative head/epoch/CAS, protected current/history access and exactly one final database guard s<=t<u with required current head/owner predicates. No SQL after guard; result after observed physical commit; uncertain acknowledgement remains INDETERMINATE without automatic retry.
+- Prove the real owner/API/persistence path and negative cases; record exact source, actual executed and skipped cases and accepted contract artifact.
+- Required transactions roll back fully; historical exact reads remain reproducible after source revision.
+- Missing policy, unregistered file placement or unavailable authority is explicitly blocked rather than fabricated.
+- Applicable Full/Fast/Docs acceptance succeeds on the implementation SHA; software acceptance remains separate from SITE commissioning.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: HAPI-583. A dependency edge does not select implementation. Resolve only the task-specific exact path/policy/source contract gaps described here before code; real deployment data is not a software-contract blocker.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. For implementation, deliver only the admitted CREATE/MODIFY set, public API evidence where required, fresh-schema proof where applicable and preserved historical behavior.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [doc/model-remediation/RECONCILIATION.md:23150](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L23150)
+- [doc/model-remediation/RECONCILIATION.md:23728](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L23728)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:1036](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L1036)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:1500](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L1500)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+doc/roadmap/ULTIMATE_ROADMAP.md:1036 | HPR-P25-051L | BLOCKED_SPECIFICATION | Protected internal Topology head and operation boundary
+doc/roadmap/ULTIMATE_ROADMAP.md:1500 | HPR-P25-051L | Protected internal Topology operation boundary; Topology | K accepted; exact038 head/epoch/predecessor schema and owner contract registered. | Atomic provisional operation plus authoritative head/epoch/CAS, protected current/history access and exactly one final database guard s<=t<u with required current head/owner predicates. No SQL after guard; result after observed physical commit; uncertain acknowledgement remains INDETERMINATE without automatic retry.
+doc/model-remediation/RECONCILIATION.md:23150 | HPR-P25-051L | Protected internal Topology operation boundary; Topology | K accepted; exact038 head/epoch/predecessor schema and owner contract registered. | Atomic provisional operation plus authoritative head/epoch/CAS, protected current/history access and exactly one final database guard s<=t<u with required current head/owner predicates. No SQL after guard; result after observed physical commit; uncertain acknowledgement remains INDETERMINATE without automatic retry.
+doc/model-remediation/RECONCILIATION.md:23728 | HPR-P25-051L | BLOCKED_SPECIFICATION | Protected internal Topology head and operation boundary
+~~~~~~~~
+
+<a id="hapi-585"></a>
+## HAPI-585 — Integrated adversarial, concurrency and latency qualification
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: HPR-P25-051M
+
+Priority: P0
+
+Implementation Status: PARTIAL
+
+Planning Status: BLOCKED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: HAPI-584
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Integrated adversarial/concurrency/latency qualification and parent closure; independent verification
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityAdministrationCommandController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityOidcAuthorizationController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/AuthenticateDirectUserUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/EvaluatePermissionUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/IdentityAdministrationQueryUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationAssertionPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/CustodyTransferTicketActorReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/DirectAuthenticationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/LocalAuthenticationOutcomeApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/MaintenanceWorkOrderActorReferenceQueryService.java`
+- `src/test/java/dz/sh/hidra/modules/identity/AuthenticationArchitectureAndSecretGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+Finish paired permissions, Party/Facility participation, common transaction/time fences, CAS publication and adversarial qualification. Prove organization-to-station monitoring isolation. The exact bounded remaining delivery is: Integrated adversarial/concurrency/latency qualification and parent closure; independent verification.
+
+### 4. Functional Requirements
+
+Real-owner positive/negative/race/expiry/rollback/CAS/transfer/two-company tests, exact-SHA full/fast/docs and zero-skip partition+oracle proof, contention/latency criteria and formal reconciliation. Close051 only when every supported B1/B2/B3/038 obligation is evidenced.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/in/AuthenticateDirectUserUseCase.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/in/EvaluatePermissionUseCase.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/in/IdentityAdministrationQueryUseCase.java`.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationAssertionPort.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`.
+- Application services: `src/main/java/dz/sh/hidra/modules/identity/application/service/CustodyTransferTicketActorReferenceQueryService.java`, `src/main/java/dz/sh/hidra/modules/identity/application/service/DirectAuthenticationApplicationService.java`, `src/main/java/dz/sh/hidra/modules/identity/application/service/LocalAuthenticationOutcomeApplicationService.java`, `src/main/java/dz/sh/hidra/modules/identity/application/service/MaintenanceWorkOrderActorReferenceQueryService.java`.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE — PROPOSED:**
+
+- `src/test/java/dz/sh/hidra/modules/identity/qualification/ProtectedPublicationAdversarialQualificationTest.java` — actual owner/filter/database qualification of this task's exit matrix.
+
+**MODIFY:** `.github/ci-test-inventory.json` — actual class/case/hash admission; `doc/roadmap/ULTIMATE_TASKS.md` — exact-source evidence and limitations.
+
+**DELETE:** none.
+
+**PRESERVE / REUSE:**
+
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityAdministrationCommandController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityOidcAuthorizationController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/AuthenticateDirectUserUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/EvaluatePermissionUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/IdentityAdministrationQueryUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationAssertionPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/CustodyTransferTicketActorReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/DirectAuthenticationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/LocalAuthenticationOutcomeApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/MaintenanceWorkOrderActorReferenceQueryService.java`
+- `src/test/java/dz/sh/hidra/modules/identity/AuthenticationArchitectureAndSecretGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java`
+
+**DISCOVERY_REQUIRED:** fixture/support filenames and exact test partition; use synthetic owners and real transactions, not fabricated prior results.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/modules/identity/AuthenticationArchitectureAndSecretGuardrailTest.java` — exact-head oracle suite 8 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java` — exact-head oracle suite 13 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Real-owner positive/negative/race/expiry/rollback/CAS/transfer/two-company tests, exact-SHA full/fast/docs and zero-skip partition+oracle proof, contention/latency criteria and formal reconciliation. Close051 only when every supported B1/B2/B3/038 obligation is evidenced.
+- Prove the real owner/API/persistence path and negative cases; record exact source, actual executed and skipped cases and accepted contract artifact.
+- Required transactions roll back fully; historical exact reads remain reproducible after source revision.
+- Missing policy, unregistered file placement or unavailable authority is explicitly blocked rather than fabricated.
+- Applicable Full/Fast/Docs acceptance succeeds on the implementation SHA; software acceptance remains separate from SITE commissioning.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: HAPI-584. A dependency edge does not select implementation. Resolve only the task-specific exact path/policy/source contract gaps described here before code; real deployment data is not a software-contract blocker.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. For implementation, deliver only the admitted CREATE/MODIFY set, public API evidence where required, fresh-schema proof where applicable and preserved historical behavior.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [doc/model-remediation/RECONCILIATION.md:23151](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L23151)
+- [doc/model-remediation/RECONCILIATION.md:23729](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L23729)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:1037](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L1037)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:1501](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L1501)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+doc/roadmap/ULTIMATE_ROADMAP.md:1037 | HPR-P25-051M | BLOCKED_SPECIFICATION | Integrated adversarial, concurrency and latency qualification
+doc/roadmap/ULTIMATE_ROADMAP.md:1501 | HPR-P25-051M | Integrated adversarial/concurrency/latency qualification and parent closure; independent verification | All G–L accepted and complete residual051 obligation matrix; exact current source evidence. | Real-owner positive/negative/race/expiry/rollback/CAS/transfer/two-company tests, exact-SHA full/fast/docs and zero-skip partition+oracle proof, contention/latency criteria and formal reconciliation. Close051 only when every supported B1/B2/B3/038 obligation is evidenced.
+doc/model-remediation/RECONCILIATION.md:23151 | HPR-P25-051M | Integrated adversarial/concurrency/latency qualification and parent closure; independent verification | All G–L accepted and complete residual051 obligation matrix; exact current source evidence. | Real-owner positive/negative/race/expiry/rollback/CAS/transfer/two-company tests, exact-SHA full/fast/docs and zero-skip partition+oracle proof, contention/latency criteria and formal reconciliation. Close051 only when every supported B1/B2/B3/038 obligation is evidenced.
+doc/model-remediation/RECONCILIATION.md:23729 | HPR-P25-051M | BLOCKED_SPECIFICATION | Integrated adversarial, concurrency and latency qualification
+~~~~~~~~
+
+<a id="hapi-670"></a>
+## HAPI-670 — add permission domain model and policy
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: ID-004
+
+Priority: P2
+
+Implementation Status: IMPLEMENTED
+
+Planning Status: SUPERSEDED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Permission model and code policy
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/Permission.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+This old execution plan is inactive; preserve its historical outcome and current replacement. Do not repeat foundation or remedial work solely to satisfy stale filenames.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/identity/domain/model/Permission.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/Permission.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+No new API is part of this bounded documentation/historical outcome. Existing owner operations are listed in the runtime contract inventory below; no proposed endpoint is relabeled as implemented.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. A dependency edge does not select implementation. Resolve only the task-specific exact path/policy/source contract gaps described here before code; real deployment data is not a software-contract blocker.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/identity.md:165](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/identity.md#L165)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical foundation execution plan is absorbed by the current implementation, semantic-remediation and canonical regression gates; no duplicate foundation rebuild is authorized. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/identity.md:165 | ID-004 | feat(identity): add permission domain model and policy | Permission model and code policy
+~~~~~~~~
+
+<a id="hapi-671"></a>
+## HAPI-671 — add role domain model
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: ID-005
+
+Priority: P2
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: SUPERSEDED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Role aggregate and permission assignment
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+This old execution plan is inactive; preserve its historical outcome and current replacement. Do not repeat foundation or remedial work solely to satisfy stale filenames.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+No new API is part of this bounded documentation/historical outcome. Existing owner operations are listed in the runtime contract inventory below; no proposed endpoint is relabeled as implemented.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. A dependency edge does not select implementation. Resolve only the task-specific exact path/policy/source contract gaps described here before code; real deployment data is not a software-contract blocker.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/identity.md:166](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/identity.md#L166)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical foundation execution plan is absorbed by the current implementation, semantic-remediation and canonical regression gates; no duplicate foundation rebuild is authorized. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/identity.md:166 | ID-005 | feat(identity): add role domain model | Role aggregate and permission assignment
+~~~~~~~~
+
+<a id="hapi-672"></a>
+## HAPI-672 — add user domain model
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: ID-006
+
+Priority: P2
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: SUPERSEDED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+User aggregate and role assignment
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+This old execution plan is inactive; preserve its historical outcome and current replacement. Do not repeat foundation or remedial work solely to satisfy stale filenames.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+No new API is part of this bounded documentation/historical outcome. Existing owner operations are listed in the runtime contract inventory below; no proposed endpoint is relabeled as implemented.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. A dependency edge does not select implementation. Resolve only the task-specific exact path/policy/source contract gaps described here before code; real deployment data is not a software-contract blocker.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/identity.md:167](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/identity.md#L167)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical foundation execution plan is absorbed by the current implementation, semantic-remediation and canonical regression gates; no duplicate foundation rebuild is authorized. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/identity.md:167 | ID-006 | feat(identity): add user domain model | User aggregate and role assignment
+~~~~~~~~
+
+<a id="hapi-674"></a>
+## HAPI-674 — add identity domain events
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: ID-008
+
+Priority: P2
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: SUPERSEDED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+User/role/permission events
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+This old execution plan is inactive; preserve its historical outcome and current replacement. Do not repeat foundation or remedial work solely to satisfy stale filenames.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Decide protected actions from current owner-controlled evidence, scoped grants and deterministic revocation fences.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+No new API is part of this bounded documentation/historical outcome. Existing owner operations are listed in the runtime contract inventory below; no proposed endpoint is relabeled as implemented.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. A dependency edge does not select implementation. Resolve only the task-specific exact path/policy/source contract gaps described here before code; real deployment data is not a software-contract blocker.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/identity.md:169](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/identity.md#L169)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical foundation execution plan is absorbed by the current implementation, semantic-remediation and canonical regression gates; no duplicate foundation rebuild is authorized. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/identity.md:169 | ID-008 | feat(identity): add identity domain events | User/role/permission events
+~~~~~~~~
+
+<a id="hapi-689"></a>
+## HAPI-689 — Qualify organization-scoped station monitoring
+
+Phase: HPS-002 — Authorization and Access Control
+
+Legacy IDs: ID-GAP-002
+
+Priority: P0
+
+Implementation Status: PARTIAL
+
+Planning Status: BLOCKED
+
+Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Prove station monitoring, history, counts, exports and subscriptions enforce current company and organizational responsibility; absorb compatible implementation into existing owner-fence and telemetry tasks.
+
+### 2. Existing Implementation
+
+Route grants, scoped exports, generation fences and bounded Identity-private protected readers exist. Complete multi-owner publication authorization is partial. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityAdministrationCommandController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityOidcAuthorizationController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/AuthenticateDirectUserUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/EvaluatePermissionUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/IdentityAdministrationQueryUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationAssertionPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/CustodyTransferTicketActorReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/DirectAuthenticationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/LocalAuthenticationOutcomeApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/MaintenanceWorkOrderActorReferenceQueryService.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+Finish paired permissions, Party/Facility participation, common transaction/time fences, CAS publication and adversarial qualification. Prove organization-to-station monitoring isolation. The exact bounded remaining delivery is: Prove station monitoring, history, counts, exports and subscriptions enforce current company and organizational responsibility; absorb compatible implementation into existing owner-fence and telemetry tasks..
+
+### 4. Functional Requirements
+
+Resolve station company/unit membership from current owner evidence; current assignments, explicit hierarchy/delegation policy and revocation govern lists, direct IDs, counts, histories, exports and subscriptions. Missing membership evidence denies; facility grant alone does not establish organizational membership.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `identity`; primary phase owns this obligation. Authentication evidence is a prerequisite; existence, counts, exports and historical reads require current authority. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/in/AuthenticateDirectUserUseCase.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/in/EvaluatePermissionUseCase.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/in/IdentityAdministrationQueryUseCase.java`.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationAssertionPort.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`, `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`.
+- Application services: `src/main/java/dz/sh/hidra/modules/identity/application/service/CustodyTransferTicketActorReferenceQueryService.java`, `src/main/java/dz/sh/hidra/modules/identity/application/service/DirectAuthenticationApplicationService.java`, `src/main/java/dz/sh/hidra/modules/identity/application/service/LocalAuthenticationOutcomeApplicationService.java`, `src/main/java/dz/sh/hidra/modules/identity/application/service/MaintenanceWorkOrderActorReferenceQueryService.java`.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE:** DISCOVERY_REQUIRED — first resolve the bounded policy and inspect existing primitives; no invented migration or production class filename.
+
+**MODIFY candidates — existing verified owner seams:**
+
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityAdministrationCommandController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityOidcAuthorizationController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/AuthenticateDirectUserUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/EvaluatePermissionUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/IdentityAdministrationQueryUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationAssertionPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/ClaimNameCatalogPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/CustodyTransferTicketActorReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/DirectAuthenticationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/LocalAuthenticationOutcomeApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/MaintenanceWorkOrderActorReferenceQueryService.java`
+
+**DELETE:** none.
+
+**PRESERVE / REUSE:** current completed authentication/responsibility/source behavior and historical records.
+
+Register an exact small implementation package after the explicit decisions and test matrix below; do not revive the old module scaffold.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Resolve station company/unit membership from current owner evidence; current assignments, explicit hierarchy/delegation policy and revocation govern lists, direct IDs, counts, histories, exports and subscriptions. Missing membership evidence denies; facility grant alone does not establish organizational membership.
+- Prove the real owner/API/persistence path and negative cases; record exact source, actual executed and skipped cases and accepted contract artifact.
+- Required transactions roll back fully; historical exact reads remain reproducible after source revision.
+- Missing policy, unregistered file placement or unavailable authority is explicitly blocked rather than fabricated.
+- Applicable Full/Fast/Docs acceptance succeeds on the implementation SHA; software acceptance remains separate from SITE commissioning.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. A dependency edge does not select implementation. Resolve only the task-specific exact path/policy/source contract gaps described here before code; real deployment data is not a software-contract blocker.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. For implementation, deliver only the admitted CREATE/MODIFY set, public API evidence where required, fresh-schema proof where applicable and preserved historical behavior.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- The exact identity is retained in the pinned full source records; a self-contained original task definition is NOT ESTABLISHED.
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: New bounded verification/correction obligation admitted by initial baseline authorization; preserve predecessor behavior. Exact owner policy/path admission remains explicit. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+<!-- task-register:payload:end -->

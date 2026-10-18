@@ -1,0 +1,9685 @@
+# HPS-004 — Physical Network Topology: task definitions
+
+## Status
+
+CURRENT — owner-authorized task-register split, 2026-10-18. Source `2148b270a863cee5f0b42d458508cd9327567591`; all task definitions and evidence retained without edits. TARGET/DEFERRED and unknown acceptance stay explicit.
+
+[Task index and execution rules](ULTIMATE_TASKS.md) · [Phase baseline](ULTIMATE_PHASES.md)
+
+<!-- task-register:payload:start -->
+# HPS-004 — Physical Network Topology
+
+<a id="hapi-048"></a>
+## HAPI-048 — inventory deprecated and transitional files
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: COR2-002
+
+Priority: P1
+
+Implementation Status: IMPLEMENTED
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Create the verified deletion inventory before code changes
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `README.md`
+- `docs/roadmap/identity.md`
+- `docs/roadmap/kernel.md`
+- `docs/roadmap/organization.md`
+- `docs/roadmap/platform.md`
+- `docs/roadmap/topology.md`
+- `src/main/java/dz/sh/hidra/modules/organization/domain/model/OrganizationUnit.java`
+- `src/main/java/dz/sh/hidra/modules/organization/domain/model/OrganizationUnitType.java`
+- `src/main/java/dz/sh/hidra/modules/organization/domain/value/OperationalScopeType.java`
+- `src/main/java/dz/sh/hidra/modules/organization/domain/value/ReportingLineType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/mapper/TopologyRestMapper.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Equipment.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Facility.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Pipeline.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyConnection.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/NodeType.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/organization/domain/model/OrganizationUnit.java`, `src/main/java/dz/sh/hidra/modules/organization/domain/model/OrganizationUnitType.java`, `src/main/java/dz/sh/hidra/modules/organization/domain/value/OperationalScopeType.java`, `src/main/java/dz/sh/hidra/modules/organization/domain/value/ReportingLineType.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `README.md`
+- `docs/roadmap/identity.md`
+- `docs/roadmap/kernel.md`
+- `docs/roadmap/organization.md`
+- `docs/roadmap/platform.md`
+- `docs/roadmap/topology.md`
+- `src/main/java/dz/sh/hidra/modules/organization/domain/model/OrganizationUnit.java`
+- `src/main/java/dz/sh/hidra/modules/organization/domain/model/OrganizationUnitType.java`
+- `src/main/java/dz/sh/hidra/modules/organization/domain/value/OperationalScopeType.java`
+- `src/main/java/dz/sh/hidra/modules/organization/domain/value/ReportingLineType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/mapper/TopologyRestMapper.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Equipment.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Facility.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Pipeline.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyConnection.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/NodeType.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+## COR2-002 — Inventory Deprecated and Transitional Files
+
+### Commit message
+
+```text
+chore(repo): inventory deprecated and transitional files
+```
+
+### Description
+
+Create a verified cleanup inventory before deleting code.
+
+Search the full repository for deprecated, transitional, bridge, temporary, and compatibility files or methods.
+
+### Files to create or update
+
+| Action | File | Purpose |
+|---|---|---|
+| Update | `docs/roadmap/correction_02.md` | Add actual inventory result and update task status |
+
+### Required search commands
+
+```bash
+grep -R "@Deprecated" src/main/java src/test/java || true
+grep -R "SuppressWarnings(\"deprecated\")" src/main/java src/test/java || true
+grep -R "transitional\|legacy\|bridge\|compatibility\|temporary\|migration adapter" src/main/java src/test/java docs README.md || true
+find docs/roadmap -type f | sort
+```
+
+### Verified search inventory
+
+Search method used for this commit:
+
+```text
+GitHub repository search for: @Deprecated
+GitHub repository search for: SuppressWarnings("deprecated")
+GitHub repository search for: compatibility
+GitHub repository search for: legacy
+GitHub repository search for: transitional
+GitHub repository search for: temporary
+GitHub repository search for: docs/roadmap
+Representative source files fetched to verify @Deprecated annotations and compatibility intent.
+```
+
+#### Deprecated production compatibility files
+
+| # | File | Category | Evidence | Status | Follow-up task |
+|---|---|---|---|---|---|
+| 1 | `src/main/java/dz/sh/hidra/modules/topology/domain/value/ProductType.java` | Deprecated catalog compatibility wrapper | Header and Javadoc say deprecated compatibility constant class; annotated `@Deprecated(forRemoval = false)`; exposes enum-style constants, `valueOf`, `values`, and `name`. | DELETE | COR2-003 |
+| 2 | `src/main/java/dz/sh/hidra/modules/organization/domain/value/OrganizationUnitType.java` | Deprecated catalog compatibility wrapper | Header and Javadoc say deprecated compatibility wrapper; annotated `@Deprecated(forRemoval = false)`; exposes constants, `valueOf`, `values`, `toReference`, and `name`. | DELETE | COR2-004 |
+| 3 | `src/main/java/dz/sh/hidra/modules/topology/domain/value/FacilityType.java` | Deprecated catalog compatibility wrapper | Header and Javadoc say deprecated compatibility constant class for facility type catalog; annotated `@Deprecated(forRemoval = false)`; exposes constants, `valueOf`, `values`, and `name`. | REPLACE_FIRST_THEN_DELETE | COR2-007 then catalog cleanup task |
+| 4 | `src/main/java/dz/sh/hidra/modules/topology/domain/value/NodeType.java` | Deprecated catalog compatibility wrapper | Header says deprecated compatibility constant class for node type catalog; annotated `@Deprecated(forRemoval = false)`; exposes constants, `valueOf`, `values`, and `name`. | REPLACE_FIRST_THEN_DELETE | COR2-007 then catalog cleanup task |
+| 5 | `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionType.java` | Deprecated catalog compatibility wrapper | Header says deprecated compatibility constant class for connection type catalog; annotated `@Deprecated(forRemoval = false)`; exposes constants, `valueOf`, `values`, and `name`. | REPLACE_FIRST_THEN_DELETE | COR2-007 then catalog cleanup task |
+| 6 | `src/main/java/dz/sh/hidra/modules/topology/domain/value/EquipmentType.java` | Deprecated catalog compatibility wrapper | Header says deprecated compatibility constant class for equipment type catalog; annotated `@Deprecated(forRemoval = false)`; exposes constants, `valueOf`, `values`, and `name`. | REPLACE_FIRST_THEN_DELETE | COR2-007 then catalog cleanup task |
+| 7 | `src/main/java/dz/sh/hidra/modules/topology/domain/value/PipelineAppurtenanceType.java` | Deprecated catalog compatibility wrapper | Header says deprecated compatibility constant class for pipeline appurtenance type catalog; annotated `@Deprecated(forRemoval = false)`; exposes constants, `valueOf`, `values`, `name`, and `isValve`. | REPLACE_FIRST_THEN_DELETE | COR2-007 then catalog cleanup task |
+| 8 | `src/main/java/dz/sh/hidra/modules/topology/domain/value/ValveType.java` | Deprecated catalog compatibility wrapper | Header says deprecated compatibility constant class for valve type catalog; annotated `@Deprecated(forRemoval = false)`; exposes constants, `valueOf`, `values`, and `name`. | REPLACE_FIRST_THEN_DELETE | COR2-007 then catalog cleanup task |
+| 9 | `src/main/java/dz/sh/hidra/modules/organization/domain/value/ReportingLineType.java` | Deprecated compatibility constant class | Header says deprecated compatibility constant class for reporting line types; annotated `@Deprecated(forRemoval = false)`; exposes constants, `valueOf`, `values`, `name`, and `allowsMultipleActiveLines`. | REPLACE_FIRST_THEN_DELETE | COR2-007 then organization follow-up |
+| 10 | `src/main/java/dz/sh/hidra/modules/organization/domain/value/OperationalScopeType.java` | Deprecated compatibility constant class | Header says deprecated compatibility constant class for operational scope types; annotated `@Deprecated(forRemoval = false)`; exposes constants, `valueOf`, `values`, `name`, and `isStationScope`. | REPLACE_FIRST_THEN_DELETE | COR2-007 then organization follow-up |
+
+#### Deprecated or bridge usages discovered by search
+
+| # | File | Category | Inventory decision | Follow-up task |
+|---|---|---|---|---|
+| 1 | `src/main/java/dz/sh/hidra/modules/topology/domain/model/Pipeline.java` | Active aggregate bridge overloads for `ProductType` | Remove deprecated overloads and keep `ProductTypeReference` only. | COR2-003 |
+| 2 | `src/main/java/dz/sh/hidra/modules/organization/domain/model/OrganizationUnit.java` | Active aggregate bridge overloads for `OrganizationUnitType` | Remove deprecated overloads and keep `OrganizationUnitTypeReference` only. | COR2-004 |
+| 3 | `src/main/java/dz/sh/hidra/modules/topology/domain/value/ProductTypeReference.java` | Reference object still has legacy bridge method(s) from deleted wrapper | Remove `from(ProductType)` and enum-like compatibility helpers. | COR2-003 |
+| 4 | `src/main/java/dz/sh/hidra/modules/organization/domain/value/OrganizationUnitTypeReference.java` | Reference object still has legacy/label behavior | Keep `id` + `code`; remove hardcoded labels once catalog response exists. | COR2-004 / COR2-006 |
+| 5 | `src/main/java/dz/sh/hidra/modules/topology/domain/model/Facility.java` | Active model references deprecated facility type compatibility path | Replace with catalog reference object. | COR2-007 follow-up |
+| 6 | `src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyNode.java` | Active model references deprecated node type compatibility path | Replace with catalog reference object. | COR2-007 follow-up |
+| 7 | `src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyConnection.java` | Active model references deprecated connection type compatibility path | Replace with catalog reference object. | COR2-007 follow-up |
+| 8 | `src/main/java/dz/sh/hidra/modules/topology/domain/model/Equipment.java` | Active model references deprecated equipment/valve type compatibility path | Replace with catalog reference object. | COR2-007 follow-up |
+| 9 | `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineAppurtenance.java` | Active model references deprecated appurtenance/valve compatibility path | Replace with catalog reference object. | COR2-007 follow-up |
+
+#### Transition and roadmap documents
+
+| # | File | Category | Status | Notes |
+|---|---|---|---|---|
+| 1 | `docs/roadmap/correction_01.md` | Transition/correction roadmap | KEEP_WITH_REASON | Historical correction plan; consolidate or archive during COR2-017, not delete during inventory. |
+| 2 | `docs/roadmap/correction_02.md` | Active correction roadmap | KEEP_WITH_REASON | Current executable roadmap. |
+| 3 | `docs/roadmap/topology_validation_checklist.md` | Validation checklist document | KEEP_WITH_REASON | Keep until topology validation is superseded by final architecture docs. |
+| 4 | `docs/roadmap/stabilization_01.md` | Stabilization roadmap | KEEP_WITH_REASON | Keep until stabilization scope is merged into architecture/developer docs. |
+| 5 | `docs/roadmap/kernel.md` | Module roadmap | KEEP_WITH_REASON | Active historical/module execution memory. |
+| 6 | `docs/roadmap/platform.md` | Module roadmap | KEEP_WITH_REASON | Active historical/module execution memory. |
+| 7 | `docs/roadmap/identity.md` | Module roadmap | KEEP_WITH_REASON | Active historical/module execution memory. |
+| 8 | `docs/roadmap/organization.md` | Module roadmap | KEEP_WITH_REASON | Active historical/module execution memory. |
+| 9 | `docs/roadmap/topology.md` | Module roadmap | KEEP_WITH_REASON | Active historical/module execution memory. |
+
+#### Clean categories
+
+| Search category | Result | Status |
+|---|---|---|
+| `SuppressWarnings("deprecated")` | No connector search results found. | Clean |
+| `migration adapter` | No connector search results found. | Clean |
+| `transitional` | Found in `docs/roadmap/correction_01.md`, `TopologyTypeCatalog`, `PipelineSystem`, and `TopologyRestMapper`; treat as follow-up context, not immediate deletion without compilation inspection. | REVIEW_IN_COR2-007 / COR2-013 |
+| `temporary` | Found in roadmap/package/migration/tooling contexts; no immediate production deletion without local compilation inspection. | REVIEW_WITH_CONTEXT |
+
+### Acceptance criteria
+
+- Every deprecated production file found by connector search is listed above.
+- Every deprecated method/bridge usage found in active aggregate/model code is listed above.
+- Every transition/roadmap document found by connector search is listed above.
+- Every item has one of these statuses:
+
+```text
+DELETE
+REPLACE_FIRST_THEN_DELETE
+KEEP_WITH_REASON
+REVIEW_WITH_CONTEXT
+```
+
+`REVIEW_WITH_CONTEXT` is used only for text-search hits where the term appears in a non-deprecated or ambiguous context and should not be deleted blindly.
+
+### Validation
+
+Required local validation command:
+
+```bash
+mvn -q -DskipTests compile
+```
+
+Result for this connector-executed commit:
+
+```text
+NOT_RUN_IN_SANDBOX
+Reason: repository was inspected through the GitHub connector; no local checkout or Maven execution environment was available in this session.
+```
+
+### Result
+
+```text
+Status: COMPLETED
+Files changed: docs/roadmap/correction_02.md
+Commit message: chore(repo): inventory deprecated and transitional files
+```
+
+---
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `816c243f0b7f56132297c0f95b3c9bd7061bad8a` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/fixs/correction_02.md:374](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_02.md#L374)
+- [docs/roadmap/fixs/correction_02.md:435](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_02.md#L435)
+- [docs/roadmap/fixs/correction_02.md:1441](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_02.md#L1441)
+- [docs/roadmap/fixs/correction_02_final_checklist.md:22](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_02_final_checklist.md#L22)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/fixs/correction_02.md:374 | COR2-002 | chore(repo): inventory deprecated and transitional files | Create the verified deletion inventory before code changes
+docs/roadmap/fixs/correction_02_final_checklist.md:22 | COR2-002 | 816c243f0b7f56132297c0f95b3c9bd7061bad8a | Completed | Added deprecated/transitional inventory to the roadmap.
+docs/roadmap/fixs/correction_02.md:1441 | COR2-002 | Completed | Deprecated/transitional inventory recorded in this file; Maven validation not run because execution used GitHub connector only
+~~~~~~~~
+
+<a id="hapi-049"></a>
+## HAPI-049 — remove product type compatibility wrapper
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: COR2-003
+
+Priority: P1
+
+Implementation Status: IMPLEMENTED
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Delete deprecated ProductType wrapper and legacy topology bridges
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `src/main/java/dz/sh/hidra/modules/topology/application/command/CreatePipelineSystemCommand.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Facility.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Pipeline.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/topology/domain/model/Facility.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/model/Pipeline.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `src/main/java/dz/sh/hidra/modules/topology/application/command/CreatePipelineSystemCommand.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Facility.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Pipeline.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+## COR2-003 — Remove Topology Product Type Compatibility Wrapper
+
+### Commit message
+
+```text
+refactor(topology): remove product type compatibility wrapper
+```
+
+### Description
+
+Remove deprecated product type compatibility code from topology.
+
+The old `ProductType` wrapper is a user-facing business classification and must not remain as a pseudo-enum compatibility layer.
+
+### Files to inspect
+
+| File | Expected action |
+|---|---|
+| `src/main/java/dz/sh/hidra/modules/topology/domain/value/ProductType.java` | Delete |
+| `src/main/java/dz/sh/hidra/modules/topology/domain/value/ProductTypeReference.java` | Remove legacy bridge methods if present |
+| `src/main/java/dz/sh/hidra/modules/topology/domain/model/Pipeline.java` | Remove overloads accepting `ProductType` |
+| `src/main/java/dz/sh/hidra/modules/topology/**` | Replace any remaining usage with `ProductTypeReference` |
+| `src/test/java/dz/sh/hidra/modules/topology/**` | Update tests to use `ProductTypeReference` |
+
+### Acceptance criteria
+
+- `ProductType.java` no longer exists.
+- No production code imports or references `ProductType`.
+- `Pipeline.create(...)` accepts `ProductTypeReference`, not `ProductType`.
+- `Pipeline.restore(...)` accepts `ProductTypeReference`, not `ProductType`.
+- `ProductTypeReference` does not expose enum-like `values()`, `valueOf()`, or `from(ProductType)` APIs.
+- Tests use explicit catalog reference fixtures.
+
+### Validation
+
+```bash
+! test -f src/main/java/dz/sh/hidra/modules/topology/domain/value/ProductType.java
+grep -R "ProductType" src/main/java src/test/java || true
+mvn -q -DskipTests compile
+mvn -q test -Dtest='*Topology*Test'
+```
+
+---
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `4f2613ae3f7a42ae0a6d81bd35a7c9fcfdadbaea` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/fixs/correction_02.md:375](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_02.md#L375)
+- [docs/roadmap/fixs/correction_02.md:572](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_02.md#L572)
+- [docs/roadmap/fixs/correction_02.md:1442](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_02.md#L1442)
+- [docs/roadmap/fixs/correction_02_final_checklist.md:23](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_02_final_checklist.md#L23)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/fixs/correction_02_final_checklist.md:23 | COR2-003 | PR #33 | Completed | Removed topology `ProductType` compatibility wrapper and active bridges.
+docs/roadmap/fixs/correction_02.md:375 | COR2-003 | refactor(topology): remove product type compatibility wrapper | Delete deprecated `ProductType` wrapper and legacy topology bridges
+docs/roadmap/fixs/correction_02.md:1442 | COR2-003 | Pending | Topology product type cleanup
+~~~~~~~~
+
+<a id="hapi-051"></a>
+## HAPI-051 — complete product type catalog model
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: COR2-005
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Ensure product types are catalog-backed and trilingual
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+## COR2-005 — Complete Product Type Catalog Model
+
+### Commit message
+
+```text
+feat(topology): complete product type catalog model
+```
+
+### Description
+
+Complete product type modeling as a multilingual catalog.
+
+Product type is a user-facing classification, so the UI/API must be able to display Arabic, French, and English names without hardcoded enum labels.
+
+### Target model
+
+```text
+ProductTypeCatalog or ProductTypeCatalogEntry
+ProductTypeReference
+ProductTypeCatalogRepository / ProductTypeCatalogPort, if persisted or externally loaded
+ProductTypeResponse, if exposed through REST
+```
+
+### Required catalog fields
+
+```text
+id
+code
+nameAr
+nameFr
+nameEn
+descriptionAr, optional
+descriptionFr, optional
+descriptionEn, optional
+status, if lifecycle-managed
+sortOrder, if displayed in UI
+createdAt / updatedAt, if persisted
+```
+
+### Acceptance criteria
+
+- Product type labels are not hardcoded in `ProductTypeReference`.
+- Product type API output exposes trilingual labels.
+- Pipeline creation/listing does not require the deleted compatibility wrapper.
+- Seeded product types preserve known business codes: `GAS`, `CRUDE_OIL`, `CONDENSATE`, `LPG`, `REFINED_PRODUCT`, `MULTIPHASE`, `UNKNOWN`.
+- The catalog supports future additions without Java source changes.
+
+### Validation
+
+```bash
+grep -R "enum ProductType\|class ProductType" src/main/java/dz/sh/hidra/modules/topology || true
+grep -R "nameAr\|nameFr\|nameEn" src/main/java/dz/sh/hidra/modules/topology src/main/resources/db/migration || true
+mvn -q -DskipTests compile
+mvn -q test -Dtest='*ProductType*Test,*Pipeline*Test'
+```
+
+---
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `74a3dc43b0a94d14cedc0eae80cea908968c55cb` — exact registered-message commit; surviving paths matched to current tree.
+- `1cb3616b870e414c3cfb77c17d03e3ae60cedd3b` — exact registered-message commit; surviving paths matched to current tree.
+- `d33ef752c943794e1af8eb471f8db3e6c01f2440` — exact registered-message commit; surviving paths matched to current tree.
+- `1cf67ef9417c35d2e9d2af4210424fa946cc97ab` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/fixs/correction_02.md:377](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_02.md#L377)
+- [docs/roadmap/fixs/correction_02.md:660](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_02.md#L660)
+- [docs/roadmap/fixs/correction_02.md:1444](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_02.md#L1444)
+- [docs/roadmap/fixs/correction_02_final_checklist.md:25](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_02_final_checklist.md#L25)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/fixs/correction_02.md:377 | COR2-005 | feat(topology): complete product type catalog model | Ensure product types are catalog-backed and trilingual
+docs/roadmap/fixs/correction_02_final_checklist.md:25 | COR2-005 | PR #35 | Completed | Added product type catalog DTO/API surface and trilingual response model.
+docs/roadmap/fixs/correction_02.md:1444 | COR2-005 | Pending | Product type catalog completion
+~~~~~~~~
+
+<a id="hapi-054"></a>
+## HAPI-054 — standardize pipeline multilingual labels
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: COR2-008
+
+Priority: P1
+
+Implementation Status: IMPLEMENTED
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Replace single-language pipeline API labels with trilingual fields
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/mapper/TopologyRestMapper.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Pipeline.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/mapper/TopologyPersistenceMapper.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/topology/domain/model/Pipeline.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineJpaEntity.java`, `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/mapper/TopologyPersistenceMapper.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/mapper/TopologyRestMapper.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Pipeline.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/mapper/TopologyPersistenceMapper.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+## COR2-008 — Standardize Pipeline Multilingual Labels
+
+### Commit message
+
+```text
+refactor(api): standardize pipeline multilingual labels
+```
+
+### Description
+
+Replace single-language pipeline labels in REST contracts and DTOs.
+
+Pipeline names and descriptions are human-readable business text and must follow the trilingual convention.
+
+### Files to inspect
+
+| File / Package | Expected work |
+|---|---|
+| `topology/api/rest/request/CreatePipelineRequest.java` | Replace `name` and `description` with trilingual fields |
+| `topology/api/rest/request/UpdatePipelineRequest.java`, if present | Apply same convention |
+| `topology/api/rest/response/PipelineResponse.java` | Expose trilingual fields or documented locale projection |
+| `topology/application/command` | Update command records |
+| `topology/application/dto` | Update DTO records |
+| `topology/api/rest/mapper` | Update mapping |
+| `topology/domain/model/Pipeline.java` | Align with trilingual value object if needed |
+| `topology/infrastructure/persistence` | Align columns if persistence stores labels |
+
+### Required API fields
+
+Preferred full trilingual contract:
+
+```text
+nameAr
+nameFr
+nameEn
+descriptionAr
+descriptionFr
+descriptionEn
+```
+
+Alternative accepted only if explicitly documented:
+
+```text
+name
+```
+
+may appear only in a locale-projected read model where:
+
+```text
+source fields remain trilingual
+projection language is determined by Accept-Language
+OpenAPI documents the projection clearly
+```
+
+### Acceptance criteria
+
+- No create/update request for pipeline accepts a single business `name` field.
+- No persistence entity stores only a single pipeline display name unless explicitly technical.
+- Swagger examples exist for Arabic, French, and English labels.
+- Tests validate mapping from request to command to domain.
+
+### Validation
+
+```bash
+grep -R "String name\|String description" src/main/java/dz/sh/hidra/modules/topology/api src/main/java/dz/sh/hidra/modules/topology/application || true
+grep -R "nameAr\|nameFr\|nameEn" src/main/java/dz/sh/hidra/modules/topology || true
+mvn -q -DskipTests compile
+mvn -q test -Dtest='*Pipeline*Test,*Topology*Mapper*Test'
+```
+
+---
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `e97a77cf76fced454f2200722e3174c8d1f6c53a` — exact registered-message commit; surviving paths matched to current tree.
+- `c7153a8fb4a30d15f0187a8b2d29694a5086ab59` — exact registered-message commit; surviving paths matched to current tree.
+- `f6796a70ad5c84b8c3bb0a89064e69277d57ac91` — exact registered-message commit; surviving paths matched to current tree.
+- `0b1995551bdfc301c7a68fc4d2b95591a3d8b566` — exact registered-message commit; surviving paths matched to current tree.
+- `664dee9cce573e9d3b3dd9a6fad2cb8533a75b2b` — exact registered-message commit; surviving paths matched to current tree.
+- `f44ec81ea5880911da0738f0838b866f0595517f` — exact registered-message commit; surviving paths matched to current tree.
+- `3b8582a123325cddc0669c5882c5fdf1b9648b7d` — exact registered-message commit; surviving paths matched to current tree.
+- `f06ae05a59f870d3c0527e58f09aa39bf912ce78` — exact registered-message commit; surviving paths matched to current tree.
+- `c344f9c080c06200009f75f749dfbf004e99a073` — exact registered-message commit; surviving paths matched to current tree.
+- `6deb3674c0175a706b9dafa55d4ac84bee8664d2` — exact registered-message commit; surviving paths matched to current tree.
+- `3d255312c78db5be0b11d528ae6ff4d702a1e47d` — exact registered-message commit; surviving paths matched to current tree.
+- `592e48c49deaaa9ca13441cda131431d3d68328d` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/fixs/correction_02.md:380](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_02.md#L380)
+- [docs/roadmap/fixs/correction_02.md:854](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_02.md#L854)
+- [docs/roadmap/fixs/correction_02.md:1447](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_02.md#L1447)
+- [docs/roadmap/fixs/correction_02_final_checklist.md:28](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_02_final_checklist.md#L28)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/fixs/correction_02_final_checklist.md:28 | COR2-008 | PR #38 | Completed | Standardized pipeline API/domain/persistence multilingual labels.
+docs/roadmap/fixs/correction_02.md:380 | COR2-008 | refactor(api): standardize pipeline multilingual labels | Replace single-language pipeline API labels with trilingual fields
+docs/roadmap/fixs/correction_02.md:1447 | COR2-008 | Pending | Pipeline multilingual labels
+~~~~~~~~
+
+<a id="hapi-066"></a>
+## HAPI-066 — realign topology roadmap with repository reality
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: COR-003
+
+Priority: P1
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Realign topology docs with actual TOP sequence.
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `docs/roadmap/topology.md`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. It is a documentation/review/preflight outcome; broader application functionality remains separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `docs/roadmap/topology.md`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+No new API is part of this bounded documentation/historical outcome. Existing owner operations are listed in the runtime contract inventory below; no proposed endpoint is relabeled as implemented.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `99f12a4d6585af5b32dddf32499d18f4d0b80033` — exact registered-message commit; surviving paths matched to current tree.
+- `14b77edbcc31aebf6ceee9f5fcf9b25c466e1e99` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/fixs/correction_01.md:97](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_01.md#L97)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent. Doc/preflight completion is not completion of the associated application workflow.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/fixs/correction_01.md:97 | COR-003 | docs(topology): realign topology roadmap with repository reality | Completed | Realign topology docs with actual TOP sequence.
+~~~~~~~~
+
+<a id="hapi-068"></a>
+## HAPI-068 — add topology type catalog tables
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: COR-005
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Add topology catalog and translation tables in V003.
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `d85c0b89bbd531b6d81918572f9fd563dab8c0d0` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/fixs/correction_01.md:99](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_01.md#L99)
+- [docs/roadmap/topology.md:105](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L105)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:105 | COR-005 | db(topology): add topology type catalog tables | Completed | Adds multilingual topology catalog and translation tables in V003.
+docs/roadmap/fixs/correction_01.md:99 | COR-005 | db(topology): add topology type catalog tables | Completed | Add topology catalog and translation tables in V003.
+~~~~~~~~
+
+<a id="hapi-069"></a>
+## HAPI-069 — add catalog domain model and references
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: COR-006
+
+Priority: P1
+
+Implementation Status: IMPLEMENTED
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Add topology catalog domain model and type references.
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionTypeReference.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionTypeReference.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionTypeReference.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `e92a89df283c7bdc8fc3d4d9c9db2647531c31fd` — exact registered-message commit; surviving paths matched to current tree.
+- `e816daed53e9399b1164720cb5bd942f7a60a249` — exact registered-message commit; surviving paths matched to current tree.
+- `284015f6293f90a67b3bbfc6678b0dc0ff37b9df` — exact registered-message commit; surviving paths matched to current tree.
+- `50085e7497b5c77ea24380a610d8cfabb4483189` — exact registered-message commit; surviving paths matched to current tree.
+- `405f6a58bab5f9ee743bdfb75a784981f306f25b` — exact registered-message commit; surviving paths matched to current tree.
+- `6bc68a24219c020aba7e1732545f1105d118fbe5` — exact registered-message commit; surviving paths matched to current tree.
+- `5403ab227f8fe64a53668e59a3abdaff5a388b1a` — exact registered-message commit; surviving paths matched to current tree.
+- `5bf669be7af5f4de1cccb1deb0ae6e7b36c6514a` — exact registered-message commit; surviving paths matched to current tree.
+- `59a745b39715d19c8f980429a806b29be9fee537` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/fixs/correction_01.md:100](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_01.md#L100)
+- [docs/roadmap/topology.md:106](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L106)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:106 | COR-006 | feat(topology): add catalog domain model and references | Completed | Adds catalog domain model and type reference value objects.
+docs/roadmap/fixs/correction_01.md:100 | COR-006 | feat(topology): add catalog domain model and references | Completed | Add topology catalog domain model and type references.
+~~~~~~~~
+
+<a id="hapi-070"></a>
+## HAPI-070 — add topology catalog application services
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: COR-007
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Add catalog DTOs, queries, ports, and application service.
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `19137769788945fb8b29b10b8c2296341f013b6a` — exact registered-message commit; surviving paths matched to current tree.
+- `fd3d6a6f86e86d4563386ea1d88267af612f99b4` — exact registered-message commit; surviving paths matched to current tree.
+- `968d98134569926d106d5eca39b84058efadc9d3` — exact registered-message commit; surviving paths matched to current tree.
+- `c288afa4f8ec9deb20dc5024173a08ab4fd344f9` — exact registered-message commit; surviving paths matched to current tree.
+- `08894c34d0e4e6007f5e45ae08dd297df04f75a5` — exact registered-message commit; surviving paths matched to current tree.
+- `a12644cb0dac353b5aac3980a61742a9bfd92a86` — exact registered-message commit; surviving paths matched to current tree.
+- `65c2fda0dcbf2da79afdd413bdaa87e260e88302` — exact registered-message commit; surviving paths matched to current tree.
+- `d48ed7abc9d0389c58a2a486413b91bc358859fe` — exact registered-message commit; surviving paths matched to current tree.
+- `289dff5d9104bf368dc354bc3f4cacc929f89c43` — exact registered-message commit; surviving paths matched to current tree.
+- `66e7c773b14d08c591fea23a83c7f57152062943` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/fixs/correction_01.md:101](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_01.md#L101)
+- [docs/roadmap/topology.md:107](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L107)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:107 | COR-007 | feat(topology): add topology catalog application services | Completed | Adds catalog application DTOs, queries, ports, and service.
+docs/roadmap/fixs/correction_01.md:101 | COR-007 | feat(topology): add topology catalog application services | Completed | Add catalog DTOs, queries, ports, and application service.
+~~~~~~~~
+
+<a id="hapi-071"></a>
+## HAPI-071 — add topology catalog persistence adapters
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: COR-008
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Add catalog persistence adapter and configuration wiring.
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `1169d2f5ba25cb5f47a0bd2ce6078c4133cfee5d` — exact registered-message commit; surviving paths matched to current tree.
+- `774c44ad8ae907483966ebb6a460730c0e2081fb` — exact registered-message commit; surviving paths matched to current tree.
+- `242e6ca0e2335bfd922fa200b1fd9c31df5f6173` — exact registered-message commit; surviving paths matched to current tree.
+- `f8e4b5f3982594a490c2df5ae6759c0b856034d5` — exact registered-message commit; surviving paths matched to current tree.
+- `66f7b4bbe5ab085ecb057b0f8e12815b72058802` — exact registered-message commit; surviving paths matched to current tree.
+- `af615f2fe6d81f1492b01554555b5aa3875380a0` — exact registered-message commit; surviving paths matched to current tree.
+- `e10256caad2d511a019bed28d93539d333a9860b` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/fixs/correction_01.md:102](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_01.md#L102)
+- [docs/roadmap/topology.md:108](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L108)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:108 | COR-008 | feat(topology): add topology catalog persistence adapters | Completed | Adds catalog persistence adapter and configuration wiring.
+docs/roadmap/fixs/correction_01.md:102 | COR-008 | feat(topology): add topology catalog persistence adapters | Completed | Add catalog persistence adapter and configuration wiring.
+~~~~~~~~
+
+<a id="hapi-072"></a>
+## HAPI-072 — replace enum usage in domain assets with type references
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: COR-009
+
+Priority: P1
+
+Implementation Status: IMPLEMENTED
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Refactor topology domain/application asset contracts to use references.
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `src/main/java/dz/sh/hidra/modules/topology/application/command/CreatePipelineSystemCommand.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Equipment.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Facility.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Pipeline.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyConnection.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionTypeReference.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/topology/domain/model/Equipment.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/model/Facility.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/model/Pipeline.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `src/main/java/dz/sh/hidra/modules/topology/application/command/CreatePipelineSystemCommand.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Equipment.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Facility.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Pipeline.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyConnection.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionTypeReference.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `efb85453c20c7c4ed2c31d6e75caf11d0095d25f` — exact registered-message commit; surviving paths matched to current tree.
+- `e2e4d19325359bda891af032bc0eb21c715b40d7` — exact registered-message commit; surviving paths matched to current tree.
+- `2ddb25f01d651e68a07a51d1e39266c976568d4c` — exact registered-message commit; surviving paths matched to current tree.
+- `a941efe214b3aa87cdefc93e2a00f0705f4bb4f2` — exact registered-message commit; surviving paths matched to current tree.
+- `16dde4952ed839a9c0510724152104ada2157642` — exact registered-message commit; surviving paths matched to current tree.
+- `8883e4e72c1fa161e7d9cebdc5950469a12525eb` — exact registered-message commit; surviving paths matched to current tree.
+- `955dec6d673b577e026bf642e486270fcebbe7e3` — exact registered-message commit; surviving paths matched to current tree.
+- `d9c80aea60aff03116b636bf0cfef70b230ee944` — exact registered-message commit; surviving paths matched to current tree.
+- `0544c08ba118e13a48bd463d46c1dd242a883d51` — exact registered-message commit; surviving paths matched to current tree.
+- `bf17c20b28ea3014e38ca89aca7f7cab8dd0a152` — exact registered-message commit; surviving paths matched to current tree.
+- `4060db9b4e1c1b3f9620192b7b8a039d76b0df18` — exact registered-message commit; surviving paths matched to current tree.
+- `ad2788cec5f0bf2fe1dd11f5738032d4046f5dd8` — exact registered-message commit; surviving paths matched to current tree.
+- `aff7eed2154eaf5575c217762f49dee85f0f396e` — exact registered-message commit; surviving paths matched to current tree.
+- `4275c2575a5599253b8e1272aac2250c61d2c58f` — exact registered-message commit; surviving paths matched to current tree.
+- `390b16169508e40dd8048d409286676a37b204f1` — exact registered-message commit; surviving paths matched to current tree.
+- `7ad50e710db9be808ed370c5b23d4eebc7117d29` — exact registered-message commit; surviving paths matched to current tree.
+- `8b325109726fa8d4916dea8088dbb422a4f5d6fc` — exact registered-message commit; surviving paths matched to current tree.
+- `9a9d8b652707f107ffe2e7583548921ca3a14e61` — exact registered-message commit; surviving paths matched to current tree.
+- `838db607540e93cabfd82ecf2d90df3072029bda` — exact registered-message commit; surviving paths matched to current tree.
+- `1adc4031c4920527133cba216b94b2d810e79837` — exact registered-message commit; surviving paths matched to current tree.
+- `f602b70110299f25a96a49078c8dea3bc503b245` — exact registered-message commit; surviving paths matched to current tree.
+- `67e1ece3ac7d4f059b2b4da3970d51fea487f73a` — exact registered-message commit; surviving paths matched to current tree.
+- `fbbaf8ff6a078b5cc8af8bf5d5fbd67e175a112c` — exact registered-message commit; surviving paths matched to current tree.
+- `9718a8ef25cd340e8ad6786d97295fb5f5a62f71` — exact registered-message commit; surviving paths matched to current tree.
+- `fefd3532686e0d613cdcb832e12e9c793b46e739` — exact registered-message commit; surviving paths matched to current tree.
+- `110811cf8c87e39db6ffc7ed7ac5032fe1da69d3` — exact registered-message commit; surviving paths matched to current tree.
+- `ff0bc872489cfe7fb9451c213855d69df2d37947` — exact registered-message commit; surviving paths matched to current tree.
+- `99592650b926131de42e28f820ab5623f2a83cf7` — exact registered-message commit; surviving paths matched to current tree.
+- `f5c6c83d6bd11e734d79b6ada83100333cc94f2e` — exact registered-message commit; surviving paths matched to current tree.
+- `796613d6f82e241977c02d7ceb443f13665e6939` — exact registered-message commit; surviving paths matched to current tree.
+- `e11d122341a62fa5d8d22c665dc9674a28a165bb` — exact registered-message commit; surviving paths matched to current tree.
+- `209830b6348587a5134aa1114f9d0438f2311fdc` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/fixs/correction_01.md:103](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_01.md#L103)
+- [docs/roadmap/topology.md:109](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L109)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:109 | COR-009 | refactor(topology): replace enum usage in domain assets with type references | Completed | Domain/application assets use catalog reference value objects.
+docs/roadmap/fixs/correction_01.md:103 | COR-009 | refactor(topology): replace enum usage in domain assets with type references | Completed | Refactor topology domain/application asset contracts to use references.
+~~~~~~~~
+
+<a id="hapi-073"></a>
+## HAPI-073 — migrate topology assets to catalog foreign keys
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: COR-010
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Add and backfill topology catalog FK columns in V004.
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `f991715a01c17a3f11583dd7690d9817449ac28f` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/fixs/correction_01.md:104](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_01.md#L104)
+- [docs/roadmap/topology.md:110](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L110)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:110 | COR-010 | db(topology): migrate topology assets to catalog foreign keys | Completed | Adds and backfills catalog FK columns in V004.
+docs/roadmap/fixs/correction_01.md:104 | COR-010 | db(topology): migrate topology assets to catalog foreign keys | Completed | Add and backfill topology catalog FK columns in V004.
+~~~~~~~~
+
+<a id="hapi-074"></a>
+## HAPI-074 — update topology persistence mapping to catalog foreign keys
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: COR-011
+
+Priority: P1
+
+Implementation Status: IMPLEMENTED
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Use catalog FK ids in topology persistence.
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/EquipmentJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/FacilityJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineSystemJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/TopologyConnectionJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/TopologyNodeJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/mapper/TopologyPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/EquipmentJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/FacilityJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineSystemJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/TopologyConnectionJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/TopologyNodeJpaRepository.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/EquipmentJpaEntity.java`, `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/FacilityJpaEntity.java`, `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineJpaEntity.java`, `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineSystemJpaEntity.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/EquipmentJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/FacilityJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineSystemJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/TopologyConnectionJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/TopologyNodeJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/mapper/TopologyPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/EquipmentJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/FacilityJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineSystemJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/TopologyConnectionJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/TopologyNodeJpaRepository.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `b3f4b2e6a122c21f69c95a5809cefabc1ddac03c` — exact registered-message commit; surviving paths matched to current tree.
+- `10e6e5aef7f3f5df679638fce08a19956dcc50f9` — exact registered-message commit; surviving paths matched to current tree.
+- `adfbc74023d0492960ac38df008e72ed0f430e56` — exact registered-message commit; surviving paths matched to current tree.
+- `05c3de2079c929d4fd7d30568d9330d2c15c37de` — exact registered-message commit; surviving paths matched to current tree.
+- `4eeffd7703ef9f105ef662e63757b4d32643facb` — exact registered-message commit; surviving paths matched to current tree.
+- `43d4700676ff243d605872ca907b2544c1d25bc4` — exact registered-message commit; surviving paths matched to current tree.
+- `7af0f74763eabc681ec8bcf8084260411d240281` — exact registered-message commit; surviving paths matched to current tree.
+- `f084c17721e6e0d05ed58dc8e7a1e5bafd7ecfe3` — exact registered-message commit; surviving paths matched to current tree.
+- `444cccaf6cbd6e9a78c08e33504bf313e679552c` — exact registered-message commit; surviving paths matched to current tree.
+- `6d4db3b6c20006462f21d66892e1153c548a98c3` — exact registered-message commit; surviving paths matched to current tree.
+- `36be67bd9001df7737c0ac6ce205f5bf505864a0` — exact registered-message commit; surviving paths matched to current tree.
+- `0a05d6446a6d348b3ad47a39d6e3a130c413b081` — exact registered-message commit; surviving paths matched to current tree.
+- `13e0bc2d76470d6a777a25a1edfed59137eb7f78` — exact registered-message commit; surviving paths matched to current tree.
+- `fad47cecb028fa6dfcd80d0cf447eddfb5280cdd` — exact registered-message commit; surviving paths matched to current tree.
+- `0b76fe2de0617ad5ca7059bd687b5970e31df27e` — exact registered-message commit; surviving paths matched to current tree.
+- `ab6f4c70167ebd28b0ec6d9a689102674ad182ad` — exact registered-message commit; surviving paths matched to current tree.
+- `05769eee43bbc8254ba7310b6e0501e76b86cddd` — exact registered-message commit; surviving paths matched to current tree.
+- `593cd5cd3a763b465198c28e8ae01c6039986e25` — exact registered-message commit; surviving paths matched to current tree.
+- `403b4fe24b1f28b71dd15c94ed33c4a9e7fe39af` — exact registered-message commit; surviving paths matched to current tree.
+- `c04576d4e92375cbb8e67daa748046dedddf05b0` — exact registered-message commit; surviving paths matched to current tree.
+- `99d79437507caa6a39e05ffc280cac224ff797f2` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/fixs/correction_01.md:105](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_01.md#L105)
+- [docs/roadmap/topology.md:111](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L111)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:111 | COR-011 | refactor(topology): update topology persistence mapping to catalog foreign keys | Completed | Persistence writes/reads catalog FK references.
+docs/roadmap/fixs/correction_01.md:105 | COR-011 | refactor(topology): update topology persistence mapping to catalog foreign keys | Completed | Use catalog FK ids in topology persistence.
+~~~~~~~~
+
+<a id="hapi-075"></a>
+## HAPI-075 — update topology REST contracts for catalog types and localization
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: COR-012
+
+Priority: P1
+
+Implementation Status: IMPLEMENTED
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+REST uses typeCode and localized type responses.
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/mapper/TopologyRestMapper.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/request/CreatePipelineSystemRequest.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/response/FacilityResponse.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/response/PipelineSystemResponse.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/mapper/TopologyRestMapper.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/request/CreatePipelineSystemRequest.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/response/FacilityResponse.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/response/PipelineSystemResponse.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `da0f2657b83104ca9c7ec0ba15ab6093dc3dcf79` — exact registered-message commit; surviving paths matched to current tree.
+- `78a862b3d8cf31759a9048517c11ac661b24a362` — exact registered-message commit; surviving paths matched to current tree.
+- `918a1dfbf7f77b751d21b633e01f82177b000799` — exact registered-message commit; surviving paths matched to current tree.
+- `8a66115066463ebeea31a68dc8ad7c567af0b0a9` — exact registered-message commit; surviving paths matched to current tree.
+- `8e667b998644907480587b2b7dcdf630548acbd7` — exact registered-message commit; surviving paths matched to current tree.
+- `1833e514ee71f2a3387d14c3adcb4840c84dc820` — exact registered-message commit; surviving paths matched to current tree.
+- `ec9a7f2d4d71c2613a8190e43da74c4924220fbc` — exact registered-message commit; surviving paths matched to current tree.
+- `e78ef7934bc61a374b4b1bd7647d13bb3dee09f4` — exact registered-message commit; surviving paths matched to current tree.
+- `497bcd08e2914ee9f387a564d7b774a273e43df1` — exact registered-message commit; surviving paths matched to current tree.
+- `e70c4db1e5d7779dd879f8b22b52346a6dc1830a` — exact registered-message commit; surviving paths matched to current tree.
+- `7f970089610f0e46555ff1b6e48caaa63cdd2ed8` — exact registered-message commit; surviving paths matched to current tree.
+- `e1682391293b79b41f5c90a47ec9346ec4ceb6f8` — exact registered-message commit; surviving paths matched to current tree.
+- `bce5bf735c3a7b22566c96ae43f6801e24b2dbc4` — exact registered-message commit; surviving paths matched to current tree.
+- `dd7bee7d1e5c54da14da3a2df61720208cc03a4c` — exact registered-message commit; surviving paths matched to current tree.
+- `eefbf220f2a53c6d6ce992b68c8a78f1915488dc` — exact registered-message commit; surviving paths matched to current tree.
+- `85731cff6de456db5e95618ba4bfa613f0fe9084` — exact registered-message commit; surviving paths matched to current tree.
+- `4305dc07bc5f5224d18ffd362f7cd9ae8fd3840d` — exact registered-message commit; surviving paths matched to current tree.
+- `2792e1ff8c0740e3b8a14576746fd0f5902b37f0` — exact registered-message commit; surviving paths matched to current tree.
+- `871a39481a883e7d177c73ec41161b931955bf3b` — exact registered-message commit; surviving paths matched to current tree.
+- `79332ff2b95622c52bd58574180ee97105dbb20f` — exact registered-message commit; surviving paths matched to current tree.
+- `2cc213cc5b3e27f7d5476f5a12806e55cf0b274d` — exact registered-message commit; surviving paths matched to current tree.
+- `ec458dad6039e093e60683593e18364b3815e4a4` — exact registered-message commit; surviving paths matched to current tree.
+- `ed7923d87a526968471b2bbe3d829cbedffa6e2d` — exact registered-message commit; surviving paths matched to current tree.
+- `d096e220a618859c4645760381a3e0200e9dd5fc` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/fixs/correction_01.md:106](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_01.md#L106)
+- [docs/roadmap/topology.md:112](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L112)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:112 | COR-012 | refactor(topology): update topology REST contracts for catalog types and localization | Completed | REST requests use `typeCode`; responses expose localized type labels.
+docs/roadmap/fixs/correction_01.md:106 | COR-012 | refactor(topology): update topology REST contracts for catalog types and localization | Completed | REST uses `typeCode` and localized type responses.
+~~~~~~~~
+
+<a id="hapi-076"></a>
+## HAPI-076 — remove topology enum-style type constraints
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: COR-013
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Remove old topology type varchar columns/checks in V005.
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `66d338c9f7ff059802995863bf9347f7095ace10` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/fixs/correction_01.md:107](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_01.md#L107)
+- [docs/roadmap/topology.md:113](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L113)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:113 | COR-013 | db(topology): remove topology enum-style type constraints | Completed | Removes old varchar taxonomy columns and old enum-style checks in V005.
+docs/roadmap/fixs/correction_01.md:107 | COR-013 | db(topology): remove topology enum-style type constraints | Completed | Remove old topology type varchar columns/checks in V005.
+~~~~~~~~
+
+<a id="hapi-077"></a>
+## HAPI-077 — repair unstable topology tests
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: COR-014
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Stabilize topology fixtures and tests after catalog conversion.
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `728e0e843002bed58dfd443a4991f1140b70073c` — exact registered-message commit; surviving paths matched to current tree.
+- `94dd7c8c933c76c9e619af913da05f6fd1af3be4` — exact registered-message commit; surviving paths matched to current tree.
+- `894292561c9aea9a22e326931cffa554be85333e` — exact registered-message commit; surviving paths matched to current tree.
+- `dd62a5a2cbfcae41c3e3265fd1612a36c5556a55` — exact registered-message commit; surviving paths matched to current tree.
+- `882e52f9cc958a39b0d121553862871fca7cf3ee` — exact registered-message commit; surviving paths matched to current tree.
+- `3423c4d26e928e289155e8892f6538355bb4a0b3` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/fixs/correction_01.md:108](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_01.md#L108)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/fixs/correction_01.md:108 | COR-014 | test(topology): repair unstable topology tests | Completed | Stabilize topology fixtures and tests after catalog conversion.
+~~~~~~~~
+
+<a id="hapi-080"></a>
+## HAPI-080 — update topology roadmap after catalog refactor
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: COR-017
+
+Priority: P1
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Update topology roadmap/checklist after catalog refactor.
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `docs/roadmap/topology.md`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. It is a documentation/review/preflight outcome; broader application functionality remains separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `docs/roadmap/topology.md`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+No new API is part of this bounded documentation/historical outcome. Existing owner operations are listed in the runtime contract inventory below; no proposed endpoint is relabeled as implemented.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `429c8a2ae02a1d9bf93ce16fcd310e4535d8ee3b` — exact registered-message commit; surviving paths matched to current tree.
+- `0960721c46e8f6f4ee25454efdacd7596519c6c5` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/fixs/correction_01.md:111](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_01.md#L111)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent. Doc/preflight completion is not completion of the associated application workflow.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/fixs/correction_01.md:111 | COR-017 | docs(topology): update topology roadmap after catalog refactor | Completed | Update topology roadmap/checklist after catalog refactor.
+~~~~~~~~
+
+<a id="hapi-082"></a>
+## HAPI-082 — remove remaining business taxonomy enum declarations
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: COR-019
+
+Priority: P1
+
+Implementation Status: IMPLEMENTED
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Replace remaining forbidden enum declarations with compatibility classes.
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `src/main/java/dz/sh/hidra/modules/organization/domain/value/OperationalScopeType.java`
+- `src/main/java/dz/sh/hidra/modules/organization/domain/value/ReportingLineType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/NodeType.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/organization/domain/value/OperationalScopeType.java`, `src/main/java/dz/sh/hidra/modules/organization/domain/value/ReportingLineType.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionType.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/value/NodeType.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `src/main/java/dz/sh/hidra/modules/organization/domain/value/OperationalScopeType.java`
+- `src/main/java/dz/sh/hidra/modules/organization/domain/value/ReportingLineType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/NodeType.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+## 5. COR-019 record
+
+```text
+Commit code    : COR-019
+Commit message : refactor(catalog): remove remaining business taxonomy enum declarations
+Type           : Refactor
+Module         : catalog
+```
+
+### Goal
+
+Remove remaining forbidden Java enum declarations that blocked `ControlledVocabularyArchitectureTest`.
+
+### Files updated
+
+```text
+src/main/java/dz/sh/hidra/modules/topology/domain/value/ProductType.java
+src/main/java/dz/sh/hidra/modules/topology/domain/value/FacilityType.java
+src/main/java/dz/sh/hidra/modules/topology/domain/value/NodeType.java
+src/main/java/dz/sh/hidra/modules/topology/domain/value/PipelineAppurtenanceType.java
+src/main/java/dz/sh/hidra/modules/topology/domain/value/ValveType.java
+src/main/java/dz/sh/hidra/modules/topology/domain/value/EquipmentType.java
+src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionType.java
+src/main/java/dz/sh/hidra/modules/organization/domain/value/OperationalScopeType.java
+src/main/java/dz/sh/hidra/modules/organization/domain/value/ReportingLineType.java
+```
+
+### Rule
+
+These compatibility files may temporarily remain as final classes, but must not be Java enums.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `e336e8b8768da09fd764ef1874d103f0010642a3` — exact registered-message commit; surviving paths matched to current tree.
+- `66366a2b883cf03daf32381a67c2a9a2b3386dc6` — exact registered-message commit; surviving paths matched to current tree.
+- `807acf4847b09792349ed2945a7d8bfbd23b0d7c` — exact registered-message commit; surviving paths matched to current tree.
+- `e20b7a3e00f22431e92d1ec63e1de54ebd881f7a` — exact registered-message commit; surviving paths matched to current tree.
+- `4cfcddb32c28a945f258037cab9b7f4cc62f33e9` — exact registered-message commit; surviving paths matched to current tree.
+- `0221b34f2f87b69810db8dc00d060beea4f13835` — exact registered-message commit; surviving paths matched to current tree.
+- `caec06475f297982d09583191c1201014b174bb6` — exact registered-message commit; surviving paths matched to current tree.
+- `1e1e1dea0afd558fdea50c7f0bc636a368ff228f` — exact registered-message commit; surviving paths matched to current tree.
+- `19b07b4a8eb8a1ad1db033b36916dc6227af09bf` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/fixs/correction_01.md:113](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_01.md#L113)
+- [docs/roadmap/fixs/correction_01.md:117](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_01.md#L117)
+- [docs/roadmap/topology.md:114](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L114)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:114 | COR-019 | refactor(catalog): remove remaining business taxonomy enum declarations | Completed | Removes remaining forbidden business taxonomy enum declarations.
+docs/roadmap/fixs/correction_01.md:113 | COR-019 | refactor(catalog): remove remaining business taxonomy enum declarations | Completed | Replace remaining forbidden enum declarations with compatibility classes.
+~~~~~~~~
+
+<a id="hapi-083"></a>
+## HAPI-083 — record COR-019 and corrected baseline validation path
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: COR-020
+
+Priority: P1
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Record COR-019/COR-020 and add transition constructor fix.
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `src/main/java/dz/sh/hidra/kernel/pagination/PageRequest.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/TopologyStatus.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. It is a documentation/review/preflight outcome; broader application functionality remains separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/topology/domain/value/TopologyStatus.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `src/main/java/dz/sh/hidra/kernel/pagination/PageRequest.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/TopologyStatus.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+## 6. COR-020 record
+
+```text
+Commit code    : COR-020
+Commit message : docs(correction): record COR-019 and corrected baseline validation path
+Type           : Documentation / Compile Compatibility
+Module         : correction
+```
+
+### Goal
+
+Record COR-019 in the correction roadmap and document the corrected baseline validation path.
+
+Also repair the reported transitional compile error:
+
+```text
+The constructor ListFacilitiesQuery(String, FacilityTypeReference, ProductType, TopologyStatus, PageRequest) is undefined
+```
+
+### Files updated
+
+```text
+docs/roadmap/correction_01.md
+src/main/java/dz/sh/hidra/modules/topology/application/query/ListFacilitiesQuery.java
+```
+
+~~~~~~~~
+
+### 7. API Contracts
+
+No new API is part of this bounded documentation/historical outcome. Existing owner operations are listed in the runtime contract inventory below; no proposed endpoint is relabeled as implemented.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `2ca1232187a61272fcd6d62b7aaa5e399701b9dc` — exact registered-message commit; surviving paths matched to current tree.
+- `221901fffe1e73057e025ad36d71f3a3b25f783b` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/fixs/correction_01.md:114](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_01.md#L114)
+- [docs/roadmap/fixs/correction_01.md:148](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/correction_01.md#L148)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent. Doc/preflight completion is not completion of the associated application workflow.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/fixs/correction_01.md:114 | COR-020 | docs(correction): record COR-019 and corrected baseline validation path | Completed | Record COR-019/COR-020 and add transition constructor fix.
+~~~~~~~~
+
+<a id="hapi-169"></a>
+## HAPI-169 — scan topology domain models
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: HMC-024
+
+Priority: P1
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Scan all 5 topology model files.
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `docs/roadmap/model-field-catalogue.md`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Equipment.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Facility.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Pipeline.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyConnection.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/EquipmentStatus.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/FacilityKind.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/FacilityStatus.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/FlowDirection.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/PipelineSystemType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/PipelineType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/TopologyStatus.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. It is a documentation/review/preflight outcome; broader application functionality remains separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/topology/domain/model/Equipment.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/model/Facility.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/model/Pipeline.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `docs/roadmap/model-field-catalogue.md`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Equipment.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Facility.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Pipeline.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyConnection.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/EquipmentStatus.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/FacilityKind.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/FacilityStatus.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/FlowDirection.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/PipelineSystemType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/PipelineType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/TopologyStatus.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+## 33. HMC-024 — Topology module scan evidence
+
+**Source commit:** `5e301857882b59e9e35ecc474e9c6537d89cc96a`  
+**Module:** `topology`  
+**Baseline model files:** 5  
+**Scanned models:** 5  
+**Declared fields/components:** 73  
+**Zero-field models:** 0  
+**Extraction exceptions:** 0
+
+### Topology model index
+
+| Model | Kind | Declared field count | Source path | Status |
+|---|---|---:|---|---|
+| Equipment | record | 16 | `src/main/java/dz/sh/hidra/modules/topology/domain/model/Equipment.java` | Extracted |
+| Facility | record | 18 | `src/main/java/dz/sh/hidra/modules/topology/domain/model/Facility.java` | Extracted |
+| Pipeline | record | 15 | `src/main/java/dz/sh/hidra/modules/topology/domain/model/Pipeline.java` | Extracted |
+| PipelineSystem | record | 12 | `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java` | Extracted |
+| TopologyConnection | record | 12 | `src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyConnection.java` | Extracted |
+
+### Topology fields and declared Java types
+
+| Model | Ordinal | Field | Declared Java Type |
+|---|---:|---|---|
+| Equipment | 1 | id | String |
+| Equipment | 2 | code | String |
+| Equipment | 3 | name | String |
+| Equipment | 4 | facilityId | String |
+| Equipment | 5 | nodeId | String |
+| Equipment | 6 | pipelineSegmentId | String |
+| Equipment | 7 | equipmentTypeId | String |
+| Equipment | 8 | equipmentKind | EquipmentKind |
+| Equipment | 9 | manufacturerPartyId | String |
+| Equipment | 10 | manufacturerPartyCodeSnapshot | String |
+| Equipment | 11 | manufacturerPartyNameSnapshot | String |
+| Equipment | 12 | status | EquipmentStatus |
+| Equipment | 13 | installedAt | Instant |
+| Equipment | 14 | retiredAt | Instant |
+| Equipment | 15 | createdAt | Instant |
+| Equipment | 16 | updatedAt | Instant |
+| Facility | 1 | id | String |
+| Facility | 2 | code | String |
+| Facility | 3 | nameAr | String |
+| Facility | 4 | nameFr | String |
+| Facility | 5 | nameEn | String |
+| Facility | 6 | facilityTypeId | String |
+| Facility | 7 | facilityKind | FacilityKind |
+| Facility | 8 | ownerPartyId | String |
+| Facility | 9 | ownerPartyCodeSnapshot | String |
+| Facility | 10 | ownerPartyNameSnapshot | String |
+| Facility | 11 | latitude | BigDecimal |
+| Facility | 12 | longitude | BigDecimal |
+| Facility | 13 | elevationMeters | BigDecimal |
+| Facility | 14 | status | FacilityStatus |
+| Facility | 15 | commissionedAt | Instant |
+| Facility | 16 | retiredAt | Instant |
+| Facility | 17 | createdAt | Instant |
+| Facility | 18 | updatedAt | Instant |
+| Pipeline | 1 | id | String |
+| Pipeline | 2 | pipelineSystemId | String |
+| Pipeline | 3 | code | String |
+| Pipeline | 4 | nameAr | String |
+| Pipeline | 5 | nameFr | String |
+| Pipeline | 6 | nameEn | String |
+| Pipeline | 7 | pipelineType | PipelineType |
+| Pipeline | 8 | nominalDiameter | BigDecimal |
+| Pipeline | 9 | diameterUnitCode | String |
+| Pipeline | 10 | designPressure | BigDecimal |
+| Pipeline | 11 | pressureUnitCode | String |
+| Pipeline | 12 | totalLengthKm | BigDecimal |
+| Pipeline | 13 | status | TopologyStatus |
+| Pipeline | 14 | createdAt | Instant |
+| Pipeline | 15 | updatedAt | Instant |
+| PipelineSystem | 1 | id | String |
+| PipelineSystem | 2 | code | String |
+| PipelineSystem | 3 | nameAr | String |
+| PipelineSystem | 4 | nameFr | String |
+| PipelineSystem | 5 | nameEn | String |
+| PipelineSystem | 6 | systemType | PipelineSystemType |
+| PipelineSystem | 7 | status | TopologyStatus |
+| PipelineSystem | 8 | description | String |
+| PipelineSystem | 9 | commissionedAt | Instant |
+| PipelineSystem | 10 | retiredAt | Instant |
+| PipelineSystem | 11 | createdAt | Instant |
+| PipelineSystem | 12 | updatedAt | Instant |
+| TopologyConnection | 1 | id | String |
+| TopologyConnection | 2 | code | String |
+| TopologyConnection | 3 | fromNodeId | String |
+| TopologyConnection | 4 | toNodeId | String |
+| TopologyConnection | 5 | connectionType | ConnectionType |
+| TopologyConnection | 6 | flowDirection | FlowDirection |
+| TopologyConnection | 7 | pipelineSegmentId | String |
+| TopologyConnection | 8 | nominalCapacity | BigDecimal |
+| TopologyConnection | 9 | capacityUnitCode | String |
+| TopologyConnection | 10 | status | TopologyStatus |
+| TopologyConnection | 11 | createdAt | Instant |
+| TopologyConnection | 12 | updatedAt | Instant |
+
+### HMC-024 reconciliation
+
+```text
+baseline model files = 5
+extracted models     = 5
+exceptions           = 0
+declared fields      = 73
+zero-field models    = 0
+```
+
+The scan records only declarations under `topology/domain/model`. Topology domain value types referenced by record components remain declared field types and are not expanded into independent model rows.
+
+No JPA entity, API DTO, migration, application contract, infrastructure model, GIS implementation, party implementation, telemetry implementation, simulation implementation, or database column metadata was mixed into this module scan.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+No new API is part of this bounded documentation/historical outcome. Existing owner operations are listed in the runtime contract inventory below; no proposed endpoint is relabeled as implemented.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `6bbf4168a030bac1bf07a83b4aa3dc9ae0e640bf` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/model-field-catalogue.md:152](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-field-catalogue.md#L152)
+- [docs/roadmap/model-field-catalogue.md:2797](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-field-catalogue.md#L2797)
+- [docs/roadmap/model-field-catalogue.md:2895](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-field-catalogue.md#L2895)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent. Doc/preflight completion is not completion of the associated application workflow.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/model-field-catalogue.md:152 | HMC-024 | docs(catalogue): scan topology domain models | Scan all 5 topology model files. | **Completed** — 5/5 models, 73 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`.
+~~~~~~~~
+
+<a id="hapi-201"></a>
+## HAPI-201 — remediate semantic review PipelineSystem
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: HMR-022
+
+Priority: P1
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+remediate semantic review PipelineSystem
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `docs/data definition/Topology.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `docs/roadmap/topology.md`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/request/CreatePipelineSystemRequest.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/response/PipelineSystemResponse.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/command/CreatePipelineSystemCommand.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/dto/PipelineSystemSummaryDto.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/CreatePipelineSystemUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineSystemRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineSystemApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/PipelineSystemType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JpaPipelineSystemRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineSystemFacilityJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineSystemJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineSystemTypeJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/mapper/TopologyPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineSystemFacilityJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineSystemJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineSystemTypeJpaRepository.java`
+- `src/main/resources/db/migration/V20261004_022__hmr_022_topology_pipeline_system.sql`
+- `src/test/java/dz/sh/hidra/modules/topology/semantic/PipelineSystemSemanticRemediationTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/value/PipelineSystemType.java`.
+- Inbound ports: `src/main/java/dz/sh/hidra/modules/topology/application/port/in/CreatePipelineSystemUseCase.java`.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineSystemRepositoryPort.java`.
+- Application services: `src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineSystemApplicationService.java`.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JpaPipelineSystemRepositoryAdapter.java`, `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineSystemFacilityJpaEntity.java`, `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineSystemJpaEntity.java`, `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineSystemTypeJpaEntity.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `docs/data definition/Topology.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `docs/roadmap/topology.md`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/request/CreatePipelineSystemRequest.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/response/PipelineSystemResponse.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/command/CreatePipelineSystemCommand.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/dto/PipelineSystemSummaryDto.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/CreatePipelineSystemUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineSystemRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineSystemApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/PipelineSystemType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JpaPipelineSystemRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineSystemFacilityJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineSystemJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineSystemTypeJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/mapper/TopologyPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineSystemFacilityJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineSystemJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineSystemTypeJpaRepository.java`
+- `src/main/resources/db/migration/V20261004_022__hmr_022_topology_pipeline_system.sql`
+- `src/test/java/dz/sh/hidra/modules/topology/semantic/PipelineSystemSemanticRemediationTest.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+#### HMR-022 — topology.PipelineSystem
+
+- Source review: `HMSR-024`
+- Exact commit: `fix(topology): remediate semantic review PipelineSystem`
+- Status: **Completed** — dedicated Topology-owned PipelineSystem classification catalog/reference implemented; the six evidence-backed legacy codes are migrated, the enum-style `system_type` representation is retired, and missing/unknown create classification now fails closed without silent `TRANSPORT` defaulting.
+- SCC: —
+- Recorded upstream HMS dependencies: —
+- HMSR correction count: 2
+- Additive Flyway: `src/main/resources/db/migration/V20261004_022__hmr_022_topology_pipeline_system.sql`
+- Owner-contract prerequisite: No cross-module owner contract is required; the classification catalog remains Topology-owned. HMR-022A is the local architecture/persistence prerequisite.
+- Exact write allowlist:
+  - `docs/data definition/Topology.md`
+  - `docs/roadmap/model-semantic-remediation.md`
+  - `docs/roadmap/topology.md`
+  - `src/main/java/dz/sh/hidra/modules/topology/api/rest/request/CreatePipelineSystemRequest.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/api/rest/response/PipelineSystemResponse.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/application/command/CreatePipelineSystemCommand.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/application/dto/PipelineSystemSummaryDto.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/application/port/in/CreatePipelineSystemUseCase.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineSystemRepositoryPort.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineSystemApplicationService.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/domain/value/PipelineSystemType.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JpaPipelineSystemRepositoryAdapter.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineSystemFacilityJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineSystemJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/mapper/TopologyPersistenceMapper.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineSystemFacilityJpaRepository.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineSystemJpaRepository.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineSystemTypeJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineSystemTypeJpaRepository.java`
+  - `src/main/resources/db/migration/V20261004_022__hmr_022_topology_pipeline_system.sql`
+  - `src/test/java/dz/sh/hidra/modules/topology/semantic/PipelineSystemSemanticRemediationTest.java`
+- Exact validation:
+  - `./mvnw -q -DskipTests compile`
+  - `./mvnw -q -Dtest=PipelineSystemSemanticRemediationTest test`
+  - `./mvnw -q test`
+  - `./mvnw -q clean verify`
+- HMSR obligations:
+  1. **Reconcile PipelineSystem business classification with the accepted Topology catalog policy.** Replace or explicitly redesign the current fixed `PipelineSystemType/system_type` representation so the final PipelineSystem contract is consistent with the repository's catalog-backed business-type architecture. The correction must define the authoritative catalog/reference semantics rather than blindly assuming `ProductTypeReference`; domain, application, REST, JPA and additive Flyway changes must remain aligned in the separately authorized Topology task.
+  2. **Remove the unsupported silent `TRANSPORT` inference.** Missing PipelineSystem classification must not be converted to `TRANSPORT` unless an explicit Topology business rule establishes that default. The corrected write boundary should fail closed or use the explicitly approved classification/catalog contract.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/modules/topology/semantic/PipelineSystemSemanticRemediationTest.java` — exact-head oracle suite 4 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `3095625652aaa5fc9c44bfade20bfb4cf95b0c97` — exact registered-message commit; surviving paths matched to current tree.
+- `7d5d289a6ce7cb18d959344597a1c69bb60026f1` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/model-semantic-remediation.md:168](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-remediation.md#L168)
+- [docs/roadmap/model-semantic-remediation.md:1372](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-remediation.md#L1372)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Retained completed semantic remediation; legacy Planned/Blocked text is superseded by canonical reconciliation and current regression evidence. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/model-semantic-remediation.md:168 | HMR-022 | HMSR-024 | topology | PipelineSystem | — | — | fix(topology): remediate semantic review PipelineSystem | Planned
+~~~~~~~~
+
+<a id="hapi-213"></a>
+## HAPI-213 — remediate semantic review TopologyConnection
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: HMR-031
+
+Priority: P1
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+remediate semantic review TopologyConnection
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `docs/data definition/Topology.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `docs/roadmap/topology.md`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/TopologyConnectionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/exception/InvalidTopologyConnectionException.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyConnection.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/service/TopologyConnectionValidator.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionTypeReference.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/FlowDirection.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/TopologyStatus.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JpaTopologyConnectionRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/ConnectionTypeJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/TopologyConnectionJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/mapper/TopologyPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/ConnectionTypeJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/TopologyConnectionJpaRepository.java`
+- `src/main/resources/db/migration/V20261004_031__hmr_031_topology_topology_connection.sql`
+- `src/test/java/dz/sh/hidra/modules/topology/semantic/TopologyConnectionSemanticRemediationTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/topology/domain/exception/InvalidTopologyConnectionException.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyConnection.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/service/TopologyConnectionValidator.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/topology/application/port/out/TopologyConnectionRepositoryPort.java`.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JpaTopologyConnectionRepositoryAdapter.java`, `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/ConnectionTypeJpaEntity.java`, `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/TopologyConnectionJpaEntity.java`, `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/mapper/TopologyPersistenceMapper.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `docs/data definition/Topology.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `docs/roadmap/topology.md`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/TopologyConnectionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/exception/InvalidTopologyConnectionException.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyConnection.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/service/TopologyConnectionValidator.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionTypeReference.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/FlowDirection.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/TopologyStatus.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JpaTopologyConnectionRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/ConnectionTypeJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/TopologyConnectionJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/mapper/TopologyPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/ConnectionTypeJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/TopologyConnectionJpaRepository.java`
+- `src/main/resources/db/migration/V20261004_031__hmr_031_topology_topology_connection.sql`
+- `src/test/java/dz/sh/hidra/modules/topology/semantic/TopologyConnectionSemanticRemediationTest.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+#### HMR-031 — topology.TopologyConnection
+
+- Source review: `HMSR-034`
+- Exact commit: `fix(topology): remediate semantic review TopologyConnection`
+- Status: **Completed** — TopologyConnection now uses catalog-backed ConnectionTypeReference semantics, rejects self-loops at domain/database boundaries, and protects populated PipelineSegment references.
+- SCC: —
+- Recorded upstream HMS dependencies: —
+- HMSR correction count: 3
+- Additive Flyway: `src/main/resources/db/migration/V20261004_031__hmr_031_topology_topology_connection.sql`
+- Owner-contract prerequisite: No cross-module owner-contract prerequisite recorded by this HMSR correction.
+- Exact write allowlist:
+  - `docs/data definition/Topology.md`
+  - `docs/roadmap/model-semantic-remediation.md`
+  - `docs/roadmap/topology.md`
+  - `src/main/java/dz/sh/hidra/modules/topology/application/port/out/TopologyConnectionRepositoryPort.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/domain/exception/InvalidTopologyConnectionException.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyConnection.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionTypeReference.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionType.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/domain/service/TopologyConnectionValidator.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JpaTopologyConnectionRepositoryAdapter.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/TopologyConnectionJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/ConnectionTypeJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/mapper/TopologyPersistenceMapper.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/TopologyConnectionJpaRepository.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/ConnectionTypeJpaRepository.java`
+  - `src/main/resources/db/migration/V20261004_031__hmr_031_topology_topology_connection.sql`
+  - `src/test/java/dz/sh/hidra/modules/topology/semantic/TopologyConnectionSemanticRemediationTest.java`
+- Exact validation:
+  - `./mvnw -q -DskipTests compile`
+  - `./mvnw -q -Dtest=TopologyConnectionSemanticRemediationTest test`
+  - `./mvnw -q test`
+  - `./mvnw -q clean verify`
+- HMSR obligations:
+  1. **Restore/reconcile catalog-backed connection-type semantics.** Replace the live fixed `ConnectionType` enum/string persistence with the accepted `ConnectionTypeReference`/catalog architecture, or explicitly revise the governing Topology architecture if that earlier decision is no longer intended. Domain, JPA, Flyway, API/application contracts and migration strategy must converge on one representation.
+  2. **Enforce the no-self-connection domain rule on authoritative writes.** `fromNodeId` and `toNodeId` must not resolve to the same node when a TopologyConnection becomes authoritative. The existing unused validator is insufficient by itself.
+  3. **Protect populated PipelineSegment references.** When `pipelineSegmentId` is non-null, it must resolve to the retained Topology PipelineSegment target through an additive nullable FK, application validation, guarded provisioning path, or equivalent fail-closed mechanism.
+
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/modules/topology/semantic/TopologyConnectionSemanticRemediationTest.java` — exact-head oracle suite 4 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `ecf9b13cf90bf9e3602be0099c87fd2575e54bb7` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/data definition/Topology.md:241](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/data definition/Topology.md#L241)
+- [docs/roadmap/model-semantic-remediation.md:177](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-remediation.md#L177)
+- [docs/roadmap/model-semantic-remediation.md:1786](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-remediation.md#L1786)
+- [docs/roadmap/topology.md:515](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L515)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Retained completed semantic remediation; legacy Planned/Blocked text is superseded by canonical reconciliation and current regression evidence. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/model-semantic-remediation.md:177 | HMR-031 | HMSR-034 | topology | TopologyConnection | — | — | fix(topology): remediate semantic review TopologyConnection | Planned
+~~~~~~~~
+
+<a id="hapi-220"></a>
+## HAPI-220 — remediate semantic review Facility
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: HMR-036
+
+Priority: P1
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+remediate semantic review Facility
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `docs/data definition/Topology.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `docs/roadmap/topology.md`
+- `src/main/java/dz/sh/hidra/modules/party/application/contract/topology/TopologyPartyReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/party/application/contract/topology/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/party/application/service/TopologyPartyReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/request/RegisterFacilityRequest.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/response/FacilityResponse.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/command/RegisterFacilityCommand.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/dto/FacilitySummaryDto.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/RegisterFacilityUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/FacilityRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/FacilityApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Facility.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/FacilityKind.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/FacilityStatus.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JpaFacilityRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/FacilityAttributeDefinitionJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/FacilityAttributeValueJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/FacilityJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/FacilityNodeBindingJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/FacilityTypeJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/FacilityTypeVersionJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineSystemFacilityJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/mapper/TopologyPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/FacilityAttributeDefinitionJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/FacilityAttributeValueJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/FacilityJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/FacilityNodeBindingJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/FacilityTypeJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/FacilityTypeVersionJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineSystemFacilityJpaRepository.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+- `src/test/java/dz/sh/hidra/modules/party/application/service/TopologyPartyReferenceQueryServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/semantic/FacilitySemanticRemediationTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/topology/domain/model/Facility.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/value/FacilityKind.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/value/FacilityStatus.java`.
+- Inbound ports: `src/main/java/dz/sh/hidra/modules/topology/application/port/in/RegisterFacilityUseCase.java`.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/topology/application/port/out/FacilityRepositoryPort.java`.
+- Application services: `src/main/java/dz/sh/hidra/modules/party/application/service/TopologyPartyReferenceQueryService.java`, `src/main/java/dz/sh/hidra/modules/topology/application/service/FacilityApplicationService.java`, `src/test/java/dz/sh/hidra/modules/party/application/service/TopologyPartyReferenceQueryServiceTest.java`.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JpaFacilityRepositoryAdapter.java`, `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/FacilityAttributeDefinitionJpaEntity.java`, `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/FacilityAttributeValueJpaEntity.java`, `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/FacilityJpaEntity.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `docs/data definition/Topology.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `docs/roadmap/topology.md`
+- `src/main/java/dz/sh/hidra/modules/party/application/contract/topology/TopologyPartyReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/party/application/contract/topology/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/party/application/service/TopologyPartyReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/request/RegisterFacilityRequest.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/response/FacilityResponse.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/command/RegisterFacilityCommand.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/dto/FacilitySummaryDto.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/RegisterFacilityUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/FacilityRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/FacilityApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Facility.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/FacilityKind.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/FacilityStatus.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JpaFacilityRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/FacilityAttributeDefinitionJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/FacilityAttributeValueJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/FacilityJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/FacilityNodeBindingJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/FacilityTypeJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/FacilityTypeVersionJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineSystemFacilityJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/mapper/TopologyPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/FacilityAttributeDefinitionJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/FacilityAttributeValueJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/FacilityJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/FacilityNodeBindingJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/FacilityTypeJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/FacilityTypeVersionJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineSystemFacilityJpaRepository.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+- `src/test/java/dz/sh/hidra/modules/party/application/service/TopologyPartyReferenceQueryServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/semantic/FacilitySemanticRemediationTest.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+#### HMR-036 — topology.Facility
+
+- Source review: `HMSR-041`
+- Exact commit: `fix(topology): remediate semantic review Facility`
+- Status: **Completed** — populated Facility ownerPartyId is validated fail-closed through the Party-owned Topology application contract; snapshots remain non-authoritative and no cross-module FK is introduced.
+- SCC: —
+- Recorded upstream HMS dependencies: party.Party
+- HMSR correction count: 1
+- Additive Flyway: `src/main/resources/db/migration/V20261004_036__hmr_036_topology_facility.sql`
+- Owner-contract prerequisite: No suitable exported owner lookup found in live tree for party; task must introduce/authorize an owner contract by roadmap amendment before cross-module validation changes.
+- Exact write allowlist:
+  - `docs/data definition/Topology.md`
+  - `docs/roadmap/model-semantic-remediation.md`
+  - `docs/roadmap/topology.md`
+  - `src/main/java/dz/sh/hidra/modules/topology/api/rest/request/RegisterFacilityRequest.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/api/rest/response/FacilityResponse.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/application/command/RegisterFacilityCommand.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/application/dto/FacilitySummaryDto.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/application/port/in/RegisterFacilityUseCase.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/application/port/out/FacilityRepositoryPort.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/application/service/FacilityApplicationService.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/domain/model/Facility.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/domain/value/FacilityKind.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/domain/value/FacilityStatus.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JpaFacilityRepositoryAdapter.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/FacilityAttributeDefinitionJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/FacilityAttributeValueJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/FacilityJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/FacilityNodeBindingJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/FacilityTypeJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/FacilityTypeVersionJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineSystemFacilityJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/mapper/TopologyPersistenceMapper.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/FacilityAttributeDefinitionJpaRepository.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/FacilityAttributeValueJpaRepository.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/FacilityJpaRepository.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/FacilityNodeBindingJpaRepository.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/FacilityTypeJpaRepository.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/FacilityTypeVersionJpaRepository.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineSystemFacilityJpaRepository.java`
+  - `src/main/resources/db/migration/V20261004_036__hmr_036_topology_facility.sql`
+  - `src/test/java/dz/sh/hidra/modules/topology/semantic/FacilitySemanticRemediationTest.java`
+- Exact validation:
+  - `./mvnw -q -DskipTests compile`
+  - `./mvnw -q -Dtest=FacilitySemanticRemediationTest test`
+  - `./mvnw -q test`
+  - `./mvnw -q clean verify`
+- HMSR obligations:
+  1. **Validate populated Facility owner Party references through the Party owner boundary.** When `ownerPartyId` is supplied, Topology must fail closed unless that Party identity exists under the Party bounded context. Do not introduce a cross-module database FK. A separately authorized Topology/Party correction should use a deliberate Party lookup/contract or equivalent owner-controlled validation boundary and preserve snapshots as non-authoritative evidence.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` — exact-head oracle suite 16 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java` — exact-head oracle suite 5 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/party/application/service/TopologyPartyReferenceQueryServiceTest.java` — exact-head oracle suite 1 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/topology/semantic/FacilitySemanticRemediationTest.java` — exact-head oracle suite 1 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `b01c700805b3125f0173ee3ac80e9f28d9997920` — exact registered-message commit; surviving paths matched to current tree.
+- `71dce59eddf14b1a2c696b9d477d3cb673699df6` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/data definition/Topology.md:279](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/data definition/Topology.md#L279)
+- [docs/roadmap/model-semantic-remediation.md:187](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-remediation.md#L187)
+- [docs/roadmap/model-semantic-remediation.md:2052](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-remediation.md#L2052)
+- [docs/roadmap/topology.md:571](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L571)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Retained completed semantic remediation; legacy Planned/Blocked text is superseded by canonical reconciliation and current regression evidence. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/model-semantic-remediation.md:187 | HMR-036 | HMSR-041 | topology | Facility | — | party.Party | fix(topology): remediate semantic review Facility | Blocked — owner lookup contract prerequisite unresolved
+~~~~~~~~
+
+<a id="hapi-229"></a>
+## HAPI-229 — remediate semantic review Pipeline
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: HMR-042
+
+Priority: P1
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+remediate semantic review Pipeline
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `docs/data definition/Topology.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `docs/roadmap/topology.md`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/request/CreatePipelineSystemRequest.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/response/PipelineSystemResponse.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/command/CreatePipelineSystemCommand.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/dto/PipelineSystemSummaryDto.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/CreatePipelineSystemUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineSystemRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineSystemApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Pipeline.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyConnection.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/PipelineSegmentType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/PipelineSystemType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/PipelineType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/TopologyStatus.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JpaPipelineRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JpaPipelineSystemRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineSegmentJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineSystemFacilityJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineSystemJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineTypeJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/mapper/TopologyPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineSegmentJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineSystemFacilityJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineSystemJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineTypeJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/visualization/JpaTopologyMapVisualizationAdapter.java`
+- `src/main/resources/db/migration/V20261004_042__hmr_042_topology_pipeline.sql`
+- `src/test/java/dz/sh/hidra/modules/topology/semantic/PipelineSemanticRemediationTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/topology/domain/model/Pipeline.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyConnection.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/value/PipelineSegmentType.java`.
+- Inbound ports: `src/main/java/dz/sh/hidra/modules/topology/application/port/in/CreatePipelineSystemUseCase.java`.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineRepositoryPort.java`, `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineSystemRepositoryPort.java`.
+- Application services: `src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineSystemApplicationService.java`.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JpaPipelineRepositoryAdapter.java`, `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JpaPipelineSystemRepositoryAdapter.java`, `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineJpaEntity.java`, `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineSegmentJpaEntity.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `docs/data definition/Topology.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `docs/roadmap/topology.md`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/request/CreatePipelineSystemRequest.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/response/PipelineSystemResponse.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/command/CreatePipelineSystemCommand.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/dto/PipelineSystemSummaryDto.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/CreatePipelineSystemUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineSystemRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineSystemApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Pipeline.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyConnection.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/PipelineSegmentType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/PipelineSystemType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/PipelineType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/TopologyStatus.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JpaPipelineRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JpaPipelineSystemRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineSegmentJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineSystemFacilityJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineSystemJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineTypeJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/mapper/TopologyPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineSegmentJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineSystemFacilityJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineSystemJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineTypeJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/visualization/JpaTopologyMapVisualizationAdapter.java`
+- `src/main/resources/db/migration/V20261004_042__hmr_042_topology_pipeline.sql`
+- `src/test/java/dz/sh/hidra/modules/topology/semantic/PipelineSemanticRemediationTest.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+#### HMR-042 — topology.Pipeline
+
+- Source review: `HMSR-050`
+- Exact commit: `fix(topology): remediate semantic review Pipeline`
+- Status: **Completed** — Pipeline classification now uses an open Topology-owned catalog reference with seven migrated compatibility codes, FK-backed persistence, validated legacy backfill and stable-code visualization; TopologyStatus remains the lifecycle enum.
+- SCC: —
+- Recorded upstream HMS dependencies: topology.PipelineSystem
+- HMSR correction count: 1
+- Additive Flyway: not pre-authorized by HMR-002
+- Owner-contract prerequisite: No cross-module owner-contract prerequisite recorded by this HMSR correction.
+- Exact write allowlist:
+  - `docs/data definition/Topology.md`
+  - `docs/roadmap/model-semantic-remediation.md`
+  - `docs/roadmap/topology.md`
+  - `src/main/java/dz/sh/hidra/modules/topology/api/rest/request/CreatePipelineSystemRequest.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/api/rest/response/PipelineSystemResponse.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/application/command/CreatePipelineSystemCommand.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/application/dto/PipelineSystemSummaryDto.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/application/port/in/CreatePipelineSystemUseCase.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineRepositoryPort.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineSystemRepositoryPort.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineSystemApplicationService.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/domain/model/Pipeline.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/domain/value/PipelineSegmentType.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/domain/value/PipelineSystemType.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/domain/value/PipelineType.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JpaPipelineRepositoryAdapter.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JpaPipelineSystemRepositoryAdapter.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineSegmentJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineSystemFacilityJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineSystemJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/mapper/TopologyPersistenceMapper.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineJpaRepository.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineSegmentJpaRepository.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineSystemFacilityJpaRepository.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineSystemJpaRepository.java`
+  - `src/test/java/dz/sh/hidra/modules/topology/semantic/PipelineSemanticRemediationTest.java`
+- Exact validation:
+  - `./mvnw -q -DskipTests compile`
+  - `./mvnw -q -Dtest=PipelineSemanticRemediationTest test`
+  - `./mvnw -q test`
+  - `./mvnw -q clean verify`
+- HMSR obligations:
+  1. **Replace Pipeline's fixed `PipelineType` business taxonomy with the repository-approved catalog-reference architecture.** The correction must reconcile domain, persistence, Flyway/data migration, API/read contracts and existing values with the accepted Topology type-catalog design, using stable catalog codes/localized labels rather than a fixed business enum. Preserve `TopologyStatus` as a lifecycle enum unless separate evidence changes that classification.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/modules/topology/semantic/PipelineSemanticRemediationTest.java` — exact-head oracle suite 2 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `4c67d06e8ea6e4ebf42213fb9ad189514f82be83` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/model-semantic-remediation.md:193](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-remediation.md#L193)
+- [docs/roadmap/model-semantic-remediation.md:2345](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-remediation.md#L2345)
+- [docs/roadmap/topology.md:580](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L580)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Retained completed semantic remediation; legacy Planned/Blocked text is superseded by canonical reconciliation and current regression evidence. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/model-semantic-remediation.md:193 | HMR-042 | HMSR-050 | topology | Pipeline | — | topology.PipelineSystem | fix(topology): remediate semantic review Pipeline | Planned
+~~~~~~~~
+
+<a id="hapi-230"></a>
+## HAPI-230 — register Pipeline catalog prerequisite
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: HMR-042A
+
+Priority: P1
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+register Pipeline catalog prerequisite
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionTypeReference.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/PipelineSystemType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/PipelineType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/TopologyStatus.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineTypeJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineTypeJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/visualization/JpaTopologyMapVisualizationAdapter.java`
+- `src/main/resources/db/migration/V20261004_042__hmr_042_topology_pipeline.sql`
+- `src/test/java/dz/sh/hidra/modules/topology/application/service/TopologyOperationalScopeTargetQueryServiceTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. It is a documentation/review/preflight outcome; broader application functionality remains separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionType.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionTypeReference.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/value/PipelineSystemType.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: `src/test/java/dz/sh/hidra/modules/topology/application/service/TopologyOperationalScopeTargetQueryServiceTest.java`.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineJpaEntity.java`, `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineTypeJpaEntity.java`, `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineTypeJpaRepository.java`, `src/main/java/dz/sh/hidra/modules/topology/infrastructure/visualization/JpaTopologyMapVisualizationAdapter.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionTypeReference.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/PipelineSystemType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/PipelineType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/TopologyStatus.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineTypeJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineTypeJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/visualization/JpaTopologyMapVisualizationAdapter.java`
+- `src/main/resources/db/migration/V20261004_042__hmr_042_topology_pipeline.sql`
+- `src/test/java/dz/sh/hidra/modules/topology/application/service/TopologyOperationalScopeTargetQueryServiceTest.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+#### HMR-042A — Pipeline classification catalog prerequisite
+
+- Source: HMR-042 / HMSR-050 plus live Pipeline/PipelineSystem catalog evidence.
+- Exact commit: `docs(model-remediation): register Pipeline catalog prerequisite`
+- Status: **Completed** — the missing Pipeline classification catalog persistence/migration surface and minimal downstream compatibility scope are authorized; HMR-042A itself changes documentation only.
+- Type: documentation/architecture/schema prerequisite.
+- Live evidence:
+  1. `Pipeline.pipelineType` is still the fixed enum `PipelineType` with values `CRUDE_OIL`, `CONDENSATE`, `NATURAL_GAS`, `LPG`, `MULTI_PRODUCT`, `WATER`, `OTHER`.
+  2. `PipelineJpaEntity` still persists that enum directly in legacy column `pipeline_type`.
+  3. No `PipelineTypeJpaEntity`, `PipelineTypeJpaRepository`, `hidra_topology_pipeline_type`, or `pipeline_type_id` exists on live `main`.
+  4. The repository-approved Topology catalog pattern already exists for `PipelineSystemType` and `ConnectionTypeReference`: dedicated catalog table/entity/repository, domain reference object, code lookup at the application/repository boundary, FK-backed persisted ID, and migration/backfill from former enum/string values.
+  5. HMR-042 explicitly requires Flyway/data migration, but its original registration had no additive migration authorization.
+  6. `PipelineType` is consumed by the topology map visualization adapter and existing topology application tests outside the original HMR-042 allowlist; those callers must migrate to stable catalog-code semantics to keep the repository compiling without reintroducing enum coupling.
+- Required decisions:
+  1. Convert `PipelineType` from a closed business enum into the open Pipeline classification reference object, preserving the seven existing codes only as compatibility constants/seeded references, not as an exhaustive taxonomy.
+  2. Introduce a dedicated Topology-owned `hidra_topology_pipeline_type` catalog following the proven PipelineSystemType/ConnectionType catalog shape: stable `id`, unique stable `code`, optional `name_ar/name_fr/name_en`, `active`, and timestamps.
+  3. Seed exactly the seven codes already present in the former enum. Do not invent localized labels or new classifications.
+  4. Add an immutable HMR-042 Flyway migration that validates legacy values, backfills `pipeline_type_id`, adds/validates the same-module FK, indexes the reference, and removes the legacy `pipeline_type` column only after successful backfill.
+  5. Pipeline persistence must store the catalog FK/reference, not an enum string.
+  6. Repository/application reads expose stable catalog code and optional localized labels. Existing lifecycle `TopologyStatus` remains an enum.
+  7. Visualization must emit the Pipeline type stable code, not enum-name reflection.
+  8. No generic/shared catalog abstraction is authorized; keep the correction Topology/Pipeline-specific.
+- Newly authorized HMR-042 production files in addition to the original allowlist:
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineTypeJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineTypeJpaRepository.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/visualization/JpaTopologyMapVisualizationAdapter.java`
+  - `src/main/resources/db/migration/V20261004_042__hmr_042_topology_pipeline.sql`
+- Newly authorized HMR-042 compatibility test file:
+  - `src/test/java/dz/sh/hidra/modules/topology/application/service/TopologyOperationalScopeTargetQueryServiceTest.java`
+- HMR-042 remains the current production remediation after this prerequisite is observed. Do not start HMR-043 automatically.
+
+
+~~~~~~~~
+
+### 7. API Contracts
+
+No new API is part of this bounded documentation/historical outcome. Existing owner operations are listed in the runtime contract inventory below; no proposed endpoint is relabeled as implemented.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/modules/topology/application/service/TopologyOperationalScopeTargetQueryServiceTest.java` — exact-head oracle suite 2 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `4f62ab53977b7f8ed2ffd258906c9b226cff63be` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/model-semantic-remediation.md:2392](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-remediation.md#L2392)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent. Doc/preflight completion is not completion of the associated application workflow.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+<a id="hapi-334"></a>
+## HAPI-334 — review topology PipelineSystem
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: HMSR-024
+
+Priority: P1
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+review topology PipelineSystem
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `docs/roadmap/model-semantic-review.md`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/request/CreatePipelineSystemRequest.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/response/PipelineSystemResponse.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/command/CreatePipelineSystemCommand.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/dto/PipelineSystemSummaryDto.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineSystemApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/PipelineSystemType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/TopologyStatus.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. It is a documentation/review/preflight outcome; broader application functionality remains separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/value/PipelineSystemType.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/value/TopologyStatus.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: `src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineSystemApplicationService.java`.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `docs/roadmap/model-semantic-review.md`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/request/CreatePipelineSystemRequest.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/response/PipelineSystemResponse.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/command/CreatePipelineSystemCommand.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/dto/PipelineSystemSummaryDto.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineSystemApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/PipelineSystemType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/TopologyStatus.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+## 37. HMSR-024 — topology.PipelineSystem review
+
+**Decision:** REVISE  
+**Review code:** HMSR-024  
+**Dependency level:** 0  
+**Bounded context:** topology  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct dependents:** 1 — `topology.Pipeline` through `pipelineSystemId`  
+**Transitive dependents:** 1  
+**Unresolved/non-subject references:** 0
+
+### 37.1 Semantic role and ordering rationale
+
+`PipelineSystem` is the Topology-owned logical transportation-system aggregate that groups pipelines and participates in broader system/facility associations. It is part of the canonical physical/logical network backbone used by downstream operational, telemetry, simulation, risk, visualization and responsibility-scope use cases.
+
+It is Level 0 because it has no confirmed upstream HMS subject-model dependency. `Pipeline` is the one direct HMS subject dependent through mandatory `pipelineSystemId`.
+
+Topology DDD correctly owns PipelineSystem and explicitly excludes organization, identity, telemetry values, workflow approvals, integrity findings, HSE cases and other foreign bounded-context state.
+
+### 37.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable PipelineSystem identity and persistence primary key. |
+| `code` | `String` | Mandatory | Stable language-neutral topology business code. |
+| `nameAr` | `String` | Optional localized text | Arabic system name. |
+| `nameFr` | `String` | Optional localized text | French system name. |
+| `nameEn` | `String` | Optional localized text | English system name. |
+| `systemType` | `PipelineSystemType` | Mandatory in current live model | Current fixed classification enum: `TRANSPORT`, `GATHERING`, `DISTRIBUTION`, `EXPORT`, `IMPORT`, or `MIXED`. This is the principal semantic inconsistency identified by HMSR-024. |
+| `status` | `TopologyStatus` | Mandatory | Lifecycle state: `DRAFT`, `ACTIVE`, `SUSPENDED`, `RETIRED`, or `ARCHIVED`. |
+| `description` | `String` | Optional | Free-form system description. |
+| `commissionedAt` | `Instant` | Optional | Commissioning timestamp when known. |
+| `retiredAt` | `Instant` | Optional | Retirement timestamp when known. |
+| `createdAt` | `Instant` | Persistence-required audit timestamp | Creation timestamp. |
+| `updatedAt` | `Instant` | Persistence-required audit timestamp | Last-update timestamp. |
+
+The current compact constructor already rejects blank `id` and `code`, requires non-null `systemType` and `status`, and normalizes textual values.
+
+### 37.3 Topology ownership and downstream Pipeline boundary
+
+The validated HMS graph contains:
+
+```text
+Pipeline.pipelineSystemId
+    -> PipelineSystem.id
+```
+
+`Pipeline.pipelineSystemId` is mandatory in domain and JPA state. HRA-111 installs `fk_hra111_topology_020`, linking:
+
+```text
+hidra_topology_pipeline.pipeline_system_id
+    -> hidra_topology_pipeline_system.id
+```
+
+with `ON DELETE RESTRICT`.
+
+Topology persistence also contains non-HMS-subject association models such as `PipelineSystemFacility` that point to PipelineSystem. Those persistence dependents reinforce PipelineSystem as stable topology master identity but do not change the HMS direct-subject dependent count.
+
+### 37.4 Accepted catalog policy versus live PipelineSystem classification
+
+The active Topology roadmap states:
+
+```text
+Topology business taxonomy concepts are no longer roadmap-accepted as Java enums.
+```
+
+and records the catalog correction sequence as completed. The same roadmap says business type concepts are modeled through catalog references with stable codes/localized labels and that REST create/list requests use stable `typeCode` fields.
+
+The current architecture domain schema also represents PipelineSystem with a catalog-style reference:
+
+```text
+PipelineSystem
+  ...
+  ProductTypeReference productType
+  TopologyStatus status
+```
+
+and the controlled-vocabulary correction history classifies `TopologyStatus` as an intentional lifecycle enum while requiring business-type enums to be replaced by catalog/reference semantics.
+
+However, live PipelineSystem remains:
+
+```text
+PipelineSystemType systemType
+```
+
+where `PipelineSystemType` is a Java enum containing:
+
+```text
+TRANSPORT
+GATHERING
+DISTRIBUTION
+EXPORT
+IMPORT
+MIXED
+```
+
+The JPA entity persists this as an enumerated string in mandatory `system_type`, and the base Flyway table still defines:
+
+```text
+system_type varchar(80) NOT NULL
+```
+
+No live migration reviewed by HMSR-024 replaces this field with a catalog FK/reference.
+
+### 37.5 Application/API inconsistency with the accepted type-code contract
+
+The unfinished taxonomy shape reaches every active write/read boundary:
+
+- `CreatePipelineSystemCommand` accepts `PipelineSystemType systemType`;
+- `CreatePipelineSystemRequest` exposes the domain enum directly;
+- `PipelineSystemSummaryDto` exposes the same enum;
+- `PipelineSystemResponse` exposes the same enum;
+- `PipelineSystemApplicationService` constructs the aggregate using that enum.
+
+This conflicts with the accepted Topology roadmap's general post-correction contract that create/list inputs use stable catalog `typeCode` values and responses expose catalog/localized type semantics rather than fixed business taxonomy enums.
+
+HMSR-024 does **not** assume that the correct replacement is necessarily the existing `ProductTypeReference` despite the architecture diagram. The live enum values describe transportation-system classification, while "product type" usually represents transported hydrocarbon/product semantics. Current repository evidence is contradictory enough that a dedicated Topology correction must decide whether PipelineSystem needs its own catalog-backed system classification, an existing approved catalog, or an explicitly revised architecture contract.
+
+What is proven is that the current fixed Java enum cannot simultaneously be the final model while the accepted Topology policy says business type concepts are catalog-backed and the catalog correction sequence is complete.
+
+### 37.6 Unsupported silent TRANSPORT default
+
+`PipelineSystemApplicationService.createPipelineSystem()` currently applies:
+
+```text
+command.systemType() == null
+    ? PipelineSystemType.TRANSPORT
+    : command.systemType()
+```
+
+The domain itself says `systemType` is mandatory, but no Topology DDD rule, roadmap rule, migration rule or application contract reviewed by HMSR-024 states that an omitted classification semantically means `TRANSPORT`.
+
+Therefore the service can silently invent a business classification instead of failing closed or resolving an explicitly supplied catalog/reference value.
+
+This default is especially problematic while the type model itself is unresolved: data provisioned or created through this path could encode `TRANSPORT` simply because the caller supplied no type, not because authoritative source data established that classification.
+
+### 37.7 Multilingual and lifecycle semantics
+
+`nameAr/nameFr/nameEn` provide an embedded multilingual system name. Current repository evidence does not require every language to be non-null, so HMSR-024 does not invent a completeness rule.
+
+`TopologyStatus` is explicitly distinguished from business taxonomy in the correction audit and retained as a lifecycle enum. New systems are created as `DRAFT`, which is conservative and consistent with the current status vocabulary.
+
+The repository does not define a complete PipelineSystem status-transition matrix, so HMSR-024 does not invent one.
+
+### 37.8 Commissioning/retirement semantics deliberately not invented
+
+`commissionedAt` and `retiredAt` are optional in both domain and persistence.
+
+Although chronological rules may be intuitively desirable, the repository-wide invariant classification lists five approved Topology temporal invariants and does not include a PipelineSystem `commissionedAt <= retiredAt` rule. HMSR-024 therefore does not promote that assumption into the semantic baseline.
+
+Likewise, no evidence reviewed here requires `retiredAt` whenever status is `RETIRED`, forbids it for other statuses, or requires `commissionedAt` before activation.
+
+### 37.9 Code and persistence semantics deliberately not invented
+
+The base schema indexes `PipelineSystem.code` but does not declare it unique. Current active Topology DDD/roadmap evidence reviewed here does not state the exact uniqueness scope for PipelineSystem code, so HMSR-024 does not invent one.
+
+The live domain and JPA models otherwise agree on all 12 current components, and generic `createdAt`/`updatedAt` requirements remain persistence/application-boundary audit concerns under the HRA invariant policy.
+
+### 37.10 Required revisions
+
+Two evidence-backed obligations remain:
+
+1. **Reconcile PipelineSystem business classification with the accepted Topology catalog policy.** Replace or explicitly redesign the current fixed `PipelineSystemType/system_type` representation so the final PipelineSystem contract is consistent with the repository's catalog-backed business-type architecture. The correction must define the authoritative catalog/reference semantics rather than blindly assuming `ProductTypeReference`; domain, application, REST, JPA and additive Flyway changes must remain aligned in the separately authorized Topology task.
+
+2. **Remove the unsupported silent `TRANSPORT` inference.** Missing PipelineSystem classification must not be converted to `TRANSPORT` unless an explicit Topology business rule establishes that default. The corrected write boundary should fail closed or use the explicitly approved classification/catalog contract.
+
+HMSR-024 does not modify production Java, JPA, Flyway, REST/application contracts, tests, topology master data or provisioned data.
+
+### 37.11 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, PipelineSystem is a high-level network grouping used to organize pipelines and associated facilities. Whether a system is transport, gathering, export, import, distribution or mixed is operational master-data classification, not merely a technical implementation detail.
+
+Such classification should be authoritative and traceable. Silently classifying an unspecified system as `TRANSPORT` can misrepresent network semantics, while hard-coding an evolving business classification into a Java enum conflicts with Hidra's accepted catalog-governance direction.
+
+Topology remains the owner of this network identity and classification; other bounded contexts should consume stable topology references rather than duplicate or redefine the system taxonomy.
+
+### 37.12 Review conclusion
+
+**REVISE.** `PipelineSystem` has a coherent Topology ownership role, correct Level-0 placement, stable 12-field current representation, appropriate multilingual names, intentional lifecycle status and a database-protected downstream Pipeline relationship.
+
+The target baseline cannot mark it APPROVED while live domain/JPA/API/schema still use fixed `PipelineSystemType/system_type` business taxonomy despite the accepted completed catalog policy, and while the create service silently invents `TRANSPORT` when classification is absent.
+
+HMS reconciliation must retain these obligations until a separately authorized Topology correction reconciles the classification model and removes unsupported defaulting, or the accepted Topology catalog architecture is explicitly revised with stronger repository evidence.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+No new API is part of this bounded documentation/historical outcome. Existing owner operations are listed in the runtime contract inventory below; no proposed endpoint is relabeled as implemented.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `f2c36c5cc0dc90cedd7d934e328da5af06bb90c9` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [doc/domain/SEMANTIC_DECISIONS.md:76](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/domain/SEMANTIC_DECISIONS.md#L76)
+- [docs/roadmap/model-semantic-review.md:219](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-review.md#L219)
+- [docs/roadmap/model-semantic-review.md:6165](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-review.md#L6165)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Completed semantic review is documentation work; APPROVED/REVISE is the historical model verdict, not application completeness. Current implementation/planning states above are independent. Doc/preflight completion is not completion of the associated application workflow.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/model-semantic-review.md:219 | HMSR-024 | 0 | topology | PipelineSystem | — | — | 1 | 1 | 0 | REVISE | Completed | docs(model-review): review topology PipelineSystem
+doc/domain/SEMANTIC_DECISIONS.md:76 | HMSR-024 | [topology.PipelineSystem](#topology-pipelinesystem) | REVISE | HMR-022
+~~~~~~~~
+
+<a id="hapi-344"></a>
+## HAPI-344 — review topology TopologyConnection
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: HMSR-034
+
+Priority: P1
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+review topology TopologyConnection
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `docs/roadmap/model-semantic-review.md`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyConnection.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/service/TopologyConnectionValidator.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionTypeReference.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/FlowDirection.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/TopologyStatus.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/TopologyConnectionJpaEntity.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. It is a documentation/review/preflight outcome; broader application functionality remains separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyConnection.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/service/TopologyConnectionValidator.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionType.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionTypeReference.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/TopologyConnectionJpaEntity.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `docs/roadmap/model-semantic-review.md`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyConnection.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/service/TopologyConnectionValidator.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionTypeReference.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/FlowDirection.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/TopologyStatus.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/TopologyConnectionJpaEntity.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+## 47. HMSR-034 — topology.TopologyConnection review
+
+**Decision:** REVISE  
+**Review code:** HMSR-034  
+**Dependency level:** 0  
+**Bounded context:** topology  
+**Confirmed upstream HMS subject dependencies:** none  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Non-subject/read-persistence prerequisites:** 3 — two TopologyNode references and one optional PipelineSegment reference
+
+### 47.1 Semantic role and ordering rationale
+
+`TopologyConnection` is the Topology-owned explicit graph edge between two topology nodes. It carries the connection classification, directionality, optional pipeline-segment association, optional nominal-capacity metadata, lifecycle state and audit timestamps.
+
+The active Topology roadmap distinguishes `PipelineSegment` as the linear physical pipe asset between two nodes and `TopologyConnection` as the explicit graph edge between nodes. This distinction is retained.
+
+It remains HMS Level 0 because HMS-005 already classifies `TopologyNode` and `PipelineSegment` as retained Topology read/persistence prerequisites outside the 123-model HMS subject graph. Resolving these references therefore does not add an HMS graph edge.
+
+### 47.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable topology-connection identity and persistence primary key. |
+| `code` | `String` | Mandatory | Stable connection code. Current evidence does not establish a uniqueness scope. |
+| `fromNodeId` | `String` | Mandatory | Source/end-A TopologyNode reference. |
+| `toNodeId` | `String` | Mandatory | Target/end-B TopologyNode reference. |
+| `connectionType` | `ConnectionType` in live code | Mandatory, but representation requires revision | Business classification of the graph edge; accepted Topology architecture requires a catalog-backed `ConnectionTypeReference`. |
+| `flowDirection` | `FlowDirection` | Mandatory | Technical graph/flow direction: `DIRECTED`, `BIDIRECTIONAL`, or `UNKNOWN`. |
+| `pipelineSegmentId` | `String` | Optional | Optional association to retained Topology PipelineSegment master data. |
+| `nominalCapacity` | `BigDecimal` | Optional | Optional nominal-capacity metadata. No current authoritative range/sign rule was found. |
+| `capacityUnitCode` | `String` | Optional | Unit code associated with nominal capacity when supplied; current evidence does not define a governed unit-reference model or mandatory pairing rule. |
+| `status` | `TopologyStatus` | Mandatory | Technical lifecycle state: `DRAFT`, `ACTIVE`, `SUSPENDED`, `RETIRED`, or `ARCHIVED`. |
+| `createdAt` | `Instant` | Persistence-required audit timestamp | Creation timestamp. |
+| `updatedAt` | `Instant` | Persistence-required audit timestamp | Last-update timestamp. |
+
+The canonical record already rejects blank `id`, `code`, `fromNodeId`, and `toNodeId`, and requires non-null connection type, flow direction and lifecycle status.
+
+### 47.3 Node dependency resolution and integrity
+
+HMS-005 already records:
+
+```text
+topology.TopologyConnection.fromNodeId/toNodeId
+    -> persistence/read TopologyNode
+```
+
+and the scalar-reference integrity inventory resolves both fields to `topology.TopologyNode`.
+
+HRA-111 installs:
+
+```text
+fk_hra111_topology_001
+  from_node_id -> hidra_topology_node(id)
+
+fk_hra111_topology_002
+  to_node_id -> hidra_topology_node(id)
+```
+
+both with `ON DELETE RESTRICT` and validated against existing rows.
+
+Therefore both required node references are now semantically and relationally resolved. No production correction is required merely for node existence.
+
+### 47.4 Self-connection invariant enforcement gap
+
+The repository contains `TopologyConnectionValidator`, which states the domain rule:
+
+```text
+Topology connection must not connect a node to itself.
+```
+
+However, the canonical `TopologyConnection` constructor does not reject `fromNodeId == toNodeId`, the base schema has no corresponding CHECK constraint, and repository search found no active application write service invoking `TopologyConnectionValidator`.
+
+Consequently, the domain rule exists but is not guaranteed by the model/persistence boundary. A self-loop can be constructed and, through a direct repository/persistence path, stored while satisfying both node foreign keys.
+
+HMSR-034 does not prescribe whether the invariant belongs in the record constructor, an authoritative domain/application policy, an additive database CHECK, or a combination. It requires only that authoritative writes fail closed.
+
+### 47.5 Connection-type catalog regression
+
+The active Topology roadmap states that **Connection type** is a catalog-backed controlled vocabulary and that business type concepts must use catalog references rather than fixed Java enum fields.
+
+The accepted architecture artifacts specifically show:
+
+```text
+TopologyConnection -> ConnectionTypeReference
+```
+
+and the COR2-007 controlled-vocabulary audit classifies `ConnectionType` as `REPLACE_FIRST_THEN_DELETE`, while `ConnectionTypeReference` is the intended retained reference object.
+
+Live `main`, however, has no `ConnectionTypeReference.java`. `TopologyConnection` and `TopologyConnectionJpaEntity` both use the fixed Java enum:
+
+```text
+PIPELINE_SEGMENT
+DIRECT_LINK
+VIRTUAL_LINK
+TRANSFER_LINK
+MEASUREMENT_LINK
+```
+
+and persistence stores it directly in `connection_type varchar(80) NOT NULL` using `EnumType.STRING`. The consolidated current Topology migration contains no connection-type catalog table/reference column for this model.
+
+This is a direct contradiction between accepted Topology controlled-vocabulary architecture and the current production model/persistence shape. The semantic baseline cannot preserve both as authoritative.
+
+### 47.6 Optional PipelineSegment reference integrity gap
+
+HMS-005 explicitly identifies:
+
+```text
+topology.TopologyConnection.pipelineSegmentId
+    -> persistence/read PipelineSegment
+```
+
+so the optional field is no longer semantically unresolved.
+
+The base schema indexes `pipeline_segment_id`, but HRA-111 does not add an FK for this nullable field, and no active TopologyConnection write service or lookup validator was found that checks a populated segment ID before persistence.
+
+Therefore a non-null `pipelineSegmentId` can currently be stored without demonstrated fail-closed proof that the referenced PipelineSegment exists.
+
+HMSR-034 does not make the segment association mandatory and does not infer that every `PIPELINE_SEGMENT` connection type must carry one, because current authoritative evidence does not state that coupling.
+
+### 47.7 FlowDirection and lifecycle semantics
+
+`FlowDirection` behaves as technical graph semantics rather than a user-maintained business taxonomy, and current evidence does not classify it for catalog replacement. HMSR-034 therefore retains the enum.
+
+`TopologyStatus` was explicitly retained as a lifecycle enum by the controlled-vocabulary audit. No status-transition matrix specific to TopologyConnection is defined by current evidence, so none is invented.
+
+### 47.8 Capacity semantics deliberately not invented
+
+Current repository evidence does not establish:
+
+- that `nominalCapacity` must be positive or nonnegative;
+- that `nominalCapacity` and `capacityUnitCode` must always appear together;
+- a canonical capacity-unit catalog/owner for this field;
+- conversion semantics or base units;
+- connection-type-specific capacity rules.
+
+HMSR-034 therefore records no capacity invariant beyond the existing optional representation.
+
+### 47.9 Code and graph uniqueness deliberately not invented
+
+The base schema contains only an ordinary index on `code`, and no current Topology DDD/roadmap evidence reviewed here states a global or scoped connection-code uniqueness invariant.
+
+Likewise, current evidence does not define uniqueness for `(fromNodeId, toNodeId, connectionType)`, nor whether parallel logical edges between the same nodes are allowed. Such rules are not inferred from generic graph modeling.
+
+### 47.10 Required revisions
+
+Three evidence-backed correction obligations remain:
+
+1. **Restore/reconcile catalog-backed connection-type semantics.** Replace the live fixed `ConnectionType` enum/string persistence with the accepted `ConnectionTypeReference`/catalog architecture, or explicitly revise the governing Topology architecture if that earlier decision is no longer intended. Domain, JPA, Flyway, API/application contracts and migration strategy must converge on one representation.
+
+2. **Enforce the no-self-connection domain rule on authoritative writes.** `fromNodeId` and `toNodeId` must not resolve to the same node when a TopologyConnection becomes authoritative. The existing unused validator is insufficient by itself.
+
+3. **Protect populated PipelineSegment references.** When `pipelineSegmentId` is non-null, it must resolve to the retained Topology PipelineSegment target through an additive nullable FK, application validation, guarded provisioning path, or equivalent fail-closed mechanism.
+
+HMSR-034 does not modify production Java, JPA, Flyway, API/application contracts, tests, topology master data, or provisioned data.
+
+### 47.11 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, TopologyConnection is the governed graph edge used to represent network connectivity between physical/logical topology nodes. It is distinct from the pipe-segment asset itself even when a connection is associated with a PipelineSegment.
+
+Node existence, valid edge classification and prevention of unintended self-connections are important for map rendering, routing, simulation snapshots, telemetry anchoring and downstream network reasoning. A dangling segment link or classification drift would weaken network traceability.
+
+### 47.12 Review conclusion
+
+**REVISE.** `TopologyConnection` has a coherent 12-field Topology-owned graph role, required node references protected by HRA-111, correct technical flow/lifecycle enums, and a clear distinction from PipelineSegment.
+
+The target baseline cannot mark it APPROVED while the live fixed `ConnectionType` representation contradicts the accepted catalog-reference architecture, the explicit no-self-loop rule is not enforced on authoritative writes, and populated optional `pipelineSegmentId` values lack demonstrated referential protection.
+
+HMS reconciliation must retain these obligations until an explicitly authorized Topology correction task resolves them or the governing Topology architecture is explicitly revised with stronger evidence.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+No new API is part of this bounded documentation/historical outcome. Existing owner operations are listed in the runtime contract inventory below; no proposed endpoint is relabeled as implemented.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `764f4a8c7395db4d3a34b2491d157e2e6f7c383b` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [doc/domain/SEMANTIC_DECISIONS.md:86](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/domain/SEMANTIC_DECISIONS.md#L86)
+- [docs/roadmap/model-semantic-review.md:229](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-review.md#L229)
+- [docs/roadmap/model-semantic-review.md:7848](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-review.md#L7848)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Completed semantic review is documentation work; APPROVED/REVISE is the historical model verdict, not application completeness. Current implementation/planning states above are independent. Doc/preflight completion is not completion of the associated application workflow.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/model-semantic-review.md:229 | HMSR-034 | 0 | topology | TopologyConnection | — | — | 0 | 0 | 3 | REVISE | Completed | docs(model-review): review topology TopologyConnection
+doc/domain/SEMANTIC_DECISIONS.md:86 | HMSR-034 | [topology.TopologyConnection](#topology-topologyconnection) | REVISE | HMR-031
+~~~~~~~~
+
+<a id="hapi-351"></a>
+## HAPI-351 — review topology Facility
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: HMSR-041
+
+Priority: P1
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+review topology Facility
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `docs/roadmap/model-semantic-review.md`
+- `src/main/java/dz/sh/hidra/modules/organization/domain/model/OrganizationUnit.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/FacilityRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/FacilityApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Equipment.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/FacilityKind.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/FacilityStatus.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. It is a documentation/review/preflight outcome; broader application functionality remains separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/organization/domain/model/OrganizationUnit.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/model/Equipment.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/value/FacilityKind.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/value/FacilityStatus.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/topology/application/port/out/FacilityRepositoryPort.java`.
+- Application services: `src/main/java/dz/sh/hidra/modules/topology/application/service/FacilityApplicationService.java`.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `docs/roadmap/model-semantic-review.md`
+- `src/main/java/dz/sh/hidra/modules/organization/domain/model/OrganizationUnit.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/FacilityRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/FacilityApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Equipment.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/FacilityKind.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/FacilityStatus.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+## 54. HMSR-041 — topology.Facility review
+
+**Decision:** REVISE  
+**Review code:** HMSR-041  
+**Dependency level:** 1  
+**Bounded context:** topology  
+**Confirmed upstream subject dependencies:** `party.Party` through optional `ownerPartyId`  
+**Confirmed direct HMS subject dependents:** 1 — `topology.Equipment` through its facility relationship  
+**Transitive HMS subject dependents:** 1  
+**Unresolved/non-subject references:** 0 — `facilityTypeId` is now resolved to retained Topology FacilityType persistence/read state outside the HMS subject set
+
+### 54.1 Semantic role and ordering rationale
+
+`Facility` is the Topology-owned physical-facility model for stations, terminals, depots, pump/compressor stations and other physical network facilities.
+
+It owns physical-network identity, facility classification, location coordinates, operational lifecycle and optional external Party ownership reference. It must remain distinct from OrganizationUnit: an organizational station/unit represents people/responsibility structure, while Facility represents the physical site/network asset.
+
+It is Level 1 because the optional `ownerPartyId` is a confirmed cross-module HMS subject reference to `party.Party`. Facility type is Topology-owned retained persistence/read state and therefore does not add an HMS subject edge.
+
+### 54.2 Field semantics
+
+| Field | Type | Reviewed meaning |
+|---|---|---|
+| `id` | `String` | Mandatory stable Topology facility identity. |
+| `code` | `String` | Mandatory language-neutral facility business/reference code. No current authoritative uniqueness scope is established. |
+| `nameAr` | `String` | Optional Arabic display name. |
+| `nameFr` | `String` | Optional French display name. |
+| `nameEn` | `String` | Optional English display name. |
+| `facilityTypeId` | `String` | Mandatory same-module reference to Topology FacilityType. |
+| `facilityKind` | `FacilityKind` | Mandatory Topology facility-kind classification used by the current model. |
+| `ownerPartyId` | `String` | Optional cross-module stable reference to Party-owned owner identity. |
+| `ownerPartyCodeSnapshot` | `String` | Optional historical/readability snapshot of Party code. |
+| `ownerPartyNameSnapshot` | `String` | Optional historical/readability snapshot of Party display name. |
+| `latitude` | `BigDecimal` | Optional latitude value. |
+| `longitude` | `BigDecimal` | Optional longitude value. |
+| `elevationMeters` | `BigDecimal` | Optional elevation in meters. |
+| `status` | `FacilityStatus` | Mandatory facility lifecycle state. |
+| `commissionedAt` | `Instant` | Optional commissioning timestamp. |
+| `retiredAt` | `Instant` | Optional retirement timestamp. |
+| `createdAt` | `Instant` | Persistence-required creation timestamp. |
+| `updatedAt` | `Instant` | Persistence-required update timestamp. |
+
+The canonical constructor rejects blank ID, code and facility type; requires non-null facility kind and status; and normalizes text/reference/snapshot values.
+
+### 54.3 FacilityType reference semantics
+
+The Topology DDD owns both `Facility` and `FacilityType`.
+
+The base facility schema requires:
+
+```text
+facility_type_id varchar(80) NOT NULL
+```
+
+and HRA-111 installs:
+
+```text
+fk_hra111_topology_014
+  facility_type_id -> hidra_topology_facility_type(id)
+  ON DELETE RESTRICT
+```
+
+with constraint validation.
+
+Therefore `facilityTypeId` is no longer a generic unresolved catalog/value dependency. It is a mandatory same-module reference to the retained Topology FacilityType persistence/read model outside the 123 HMS subject set.
+
+The database already fails closed on missing FacilityType rows. Current evidence does not separately define an active/selectable FacilityType eligibility rule for facility registration, so HMSR-041 does not invent one.
+
+### 54.4 Party ownership boundary and integrity gap
+
+The Party DDD explicitly establishes Party as the owner of external legal-entity/counterparty master data and states that other modules store only Party references and snapshots.
+
+Facility follows that pattern:
+
+```text
+ownerPartyId
+ownerPartyCodeSnapshot
+ownerPartyNameSnapshot
+```
+
+The HMS graph correctly resolves `ownerPartyId -> party.Party`.
+
+However, `FacilityApplicationService.registerFacility()` accepts `ownerPartyId` and both snapshots directly from the command and persists them without resolving the Party target through a Party-owned lookup/contract.
+
+The field is nullable, so HMSR-041 does not make Party ownership mandatory. But when `ownerPartyId` is populated, current authoritative writes can persist a nonexistent Party identity.
+
+A cross-module database FK would violate the established bounded-context reference policy. The correction therefore belongs at an application/owner-contract boundary, not in Topology schema coupling.
+
+Current evidence also does not define a required Party role such as OWNER for every facility owner reference. HMSR-041 does not invent role eligibility beyond existence unless stronger Party/Topology evidence later establishes it.
+
+### 54.5 Snapshot semantics
+
+`ownerPartyCodeSnapshot` and `ownerPartyNameSnapshot` are historical/readability values and do not replace Party identity.
+
+Because the current registration API accepts snapshots directly from the caller, they are not independently authoritative proof of Party existence.
+
+HMSR-041 does not require snapshots to be mandatory whenever `ownerPartyId` is present because no current Topology DDD rule establishes that pairing. A future correction may choose to resolve snapshots from Party rather than trust caller-supplied values, but that is not elevated into a separate HMSR obligation without stronger explicit evidence.
+
+### 54.6 FacilityKind and lifecycle semantics
+
+`FacilityKind` is mandatory in the canonical model. The current registration service defaults a missing command value to `FacilityKind.OTHER`.
+
+No current Topology DDD/roadmap evidence reviewed here establishes that FacilityKind must be replaced by FacilityType or by a catalog-backed reference, nor that the two fields are redundant. HMSR-041 therefore does not manufacture a controlled-vocabulary refactor.
+
+`FacilityStatus` is mandatory and new registrations are created as `PLANNED`, which is conservative for a newly registered physical facility.
+
+Current evidence does not define a full Facility status-transition matrix, commissioned/retired timestamp requirements by status, or automatic transitions. None are invented.
+
+### 54.7 Location and chronology rules deliberately not invented
+
+The model permits optional latitude, longitude and elevation.
+
+Current Topology DDD/roadmap evidence does not define:
+
+- required coordinates for every facility;
+- latitude/longitude ranges at the Facility model boundary;
+- mandatory coordinate pairing;
+- CRS/datum semantics on this record;
+- elevation sign/range limits.
+
+The broader data-provisioning roadmap requires coordinate/CRS validation during provisioning, but that does not by itself prove a Facility constructor invariant. HMSR-041 therefore records no coordinate correction.
+
+Likewise, current evidence does not explicitly define `commissionedAt <= retiredAt` or status/timestamp coupling for Facility, so no chronology rule is invented.
+
+### 54.8 Code and multilingual semantics
+
+The facility code is mandatory in domain/JPA/schema.
+
+The base schema creates an ordinary code index, not a unique constraint. Current authoritative Topology DDD/roadmap evidence reviewed here does not explicitly establish global or scoped Facility code uniqueness. HMSR-041 therefore does not infer uniqueness from the field name.
+
+`nameAr/nameFr/nameEn` are optional in both domain and persistence. Current Topology evidence does not require all three names or French specifically, and no separate translation model is established for Facility. No multilingual correction is recorded.
+
+### 54.9 Application/JPA/Flyway alignment
+
+The live domain and JPA representations agree on all 18 components.
+
+The registration application service:
+
+- generates a Topology-owned ID;
+- accepts the mandatory code and facility type;
+- defaults a missing facility kind to `OTHER`;
+- initializes status to `PLANNED`;
+- leaves commissioning/retirement timestamps unset; and
+- persists through `FacilityRepositoryPort`.
+
+The final persistence contract requires ID, code, facility type, facility kind, status and audit timestamps while keeping names, Party ownership, coordinates and lifecycle timestamps nullable.
+
+The only evidence-backed alignment defect found for authoritative registration is the unvalidated populated Party owner reference.
+
+### 54.10 Required revision
+
+One evidence-backed correction obligation remains:
+
+1. **Validate populated Facility owner Party references through the Party owner boundary.** When `ownerPartyId` is supplied, Topology must fail closed unless that Party identity exists under the Party bounded context. Do not introduce a cross-module database FK. A separately authorized Topology/Party correction should use a deliberate Party lookup/contract or equivalent owner-controlled validation boundary and preserve snapshots as non-authoritative evidence.
+
+HMSR-041 does not modify production Java, JPA, Flyway, API/application contracts, tests, facility master data, Party data, or provisioned data.
+
+### 54.11 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, Facility represents the physical pipeline-network site: for example a station, terminal, depot, pump station or compressor station.
+
+A Facility must remain distinct from the OrganizationUnit that may staff or administratively represent that site. Physical ownership may reference a Party where appropriate, but the Party identity remains governed by Party master data.
+
+A dangling owner Party would weaken ownership traceability for physical infrastructure, reporting, contractual context and downstream asset/reference use even though the physical Facility record itself remains valid.
+
+### 54.12 Review conclusion
+
+**REVISE.** `Facility` has a coherent 18-field Topology-owned physical-site model, correct separation from Organization, mandatory FacilityType reference protected by HRA-111, aligned domain/JPA/schema requiredness, optional multilingual/location state, and conservative PLANNED creation semantics.
+
+The target baseline cannot mark it APPROVED while a populated `ownerPartyId` can be persisted without demonstrated validation against the Party-owned master identity.
+
+HMS reconciliation must retain this Party-reference integrity obligation until an explicitly authorized Topology/Party correction resolves it or stronger repository evidence explicitly changes Facility ownership semantics.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+No new API is part of this bounded documentation/historical outcome. Existing owner operations are listed in the runtime contract inventory below; no proposed endpoint is relabeled as implemented.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `66e478b714d64800563e7260b974921d65ef380c` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [doc/domain/SEMANTIC_DECISIONS.md:93](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/domain/SEMANTIC_DECISIONS.md#L93)
+- [docs/roadmap/model-semantic-review.md:236](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-review.md#L236)
+- [docs/roadmap/model-semantic-review.md:9089](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-review.md#L9089)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Completed semantic review is documentation work; APPROVED/REVISE is the historical model verdict, not application completeness. Current implementation/planning states above are independent. Doc/preflight completion is not completion of the associated application workflow.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/model-semantic-review.md:236 | HMSR-041 | 1 | topology | Facility | — | party.Party | 1 | 1 | 0 | REVISE | Completed | docs(model-review): review topology Facility
+doc/domain/SEMANTIC_DECISIONS.md:93 | HMSR-041 | [topology.Facility](#topology-facility) | REVISE | HMR-036
+~~~~~~~~
+
+<a id="hapi-360"></a>
+## HAPI-360 — review topology Pipeline
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: HMSR-050
+
+Priority: P1
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+review topology Pipeline
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `docs/roadmap/model-semantic-review.md`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/PipelineType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/TopologyStatus.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. It is a documentation/review/preflight outcome; broader application functionality remains separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/value/PipelineType.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/value/TopologyStatus.java`.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineRepositoryPort.java`.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `docs/roadmap/model-semantic-review.md`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/PipelineType.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/TopologyStatus.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+## 63. HMSR-050 — topology.Pipeline review
+
+**Decision:** REVISE  
+**Review code:** HMSR-050  
+**Dependency level:** 1  
+**Bounded context:** topology  
+**Confirmed upstream subject dependencies:** `topology.PipelineSystem` through mandatory `pipelineSystemId`  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject references:** 0
+
+### 63.1 Semantic role and ordering rationale
+
+`Pipeline` is the Topology-owned physical/logical pipeline record within one PipelineSystem.
+
+Topology owns network structure, so Pipeline carries stable topology identity, system membership, engineering descriptors, multilingual labels and lifecycle state. It must remain distinct from organizational ownership, telemetry measurements, integrity findings and maintainability state.
+
+It is Level 1 because mandatory `pipelineSystemId` references the already-reviewed HMS subject `PipelineSystem`.
+
+### 63.2 Field semantics
+
+| Field | Type | Reviewed meaning |
+|---|---|---|
+| `id` | `String` | Mandatory stable Pipeline identity. |
+| `pipelineSystemId` | `String` | Mandatory same-module reference to PipelineSystem. |
+| `code` | `String` | Mandatory language-neutral pipeline code. |
+| `nameAr` | `String` | Optional Arabic display name. |
+| `nameFr` | `String` | Optional French display name. |
+| `nameEn` | `String` | Optional English display name. |
+| `pipelineType` | `PipelineType` | Mandatory business classification currently implemented as a fixed Java enum. |
+| `nominalDiameter` | `BigDecimal` | Optional nominal diameter. |
+| `diameterUnitCode` | `String` | Optional unit code accompanying nominal diameter. |
+| `designPressure` | `BigDecimal` | Optional design pressure. |
+| `pressureUnitCode` | `String` | Optional unit code accompanying design pressure. |
+| `totalLengthKm` | `BigDecimal` | Optional total length in kilometres. |
+| `status` | `TopologyStatus` | Mandatory lifecycle/status state. |
+| `createdAt` | `Instant` | Persistence-required creation timestamp. |
+| `updatedAt` | `Instant` | Persistence-required update timestamp. |
+
+The canonical constructor requires nonblank ID, PipelineSystem ID and code, and non-null pipeline type/status.
+
+### 63.3 PipelineSystem reference integrity
+
+The final schema requires `pipeline_system_id NOT NULL`.
+
+HRA-111 installs and validates:
+
+```text
+hidra_topology_pipeline.pipeline_system_id
+    -> hidra_topology_pipeline_system.id
+```
+
+Therefore the mandatory HMS dependency is fail-closed at persistence.
+
+The domain also rejects blank `pipelineSystemId`, so domain/persistence requiredness is aligned for the system relationship.
+
+### 63.4 Topology catalog architecture conflict
+
+The live Topology roadmap records the completed catalog-refactor baseline:
+
+```text
+COR-009  refactor(topology): replace enum usage in domain assets with type references
+COR-010  db(topology): migrate topology assets to catalog foreign keys
+COR-011  refactor(topology): update topology persistence mapping to catalog foreign keys
+COR-013  db(topology): remove topology enum-style type constraints
+COR-019  refactor(catalog): remove remaining business taxonomy enum declarations
+```
+
+It then states:
+
+```text
+Topology business taxonomy concepts are no longer roadmap-accepted as Java enums.
+Business type concepts are modeled as catalog references with stable codes and localized labels,
+not as fixed Java enum fields.
+```
+
+The live Pipeline model nevertheless declares:
+
+```java
+PipelineType pipelineType
+```
+
+and the current enum fixes the vocabulary to:
+
+```text
+CRUDE_OIL
+CONDENSATE
+NATURAL_GAS
+LPG
+MULTI_PRODUCT
+WATER
+OTHER
+```
+
+JPA persists the enum string directly in `pipeline_type`.
+
+This conflicts with the repository's accepted Topology controlled-vocabulary architecture. The issue is not merely that an enum could be extensible later; the live roadmap explicitly records removal of business-taxonomy enums as completed architectural intent.
+
+### 63.5 Lifecycle enum remains valid
+
+The same Topology roadmap explicitly distinguishes lifecycle/status concepts from business taxonomies and allows technical enums where appropriate.
+
+`TopologyStatus` therefore does not inherit the PipelineType correction obligation merely because it is also a Java enum.
+
+HMSR-050 preserves that distinction.
+
+### 63.6 Engineering measurements
+
+`nominalDiameter`, `designPressure` and `totalLengthKm` are optional in both domain and persistence.
+
+Current Topology DDD/roadmap evidence reviewed here does not state:
+
+- positivity constraints;
+- mandatory diameter/pressure for every pipeline;
+- mandatory pairing between a numeric value and its unit code;
+- one canonical diameter or pressure unit;
+- a tolerance/precision rule beyond persistence precision.
+
+HMSR-050 therefore does not invent those engineering invariants.
+
+The future data-provisioning transformation task must validate units/source values against the final target contract, but that does not by itself prove additional canonical constructor rules.
+
+### 63.7 Code and multilingual semantics
+
+`code` is mandatory in domain and persistence.
+
+The schema has an ordinary code index, not a unique constraint, and the current Topology evidence reviewed for HMSR-050 does not establish a global/scoped Pipeline code uniqueness invariant. None is invented.
+
+Arabic/French/English names are optional in both domain and persistence. Current evidence does not require all three translations simultaneously, so no multilingual correction is recorded.
+
+### 63.8 Application and repository reality
+
+The live target inventory shows no dedicated current Pipeline create inbound use case; PipelineRepositoryPort remains actively used for owner-controlled query resolution, visualization and persistence infrastructure.
+
+That absence does not remove Pipeline from the canonical target model, nor does it cure the domain/JPA taxonomy conflict. Any future authoritative write path must follow the catalog-backed Topology contract rather than cementing the legacy enum.
+
+HMSR-050 does not create a new API/use-case obligation merely because a dedicated create path is not currently exposed.
+
+### 63.9 Domain/JPA/Flyway alignment
+
+Domain and JPA agree on all 15 components and on intrinsic requiredness for ID, PipelineSystem ID, code, pipeline type and status.
+
+The PipelineSystem dependency is protected by a validated FK.
+
+The structural model is otherwise coherent, but `pipelineType` remains semantically misaligned with the accepted Topology catalog architecture because the domain and persistence still encode the business taxonomy as an enum/varchar value instead of the roadmap-approved catalog-reference form.
+
+### 63.10 Required revision
+
+One evidence-backed production correction obligation remains:
+
+1. **Replace Pipeline's fixed `PipelineType` business taxonomy with the repository-approved catalog-reference architecture.** The correction must reconcile domain, persistence, Flyway/data migration, API/read contracts and existing values with the accepted Topology type-catalog design, using stable catalog codes/localized labels rather than a fixed business enum. Preserve `TopologyStatus` as a lifecycle enum unless separate evidence changes that classification.
+
+HMSR-050 does not modify production Java, JPA, Flyway, API/application contracts, tests, pipeline data, type catalogs, or provisioned data.
+
+### 63.11 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, pipeline classifications such as crude-oil, condensate, natural-gas, LPG or multi-product are business reference data used across visualization, planning, monitoring, integrity, reporting and future provisioning.
+
+Treating this vocabulary as governed catalog/reference data allows controlled extension, localization and lifecycle governance without recompiling the platform or hard-coding business vocabulary into downstream modules.
+
+The physical Pipeline remains owned by Topology; changing the taxonomy representation does not transfer ownership to another bounded context.
+
+### 63.12 Review conclusion
+
+**REVISE.** `Pipeline` has a coherent 15-field Topology model, correct mandatory dependency on PipelineSystem with validated FK protection, aligned system/code/status requiredness, and conservative optional engineering/multilingual state.
+
+The target baseline cannot mark it APPROVED while the live model still encodes `PipelineType` as a fixed Java enum contrary to the completed and explicitly documented Topology catalog-refactor architecture.
+
+HMS reconciliation must retain this catalog-taxonomy correction until an explicitly authorized Topology production correction resolves it or stronger repository evidence explicitly changes the accepted Topology controlled-vocabulary policy.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+No new API is part of this bounded documentation/historical outcome. Existing owner operations are listed in the runtime contract inventory below; no proposed endpoint is relabeled as implemented.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `31e3549e6492c5aece0eda278b169a145b832fb8` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [doc/domain/SEMANTIC_DECISIONS.md:102](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/domain/SEMANTIC_DECISIONS.md#L102)
+- [docs/roadmap/model-semantic-review.md:245](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-review.md#L245)
+- [docs/roadmap/model-semantic-review.md:10573](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/model-semantic-review.md#L10573)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Completed semantic review is documentation work; APPROVED/REVISE is the historical model verdict, not application completeness. Current implementation/planning states above are independent. Doc/preflight completion is not completion of the associated application workflow.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/model-semantic-review.md:245 | HMSR-050 | 1 | topology | Pipeline | — | topology.PipelineSystem | 0 | 0 | 0 | REVISE | Completed | docs(model-review): review topology Pipeline
+doc/domain/SEMANTIC_DECISIONS.md:102 | HMSR-050 | [topology.Pipeline](#topology-pipeline) | REVISE | HMR-042
+~~~~~~~~
+
+<a id="hapi-509"></a>
+## HAPI-509 — expose operational twin visualization
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: HPR-P25-003
+
+Priority: P3
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: DEFERRED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: HAPI-504
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Provide authorized network map/state APIs with product and asset layers, connectivity, measured/estimated overlays, quality/freshness and issue location; verify the frontend integration contract.
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/SpringTopologyController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/TopologyMapController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/CreatePipelineSystemUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/RegisterFacilityUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/TopologyMapVisualizationUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/EquipmentRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineSystemRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/StationInternalGraphRevisionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineSystemApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/RiskTopologyScopeReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologyOperationalScopeTargetQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologySimulationPhysicalNetworkRevisionQueryService.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+Deliver company/network drafts, physical graph editing and protected publication/history APIs after owner-fence acceptance. The exact bounded remaining delivery is: Provide authorized network map/state APIs with product and asset layers, connectivity, measured/estimated overlays, quality/freshness and issue location; verify the frontend integration contract..
+
+### 4. Functional Requirements
+
+Original independent acceptance; design is not implementation; F1/F3 actual cases
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: `src/main/java/dz/sh/hidra/modules/topology/application/port/in/CreatePipelineSystemUseCase.java`, `src/main/java/dz/sh/hidra/modules/topology/application/port/in/RegisterFacilityUseCase.java`, `src/main/java/dz/sh/hidra/modules/topology/application/port/in/TopologyMapVisualizationUseCase.java`.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/topology/application/port/out/EquipmentRepositoryPort.java`, `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineSystemRepositoryPort.java`, `src/main/java/dz/sh/hidra/modules/topology/application/port/out/StationInternalGraphRevisionRepositoryPort.java`.
+- Application services: `src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineSystemApplicationService.java`, `src/main/java/dz/sh/hidra/modules/topology/application/service/RiskTopologyScopeReferenceQueryService.java`, `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologyOperationalScopeTargetQueryService.java`, `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologySimulationPhysicalNetworkRevisionQueryService.java`.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY:** DISCOVERY_REQUIRED for implementation; no executable source allowlist inferred from this historical or integration scope.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/SpringTopologyController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/TopologyMapController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/CreatePipelineSystemUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/RegisterFacilityUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/TopologyMapVisualizationUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/EquipmentRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineSystemRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/StationInternalGraphRevisionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineSystemApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/RiskTopologyScopeReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologyOperationalScopeTargetQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologySimulationPhysicalNetworkRevisionQueryService.java`
+
+**DELETE:** none.
+
+First recover this bounded objective's exact acceptance/replacement from the pinned references, inspect only its current owner seams and decide whether a source change is still needed. If fulfilled, record evidence and status without rewriting working code. If a genuine successor is necessary, absorb it in its existing unfinished owner package or propose PENDING_BASELINE_APPROVAL.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original independent acceptance; design is not implementation; F1/F3 actual cases
+- Prove the real owner/API/persistence path and negative cases; record exact source, actual executed and skipped cases and accepted contract artifact.
+- Required transactions roll back fully; historical exact reads remain reproducible after source revision.
+- Missing policy, unregistered file placement or unavailable authority is explicitly blocked rather than fabricated.
+- Applicable Full/Fast/Docs acceptance succeeds on the implementation SHA; software acceptance remains separate from SITE commissioning.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: HAPI-504. A dependency edge does not select implementation. Resolve only the task-specific exact path/policy/source contract gaps described here before code; real deployment data is not a software-contract blocker.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. For implementation, deliver only the admitted CREATE/MODIFY set, public API evidence where required, fresh-schema proof where applicable and preserved historical behavior.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [doc/model-remediation/RECONCILIATION.md:13649](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L13649)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:6087](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L6087)
+- [doc/roadmap/history/ULTIMATE_ROADMAP_HISTORY.md:854](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/history/ULTIMATE_ROADMAP_HISTORY.md#L854)
+- [doc/roadmap/history/ULTIMATE_ROADMAP_HISTORY.md:15389](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/history/ULTIMATE_ROADMAP_HISTORY.md#L15389)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+Original bounded record status: DEFERRED / retained incomplete mixed parent.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+doc/roadmap/history/ULTIMATE_ROADMAP_HISTORY.md:854 | HPR-P25-003 | PENDING | Topology / Telemetry / API | Code/Test | Provide authorized network map/state APIs with product and asset layers, connectivity, measured/estimated overlays, quality/freshness and issue location; verify the frontend integration contract. | feat(topology): expose operational twin visualization | HPR-P25-002
+doc/roadmap/history/ULTIMATE_ROADMAP_HISTORY.md:15389 | HPR-P25-003 | PENDING | FOUNDATION_ACTIVE | Topology / Telemetry / API | 003/004: specific independent owner contracts, not all 002; 018: amendment docs CI + owner selection; 019/020: 018 | Original independent visualization/measurement or engineering provisioning objective | Any solver use remains outside this independent scope | Original independent acceptance; design is not implementation; F1/F3 actual cases | NOT SELECTED | Own bounded preflight/implementation after prerequisites
+doc/roadmap/ULTIMATE_ROADMAP.md:6087 | HPR-P25-003 | DEFERRED / retained incomplete mixed parent | Independent engineering/monitoring share mapped 052–058; original simulator remainder not closed
+doc/model-remediation/RECONCILIATION.md:13649 | HPR-P25-003 | PENDING | FOUNDATION_ACTIVE | Topology / Telemetry / API | 003/004: specific independent owner contracts, not all 002; 018: amendment docs CI + owner selection; 019/020: 018 | Original independent visualization/measurement or engineering provisioning objective | Any solver use remains outside this independent scope | Original independent acceptance; design is not implementation; F1/F3 actual cases | NOT SELECTED | Own bounded preflight/implementation after prerequisites
+~~~~~~~~
+
+<a id="hapi-586"></a>
+## HAPI-586 — Integrated closure: six topology/operator delivery packages
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: HPR-P25-052
+
+Priority: P1
+
+Implementation Status: PARTIAL
+
+Planning Status: BLOCKED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: HAPI-592
+
+Cross-Repository Dependencies: HWEB-F02, HWEB-F03 — legacy HidraWEB consumer references, not backend implementation tasks.
+
+### 1. Objective
+
+Independently reconcile and accept the complete child-deliverable matrix for HPR-P25-052; child tasks own implementation. six topology/operator delivery packages
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/SpringTopologyController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/TopologyMapController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/CreatePipelineSystemUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/RegisterFacilityUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/TopologyMapVisualizationUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/EquipmentRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineSystemRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/StationInternalGraphRevisionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/FacilityApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineSystemApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/RiskTopologyScopeReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologyOperationalScopeTargetQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologySimulationPhysicalNetworkRevisionQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/StationInternalGraph.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/StationInternalGraphRevision.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyPhysicalNetworkRevision.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+Deliver company/network drafts, physical graph editing and protected publication/history APIs after owner-fence acceptance. The exact bounded remaining delivery is: Independently reconcile and accept the complete child-deliverable matrix for HPR-P25-052; child tasks own implementation. six topology/operator delivery packages.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/topology/domain/model/StationInternalGraph.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/model/StationInternalGraphRevision.java`, `src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyPhysicalNetworkRevision.java`.
+- Inbound ports: `src/main/java/dz/sh/hidra/modules/topology/application/port/in/CreatePipelineSystemUseCase.java`, `src/main/java/dz/sh/hidra/modules/topology/application/port/in/RegisterFacilityUseCase.java`, `src/main/java/dz/sh/hidra/modules/topology/application/port/in/TopologyMapVisualizationUseCase.java`.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/topology/application/port/out/EquipmentRepositoryPort.java`, `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineSystemRepositoryPort.java`, `src/main/java/dz/sh/hidra/modules/topology/application/port/out/StationInternalGraphRevisionRepositoryPort.java`.
+- Application services: `src/main/java/dz/sh/hidra/modules/topology/application/service/FacilityApplicationService.java`, `src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineSystemApplicationService.java`, `src/main/java/dz/sh/hidra/modules/topology/application/service/RiskTopologyScopeReferenceQueryService.java`, `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologyOperationalScopeTargetQueryService.java`.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY:** DISCOVERY_REQUIRED for implementation; no executable source allowlist inferred from this historical or integration scope.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/SpringTopologyController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/TopologyMapController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/CreatePipelineSystemUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/RegisterFacilityUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/TopologyMapVisualizationUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/EquipmentRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineSystemRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/StationInternalGraphRevisionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/FacilityApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineSystemApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/RiskTopologyScopeReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologyOperationalScopeTargetQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologySimulationPhysicalNetworkRevisionQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/StationInternalGraph.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/StationInternalGraphRevision.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyPhysicalNetworkRevision.java`
+
+**DELETE:** none.
+
+First recover this bounded objective's exact acceptance/replacement from the pinned references, inspect only its current owner seams and decide whether a source change is still needed. If fulfilled, record evidence and status without rewriting working code. If a genuine successor is necessary, absorb it in its existing unfinished owner package or propose PENDING_BASELINE_APPROVAL.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+#### HPR-P25-052 — six topology/operator delivery packages
+
+Prerequisites: accepted051 and the retained018/019/020/032/034/036/037/038 scopes;
+D3 closes exact draft/published schemas, supported geometry, permissions, CRUD/API/
+errors/export packages and source paths before each relevant implementation. Existing
+SpringTopologyController creates systems/facilities, and immutable revision stores exist;
+neither is the missing complete editor. Reuse051's internal publication/CAS/epoch boundary
+instead of implementing a competing security/head mechanism.
+
+| Planning stage | Remaining delivery | Evidence / exit criterion |
+|---|---|---|
+| HPR-P25-052A | Company/network-owned drafts and bounded create/read/update/validate lifecycle. | Actual protected API round trips, optimistic draft conflict, incomplete draft diagnostics, owner isolation and action-specific permissions. No incomplete draft presented as published. |
+| HPR-P25-052B | Physical network/branch/station/port graph authoring and incidence validation. | Persist/reload supported serial/parallel graphs; reject dangling/wrong-owner/wrong-kind references; retain exact source identities and graph precision. Installed-unit completion remains054. |
+| HPR-P25-052C | Survey/CRS/vertical datum/chainage/elevation/profile and pipe-section authoring. | Preserve intermediate elevations/section boundaries, declared units/precision/source/evidence across revisions; reject unsupported/wrong/missing metadata, no browser/default elevation or PostGIS/physics assumption. |
+| HPR-P25-052D | Public protected publish/exact read/current/history/effective/list lifecycle over051. | Expected predecessor and owner/head epoch, one CAS winner, identical/conflicting replay, withdrawal/reactivation/transfer-hold semantics, exact old formats and history cursors; denied paths reveal no foreign metadata. |
+| HPR-P25-052E | Supported local typed import/export and per-editor capability/completeness closure. | Versioned bounded packages, dry-run without writes, lossless precision/provenance, atomic admitted import and explicit unsupported states. Aggregate multi-owner exchange remains055. |
+| HPR-P25-052F | Cross-slice operator/API/security/history qualification and consumer-ready contract. | Real configured API/filter path across two companies/networks and station graphs, rollback/concurrency/corruption tests; exact runtime OpenAPI/permissions/DTOs and relevant consumer handoff, no new frontend implementation in this repo. |
+
+Publish truthful capabilities with each accepted increment, not only at E. E closes
+remaining local exchange/capability obligations. Source authoring pins only existing
+eligible owner revisions; it never requires a future055 baseline. Accepted052 slices
+may unblock relevant HidraWEB F02/F03 work independently; no claim of live paired E2E.
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+- Prove the real owner/API/persistence path and negative cases; record exact source, actual executed and skipped cases and accepted contract artifact.
+- Required transactions roll back fully; historical exact reads remain reproducible after source revision.
+- Missing policy, unregistered file placement or unavailable authority is explicitly blocked rather than fabricated.
+- Applicable Full/Fast/Docs acceptance succeeds on the implementation SHA; software acceptance remains separate from SITE commissioning.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: HAPI-592. A dependency edge does not select implementation. Resolve only the task-specific exact path/policy/source contract gaps described here before code; real deployment data is not a software-contract blocker.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. For implementation, deliver only the admitted CREATE/MODIFY set, public API evidence where required, fresh-schema proof where applicable and preserved historical behavior.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [doc/model-remediation/RECONCILIATION.md:23345](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L23345)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:1283](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L1283)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:5097](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L5097)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+<a id="hapi-587"></a>
+## HAPI-587 — Company/network-owned engineering drafts
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: HPR-P25-052A
+
+Priority: P1
+
+Implementation Status: NOT_IMPLEMENTED
+
+Planning Status: BLOCKED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: HAPI-567
+
+Cross-Repository Dependencies: HWEB-F02, HWEB-F03 — legacy HidraWEB consumer references, not backend implementation tasks.
+
+### 1. Objective
+
+Company/network-owned drafts and bounded create/read/update/validate lifecycle.
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/SpringTopologyController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/TopologyMapController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/CreatePipelineSystemUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/RegisterFacilityUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/TopologyMapVisualizationUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/EquipmentRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineSystemRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/StationInternalGraphRevisionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineSystemApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/RiskTopologyScopeReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologyOperationalScopeTargetQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologySimulationPhysicalNetworkRevisionQueryService.java`
+- `src/test/java/dz/sh/hidra/modules/topology/semantic/FacilitySemanticRemediationTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/semantic/IncidentTopologyContractTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+Deliver company/network drafts, physical graph editing and protected publication/history APIs after owner-fence acceptance. The exact bounded remaining delivery is: Company/network-owned drafts and bounded create/read/update/validate lifecycle..
+
+### 4. Functional Requirements
+
+Actual protected API round trips, optimistic draft conflict, incomplete draft diagnostics, owner isolation and action-specific permissions. No incomplete draft presented as published.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: `src/main/java/dz/sh/hidra/modules/topology/application/port/in/CreatePipelineSystemUseCase.java`, `src/main/java/dz/sh/hidra/modules/topology/application/port/in/RegisterFacilityUseCase.java`, `src/main/java/dz/sh/hidra/modules/topology/application/port/in/TopologyMapVisualizationUseCase.java`.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/topology/application/port/out/EquipmentRepositoryPort.java`, `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineSystemRepositoryPort.java`, `src/main/java/dz/sh/hidra/modules/topology/application/port/out/StationInternalGraphRevisionRepositoryPort.java`.
+- Application services: `src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineSystemApplicationService.java`, `src/main/java/dz/sh/hidra/modules/topology/application/service/RiskTopologyScopeReferenceQueryService.java`, `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologyOperationalScopeTargetQueryService.java`, `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologySimulationPhysicalNetworkRevisionQueryService.java`.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE — all filenames PROPOSED, not yet executable allowlist:**
+
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/EngineeringNetworkDraft.java` — pure Java owned aggregate/value and invariants for company/network-owned editable drafts; completeness and expected draft version.
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/EngineeringNetworkDraftUseCase.java` — typed command/query input and authorization-aware orchestration contract.
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/EngineeringNetworkDraftRepositoryPort.java` — owned persistence and expected-version contract.
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/EngineeringNetworkDraftApplicationService.java` — owner transaction, permission evidence and domain coordination.
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/EngineeringNetworkDraftController.java` — explicit request/response DTO mapping and documented errors.
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringNetworkDraftRepositoryAdapter.java` — PostgreSQL implementation with parameterized statements, constraints and concurrency checks.
+
+**MODIFY — existing verified paths, if required by the admitted package:**
+
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` — add only approved exported contract enforcement if the feature introduces an actual cross-owner boundary.
+
+- `.github/ci-test-inventory.json` — register actual new test classes/cases/source hashes; preserve existing lanes and fallback.
+
+**DELETE:** none.
+
+**PRESERVE / REUSE:**
+
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/SpringTopologyController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/TopologyMapController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/CreatePipelineSystemUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/RegisterFacilityUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/TopologyMapVisualizationUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/EquipmentRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineSystemRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/StationInternalGraphRevisionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineSystemApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/RiskTopologyScopeReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologyOperationalScopeTargetQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologySimulationPhysicalNetworkRevisionQueryService.java`
+- `src/test/java/dz/sh/hidra/modules/topology/semantic/FacilitySemanticRemediationTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/semantic/IncidentTopologyContractTest.java`
+
+**DISCOVERY_REQUIRED:** close request/response DTO filenames, actual bootstrap wiring and additive schema migration filename after checking live ownership, current migration inventory and writer order. Proposed source types require their focused invariant/application/API/PostgreSQL tests under the corresponding existing module test root. Reuse an existing equivalent type instead of creating a duplicate.
+
+### 7. API Contracts
+
+**PROPOSED, not existing:** `POST /api/v1/topology/engineering-networks` for company/network-owned editable drafts; completeness and expected draft version. Exact request/response DTO schemas, pagination/replay/idempotency fields and per-action effective grants require source-backed admission. Preserve all existing module operations in the runtime API inventory below.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/modules/topology/semantic/FacilitySemanticRemediationTest.java` — exact-head oracle suite 1 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/topology/semantic/IncidentTopologyContractTest.java` — exact-head oracle suite 1 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Actual protected API round trips, optimistic draft conflict, incomplete draft diagnostics, owner isolation and action-specific permissions. No incomplete draft presented as published.
+- Prove the real owner/API/persistence path and negative cases; record exact source, actual executed and skipped cases and accepted contract artifact.
+- Required transactions roll back fully; historical exact reads remain reproducible after source revision.
+- Missing policy, unregistered file placement or unavailable authority is explicitly blocked rather than fabricated.
+- Applicable Full/Fast/Docs acceptance succeeds on the implementation SHA; software acceptance remains separate from SITE commissioning.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: HAPI-567. A dependency edge does not select implementation. Resolve only the task-specific exact path/policy/source contract gaps described here before code; real deployment data is not a software-contract blocker.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. For implementation, deliver only the admitted CREATE/MODIFY set, public API evidence where required, fresh-schema proof where applicable and preserved historical behavior.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [doc/model-remediation/RECONCILIATION.md:23356](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L23356)
+- [doc/model-remediation/RECONCILIATION.md:23701](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L23701)
+- [doc/model-remediation/RECONCILIATION.md:23734](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L23734)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:1009](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L1009)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:1042](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L1042)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:1294](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L1294)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+doc/roadmap/ULTIMATE_ROADMAP.md:1009 | HPR-P25-052A | Confirm whether one network can have multiple company engineering contexts and how network ownership transfer relates to facility publication epochs. | Business/security data owner for policy; accountable bounded-context owner and independent architecture/database reviewer for technical registration
+doc/roadmap/ULTIMATE_ROADMAP.md:1042 | HPR-P25-052A | REQUIRES_OWNER_DECISION | Company/network-owned engineering drafts
+doc/roadmap/ULTIMATE_ROADMAP.md:1294 | HPR-P25-052A | Company/network-owned drafts and bounded create/read/update/validate lifecycle. | Actual protected API round trips, optimistic draft conflict, incomplete draft diagnostics, owner isolation and action-specific permissions. No incomplete draft presented as published.
+doc/model-remediation/RECONCILIATION.md:23356 | HPR-P25-052A | Company/network-owned drafts and bounded create/read/update/validate lifecycle. | Actual protected API round trips, optimistic draft conflict, incomplete draft diagnostics, owner isolation and action-specific permissions. No incomplete draft presented as published.
+doc/model-remediation/RECONCILIATION.md:23701 | HPR-P25-052A | Confirm whether one network can have multiple company engineering contexts and how network ownership transfer relates to facility publication epochs. | Business/security data owner for policy; accountable bounded-context owner and independent architecture/database reviewer for technical registration
+doc/model-remediation/RECONCILIATION.md:23734 | HPR-P25-052A | REQUIRES_OWNER_DECISION | Company/network-owned engineering drafts
+~~~~~~~~
+
+<a id="hapi-588"></a>
+## HAPI-588 — Physical network and station incidence authoring
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: HPR-P25-052B
+
+Priority: P1
+
+Implementation Status: NOT_IMPLEMENTED
+
+Planning Status: BLOCKED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: HAPI-587
+
+Cross-Repository Dependencies: HWEB-F02, HWEB-F03 — legacy HidraWEB consumer references, not backend implementation tasks.
+
+### 1. Objective
+
+Physical network/branch/station/port graph authoring and incidence validation.
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/SpringTopologyController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/TopologyMapController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/simulation/SimulationPhysicalNetworkRevisionContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/CreatePipelineSystemUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/RegisterFacilityUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/TopologyMapVisualizationUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/EquipmentRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineSystemRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/StationInternalGraphRevisionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/TopologyPhysicalNetworkRevisionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineSystemApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/RiskTopologyScopeReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologyOperationalScopeTargetQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologySimulationPhysicalNetworkRevisionQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyPhysicalNetworkRevision.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcTopologyPhysicalNetworkRevisionRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/TopologyPhysicalNetworkRevisionCodec.java`
+- `src/test/java/dz/sh/hidra/modules/topology/application/contract/simulation/SimulationPhysicalNetworkRevisionContractTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/application/service/TopologySimulationPhysicalNetworkRevisionQueryServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/domain/model/TopologyPhysicalNetworkRevisionTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/TopologyPhysicalNetworkRevisionPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/TopologyPhysicalNetworkRevisionCodecTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+Deliver company/network drafts, physical graph editing and protected publication/history APIs after owner-fence acceptance. The exact bounded remaining delivery is: Physical network/branch/station/port graph authoring and incidence validation..
+
+### 4. Functional Requirements
+
+Persist/reload supported serial/parallel graphs; reject dangling/wrong-owner/wrong-kind references; retain exact source identities and graph precision. Installed-unit completion remains054.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: `src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyPhysicalNetworkRevision.java`, `src/test/java/dz/sh/hidra/modules/topology/domain/model/TopologyPhysicalNetworkRevisionTest.java`.
+- Inbound ports: `src/main/java/dz/sh/hidra/modules/topology/application/port/in/CreatePipelineSystemUseCase.java`, `src/main/java/dz/sh/hidra/modules/topology/application/port/in/RegisterFacilityUseCase.java`, `src/main/java/dz/sh/hidra/modules/topology/application/port/in/TopologyMapVisualizationUseCase.java`.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/topology/application/port/out/EquipmentRepositoryPort.java`, `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineSystemRepositoryPort.java`, `src/main/java/dz/sh/hidra/modules/topology/application/port/out/StationInternalGraphRevisionRepositoryPort.java`, `src/main/java/dz/sh/hidra/modules/topology/application/port/out/TopologyPhysicalNetworkRevisionRepositoryPort.java`.
+- Application services: `src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineSystemApplicationService.java`, `src/main/java/dz/sh/hidra/modules/topology/application/service/RiskTopologyScopeReferenceQueryService.java`, `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologyOperationalScopeTargetQueryService.java`, `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologySimulationPhysicalNetworkRevisionQueryService.java`.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcTopologyPhysicalNetworkRevisionRepositoryAdapter.java`, `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/TopologyPhysicalNetworkRevisionCodec.java`, `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/TopologyPhysicalNetworkRevisionPostgresIntegrationTest.java`, `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/TopologyPhysicalNetworkRevisionCodecTest.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE — all filenames PROPOSED, not yet executable allowlist:**
+
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/EngineeringGraphDraft.java` — pure Java owned aggregate/value and invariants for typed nodes, branches, ports and incidence; no dangling or wrong-owner graph links.
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/EngineeringGraphDraftUseCase.java` — typed command/query input and authorization-aware orchestration contract.
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/EngineeringGraphDraftRepositoryPort.java` — owned persistence and expected-version contract.
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/EngineeringGraphDraftApplicationService.java` — owner transaction, permission evidence and domain coordination.
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/EngineeringGraphDraftController.java` — explicit request/response DTO mapping and documented errors.
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringGraphDraftRepositoryAdapter.java` — PostgreSQL implementation with parameterized statements, constraints and concurrency checks.
+
+**MODIFY — existing verified paths, if required by the admitted package:**
+
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` — add only approved exported contract enforcement if the feature introduces an actual cross-owner boundary.
+
+- `.github/ci-test-inventory.json` — register actual new test classes/cases/source hashes; preserve existing lanes and fallback.
+
+**DELETE:** none.
+
+**PRESERVE / REUSE:**
+
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/SpringTopologyController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/TopologyMapController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/simulation/SimulationPhysicalNetworkRevisionContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/CreatePipelineSystemUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/RegisterFacilityUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/TopologyMapVisualizationUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/EquipmentRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineSystemRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/StationInternalGraphRevisionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/TopologyPhysicalNetworkRevisionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineSystemApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/RiskTopologyScopeReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologyOperationalScopeTargetQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologySimulationPhysicalNetworkRevisionQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyPhysicalNetworkRevision.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcTopologyPhysicalNetworkRevisionRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/TopologyPhysicalNetworkRevisionCodec.java`
+- `src/test/java/dz/sh/hidra/modules/topology/application/contract/simulation/SimulationPhysicalNetworkRevisionContractTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/application/service/TopologySimulationPhysicalNetworkRevisionQueryServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/domain/model/TopologyPhysicalNetworkRevisionTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/TopologyPhysicalNetworkRevisionPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/TopologyPhysicalNetworkRevisionCodecTest.java`
+
+**DISCOVERY_REQUIRED:** close request/response DTO filenames, actual bootstrap wiring and additive schema migration filename after checking live ownership, current migration inventory and writer order. Proposed source types require their focused invariant/application/API/PostgreSQL tests under the corresponding existing module test root. Reuse an existing equivalent type instead of creating a duplicate.
+
+### 7. API Contracts
+
+**PROPOSED, not existing:** `PUT /api/v1/topology/engineering-networks/{id}/graph` for typed nodes, branches, ports and incidence; no dangling or wrong-owner graph links. Exact request/response DTO schemas, pagination/replay/idempotency fields and per-action effective grants require source-backed admission. Preserve all existing module operations in the runtime API inventory below.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/modules/topology/application/contract/simulation/SimulationPhysicalNetworkRevisionContractTest.java` — exact-head oracle suite 5 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/topology/application/service/TopologySimulationPhysicalNetworkRevisionQueryServiceTest.java` — exact-head oracle suite 5 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/topology/domain/model/TopologyPhysicalNetworkRevisionTest.java` — exact-head oracle suite 20 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/TopologyPhysicalNetworkRevisionPostgresIntegrationTest.java` — exact-head oracle suite 10 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/TopologyPhysicalNetworkRevisionCodecTest.java` — exact-head oracle suite 7 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Persist/reload supported serial/parallel graphs; reject dangling/wrong-owner/wrong-kind references; retain exact source identities and graph precision. Installed-unit completion remains054.
+- Prove the real owner/API/persistence path and negative cases; record exact source, actual executed and skipped cases and accepted contract artifact.
+- Required transactions roll back fully; historical exact reads remain reproducible after source revision.
+- Missing policy, unregistered file placement or unavailable authority is explicitly blocked rather than fabricated.
+- Applicable Full/Fast/Docs acceptance succeeds on the implementation SHA; software acceptance remains separate from SITE commissioning.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: HAPI-587. A dependency edge does not select implementation. Resolve only the task-specific exact path/policy/source contract gaps described here before code; real deployment data is not a software-contract blocker.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. For implementation, deliver only the admitted CREATE/MODIFY set, public API evidence where required, fresh-schema proof where applicable and preserved historical behavior.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [doc/model-remediation/RECONCILIATION.md:23357](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L23357)
+- [doc/model-remediation/RECONCILIATION.md:23735](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L23735)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:1043](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L1043)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:1295](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L1295)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+doc/roadmap/ULTIMATE_ROADMAP.md:1043 | HPR-P25-052B | BLOCKED_SPECIFICATION | Physical network and station incidence authoring
+doc/roadmap/ULTIMATE_ROADMAP.md:1295 | HPR-P25-052B | Physical network/branch/station/port graph authoring and incidence validation. | Persist/reload supported serial/parallel graphs; reject dangling/wrong-owner/wrong-kind references; retain exact source identities and graph precision. Installed-unit completion remains054.
+doc/model-remediation/RECONCILIATION.md:23357 | HPR-P25-052B | Physical network/branch/station/port graph authoring and incidence validation. | Persist/reload supported serial/parallel graphs; reject dangling/wrong-owner/wrong-kind references; retain exact source identities and graph precision. Installed-unit completion remains054.
+doc/model-remediation/RECONCILIATION.md:23735 | HPR-P25-052B | BLOCKED_SPECIFICATION | Physical network and station incidence authoring
+~~~~~~~~
+
+<a id="hapi-590"></a>
+## HAPI-590 — Public governed revision publication and history
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: HPR-P25-052D
+
+Priority: P1
+
+Implementation Status: NOT_IMPLEMENTED
+
+Planning Status: BLOCKED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: HAPI-567, HAPI-588, HAPI-589
+
+Cross-Repository Dependencies: HWEB-F02, HWEB-F03 — legacy HidraWEB consumer references, not backend implementation tasks.
+
+### 1. Objective
+
+Public protected publish/exact read/current/history/effective/list lifecycle over051.
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/SpringTopologyController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/TopologyMapController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/CreatePipelineSystemUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/RegisterFacilityUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/TopologyMapVisualizationUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/EquipmentRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineSystemRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/StationInternalGraphRevisionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineSystemApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/RiskTopologyScopeReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologyOperationalScopeTargetQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologySimulationPhysicalNetworkRevisionQueryService.java`
+- `src/test/java/dz/sh/hidra/modules/topology/semantic/FacilitySemanticRemediationTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/semantic/IncidentTopologyContractTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+Deliver company/network drafts, physical graph editing and protected publication/history APIs after owner-fence acceptance. The exact bounded remaining delivery is: Public protected publish/exact read/current/history/effective/list lifecycle over051..
+
+### 4. Functional Requirements
+
+Expected predecessor and owner/head epoch, one CAS winner, identical/conflicting replay, withdrawal/reactivation/transfer-hold semantics, exact old formats and history cursors; denied paths reveal no foreign metadata.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: `src/main/java/dz/sh/hidra/modules/topology/application/port/in/CreatePipelineSystemUseCase.java`, `src/main/java/dz/sh/hidra/modules/topology/application/port/in/RegisterFacilityUseCase.java`, `src/main/java/dz/sh/hidra/modules/topology/application/port/in/TopologyMapVisualizationUseCase.java`.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/topology/application/port/out/EquipmentRepositoryPort.java`, `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineSystemRepositoryPort.java`, `src/main/java/dz/sh/hidra/modules/topology/application/port/out/StationInternalGraphRevisionRepositoryPort.java`.
+- Application services: `src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineSystemApplicationService.java`, `src/main/java/dz/sh/hidra/modules/topology/application/service/RiskTopologyScopeReferenceQueryService.java`, `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologyOperationalScopeTargetQueryService.java`, `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologySimulationPhysicalNetworkRevisionQueryService.java`.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE — all filenames PROPOSED, not yet executable allowlist:**
+
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/EngineeringRevisionPublication.java` — pure Java owned aggregate/value and invariants for publish/withdraw/history using accepted paired authorization and predecessor/owner/head CAS.
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/EngineeringRevisionPublicationUseCase.java` — typed command/query input and authorization-aware orchestration contract.
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/EngineeringRevisionPublicationRepositoryPort.java` — owned persistence and expected-version contract.
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/EngineeringRevisionPublicationApplicationService.java` — owner transaction, permission evidence and domain coordination.
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/EngineeringRevisionPublicationController.java` — explicit request/response DTO mapping and documented errors.
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringRevisionPublicationRepositoryAdapter.java` — PostgreSQL implementation with parameterized statements, constraints and concurrency checks.
+
+**MODIFY — existing verified paths, if required by the admitted package:**
+
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` — add only approved exported contract enforcement if the feature introduces an actual cross-owner boundary.
+
+- `.github/ci-test-inventory.json` — register actual new test classes/cases/source hashes; preserve existing lanes and fallback.
+
+**DELETE:** none.
+
+**PRESERVE / REUSE:**
+
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/SpringTopologyController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/TopologyMapController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/CreatePipelineSystemUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/RegisterFacilityUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/TopologyMapVisualizationUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/EquipmentRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineSystemRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/StationInternalGraphRevisionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineSystemApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/RiskTopologyScopeReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologyOperationalScopeTargetQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologySimulationPhysicalNetworkRevisionQueryService.java`
+- `src/test/java/dz/sh/hidra/modules/topology/semantic/FacilitySemanticRemediationTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/semantic/IncidentTopologyContractTest.java`
+
+**DISCOVERY_REQUIRED:** close request/response DTO filenames, actual bootstrap wiring and additive schema migration filename after checking live ownership, current migration inventory and writer order. Proposed source types require their focused invariant/application/API/PostgreSQL tests under the corresponding existing module test root. Reuse an existing equivalent type instead of creating a duplicate.
+
+### 7. API Contracts
+
+**PROPOSED, not existing:** `POST /api/v1/topology/engineering-networks/{id}/publications` for publish/withdraw/history using accepted paired authorization and predecessor/owner/head CAS. Exact request/response DTO schemas, pagination/replay/idempotency fields and per-action effective grants require source-backed admission. Preserve all existing module operations in the runtime API inventory below.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/modules/topology/semantic/FacilitySemanticRemediationTest.java` — exact-head oracle suite 1 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/topology/semantic/IncidentTopologyContractTest.java` — exact-head oracle suite 1 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Expected predecessor and owner/head epoch, one CAS winner, identical/conflicting replay, withdrawal/reactivation/transfer-hold semantics, exact old formats and history cursors; denied paths reveal no foreign metadata.
+- Prove the real owner/API/persistence path and negative cases; record exact source, actual executed and skipped cases and accepted contract artifact.
+- Required transactions roll back fully; historical exact reads remain reproducible after source revision.
+- Missing policy, unregistered file placement or unavailable authority is explicitly blocked rather than fabricated.
+- Applicable Full/Fast/Docs acceptance succeeds on the implementation SHA; software acceptance remains separate from SITE commissioning.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: HAPI-567, HAPI-588, HAPI-589. A dependency edge does not select implementation. Resolve only the task-specific exact path/policy/source contract gaps described here before code; real deployment data is not a software-contract blocker.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. For implementation, deliver only the admitted CREATE/MODIFY set, public API evidence where required, fresh-schema proof where applicable and preserved historical behavior.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [doc/model-remediation/RECONCILIATION.md:23359](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L23359)
+- [doc/model-remediation/RECONCILIATION.md:23737](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L23737)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:1045](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L1045)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:1297](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L1297)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+doc/roadmap/ULTIMATE_ROADMAP.md:1045 | HPR-P25-052D | BLOCKED_SPECIFICATION | Public governed revision publication and history
+doc/roadmap/ULTIMATE_ROADMAP.md:1297 | HPR-P25-052D | Public protected publish/exact read/current/history/effective/list lifecycle over051. | Expected predecessor and owner/head epoch, one CAS winner, identical/conflicting replay, withdrawal/reactivation/transfer-hold semantics, exact old formats and history cursors; denied paths reveal no foreign metadata.
+doc/model-remediation/RECONCILIATION.md:23359 | HPR-P25-052D | Public protected publish/exact read/current/history/effective/list lifecycle over051. | Expected predecessor and owner/head epoch, one CAS winner, identical/conflicting replay, withdrawal/reactivation/transfer-hold semantics, exact old formats and history cursors; denied paths reveal no foreign metadata.
+doc/model-remediation/RECONCILIATION.md:23737 | HPR-P25-052D | BLOCKED_SPECIFICATION | Public governed revision publication and history
+~~~~~~~~
+
+<a id="hapi-592"></a>
+## HAPI-592 — Topology operator/API/history qualification
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: HPR-P25-052F
+
+Priority: P1
+
+Implementation Status: NOT_IMPLEMENTED
+
+Planning Status: BLOCKED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: HAPI-591
+
+Cross-Repository Dependencies: HWEB-F02, HWEB-F03 — legacy HidraWEB consumer references, not backend implementation tasks.
+
+### 1. Objective
+
+Cross-slice operator/API/security/history qualification and consumer-ready contract.
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `src/main/java/dz/sh/hidra/modules/topology/TopologyModule.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/TopologyApi.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/TopologyRestApi.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/SpringTopologyController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/TopologyController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/TopologyMapController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/mapper/TopologyGeneratedRestMapper.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/mapper/TopologyRestMapper.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/analytics/AnalyticsTopologyScopeContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/assets/AssetsTopologyReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/incident/IncidentTopologyContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/integrity/IntegrityCaseTopologyReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/leakdetection/LeakDetectionTopologyAssetContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/organization/TopologyOperationalScopeTargetContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/planning/PlanningTargetTopologyReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/planning/PlanningTopologyScopeContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/risk/RiskTopologyScopeReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/simulation/SimulationTopologyScopeContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/simulation/SimulationTopologyTargetContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/mapper/TopologyApplicationMapper.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/CreatePipelineSystemUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/RegisterFacilityUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/TopologyMapVisualizationUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/EquipmentRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineSystemRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/StationInternalGraphRevisionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineSystemApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/RiskTopologyScopeReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologyOperationalScopeTargetQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologySimulationPhysicalNetworkRevisionQueryService.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+Deliver company/network drafts, physical graph editing and protected publication/history APIs after owner-fence acceptance. The exact bounded remaining delivery is: Cross-slice operator/API/security/history qualification and consumer-ready contract..
+
+### 4. Functional Requirements
+
+Real configured API/filter path across two companies/networks and station graphs, rollback/concurrency/corruption tests; exact runtime OpenAPI/permissions/DTOs and relevant consumer handoff, no new frontend implementation in this repo.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: `src/main/java/dz/sh/hidra/modules/topology/application/port/in/CreatePipelineSystemUseCase.java`, `src/main/java/dz/sh/hidra/modules/topology/application/port/in/RegisterFacilityUseCase.java`, `src/main/java/dz/sh/hidra/modules/topology/application/port/in/TopologyMapVisualizationUseCase.java`.
+- Outbound ports: `src/main/java/dz/sh/hidra/modules/topology/application/port/out/EquipmentRepositoryPort.java`, `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineSystemRepositoryPort.java`, `src/main/java/dz/sh/hidra/modules/topology/application/port/out/StationInternalGraphRevisionRepositoryPort.java`.
+- Application services: `src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineSystemApplicationService.java`, `src/main/java/dz/sh/hidra/modules/topology/application/service/RiskTopologyScopeReferenceQueryService.java`, `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologyOperationalScopeTargetQueryService.java`, `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologySimulationPhysicalNetworkRevisionQueryService.java`.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE — PROPOSED:**
+
+- `src/test/java/dz/sh/hidra/modules/topology/qualification/TopologyEngineeringOperatorQualificationTest.java` — actual owner/filter/database qualification of this task's exit matrix.
+
+**MODIFY:** `.github/ci-test-inventory.json` — actual class/case/hash admission; `doc/roadmap/ULTIMATE_TASKS.md` — exact-source evidence and limitations.
+
+**DELETE:** none.
+
+**PRESERVE / REUSE:**
+
+- `src/main/java/dz/sh/hidra/modules/topology/TopologyModule.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/TopologyApi.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/TopologyRestApi.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/SpringTopologyController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/TopologyController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/TopologyMapController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/mapper/TopologyGeneratedRestMapper.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/mapper/TopologyRestMapper.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/analytics/AnalyticsTopologyScopeContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/assets/AssetsTopologyReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/incident/IncidentTopologyContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/integrity/IntegrityCaseTopologyReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/leakdetection/LeakDetectionTopologyAssetContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/organization/TopologyOperationalScopeTargetContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/planning/PlanningTargetTopologyReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/planning/PlanningTopologyScopeContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/risk/RiskTopologyScopeReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/simulation/SimulationTopologyScopeContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/simulation/SimulationTopologyTargetContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/mapper/TopologyApplicationMapper.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/CreatePipelineSystemUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/RegisterFacilityUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/TopologyMapVisualizationUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/EquipmentRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PipelineSystemRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/StationInternalGraphRevisionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineSystemApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/RiskTopologyScopeReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologyOperationalScopeTargetQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologySimulationPhysicalNetworkRevisionQueryService.java`
+
+**DISCOVERY_REQUIRED:** fixture/support filenames and exact test partition; use synthetic owners and real transactions, not fabricated prior results.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Real configured API/filter path across two companies/networks and station graphs, rollback/concurrency/corruption tests; exact runtime OpenAPI/permissions/DTOs and relevant consumer handoff, no new frontend implementation in this repo.
+- Prove the real owner/API/persistence path and negative cases; record exact source, actual executed and skipped cases and accepted contract artifact.
+- Required transactions roll back fully; historical exact reads remain reproducible after source revision.
+- Missing policy, unregistered file placement or unavailable authority is explicitly blocked rather than fabricated.
+- Applicable Full/Fast/Docs acceptance succeeds on the implementation SHA; software acceptance remains separate from SITE commissioning.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: HAPI-591. A dependency edge does not select implementation. Resolve only the task-specific exact path/policy/source contract gaps described here before code; real deployment data is not a software-contract blocker.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. For implementation, deliver only the admitted CREATE/MODIFY set, public API evidence where required, fresh-schema proof where applicable and preserved historical behavior.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [doc/model-remediation/RECONCILIATION.md:23361](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L23361)
+- [doc/model-remediation/RECONCILIATION.md:23739](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/model-remediation/RECONCILIATION.md#L23739)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:1047](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L1047)
+- [doc/roadmap/ULTIMATE_ROADMAP.md:1299](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/doc/roadmap/ULTIMATE_ROADMAP.md#L1299)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+doc/roadmap/ULTIMATE_ROADMAP.md:1047 | HPR-P25-052F | BLOCKED_SPECIFICATION | Topology operator/API/history qualification
+doc/roadmap/ULTIMATE_ROADMAP.md:1299 | HPR-P25-052F | Cross-slice operator/API/security/history qualification and consumer-ready contract. | Real configured API/filter path across two companies/networks and station graphs, rollback/concurrency/corruption tests; exact runtime OpenAPI/permissions/DTOs and relevant consumer handoff, no new frontend implementation in this repo.
+doc/model-remediation/RECONCILIATION.md:23361 | HPR-P25-052F | Cross-slice operator/API/security/history qualification and consumer-ready contract. | Real configured API/filter path across two companies/networks and station graphs, rollback/concurrency/corruption tests; exact runtime OpenAPI/permissions/DTOs and relevant consumer handoff, no new frontend implementation in this repo.
+doc/model-remediation/RECONCILIATION.md:23739 | HPR-P25-052F | BLOCKED_SPECIFICATION | Topology operator/API/history qualification
+~~~~~~~~
+
+<a id="hapi-658"></a>
+## HAPI-658 — expose operational scope resolution contract
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: HRA-091
+
+Priority: P1
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Export the Topology scope-resolution contract consumed by Organization.
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `docs/roadmap/repository-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/organization/infrastructure/adapter/AuthoritativeOperationalScopeTargetResolverAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/organization/TopologyOperationalScopeTargetContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/organization/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologyOperationalScopeTargetQueryService.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/modules/organization/infrastructure/adapter/AuthoritativeOperationalScopeTargetResolverAdapterTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologyOperationalScopeTargetQueryService.java`.
+- Primary/secondary adapters: `src/main/java/dz/sh/hidra/modules/organization/infrastructure/adapter/AuthoritativeOperationalScopeTargetResolverAdapter.java`, `src/test/java/dz/sh/hidra/modules/organization/infrastructure/adapter/AuthoritativeOperationalScopeTargetResolverAdapterTest.java`.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `docs/roadmap/repository-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/organization/infrastructure/adapter/AuthoritativeOperationalScopeTargetResolverAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/organization/TopologyOperationalScopeTargetContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/organization/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologyOperationalScopeTargetQueryService.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/modules/organization/infrastructure/adapter/AuthoritativeOperationalScopeTargetResolverAdapterTest.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` — exact-head oracle suite 16 cases, zero failures/errors/skips.
+- `src/test/java/dz/sh/hidra/modules/organization/infrastructure/adapter/AuthoritativeOperationalScopeTargetResolverAdapterTest.java` — exact-head oracle suite 5 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `8d48f28d5008e006ca1969ba526f0b3963d4192a` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/repository-remediation.md:336](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/repository-remediation.md#L336)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/repository-remediation.md:336 | HRA-091 | refactor(topology): expose operational scope resolution contract | Export the Topology scope-resolution contract consumed by Organization. | Organization no longer imports Topology's internal application package. | HRA-002 | **Completed** — relocated the topology-owned operational-scope resolver into the deliberate `topology.application.contract.organization.TopologyOperationalScopeTargetContract`, migrated the Topology implementation plus Organization adapter/tests, deleted the obsolete private `port.in` contract, removed the final transitional cross-module allowlist entry, and updated ArchUnit to permit only the exported contract package.
+~~~~~~~~
+
+<a id="hapi-666"></a>
+## HAPI-666 — remove residual projection vocabulary
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: HRA-122
+
+Priority: P1
+
+Implementation Status: IMPLEMENTED
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+Delete only the HRA-120-classified zero-incoming topology.domain.value.ProjectionType enum. Re-run static incoming-reference search immediately before deletion; if a live Java/configuration/serialization/reflection consumer appears, stop and reclassify instead of deleting. Update the orphan-classification and forensic closure evidence/guardrail to record the removal. Do not change the unrelated Analytics projectionType string field or any analytics persistence/API contract merely because it shares the word “projection”.
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- `docs/architecture/forensic-remediation-closure.md`
+- `docs/architecture/static-orphan-classification.md`
+- `docs/roadmap/repository-remediation.md`
+- `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- `docs/architecture/forensic-remediation-closure.md`
+- `docs/architecture/static-orphan-classification.md`
+- `docs/roadmap/repository-remediation.md`
+- `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+
+**Pinned original bounded record — historical applicability:**
+
+~~~~~~~~text
+## HRA-122 corrective follow-up
+
+HRA-122 removes the separately classified Topology residual without broadening into Analytics or
+other projection-related concepts.
+
+Exact-head revalidation before deletion confirmed that
+`dz.sh.hidra.modules.topology.domain.value.ProjectionType` had no Java, configuration,
+serialization, or reflection consumer. The complete enum vocabulary also appeared nowhere else.
+The unrelated Analytics `projectionType` field remains unchanged and continues to be owned by the
+Analytics module as string state.
+
+`ProjectionType.java` is now removed, and `ForensicRemediationClosureTest` verifies that the
+source file stays absent while the orphan-classification evidence records
+`DELETE_RESIDUAL → REMOVED_HRA_122`.
+
+After HRA-121 and HRA-122, both concrete blockers found by the 2026-09-29 HRA-120 replay have been
+corrected. **HRA-120 remains BLOCKED only pending a fresh replay of the same forensic methodology
+against the new live head.** This HRA-122 task does not itself claim forensic closure.
+
+
+~~~~~~~~
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java` — exact-head oracle suite 5 cases, zero failures/errors/skips.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- `d6d1454b816b819bc90c2c4ef3e382a59cd6d4c0` — exact registered-message commit; surviving paths matched to current tree.
+
+Pinned task-definition/status/history references:
+
+- [docs/architecture/forensic-remediation-closure.md:164](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/architecture/forensic-remediation-closure.md#L164)
+- [docs/architecture/static-orphan-classification.md:205](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/architecture/static-orphan-classification.md#L205)
+- [docs/roadmap/repository-remediation.md:372](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/repository-remediation.md#L372)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/repository-remediation.md:372 | HRA-122 | refactor(topology): remove residual projection vocabulary | Delete only the HRA-120-classified zero-incoming `topology.domain.value.ProjectionType` enum. Re-run static incoming-reference search immediately before deletion; if a live Java/configuration/serialization/reflection consumer appears, stop and reclassify instead of deleting. Update the orphan-classification and forensic closure evidence/guardrail to record the removal. Do not change the unrelated Analytics `projectionType` string field or any analytics persistence/API contract merely because it shares the word “projection”. | ProjectionType.java` is absent; no production/test source imports or references the deleted Topology enum; Analytics projection fields/contracts are unchanged; static-orphan evidence records the classified residual as removed; repository validation passes. | HRA-120 `DELETE_RESIDUAL` evidence | **Completed** — exact-head revalidation on `9d62c46e1a14b1f866f6d48f565322411fb3d960` found no Java/configuration/serialization/reflection consumer of the Topology enum and no reuse of its complete vocabulary outside its own declaration. `ProjectionType.java` was deleted; orphan and forensic evidence record `DELETE_RESIDUAL → REMOVED_HRA_122`; the closure guardrail now asserts the file remains absent. Unrelated Analytics `projectionType` string state/contracts were not changed.
+~~~~~~~~
+
+<a id="hapi-871"></a>
+## HAPI-871 — add topology implementation roadmap
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: TOP-001
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+add topology implementation roadmap
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. It is a documentation/review/preflight outcome; broader application functionality remains separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+No new API is part of this bounded documentation/historical outcome. Existing owner operations are listed in the runtime contract inventory below; no proposed endpoint is relabeled as implemented.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/topology.md:70](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L70)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent. Doc/preflight completion is not completion of the associated application workflow.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:70 | TOP-001 | docs(topology): add topology implementation roadmap | Completed | Initial topology roadmap.
+~~~~~~~~
+
+<a id="hapi-872"></a>
+## HAPI-872 — add topology package skeleton
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: TOP-002
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+add topology package skeleton
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/topology.md:71](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L71)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:71 | TOP-002 | chore(topology): add topology package skeleton | Completed | Production package skeleton.
+~~~~~~~~
+
+<a id="hapi-873"></a>
+## HAPI-873 — add topology domain value objects
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: TOP-003
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+add topology domain value objects
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/topology.md:72](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L72)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:72 | TOP-003 | feat(topology): add topology domain value objects | Completed | Domain identifiers, values, and initial controlled vocabularies.
+~~~~~~~~
+
+<a id="hapi-874"></a>
+## HAPI-874 — add topology domain models
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: TOP-004
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+add topology domain models
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/topology.md:73](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L73)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:73 | TOP-004 | feat(topology): add topology domain models | Completed | Physical topology aggregates/entities.
+~~~~~~~~
+
+<a id="hapi-875"></a>
+## HAPI-875 — add topology domain policies
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: TOP-005
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+add topology domain policies
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/topology.md:74](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L74)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:74 | TOP-005 | feat(topology): add topology domain policies | Completed | Domain validation policies.
+~~~~~~~~
+
+<a id="hapi-876"></a>
+## HAPI-876 — add topology domain services
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: TOP-006
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+add topology domain services
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/topology.md:75](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L75)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:75 | TOP-006 | feat(topology): add topology domain services | Completed | Domain orchestration services.
+~~~~~~~~
+
+<a id="hapi-877"></a>
+## HAPI-877 — add topology application commands and queries
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: TOP-007
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+add topology application commands and queries
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/topology.md:76](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L76)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:76 | TOP-007 | feat(topology): add topology application commands and queries | Completed | Application input records.
+~~~~~~~~
+
+<a id="hapi-878"></a>
+## HAPI-878 — add topology application DTOs
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: TOP-008
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+add topology application DTOs
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/topology.md:77](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L77)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:77 | TOP-008 | feat(topology): add topology application DTOs | Completed | Application output records.
+~~~~~~~~
+
+<a id="hapi-879"></a>
+## HAPI-879 — add topology application ports
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: TOP-009
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+add topology application ports
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/topology.md:78](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L78)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:78 | TOP-009 | feat(topology): add topology application ports | Completed | Inbound and outbound ports.
+~~~~~~~~
+
+<a id="hapi-880"></a>
+## HAPI-880 — add topology application services
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: TOP-010
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+add topology application services
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/topology.md:79](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L79)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:79 | TOP-010 | feat(topology): add topology application services | Completed | Application services and wiring.
+~~~~~~~~
+
+<a id="hapi-881"></a>
+## HAPI-881 — add topology persistence entities and repositories
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: TOP-011
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+add topology persistence entities and repositories
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/topology.md:80](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L80)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:80 | TOP-011 | feat(topology): add topology persistence entities and repositories | Completed | JPA entities and Spring Data repository interfaces.
+~~~~~~~~
+
+<a id="hapi-882"></a>
+## HAPI-882 — add topology persistence mapper and adapters
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: TOP-012
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+add topology persistence mapper and adapters
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/topology.md:81](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L81)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:81 | TOP-012 | feat(topology): add topology persistence mapper and adapters | Completed | Persistence mapper and outbound adapters.
+~~~~~~~~
+
+<a id="hapi-883"></a>
+## HAPI-883 — add topology flyway migration
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: TOP-013
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+add topology flyway migration
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/topology.md:82](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L82)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:82 | TOP-013 | db(topology): add topology flyway migration | Completed | V002__create_topology_tables.sql`.
+~~~~~~~~
+
+<a id="hapi-884"></a>
+## HAPI-884 — add topology REST request DTOs
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: TOP-014
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+add topology REST request DTOs
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/topology.md:83](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L83)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:83 | TOP-014 | feat(topology): add topology REST request DTOs | Completed | Request DTO contracts.
+~~~~~~~~
+
+<a id="hapi-885"></a>
+## HAPI-885 — add topology REST response DTOs
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: TOP-015
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+add topology REST response DTOs
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/topology.md:84](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L84)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:84 | TOP-015 | feat(topology): add topology REST response DTOs | Completed | Response DTO contracts.
+~~~~~~~~
+
+<a id="hapi-886"></a>
+## HAPI-886 — add topology REST mapper
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: TOP-016
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+add topology REST mapper
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/topology.md:85](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L85)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:85 | TOP-016 | feat(topology): add topology REST mapper | Completed | API mapper and mapper bean configuration.
+~~~~~~~~
+
+<a id="hapi-887"></a>
+## HAPI-887 — add topology REST controllers
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: TOP-017
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+add topology REST controllers
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/topology.md:86](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L86)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:86 | TOP-017 | feat(topology): add topology REST controllers | Completed | REST controllers for implemented topology use cases.
+~~~~~~~~
+
+<a id="hapi-888"></a>
+## HAPI-888 — add topology domain tests
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: TOP-018
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+add topology domain tests
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/topology.md:87](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L87)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:87 | TOP-018 | test(topology): add topology domain tests | Completed | Domain unit tests.
+~~~~~~~~
+
+<a id="hapi-889"></a>
+## HAPI-889 — add topology application service tests
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: TOP-019
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+add topology application service tests
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/topology.md:88](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L88)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:88 | TOP-019 | test(topology): add topology application service tests | Completed | Application service unit tests.
+~~~~~~~~
+
+<a id="hapi-890"></a>
+## HAPI-890 — add topology persistence tests
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: TOP-020
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+add topology persistence tests
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/topology.md:89](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L89)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:89 | TOP-020 | test(topology): add topology persistence tests | Completed | Persistence mapper/entity/repository/adapter tests.
+~~~~~~~~
+
+<a id="hapi-891"></a>
+## HAPI-891 — add topology REST mapper and controller tests
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: TOP-021
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+add topology REST mapper and controller tests
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/topology.md:90](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L90)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:90 | TOP-021 | test(topology): add topology REST mapper and controller tests | Completed | REST mapper/controller tests.
+~~~~~~~~
+
+<a id="hapi-892"></a>
+## HAPI-892 — add topology application boot smoke test
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: TOP-022
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+add topology application boot smoke test
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/topology.md:91](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L91)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:91 | TOP-022 | test(topology): add topology application boot smoke test | Completed | Spring Boot + PostgreSQL Testcontainers topology smoke test.
+~~~~~~~~
+
+<a id="hapi-893"></a>
+## HAPI-893 — finalize topology validation checklist
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: TOP-023
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+finalize topology validation checklist
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. It is a documentation/review/preflight outcome; broader application functionality remains separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+No new API is part of this bounded documentation/historical outcome. Existing owner operations are listed in the runtime contract inventory below; no proposed endpoint is relabeled as implemented.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/topology.md:92](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/topology.md#L92)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent. Doc/preflight completion is not completion of the associated application workflow.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/topology.md:92 | TOP-023 | docs(topology): finalize topology validation checklist | Completed | docs/roadmap/topology_validation_checklist.md`.
+~~~~~~~~
+
+<a id="hapi-894"></a>
+## HAPI-894 — TOP-COR-001 historical bounded obligation
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: TOP-COR-001
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: SUPERSEDED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+TOP-COR-001 historical bounded obligation
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+This old execution plan is inactive; preserve its historical outcome and current replacement. Do not repeat foundation or remedial work solely to satisfy stale filenames.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+No new API is part of this bounded documentation/historical outcome. Existing owner operations are listed in the runtime contract inventory below; no proposed endpoint is relabeled as implemented.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. A dependency edge does not select implementation. Resolve only the task-specific exact path/policy/source contract gaps described here before code; real deployment data is not a software-contract blocker.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/fixs/telemetry_corrected_baseline_validated.md:44](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/telemetry_corrected_baseline_validated.md#L44)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/fixs/telemetry_corrected_baseline_validated.md:44 | TOP-COR-001 | topology | Superseded | @Primary` alone did not remove concrete application-service ambiguity.
+~~~~~~~~
+
+<a id="hapi-895"></a>
+## HAPI-895 — TOP-COR-002 historical bounded obligation
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: TOP-COR-002
+
+Priority: P1
+
+Implementation Status: NOT_VERIFIABLE
+
+Planning Status: COMPLETED
+
+Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
+
+Dependencies: —
+
+Cross-Repository Dependencies: None independently verified for this bounded task.
+
+### 1. Objective
+
+TOP-COR-002 historical bounded obligation
+
+### 2. Existing Implementation
+
+Pipeline-system/facility creation, map reads and immutable internal physical/station graph revision stores exist. These are phase context, not automatic completion evidence for this task. Task-specific current artifacts were matched to the exact tree:
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+No current file is invented to make a historical allowlist appear complete. Artifact presence and a tested narrow method do not establish the whole business workflow.
+
+### 3. Missing or Incomplete Capabilities
+
+No successor implementation is selected for this completed bounded objective. Preserve accepted source behavior; broader phase completion and SITE gates remain separate.
+
+### 4. Functional Requirements
+
+Preserve the original bounded objective and verify its claimed output against current artifacts. Maintain authoritative physical nodes, segments, branches, station incidence and governed network revisions.
+
+Preserve explicit lifecycle, required values, invalid-reference rejection, supported catalog families and uncertainty semantics from the original bounded record. Optional fields are not silently defaulted into engineering facts. A follow-on capability never changes the meaning of a completed preflight.
+
+### 5. Architecture and Domain Design
+
+Bounded Context: `topology`; primary phase owns this obligation. A map is a representation of stored facts; it is not a full engineering authoring contract. Aggregate/invariant ownership follows the existing domain artifacts below; proposed aggregates must not duplicate another owner. Domain remains pure Java; application coordinates authorization/transactions through ports; REST and persistence/integration remain adapters.
+
+- Domain ownership/invariants: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Inbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Outbound ports: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Application services: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+- Primary/secondary adapters: DISCOVERY_REQUIRED for this task; reuse the exact owner inventory below before adding a proposed contract.
+
+### 6. Exact File-Level Execution Plan
+
+**CREATE / MODIFY / DELETE:** none selected. Preserve the completed or superseded bounded outcome.
+
+**PRESERVE / REUSE — current matched artifacts:**
+
+- DISCOVERY_REQUIRED — no task-specific existing artifact was independently matched.
+
+Historical-only/deleted proposed paths in the original record are not presented as current files. Recover replacements only if a concrete regression is established.
+
+### 7. API Contracts
+
+Reuse only actual owner operations from the runtime contract inventory below. DISCOVERY_REQUIRED for any new operation/schema: specify explicit request/response DTOs, field validation/units, 400 malformed/invalid input, 401 unauthenticated, non-disclosing 403/404 policy, 409 stale version/idempotency conflict, applicable availability errors and bounded pagination. Publish exact-SHA OpenAPI and verify consumer compatibility; never expose persistence entities.
+
+### 8. Persistence and Transactions
+
+Owner schema and existing mapped domain/persistence types are preserved. Flyway history is immutable; any new database requirement uses an additive migration whose actual filename/version remains DISCOVERY_REQUIRED until the live chain is checked. Enforce meaningful owned references, catalog family, immutable revision/digest, expected-version/uniqueness and concurrent-writer guarantees in the actual database as appropriate. Do not impose cross-module foreign aggregates or assume application pre-checks prevent races. PostgreSQL is current; MySQL equivalence is not established. Completed documentation work adds no schema requirement. Actual transaction/lock/time semantics in the original source record take precedence over this common preservation rule.
+
+### 9. Security
+
+Authenticate through the actual configured chain; authorize before revealing protected existence, count, history, export or payload. Preserve company/resource scope, current effective responsibility, DENY precedence, audit actor provenance and fail-closed unavailable/unknown evidence. Never trust caller-constructed actor/claim/permission evidence or stale grants. Keep industrial IT/OT segregation and human decision authority; no PLC/RTU command or autonomous actuation. Do not store raw IdP tokens, secrets or unrestricted personal/claim payloads.
+
+### 10. Testing
+
+Matched executed task-specific source suites:
+
+- No task-specific executed suite was independently matched. The module-level exact-head suite inventory is recorded below; it does not automatically verify this whole objective.
+
+For remaining code scope, add focused domain-invariant and application tests, actual request/DTO/error and authorization contract tests, fresh PostgreSQL/Flyway/JPA/constraint/rollback tests, relevant negative/replay/concurrency cases and architecture/mapper checks. Reuse existing module tests and add actual class/case/source hashes to the CI inventory only when those tests exist. A Docker skip is not database proof. Documentation/preflight tasks use actual documentation consistency/link/inventory checks without claiming Java behavior was newly executed. Full/Fast/Docs evidence must retain exact SHA/run/attempt and required case membership.
+
+### 11. Acceptance Criteria
+
+- Original bounded artifacts remain present or their stronger approved replacement is explicitly recorded.
+- Source/document assertions and matched test/CI provenance remain independently reproducible; no broader workflow closure is inferred.
+
+### 12. Dependencies and Blockers
+
+Canonical prerequisites: —. This completed scope remains accepted within its recorded limits.
+
+### 13. Deliverables
+
+The bounded objective, exact owner contracts/artifacts, meaningful verification and source-linked acceptance record. No new source deliverable is selected for this retained task.
+
+### 14. Evidence and History
+
+Source applicability: `e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8`; exact-head Full #713 / Fast #41 / Docs #358 and raw report verification as described in the baseline. A cumulative passing run does not invent an unlocated original task commit.
+
+- Independent original implementation commit identity was not matched for this bounded record; do not invent one.
+
+Pinned task-definition/status/history references:
+
+- [docs/roadmap/fixs/telemetry_corrected_baseline_validated.md:45](https://github.com/CHOUABBIA-AMINE/HidraAPI/blob/e0d6cfc15e9e5f57bbfe4ddf2992fb0026cd22f8/docs/roadmap/fixs/telemetry_corrected_baseline_validated.md#L45)
+
+### 15. Current Reconciliation Record
+
+Initial canonical adoption, 2026-10-16: Historical task retained independently; objective and record applicability are bounded by the pinned source. Current implementation/planning states above are independent.
+
+No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
+
+Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+**Original task rows — quoted historical evidence, not competing current statuses:**
+
+~~~~~~~~text
+docs/roadmap/fixs/telemetry_corrected_baseline_validated.md:45 | TOP-COR-002 | topology | Accepted | Explicit `@Qualifier(...)` annotations on topology use-case factory parameters remove ambiguity.
+~~~~~~~~
+
+<!-- task-register:payload:end -->

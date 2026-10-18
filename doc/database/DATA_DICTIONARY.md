@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `4bb52d9585288dfdbfa43b44c6f9ecea82eb883e`
+Captured source SHA: `1a8a28701a8336a00cb4e5271932e89db87e8585`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `9d87dbf4d4eeffbdd3da55a629210e23e68216c58a223f78ee5c39fc060fa23f`.
-Migrations: 151; JPA mappings: 470; catalog relations: 493; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `1add86a1c45a2de75b8aae3282a18439743d93180b5139d1b4445c035bebc635`.
+Migrations: 153; JPA mappings: 470; catalog relations: 495; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -17541,6 +17541,42 @@ Persisted PartyDocumentReferenceJpaEntity state; semantic authority remains with
 
 None captured in this catalog category.
 
+### public.hidra_party_eligibility_generation
+
+Owner: **party**; relation kind: `r`.
+
+Owner-issued monotone live/tombstone witness for protected ACTIVE Party eligibility; not a publication epoch or permission.
+
+- Evidence: [V20261018_001__p25_party_eligibility_generations.sql](../../src/main/resources/db/migration/V20261018_001__p25_party_eligibility_generations.sql)
+- Evidence: [JdbcTopologyProtectedPartyEligibilityAdapter.java](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JdbcTopologyProtectedPartyEligibilityAdapter.java)
+- Migration mention (not inferred introduction): [V20261018_001__p25_party_eligibility_generations.sql](../../src/main/resources/db/migration/V20261018_001__p25_party_eligibility_generations.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| generation | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| present | boolean | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `ck_p25_party_eligibility_positive`: CHECK (generation &gt; 0)
+  - Catalog attributes: {"columns": ["generation"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_party_eligibility_generation_pkey`: PRIMARY KEY (party_id)
+  - Catalog attributes: {"columns": ["party_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `hidra_party_eligibility_generation_pkey`: CREATE UNIQUE INDEX hidra_party_eligibility_generation_pkey ON public.hidra_party_eligibility_generation USING btree (party_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `trg_p25_party_eligibility_registry_truncate`: CREATE TRIGGER trg_p25_party_eligibility_registry_truncate BEFORE TRUNCATE ON hidra_party_eligibility_generation FOR EACH STATEMENT EXECUTE FUNCTION hidra_p25_party_eligibility_truncate()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_party_eligibility_truncate()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_party_eligibility_truncate()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    IF TG_WHEN &lt;&gt; 'BEFORE' OR TG_LEVEL &lt;&gt; 'STATEMENT' OR TG_OP &lt;&gt; 'TRUNCATE' OR TG_NARGS &lt;&gt; 0<br>       OR NOT ((TG_RELID='public.hidra_party_party'::regclass AND TG_NAME='trg_p25_party_eligibility_root_truncate')<br>               OR (TG_RELID='public.hidra_party_eligibility_generation'::regclass AND TG_NAME='trg_p25_party_eligibility_registry_truncate')) THEN<br>        RAISE EXCEPTION 'Invalid owner truncate invocation' USING ERRCODE='23514';<br>    END IF;<br>    RAISE EXCEPTION 'Owner generation lifetime cannot be truncated' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
+comment: "Owner-issued live/tombstone generation, not publication epoch or permission"
+
 ### public.hidra_party_external_reference
 
 Owner: **party**; relation kind: `r`.
@@ -17829,6 +17865,7 @@ Persisted PartyJpaEntity state; semantic authority remains with party.
 - Migration mention (not inferred introduction): [V20260611_003__create_party_tables.sql](../../src/main/resources/db/migration/V20260611_003__create_party_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261004_004__hmr_004_party_party.sql](../../src/main/resources/db/migration/V20261004_004__hmr_004_party_party.sql)
+- Migration mention (not inferred introduction): [V20261018_001__p25_party_eligibility_generations.sql](../../src/main/resources/db/migration/V20261018_001__p25_party_eligibility_generations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -17871,7 +17908,12 @@ Persisted PartyJpaEntity state; semantic authority remains with party.
 
 #### Triggers
 
-None captured in this catalog category.
+- `trg_p25_party_eligibility_root_truncate`: CREATE TRIGGER trg_p25_party_eligibility_root_truncate BEFORE TRUNCATE ON hidra_party_party FOR EACH STATEMENT EXECUTE FUNCTION hidra_p25_party_eligibility_truncate()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_party_eligibility_truncate()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_party_eligibility_truncate()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    IF TG_WHEN &lt;&gt; 'BEFORE' OR TG_LEVEL &lt;&gt; 'STATEMENT' OR TG_OP &lt;&gt; 'TRUNCATE' OR TG_NARGS &lt;&gt; 0<br>       OR NOT ((TG_RELID='public.hidra_party_party'::regclass AND TG_NAME='trg_p25_party_eligibility_root_truncate')<br>               OR (TG_RELID='public.hidra_party_eligibility_generation'::regclass AND TG_NAME='trg_p25_party_eligibility_registry_truncate')) THEN<br>        RAISE EXCEPTION 'Invalid owner truncate invocation' USING ERRCODE='23514';<br>    END IF;<br>    RAISE EXCEPTION 'Owner generation lifetime cannot be truncated' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `trg_p25_party_eligibility_write`: CREATE TRIGGER trg_p25_party_eligibility_write AFTER INSERT OR DELETE OR UPDATE OF id, status ON hidra_party_party FOR EACH ROW EXECUTE FUNCTION hidra_p25_party_eligibility_write()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_party_eligibility_write()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_party_eligibility_write()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>DECLARE old_id varchar(80); new_id varchar(80); item record;<br>BEGIN<br>    IF TG_RELID &lt;&gt; 'public.hidra_party_party'::regclass OR TG_NAME &lt;&gt; 'trg_p25_party_eligibility_write'<br>       OR TG_WHEN &lt;&gt; 'AFTER' OR TG_LEVEL &lt;&gt; 'ROW' OR TG_NARGS &lt;&gt; 0<br>       OR TG_OP NOT IN ('INSERT','UPDATE','DELETE') THEN<br>        RAISE EXCEPTION 'Invalid owner generation invocation' USING ERRCODE='23514';<br>    END IF;<br>    IF TG_OP IN ('UPDATE','DELETE') THEN old_id := OLD.id; END IF;<br>    IF TG_OP IN ('UPDATE','INSERT') THEN new_id := NEW.id; END IF;<br>    IF old_id IS NOT NULL AND old_id = new_id THEN<br>        UPDATE public.hidra_party_eligibility_generation SET generation=generation+1<br>        WHERE party_id=old_id AND present AND generation&lt;9223372036854775807::bigint;<br>        IF NOT FOUND THEN<br>            RAISE EXCEPTION 'Owner generation unavailable or exhausted' USING ERRCODE='23514';<br>        END IF;<br>    ELSE<br>        FOR item IN SELECT v.id,v.live FROM (VALUES(old_id,false),(new_id,true)) AS v(id,live)<br>                    WHERE v.id IS NOT NULL ORDER BY v.id COLLATE "C" LOOP<br>            IF item.live THEN<br>                INSERT INTO public.hidra_party_eligibility_generation AS g (party_id,generation,present) VALUES(item.id,1,true)<br>                ON CONFLICT (party_id) DO UPDATE SET generation=g.generation+1,present=true<br>                WHERE NOT g.present AND g.generation&lt;9223372036854775807::bigint;<br>            ELSE<br>                UPDATE public.hidra_party_eligibility_generation SET generation=generation+1,present=false<br>                WHERE party_id=item.id AND present AND generation&lt;9223372036854775807::bigint;<br>            END IF;<br>            IF NOT FOUND THEN<br>                RAISE EXCEPTION 'Owner generation unavailable or exhausted' USING ERRCODE='23514';<br>            END IF;<br>        END LOOP;<br>    END IF;<br>    RETURN NULL;<br>END;<br>$function$<br>
 
 ### public.hidra_party_qualification
 
@@ -25169,6 +25211,7 @@ Persisted FacilityJpaEntity state; semantic authority remains with topology.
 - Migration mention (not inferred introduction): [V20260611_004__create_topology_tables.sql](../../src/main/resources/db/migration/V20260611_004__create_topology_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261006_009__hmr_054_equipment_catalog_and_attachments.sql](../../src/main/resources/db/migration/V20261006_009__hmr_054_equipment_catalog_and_attachments.sql)
+- Migration mention (not inferred introduction): [V20261018_002__p25_topology_facility_owner_generations.sql](../../src/main/resources/db/migration/V20261018_002__p25_topology_facility_owner_generations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -25217,7 +25260,12 @@ Persisted FacilityJpaEntity state; semantic authority remains with topology.
 
 #### Triggers
 
-None captured in this catalog category.
+- `trg_p25_facility_owner_root_truncate`: CREATE TRIGGER trg_p25_facility_owner_root_truncate BEFORE TRUNCATE ON hidra_topology_facility FOR EACH STATEMENT EXECUTE FUNCTION hidra_p25_facility_owner_truncate()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_facility_owner_truncate()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_facility_owner_truncate()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    IF TG_WHEN &lt;&gt; 'BEFORE' OR TG_LEVEL &lt;&gt; 'STATEMENT' OR TG_OP &lt;&gt; 'TRUNCATE' OR TG_NARGS &lt;&gt; 0<br>       OR NOT ((TG_RELID='public.hidra_topology_facility'::regclass AND TG_NAME='trg_p25_facility_owner_root_truncate')<br>               OR (TG_RELID='public.hidra_topology_facility_owner_generation'::regclass AND TG_NAME='trg_p25_facility_owner_registry_truncate')) THEN<br>        RAISE EXCEPTION 'Invalid owner truncate invocation' USING ERRCODE='23514';<br>    END IF;<br>    RAISE EXCEPTION 'Owner generation lifetime cannot be truncated' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `trg_p25_facility_owner_write`: CREATE TRIGGER trg_p25_facility_owner_write AFTER INSERT OR DELETE OR UPDATE OF id, owner_party_id ON hidra_topology_facility FOR EACH ROW EXECUTE FUNCTION hidra_p25_facility_owner_write()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_facility_owner_write()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_facility_owner_write()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>DECLARE old_id varchar(80); new_id varchar(80); item record;<br>BEGIN<br>    IF TG_RELID &lt;&gt; 'public.hidra_topology_facility'::regclass OR TG_NAME &lt;&gt; 'trg_p25_facility_owner_write'<br>       OR TG_WHEN &lt;&gt; 'AFTER' OR TG_LEVEL &lt;&gt; 'ROW' OR TG_NARGS &lt;&gt; 0<br>       OR TG_OP NOT IN ('INSERT','UPDATE','DELETE') THEN<br>        RAISE EXCEPTION 'Invalid owner generation invocation' USING ERRCODE='23514';<br>    END IF;<br>    IF TG_OP IN ('UPDATE','DELETE') THEN old_id := OLD.id; END IF;<br>    IF TG_OP IN ('UPDATE','INSERT') THEN new_id := NEW.id; END IF;<br>    IF old_id IS NOT NULL AND old_id = new_id THEN<br>        UPDATE public.hidra_topology_facility_owner_generation SET generation=generation+1<br>        WHERE facility_id=old_id AND present AND generation&lt;9223372036854775807::bigint;<br>        IF NOT FOUND THEN<br>            RAISE EXCEPTION 'Owner generation unavailable or exhausted' USING ERRCODE='23514';<br>        END IF;<br>    ELSE<br>        FOR item IN SELECT v.id,v.live FROM (VALUES(old_id,false),(new_id,true)) AS v(id,live)<br>                    WHERE v.id IS NOT NULL ORDER BY v.id COLLATE "C" LOOP<br>            IF item.live THEN<br>                INSERT INTO public.hidra_topology_facility_owner_generation AS g (facility_id,generation,present) VALUES(item.id,1,true)<br>                ON CONFLICT (facility_id) DO UPDATE SET generation=g.generation+1,present=true<br>                WHERE NOT g.present AND g.generation&lt;9223372036854775807::bigint;<br>            ELSE<br>                UPDATE public.hidra_topology_facility_owner_generation SET generation=generation+1,present=false<br>                WHERE facility_id=item.id AND present AND generation&lt;9223372036854775807::bigint;<br>            END IF;<br>            IF NOT FOUND THEN<br>                RAISE EXCEPTION 'Owner generation unavailable or exhausted' USING ERRCODE='23514';<br>            END IF;<br>        END LOOP;<br>    END IF;<br>    RETURN NULL;<br>END;<br>$function$<br>
 
 ### public.hidra_topology_facility_attribute_definition
 
@@ -25363,6 +25411,42 @@ Persisted FacilityNodeBindingJpaEntity state; semantic authority remains with to
 #### Triggers
 
 None captured in this catalog category.
+
+### public.hidra_topology_facility_owner_generation
+
+Owner: **topology**; relation kind: `r`.
+
+Owner-issued monotone live/tombstone witness for protected Facility ownership; not a publication epoch or permission.
+
+- Evidence: [V20261018_002__p25_topology_facility_owner_generations.sql](../../src/main/resources/db/migration/V20261018_002__p25_topology_facility_owner_generations.sql)
+- Evidence: [JdbcStationProtectedFacilityOwnershipAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationProtectedFacilityOwnershipAdapter.java)
+- Migration mention (not inferred introduction): [V20261018_002__p25_topology_facility_owner_generations.sql](../../src/main/resources/db/migration/V20261018_002__p25_topology_facility_owner_generations.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| facility_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| generation | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| present | boolean | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `ck_p25_facility_owner_positive`: CHECK (generation &gt; 0)
+  - Catalog attributes: {"columns": ["generation"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_facility_owner_generation_pkey`: PRIMARY KEY (facility_id)
+  - Catalog attributes: {"columns": ["facility_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `hidra_topology_facility_owner_generation_pkey`: CREATE UNIQUE INDEX hidra_topology_facility_owner_generation_pkey ON public.hidra_topology_facility_owner_generation USING btree (facility_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `trg_p25_facility_owner_registry_truncate`: CREATE TRIGGER trg_p25_facility_owner_registry_truncate BEFORE TRUNCATE ON hidra_topology_facility_owner_generation FOR EACH STATEMENT EXECUTE FUNCTION hidra_p25_facility_owner_truncate()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_facility_owner_truncate()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_facility_owner_truncate()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    IF TG_WHEN &lt;&gt; 'BEFORE' OR TG_LEVEL &lt;&gt; 'STATEMENT' OR TG_OP &lt;&gt; 'TRUNCATE' OR TG_NARGS &lt;&gt; 0<br>       OR NOT ((TG_RELID='public.hidra_topology_facility'::regclass AND TG_NAME='trg_p25_facility_owner_root_truncate')<br>               OR (TG_RELID='public.hidra_topology_facility_owner_generation'::regclass AND TG_NAME='trg_p25_facility_owner_registry_truncate')) THEN<br>        RAISE EXCEPTION 'Invalid owner truncate invocation' USING ERRCODE='23514';<br>    END IF;<br>    RAISE EXCEPTION 'Owner generation lifetime cannot be truncated' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
+comment: "Owner-issued live/tombstone generation, not publication epoch or permission"
 
 ### public.hidra_topology_facility_type
 

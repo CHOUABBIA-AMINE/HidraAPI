@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `1a8a28701a8336a00cb4e5271932e89db87e8585`
+Captured source SHA: `d7745f4282444d8e47aa28bbbde060eb86e7ba98`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `1add86a1c45a2de75b8aae3282a18439743d93180b5139d1b4445c035bebc635`.
-Migrations: 153; JPA mappings: 470; catalog relations: 495; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `1c69a9e07f00f3477a44e32e8b123103cbe93b8862b73a4c380f75c524bba477`.
+Migrations: 154; JPA mappings: 470; catalog relations: 497; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -26032,6 +26032,126 @@ Persisted TopologySnapshotJpaEntity state; semantic authority remains with topol
 
 None captured in this catalog category.
 
+### public.hidra_topology_station_graph_head
+
+Owner: **topology**; relation kind: `r`.
+
+Topology-owned current station graph publication selection with monotone epoch and immutable event reference.
+
+- Evidence: [V20261018_003__p25_topology_protected_station_graph_operations.sql](../../src/main/resources/db/migration/V20261018_003__p25_topology_protected_station_graph_operations.sql)
+- Evidence: [JdbcStationGraphProtectedPublicationAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationGraphProtectedPublicationAdapter.java)
+- Migration mention (not inferred introduction): [V20261018_003__p25_topology_protected_station_graph_operations.sql](../../src/main/resources/db/migration/V20261018_003__p25_topology_protected_station_graph_operations.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| facility_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| revision_id | text | False | None; identity=; generated= | No current mapped Java column | — |
+| head_epoch | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| state | character varying(16) | False | None; identity=; generated= | No current mapped Java column | — |
+| last_event_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `fk_p25_graph_head_event`: FOREIGN KEY (facility_id, last_event_id, head_epoch, revision_id) REFERENCES hidra_topology_station_graph_operation_event(facility_id, event_id, resulting_epoch, resulting_revision_id)
+  - Catalog attributes: {"columns": ["facility_id", "last_event_id", "head_epoch", "revision_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["facility_id", "event_id", "resulting_epoch", "resulting_revision_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_station_graph_operation_event"}, "type": "f", "validated": true}
+- `fk_p25_graph_head_revision`: FOREIGN KEY (facility_id, revision_id) REFERENCES hidra_topology_station_graph_revision(facility_id, revision_id)
+  - Catalog attributes: {"columns": ["facility_id", "revision_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["facility_id", "revision_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_station_graph_revision"}, "type": "f", "validated": true}
+- `hidra_topology_station_graph_head_head_epoch_check`: CHECK (head_epoch &gt; 0)
+  - Catalog attributes: {"columns": ["head_epoch"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_station_graph_head_pkey`: PRIMARY KEY (facility_id)
+  - Catalog attributes: {"columns": ["facility_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_topology_station_graph_head_state_check`: CHECK (state::text = ANY (ARRAY['ACTIVE'::character varying, 'WITHDRAWN'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["state"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_topology_station_graph_head_pkey`: CREATE UNIQUE INDEX hidra_topology_station_graph_head_pkey ON public.hidra_topology_station_graph_head USING btree (facility_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `trg_p25_graph_head_no_delete`: CREATE TRIGGER trg_p25_graph_head_no_delete BEFORE DELETE ON hidra_topology_station_graph_head FOR EACH ROW EXECUTE FUNCTION hidra_p25_graph_immutable_event()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_graph_immutable_event()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_graph_immutable_event()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Immutable station publication event' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `trg_p25_graph_head_no_truncate`: CREATE TRIGGER trg_p25_graph_head_no_truncate BEFORE TRUNCATE ON hidra_topology_station_graph_head FOR EACH STATEMENT EXECUTE FUNCTION hidra_p25_graph_immutable_event()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_graph_immutable_event()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_graph_immutable_event()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Immutable station publication event' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `trg_p25_graph_head_transition`: CREATE TRIGGER trg_p25_graph_head_transition BEFORE INSERT OR UPDATE ON hidra_topology_station_graph_head FOR EACH ROW EXECUTE FUNCTION hidra_p25_graph_head_transition()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_graph_head_transition()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_graph_head_transition()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>DECLARE action_name varchar(16);<br>BEGIN<br>    IF TG_OP='TRUNCATE' OR TG_OP='DELETE' THEN<br>        RAISE EXCEPTION 'Station publication head must retain tombstone' USING ERRCODE='23514';<br>    END IF;<br>    SELECT e.event_kind INTO action_name FROM public.hidra_topology_station_graph_operation_event e<br>    WHERE e.event_id=NEW.last_event_id AND e.facility_id=NEW.facility_id<br>      AND e.resulting_epoch=NEW.head_epoch AND e.resulting_revision_id=NEW.revision_id;<br>    IF action_name IS NULL THEN<br>        RAISE EXCEPTION 'Missing publication event witness' USING ERRCODE='23514';<br>    END IF;<br>    IF TG_OP='INSERT' THEN<br>        IF NEW.head_epoch&lt;&gt;1 OR NEW.state&lt;&gt;'ACTIVE' OR action_name&lt;&gt;'PUBLISH' THEN<br>            RAISE EXCEPTION 'Initial station head must publish epoch one' USING ERRCODE='23514';<br>        END IF;<br>    ELSIF TG_OP='UPDATE' THEN<br>        IF NEW.facility_id&lt;&gt;OLD.facility_id OR OLD.head_epoch=9223372036854775807::bigint<br>           OR NEW.head_epoch&lt;&gt;OLD.head_epoch+1 THEN<br>            RAISE EXCEPTION 'Station head must advance exactly one epoch' USING ERRCODE='23514';<br>        END IF;<br>        IF (action_name='PUBLISH' AND (OLD.state&lt;&gt;'ACTIVE' OR NEW.state&lt;&gt;'ACTIVE'<br>             OR NEW.revision_id=OLD.revision_id))<br>           OR (action_name='WITHDRAW' AND (OLD.state&lt;&gt;'ACTIVE' OR NEW.state&lt;&gt;'WITHDRAWN'<br>             OR NEW.revision_id&lt;&gt;OLD.revision_id))<br>           OR (action_name='REACTIVATE' AND (OLD.state&lt;&gt;'WITHDRAWN' OR NEW.state&lt;&gt;'ACTIVE'<br>             OR NEW.revision_id&lt;&gt;OLD.revision_id))<br>           OR action_name NOT IN ('PUBLISH','WITHDRAW','REACTIVATE') THEN<br>            RAISE EXCEPTION 'Invalid publication head transition' USING ERRCODE='23514';<br>        END IF;<br>    END IF;<br>    RETURN NEW;<br>END;<br>$function$<br>
+
+### public.hidra_topology_station_graph_operation_event
+
+Owner: **topology**; relation kind: `r`.
+
+Topology-owned immutable station graph operation provenance; not evidence of operational acceptance.
+
+- Evidence: [V20261018_003__p25_topology_protected_station_graph_operations.sql](../../src/main/resources/db/migration/V20261018_003__p25_topology_protected_station_graph_operations.sql)
+- Evidence: [JdbcStationGraphProtectedPublicationAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationGraphProtectedPublicationAdapter.java)
+- Migration mention (not inferred introduction): [V20261018_003__p25_topology_protected_station_graph_operations.sql](../../src/main/resources/db/migration/V20261018_003__p25_topology_protected_station_graph_operations.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| event_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| facility_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| event_kind | character varying(16) | False | None; identity=; generated= | No current mapped Java column | — |
+| resulting_epoch | bigint | True | None; identity=; generated= | No current mapped Java column | — |
+| prior_revision_id | text | True | None; identity=; generated= | No current mapped Java column | — |
+| resulting_revision_id | text | True | None; identity=; generated= | No current mapped Java column | — |
+| actor_binding_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_session_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_user_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| party_generation | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| facility_generation | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| sampled_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| valid_until | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| backend_pid | integer | False | None; identity=; generated= | No current mapped Java column | — |
+| transaction_id | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `ck_p25_graph_event_epoch`: CHECK (event_kind::text = 'AUTHOR'::text AND resulting_epoch IS NULL OR event_kind::text &lt;&gt; 'AUTHOR'::text AND resulting_epoch &gt; 0)
+  - Catalog attributes: {"columns": ["event_kind", "resulting_epoch"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_p25_graph_event_id`: CHECK (length(btrim(facility_id::text)) &gt; 0 AND facility_id::text = btrim(facility_id::text) AND length(btrim(company_party_id::text)) &gt; 0 AND company_party_id::text = btrim(company_party_id::text) AND length(btrim(actor_binding_id::text)) &gt; 0 AND length(btrim(actor_session_id::text)) &gt; 0 AND length(btrim(actor_user_id::text)) &gt; 0)
+  - Catalog attributes: {"columns": ["facility_id", "company_party_id", "actor_binding_id", "actor_session_id", "actor_user_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_p25_graph_event_kind`: CHECK (event_kind::text = ANY (ARRAY['AUTHOR'::character varying, 'PUBLISH'::character varying, 'WITHDRAW'::character varying, 'REACTIVATE'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["event_kind"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_p25_graph_event_positive`: CHECK (party_generation &gt; 0 AND facility_generation &gt; 0 AND backend_pid &gt; 0 AND transaction_id &gt; 0)
+  - Catalog attributes: {"columns": ["party_generation", "facility_generation", "backend_pid", "transaction_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_p25_graph_event_revision`: CHECK (resulting_revision_id IS NOT NULL)
+  - Catalog attributes: {"columns": ["resulting_revision_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_p25_graph_event_time`: CHECK (valid_until &gt; sampled_at)
+  - Catalog attributes: {"columns": ["valid_until", "sampled_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `fk_p25_graph_event_revision`: FOREIGN KEY (facility_id, resulting_revision_id) REFERENCES hidra_topology_station_graph_revision(facility_id, revision_id)
+  - Catalog attributes: {"columns": ["facility_id", "resulting_revision_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["facility_id", "revision_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_station_graph_revision"}, "type": "f", "validated": true}
+- `hidra_topology_station_graph_operation_event_pkey`: PRIMARY KEY (event_id)
+  - Catalog attributes: {"columns": ["event_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `uq_p25_graph_event_epoch`: UNIQUE (facility_id, resulting_epoch)
+  - Catalog attributes: {"columns": ["facility_id", "resulting_epoch"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `uq_p25_graph_event_head_witness`: UNIQUE (facility_id, event_id, resulting_epoch, resulting_revision_id)
+  - Catalog attributes: {"columns": ["facility_id", "event_id", "resulting_epoch", "resulting_revision_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+
+#### Indexes
+
+- `hidra_topology_station_graph_operation_event_pkey`: CREATE UNIQUE INDEX hidra_topology_station_graph_operation_event_pkey ON public.hidra_topology_station_graph_operation_event USING btree (event_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `ix_p25_graph_event_history`: CREATE INDEX ix_p25_graph_event_history ON public.hidra_topology_station_graph_operation_event USING btree (facility_id, resulting_epoch DESC, event_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+- `uq_p25_graph_event_epoch`: CREATE UNIQUE INDEX uq_p25_graph_event_epoch ON public.hidra_topology_station_graph_operation_event USING btree (facility_id, resulting_epoch)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `uq_p25_graph_event_head_witness`: CREATE UNIQUE INDEX uq_p25_graph_event_head_witness ON public.hidra_topology_station_graph_operation_event USING btree (facility_id, event_id, resulting_epoch, resulting_revision_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `trg_p25_graph_event_immutable`: CREATE TRIGGER trg_p25_graph_event_immutable BEFORE DELETE OR UPDATE ON hidra_topology_station_graph_operation_event FOR EACH ROW EXECUTE FUNCTION hidra_p25_graph_immutable_event()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_graph_immutable_event()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_graph_immutable_event()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Immutable station publication event' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `trg_p25_graph_event_no_truncate`: CREATE TRIGGER trg_p25_graph_event_no_truncate BEFORE TRUNCATE ON hidra_topology_station_graph_operation_event FOR EACH STATEMENT EXECUTE FUNCTION hidra_p25_graph_immutable_event()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_graph_immutable_event()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_graph_immutable_event()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Immutable station publication event' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
 ### public.hidra_topology_station_graph_revision
 
 Owner: **topology**; relation kind: `r`.
@@ -26042,6 +26162,7 @@ Topology-owned immutable station graph declarations with canonical byte integrit
 - Evidence: [JdbcStationInternalGraphRevisionRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationInternalGraphRevisionRepositoryAdapter.java)
 - Evidence: [V20261011_002__p25_topology_station_graph_revisions.sql](../../src/main/resources/db/migration/V20261011_002__p25_topology_station_graph_revisions.sql)
 - Migration mention (not inferred introduction): [V20261011_002__p25_topology_station_graph_revisions.sql](../../src/main/resources/db/migration/V20261011_002__p25_topology_station_graph_revisions.sql)
+- Migration mention (not inferred introduction): [V20261018_003__p25_topology_protected_station_graph_operations.sql](../../src/main/resources/db/migration/V20261018_003__p25_topology_protected_station_graph_operations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

@@ -913,6 +913,19 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
     @Test void realProducerPairsAndOwnerWitnessesUseOnePhysicalSample() {
         for(String type:List.of("LOCAL","OIDC","LDAP","ACTIVE_DIRECTORY")) {
             cleanEvidence();var f=fixture(type);for(String op:OPS)both(f,op);
+            // Warm this matrix's genuine provider/operation paths outside the executor budget.
+            // No protected-attempt retry, deadline change or measured combination is removed.
+            for(var operation:Operation.values()) {
+                var prepared=originalSource(f);var warmRequest=new Request(operation,COMPANY,FACILITY);
+                tx().executeWithoutResult(status->{
+                    var i=paired.acquire(prepared,warmRequest);
+                    var p=partyOwner.acquire(COMPANY);var owner=facilityOwner.acquire(FACILITY);
+                    assertThat(paired.contribute(i).combinedDecision()).isEqualTo(Decision.PERMIT);
+                    assertThat(partyOwner.read(p).partyId()).isEqualTo(COMPANY);
+                    assertThat(facilityOwner.read(owner).ownerPartyId()).isEqualTo(COMPANY);
+                    paired.requireCurrent(i);
+                });
+            }
             for(var operation:Operation.values()) {
                 var c=kr(kp(f),new Request(operation,COMPANY,FACILITY),()->{},()->{},()->{});
                 assertThat(c.userId()).isEqualTo(f.user());assertThat(c.partyGeneration()).isPositive();assertThat(c.facilityGeneration()).isPositive();assertThat(c.sampledAt()).isBefore(c.validUntil());

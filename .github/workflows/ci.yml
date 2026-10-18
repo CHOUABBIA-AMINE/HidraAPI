@@ -479,8 +479,12 @@ jobs:
         test -n "${classes}"
         cpus="$(nproc)"
         memory_mib="$(awk '/^MemTotal:/ { print int($2 / 1024) }' /proc/meminfo)"
-        forks="$(python3 .github/scripts/verify_ci_test_inventory.py --oracle-forks "${cpus}" "${memory_mib}")"
-        printf 'Oracle resources: %s CPUs, %s MiB RAM; %s reused forks, 2048 MiB heap each, 1024 MiB Maven heap.\n' "${cpus}" "${memory_mib}" "${forks}" | tee -a "${GITHUB_STEP_SUMMARY}"
+        capacity_forks="$(python3 .github/scripts/verify_ci_test_inventory.py --oracle-forks "${cpus}" "${memory_mib}")"
+        # Protected transactions enforce real 500ms deadlines. Concurrent test JVMs
+        # compete with their PostgreSQL containers on this same runner.
+        # Keep the complete oracle serial; do not relax deadlines or retry tests.
+        forks=1
+        printf 'Oracle resources: %s CPUs, %s MiB RAM; capacity %s forks, executing %s reused fork, 2048 MiB heap, 1024 MiB Maven heap.\n' "${cpus}" "${memory_mib}" "${capacity_forks}" "${forks}" | tee -a "${GITHUB_STEP_SUMMARY}"
         ./mvnw -B -q clean verify "-DforkCount=${forks}" -DreuseForks=true \
           '-DargLine=-Xmx2048m' -Djunit.jupiter.execution.parallel.enabled=false "-Dtest=${classes}"
     - name: Require every selected raw test report

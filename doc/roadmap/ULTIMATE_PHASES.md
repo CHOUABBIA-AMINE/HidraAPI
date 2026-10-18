@@ -179,7 +179,7 @@ Cross-phase prerequisites in the approved task graph: No additional cross-phase 
 | [HAPI-579](ULTIMATE_TASKS.md#hapi-579) | project bounded oidc claim coverage | project bounded oidc claim coverage | P2 | HAPI-578 | VERIFIED | COMPLETED |
 | [HAPI-580](ULTIMATE_TASKS.md#hapi-580) | capture verified oidc claim receipt | capture verified oidc claim receipt | P2 | HAPI-579 | VERIFIED | COMPLETED |
 | [HAPI-581](ULTIMATE_TASKS.md#hapi-581) | Paired protected Identity authorization | Paired protected Identity authorization; Identity | P0 | HAPI-575 | VERIFIED | COMPLETED |
-| [HAPI-582](ULTIMATE_TASKS.md#hapi-582) | Party eligibility and Facility ownership participation | Party eligibility and Facility ownership participation; Party/Topology | P0 | HAPI-581 | PARTIAL | BLOCKED |
+| [HAPI-582](ULTIMATE_TASKS.md#hapi-582) | Party eligibility and Facility ownership participation | Party eligibility and Facility ownership participation; Party/Topology | P0 | HAPI-581 | PARTIAL | REGISTERED_PENDING |
 | [HAPI-583](ULTIMATE_TASKS.md#hapi-583) | Global admission, fences and common database time | Global admission/fences and common time; trusted coordinator with owner contracts, Platform technical mechanics | P0 | HAPI-582 | PARTIAL | BLOCKED |
 | [HAPI-584](ULTIMATE_TASKS.md#hapi-584) | Protected internal Topology head and operation boundary | Protected internal Topology operation boundary; Topology | P0 | HAPI-583 | PARTIAL | BLOCKED |
 | [HAPI-585](ULTIMATE_TASKS.md#hapi-585) | Integrated adversarial, concurrency and latency qualification | Integrated adversarial/concurrency/latency qualification and parent closure; independent verification | P0 | HAPI-584 | PARTIAL | BLOCKED |

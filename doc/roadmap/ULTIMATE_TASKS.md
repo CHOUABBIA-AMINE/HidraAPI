@@ -36,6 +36,8 @@ All original scope/status/evidence records are reachable through exact-SHA refer
 
 ## Current next eligible development package
 
+**Current registration — 2026-10-18, HAPI-582:** combined writer/FK/trigger order, durable owner-generation versus publication-epoch meaning, and acquire-before-common-time compatibility are defined in section15. J is PARTIAL/REGISTERED_PENDING with exact11 CREATE/3 MODIFY runtime paths,2 additive migration reservations, a fixed fixture matrix and exact commit message. This publication is documentation only; next selects the bounded owner-witness implementation after Docs acceptance. K/L runtime remains separately blocked. Earlier pointers are historical.
+
 **Current review — 2026-10-18, HAPI-582:** owner Next completes the source-backed Party/Facility contract review after Docs389 success. Existing active-Party and live-owner observations are preserved; persisted owner/publication witness and a proven writer-order/common-time contract remain absent. J remains PARTIAL/BLOCKED. Section15 fixes the three engineering gates and one combined design/registration deliverable; no owner-lock/runtime/schema package is selected. Earlier pointers remain historical.
 
 **Current acceptance — 2026-10-18, HAPI-581:** paired protected Identity authorization is VERIFIED/COMPLETED at97c51525ffcfd55017cbe7bc24320a5510181b76 after Full736/Fast63/Docs388 SUCCESS and independently reconstructed raw aggregate:397 classes /2269 tests /zero failures/errors/skips. Section15 fixes the acceptance boundary. Next select HAPI-582 after this closure documentation acceptance; its Party/Facility contract review remains required before implementation. Earlier pointers are historical.
@@ -20841,7 +20843,7 @@ Priority: P0
 
 Implementation Status: PARTIAL
 
-Planning Status: BLOCKED
+Planning Status: REGISTERED_PENDING
 
 Owning Module: `identity` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -21027,6 +21029,79 @@ All shortened paths in the table are relative to their named module or the same 
 The future fixed fixture matrix must cover ACTIVE versus every other Party status; every FacilityStatus/Kind's preserved reference meaning; two independent companies/facilities; exact live owner mismatch and snapshot substitution; persisted version/epoch mismatch and delete/reinsert ABA; concurrent Party status/Facility owner/native/JPA/bulk writers with rollback; missing/unknown/corrupt owner/version state; one physical RC backend/XID and common s/u; no unauthorized existence/count/history export; and preservation of I plus immutable V1 revisions. Constructing a synthetic Contribution without the real owner call path is never the positive oracle. PostgreSQL skips are not proof. J's eventual complete acceptance must establish its owner witnesses, not only a Boolean lookup or documentation completion.
 
 **This publication and checks:** exactly1 MODIFY /0 CREATE /0 DELETE: `doc/roadmap/ULTIMATE_TASKS.md` appends this review and the scheduling pointer. All canonical statuses/tables, source/tests/migrations/workflows, previous accepted I evidence and historical reconciliation remain unchanged. Admit/reuse this task's documentation message **`docs(topology): define protected owner participation`** under canonical execution rule2; it conflicts with no existing J commit message. Local validation passed:101 documents/7215 relative links/24 modules/13 retained P2 rows, all10 documentation-validator unit tests, exact1-file scope, preserved current status fields and all later-task/historical bytes, and whitespace checks. Publish on expected main cb09e5f with parent/tree/blob verification and guarded main update; observe exact-SHA Documentation Validation creation/queue/start, then STOP. No new Java/PostgreSQL execution or runtime readiness is claimed. Next is the single combined J-ORDER/J-VERSION/J-COMMON design/registration delivery above, not J runtime, K/L implementation or optional I enhancement.
+
+### HAPI-582 combined owner design and executable registration — 2026-10-18
+
+**Disposition:** main `d35d1e9cbeb1fc15a6809c09df8ea781826b110a`, tree `8cc1e0a30b9499b32319725560f29273c1ecbf17`, [Docs390](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39109852002) SUCCESS; code-equivalent to accepted Full736. This closes J-ORDER/J-VERSION/J-COMMON specification gates for the exact package below, superseding earlier DISCOVERY_REQUIRED/no-allowlist pointers. PARTIAL/REGISTERED_PENDING; runtime remains unimplemented. Preserve all earlier evidence, compatibility rules and frozen task identity. K/L remain separately blocked.
+
+**J-VERSION:** recover HPR-P25-038 policy from RECONCILIATION's2026-10-11 entry: explicit publication epochs, separately authorized transfer, no inherited history/draft adoption, immutable V1. Select distinct witnesses:
+
+| Witness | Meaning |
+|---|---|
+| Party eligibility generation | Positive monotone per exact Party.id, tombstone retained. INSERT/DELETE/UPDATE OF id,status (including same-value assignments) advance; unrelated fields do not. ACTIVE remains the sole eligibility predicate, never membership/publication epoch. |
+| Facility ownership generation | Positive monotone per exact Facility.id, tombstone retained. INSERT/DELETE/UPDATE OF id,owner_party_id (including same-value assignments) advance; snapshots/coordinates/Kind/FacilityStatus alone do not. Detects owner A→B→A and delete/reinsert ABA. |
+| Publication epoch/head generation | Distinct L-owned state absent today. Authorized initial publication stores live owner AND Facility generation under all fences. Separately authorized transfer increments epoch/head. Owner OR generation mismatch holds disclosure/replay/mutation; no auto-rebind/history inheritance. L registers its DDL/protocol separately. |
+
+Party suspension/resumption changes eligibility, not ownership epoch. Preserve all FacilityStatus/Kind reference semantics and actual owner_party_id. J neither clears holds nor grants history. Missing/corrupt/unknown state fails closed. Test witness mismatch without inventing L tables.
+
+**J-ORDER — bounded source/catalog graph:** reviewed all production repository references, scalar entities/mappers, migrations and Full736 catalog. Located writers: PartyApplicationService→PartyRepositoryPort→JpaPartyRepositoryAdapter→PartyJpaRepository.save; FacilityApplicationService→FacilityRepositoryPort→JpaFacilityRepositoryAdapter→FacilityJpaRepository.save. Neither service establishes cross-owner atomicity. No current native/bulk root writer, custom root trigger, association/cascade or @Version; inherited/native/bulk DML is still covered. Other reviewed reference/visualization routes only read roots.
+
+| Route | Edges / interaction |
+|---|---|
+| `public.hidra_party_party` | Root ROW EXCLUSIVE→tuple/FK to hidra_party_type→selected AFTER trigger→own generation. J root SHARE ROW EXCLUSIVE NOWAIT→registry ACCESS SHARE NOWAIT excludes all ordinary root DML, including missing-ID phantoms. |
+| `public.hidra_topology_facility` | Same, FK to hidra_topology_facility_type, own generation; scalar owner_party_id has no Party FK. Trigger/reader never reaches Party. |
+| Party incoming24 FKs | `hidra_party_` address, bank_reference, certification, compliance_status, contact_person, contact_point, contractor_qualification, document_reference, external_reference, legal_profile, manufacturer_profile, operator_profile, owner_profile, qualification, registration, risk_snapshot, role_assignment, status_history, supplier_qualification, tax_identifier, vendor_qualification use party_id; ownership_link uses owner_party_id; relationship uses source_party_id AND target_party_id. All DELETE RESTRICT/UPDATE NO ACTION. Child→root KEY SHARE/ROW SHARE is compatible; children do not define ACTIVE. |
+| Facility incoming4 FKs | `hidra_topology_` equipment, facility_attribute_value, facility_node_binding, pipeline_system_facility reference facility_id; all RESTRICT/NO ACTION. Same compatibility; children do not define owner. |
+| Planning | JpaNominationRepositoryAdapter.save transaction: nomination FOR UPDATE→revision/scenario/catalog FOR SHARE→product/unit contracts→sorted fresh Party IDs through MANDATORY PlanningPartyReferenceQueryAdapter/findByIdForShare→Topology ordinary lookup→saveAndFlush. J touches no Planning/child/tuple, so adds no reverse tuple wait. |
+| Global target | Unchanged JdbcIdentityAuthorityFence exact22-base constant/order→external_mapping_generation ACCESS SHARE→bound_source_claim_evidence SHARE→Party base/tail→Facility base/tail→publication fences→common sample. No owner FK/trigger reaches Identity. |
+
+J locks only its schema-qualified base SHARE ROW EXCLUSIVE NOWAIT then registry ACCESS SHARE NOWAIT through completion; no tuples/DML/upgrades/releases/retries. Admission precedes mutation/flush; K rejects prior cross-owner DML. Conflicts55P03, deadlocks40P01 or SQL/context/invariant failures roll back the whole operation; no savepoint recovery/partial authority. This serializes protected reads and adds no waiting acquisition under earlier locks. Ordinary writers can still deadlock/rollback; no administrator/latency guarantee. This is a design inference from PostgreSQL16 [LOCK](https://www.postgresql.org/docs/16/sql-lock.html), [CREATE TRIGGER](https://www.postgresql.org/docs/16/sql-createtrigger.html), [CREATE FUNCTION](https://www.postgresql.org/docs/16/sql-createfunction.html), pending real concurrency proof.
+
+**Selected DDL/privileges:** reserve absent V20261018_001/_002. Each asserts empty master (reviewed fresh-development chain), rejecting nonempty initialization; no backfill/seed/old-migration rewrite or role creation. Tables: `public.hidra_party_eligibility_generation(party_id varchar(80) PRIMARY KEY,generation bigint NOT NULL CHECK(generation>0),present boolean NOT NULL)` and `public.hidra_topology_facility_owner_generation(facility_id varchar(80) PRIMARY KEY,generation bigint NOT NULL CHECK(generation>0),present boolean NOT NULL)`. No master FK; tombstones survive DELETE.
+
+AFTER INSERT initializes1/live or advances a consistent tombstone; DELETE increments/tombstones; UPDATE OF selected columns increments, including no-op. ID rename updates old/new lifetimes in `COLLATE "C"` order. Missing UPDATE/DELETE witness, inconsistent live state or overflow at9223372036854775807 raises23514; never recreate at1. Bulk changes/rollback affect root+registry atomically. BEFORE TRUNCATE root/registry guards reject CASCADE/reset. All native/bulk/JPA flush paths fire triggers; no Java writer callbacks.
+
+Owner-prefixed SECURITY DEFINER trigger functions use `SET search_path=pg_catalog,pg_temp`, qualified references and exact TG_RELID/TG_NAME/TG_OP checks. Revoke PUBLIC table/function access transactionally. Migration owner owns registries/functions; runtime role has registry SELECT and sufficient root UPDATE for fences, never registry DML/function execution. No broad GRANT. Admission/read rejects superuser/BYPASSRLS, inherited relation/function ownership, schemaCREATE/replacement or registry mutation authority, non-origin replication, inheritance/partitioning/RLS and missing/altered/disabled constraints/triggers/functions. Check effective membership privileges and exact reviewed definitions. Administrators remain outside runtime trust.
+
+**J-COMMON / interfaces:** pure Party `TopologyProtectedPartyEligibilityContract` and Topology `StationProtectedFacilityOwnershipContract`: `Admission acquire(String exactId)` then `Contribution read(Admission)`. Opaque marker accepted only as issuing adapter's private ticket; no caller clocks/generations/connections/claims/epochs. Trim/nonblank/max80 ID, preserve case. Scalar exports: exact IDs, positive generation, actual backend PID/XID; Party only ACTIVE, Facility only live facilityId/ownerPartyId. K compares actual owner to Party and real paired Identity request before disclosure. Constructed Contributions are data, never provenance/permits.
+
+Malformed input IllegalArgumentException; missing/ineligible/mismatched/corrupt evidence non-disclosing IllegalStateException; SQL/context failures propagate/mark full rollback. Configured JDBC adapters require existing bound DataSource/resource/connection, MANDATORY writable RC, same issuer/thread/backend/XID, retained lock census and completion invalidation. Ticket is consumed before fresh master/registry SQL; reject fake/foreign/null/reused/completed/suspended/REQUIRES_NEW/cross-thread or changed resource/context. No unwrapping/replacing/closing resources, JPA cache or synthetic clock.
+
+K must separately register/implement Identity acquisition/collection split: FULL Identity prefix→J Party/Facility→publication fences BEFORE single database s/conservative u, then trusted Identity evaluation/J reads with all fences held. Today's coupled F/I collect cannot precede late J locks and become atomic by labeling. J edits no F/I/Platform files. J predicates have no time-driven transition; fenced values observed after s remain stable. K verifies real resource/PID/XID and I s/u/expiry/final guard; caller scalar matching, REQUIRES_NEW or second I evaluation is insufficient. No dependency cycle or completed K proof is claimed.
+
+**One next runtime commit:** **`feat(topology): add protected party and facility witnesses`**. CREATE exactly11:
+
+1. `src/main/resources/db/migration/V20261018_001__p25_party_eligibility_generations.sql`
+2. `src/main/resources/db/migration/V20261018_002__p25_topology_facility_owner_generations.sql`
+3. `src/main/java/dz/sh/hidra/modules/party/application/contract/topology/TopologyProtectedPartyEligibilityContract.java`
+4. `src/main/java/dz/sh/hidra/modules/topology/application/contract/station/StationProtectedFacilityOwnershipContract.java`
+5. `src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JdbcTopologyProtectedPartyEligibilityAdapter.java`
+6. `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationProtectedFacilityOwnershipAdapter.java`
+7. `src/test/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JdbcTopologyProtectedPartyEligibilityAdapterTest.java`
+8. `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationProtectedFacilityOwnershipAdapterTest.java`
+9. `src/test/java/dz/sh/hidra/modules/party/infrastructure/persistence/ProtectedPartyEligibilityPostgresIntegrationTest.java`
+10. `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedFacilityOwnershipPostgresIntegrationTest.java`
+11. `src/test/java/dz/sh/hidra/modules/topology/ProtectedOwnerWitnessBoundaryGuardrailTest.java`
+
+MODIFY exactly3: `.github/ci-test-inventory.json` (actual5 classes/cases/source hashes; PostgreSQL lane and unit-architecture), `.github/database-dictionary-ownership.json` (two registries/source links), `doc/roadmap/ULTIMATE_TASKS.md` (evidence). DELETE none. Preserve all existing source/workflows/build/seeds/migrations/V1; register scope expansion first.
+
+**Same-task follow-up:** **`docs(topology): record protected owner witness evidence`** admits actual-catalog regeneration of `doc/database/DATA_DICTIONARY.md` via existing generator, TASKS and justified status-only HAPI-582 ROADMAP/PHASES. AGENTS11.1 permits initially retaining old dictionary explicitly pending; use hosted catalog next. Dictionary failure requires repair/green replacement CI, never invented metadata. No K/enhancement scope.
+
+**Fixed executable tests:** real configured adapters/migrated PostgreSQL/nonowner roles. Unit suites cover ID/tickets/failures; guard enforces pure exports/boundaries. PostgreSQL suites establish:
+
+| Family | Required fixtures |
+|---|---|
+| Semantics | ACTIVE succeeds/all4 other Party statuses fail; every FacilityStatus/Kind; two companies/facilities, owner mismatch/snapshot substitution, invalid/nonexact IDs. |
+| Versions | INSERT1, no-op relevant UPDATE, unrelated UPDATE unchanged, DELETE/reinsert, A→B→A, rename, native bulk/JPA saveAndFlush, rollback, missing/corrupt/nonlive state, exhaustion; retained-old versus actual-new witness mismatch, no invented L table. |
+| Concurrency | Two connections/barriers: committed/rolled-back status/owner/native/bulk/phantom/JPA writers. Writer-first admission55P03; admission-first exclusion until completion; actual pg_locks/no root tuple lock. Bounded lock/statement timeouts and joined/cleaned workers; no sleep-only oracle. |
+| DDL/security | FK child and Party FOR SHARE compatibility; root/registry TRUNCATE/CASCADE denial; ordinary root DML/registry SELECT allowed, witness forgery/function calls denied; inherited/elevated/schemaCREATE roles, replication, changed/disabled functions/triggers, RLS/inheritance/shape rejection; empty migration success/nonempty rejection. |
+| Lifetime | No tx/read-only/wrong isolation; fake/foreign/reused/completed/suspended/new-tx/cross-thread tickets, PID/XID/resource mismatch/lost fence fail; full rollback and retained locks. |
+| Preservation | Existing Party eligibility/StationRevisionOwner, immutable V1 and accepted I suites pass. No J permit/existence/history API. Common I/J s/u and publication hold/CAS remain K/L/M obligations. |
+
+Focused command: `./mvnw -B -q -Dtest=JdbcTopologyProtectedPartyEligibilityAdapterTest,JdbcStationProtectedFacilityOwnershipAdapterTest,ProtectedPartyEligibilityPostgresIntegrationTest,ProtectedFacilityOwnershipPostgresIntegrationTest,ProtectedOwnerWitnessBoundaryGuardrailTest,TopologyPartyEligibilityQueryServiceTest,StationRevisionOwnerQueryServiceTest test`. Also compile/documentation/inventory/dictionary and applicable Full/Fast/Docs per CI-first policy. Skips are non-proof. Accept actual class/case/source hashes/catalog/fence results from raw hosted artifacts; finish pending dictionary repair with green replacement CI. No new Java/PostgreSQL pass here.
+
+**This publication:**3 MODIFY/0 CREATE/0 DELETE: TASKS appends design/pointer and changes HAPI-582 planning; ROADMAP/PHASES only that planning cell. Reuse **`docs(topology): define protected owner participation`**. Local PASS:10 documentation-validator tests;101 docs/7215 links/24 modules/13 P2 rows; offline OpenAPI244 paths/263 operations/231 schemas; exact scope/absent11 CREATE paths/preserved J history/later bytes/whitespace. Guard main d35d1e9, verify blobs/tree/parent, observe Docs startup, STOP. Next selects J runtime after Docs acceptance.
+
 
 **Original task rows — quoted historical evidence, not competing current statuses:**
 

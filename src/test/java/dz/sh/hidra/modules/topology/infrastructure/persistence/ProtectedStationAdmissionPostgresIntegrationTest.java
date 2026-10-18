@@ -937,7 +937,7 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
         }).when(org.springframework.test.util.AopTestUtils.<dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcIdentityTemporalEventCollector>getUltimateTargetObject(collector)).collectFenced(anyString());
         var observed=new ArrayList<Instant>();
         doAnswer(i->{var result=i.callRealMethod();observed.add(((ProtectedOperationIdentityParticipant.QualifiedClaimRead)i.getArgument(0))==null?null:
-            ((ProtectedOperationIdentityParticipant.Contribution)ReflectionTestUtils.getField(i.getArgument(0),"contribution")).evidence().observedAt());return result;})
+            ((ProtectedOperationIdentityParticipant.Contribution)ReflectionTestUtils.getField((Object)i.getArgument(0),"contribution")).evidence().observedAt());return result;})
             .when(readerTarget()).loadQualified(any(),any());
         var result=kr(kp(f),request(),()->assertThat(samples).hasValue(0),()->assertThat(samples).hasValue(1),()->{});
         assertThat(samples).hasValue(1);assertThat(observed).containsExactly(result.sampledAt(),result.sampledAt());

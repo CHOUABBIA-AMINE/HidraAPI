@@ -1445,6 +1445,9 @@
         "nativeConfigurationAndIdsRejectBoundaryWhitespaceNulAndMalformedUnicode",
         "nativeIntervalsRequireFiniteWholeSecondIncreasingInstantsAndCanonicalUuids",
         "nativeKeysCountUtf8BytesAndOwnerIdsCountPostgresqlCharacters",
+        "pairedContractExportsOnlyTheApprovedImmutableScalars",
+        "pairedOwnerEntryAndReaderSeamsHaveOnlyReviewedProductionCallers",
+        "pairedParticipantNeverStartsAnIndependentTransaction",
         "qualifiedConsumptionAndPostReadValidationHaveOnlyTheReviewedReaderCaller",
         "readerKeepsPrivateNativeVerificationInsideIdentityAndUsesReadOnlyFreshOwnerQuery",
         "restDtosAndOriginalAssertionNeverTransportBindingSecretsOrHandles",
@@ -1459,7 +1462,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java",
-      "source_sha256": "dd6834d5279c4c3b7df0adf72d6c64a4a51f8fe0ac56d9c10dabac5f81318fad",
+      "source_sha256": "1a88468a10ac90ae0c10b76a542aaa87793d92677aced0faabc85323c69d51c5",
       "supports": []
     },
     {
@@ -2284,6 +2287,30 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "capturedMappingGenerationDriftRejectsTheWholePair",
+        "concurrentGrantWriterBlocksThroughCommitAndRollbackReleasesFences",
+        "duplicatePairReadAndChangedContextDuringSecondGraphNeverExportAResult",
+        "eightOwnerOperationsUseOnePhysicalSampleForBothExactRequests",
+        "entryAndPairReplayRequestSwapAndCrossTransactionAreRejected",
+        "fourGenuineProducersRequireBothScopesAndRejectEitherRemovalOrDeny",
+        "futureDenyBoundsAreRetainedAndMalformedDenyNeverCreatesPartialPermit",
+        "incompatibleTransactionsAndChangedAmbientActorCannotContribute",
+        "roleGroupAndPolicyDenySemanticsAreReusedByTheActualPair",
+        "secondGraphFailureRollsBackWithoutDecisionPersistenceOrPartialExport",
+        "unknownExternalDenyCannotBePromotedByUnrelatedDirectPermits"
+      ],
+      "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.ProtectedTopologyAuthorizationPostgresIntegrationTest",
+      "dependency_reason": "HAPI-581 actual paired owner verification; timing unmeasured, zero is an initial shard estimate only.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedTopologyAuthorizationPostgresIntegrationTest.java",
+      "source_sha256": "d8be98e7b65fd8e53fda1932b39b881abeea158aeaae9cf32edcbf09ec192f5b",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
         "aggregateElapsedBudgetAbortsWholeWorkWithoutRetry",
         "ambientReadOnlyAndSerializableTransactionsRejectBeforeWork",
         "batchAndStreamingAttemptsPoisonCaughtErrors",
@@ -2382,7 +2409,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java",
-      "source_sha256": "7cbfb10df31da7c6d2246329765c9edd600d02bb1ddf03a59721fdab7ffea473",
+      "source_sha256": "f62161b4cf55ac19395b07053391cbda921ea068fbdc05cfa0e9faf0691ac492",
       "supports": []
     },
     {
@@ -2652,6 +2679,31 @@
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipantTest.java",
       "source_sha256": "4bab7d33720a2507bb7a03932d4dc267b61b579fd46508b2d0f019ad8c8f2a93",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "adapterUsesOneQualifiedPairAndExportsOnlyItsActualScalarIdentity",
+        "allNineDecisionPairsRequireTwoPermits",
+        "anotherParticipantCannotConsumeOrReturnTheOpaqueEntry",
+        "changedAuthenticationCannotBorrowPreparation",
+        "eightOperationsHaveExactOwnerCodes",
+        "entryIsConsumedOnSuccessfulOrFailedAttempt",
+        "foreignMarkerAndNullCannotReachTheOwner",
+        "graphContextMutationPreventsScalarExport",
+        "missingRequestConsumesTheAttempt",
+        "preparationCannotReturnWithMissingOrChangedActor",
+        "sameAuthenticationOnAnotherThreadCannotBorrowPreparation",
+        "scalarConstructorRefusesIncoherentDecisionCodeTimeOrIdentity"
+      ],
+      "class": "dz.sh.hidra.modules.identity.infrastructure.security.ProtectedTopologyAuthorizationParticipantTest",
+      "dependency_reason": "HAPI-581 actual paired owner verification; timing unmeasured, zero is an initial shard estimate only.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedTopologyAuthorizationParticipantTest.java",
+      "source_sha256": "02f43ad4f21be4d3ab040d2109546a9db4c39c287dc012152e74da2950e9add8",
       "supports": []
     },
     {

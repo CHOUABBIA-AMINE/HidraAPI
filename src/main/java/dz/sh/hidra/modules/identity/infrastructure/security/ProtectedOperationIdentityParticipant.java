@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedOperationIdentityParticipant
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-15
+ * @UpdatedOn   : 2026-10-18
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -20,6 +20,10 @@
 package dz.sh.hidra.modules.identity.infrastructure.security;
 
 import dz.sh.hidra.modules.identity.application.contract.topology.TopologyOperationAuthenticationContract.Evidence;
+import dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedAuthorizationContract;
+import dz.sh.hidra.modules.identity.application.contract.topology.TopologyScopedAccessContract.Request;
+import dz.sh.hidra.modules.identity.domain.value.AuthorizationScope;
+import dz.sh.hidra.modules.identity.domain.value.ScopeType;
 import dz.sh.hidra.modules.identity.application.port.out.AccessTokenIssuerPort;
 import dz.sh.hidra.modules.identity.application.port.out.AuthenticationSecurityStateQueryPort;
 import dz.sh.hidra.modules.identity.application.port.out.OperationAuthenticationBindingRepositoryPort;
@@ -340,6 +344,118 @@ public class ProtectedOperationIdentityParticipant {
             throw unavailable();
         }
     }
+
+    /** Collect F once; derive both exact owner requests from the actual bound actor. */
+    @Transactional(propagation = Propagation.MANDATORY)
+    public QualifiedClaimPair qualifyPair(Prepared prepared, Request request) {
+        if (request == null) throw denied();
+        Contribution contribution = contribute(prepared);
+        Object resource = connectionResource();
+        if (resource == null) throw unavailable();
+        context(prepared);
+        String code = TopologyProtectedAuthorizationContract.permissionCode(request.operation());
+        var company =
+                new AuthorizationEvaluationRequest(
+                        contribution.evidence().userId(),
+                        code,
+                        "STATION_GRAPH_REVISION",
+                        request.facilityId(),
+                        new AuthorizationScope(
+                                ScopeType.CUSTOM,
+                                "topology-company:" + request.companyPartyId(),
+                                null));
+        var facility =
+                new AuthorizationEvaluationRequest(
+                        contribution.evidence().userId(),
+                        code,
+                        "STATION_GRAPH_REVISION",
+                        request.facilityId(),
+                        new AuthorizationScope(ScopeType.FACILITY, request.facilityId(), null));
+        return new QualifiedClaimPair(
+                this,
+                request,
+                new QualifiedClaimRead(
+                        this, prepared.actual, prepared.locator, company, contribution, resource),
+                new QualifiedClaimRead(
+                        this, prepared.actual, prepared.locator, facility, contribution, resource));
+    }
+
+    /**
+     * The reader alone unwraps one opaque pair; children retain their original single-use checks.
+     */
+    @Transactional(propagation = Propagation.MANDATORY)
+    public PairReads consumePair(QualifiedClaimPair pair, Request request) {
+        if (pair == null || !pair.used.compareAndSet(false, true)) throw denied();
+        if (pair.owner != this || request == null || !pair.request.equals(request)) throw denied();
+        // Do not consume the children here: loadQualified performs their actual fresh validation.
+        pairContext(pair);
+        return new PairReads(
+                pair.company,
+                pair.company.request,
+                pair.facility,
+                pair.facility.request,
+                pair.company.contribution);
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    public void requireCurrentPair(QualifiedClaimPair pair, Request request) {
+        if (pair == null
+                || !pair.used.get()
+                || pair.owner != this
+                || request == null
+                || !pair.request.equals(request)) throw denied();
+        pairContext(pair);
+        requireCurrentClaims(pair.company, pair.company.request);
+        requireCurrentClaims(pair.facility, pair.facility.request);
+    }
+
+    private void pairContext(QualifiedClaimPair pair) {
+        QualifiedClaimRead a = pair.company, b = pair.facility;
+        if (a.owner != this
+                || b.owner != this
+                || a.origin != Thread.currentThread()
+                || b.origin != Thread.currentThread()
+                || a.actual != b.actual
+                || a.actual != SecurityContextHolder.getContext().getAuthentication()
+                || !a.actual.isAuthenticated()
+                || a.contribution != b.contribution
+                || a.transactionResource == null
+                || a.transactionResource != b.transactionResource
+                || connectionResource() != a.transactionResource
+                || TransactionSynchronizationManager.isCurrentTransactionReadOnly()) throw denied();
+    }
+
+    /** Private children cannot be swapped or supplied by a caller. */
+    public static final class QualifiedClaimPair {
+        private final ProtectedOperationIdentityParticipant owner;
+        private final Request request;
+        private final QualifiedClaimRead company, facility;
+        private final AtomicBoolean used = new AtomicBoolean();
+
+        private QualifiedClaimPair(
+                ProtectedOperationIdentityParticipant owner,
+                Request request,
+                QualifiedClaimRead company,
+                QualifiedClaimRead facility) {
+            this.owner = owner;
+            this.request = request;
+            this.company = company;
+            this.facility = facility;
+        }
+
+        @Override
+        public String toString() {
+            return "QualifiedClaimPair[opaque]";
+        }
+    }
+
+    /** Identity-private reader transport, never a public contract or independent authority. */
+    public record PairReads(
+            QualifiedClaimRead company,
+            AuthorizationEvaluationRequest companyRequest,
+            QualifiedClaimRead facility,
+            AuthorizationEvaluationRequest facilityRequest,
+            Contribution contribution) {}
 
     private Object connectionResource() {
         if (!TransactionSynchronizationManager.isActualTransactionActive()

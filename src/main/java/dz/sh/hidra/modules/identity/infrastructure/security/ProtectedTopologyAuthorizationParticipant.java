@@ -1,0 +1,146 @@
+/**
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : ProtectedTopologyAuthorizationParticipant
+ * @CreatedOn   : 2025-06-26
+ * @UpdatedOn   : 2026-10-18
+ *
+ * @Type        : Class
+ * @Layer       : Infrastructure
+ * @Module      : identity
+ * @Package     : dz.sh.hidra.modules.identity.infrastructure.security
+ *
+ * @Description : Contributes paired decisions through one genuine fenced Identity invocation.
+ *
+ */
+package dz.sh.hidra.modules.identity.infrastructure.security;
+
+import dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedAuthorizationContract;
+import dz.sh.hidra.modules.identity.application.contract.topology.TopologyScopedAccessContract.Request;
+import dz.sh.hidra.modules.identity.domain.service.AuthorizationPolicyEvaluator;
+import dz.sh.hidra.modules.identity.domain.value.AuthorizationDecisionValue;
+import dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcProtectedAuthorizationEvidenceReader;
+
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+/** Calls real F and qualified graph readers; standalone Boolean decisions are never inputs. */
+@Component
+public class ProtectedTopologyAuthorizationParticipant
+        implements TopologyProtectedAuthorizationContract {
+    private final ProtectedOperationIdentityParticipant identity;
+    private final JdbcProtectedAuthorizationEvidenceReader reader;
+    private final AuthorizationPolicyEvaluator evaluator = new AuthorizationPolicyEvaluator();
+
+    public ProtectedTopologyAuthorizationParticipant(
+            ProtectedOperationIdentityParticipant identity,
+            JdbcProtectedAuthorizationEvidenceReader reader) {
+        this.identity = Objects.requireNonNull(identity);
+        this.reader = Objects.requireNonNull(reader);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.NEVER)
+    public Prepared prepare() {
+        Authentication actual = SecurityContextHolder.getContext().getAuthentication();
+        var prepared = identity.prepare();
+        if (actual == null
+                || !actual.isAuthenticated()
+                || actual != SecurityContextHolder.getContext().getAuthentication()) throw denied();
+        return new Entry(this, prepared, actual);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.MANDATORY)
+    public Contribution contribute(Prepared prepared, Request request) {
+        if (!(prepared instanceof Entry entry) || !entry.used.compareAndSet(false, true))
+            throw denied();
+        current(entry);
+        if (request == null) throw denied();
+        var pair = identity.qualifyPair(entry.prepared, request);
+        var graphs = reader.loadQualifiedPair(pair, request);
+        var bound = graphs.contribution();
+        var sampled = bound.evidence().observedAt();
+        var company =
+                decision(
+                        evaluator
+                                .evaluate(graphs.companyRequest(), graphs.company(), sampled)
+                                .decision());
+        var facility =
+                decision(
+                        evaluator
+                                .evaluate(graphs.facilityRequest(), graphs.facility(), sampled)
+                                .decision());
+        identity.requireCurrentPair(pair, request);
+        current(entry);
+        return new Contribution(
+                bound.evidence().bindingId(),
+                bound.evidence().sessionId(),
+                bound.evidence().userId(),
+                request.operation(),
+                TopologyProtectedAuthorizationContract.permissionCode(request.operation()),
+                request.companyPartyId(),
+                request.facilityId(),
+                company,
+                facility,
+                TopologyProtectedAuthorizationContract.combine(company, facility),
+                sampled,
+                bound.validUntil(),
+                bound.backendPid(),
+                bound.transactionId());
+    }
+
+    private static Decision decision(AuthorizationDecisionValue value) {
+        if (value == null) throw new IllegalStateException("Paired authorization unavailable.");
+        return switch (value) {
+            case PERMIT -> Decision.PERMIT;
+            case DENY -> Decision.DENY;
+            case INDETERMINATE -> Decision.INDETERMINATE;
+            default -> throw new IllegalStateException("Unsupported paired decision.");
+        };
+    }
+
+    private void current(Entry entry) {
+        if (entry.owner != this
+                || entry.thread != Thread.currentThread()
+                || entry.actual != SecurityContextHolder.getContext().getAuthentication()
+                || !entry.actual.isAuthenticated()) throw denied();
+    }
+
+    private static AccessDeniedException denied() {
+        return new AccessDeniedException("Paired authorization denied.");
+    }
+
+    private static final class Entry implements Prepared {
+        private final ProtectedTopologyAuthorizationParticipant owner;
+        private final ProtectedOperationIdentityParticipant.Prepared prepared;
+        private final Authentication actual;
+        private final Thread thread = Thread.currentThread();
+        private final AtomicBoolean used = new AtomicBoolean();
+
+        private Entry(
+                ProtectedTopologyAuthorizationParticipant owner,
+                ProtectedOperationIdentityParticipant.Prepared prepared,
+                Authentication actual) {
+            this.owner = owner;
+            this.prepared = prepared;
+            this.actual = actual;
+        }
+
+        @Override
+        public String toString() {
+            return "Prepared[opaque paired Identity]";
+        }
+    }
+}

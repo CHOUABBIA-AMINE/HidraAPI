@@ -605,6 +605,15 @@ class JdbcProtectedAuthorizationEvidenceReaderTest {
                                                 .getDeclaredMethods())
                                 .filter(m -> java.lang.reflect.Modifier.isPublic(m.getModifiers())))
                 .extracting(java.lang.reflect.Method::getName)
-                .containsExactlyInAnyOrder("load", "loadQualified");
+                .containsExactlyInAnyOrder("load", "loadQualified", "loadQualifiedPair");
+        assertThat(Arrays.stream(JdbcProtectedAuthorizationEvidenceReader.class.getDeclaredMethods())
+                .filter(m -> m.getName().equals("loadQualifiedPair")))
+            .singleElement().satisfies(method -> {
+                assertThat(method.getParameterTypes()).containsExactly(
+                    dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipant.QualifiedClaimPair.class,
+                    dz.sh.hidra.modules.identity.application.contract.topology.TopologyScopedAccessContract.Request.class);
+                assertThat(method.getReturnType()).isEqualTo(
+                    JdbcProtectedAuthorizationEvidenceReader.PairedAuthorizationEvidence.class);
+            });
     }
 }

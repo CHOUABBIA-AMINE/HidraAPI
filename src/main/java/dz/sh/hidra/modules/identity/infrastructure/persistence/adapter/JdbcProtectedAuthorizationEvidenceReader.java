@@ -7,7 +7,7 @@
  *
  * @Name        : JdbcProtectedAuthorizationEvidenceReader
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-15
+ * @UpdatedOn   : 2026-10-18
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.identity.infrastructure.persistence.adapter;
 
 import dz.sh.hidra.modules.identity.application.contract.topology.TopologyOperationAuthenticationContract.Evidence;
+import dz.sh.hidra.modules.identity.application.contract.topology.TopologyScopedAccessContract.Request;
 import dz.sh.hidra.modules.identity.domain.policy.*;
 import dz.sh.hidra.modules.identity.domain.service.AuthorizationExpressionStabilityCompiler;
 import dz.sh.hidra.modules.identity.domain.service.ExternalClaimMatchEvaluator;
@@ -195,6 +196,35 @@ public class JdbcProtectedAuthorizationEvidenceReader {
             throw invalid();
         }
     }
+
+    /** Both graphs are loaded before any result is returned, at one F sample and physical XID. */
+    @Transactional(propagation = Propagation.MANDATORY)
+    public PairedAuthorizationEvidence loadQualifiedPair(
+            ProtectedOperationIdentityParticipant.QualifiedClaimPair pair, Request request) {
+        try {
+            if (participant == null) throw invalid();
+            var reads = participant.consumePair(pair, request);
+            var company = loadQualified(reads.company(), reads.companyRequest());
+            var facility = loadQualified(reads.facility(), reads.facilityRequest());
+            participant.requireCurrentPair(pair, request);
+            return new PairedAuthorizationEvidence(
+                    reads.companyRequest(),
+                    company,
+                    reads.facilityRequest(),
+                    facility,
+                    reads.contribution());
+        } catch (RuntimeException failure) {
+            throw invalid();
+        }
+    }
+
+    /** Synchronous Identity-private inputs only, not an exported permission. */
+    public record PairedAuthorizationEvidence(
+            AuthorizationEvaluationRequest companyRequest,
+            AuthorizationEvidence company,
+            AuthorizationEvaluationRequest facilityRequest,
+            AuthorizationEvidence facility,
+            ProtectedOperationIdentityParticipant.Contribution contribution) {}
 
     private void heldClaims() {
         if (!RELATIONS.stream().map(PREFIX::concat).toList()

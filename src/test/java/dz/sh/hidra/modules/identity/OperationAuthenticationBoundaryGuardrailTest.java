@@ -503,4 +503,125 @@ class OperationAuthenticationBoundaryGuardrailTest {
                 expires,
                 tag);
     }
+    @Test
+    void pairedContractExportsOnlyTheApprovedImmutableScalars() throws Exception {
+        var type =
+                dz.sh.hidra.modules.identity.application.contract.topology
+                        .TopologyProtectedAuthorizationContract.Contribution.class;
+        assertThat(
+                        Arrays.stream(type.getRecordComponents())
+                                .map(java.lang.reflect.RecordComponent::getName))
+                .containsExactly(
+                        "bindingId",
+                        "sessionId",
+                        "userId",
+                        "operation",
+                        "permissionCode",
+                        "companyPartyId",
+                        "facilityId",
+                        "companyDecision",
+                        "facilityDecision",
+                        "combinedDecision",
+                        "sampledAt",
+                        "validUntil",
+                        "backendPid",
+                        "transactionId");
+        assertThat(
+                        Arrays.stream(type.getRecordComponents())
+                                .map(java.lang.reflect.RecordComponent::getType))
+                .allSatisfy(
+                        t ->
+                                assertThat(
+                                                t.isPrimitive()
+                                                        || t.isEnum()
+                                                        || t == String.class
+                                                        || t == Instant.class)
+                                        .isTrue());
+        var contract =
+                IDENTITY.resolve(
+                        "application/contract/topology/TopologyProtectedAuthorizationContract.java");
+        assertThat(Files.readString(contract))
+                .doesNotContain("org.springframework", "jakarta.", "infrastructure.", "domain.");
+        var pair =
+                dz.sh.hidra.modules.identity.infrastructure.security
+                        .ProtectedOperationIdentityParticipant.QualifiedClaimPair.class;
+        assertThat(pair.getConstructors()).isEmpty();
+        assertThat(Arrays.stream(pair.getDeclaredConstructors()))
+                .allSatisfy(
+                        c ->
+                                assertThat(java.lang.reflect.Modifier.isPrivate(c.getModifiers()))
+                                        .isTrue());
+        assertThat(Arrays.stream(pair.getDeclaredFields()))
+                .allSatisfy(
+                        f ->
+                                assertThat(java.lang.reflect.Modifier.isPrivate(f.getModifiers()))
+                                        .isTrue());
+    }
+
+    @Test
+    void pairedOwnerEntryAndReaderSeamsHaveOnlyReviewedProductionCallers() throws Exception {
+        var allowed =
+                java.util.Map.of(
+                        "qualifyPair",
+                                Set.of(
+                                        "dz/sh/hidra/modules/identity/infrastructure/security/ProtectedTopologyAuthorizationParticipant.java"),
+                        "consumePair",
+                                Set.of(
+                                        "dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java"),
+                        "loadQualifiedPair",
+                                Set.of(
+                                        "dz/sh/hidra/modules/identity/infrastructure/security/ProtectedTopologyAuthorizationParticipant.java"),
+                        "requireCurrentPair",
+                                Set.of(
+                                        "dz/sh/hidra/modules/identity/infrastructure/security/ProtectedTopologyAuthorizationParticipant.java",
+                                        "dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java"));
+        var root = Path.of("src/main/java");
+        for (var entry : allowed.entrySet()) {
+            var found = new java.util.HashSet<String>();
+            try (var paths = Files.walk(root)) {
+                for (var file : paths.filter(p -> p.toString().endsWith(".java")).toList())
+                    if (Files.readString(file).contains("." + entry.getKey() + "("))
+                        found.add(root.relativize(file).toString().replace('\\', '/'));
+            }
+            assertThat(found).isEqualTo(entry.getValue());
+        }
+        String adapter =
+                Files.readString(
+                        IDENTITY.resolve(
+                                "infrastructure/security/ProtectedTopologyAuthorizationParticipant.java"));
+        assertThat(adapter)
+                .doesNotContain(
+                        "TopologyScopedAccessQueryService",
+                        "EvaluatePermissionUseCase",
+                        "Instant.now(",
+                        "reader.load(",
+                        "REQUIRES_NEW");
+        assertThat(adapter)
+                .contains(
+                        "private static final class Entry",
+                        "private Entry(",
+                        "loadQualifiedPair(",
+                        "requireCurrentPair(");
+    }
+
+    @Test
+    void pairedParticipantNeverStartsAnIndependentTransaction() {
+        var contributor =
+                dz.sh.hidra.modules.identity.infrastructure.security
+                        .ProtectedTopologyAuthorizationParticipant.class;
+        for (var method : contributor.getDeclaredMethods())
+            if (Set.of("prepare", "contribute").contains(method.getName())) {
+                var annotation =
+                        method.getAnnotation(
+                                org.springframework.transaction.annotation.Transactional.class);
+                assertThat(annotation).isNotNull();
+                assertThat(annotation.propagation())
+                        .isEqualTo(
+                                method.getName().equals("prepare")
+                                        ? org.springframework.transaction.annotation.Propagation
+                                                .NEVER
+                                        : org.springframework.transaction.annotation.Propagation
+                                                .MANDATORY);
+            }
+    }
 }

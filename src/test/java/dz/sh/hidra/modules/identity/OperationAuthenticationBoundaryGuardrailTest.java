@@ -624,4 +624,13 @@ class OperationAuthenticationBoundaryGuardrailTest {
                                                 .MANDATORY);
             }
     }
+
+    @Test void splitIdentityAdmissionRemainsOpaqueAndMandatory() throws Exception {
+        var type=dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedAuthorizationContract.class;
+        assertThat(type.getDeclaredClasses()).anyMatch(c->c.getSimpleName().equals("Admission") && c.isInterface());
+        var implementation=dz.sh.hidra.modules.identity.infrastructure.security.ProtectedTopologyAuthorizationParticipant.class;
+        for(var m:implementation.getDeclaredMethods())if(java.util.Set.of("acquire","requireCurrent").contains(m.getName()))
+            assertThat(m.getAnnotation(org.springframework.transaction.annotation.Transactional.class).propagation()).isEqualTo(org.springframework.transaction.annotation.Propagation.MANDATORY);
+    }
+
 }

@@ -167,7 +167,7 @@ class ProtectedTopologyAuthorizationParticipantTest {
                 .isInstanceOf(RuntimeException.class);
         assertThatThrownBy(() -> adapter.contribute(null, request))
                 .isInstanceOf(RuntimeException.class);
-        verify(identity, never()).qualifyPair(any(), any());
+        verify(identity, never()).qualifyPair(any(ProtectedOperationIdentityParticipant.Prepared.class), any());
     }
 
     @Test
@@ -201,7 +201,7 @@ class ProtectedTopologyAuthorizationParticipantTest {
         SecurityContextHolder.clearContext();
         assertThatThrownBy(() -> adapter.contribute(p, request))
                 .isInstanceOf(RuntimeException.class);
-        verify(identity, never()).qualifyPair(any(), any());
+        verify(identity, never()).qualifyPair(any(ProtectedOperationIdentityParticipant.Prepared.class), any());
     }
 
     @Test
@@ -302,4 +302,18 @@ class ProtectedTopologyAuthorizationParticipantTest {
         assertThat(valid.toString())
                 .doesNotContain("actual-user", valid.bindingId(), valid.sessionId());
     }
+
+    @Test void integratedAdmissionDefersTheQualifiedPairUntilCollection() {
+        var admitted=mock(ProtectedOperationIdentityParticipant.Admitted.class);
+        when(identity.admit(original)).thenReturn(admitted);when(identity.qualifyPair(admitted,request)).thenReturn(pair);
+        org.springframework.transaction.support.TransactionSynchronizationManager.setActualTransactionActive(true);
+        org.springframework.transaction.support.TransactionSynchronizationManager.initSynchronization();
+        try {
+            var a=adapter.acquire(adapter.prepare(),request);
+            verify(identity,never()).qualifyPair(admitted,request);verifyNoInteractions(reader);
+            var c=adapter.contribute(a);assertThat(c.sampledAt()).isEqualTo(at);
+            assertThatThrownBy(()->adapter.contribute(a)).isInstanceOf(RuntimeException.class);
+        } finally {org.springframework.transaction.support.TransactionSynchronizationManager.clearSynchronization();org.springframework.transaction.support.TransactionSynchronizationManager.setActualTransactionActive(false);}
+    }
+
 }

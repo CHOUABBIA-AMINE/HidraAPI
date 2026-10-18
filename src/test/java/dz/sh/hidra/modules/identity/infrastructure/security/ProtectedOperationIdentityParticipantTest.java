@@ -507,4 +507,9 @@ class ProtectedOperationIdentityParticipantTest {
                 + b.encodeToString(payload.getBytes(StandardCharsets.UTF_8))
                 + ".c3ludGhldGlj";
     }
+
+    @Test void integratedNativeAdmissionRejectsNullBeforeAnyFenceOrClock() {
+        assertThatThrownBy(()->participant.admit(null)).isInstanceOf(RuntimeException.class);verifyNoInteractions(fence);
+    }
+
 }

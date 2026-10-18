@@ -339,7 +339,7 @@ public class ProtectedTopologyAuthorizationPostgresIntegrationTest {
                                 return c;
                             })
                     .when(identityTarget())
-                    .contribute(any());
+                    .contribute(any(ProtectedOperationIdentityParticipant.Prepared.class));
             var c = run(p, req);
             permit(c);
             assertThat(c.userId()).isEqualTo(f.user());

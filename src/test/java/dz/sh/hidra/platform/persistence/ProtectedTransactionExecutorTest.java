@@ -730,4 +730,12 @@ class ProtectedTransactionExecutorTest {
             statement.execute();
         }
     }
+
+    @Test void admissionGrammarKeepsQuotedDataButRejectsWritableQueryForms() {
+        assertThat(ProtectedOperationDataSource.admissionSql("SELECT 'UPDATE WITH INTO' AS value")).isTrue();
+        assertThat(ProtectedOperationDataSource.admissionSql("SELECT 1 INTO new_table")).isFalse();
+        assertThat(ProtectedOperationDataSource.admissionSql("WITH x AS (DELETE FROM t RETURNING 1) SELECT 1")).isFalse();
+        assertThat(ProtectedOperationDataSource.admissionSql("SELECT set_config('role','owner',true)")).isFalse();
+    }
+
 }

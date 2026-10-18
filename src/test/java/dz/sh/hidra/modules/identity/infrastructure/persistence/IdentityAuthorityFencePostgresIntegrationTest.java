@@ -1527,4 +1527,12 @@ class IdentityAuthorityFencePostgresIntegrationTest {
             }
         }
     }
+
+    @Test void integratedFenceRefusesForeignOrCompletedAdmission() {
+        var t=new TransactionTemplate(manager);t.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
+        var a=t.execute(s->fence.acquireNowait(java.util.UUID.randomUUID().toString()));
+        assertThatThrownBy(()->t.execute(s->{fence.requireCurrent(a);return null;})).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(()->t.execute(s->{fence.requireCurrent(null);return null;})).isInstanceOf(RuntimeException.class);
+    }
+
 }

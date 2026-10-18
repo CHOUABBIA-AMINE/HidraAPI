@@ -414,4 +414,10 @@ class IdentityTemporalEventCollectorPostgresIntegrationTest {
             finally{c.close();}
         }
     }
+
+    @Test void admittedCollectorCannotManufactureAuthorityWithoutTheFullPrefix() {
+        var t=new TransactionTemplate(manager);t.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
+        assertThatThrownBy(()->t.execute(s->new JdbcIdentityTemporalEventCollector(jdbc).collectFenced(java.util.UUID.randomUUID().toString()))).isInstanceOf(RuntimeException.class);
+    }
+
 }

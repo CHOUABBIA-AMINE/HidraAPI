@@ -102,6 +102,21 @@ public class JdbcIdentityTemporalEventCollector {
         if (!Boolean.TRUE.equals(compatible)) throw invalid("Incompatible physical transaction");
         // No owner data or clock sample precedes the fixed temporal/expression fences.
         jdbc.execute(LOCKS);
+        return sampleAndCompile(bindingId);
+    }
+
+    /** Only the private fence admission path may call this retained-fence collector. */
+    @Transactional(propagation = Propagation.MANDATORY)
+    public Candidate collectFenced(String bindingId) {
+        if (!TransactionSynchronizationManager.isActualTransactionActive()
+            || TransactionSynchronizationManager.isCurrentTransactionReadOnly()
+            || bindingId==null || !bindingId.matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"))
+            throw invalid("Invalid admitted binding");
+        JdbcIdentityAuthorityFence.requireFences(jdbc);
+        return sampleAndCompile(bindingId);
+    }
+
+    private Candidate sampleAndCompile(String bindingId) {
         Sample sample = jdbc.queryForObject("SELECT clock_timestamp(),pg_backend_pid(),txid_current()",
                 (r,n) -> new Sample(r.getTimestamp(1).toInstant(),r.getInt(2),r.getLong(3)));
         List<Binding> selected = jdbc.query(

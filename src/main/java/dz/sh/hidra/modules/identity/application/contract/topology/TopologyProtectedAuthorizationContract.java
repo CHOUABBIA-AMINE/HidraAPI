@@ -31,6 +31,15 @@ public interface TopologyProtectedAuthorizationContract {
 
     Contribution contribute(Prepared prepared, Request request);
 
+    Admission acquire(Prepared prepared, Request request);
+
+    Contribution contribute(Admission admission);
+
+    void requireCurrent(Admission admission);
+
+    /** Marker only; only the issuing adapter accepts its private ticket. */
+    interface Admission {}
+
     /** A marker is not proof. Only the issuing adapter's private implementation is accepted. */
     interface Prepared {}
 

@@ -79,6 +79,7 @@ public final class ProtectedTransactionExecutor {
                     Outcome.REJECTED_BEFORE_COMMIT,
                     new IllegalStateException("unsupported manager"));
         var s = new ProtectedOperationDataSource.Scope();
+        s.executor=this;
         TransactionStatus status = null;
         ProtectedOperationDataSource.CURRENT.set(s);
         try {
@@ -110,6 +111,9 @@ public final class ProtectedTransactionExecutor {
             s.phase = ProtectedOperationDataSource.Phase.WORKING;
             T result = work.get();
             s.deadline();
+            if(s.admission && s.phase!=ProtectedOperationDataSource.Phase.OBSERVING) {
+                s.reject("incomplete owner admission");s.healthy();
+            }
             materialized(result, 0);
             s.phase = ProtectedOperationDataSource.Phase.FLUSHING;
             flush.run();
@@ -142,6 +146,44 @@ public final class ProtectedTransactionExecutor {
             s.phase = ProtectedOperationDataSource.Phase.FINISHED;
             ProtectedOperationDataSource.CURRENT.remove();
         }
+    }
+
+    /** Technical state only; compiled owner coordinator supplies every business invariant. */
+    public void beginAdmission() {
+        var s=admissionScope();
+        if(s.phase!=ProtectedOperationDataSource.Phase.WORKING || s.admission || s.userStatements!=0) {
+            s.reject("admission must precede all user SQL");s.healthy();
+        }
+        s.admission=true;s.phase=ProtectedOperationDataSource.Phase.ADMITTING;
+    }
+    public void sealAdmission() {
+        var s=admissionScope();
+        if(!s.admission || s.phase!=ProtectedOperationDataSource.Phase.ADMITTING) {
+            s.reject("admission cannot be sealed here");s.healthy();
+        }
+        s.phase=ProtectedOperationDataSource.Phase.OBSERVING;
+    }
+    public void requireAdmission() {
+        var s=admissionScope();
+        if(!s.admission || s.phase!=ProtectedOperationDataSource.Phase.OBSERVING) {
+            s.reject("qualified admission required");s.healthy();
+        }
+    }
+    public void rejectAdmission() {
+        var s=ProtectedOperationDataSource.CURRENT.get();
+        if(s!=null) s.reject("owner admission failed");
+        for(Object resource:TransactionSynchronizationManager.getResourceMap().values())
+            if(resource instanceof org.springframework.jdbc.datasource.ConnectionHolder h) h.setRollbackOnly();
+    }
+    private ProtectedOperationDataSource.Scope admissionScope() {
+        var s=ProtectedOperationDataSource.CURRENT.get();
+        if(s==null) throw new IllegalStateException("Protected physical scope required");
+        if(s.executor!=this || s.owner!=Thread.currentThread() || s.physical==null
+            || !TransactionSynchronizationManager.isActualTransactionActive()
+            || TransactionSynchronizationManager.isCurrentTransactionReadOnly()) {
+            s.reject("foreign admission scope");s.healthy();
+        }
+        s.deadline();return s;
     }
 
     private static void materialized(Object value, int depth) throws ReflectiveOperationException {

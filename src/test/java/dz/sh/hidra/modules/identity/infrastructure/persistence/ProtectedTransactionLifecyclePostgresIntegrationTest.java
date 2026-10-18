@@ -831,4 +831,10 @@ class ProtectedTransactionLifecyclePostgresIntegrationTest {
                                     }
                                 }));
     }
+
+    @Test void admissionMethodsCannotRunOutsideProtectedExecutorScope() {
+        assertThatThrownBy(()->executor.beginAdmission()).isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(()->executor.sealAdmission()).isInstanceOf(IllegalStateException.class);
+    }
+
 }

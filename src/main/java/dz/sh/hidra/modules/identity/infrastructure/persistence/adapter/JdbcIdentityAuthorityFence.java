@@ -27,6 +27,11 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
+import org.springframework.jdbc.datasource.ConnectionHolder;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.sql.Connection;
 import java.util.List;
 import java.util.Objects;
 
@@ -132,6 +137,103 @@ public class JdbcIdentityAuthorityFence {
             throw invalid("Temporal collector changed physical transaction");
         // Preserve the delegate's exact sample/bound and immutable diagnostic result.
         return candidate;
+    }
+
+    /** Integrated admission acquires no owner eligibility sample. */
+    @Transactional(propagation = Propagation.MANDATORY)
+    public Admission acquireNowait(String bindingId) { return acquire(bindingId, true); }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    public Admission acquire(String bindingId) { return acquire(bindingId, false); }
+
+    private Admission acquire(String bindingId, boolean nowait) {
+        try {
+            if (bindingId == null || !bindingId.matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"))
+                throw invalid("Exact binding identity required");
+            var holder = holder();
+            String suffix = nowait ? " NOWAIT" : "";
+            jdbc.execute(LOCKS + suffix);
+            jdbc.execute("LOCK TABLE public.hidra_identity_external_mapping_generation IN ACCESS SHARE MODE" + suffix);
+            jdbc.execute("LOCK TABLE public.hidra_identity_bound_source_claim_evidence IN SHARE MODE" + suffix);
+            var ticket = jdbc.queryForObject("SELECT pg_catalog.pg_backend_pid(),pg_catalog.txid_current(),current_user",
+                (r,n) -> new Admission(this,bindingId,holder,r.getInt(1),r.getLong(2),r.getString(3)));
+            if (ticket == null) throw invalid("Missing physical admission");
+            TransactionSynchronizationManager.registerSynchronization(ticket);
+            requireCurrent(ticket);
+            return ticket;
+        } catch (RuntimeException failure) { rollback(); throw failure; }
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    public Candidate collect(Admission admission) {
+        try {
+            requireCurrent(admission);
+            if (!admission.used.compareAndSet(false,true)) throw invalid("Admission already collected");
+            Candidate result = collector.collectFenced(admission.bindingId);
+            requireCurrent(admission);
+            if (result == null || result.backendPid()!=admission.pid || result.transactionId()!=admission.xid)
+                throw invalid("Changed temporal physical context");
+            return result;
+        } catch (RuntimeException failure) { rollback(); throw failure; }
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    public void requireCurrent(Admission a) {
+        try {
+            var holder=holder();
+            if (a==null || a.owner!=this || !a.active || a.thread!=Thread.currentThread()
+                || a.holder!=holder || a.connection!=holder.getConnection()) throw invalid("Foreign admission");
+            if (!Boolean.TRUE.equals(jdbc.queryForObject(
+                "SELECT pg_catalog.pg_backend_pid()=? AND pg_catalog.txid_current()=? AND current_user=?",
+                Boolean.class,a.pid,a.xid,a.role))) throw invalid("Changed physical admission");
+            requireFences(jdbc);
+        } catch (RuntimeException failure) { rollback(); throw failure; }
+    }
+
+    static void requireFences(JdbcTemplate jdbc) {
+        if (!RELATIONS.equals(jdbc.queryForList(HELD,String.class).stream().sorted().toList())
+            || !Boolean.TRUE.equals(jdbc.queryForObject("""
+                SELECT pg_catalog.current_setting('transaction_isolation')='read committed'
+                  AND pg_catalog.current_setting('transaction_read_only')='off'
+                  AND EXISTS (SELECT 1 FROM pg_catalog.pg_locks WHERE pid=pg_catalog.pg_backend_pid() AND granted
+                    AND locktype='relation' AND relation='public.hidra_identity_external_mapping_generation'::regclass AND mode='AccessShareLock')
+                  AND EXISTS (SELECT 1 FROM pg_catalog.pg_locks WHERE pid=pg_catalog.pg_backend_pid() AND granted
+                    AND locktype='relation' AND relation='public.hidra_identity_bound_source_claim_evidence'::regclass AND mode='ShareLock')
+                """,Boolean.class))) throw invalid("Complete retained Identity fences required");
+    }
+
+    private ConnectionHolder holder() {
+        if (!TransactionSynchronizationManager.isActualTransactionActive()
+            || !TransactionSynchronizationManager.isSynchronizationActive()
+            || TransactionSynchronizationManager.isCurrentTransactionReadOnly()
+            || jdbc.getDataSource()==null
+            || !(TransactionSynchronizationManager.getResource(jdbc.getDataSource()) instanceof ConnectionHolder h)
+            || h.isRollbackOnly()) throw invalid("Writable bound resource required");
+        return h;
+    }
+
+    private void rollback() {
+        if (jdbc.getDataSource()!=null && TransactionSynchronizationManager.getResource(jdbc.getDataSource()) instanceof ConnectionHolder h) h.setRollbackOnly();
+        try { TransactionAspectSupport.currentTransactionStatus().setRollbackOnly(); }
+        catch (org.springframework.transaction.NoTransactionException absent) { /* Direct template caller. */ }
+    }
+
+    public static final class Admission implements TransactionSynchronization {
+        private final JdbcIdentityAuthorityFence owner;
+        private final String bindingId,role;
+        private final Thread thread=Thread.currentThread();
+        private final ConnectionHolder holder;
+        private final Connection connection;
+        private final int pid;
+        private final long xid;
+        private final AtomicBoolean used=new AtomicBoolean();
+        private boolean active=true;
+        private Admission(JdbcIdentityAuthorityFence owner,String bindingId,ConnectionHolder holder,int pid,long xid,String role) {
+            this.owner=owner;this.bindingId=bindingId;this.holder=holder;this.connection=holder.getConnection();this.pid=pid;this.xid=xid;this.role=role;
+        }
+        @Override public void suspend() { active=false; }
+        @Override public void afterCompletion(int status) { active=false; }
+        @Override public String toString() { return "Admission[opaque Identity fences]"; }
     }
 
     private static IllegalStateException invalid(String reason) {

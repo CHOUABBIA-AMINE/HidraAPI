@@ -37,6 +37,8 @@ public final class ProtectedOperationDataSource extends DelegatingDataSource
     enum Phase {
         OPENING,
         WORKING,
+        ADMITTING,
+        OBSERVING,
         FLUSHING,
         GUARD,
         SEALED,
@@ -52,6 +54,9 @@ public final class ProtectedOperationDataSource extends DelegatingDataSource
         boolean providerCommit, providerRollback, cleanup, commitAttempted, committed, rolledBack;
         int guardExecutions, guardPreparations, openGuardResults;
         long started, xid;
+        long userStatements;
+        boolean admission;
+        Object executor;
         int pid;
         String reason;
 
@@ -119,6 +124,34 @@ public final class ProtectedOperationDataSource extends DelegatingDataSource
         int begin = i;
         while (i < n && (Character.isLetter(sql.charAt(i)) || sql.charAt(i) == '_')) i++;
         return sql.substring(begin, i).toUpperCase(Locale.ROOT);
+    }
+
+    static boolean admissionSql(String sql) {
+        if(sql==null) return false;
+        String first=firstSqlWord(sql);
+        if(!first.equals("SELECT") && !first.equals("LOCK")) return false;
+        // Inspect code tokens, never text inside quoted data or identifiers.
+        StringBuilder code=new StringBuilder();
+        for(int i=0;i<sql.length();) {
+            char c=sql.charAt(i);
+            if(c=='\'' || c=='"') {
+                char quote=c;i++;
+                while(i<sql.length()) { if(sql.charAt(i++)==quote) { if(i<sql.length() && sql.charAt(i)==quote) i++; else break; } }
+                code.append(' ');
+            } else if(sql.startsWith("--",i)) {
+                int e=sql.indexOf('\n',i);i=e<0?sql.length():e+1;code.append(' ');
+            } else if(sql.startsWith("/*",i)) {
+                int depth=1;i+=2;
+                while(i<sql.length() && depth>0) {
+                    if(sql.startsWith("/*",i)) {depth++;i+=2;}
+                    else if(sql.startsWith("*/",i)) {depth--;i+=2;} else i++;
+                }
+                if(depth!=0) return false;code.append(' ');
+            } else {code.append(c);i++;}
+        }
+        String tokens=code.toString().toUpperCase(Locale.ROOT);
+        return !java.util.regex.Pattern.compile("\\b(INTO|INSERT|UPDATE|DELETE|MERGE|CALL|DO|COPY|WITH|SET_CONFIG|PG_ADVISORY_LOCK)\\b").matcher(tokens).find()
+            && !tokens.contains("$") && !tokens.contains(";");
     }
 
     public ProtectedOperationDataSource(DataSource target) {
@@ -260,6 +293,8 @@ public final class ProtectedOperationDataSource extends DelegatingDataSource
             if (s == null) return;
             if (s.poisoned) throw s.reject("previous error");
             if (s.phase != Phase.OPENING
+                    && s.phase != Phase.ADMITTING
+                    && s.phase != Phase.OBSERVING
                     && s.phase != Phase.WORKING
                     && s.phase != Phase.FLUSHING
                     && s.phase != Phase.GUARD) throw s.reject("SQL after final guard");
@@ -289,6 +324,12 @@ public final class ProtectedOperationDataSource extends DelegatingDataSource
                     s.reject("participation probe failed");
                     throw error;
                 }
+            }
+            if(s.phase!=Phase.OPENING) {
+                s.userStatements++;
+                if(s.admission && (!admissionSql(text)
+                    || (s.phase!=Phase.ADMITTING && firstSqlWord(text).equals("LOCK"))))
+                    throw s.reject("mutation or late lock during protected admission");
             }
             if (s.phase != Phase.OPENING
                     && text != null
@@ -443,6 +484,8 @@ public final class ProtectedOperationDataSource extends DelegatingDataSource
                 String text =
                         args != null && args.length > 0 && args[0] instanceof String t ? t : sql;
                 connection.sql(s, text);
+                if(s!=null && s.admission && firstSqlWord(text).equals("SELECT") && !name.equals("executeQuery"))
+                    throw s.reject("admission SELECT requires executeQuery");
                 if (guard) {
                     if (!name.equals("executeQuery"))
                         throw s.reject("final guard must be scalar query");

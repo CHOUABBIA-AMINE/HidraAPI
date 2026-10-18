@@ -162,6 +162,10 @@ public class ProtectedOperationIdentityParticipant {
         } catch (DataAccessException storage) {
             throw unavailable();
         }
+        return finish(prepared,candidate);
+    }
+
+    private Contribution finish(Prepared prepared,Candidate candidate) {
         try {
             var binding =
                     bindings.findByNativeIssuerAndJti(
@@ -220,6 +224,41 @@ public class ProtectedOperationIdentityParticipant {
         }
     }
 
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    public Admitted admit(Prepared prepared) {
+        if (prepared==null || !prepared.used.compareAndSet(false,true)) throw denied();
+        context(prepared);
+        var admission=fence.acquireNowait(prepared.locator.bindingId());
+        return new Admitted(this,prepared,admission);
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    public Contribution contribute(Admitted admitted) {
+        requireAdmitted(admitted);
+        if (!admitted.used.compareAndSet(false,true)) throw denied();
+        var result=finish(admitted.prepared,fence.collect(admitted.fence));
+        requireAdmitted(admitted);
+        return result;
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    public void requireAdmitted(Admitted admitted) {
+        if (admitted==null || admitted.owner!=this) throw denied();
+        context(admitted.prepared);
+        fence.requireCurrent(admitted.fence);
+    }
+
+    public static final class Admitted {
+        private final ProtectedOperationIdentityParticipant owner;
+        private final Prepared prepared;
+        private final JdbcIdentityAuthorityFence.Admission fence;
+        private final AtomicBoolean used=new AtomicBoolean();
+        private Admitted(ProtectedOperationIdentityParticipant owner,Prepared prepared,JdbcIdentityAuthorityFence.Admission fence) {
+            this.owner=owner;this.prepared=prepared;this.fence=fence;
+        }
+        @Override public String toString() { return "Admitted[opaque native Identity]"; }
+    }
 
     /**
      * Consume genuine prepared authentication once and bind the result to the actual caller
@@ -350,6 +389,16 @@ public class ProtectedOperationIdentityParticipant {
     public QualifiedClaimPair qualifyPair(Prepared prepared, Request request) {
         if (request == null) throw denied();
         Contribution contribution = contribute(prepared);
+        return pair(prepared,request,contribution);
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    public QualifiedClaimPair qualifyPair(Admitted admitted, Request request) {
+        if(request==null) throw denied();
+        return pair(admitted.prepared,request,contribute(admitted));
+    }
+
+    private QualifiedClaimPair pair(Prepared prepared,Request request,Contribution contribution) {
         Object resource = connectionResource();
         if (resource == null) throw unavailable();
         context(prepared);

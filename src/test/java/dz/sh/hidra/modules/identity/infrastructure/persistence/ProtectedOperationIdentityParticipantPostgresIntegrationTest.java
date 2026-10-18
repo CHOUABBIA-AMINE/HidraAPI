@@ -1163,4 +1163,9 @@ class ProtectedOperationIdentityParticipantPostgresIntegrationTest {
         }
         return new Fixture(user, provider, link, credential, subject, type);
     }
+
+    @Test void admittedNativeCredentialHasNoPublicConstructor() {
+        assertThat(ProtectedOperationIdentityParticipant.Admitted.class.getConstructors()).isEmpty();
+    }
+
 }

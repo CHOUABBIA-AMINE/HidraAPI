@@ -6704,6 +6704,7 @@
         "expiryBetweenAdmissionCollectionAndFinalGuardRollsBack",
         "forgedReplayedSuspendedAndChangedAuthenticationTicketsFail",
         "futureDenyAndSourceExpiryConstrainTheCommonUpperBound",
+        "genuinePublicationLifecycleUsesEveryProviderAndSameOwnerSample",
         "identityNativeAndJpaWritersConflictBeforeAdmission",
         "incomingFkAndPlanningRowShareRemainCompatible",
         "legacyIdentityAndClaimIssuancePathsRetainTheirSemantics",
@@ -6712,15 +6713,24 @@
         "partyAndFacilityNativeBulkAndJpaWritersConflictBeforeAdmission",
         "partyStatusAndFacilityOwnershipMismatchFailClosed",
         "priorSqlAndDirtyFlushCannotBeAdopted",
-        "realProducerPairsAndOwnerWitnessesUseOnePhysicalSample"
+        "realProducerPairsAndOwnerWitnessesUseOnePhysicalSample",
+        "realPublicationPoisonsCaughtUnreviewedProvisionalSql",
+        "realPublicationRefusesDirectPortAdmissionAndSqlRoleEscapes",
+        "realPublicationRejectsCaughtSqlAfterActualFinalGuard",
+        "realPublicationRejectsDisabledCatalogGuardBeforeWriting",
+        "realPublicationRejectsUnauthorizedReadsBeforeHeadOrHistory",
+        "realPublicationRejectsWriterFirstAndLiveOwnerTransfer",
+        "realPublicationRetainsPhysicalCommitAndIndeterminateNoRetry",
+        "realPublicationRollsBackRevisionAndEventOnActualFinalGuardExpiry",
+        "realPublicationUsesActualSingleIdentitySampleAndRejectsStaleEpoch"
       ],
       "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.ProtectedStationAdmissionPostgresIntegrationTest",
-      "dependency_reason": "Registered HAPI-583 actual PostgreSQL/producer/owner admission",
+      "dependency_reason": "HAPI-583 retained 19 real K cases plus 10 HAPI-584 genuine protected service/owner/publication integration cases; hosted CI pending",
       "fast": false,
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedStationAdmissionPostgresIntegrationTest.java",
-      "source_sha256": "e0e120eaf60d9eca5cf2be74ec2682df0e76c2ee812fb9244e2c454d2f263259",
+      "source_sha256": "80afe396f9031094e3b438fc01e514ed78d63c49f49debb25e5ffcb4f9ee9cde",
       "supports": []
     },
     {
@@ -6738,7 +6748,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedStationGraphBoundaryGuardrailTest.java",
-      "source_sha256": "5d3d97e705ef8901e05dd8885059151132bf74855e50743d4f6dbe6f1d1036de",
+      "source_sha256": "99a2e28558acf9b99f9b2ce0604e7b6e90d11202efa2f924832e9462f0c27823",
       "supports": []
     },
     {

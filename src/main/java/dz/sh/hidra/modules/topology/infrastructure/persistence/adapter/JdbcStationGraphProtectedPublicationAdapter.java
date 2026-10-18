@@ -44,6 +44,75 @@ public class JdbcStationGraphProtectedPublicationAdapter implements StationGraph
     private static final String HEAD_INS="INSERT INTO public.hidra_topology_station_graph_head (facility_id,revision_id,head_epoch,state,last_event_id) VALUES (?,?,?,?,?)";
     private static final String HEAD_CAS="UPDATE public.hidra_topology_station_graph_head SET revision_id=?,head_epoch=?,state=?,last_event_id=? WHERE facility_id=? AND head_epoch=? AND revision_id=? AND state=?";
     private static final Set<String> MUTATIONS=Set.of(REV_INS,EVT_INS,HEAD_INS,HEAD_CAS);
+    private static final String CATALOG="""
+        SELECT pg_catalog.current_setting('session_replication_role')='origin'
+          AND NOT pg_catalog.has_schema_privilege(current_user,'public','CREATE')
+          AND NOT pg_catalog.has_schema_privilege(current_user,'pg_catalog','CREATE')
+          AND NOT EXISTS(SELECT 1 FROM pg_catalog.pg_roles r WHERE
+            (r.rolname=current_user OR pg_catalog.pg_has_role(current_user,r.oid,'MEMBER'))
+            AND (r.rolsuper OR r.rolbypassrls))
+          AND (SELECT count(*)=3 AND bool_and(c.relkind='r' AND c.relpersistence='p'
+            AND NOT c.relrowsecurity AND NOT c.relforcerowsecurity AND NOT c.relispartition
+            AND NOT pg_catalog.pg_has_role(current_user,c.relowner,'MEMBER')
+            AND NOT pg_catalog.has_table_privilege(current_user,c.oid,'TRIGGER,TRUNCATE'))
+            FROM pg_catalog.pg_class c WHERE c.oid IN
+              ('public.hidra_topology_station_graph_revision'::regclass,
+               'public.hidra_topology_station_graph_head'::regclass,
+               'public.hidra_topology_station_graph_operation_event'::regclass))
+          AND NOT EXISTS(SELECT 1 FROM pg_catalog.pg_inherits WHERE inhrelid IN
+              ('public.hidra_topology_station_graph_revision'::regclass,
+               'public.hidra_topology_station_graph_head'::regclass,
+               'public.hidra_topology_station_graph_operation_event'::regclass)
+             OR inhparent IN ('public.hidra_topology_station_graph_revision'::regclass,
+               'public.hidra_topology_station_graph_head'::regclass,
+               'public.hidra_topology_station_graph_operation_event'::regclass))
+          AND (SELECT count(*)=2 AND bool_and(prosecdef AND prokind='f' AND pronargs=0
+            AND prorettype='trigger'::regtype AND provolatile='v' AND NOT proleakproof
+            AND prolang=(SELECT oid FROM pg_catalog.pg_language WHERE lanname='plpgsql')
+            AND proconfig=ARRAY['search_path=pg_catalog, pg_temp']
+            AND NOT pg_catalog.pg_has_role(current_user,proowner,'MEMBER')
+            AND NOT pg_catalog.has_function_privilege(current_user,oid,'EXECUTE')
+            AND ((oid='public.hidra_p25_graph_immutable_event()'::regprocedure AND md5(prosrc)='1f6d2a85a7700611e4cdbe4d2a0b3a38')
+              OR (oid='public.hidra_p25_graph_head_transition()'::regprocedure AND md5(prosrc)='b73d0be2d588f6f0e097314d3baf13e9')))
+            FROM pg_catalog.pg_proc WHERE oid IN ('public.hidra_p25_graph_immutable_event()'::regprocedure,
+              'public.hidra_p25_graph_head_transition()'::regprocedure))
+          AND (SELECT count(*)=21 AND bool_and(k.convalidated AND NOT k.condeferrable)
+            AND md5(string_agg(c.relname||'|'||k.conname||'|'||pg_catalog.pg_get_constraintdef(k.oid,true),
+                E'\\n' ORDER BY c.relname COLLATE "C",k.conname COLLATE "C"))='0d3e9e1234818df1668b281f15df936f'
+            FROM pg_catalog.pg_constraint k JOIN pg_catalog.pg_class c ON c.oid=k.conrelid
+            WHERE k.conrelid IN ('public.hidra_topology_station_graph_revision'::regclass,
+                'public.hidra_topology_station_graph_head'::regclass,
+                'public.hidra_topology_station_graph_operation_event'::regclass))
+          AND (SELECT count(*)=7 AND bool_and(tgenabled='O' AND tgqual IS NULL AND tgnargs=0
+            AND tgconstraint=0 AND tgparentid=0 AND cardinality(tgattr::smallint[])=0 AND
+            ((tgrelid='public.hidra_topology_station_graph_revision'::regclass AND
+                tgfoid='public.hidra_topology_reject_station_graph_revision_mutation()'::regprocedure AND
+                ((tgname='topology_station_graph_revision_no_update_delete' AND tgtype=27)
+                 OR (tgname='topology_station_graph_revision_no_truncate' AND tgtype=34)))
+             OR (tgrelid='public.hidra_topology_station_graph_operation_event'::regclass AND
+                tgfoid='public.hidra_p25_graph_immutable_event()'::regprocedure AND
+                ((tgname='trg_p25_graph_event_immutable' AND tgtype=27)
+                 OR (tgname='trg_p25_graph_event_no_truncate' AND tgtype=34)))
+             OR (tgrelid='public.hidra_topology_station_graph_head'::regclass AND
+                ((tgname='trg_p25_graph_head_transition' AND tgtype=23 AND
+                    tgfoid='public.hidra_p25_graph_head_transition()'::regprocedure)
+                 OR (tgname='trg_p25_graph_head_no_delete' AND tgtype=11 AND
+                    tgfoid='public.hidra_p25_graph_immutable_event()'::regprocedure)
+                 OR (tgname='trg_p25_graph_head_no_truncate' AND tgtype=34 AND
+                    tgfoid='public.hidra_p25_graph_immutable_event()'::regprocedure)))))
+            FROM pg_catalog.pg_trigger WHERE NOT tgisinternal AND tgrelid IN
+              ('public.hidra_topology_station_graph_revision'::regclass,
+               'public.hidra_topology_station_graph_head'::regclass,
+               'public.hidra_topology_station_graph_operation_event'::regclass))
+        """;
+    private static final String RETAINED="""
+        (SELECT count(DISTINCT relation)=3 FROM pg_catalog.pg_locks
+          WHERE pid=pg_catalog.pg_backend_pid() AND granted AND locktype='relation'
+            AND mode='ShareRowExclusiveLock' AND relation IN
+              ('public.hidra_topology_station_graph_revision'::regclass,
+               'public.hidra_topology_station_graph_head'::regclass,
+               'public.hidra_topology_station_graph_operation_event'::regclass))
+        """;
     private static final String GUARD="""
         WITH sampled_clock AS MATERIALIZED (SELECT pg_catalog.clock_timestamp() AS t)
         SELECT ((SELECT t FROM sampled_clock)>=?::timestamptz)
@@ -59,7 +128,8 @@ public class JdbcStationGraphProtectedPublicationAdapter implements StationGraph
                  AND h.head_epoch=? AND h.revision_id=? AND h.state=? AND h.last_event_id=?::uuid))
           AND (?::uuid IS NULL OR EXISTS(SELECT 1 FROM public.hidra_topology_station_graph_operation_event e
              WHERE e.facility_id=? AND e.event_id=?::uuid))
-        """;
+        """+" AND "+RETAINED+" AND NOT EXISTS (SELECT 1 FROM public.hidra_topology_station_graph_revision r "
+            +"WHERE r.facility_id=? AND r.sha256<>pg_catalog.encode(pg_catalog.sha256(r.canonical_payload),'hex'))";
     private final EntityManager em;
     private final JdbcTemplate jdbc;
     private final DataSource source;
@@ -71,6 +141,7 @@ public class JdbcStationGraphProtectedPublicationAdapter implements StationGraph
         this.executor=Objects.requireNonNull(executor);this.em=Objects.requireNonNull(em);
     }
     private final class Ticket implements Admission,TransactionSynchronization {
+        final JdbcStationGraphProtectedPublicationAdapter issuer=JdbcStationGraphProtectedPublicationAdapter.this;
         final String facility,role; final ConnectionHolder holder;final Connection physical;
         final int pid;final long xid;final Thread thread=Thread.currentThread();
         final AtomicBoolean active=new AtomicBoolean(true);
@@ -81,7 +152,12 @@ public class JdbcStationGraphProtectedPublicationAdapter implements StationGraph
         @Override public void afterCompletion(int status){active.set(false);}
     }
     private static IllegalStateException invalid(){return new IllegalStateException("Protected Topology publication unavailable");}
+    private boolean compiledCaller(){
+        return StackWalker.getInstance().walk(frames->frames.anyMatch(f->f.getClassName().equals(
+            "dz.sh.hidra.modules.topology.application.service.ProtectedStationGraphOperationService")));
+    }
     private ConnectionHolder physical(){
+        if(!compiledCaller()) {executor.rejectAdmission();throw invalid();}
         if(!TransactionSynchronizationManager.isActualTransactionActive() ||
            !TransactionSynchronizationManager.isSynchronizationActive() ||
            TransactionSynchronizationManager.isCurrentTransactionReadOnly() ||
@@ -91,7 +167,7 @@ public class JdbcStationGraphProtectedPublicationAdapter implements StationGraph
     }
     private Ticket ticket(Admission admission){
         ConnectionHolder h=physical();
-        if(!(admission instanceof Ticket t) || t.thread!=Thread.currentThread() ||
+        if(!(admission instanceof Ticket t) || t.issuer!=this || t.thread!=Thread.currentThread() ||
             !t.active.get() || t.holder!=h || t.physical!=h.getConnection()) {
             executor.rejectAdmission();throw invalid();
         }
@@ -100,7 +176,7 @@ public class JdbcStationGraphProtectedPublicationAdapter implements StationGraph
     private Ticket observed(Admission a){
         Ticket t=ticket(a);
         if(!Boolean.TRUE.equals(jdbc.queryForObject(
-            "SELECT pg_catalog.pg_backend_pid()=? AND pg_catalog.txid_current()=? AND current_user=?",
+            "SELECT pg_catalog.pg_backend_pid()=? AND pg_catalog.txid_current()=? AND current_user=? AND "+RETAINED,
             Boolean.class,t.pid,t.xid,t.role)))throw invalid();
         return t;
     }
@@ -112,6 +188,7 @@ public class JdbcStationGraphProtectedPublicationAdapter implements StationGraph
             jdbc.execute("LOCK TABLE public.hidra_topology_station_graph_revision IN SHARE ROW EXCLUSIVE MODE NOWAIT");
             jdbc.execute("LOCK TABLE public.hidra_topology_station_graph_head IN SHARE ROW EXCLUSIVE MODE NOWAIT");
             jdbc.execute("LOCK TABLE public.hidra_topology_station_graph_operation_event IN SHARE ROW EXCLUSIVE MODE NOWAIT");
+            if(!Boolean.TRUE.equals(jdbc.queryForObject(CATALOG,Boolean.class)))throw invalid();
             Ticket t=jdbc.queryForObject("SELECT pg_catalog.pg_backend_pid(),pg_catalog.txid_current(),current_user",
                 (r,n)->new Ticket(id,r.getString(3),h,r.getInt(1),r.getLong(2)));
             if(t==null)throw invalid();
@@ -121,7 +198,7 @@ public class JdbcStationGraphProtectedPublicationAdapter implements StationGraph
     }
     @Override public Set<String> mutationSql(){return MUTATIONS;}
     @Override @Transactional(propagation=Propagation.MANDATORY)
-    public void flush(){em.flush();}
+    public void flush(){physical();em.flush();}
     @Override @Transactional(propagation=Propagation.MANDATORY)
     public Optional<StationGraphPublicationHead> head(Admission a){
         Ticket t=observed(a);
@@ -214,7 +291,7 @@ public class JdbcStationGraphProtectedPublicationAdapter implements StationGraph
                 head==null?null:head.epoch(),t.facility,t.facility,
                 head==null?null:head.epoch(),head==null?null:head.revisionId(),
                 head==null?null:head.state().name(),head==null?null:head.lastEventId(),
-                eventId,t.facility,eventId);
+                eventId,t.facility,eventId,t.facility);
             if(!Boolean.TRUE.equals(b))throw invalid();return true;
         }catch(RuntimeException error){executor.rejectAdmission();throw error;}
     }

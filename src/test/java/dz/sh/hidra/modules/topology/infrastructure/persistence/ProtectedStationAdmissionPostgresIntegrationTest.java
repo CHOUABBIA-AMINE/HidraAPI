@@ -63,6 +63,7 @@ import java.sql.*;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import static dz.sh.hidra.modules.topology.application.port.in.ProtectedStationGraphOperationUseCase.Kind.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;
 
@@ -105,6 +106,9 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
         }
     }
     @Autowired dz.sh.hidra.modules.topology.application.service.ProtectedStationAdmissionCoordinator coordinator;
+    @Autowired dz.sh.hidra.modules.topology.application.port.in.ProtectedStationGraphOperationUseCase graphOperations;
+    @MockitoSpyBean dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.JdbcStationGraphProtectedPublicationAdapter graphPublication;
+
     @Autowired dz.sh.hidra.modules.party.application.contract.topology.TopologyProtectedPartyEligibilityContract partyOwner;
     @Autowired dz.sh.hidra.modules.topology.application.contract.station.StationProtectedFacilityOwnershipContract facilityOwner;
     @MockitoSpyBean dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcIdentityTemporalEventCollector collector;
@@ -1078,4 +1082,199 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
         executor.execute(()->{a.set(coordinator.acquire(pre,request()));return coordinator.collect(a.get());},em::flush,()->{assertThat(blocked("UPDATE public.hidra_party_party SET status=status WHERE id='"+COMPANY+"'")).isEqualTo("55P03");jdbc.queryForObject("SELECT 1",Integer.class);});
         assertThatThrownBy(()->coordinator.requireCurrent(a.get())).isInstanceOf(RuntimeException.class);assertThat(blocked("UPDATE public.hidra_party_party SET status=status WHERE id='"+COMPANY+"'")).isEqualTo("WROTE");
     }
+    private dz.sh.hidra.modules.topology.domain.model.StationInternalGraphRevision graphRevision(String revision,String predecessor) {
+        var g=new dz.sh.hidra.modules.topology.domain.model.StationInternalGraph(FACILITY,revision,
+            dz.sh.hidra.modules.topology.domain.model.StationInternalGraph.Status.COMPLETE,
+            List.of(new dz.sh.hidra.modules.topology.domain.model.StationInternalGraph.Header("s",
+                        dz.sh.hidra.modules.topology.domain.model.StationInternalGraph.HeaderKind.SUCTION,"sp"),
+                    new dz.sh.hidra.modules.topology.domain.model.StationInternalGraph.Header("d",
+                        dz.sh.hidra.modules.topology.domain.model.StationInternalGraph.HeaderKind.DISCHARGE,"dp")),
+            List.of(new dz.sh.hidra.modules.topology.domain.model.StationInternalGraph.Unit("u",FACILITY,"in","out")),
+            List.of(new dz.sh.hidra.modules.topology.domain.model.StationInternalGraph.Edge("a","sp","in"),
+                    new dz.sh.hidra.modules.topology.domain.model.StationInternalGraph.Edge("b","out","dp")));
+        var at=Instant.parse("2026-10-18T00:00:00Z");
+        return new dz.sh.hidra.modules.topology.domain.model.StationInternalGraphRevision(FACILITY,revision,g,
+            dz.sh.hidra.modules.topology.domain.model.StationInternalGraphRevision.SourceClassification.SYNTHETIC,
+            at,at,null,"synthetic-source",predecessor,
+            dz.sh.hidra.modules.topology.domain.model.StationInternalGraphRevision.Qualification.STRUCTURALLY_QUALIFIED);
+    }
+    private Fixture graphActor(String type) {
+        cleanEvidence();var f=fixture(type);for(String op:OPS)both(f,op);return f;
+    }
+    private dz.sh.hidra.modules.topology.application.port.in.ProtectedStationGraphOperationUseCase.Result graphRun(
+        Fixture actor,dz.sh.hidra.modules.topology.application.port.in.ProtectedStationGraphOperationUseCase.Kind kind,
+        String revision,Long expected,String prior,
+        dz.sh.hidra.modules.topology.domain.model.StationInternalGraphRevision authored) {
+        originalSource(actor);awaitStableTemporalCensus();
+        return graphOperations.execute(new dz.sh.hidra.modules.topology.application.port.in.ProtectedStationGraphOperationUseCase.Command(
+            kind,COMPANY,FACILITY,revision,expected,prior,null,authored,100));
+    }
+    private long graphRows(String table,String revision) {
+        return jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_station_graph_"+table+
+            " WHERE facility_id=?"+(revision==null?"":" AND revision_id=?"),Long.class,
+            revision==null?new Object[]{FACILITY}:new Object[]{FACILITY,revision});
+    }
+    @Test void genuinePublicationLifecycleUsesEveryProviderAndSameOwnerSample() {
+        var types=List.of("LOCAL","OIDC","LDAP","ACTIVE_DIRECTORY");
+        for(String type:types) {
+            var actor=graphActor(type);String rev="live-"+id();
+            var existing=jdbc.queryForList("SELECT revision_id,head_epoch FROM public.hidra_topology_station_graph_head WHERE facility_id=?",FACILITY);
+            String predecessor=existing.isEmpty()?null:(String)existing.getFirst().get("revision_id");
+            long epoch=existing.isEmpty()?0:((Number)existing.getFirst().get("head_epoch")).longValue();
+            var authored=graphRun(actor,dz.sh.hidra.modules.topology.application.port.in.ProtectedStationGraphOperationUseCase.Kind.AUTHOR,
+                rev,null,null,graphRevision(rev,predecessor));
+            assertThat(authored.observedCommit()).isTrue();assertThat(authored.revision().revisionId()).isEqualTo(rev);
+            var pub=graphRun(actor,dz.sh.hidra.modules.topology.application.port.in.ProtectedStationGraphOperationUseCase.Kind.PUBLISH,
+                rev,epoch,predecessor,null);
+            assertThat(pub.observedCommit()).isTrue();assertThat(pub.head().epoch()).isEqualTo(epoch+1);
+            var history=graphRun(actor,dz.sh.hidra.modules.topology.application.port.in.ProtectedStationGraphOperationUseCase.Kind.LIST_HISTORY,
+                null,null,null,null).history();
+            assertThat(history).hasSizeGreaterThanOrEqualTo(2);
+            for(var e:history.stream().filter(e->e.resultingRevisionId().equals(rev)).toList()) {
+                assertThat(e.actorUserId()).isEqualTo(actor.user());
+                assertThat(e.companyPartyId()).isEqualTo(COMPANY);
+                assertThat(e.partyGeneration()).isEqualTo(partyGeneration());
+                assertThat(e.facilityGeneration()).isEqualTo(jdbc.queryForObject("SELECT generation FROM public.hidra_topology_facility_owner_generation WHERE facility_id=?",Long.class,FACILITY));
+                assertThat(jdbc.queryForObject("SELECT user_id=? AND session_id=? FROM public.hidra_identity_operation_binding WHERE binding_id=?",Boolean.class,e.actorUserId(),e.actorSessionId(),e.actorBindingId())).isTrue();
+                assertThat(e.sampledAt()).isBefore(e.validUntil());
+            }
+            assertThat(graphRun(actor,dz.sh.hidra.modules.topology.application.port.in.ProtectedStationGraphOperationUseCase.Kind.READ_CURRENT,
+                null,null,null,null).revision().revisionId()).isEqualTo(rev);
+            assertThat(graphRun(actor,dz.sh.hidra.modules.topology.application.port.in.ProtectedStationGraphOperationUseCase.Kind.READ_HISTORY,
+                rev,null,null,null).revision().revisionId()).isEqualTo(rev);
+            var withdrawn=graphRun(actor,dz.sh.hidra.modules.topology.application.port.in.ProtectedStationGraphOperationUseCase.Kind.WITHDRAW,
+                null,epoch+1,rev,null);
+            assertThat(withdrawn.head().epoch()).isEqualTo(epoch+2);
+            assertThat(graphRun(actor,dz.sh.hidra.modules.topology.application.port.in.ProtectedStationGraphOperationUseCase.Kind.READ_CURRENT,
+                null,null,null,null).revision()).isNull();
+            assertThat(graphRun(actor,dz.sh.hidra.modules.topology.application.port.in.ProtectedStationGraphOperationUseCase.Kind.REACTIVATE,
+                null,epoch+2,rev,null).head().epoch()).isEqualTo(epoch+3);
+        }
+    }
+
+    @Test void realPublicationRejectsUnauthorizedReadsBeforeHeadOrHistory() {
+        var actor=graphActor("LOCAL");cleanEvidence();clearInvocations(graphPublication);
+        for(var kind:List.of(READ_CURRENT,READ_HISTORY,LIST_HISTORY)) {
+            assertThatThrownBy(()->graphRun(actor,kind,kind==READ_HISTORY?"unknown":null,null,null,null))
+                .isInstanceOf(RuntimeException.class);
+        }
+        verify(graphPublication,never()).head(any());
+        verify(graphPublication,never()).history(any(),anyInt());
+        verify(graphPublication,never()).revision(any(),anyString());
+    }
+    @Test void realPublicationRefusesDirectPortAdmissionAndSqlRoleEscapes() throws Exception {
+        assertThatThrownBy(()->tx().execute(status->graphPublication.acquire(FACILITY)))
+            .isInstanceOf(RuntimeException.class);
+        try(var c=writer();var st=c.createStatement()) {
+            assertThatThrownBy(()->st.execute("ALTER TABLE public.hidra_topology_station_graph_head DISABLE TRIGGER ALL"))
+                .isInstanceOf(SQLException.class);
+            assertThatThrownBy(()->st.execute("TRUNCATE public.hidra_topology_station_graph_operation_event"))
+                .isInstanceOf(SQLException.class);
+            assertThatThrownBy(()->st.execute("CREATE OR REPLACE FUNCTION public.hidra_p25_graph_immutable_event() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RETURN NEW; END; $$"))
+                .isInstanceOf(SQLException.class);
+        }
+    }
+    @Test void realPublicationRejectsDisabledCatalogGuardBeforeWriting() {
+        var actor=graphActor("LOCAL");String revision="tamper-"+id();
+        jdbc.execute("ALTER TABLE public.hidra_topology_station_graph_head DISABLE TRIGGER trg_p25_graph_head_transition");
+        try {assertThatThrownBy(()->graphRun(actor,AUTHOR,revision,null,null,graphRevision(revision,null)))
+                .isInstanceOf(RuntimeException.class);}
+        finally {jdbc.execute("ALTER TABLE public.hidra_topology_station_graph_head ENABLE TRIGGER trg_p25_graph_head_transition");}
+        assertThat(graphRows("revision",revision)).isZero();
+    }
+    @Test void realPublicationRollsBackRevisionAndEventOnActualFinalGuardExpiry() {
+        var actor=graphActor("LOCAL");String revision="rollback-"+id();
+        long before=graphRows("operation_event",null);
+        doAnswer(i->{i.getArguments()[2]=i.getArgument(1);return i.callRealMethod();})
+            .when(graphPublication).finalGuard(any(),any(),any(),anyString(),anyLong(),anyLong(),any(),any());
+        assertThatThrownBy(()->graphRun(actor,AUTHOR,revision,null,null,graphRevision(revision,null)))
+            .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class);
+        verify(graphPublication).append(any(),any(),any());
+        verify(graphPublication).finalGuard(any(),any(),any(),anyString(),anyLong(),anyLong(),any(),any());
+        assertThat(graphRows("revision",revision)).isZero();
+        assertThat(graphRows("operation_event",null)).isEqualTo(before);
+    }
+    @Test void realPublicationPoisonsCaughtUnreviewedProvisionalSql() {
+        var actor=graphActor("LOCAL");String revision="poison-"+id();long before=graphRows("operation_event",null);
+        doAnswer(i->{Object result=i.callRealMethod();
+            try {jdbc.update("DELETE FROM public.hidra_topology_station_graph_head WHERE facility_id=?",FACILITY);}
+            catch(RuntimeException expected){/* The real executor must remember this denial. */}
+            return result;
+        }).when(graphPublication).append(any(),any(),any());
+        assertThatThrownBy(()->graphRun(actor,AUTHOR,revision,null,null,graphRevision(revision,null)))
+            .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class);
+        assertThat(graphRows("revision",revision)).isZero();
+        assertThat(graphRows("operation_event",null)).isEqualTo(before);
+    }
+    @Test void realPublicationRetainsPhysicalCommitAndIndeterminateNoRetry() {
+        var actor=graphActor("LOCAL");var committed=new AtomicBoolean();var acquired=new AtomicInteger();
+        doAnswer(i->{var result=i.callRealMethod();acquired.incrementAndGet();
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization(){
+                @Override public void afterCommit(){committed.set(true);}
+            });return result;
+        }).when(graphPublication).acquire(anyString());
+        String revision="committed-"+id();
+        var result=graphRun(actor,AUTHOR,revision,null,null,graphRevision(revision,null));
+        assertThat(committed).isTrue();assertThat(result.observedCommit()).isTrue();assertThat(acquired).hasValue(1);
+        acquired.set(0);
+        doAnswer(i->{var value=i.callRealMethod();acquired.incrementAndGet();
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization(){
+                @Override public void afterCommit(){throw new IllegalStateException("Synthetic lost acknowledgement");}
+            });return value;
+        }).when(graphPublication).acquire(anyString());
+        String uncertain="uncertain-"+id();
+        assertThatThrownBy(()->graphRun(actor,AUTHOR,uncertain,null,null,graphRevision(uncertain,null)))
+            .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class)
+            .satisfies(e->assertThat(((ProtectedTransactionExecutor.ExecutionFailure)e).outcome())
+                .isEqualTo(ProtectedTransactionExecutor.Outcome.INDETERMINATE));
+        assertThat(acquired).hasValue(1);assertThat(graphRows("revision",uncertain)).isEqualTo(1);
+    }
+    @Test void realPublicationUsesActualSingleIdentitySampleAndRejectsStaleEpoch() {
+        var actor=graphActor("OIDC");String revision="sample-"+id();
+        var observed=new AtomicReference<dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcIdentityTemporalEventCollector.Candidate>();
+        var count=new AtomicInteger();
+        var target=org.springframework.test.util.AopTestUtils.<dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcIdentityTemporalEventCollector>getUltimateTargetObject(collector);
+        doAnswer(i->{var value=(dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcIdentityTemporalEventCollector.Candidate)i.callRealMethod();observed.set(value);count.incrementAndGet();return value;})
+            .when(target).collectFenced(anyString());
+        graphRun(actor,AUTHOR,revision,null,null,graphRevision(revision,null));
+        assertThat(count).hasValue(1);
+        var row=jdbc.queryForMap("SELECT sampled_at,backend_pid,transaction_id FROM public.hidra_topology_station_graph_operation_event WHERE facility_id=? AND resulting_revision_id=?",FACILITY,revision);
+        assertThat(((Timestamp)row.get("sampled_at")).toInstant()).isEqualTo(observed.get().sampledAt());
+        assertThat(((Number)row.get("backend_pid")).intValue()).isEqualTo(observed.get().backendPid());
+        assertThat(((Number)row.get("transaction_id")).longValue()).isEqualTo(observed.get().transactionId());
+        long before=graphRows("operation_event",null);
+        assertThatThrownBy(()->graphRun(actor,PUBLISH,revision,Long.MAX_VALUE,"stale",null))
+            .isInstanceOf(RuntimeException.class);
+        assertThat(graphRows("operation_event",null)).isEqualTo(before);
+    }
+    @Test void realPublicationRejectsWriterFirstAndLiveOwnerTransfer() throws Exception {
+        var actor=graphActor("LDAP");String revision="writer-"+id();
+        try(var c=writer();var st=c.createStatement()) {
+            c.setAutoCommit(false);
+            st.execute("LOCK TABLE public.hidra_topology_station_graph_head IN SHARE ROW EXCLUSIVE MODE");
+            assertThatThrownBy(()->graphRun(actor,AUTHOR,revision,null,null,graphRevision(revision,null)))
+                .isInstanceOf(RuntimeException.class);
+            c.rollback();
+        }
+        jdbc.update("UPDATE public.hidra_topology_facility SET owner_party_id='other-company' WHERE id=?",FACILITY);
+        try {assertThatThrownBy(()->graphRun(actor,AUTHOR,revision,null,null,graphRevision(revision,null)))
+                .isInstanceOf(RuntimeException.class);}
+        finally {jdbc.update("UPDATE public.hidra_topology_facility SET owner_party_id=? WHERE id=?",COMPANY,FACILITY);}
+        assertThat(graphRows("revision",revision)).isZero();
+    }
+
+    @Test void realPublicationRejectsCaughtSqlAfterActualFinalGuard() {
+        var actor=graphActor("LOCAL");String revision="sealed-"+id();long before=graphRows("operation_event",null);
+        doAnswer(i->{var result=i.callRealMethod();
+            try {jdbc.queryForObject("SELECT 1",Integer.class);}
+            catch(RuntimeException expected){/* Poisoning must survive a caught post-guard denial. */}
+            return result;
+        }).when(graphPublication).finalGuard(any(),any(),any(),anyString(),anyLong(),anyLong(),any(),any());
+        assertThatThrownBy(()->graphRun(actor,AUTHOR,revision,null,null,graphRevision(revision,null)))
+            .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class);
+        verify(graphPublication).append(any(),any(),any());
+        verify(graphPublication).finalGuard(any(),any(),any(),anyString(),anyLong(),anyLong(),any(),any());
+        assertThat(graphRows("revision",revision)).isZero();assertThat(graphRows("operation_event",null)).isEqualTo(before);
+    }
+
 }

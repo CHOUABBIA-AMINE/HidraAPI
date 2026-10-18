@@ -69,6 +69,15 @@ class ProtectedStationGraphOperationServiceTest {
         }).when(executor).execute(any(),any(),any());
     }
     private Command command(Kind kind){return new Command(kind,"company","facility",null,null,null,null,null,5);}
+    @Test void rejectsAmbientTransactionBeforePreparation(){
+        org.springframework.transaction.support.TransactionSynchronizationManager.setActualTransactionActive(true);
+        try {
+            assertThrows(IllegalStateException.class,()->service.execute(command(Kind.READ_CURRENT)));
+            verifyNoInteractions(coordinator,publication,executor);
+        } finally {
+            org.springframework.transaction.support.TransactionSynchronizationManager.setActualTransactionActive(false);
+        }
+    }
     @Test void requiresActualOpaqueKAdmissionAndBothOwnerPermits(){
         doThrow(new IllegalStateException("DENY")).when(coordinator).requireCurrent(admitted);
         assertThrows(IllegalStateException.class,()->service.execute(command(Kind.READ_CURRENT)));

@@ -1236,7 +1236,11 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
         var target=org.springframework.test.util.AopTestUtils.<dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcIdentityTemporalEventCollector>getUltimateTargetObject(collector);
         doAnswer(i->{var value=(dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcIdentityTemporalEventCollector.Candidate)i.callRealMethod();observed.set(value);count.incrementAndGet();return value;})
             .when(target).collectFenced(anyString());
+        assertThat(TransactionSynchronizationManager.isSynchronizationActive()).isFalse();
         graphRun(actor,AUTHOR,revision,null,null,graphRevision(revision,null));
+        assertThat(TransactionSynchronizationManager.isSynchronizationActive()).isFalse();
+        assertThat(TransactionSynchronizationManager.getResourceMap()).isEmpty();
+        assertThat(jdbc.queryForObject("SELECT 1",Integer.class)).isEqualTo(1);
         assertThat(count).hasValue(1);
         var row=jdbc.queryForMap("SELECT sampled_at,backend_pid,transaction_id FROM public.hidra_topology_station_graph_operation_event WHERE facility_id=? AND resulting_revision_id=?",FACILITY,revision);
         assertThat(((Timestamp)row.get("sampled_at")).toInstant()).isEqualTo(observed.get().sampledAt());

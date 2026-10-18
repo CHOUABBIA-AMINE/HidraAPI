@@ -6368,6 +6368,7 @@
         "materializesResultsOnlyAfterObservedPhysicalCommit",
         "neverDisclosesCurrentHistoryOrCountsBeforeAuthority",
         "poisonsCaughtMutationAndGuardFailures",
+        "rejectsAmbientTransactionBeforePreparation",
         "rejectsStaleHeadOrConsumedTicketAndConflictingEpoch",
         "rejectsTransferWithoutForgingFacilityOwnership",
         "requiresActualOpaqueKAdmissionAndBothOwnerPermits"
@@ -6378,7 +6379,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/application/service/ProtectedStationGraphOperationServiceTest.java",
-      "source_sha256": "3a73752db16b64545e3b65f64d336262f3c56c1695c8917e3306719012a2ae2b",
+      "source_sha256": "b64a554752cf785ef4322c0a15bf05bdca97306762399836d533312f8b005a76",
       "supports": []
     },
     {
@@ -6730,7 +6731,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedStationAdmissionPostgresIntegrationTest.java",
-      "source_sha256": "80afe396f9031094e3b438fc01e514ed78d63c49f49debb25e5ffcb4f9ee9cde",
+      "source_sha256": "11239c6a7d5602d8bb7135a63b8a4d2b64c0e9db2d99af8702d592ebefb13bed",
       "supports": []
     },
     {

@@ -28,8 +28,7 @@ import dz.sh.hidra.platform.persistence.ProtectedTransactionExecutor;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /** No REST endpoint, implicit permission, cross-module persistence write or user callback. */
 @Service
@@ -57,8 +56,12 @@ public class ProtectedStationGraphOperationService implements ProtectedStationGr
             c.bindingId(),c.sessionId(),c.userId(),c.companyPartyId(),c.partyGeneration(),
             c.facilityGeneration(),c.sampledAt(),c.validUntil(),c.backendPid(),c.transactionId());
     }
-    @Override @Transactional(propagation=Propagation.NEVER)
+    @Override
     public Result execute(Command cmd){
+        // Reject an ambient transaction without opening an empty synchronization scope.
+        // Preparation may use JDBC; it must finish and release its resources before
+        // the executor starts the sole protected physical transaction.
+        if(TransactionSynchronizationManager.isActualTransactionActive())throw invalid();
         Objects.requireNonNull(cmd);
         Operation op=operation(cmd.kind()); // TRANSFER is unsupported before disclosing existence.
         if(cmd.kind()==Kind.AUTHOR && (cmd.authoredRevision()==null || cmd.revisionId()==null))throw invalid();

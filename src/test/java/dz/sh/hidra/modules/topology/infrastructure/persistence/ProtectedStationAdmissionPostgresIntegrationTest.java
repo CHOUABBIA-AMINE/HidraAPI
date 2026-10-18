@@ -128,6 +128,9 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
                             "log_error_verbosity=terse",
                             "-c",
                             "track_commit_timestamp=on",
+                            // This private disposable database tests explicit writers, not autovacuum races.
+                            "-c",
+                            "autovacuum=off",
                             "-c",
                             "log_min_error_statement=panic",
                             "-c",
@@ -210,6 +213,7 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
 
     @BeforeEach
     void initialize() {
+        assertThat(jdbc.queryForObject("SHOW autovacuum",String.class)).isEqualTo("off");
         SecurityContextHolder.clearContext();
         cleanEvidence();
         flyway.validate();

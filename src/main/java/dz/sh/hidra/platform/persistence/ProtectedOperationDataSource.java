@@ -424,7 +424,7 @@ public final class ProtectedOperationDataSource extends DelegatingDataSource
                             if (method.getName().equals("getConnection")) return proxy;
                             if (current != null && method.getName().equals("unwrap"))
                                 throw current.reject("raw metadata unwrap");
-                            sql(current, null);
+                            sql(current, null, false);
                             Object v = call(metadata, method, values);
                             if (current != null && v instanceof ResultSet)
                                 throw current.reject("metadata cursor unsupported");

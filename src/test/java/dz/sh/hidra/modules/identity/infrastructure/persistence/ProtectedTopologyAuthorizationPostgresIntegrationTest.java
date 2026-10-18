@@ -205,6 +205,11 @@ public class ProtectedTopologyAuthorizationPostgresIntegrationTest {
         tx().executeWithoutResult(
                         s -> {
                             c3SelectRestrictedRole();
+                            // The guard may insert a sentinel, but must not require row disclosure.
+                            assertThat(jdbc.queryForObject(
+                                    "SELECT has_table_privilege(current_user,?,'INSERT') AND NOT "
+                                            + "has_column_privilege(current_user,?,'id','SELECT')",
+                                    Boolean.class, receipt(), receipt())).isTrue();
                             paired.contribute(p, request());
                         });
         cleanEvidence();
@@ -287,7 +292,7 @@ public class ProtectedTopologyAuthorizationPostgresIntegrationTest {
                                         + " made AS (INSERT INTO "
                                             + receipt()
                                             + " SELECT ? FROM observed WHERE t>=? AND t<? RETURNING"
-                                            + " id) SELECT count(*) FROM made",
+                                            + " 1) SELECT count(*) FROM made",
                                     Integer.class,
                                     receipts.incrementAndGet(),
                                     Timestamp.from(c.sampledAt()),

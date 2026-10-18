@@ -6684,7 +6684,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedStationAdmissionPostgresIntegrationTest.java",
-      "source_sha256": "fdc42053f1db6ee1f761f1ea37eb1d0c6fa6e7979a2366feaeb43c768e551bf5",
+      "source_sha256": "fad8c6d51cbebccd0e2a0fba7bc6e749beb6b8dc53ad14a489b3d1cfb176b28b",
       "supports": []
     },
     {
@@ -7562,6 +7562,7 @@
         "ordinaryProtectedCallbacksRetainExistingBehavior",
         "previouslyPreparedDmlStillPoisonsWhenExecutedAfterAdmission",
         "readAdmissionRetainsFinalGuardAndCommitRules",
+        "readOnlyCteQueriesDoNotAdmitWritableCtes",
         "unusedStatementPreparationDoesNotCountAsExecutedUserSql"
       ],
       "class": "dz.sh.hidra.platform.persistence.ProtectedAdmissionLifecycleTest",
@@ -7570,7 +7571,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/persistence/ProtectedAdmissionLifecycleTest.java",
-      "source_sha256": "9913ee7b4bd36b4477501d980baf4fbffc930f14e60bc843860fbc05e3635cb3",
+      "source_sha256": "7113e61372cd7bee98fc8541229ab0308282da19a9d552c6d8a5485806a0c55d",
       "supports": []
     },
     {

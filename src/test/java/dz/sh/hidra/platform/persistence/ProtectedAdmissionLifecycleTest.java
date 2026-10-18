@@ -230,4 +230,14 @@ class ProtectedAdmissionLifecycleTest {
         },()->{},this::guard));
         assertThat(commits).hasValue(0);assertThat(rollbacks).hasValue(1);
     }
+    @Test void readOnlyCteQueriesDoNotAdmitWritableCtes() {
+        assertThat(ProtectedOperationDataSource.admissionSql("WITH x AS (SELECT 1) SELECT * FROM x")).isTrue();
+        for(String sql:List.of("WITH x AS (DELETE FROM t RETURNING 1) SELECT * FROM x",
+            "WITH x AS (SELECT 1) INSERT INTO t SELECT * FROM x",
+            "WITH x AS (UPDATE t SET a=1 RETURNING a) SELECT * FROM x",
+            "WITH x AS (SELECT 1) SELECT * INTO t FROM x"))
+            assertThat(ProtectedOperationDataSource.admissionSql(sql)).isFalse();
+        assertThat(run(()->{executor.beginAdmission();assertThat(jdbc.queryForObject("WITH x AS (SELECT 'ok' AS value) SELECT value FROM x",String.class)).isEqualTo("ok");executor.sealAdmission();return "ok";},()->{},this::guard)).isEqualTo("ok");
+        assertThat(commits).hasValue(1);
+    }
 }

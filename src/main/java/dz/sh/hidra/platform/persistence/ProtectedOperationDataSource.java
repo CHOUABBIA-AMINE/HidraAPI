@@ -129,7 +129,7 @@ public final class ProtectedOperationDataSource extends DelegatingDataSource
     static boolean admissionSql(String sql) {
         if(sql==null) return false;
         String first=firstSqlWord(sql);
-        if(!first.equals("SELECT") && !first.equals("LOCK")) return false;
+        if(!first.equals("SELECT") && !first.equals("WITH") && !first.equals("LOCK")) return false;
         // Inspect code tokens, never text inside quoted data or identifiers.
         StringBuilder code=new StringBuilder();
         for(int i=0;i<sql.length();) {
@@ -150,7 +150,7 @@ public final class ProtectedOperationDataSource extends DelegatingDataSource
             } else {code.append(c);i++;}
         }
         String tokens=code.toString().toUpperCase(Locale.ROOT);
-        return !java.util.regex.Pattern.compile("\\b(INTO|INSERT|UPDATE|DELETE|MERGE|CALL|DO|COPY|WITH|SET_CONFIG|PG_ADVISORY_LOCK)\\b").matcher(tokens).find()
+        return !java.util.regex.Pattern.compile("\\b(INTO|INSERT|UPDATE|DELETE|MERGE|CALL|DO|COPY|SET_CONFIG|PG_ADVISORY_LOCK)\\b").matcher(tokens).find()
             && !tokens.contains("$") && !tokens.contains(";");
     }
 
@@ -484,7 +484,7 @@ public final class ProtectedOperationDataSource extends DelegatingDataSource
                 String text =
                         args != null && args.length > 0 && args[0] instanceof String t ? t : sql;
                 connection.sql(s, text, true);
-                if(s!=null && s.admission && firstSqlWord(text).equals("SELECT") && !name.equals("executeQuery"))
+                if(s!=null && s.admission && Set.of("SELECT","WITH").contains(firstSqlWord(text)) && !name.equals("executeQuery"))
                     throw s.reject("admission SELECT requires executeQuery");
                 if (guard) {
                     if (!name.equals("executeQuery"))

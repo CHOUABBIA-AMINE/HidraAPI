@@ -86,6 +86,7 @@ import javax.crypto.spec.SecretKeySpec;
             "hidra.platform.security.jwt.audience=hidra-api"
         })
 @ActiveProfiles("test")
+@DirtiesContext(classMode=DirtiesContext.ClassMode.AFTER_CLASS)
 @org.springframework.context.annotation.Import(ProtectedStationAdmissionPostgresIntegrationTest.Config.class)
 public class ProtectedStationAdmissionPostgresIntegrationTest {
     @org.springframework.boot.test.context.TestConfiguration(proxyBeanMethods=false)
@@ -103,6 +104,8 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
         }
     }
     @Autowired dz.sh.hidra.modules.topology.application.service.ProtectedStationAdmissionCoordinator coordinator;
+    @Autowired dz.sh.hidra.modules.party.application.contract.topology.TopologyProtectedPartyEligibilityContract partyOwner;
+    @Autowired dz.sh.hidra.modules.topology.application.contract.station.StationProtectedFacilityOwnershipContract facilityOwner;
     @MockitoSpyBean dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcIdentityTemporalEventCollector collector;
 
     private static final String KEY = "synthetic-completion-test-key-32-bytes-only";
@@ -233,6 +236,19 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
         cleanEvidence();
         clearInvocations(readerTarget(), identityTarget());
         owners();
+        // Exercise genuine configured I/J paths before the executor's strict measured attempt.
+        for(String type:List.of("LOCAL","OIDC")) {
+            cleanEvidence();var warm=fixture(type);both(warm,"author");var prepared=originalSource(warm);
+            tx().executeWithoutResult(status->{
+                var identityAdmission=paired.acquire(prepared,request());
+                var partyAdmission=partyOwner.acquire(COMPANY);var facilityAdmission=facilityOwner.acquire(FACILITY);
+                assertThat(paired.contribute(identityAdmission).combinedDecision()).isEqualTo(Decision.PERMIT);
+                assertThat(partyOwner.read(partyAdmission).partyId()).isEqualTo(COMPANY);
+                assertThat(facilityOwner.read(facilityAdmission).ownerPartyId()).isEqualTo(COMPANY);
+                paired.requireCurrent(identityAdmission);
+            });
+        }
+        cleanEvidence();clearInvocations(readerTarget(),identityTarget());
     }
 
     @AfterEach
@@ -907,15 +923,15 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
         doAnswer(i->{
             samples.incrementAndGet();
             @SuppressWarnings("unchecked")
-            var prefix=(List<String>)ReflectionTestUtils.getField(org.springframework.test.util.AopTestUtils.getUltimateTargetObject(fence),"RELATIONS");
+            var prefix=(List<String>)ReflectionTestUtils.getField(JdbcIdentityAuthorityFence.class,"RELATIONS");
             assertThat(prefix).hasSize(22);
-            for(String relation:prefix)
-                assertThat(jdbc.queryForObject("SELECT EXISTS(SELECT 1 FROM pg_catalog.pg_locks WHERE pid=pg_catalog.pg_backend_pid() AND relation=?::regclass AND mode='ShareRowExclusiveLock' AND granted)",Boolean.class,relation)).isTrue();
-            assertThat(jdbc.queryForObject("SELECT EXISTS(SELECT 1 FROM pg_catalog.pg_locks WHERE pid=pg_catalog.pg_backend_pid() AND relation='public.hidra_identity_bound_source_claim_evidence'::regclass AND mode='ShareLock' AND granted)",Boolean.class)).isTrue();
-            for(String relation:List.of("hidra_party_party","hidra_topology_facility"))
-                assertThat(jdbc.queryForObject("SELECT EXISTS(SELECT 1 FROM pg_catalog.pg_locks WHERE pid=pg_catalog.pg_backend_pid() AND relation=('public.' || ?)::regclass AND mode='ShareRowExclusiveLock' AND granted)",Boolean.class,relation)).isTrue();
-            for(String relation:List.of("hidra_identity_external_mapping_generation","hidra_party_eligibility_generation","hidra_topology_facility_owner_generation"))
-                assertThat(jdbc.queryForObject("SELECT EXISTS(SELECT 1 FROM pg_catalog.pg_locks WHERE pid=pg_catalog.pg_backend_pid() AND relation=('public.' || ?)::regclass AND mode='AccessShareLock' AND granted)",Boolean.class,relation)).isTrue();
+            var held=new HashSet<String>();
+            jdbc.query("SELECT n.nspname||'.'||c.relname AS relation,l.mode FROM pg_catalog.pg_locks l JOIN pg_catalog.pg_class c ON c.oid=l.relation JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace WHERE l.pid=pg_catalog.pg_backend_pid() AND l.granted AND l.locktype='relation'",
+                (org.springframework.jdbc.core.RowCallbackHandler)row->held.add(row.getString(1)+":"+row.getString(2)));
+            for(String relation:prefix)assertThat(held).contains(relation+":ShareRowExclusiveLock");
+            assertThat(held).contains("public.hidra_identity_bound_source_claim_evidence:ShareLock");
+            for(String relation:List.of("hidra_party_party","hidra_topology_facility"))assertThat(held).contains("public."+relation+":ShareRowExclusiveLock");
+            for(String relation:List.of("hidra_identity_external_mapping_generation","hidra_party_eligibility_generation","hidra_topology_facility_owner_generation"))assertThat(held).contains("public."+relation+":AccessShareLock");
             return i.callRealMethod();
         }).when(org.springframework.test.util.AopTestUtils.<dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcIdentityTemporalEventCollector>getUltimateTargetObject(collector)).collectFenced(anyString());
         var observed=new ArrayList<Instant>();
@@ -965,10 +981,18 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
 
     @Test void expiryBetweenAdmissionCollectionAndFinalGuardRollsBack() {
         var f=localPair();var pre=kp(f);String deny=grant(f,"author","DENY","FACILITY",FACILITY);
-        Instant start=dbNow().plusMillis(200);jdbc.update("UPDATE public.hidra_identity_user_permission_grant SET valid_from=?,valid_to=? WHERE id=?",Timestamp.from(start),Timestamp.from(start.plusSeconds(60)),deny);
+        Instant start=dbNow().plusMillis(350);jdbc.update("UPDATE public.hidra_identity_user_permission_grant SET valid_from=?,valid_to=? WHERE id=?",Timestamp.from(start),Timestamp.from(start.plusSeconds(60)),deny);
         var reachedGuard=new AtomicBoolean();
-        assertThatThrownBy(()->kr(pre,request(),()->{},()->jdbc.queryForObject("SELECT pg_catalog.pg_sleep(0.25)::text",String.class),()->reachedGuard.set(true))).isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class);
-        assertThat(reachedGuard).isTrue();
+        var captured=new AtomicReference<dz.sh.hidra.modules.topology.application.service.ProtectedStationAdmissionCoordinator.Contribution>();
+        assertThatThrownBy(()->executor.execute(()->{
+            var a=coordinator.acquire(pre,request());var result=coordinator.collect(a);captured.set(result);return result;
+        },em::flush,()->{
+            reachedGuard.set(true);var c=captured.get();
+            Boolean permitted=jdbc.queryForObject("WITH waited AS MATERIALIZED (SELECT pg_catalog.pg_sleep(GREATEST(0,EXTRACT(EPOCH FROM (?::timestamptz-pg_catalog.clock_timestamp()))))), observed AS MATERIALIZED (SELECT pg_catalog.clock_timestamp() AS t FROM waited) SELECT t>=? AND t<? FROM observed",
+                Boolean.class,Timestamp.from(c.validUntil()),Timestamp.from(c.sampledAt()),Timestamp.from(c.validUntil()));
+            assertThat(permitted).isFalse();throw new IllegalStateException("Actual common deadline reached");
+        })).isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class);
+        assertThat(reachedGuard).isTrue();assertThat(captured.get().validUntil()).isEqualTo(start);
     }
     @Test void forgedReplayedSuspendedAndChangedAuthenticationTicketsFail() {
         var f=localPair();var pre=kp(f);kr(pre,request(),()->{},()->{},()->{});assertThatThrownBy(()->kr(pre,request(),()->{},()->{},()->{})).isInstanceOf(RuntimeException.class);

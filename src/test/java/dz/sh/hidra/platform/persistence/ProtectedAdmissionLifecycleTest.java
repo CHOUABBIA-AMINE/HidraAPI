@@ -210,4 +210,24 @@ class ProtectedAdmissionLifecycleTest {
     @Test void readAdmissionRetainsFinalGuardAndCommitRules() {
         assertThat(run(()->{executor.beginAdmission();jdbc.queryForObject("SELECT 'ok'",String.class);executor.sealAdmission();executor.requireAdmission();return "ok";},()->{},this::guard)).isEqualTo("ok");assertThat(commits).hasValue(1);
     }
+    @Test void unusedStatementPreparationDoesNotCountAsExecutedUserSql() {
+        assertThat(run(()->{
+            try(var statement=providerConnection.get().prepareStatement("SELECT 'ok'")) {
+                executor.beginAdmission();
+                try(var result=statement.executeQuery()) {assertThat(result.next()).isTrue();}
+                executor.sealAdmission();executor.requireAdmission();return "ok";
+            } catch(SQLException failure) {throw new IllegalStateException(failure);}
+        },()->{},this::guard)).isEqualTo("ok");
+        assertThat(commits).hasValue(1);
+    }
+    @Test void previouslyPreparedDmlStillPoisonsWhenExecutedAfterAdmission() {
+        rejected(()->run(()->{
+            try(var statement=providerConnection.get().prepareStatement("UPDATE x SET a=1")) {
+                executor.beginAdmission();
+                try {statement.executeUpdate();}catch(SQLException expected) { /* Poison must survive a caught refusal. */ }
+                executor.sealAdmission();return "bad";
+            } catch(SQLException failure) {throw new IllegalStateException(failure);}
+        },()->{},this::guard));
+        assertThat(commits).hasValue(0);assertThat(rollbacks).hasValue(1);
+    }
 }

@@ -79,7 +79,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java",
-      "source_sha256": "8bc75b99fcd24b37226b545533a2ab93e90e9055fa2f70bf7577e7278f57d914",
+      "source_sha256": "ba706a7f49ea07332403a6a36e56fddfb5952a7cad4e0832ba6ba8ebe052f2cd",
       "supports": []
     },
     {
@@ -7560,7 +7560,9 @@
         "admissionRejectsDmlCteSelectIntoAndBatchBeforeDispatch",
         "caughtJavaAdmissionFailurePoisonsPhysicalAttempt",
         "ordinaryProtectedCallbacksRetainExistingBehavior",
-        "readAdmissionRetainsFinalGuardAndCommitRules"
+        "previouslyPreparedDmlStillPoisonsWhenExecutedAfterAdmission",
+        "readAdmissionRetainsFinalGuardAndCommitRules",
+        "unusedStatementPreparationDoesNotCountAsExecutedUserSql"
       ],
       "class": "dz.sh.hidra.platform.persistence.ProtectedAdmissionLifecycleTest",
       "dependency_reason": "Registered HAPI-583 JVM/source or simulated provider checks; timing unmeasured",
@@ -7568,7 +7570,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/persistence/ProtectedAdmissionLifecycleTest.java",
-      "source_sha256": "a0b387caf797dba371877464c0850d97ad24a5200a1390fcbe11a75427d8421a",
+      "source_sha256": "9913ee7b4bd36b4477501d980baf4fbffc930f14e60bc843860fbc05e3635cb3",
       "supports": []
     },
     {

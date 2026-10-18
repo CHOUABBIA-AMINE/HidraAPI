@@ -289,7 +289,7 @@ public final class ProtectedOperationDataSource extends DelegatingDataSource
             return bound;
         }
 
-        void sql(Scope s, String text) throws SQLException {
+        void sql(Scope s, String text, boolean execution) throws SQLException {
             if (s == null) return;
             if (s.poisoned) throw s.reject("previous error");
             if (s.phase != Phase.OPENING
@@ -325,7 +325,7 @@ public final class ProtectedOperationDataSource extends DelegatingDataSource
                     throw error;
                 }
             }
-            if(s.phase!=Phase.OPENING) {
+            if(execution && s.phase!=Phase.OPENING) {
                 s.userStatements++;
                 if(s.admission && (!admissionSql(text)
                     || (s.phase!=Phase.ADMITTING && firstSqlWord(text).equals("LOCK"))))
@@ -404,7 +404,7 @@ public final class ProtectedOperationDataSource extends DelegatingDataSource
             if (Set.of("prepareStatement", "prepareCall", "createStatement").contains(name)) {
                 String text =
                         args != null && args.length > 0 && args[0] instanceof String t ? t : null;
-                sql(s, text);
+                sql(s, text, false);
                 if (s != null && name.equals("prepareCall"))
                     throw s.reject("callable statement unsupported");
                 if (s != null && s.phase == Phase.GUARD && ++s.guardPreparations != 1)
@@ -483,7 +483,7 @@ public final class ProtectedOperationDataSource extends DelegatingDataSource
             if (execution) {
                 String text =
                         args != null && args.length > 0 && args[0] instanceof String t ? t : sql;
-                connection.sql(s, text);
+                connection.sql(s, text, true);
                 if(s!=null && s.admission && firstSqlWord(text).equals("SELECT") && !name.equals("executeQuery"))
                     throw s.reject("admission SELECT requires executeQuery");
                 if (guard) {

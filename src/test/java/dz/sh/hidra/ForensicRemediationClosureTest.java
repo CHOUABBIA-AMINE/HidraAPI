@@ -162,6 +162,15 @@ class ForensicRemediationClosureTest {
                 if (EXPORTED_PACKAGES.stream().anyMatch(imported::startsWith)) {
                     continue;
                 }
+                // HAPI-583: only the registered coordinator's three exact Identity exports.
+                if (source.fqcn().equals("dz.sh.hidra.modules.topology.application.service.ProtectedStationAdmissionCoordinator")
+                        && Set.of(
+                                "dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedAuthorizationContract",
+                                "dz.sh.hidra.modules.identity.application.contract.topology.TopologyScopedAccessContract.Request",
+                                "dz.sh.hidra.modules.identity.application.contract.topology.TopologyScopedAccessContract.Operation")
+                                .contains(imported)) {
+                    continue;
+                }
                 violations.add(source.fqcn() + " -> " + imported);
             }
         }

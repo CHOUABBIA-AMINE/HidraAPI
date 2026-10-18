@@ -875,7 +875,10 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
         },em::flush,()->{
             beforeGuard.run();var c=value.get();
             Boolean ok=jdbc.queryForObject("SELECT t>=? AND t<? AND pg_catalog.pg_backend_pid()=? AND pg_catalog.txid_current()=? FROM (SELECT pg_catalog.clock_timestamp() AS t) observed",Boolean.class,Timestamp.from(c.sampledAt()),Timestamp.from(c.validUntil()),c.backendPid(),c.transactionId());
-            if(!Boolean.TRUE.equals(ok))throw new IllegalStateException("Synthetic composition time/context guard rejected");
+            if(!Boolean.TRUE.equals(ok))throw new IllegalStateException("Synthetic composition time/context guard rejected: operation="
+                +c.operation()+", sampledAt="+c.sampledAt()+", validUntil="+c.validUntil()
+                +", expectedPid="+c.backendPid()+", expectedXid="+c.transactionId()
+                +", fixtureObservedAfterGuard="+Instant.now());
         });
     }
     private dz.sh.hidra.modules.topology.application.service.ProtectedStationAdmissionCoordinator.Contribution kr(Fixture f) {return kr(kp(f),request(),()->{},()->{},()->{});}
@@ -910,6 +913,29 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
     }
     private long partyGeneration() {return jdbc.queryForObject("SELECT generation FROM public.hidra_party_eligibility_generation WHERE party_id=?",Long.class,COMPANY);}
 
+    /** Positive matrix setup only: retain immutable evidence while old expiry fixtures settle. */
+    private void awaitStableTemporalCensus() {
+        String census=(String)ReflectionTestUtils.getField(
+            dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcIdentityTemporalEventCollector.class,
+            "TEMPORAL_SQL");
+        assertThat(census).isNotBlank();
+        long deadline=System.nanoTime()+TimeUnit.SECONDS.toNanos(15);
+        while(true) {
+            // Use the actual collector census, including retained native/source/session endpoints.
+            // One read outside the protected executor; never change or delete provenance or dates.
+            Timestamp edge=jdbc.queryForObject("WITH census AS MATERIALIZED ("+census+
+                "), observed AS MATERIALIZED (SELECT clock_timestamp() AS t) "
+                +"SELECT max(v.boundary) FROM census c CROSS JOIN observed o "
+                +"CROSS JOIN LATERAL (VALUES(c.from_at),(c.to_at)) v(boundary) "
+                +"WHERE v.boundary>o.t AND v.boundary<=o.t+interval '2 seconds'",Timestamp.class);
+            if(edge==null)return;
+            if(System.nanoTime()>=deadline)throw new AssertionError("Positive fixture has no stable temporal horizon; next boundary="+edge);
+            long pause=Math.max(1,Math.min(2000,java.time.Duration.between(dbNow(),edge.toInstant()).toMillis()+5));
+            try {Thread.sleep(pause);}
+            catch(InterruptedException interrupted){Thread.currentThread().interrupt();throw new AssertionError(interrupted);}
+        }
+    }
+
     @Test void realProducerPairsAndOwnerWitnessesUseOnePhysicalSample() {
         for(String type:List.of("LOCAL","OIDC","LDAP","ACTIVE_DIRECTORY")) {
             cleanEvidence();var f=fixture(type);for(String op:OPS)both(f,op);
@@ -927,7 +953,9 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
                 });
             }
             for(var operation:Operation.values()) {
-                var c=kr(kp(f),new Request(operation,COMPANY,FACILITY),()->{},()->{},()->{});
+                var prepared=kp(f);
+                awaitStableTemporalCensus(); // Setup only; the following protected attempt runs once.
+                var c=kr(prepared,new Request(operation,COMPANY,FACILITY),()->{},()->{},()->{});
                 assertThat(c.userId()).isEqualTo(f.user());assertThat(c.partyGeneration()).isPositive();assertThat(c.facilityGeneration()).isPositive();assertThat(c.sampledAt()).isBefore(c.validUntil());
             }
         }

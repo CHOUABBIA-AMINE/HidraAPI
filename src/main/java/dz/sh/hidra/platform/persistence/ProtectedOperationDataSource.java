@@ -39,6 +39,7 @@ public final class ProtectedOperationDataSource extends DelegatingDataSource
         WORKING,
         ADMITTING,
         OBSERVING,
+        PROVISIONAL,
         FLUSHING,
         GUARD,
         SEALED,
@@ -55,7 +56,9 @@ public final class ProtectedOperationDataSource extends DelegatingDataSource
         int guardExecutions, guardPreparations, openGuardResults;
         long started, xid;
         long userStatements;
-        boolean admission;
+        boolean admission, provisionalUsed;
+        Object provisionalPermit;
+        Set<String> provisionalStatements=Set.of();
         Object executor;
         int pid;
         String reason;
@@ -295,6 +298,7 @@ public final class ProtectedOperationDataSource extends DelegatingDataSource
             if (s.phase != Phase.OPENING
                     && s.phase != Phase.ADMITTING
                     && s.phase != Phase.OBSERVING
+                    && s.phase != Phase.PROVISIONAL
                     && s.phase != Phase.WORKING
                     && s.phase != Phase.FLUSHING
                     && s.phase != Phase.GUARD) throw s.reject("SQL after final guard");
@@ -327,9 +331,13 @@ public final class ProtectedOperationDataSource extends DelegatingDataSource
             }
             if(execution && s.phase!=Phase.OPENING) {
                 s.userStatements++;
-                if(s.admission && (!admissionSql(text)
-                    || (s.phase!=Phase.ADMITTING && firstSqlWord(text).equals("LOCK"))))
+                if (s.admission && s.phase==Phase.PROVISIONAL) {
+                    if(text==null || !s.provisionalStatements.contains(text))
+                        throw s.reject("statement not admitted in provisional phase");
+                } else if (s.admission && (!admissionSql(text)
+                        || (s.phase!=Phase.ADMITTING && firstSqlWord(text).equals("LOCK")))) {
                     throw s.reject("mutation or late lock during protected admission");
+                }
             }
             if (s.phase != Phase.OPENING
                     && text != null

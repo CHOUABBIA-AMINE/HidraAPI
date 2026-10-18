@@ -92,13 +92,57 @@ public class ProtectedStationAdmissionCoordinator {
             current(a);
             a.result=new Contribution(i.operation(),p.partyId(),f.facilityId(),p.generation(),f.generation(),
                 i.bindingId(),i.sessionId(),i.userId(),i.sampledAt(),i.validUntil(),i.backendPid(),i.transactionId());
-            executor.sealAdmission();
+            a.provisional=executor.sealAdmission();
             requireCurrent(a);
             return a.result;
         } catch(RuntimeException failure) {
             if(admission!=null) admission.active=false;
             executor.rejectAdmission();throw failure;
         }
+    }
+
+    private static final java.util.Set<String> STATION_GRAPH_DML_HASHES=java.util.Set.of(
+        "1da26cb5a0a20932ad80d47f5564fb3b2d55a9bfb9f47436105b1bdf8a86e98f",
+        "e3380cc4991b667311a47f4723d055feadf9bbb75c199b30518381d99cef0ec2",
+        "269e222f46502b45c777ec281f24148cb68a12d5f533e10c5d6a23280274c1fa",
+        "6208166015b18ca53fbb356823ec24217093bc1f241f25959a438bf86bbcd388");
+    private static String digest(String sql) {
+        try {
+            return java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256")
+                    .digest(sql.getBytes(java.nio.charset.StandardCharsets.UTF_8)));
+        } catch(java.security.NoSuchAlgorithmException absent) {
+            throw new IllegalStateException("SHA-256 unavailable",absent);
+        }
+    }
+    private static boolean reviewed(java.util.Set<String> sql) {
+        return sql!=null && sql.size()==STATION_GRAPH_DML_HASHES.size()
+            && sql.stream().allMatch(java.util.Objects::nonNull)
+            && sql.stream().map(ProtectedStationAdmissionCoordinator::digest)
+                    .collect(java.util.stream.Collectors.toUnmodifiableSet()).equals(STATION_GRAPH_DML_HASHES);
+    }
+    private static boolean compiledOperationCaller() {
+        return StackWalker.getInstance().walk(frames->frames.anyMatch(f->f.getClassName().equals(
+            "dz.sh.hidra.modules.topology.application.service.ProtectedStationGraphOperationService")));
+    }
+    /** Only the original K coordinator may open this issue-bound, single-use provisional transition. */
+    @Transactional(propagation=Propagation.MANDATORY)
+    public void beginProvisional(Admission admission,java.util.Set<String> exactStatements) {
+        try {
+            requireCurrent(admission);
+            if(!compiledOperationCaller() || !reviewed(exactStatements)
+                || !java.util.EnumSet.of(
+                    Operation.AUTHOR,Operation.PUBLISH,Operation.WITHDRAW,Operation.REACTIVATE)
+                    .contains(admission.request.operation())) throw invalid();
+            executor.beginProvisional(admission.provisional,exactStatements);
+        } catch(RuntimeException error){executor.rejectAdmission();throw error;}
+    }
+    @Transactional(propagation=Propagation.MANDATORY)
+    public void endProvisional(Admission admission) {
+        try {
+            if(current(admission).result==null || !compiledOperationCaller())throw invalid();
+            executor.endProvisional(admission.provisional);
+            requireCurrent(admission);
+        } catch(RuntimeException error){executor.rejectAdmission();throw error;}
     }
 
     @Transactional(propagation=Propagation.MANDATORY)
@@ -141,6 +185,7 @@ public class ProtectedStationAdmissionCoordinator {
         private final AtomicBoolean used=new AtomicBoolean();
         private volatile boolean active=true;
         private Contribution result;
+        private ProtectedTransactionExecutor.ProvisionalPermit provisional;
         private Admission(ProtectedStationAdmissionCoordinator owner,Request request,
             TopologyProtectedAuthorizationContract.Admission identity,TopologyProtectedPartyEligibilityContract.Admission party,
             StationProtectedFacilityOwnershipContract.Admission facility) {

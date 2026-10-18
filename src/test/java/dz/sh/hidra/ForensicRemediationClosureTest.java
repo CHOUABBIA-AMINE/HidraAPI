@@ -171,6 +171,14 @@ class ForensicRemediationClosureTest {
                                 .contains(imported)) {
                     continue;
                 }
+                // HAPI-584 permits only these two exact public Identity operation exports.
+                if (source.fqcn().equals("dz.sh.hidra.modules.topology.application.service.ProtectedStationGraphOperationService")
+                        && Set.of(
+                                "dz.sh.hidra.modules.identity.application.contract.topology.TopologyScopedAccessContract.Operation",
+                                "dz.sh.hidra.modules.identity.application.contract.topology.TopologyScopedAccessContract.Request")
+                                .contains(imported)) {
+                    continue;
+                }
                 violations.add(source.fqcn() + " -> " + imported);
             }
         }

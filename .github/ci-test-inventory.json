@@ -79,7 +79,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java",
-      "source_sha256": "ba706a7f49ea07332403a6a36e56fddfb5952a7cad4e0832ba6ba8ebe052f2cd",
+      "source_sha256": "300f675ef59bd2f5ee10113a4f41aabdd3e91d7c95eb465c1b06a7fa55c8d726",
       "supports": []
     },
     {
@@ -6362,6 +6362,26 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "acquiresHeadAndRevisionFencesBeforeCommonSample",
+        "materializesResultsOnlyAfterObservedPhysicalCommit",
+        "neverDisclosesCurrentHistoryOrCountsBeforeAuthority",
+        "poisonsCaughtMutationAndGuardFailures",
+        "rejectsStaleHeadOrConsumedTicketAndConflictingEpoch",
+        "rejectsTransferWithoutForgingFacilityOwnership",
+        "requiresActualOpaqueKAdmissionAndBothOwnerPermits"
+      ],
+      "class": "dz.sh.hidra.modules.topology.application.service.ProtectedStationGraphOperationServiceTest",
+      "dependency_reason": "HAPI-584 synthetic Java21 domain/application/boundary suite; CI pending",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/application/service/ProtectedStationGraphOperationServiceTest.java",
+      "source_sha256": "364a3a32759f0f84d67736537a5c47c01886484a6ba58d7317ec05cd90a24c76",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0.008,
       "cases": [
         "supportsOnlyRegisteredTopologyScopeTypes"
@@ -6476,6 +6496,22 @@
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/application/service/TopologySimulationScopeQueryServiceTest.java",
       "source_sha256": "9629155d8fd4b941e0279356fea7fe15b1eda8747c82600bdbffb50d91667b91",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "preservesWithdrawnHistoryAndMonotonicEpoch",
+        "rejectsMissingOrOverflowedEpochAndInvalidPublicationState",
+        "rejectsSelfOrStalePredecessorAndForgedProvenance"
+      ],
+      "class": "dz.sh.hidra.modules.topology.domain.model.StationGraphPublicationInvariantTest",
+      "dependency_reason": "HAPI-584 synthetic Java21 domain/application/boundary suite; CI pending",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/domain/model/StationGraphPublicationInvariantTest.java",
+      "source_sha256": "af71346b629b60f8422d7758bc082376ba63fb37f3251dd8f408902c5715c812",
       "supports": []
     },
     {
@@ -6685,6 +6721,48 @@
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedStationAdmissionPostgresIntegrationTest.java",
       "source_sha256": "b6a9d18feb78b6fbaed73571d45b005cd3542c07d5a864f633d69496d2ec9b39",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "allExactJdbcStatementsAndEventsAreParameterBound",
+        "noPublicCallerSuppliesAuthorizationScalarsOrClock",
+        "noPublicRestSurfaceOrChangedLegacyRevisionContract",
+        "onlyReviewedCoordinatorCanOpenBoundedProvisionalPhase",
+        "topologyOwnsHeadAndNoForeignBusinessAdapterImports"
+      ],
+      "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.ProtectedStationGraphBoundaryGuardrailTest",
+      "dependency_reason": "HAPI-584 synthetic Java21 domain/application/boundary suite; CI pending",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedStationGraphBoundaryGuardrailTest.java",
+      "source_sha256": "45a74fd0b61ccae99be8ace9a21272457840d49b3bc67d4c6441001b6be9f741",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "allProvisionalEffectsRollbackOnFinalGuardOrCommitFailure",
+        "fullFreshFlywaySchemaAndRevisionReplayRemainCompatible",
+        "historyAndCurrentEnforceCompanyFacilityVisibility",
+        "identityRevocationSourceExpiryAndOwnerTransferFailClosed",
+        "noSqlAfterSingleFinalGuardAndNoUncertainRetry",
+        "publishesFirstHeadAndSuccessorByPhysicalCas",
+        "realIdentityPartyFacilityGraphAndHeadUseSameSample",
+        "rejectsConcurrentSameExpectedEpochAndPredecessorAba",
+        "rejectsDirectSqlRoleEscapesTriggerTamperingAndEpochResets",
+        "withdrawAndReactivatePreserveImmutableHistory",
+        "writerFirstAndReaderFirstRespectAuthorityFenceOrder"
+      ],
+      "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.ProtectedStationGraphOperationPostgresIntegrationTest",
+      "dependency_reason": "HAPI-584 synthetic PostgreSQL schema/epoch test; I/Party/Facility integration remains an independent acceptance gate",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedStationGraphOperationPostgresIntegrationTest.java",
+      "source_sha256": "0152e00e9399b2799d1116a0ca7f43af4b393488a65eee82050cf69230ef66f2",
       "supports": []
     },
     {

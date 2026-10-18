@@ -156,11 +156,65 @@ public final class ProtectedTransactionExecutor {
         }
         s.admission=true;s.phase=ProtectedOperationDataSource.Phase.ADMITTING;
     }
-    public void sealAdmission() {
+    /** Opaque one-use technical permit; no business authority is inferred from this handle. */
+    public static final class ProvisionalPermit {
+        private final ProtectedTransactionExecutor issuer;
+        private final ProtectedOperationDataSource.Scope scope;
+        private boolean opened,consumed;
+        private ProvisionalPermit(ProtectedTransactionExecutor issuer,ProtectedOperationDataSource.Scope scope){
+            this.issuer=issuer;this.scope=scope;
+        }
+        @Override public String toString(){return "ProvisionalPermit[opaque]";}
+    }
+    public ProvisionalPermit sealAdmission() {
         var s=admissionScope();
         if(!s.admission || s.phase!=ProtectedOperationDataSource.Phase.ADMITTING) {
             s.reject("admission cannot be sealed here");s.healthy();
         }
+        s.phase=ProtectedOperationDataSource.Phase.OBSERVING;
+        // Only the genuine compiled owner K coordinator can receive an opaque mutation permit.
+        // Other callers can still seal read-only diagnostic admission (legacy contract).
+        if(!StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)
+                .getCallerClass().getName().equals(
+                    "dz.sh.hidra.modules.topology.application.service.ProtectedStationAdmissionCoordinator"))
+            return null;
+        var result=new ProvisionalPermit(this,s);
+        s.provisionalPermit=result;
+        return result;
+    }
+    /** Accept only exact, reviewed DML templates for one use of an issued owner ticket. */
+    public void beginProvisional(ProvisionalPermit permit,Set<String> exactStatements) {
+        var s=admissionScope();
+        if(!StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)
+                .getCallerClass().getName().equals(
+                    "dz.sh.hidra.modules.topology.application.service.ProtectedStationAdmissionCoordinator")
+          || permit==null || permit.issuer!=this || permit.scope!=s
+          || s.provisionalPermit!=permit || permit.opened || permit.consumed
+          || s.provisionalUsed || s.phase!=ProtectedOperationDataSource.Phase.OBSERVING
+          || exactStatements==null || exactStatements.isEmpty()) {
+            s.reject("invalid provisional request");s.healthy();
+        }
+        Set<String> allowed=Set.copyOf(exactStatements);
+        for(String sql:allowed) {
+            if(sql==null || sql.contains(";") || sql.contains("--") || sql.contains("/*")
+               || !(sql.startsWith("INSERT INTO public.hidra_topology_station_graph_")
+                 || sql.startsWith("UPDATE public.hidra_topology_station_graph_head "))) {
+                s.reject("provisional statement not reviewed");s.healthy();
+            }
+        }
+        s.provisionalStatements=allowed;s.phase=ProtectedOperationDataSource.Phase.PROVISIONAL;
+        permit.opened=true;
+    }
+    public void endProvisional(ProvisionalPermit permit) {
+        var s=admissionScope();
+        if(!StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)
+                .getCallerClass().getName().equals(
+                    "dz.sh.hidra.modules.topology.application.service.ProtectedStationAdmissionCoordinator")
+          || permit==null || permit.issuer!=this || permit.scope!=s || s.provisionalPermit!=permit
+          || !permit.opened || permit.consumed || s.phase!=ProtectedOperationDataSource.Phase.PROVISIONAL) {
+            s.reject("invalid provisional completion");s.healthy();
+        }
+        permit.consumed=true;s.provisionalUsed=true;s.provisionalStatements=Set.of();
         s.phase=ProtectedOperationDataSource.Phase.OBSERVING;
     }
     public void requireAdmission() {

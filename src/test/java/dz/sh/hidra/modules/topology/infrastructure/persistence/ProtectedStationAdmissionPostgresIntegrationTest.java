@@ -109,6 +109,12 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
     @Autowired dz.sh.hidra.modules.topology.application.port.in.ProtectedStationGraphOperationUseCase graphOperations;
     @MockitoSpyBean dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.JdbcStationGraphProtectedPublicationAdapter graphPublication;
 
+    // Mockito setup/verification must not enter the mandatory-transaction interceptor.
+    // Runtime operations still call graphPublication through its secured Spring proxy.
+    private dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.JdbcStationGraphProtectedPublicationAdapter graphTarget() {
+        return org.springframework.test.util.AopTestUtils.getUltimateTargetObject(graphPublication);
+    }
+
     @Autowired dz.sh.hidra.modules.party.application.contract.topology.TopologyProtectedPartyEligibilityContract partyOwner;
     @Autowired dz.sh.hidra.modules.topology.application.contract.station.StationProtectedFacilityOwnershipContract facilityOwner;
     @MockitoSpyBean dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcIdentityTemporalEventCollector collector;
@@ -217,6 +223,8 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
 
     @BeforeEach
     void initialize() {
+        assertThat(org.springframework.aop.support.AopUtils.isAopProxy(graphPublication)).isTrue();
+        assertThat(mockingDetails(graphTarget()).isSpy()).isTrue();
         assertThat(jdbc.queryForObject("SHOW autovacuum",String.class)).isEqualTo("off");
         SecurityContextHolder.clearContext();
         cleanEvidence();
@@ -1153,14 +1161,14 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
     }
 
     @Test void realPublicationRejectsUnauthorizedReadsBeforeHeadOrHistory() {
-        var actor=graphActor("LOCAL");cleanEvidence();clearInvocations(graphPublication);
+        var actor=graphActor("LOCAL");cleanEvidence();clearInvocations(graphTarget());
         for(var kind:List.of(READ_CURRENT,READ_HISTORY,LIST_HISTORY)) {
             assertThatThrownBy(()->graphRun(actor,kind,kind==READ_HISTORY?"unknown":null,null,null,null))
                 .isInstanceOf(RuntimeException.class);
         }
-        verify(graphPublication,never()).head(any());
-        verify(graphPublication,never()).history(any(),anyInt());
-        verify(graphPublication,never()).revision(any(),anyString());
+        verify(graphTarget(),never()).head(any());
+        verify(graphTarget(),never()).history(any(),anyInt());
+        verify(graphTarget(),never()).revision(any(),anyString());
     }
     @Test void realPublicationRefusesDirectPortAdmissionAndSqlRoleEscapes() throws Exception {
         assertThatThrownBy(()->tx().execute(status->graphPublication.acquire(FACILITY)))
@@ -1186,11 +1194,11 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
         var actor=graphActor("LOCAL");String revision="rollback-"+id();
         long before=graphRows("operation_event",null);
         doAnswer(i->{i.getArguments()[2]=i.getArgument(1);return i.callRealMethod();})
-            .when(graphPublication).finalGuard(any(),any(),any(),anyString(),anyLong(),anyLong(),any(),any());
+            .when(graphTarget()).finalGuard(any(),any(),any(),anyString(),anyLong(),anyLong(),any(),any());
         assertThatThrownBy(()->graphRun(actor,AUTHOR,revision,null,null,graphRevision(revision,null)))
             .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class);
-        verify(graphPublication).append(any(),any(),any());
-        verify(graphPublication).finalGuard(any(),any(),any(),anyString(),anyLong(),anyLong(),any(),any());
+        verify(graphTarget()).append(any(),any(),any());
+        verify(graphTarget()).finalGuard(any(),any(),any(),anyString(),anyLong(),anyLong(),any(),any());
         assertThat(graphRows("revision",revision)).isZero();
         assertThat(graphRows("operation_event",null)).isEqualTo(before);
     }
@@ -1200,7 +1208,7 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
             try {jdbc.update("DELETE FROM public.hidra_topology_station_graph_head WHERE facility_id=?",FACILITY);}
             catch(RuntimeException expected){/* The real executor must remember this denial. */}
             return result;
-        }).when(graphPublication).append(any(),any(),any());
+        }).when(graphTarget()).append(any(),any(),any());
         assertThatThrownBy(()->graphRun(actor,AUTHOR,revision,null,null,graphRevision(revision,null)))
             .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class);
         assertThat(graphRows("revision",revision)).isZero();
@@ -1212,7 +1220,7 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
             TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization(){
                 @Override public void afterCommit(){committed.set(true);}
             });return result;
-        }).when(graphPublication).acquire(anyString());
+        }).when(graphTarget()).acquire(anyString());
         String revision="committed-"+id();
         var result=graphRun(actor,AUTHOR,revision,null,null,graphRevision(revision,null));
         assertThat(committed).isTrue();assertThat(result.observedCommit()).isTrue();assertThat(acquired).hasValue(1);
@@ -1221,7 +1229,7 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
             TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization(){
                 @Override public void afterCommit(){throw new IllegalStateException("Synthetic lost acknowledgement");}
             });return value;
-        }).when(graphPublication).acquire(anyString());
+        }).when(graphTarget()).acquire(anyString());
         String uncertain="uncertain-"+id();
         assertThatThrownBy(()->graphRun(actor,AUTHOR,uncertain,null,null,graphRevision(uncertain,null)))
             .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class)
@@ -1273,11 +1281,11 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
             try {jdbc.queryForObject("SELECT 1",Integer.class);}
             catch(RuntimeException expected){/* Poisoning must survive a caught post-guard denial. */}
             return result;
-        }).when(graphPublication).finalGuard(any(),any(),any(),anyString(),anyLong(),anyLong(),any(),any());
+        }).when(graphTarget()).finalGuard(any(),any(),any(),anyString(),anyLong(),anyLong(),any(),any());
         assertThatThrownBy(()->graphRun(actor,AUTHOR,revision,null,null,graphRevision(revision,null)))
             .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class);
-        verify(graphPublication).append(any(),any(),any());
-        verify(graphPublication).finalGuard(any(),any(),any(),anyString(),anyLong(),anyLong(),any(),any());
+        verify(graphTarget()).append(any(),any(),any());
+        verify(graphTarget()).finalGuard(any(),any(),any(),anyString(),anyLong(),anyLong(),any(),any());
         assertThat(graphRows("revision",revision)).isZero();assertThat(graphRows("operation_event",null)).isEqualTo(before);
     }
 

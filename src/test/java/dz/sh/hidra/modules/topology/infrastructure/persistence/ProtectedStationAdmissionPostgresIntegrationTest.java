@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedStationAdmissionPostgresIntegrationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-18
+ * @UpdatedOn   : 2026-10-19
  *
  * @Type        : Class
  * @Layer       : Topology Test
@@ -39,6 +39,9 @@ import dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcProte
 import dz.sh.hidra.modules.identity.infrastructure.security.*;
 import dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipant.*;
 import dz.sh.hidra.platform.persistence.ProtectedTransactionExecutor;
+import dz.sh.hidra.modules.topology.application.port.in.ProtectedStationGraphOperationUseCase;
+import dz.sh.hidra.modules.topology.application.service.ProtectedStationAdmissionCoordinator;
+import dz.sh.hidra.modules.topology.domain.model.StationInternalGraphRevision;
 
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.*;
@@ -105,7 +108,7 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
             };
         }
     }
-    @Autowired dz.sh.hidra.modules.topology.application.service.ProtectedStationAdmissionCoordinator coordinator;
+    @MockitoSpyBean dz.sh.hidra.modules.topology.application.service.ProtectedStationAdmissionCoordinator coordinator;
     @Autowired dz.sh.hidra.modules.topology.application.port.in.ProtectedStationGraphOperationUseCase graphOperations;
     @MockitoSpyBean dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.JdbcStationGraphProtectedPublicationAdapter graphPublication;
 
@@ -241,6 +244,9 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
 
     private String schema;
     private final AtomicInteger receipts = new AtomicInteger();
+    // Keep immutable issuance history intact without growing it merely to repeat JVM warmup.
+    // Every test still performs its own genuine paired warmup and all asserted operations below.
+    private static boolean ownerPathsWarmed;
 
     @BeforeEach
     void initialize() {
@@ -290,8 +296,9 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
         cleanEvidence();
         clearInvocations(readerTarget(), identityTarget());
         owners();
-        // Exercise genuine configured I/J paths before the executor's strict measured attempt.
-        for(String type:List.of("LOCAL","OIDC")) {
+        // Warm the additional owner/provider paths once in this serial class, outside measured work.
+        // Repeating setup per method unnecessarily consumes the real1024-row census.
+        if(!ownerPathsWarmed)for(String type:List.of("LOCAL","OIDC")) {
             cleanEvidence();var warm=fixture(type);both(warm,"author");var prepared=originalSource(warm);
             tx().executeWithoutResult(status->{
                 var identityAdmission=paired.acquire(prepared,request());
@@ -302,6 +309,7 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
                 paired.requireCurrent(identityAdmission);
             });
         }
+        ownerPathsWarmed=true;
         cleanEvidence();clearInvocations(readerTarget(),identityTarget());
     }
 
@@ -1128,17 +1136,20 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
         assertThatThrownBy(()->coordinator.requireCurrent(a.get())).isInstanceOf(RuntimeException.class);assertThat(blocked("UPDATE public.hidra_party_party SET status=status WHERE id='"+COMPANY+"'")).isEqualTo("WROTE");
     }
     private dz.sh.hidra.modules.topology.domain.model.StationInternalGraphRevision graphRevision(String revision,String predecessor) {
-        var g=new dz.sh.hidra.modules.topology.domain.model.StationInternalGraph(FACILITY,revision,
+        return graphRevisionFor(FACILITY,revision,predecessor);
+    }
+    private StationInternalGraphRevision graphRevisionFor(String facility,String revision,String predecessor) {
+        var g=new dz.sh.hidra.modules.topology.domain.model.StationInternalGraph(facility,revision,
             dz.sh.hidra.modules.topology.domain.model.StationInternalGraph.Status.COMPLETE,
             List.of(new dz.sh.hidra.modules.topology.domain.model.StationInternalGraph.Header("s",
                         dz.sh.hidra.modules.topology.domain.model.StationInternalGraph.HeaderKind.SUCTION,"sp"),
                     new dz.sh.hidra.modules.topology.domain.model.StationInternalGraph.Header("d",
                         dz.sh.hidra.modules.topology.domain.model.StationInternalGraph.HeaderKind.DISCHARGE,"dp")),
-            List.of(new dz.sh.hidra.modules.topology.domain.model.StationInternalGraph.Unit("u",FACILITY,"in","out")),
+            List.of(new dz.sh.hidra.modules.topology.domain.model.StationInternalGraph.Unit("u",facility,"in","out")),
             List.of(new dz.sh.hidra.modules.topology.domain.model.StationInternalGraph.Edge("a","sp","in"),
                     new dz.sh.hidra.modules.topology.domain.model.StationInternalGraph.Edge("b","out","dp")));
         var at=Instant.parse("2026-10-18T00:00:00Z");
-        return new dz.sh.hidra.modules.topology.domain.model.StationInternalGraphRevision(FACILITY,revision,g,
+        return new dz.sh.hidra.modules.topology.domain.model.StationInternalGraphRevision(facility,revision,g,
             dz.sh.hidra.modules.topology.domain.model.StationInternalGraphRevision.SourceClassification.SYNTHETIC,
             at,at,null,"synthetic-source",predecessor,
             dz.sh.hidra.modules.topology.domain.model.StationInternalGraphRevision.Qualification.STRUCTURALLY_QUALIFIED);
@@ -1530,6 +1541,414 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
         verify(graphTarget(),never()).historicalRevision(any(),anyString());
         verify(graphTarget(),never()).revision(any(),anyString());
         verify(graphTarget(),never()).history(any(),anyInt());
+    }
+
+    // M qualification observes/delegates the genuine production chain. No permit or clock is mocked.
+    private ProtectedStationAdmissionCoordinator coordinatorTarget() {
+        return org.springframework.test.util.AopTestUtils.getUltimateTargetObject(coordinator);
+    }
+
+    private ProtectedStationGraphOperationUseCase.Command command(
+            ProtectedStationGraphOperationUseCase.Kind kind,String company,String facility,
+            String revision,Long epoch,String prior,StationInternalGraphRevision authored) {
+        return new ProtectedStationGraphOperationUseCase.Command(
+                kind,company,facility,revision,epoch,prior,null,authored,100);
+    }
+
+    private ProtectedStationGraphOperationUseCase.Result scopedRun(
+            Fixture actor,ProtectedStationGraphOperationUseCase.Command command) {
+        originalSource(actor);awaitStableTemporalCensus();return graphOperations.execute(command);
+    }
+
+    private void qualificationOwner(String company,String facility) {
+        jdbc.update("INSERT INTO public.hidra_party_party(id,code,party_type_id,legal_name,country_code,status,created_at,updated_at) VALUES(?,?,'k-party-type','Synthetic M','DZ','ACTIVE',now(),now()) ON CONFLICT DO NOTHING",company,company);
+        jdbc.update("INSERT INTO public.hidra_topology_facility(id,code,facility_type_id,facility_kind,owner_party_id,status,created_at,updated_at) VALUES(?,?,'k-facility-type','STATION',?,'ACTIVE',now(),now())",facility,facility,company);
+    }
+
+    private List<String> qualificationGrants(Fixture actor,String company,String facility) {
+        var ids=new ArrayList<String>();
+        for(String op:OPS) {
+            ids.add(grant(actor,op,"GRANT","CUSTOM","topology-company:"+company));
+            ids.add(grant(actor,op,"GRANT","FACILITY",facility));
+        }
+        return ids;
+    }
+
+    private record PublicationImage(List<Map<String,Object>> heads,
+            List<Map<String,Object>> revisions,List<Map<String,Object>> events) {}
+
+    /** Explicit administrator connection, outside the protected call, including rollback verification. */
+    private PublicationImage publicationImage(String facility) {
+        assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isFalse();
+        return new PublicationImage(
+            jdbc.queryForList("SELECT * FROM public.hidra_topology_station_graph_head WHERE facility_id=? ORDER BY facility_id",facility),
+            jdbc.queryForList("SELECT revision_id,sha256,encode(canonical_payload,'hex') AS bytes FROM public.hidra_topology_station_graph_revision WHERE facility_id=? ORDER BY revision_id",facility),
+            jdbc.queryForList("SELECT * FROM public.hidra_topology_station_graph_operation_event WHERE facility_id=? ORDER BY event_id",facility));
+    }
+
+    private static Throwable rootCause(Throwable error) {
+        while(error.getCause()!=null)error=error.getCause();return error;
+    }
+
+    /** Accept only the actual bound-identity denial or owner/paired-permission rejection. */
+    private void authorityDenied(Runnable attempt) {
+        assertThatThrownBy(attempt::run).satisfies(error->{
+            assertThat(error).isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class);
+            assertThat(((ProtectedTransactionExecutor.ExecutionFailure)error).outcome())
+                .isEqualTo(ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT);
+            Throwable root=rootCause(error);
+            if(root instanceof org.springframework.security.access.AccessDeniedException)
+                assertThat(root.getMessage()).isEqualTo("Bound authentication denied.");
+            else assertThat(root).isInstanceOf(IllegalStateException.class)
+                .hasMessage("Protected station admission unavailable");
+        });
+    }
+
+    private void noProtectedReadsOrMutations() {
+        verify(graphTarget(),never()).head(any());
+        verify(graphTarget(),never()).revision(any(),anyString());
+        verify(graphTarget(),never()).historicalRevision(any(),anyString());
+        verify(graphTarget(),never()).history(any(),anyInt());
+        verify(graphTarget(),never()).append(any(),any(),any());
+        verify(graphTarget(),never()).change(any(),any(),any(),any(),any());
+    }
+
+    private static final class QualificationTrace {
+        long started,work,owners,locks,collected,head,appended,guard,guardReturned,completed,returned;
+        int completion=-1,pid;long xid;
+        Long expectedEpoch,observedEpoch;
+        Instant sampledAt,validUntil;
+        ProtectedStationAdmissionCoordinator.Admission admission;
+        ProtectedStationGraphOperationUseCase.Result result;
+        RuntimeException failure;
+        Runnable afterHead=()->{},afterAppend=()->{},beforeGuard=()->{};
+    }
+
+    private final ThreadLocal<QualificationTrace> qualificationTrace=new ThreadLocal<>();
+
+    private void qualificationProbe() {
+        doAnswer(i->{
+            var t=qualificationTrace.get();
+            if(t!=null) {
+                t.work=System.nanoTime();
+                TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization(){
+                    @Override public void afterCompletion(int status) {
+                        t.completed=System.nanoTime();t.completion=status;
+                    }
+                });
+            }
+            var result=i.callRealMethod();
+            if(t!=null){t.owners=System.nanoTime();t.admission=(ProtectedStationAdmissionCoordinator.Admission)result;}
+            return result;
+        }).when(coordinatorTarget()).acquire(any(),any());
+        doAnswer(i->{var result=i.callRealMethod();var t=qualificationTrace.get();
+            if(t!=null)t.locks=System.nanoTime();return result;
+        }).when(graphTarget()).acquire(anyString());
+        doAnswer(i->{var result=(ProtectedStationAdmissionCoordinator.Contribution)i.callRealMethod();
+            var t=qualificationTrace.get();
+            if(t!=null){t.collected=System.nanoTime();t.sampledAt=result.sampledAt();t.validUntil=result.validUntil();t.pid=result.backendPid();t.xid=result.transactionId();}
+            return result;
+        }).when(coordinatorTarget()).collect(any());
+        doAnswer(i->{var result=i.callRealMethod();var t=qualificationTrace.get();
+            if(t!=null){
+                @SuppressWarnings("unchecked")
+                var observed=(Optional<dz.sh.hidra.modules.topology.domain.model.StationGraphPublicationHead>)result;
+                t.observedEpoch=observed.map(dz.sh.hidra.modules.topology.domain.model.StationGraphPublicationHead::epoch).orElse(0L);
+                t.head=System.nanoTime();t.afterHead.run();
+            }return result;
+        }).when(graphTarget()).head(any());
+        doAnswer(i->{var result=i.callRealMethod();var t=qualificationTrace.get();
+            if(t!=null){t.appended=System.nanoTime();t.afterAppend.run();}return result;
+        }).when(graphTarget()).append(any(),any(),any());
+        doAnswer(i->{var t=qualificationTrace.get();
+            if(t!=null){t.guard=System.nanoTime();t.beforeGuard.run();}
+            var result=i.callRealMethod();if(t!=null)t.guardReturned=System.nanoTime();return result;
+        }).when(graphTarget()).finalGuard(any(),any(),any(),anyString(),anyLong(),anyLong(),any(),any(),anyList());
+    }
+
+    private QualificationTrace qualifiedAttempt(ProtectedStationGraphOperationUseCase.Command command,QualificationTrace t) {
+        t.expectedEpoch=command.expectedEpoch();t.started=System.nanoTime();qualificationTrace.set(t);
+        try {t.result=graphOperations.execute(command);}
+        catch(RuntimeException failure){t.failure=failure;}
+        finally {t.returned=System.nanoTime();qualificationTrace.remove();}
+        return t;
+    }
+
+    private void observedCompletion(QualificationTrace t,boolean committed) {
+        assertThat(t.work).isPositive();assertThat(t.completed).isPositive();
+        assertThat(t.completed).isLessThanOrEqualTo(t.returned);
+        assertThat(t.completion).isEqualTo(committed?TransactionSynchronization.STATUS_COMMITTED:TransactionSynchronization.STATUS_ROLLED_BACK);
+        if(committed) {
+            assertThat(t.failure).isNull();assertThat(t.result.observedCommit()).isTrue();
+            assertThat(t.pid).isPositive();assertThat(t.xid).isPositive();
+            assertThat(t.guardReturned).isPositive();
+            assertThat(t.guardReturned-t.work).isLessThan(500_000_000L);
+        } else {
+            assertThat(t.result).isNull();assertThat(t.failure).isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class);
+            assertThat(((ProtectedTransactionExecutor.ExecutionFailure)t.failure).outcome())
+                .isEqualTo(ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT);
+        }
+    }
+
+    @Test void twoCompanyProtectedReadsAndMutationsRemainOpaque() {
+        var actor=graphActor("LOCAL");String companyB="m-company-"+id(),facilityB="m-facility-"+id();
+        qualificationOwner(companyB,facilityB);
+        var a=privilegedPublication(actor);
+        var bGrants=qualificationGrants(actor,companyB,facilityB);
+        String revision="m-isolation-"+id();
+        scopedRun(actor,command(AUTHOR,companyB,facilityB,revision,null,null,graphRevisionFor(facilityB,revision,null)));
+        scopedRun(actor,command(PUBLISH,companyB,facilityB,revision,0L,null,null));
+        assertThat(scopedRun(actor,command(READ_CURRENT,companyB,facilityB,null,null,null,null)).revision().revisionId()).isEqualTo(revision);
+        for(String grant:bGrants)jdbc.update("DELETE FROM public.hidra_identity_user_permission_grant WHERE id=?",grant);
+        var beforeA=publicationImage(FACILITY);var beforeB=publicationImage(facilityB);
+        clearInvocations(graphTarget());
+        originalSource(actor);awaitStableTemporalCensus();
+        for(var pair:List.of(List.of(companyB,facilityB),List.of(COMPANY,facilityB),List.of(companyB,FACILITY))) {
+            for(var kind:List.of(READ_CURRENT,READ_HISTORY,LIST_HISTORY,AUTHOR,PUBLISH,WITHDRAW,REACTIVATE)) {
+                String target=kind==AUTHOR?"m-denied-"+id():(pair.get(1).equals(FACILITY)?a.revisionId():revision);
+                var cmd=command(kind,pair.get(0),pair.get(1),target,1L,target,
+                    kind==AUTHOR?graphRevisionFor(pair.get(1),target,null):null);
+                authorityDenied(()->graphOperations.execute(cmd));
+            }
+        }
+        noProtectedReadsOrMutations();
+        assertThat(publicationImage(FACILITY)).isEqualTo(beforeA);assertThat(publicationImage(facilityB)).isEqualTo(beforeB);
+        qualificationGrants(actor,companyB,facilityB);
+        assertThat(scopedRun(actor,command(READ_HISTORY,companyB,facilityB,revision,null,null,null)).revision().revisionId()).isEqualTo(revision);
+        // Restoration of A's exact current/history controls is separate from the unauthorized pairs.
+        assertThat(graphRun(actor,READ_HISTORY,a.revisionId(),null,null,null).revision().revisionId()).isEqualTo(a.revisionId());
+    }
+
+    @Test void revocationCommittedBeforeRealPublicationPreventsEffects() {
+        var actor=graphActor("LOCAL");var before=publicationImage(FACILITY);String revision="m-revoked-"+id();
+        var cmd=command(AUTHOR,COMPANY,FACILITY,revision,null,null,graphRevision(revision,null));
+        originalSource(actor);awaitStableTemporalCensus();
+        // Real credential generation change invalidates the genuine already-issued native binding.
+        jdbc.update("UPDATE public.hidra_identity_local_credential SET password_hash=? WHERE id=?",
+            passwords.encode("synthetic-password"),actor.credential());
+        clearInvocations(graphTarget());authorityDenied(()->graphOperations.execute(cmd));noProtectedReadsOrMutations();
+        assertThat(publicationImage(FACILITY)).isEqualTo(before);
+        originalSource(actor);awaitStableTemporalCensus();
+        jdbc.update("DELETE FROM public.hidra_identity_user_permission_grant WHERE user_id=? AND scope_type='FACILITY' AND scope_reference_id=?",actor.user(),FACILITY);
+        clearInvocations(graphTarget());authorityDenied(()->graphOperations.execute(cmd));noProtectedReadsOrMutations();
+        assertThat(publicationImage(FACILITY)).isEqualTo(before);
+        for(String op:OPS)grant(actor,op,"GRANT","FACILITY",FACILITY);
+        assertThat(graphRun(actor,AUTHOR,revision,null,null,graphRevision(revision,null)).observedCommit()).isTrue();
+    }
+
+    @Test void phantomDenyWriterBeforeAdmissionRejectsRealPublication() throws Exception {
+        var actor=graphActor("LOCAL");String revision="m-phantom-"+id(),deny=id();
+        var cmd=command(AUTHOR,COMPANY,FACILITY,revision,null,null,graphRevision(revision,null));
+        originalSource(actor);awaitStableTemporalCensus();String permission=permission("author");
+        var before=publicationImage(FACILITY);qualificationProbe();var t=new QualificationTrace();
+        try(var w=writer();var insert=w.prepareStatement("INSERT INTO public.hidra_identity_user_permission_grant(id,user_id,permission_id,effect,scope_type,scope_reference_id,grant_reason,emergency_access,valid_from,valid_to,status,created_at) VALUES (?,?,?,'DENY','FACILITY',?,'synthetic M phantom',false,clock_timestamp()-interval '1 hour',clock_timestamp()+interval '1 hour','ACTIVE',clock_timestamp())")) {
+            w.setAutoCommit(false);insert.setString(1,deny);insert.setString(2,actor.user());insert.setString(3,permission);insert.setString(4,FACILITY);
+            assertThat(insert.executeUpdate()).isEqualTo(1);
+            try {qualifiedAttempt(cmd,t);observedCompletion(t,false);
+                assertThat(rootCause(t.failure)).isInstanceOf(SQLException.class);
+                assertThat(((SQLException)rootCause(t.failure)).getSQLState()).isEqualTo("55P03");
+                assertThat(t.collected).isZero();assertThat(t.appended).isZero();
+            } finally {w.rollback();}
+        }
+        assertThat(publicationImage(FACILITY)).isEqualTo(before);
+        assertThat(graphRun(actor,AUTHOR,revision,null,null,graphRevision(revision,null)).observedCommit()).isTrue();
+    }
+
+    @Test void realPublicationFencesBlockGrantAndOwnerWritersUntilCompletion() {
+        var actor=graphActor("LOCAL");qualificationProbe();
+        List<String> writes=List.of(
+            "UPDATE public.hidra_identity_user_permission_grant SET grant_reason=grant_reason WHERE user_id='"+actor.user()+"'",
+            "UPDATE public.hidra_party_party SET legal_name=legal_name WHERE id='"+COMPANY+"'",
+            "UPDATE public.hidra_topology_facility SET owner_party_id=owner_party_id WHERE id='"+FACILITY+"'");
+        for(boolean rollback:List.of(false,true)) {
+            String revision="m-reader-first-"+id();var before=publicationImage(FACILITY);var t=new QualificationTrace();
+            t.afterHead=()->{
+                assertThat(t.collected).isPositive();assertThat(t.completed).isZero();
+                assertThat(runtimeJdbc.queryForObject("SELECT pg_backend_pid()=? AND txid_current()=?",Boolean.class,t.pid,t.xid)).isTrue();
+                for(String sql:writes)assertThat(blocked(sql)).isEqualTo("55P03");
+            };
+            if(rollback)t.afterAppend=()->{throw new IllegalStateException("Synthetic M rollback after real append");};
+            originalSource(actor);awaitStableTemporalCensus();qualifiedAttempt(command(AUTHOR,COMPANY,FACILITY,revision,null,null,graphRevision(revision,null)),t);
+            observedCompletion(t,!rollback);assertThat(t.appended).isPositive();
+            if(rollback){assertThat(rootCause(t.failure)).hasMessage("Synthetic M rollback after real append");assertThat(publicationImage(FACILITY)).isEqualTo(before);}
+            else assertThat(graphRows("revision",revision)).isEqualTo(1);
+            // Physical completion has been observed; every independent authority writer now proceeds.
+            for(String sql:writes)assertThat(blocked(sql)).isEqualTo("WROTE");
+        }
+    }
+
+    @Test void sourceAndOwnerAbaCannotReuseStalePublicationAuthority() {
+        var actor=graphActor("LOCAL");qualificationProbe();String revision="m-aba-initial-"+id();
+        originalSource(actor);awaitStableTemporalCensus();var t=qualifiedAttempt(command(AUTHOR,COMPANY,FACILITY,revision,null,null,graphRevision(revision,null)),new QualificationTrace());
+        observedCompletion(t,true);var staleAuthentication=SecurityContextHolder.getContext().getAuthentication();
+        long generation=jdbc.queryForObject("SELECT generation FROM public.hidra_topology_facility_owner_generation WHERE facility_id=?",Long.class,FACILITY);
+        String originalHash=jdbc.queryForObject("SELECT password_hash FROM public.hidra_identity_local_credential WHERE id=?",String.class,actor.credential());
+        long credentialGeneration=jdbc.queryForObject("SELECT security_version FROM public.hidra_identity_local_credential WHERE id=?",Long.class,actor.credential());
+        var before=publicationImage(FACILITY);
+        jdbc.update("UPDATE public.hidra_identity_local_credential SET password_hash=? WHERE id=?",passwords.encode("synthetic-password"),actor.credential());
+        jdbc.update("UPDATE public.hidra_identity_local_credential SET password_hash=? WHERE id=?",originalHash,actor.credential());
+        assertThat(jdbc.queryForObject("SELECT security_version FROM public.hidra_identity_local_credential WHERE id=?",Long.class,actor.credential())).isEqualTo(credentialGeneration+2);
+        jdbc.update("UPDATE public.hidra_topology_facility SET owner_party_id='other-company' WHERE id=?",FACILITY);
+        try {
+            clearInvocations(graphTarget());originalSource(actor);awaitStableTemporalCensus();
+            authorityDenied(()->graphOperations.execute(command(READ_HISTORY,COMPANY,FACILITY,revision,null,null,null)));
+            noProtectedReadsOrMutations();
+        } finally {jdbc.update("UPDATE public.hidra_topology_facility SET owner_party_id=? WHERE id=?",COMPANY,FACILITY);}
+        assertThat(jdbc.queryForObject("SELECT generation FROM public.hidra_topology_facility_owner_generation WHERE facility_id=?",Long.class,FACILITY)).isEqualTo(generation+2);
+        SecurityContextHolder.getContext().setAuthentication(staleAuthentication);clearInvocations(graphTarget());
+        String rejectedRevision="m-aba-rejected-"+id();
+        authorityDenied(()->graphOperations.execute(command(AUTHOR,COMPANY,FACILITY,rejectedRevision,null,null,graphRevision(rejectedRevision,null))));
+        noProtectedReadsOrMutations();
+        assertThatThrownBy(()->tx().executeWithoutResult(status->coordinator.requireCurrent(t.admission)))
+            .isInstanceOf(IllegalStateException.class).hasMessage("Protected station admission unavailable");
+        assertThat(publicationImage(FACILITY)).isEqualTo(before);
+        String fresh="m-aba-fresh-"+id();graphRun(actor,AUTHOR,fresh,null,null,graphRevision(fresh,null));
+        assertThat(jdbc.queryForObject("SELECT facility_generation FROM public.hidra_topology_station_graph_operation_event WHERE facility_id=? AND resulting_revision_id=?",Long.class,FACILITY,fresh)).isEqualTo(generation+2);
+    }
+
+    @Test void actualDeadlineCrossingRollsBackRealProvisionalRevisionAndEvent() {
+        var actor=graphActor("LOCAL");String revision="m-real-expiry-"+id();
+        originalSource(actor);awaitStableTemporalCensus();
+        String deny=grant(actor,"author","DENY","FACILITY",FACILITY);
+        var before=publicationImage(FACILITY);qualificationProbe();var t=new QualificationTrace();
+        t.beforeGuard=()->{
+            assertThat(t.appended).isPositive();assertThat(t.validUntil).isAfter(t.sampledAt);
+            // No SQL, fake time or changed guard arguments. The real database scalar decides t<u.
+            while(Instant.now().isBefore(t.validUntil.plusMillis(2)))
+                java.util.concurrent.locks.LockSupport.parkNanos(100_000L);
+        };
+        Instant deadline=dbNow().plusMillis(350);
+        jdbc.update("UPDATE public.hidra_identity_user_permission_grant SET valid_from=?,valid_to=? WHERE id=?",Timestamp.from(deadline),Timestamp.from(deadline.plusSeconds(60)),deny);
+        qualifiedAttempt(command(AUTHOR,COMPANY,FACILITY,revision,null,null,graphRevision(revision,null)),t);
+        observedCompletion(t,false);assertThat(t.appended).isPositive();assertThat(t.guard).isPositive();
+        assertThat(t.validUntil).isEqualTo(deadline);assertThat(t.guardReturned).isZero();
+        assertThat(rootCause(t.failure)).isInstanceOf(IllegalStateException.class).hasMessage("Protected Topology publication unavailable");
+        verify(graphTarget()).finalGuard(any(),any(),eq(deadline),anyString(),anyLong(),anyLong(),any(),any(),anyList());
+        assertThat(publicationImage(FACILITY)).isEqualTo(before);
+    }
+
+    /** Native issuance is sequential setup; each worker later prepares its own thread-bound locator. */
+    private List<org.springframework.security.core.Authentication> cohortAuthentication(Fixture actor,int count) {
+        var actual=new ArrayList<org.springframework.security.core.Authentication>();
+        for(int i=0;i<count;i++){originalSource(actor);actual.add(SecurityContextHolder.getContext().getAuthentication());}
+        awaitStableTemporalCensus();return actual;
+    }
+
+    private List<QualificationTrace> publicationCohort(List<org.springframework.security.core.Authentication> authentication,
+            List<ProtectedStationGraphOperationUseCase.Command> commands,boolean observeConflict) throws Exception {
+        assertThat(authentication).hasSameSizeAs(commands);
+        var gate=new CyclicBarrier(commands.size());var pool=Executors.newFixedThreadPool(commands.size());
+        var firstAbort=new CountDownLatch(1);var firstReader=new AtomicBoolean();
+        try {
+            var futures=new ArrayList<Future<QualificationTrace>>();
+            for(int n=0;n<commands.size();n++) {
+                final int i=n;futures.add(pool.submit(()->{
+                    var context=SecurityContextHolder.createEmptyContext();context.setAuthentication(authentication.get(i));SecurityContextHolder.setContext(context);
+                    try {
+                        gate.await(3,TimeUnit.SECONDS);var t=new QualificationTrace();
+                        if(observeConflict)t.afterHead=()->{
+                            if(firstReader.compareAndSet(false,true))try {
+                                // Retain genuine fences until a competing attempt completes. The
+                                // default two-connection publisher pool and500ms budget stay intact.
+                                assertThat(firstAbort.await(250,TimeUnit.MILLISECONDS)).isTrue();
+                            } catch(InterruptedException interrupted) {
+                                Thread.currentThread().interrupt();throw new AssertionError(interrupted);
+                            }
+                        };
+                        qualifiedAttempt(commands.get(i),t);
+                        if(t.failure!=null)firstAbort.countDown();return t;
+                    }
+                    finally {SecurityContextHolder.clearContext();assertThat(TransactionSynchronizationManager.getResourceMap()).isEmpty();}
+                }));
+            }
+            var traces=new ArrayList<QualificationTrace>();
+            for(var future:futures)traces.add(future.get(10,TimeUnit.SECONDS));return traces;
+        } finally {pool.shutdownNow();assertThat(pool.awaitTermination(3,TimeUnit.SECONDS)).isTrue();}
+    }
+
+    private String classifiedPublicationOutcome(QualificationTrace t,boolean staleAllowed) {
+        if(t.failure==null){observedCompletion(t,true);return "COMMITTED";}
+        observedCompletion(t,false);Throwable root=rootCause(t.failure);
+        if(root instanceof SQLException sql) {
+            assertThat(sql.getSQLState()).isEqualTo("55P03");
+            assertThat(t.collected).isZero();assertThat(t.appended).isZero();assertThat(t.guard).isZero();return "FENCE_55P03";
+        }
+        assertThat(staleAllowed).as("Non-SQL abort permitted only for the same-epoch CAS race").isTrue();
+        assertThat(t.head).isPositive();assertThat(t.guard).isZero();
+        assertThat(t.expectedEpoch).isNotNull();assertThat(t.observedEpoch).isNotEqualTo(t.expectedEpoch);
+        assertThat(root).isInstanceOf(IllegalStateException.class).hasMessage("Protected station operation unavailable");
+        assertThat(Arrays.stream(root.getStackTrace()).anyMatch(f->f.getClassName().equals(
+            "dz.sh.hidra.modules.topology.application.service.ProtectedStationGraphOperationService"))).isTrue();
+        return "STALE_EXPECTED_EPOCH";
+    }
+
+    @Test void concurrentSameExpectedEpochCommitsAtMostOneSuccessor() throws Exception {
+        var actor=graphActor("LOCAL");String facility="m-cas-facility-"+id();qualificationOwner(COMPANY,facility);qualificationGrants(actor,COMPANY,facility);
+        String first="m-cas-first-"+id(),next="m-cas-next-"+id();
+        scopedRun(actor,command(AUTHOR,COMPANY,facility,first,null,null,graphRevisionFor(facility,first,null)));
+        var initial=scopedRun(actor,command(PUBLISH,COMPANY,facility,first,0L,null,null)).head();
+        scopedRun(actor,command(AUTHOR,COMPANY,facility,next,null,null,graphRevisionFor(facility,next,first)));
+        var auth=cohortAuthentication(actor,2);var before=publicationImage(facility);qualificationProbe();
+        var cmd=command(PUBLISH,COMPANY,facility,next,initial.epoch(),first,null);
+        var traces=publicationCohort(auth,List.of(cmd,cmd),false);int successes=0;
+        for(var t:traces)if(classifiedPublicationOutcome(t,true).equals("COMMITTED"))successes++;
+        assertThat(successes).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT head_epoch FROM public.hidra_topology_station_graph_head WHERE facility_id=?",Long.class,facility)).isEqualTo(initial.epoch()+1);
+        assertThat(jdbc.queryForObject("SELECT revision_id FROM public.hidra_topology_station_graph_head WHERE facility_id=?",String.class,facility)).isEqualTo(next);
+        var after=publicationImage(facility);assertThat(after.revisions()).isEqualTo(before.revisions());
+        assertThat(after.events()).hasSize(before.events().size()+1);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_station_graph_operation_event WHERE facility_id=? AND event_kind='PUBLISH' AND resulting_epoch=? AND resulting_revision_id=?",Long.class,facility,initial.epoch()+1,next)).isEqualTo(1);
+    }
+
+    private static String elapsed(long start,long end) {
+        return start==0||end==0?"UNENTERED":Double.toString((end-start)/1_000_000.0);
+    }
+
+    @Test void eightRealPublicationContendersRecordWaitHoldCommitTailAndAdminLatency() throws Exception {
+        var actor=graphActor("LOCAL");var auth=cohortAuthentication(actor,8);var before=publicationImage(FACILITY);
+        var commands=new ArrayList<ProtectedStationGraphOperationUseCase.Command>();
+        for(int i=0;i<8;i++){String revision="m-cohort-"+id();commands.add(command(AUTHOR,COMPANY,FACILITY,revision,null,null,graphRevision(revision,null)));}
+        qualificationProbe();var traces=publicationCohort(auth,commands,true);int successes=0;
+        for(int i=0;i<8;i++) {
+            var t=traces.get(i);String outcome=classifiedPublicationOutcome(t,false);boolean committed=outcome.equals("COMMITTED");
+            if(committed)successes++;
+            assertThat(graphRows("revision",commands.get(i).revisionId())).isEqualTo(committed?1:0);
+            assertThat(jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_station_graph_operation_event WHERE facility_id=? AND resulting_revision_id=?",Long.class,FACILITY,commands.get(i).revisionId())).isEqualTo(committed?1:0);
+            System.out.println("HAPI585 attempt="+i+" outcome="+outcome+" sqlstate="+(committed?"NONE":"55P03")
+                +" work_entered="+(t.work>0)+" owners_acquired="+(t.owners>0)+" publication_acquired="+(t.locks>0)
+                +" sample_entered="+(t.collected>0)+" guard_entered="+(t.guard>0)+" completion="+t.completion
+                +" acquisition_ms="+elapsed(t.work,t.locks)+" hold_release_ms="+elapsed(t.locks,t.completed)
+                +" all_fence_residency_upper_bound_ms="+elapsed(t.work,t.completed)
+                +" guard_to_completion_ms="+elapsed(t.guardReturned,t.completed)+" total_ms="+elapsed(t.started,t.returned));
+        }
+        assertThat(traces).hasSize(8);assertThat(successes).isBetween(1,7);
+        var after=publicationImage(FACILITY);assertThat(after.heads()).isEqualTo(before.heads());
+        assertThat(after.revisions()).hasSize(before.revisions().size()+successes);assertThat(after.events()).hasSize(before.events().size()+successes);
+        var adminMs=new ArrayList<Double>();
+        try(var w=writer();var update=w.prepareStatement("UPDATE public.hidra_identity_user_permission_grant SET grant_reason=grant_reason WHERE user_id=?")) {
+            update.setString(1,actor.user());
+            try(var st=w.createStatement()){st.execute("SET lock_timeout='1000ms'");st.execute("SET statement_timeout='1000ms'");}
+            for(int i=0;i<8;i++){long start=System.nanoTime();assertThat(update.executeUpdate()).isEqualTo(16);adminMs.add((System.nanoTime()-start)/1_000_000.0);}
+        }
+        adminMs.sort(Double::compareTo);assertThat(adminMs).hasSize(8);assertThat(adminMs.get(7)).isLessThanOrEqualTo(1000.0);
+        System.out.println("HAPI585 cohort=8 success="+successes+" abort="+(8-successes)+" admin_n=8 nearest_rank_p95_ms="+adminMs.get(7)
+            +" admin_samples_ms="+adminMs+" cpu="+Runtime.getRuntime().availableProcessors()+" heap_bytes="+Runtime.getRuntime().maxMemory()
+            +" condition=fresh-fixture/warm-Spring injected_outages=0 industrial_latency=UNPROVEN commit_tail_sla=NONE");
+    }
+
+    @Test void unsupportedTransferCannotMutateOwnerHeadOrLedger() {
+        var actor=graphActor("LOCAL");var head=privilegedPublication(actor);var before=publicationImage(FACILITY);
+        var owner=jdbc.queryForMap("SELECT owner_party_id FROM public.hidra_topology_facility WHERE id=?",FACILITY);
+        clearInvocations(graphTarget(),coordinatorTarget());
+        for(String facility:List.of(FACILITY,"m-absent-"+id())) {
+            assertThatThrownBy(()->scopedRun(actor,command(TRANSFER,COMPANY,facility,null,head.epoch(),head.revisionId(),null)))
+                .isInstanceOf(IllegalStateException.class).hasMessage("Protected station operation unavailable");
+        }
+        verify(coordinatorTarget(),never()).prepare();noProtectedReadsOrMutations();verify(graphTarget(),never()).acquire(anyString());
+        assertThat(publicationImage(FACILITY)).isEqualTo(before);
+        assertThat(jdbc.queryForMap("SELECT owner_party_id FROM public.hidra_topology_facility WHERE id=?",FACILITY)).isEqualTo(owner);
+        var withdrawn=graphRun(actor,WITHDRAW,null,head.epoch(),head.revisionId(),null).head();
+        assertThat(graphRun(actor,REACTIVATE,null,withdrawn.epoch(),withdrawn.revisionId(),null).observedCommit()).isTrue();
     }
 
 }

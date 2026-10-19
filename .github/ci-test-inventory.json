@@ -6699,6 +6699,7 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "actualDeadlineCrossingRollsBackRealProvisionalRevisionAndEvent",
         "admissionFirstExcludesAuthorityWritersThroughCommitAndRollback",
         "allFencesReleaseOnlyAfterPhysicalCompletion",
         "allOwnerFencesAreRequiredInTheActualFinalGuard",
@@ -6707,7 +6708,9 @@
         "caughtOwnerOrSqlFailureCannotCommitPartialWork",
         "changedPhysicalContextAndWrongIsolationFail",
         "committedRevocationAndOwnerAbaAreObservedBeforeAdmission",
+        "concurrentSameExpectedEpochCommitsAtMostOneSuccessor",
         "dirtyManagedMasterAfterAdmissionRollsBackAllPublicationEffects",
+        "eightRealPublicationContendersRecordWaitHoldCommitTailAndAdminLatency",
         "exactHistoricalRevisionRemainsReadableBeyondLatestHundredEvents",
         "expiryBetweenAdmissionCollectionAndFinalGuardRollsBack",
         "forgedReplayedSuspendedAndChangedAuthenticationTicketsFail",
@@ -6723,10 +6726,12 @@
         "ordinaryLoginCannotForgePublicationEventOrHead",
         "partyAndFacilityNativeBulkAndJpaWritersConflictBeforeAdmission",
         "partyStatusAndFacilityOwnershipMismatchFailClosed",
+        "phantomDenyWriterBeforeAdmissionRejectsRealPublication",
         "priorSqlAndDirtyFlushCannotBeAdopted",
         "publisherAndOrdinaryMisconfigurationFailClosed",
         "publisherConnectionIsSingleAndRestoresOrdinaryAccessAfterCompletion",
         "realProducerPairsAndOwnerWitnessesUseOnePhysicalSample",
+        "realPublicationFencesBlockGrantAndOwnerWritersUntilCompletion",
         "realPublicationPoisonsCaughtUnreviewedProvisionalSql",
         "realPublicationRefusesDirectPortAdmissionAndSqlRoleEscapes",
         "realPublicationRejectsCaughtSqlAfterActualFinalGuard",
@@ -6735,7 +6740,11 @@
         "realPublicationRejectsWriterFirstAndLiveOwnerTransfer",
         "realPublicationRetainsPhysicalCommitAndIndeterminateNoRetry",
         "realPublicationRollsBackRevisionAndEventOnActualFinalGuardExpiry",
-        "realPublicationUsesActualSingleIdentitySampleAndRejectsStaleEpoch"
+        "realPublicationUsesActualSingleIdentitySampleAndRejectsStaleEpoch",
+        "revocationCommittedBeforeRealPublicationPreventsEffects",
+        "sourceAndOwnerAbaCannotReuseStalePublicationAuthority",
+        "twoCompanyProtectedReadsAndMutationsRemainOpaque",
+        "unsupportedTransferCannotMutateOwnerHeadOrLedger"
       ],
       "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.ProtectedStationAdmissionPostgresIntegrationTest",
       "dependency_reason": "HAPI-583 retained 19 real K cases plus 10 HAPI-584 genuine protected service/owner/publication integration cases; hosted CI pending",
@@ -6743,7 +6752,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedStationAdmissionPostgresIntegrationTest.java",
-      "source_sha256": "20ab1c00ca294af7670587cac5b63f74b12780b5999fcc5b4ee76d33a926bb7f",
+      "source_sha256": "125cd3100cec63a4b095ac68ff1ef40c42d997473c0940ae1de4bf165e3ad5ab",
       "supports": []
     },
     {

@@ -164,7 +164,7 @@ Cross-phase prerequisites in the approved task graph: No additional cross-phase 
 | [HAPI-552](TASKS_HPS-002.md#hapi-552) | HPR-P25-040 historical bounded obligation | HPR-P25-040 historical bounded obligation | P2 | — | NOT_VERIFIABLE | COMPLETED |
 | [HAPI-553](TASKS_HPS-002.md#hapi-553) | HPR-P25-041 historical bounded obligation | HPR-P25-041 historical bounded obligation | P2 | — | NOT_VERIFIABLE | COMPLETED |
 | [HAPI-555](TASKS_HPS-002.md#hapi-555) | HPR-P25-043 historical bounded obligation | HPR-P25-043 historical bounded obligation | P2 | — | NOT_VERIFIABLE | COMPLETED |
-| [HAPI-567](TASKS_HPS-002.md#hapi-567) | Integrated closure: Revocation, operation time and physical transaction fence | Independently reconcile and accept the complete child-deliverable matrix for HPR-P25-051; child tasks own implementation. Revocation, operation time and physical… | P0 | HAPI-585 | PARTIAL | IN_PROGRESS |
+| [HAPI-567](TASKS_HPS-002.md#hapi-567) | Integrated closure: Revocation, operation time and physical transaction fence | Independently reconcile and accept the complete child-deliverable matrix for HPR-P25-051; child tasks own implementation. Revocation, operation time and physical… | P0 | HAPI-585 | VERIFIED | COMPLETED |
 | [HAPI-568](TASKS_HPS-002.md#hapi-568) | enforce protected transaction lifecycle | enforce protected transaction lifecycle | P2 | — | VERIFIED | COMPLETED |
 | [HAPI-569](TASKS_HPS-002.md#hapi-569) | compile protected static expression syntax | compile protected static expression syntax | P2 | HAPI-568 | VERIFIED | COMPLETED |
 | [HAPI-570](TASKS_HPS-002.md#hapi-570) | reduce protected temporal boundaries | reduce protected temporal boundaries | P2 | HAPI-569 | VERIFIED | COMPLETED |

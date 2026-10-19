@@ -231,8 +231,19 @@ public class JdbcStationGraphProtectedPublicationAdapter implements StationGraph
     }
     @Override @Transactional(propagation=Propagation.MANDATORY)
     public Optional<StationInternalGraphRevision> revision(Admission a,String revisionId){
+        return loadRevision(a,revisionId,false);
+    }
+    @Override @Transactional(propagation=Propagation.MANDATORY)
+    public Optional<StationInternalGraphRevision> historicalRevision(Admission a,String revisionId){
+        return loadRevision(a,revisionId,true);
+    }
+    private Optional<StationInternalGraphRevision> loadRevision(Admission a,String revisionId,boolean historical){
         Ticket t=observed(a);String rev=StationGraphPublicationHead.identity(revisionId);
-        var rows=jdbc.query("SELECT facility_id,revision_id,payload_format,canonical_payload,sha256 FROM public.hidra_topology_station_graph_revision WHERE facility_id=? AND revision_id=?",
+        String sql="SELECT r.facility_id,r.revision_id,r.payload_format,r.canonical_payload,r.sha256 "
+            +"FROM public.hidra_topology_station_graph_revision r WHERE r.facility_id=? AND r.revision_id=?"
+            +(historical?" AND EXISTS (SELECT 1 FROM public.hidra_topology_station_graph_operation_event e "
+                +"WHERE e.facility_id=r.facility_id AND e.resulting_revision_id=r.revision_id)":"");
+        var rows=jdbc.query(sql,
             (r,n)->{
                 byte[] bytes=r.getBytes(4);
                 if(bytes==null || !StationInternalGraphRevisionCodec.FORMAT.equals(r.getString(3))

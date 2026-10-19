@@ -1206,6 +1206,7 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
         verify(graphTarget(),never()).head(any());
         verify(graphTarget(),never()).history(any(),anyInt());
         verify(graphTarget(),never()).revision(any(),anyString());
+        verify(graphTarget(),never()).historicalRevision(any(),anyString());
     }
     @Test void realPublicationRefusesDirectPortAdmissionAndSqlRoleEscapes() throws Exception {
         assertThatThrownBy(()->tx().execute(status->graphPublication.acquire(FACILITY)))
@@ -1468,6 +1469,67 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
         });
         assertThat(graphRows("revision",revision)).isEqualTo(1);assertThat(graphRows("operation_event",null)).isEqualTo(events);
         assertThat(jdbc.queryForList("SELECT revision_id,head_epoch,state,last_event_id FROM public.hidra_topology_station_graph_head WHERE facility_id=?",FACILITY)).isEqualTo(head);
+    }
+
+    @Test void exactHistoricalRevisionRemainsReadableBeyondLatestHundredEvents() throws Exception {
+        var actor=graphActor("LOCAL");var target=privilegedPublication(actor);
+        var expected=legacyRevisions.find(FACILITY,target.revisionId()).orElseThrow();
+        byte[] expectedBytes=jdbc.queryForObject("SELECT canonical_payload FROM public.hidra_topology_station_graph_revision WHERE facility_id=? AND revision_id=?",
+            byte[].class,FACILITY,target.revisionId());
+        String expectedDigest=jdbc.queryForObject("SELECT sha256 FROM public.hidra_topology_station_graph_revision WHERE facility_id=? AND revision_id=?",
+            String.class,FACILITY,target.revisionId());
+        var successor=privilegedPublication(actor);
+        // Explicit administrator-only ledger fixture: 102 valid successor transitions, leaving the head ACTIVE.
+        // Each event precedes its matching CAS, preserving the immutable ledger and every constraint.
+        try(var c=administrator.getConnection()) {
+            c.setAutoCommit(false);
+            try(var event=c.prepareStatement("""
+                INSERT INTO public.hidra_topology_station_graph_operation_event
+                (event_id,facility_id,event_kind,resulting_epoch,prior_revision_id,resulting_revision_id,
+                 actor_binding_id,actor_session_id,actor_user_id,company_party_id,party_generation,facility_generation,
+                 sampled_at,valid_until,backend_pid,transaction_id)
+                SELECT ?::uuid,facility_id,?,?::bigint,resulting_revision_id,resulting_revision_id,
+                 actor_binding_id,actor_session_id,actor_user_id,company_party_id,party_generation,facility_generation,
+                 sampled_at,valid_until,pg_backend_pid(),txid_current()
+                FROM public.hidra_topology_station_graph_operation_event WHERE event_id=?::uuid
+                """);var head=c.prepareStatement("UPDATE public.hidra_topology_station_graph_head SET head_epoch=?,state=?,last_event_id=?::uuid WHERE facility_id=? AND head_epoch=?")) {
+                for(int i=1;i<=102;i++) {
+                    UUID id=UUID.randomUUID();long epoch=Math.addExact(successor.epoch(),i);
+                    boolean withdraw=(i%2)==1;
+                    event.setObject(1,id);event.setString(2,withdraw?"WITHDRAW":"REACTIVATE");
+                    event.setLong(3,epoch);event.setObject(4,successor.lastEventId());
+                    assertThat(event.executeUpdate()).isEqualTo(1);
+                    head.setLong(1,epoch);head.setString(2,withdraw?"WITHDRAWN":"ACTIVE");
+                    head.setObject(3,id);head.setString(4,FACILITY);head.setLong(5,epoch-1);
+                    assertThat(head.executeUpdate()).isEqualTo(1);
+                }
+                c.commit();
+            } catch(Exception failure) {c.rollback();throw failure;}
+        }
+        var page=graphRun(actor,LIST_HISTORY,null,null,null,null);
+        assertThat(page.observedCommit()).isTrue();assertThat(page.history()).hasSize(100);
+        assertThat(page.history()).allSatisfy(e->assertThat(e.resultingRevisionId()).isNotEqualTo(target.revisionId()));
+        clearInvocations(graphTarget());
+        var exact=graphRun(actor,READ_HISTORY,target.revisionId(),null,null,null);
+        assertThat(exact.observedCommit()).isTrue();assertThat(exact.revision()).isEqualTo(expected);
+        var codec=new dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.StationInternalGraphRevisionCodec();
+        assertThat(codec.encode(exact.revision())).containsExactly(expectedBytes);
+        assertThat(codec.sha256(codec.encode(exact.revision()))).isEqualTo(expectedDigest);
+        verify(graphTarget()).historicalRevision(any(),eq(target.revisionId()));
+        verify(graphTarget(),never()).history(any(),anyInt());
+        verify(graphTarget(),never()).revision(any(),anyString());
+
+        String legacy="unledgered-history-"+id();
+        tx().executeWithoutResult(status->legacyRevisions.append(graphRevision(legacy,null)));
+        assertThat(legacyRevisions.find(FACILITY,legacy)).isPresent();
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_station_graph_operation_event WHERE facility_id=? AND resulting_revision_id=?",Long.class,FACILITY,legacy)).isZero();
+        assertThatThrownBy(()->graphRun(actor,READ_HISTORY,legacy,null,null,null)).isInstanceOf(RuntimeException.class);
+
+        cleanEvidence();clearInvocations(graphTarget());
+        assertThatThrownBy(()->graphRun(actor,READ_HISTORY,target.revisionId(),null,null,null)).isInstanceOf(RuntimeException.class);
+        verify(graphTarget(),never()).historicalRevision(any(),anyString());
+        verify(graphTarget(),never()).revision(any(),anyString());
+        verify(graphTarget(),never()).history(any(),anyInt());
     }
 
 }

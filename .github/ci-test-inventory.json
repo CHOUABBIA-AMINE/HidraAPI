@@ -6367,6 +6367,8 @@
       "baseline_seconds": 0,
       "cases": [
         "acquiresHeadAndRevisionFencesBeforeCommonSample",
+        "exactHistoryLookupDoesNotUseTheListingWindow",
+        "exactHistoryRejectsMissingLedgerEvidence",
         "materializesResultsOnlyAfterObservedPhysicalCommit",
         "neverDisclosesCurrentHistoryOrCountsBeforeAuthority",
         "poisonsCaughtMutationAndGuardFailures",
@@ -6381,7 +6383,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/application/service/ProtectedStationGraphOperationServiceTest.java",
-      "source_sha256": "c523710fe77735406a100105e602c408ad1ea006f577b310a480b976eb857661",
+      "source_sha256": "08bc7f70f708fff95f63e87b325c11deda3921a47651e3ac4697ba885eb0c9ed",
       "supports": []
     },
     {
@@ -6706,6 +6708,7 @@
         "changedPhysicalContextAndWrongIsolationFail",
         "committedRevocationAndOwnerAbaAreObservedBeforeAdmission",
         "dirtyManagedMasterAfterAdmissionRollsBackAllPublicationEffects",
+        "exactHistoricalRevisionRemainsReadableBeyondLatestHundredEvents",
         "expiryBetweenAdmissionCollectionAndFinalGuardRollsBack",
         "forgedReplayedSuspendedAndChangedAuthenticationTicketsFail",
         "futureDenyAndSourceExpiryConstrainTheCommonUpperBound",
@@ -6740,7 +6743,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedStationAdmissionPostgresIntegrationTest.java",
-      "source_sha256": "1711dfef14516d20da2ed8a8850062a85672f1fce0b84180d3130903e0b2259a",
+      "source_sha256": "20ab1c00ca294af7670587cac5b63f74b12780b5999fcc5b4ee76d33a926bb7f",
       "supports": []
     },
     {

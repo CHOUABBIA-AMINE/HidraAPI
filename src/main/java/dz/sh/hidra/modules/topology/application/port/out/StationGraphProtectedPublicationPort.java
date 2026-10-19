@@ -33,6 +33,8 @@ public interface StationGraphProtectedPublicationPort {
     Admission acquire(String facilityId);
     Optional<StationGraphPublicationHead> head(Admission ticket);
     Optional<StationInternalGraphRevision> revision(Admission ticket,String revisionId);
+    /** Exact protected historical access requires ledger evidence, independent of listing bounds. */
+    Optional<StationInternalGraphRevision> historicalRevision(Admission ticket,String revisionId);
     List<StationGraphPublicationEvent> history(Admission ticket,int limit);
     /** Exact constant reviewed SQL texts, not caller-provided templates. */
     Set<String> mutationSql();

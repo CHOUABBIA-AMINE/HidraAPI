@@ -135,4 +135,27 @@ class ProtectedStationGraphOperationServiceTest {
                 eq(1L),eq(2L),isNull(),isNull(),anyList())).thenReturn(false);
         assertThrows(IllegalStateException.class,()->service.execute(command(Kind.READ_CURRENT)));
     }
+    @Test void exactHistoryLookupDoesNotUseTheListingWindow(){
+        var graph=new StationInternalGraph("facility","old-revision",StationInternalGraph.Status.DRAFT,
+            List.of(),List.of(),List.of());
+        var expected=new StationInternalGraphRevision("facility","old-revision",graph,
+            StationInternalGraphRevision.SourceClassification.SYNTHETIC,sampled,sampled,null,null,null,
+            StationInternalGraphRevision.Qualification.DRAFT);
+        when(publication.historicalRevision(ticket,"old-revision")).thenReturn(Optional.of(expected));
+        var result=service.execute(new Command(Kind.READ_HISTORY,"company","facility","old-revision",null,null,null,null,5));
+        assertSame(expected,result.revision());assertTrue(result.observedCommit());
+        verify(publication).historicalRevision(ticket,"old-revision");
+        verify(publication,never()).history(any(),anyInt());
+        verify(publication,never()).revision(any(),anyString());
+    }
+    @Test void exactHistoryRejectsMissingLedgerEvidence(){
+        when(publication.historicalRevision(ticket,"legacy-only")).thenReturn(Optional.empty());
+        assertThrows(IllegalStateException.class,()->service.execute(
+            new Command(Kind.READ_HISTORY,"company","facility","legacy-only",null,null,null,null,5)));
+        verify(publication).historicalRevision(ticket,"legacy-only");
+        verify(publication,never()).history(any(),anyInt());
+        verify(publication,never()).revision(any(),anyString());
+        verify(publication,never()).flush();
+    }
+
 }

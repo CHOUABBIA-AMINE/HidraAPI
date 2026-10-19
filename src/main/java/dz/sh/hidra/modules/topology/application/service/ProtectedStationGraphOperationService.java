@@ -135,9 +135,8 @@ public class ProtectedStationGraphOperationService implements ProtectedStationGr
                         revision=publication.revision(ticket.get(),current.revisionId()).orElseThrow(ProtectedStationGraphOperationService::invalid);
                 }
                 case READ_HISTORY->{
-                    var items=publication.history(ticket.get(),100);
-                    if(items.stream().noneMatch(x->cmd.revisionId().equals(x.resultingRevisionId())))throw invalid();
-                    revision=publication.revision(ticket.get(),cmd.revisionId()).orElseThrow(ProtectedStationGraphOperationService::invalid);
+                    revision=publication.historicalRevision(ticket.get(),cmd.revisionId())
+                        .orElseThrow(ProtectedStationGraphOperationService::invalid);
                 }
                 case LIST_HISTORY->history=publication.history(ticket.get(),cmd.limit());
                 case TRANSFER->throw invalid();

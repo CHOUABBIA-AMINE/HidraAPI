@@ -57,18 +57,21 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
     }
     @Test void platformHasNoBusinessModuleDependencies() throws Exception {
         String approved="\"dz.sh.hidra.modules.topology.application.service.ProtectedStationAdmissionCoordinator\"";
+        String publication="\"dz.sh.hidra.modules.topology.application.service.ProtectedStationGraphOperationService\"";
         for(String name:List.of("ProtectedTransactionExecutor","ProtectedOperationDataSource")) {
             String s=source("platform/persistence/"+name+".java");
             // L pins the compiled issuer by name, without importing or linking a business class.
             assertEquals(name.equals("ProtectedTransactionExecutor")?3:0,s.split(java.util.regex.Pattern.quote(approved),-1).length-1);
-            assertFalse(s.replace(approved,"\"reviewed-caller\"").contains("dz.sh.hidra.modules."));
+            assertEquals(name.equals("ProtectedTransactionExecutor")?1:0,s.split(java.util.regex.Pattern.quote(publication),-1).length-1);
+            assertFalse(s.replace(approved,"\"reviewed-caller\"").replace(publication,"\"reviewed-publication-caller\"").contains("dz.sh.hidra.modules."));
         }
     }
+    // Reader stays byte-pinned; J fingerprints admit only the registered technical fence exports.
     @Test void existingReaderAndJContractsRemainUnchanged() throws Exception {
         assertEquals("262b2b854bff04d64e712357d75ff099c3cb1d04d207a79e646699b2063facb4",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(Path.of("src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java")))));
-        assertEquals("02da79360f49461c25ea7b1be34c55ace4074ce56bad3342e0f381370d63ae11",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(Path.of("src/main/java/dz/sh/hidra/modules/party/application/contract/topology/TopologyProtectedPartyEligibilityContract.java")))));
-        assertEquals("7c323e429f73497623172156f1161e12b00026980441f4fdc11755ff3f75a283",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(Path.of("src/main/java/dz/sh/hidra/modules/topology/application/contract/station/StationProtectedFacilityOwnershipContract.java")))));
-        assertEquals("d8108e6ebb3d968a4159714080d567f04ddf0ccae08f35cb3e253dcbc93524dc",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(Path.of("src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JdbcTopologyProtectedPartyEligibilityAdapter.java")))));
-        assertEquals("1e60fdd86c70c7816050189d97c3b6cb39406c7c108f954c7d9b0e815b2b2467",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(Path.of("src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationProtectedFacilityOwnershipAdapter.java")))));
+        assertEquals("ae4b5c36fbe2531ab5fc82988a05206ad850dfb5377792f7201d2394eb5c41cc",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(Path.of("src/main/java/dz/sh/hidra/modules/party/application/contract/topology/TopologyProtectedPartyEligibilityContract.java")))));
+        assertEquals("11a7e8b269fd96e4132437831b6efd4184c1cd17765438d52bb022decaf3e886",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(Path.of("src/main/java/dz/sh/hidra/modules/topology/application/contract/station/StationProtectedFacilityOwnershipContract.java")))));
+        assertEquals("b4ed2114a0af4d715d3da994ed096b2d0b184f5106ddf68cd16dd8cedbdc666c",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(Path.of("src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JdbcTopologyProtectedPartyEligibilityAdapter.java")))));
+        assertEquals("d886bb5797eb64c144733609fa648e051ae9015320e41d1a674a04258a44ff83",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(Path.of("src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationProtectedFacilityOwnershipAdapter.java")))));
     }
 }

@@ -76,6 +76,17 @@ public class JdbcIdentityAuthorityFence {
                             .map(r -> "'" + r + "'")
                             .collect(java.util.stream.Collectors.joining(","))
                     + ") ORDER BY 1";
+    public static java.util.List<dz.sh.hidra.platform.persistence.ProtectedRelationFence> requiredRelationFences() {
+        var result=new java.util.ArrayList<dz.sh.hidra.platform.persistence.ProtectedRelationFence>();
+        for(String relation:RELATIONS)result.add(new dz.sh.hidra.platform.persistence.ProtectedRelationFence(
+            relation,dz.sh.hidra.platform.persistence.ProtectedRelationFence.Mode.SHARE_ROW_EXCLUSIVE));
+        result.add(new dz.sh.hidra.platform.persistence.ProtectedRelationFence("public.hidra_identity_external_mapping_generation",
+            dz.sh.hidra.platform.persistence.ProtectedRelationFence.Mode.ACCESS_SHARE));
+        result.add(new dz.sh.hidra.platform.persistence.ProtectedRelationFence("public.hidra_identity_bound_source_claim_evidence",
+            dz.sh.hidra.platform.persistence.ProtectedRelationFence.Mode.SHARE));
+        return java.util.List.copyOf(result);
+    }
+
     private final JdbcTemplate jdbc;
     private final JdbcIdentityTemporalEventCollector collector;
 

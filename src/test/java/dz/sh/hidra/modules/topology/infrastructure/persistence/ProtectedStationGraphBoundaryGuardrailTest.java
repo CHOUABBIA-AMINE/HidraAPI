@@ -38,6 +38,10 @@ class ProtectedStationGraphBoundaryGuardrailTest {
         String adapter=source("modules/topology/infrastructure/persistence/adapter/JdbcStationGraphProtectedPublicationAdapter.java");
         assertFalse(service.contains("jakarta.persistence"));
         assertTrue(service.contains("publication.flush()"));
+        assertTrue(service.contains("executor.executePublication("));
+        assertTrue(adapter.contains("ownerFences.size()!=28"));
+        assertTrue(adapter.contains("l.mode=required.mode"));
+        assertTrue(adapter.contains("session_user=?"));
         assertTrue(adapter.contains("void flush(){physical();em.flush();}"));
         assertTrue(adapter.contains("if(!compiledCaller())"));
         assertTrue(adapter.contains("t.issuer!=this"));

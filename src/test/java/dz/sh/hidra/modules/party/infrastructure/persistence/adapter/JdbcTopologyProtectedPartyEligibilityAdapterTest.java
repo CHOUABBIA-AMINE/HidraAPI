@@ -93,4 +93,10 @@ class JdbcTopologyProtectedPartyEligibilityAdapterTest {
         assertThrows(IllegalArgumentException.class,()->new TopologyProtectedPartyEligibilityContract.Contribution(" owner",1,10,20));
         assertFalse(TopologyProtectedPartyEligibilityContract.Admission.class.isRecord());
     }
+    @Test void finalFenceExportRejectsForgedAdmissionWithoutReadingOwnerRows() {
+        transaction();
+        assertThrows(IllegalStateException.class,()->adapter.finalFences(new TopologyProtectedPartyEligibilityContract.Admission(){}));
+        assertTrue(holder.isRollbackOnly());verifyNoInteractions(jdbc);
+    }
+
 }

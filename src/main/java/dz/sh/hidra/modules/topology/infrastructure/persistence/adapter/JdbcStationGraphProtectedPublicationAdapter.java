@@ -105,6 +105,22 @@ public class JdbcStationGraphProtectedPublicationAdapter implements StationGraph
                'public.hidra_topology_station_graph_head'::regclass,
                'public.hidra_topology_station_graph_operation_event'::regclass))
         """;
+    private static final String ORDINARY_DENIED="""
+        SELECT session_user=? AND current_user=? AND ?<>?
+          AND NOT pg_catalog.pg_has_role(?::name,?::name,'MEMBER')
+          AND NOT pg_catalog.has_schema_privilege(?::name,'public','CREATE')
+          AND NOT pg_catalog.has_schema_privilege(?::name,'pg_catalog','CREATE')
+          AND NOT EXISTS(SELECT 1 FROM pg_catalog.pg_roles r
+            WHERE (r.rolname=?::name OR pg_catalog.pg_has_role(?::name,r.oid,'MEMBER'))
+              AND (r.rolsuper OR r.rolbypassrls OR r.rolcreaterole OR r.rolcreatedb OR r.rolreplication
+                OR r.rolname IN ('pg_execute_server_program','pg_read_server_files','pg_write_server_files')))
+          AND NOT EXISTS(SELECT 1 FROM pg_catalog.pg_class c
+            WHERE c.oid IN ('public.hidra_topology_station_graph_head'::regclass,
+                'public.hidra_topology_station_graph_operation_event'::regclass)
+              AND (pg_catalog.pg_has_role(?::name,c.relowner,'MEMBER')
+                OR pg_catalog.has_table_privilege(?::name,c.oid,'INSERT,UPDATE,DELETE,TRUNCATE,TRIGGER')
+                OR pg_catalog.has_any_column_privilege(?::name,c.oid,'INSERT,UPDATE,REFERENCES')))
+        """;
     private static final String RETAINED="""
         (SELECT count(DISTINCT relation)=3 FROM pg_catalog.pg_locks
           WHERE pid=pg_catalog.pg_backend_pid() AND granted AND locktype='relation'
@@ -189,6 +205,11 @@ public class JdbcStationGraphProtectedPublicationAdapter implements StationGraph
             jdbc.execute("LOCK TABLE public.hidra_topology_station_graph_head IN SHARE ROW EXCLUSIVE MODE NOWAIT");
             jdbc.execute("LOCK TABLE public.hidra_topology_station_graph_operation_event IN SHARE ROW EXCLUSIVE MODE NOWAIT");
             if(!Boolean.TRUE.equals(jdbc.queryForObject(CATALOG,Boolean.class)))throw invalid();
+            var principals=executor.publicationDatabaseIdentity();
+            String ordinary=principals.ordinaryUser(),publisher=principals.publisherUser();
+            if(!Boolean.TRUE.equals(jdbc.queryForObject(ORDINARY_DENIED,Boolean.class,
+                publisher,publisher,ordinary,publisher,ordinary,publisher,ordinary,ordinary,
+                ordinary,ordinary,ordinary,ordinary,ordinary)))throw invalid();
             Ticket t=jdbc.queryForObject("SELECT pg_catalog.pg_backend_pid(),pg_catalog.txid_current(),current_user",
                 (r,n)->new Ticket(id,r.getString(3),h,r.getInt(1),r.getLong(2)));
             if(t==null)throw invalid();
@@ -283,15 +304,32 @@ public class JdbcStationGraphProtectedPublicationAdapter implements StationGraph
     }
     @Override @Transactional(propagation=Propagation.MANDATORY)
     public boolean finalGuard(Admission a,Instant s,Instant u,String companyPartyId,
-              long partyGeneration,long facilityGeneration,StationGraphPublicationHead head,UUID eventId){
+              long partyGeneration,long facilityGeneration,StationGraphPublicationHead head,UUID eventId,
+              List<dz.sh.hidra.platform.persistence.ProtectedRelationFence> ownerFences){
         try {
-            Ticket t=ticket(a); // Do not perform a second query before the one final scalar SQL.
-            Boolean b=jdbc.queryForObject(GUARD,Boolean.class,Timestamp.from(s),Timestamp.from(u),
+            Ticket t=ticket(a); // No SQL before the one final scalar statement.
+            if(ownerFences==null || ownerFences.size()!=28)throw invalid();
+            var fences=new ArrayList<>(ownerFences);
+            for(String relation:List.of("public.hidra_topology_station_graph_revision",
+                "public.hidra_topology_station_graph_head","public.hidra_topology_station_graph_operation_event"))
+                fences.add(new dz.sh.hidra.platform.persistence.ProtectedRelationFence(relation,
+                    dz.sh.hidra.platform.persistence.ProtectedRelationFence.Mode.SHARE_ROW_EXCLUSIVE));
+            if(fences.stream().map(dz.sh.hidra.platform.persistence.ProtectedRelationFence::relation).distinct().count()!=31
+                || fences.stream().filter(f->f.mode()==dz.sh.hidra.platform.persistence.ProtectedRelationFence.Mode.SHARE_ROW_EXCLUSIVE).count()!=27
+                || fences.stream().filter(f->f.mode()==dz.sh.hidra.platform.persistence.ProtectedRelationFence.Mode.ACCESS_SHARE).count()!=3
+                || fences.stream().filter(f->f.mode()==dz.sh.hidra.platform.persistence.ProtectedRelationFence.Mode.SHARE).count()!=1)throw invalid();
+            String required=String.join(",",Collections.nCopies(fences.size(),"(?::regclass,?::text)"));
+            String complete=" AND session_user=? AND NOT EXISTS (SELECT 1 FROM (VALUES "+required+") required(relation,mode) "
+                +"WHERE NOT EXISTS (SELECT 1 FROM pg_catalog.pg_locks l WHERE l.pid=pg_catalog.pg_backend_pid() "
+                +"AND l.granted AND l.locktype='relation' AND l.relation=required.relation AND l.mode=required.mode))";
+            var args=new ArrayList<Object>(Arrays.asList(Timestamp.from(s),Timestamp.from(u),
                 t.pid,t.xid,t.role,companyPartyId,partyGeneration,t.facility,companyPartyId,facilityGeneration,
                 head==null?null:head.epoch(),t.facility,t.facility,
                 head==null?null:head.epoch(),head==null?null:head.revisionId(),
-                head==null?null:head.state().name(),head==null?null:head.lastEventId(),
-                eventId,t.facility,eventId,t.facility);
+                head==null?null:head.state().name(),head==null?null:head.lastEventId(),eventId,t.facility,eventId,t.facility));
+            args.add(executor.publicationDatabaseIdentity().publisherUser());
+            for(var fence:fences){args.add(fence.relation());args.add(fence.mode().catalog());}
+            Boolean b=jdbc.queryForObject(GUARD+complete,Boolean.class,args.toArray());
             if(!Boolean.TRUE.equals(b))throw invalid();return true;
         }catch(RuntimeException error){executor.rejectAdmission();throw error;}
     }

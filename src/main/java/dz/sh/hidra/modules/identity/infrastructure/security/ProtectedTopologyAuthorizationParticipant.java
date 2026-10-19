@@ -147,6 +147,14 @@ public class ProtectedTopologyAuthorizationParticipant
         } catch(RuntimeException failure) { rollback();throw failure; }
     }
 
+    @Override @Transactional(propagation=Propagation.MANDATORY)
+    public java.util.List<dz.sh.hidra.platform.persistence.ProtectedRelationFence> finalFences(Admission admission) {
+        try {
+            ticket(admission);
+            return dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcIdentityAuthorityFence.requiredRelationFences();
+        } catch(RuntimeException failure){rollback();throw failure;}
+    }
+
     private Ticket ticket(Admission admission) {
         if(!(admission instanceof Ticket t) || t.owner!=this || !t.active || t.thread!=Thread.currentThread()) throw denied();
         current(t.entry);identity.requireAdmitted(t.admitted);return t;

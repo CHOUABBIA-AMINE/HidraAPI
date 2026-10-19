@@ -2696,6 +2696,7 @@
         "changedAuthenticationCannotBorrowPreparation",
         "eightOperationsHaveExactOwnerCodes",
         "entryIsConsumedOnSuccessfulOrFailedAttempt",
+        "fenceExportRejectsForgedAdmissionWithoutOwnerAuthority",
         "foreignMarkerAndNullCannotReachTheOwner",
         "graphContextMutationPreventsScalarExport",
         "integratedAdmissionDefersTheQualifiedPairUntilCollection",
@@ -2710,7 +2711,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedTopologyAuthorizationParticipantTest.java",
-      "source_sha256": "789b6ea552492a544d590c072e1d6c2972f769ac7494c32a129b103053343e6c",
+      "source_sha256": "107640bc00c988e68c3ec806eacb7e04058cee2037b2347cdf0e408a5be41ae0",
       "supports": []
     },
     {
@@ -4954,6 +4955,7 @@
         "acquisitionRequiresAnActualBoundTransaction",
         "fabricatedAdmissionCannotReachOwnerRowsAndMarksRollback",
         "failedFirstFencePropagatesAndNeverAcquiresTheTail",
+        "finalFenceExportRejectsForgedAdmissionWithoutReadingOwnerRows",
         "invalidIdentitiesNeverQueryTheDatabase",
         "nullAdmissionFailsClosed",
         "readOnlyContextFailsBeforeAnyOwnerQuery",
@@ -4966,7 +4968,7 @@
       "lane": "unit-architecture",
       "owner": "party",
       "path": "src/test/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JdbcTopologyProtectedPartyEligibilityAdapterTest.java",
-      "source_sha256": "1361df809f842fd9de208297cd93560c64b042ae1f937c5766a2d259de357d37",
+      "source_sha256": "df2344f20b49d89e8507b1c094d95cbdcc72759c95f44dbafeb7b65b1e44bd83",
       "supports": [],
       "timing_status": "unmeasured-new-suite"
     },
@@ -6242,7 +6244,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/ProtectedOwnerWitnessBoundaryGuardrailTest.java",
-      "source_sha256": "df7704b61c681f5746fc5293af842a670ac292e19b01453d6313e2aa976ae9ee",
+      "source_sha256": "2387188f5e8376c6df4a99c9d3da9cc36d2c43a1d5ec3a96ec432a6c5f0887e1",
       "supports": [],
       "timing_status": "unmeasured-new-suite"
     },
@@ -6261,7 +6263,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java",
-      "source_sha256": "e9846f7d057d23cbab99cf9b923ce43dd747062c11d133f6092c7f05727e4dea",
+      "source_sha256": "24a1374b78b3aea32779a983715d28714c7f33ab8b57c3d7736b902157ecc753",
       "supports": []
     },
     {
@@ -6358,7 +6360,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/application/service/ProtectedStationAdmissionCoordinatorTest.java",
-      "source_sha256": "2551406880bf526d49ce2e08aa67f46233480e836b1e241a65fd50b061bd40d4",
+      "source_sha256": "4f1b54d079c730736dc102435f021e6bfbf6a0369552e60c6ef2d6d4f6f191e2",
       "supports": []
     },
     {
@@ -6379,7 +6381,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/application/service/ProtectedStationGraphOperationServiceTest.java",
-      "source_sha256": "b64a554752cf785ef4322c0a15bf05bdca97306762399836d533312f8b005a76",
+      "source_sha256": "c523710fe77735406a100105e602c408ad1ea006f577b310a480b976eb857661",
       "supports": []
     },
     {
@@ -6697,11 +6699,13 @@
       "cases": [
         "admissionFirstExcludesAuthorityWritersThroughCommitAndRollback",
         "allFencesReleaseOnlyAfterPhysicalCompletion",
+        "allOwnerFencesAreRequiredInTheActualFinalGuard",
         "allRelationFencesPrecedeTheSingleEligibilitySample",
         "bothScopesDenyOrUnknownNeverExportQualifiedOwnerAuthority",
         "caughtOwnerOrSqlFailureCannotCommitPartialWork",
         "changedPhysicalContextAndWrongIsolationFail",
         "committedRevocationAndOwnerAbaAreObservedBeforeAdmission",
+        "dirtyManagedMasterAfterAdmissionRollsBackAllPublicationEffects",
         "expiryBetweenAdmissionCollectionAndFinalGuardRollsBack",
         "forgedReplayedSuspendedAndChangedAuthenticationTicketsFail",
         "futureDenyAndSourceExpiryConstrainTheCommonUpperBound",
@@ -6709,11 +6713,16 @@
         "identityNativeAndJpaWritersConflictBeforeAdmission",
         "incomingFkAndPlanningRowShareRemainCompatible",
         "legacyIdentityAndClaimIssuancePathsRetainTheirSemantics",
+        "legacyRevisionWritesRemainOrdinaryAndNeverEnactPublication",
         "missingIdentityAndOwnerRowsCannotRacePhantomAuthority",
         "noResultEscapesBeforePhysicalCommitAndUnknownCommitDoesNotRetry",
+        "ordinaryLoginCannotAssumeOrInheritPublisherRole",
+        "ordinaryLoginCannotForgePublicationEventOrHead",
         "partyAndFacilityNativeBulkAndJpaWritersConflictBeforeAdmission",
         "partyStatusAndFacilityOwnershipMismatchFailClosed",
         "priorSqlAndDirtyFlushCannotBeAdopted",
+        "publisherAndOrdinaryMisconfigurationFailClosed",
+        "publisherConnectionIsSingleAndRestoresOrdinaryAccessAfterCompletion",
         "realProducerPairsAndOwnerWitnessesUseOnePhysicalSample",
         "realPublicationPoisonsCaughtUnreviewedProvisionalSql",
         "realPublicationRefusesDirectPortAdmissionAndSqlRoleEscapes",
@@ -6731,7 +6740,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedStationAdmissionPostgresIntegrationTest.java",
-      "source_sha256": "80298c8c55da68690c6c1b52487c4de22f98fc7586f4d1621aedaa35066e7188",
+      "source_sha256": "c0f4fc8579550ef9b23c8d5fb9698d2e46d46a5e0607ff43082e1d59bbf3cc22",
       "supports": []
     },
     {
@@ -6749,7 +6758,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedStationGraphBoundaryGuardrailTest.java",
-      "source_sha256": "99a2e28558acf9b99f9b2ce0604e7b6e90d11202efa2f924832e9462f0c27823",
+      "source_sha256": "7cc322d53dfa20472518ac3277d667fed19f29889fa0ed5331da4a3f1326915d",
       "supports": []
     },
     {
@@ -6832,6 +6841,7 @@
         "acquisitionRequiresAnActualBoundTransaction",
         "fabricatedAdmissionCannotReachOwnerRowsAndMarksRollback",
         "failedFirstFencePropagatesAndNeverAcquiresTheTail",
+        "finalFenceExportRejectsForgedAdmissionWithoutReadingOwnerRows",
         "invalidIdentitiesNeverQueryTheDatabase",
         "nullAdmissionFailsClosed",
         "readOnlyContextFailsBeforeAnyOwnerQuery",
@@ -6844,7 +6854,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationProtectedFacilityOwnershipAdapterTest.java",
-      "source_sha256": "e56aa14d9f82044a80ec55f8963e325b10c38d5a9fa12c530bd93a4dfacb3615",
+      "source_sha256": "1f2b1af22b7c470051349d028ed0e17d1f0ca0a110f682bc85e3321a58a090af",
       "supports": [],
       "timing_status": "unmeasured-new-suite"
     },
@@ -7607,6 +7617,23 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "configurationRenderingRedactsSecrets",
+        "disabledConfigurationDoesNotRequirePublisherSecrets",
+        "enabledConfigurationRequiresDistinctPublisherCredential",
+        "rejectsInvalidPoolBounds"
+      ],
+      "class": "dz.sh.hidra.platform.configuration.ProtectedPublicationDatabasePropertiesTest",
+      "dependency_reason": "Registered HAPI-584 option A route/properties/fence JVM suite; duration unmeasured, hosted acceptance pending",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "platform",
+      "path": "src/test/java/dz/sh/hidra/platform/configuration/ProtectedPublicationDatabasePropertiesTest.java",
+      "source_sha256": "c0c864674fb9262107360cabf8e8787faf82c2b29aa3969d86bddaef74e3ce3b",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0.001,
       "cases": [
         "mapsAuthorizationFailureTo403",
@@ -7666,6 +7693,42 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "closeReleasesBothOwnedPoolsExactlyOnce",
+        "disabledPublisherRouteFailsBeforeConnection",
+        "explicitCredentialAndUnwrapEscapesAreRejected",
+        "nestedOrAmbientRoutesAreRejected",
+        "ordinaryAccessRetainsOriginalDataSource",
+        "publisherRouteUsesSeparatePrincipalAndSameEndpoint",
+        "routeIsThreadConfinedAndClearedOnAllOutcomes"
+      ],
+      "class": "dz.sh.hidra.platform.persistence.ProtectedCredentialRoutingDataSourceTest",
+      "dependency_reason": "Registered HAPI-584 option A route/properties/fence JVM suite; duration unmeasured, hosted acceptance pending",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "platform",
+      "path": "src/test/java/dz/sh/hidra/platform/persistence/ProtectedCredentialRoutingDataSourceTest.java",
+      "source_sha256": "d25b6e0f96eebde845b6f041214ae28f0b80ecaa40585718ed097f17809a0045",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "preservesExactImmutableRequirementData",
+        "rejectsUnqualifiedOrUnsafeRelationNames",
+        "rejectsUnsupportedOrMissingLockMode"
+      ],
+      "class": "dz.sh.hidra.platform.persistence.ProtectedRelationFenceTest",
+      "dependency_reason": "Registered HAPI-584 option A route/properties/fence JVM suite; duration unmeasured, hosted acceptance pending",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "platform",
+      "path": "src/test/java/dz/sh/hidra/platform/persistence/ProtectedRelationFenceTest.java",
+      "source_sha256": "747cbc4be6267c5a3916a6d4fe3bf40b3eea83925ce58420726cd57543cdf62f",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
         "additionalDatasourceConnectionPoisonsOwner",
         "admissionGrammarKeepsQuotedDataButRejectsWritableQueryForms",
         "afterCommitCallbackErrorWithholdsCommittedResult",
@@ -7689,6 +7752,7 @@
         "nestedExecutorPoisonsOuterAttempt",
         "prematureCommitRollbackSavepointAndSettingsPoisonAttempts",
         "providerMayResetAutocommitOnlyAfterObservedPhysicalCommit",
+        "publicationCredentialEntryRejectsUnreviewedCallerBeforeWork",
         "rawConnectionAndDatasourceUnwrapReject",
         "secondGuardStatementPoisonsEvenIfCaught",
         "successfulScalarExecutionCommitsBeforeReturning",
@@ -7705,7 +7769,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java",
-      "source_sha256": "b11f75cfe79140d3347fa88e9635512d6a30fe532bd7030c621e8ef95dccb374",
+      "source_sha256": "5c9042296284da4092643a19778e404fd04102338c4329e4ced80a505021ce3c",
       "supports": []
     },
     {

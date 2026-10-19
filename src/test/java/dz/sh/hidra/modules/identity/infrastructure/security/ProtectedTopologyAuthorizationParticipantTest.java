@@ -316,4 +316,8 @@ class ProtectedTopologyAuthorizationParticipantTest {
         } finally {org.springframework.transaction.support.TransactionSynchronizationManager.clearSynchronization();org.springframework.transaction.support.TransactionSynchronizationManager.setActualTransactionActive(false);}
     }
 
+    @Test void fenceExportRejectsForgedAdmissionWithoutOwnerAuthority() {
+        assertThatThrownBy(()->adapter.finalFences(new TopologyProtectedAuthorizationContract.Admission(){})).isInstanceOf(RuntimeException.class);
+    }
+
 }

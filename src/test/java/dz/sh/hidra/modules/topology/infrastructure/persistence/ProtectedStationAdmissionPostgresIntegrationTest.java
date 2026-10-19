@@ -99,7 +99,7 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
                 @Override protected void doBegin(Object transaction,TransactionDefinition definition) {
                     super.doBegin(transaction,definition);
                     var j=new JdbcTemplate(ds);
-                    if(Boolean.TRUE.equals(j.queryForObject("SELECT EXISTS(SELECT 1 FROM pg_catalog.pg_roles WHERE rolname='c3_source_claim_app')",Boolean.class)))
+                    if(Boolean.TRUE.equals(j.queryForObject("SELECT session_user='c3_source_claim_app'",Boolean.class)))
                         j.queryForObject("SELECT pg_catalog.set_config('role','c3_source_claim_app',true)",String.class);
                 }
             };
@@ -149,13 +149,32 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry r) {
         r.add("spring.datasource.url", POSTGRES::getJdbcUrl);
-        r.add("spring.datasource.username", POSTGRES::getUsername);
-        r.add("spring.datasource.password", POSTGRES::getPassword);
+        POSTGRES.start();
+        var admin=new JdbcTemplate(new org.springframework.jdbc.datasource.DriverManagerDataSource(
+            POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword()));
+        for(String role:List.of("c3_source_claim_app","c3_publication_app")) {
+            if(!Boolean.TRUE.equals(admin.queryForObject("SELECT EXISTS(SELECT 1 FROM pg_catalog.pg_roles WHERE rolname=?)",Boolean.class,role)))
+                admin.execute("CREATE ROLE "+role+" LOGIN PASSWORD '"+(role.equals("c3_publication_app")?"synthetic-publication-test-only":"synthetic-c3-test-only")+"'");
+            admin.execute("GRANT USAGE ON SCHEMA public TO "+role);
+            admin.execute("ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT,INSERT,UPDATE,DELETE ON TABLES TO "+role);
+        }
+        admin.execute("REVOKE CREATE ON SCHEMA public FROM PUBLIC");
+        r.add("spring.datasource.username", ()->"c3_source_claim_app");
+        r.add("spring.datasource.password", ()->"synthetic-c3-test-only");
+        r.add("spring.flyway.user",POSTGRES::getUsername);
+        r.add("spring.flyway.password",POSTGRES::getPassword);
+        r.add("hidra.platform.persistence.publication.enabled",()->"true");
+        r.add("hidra.platform.persistence.publication.username",()->"c3_publication_app");
+        r.add("hidra.platform.persistence.publication.password",()->"synthetic-publication-test-only");
         r.add("spring.jpa.hibernate.ddl-auto", () -> "validate");
         r.add("spring.flyway.enabled", () -> "true");
     }
 
-    @Autowired JdbcTemplate jdbc;
+    @Autowired JdbcTemplate runtimeJdbc;
+    @Autowired dz.sh.hidra.modules.topology.application.port.out.StationInternalGraphRevisionRepositoryPort legacyRevisions;
+    private JdbcTemplate jdbc;
+    private javax.sql.DataSource administrator;
+
     @MockitoSpyBean JdbcProtectedAuthorizationEvidenceReader reader;
     @Autowired jakarta.persistence.EntityManager em;
     @Autowired Flyway flyway;
@@ -223,6 +242,22 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
 
     @BeforeEach
     void initialize() {
+        administrator=new org.springframework.jdbc.datasource.DriverManagerDataSource(
+            POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword());
+        // Fixture DDL/seeding uses the administrator explicitly. Transaction callbacks
+        // obtain the genuine runtime resource key so denied SQL still poisons the executor.
+        jdbc=new JdbcTemplate(administrator) {
+            @Override public javax.sql.DataSource getDataSource() {
+                return TransactionSynchronizationManager.isActualTransactionActive()?runtimeJdbc.getDataSource():administrator;
+            }
+        };
+        for(String role:List.of("c3_source_claim_app","c3_publication_app")) {
+            jdbc.execute("REVOKE ALL ON public.hidra_identity_external_mapping_generation,public.hidra_party_eligibility_generation,public.hidra_topology_facility_owner_generation FROM "+role);
+            jdbc.execute("GRANT SELECT ON public.hidra_identity_external_mapping_generation,public.hidra_party_eligibility_generation,public.hidra_topology_facility_owner_generation TO "+role);
+        }
+        jdbc.execute("REVOKE ALL ON public.hidra_topology_station_graph_head,public.hidra_topology_station_graph_operation_event FROM c3_source_claim_app");
+        jdbc.execute("GRANT SELECT ON public.hidra_topology_station_graph_head,public.hidra_topology_station_graph_operation_event TO c3_source_claim_app");
+        assertThat(runtimeJdbc.queryForObject("SELECT session_user=current_user AND session_user='c3_source_claim_app'",Boolean.class)).isTrue();
         assertThat(org.springframework.aop.support.AopUtils.isAopProxy(graphPublication)).isTrue();
         assertThat(mockingDetails(graphTarget()).isSpy()).isTrue();
         assertThat(jdbc.queryForObject("SHOW autovacuum",String.class)).isEqualTo("off");
@@ -1194,11 +1229,11 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
         var actor=graphActor("LOCAL");String revision="rollback-"+id();
         long before=graphRows("operation_event",null);
         doAnswer(i->{i.getArguments()[2]=i.getArgument(1);return i.callRealMethod();})
-            .when(graphTarget()).finalGuard(any(),any(),any(),anyString(),anyLong(),anyLong(),any(),any());
+            .when(graphTarget()).finalGuard(any(),any(),any(),anyString(),anyLong(),anyLong(),any(),any(),anyList());
         assertThatThrownBy(()->graphRun(actor,AUTHOR,revision,null,null,graphRevision(revision,null)))
             .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class);
         verify(graphTarget()).append(any(),any(),any());
-        verify(graphTarget()).finalGuard(any(),any(),any(),anyString(),anyLong(),anyLong(),any(),any());
+        verify(graphTarget()).finalGuard(any(),any(),any(),anyString(),anyLong(),anyLong(),any(),any(),anyList());
         assertThat(graphRows("revision",revision)).isZero();
         assertThat(graphRows("operation_event",null)).isEqualTo(before);
     }
@@ -1248,7 +1283,7 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
         graphRun(actor,AUTHOR,revision,null,null,graphRevision(revision,null));
         assertThat(TransactionSynchronizationManager.isSynchronizationActive()).isFalse();
         assertThat(TransactionSynchronizationManager.getResourceMap()).isEmpty();
-        assertThat(jdbc.queryForObject("SELECT 1",Integer.class)).isEqualTo(1);
+        assertThat(runtimeJdbc.queryForObject("SELECT 1",Integer.class)).isEqualTo(1);
         assertThat(count).hasValue(1);
         var row=jdbc.queryForMap("SELECT sampled_at,backend_pid,transaction_id FROM public.hidra_topology_station_graph_operation_event WHERE facility_id=? AND resulting_revision_id=?",FACILITY,revision);
         assertThat(((Timestamp)row.get("sampled_at")).toInstant()).isEqualTo(observed.get().sampledAt());
@@ -1281,12 +1316,148 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
             try {jdbc.queryForObject("SELECT 1",Integer.class);}
             catch(RuntimeException expected){/* Poisoning must survive a caught post-guard denial. */}
             return result;
-        }).when(graphTarget()).finalGuard(any(),any(),any(),anyString(),anyLong(),anyLong(),any(),any());
+        }).when(graphTarget()).finalGuard(any(),any(),any(),anyString(),anyLong(),anyLong(),any(),any(),anyList());
         assertThatThrownBy(()->graphRun(actor,AUTHOR,revision,null,null,graphRevision(revision,null)))
             .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class);
         verify(graphTarget()).append(any(),any(),any());
-        verify(graphTarget()).finalGuard(any(),any(),any(),anyString(),anyLong(),anyLong(),any(),any());
+        verify(graphTarget()).finalGuard(any(),any(),any(),anyString(),anyLong(),anyLong(),any(),any(),anyList());
         assertThat(graphRows("revision",revision)).isZero();assertThat(graphRows("operation_event",null)).isEqualTo(before);
+    }
+
+    private dz.sh.hidra.modules.topology.domain.model.StationGraphPublicationHead privilegedPublication(Fixture actor) {
+        var rows=jdbc.queryForList("SELECT revision_id,head_epoch FROM public.hidra_topology_station_graph_head WHERE facility_id=?",FACILITY);
+        String predecessor=rows.isEmpty()?null:(String)rows.getFirst().get("revision_id");
+        long epoch=rows.isEmpty()?0:((Number)rows.getFirst().get("head_epoch")).longValue();
+        String revision="privilege-"+id();
+        graphRun(actor,AUTHOR,revision,null,null,graphRevision(revision,predecessor));
+        return graphRun(actor,PUBLISH,revision,epoch,predecessor,null).head();
+    }
+    private int forgeEvent(Connection c,UUID event,dz.sh.hidra.modules.topology.domain.model.StationGraphPublicationHead head) throws SQLException {
+        try(var s=c.prepareStatement("""
+            INSERT INTO public.hidra_topology_station_graph_operation_event
+            (event_id,facility_id,event_kind,resulting_epoch,prior_revision_id,resulting_revision_id,
+             actor_binding_id,actor_session_id,actor_user_id,company_party_id,party_generation,facility_generation,
+             sampled_at,valid_until,backend_pid,transaction_id)
+            SELECT ?::uuid,facility_id,'WITHDRAW',?::bigint,resulting_revision_id,resulting_revision_id,
+             actor_binding_id,actor_session_id,actor_user_id,company_party_id,party_generation,facility_generation,
+             clock_timestamp(),clock_timestamp()+interval '5 seconds',pg_backend_pid(),txid_current()
+            FROM public.hidra_topology_station_graph_operation_event WHERE event_id=?::uuid
+            """)) {
+            s.setObject(1,event);s.setLong(2,head.epoch()+1);s.setObject(3,head.lastEventId());return s.executeUpdate();
+        }
+    }
+    private int forgeHead(Connection c,UUID event,dz.sh.hidra.modules.topology.domain.model.StationGraphPublicationHead head) throws SQLException {
+        try(var s=c.prepareStatement("UPDATE public.hidra_topology_station_graph_head SET head_epoch=?,state='WITHDRAWN',last_event_id=?::uuid WHERE facility_id=? AND head_epoch=?")) {
+            s.setLong(1,head.epoch()+1);s.setObject(2,event);s.setString(3,FACILITY);s.setLong(4,head.epoch());return s.executeUpdate();
+        }
+    }
+    @Test void ordinaryLoginCannotForgePublicationEventOrHead() throws Exception {
+        var actor=graphActor("LOCAL");var head=privilegedPublication(actor);UUID event=UUID.randomUUID();
+        long before=graphRows("operation_event",null);
+        try(var control=administrator.getConnection()) {
+            control.setAutoCommit(false);
+            try {assertThat(forgeEvent(control,event,head)).isEqualTo(1);assertThat(forgeHead(control,event,head)).isEqualTo(1);}
+            finally {control.rollback();}
+        }
+        try(var c=writer()) {
+            c.setAutoCommit(false);
+            try {assertThatThrownBy(()->forgeEvent(c,event,head)).isInstanceOf(SQLException.class)
+                .satisfies(e->assertThat(((SQLException)e).getSQLState()).isEqualTo("42501"));}
+            finally {c.rollback();}
+            try {assertThatThrownBy(()->forgeHead(c,event,head)).isInstanceOf(SQLException.class)
+                .satisfies(e->assertThat(((SQLException)e).getSQLState()).isEqualTo("42501"));}
+            finally {c.rollback();}
+        }
+        assertThat(graphRows("operation_event",null)).isEqualTo(before);
+        assertThat(jdbc.queryForObject("SELECT head_epoch FROM public.hidra_topology_station_graph_head WHERE facility_id=?",Long.class,FACILITY)).isEqualTo(head.epoch());
+    }
+    @Test void ordinaryLoginCannotAssumeOrInheritPublisherRole() throws Exception {
+        assertThat(runtimeJdbc.queryForObject("SELECT NOT pg_has_role(session_user,'c3_publication_app','MEMBER')",Boolean.class)).isTrue();
+        try(var c=writer();var s=c.createStatement()) {
+            assertThatThrownBy(()->s.execute("SET ROLE c3_publication_app")).isInstanceOf(SQLException.class)
+                .satisfies(e->assertThat(((SQLException)e).getSQLState()).isEqualTo("42501"));
+        }
+    }
+    @Test void publisherAndOrdinaryMisconfigurationFailClosed() throws Exception {
+        var actor=graphActor("LOCAL");String revision="denied-config-"+id();
+        var router=runtimeJdbc.getDataSource().unwrap(dz.sh.hidra.platform.persistence.ProtectedCredentialRoutingDataSource.class);
+        Object original=ReflectionTestUtils.getField(router,"properties");
+        for(var properties:List.of(
+            new dz.sh.hidra.platform.configuration.ProtectedPublicationDatabaseProperties(false,null,null,2),
+            new dz.sh.hidra.platform.configuration.ProtectedPublicationDatabaseProperties(true,"c3_source_claim_app","synthetic-c3-test-only",2))) {
+            ReflectionTestUtils.setField(router,"properties",properties);
+            try {assertThatThrownBy(()->graphRun(actor,AUTHOR,revision,null,null,graphRevision(revision,null))).isInstanceOf(RuntimeException.class);}
+            finally {ReflectionTestUtils.setField(router,"properties",original);}
+        }
+        jdbc.execute("GRANT INSERT ON public.hidra_topology_station_graph_operation_event TO c3_source_claim_app");
+        try {assertThatThrownBy(()->graphRun(actor,AUTHOR,revision,null,null,graphRevision(revision,null))).isInstanceOf(RuntimeException.class);}
+        finally {jdbc.execute("REVOKE INSERT ON public.hidra_topology_station_graph_operation_event FROM c3_source_claim_app");}
+        jdbc.execute("GRANT INSERT(actor_user_id) ON public.hidra_topology_station_graph_operation_event TO c3_source_claim_app");
+        try {assertThatThrownBy(()->graphRun(actor,AUTHOR,revision,null,null,graphRevision(revision,null))).isInstanceOf(RuntimeException.class);}
+        finally {jdbc.execute("REVOKE INSERT(actor_user_id) ON public.hidra_topology_station_graph_operation_event FROM c3_source_claim_app");}
+        jdbc.execute("GRANT c3_publication_app TO c3_source_claim_app");
+        try {assertThatThrownBy(()->graphRun(actor,AUTHOR,revision,null,null,graphRevision(revision,null))).isInstanceOf(RuntimeException.class);}
+        finally {jdbc.execute("REVOKE c3_publication_app FROM c3_source_claim_app");}
+        assertThat(graphRows("revision",revision)).isZero();
+        assertThat(runtimeJdbc.queryForObject("SELECT session_user",String.class)).isEqualTo("c3_source_claim_app");
+    }
+    @Test void allOwnerFencesAreRequiredInTheActualFinalGuard() {
+        var actor=graphActor("LOCAL");var checked=new AtomicInteger();
+        doAnswer(i->{
+            @SuppressWarnings("unchecked")
+            var actual=(List<dz.sh.hidra.platform.persistence.ProtectedRelationFence>)i.getArgument(8);
+            assertThat(actual).hasSize(28);
+            var changed=new ArrayList<>(actual);int index=new int[]{0,24,26}[checked.getAndIncrement()];
+            var original=changed.get(index);
+            changed.set(index,new dz.sh.hidra.platform.persistence.ProtectedRelationFence("public.flyway_schema_history",original.mode()));
+            i.getArguments()[8]=List.copyOf(changed);
+            return i.callRealMethod();
+        }).when(graphTarget()).finalGuard(any(),any(),any(),anyString(),anyLong(),anyLong(),any(),any(),anyList());
+        for(int n=0;n<3;n++) {
+            String revision="fence-negative-"+id();
+            assertThatThrownBy(()->graphRun(actor,AUTHOR,revision,null,null,graphRevision(revision,null)))
+                .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class);
+            assertThat(graphRows("revision",revision)).isZero();
+        }
+        assertThat(checked).hasValue(3);
+        verify(graphTarget(),times(3)).append(any(),any(),any());
+    }
+    @Test void dirtyManagedMasterAfterAdmissionRollsBackAllPublicationEffects() {
+        var actor=graphActor("LOCAL");String revision="dirty-flush-"+id();long before=graphRows("operation_event",null);
+        String previous=jdbc.queryForObject("SELECT legal_name FROM public.hidra_party_party WHERE id=?",String.class,COMPANY);
+        doAnswer(i->{var result=i.callRealMethod();
+            var managed=em.find(dz.sh.hidra.modules.party.infrastructure.persistence.entity.PartyJpaEntity.class,COMPANY);
+            ReflectionTestUtils.setField(managed,"legalName","Uncommitted dirty master");return result;
+        }).when(graphTarget()).acquire(anyString());
+        assertThatThrownBy(()->graphRun(actor,AUTHOR,revision,null,null,graphRevision(revision,null)))
+            .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class);
+        verify(graphTarget()).append(any(),any(),any());verify(graphTarget()).flush();
+        verify(graphTarget(),never()).finalGuard(any(),any(),any(),anyString(),anyLong(),anyLong(),any(),any(),anyList());
+        assertThat(graphRows("revision",revision)).isZero();assertThat(graphRows("operation_event",null)).isEqualTo(before);
+        assertThat(jdbc.queryForObject("SELECT legal_name FROM public.hidra_party_party WHERE id=?",String.class,COMPANY)).isEqualTo(previous);
+    }
+    @Test void publisherConnectionIsSingleAndRestoresOrdinaryAccessAfterCompletion() {
+        var actor=graphActor("OIDC");String revision="publisher-session-"+id();var pid=new AtomicInteger();
+        doAnswer(i->{var result=i.callRealMethod();
+            assertThat(runtimeJdbc.queryForObject("SELECT session_user=current_user AND session_user='c3_publication_app'",Boolean.class)).isTrue();
+            pid.set(runtimeJdbc.queryForObject("SELECT pg_backend_pid()",Integer.class));return result;
+        }).when(graphTarget()).acquire(anyString());
+        graphRun(actor,AUTHOR,revision,null,null,graphRevision(revision,null));
+        assertThat(jdbc.queryForObject("SELECT backend_pid FROM public.hidra_topology_station_graph_operation_event WHERE facility_id=? AND resulting_revision_id=?",Integer.class,FACILITY,revision)).isEqualTo(pid.get());
+        assertThat(runtimeJdbc.queryForObject("SELECT session_user=current_user AND session_user='c3_source_claim_app'",Boolean.class)).isTrue();
+        assertThat(TransactionSynchronizationManager.getResourceMap()).isEmpty();
+    }
+
+    @Test void legacyRevisionWritesRemainOrdinaryAndNeverEnactPublication() {
+        String revision="legacy-ordinary-"+id();long events=graphRows("operation_event",null);
+        var head=jdbc.queryForList("SELECT revision_id,head_epoch,state,last_event_id FROM public.hidra_topology_station_graph_head WHERE facility_id=?",FACILITY);
+        tx().executeWithoutResult(status->{
+            assertThat(runtimeJdbc.queryForObject("SELECT session_user=current_user AND session_user='c3_source_claim_app'",Boolean.class)).isTrue();
+            assertThat(legacyRevisions.append(graphRevision(revision,null)).revisionId()).isEqualTo(revision);
+            assertThat(legacyRevisions.find(FACILITY,revision)).isPresent();
+        });
+        assertThat(graphRows("revision",revision)).isEqualTo(1);assertThat(graphRows("operation_event",null)).isEqualTo(events);
+        assertThat(jdbc.queryForList("SELECT revision_id,head_epoch,state,last_event_id FROM public.hidra_topology_station_graph_head WHERE facility_id=?",FACILITY)).isEqualTo(head);
     }
 
 }

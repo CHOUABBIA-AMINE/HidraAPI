@@ -738,4 +738,11 @@ class ProtectedTransactionExecutorTest {
         assertThat(ProtectedOperationDataSource.admissionSql("SELECT set_config('role','owner',true)")).isFalse();
     }
 
+    @Test void publicationCredentialEntryRejectsUnreviewedCallerBeforeWork() {
+        var called=new AtomicBoolean();
+        assertThatThrownBy(()->executor.executePublication(()->{called.set(true);return "no";},()->{},()->{}))
+            .isInstanceOf(IllegalStateException.class);
+        assertThat(called).isFalse();assertThat(commits).hasValue(0);
+    }
+
 }

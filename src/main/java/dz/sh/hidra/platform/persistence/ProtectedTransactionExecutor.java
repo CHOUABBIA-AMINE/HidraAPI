@@ -53,10 +53,34 @@ public final class ProtectedTransactionExecutor {
 
     private final PlatformTransactionManager manager;
     private final DataSource datasource;
+    private final ProtectedCredentialRoutingDataSource publicationRouter;
 
     public ProtectedTransactionExecutor(PlatformTransactionManager manager, DataSource datasource) {
         this.manager = Objects.requireNonNull(manager);
         this.datasource = Objects.requireNonNull(datasource);
+        ProtectedCredentialRoutingDataSource router=null;
+        try {
+            if(datasource.isWrapperFor(ProtectedCredentialRoutingDataSource.class))
+                router=datasource.unwrap(ProtectedCredentialRoutingDataSource.class);
+        } catch(java.sql.SQLException unavailable) { /* Ordinary executor remains usable. */ }
+        publicationRouter=router;
+    }
+
+    /** Select the private credential before any physical transaction; no business permission implied. */
+    public <T> T executePublication(Supplier<T> work,Runnable flush,Runnable guard) {
+        if(!StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName().equals(
+            "dz.sh.hidra.modules.topology.application.service.ProtectedStationGraphOperationService"))
+            throw new IllegalStateException("Unreviewed credential route caller");
+        try(var route=credentialRouter().open()) {return execute(work,flush,guard);}
+    }
+
+    public ProtectedCredentialRoutingDataSource.Identity publicationDatabaseIdentity() {
+        return credentialRouter().identity();
+    }
+
+    private ProtectedCredentialRoutingDataSource credentialRouter() {
+        if(publicationRouter==null)throw new IllegalStateException("Protected credential router required");
+        return publicationRouter;
     }
 
     public <T> T execute(Supplier<T> work, Runnable flush, Runnable guard) {

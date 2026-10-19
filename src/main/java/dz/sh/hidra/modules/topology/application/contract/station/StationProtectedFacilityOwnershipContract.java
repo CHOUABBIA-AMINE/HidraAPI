@@ -19,12 +19,18 @@
  */
 package dz.sh.hidra.modules.topology.application.contract.station;
 
+import dz.sh.hidra.platform.persistence.ProtectedRelationFence;
+import java.util.List;
+
 /** Live owner data only; the trusted coordinator owns permissions, time and publication gates. */
 public interface StationProtectedFacilityOwnershipContract {
     Admission acquire(String exactId);
     Contribution read(Admission admission);
 
     /** Marker only: fabricated implementations are never accepted by the configured adapter. */
+    /** Technical requirements from the issuing owner; data alone grants no authority. */
+    List<ProtectedRelationFence> finalFences(Admission admission);
+
     interface Admission {}
 
     /** Constructible scalar data is not a transferable attestation or permission. */

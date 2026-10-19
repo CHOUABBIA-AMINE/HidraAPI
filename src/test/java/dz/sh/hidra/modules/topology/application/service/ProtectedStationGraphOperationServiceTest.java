@@ -61,12 +61,13 @@ class ProtectedStationGraphOperationServiceTest {
         when(coordinator.collect(admitted)).thenReturn(evidence);
         when(publication.acquire("facility")).thenReturn(ticket);
         when(publication.head(ticket)).thenReturn(Optional.empty());
-        when(publication.finalGuard(eq(ticket),eq(sampled),any(Instant.class),eq("company"),eq(1L),eq(2L),isNull(),isNull())).thenReturn(true);
+        when(coordinator.finalFences(admitted)).thenReturn(List.of());
+        when(publication.finalGuard(eq(ticket),eq(sampled),any(Instant.class),eq("company"),eq(1L),eq(2L),isNull(),isNull(),anyList())).thenReturn(true);
         doAnswer(call->{
             @SuppressWarnings("unchecked") Supplier<Object> body=call.getArgument(0);
             Runnable flush=call.getArgument(1),guard=call.getArgument(2);
             Object r=body.get();flush.run();guard.run();return r;
-        }).when(executor).execute(any(),any(),any());
+        }).when(executor).executePublication(any(),any(),any());
     }
     private Command command(Kind kind){return new Command(kind,"company","facility",null,null,null,null,null,5);}
     @Test void rejectsAmbientTransactionBeforePreparation(){
@@ -120,18 +121,18 @@ class ProtectedStationGraphOperationServiceTest {
         var result=service.execute(command(Kind.READ_CURRENT));
         assertTrue(result.observedCommit());assertNull(result.revision());
         InOrder order=inOrder(executor,coordinator,publication);
-        order.verify(executor).execute(any(),any(),any());
+        order.verify(executor).executePublication(any(),any(),any());
         order.verify(coordinator).acquire(eq(prepared),any(Request.class));
         order.verify(publication).acquire("facility");
         order.verify(coordinator).collect(admitted);
         order.verify(coordinator).requireCurrent(admitted);
         order.verify(publication).flush();
         order.verify(publication).finalGuard(eq(ticket),eq(sampled),any(Instant.class),
-            eq("company"),eq(1L),eq(2L),isNull(),isNull());
+            eq("company"),eq(1L),eq(2L),isNull(),isNull(),anyList());
     }
     @Test void poisonsCaughtMutationAndGuardFailures(){
         when(publication.finalGuard(eq(ticket),eq(sampled),any(Instant.class),eq("company"),
-                eq(1L),eq(2L),isNull(),isNull())).thenReturn(false);
+                eq(1L),eq(2L),isNull(),isNull(),anyList())).thenReturn(false);
         assertThrows(IllegalStateException.class,()->service.execute(command(Kind.READ_CURRENT)));
     }
 }

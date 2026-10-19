@@ -144,6 +144,18 @@ public class JdbcTopologyProtectedPartyEligibilityAdapter implements TopologyPro
         } catch (RuntimeException failure) { rollback(); throw failure instanceof IllegalArgumentException ? invalid() : failure; }
     }
 
+    @Override @Transactional(propagation=Propagation.MANDATORY)
+    public java.util.List<dz.sh.hidra.platform.persistence.ProtectedRelationFence> finalFences(Admission admission) {
+        try {
+            var holder=context();
+            if(!(admission instanceof Ticket t) || t.issuer!=this || !t.active || t.thread!=Thread.currentThread()
+                || t.holder!=holder || t.connection!=holder.getConnection())throw invalid();
+            return java.util.List.of(
+                new dz.sh.hidra.platform.persistence.ProtectedRelationFence("public.hidra_party_party",dz.sh.hidra.platform.persistence.ProtectedRelationFence.Mode.SHARE_ROW_EXCLUSIVE),
+                new dz.sh.hidra.platform.persistence.ProtectedRelationFence("public.hidra_party_eligibility_generation",dz.sh.hidra.platform.persistence.ProtectedRelationFence.Mode.ACCESS_SHARE));
+        } catch(RuntimeException failure){rollback();throw failure;}
+    }
+
     private ConnectionHolder context() {
         if (!TransactionSynchronizationManager.isActualTransactionActive()
                 || !TransactionSynchronizationManager.isSynchronizationActive()

@@ -41,7 +41,12 @@ class ProtectedOwnerWitnessBoundaryGuardrailTest {
     @Test void exportedContractsContainOnlyJdkScalarsAndOpaqueAdmission() throws Exception {
         for(var o:OWNERS) {
             String source=Files.readString(module(o).resolve("application/contract/"+o.contractPackage()+"/"+o.contract()+".java"));
-            assertFalse(source.contains("import "));assertFalse(source.contains("org.springframework"));
+            var imports=Pattern.compile("^import ([^;]+);",Pattern.MULTILINE).matcher(source);
+            while(imports.find())assertTrue(List.of("java.util.List","dz.sh.hidra.platform.persistence.ProtectedRelationFence").contains(imports.group(1)));
+            assertFalse(source.contains("org.springframework"));
+            assertTrue(source.contains("finalFences(Admission admission)"));
+            String technical=Files.readString(Path.of("src/main/java/dz/sh/hidra/platform/persistence/ProtectedRelationFence.java"));
+            assertFalse(technical.contains("org.springframework"));assertFalse(technical.contains("jakarta.persistence"));
             assertTrue(source.contains("Admission acquire(String exactId)"));assertTrue(source.contains("Contribution read(Admission admission)"));
             Class<?> type=Class.forName("dz.sh.hidra.modules."+o.module()+".application.contract."+o.contractPackage()+"."+o.contract());
             Class<?> marker=Class.forName(type.getName()+"$Admission");

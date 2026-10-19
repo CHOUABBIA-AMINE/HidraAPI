@@ -66,7 +66,15 @@ public class ProtectedStationAdmissionCoordinator {
             var i=identity.acquire(prepared.identity,request);
             var p=party.acquire(request.companyPartyId());
             var f=facility.acquire(request.facilityId());
-            var admission=new Admission(this,request,i,p,f);
+            var identityFences=identity.finalFences(i);
+            var partyFences=party.finalFences(p);
+            var facilityFences=facility.finalFences(f);
+            if(identityFences==null || identityFences.size()!=24 || partyFences==null || partyFences.size()!=2
+                || facilityFences==null || facilityFences.size()!=2)throw invalid();
+            var fences=new java.util.ArrayList<dz.sh.hidra.platform.persistence.ProtectedRelationFence>();
+            fences.addAll(identityFences);fences.addAll(partyFences);fences.addAll(facilityFences);
+            if(fences.stream().map(dz.sh.hidra.platform.persistence.ProtectedRelationFence::relation).distinct().count()!=28)throw invalid();
+            var admission=new Admission(this,request,i,p,f,java.util.List.copyOf(fences));
             TransactionSynchronizationManager.registerSynchronization(admission);
             return admission;
         } catch(RuntimeException failure) { executor.rejectAdmission();throw failure; }
@@ -157,6 +165,11 @@ public class ProtectedStationAdmissionCoordinator {
         }
     }
 
+    /** Frozen owner requirements collected before the eligibility sample, never caller authority. */
+    public java.util.List<dz.sh.hidra.platform.persistence.ProtectedRelationFence> finalFences(Admission admission) {
+        return current(admission).fences;
+    }
+
     private Admission current(Admission a) {
         if(a==null || a.owner!=this || a.thread!=Thread.currentThread() || !a.active
             || !TransactionSynchronizationManager.isActualTransactionActive()
@@ -182,14 +195,15 @@ public class ProtectedStationAdmissionCoordinator {
         private final TopologyProtectedAuthorizationContract.Admission identity;
         private final TopologyProtectedPartyEligibilityContract.Admission party;
         private final StationProtectedFacilityOwnershipContract.Admission facility;
+        private final java.util.List<dz.sh.hidra.platform.persistence.ProtectedRelationFence> fences;
         private final AtomicBoolean used=new AtomicBoolean();
         private volatile boolean active=true;
         private Contribution result;
         private ProtectedTransactionExecutor.ProvisionalPermit provisional;
         private Admission(ProtectedStationAdmissionCoordinator owner,Request request,
             TopologyProtectedAuthorizationContract.Admission identity,TopologyProtectedPartyEligibilityContract.Admission party,
-            StationProtectedFacilityOwnershipContract.Admission facility) {
-            this.owner=owner;this.request=request;this.identity=identity;this.party=party;this.facility=facility;
+            StationProtectedFacilityOwnershipContract.Admission facility,java.util.List<dz.sh.hidra.platform.persistence.ProtectedRelationFence> fences) {
+            this.owner=owner;this.request=request;this.identity=identity;this.party=party;this.facility=facility;this.fences=fences;
         }
         @Override public void suspend() { active=false; }
         @Override public void afterCompletion(int status) { active=false; }

@@ -25,6 +25,9 @@ import dz.sh.hidra.modules.identity.application.contract.topology.TopologyScoped
 import java.time.Instant;
 import java.util.Objects;
 
+import dz.sh.hidra.platform.persistence.ProtectedRelationFence;
+import java.util.List;
+
 /** Identity contribution only; the trusted coordinator owns all other owner and commit gates. */
 public interface TopologyProtectedAuthorizationContract {
     Prepared prepare();
@@ -38,6 +41,9 @@ public interface TopologyProtectedAuthorizationContract {
     void requireCurrent(Admission admission);
 
     /** Marker only; only the issuing adapter accepts its private ticket. */
+    /** Technical requirements from the issuing owner; data alone grants no authority. */
+    List<ProtectedRelationFence> finalFences(Admission admission);
+
     interface Admission {}
 
     /** A marker is not proof. Only the issuing adapter's private implementation is accepted. */

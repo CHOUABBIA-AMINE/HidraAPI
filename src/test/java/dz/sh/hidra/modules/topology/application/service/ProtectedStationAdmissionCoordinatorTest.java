@@ -42,6 +42,16 @@ class ProtectedStationAdmissionCoordinatorTest {
     final TopologyProtectedPartyEligibilityContract.Admission pa=mock(TopologyProtectedPartyEligibilityContract.Admission.class);
     final StationProtectedFacilityOwnershipContract.Admission fa=mock(StationProtectedFacilityOwnershipContract.Admission.class);
     @BeforeEach void setup() {
+        var fences=new java.util.ArrayList<dz.sh.hidra.platform.persistence.ProtectedRelationFence>();
+        for(int n=0;n<24;n++)fences.add(new dz.sh.hidra.platform.persistence.ProtectedRelationFence(
+            "public.identity_test_"+n,dz.sh.hidra.platform.persistence.ProtectedRelationFence.Mode.SHARE_ROW_EXCLUSIVE));
+        when(i.finalFences(ia)).thenReturn(List.copyOf(fences));
+        when(p.finalFences(pa)).thenReturn(List.of(
+            new dz.sh.hidra.platform.persistence.ProtectedRelationFence("public.party_test",dz.sh.hidra.platform.persistence.ProtectedRelationFence.Mode.SHARE_ROW_EXCLUSIVE),
+            new dz.sh.hidra.platform.persistence.ProtectedRelationFence("public.party_generation",dz.sh.hidra.platform.persistence.ProtectedRelationFence.Mode.ACCESS_SHARE)));
+        when(f.finalFences(fa)).thenReturn(List.of(
+            new dz.sh.hidra.platform.persistence.ProtectedRelationFence("public.facility_test",dz.sh.hidra.platform.persistence.ProtectedRelationFence.Mode.SHARE_ROW_EXCLUSIVE),
+            new dz.sh.hidra.platform.persistence.ProtectedRelationFence("public.facility_generation",dz.sh.hidra.platform.persistence.ProtectedRelationFence.Mode.ACCESS_SHARE)));
         when(i.prepare()).thenReturn(prepared);when(i.acquire(prepared,r)).thenReturn(ia);
         when(p.acquire("company")).thenReturn(pa);when(f.acquire("facility")).thenReturn(fa);
         when(i.contribute(ia)).thenReturn(identity(TopologyProtectedAuthorizationContract.Decision.PERMIT));

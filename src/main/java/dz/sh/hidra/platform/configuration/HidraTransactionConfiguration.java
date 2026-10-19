@@ -21,6 +21,8 @@ package dz.sh.hidra.platform.configuration;
 
 import dz.sh.hidra.platform.persistence.ProtectedJpaTransactionManager;
 import dz.sh.hidra.platform.persistence.ProtectedOperationDataSource;
+import dz.sh.hidra.platform.persistence.ProtectedCredentialRoutingDataSource;
+import org.springframework.core.env.Environment;
 
 import jakarta.persistence.EntityManagerFactory;
 
@@ -38,13 +40,14 @@ import javax.sql.DataSource;
 @EnableTransactionManagement
 public class HidraTransactionConfiguration {
     @Bean
-    static BeanPostProcessor protectedOperationDatasource() {
+    static BeanPostProcessor protectedOperationDatasource(Environment environment) {
+        var publication=ProtectedPublicationDatabaseProperties.from(environment);
         return new BeanPostProcessor() {
             @Override
             public Object postProcessAfterInitialization(Object bean, String name) {
                 return bean instanceof DataSource ds
                                 && !(bean instanceof ProtectedOperationDataSource)
-                        ? new ProtectedOperationDataSource(ds)
+                        ? new ProtectedOperationDataSource(new ProtectedCredentialRoutingDataSource(ds,publication))
                         : bean;
             }
         };

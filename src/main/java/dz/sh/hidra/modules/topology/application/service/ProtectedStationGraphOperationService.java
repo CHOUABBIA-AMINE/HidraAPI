@@ -75,7 +75,7 @@ public class ProtectedStationGraphOperationService implements ProtectedStationGr
         AtomicReference<ProtectedStationAdmissionCoordinator.Contribution> evidence=new AtomicReference<>();
         AtomicReference<StationGraphPublicationHead> resultHead=new AtomicReference<>();
         AtomicReference<UUID> eventId=new AtomicReference<>();
-        Result uncommitted=executor.execute(()->{
+        Result uncommitted=executor.executePublication(()->{
             var admission=coordinator.acquire(prepared,new Request(op,cmd.companyPartyId(),cmd.facilityId()));
             auth.set(admission);
             ticket.set(publication.acquire(cmd.facilityId())); // Head/event/revision fences BEFORE common sample.
@@ -150,7 +150,7 @@ public class ProtectedStationGraphOperationService implements ProtectedStationGr
             var e=evidence.get();
             if(e==null || !publication.finalGuard(ticket.get(),e.sampledAt(),e.validUntil(),
                  e.companyPartyId(),e.partyGeneration(),e.facilityGeneration(),
-                 resultHead.get(),eventId.get()))throw invalid();
+                 resultHead.get(),eventId.get(),coordinator.finalFences(auth.get())))throw invalid();
         });
         return new Result(uncommitted.head(),uncommitted.revision(),uncommitted.history(),true);
     }

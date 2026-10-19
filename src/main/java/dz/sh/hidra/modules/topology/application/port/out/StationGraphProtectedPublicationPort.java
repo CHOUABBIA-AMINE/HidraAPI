@@ -43,5 +43,6 @@ public interface StationGraphProtectedPublicationPort {
     StationGraphPublicationHead change(Admission ticket,StationGraphPublicationHead next,
         StationGraphPublicationEvent event,Long expectedEpoch,String expectedRevisionId);
     boolean finalGuard(Admission ticket,Instant sampledAt,Instant validUntil,String companyPartyId,
-                       long partyGeneration,long facilityGeneration,StationGraphPublicationHead head,UUID eventId);
+                       long partyGeneration,long facilityGeneration,StationGraphPublicationHead head,UUID eventId,
+                       List<dz.sh.hidra.platform.persistence.ProtectedRelationFence> ownerFences);
 }

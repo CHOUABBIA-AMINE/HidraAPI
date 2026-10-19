@@ -93,4 +93,10 @@ class JdbcStationProtectedFacilityOwnershipAdapterTest {
         assertThrows(IllegalArgumentException.class,()->new StationProtectedFacilityOwnershipContract.Contribution("facility"," owner",1,10,20));
         assertFalse(StationProtectedFacilityOwnershipContract.Admission.class.isRecord());
     }
+    @Test void finalFenceExportRejectsForgedAdmissionWithoutReadingOwnerRows() {
+        transaction();
+        assertThrows(IllegalStateException.class,()->adapter.finalFences(new StationProtectedFacilityOwnershipContract.Admission(){}));
+        assertTrue(holder.isRollbackOnly());verifyNoInteractions(jdbc);
+    }
+
 }

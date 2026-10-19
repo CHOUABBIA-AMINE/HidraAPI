@@ -573,11 +573,232 @@
       ],
       "status": "LEGACY-P1"
     },
+    "doc/roadmap/PLATFORM_ACCEPTANCE.md": {
+      "metadata_from": [
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/roadmap/TASKS_HPS-001.md": {
+      "metadata_from": [
+        "doc/roadmap/ULTIMATE_TASKS.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/roadmap/TASKS_HPS-002.md": {
+      "metadata_from": [
+        "doc/roadmap/ULTIMATE_TASKS.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/roadmap/TASKS_HPS-003.md": {
+      "metadata_from": [
+        "doc/roadmap/ULTIMATE_TASKS.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/roadmap/TASKS_HPS-004.md": {
+      "metadata_from": [
+        "doc/roadmap/ULTIMATE_TASKS.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/roadmap/TASKS_HPS-005.md": {
+      "metadata_from": [
+        "doc/roadmap/ULTIMATE_TASKS.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/roadmap/TASKS_HPS-006.md": {
+      "metadata_from": [
+        "doc/roadmap/ULTIMATE_TASKS.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/roadmap/TASKS_HPS-007.md": {
+      "metadata_from": [
+        "doc/roadmap/ULTIMATE_TASKS.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/roadmap/TASKS_HPS-008.md": {
+      "metadata_from": [
+        "doc/roadmap/ULTIMATE_TASKS.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/roadmap/TASKS_HPS-009.md": {
+      "metadata_from": [
+        "doc/roadmap/ULTIMATE_TASKS.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/roadmap/TASKS_HPS-010.md": {
+      "metadata_from": [
+        "doc/roadmap/ULTIMATE_TASKS.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/roadmap/TASKS_HPS-011.md": {
+      "metadata_from": [
+        "doc/roadmap/ULTIMATE_TASKS.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/roadmap/TASKS_HPS-012.md": {
+      "metadata_from": [
+        "doc/roadmap/ULTIMATE_TASKS.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/roadmap/TASKS_HPS-013.md": {
+      "metadata_from": [
+        "doc/roadmap/ULTIMATE_TASKS.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/roadmap/TASKS_HPS-014.md": {
+      "metadata_from": [
+        "doc/roadmap/ULTIMATE_TASKS.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/roadmap/TASKS_HPS-015.md": {
+      "metadata_from": [
+        "doc/roadmap/ULTIMATE_TASKS.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/roadmap/TASKS_HPS-016.md": {
+      "metadata_from": [
+        "doc/roadmap/ULTIMATE_TASKS.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/roadmap/TASKS_HPS-017.md": {
+      "metadata_from": [
+        "doc/roadmap/ULTIMATE_TASKS.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/roadmap/TASKS_HPS-018.md": {
+      "metadata_from": [
+        "doc/roadmap/ULTIMATE_TASKS.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/roadmap/TASKS_HPS-019.md": {
+      "metadata_from": [
+        "doc/roadmap/ULTIMATE_TASKS.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/roadmap/TASKS_HPS-020.md": {
+      "metadata_from": [
+        "doc/roadmap/ULTIMATE_TASKS.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/roadmap/TASKS_HPS-021.md": {
+      "metadata_from": [
+        "doc/roadmap/ULTIMATE_TASKS.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/roadmap/TASKS_HPS-022.md": {
+      "metadata_from": [
+        "doc/roadmap/ULTIMATE_TASKS.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/roadmap/TASKS_HPS-023.md": {
+      "metadata_from": [
+        "doc/roadmap/ULTIMATE_TASKS.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/roadmap/TASKS_HPS-024.md": {
+      "metadata_from": [
+        "doc/roadmap/ULTIMATE_TASKS.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/roadmap/TASKS_HPS-025.md": {
+      "metadata_from": [
+        "doc/roadmap/ULTIMATE_TASKS.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/roadmap/ULTIMATE_PHASES.md": {
+      "metadata_from": [
+        "doc/roadmap/ULTIMATE_PHASES.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
     "doc/roadmap/ULTIMATE_ROADMAP.md": {
       "metadata_from": [
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
       "status": "ACTIVE"
+    },
+    "doc/roadmap/ULTIMATE_TASKS.md": {
+      "metadata_from": [
+        "doc/roadmap/ULTIMATE_TASKS.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/roadmap/ULTIMATE_TASKS_BASELINE.md": {
+      "metadata_from": [
+        "doc/roadmap/ULTIMATE_TASKS.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "HISTORICAL"
+    },
+    "doc/roadmap/ULTIMATE_TASKS_EVIDENCE.md": {
+      "metadata_from": [
+        "doc/roadmap/ULTIMATE_TASKS.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "HISTORICAL"
+    },
+    "doc/roadmap/gaps.md": {
+      "metadata_from": [
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/roadmap/history/ULTIMATE_ROADMAP_HISTORY.md": {
+      "metadata_from": [
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "HISTORICAL"
     },
     "doc/security/INCIDENT_RESPONSE.md": {
       "metadata_from": [
@@ -657,236 +878,17 @@
       ],
       "status": "CURRENT"
     },
-    "doc/roadmap/PLATFORM_ACCEPTANCE.md": {
-      "status": "CURRENT",
-      "metadata_from": [
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ]
-    },
-    "doc/roadmap/history/ULTIMATE_ROADMAP_HISTORY.md": {
-      "status": "HISTORICAL",
-      "metadata_from": [
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ]
-    },
-    "doc/roadmap/gaps.md": {
-      "metadata_from": [
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ],
-      "status": "CURRENT"
-    },
     "doc/vision/HIDRA_MASTER_PRODUCT_VISION.md": {
       "metadata_from": [
         "doc/README.md",
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
       "status": "TARGET"
-    },
-    "doc/roadmap/ULTIMATE_PHASES.md": {
-      "status": "CURRENT",
-      "metadata_from": [
-        "doc/roadmap/ULTIMATE_PHASES.md",
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ]
-    },
-    "doc/roadmap/ULTIMATE_TASKS.md": {
-      "status": "CURRENT",
-      "metadata_from": [
-        "doc/roadmap/ULTIMATE_TASKS.md",
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ]
-    },
-    "doc/roadmap/TASKS_HPS-001.md": {
-      "status": "CURRENT",
-      "metadata_from": [
-        "doc/roadmap/ULTIMATE_TASKS.md",
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ]
-    },
-    "doc/roadmap/TASKS_HPS-002.md": {
-      "status": "CURRENT",
-      "metadata_from": [
-        "doc/roadmap/ULTIMATE_TASKS.md",
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ]
-    },
-    "doc/roadmap/TASKS_HPS-003.md": {
-      "status": "CURRENT",
-      "metadata_from": [
-        "doc/roadmap/ULTIMATE_TASKS.md",
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ]
-    },
-    "doc/roadmap/TASKS_HPS-004.md": {
-      "status": "CURRENT",
-      "metadata_from": [
-        "doc/roadmap/ULTIMATE_TASKS.md",
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ]
-    },
-    "doc/roadmap/TASKS_HPS-005.md": {
-      "status": "CURRENT",
-      "metadata_from": [
-        "doc/roadmap/ULTIMATE_TASKS.md",
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ]
-    },
-    "doc/roadmap/TASKS_HPS-006.md": {
-      "status": "CURRENT",
-      "metadata_from": [
-        "doc/roadmap/ULTIMATE_TASKS.md",
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ]
-    },
-    "doc/roadmap/TASKS_HPS-007.md": {
-      "status": "CURRENT",
-      "metadata_from": [
-        "doc/roadmap/ULTIMATE_TASKS.md",
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ]
-    },
-    "doc/roadmap/TASKS_HPS-008.md": {
-      "status": "CURRENT",
-      "metadata_from": [
-        "doc/roadmap/ULTIMATE_TASKS.md",
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ]
-    },
-    "doc/roadmap/TASKS_HPS-009.md": {
-      "status": "CURRENT",
-      "metadata_from": [
-        "doc/roadmap/ULTIMATE_TASKS.md",
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ]
-    },
-    "doc/roadmap/TASKS_HPS-010.md": {
-      "status": "CURRENT",
-      "metadata_from": [
-        "doc/roadmap/ULTIMATE_TASKS.md",
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ]
-    },
-    "doc/roadmap/TASKS_HPS-011.md": {
-      "status": "CURRENT",
-      "metadata_from": [
-        "doc/roadmap/ULTIMATE_TASKS.md",
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ]
-    },
-    "doc/roadmap/TASKS_HPS-012.md": {
-      "status": "CURRENT",
-      "metadata_from": [
-        "doc/roadmap/ULTIMATE_TASKS.md",
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ]
-    },
-    "doc/roadmap/TASKS_HPS-013.md": {
-      "status": "CURRENT",
-      "metadata_from": [
-        "doc/roadmap/ULTIMATE_TASKS.md",
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ]
-    },
-    "doc/roadmap/TASKS_HPS-014.md": {
-      "status": "CURRENT",
-      "metadata_from": [
-        "doc/roadmap/ULTIMATE_TASKS.md",
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ]
-    },
-    "doc/roadmap/TASKS_HPS-015.md": {
-      "status": "CURRENT",
-      "metadata_from": [
-        "doc/roadmap/ULTIMATE_TASKS.md",
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ]
-    },
-    "doc/roadmap/TASKS_HPS-016.md": {
-      "status": "CURRENT",
-      "metadata_from": [
-        "doc/roadmap/ULTIMATE_TASKS.md",
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ]
-    },
-    "doc/roadmap/TASKS_HPS-017.md": {
-      "status": "CURRENT",
-      "metadata_from": [
-        "doc/roadmap/ULTIMATE_TASKS.md",
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ]
-    },
-    "doc/roadmap/TASKS_HPS-018.md": {
-      "status": "CURRENT",
-      "metadata_from": [
-        "doc/roadmap/ULTIMATE_TASKS.md",
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ]
-    },
-    "doc/roadmap/TASKS_HPS-019.md": {
-      "status": "CURRENT",
-      "metadata_from": [
-        "doc/roadmap/ULTIMATE_TASKS.md",
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ]
-    },
-    "doc/roadmap/TASKS_HPS-020.md": {
-      "status": "CURRENT",
-      "metadata_from": [
-        "doc/roadmap/ULTIMATE_TASKS.md",
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ]
-    },
-    "doc/roadmap/TASKS_HPS-021.md": {
-      "status": "CURRENT",
-      "metadata_from": [
-        "doc/roadmap/ULTIMATE_TASKS.md",
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ]
-    },
-    "doc/roadmap/TASKS_HPS-022.md": {
-      "status": "CURRENT",
-      "metadata_from": [
-        "doc/roadmap/ULTIMATE_TASKS.md",
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ]
-    },
-    "doc/roadmap/TASKS_HPS-023.md": {
-      "status": "CURRENT",
-      "metadata_from": [
-        "doc/roadmap/ULTIMATE_TASKS.md",
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ]
-    },
-    "doc/roadmap/TASKS_HPS-024.md": {
-      "status": "CURRENT",
-      "metadata_from": [
-        "doc/roadmap/ULTIMATE_TASKS.md",
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ]
-    },
-    "doc/roadmap/TASKS_HPS-025.md": {
-      "status": "CURRENT",
-      "metadata_from": [
-        "doc/roadmap/ULTIMATE_TASKS.md",
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ]
-    },
-    "doc/roadmap/ULTIMATE_TASKS_BASELINE.md": {
-      "status": "HISTORICAL",
-      "metadata_from": [
-        "doc/roadmap/ULTIMATE_TASKS.md",
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ]
-    },
-    "doc/roadmap/ULTIMATE_TASKS_EVIDENCE.md": {
-      "status": "HISTORICAL",
-      "metadata_from": [
-        "doc/roadmap/ULTIMATE_TASKS.md",
-        "doc/governance/DOCUMENT_REGISTER.md"
-      ]
     }
   },
   "format_version": 1,
+  "historical_roadmap": "doc/roadmap/history/ULTIMATE_ROADMAP_HISTORY.md",
+  "historical_roadmap_blob_sha": "405c417411270188e73cf2489735b43b6e172969",
   "indexes": {
     "doc/README.md": [
       "doc/vision/HIDRA_MASTER_PRODUCT_VISION.md",
@@ -980,13 +982,6 @@
       "doc/modules/topology.md",
       "doc/modules/workflow.md"
     ],
-    "doc/testing/README.md": [
-      "doc/testing/API_TESTING.md",
-      "doc/testing/ARCHITECTURE_TESTING.md",
-      "doc/testing/DATABASE_TESTING.md",
-      "doc/testing/REQUIREMENTS_TRACEABILITY.md",
-      "doc/testing/TEST_STRATEGY.md"
-    ],
     "doc/roadmap/ULTIMATE_TASKS.md": [
       "doc/roadmap/TASKS_HPS-001.md",
       "doc/roadmap/TASKS_HPS-002.md",
@@ -1015,51 +1010,58 @@
       "doc/roadmap/TASKS_HPS-025.md",
       "doc/roadmap/ULTIMATE_TASKS_BASELINE.md",
       "doc/roadmap/ULTIMATE_TASKS_EVIDENCE.md"
+    ],
+    "doc/testing/README.md": [
+      "doc/testing/API_TESTING.md",
+      "doc/testing/ARCHITECTURE_TESTING.md",
+      "doc/testing/DATABASE_TESTING.md",
+      "doc/testing/REQUIREMENTS_TRACEABILITY.md",
+      "doc/testing/TEST_STRATEGY.md"
     ]
   },
   "legacy_statuses": {
     "doc/operations/APPLICATION_HIGH_AVAILABILITY.md": {
-      "line": "APPROVED TARGET — HPR-P1-002",
+      "line": "APPROVED TARGET \u2014 HPR-P1-002",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     },
     "doc/operations/CI_CD_RELEASE_GUIDE.md": {
-      "line": "CONTROLLED PIPELINE IMPLEMENTED / LIVE PRODUCTION-EQUIVALENT EXECUTION PENDING — HPR-P1-018",
+      "line": "CONTROLLED PIPELINE IMPLEMENTED / LIVE PRODUCTION-EQUIVALENT EXECUTION PENDING \u2014 HPR-P1-018",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     },
     "doc/operations/DEPLOYMENT_RUNBOOK.md": {
-      "line": "APPROVED PRODUCT-NEUTRAL PROCEDURE — HPR-P1-007",
+      "line": "APPROVED PRODUCT-NEUTRAL PROCEDURE \u2014 HPR-P1-007",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     },
     "doc/operations/DISASTER_RECOVERY_OBJECTIVES.md": {
-      "line": "APPROVED TARGET — HPR-P1-004",
+      "line": "APPROVED TARGET \u2014 HPR-P1-004",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     },
     "doc/operations/DISASTER_RECOVERY_RUNBOOK.md": {
-      "line": "APPROVED PROCEDURE — HPR-P1-005",
+      "line": "APPROVED PROCEDURE \u2014 HPR-P1-005",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     },
     "doc/operations/ENVIRONMENT_CONFIGURATION.md": {
-      "line": "CURRENT CONFIGURATION CONTRACT + APPROVED OPERATING REQUIREMENTS — HPR-P1-007",
+      "line": "CURRENT CONFIGURATION CONTRACT + APPROVED OPERATING REQUIREMENTS \u2014 HPR-P1-007",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     },
     "doc/operations/HIGH_AVAILABILITY_ARCHITECTURE.md": {
-      "line": "APPROVED TARGET ARCHITECTURE — HPR-P1-006",
+      "line": "APPROVED TARGET ARCHITECTURE \u2014 HPR-P1-006",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     },
     "doc/operations/OBSERVABILITY_AND_SRE.md": {
-      "line": "OPERATING MODEL ESTABLISHED / P1 ALERTING IMPLEMENTED-PENDING-LIVE-EXERCISE — HPR-P1-010 + HPR-P1-019",
+      "line": "OPERATING MODEL ESTABLISHED / P1 ALERTING IMPLEMENTED-PENDING-LIVE-EXERCISE \u2014 HPR-P1-010 + HPR-P1-019",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     },
     "doc/operations/P1_OWNER_APPROVED_VALUES.md": {
-      "line": "OWNER-APPROVED — 2026-10-05",
+      "line": "OWNER-APPROVED \u2014 2026-10-05",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     },
     "doc/operations/P1_SURVIVABILITY_EXERCISE_EVIDENCE_2026-10-06.md": {
-      "line": "COMPLETED — 2026-10-06",
+      "line": "COMPLETED \u2014 2026-10-06",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     },
     "doc/operations/PRODUCTION_INFRASTRUCTURE_STACK.md": {
-      "line": "OWNER-APPROVED PRODUCTION INFRASTRUCTURE BASELINE — HPR-P1-013",
+      "line": "OWNER-APPROVED PRODUCTION INFRASTRUCTURE BASELINE \u2014 HPR-P1-013",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     }
   },
@@ -1100,21 +1102,35 @@
   ],
   "openapi": {
     "counts": {
-      "operations": 263,
-      "paths": 244,
-      "schemas": 231
+      "operations": 267,
+      "paths": 247,
+      "schemas": 236
     },
     "path": "doc/api/openapi.yaml",
     "provenance": {
-      "artifact_id": 11577329466,
+      "artifact_id": 12191249823,
+      "artifact_name": "hidra-ci-diagnostics-a98ef0ea115b85a80941be40406511334b4b477a-39264047957-1-api-contract",
       "conclusion": "success",
-      "json_sha256": "1ee03ad711b79c7ef42767a6aa3c685f4857800f09f03002deeac49e4e2d23d4",
-      "run_id": 37841205677,
-      "source_sha": "617c2eec812e3a5734957ee9fa0360f6f5613032",
-      "zip_sha256": "2ff35c384c54b2d49e50aa2a9e646a67c62427e8afcc8db92e17e5368a91b334"
+      "conclusion_scope": "Publish deterministic OpenAPI contract generation step only",
+      "generation_step": "Publish deterministic OpenAPI contract",
+      "generation_step_conclusion": "success",
+      "generation_step_number": 7,
+      "job_conclusion": "failure",
+      "job_id": 118098882769,
+      "json_sha256": "1144f929d23a0b3d4bb63fc2bac645c6ca1a1cb9b9e59b91deeb8933305842ce",
+      "remaining_gates": [
+        "exact repair-SHA runtime snapshot equality",
+        "full verification",
+        "migrated database dictionary reconciliation"
+      ],
+      "run_attempt": 1,
+      "run_id": 39264047957,
+      "source_sha": "a98ef0ea115b85a80941be40406511334b4b477a",
+      "workflow_conclusion": "failure",
+      "zip_sha256": "db55d874636feba7df69dab8ac112403e06a79d820bdb23ae94af38fb0f70f75"
     },
-    "sha256": "ba9511455ebabb51c704ef510d08f4fdc766f29d8def0a34ef7a8f1acf86d9fd",
-    "source_sha": "617c2eec812e3a5734957ee9fa0360f6f5613032"
+    "sha256": "b4e5f611148bce49e9855c5f5af944499e3a3cf69e995c3c7176b49ffd82546a",
+    "source_sha": "a98ef0ea115b85a80941be40406511334b4b477a"
   },
   "register": "doc/governance/DOCUMENT_REGISTER.md",
   "register_areas": {
@@ -1126,14 +1142,12 @@
     "doc/vision/**": "TARGET"
   },
   "roadmap": "doc/roadmap/ULTIMATE_ROADMAP.md",
-  "historical_roadmap": "doc/roadmap/history/ULTIMATE_ROADMAP_HISTORY.md",
-  "historical_roadmap_blob_sha": "405c417411270188e73cf2489735b43b6e172969",
   "task_register": {
+    "archives": {
+      "doc/roadmap/ULTIMATE_TASKS_BASELINE.md": "c26ac08772fb3bd0932381282ac3b457f125dc30ef11d867d8d1e4747047f99f",
+      "doc/roadmap/ULTIMATE_TASKS_EVIDENCE.md": "686da36e049f6eaa19be3649ac63c66a9a897d721f16752aef3918c55e60819a"
+    },
     "index": "doc/roadmap/ULTIMATE_TASKS.md",
-    "source_sha": "2148b270a863cee5f0b42d458508cd9327567591",
-    "source_blob": "06331349b698b8faeb09e5a24a13cfe9a5175adc",
-    "source_sha256": "09f0137b7973fff98f7104d9bf7af05beb3faa669170264d53ca71dadb61b748",
-    "task_count": 921,
     "phases": {
       "HPS-001": "doc/roadmap/TASKS_HPS-001.md",
       "HPS-002": "doc/roadmap/TASKS_HPS-002.md",
@@ -1161,13 +1175,13 @@
       "HPS-024": "doc/roadmap/TASKS_HPS-024.md",
       "HPS-025": "doc/roadmap/TASKS_HPS-025.md"
     },
-    "archives": {
-      "doc/roadmap/ULTIMATE_TASKS_BASELINE.md": "c26ac08772fb3bd0932381282ac3b457f125dc30ef11d867d8d1e4747047f99f",
-      "doc/roadmap/ULTIMATE_TASKS_EVIDENCE.md": "686da36e049f6eaa19be3649ac63c66a9a897d721f16752aef3918c55e60819a"
-    },
+    "source_blob": "06331349b698b8faeb09e5a24a13cfe9a5175adc",
+    "source_sha": "2148b270a863cee5f0b42d458508cd9327567591",
+    "source_sha256": "09f0137b7973fff98f7104d9bf7af05beb3faa669170264d53ca71dadb61b748",
     "tables": [
       "doc/roadmap/ULTIMATE_ROADMAP.md",
       "doc/roadmap/ULTIMATE_PHASES.md"
-    ]
+    ],
+    "task_count": 921
   }
 }

@@ -30,6 +30,10 @@ class EngineeringNetworkDraftBoundaryGuardrailTest {
     @Test void networkPairCannotBeConstructedOrRetaggedByCallers(){
         for(var c:ProtectedOperationIdentityParticipant.DraftClaimPair.class.getDeclaredConstructors())assertTrue(Modifier.isPrivate(c.getModifiers()));
         assertEquals(0,ProtectedOperationIdentityParticipant.DraftClaimPair.class.getConstructors().length);
+        for(var f:ProtectedOperationIdentityParticipant.QualifiedClaimRead.class.getDeclaredFields()){
+            assertTrue(Modifier.isPrivate(f.getModifiers()));assertTrue(Modifier.isFinal(f.getModifiers()));
+        }
+
     }
     @Test void finiteDraftSqlHashesAndPlatformIssuerNamesStayBound() throws Exception {
         String base="src/main/java/dz/sh/hidra/";

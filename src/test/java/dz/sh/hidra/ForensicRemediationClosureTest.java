@@ -179,6 +179,12 @@ class ForensicRemediationClosureTest {
                                 .contains(imported)) {
                     continue;
                 }
+                // HAPI-587: one compiled coordinator consumes the distinct public company/network contract.
+                // This is not a package-wide exemption and admits no foreign persistence type.
+                if (source.fqcn().equals("dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringDraftAdmissionCoordinator")
+                        && imported.equals("dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedEngineeringDraftAuthorizationContract")) {
+                    continue;
+                }
                 violations.add(source.fqcn() + " -> " + imported);
             }
         }

@@ -38,7 +38,7 @@ public class EngineeringNetworkDraftController {
     @Operation(operationId="createEngineeringNetworkDraft",summary="Create or replay a company-scoped engineering draft")
     @PostMapping public ResponseEntity<Draft> create(@RequestBody Create body){
         var r=useCase.execute(new Command(Kind.CREATE,body.companyPartyId(),body.pipelineSystemId(),null,
-            EngineeringNetworkDraft.uuid(body.creationRequestId()),null,body.metadata()));
+            EngineeringNetworkDraft.uuid(body.creationRequestId()),null,new EngineeringNetworkDraft.Metadata(body.title(),body.description(),body.evidenceReference())));
         return ResponseEntity.status(r.replayed()?200:201).body(EngineeringNetworkDraftResponses.from(r));
     }
     @Operation(operationId="readEngineeringNetworkDraft",summary="Read the current scoped engineering draft")
@@ -49,7 +49,7 @@ public class EngineeringNetworkDraftController {
     @Operation(operationId="updateEngineeringNetworkDraft",summary="Append engineering draft metadata at an expected version")
     @PutMapping("/{draftId}") public Draft update(@PathVariable("draftId") String id,
             @RequestParam("companyPartyId") String company,@RequestParam("pipelineSystemId") String network,@RequestBody Update body){
-        return EngineeringNetworkDraftResponses.from(useCase.execute(new Command(Kind.UPDATE,company,network,EngineeringNetworkDraft.uuid(id),null,body.expectedVersion(),body.metadata())));
+        return EngineeringNetworkDraftResponses.from(useCase.execute(new Command(Kind.UPDATE,company,network,EngineeringNetworkDraft.uuid(id),null,body.expectedVersion(),new EngineeringNetworkDraft.Metadata(body.title(),body.description(),body.evidenceReference()))));
     }
     @Operation(operationId="validateEngineeringNetworkDraft",summary="Validate the exact current draft version without publication")
     @PostMapping("/{draftId}/validate") public Draft validate(@PathVariable("draftId") String id,

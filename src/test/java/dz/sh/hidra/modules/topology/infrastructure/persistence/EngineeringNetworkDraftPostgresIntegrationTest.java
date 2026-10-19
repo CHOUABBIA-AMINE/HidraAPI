@@ -950,7 +950,7 @@ public class EngineeringNetworkDraftPostgresIntegrationTest {
             String code="topology:engineering-draft:"+op;String permission="draft-permission-"+op;
             jdbc.update("INSERT INTO public.hidra_identity_permission(id,code,permission_domain,resource_type,action,sensitive,status,created_at,updated_at) VALUES(?,?,'topology','ENGINEERING_NETWORK_DRAFT',?,false,'ACTIVE',now(),now())",permission,code,op);
             for(String scope:List.of("topology-company:"+COMPANY,"topology-network:"+network))jdbc.update(
-                "INSERT INTO public.hidra_identity_user_permission_grant(id,user_id,permission_id,effect,scope_type,scope_reference_id,status,valid_from,created_at,updated_at) VALUES(?,?,?,'GRANT','CUSTOM',?,'ACTIVE',now()-interval '1 hour',now(),now())",id(),f.user(),permission,scope);
+                "INSERT INTO public.hidra_identity_user_permission_grant(id,user_id,permission_id,effect,scope_type,scope_reference_id,grant_reason,emergency_access,valid_from,valid_to,status,created_at) VALUES(?,?,?,'GRANT','CUSTOM',?,'synthetic draft evidence',false,now()-interval '1 hour',now()+interval '1 hour','ACTIVE',now())",id(),f.user(),permission,scope);
         }
         rawToken=authenticate(f).accessToken();ambient(rawToken);return f;
     }
@@ -1023,7 +1023,7 @@ public class EngineeringNetworkDraftPostgresIntegrationTest {
     @Test void twoCompaniesHaveIsolatedContextsOnTheSameLogicalNetwork(){
         var actor=draftActor("LOCAL");var first=create(UUID.randomUUID(),"company one");String other="other-"+id();
         jdbc.update("INSERT INTO public.hidra_party_party(id,code,party_type_id,legal_name,country_code,status,created_at,updated_at) VALUES(?,?,'k-party-type','Synthetic','DZ','ACTIVE',now(),now())",other,other);
-        for(String action:List.of("create","read"))jdbc.update("INSERT INTO public.hidra_identity_user_permission_grant(id,user_id,permission_id,effect,scope_type,scope_reference_id,status,valid_from,created_at,updated_at) VALUES(?,?,?,'GRANT','CUSTOM',?,'ACTIVE',now()-interval '1 hour',now(),now())",id(),actor.user(),"draft-permission-"+action,"topology-company:"+other);
+        for(String action:List.of("create","read"))jdbc.update("INSERT INTO public.hidra_identity_user_permission_grant(id,user_id,permission_id,effect,scope_type,scope_reference_id,grant_reason,emergency_access,valid_from,valid_to,status,created_at) VALUES(?,?,?,'GRANT','CUSTOM',?,'synthetic draft evidence',false,now()-interval '1 hour',now()+interval '1 hour','ACTIVE',now())",id(),actor.user(),"draft-permission-"+action,"topology-company:"+other);
         var cmd=new dz.sh.hidra.modules.topology.application.port.in.EngineeringNetworkDraftUseCase.Command(
             dz.sh.hidra.modules.topology.application.port.in.EngineeringNetworkDraftUseCase.Kind.CREATE,other,network,null,UUID.randomUUID(),null,
             new dz.sh.hidra.modules.topology.domain.model.EngineeringNetworkDraft.Metadata("company two",null,null));
@@ -1035,9 +1035,9 @@ public class EngineeringNetworkDraftPostgresIntegrationTest {
     }
     @Test void committedNetworkRevocationAndPartyIneligibilityPreventReplay(){
         var actor=draftActor("LOCAL");var request=UUID.randomUUID();create(request,"first");
-        jdbc.update("UPDATE public.hidra_identity_user_permission_grant SET status='INACTIVE' WHERE user_id=? AND scope_reference_id=?",actor.user(),"topology-network:"+network);
+        jdbc.update("UPDATE public.hidra_identity_user_permission_grant SET status='REVOKED',revoked_at=now() WHERE user_id=? AND scope_reference_id=?",actor.user(),"topology-network:"+network);
         assertThatThrownBy(()->create(request,"first")).isInstanceOf(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.class);
-        jdbc.update("UPDATE public.hidra_identity_user_permission_grant SET status='ACTIVE' WHERE user_id=?",actor.user());
+        jdbc.update("UPDATE public.hidra_identity_user_permission_grant SET status='ACTIVE',revoked_at=NULL WHERE user_id=?",actor.user());
         jdbc.update("UPDATE public.hidra_party_party SET status='INACTIVE' WHERE id=?",COMPANY);
         try {assertThatThrownBy(()->create(request,"first")).isInstanceOf(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.class);}
         finally {jdbc.update("UPDATE public.hidra_party_party SET status='ACTIVE' WHERE id=?",COMPANY);}

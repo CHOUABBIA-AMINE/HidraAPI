@@ -86,6 +86,7 @@ import javax.crypto.spec.SecretKeySpec;
             "hidra.platform.security.jwt.audience=hidra-api"
         })
 @ActiveProfiles("test")
+@org.springframework.test.annotation.DirtiesContext(classMode=org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_CLASS)
 public class ProtectedEngineeringDraftAuthorizationPostgresIntegrationTest {
     private static final String KEY = "synthetic-completion-test-key-32-bytes-only";
     private static final String SOURCE = "https://oidc.synthetic.invalid";

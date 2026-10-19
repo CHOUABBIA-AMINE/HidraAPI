@@ -519,9 +519,8 @@ public class ProtectedOperationIdentityParticipant {
             new AuthorizationScope(ScopeType.CUSTOM,"topology-company:"+request.companyPartyId(),null));
         var network=new AuthorizationEvaluationRequest(c.evidence().userId(),code,"ENGINEERING_NETWORK_DRAFT",request.pipelineSystemId(),
             new AuthorizationScope(ScopeType.CUSTOM,"topology-network:"+request.pipelineSystemId(),null));
-        var a=new QualifiedClaimRead(this,p.actual,p.locator,company,c,resource);
-        var b=new QualifiedClaimRead(this,p.actual,p.locator,network,c,resource);
-        a.engineeringDraft=true;b.engineeringDraft=true;
+        var a=new QualifiedClaimRead(this,p.actual,p.locator,company,c,resource,true);
+        var b=new QualifiedClaimRead(this,p.actual,p.locator,network,c,resource,true);
         return new DraftClaimPair(this,request,a,b);
     }
     public static final class DraftClaimPair {
@@ -576,12 +575,20 @@ public class ProtectedOperationIdentityParticipant {
         private final Contribution contribution;
         private final Object transactionResource;
         private final AtomicBoolean used = new AtomicBoolean();
-        private boolean engineeringDraft;
+        private final boolean engineeringDraft;
 
         private QualifiedClaimRead(
                 ProtectedOperationIdentityParticipant owner, Authentication actual,
                 OperationAuthenticationBinding locator, AuthorizationEvaluationRequest request,
                 Contribution contribution, Object transactionResource) {
+            this(owner,actual,locator,request,contribution,transactionResource,false);
+        }
+
+        private QualifiedClaimRead(
+                ProtectedOperationIdentityParticipant owner, Authentication actual,
+                OperationAuthenticationBinding locator, AuthorizationEvaluationRequest request,
+                Contribution contribution, Object transactionResource,boolean engineeringDraft) {
+            this.engineeringDraft=engineeringDraft;
             this.owner = owner;
             this.actual = actual;
             this.locator = locator;

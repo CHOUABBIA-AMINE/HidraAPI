@@ -2,7 +2,7 @@
 
 ## Status
 
-CURRENT — canonical OpenAPI generation/provenance control, refreshed by HPR-P2-012.
+CURRENT — canonical OpenAPI generation/provenance control; HAPI-587 generation-step refresh with aggregate CI acceptance pending.
 
 ## Source of Generation
 
@@ -28,7 +28,7 @@ For deterministic compactness it is stored using JSON syntax, which is valid YAM
 
 The current `x-hidra-ci-source-sha` is:
 
-`617c2eec812e3a5734957ee9fa0360f6f5613032`
+`a98ef0ea115b85a80941be40406511334b4b477a`
 
 That is intentional: it identifies the executable revision that generated the contract, not the later documentation/CI commit that versions the snapshot.
 
@@ -80,3 +80,27 @@ Do not hand-author endpoint/schema changes directly in `openapi.yaml`.
 [Validation guide](../governance/DOCUMENTATION_VALIDATION.md) documents the reviewed manifest, structural checks and strict production runtime comparison. Offline documentation validation verifies canonical serialization, file digest/counts/source provenance, local references and representative security declarations. Production CI compares freshly generated content after removing only the source-SHA field, validating both generator identities separately. All other object values and array order remain significant. Supported backward compatibility remains a separate required gate.
 
 A contract change requires a successful generated artifact and reviewed snapshot/provenance/manifest refresh; never widen an ignore list or hand-author a schema to silence a failure. These checks cover the repository JSON snapshot subset, not complete OpenAPI certification or production acceptance.
+
+## HAPI-587 generated snapshot repair — 2026-10-19
+
+The canonical snapshot now uses executable generator `a98ef0ea115b85a80941be40406511334b4b477a`.
+It is reconstructed without endpoint/schema/security edits from the actual retained
+`openapi/hidra-api.json` member of artifact12191249823 in run39264047957, attempt1,
+job118098882769 (API contract and dictionary). Generation step7,
+`Publish deterministic OpenAPI contract`, completed **successfully**.
+The overall job and workflow **FAILED**: runtime snapshot equality rejected the old
+snapshot; other lanes reported independent guardrail/fixture failures.
+The manifest records both failed aggregate conclusions explicitly. Its
+`provenance.conclusion=success` is scoped only to the named generation step,
+not to full CI, compatibility acceptance or HAPI-587 completion.
+
+Artifact ZIP SHA256: `db55d874636feba7df69dab8ac112403e06a79d820bdb23ae94af38fb0f70f75`.
+Actual generated member SHA256: `1144f929d23a0b3d4bb63fc2bac645c6ca1a1cb9b9e59b91deeb8933305842ce`.
+Canonical sorted compact snapshot SHA256: `b4e5f611148bce49e9855c5f5af944499e3a3cf69e995c3c7176b49ffd82546a`.
+The generated object contains247 paths/267 operations/236 schemas.
+Every old path/operation object and every old schema are preserved exactly; the
+addition is three path items/four operations/five schemas for engineering drafts.
+The source SHA identifies the executable generator, not this subsequent repair commit.
+The repaired source still requires freshly generated exact-SHA equality, full tests
+and actual database dictionary capture/reconciliation before acceptance.
+The four-case/14-fixture-error failures are not presented as passing test evidence.

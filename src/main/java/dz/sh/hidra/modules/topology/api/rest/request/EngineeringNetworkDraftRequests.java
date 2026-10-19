@@ -21,19 +21,16 @@ package dz.sh.hidra.modules.topology.api.rest.request;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import io.swagger.v3.oas.annotations.media.Schema;
-import dz.sh.hidra.modules.topology.domain.model.EngineeringNetworkDraft.Metadata;
 public final class EngineeringNetworkDraftRequests {
     private EngineeringNetworkDraftRequests(){}
     @Schema(name="EngineeringDraftCreateRequest")
     public record Create(String companyPartyId,String pipelineSystemId,String creationRequestId,
             String title,String description,String evidenceReference){
         @JsonAnySetter public void unknown(String name,Object value){throw new IllegalArgumentException("Unsupported draft field");}
-        public Metadata metadata(){return new Metadata(title,description,evidenceReference);}
     }
     @Schema(name="EngineeringDraftUpdateRequest")
     public record Update(Long expectedVersion,String title,String description,String evidenceReference){
         @JsonAnySetter public void unknown(String name,Object value){throw new IllegalArgumentException("Unsupported draft field");}
-        public Metadata metadata(){return new Metadata(title,description,evidenceReference);}
     }
     @Schema(name="EngineeringDraftValidateRequest")
     public record Validate(Long expectedVersion){

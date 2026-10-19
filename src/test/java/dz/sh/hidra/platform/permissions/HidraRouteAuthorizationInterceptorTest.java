@@ -111,6 +111,58 @@ class HidraRouteAuthorizationInterceptorTest {
         );
     }
 
+
+    @Test
+    void engineeringDraftNativeOwnerOnlyHandlesExactFourCompiledOperations() throws Exception {
+        var resolver = new HidraEffectivePermissionResolver(List.of());
+        var interceptor = new HidraRouteAuthorizationInterceptor(resolver, naming, true, "jwt");
+        var owner = new dz.sh.hidra.modules.topology.api.rest.controller.EngineeringNetworkDraftController(
+            command -> { throw new AssertionError("No business execution from route test"); });
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
+            "operator", "n/a", List.of(new SimpleGrantedAuthority("ROLE_OPERATOR"))));
+        String[] methods = {"create", "read", "update", "validate"};
+        String[] verbs = {"POST", "GET", "PUT", "POST"};
+        String[] routes = {
+            "/api/v1/topology/engineering-networks",
+            "/api/v1/topology/engineering-networks/{draftId}",
+            "/api/v1/topology/engineering-networks/{draftId}",
+            "/api/v1/topology/engineering-networks/{draftId}/validate"
+        };
+        for (int i=0; i<methods.length; i++) {
+            final int selected = i;
+            java.lang.reflect.Method m = java.util.Arrays.stream(owner.getClass().getDeclaredMethods())
+                .filter(q -> q.getName().equals(methods[selected])).findFirst().orElseThrow();
+            var handler = new HandlerMethod(owner,m);
+            var actual = new MockHttpServletRequest(verbs[i],routes[i].replace("{draftId}","draft-id"));
+            actual.setAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE,routes[i]);
+            assertTrue(interceptor.preHandle(actual,new MockHttpServletResponse(),handler));
+            // Renaming, method switching, or mismatched routes must fail to ordinary permission gating.
+            var wrong = new MockHttpServletRequest("DELETE",actual.getRequestURI());
+            wrong.setAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE,routes[i]);
+            assertThrows(AccessDeniedException.class,
+                ()->interceptor.preHandle(wrong,new MockHttpServletResponse(),handler));
+        }
+    }
+
+    @Test
+    void engineeringDraftNeverDelegatesAnonymousOrDifferentController() throws Exception {
+        var resolver=new HidraEffectivePermissionResolver(List.of());
+        var interceptor=new HidraRouteAuthorizationInterceptor(resolver,naming,true,"jwt");
+        var owner=new dz.sh.hidra.modules.topology.api.rest.controller.EngineeringNetworkDraftController(
+            command -> {throw new AssertionError("No business execution from route test");});
+        var m=java.util.Arrays.stream(owner.getClass().getDeclaredMethods())
+            .filter(q->q.getName().equals("create")).findFirst().orElseThrow();
+        var req=new MockHttpServletRequest("POST","/api/v1/topology/engineering-networks");
+        req.setAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE,
+            "/api/v1/topology/engineering-networks");
+        assertThrows(AccessDeniedException.class,
+            ()->interceptor.preHandle(req,new MockHttpServletResponse(),new HandlerMethod(owner,m)));
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
+            "operator","n/a",List.of(new SimpleGrantedAuthority("ROLE_OPERATOR"))));
+        assertThrows(AccessDeniedException.class,
+            ()->interceptor.preHandle(req,new MockHttpServletResponse(),handlerMethod()));
+    }
+
     private static MockHttpServletRequest request() {
         MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/v1/telemetry/points/point-1/readings");
         request.setAttribute(

@@ -25,6 +25,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -88,12 +89,42 @@ public final class HidraRouteAuthorizationInterceptor implements HandlerIntercep
         }
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        // The four draft operations have their own company/network-scoped native Identity
+        // authority, sampled in the protected transaction. A static module:resource route
+        // permission is unrelated to those paired grants and must not replace them.
+        // Only this exact compiled controller/method/route tuple delegates to that owner;
+        // every other route retains the ordinary effective-permission check.
+        if (isOwnedEngineeringDraftRoute(handlerMethod, routePattern, request.getMethod())) {
+            if (authentication == null || !authentication.isAuthenticated()
+                    || authentication instanceof AnonymousAuthenticationToken) {
+                throw new AccessDeniedException("Engineering draft authentication required.");
+            }
+            return true;
+        }
+
         String requiredPermission = permissionNaming.permissionFor(routePattern, request.getMethod(), handlerMethod);
         if (permissionResolver.hasPermission(authentication, requiredPermission)) {
             return true;
         }
 
         throw new AccessDeniedException("Missing required permission: " + requiredPermission);
+    }
+
+    private static boolean isOwnedEngineeringDraftRoute(
+            HandlerMethod handler, String routePattern, String method) {
+        if (handler == null || routePattern == null || method == null
+                || !handler.getBeanType().getName().equals(
+                    "dz.sh.hidra.modules.topology.api.rest.controller.EngineeringNetworkDraftController")) {
+            return false;
+        }
+        String selected = method + " " + routePattern + " " + handler.getMethod().getName();
+        return switch (selected) {
+            case "POST /api/v1/topology/engineering-networks create",
+                 "GET /api/v1/topology/engineering-networks/{draftId} read",
+                 "PUT /api/v1/topology/engineering-networks/{draftId} update",
+                 "POST /api/v1/topology/engineering-networks/{draftId}/validate validate" -> true;
+            default -> false;
+        };
     }
 
     private static boolean isPublicOrAuthenticatedOnly(String path) {

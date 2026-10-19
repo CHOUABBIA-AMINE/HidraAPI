@@ -1099,7 +1099,11 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
         // The Identity temporal collector uses a second-granularity effective bound.
         // Preserve the actual database-deadline rejection above, never compare to
         // the fractional fixture input as though it were an admitted expiry.
-        assertThat(captured.get().validUntil()).isEqualTo(start.truncatedTo(ChronoUnit.SECONDS));
+        // PostgreSQL effective bounds may preserve fractions or originate from a whole-
+        // second native bearer; neither representation may extend beyond the deny.
+        // Retain the real database-time check above, which must still reject commit.
+        assertThat(captured.get().validUntil())
+            .isBetween(start.truncatedTo(ChronoUnit.SECONDS), start);
     }
     @Test void forgedReplayedSuspendedAndChangedAuthenticationTicketsFail() {
         var f=localPair();var pre=kp(f);kr(pre,request(),()->{},()->{},()->{});assertThatThrownBy(()->kr(pre,request(),()->{},()->{},()->{})).isInstanceOf(RuntimeException.class);

@@ -4934,7 +4934,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.0,
+      "baseline_seconds": 0,
       "cases": [
         "actualJpaSaveAndFlushBumpsWitnessAndRollbackRestoresIt",
         "admissionRetainsRelationFencesAndExcludesWritersUntilCompletion",
@@ -4970,7 +4970,7 @@
       "timing_status": "unmeasured-new-suite"
     },
     {
-      "baseline_seconds": 0.0,
+      "baseline_seconds": 0,
       "cases": [
         "acquisitionRequiresAnActualBoundTransaction",
         "fabricatedAdmissionCannotReachOwnerRowsAndMarksRollback",
@@ -6268,7 +6268,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.0,
+      "baseline_seconds": 0,
       "cases": [
         "catalogFunctionFingerprintsMatchBothActualMigrationBodies",
         "eachAdapterUsesOnlyItsOwnerAndParticipatesWithoutNewTransactionOrClock",
@@ -6771,7 +6771,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.0,
+      "baseline_seconds": 0,
       "cases": [
         "actualJpaSaveAndFlushBumpsWitnessAndRollbackRestoresIt",
         "admissionRetainsRelationFencesAndExcludesWritersUntilCompletion",
@@ -6863,7 +6863,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedStationAdmissionPostgresIntegrationTest.java",
-      "source_sha256": "1207f0fc205781eae96242c4f85957aeb056964e67a9f57f280edc18ab6eebc2",
+      "source_sha256": "8be0b03f001b9b0a1a7e67f448da409a9c1345bf00d8332ba55f7cde79222a40",
       "supports": []
     },
     {
@@ -6959,7 +6959,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.0,
+      "baseline_seconds": 0,
       "cases": [
         "acquisitionRequiresAnActualBoundTransaction",
         "fabricatedAdmissionCannotReachOwnerRowsAndMarksRollback",
@@ -7776,6 +7776,8 @@
       "cases": [
         "anonymousProtectedRouteStillRequiresPermission",
         "derivesIdentityRoadmapPermissionFormat",
+        "engineeringDraftNativeOwnerOnlyHandlesExactFourCompiledOperations",
+        "engineeringDraftNeverDelegatesAnonymousOrDifferentController",
         "forbidsMissingEffectivePermission",
         "permitsAnonymousDirectLoginBeforeRoutePermissionResolution",
         "permitsMatchingEffectivePermission"
@@ -7786,7 +7788,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptorTest.java",
-      "source_sha256": "f07a48284c92efa4fc27c65704616ed5aa5a31e2d5f606b926fdd4c9511a00c7",
+      "source_sha256": "d08c4a8a1ebb611a5029e59fa80cca2d6007aca53f815ab7be3464d7a5b98f02",
       "supports": []
     },
     {

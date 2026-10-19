@@ -1298,12 +1298,20 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
     }
     @Test void realPublicationRejectsWriterFirstAndLiveOwnerTransfer() throws Exception {
         var actor=graphActor("LDAP");String revision="writer-"+id();
-        try(var c=writer();var st=c.createStatement()) {
+        // The competing publication writer is privileged fixture setup, not the ordinary login.
+        try(var c=administrator.getConnection();var st=c.createStatement()) {
             c.setAutoCommit(false);
-            st.execute("LOCK TABLE public.hidra_topology_station_graph_head IN SHARE ROW EXCLUSIVE MODE");
-            assertThatThrownBy(()->graphRun(actor,AUTHOR,revision,null,null,graphRevision(revision,null)))
-                .isInstanceOf(RuntimeException.class);
-            c.rollback();
+            try {
+                st.execute("LOCK TABLE public.hidra_topology_station_graph_head IN SHARE ROW EXCLUSIVE MODE");
+                assertThatThrownBy(()->graphRun(actor,AUTHOR,revision,null,null,graphRevision(revision,null)))
+                    .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class)
+                    .satisfies(error->{
+                        Throwable root=error;
+                        while(root.getCause()!=null)root=root.getCause();
+                        assertThat(root).isInstanceOf(SQLException.class);
+                        assertThat(((SQLException)root).getSQLState()).isEqualTo("55P03");
+                    });
+            } finally {c.rollback();}
         }
         jdbc.update("UPDATE public.hidra_topology_facility SET owner_party_id='other-company' WHERE id=?",FACILITY);
         try {assertThatThrownBy(()->graphRun(actor,AUTHOR,revision,null,null,graphRevision(revision,null)))

@@ -6574,6 +6574,33 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "acceptsParallelBranchesBetweenTheSamePortsWithDistinctIdentities",
+        "acceptsSerialStationAndJunctionIncidenceWithoutDimensions",
+        "copiesSortsAndFreezesAllListsWithoutChangingSourceIds",
+        "detectsEmptyAndDisconnectedSketchesWithoutFakingQualification",
+        "detectsIsolatedSubgraphsWithoutDiscardingAuthoredEdges",
+        "domainHasNoInfrastructureOrFrameworkDependencies",
+        "enforcesStationOnlyFacilityBindingAndRequiredKinds",
+        "rejectsBlankNonnfcSurrogateControlsAndOversizedUtf8Identities",
+        "rejectsDanglingNodesAndPorts",
+        "rejectsDuplicateIdsWithinEachNamespace",
+        "rejectsNullElementsAndExcessiveCollectionLengths",
+        "rejectsSamePortAndIntraNodeBranch",
+        "rejectsWrongPortDirectionForEitherEndpoint",
+        "supportsBidirectionalEndpoints"
+      ],
+      "class": "dz.sh.hidra.modules.topology.domain.model.EngineeringGraphDraftTest",
+      "dependency_reason": "HAPI-588 Package A pure Java graph draft domain/codec tests; hosted Java21 run and timing pending",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/domain/model/EngineeringGraphDraftTest.java",
+      "source_sha256": "51ba5347c16509cdccc89a1dc0e483c3af9e54cb1c3977e29444e9e5370a7cfb",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
         "canonicalCodecRetainsNullAndUnicodeAndRejectsTrailingOrOversizedBytes",
         "exactScopeBoundsAndOverflowAreRejected",
         "immutableMetadataVersionAndIncompleteDiagnostics"
@@ -6956,6 +6983,31 @@
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/TopologyPhysicalNetworkRevisionPostgresIntegrationTest.java",
       "source_sha256": "92ce54f42084c09d38e5ef94a50ed8885f3cfffee9a1eb087cc836e88dead58a",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "emptyAndDisconnectedDiagnosticsRemainDraftOnlyAfterDecode",
+        "emptyDraftHasStableIndependentCanonicalBytes",
+        "independentlyPackedConnectedBytesAndSha256Match",
+        "parallelBranchesAreRoundTrippedAndHashedDifferently",
+        "preservesNfcUnicodeIdentifiersWithoutCaseFolding",
+        "rejectsCorruptedHeaderAndUnknownFormat",
+        "rejectsEveryTruncationTrailingBytesAndNull",
+        "rejectsInvalidUtf8AndMismatchedEnum",
+        "rejectsNoncanonicalElementOrdering",
+        "rejectsOversizedAndNegativeCountsBeforeAllocation",
+        "rejectsOversizedPayloadAndDefensivelyDecodesBytes",
+        "sortingAndReorderedEquivalentGraphsHaveIdenticalBytes"
+      ],
+      "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.EngineeringGraphDraftCodecTest",
+      "dependency_reason": "HAPI-588 Package A pure Java graph draft domain/codec tests; hosted Java21 run and timing pending",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/EngineeringGraphDraftCodecTest.java",
+      "source_sha256": "3d34550ae94aaa6face84ca49de02369050d2cd217ca20d646dba0f9415eae79",
       "supports": []
     },
     {

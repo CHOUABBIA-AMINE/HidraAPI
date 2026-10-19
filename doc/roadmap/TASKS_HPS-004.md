@@ -6117,7 +6117,7 @@ Legacy IDs: HPR-P25-052B
 
 Priority: P1
 
-Implementation Status: NOT_IMPLEMENTED
+Implementation Status: PARTIAL
 
 Planning Status: REGISTERED_PENDING
 
@@ -6376,6 +6376,26 @@ No other files may be changed absent separately recorded owner-authorized repair
 **Package C — generated evidence reconciliation; only after B's exact-SHA runtime artifacts exist.** Exact commit `docs(topology): reconcile engineering graph authoring artifacts`. MODIFY only `doc/api/openapi.yaml`, `.github/documentation-validation.json`, `doc/api/OPENAPI_GOVERNANCE.md`, `doc/database/DATA_DICTIONARY.md`, `doc/roadmap/TASKS_HPS-004.md`. No fabricated source/catalog bytes; regenerate strictly from hosted B runtime OpenAPI and migrated PostgreSQL catalog, preserve old paths/schemas, run strict snapshot and dictionary equality against actual artifacts, record exact source SHA/run/job/attempt/artifact/digest counts and all test case identities. Start same-SHA applicable CI and STOP. After C Full/Fast/Docs evidence **actually passes**, a separate registered documentation-only acceptance step `docs(topology): record engineering graph authoring acceptance` may mark HAPI-588 VERIFIED/COMPLETED and set phase/task statuses accordingly in `doc/roadmap/TASKS_HPS-004.md`, `doc/roadmap/ULTIMATE_ROADMAP.md`, `doc/roadmap/ULTIMATE_PHASES.md`; no HAPI-589/590/600 implementation or deployment is automatically selected.
 
 **Registration disposition and explicit next:** these three bounded packages are the executable scopes superseding only the earlier six speculative source filenames. Existing code, migrations, public APIs, CI/source hashes and historical registry entries are unchanged by this documentation registration. HAPI-588 remains **NOT_IMPLEMENTED/REGISTERED_PENDING** until A begins; no claim of approved graph API, physical-network qualification, steady/transient model or operational acceptance. The **next single stage is HAPI-588A**, not B/C or any downstream phase, after the registration's exact-head Docs result. Refresh live HEAD/migrations/tests before implementing A; stop on source conflict or failed Docs.
+
+### HAPI-588 Package A delivery — 2026-10-19; Java21 CI qualification pending
+
+**One-task sequencing:** this is implementation **Package A of HAPI-588 / HPR-P25-052B**, not a new roadmap ID. The owner explicitly authorizes three packages under one HAPI-588 task. B/C remain registered but unselected; HAPI-587 remains VERIFIED/COMPLETED, and HAPI-589/HAPI-590/HAPI-600 are not selected. Registered exact message: `feat(topology): define engineering graph draft contract`.
+
+**Exact bounded publication:** CREATE only:
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/EngineeringGraphDraft.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/EngineeringGraphDraftCodec.java`
+- `src/test/java/dz/sh/hidra/modules/topology/domain/model/EngineeringGraphDraftTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/EngineeringGraphDraftCodecTest.java`
+
+MODIFY only `.github/ci-test-inventory.json`, this task record, `doc/roadmap/ULTIMATE_ROADMAP.md`, and `doc/roadmap/ULTIMATE_PHASES.md`. No DELETE, historical migration rewrite, REST/API schema change, protected-operation admission change or graph publication.
+
+**Implemented bounded source:** pure Java immutable node `JUNCTION/STATION`, station facility selector (without owner claim), port `INLET/OUTLET/BIDIRECTIONAL` and branch `PIPE/CONNECTOR` records; stable exact NFC identities bounded to 80 UTF-8 bytes; distinct element namespaces, deterministic sorted defensive copies, maximum counts, no null/duplicate/dangling/self/intra-node/incorrect-direction links. Parallel distinct branch IDs and serial links are permitted. Empty and disconnected sketches remain draft-only and expose `GRAPH_NOT_AUTHORED`, `GRAPH_DISCONNECTED`, `PIPE_NOT_AUTHORED` and `PHYSICAL_VALUES_NOT_SUPPLIED` diagnostics as applicable. No numeric engineering field, station permission, ownership transfer, physical completeness or qualified simulation claim is invented.
+
+**Codec contract:** versioned `HIDRA_ENGINEERING_GRAPH_DRAFT_V1`, strict standard UTF-8 with bounded signed-big-endian lengths/counts, 1,048,576-byte maximum, stable sorted canonical payload, no repaired/normalized source text, rejection of invalid UTF-8/enums/counts/unknown format/noncanonical order/trailing or truncated bytes, digest via SHA-256. Historical `TopologyPhysicalNetworkRevisionCodec` V1/V2 and accepted HAPI-587 metadata V1 remain untouched. A separately packed independent fixture checks 169 exact bytes and digest `6e7fd1dde5a571f5526349c3842fc27afe2cf59ccf7b65ef8726c36f0f338f4c`; empty payload fixture checks digest `71d579c3e03468bbfc8a487649148a871ea56f43d55ede951de28a300fde34db`.
+
+**Tests and source inventory:** 14 domain cases registered with SHA-256 `51ba5347c16509cdccc89a1dc0e483c3af9e54cb1c3977e29444e9e5370a7cfb`; 12 codec cases with SHA-256 `3d34550ae94aaa6face84ca49de02369050d2cd217ca20d646dba0f9415eae79`; original 423 inventory classes preserved and 2 added to existing `unit-architecture` / Fast lane with unmeasured baseline. Domain source import-boundary assertion included. The original complete test case and artifact inventory remain untouched.
+
+**Evidence limitation and gate:** GitHub Java sources and JUnit tests are prepared for hosted CI; neither an actual Maven compile nor executed JUnit/database result is asserted at registration. No PostgreSQL table, API route or protected integration exists from Package A alone. On guarded direct-main publication, confirm exact parent/tree/8-path scope and exact-SHA Full/Fast/Docs created or started, then STOP without waiting. If CI fails, repair A before B. Only after its required CI acceptance may owner Next select B. HAPI-588 is now **PARTIAL/REGISTERED_PENDING**, never VERIFIED/COMPLETED from A alone.
 
 <a id="hapi-590"></a>
 ## HAPI-590 — Public governed revision publication and history

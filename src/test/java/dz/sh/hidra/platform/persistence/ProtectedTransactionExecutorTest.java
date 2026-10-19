@@ -745,4 +745,18 @@ class ProtectedTransactionExecutorTest {
         assertThat(called).isFalse();assertThat(commits).hasValue(0);
     }
 
+    @Test void diagnosticAdmissionCannotMintDraftMutationPermit(){
+        assertThatThrownBy(()->run(()->{executor.beginAdmission();
+            var permit=executor.sealAdmission();assertThat(permit).isNull();
+            executor.beginProvisional(permit,java.util.Set.of("INSERT INTO public.hidra_topology_engineering_context (id) VALUES (?)"));
+            return "forbidden";},()->{},this::guard)).isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class);
+        assertThat(commits).hasValue(0);
+    }
+    @Test void ordinaryExecutorCannotSelectPrivateDraftCredentialByCallback(){
+        var reached=new AtomicBoolean();
+        assertThatThrownBy(()->executor.executePublication(()->{reached.set(true);return "forbidden";},()->{},this::guard))
+            .isInstanceOf(IllegalStateException.class);
+        assertThat(reached).isFalse();assertThat(commits).hasValue(0);
+    }
+
 }

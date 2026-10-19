@@ -506,6 +506,60 @@ public class ProtectedOperationIdentityParticipant {
             AuthorizationEvaluationRequest facilityRequest,
             Contribution contribution) {}
 
+
+    /** A distinct issuer-tagged family; station and diagnostic children can never impersonate it. */
+    @Transactional(propagation=Propagation.MANDATORY)
+    public DraftClaimPair qualifyDraftPair(Admitted admitted,
+            dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedEngineeringDraftAuthorizationContract.Request request) {
+        Objects.requireNonNull(request);
+        Contribution c=contribute(admitted);Prepared p=admitted.prepared;
+        Object resource=connectionResource();if(resource==null)throw unavailable();context(p);
+        String code=dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedEngineeringDraftAuthorizationContract.permissionCode(request.action());
+        var company=new AuthorizationEvaluationRequest(c.evidence().userId(),code,"ENGINEERING_NETWORK_DRAFT",request.pipelineSystemId(),
+            new AuthorizationScope(ScopeType.CUSTOM,"topology-company:"+request.companyPartyId(),null));
+        var network=new AuthorizationEvaluationRequest(c.evidence().userId(),code,"ENGINEERING_NETWORK_DRAFT",request.pipelineSystemId(),
+            new AuthorizationScope(ScopeType.CUSTOM,"topology-network:"+request.pipelineSystemId(),null));
+        var a=new QualifiedClaimRead(this,p.actual,p.locator,company,c,resource);
+        var b=new QualifiedClaimRead(this,p.actual,p.locator,network,c,resource);
+        a.engineeringDraft=true;b.engineeringDraft=true;
+        return new DraftClaimPair(this,request,a,b);
+    }
+    public static final class DraftClaimPair {
+        private final ProtectedOperationIdentityParticipant owner;
+        private final dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedEngineeringDraftAuthorizationContract.Request request;
+        private final QualifiedClaimRead company,network;
+        private final AtomicBoolean used=new AtomicBoolean();
+        private DraftClaimPair(ProtectedOperationIdentityParticipant owner,
+            dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedEngineeringDraftAuthorizationContract.Request request,
+            QualifiedClaimRead company,QualifiedClaimRead network){this.owner=owner;this.request=request;this.company=company;this.network=network;}
+        @Override public String toString(){return "DraftClaimPair[opaque]";}
+    }
+    @Transactional(propagation=Propagation.MANDATORY)
+    public PairReads consumeDraftPair(DraftClaimPair pair,
+            dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedEngineeringDraftAuthorizationContract.Request request){
+        if(pair==null || !pair.used.compareAndSet(false,true) || pair.owner!=this || !pair.request.equals(request))throw denied();
+        draftContext(pair);
+        return new PairReads(pair.company,pair.company.request,pair.network,pair.network.request,pair.company.contribution);
+    }
+    @Transactional(propagation=Propagation.MANDATORY)
+    public void requireCurrentDraftPair(DraftClaimPair pair,
+            dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedEngineeringDraftAuthorizationContract.Request request){
+        if(pair==null || !pair.used.get() || pair.owner!=this || !pair.request.equals(request))throw denied();
+        draftContext(pair);requireCurrentClaims(pair.company,pair.company.request);requireCurrentClaims(pair.network,pair.network.request);
+    }
+    private void draftContext(DraftClaimPair p){
+        var a=p.company;var b=p.network;
+        if(!a.engineeringDraft || !b.engineeringDraft || a.owner!=this || b.owner!=this || a.origin!=Thread.currentThread()
+            || b.origin!=Thread.currentThread() || a.actual!=b.actual || a.actual!=SecurityContextHolder.getContext().getAuthentication()
+            || !a.actual.isAuthenticated() || a.contribution!=b.contribution || a.transactionResource==null
+            || a.transactionResource!=b.transactionResource || connectionResource()!=a.transactionResource
+            || TransactionSynchronizationManager.isCurrentTransactionReadOnly())throw denied();
+    }
+    /** This is only a family discriminator after genuine consume; it creates no credential. */
+    public boolean engineeringDraftCredential(QualifiedClaimRead read){
+        return read!=null && read.owner==this && read.used.get() && read.engineeringDraft;
+    }
+
     private Object connectionResource() {
         if (!TransactionSynchronizationManager.isActualTransactionActive()
                 || jdbc.getDataSource() == null) return null;
@@ -522,6 +576,7 @@ public class ProtectedOperationIdentityParticipant {
         private final Contribution contribution;
         private final Object transactionResource;
         private final AtomicBoolean used = new AtomicBoolean();
+        private boolean engineeringDraft;
 
         private QualifiedClaimRead(
                 ProtectedOperationIdentityParticipant owner, Authentication actual,

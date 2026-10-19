@@ -142,7 +142,7 @@ public class JdbcProtectedAuthorizationEvidenceReader {
             Evidence evidence = contribution.evidence();
             int pid = contribution.backendPid();
             long xid = contribution.transactionId();
-            validate(evidence, request, pid, xid);
+            validate(evidence, request, pid, xid, participant.engineeringDraftCredential(credential));
             coordinates(pid, xid);
             heldClaims();
             OperationAuthenticationBinding original =
@@ -218,6 +218,20 @@ public class JdbcProtectedAuthorizationEvidenceReader {
         }
     }
 
+    @Transactional(propagation=Propagation.MANDATORY)
+    public PairedAuthorizationEvidence loadQualifiedDraftPair(
+            ProtectedOperationIdentityParticipant.DraftClaimPair pair,
+            dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedEngineeringDraftAuthorizationContract.Request request){
+        try {
+            if(participant==null)throw invalid();
+            var reads=participant.consumeDraftPair(pair,request);
+            var company=loadQualified(reads.company(),reads.companyRequest());
+            var network=loadQualified(reads.facility(),reads.facilityRequest());
+            participant.requireCurrentDraftPair(pair,request);
+            return new PairedAuthorizationEvidence(reads.companyRequest(),company,reads.facilityRequest(),network,reads.contribution());
+        }catch(RuntimeException failure){throw invalid();}
+    }
+
     /** Synchronous Identity-private inputs only, not an exported permission. */
     public record PairedAuthorizationEvidence(
             AuthorizationEvaluationRequest companyRequest,
@@ -275,6 +289,9 @@ public class JdbcProtectedAuthorizationEvidenceReader {
     }
 
     private void validate(Evidence i, AuthorizationEvaluationRequest r, int pid, long xid) {
+        validate(i,r,pid,xid,false);
+    }
+    private void validate(Evidence i, AuthorizationEvaluationRequest r, int pid, long xid,boolean draft) {
         if (!TransactionSynchronizationManager.isActualTransactionActive()
                 || TransactionSynchronizationManager.isCurrentTransactionReadOnly()
                 || i == null
@@ -312,6 +329,15 @@ public class JdbcProtectedAuthorizationEvidenceReader {
                         || i.externalGeneration() <= 0
                         || ("OIDC".equals(i.authenticationType())
                                 != (i.sourceExpiresAt() != null)))) throw invalid();
+        if(draft){
+            if(!i.userId().equals(r.userId()) || !"ENGINEERING_NETWORK_DRAFT".equals(r.resourceType())
+                || !text(r.resourceReferenceId(),80) || r.scope()==null || r.scope().scopeType()!=ScopeType.CUSTOM
+                || !Set.of("topology:engineering-draft:create","topology:engineering-draft:read",
+                    "topology:engineering-draft:update","topology:engineering-draft:validate").contains(r.permissionCode()))throw invalid();
+            String ref=r.scope().scopeReferenceId();
+            if(ref==null || !(ref.equals("topology-network:"+r.resourceReferenceId())
+                || (ref.startsWith("topology-company:") && text(ref.substring(17),80))))throw invalid();
+        }else{
         if (!i.userId().equals(r.userId())
                 || !"STATION_GRAPH_REVISION".equals(r.resourceType())
                 || !text(r.resourceReferenceId(), 120)
@@ -328,6 +354,7 @@ public class JdbcProtectedAuthorizationEvidenceReader {
                 || ref == null
                 || !ref.startsWith("topology-company:")
                 || !text(ref.substring(17), 80)) throw invalid();
+        }
     }
 
     private AuthorizationEvidence read(Evidence i, AuthorizationEvaluationRequest r, Rows q) {

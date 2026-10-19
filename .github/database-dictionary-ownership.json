@@ -179,12 +179,12 @@
     "purpose": "Organization-owned reporting-line state; legacy reporting_line_type is retained as a trigger-synchronized compatibility projection, not the canonical classification."
   },
   "public.hidra_party_eligibility_generation": {
-    "owner": "party",
-    "purpose": "Owner-issued monotone live/tombstone witness for protected ACTIVE Party eligibility; not a publication epoch or permission.",
     "evidence": [
       "src/main/resources/db/migration/V20261018_001__p25_party_eligibility_generations.sql",
       "src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JdbcTopologyProtectedPartyEligibilityAdapter.java"
-    ]
+    ],
+    "owner": "party",
+    "purpose": "Owner-issued monotone live/tombstone witness for protected ACTIVE Party eligibility; not a publication epoch or permission."
   },
   "public.hidra_planning_nomination_reference_mapping": {
     "evidence": [
@@ -251,6 +251,30 @@
     "owner": "telemetry",
     "purpose": "Telemetry-owned quantity/rate unit-role eligibility with approval provenance; no business role assignments are approved here."
   },
+  "public.hidra_topology_engineering_context": {
+    "evidence": [
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringNetworkDraftRepositoryAdapter.java",
+      "src/main/resources/db/migration/V20261019_001__p25_topology_engineering_drafts.sql"
+    ],
+    "owner": "topology",
+    "purpose": "Immutable company/network engineering-context binding; HAPI-587, current physical catalog capture pending hosted CI."
+  },
+  "public.hidra_topology_engineering_draft": {
+    "evidence": [
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringNetworkDraftRepositoryAdapter.java",
+      "src/main/resources/db/migration/V20261019_001__p25_topology_engineering_drafts.sql"
+    ],
+    "owner": "topology",
+    "purpose": "Immutable candidate identity and scoped creation-request replay identity; HAPI-587, current physical catalog capture pending hosted CI."
+  },
+  "public.hidra_topology_engineering_draft_version": {
+    "evidence": [
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringNetworkDraftRepositoryAdapter.java",
+      "src/main/resources/db/migration/V20261019_001__p25_topology_engineering_drafts.sql"
+    ],
+    "owner": "topology",
+    "purpose": "Immutable metadata versions, predecessor digest and protected actor/time provenance; HAPI-587, current physical catalog capture pending hosted CI."
+  },
   "public.hidra_topology_equipment": {
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/EquipmentJpaEntity.java",
@@ -268,12 +292,12 @@
     "purpose": "Topology-owned equipment-type state; legacy_equipment_kind is retained historical data and does not control the current catalog mapping."
   },
   "public.hidra_topology_facility_owner_generation": {
-    "owner": "topology",
-    "purpose": "Owner-issued monotone live/tombstone witness for protected Facility ownership; not a publication epoch or permission.",
     "evidence": [
       "src/main/resources/db/migration/V20261018_002__p25_topology_facility_owner_generations.sql",
       "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationProtectedFacilityOwnershipAdapter.java"
-    ]
+    ],
+    "owner": "topology",
+    "purpose": "Owner-issued monotone live/tombstone witness for protected Facility ownership; not a publication epoch or permission."
   },
   "public.hidra_topology_physical_network_revision": {
     "evidence": [
@@ -284,6 +308,22 @@
     "owner": "topology",
     "purpose": "Topology-owned append-only physical source revisions with canonical payload integrity; stored provenance and digest do not establish operational approval or live asset eligibility."
   },
+  "public.hidra_topology_station_graph_head": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261018_003__p25_topology_protected_station_graph_operations.sql",
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationGraphProtectedPublicationAdapter.java"
+    ],
+    "owner": "topology",
+    "purpose": "Topology-owned current station graph publication selection with monotone epoch and immutable event reference."
+  },
+  "public.hidra_topology_station_graph_operation_event": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261018_003__p25_topology_protected_station_graph_operations.sql",
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationGraphProtectedPublicationAdapter.java"
+    ],
+    "owner": "topology",
+    "purpose": "Topology-owned immutable station graph operation provenance; not evidence of operational acceptance."
+  },
   "public.hidra_topology_station_graph_revision": {
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/topology/domain/model/StationInternalGraphRevision.java",
@@ -292,21 +332,5 @@
     ],
     "owner": "topology",
     "purpose": "Topology-owned immutable station graph declarations with canonical byte integrity and exact history; storage does not establish company authorization or authenticated publication."
-  },
-  "public.hidra_topology_station_graph_head": {
-    "owner": "topology",
-    "purpose": "Topology-owned current station graph publication selection with monotone epoch and immutable event reference.",
-    "evidence": [
-      "src/main/resources/db/migration/V20261018_003__p25_topology_protected_station_graph_operations.sql",
-      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationGraphProtectedPublicationAdapter.java"
-    ]
-  },
-  "public.hidra_topology_station_graph_operation_event": {
-    "owner": "topology",
-    "purpose": "Topology-owned immutable station graph operation provenance; not evidence of operational acceptance.",
-    "evidence": [
-      "src/main/resources/db/migration/V20261018_003__p25_topology_protected_station_graph_operations.sql",
-      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationGraphProtectedPublicationAdapter.java"
-    ]
   }
 }

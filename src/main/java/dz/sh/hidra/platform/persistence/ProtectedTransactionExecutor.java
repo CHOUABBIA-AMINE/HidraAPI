@@ -33,6 +33,8 @@ import javax.sql.DataSource;
 /** Trusted compiled-owner callbacks only; no permission, protected API or business fence. */
 @Component
 public final class ProtectedTransactionExecutor {
+    private static final String DRAFT_SERVICE="dz.sh.hidra.modules.topology.application.service.EngineeringNetworkDraftApplicationService";
+    private static final String DRAFT_COORDINATOR="dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringDraftAdmissionCoordinator";
     public enum Outcome {
         REJECTED_BEFORE_COMMIT,
         INDETERMINATE
@@ -68,7 +70,8 @@ public final class ProtectedTransactionExecutor {
 
     /** Select the private credential before any physical transaction; no business permission implied. */
     public <T> T executePublication(Supplier<T> work,Runnable flush,Runnable guard) {
-        if(!StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName().equals(
+        String caller=StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName();
+        if(!caller.equals(DRAFT_SERVICE) && !caller.equals(
             "dz.sh.hidra.modules.topology.application.service.ProtectedStationGraphOperationService"))
             throw new IllegalStateException("Unreviewed credential route caller");
         try(var route=credentialRouter().open()) {return execute(work,flush,guard);}
@@ -185,8 +188,9 @@ public final class ProtectedTransactionExecutor {
         private final ProtectedTransactionExecutor issuer;
         private final ProtectedOperationDataSource.Scope scope;
         private boolean opened,consumed;
-        private ProvisionalPermit(ProtectedTransactionExecutor issuer,ProtectedOperationDataSource.Scope scope){
-            this.issuer=issuer;this.scope=scope;
+        private final String owner;
+        private ProvisionalPermit(ProtectedTransactionExecutor issuer,ProtectedOperationDataSource.Scope scope,String owner){
+            this.issuer=issuer;this.scope=scope;this.owner=owner;
         }
         @Override public String toString(){return "ProvisionalPermit[opaque]";}
     }
@@ -198,21 +202,21 @@ public final class ProtectedTransactionExecutor {
         s.phase=ProtectedOperationDataSource.Phase.OBSERVING;
         // Only the genuine compiled owner K coordinator can receive an opaque mutation permit.
         // Other callers can still seal read-only diagnostic admission (legacy contract).
-        if(!StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)
-                .getCallerClass().getName().equals(
+        String caller=StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName();
+        if(!caller.equals(DRAFT_COORDINATOR) && !caller.equals(
                     "dz.sh.hidra.modules.topology.application.service.ProtectedStationAdmissionCoordinator"))
             return null;
-        var result=new ProvisionalPermit(this,s);
+        var result=new ProvisionalPermit(this,s,caller);
         s.provisionalPermit=result;
         return result;
     }
     /** Accept only exact, reviewed DML templates for one use of an issued owner ticket. */
     public void beginProvisional(ProvisionalPermit permit,Set<String> exactStatements) {
         var s=admissionScope();
-        if(!StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)
-                .getCallerClass().getName().equals(
-                    "dz.sh.hidra.modules.topology.application.service.ProtectedStationAdmissionCoordinator")
-          || permit==null || permit.issuer!=this || permit.scope!=s
+        String caller=StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName();
+        if((!caller.equals(DRAFT_COORDINATOR) && !caller.equals(
+                    "dz.sh.hidra.modules.topology.application.service.ProtectedStationAdmissionCoordinator"))
+          || permit==null || !caller.equals(permit.owner) || permit.issuer!=this || permit.scope!=s
           || s.provisionalPermit!=permit || permit.opened || permit.consumed
           || s.provisionalUsed || s.phase!=ProtectedOperationDataSource.Phase.OBSERVING
           || exactStatements==null || exactStatements.isEmpty()) {
@@ -221,8 +225,12 @@ public final class ProtectedTransactionExecutor {
         Set<String> allowed=Set.copyOf(exactStatements);
         for(String sql:allowed) {
             if(sql==null || sql.contains(";") || sql.contains("--") || sql.contains("/*")
-               || !(sql.startsWith("INSERT INTO public.hidra_topology_station_graph_")
-                 || sql.startsWith("UPDATE public.hidra_topology_station_graph_head "))) {
+               || !(caller.equals(DRAFT_COORDINATOR)
+                    ? (sql.startsWith("INSERT INTO public.hidra_topology_engineering_context ")
+                        || sql.startsWith("INSERT INTO public.hidra_topology_engineering_draft ")
+                        || sql.startsWith("INSERT INTO public.hidra_topology_engineering_draft_version "))
+                    : (sql.startsWith("INSERT INTO public.hidra_topology_station_graph_")
+                        || sql.startsWith("UPDATE public.hidra_topology_station_graph_head ")))) {
                 s.reject("provisional statement not reviewed");s.healthy();
             }
         }
@@ -231,10 +239,10 @@ public final class ProtectedTransactionExecutor {
     }
     public void endProvisional(ProvisionalPermit permit) {
         var s=admissionScope();
-        if(!StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)
-                .getCallerClass().getName().equals(
-                    "dz.sh.hidra.modules.topology.application.service.ProtectedStationAdmissionCoordinator")
-          || permit==null || permit.issuer!=this || permit.scope!=s || s.provisionalPermit!=permit
+        String caller=StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName();
+        if((!caller.equals(DRAFT_COORDINATOR) && !caller.equals(
+                    "dz.sh.hidra.modules.topology.application.service.ProtectedStationAdmissionCoordinator"))
+          || permit==null || !caller.equals(permit.owner) || permit.issuer!=this || permit.scope!=s || s.provisionalPermit!=permit
           || !permit.opened || permit.consumed || s.phase!=ProtectedOperationDataSource.Phase.PROVISIONAL) {
             s.reject("invalid provisional completion");s.healthy();
         }

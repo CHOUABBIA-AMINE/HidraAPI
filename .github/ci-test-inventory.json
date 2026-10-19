@@ -2265,6 +2265,24 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "companyGrantCannotAuthorizeAnotherNetwork",
+        "eitherScopeDenyCannotProducePartialAuthority",
+        "fourGenuineProducersAndFourActionsRequireBothExactCustomScopes",
+        "preparedEntryCannotBeReplayedOrMovedToAnotherActor",
+        "structuralOrStationEvidenceCannotEnterDraftQualifiedReader"
+      ],
+      "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.ProtectedEngineeringDraftAuthorizationPostgresIntegrationTest",
+      "dependency_reason": "HAPI-587 new executable cases; hosted Java21/PostgreSQL execution and measurement pending",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedEngineeringDraftAuthorizationPostgresIntegrationTest.java",
+      "source_sha256": "9f930045e1a75847ce6f6cf0b4cbbc6967cdb8aa1191d1e7f245d6fe8e01bf97",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
         "admittedNativeCredentialHasNoPublicConstructor",
         "allFourRealProducerBearersParticipateAtDatabaseSample",
         "bindingOwnerGenerationsAndAbaAreReadAfterFences",
@@ -2400,13 +2418,15 @@
       "cases": [
         "boundsRowsJsonAndUnsupportedEvidence",
         "c3QualifiedOverloadCannotBeReachedFromPublicStructuralEvidence",
+        "fakeDraftPairCannotBypassGenuineIssuerTransport",
         "hasNoJpaCacheWallClockDecisionPersistenceOrAuthorityExport",
         "preservesGrantOrderScopeWindowsAndDenyPrecedence",
         "preservesTypedAttributesAndConflicts",
         "rejectsCallerActorResourceAndScopeMismatches",
         "rejectsUnknownClaimCoverageInsteadOfAssumingAbsence",
         "requiresMatchingPhysicalCoordinatesAndCompleteIdentityFences",
-        "requiresWritableReadCommittedParticipation"
+        "requiresWritableReadCommittedParticipation",
+        "structuralDiagnosticEvidenceCannotSelectEngineeringDraftFamily"
       ],
       "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcProtectedAuthorizationEvidenceReaderTest",
       "dependency_reason": "G diagnostic JDBC normalization/transaction checks; mocks and unchanged domain evaluator only",
@@ -2414,7 +2434,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java",
-      "source_sha256": "f62161b4cf55ac19395b07053391cbda921ea068fbdc05cfa0e9faf0691ac492",
+      "source_sha256": "b9eda1c6467df358ac24a3d8945c59240446fc80f7e3490cf6fdb3f12a269653",
       "supports": []
     },
     {
@@ -6232,6 +6252,22 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "domainAndContractsRemainFreeOfForeignPersistenceAndFrameworks",
+        "finiteDraftSqlHashesAndPlatformIssuerNamesStayBound",
+        "networkPairCannotBeConstructedOrRetaggedByCallers"
+      ],
+      "class": "dz.sh.hidra.modules.topology.EngineeringNetworkDraftBoundaryGuardrailTest",
+      "dependency_reason": "HAPI-587 new executable cases; hosted Java21/PostgreSQL execution and measurement pending",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/EngineeringNetworkDraftBoundaryGuardrailTest.java",
+      "source_sha256": "dde9af0f10e08c44066b4b1fba748eef48ae1f3fb9465bdc49ed74a8f788de5a",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0.0,
       "cases": [
         "catalogFunctionFingerprintsMatchBothActualMigrationBodies",
@@ -6263,7 +6299,23 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java",
-      "source_sha256": "24a1374b78b3aea32779a983715d28714c7f33ab8b57c3d7736b902157ecc753",
+      "source_sha256": "076925787d022223ddfc8dec9863a65d25ea20cb2e6ccfdd93a5ae8f4ef3e64a",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "createDistinguishesNewReceiptAndFreshlyAuthorizedReplay",
+        "recognizedFailuresHaveSafeNonDisclosingStatus",
+        "rejectsOwnershipGraphUnknownFieldsAndMissingVersion"
+      ],
+      "class": "dz.sh.hidra.modules.topology.api.rest.EngineeringNetworkDraftControllerTest",
+      "dependency_reason": "HAPI-587 new executable cases; hosted Java21/PostgreSQL execution and measurement pending",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/api/rest/EngineeringNetworkDraftControllerTest.java",
+      "source_sha256": "037c4aab10877ee49b997a19ef21169ebce2648ca4223ac5e731c23a761675e5",
       "supports": []
     },
     {
@@ -6327,6 +6379,22 @@
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/application/service/DocumentsTopologyTargetLookupTest.java",
       "source_sha256": "f8b16bf3c72d8614fb0d4ce632b90d58b9eb86298efe6309d5112c5dcd9c1ce9",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "ambientTransactionNeverPreparesOrExecutes",
+        "eachAttemptPreparesFreshAuthorityWithoutAutomaticRetry",
+        "updateAndValidationRequireExplicitPositiveExpectedVersion"
+      ],
+      "class": "dz.sh.hidra.modules.topology.application.service.EngineeringNetworkDraftApplicationServiceTest",
+      "dependency_reason": "HAPI-587 new executable cases; hosted Java21/PostgreSQL execution and measurement pending",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/application/service/EngineeringNetworkDraftApplicationServiceTest.java",
+      "source_sha256": "9ed5288d8cc368c964a94218dcb4c33d5e085885d9c38b69b7abfe8b235c62ec",
       "supports": []
     },
     {
@@ -6506,6 +6574,22 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "canonicalCodecRetainsNullAndUnicodeAndRejectsTrailingOrOversizedBytes",
+        "exactScopeBoundsAndOverflowAreRejected",
+        "immutableMetadataVersionAndIncompleteDiagnostics"
+      ],
+      "class": "dz.sh.hidra.modules.topology.domain.model.EngineeringNetworkDraftTest",
+      "dependency_reason": "HAPI-587 new executable cases; hosted Java21/PostgreSQL execution and measurement pending",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/domain/model/EngineeringNetworkDraftTest.java",
+      "source_sha256": "cdc0a8c22acc463baa84cb7b2d700a096b9e04c53d647212993a4a640cfe1f1b",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
         "preservesWithdrawnHistoryAndMonotonicEpoch",
         "rejectsMissingOrOverflowedEpochAndInvalidPublicationState",
         "rejectsSelfOrStalePredecessorAndForgedProvenance"
@@ -6657,6 +6741,33 @@
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/integration/SimulationTopologyTargetContractAdapterTest.java",
       "source_sha256": "89c7e525bc69a2320dc64ecbd5b0d6eabd17ce12ea7c13e27d0d13299c0b9db0",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "actualFinalGuardRejectsExpiredProvisionalVersionAndRetainsNoRows",
+        "actualFinalGuardVerifiesCompleteOwnerFenceSubset",
+        "actualPublisherFenceWorksWhileStatementTriggersRejectUpdates",
+        "committedNetworkRevocationAndPartyIneligibilityPreventReplay",
+        "concurrentSameExpectedVersionCommitsAtMostOneSuccessor",
+        "disabledActualCatalogTriggerFailsBeforeAnyDraftInsert",
+        "ordinaryDirectDmlAndDdlRemainDenied",
+        "originalCreationReplayDoesNotRevertLaterMetadata",
+        "realHttpBearerRoundTripAndSafeUnknownFieldRejection",
+        "realNativeProvidersCreateReadUpdateAndValidateWithoutPublishing",
+        "samePairReusesOneContextForIndependentCandidates",
+        "staleVersionNeverAppendsOrOverwrites",
+        "twoCompaniesHaveIsolatedContextsOnTheSameLogicalNetwork",
+        "writerFirstLockPreventsProvisionalCreate"
+      ],
+      "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.EngineeringNetworkDraftPostgresIntegrationTest",
+      "dependency_reason": "HAPI-587 new executable cases; hosted Java21/PostgreSQL execution and measurement pending",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/EngineeringNetworkDraftPostgresIntegrationTest.java",
+      "source_sha256": "9246381e997ead321faf3c78d91ccad1300563450541ce349a858adbc7cccde8",
       "supports": []
     },
     {
@@ -7752,6 +7863,7 @@
         "crossThreadCapturedHandleRejectsAndPoisons",
         "datasourceCloseDuringWorkPoisonsAttempt",
         "datasourceDelegateAndBuilderEscapesPoisonCaughtErrors",
+        "diagnosticAdmissionCannotMintDraftMutationPermit",
         "dormantCallableStatementRetainsJdbcInterfaceAndBackReference",
         "dormantDatasourceKeepsOrdinaryJdbcSemantics",
         "elapsedBudgetRejectsBeforeGuard",
@@ -7762,6 +7874,7 @@
         "mutableOrJdbcResultsCannotBeDelivered",
         "nativeControlAndMultipleSqlReject",
         "nestedExecutorPoisonsOuterAttempt",
+        "ordinaryExecutorCannotSelectPrivateDraftCredentialByCallback",
         "prematureCommitRollbackSavepointAndSettingsPoisonAttempts",
         "providerMayResetAutocommitOnlyAfterObservedPhysicalCommit",
         "publicationCredentialEntryRejectsUnreviewedCallerBeforeWork",
@@ -7781,7 +7894,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java",
-      "source_sha256": "5c9042296284da4092643a19778e404fd04102338c4329e4ced80a505021ce3c",
+      "source_sha256": "7f6049b5adf0ff15f1c82dc9a8f85a0030fcb25de1cc6044b3e04afcd347a4aa",
       "supports": []
     },
     {

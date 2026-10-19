@@ -616,4 +616,15 @@ class JdbcProtectedAuthorizationEvidenceReaderTest {
                     JdbcProtectedAuthorizationEvidenceReader.PairedAuthorizationEvidence.class);
             });
     }
+    @Test void structuralDiagnosticEvidenceCannotSelectEngineeringDraftFamily(){
+        var network=new AuthorizationEvaluationRequest(USER,"topology:engineering-draft:read","ENGINEERING_NETWORK_DRAFT","network",
+            new AuthorizationScope(ScopeType.CUSTOM,"topology-network:network",null));
+        assertThatThrownBy(()->reader.load(identity,network,7,11)).isInstanceOf(RuntimeException.class);
+    }
+    @Test void fakeDraftPairCannotBypassGenuineIssuerTransport(){
+        var request=new dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedEngineeringDraftAuthorizationContract.Request(
+            dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedEngineeringDraftAuthorizationContract.Action.READ,"company","network");
+        assertThatThrownBy(()->reader.loadQualifiedDraftPair(null,request)).isInstanceOf(RuntimeException.class);
+    }
+
 }

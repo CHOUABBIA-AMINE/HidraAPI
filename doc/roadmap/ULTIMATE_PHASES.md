@@ -181,7 +181,7 @@ Cross-phase prerequisites in the approved task graph: No additional cross-phase 
 | [HAPI-581](TASKS_HPS-002.md#hapi-581) | Paired protected Identity authorization | Paired protected Identity authorization; Identity | P0 | HAPI-575 | VERIFIED | COMPLETED |
 | [HAPI-582](TASKS_HPS-002.md#hapi-582) | Party eligibility and Facility ownership participation | Party eligibility and Facility ownership participation; Party/Topology | P0 | HAPI-581 | VERIFIED | COMPLETED |
 | [HAPI-583](TASKS_HPS-002.md#hapi-583) | Global admission, fences and common database time | Global admission/fences and common time; trusted coordinator with owner contracts, Platform technical mechanics | P0 | HAPI-582 | VERIFIED | COMPLETED |
-| [HAPI-584](TASKS_HPS-002.md#hapi-584) | Protected internal Topology head and operation boundary | Protected internal Topology operation boundary; Topology | P0 | HAPI-583 | PARTIAL | REGISTERED_PENDING |
+| [HAPI-584](TASKS_HPS-002.md#hapi-584) | Protected internal Topology head and operation boundary | Protected internal Topology operation boundary; Topology | P0 | HAPI-583 | VERIFIED | COMPLETED |
 | [HAPI-585](TASKS_HPS-002.md#hapi-585) | Integrated adversarial, concurrency and latency qualification | Integrated adversarial/concurrency/latency qualification and parent closure; independent verification | P0 | HAPI-584 | PARTIAL | BLOCKED |
 | [HAPI-670](TASKS_HPS-002.md#hapi-670) | add permission domain model and policy | Permission model and code policy | P2 | — | IMPLEMENTED | SUPERSEDED |
 | [HAPI-671](TASKS_HPS-002.md#hapi-671) | add role domain model | Role aggregate and permission assignment | P2 | — | NOT_VERIFIABLE | SUPERSEDED |

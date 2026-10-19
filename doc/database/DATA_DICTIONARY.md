@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `d7745f4282444d8e47aa28bbbde060eb86e7ba98`
+Captured source SHA: `85e9850a2bdfc8429638b50534e252f0ef618f6a`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `1c69a9e07f00f3477a44e32e8b123103cbe93b8862b73a4c380f75c524bba477`.
-Migrations: 154; JPA mappings: 470; catalog relations: 497; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `05901d8f05faef1f5fa2cb54490ce4e2ceea8f27ab035dd97097af894bc5cfc4`.
+Migrations: 155; JPA mappings: 470; catalog relations: 500; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -9276,6 +9276,7 @@ Persisted PermissionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261006_011__hmr_086_delegation_contract.sql](../../src/main/resources/db/migration/V20261006_011__hmr_086_delegation_contract.sql)
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
+- Migration mention (not inferred introduction): [V20261019_001__p25_topology_engineering_drafts.sql](../../src/main/resources/db/migration/V20261019_001__p25_topology_engineering_drafts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -24943,6 +24944,164 @@ Persisted ConnectionTypeJpaEntity state; semantic authority remains with topolog
 
 None captured in this catalog category.
 
+### public.hidra_topology_engineering_context
+
+Owner: **topology**; relation kind: `r`.
+
+Immutable company/network engineering-context binding; HAPI-587, current physical catalog capture pending hosted CI.
+
+- Evidence: [JdbcEngineeringNetworkDraftRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringNetworkDraftRepositoryAdapter.java)
+- Evidence: [V20261019_001__p25_topology_engineering_drafts.sql](../../src/main/resources/db/migration/V20261019_001__p25_topology_engineering_drafts.sql)
+- Migration mention (not inferred introduction): [V20261019_001__p25_topology_engineering_drafts.sql](../../src/main/resources/db/migration/V20261019_001__p25_topology_engineering_drafts.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| pipeline_system_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_topology_engineering_co_company_party_id_pipeline_sys_key`: UNIQUE (company_party_id, pipeline_system_id)
+  - Catalog attributes: {"columns": ["company_party_id", "pipeline_system_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_topology_engineering_context_company_party_id_check`: CHECK (company_party_id::text = btrim(company_party_id::text) AND length(company_party_id::text) &gt; 0)
+  - Catalog attributes: {"columns": ["company_party_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_context_pipeline_system_id_fkey`: FOREIGN KEY (pipeline_system_id) REFERENCES hidra_topology_pipeline_system(id)
+  - Catalog attributes: {"columns": ["pipeline_system_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_pipeline_system"}, "type": "f", "validated": true}
+- `hidra_topology_engineering_context_pkey`: PRIMARY KEY (id)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `hidra_topology_engineering_co_company_party_id_pipeline_sys_key`: CREATE UNIQUE INDEX hidra_topology_engineering_co_company_party_id_pipeline_sys_key ON public.hidra_topology_engineering_context USING btree (company_party_id, pipeline_system_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_topology_engineering_context_pkey`: CREATE UNIQUE INDEX hidra_topology_engineering_context_pkey ON public.hidra_topology_engineering_context USING btree (id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `p25_engineering_context_immutable`: CREATE TRIGGER p25_engineering_context_immutable BEFORE DELETE OR UPDATE ON hidra_topology_engineering_context FOR EACH STATEMENT EXECUTE FUNCTION hidra_p25_draft_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_draft_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_draft_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'Immutable engineering draft storage' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `p25_engineering_context_no_truncate`: CREATE TRIGGER p25_engineering_context_no_truncate BEFORE TRUNCATE ON hidra_topology_engineering_context FOR EACH STATEMENT EXECUTE FUNCTION hidra_p25_draft_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_draft_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_draft_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'Immutable engineering draft storage' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
+### public.hidra_topology_engineering_draft
+
+Owner: **topology**; relation kind: `r`.
+
+Immutable candidate identity and scoped creation-request replay identity; HAPI-587, current physical catalog capture pending hosted CI.
+
+- Evidence: [JdbcEngineeringNetworkDraftRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringNetworkDraftRepositoryAdapter.java)
+- Evidence: [V20261019_001__p25_topology_engineering_drafts.sql](../../src/main/resources/db/migration/V20261019_001__p25_topology_engineering_drafts.sql)
+- Migration mention (not inferred introduction): [V20261019_001__p25_topology_engineering_drafts.sql](../../src/main/resources/db/migration/V20261019_001__p25_topology_engineering_drafts.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| context_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| creation_request_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| request_sha256 | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_topology_engineering_dr_context_id_creation_request_i_key`: UNIQUE (context_id, creation_request_id)
+  - Catalog attributes: {"columns": ["context_id", "creation_request_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_topology_engineering_draft_context_id_fkey`: FOREIGN KEY (context_id) REFERENCES hidra_topology_engineering_context(id)
+  - Catalog attributes: {"columns": ["context_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_engineering_context"}, "type": "f", "validated": true}
+- `hidra_topology_engineering_draft_pkey`: PRIMARY KEY (id)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_topology_engineering_draft_request_sha256_check`: CHECK (request_sha256::text ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["request_sha256"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_topology_engineering_dr_context_id_creation_request_i_key`: CREATE UNIQUE INDEX hidra_topology_engineering_dr_context_id_creation_request_i_key ON public.hidra_topology_engineering_draft USING btree (context_id, creation_request_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_topology_engineering_draft_pkey`: CREATE UNIQUE INDEX hidra_topology_engineering_draft_pkey ON public.hidra_topology_engineering_draft USING btree (id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `p25_engineering_draft_immutable`: CREATE TRIGGER p25_engineering_draft_immutable BEFORE DELETE OR UPDATE ON hidra_topology_engineering_draft FOR EACH STATEMENT EXECUTE FUNCTION hidra_p25_draft_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_draft_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_draft_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'Immutable engineering draft storage' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `p25_engineering_draft_no_truncate`: CREATE TRIGGER p25_engineering_draft_no_truncate BEFORE TRUNCATE ON hidra_topology_engineering_draft FOR EACH STATEMENT EXECUTE FUNCTION hidra_p25_draft_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_draft_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_draft_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'Immutable engineering draft storage' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
+### public.hidra_topology_engineering_draft_version
+
+Owner: **topology**; relation kind: `r`.
+
+Immutable metadata versions, predecessor digest and protected actor/time provenance; HAPI-587, current physical catalog capture pending hosted CI.
+
+- Evidence: [JdbcEngineeringNetworkDraftRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringNetworkDraftRepositoryAdapter.java)
+- Evidence: [V20261019_001__p25_topology_engineering_drafts.sql](../../src/main/resources/db/migration/V20261019_001__p25_topology_engineering_drafts.sql)
+- Migration mention (not inferred introduction): [V20261019_001__p25_topology_engineering_drafts.sql](../../src/main/resources/db/migration/V20261019_001__p25_topology_engineering_drafts.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| draft_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| version | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| payload_format | character varying(40) | False | None; identity=; generated= | No current mapped Java column | — |
+| canonical_payload | bytea | False | None; identity=; generated= | No current mapped Java column | — |
+| sha256 | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| predecessor_sha256 | character varying(64) | True | None; identity=; generated= | No current mapped Java column | — |
+| actor_binding_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_session_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_user_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| party_generation | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| sampled_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| valid_until | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| backend_pid | integer | False | None; identity=; generated= | No current mapped Java column | — |
+| transaction_id | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_topology_engineering_draft_versio_canonical_payload_check`: CHECK (octet_length(canonical_payload) &gt;= 16 AND octet_length(canonical_payload) &lt;= 32768)
+  - Catalog attributes: {"columns": ["canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_draft_version_actor_user_id_check`: CHECK (length(btrim(actor_user_id::text)) &gt; 0)
+  - Catalog attributes: {"columns": ["actor_user_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_draft_version_backend_pid_check`: CHECK (backend_pid &gt; 0)
+  - Catalog attributes: {"columns": ["backend_pid"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_draft_version_check`: CHECK (sha256::text = encode(sha256(canonical_payload), 'hex'::text))
+  - Catalog attributes: {"columns": ["sha256", "canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_draft_version_check1`: CHECK (valid_until &gt; sampled_at)
+  - Catalog attributes: {"columns": ["valid_until", "sampled_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_draft_version_check2`: CHECK (version = 1 AND predecessor_sha256 IS NULL OR version &gt; 1 AND predecessor_sha256::text ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["version", "predecessor_sha256"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_draft_version_draft_id_fkey`: FOREIGN KEY (draft_id) REFERENCES hidra_topology_engineering_draft(id)
+  - Catalog attributes: {"columns": ["draft_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_engineering_draft"}, "type": "f", "validated": true}
+- `hidra_topology_engineering_draft_version_party_generation_check`: CHECK (party_generation &gt; 0)
+  - Catalog attributes: {"columns": ["party_generation"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_draft_version_payload_format_check`: CHECK (payload_format::text = 'HIDRA_ENGINEERING_METADATA_V1'::text)
+  - Catalog attributes: {"columns": ["payload_format"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_draft_version_pkey`: PRIMARY KEY (draft_id, version)
+  - Catalog attributes: {"columns": ["draft_id", "version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_topology_engineering_draft_version_transaction_id_check`: CHECK (transaction_id &gt; 0)
+  - Catalog attributes: {"columns": ["transaction_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_draft_version_version_check`: CHECK (version &gt; 0)
+  - Catalog attributes: {"columns": ["version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_topology_engineering_draft_version_pkey`: CREATE UNIQUE INDEX hidra_topology_engineering_draft_version_pkey ON public.hidra_topology_engineering_draft_version USING btree (draft_id, version)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `p25_engineering_draft_version_immutable`: CREATE TRIGGER p25_engineering_draft_version_immutable BEFORE DELETE OR UPDATE ON hidra_topology_engineering_draft_version FOR EACH STATEMENT EXECUTE FUNCTION hidra_p25_draft_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_draft_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_draft_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'Immutable engineering draft storage' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `p25_engineering_draft_version_no_truncate`: CREATE TRIGGER p25_engineering_draft_version_no_truncate BEFORE TRUNCATE ON hidra_topology_engineering_draft_version FOR EACH STATEMENT EXECUTE FUNCTION hidra_p25_draft_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_draft_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_draft_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'Immutable engineering draft storage' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `p25_engineering_next_version`: CREATE TRIGGER p25_engineering_next_version BEFORE INSERT ON hidra_topology_engineering_draft_version FOR EACH ROW EXECUTE FUNCTION hidra_p25_draft_next_version()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_draft_next_version()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_draft_next_version()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>DECLARE last_version bigint; last_digest text;<br>BEGIN<br> PERFORM id FROM public.hidra_topology_engineering_draft WHERE id=NEW.draft_id FOR UPDATE;<br> IF NOT FOUND THEN RAISE EXCEPTION 'Missing draft' USING ERRCODE='23503'; END IF;<br> SELECT version,sha256 INTO last_version,last_digest<br> FROM public.hidra_topology_engineering_draft_version WHERE draft_id=NEW.draft_id ORDER BY version DESC LIMIT 1;<br> IF (last_version IS NULL AND (NEW.version&lt;&gt;1 OR NEW.predecessor_sha256 IS NOT NULL))<br>    OR (last_version IS NOT NULL AND (last_version=9223372036854775807::bigint<br>        OR NEW.version&lt;&gt;last_version+1 OR NEW.predecessor_sha256 IS DISTINCT FROM last_digest)) THEN<br>  RAISE EXCEPTION 'Stale engineering draft version' USING ERRCODE='23514';<br> END IF;<br> RETURN NEW;<br>END;<br>$function$<br>
+
 ### public.hidra_topology_equipment
 
 Owner: **topology**; relation kind: `r`.
@@ -25823,6 +25982,7 @@ Persisted PipelineSystemJpaEntity state; semantic authority remains with topolog
 - Migration mention (not inferred introduction): [V20260611_004__create_topology_tables.sql](../../src/main/resources/db/migration/V20260611_004__create_topology_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261004_022__hmr_022_topology_pipeline_system.sql](../../src/main/resources/db/migration/V20261004_022__hmr_022_topology_pipeline_system.sql)
+- Migration mention (not inferred introduction): [V20261019_001__p25_topology_engineering_drafts.sql](../../src/main/resources/db/migration/V20261019_001__p25_topology_engineering_drafts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

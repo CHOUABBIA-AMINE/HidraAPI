@@ -1095,7 +1095,11 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
                 Boolean.class,Timestamp.from(c.validUntil()),Timestamp.from(c.sampledAt()),Timestamp.from(c.validUntil()));
             assertThat(permitted).isFalse();throw new IllegalStateException("Actual common deadline reached");
         })).isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class);
-        assertThat(reachedGuard).isTrue();assertThat(captured.get().validUntil()).isEqualTo(start);
+        assertThat(reachedGuard).isTrue();
+        // The Identity temporal collector uses a second-granularity effective bound.
+        // Preserve the actual database-deadline rejection above, never compare to
+        // the fractional fixture input as though it were an admitted expiry.
+        assertThat(captured.get().validUntil()).isEqualTo(start.truncatedTo(ChronoUnit.SECONDS));
     }
     @Test void forgedReplayedSuspendedAndChangedAuthenticationTicketsFail() {
         var f=localPair();var pre=kp(f);kr(pre,request(),()->{},()->{},()->{});assertThatThrownBy(()->kr(pre,request(),()->{},()->{},()->{})).isInstanceOf(RuntimeException.class);

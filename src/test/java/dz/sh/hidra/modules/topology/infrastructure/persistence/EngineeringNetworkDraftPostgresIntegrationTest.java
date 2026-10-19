@@ -1008,8 +1008,18 @@ public class EngineeringNetworkDraftPostgresIntegrationTest {
     }
     @Test void realHttpBearerRoundTripAndSafeUnknownFieldRejection() throws Exception {
         draftActor("LOCAL");String body="{\"companyPartyId\":\""+COMPANY+"\",\"pipelineSystemId\":\""+network+"\",\"creationRequestId\":\""+UUID.randomUUID()+"\"}";
-        http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/api/v1/topology/engineering-networks").header("Authorization","Bearer "+rawToken).contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(body))
-            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isCreated());
+        // Do not use the original synthetic ambient wrapper as an HTTP credential.
+        // The real Spring Security filter must decode and authenticate the native JWT.
+        assertThat(nativeDecoder.decode(rawToken).getTokenValue()).isEqualTo(rawToken);
+        SecurityContextHolder.clearContext();
+        var actualHttp=http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+            .post("/api/v1/topology/engineering-networks").header("Authorization","Bearer "+rawToken)
+            .contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(body)).andReturn();
+        assertThat(actualHttp.getResponse().getStatus())
+            .as("Actual bearer status; response=%s, resolvedException=%s",
+                actualHttp.getResponse().getContentAsString(),
+                actualHttp.getResolvedException()==null?"none":actualHttp.getResolvedException().getClass().getName())
+            .isEqualTo(201);
         http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/api/v1/topology/engineering-networks").header("Authorization","Bearer "+rawToken).contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(body.substring(0,body.length()-1)+",\"graph\":{}}"))
             .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isBadRequest());
     }

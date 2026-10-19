@@ -97,13 +97,12 @@ class EngineeringGraphDraftCodecTest {
         assertThrows(IllegalArgumentException.class,()->codec.sha256(null));
     }
     @Test void rejectsCorruptedHeaderAndUnknownFormat() {
-        byte[] x=HexFormat.of().parseHex(CONNECTED_HEX);
-        x[12]='X';
-        assertThrows(IllegalArgumentException.class,()->codec.decode(x));
-        x=HexFormat.of().parseHex(CONNECTED_HEX);
-        ByteBuffer.wrap(x).putInt(0,Integer.MAX_VALUE);
-        byte[] corrupt=x;
-        assertThrows(IllegalArgumentException.class,()->codec.decode(corrupt));
+        byte[] corruptFormat=HexFormat.of().parseHex(CONNECTED_HEX);
+        corruptFormat[12]='X';
+        assertThrows(IllegalArgumentException.class,()->codec.decode(corruptFormat));
+        byte[] corruptLength=HexFormat.of().parseHex(CONNECTED_HEX);
+        ByteBuffer.wrap(corruptLength).putInt(0,Integer.MAX_VALUE);
+        assertThrows(IllegalArgumentException.class,()->codec.decode(corruptLength));
     }
     @Test void rejectsInvalidUtf8AndMismatchedEnum() {
         byte[] x=HexFormat.of().parseHex(CONNECTED_HEX);

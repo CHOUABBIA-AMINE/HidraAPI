@@ -161,6 +161,8 @@ public class ProtectedStationAdmissionPostgresIntegrationTest {
         admin.execute("REVOKE CREATE ON SCHEMA public FROM PUBLIC");
         r.add("spring.datasource.username", ()->"c3_source_claim_app");
         r.add("spring.datasource.password", ()->"synthetic-c3-test-only");
+        // A separate migration login needs an explicit URL; the runtime DataSource is guarded.
+        r.add("spring.flyway.url",POSTGRES::getJdbcUrl);
         r.add("spring.flyway.user",POSTGRES::getUsername);
         r.add("spring.flyway.password",POSTGRES::getPassword);
         r.add("hidra.platform.persistence.publication.enabled",()->"true");

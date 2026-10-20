@@ -19622,7 +19622,7 @@ Priority: P1
 
 Implementation Status: PARTIAL
 
-Planning Status: REGISTERED_PENDING
+Planning Status: IN_PROGRESS
 
 Owning Module: `organization` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -19751,6 +19751,89 @@ Initial canonical adoption, 2026-10-16: New bounded verification/correction obli
 No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
 
 Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+### 2026-10-20 — Independent appointment lifecycle source review selected by owner
+
+Owner-directed continuation selects HAPI-778 / ORG-GAP-003 while HAPI-590
+remains on its explicitly recorded failed-gate hold. HAPI-778 is an existing
+P1 obligation with no canonical prerequisites and no HAPI-590 dependency.
+State is **PARTIAL / IN_PROGRESS** for source review/design; no new lifecycle
+implementation or acceptance is claimed.
+
+**This bounded governance stage:** exact message
+`docs(planning): hold failed publication and select appointment lifecycle review`.
+MODIFY exactly ULTIMATE_ROADMAP.md, ULTIMATE_PHASES.md, ULTIMATE_TASKS.md,
+TASKS_HPS-004.md and this phase record. Registry changes are status-only:
+HAPI-590 planning REGISTERED_PENDING to BLOCKED; HAPI-778 planning
+REGISTERED_PENDING to IN_PROGRESS. Both implementation cells remain PARTIAL.
+Every other row, ID, dependency, priority and historical record is preserved.
+The index changes only the current execution selection. No Java/test, migration,
+workflow, API artifact, dictionary, identity/responsibility behavior or deployment
+change is included.
+
+**Actual source review at `ce9cdf0be134fa968eecc205c53a028303da8328`:**
+
+- EmployeeAssignment is an existing pure-Java immutable record with required
+  employee/unit/position/type/status and validFrom, optional validTo, and a
+  strict validTo>validFrom invariant. Its documentation explicitly separates
+  membership from ResponsibilityAssignment. It defines no transfer or audited
+  correction operation.
+- AssignEmployeeUseCase exposes assignEmployee only.
+  EmployeeAssignmentApplicationService checks an existing ACTIVE unit, defaults
+  omitted type to PRIMARY and validFrom to the current application time,
+  creates an ACTIVE assignment with a new ID, and saves it. That service has
+  no transaction annotation, expected-version input or transfer/history method.
+  This review does not change or endorse those defaults as a future policy.
+- EmployeeAssignmentRepositoryPort exposes save/findById only; the JPA adapter
+  maps through OrganizationPersistenceMapper and delegates to the Spring Data
+  repository. EmployeeAssignmentJpaRepository extends JpaRepository with no
+  explicit employee/position-history or overlap query. Absence of those methods
+  is not a claim that every possible repository query has been audited.
+- EmployeeAssignmentJpaEntity maps hidra_org_employee_assignment with effective
+  times/status and created/updated timestamps; it has no mapped @Version field.
+  Source mappings do not establish current physical constraints; migrations and
+  actual PostgreSQL evidence still require review before implementation.
+- SpringOrganizationController exposes POST /employees/assignments plus the
+  retained /assign-employee alias through AssignEmployeeRequest/use-case mapping.
+  It has no transfer, correction or position-occupant-history route.
+- EmployeeAssignmentSemanticRemediationTest covers missing/absent/non-active
+  unit rejection and saving for an ACTIVE normalized unit. Those existing
+  source cases do not prove lifecycle, overlap, history, authorization or
+  concurrent transfer acceptance. No new execution of them is claimed here.
+
+Paths above are rooted under src/main/java/dz/sh/hidra/modules/organization
+in their existing domain/model, application/port/in, application/port/out,
+application/service, infrastructure/persistence/entity, adapter, repository and
+api/rest/controller packages; the semantic test is under the matching test root.
+All nine full source files were retrieved. Existing assignment history,
+Party identity and operational responsibility ownership must be preserved.
+
+**Next single registered stage — design only:**
+`docs(organization): define employee appointment lifecycle execution contract`.
+MODIFY only this HAPI-778 record in TASKS_HPS-003.md. First recover command/DTO
+mappers, Employee/Position ownership, current company/security contracts,
+ResponsibilityAssignment interactions, migration/writer inventory and actual
+query/architecture tests. Define aggregate/transaction boundaries, expected
+versions, idempotency, retained correction provenance, employee/position history
+pagination, authorization-before-disclosure, half-open intervals and explicit
+overlap/acting-assignment policy. Distinguish verified existing policy from
+proposed policy; a material unresolved owner decision must remain explicit,
+not become an inferred production rule. Register exact implementation paths,
+messages, additive migration reservation if required and meaningful synthetic
+acceptance cases before code. No filenames for new production types or schema
+versions are invented in this review. Future actual artifact equality and
+catalog capture remain required; the held HAPI-590 drift cannot be treated as
+a successful full-CI baseline for new runtime acceptance.
+
+**Validation and stop:** read live head/parent/tree, AGENTS, current registry/index,
+reconciliation placeholder and exact-source Full/Fast/Docs job dispositions.
+In-memory checks require only the two planning-cell deltas, identical task
+membership/dependency rows, append-only historical payloads and the five-file
+governance envelope. No local Java/Maven/PostgreSQL or documentation-script
+execution is available/claimed. Publish with expected-`ce9cdf0be134fa968eecc205c53a028303da8328` guard,
+verify raw blobs/tree/parent/message/scope, confirm exact-SHA applicable Docs
+creation/queueing/start and STOP. This source-review stage does not deliver
+the proposed lifecycle or claim acceptance of the failed publication task.
 
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper

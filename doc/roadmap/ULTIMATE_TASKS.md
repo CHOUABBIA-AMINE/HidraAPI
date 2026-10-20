@@ -27,17 +27,21 @@ internal software and draft authoring scopes. The former HAPI-589
 NOT_IMPLEMENTED pointer is superseded by its owning phase acceptance
 record; no prerequisite implementation should be repeated.
 
-The next sequential engineering task is
-[HAPI-590](TASKS_HPS-004.md#hapi-590), public governed revision publication and
-history. The owner selected A: immutable governed authored snapshots explicitly
-engineering-unqualified, preserving missing values and diagnostics. The complete
-21-CREATE/23-MODIFY envelope is registered in its owning phase record, with no
-runtime delivery implied by registration. Status is NOT_IMPLEMENTED/
-REGISTERED_PENDING. After this registration passes Docs, the next single stage
-is Package A, `feat(topology): define governed publication snapshot contract`;
-B integration, C actual-artifact reconciliation and final acceptance remain
-separately selected in that registered order. No repeated readiness choice,
-context-cardinality question, benchmark or operational approval is selected.
+[HAPI-590](TASKS_HPS-004.md#hapi-590) is PARTIAL/BLOCKED by owner direction
+while its required Full CI artifact gate is failing. Full788 on ce9cdf0 failed
+canonical OpenAPI equality; Fast109, Docs472, unit/architecture and all five
+PostgreSQL jobs passed. Dictionary validation remains pending. Package C and
+formal acceptance remain unfinished; no dependent task is unblocked by this hold.
+
+The active independent task is
+[HAPI-778](TASKS_HPS-003.md#hapi-778), employee appointment lifecycle and position
+history, PARTIAL/IN_PROGRESS. The owner authorized independent continuation
+despite the recorded HAPI-590 failure. Initial source review is recorded in its
+phase file. After this governance stage passes Docs, the next single stage is
+`docs(organization): define employee appointment lifecycle execution contract`,
+a source-backed design and exact-scope registration in that HAPI-778 record only.
+No lifecycle implementation, new policy, schema change or full-CI pass is implied.
+Existing HAPI-567/588/589 acceptance and the deferred simulator direction remain.
 
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent

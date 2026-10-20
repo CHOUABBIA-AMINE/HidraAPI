@@ -6418,7 +6418,7 @@ Priority: P1
 
 Implementation Status: PARTIAL
 
-Planning Status: REGISTERED_PENDING
+Planning Status: BLOCKED
 
 Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -7534,6 +7534,44 @@ message/paths/blobs and confirm applicable new-SHA CI creation/startup, then STO
 Required test success remains pending; C artifact reconciliation is the next
 registered stage only after genuine B failures are resolved. No further task,
 benchmark, release or deployment is selected.
+
+### 2026-10-20 — Owner-directed failed-gate hold and independent task continuation
+
+The owner explicitly directs: mark this as a failing task and proceed with
+another task because the artifact-processing environment is currently unavailable.
+This is an authorized sequencing exception to repair-before-advance, restricted
+to independent development work. It does not waive HAPI-590 acceptance or any
+CI gate. Current state is **PARTIAL / BLOCKED**: source implementation exists,
+but the required Full gate is failing and publication is not accepted.
+Do not label the runtime DEFECTIVE solely from artifact drift.
+
+Exact source `ce9cdf0be134fa968eecc205c53a028303da8328`, parent
+`ee1c413ffdc049d0fc6fb6e1a84fdb0ac87daf05`, tree
+`14c4bed0bc57a5ba319798d33a1319746dba868e` has
+[Full788 FAILURE](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39496709378),
+[Fast109 SUCCESS](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39496709359)
+and [Docs472 SUCCESS](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39496709385).
+Full's unit/architecture, static and all five PostgreSQL jobs succeeded.
+API job118883532586 failed strict canonical OpenAPI equality after actual
+runtime generation; the subsequent dictionary validation did not execute.
+The Full gate remains FAILURE. Its serial diagnostic job was skipped; no
+unrestricted serial run or full software acceptance is invented.
+
+Package C remains recoverable from actual source/run/attempt1 artifacts,
+including API diagnostics artifact12298846165. Required work is actual generated
+API reconciliation and actual migrated catalog/source/ownership dictionary
+validation, followed by required exact-SHA CI and later separate acceptance.
+The generated contract and physical dictionary retain their truthful prior bytes;
+no hand-authored physical metadata, test removal, equality relaxation,
+workflow bypass, source rollback or acceptance is selected. The lack of a usable
+execution environment is an agent tooling limitation, not missing owner code
+or deployment calibration data.
+
+HAPI-591, HAPI-592 and dependent integrated closure remain blocked.
+The next active independent task is HAPI-778 (Organization appointment lifecycle),
+which has no registered dependency on HAPI-590. Its initial source review and
+next bounded design stage are recorded in TASKS_HPS-003.md.
+This hold does not authorize release, deployment, simulation or live OT work.
 
 <a id="hapi-592"></a>
 ## HAPI-592 — Topology operator/API/history qualification

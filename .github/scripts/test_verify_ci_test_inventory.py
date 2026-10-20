@@ -18,10 +18,12 @@ def source(root, name, text):
     return path
 
 
-def fixture(root):
+def fixture(root, postgres_shards=2):
     source(root, 'UnitTest', 'class UnitTest { @Test void provesBehavior() {} }\n')
     source(root, 'FirstDatabaseTest', 'import org.testcontainers.containers.PostgreSQLContainer;\nclass FirstDatabaseTest {}\n')
     source(root, 'SecondDatabaseTest', 'import org.testcontainers.containers.PostgreSQLContainer;\nclass SecondDatabaseTest {}\n')
+    if postgres_shards == 3:
+        source(root, 'ThirdDatabaseTest', 'import org.testcontainers.containers.PostgreSQLContainer;\nclass ThirdDatabaseTest {}\n')
     classes = []
     for name, item in ci.discover(root).items():
         unit = name.endswith('UnitTest')
@@ -29,7 +31,8 @@ def fixture(root):
                         'owner': 'example', 'lane': 'unit-architecture' if unit else 'postgres-integration',
                         'fast': unit, 'dependency_reason': 'Reviewed runtime dependency', 'supports': [],
                         'cases': ['provesBehavior'], 'baseline_seconds': 1.0})
-    return {'format': 1, 'mode': 'shadow-fallback-required', 'classes': classes, 'supporting_classes': []}
+    return {'format': 1, 'mode': 'shadow-fallback-required', 'postgres_shards': postgres_shards,
+            'classes': classes, 'supporting_classes': []}
 
 
 def report(directory, name='example.UnitTest', case='provesBehavior', outcome='', declared=None):
@@ -90,6 +93,32 @@ class InventoryTest(unittest.TestCase):
         self.assertEqual(len(lanes['oracle']), 3)
         self.assertEqual(set(lanes['postgres-0']) & set(lanes['postgres-1']), set())
         self.assertEqual(lanes, ci.partitions(copy.deepcopy(self.manifest)))
+
+    def test_three_shards_are_disjoint_complete_and_weighted(self):
+        manifest = fixture(self.root, postgres_shards=3)
+        template = next(e for e in manifest['classes'] if e['lane'] == 'postgres-integration')
+        for name in ('FourthDatabaseTest', 'FifthDatabaseTest', 'SixthDatabaseTest'):
+            path = source(self.root, name, f'import org.testcontainers.containers.PostgreSQLContainer;\nclass {name} {{}}\n')
+            entry = ci.discover(self.root)['example.' + name]
+            manifest['classes'].append(dict(template, **{'class': 'example.' + name,
+                'path': entry['path'], 'source_sha256': entry['sha256']}))
+        weights = [9.0, 8.0, 7.0, 6.0, 5.0, 4.0]
+        for entry, weight in zip((e for e in manifest['classes'] if e['lane'] == 'postgres-integration'), weights):
+            entry['baseline_seconds'] = weight
+        ci.validate(self.root, manifest)
+        lanes = ci.partitions(manifest)
+        names = [name for lane in ci.postgres_lanes(manifest) for name in lanes[lane]]
+        self.assertEqual(len(names), len(set(names)))
+        self.assertEqual(set(names + lanes['unit-architecture']), set(lanes['oracle']))
+        self.assertEqual([sum(e['baseline_seconds'] for e in manifest['classes'] if e['class'] in lanes[lane])
+                          for lane in ci.postgres_lanes(manifest)], [13.0, 13.0, 13.0])
+        self.assertEqual(lanes, ci.partitions(copy.deepcopy(manifest)))
+
+    def test_unreviewed_or_empty_shard_count_denies(self):
+        for count in (0, 1, 4, True, '3', 3):
+            with self.subTest(count=count):
+                self.manifest['postgres_shards'] = count
+                with self.assertRaises(ValueError): ci.partitions(self.manifest)
 
     def test_archive_without_policy_denies(self):
         selected = next(e for e in self.manifest['classes'] if e['lane'] == 'postgres-integration')

@@ -1,5 +1,14 @@
 # HidraAPI / HyFlo — Project State Handoff
 
+**Owner-confirmed operating scope — 2026-10-20:** HidraAPI is a development API;
+there is no production API deployment or active production database yet. Formal
+GitHub releases and older references to production source/CI/artifacts describe
+software history and verification, not an operating production environment.
+HAPI-045 uses complete parallel development test sets by default. Explicit manual
+`audit` verification retains the unrestricted oracle for independent equivalence
+and release gates; development partition results do not qualify a release.
+See [HAPI-045](doc/roadmap/TASKS_HPS-024.md#hapi-045) for scope and measurements.
+
 **Captured:** 2026-09-22. **Release state refreshed:** 2026-10-09. **Canonical integration branch:** [main](https://github.com/CHOUABBIA-AMINE/HidraAPI/tree/main). **Current release-state baseline before this change:** [045f062f782b0f5240f255853db2e9025e69d631](https://github.com/CHOUABBIA-AMINE/HidraAPI/commit/045f062f782b0f5240f255853db2e9025e69d631). Older workstream sections remain dated handoff evidence unless explicitly refreshed below. This file is a non-secret handoff, not an assertion about future PR/branch status, live deployments or an authorization to migrate data.
 
 **Current release/development state — 2026-10-09:** last formal release is

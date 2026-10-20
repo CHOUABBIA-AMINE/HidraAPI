@@ -392,6 +392,119 @@ doc/model-remediation/RECONCILIATION.md:23334 | CI-003C | Complete representativ
 doc/model-remediation/RECONCILIATION.md:23732 | CI-003C | BLOCKED_SPECIFICATION | Equivalence and negative acceptance gates
 ~~~~~~~~
 
+### 2026-10-20 — owner-selected development CI partition optimization
+
+Owner direction: resume HAPI-045, treat HidraAPI as a development API with no
+production deployment/database, avoid running the full Java suite again alongside
+complete parallel sets, review obsolete tests and use previous runs for timing.
+This same-ID bounded development-policy amendment supersedes the per-push oracle
+requirement in sections 3/4/6 for development only. It is not CI-003 programme
+closure, production adoption, release approval or completion of HAPI-046/HAPI-436.
+An explicit manual `workflow_dispatch` with `verification_mode: audit` retains the
+unrestricted oracle, same-run equivalence and the strict release proof.
+
+Exact registered implementation message (retained HPR-CI-003 message):
+`ci: automate fast feedback and preserve full verification gates`.
+
+**Bounded write scope:** `.github/workflows/ci.yml`,
+`.github/ci-test-inventory.json`, `.github/scripts/verify_ci_test_inventory.py`,
+`.github/scripts/test_verify_ci_test_inventory.py`,
+`.github/scripts/verify_full_ci_evidence.py`,
+`.github/scripts/test_verify_full_ci_evidence.py`, `PROJECT_STATE.md` and this
+owning task record. The two inventory files/helpers are admitted because measured
+new classes had zero scheduling weights and the existing two DB sets were uneven.
+No Java source/test, POM, schema, migration, API snapshot, dictionary, Fast workflow
+or release workflow changes. All existing required static validators remain.
+Older use of the word production for source, CI or artifact checks does not imply
+an operating production API; PROJECT_STATE now records the owner's current scope.
+
+**Previous-run observations:** successful GitHub jobs, wall seconds (start to
+completion, excluding queue). These are existing naturally completed runs, not a
+new benchmark campaign or five comparable samples of the new configuration.
+
+| Full run | Unit | PostgreSQL 0 | PostgreSQL 1 | API/dictionary | Serial verification |
+|---|---:|---:|---:|---:|---:|
+| [777](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39423247020) | 100 | 312 | 748 | 152 | 1295 |
+| [774](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39410913571) | 97 | 353 | 628 | 186 | 919 |
+| [773](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39406126892) | 91 | 352 | 846 | 164 | 1113 |
+| [772](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39403043675) | 97 | 359 | 619 | 160 | 1127 |
+| [771](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39400041135) | 69 | 370 | 835 | 122 | 1051 |
+
+Observed serial-job median is 1113 seconds (18m33s); it includes the duplicate
+suite and duplicate API/dictionary/base-generation work. This is not a workflow
+elapsed-time median. Test growth, runner/cache state and source differ between
+samples; cold/warm classification, flake rate and cost acceptance are not inferred.
+Full777 total job wall time sums to 2643 seconds (44m03s runner time), excluding
+queue and any billing rounding. No new-configuration runner cost is yet measured.
+
+**Timing provenance and partition scope:** Full777 on source
+`067929306170ad69b453823a90bb7beeb6b8130d`, attempt 1, authenticated aggregate
+ZIP SHA256 `9aa04df6a595ed37388f08125d16db7efcba4d52fa181dd01fdc4f83c80e93c3`.
+Downloaded raw XML/receipts were rechecked for hashes, class/case coverage,
+API/catalog equality and dictionary source provenance. Every test/support source
+and the POM match current parent `0d11c29657ee6af5859a321c929dae4caaf89593`.
+Only `baseline_seconds` changes inside existing class entries; identities, cases,
+source pins, owners, dependencies, Fast membership and archive policy are unchanged.
+The old baseline remains for original case provenance; `timing_baseline` records
+the newer scheduling measurements separately.
+
+| Development test set | Classes | Cases | Previous oracle suite seconds, summed |
+|---|---:|---:|---:|
+| Unit/architecture | 336 | 1717 | 54.231 |
+| PostgreSQL 0 | 30 | 265 | 341.868 |
+| PostgreSQL 1 | 34 | 315 | 341.872 |
+| PostgreSQL 2 | 30 | 309 | 341.875 |
+| Complete disjoint union | 430 | 2606 | 1079.846 |
+
+Two balanced DB sets would each have about 513 suite seconds before job/setup
+cost, already exceeding the seven-minute target. Three isolated runners are
+therefore evidence-justified; JVM forks remain one, deadlines/retries and container
+isolation remain unchanged. Suite sums are scheduling estimates, not measured new
+job times or a promised speedup. Every lane still executes Java21 `clean verify`;
+the API lane still generates current/base OpenAPI and the real migrated catalog.
+The development gate requires every mandatory lane and case, and requires only the
+explicit audit job to be intentionally skipped. Missing, failed, cancelled,
+overlapping, stale or skipped test evidence fails. It emits
+`same_run_equivalence: false`, `release_eligible: false`; no synthetic oracle is
+constructed. Audit mode requires every lane plus the independent full oracle and
+compares classes/cases/API/catalog in the same run. Release lookup still requires
+the oracle job to succeed and recomputes audit evidence from authenticated raw
+artifacts; a development run cannot pass it.
+
+**Database and obsolete-test audit:** the test profile uses PostgreSQL16 with
+Flyway migration validation and Hibernate `ddl-auto=validate`. The API job starts
+an empty isolated database; it does not reuse a pre-green database, cached target,
+report or seeded production catalog. Full777's actual dictionary source contains
+157 Flyway migrations, 470 JPA mapping sources and 502 catalog relations with no
+unresolved ownership. The dictionary proves current fresh-schema migration and
+physical-catalog/source consistency, not a production-data upgrade. Integrity,
+invalid-reference, rollback, authorization and application-state tests remain
+required. The four previously owner-approved historical organization upgrade tests
+(17 cases) remain in source and manually selectable with `--select historical`;
+they are not represented as passing development cases. No additional test was
+proven obsolete, so no additional exclusions or deletions are made. New tasks must
+continue inventorying their tests; missing/stale classification fails validation.
+
+**Local validation:** `python3 -m unittest discover -s ci-review/.github/scripts
+-p 'test_*.py'` passed 77 fixtures (60 classifier/aggregate/release and 17 docs).
+New negatives cover missing third shard, missing/overlapping/skipped cases with
+updated hashes, dependency skips, unexpected oracle receipts/modes and release
+rejection of intentionally skipped development oracle. The weighted scheduler
+fixture exercises three disjoint, nonempty balanced sets; invalid/empty shard
+counts fail. YAML parsed with development default, explicit audit input and three
+matrix members. Prior Full777 artifact verification and current-tree test/POM pin
+comparison passed. Full canonical repository doc validation, Java21 Maven and live
+PostgreSQL tests were not run locally: the checkout is partial, Maven is absent and
+installed Java is 17. No environment was provisioned. Hosted exact-commit CI is the
+authoritative acceptance follow-up; only queue/start observation follows publishing.
+
+**Disposition:** HAPI-045 remains PARTIAL / IN_PROGRESS pending exact-commit hosted
+acceptance and remaining representative/negative/cold-warm qualification. HAPI-046
+and HAPI-436 statuses do not change. The next evidence step is to inspect the
+naturally produced development run; future explicit audit evidence and comparable
+new timings remain separate acceptance obligations. No production deployment,
+release, tag or additional task is selected.
+
 <a id="hapi-046"></a>
 ## HAPI-046 — Timing, runner cost and adoption decision
 

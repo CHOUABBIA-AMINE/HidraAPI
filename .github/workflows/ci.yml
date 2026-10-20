@@ -1,6 +1,7 @@
 name: HidraAPI CI
 # HIDRA_CI_FORMAT: partition-shadow-v1
-# Mandatory unrestricted fallback; optimized adoption remains disabled.
+# Development API: complete disjoint partitions by default; manual audit retains unrestricted fallback.
+# No production deployment or release qualification is implied by development mode.
 'on':
   push:
     branches:
@@ -16,7 +17,16 @@ name: HidraAPI CI
     - doc/**
     - docs/**
     - '**/*.md'
-  workflow_dispatch: null
+  workflow_dispatch:
+    inputs:
+      verification_mode:
+        description: Development partitions or full independent oracle audit
+        type: choice
+        options:
+        - development
+        - audit
+        default: development
+        required: true
 permissions:
   contents: read
   actions: read
@@ -180,6 +190,7 @@ jobs:
         shard:
         - 0
         - 1
+        - 2
   api-contract:
     name: API contract and dictionary
     runs-on: ubuntu-latest
@@ -416,6 +427,8 @@ jobs:
         if-no-files-found: warn
         retention-days: 14
   verify:
+    # Explicit audit only: the development partitions already run every active class.
+    if: github.event_name == 'workflow_dispatch' && inputs.verification_mode == 'audit'
     name: Java 21 Maven verification
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -729,10 +742,11 @@ jobs:
         pattern: hidra-ci-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}-*
         path: target/full-ci-evidence
         merge-multiple: false
-    - name: Require full reports, provenance, dependencies and same-run oracle equivalence
+    - name: Require complete test coverage, provenance and mode-specific evidence
       env:
         HIDRA_CI_NEEDS: ${{ toJSON(needs) }}
-      run: python3 .github/scripts/verify_full_ci_evidence.py aggregate --directory target/full-ci-evidence
+        HIDRA_CI_MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.verification_mode == 'audit' && 'audit' || 'development' }}
+      run: python3 .github/scripts/verify_full_ci_evidence.py aggregate --mode "$HIDRA_CI_MODE" --directory target/full-ci-evidence
     - name: Retain authenticated full evidence bundle
       uses: actions/upload-artifact@v4
       with:

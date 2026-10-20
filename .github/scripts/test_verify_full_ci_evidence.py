@@ -3,6 +3,7 @@
 import copy
 import io
 import json
+import shutil
 from pathlib import Path
 import tempfile
 import unittest
@@ -23,7 +24,7 @@ class FullEvidenceTest(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name) / 'source'
         self.root.mkdir()
-        self.manifest = fixture(self.root)
+        self.manifest = fixture(self.root, postgres_shards=3)
         (self.root / 'pom.xml').write_text('<project/>')
         script = self.root / '.github/scripts/verify_ci_test_inventory.py'
         script.parent.mkdir(parents=True)
@@ -42,7 +43,7 @@ class FullEvidenceTest(unittest.TestCase):
         for lane in full.REQUIRED_LANES:
             lane_root = self.directory / lane
             lane_root.mkdir()
-            job = {'oracle': 'verify', 'postgres-0': 'postgres-integration', 'postgres-1': 'postgres-integration'}.get(lane, lane)
+            job = {'oracle': 'verify', 'postgres-0': 'postgres-integration', 'postgres-1': 'postgres-integration', 'postgres-2': 'postgres-integration'}.get(lane, lane)
             evidence = {'format': 1, 'source_sha': SHA, 'run_id': 5, 'run_attempt': 2,
                         'lane': lane, 'job': job, 'inventory_sha256': self.fingerprint,
                         'classifier_sha256': inventory.digest(script.read_bytes()), 'files': {}}
@@ -80,6 +81,81 @@ class FullEvidenceTest(unittest.TestCase):
         self.assertTrue(result['same_run_equivalence'])
         self.assertTrue(result['fallback_required'])
         self.assertFalse(result['optimized_adoption_eligible'])
+
+    def development(self):
+        return full.aggregate(self.root, self.directory, SHA, 5, 2, self.needs, mode='development')
+
+    def prepare_development(self):
+        shutil.rmtree(self.directory / 'oracle')
+        self.needs['verify']['result'] = 'skipped'
+
+    def test_development_requires_all_three_partitions_and_denies_release_equivalence(self):
+        self.prepare_development()
+        result = self.development()
+        self.assertEqual(result['mode'], 'development-partitioned')
+        self.assertFalse(result['same_run_equivalence'])
+        self.assertFalse(result['release_eligible'])
+        self.assertFalse(result['fallback_required'])
+        self.assertTrue(result['fallback_available'])
+        self.assertFalse(result['optimized_adoption_eligible'])
+        self.assertEqual(result['classes'], 4)
+        self.assertEqual(result['counts'], dict(tests=4, failures=0, errors=0, skipped=0))
+        self.assertEqual(set(result['lane_evidence']), set(full.REQUIRED_LANES) - {'oracle'})
+        with self.assertRaises(ValueError): self.aggregate()  # audit is still the default
+
+    def test_development_does_not_hide_failed_or_cancelled_oracle(self):
+        self.prepare_development()
+        for state in ('failure', 'cancelled', 'timed_out', 'success', 'in_progress'):
+            self.needs['verify']['result'] = state
+            with self.subTest(state=state), self.assertRaises(ValueError): self.development()
+
+    def test_development_required_jobs_cannot_be_skipped(self):
+        self.prepare_development()
+        for job in set(full.REQUIRED_NEEDS) - {'verify'}:
+            self.needs[job]['result'] = 'skipped'
+            with self.subTest(job=job), self.assertRaises(ValueError): self.development()
+            self.needs[job]['result'] = 'success'
+
+    def test_development_missing_third_shard_and_corrupt_report_deny(self):
+        self.prepare_development()
+        path = self.directory / 'postgres-2/evidence.json'
+        old = path.read_bytes(); path.unlink()
+        with self.assertRaises(ValueError): self.development()
+        path.write_bytes(old)
+        next((self.directory / 'postgres-2/reports').glob('*.xml')).write_text('corrupt')
+        with self.assertRaises((ValueError, inventory.ET.ParseError)): self.development()
+
+    def test_development_extra_oracle_receipt_and_unknown_mode_deny(self):
+        self.needs['verify']['result'] = 'skipped'
+        with self.assertRaises(ValueError): self.development()
+        with self.assertRaises(ValueError): full.aggregate(self.root, self.directory, SHA, 5, 2, self.needs, mode='green')
+
+    def test_development_omission_overlap_and_skip_deny_even_with_fresh_hashes(self):
+        self.prepare_development()
+        for mutation in ('omit', 'overlap', 'skip'):
+            with self.subTest(mutation=mutation):
+                directory = self.directory / 'postgres-2'
+                receipt = directory / 'evidence.json'; old_receipt = receipt.read_bytes()
+                original = next((directory / 'reports').glob('*.xml')); old_report = original.read_bytes()
+                if mutation == 'omit':
+                    original.unlink(); changed = original
+                elif mutation == 'overlap':
+                    changed = report(directory / 'reports', name='example.UnitTest')
+                else:
+                    name = inventory.ET.fromstring(old_report).get('name')
+                    changed = report(directory / 'reports', name=name, outcome='skipped')
+                document = json.loads(old_receipt)
+                if changed.exists(): document['files'][changed.relative_to(directory).as_posix()] = inventory.digest(changed.read_bytes())
+                else: del document['files'][changed.relative_to(directory).as_posix()]
+                receipt.write_bytes(inventory.canonical(document))
+                with self.assertRaises(ValueError): self.development()
+                if changed != original: changed.unlink()
+                original.write_bytes(old_report); receipt.write_bytes(old_receipt)
+
+    def test_release_jobs_reject_intentionally_skipped_development_oracle(self):
+        jobs = [{'name': name, 'status': 'completed', 'conclusion': 'success'} for name in full.REQUIRED_JOB_NAMES]
+        next(job for job in jobs if job['name'] == 'Java 21 Maven verification')['conclusion'] = 'skipped'
+        with self.assertRaises(ValueError): full.verify_jobs(jobs)
 
     def test_sha_attempt_classifier_and_job_mismatch_deny(self):
         for field, value in [('source_sha', 'b' * 40), ('run_id', 6), ('run_attempt', 1),

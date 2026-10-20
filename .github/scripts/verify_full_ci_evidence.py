@@ -18,10 +18,10 @@ import io
 import verify_ci_test_inventory as inventory
 import generate_data_dictionary as dictionary
 
-REQUIRED_LANES = ('static-validation', 'unit-architecture', 'postgres-0', 'postgres-1', 'api-contract', 'oracle')
+REQUIRED_LANES = ('static-validation', 'unit-architecture', 'postgres-0', 'postgres-1', 'postgres-2', 'api-contract', 'oracle')
 REQUIRED_NEEDS = ('static-validation', 'unit-architecture', 'postgres-integration', 'api-contract', 'verify')
 REQUIRED_JOB_NAMES = ('Static validation', 'Java 21 unit and architecture', 'PostgreSQL integration shard 0',
-                      'PostgreSQL integration shard 1', 'API contract and dictionary',
+                      'PostgreSQL integration shard 1', 'PostgreSQL integration shard 2', 'API contract and dictionary',
                       'Java 21 Maven verification', 'Full Verification Gate')
 API_FILES = ('target/openapi/hidra-api.json', 'target/openapi/hidra-api-base.json',
              'target/openapi/base-provenance.txt', 'target/database/schema.json',
@@ -117,16 +117,24 @@ def stamp(root, kind, output):
     output.write_bytes(inventory.canonical(evidence))
 
 
-def aggregate(root, directory, sha, run, attempt, needs):
+def aggregate(root, directory, sha, run, attempt, needs, mode='audit'):
     manifest, fingerprint = inventory.read_manifest(root)
     inventory.validate(root, manifest)
-    if set(needs) != set(REQUIRED_NEEDS) or any(needs[key].get('result') != 'success' for key in REQUIRED_NEEDS):
+    if mode not in ('audit', 'development'):
+        raise ValueError('Unknown verification mode')
+    test_lanes = ('unit-architecture',) + inventory.postgres_lanes(manifest)
+    required_lanes = ('static-validation',) + test_lanes + ('api-contract',)
+    if mode == 'audit':
+        required_lanes += ('oracle',)
+    expected_needs = {key: ('skipped' if mode == 'development' and key == 'verify' else 'success')
+                      for key in REQUIRED_NEEDS}
+    if set(needs) != set(expected_needs) or any(needs[key].get('result') != result for key, result in expected_needs.items()):
         raise ValueError('Mandatory dependency failed, skipped, cancelled or absent')
     documents = {}
     for path in sorted(directory.rglob('evidence.json')):
         evidence = json.loads(path.read_text())
         lane = evidence.get('lane')
-        if lane not in REQUIRED_LANES or lane in documents:
+        if lane not in required_lanes or lane in documents:
             raise ValueError('Extra, overlapping or duplicate evidence lane')
         if (evidence.get('format'), evidence.get('source_sha'), evidence.get('run_id'), evidence.get('run_attempt'), evidence.get('inventory_sha256')) != (1, sha, run, attempt, fingerprint):
             raise ValueError('Wrong SHA, run, attempt or classifier')
@@ -134,12 +142,12 @@ def aggregate(root, directory, sha, run, attempt, needs):
         if evidence.get('classifier_sha256') != classifier:
             raise ValueError('Wrong selection helper revision')
         expected_job = {'oracle': 'verify', 'postgres-0': 'postgres-integration',
-                        'postgres-1': 'postgres-integration'}.get(lane, lane)
+                        'postgres-1': 'postgres-integration', 'postgres-2': 'postgres-integration'}.get(lane, lane)
         if evidence.get('job') != expected_job:
             raise ValueError('Missing owning job identity')
         verify_files(evidence, path.parent)
         documents[lane] = (evidence, path)
-    if set(documents) != set(REQUIRED_LANES):
+    if set(documents) != set(required_lanes):
         raise ValueError('Missing full lane evidence')
     static, _ = documents['static-validation']
     if static.get('checks') != list(STATIC_CHECKS):
@@ -147,7 +155,7 @@ def aggregate(root, directory, sha, run, attempt, needs):
     if static['files'].get('files/ci.yml') != inventory.digest((root / '.github/workflows/ci.yml').read_bytes()):
         raise ValueError('Static evidence workflow differs from candidate')
     all_cases, all_classes = [], []
-    for lane in ('unit-architecture', 'postgres-0', 'postgres-1', 'oracle'):
+    for lane in test_lanes + (('oracle',) if mode == 'audit' else ()):
         evidence, path = documents[lane]
         result = inventory.check_reports(manifest, lane, path.parent / 'reports')
         lifecycle = evidence.get('lifecycle', {})
@@ -162,18 +170,29 @@ def aggregate(root, directory, sha, run, attempt, needs):
         if lane != 'oracle':
             all_cases.extend(result['cases'])
             all_classes.extend(result['classes'])
-    oracle, _ = documents['oracle']
-    if len(all_cases) != len(set(all_cases)) or len(all_classes) != len(set(all_classes)) or sorted(all_classes) != oracle['classes'] or inventory.canonical(sorted(all_cases)) != inventory.canonical(oracle['cases']):
-        raise ValueError('Partition/oracle class and case equivalence failed')
-    apis = [api_facts(documents[lane][0], documents[lane][1].parent, root, sha)
-            for lane in ('api-contract', 'oracle')]
-    if apis[0] != apis[1]:
-        raise ValueError('Partition/oracle API, base or physical catalog mismatch')
+    expected_classes = inventory.partitions(manifest)['oracle']
+    expected_cases = sorted((e['class'], e['class'], name) for e in manifest['classes']
+                            if e['class'] in expected_classes for name in e['cases'])
+    if (len(all_cases) != len(set(all_cases)) or len(all_classes) != len(set(all_classes))
+            or sorted(all_classes) != expected_classes or sorted(all_cases) != expected_cases):
+        raise ValueError('Partition/inventory class and case coverage failed')
+    api = api_facts(documents['api-contract'][0], documents['api-contract'][1].parent, root, sha)
+    counts = {'tests': len(all_cases), 'failures': 0, 'errors': 0, 'skipped': 0}
+    if mode == 'audit':
+        oracle, path = documents['oracle']
+        if (sorted(all_classes) != oracle['classes']
+                or inventory.canonical(sorted(all_cases)) != inventory.canonical(oracle['cases'])
+                or counts != oracle['counts']):
+            raise ValueError('Partition/oracle class and case equivalence failed')
+        if api != api_facts(oracle, path.parent, root, sha):
+            raise ValueError('Partition/oracle API, base or physical catalog mismatch')
     return {'format': 'partition-shadow-v1', 'source_sha': sha, 'run_id': run,
             'run_attempt': attempt, 'inventory_sha256': fingerprint,
-            'mode': manifest['mode'], 'fallback_required': True,
-            'same_run_equivalence': True, 'optimized_adoption_eligible': False,
-            'classes': len(all_classes), 'counts': oracle['counts'], 'api': apis[0],
+            'mode': manifest['mode'] if mode == 'audit' else 'development-partitioned',
+            'fallback_required': mode == 'audit', 'fallback_available': True, 'verification_mode': mode,
+            'same_run_equivalence': mode == 'audit', 'release_eligible': mode == 'audit',
+            'optimized_adoption_eligible': False,
+            'classes': len(all_classes), 'counts': counts, 'api': api,
             'needs': needs, 'lane_evidence': {lane: inventory.digest(path.read_bytes())
                                              for lane, (_, path) in documents.items()}}
 
@@ -324,6 +343,7 @@ def main():
     stamp_args.add_argument('--output', type=Path, required=True)
     gate_args = commands.add_parser('aggregate')
     gate_args.add_argument('--directory', type=Path, required=True)
+    gate_args.add_argument('--mode', choices=('audit', 'development'), default='audit')
     release_args = commands.add_parser('release')
     release_args.add_argument('--sha', required=True)
     release_args.add_argument('--policy', type=Path, required=True)
@@ -334,7 +354,7 @@ def main():
             stamp(root, args.kind, args.output)
         elif args.command == 'aggregate':
             result = aggregate(root, args.directory, os.environ['GITHUB_SHA'], int(os.environ['GITHUB_RUN_ID']),
-                               int(os.environ['GITHUB_RUN_ATTEMPT']), json.loads(os.environ['HIDRA_CI_NEEDS']))
+                               int(os.environ['GITHUB_RUN_ATTEMPT']), json.loads(os.environ['HIDRA_CI_NEEDS']), args.mode)
             (args.directory / 'gate.json').write_bytes(inventory.canonical(result))
             print(json.dumps(result, sort_keys=True))
         else:

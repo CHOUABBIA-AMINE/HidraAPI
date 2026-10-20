@@ -13,7 +13,7 @@ import shutil
 import subprocess
 import xml.etree.ElementTree as ET
 
-LANES = ('fast', 'unit-architecture', 'postgres-0', 'postgres-1', 'oracle', 'historical')
+LANES = ('fast', 'unit-architecture', 'postgres-0', 'postgres-1', 'postgres-2', 'oracle', 'historical')
 APPROVED_GREENFIELD_ARCHIVE = frozenset({
     'dz.sh.hidra.modules.organization.infrastructure.persistence.OrganizationEmployeeContactBackfillMigrationTest',
     'dz.sh.hidra.modules.organization.infrastructure.persistence.OrganizationMultilingualCompatibilityRetirementMigrationTest',
@@ -74,6 +74,7 @@ def discover(root):
 def validate(root, manifest):
     if manifest.get('format') != 1 or manifest.get('mode') != 'shadow-fallback-required':
         raise ValueError('Unreviewed inventory format or optimized adoption')
+    postgres_lanes(manifest)
     sources = discover(root)
     entries = manifest.get('classes', [])
     policy = manifest.get('greenfield_policy')
@@ -129,22 +130,30 @@ def validate(root, manifest):
     return sources
 
 
+def postgres_lanes(manifest):
+    count = manifest.get('postgres_shards', 2)
+    if type(count) is not int or count not in (2, 3):
+        raise ValueError('Unreviewed PostgreSQL shard count')
+    return tuple(f'postgres-{index}' for index in range(count))
+
+
 def partitions(manifest):
     active = [e for e in manifest['classes'] if not e.get('archived_for_greenfield')]
     historical = sorted(e['class'] for e in manifest['classes'] if e.get('archived_for_greenfield'))
     unit = sorted(e['class'] for e in active if e['lane'] == 'unit-architecture')
     fast = sorted(e['class'] for e in active if e.get('fast'))
-    shards, totals = [[], []], [0.0, 0.0]
+    lanes = postgres_lanes(manifest)
+    shards, totals = [[] for _ in lanes], [0.0 for _ in lanes]
     for entry in sorted((e for e in active if e['lane'] == 'postgres-integration'),
                         key=lambda e: (-e['baseline_seconds'], e['class'])):
-        index = min(range(2), key=lambda i: (totals[i], i))
+        index = min(range(len(lanes)), key=lambda i: (totals[i], i))
         shards[index].append(entry['class'])
         totals[index] += entry['baseline_seconds']
     result = {'fast': fast, 'unit-architecture': unit,
-              'postgres-0': sorted(shards[0]), 'postgres-1': sorted(shards[1]),
               'oracle': sorted(e['class'] for e in active), 'historical': historical}
-    union = unit + shards[0] + shards[1]
-    if len(union) != len(set(union)) or set(union) != set(result['oracle']) or not all(result[lane] for lane in ('fast', 'unit-architecture', 'postgres-0', 'postgres-1', 'oracle')):
+    result.update({lane: sorted(shard) for lane, shard in zip(lanes, shards)})
+    union = unit + [name for shard in shards for name in shard]
+    if len(union) != len(set(union)) or set(union) != set(result['oracle']) or not all(result[lane] for lane in ('fast', 'unit-architecture', 'oracle') + lanes):
         raise ValueError('Empty, missing or overlapping full partition')
     return result
 

@@ -20469,6 +20469,211 @@ deployment and operational control remain separate.
 
 **Completed local checks:** canonical documentation validates128 documents/8277 relative links/24 modules/921 tasks/25 phases; offline OpenAPI validates257 paths/279 operations/267 schemas; git diff --check passes. Only this task's append-only review changed, with no task header, registry, source, API, dictionary, workflow or migration edits.
 
+
+### 2026-10-21 — HAPI-778 option A implementation registration
+
+**Selected stage:** `docs(organization): register appointment ownership and authority implementation`.
+Owner response A selects the explicit company/unit model, not option B.
+Baseline main a25d229e2a6e79ff569f1f527b98b2894ad7e44f and Docs477
+(run39515782021) succeeded. This append changes only this task record.
+HAPI-778 remains PARTIAL/IN_PROGRESS; HAPI-590 remains independently blocked.
+No runtime, grant, migration or acceptance is delivered by this registration.
+
+#### Closed ownership and eligibility contract
+
+Organization owns an immutable binding identified by binding ID, positive
+revision, organization-unit ID, neutral company Party ID and recordedAt.
+All identifiers are nonblank normalized strings; recordedAt is explicit.
+A revision is an immutable fact, not an editable row. A separate current pointer
+may later advance monotonically under protected administrative authority.
+A unit has at most one current binding. No hierarchy traversal, reparenting,
+position label or employee record supplies an implicit binding.
+
+Every protected appointment snapshot pins its exact binding ID and revision.
+The pin must match the snapshot's exact unit. Historical pins never resolve
+through a current pointer and are not rewritten on pointer changes. A source
+snapshot carries its original pin; newly created or moved destination snapshots
+require the current destination binding. Ending preserves the source pin.
+Correction preserves assignment/employee identity and historical before-image;
+a correction moving unit requires both source and destination authority and
+a new destination pin. Every before/after/successor company in one change must
+match exactly. Cross-company transfer or correction is rejected, not split into
+an apparent same-company operation. No automatic change to Employee,
+ResponsibilityAssignment, Workflow decisions or Identity grants is permitted.
+
+Party eligibility means only that the referenced Party currently exists and is
+ACTIVE/selectable for a new technical Organization reference. It does not certify
+an employer, labor-law status or employee ownership. The Organization-specific
+Party export must say so and issue genuine transaction-bound eligibility
+evidence; no direct foreign JPA read or Topology ticket reuse is allowed.
+ACTIVE is necessary at new binding/appointment admission, with current eligibility
+rechecked at the final protected guard. Revocation denies new protected writes.
+Historical retention does not depend on continued ACTIVE status; an authorized
+history read can show its immutable pin without treating it as current eligibility.
+A binding change freezes new admissions to the old revision, not history.
+Existing unbound rows remain retained legacy data: no inferred backfill, no
+manufactured Party, no operational activation until explicitly bound and migrated.
+
+#### Fixed authority vocabulary and policy boundary
+
+Reserve exact permissions organization.appointment.create, .end, .transfer,
+.correct, .read-current, .read-history and .read-policy (each suffix expands
+after organization.appointment). No grant/role bootstrap is authorized.
+Native requests carry action, identifiers, expected versions and idempotency
+key only; no caller-supplied identity, claims, policy, sample or credentials.
+
+The company resource is ORGANIZATION_COMPANY with CUSTOM scope and exact
+Party ID; employee resource ORGANIZATION_EMPLOYEE with CUSTOM scope and
+exact employee ID; unit resource ORGANIZATION_UNIT with ORGANIZATION_UNIT
+scope and exact unit ID. Resource ID and scope reference must agree exactly.
+These are explicit resource namespaces, not new ScopeType enum values.
+The fixed action permission must be decided for every required company,
+employee and source/destination unit at one native sample. Assignment ID
+is a protected selector, never an alternative scope or bearer capability.
+READ_POLICY needs company/unit decisions, not unrelated employee data.
+Employee-specific reads additionally require the exact employee decision;
+unit/position occupancy pages need the company/unit decisions and must omit
+personal details without corresponding employee authority. History of a move
+requires all companies/units represented by the returned versions; no foreign
+count, existence, journal payload or pagination metadata leaks before admission.
+Missing scope must be rejected before AuthorizationScope's GLOBAL default.
+No administrative bypass or protected executor wildcard is reserved here.
+
+Actual Identity support must add a private Organization native family,
+opaque issuer-owned preparation/admission, qualified one-use claim evidence
+and exact dispatcher registration, not an EvaluatePermissionQuery Boolean.
+Policy activation is an independently protected explicit versioned configuration
+operation: immutable matrix, PRIMARY limit, capacity mode, actor/provenance and
+active pointer. No permissive default, client policy or implicit bootstrap.
+The existing pure EmployeeAppointmentPolicy remains the invariant evaluator;
+a domain value supplied to B1 is not proof of active policy or authority.
+
+#### Executable B1 package — ownership values and pure admission invariants
+
+**Next exact message:** `feat(organization): model explicit appointment ownership bindings`.
+
+This is an immediately executable pure Java package after this registration's
+Docs result; it does not wait for a further generic design review.
+All Java paths below are relative to src/main/java/dz/sh/hidra.
+CREATE exactly:
+
+1. modules/organization/domain/model/OrganizationUnitCompanyBinding.java:
+   immutable normalized ID/unit/Party fields, positive revision, recordedAt;
+   no status lookup, repository, clock, framework or legal-employer assertion.
+2. modules/organization/domain/model/CompanyBoundEmployeeAppointment.java:
+   immutable EmployeeAppointmentChange.VersionedAssignment plus exact binding
+   value; reject nulls and a unit mismatch; retain complete pinned revision,
+   rather than resolving an ID against mutable current state.
+3. modules/organization/domain/policy/EmployeeAppointmentOwnershipPolicy.java:
+   pure validation of a bound create snapshot and bound change before/after/
+   optional successor against EmployeeAppointmentChange. Require exact versioned
+   snapshot equality, source pin retention for END and same-unit changes,
+   matching destination unit, and one exact company across all snapshots.
+   TRANSFER requires the successor pin; END/CORRECT forbid an extraneous
+   successor. A unit-changing CORRECT must carry a destination pin and preserve
+   its before-image. The evaluator neither selects current binding nor authenticates
+   authority, Party eligibility, persisted policy or transaction state.
+
+CREATE exactly these three corresponding tests under
+src/test/java/dz/sh/hidra with the same relative package and Test suffix:
+OrganizationUnitCompanyBindingTest.java,
+CompanyBoundEmployeeAppointmentTest.java,
+EmployeeAppointmentOwnershipPolicyTest.java.
+MODIFY only .github/ci-test-inventory.json for actual new cases/source hashes
+and this HAPI-778 record for evidence/next-stage registration.
+No existing domain model modification, API, Spring, persistence, migration,
+permission definition, generated artifact or registry/index write is allowed.
+Total B1 allowlist: six new Java files and two modified existing files.
+All six CREATE paths are absent from the reviewed current tree.
+
+B1 tests must prove trimming/blank/null/positive revision/time checks; immutable
+binding equality and exact version pinning; wrong-unit rejection; same-company
+cross-unit transfer success; different-company failure even with identical labels;
+END pin retention; same-unit pin substitution rejection; correction before-image,
+unit-change destination pin and cross-company rejection; mismatched proposal
+snapshots/versions and missing/extraneous successor rejection. Reuse the actual
+Package A proposal/policy types; no duplicate assignment lifecycle model.
+Run focused JUnit when tooling permits, canonical test inventory verification,
+Docs/OpenAPI/whitespace checks, and hosted applicable Full/Fast/Docs.
+Inventory entries describe real tests only. B1 acceptance is pure invariants,
+not proof of current ownership, permissions or protected persistence.
+
+#### Finite remaining delivery sequence and guarded migration reservation
+
+B1 must register the next concrete implementation package from live source
+as part of its evidence, not execute it. Remaining delivery is ordered:
+
+1. **B2 — genuine owner exports:** exact message
+   `feat(identity): qualify native appointment and party reference authority`.
+   Proposed CREATE contracts are
+   modules/identity/application/contract/organization/OrganizationProtectedAppointmentAuthorizationContract.java
+   and modules/party/application/contract/organization/OrganizationProtectedPartyEligibilityContract.java;
+   proposed CREATE adapters are
+   modules/identity/infrastructure/security/ProtectedOrganizationAppointmentAuthorizationParticipant.java
+   and modules/party/infrastructure/persistence/adapter/JdbcOrganizationProtectedPartyEligibilityAdapter.java.
+   Existing native participant/evidence-reader/dispatcher and architecture tests
+   must be enumerated individually before B2 admission. Preserve old families,
+   caller identities and SQL pins byte-for-byte except explicitly necessary
+   reviewed extension points. No fake adapter or arbitrary ticket factory.
+2. **B3 — protected Organization storage and lifecycle:** exact message
+   `feat(organization): persist protected appointment lifecycle and history`.
+   Deliver current-binding pointer, immutable binding/policy revisions,
+   assignment row version/pin, durable conflict keys, append-only journal and
+   idempotency receipt; replace every matched old writer and bounded public reader,
+   preserve creation aliases and Workflow membership semantics. The source census
+   in the preceding review is the mandatory MODIFY starting set, not permission
+   for a new wildcard. Include exact application/coordinator/adapter/DTO/test
+   paths in B3's own admission before any code. One additive candidate filename
+   is V20261021_001__organization_appointment_ownership_lifecycle.sql under
+   src/main/resources/db/migration; it is collision-checked below but not yet
+   authorized for execution or an invented catalog. Recheck live tail at B3,
+   resolve any collision before admission and never edit old migrations.
+3. **C — actual generated contracts:** exact message
+   `docs(organization): reconcile appointment API and catalog artifacts`.
+   Use real hosted API/catalog artifacts from the implemented SHA; freeze exact
+   artifact paths in B3's evidence. No hand-written physical metadata.
+4. **Acceptance:** exact message
+   `docs(organization): record protected appointment lifecycle acceptance`.
+   Record only actual case-level exact-SHA evidence against the prior native,
+   denial, revocation/ABA, rollback, concurrency, replay, history and Workflow
+   matrix. Status promotion needs separate explicit registry scope, not this append.
+
+B2/B3 are finite remaining packages but NOT executable allowlists yet: their
+private dispatch/caller/test/SQL paths and hashes cannot truthfully be frozen
+from a domain-only package. B1's mandatory handoff must close B2's exact scope;
+B2 must close B3. A discovered additional owner decision is a stop condition,
+not permission to invent business policy. This limitation does not block B1.
+
+B3 physical locking requirements are closed at relation/key level:
+current Identity/native/grant evidence through genuine owner fences; Party
+eligibility generation; source/destination current binding pointers plus pinned
+immutable revisions; active policy pointer/revision; affected employee key;
+both unit/position occupancy keys; exact source assignment version; request
+idempotency key and receipt/journal sequence. Durable unique lock-key rows must
+serialize absent employee/occupancy/request keys; use stable sorted ordering
+within each class and one universal class order for all appointment writers.
+Owner-controlled binding/policy mutations must share the corresponding fences.
+Acquire owner fences before mutable appointment locks, authorize without
+foreign disclosure, apply pure proposal, execute finite hashed DML, flush,
+then final native/time/Party/binding/policy/version/held-lock verification and
+observed physical commit. No retry after unknown commit outcome.
+The exact SQL, role/catalog rules, executor class identities and hash values
+must be computed from B3's actual implementation before admission/publication;
+this documentation does not fabricate them or claim a lock-count proof.
+Initial legacy migration must deny writes for unbound rows and report unresolved
+binding counts only to the separately authorized administrator.
+
+**Validation and publication:** preserve all preexisting task bytes and statuses.
+Read current governing sources and exact-source review; verify absent B1 paths
+and candidate migration collision. Run local canonical documentation,
+offline OpenAPI and whitespace validation; no Java/PostgreSQL runtime result
+is newly claimed. Publish only this phase file with the selected registration
+message and expected-a25d229 guard; verify parent/tree/message/one-file diff/
+raw blob, confirm exact-SHA applicable Docs created/queued/started, then STOP.
+
+
+**Completed registration checks:** Docs passed128 documents/8277 relative links/24 modules/921 tasks/25 phases; offline OpenAPI passed257 paths/279 operations/267 schemas; git diff --check passed. All six B1 CREATE paths and the candidate migration are absent in the exact current recursive tree. No Java, native-provider or PostgreSQL tests were run by this documentation-only stage.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

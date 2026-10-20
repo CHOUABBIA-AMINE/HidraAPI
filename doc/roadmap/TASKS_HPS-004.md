@@ -6576,6 +6576,175 @@ doc/model-remediation/RECONCILIATION.md:23359 | HPR-P25-052D | Public protected 
 doc/model-remediation/RECONCILIATION.md:23737 | HPR-P25-052D | BLOCKED_SPECIFICATION | Public governed revision publication and history
 ~~~~~~~~
 
+### 2026-10-20 — HAPI-590 source-backed public publication contract review
+
+**Selected stage and checkpoint.** Owner Next selects the next sequential
+engineering task's specification review after HAPI-046's existing-run evidence
+stage. Main `df10b03ece7cfc53344ee0e3f7e89fab33abfec5`, parent
+`96bbd74508e06f96476616764e420c866313a6bb`, tree
+`e0502406b85b377c1c6fd2aefe5993e85fe340ce`, passed
+[Documentation466](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39456266004).
+HAPI-567, HAPI-588 and HAPI-589 are VERIFIED/COMPLETED in the live registry.
+HAPI-046 stays PARTIAL/IN_PROGRESS pending comparable natural-run evidence;
+this review does not dispatch benchmarks or close HAPI-436. The accepted
+runtime baseline remains Full784/Fast106, with no executable changes in the
+subsequent two governance commits. HidraAPI remains development-only.
+
+Exact review message: `docs(topology): review governed publication contract`.
+MODIFY this phase record and only the stale Current execution pointer in
+ULTIMATE_TASKS.md; zero CREATE/DELETE. Frozen task/status tables, all previous
+evidence and every runtime/test/schema/workflow/API/catalog blob are preserved.
+This is a concrete contract review, not implementation of the six proposed
+filenames in section6.
+
+**Recovered source and actual boundaries.**
+
+| Existing owner source | Proven contract relevant to HAPI-590 |
+|---|---|
+| EngineeringNetworkDraft and its use case/repository | Immutable company/network context and draft IDs; append-only shared positive metadata versions; CREATE/READ/UPDATE/VALIDATE. No publication head or effective ledger. |
+| EngineeringGraphDraft and graph repository | Authored JUNCTION/STATION nodes, interface ports and PIPE/CONNECTOR branches. PIPE is explicitly a placeholder. Diagnostics retain PHYSICAL_VALUES_NOT_SUPPLIED even for connected graphs. |
+| SurveyRouteProfileUseCase and accepted survey repository | Exact per-branch canonical survey snapshots tied to graph version/digest and shared draft version. Omitted survey stays absent; no projection, datum conversion, inferred physical length, diameter or roughness. |
+| EngineeringNetworkDraftApplicationService / ProtectedEngineeringDraftAdmissionCoordinator | One guarded transaction, native company/network authority, Party and station witnesses, immutable metadata/graph/survey binding and final physical guard. Existing private admission is not a caller-created publication permit. |
+| TopologyProtectedEngineeringDraftAuthorizationContract | Only CREATE/READ/UPDATE/VALIDATE permission actions. It does not supply PUBLISH/WITHDRAW/REACTIVATE or authorize those from UPDATE. |
+| ProtectedStationGraphOperationUseCase and accepted051 implementation | Internal facility-scoped station revision lifecycle, expected epoch/predecessor and physical commit semantics. Its facility identity and station payload cannot be relabeled as a company/network draft publication. |
+| StationInternalGraphRevision | STRUCTURALLY_QUALIFIED requires COMPLETE station graph plus evidence; source classification remains independently declared. |
+| TopologyPhysicalNetworkRevision | A different physical-source format requiring connected nodes, node elevations, real pipe lengths/internal diameters/roughness, recorded/effective time and evidence. Draft graph/survey does not contain all those values. |
+
+The current migration tail is V20261020_001 survey snapshots. The existing
+draft context is unique per company/network pair and may contain multiple draft
+candidates; context bindings are immutable under the owner's HAPI-587 option A.
+That existing cardinality/no-transfer choice is accepted and will not be asked
+again. It is distinct from the publication-readiness question below.
+
+**Concrete product/engineering gate that source cannot decide.** HAPI-590's
+original objective says public governed publication/effective history, while
+its accepted inputs are deliberately unqualified drafts. Silently converting
+those inputs into TopologyPhysicalNetworkRevision would require inventing
+physical properties, bypassing its constructor or changing accepted semantics.
+Conversely, silently treating every incomplete draft as an operationally
+effective physical revision would overstate engineering authority. The choice
+changes what a public PUBLISH success means and therefore needs an explicit
+owner policy selection before runtime registration.
+
+| Owner choice | Public publication meaning and consequence |
+|---|---|
+| A — recommended for the current development API | Publish an immutable governed snapshot of explicitly authored metadata/graph/survey. Preserve original bytes, missing values and completeness diagnostics; expose engineeringQualified=false and no operational/hydraulic approval. Effective selection means effective within this governed snapshot ledger only. It never writes facility ownership, station publication heads, live network configuration or an engine input approval. |
+| B — engineering-complete physical publication only | A PUBLISH command must fail closed until a separately registered, complete physical-input/qualification contract is satisfied. Current draft/survey success alone is insufficient. Register the missing physical authoring/qualification dependency under its existing owner task before a positive publication path; do not fabricate values or weaken physical revision invariants. |
+
+A would unblock a useful development publication/history API without claiming
+physical qualification. B preserves a stricter meaning but the current accepted
+draft types cannot provide its positive publication evidence. This review
+selects neither. The earlier approved database-credential A and company-context
+A do not answer this different readiness policy.
+
+**Prepared common lifecycle contract, pending that decision.**
+
+1. Topology owns a new context-scoped publication head and immutable ledger.
+   Bind every published snapshot to exact context/company/network/draft and
+   shared metadata version, selected graph version/digest and each included
+   survey's graph/version/digest. Multiple candidate drafts compete for the
+   same company/network context head; do not create independent effective heads
+   merely because draft IDs differ. No ownership transfer or context rebinding
+   is introduced; authoritative owner mismatch denies/holds the operation.
+2. Define separate typed PUBLISH, WITHDRAW, REACTIVATE, READ_EXACT,
+   READ_CURRENT, READ_EFFECTIVE, LIST_HISTORY and replay semantics. A new
+   publication requires current exact source version, expected context head
+   epoch/predecessor and matching snapshot digest. Exactly one CAS wins;
+   epochs are positive, monotonic and overflow-safe. Withdrawal preserves
+   bytes/history, reactivation targets the same retained revision with fresh
+   authority. An identical request replay requires fresh current authority and
+   returns the original immutable outcome; a conflicting replay returns409.
+   Unknown commit acknowledgement stays INDETERMINATE, without automatic retry.
+3. Separate publication epoch from mutable draft version and Facility owner
+   generation. Do not coerce the context UUID/network scope into a facility
+   identity to call the station service. Preserve the existing station and
+   physical-source stores and their historical codecs. A new publication
+   envelope references exact source formats/digests and retains their bytes;
+   future formats require explicit version dispatch and compatibility proof.
+4. Identity must export a reviewed company/network publication authorization
+   contract through its public application seam. Propose dedicated
+   topology:engineering-publication action permissions, DENY precedence and
+   the existing genuine native producer/binding path; draft UPDATE and station
+   PUBLISH are not substitutes. All exact/current/effective/history/list/replay
+   reads authorize before existence, count, digest or cursor disclosure.
+   Current company/network and referenced-station owner witnesses remain live;
+   historical author provenance is not current read authority.
+5. Preserve the private-publisher credential boundary, actual physical
+   connection/EntityManager/transaction, fixed owner lock order and required
+   fence census. Resolve exact source snapshots and provisional event/head
+   mutations before one final scalar guard; bind current native actor/owner
+   generations, s<=t<u, PID/XID/session role, source bytes/digests, expected
+   head/event and required locks. No SQL/owner lookup follows it. Preserve the
+   existing500ms/lock/statement/idle limits and dirty-flush poisoning; do not
+   stretch timeouts, add callbacks or use caller scalars/GUCs as authority.
+6. Exact revision reads must be independent of history page limits. A bounded
+   deterministic keyset cursor binds context, filter/as-of and stable ordering;
+   reject malformed or cross-context cursor substitution without disclosure.
+   READ_CURRENT and READ_EFFECTIVE are different queries. Before code, specify
+   database timestamp precision, half-open effective intervals, overlap rules,
+   the effect of withdrawal/reactivation on effective selection and treatment
+   of future scheduling. Existing physical-source effectiveFrom/effectiveUntil
+   values do not silently schedule a new governed publication.
+7. Proposed REST surface remains under the existing engineering-networks
+   resource, with explicit context/company/network scope and transport-owned
+   request/response types. The existing proposed POST publications path is
+   not yet a registered endpoint set. Request bodies never supply actors,
+   permission decisions, clock samples or owner generations. Define400/401/
+   non-disclosing403/404/409 and unavailable/INDETERMINATE errors, strict
+   unknown-field/number binding and bounded history; no entity serialization.
+
+**Exact registration required after the owner choice.** Finish a single
+decision-dependent lifecycle contract and finite implementation envelope under
+HAPI-590. Close source/repository/codec and transport type filenames, the
+Identity action/catalog/route/bootstrap and Platform compiled-caller/provisional
+seams, complete owner fences, actual schema privileges and separate mutable-head/
+immutable-event/snapshot storage, effective-time and cursor contracts. Recover
+the latest migration tail again before reserving an additive migration; no
+migration filename is reserved by this review. The six existing proposed
+EngineeringRevisionPublication filenames remain proposals; reuse equivalent
+types rather than duplicating accepted stores.
+
+The envelope must name invariant/service/HTTP/architecture and genuine
+PostgreSQL classes/cases, inventory/source hashes, generated OpenAPI manifest/
+compatibility and actual migrated dictionary reconciliation paths together.
+Preserve all historical migrations and test identities. Avoid publishing partial
+routing without its authorization, schema and final guard. If work needs packages,
+register their complete union and dependency order once, not repeated generic
+preflights. Do not add a new canonical task or assume HWEB acceptance.
+
+**Required verification prepared for that registration.** Prove actual native
+LOCAL/OIDC/LDAP/AD owner-authorized publication and exact/current/effective/
+history reads, substituted context/company/network/draft denial before lookup,
+permission revocation and current DENY, stale source/graph/survey binding,
+owner-generation ABA, malformed/old-format/digest rejection, two-writer CAS,
+identical/conflicting replay, withdrawal/reactivation, effective interval
+boundaries and keyset-page continuity. Include exact historical reads beyond
+the newest100 ledger events, direct ordinary-login event/head mutation denial
+with constraint-valid controls, publisher role/catalog tamper refusal, writer-
+first/owner-first fences, final-guard expiry/dirty-flush rollback and uncertain
+commit classification without retry. The chosen readiness policy must have
+explicit positive and negative tests; missing authored/qualified data must never
+be synthesized to obtain success. Hosted Full/Fast/Docs, actual generated API
+and fresh migrated PostgreSQL dictionary remain exact-source acceptance gates.
+
+**Disposition and concrete next action.** HAPI-590 remains NOT_IMPLEMENTED /
+BLOCKED, now specifically BLOCKED_OWNER_POLICY within this record; all frozen
+status cells and completed prerequisites remain unchanged. The owner should
+choose publication readiness A or B above. Once selected, register the one
+coherent executable envelope rather than ask again about already approved
+context cardinality, publisher credentials or deployment calibration.
+HAPI-046/436 remain independently open; no timing rerun is selected.
+
+Available checks are in-memory source/path/migration-tail recovery, original
+task-preservation and unchanged-status/anchor/scope checks. The current execution
+environment is unavailable: no local Python, Java/Maven, PostgreSQL, full
+canonical-estate validation or new artifact generation is claimed. Hosted Docs
+validates the two-file review. Publish main with expected-head guard and verified
+blobs/tree/parent/message, confirm exact-SHA Docs creation/start and STOP.
+No runtime publication, operational approval, release, deployment or simulation
+is selected.
+
+
 <a id="hapi-592"></a>
 ## HAPI-592 — Topology operator/API/history qualification
 

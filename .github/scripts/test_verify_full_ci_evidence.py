@@ -3,6 +3,7 @@
 import copy
 import io
 import json
+import os
 import shutil
 from pathlib import Path
 import tempfile
@@ -16,6 +17,48 @@ import verify_full_ci_evidence as full
 from test_verify_ci_test_inventory import fixture, report
 
 SHA = 'a' * 40
+
+
+class CachePreparationTest(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory(); self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name)
+        self.environment = self.root / 'github-env'
+        self.env = {'RUNNER_TEMP': str(self.root), 'GITHUB_ENV': str(self.environment),
+                    'GITHUB_SHA': SHA, 'GITHUB_RUN_ID': '5', 'GITHUB_RUN_ATTEMPT': '2',
+                    'GITHUB_JOB': 'postgres-integration', 'HIDRA_CACHE_HIT': ''}
+
+    def test_cold_is_empty_and_selected_outside_clean_target(self):
+        with patch.dict(os.environ, self.env, clear=True): cache = full.prepare_cache('cold')
+        self.assertEqual(cache['initial_entries'], 0)
+        self.assertFalse(cache['restore_enabled'])
+        repository = Path(cache['repository'])
+        self.assertEqual(repository.parent, self.root)
+        self.assertEqual(list(repository.iterdir()), [])
+        self.assertIn('-Dmaven.repo.local=' + str(repository), self.environment.read_text())
+        self.assertIn('HIDRA_MAVEN_CACHE_EVIDENCE=', self.environment.read_text())
+        full.verify_cache({'dependency_cache': cache, 'source_sha': SHA, 'run_id': 5,
+                          'run_attempt': 2, 'job': 'postgres-integration'}, 'cold')
+        (repository / 'cached.pom').write_text('synthetic dependency')
+        with patch.dict(os.environ, self.env, clear=True), self.assertRaises(FileExistsError): full.prepare_cache('cold')
+
+    def test_existing_even_empty_repository_denies_reuse(self):
+        (self.root / 'hidra-cold-maven-repository').mkdir()
+        with patch.dict(os.environ, self.env, clear=True), self.assertRaises(FileExistsError): full.prepare_cache('cold')
+
+    def test_restore_hit_or_conflicting_override_cannot_claim_cold(self):
+        for update in ({'HIDRA_CACHE_HIT': 'true'}, {'MAVEN_OPTS': '-Dmaven.repo.local=/elsewhere'}):
+            with self.subTest(update=update), patch.dict(os.environ, dict(self.env, **update), clear=True), self.assertRaises(ValueError):
+                full.prepare_cache('cold')
+
+    def test_cached_records_observed_miss_without_claiming_warmth(self):
+        home = self.root / 'home'
+        with patch.dict(os.environ, dict(self.env, HIDRA_CACHE_HIT='false'), clear=True), patch.object(Path, 'home', return_value=home):
+            cache = full.prepare_cache('cached')
+        self.assertFalse(cache['cache_hit'])
+        self.assertTrue(cache['restore_enabled'])
+        self.assertEqual(cache['initial_entries'], 0)
+        self.assertFalse((home / '.m2/repository').exists())
 
 
 class FullEvidenceTest(unittest.TestCase):
@@ -47,6 +90,10 @@ class FullEvidenceTest(unittest.TestCase):
             evidence = {'format': 1, 'source_sha': SHA, 'run_id': 5, 'run_attempt': 2,
                         'lane': lane, 'job': job, 'inventory_sha256': self.fingerprint,
                         'classifier_sha256': inventory.digest(script.read_bytes()), 'files': {}}
+            if lane != 'static-validation':
+                evidence['dependency_cache'] = {'mode': 'cached', 'restore_enabled': True,
+                    'cache_hit': True, 'initial_entries': 1, 'repository': '/home/runner/.m2/repository',
+                    'runner_temp': '/runner/temp', 'source_sha': SHA, 'run_id': 5, 'run_attempt': 2, 'job': job}
             if lane in inventory.LANES:
                 for name in inventory.partitions(self.manifest)[lane]: report(lane_root / 'reports', name=name)
                 evidence.update(inventory.check_reports(self.manifest, lane, lane_root / 'reports'))
@@ -156,6 +203,51 @@ class FullEvidenceTest(unittest.TestCase):
         jobs = [{'name': name, 'status': 'completed', 'conclusion': 'success'} for name in full.REQUIRED_JOB_NAMES]
         next(job for job in jobs if job['name'] == 'Java 21 Maven verification')['conclusion'] = 'skipped'
         with self.assertRaises(ValueError): full.verify_jobs(jobs)
+
+    def cold_receipts(self):
+        for lane in full.REQUIRED_LANES:
+            if lane == 'static-validation': continue
+            path = self.directory / lane / 'evidence.json'
+            evidence = json.loads(path.read_text())
+            cache = evidence['dependency_cache']
+            cache.update(mode='cold', restore_enabled=False, cache_hit=None, initial_entries=0,
+                         repository='/runner/temp/hidra-cold-maven-repository')
+            self.change(lane, dependency_cache=cache)
+
+    def test_cold_audit_requires_all_lanes_and_keeps_independent_equivalence(self):
+        self.cold_receipts()
+        result = full.aggregate(self.root, self.directory, SHA, 5, 2, self.needs, dependency_cache='cold')
+        self.assertTrue(result['same_run_equivalence'])
+        self.assertEqual(result['dependency_cache_mode'], 'cold')
+        self.assertEqual(len(result['dependency_cache']), 8)
+        with self.assertRaises(ValueError): self.aggregate()
+
+    def test_missing_or_mixed_cache_evidence_denies(self):
+        self.change('postgres-4', dependency_cache={})
+        with self.assertRaises(ValueError): self.aggregate()
+        self.change('postgres-4', dependency_cache={'mode': 'cold'})
+        with self.assertRaises(ValueError): self.aggregate()
+
+    def test_nonempty_restored_wrong_path_and_stale_cold_receipts_deny(self):
+        self.cold_receipts()
+        path = self.directory / 'oracle/evidence.json'
+        good = json.loads(path.read_text())['dependency_cache']
+        for field, value in [('initial_entries', 1), ('initial_entries', True), ('cache_hit', True),
+                             ('restore_enabled', True), ('repository', '/home/runner/.m2/repository'),
+                             ('run_attempt', 1), ('source_sha', 'b' * 40), ('job', 'unit-architecture')]:
+            with self.subTest(field=field, value=value):
+                self.change('oracle', dependency_cache=dict(good, **{field: value}))
+                with self.assertRaises(ValueError): full.aggregate(self.root, self.directory, SHA, 5, 2, self.needs, dependency_cache='cold')
+        self.change('oracle', dependency_cache=good)
+
+    def test_cache_miss_is_not_misrepresented_as_warm(self):
+        path = self.directory / 'postgres-0/evidence.json'
+        cache = json.loads(path.read_text())['dependency_cache']
+        cache.update(cache_hit=False, initial_entries=0)
+        self.change('postgres-0', dependency_cache=cache)
+        result = self.aggregate()
+        self.assertFalse(result['dependency_cache']['postgres-0']['cache_hit'])
+        with self.assertRaises(ValueError): full.aggregate(self.root, self.directory, SHA, 5, 2, self.needs, dependency_cache='unknown')
 
     def test_sha_attempt_classifier_and_job_mismatch_deny(self):
         for field, value in [('source_sha', 'b' * 40), ('run_id', 6), ('run_attempt', 1),

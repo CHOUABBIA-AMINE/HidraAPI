@@ -27,9 +27,19 @@ name: HidraAPI CI
         - audit
         default: development
         required: true
+      dependency_cache:
+        description: Maven dependency restore policy; cold proves an empty isolated repository
+        type: choice
+        options:
+        - cached
+        - cold
+        default: cached
+        required: true
 permissions:
   contents: read
   actions: read
+env:
+  HIDRA_DEPENDENCY_CACHE_MODE: ${{ inputs.dependency_cache || 'cached' }}
 concurrency:
   group: hidraapi-ci-${{ github.sha }}
   cancel-in-progress: false
@@ -90,12 +100,24 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
-    - name: Set up Java 21
+    - name: Set up Java 21 with Maven dependency cache
+      if: env.HIDRA_DEPENDENCY_CACHE_MODE == 'cached'
+      id: java
       uses: actions/setup-java@v4
       with:
         distribution: temurin
         java-version: '21'
         cache: maven
+    - name: Set up Java 21 without dependency cache restoration
+      if: env.HIDRA_DEPENDENCY_CACHE_MODE == 'cold'
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: '21'
+    - name: Record and select pre-build Maven dependency repository
+      env:
+        HIDRA_CACHE_HIT: ${{ steps.java.outputs.cache-hit }}
+      run: python3 .github/scripts/verify_full_ci_evidence.py prepare-cache --mode "$HIDRA_DEPENDENCY_CACHE_MODE"
     - name: Ensure Maven wrapper is executable
       run: chmod +x mvnw
     - name: Verify exact source selection
@@ -142,12 +164,24 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
-    - name: Set up Java 21
+    - name: Set up Java 21 with Maven dependency cache
+      if: env.HIDRA_DEPENDENCY_CACHE_MODE == 'cached'
+      id: java
       uses: actions/setup-java@v4
       with:
         distribution: temurin
         java-version: '21'
         cache: maven
+    - name: Set up Java 21 without dependency cache restoration
+      if: env.HIDRA_DEPENDENCY_CACHE_MODE == 'cold'
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: '21'
+    - name: Record and select pre-build Maven dependency repository
+      env:
+        HIDRA_CACHE_HIT: ${{ steps.java.outputs.cache-hit }}
+      run: python3 .github/scripts/verify_full_ci_evidence.py prepare-cache --mode "$HIDRA_DEPENDENCY_CACHE_MODE"
     - name: Ensure Maven wrapper is executable
       run: chmod +x mvnw
     - name: Verify exact source selection
@@ -212,12 +246,24 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
-    - name: Set up Java 21
+    - name: Set up Java 21 with Maven dependency cache
+      if: env.HIDRA_DEPENDENCY_CACHE_MODE == 'cached'
+      id: java
       uses: actions/setup-java@v4
       with:
         distribution: temurin
         java-version: '21'
         cache: maven
+    - name: Set up Java 21 without dependency cache restoration
+      if: env.HIDRA_DEPENDENCY_CACHE_MODE == 'cold'
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: '21'
+    - name: Record and select pre-build Maven dependency repository
+      env:
+        HIDRA_CACHE_HIT: ${{ steps.java.outputs.cache-hit }}
+      run: python3 .github/scripts/verify_full_ci_evidence.py prepare-cache --mode "$HIDRA_DEPENDENCY_CACHE_MODE"
     - name: Ensure Maven wrapper is executable
       run: chmod +x mvnw
     - name: Build current contract application; test lanes own verification
@@ -476,18 +522,30 @@ jobs:
       run: bash ops/production/observability/validate-observability-artifacts.sh
     - name: Validate database operations procedures
       run: bash ops/production/postgres/scripts/validate-database-operations.sh
-    - name: Set up Java 21
+    - name: Set up Java 21 with Maven dependency cache
+      if: env.HIDRA_DEPENDENCY_CACHE_MODE == 'cached'
+      id: java
       uses: actions/setup-java@v4
       with:
         distribution: temurin
         java-version: '21'
         cache: maven
+    - name: Set up Java 21 without dependency cache restoration
+      if: env.HIDRA_DEPENDENCY_CACHE_MODE == 'cold'
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: '21'
+    - name: Record and select pre-build Maven dependency repository
+      env:
+        HIDRA_CACHE_HIT: ${{ steps.java.outputs.cache-hit }}
+      run: python3 .github/scripts/verify_full_ci_evidence.py prepare-cache --mode "$HIDRA_DEPENDENCY_CACHE_MODE"
     - name: Ensure Maven wrapper is executable
       run: chmod +x mvnw
     - name: Repository verification (greenfield schema, explicit exact-class oracle)
       shell: bash
       env:
-        MAVEN_OPTS: -Xmx1024m
+        MAVEN_OPTS: -Xmx1024m -Dmaven.repo.local=${{ env.HIDRA_MAVEN_REPOSITORY }}
       run: |
         set -euo pipefail
         classes="$(python3 .github/scripts/verify_ci_test_inventory.py --select oracle)"
@@ -748,7 +806,7 @@ jobs:
       env:
         HIDRA_CI_NEEDS: ${{ toJSON(needs) }}
         HIDRA_CI_MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.verification_mode == 'audit' && 'audit' || 'development' }}
-      run: python3 .github/scripts/verify_full_ci_evidence.py aggregate --mode "$HIDRA_CI_MODE" --directory target/full-ci-evidence
+      run: python3 .github/scripts/verify_full_ci_evidence.py aggregate --dependency-cache "$HIDRA_DEPENDENCY_CACHE_MODE" --mode "$HIDRA_CI_MODE" --directory target/full-ci-evidence
     - name: Retain authenticated full evidence bundle
       uses: actions/upload-artifact@v4
       with:

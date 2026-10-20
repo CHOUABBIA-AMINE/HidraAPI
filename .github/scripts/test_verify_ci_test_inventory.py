@@ -91,6 +91,20 @@ class InventoryTest(unittest.TestCase):
         self.root = Path(self.temp.name)
         self.manifest = fixture(self.root)
 
+    def test_context_retains_prebuild_cache_receipt(self):
+        receipt = {'mode': 'cold', 'initial_entries': 0}
+        path = self.root / 'cache.json'; path.write_text(json.dumps(receipt))
+        helper = self.root / '.github/scripts/verify_ci_test_inventory.py'
+        helper.parent.mkdir(parents=True); helper.write_text('fixture')
+        from types import SimpleNamespace
+        env = {'GITHUB_SHA': 'a' * 40, 'GITHUB_RUN_ID': '5', 'GITHUB_RUN_ATTEMPT': '2',
+               'GITHUB_JOB': 'postgres-integration', 'HIDRA_MAVEN_CACHE_EVIDENCE': str(path)}
+        with patch.dict('os.environ', env, clear=True), \
+                patch.object(ci.subprocess, 'check_output', return_value='a' * 40), \
+                patch.object(ci.subprocess, 'run', return_value=SimpleNamespace(returncode=0)):
+            evidence = ci.context(self.root, 'b' * 64, 'postgres-4')
+        self.assertEqual(evidence['dependency_cache'], receipt)
+
     def test_complete_disjoint_selection(self):
         ci.validate(self.root, self.manifest)
         lanes = ci.partitions(self.manifest)

@@ -209,12 +209,16 @@ def context(root, inventory_sha256, lane):
     attempt = int(os.environ['GITHUB_RUN_ATTEMPT'])
     if min(run, attempt) < 1:
         raise ValueError('Invalid run/attempt')
-    return {'format': 1, 'source_sha': sha, 'run_id': run, 'run_attempt': attempt,
+    evidence = {'format': 1, 'source_sha': sha, 'run_id': run, 'run_attempt': attempt,
             'lane': lane, 'job': os.environ['GITHUB_JOB'], 'inventory_sha256': inventory_sha256,
             'runner_os': os.environ.get('RUNNER_OS'),
             'runner_image': os.environ.get('ImageVersion'),
             'classifier_sha256': digest((root / '.github/scripts/verify_ci_test_inventory.py').read_bytes()),
             'files': {}}
+    cache = os.environ.get('HIDRA_MAVEN_CACHE_EVIDENCE')
+    if cache:
+        evidence['dependency_cache'] = json.loads(Path(cache).read_text())
+    return evidence
 
 
 def main():

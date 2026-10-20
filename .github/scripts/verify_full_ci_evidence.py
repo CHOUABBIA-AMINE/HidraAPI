@@ -117,7 +117,61 @@ def stamp(root, kind, output):
     output.write_bytes(inventory.canonical(evidence))
 
 
-def aggregate(root, directory, sha, run, attempt, needs, mode='audit'):
+def prepare_cache(mode):
+    """Record pre-build state; cold uses a new repository outside restored ~/.m2."""
+    if mode not in ('cached', 'cold'):
+        raise ValueError('Unknown dependency cache mode')
+    runner_temp = Path(os.environ['RUNNER_TEMP']).resolve()
+    repository = (runner_temp / 'hidra-cold-maven-repository' if mode == 'cold'
+                  else Path.home() / '.m2/repository').resolve()
+    if not all(re.fullmatch(r'[A-Za-z0-9_./-]+', str(path)) for path in (repository, runner_temp)):
+        raise ValueError('Unsupported Maven repository path')
+    raw_hit = os.environ.get('HIDRA_CACHE_HIT', '')
+    if raw_hit not in ('', 'true', 'false') or (mode == 'cold' and raw_hit == 'true'):
+        raise ValueError('Invalid cache restoration evidence')
+    options = os.environ.get('MAVEN_OPTS', '')
+    if '-Dmaven.repo.local' in options or '\n' in options or '\r' in options:
+        raise ValueError('Conflicting Maven repository override')
+    if mode == 'cold':
+        repository.mkdir(exist_ok=False)  # fail rather than reuse any prior repository
+    before = sum(1 for _ in repository.iterdir()) if repository.exists() else 0
+    evidence = {'mode': mode, 'restore_enabled': mode == 'cached',
+                'cache_hit': raw_hit == 'true' if raw_hit else None,
+                'initial_entries': before, 'repository': str(repository),
+                'runner_temp': str(runner_temp), 'source_sha': os.environ['GITHUB_SHA'],
+                'run_id': int(os.environ['GITHUB_RUN_ID']),
+                'run_attempt': int(os.environ['GITHUB_RUN_ATTEMPT']), 'job': os.environ['GITHUB_JOB']}
+    output = runner_temp / 'hidra-ci-dependency-cache.json'
+    output.write_bytes(inventory.canonical(evidence))
+    # Clean verify removes target; this receipt and the cold repository survive outside it.
+    with Path(os.environ['GITHUB_ENV']).open('a') as environment:
+        environment.write(f'HIDRA_MAVEN_REPOSITORY={repository}\nHIDRA_MAVEN_CACHE_EVIDENCE={output}\n'
+                          f'MAVEN_OPTS={options} -Dmaven.repo.local={repository}\n')
+    return evidence
+
+
+def verify_cache(evidence, mode):
+    cache = evidence.get('dependency_cache', {})
+    fields = {'mode', 'restore_enabled', 'cache_hit', 'initial_entries', 'repository',
+              'runner_temp', 'source_sha', 'run_id', 'run_attempt', 'job'}
+    if not isinstance(cache, dict) or set(cache) != fields:
+        raise ValueError('Missing dependency cache observation fields')
+    if (mode not in ('cached', 'cold') or cache.get('mode') != mode
+            or cache.get('restore_enabled') is not (mode == 'cached')
+            or type(cache.get('initial_entries')) is not int or cache['initial_entries'] < 0
+            or cache.get('cache_hit') is not None and type(cache['cache_hit']) is not bool
+            or any(cache.get(key) != evidence[key] for key in ('source_sha', 'run_id', 'run_attempt', 'job'))):
+        raise ValueError('Missing, stale or mixed dependency cache provenance')
+    repository = cache.get('repository', '')
+    if not repository.startswith('/') or not re.fullmatch(r'[A-Za-z0-9_./-]+', repository):
+        raise ValueError('Invalid Maven repository provenance')
+    if mode == 'cold' and (cache['initial_entries'] != 0 or cache['cache_hit'] is True
+            or repository != cache.get('runner_temp', '').rstrip('/') + '/hidra-cold-maven-repository'):
+        raise ValueError('Cold verification did not start from an empty isolated Maven repository')
+    return cache
+
+
+def aggregate(root, directory, sha, run, attempt, needs, mode='audit', dependency_cache='cached'):
     manifest, fingerprint = inventory.read_manifest(root)
     inventory.validate(root, manifest)
     if mode not in ('audit', 'development'):
@@ -147,6 +201,8 @@ def aggregate(root, directory, sha, run, attempt, needs, mode='audit'):
         if evidence.get('job') != expected_job:
             raise ValueError('Missing owning job identity')
         verify_files(evidence, path.parent)
+        if lane != 'static-validation':
+            verify_cache(evidence, dependency_cache)
         documents[lane] = (evidence, path)
     if set(documents) != set(required_lanes):
         raise ValueError('Missing full lane evidence')
@@ -190,6 +246,8 @@ def aggregate(root, directory, sha, run, attempt, needs, mode='audit'):
     return {'format': 'partition-shadow-v1', 'source_sha': sha, 'run_id': run,
             'run_attempt': attempt, 'inventory_sha256': fingerprint,
             'mode': manifest['mode'] if mode == 'audit' else 'development-partitioned',
+            'dependency_cache_mode': dependency_cache,
+            'dependency_cache': {lane: item[0]['dependency_cache'] for lane, item in documents.items() if lane != 'static-validation'},
             'fallback_required': mode == 'audit', 'fallback_available': True, 'verification_mode': mode,
             'same_run_equivalence': mode == 'audit', 'release_eligible': mode == 'audit',
             'optimized_adoption_eligible': False,
@@ -329,7 +387,7 @@ def release(root, policy, sha):
                 raise ValueError('Missing or ambiguous aggregate artifact')
             extract(archive(matches[0]), destination)
             gate = json.loads((destination / 'gate.json').read_text())
-            actual = aggregate(root, destination, sha, run['id'], attempt, gate['needs'])
+            actual = aggregate(root, destination, sha, run['id'], attempt, gate['needs'], dependency_cache=gate['dependency_cache_mode'])
             if actual != gate:
                 raise ValueError('Aggregate receipt differs from authenticated raw evidence')
             print(f'Verified full aggregate with mandatory fallback: run {run["id"]}, attempt {attempt}, SHA {sha}')
@@ -339,23 +397,28 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root', type=Path, default=Path('.'))
     commands = parser.add_subparsers(dest='command', required=True)
+    cache_args = commands.add_parser('prepare-cache')
+    cache_args.add_argument('--mode', choices=('cached', 'cold'), required=True)
     stamp_args = commands.add_parser('stamp')
     stamp_args.add_argument('--kind', choices=('static-validation', 'api-contract', 'oracle'), required=True)
     stamp_args.add_argument('--output', type=Path, required=True)
     gate_args = commands.add_parser('aggregate')
     gate_args.add_argument('--directory', type=Path, required=True)
     gate_args.add_argument('--mode', choices=('audit', 'development'), default='audit')
+    gate_args.add_argument('--dependency-cache', choices=('cached', 'cold'), default='cached')
     release_args = commands.add_parser('release')
     release_args.add_argument('--sha', required=True)
     release_args.add_argument('--policy', type=Path, required=True)
     args = parser.parse_args()
     try:
         root = args.root.resolve()
-        if args.command == 'stamp':
+        if args.command == 'prepare-cache':
+            print(json.dumps(prepare_cache(args.mode), sort_keys=True))
+        elif args.command == 'stamp':
             stamp(root, args.kind, args.output)
         elif args.command == 'aggregate':
             result = aggregate(root, args.directory, os.environ['GITHUB_SHA'], int(os.environ['GITHUB_RUN_ID']),
-                               int(os.environ['GITHUB_RUN_ATTEMPT']), json.loads(os.environ['HIDRA_CI_NEEDS']), args.mode)
+                               int(os.environ['GITHUB_RUN_ATTEMPT']), json.loads(os.environ['HIDRA_CI_NEEDS']), args.mode, args.dependency_cache)
             (args.directory / 'gate.json').write_bytes(inventory.canonical(result))
             print(json.dumps(result, sort_keys=True))
         else:

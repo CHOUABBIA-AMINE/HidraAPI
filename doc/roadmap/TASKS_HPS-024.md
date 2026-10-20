@@ -800,6 +800,79 @@ API/database deployment. No release, tag, deployment or unrelated task is select
 Retain exact registered message `ci: automate fast feedback and preserve full
 verification gates`; observe documentation CI queued/started and stop.
 
+### 2026-10-20 — explicit cold dependency-cache qualification path
+
+Owner selected the next HAPI-045 stage from green main
+`80a4962d85301fecd3931ed989f4f2aa28f7cbae` (Documentation462 success).
+Full781 already accepted independent five-set equivalence, but its matched logs
+proved warm Maven dependencies only. Implement a bounded cold-cache evidence path;
+do not fabricate a cold observation or rerun unchanged development timings.
+
+**Exact write scope:** `.github/workflows/ci.yml`,
+`.github/scripts/verify_ci_test_inventory.py`,
+`.github/scripts/test_verify_ci_test_inventory.py`,
+`.github/scripts/verify_full_ci_evidence.py`,
+`.github/scripts/test_verify_full_ci_evidence.py` and this owning task record.
+This refines HAPI-045's existing CI/helper/negative-proof scope to close the
+identified cache-provenance gap. No new file or inventory/class/case/weight change.
+Retain registered message `ci: automate fast feedback and preserve full
+verification gates`.
+
+Manual workflow input `dependency_cache` offers `cached` (default) or `cold`.
+Push/PR development verification retains normal Maven cache restoration, five DB
+sets and the same 2606 required cases. Cache policy is separate from the existing
+`verification_mode` input: a cold equivalence qualification uses `audit` plus
+`cold`. A development-only cold run does not prove independent oracle equality.
+
+Every Java lane records pre-build cache provenance before invoking Maven. In cold
+mode setup-java has no Maven cache setting; the preparation helper creates a new
+`RUNNER_TEMP/hidra-cold-maven-repository` with fail-if-existing semantics and
+observes zero entries. It selects that path through `-Dmaven.repo.local` in
+MAVEN_OPTS for current and historical-base builds. The oracle's bounded heap
+override explicitly retains the same repository property. No restored ~/.m2
+repository is used for dependency resolution, and nothing is deleted. The receipt
+and isolated repository live outside target so clean verify cannot erase them.
+This is cold Maven dependency-repository proof, not a claim that Java toolchains,
+Maven wrapper distributions, Docker image layers or operating-system caches are
+cold. Warm-path cache hits/misses are observed, not presumed.
+
+The pre-build receipt records source/run/attempt/owning job, requested policy,
+restore enablement, observed cache hit, initial entry count and selected path.
+Existing hashed lane receipts embed it. The aggregate requires policy consistency
+across unit, every DB set, API and oracle where applicable; missing/stale/mixed
+receipts fail. Cold acceptance additionally rejects nonempty/reused repositories,
+a restoration hit, enabled restoration or the wrong isolated path. Existing
+class/case/lifecycle/API/catalog/attempt/dependency negative checks remain. Release
+recomputation preserves the recorded cache mode while still requiring complete
+independent audit evidence; development remains ineligible.
+
+**Validation:** 88 Python fixtures passed (71 classifier/aggregate/release and17
+docs). New cases cover empty isolated preparation and exported Maven property,
+reuse of even an empty repository, restored-cache/conflicting-property rejection,
+receipt propagation into source-linked evidence, cold audit equivalence, missing/
+mixed/stale/nonempty/wrong-path cache observations, and truthful cache-miss
+reporting. Existing fixture coverage remains. YAML parsed; all four Java job
+templates prepare their repository before the first Maven invocation, cold setup
+has no cache restore, defaults remain cached and the oracle retains the explicit
+repository property. Five-set inventory and test source/case selection are
+unchanged. No Maven/Java21/service environment was provisioned or run locally;
+hosted exact-SHA CI validates the cached path after publication.
+
+**Acceptance follow-up:** after the normal exact-commit CI result, a manual
+`.github/workflows/ci.yml` dispatch on main with `verification_mode: audit` and
+`dependency_cache: cold` produces the distinct cold equivalence proof. The current
+connector has no workflow-dispatch action; no such run is claimed here. The
+Actions workflow page exposes both inputs. Existing audit job timeout and all
+security deadlines remain unchanged; a dependency-download timeout must fail and
+be diagnosed, not be relabeled passing or have tests skipped. No production data
+or owner calibration input is needed.
+
+HAPI-045 remains PARTIAL / IN_PROGRESS until hosted cache-path acceptance,
+actual cold audit and remaining representative-revision coverage. HAPI-046 and
+HAPI-436 do not advance. No repeated benchmark campaign, release, tag or production
+deployment is selected. HidraAPI remains development-only. Publish this bounded
+stage, observe applicable exact-SHA CI queued/started and stop per AGENTS.md §11.1.
+
 <a id="hapi-046"></a>
 ## HAPI-046 — Timing, runner cost and adoption decision
 

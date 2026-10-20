@@ -20,7 +20,9 @@ The owner explicitly approved this layout change on2026-10-18. It permits naviga
 
 ## Current execution pointer
 
-[HAPI-582](TASKS_HPS-002.md#hapi-582) is PARTIAL/REGISTERED_PENDING: its combined owner-witness design/registration was published at2148b27; Docs391 succeeded. Next eligible development is its registered Party/Facility witness implementation, with the exact11 CREATE/3 MODIFY package and fixed tests in that record. This owner-selected layout change does not execute it or advance K/L. Subsequent status/pointer changes must cite actual source/CI evidence.
+[HAPI-588](TASKS_HPS-004.md#hapi-588) is VERIFIED/COMPLETED for its registered draft-only engineering graph authoring scope. Acceptance is recorded at [00c602d](https://github.com/CHOUABBIA-AMINE/HidraAPI/commit/00c602dc090613bbb5758f15f17130e7460be952), with [Documentation #448](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39408891358) successful. The accepted executable/test checkpoint is [ff06520](https://github.com/CHOUABBIA-AMINE/HidraAPI/commit/ff06520757207cbd6bbf2b3ff29e979977998cef), with [Full #773](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39406126892), [Fast #97](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39406126873), and [Documentation #447](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39406126844) successful. Technical scope and acceptance evidence remain in the owning phase record.
+
+The next sequential task, [HAPI-589](TASKS_HPS-005.md#hapi-589) (HPR-P25-052C), remains NOT_IMPLEMENTED/BLOCKED. It requires owner approval of representational CRS/datum and chainage conventions, followed by exact scope registration before implementation. Proposed conventions are not approved by this pointer refresh. This navigation-only update selects no HAPI-589, HAPI-590, or HAPI-600 implementation and changes no task status or frozen registry.
 
 ## Phase files
 

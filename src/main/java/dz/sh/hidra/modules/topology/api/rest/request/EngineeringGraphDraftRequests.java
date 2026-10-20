@@ -27,7 +27,6 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import java.io.IOException;
-import dz.sh.hidra.modules.topology.domain.model.EngineeringGraphDraft;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import java.util.Objects;
@@ -60,20 +59,12 @@ public final class EngineeringGraphDraftRequests {
         @JsonAnySetter public void unknown(String name, Object value) {
             throw new IllegalArgumentException("Unsupported graph node field");
         }
-        EngineeringGraphDraft.Node toDomain() {
-            if (kind == null) throw new IllegalArgumentException("Node kind required");
-            return new EngineeringGraphDraft.Node(id, EngineeringGraphDraft.NodeKind.valueOf(kind), facilityId);
-        }
     }
     public record Port(@JsonDeserialize(using=StrictText.class) String id,
                        @JsonDeserialize(using=StrictText.class) String nodeId,
                        @JsonDeserialize(using=StrictText.class) String direction) {
         @JsonAnySetter public void unknown(String name, Object value) {
             throw new IllegalArgumentException("Unsupported graph port field");
-        }
-        EngineeringGraphDraft.Port toDomain() {
-            if (direction == null) throw new IllegalArgumentException("Port direction required");
-            return new EngineeringGraphDraft.Port(id, nodeId, EngineeringGraphDraft.PortDirection.valueOf(direction));
         }
     }
     public record Branch(@JsonDeserialize(using=StrictText.class) String id,
@@ -83,30 +74,86 @@ public final class EngineeringGraphDraftRequests {
         @JsonAnySetter public void unknown(String name, Object value) {
             throw new IllegalArgumentException("Unsupported graph branch field");
         }
-        EngineeringGraphDraft.Branch toDomain() {
-            if (kind == null) throw new IllegalArgumentException("Branch kind required");
-            return new EngineeringGraphDraft.Branch(id, EngineeringGraphDraft.BranchKind.valueOf(kind), fromPortId, toPortId);
-        }
     }
+    @JsonDeserialize(using=StrictUpdate.class)
     @Schema(name="EngineeringGraphDraftUpdateRequest")
     public record Update(@JsonDeserialize(using=StrictVersion.class) Long expectedVersion,
                          List<Node> nodes, List<Port> ports, List<Branch> branches) {
         @JsonAnySetter public void unknown(String name, Object value) {
             throw new IllegalArgumentException("Unsupported graph field");
         }
-        public EngineeringGraphDraft graph() {
+        /** Only transport validation belongs here; domain conversion belongs to the controller boundary. */
+        public void validate() {
             if (expectedVersion == null || expectedVersion < 1)
                 throw new IllegalArgumentException("Positive expected version required");
-            Objects.requireNonNull(nodes, "Nodes array required");
-            Objects.requireNonNull(ports, "Ports array required");
-            Objects.requireNonNull(branches, "Branches array required");
-            if (nodes.stream().anyMatch(Objects::isNull)
+            if (nodes == null || ports == null || branches == null
+                    || nodes.stream().anyMatch(Objects::isNull)
                     || ports.stream().anyMatch(Objects::isNull)
                     || branches.stream().anyMatch(Objects::isNull))
-                throw new IllegalArgumentException("Null graph element");
-            return new EngineeringGraphDraft(nodes.stream().map(Node::toDomain).toList(),
-                    ports.stream().map(Port::toDomain).toList(),
-                    branches.stream().map(Branch::toDomain).toList());
+                throw new IllegalArgumentException("Invalid graph arrays");
+        }
+    }
+
+    /** Read the JSON syntax before Jackson's permissive record/scalar coercion can occur. */
+    public static final class StrictUpdate extends JsonDeserializer<Update> {
+        private static void object(JsonParser p, com.fasterxml.jackson.databind.JsonNode value,
+                                   String... allowed) throws JsonMappingException {
+            if (value == null || !value.isObject())
+                throw JsonMappingException.from(p, "Graph object required");
+            var permitted = java.util.Set.of(allowed);
+            var keys = value.fieldNames();
+            while (keys.hasNext())
+                if (!permitted.contains(keys.next()))
+                    throw JsonMappingException.from(p, "Unsupported graph property");
+        }
+        private static String string(JsonParser p, com.fasterxml.jackson.databind.JsonNode value,
+                                     String field, boolean required) throws JsonMappingException {
+            var node = value.get(field);
+            if (node == null || node.isNull()) {
+                if (required) throw JsonMappingException.from(p, "Required graph string missing");
+                return null;
+            }
+            if (!node.isTextual()) throw JsonMappingException.from(p, "Graph values must be JSON strings");
+            return node.textValue();
+        }
+        private static com.fasterxml.jackson.databind.JsonNode array(JsonParser p,
+                com.fasterxml.jackson.databind.JsonNode root, String field) throws JsonMappingException {
+            var node = root.get(field);
+            if (node == null || !node.isArray())
+                throw JsonMappingException.from(p, "Required graph array missing");
+            return node;
+        }
+        @Override public Update deserialize(JsonParser p, DeserializationContext context) throws IOException {
+            com.fasterxml.jackson.databind.JsonNode root = p.getCodec().readTree(p);
+            object(p,root,"expectedVersion","nodes","ports","branches");
+            var versionNode=root.get("expectedVersion");
+            if (versionNode == null || !versionNode.isIntegralNumber())
+                throw JsonMappingException.from(p, "Expected version must be an integer");
+            final long version;
+            try { version=versionNode.bigIntegerValue().longValueExact(); }
+            catch (ArithmeticException range) {
+                throw JsonMappingException.from(p,"Expected version exceeds 64-bit range",range);
+            }
+            if(version < 1) throw JsonMappingException.from(p,"Expected version must be positive");
+            var nodes = new java.util.ArrayList<Node>();
+            for(var item:array(p,root,"nodes")) {
+                object(p,item,"id","kind","facilityId");
+                nodes.add(new Node(string(p,item,"id",true),string(p,item,"kind",true),
+                        string(p,item,"facilityId",false)));
+            }
+            var ports = new java.util.ArrayList<Port>();
+            for(var item:array(p,root,"ports")) {
+                object(p,item,"id","nodeId","direction");
+                ports.add(new Port(string(p,item,"id",true),string(p,item,"nodeId",true),
+                        string(p,item,"direction",true)));
+            }
+            var branches = new java.util.ArrayList<Branch>();
+            for(var item:array(p,root,"branches")) {
+                object(p,item,"id","kind","fromPortId","toPortId");
+                branches.add(new Branch(string(p,item,"id",true),string(p,item,"kind",true),
+                        string(p,item,"fromPortId",true),string(p,item,"toPortId",true)));
+            }
+            return new Update(version,List.copyOf(nodes),List.copyOf(ports),List.copyOf(branches));
         }
     }
 }

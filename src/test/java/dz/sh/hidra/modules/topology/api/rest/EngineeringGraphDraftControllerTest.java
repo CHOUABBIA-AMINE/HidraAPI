@@ -94,7 +94,9 @@ class EngineeringGraphDraftControllerTest {
                 "{\"expectedVersion\":1.0,\"nodes\":[],\"ports\":[],\"branches\":[]}",
                 "{\"expectedVersion\":true,\"nodes\":[],\"ports\":[],\"branches\":[]}",
                 "{\"expectedVersion\":1,\"nodes\":[{\"id\":99,\"kind\":\"JUNCTION\"}],\"ports\":[],\"branches\":[]}",
-                "{\"expectedVersion\":1,\"nodes\":[{\"id\":\"n\",\"kind\":\"JUNCTION\",\"extra\":true}],\"ports\":[],\"branches\":[]}"
+                "{\"expectedVersion\":1,\"nodes\":[{\"id\":\"n\",\"kind\":\"JUNCTION\",\"extra\":true}],\"ports\":[],\"branches\":[]}",
+                "{\"expectedVersion\":1,\"nodes\":[],\"ports\":[{\"id\":\"p\",\"nodeId\":\"n\",\"direction\":\"INLET\",\"extra\":true}],\"branches\":[]}",
+                "{\"expectedVersion\":1,\"nodes\":[],\"ports\":[],\"branches\":[{\"id\":\"b\",\"kind\":\"PIPE\",\"fromPortId\":\"p\",\"toPortId\":\"q\",\"extra\":true}]}"
         )) {
             mvc.perform(put(url()).contentType(MediaType.APPLICATION_JSON).content(body))
                 .andExpect(status().isBadRequest());

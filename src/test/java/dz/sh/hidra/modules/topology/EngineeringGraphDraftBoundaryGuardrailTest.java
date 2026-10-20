@@ -46,6 +46,18 @@ class EngineeringGraphDraftBoundaryGuardrailTest {
                 .getRecordComponents()[1].getType());
     }
 
+    @Test void reviewedGraphRepositoryBeansMustRemainProxyableAndTransportDtosRemainDomainFree() throws Exception {
+        assertFalse(java.lang.reflect.Modifier.isFinal(JdbcEngineeringGraphDraftRepositoryAdapter.class.getModifiers()));
+        assertFalse(java.lang.reflect.Modifier.isFinal(JdbcEngineeringGraphStationWitnessAdapter.class.getModifiers()));
+        var source = java.nio.file.Path.of("src/main/java/dz/sh/hidra/modules/topology/api/rest");
+        for (String path : java.util.List.of("request/EngineeringGraphDraftRequests.java",
+                                            "response/EngineeringGraphDraftResponses.java")) {
+            String content = java.nio.file.Files.readString(source.resolve(path));
+            assertFalse(content.contains("import dz.sh.hidra.modules.topology.domain."),
+                    "REST transport records must not import domain representations");
+        }
+    }
+
     @Test void exactOwnedControllerRouteTuplesMustRemainNarrowlyBound() throws Exception {
         RequestMapping root=EngineeringNetworkDraftController.class.getAnnotation(RequestMapping.class);
         assertArrayEquals(new String[]{"/api/v1/topology/engineering-networks"},root.value());

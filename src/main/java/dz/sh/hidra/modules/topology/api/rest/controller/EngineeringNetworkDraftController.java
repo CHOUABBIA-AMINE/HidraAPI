@@ -13,6 +13,7 @@ import dz.sh.hidra.modules.topology.api.rest.response.EngineeringNetworkDraftRes
 import dz.sh.hidra.modules.topology.api.rest.response.EngineeringNetworkDraftResponses.Draft;
 import dz.sh.hidra.modules.topology.api.rest.response.EngineeringGraphDraftResponses;
 import dz.sh.hidra.modules.topology.domain.model.EngineeringNetworkDraft;
+import dz.sh.hidra.modules.topology.domain.model.EngineeringGraphDraft;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,19 @@ public class EngineeringNetworkDraftController {
         return EngineeringNetworkDraftResponses.from(useCase.execute(new Command(Kind.VALIDATE,company,network,EngineeringNetworkDraft.uuid(id),null,body.expectedVersion(),null)));
     }
 
+    /** Explicit transport-to-domain mapping; REST DTO packages never depend on domain classes. */
+    private static EngineeringGraphDraft graphFrom(EngineeringGraphDraftRequests.Update body) {
+        body.validate();
+        return new EngineeringGraphDraft(
+            body.nodes().stream().map(n -> new EngineeringGraphDraft.Node(
+                n.id(), EngineeringGraphDraft.NodeKind.valueOf(n.kind()), n.facilityId())).toList(),
+            body.ports().stream().map(p -> new EngineeringGraphDraft.Port(
+                p.id(), p.nodeId(), EngineeringGraphDraft.PortDirection.valueOf(p.direction())).toList(),
+            body.branches().stream().map(b -> new EngineeringGraphDraft.Branch(
+                b.id(), EngineeringGraphDraft.BranchKind.valueOf(b.kind()),
+                b.fromPortId(), b.toPortId())).toList());
+    }
+
     @Operation(operationId="updateEngineeringNetworkDraftGraph",summary="Append a draft graph at the next shared metadata version")
     @PutMapping("/{draftId}/graph") public EngineeringGraphDraftResponses.Graph updateGraph(
             @PathVariable("draftId") String id,
@@ -64,7 +78,7 @@ public class EngineeringNetworkDraftController {
         if (graphUseCase == null) throw new dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure(
                 dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.Reason.UNAVAILABLE);
         var command = new EngineeringGraphDraftUseCase.Command(EngineeringGraphDraftUseCase.Kind.UPDATE,
-                company, network, EngineeringNetworkDraft.uuid(id), body.expectedVersion(), null, body.graph());
+                company, network, EngineeringNetworkDraft.uuid(id), body.expectedVersion(), null, graphFrom(body));
         return EngineeringGraphDraftResponses.Graph.from(graphUseCase.executeGraph(command));
     }
 

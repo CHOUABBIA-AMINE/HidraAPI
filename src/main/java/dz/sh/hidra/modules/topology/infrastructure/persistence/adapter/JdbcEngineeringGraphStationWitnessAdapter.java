@@ -32,7 +32,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 /** A scalar current-source observation; never independently confers identity authority. */
 @Repository
-public final class JdbcEngineeringGraphStationWitnessAdapter implements EngineeringGraphStationWitnessPort {
+public class JdbcEngineeringGraphStationWitnessAdapter implements EngineeringGraphStationWitnessPort {
     public static final String CURRENT_SQL = "SELECT g.generation FROM public.hidra_topology_facility f "
         + "JOIN public.hidra_topology_facility_owner_generation g ON g.facility_id=f.id "
         + "WHERE f.id=? AND f.owner_party_id=? AND f.status='ACTIVE' "

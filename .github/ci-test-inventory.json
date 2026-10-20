@@ -6257,6 +6257,7 @@
         "adaptersImplementPortsInsteadOfOwningDomainAuthority",
         "exactOwnedControllerRouteTuplesMustRemainNarrowlyBound",
         "graphRestResponsesMustUseTransportOwnedRecords",
+        "reviewedGraphRepositoryBeansMustRemainProxyableAndTransportDtosRemainDomainFree",
         "theOneExistingEngineeringDraftAggregateMustImplementBothUseCases"
       ],
       "class": "dz.sh.hidra.modules.topology.EngineeringGraphDraftBoundaryGuardrailTest",
@@ -6265,7 +6266,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/EngineeringGraphDraftBoundaryGuardrailTest.java",
-      "source_sha256": "fc945e7f9f68198f9bb313ac77a16258f2426fe39645b86633d8034a9f7a4506",
+      "source_sha256": "605c0781475f46421dd2cda3d730f8c920593a4df479d887a9b70cefa7ef6e04",
       "supports": []
     },
     {
@@ -6317,7 +6318,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java",
-      "source_sha256": "076925787d022223ddfc8dec9863a65d25ea20cb2e6ccfdd93a5ae8f4ef3e64a",
+      "source_sha256": "9c4f6398e862c3caa861848b43b3cdb31cba2b4a32d159670f30b6261b88411b",
       "supports": []
     },
     {
@@ -6337,7 +6338,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/api/rest/EngineeringGraphDraftControllerTest.java",
-      "source_sha256": "91126afdd8dc1c938db2fed3af70bf4194be9390403ece91ebe387c4671fcf17",
+      "source_sha256": "ea19eb228b815feb5b0c8250acf68f876d6b09fa7f349d54668b689207727229",
       "supports": []
     },
     {

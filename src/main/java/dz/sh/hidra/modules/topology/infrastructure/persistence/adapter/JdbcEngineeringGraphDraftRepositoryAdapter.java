@@ -35,7 +35,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
  * the provisional SQL permit, 34 physical relation fences, and final materialized guard.
  */
 @Repository
-public final class JdbcEngineeringGraphDraftRepositoryAdapter implements EngineeringGraphDraftRepositoryPort {
+public class JdbcEngineeringGraphDraftRepositoryAdapter implements EngineeringGraphDraftRepositoryPort {
     // A single, exact DML template must also be pinned independently by the coordinator.
     public static final String INSERT_SQL = "INSERT INTO public.hidra_topology_engineering_graph_snapshot "
         + "(draft_id,version,payload_format,canonical_payload,sha256,transaction_id) VALUES (?,?,?,?,?,?)";

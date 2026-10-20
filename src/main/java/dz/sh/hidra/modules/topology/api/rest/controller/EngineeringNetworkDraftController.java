@@ -1,6 +1,21 @@
 /**
- * HAPI-588B candidate based on main@2702a010bd, not published.
- * Protect graph operations through the same compiled controller and native authorization owner.
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : EngineeringNetworkDraftController
+ * @CreatedOn   : 2025-06-26
+ * @UpdatedOn   : 2026-10-20
+ *
+ * @Type        : Class
+ * @Layer       : API
+ * @Module      : topology
+ * @Package     : dz.sh.hidra.modules.topology.api.rest.controller
+ *
+ * @Description : Expose protected engineering draft metadata and graph operations.
+ *
  */
 package dz.sh.hidra.modules.topology.api.rest.controller;
 
@@ -63,7 +78,7 @@ public class EngineeringNetworkDraftController {
             body.nodes().stream().map(n -> new EngineeringGraphDraft.Node(
                 n.id(), EngineeringGraphDraft.NodeKind.valueOf(n.kind()), n.facilityId())).toList(),
             body.ports().stream().map(p -> new EngineeringGraphDraft.Port(
-                p.id(), p.nodeId(), EngineeringGraphDraft.PortDirection.valueOf(p.direction())).toList(),
+                p.id(), p.nodeId(), EngineeringGraphDraft.PortDirection.valueOf(p.direction()))).toList(),
             body.branches().stream().map(b -> new EngineeringGraphDraft.Branch(
                 b.id(), EngineeringGraphDraft.BranchKind.valueOf(b.kind()),
                 b.fromPortId(), b.toPortId())).toList());

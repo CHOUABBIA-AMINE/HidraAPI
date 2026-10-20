@@ -464,7 +464,7 @@ Cross-phase prerequisites in the approved task graph: HPS-004 Dependency edges a
 | [HAPI-116](TASKS_HPS-005.md#hapi-116) | add ili spatial evidence | Add only missing PostGIS/ILI columns/tables using actual next Flyway migration. | P3 | — | NOT_VERIFIABLE | DEFERRED |
 | [HAPI-117](TASKS_HPS-005.md#hapi-117) | add ili spatial mapping | Add approved domain/application/persistence mapping for inspection anomalies and geometry/KP reconciliation. | P3 | — | NOT_VERIFIABLE | DEFERRED |
 | [HAPI-531](TASKS_HPS-005.md#hapi-531) | define revisioned route and elevation profiles | define revisioned route and elevation profiles | P1 | — | VERIFIED | COMPLETED |
-| [HAPI-589](TASKS_HPS-005.md#hapi-589) | Survey, CRS, profile and pipe-section authoring | Survey/CRS/vertical datum/chainage/elevation/profile and pipe-section authoring. | P1 | HAPI-587 | NOT_IMPLEMENTED | BLOCKED |
+| [HAPI-589](TASKS_HPS-005.md#hapi-589) | Survey, CRS, profile and pipe-section authoring | Survey/CRS/vertical datum/chainage/elevation/profile and pipe-section authoring. | P1 | HAPI-587 | VERIFIED | COMPLETED |
 
 ### 8. Phase Completion Criteria
 

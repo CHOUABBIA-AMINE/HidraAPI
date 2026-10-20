@@ -6724,6 +6724,33 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "allowsMissingAndNegativeElevationsWithoutDefaults",
+        "allowsNonzeroStartingChainageAndRepeatedCoordinates",
+        "defensivelyCopiesAllCollections",
+        "preservesAxisOrderDecimalsAndIntermediatePoints",
+        "preservesTouchingSectionBoundariesAndPermitsGaps",
+        "rejectsDuplicatePointAndSectionIdentities",
+        "rejectsMissingInvalidAndOversizedMetadata",
+        "rejectsNullElementsAndExcessiveCollectionSizes",
+        "rejectsOverlappingReversedAndOutOfRangeSections",
+        "rejectsZeroOrNegativeSuppliedPrecision",
+        "requiresDatumAndPrecisionWhenElevationSupplied",
+        "requiresExplicitCrsAxesAndUnits",
+        "requiresOriginDirectionAndStrictlyIncreasingMetreChainage",
+        "requiresSectionBoundariesInRetainedPoints"
+      ],
+      "class": "dz.sh.hidra.modules.topology.domain.model.SurveyRouteProfileTest",
+      "dependency_reason": "HAPI-589 Package A pure Java survey/profile invariant tests; hosted Java21 execution and timing pending; zero is an unmeasured placeholder",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/domain/model/SurveyRouteProfileTest.java",
+      "source_sha256": "841d8f6e81725103b8a9f15e0b6df816a2006a16ea80df6ddcc61d0e41a84aa6",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0.044,
       "cases": [
         "acceptsBranchWithoutEquipment",

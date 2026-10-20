@@ -1,32 +1,21 @@
 /**
- *
- * @Project     : HidraAPI
- * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
- * @Author      : Abir MEDJERAB
- * @Owner       : Sonatrach / TRC : Digitalization Initiative
- *
- * @Name        : EngineeringNetworkDraftController
- * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-19
- *
- * @Type        : Class
- * @Layer       : API
- * @Module      : topology
- * @Package     : dz.sh.hidra.modules.topology.api.rest.controller
- *
- * @Description : Implements the bounded company-scoped engineering draft contract.
- *
+ * HAPI-588B candidate based on main@2702a010bd, not published.
+ * Protect graph operations through the same compiled controller and native authorization owner.
  */
 package dz.sh.hidra.modules.topology.api.rest.controller;
 
 import dz.sh.hidra.modules.topology.application.port.in.EngineeringNetworkDraftUseCase;
 import dz.sh.hidra.modules.topology.application.port.in.EngineeringNetworkDraftUseCase.*;
+import dz.sh.hidra.modules.topology.application.port.in.EngineeringGraphDraftUseCase;
 import dz.sh.hidra.modules.topology.api.rest.request.EngineeringNetworkDraftRequests.*;
+import dz.sh.hidra.modules.topology.api.rest.request.EngineeringGraphDraftRequests;
 import dz.sh.hidra.modules.topology.api.rest.response.EngineeringNetworkDraftResponses;
 import dz.sh.hidra.modules.topology.api.rest.response.EngineeringNetworkDraftResponses.Draft;
+import dz.sh.hidra.modules.topology.api.rest.response.EngineeringGraphDraftResponses;
 import dz.sh.hidra.modules.topology.domain.model.EngineeringNetworkDraft;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Objects;
 import io.swagger.v3.oas.annotations.Operation;
 
@@ -34,7 +23,16 @@ import io.swagger.v3.oas.annotations.Operation;
 @RequestMapping("/api/v1/topology/engineering-networks")
 public class EngineeringNetworkDraftController {
     private final EngineeringNetworkDraftUseCase useCase;
-    public EngineeringNetworkDraftController(EngineeringNetworkDraftUseCase u){useCase=Objects.requireNonNull(u);}
+    private final EngineeringGraphDraftUseCase graphUseCase;
+
+    @Autowired
+    public EngineeringNetworkDraftController(EngineeringNetworkDraftUseCase u, EngineeringGraphDraftUseCase g) {
+        useCase=Objects.requireNonNull(u); graphUseCase=Objects.requireNonNull(g);
+    }
+    /** Retained only for existing standalone metadata tests; graph endpoints must fail closed. */
+    public EngineeringNetworkDraftController(EngineeringNetworkDraftUseCase u) {
+        useCase=Objects.requireNonNull(u); graphUseCase=null;
+    }
     @Operation(operationId="createEngineeringNetworkDraft",summary="Create or replay a company-scoped engineering draft")
     @PostMapping public ResponseEntity<Draft> create(@RequestBody Create body){
         var r=useCase.execute(new Command(Kind.CREATE,body.companyPartyId(),body.pipelineSystemId(),null,
@@ -55,5 +53,30 @@ public class EngineeringNetworkDraftController {
     @PostMapping("/{draftId}/validate") public Draft validate(@PathVariable("draftId") String id,
             @RequestParam("companyPartyId") String company,@RequestParam("pipelineSystemId") String network,@RequestBody Validate body){
         return EngineeringNetworkDraftResponses.from(useCase.execute(new Command(Kind.VALIDATE,company,network,EngineeringNetworkDraft.uuid(id),null,body.expectedVersion(),null)));
+    }
+
+    @Operation(operationId="updateEngineeringNetworkDraftGraph",summary="Append a draft graph at the next shared metadata version")
+    @PutMapping("/{draftId}/graph") public EngineeringGraphDraftResponses.Graph updateGraph(
+            @PathVariable("draftId") String id,
+            @RequestParam("companyPartyId") String company,
+            @RequestParam("pipelineSystemId") String network,
+            @RequestBody EngineeringGraphDraftRequests.Update body) {
+        if (graphUseCase == null) throw new dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure(
+                dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.Reason.UNAVAILABLE);
+        var command = new EngineeringGraphDraftUseCase.Command(EngineeringGraphDraftUseCase.Kind.UPDATE,
+                company, network, EngineeringNetworkDraft.uuid(id), body.expectedVersion(), null, body.graph());
+        return EngineeringGraphDraftResponses.Graph.from(graphUseCase.executeGraph(command));
+    }
+
+    @Operation(operationId="readEngineeringNetworkDraftGraph",summary="Read the authorized current or historical graph sketch")
+    @GetMapping("/{draftId}/graph") public EngineeringGraphDraftResponses.Graph readGraph(
+            @PathVariable("draftId") String id,
+            @RequestParam("companyPartyId") String company,
+            @RequestParam("pipelineSystemId") String network,
+            @RequestParam(value="version",required=false) Long version) {
+        if (graphUseCase == null) throw new dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure(
+                dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.Reason.UNAVAILABLE);
+        return EngineeringGraphDraftResponses.Graph.from(graphUseCase.executeGraph(new EngineeringGraphDraftUseCase.Command(
+                EngineeringGraphDraftUseCase.Kind.READ,company,network,EngineeringNetworkDraft.uuid(id),null,version,null)));
     }
 }

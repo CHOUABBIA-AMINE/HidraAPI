@@ -44,6 +44,15 @@ class EngineeringNetworkDraftBoundaryGuardrailTest {
         assertEquals(3,n);String platform=Files.readString(Path.of(base+"platform/persistence/ProtectedTransactionExecutor.java"));
         assertTrue(platform.contains("caller.equals(permit.owner)"));assertFalse(platform.contains("import dz.sh.hidra.modules."));
     }
+    @Test void graphMutationRetainsExactTwoStatementPinsAndPureOwnerBoundary() throws Exception {
+        String root="src/main/java/dz/sh/hidra/";
+        String c=Files.readString(Path.of(root+"modules/topology/application/service/ProtectedEngineeringDraftAdmissionCoordinator.java"));
+        String e=Files.readString(Path.of(root+"platform/persistence/ProtectedTransactionExecutor.java"));
+        assertTrue(c.contains("GRAPH_DML_HASHES"));
+        assertTrue(c.contains("GRAPH_UPDATE"));
+        assertTrue(e.contains("INSERT INTO public.hidra_topology_engineering_graph_snapshot "));
+        assertFalse(c.contains(".infrastructure."));
+    }
     @Test void domainAndContractsRemainFreeOfForeignPersistenceAndFrameworks() throws Exception {
         String s=Files.readString(Path.of("src/main/java/dz/sh/hidra/modules/topology/domain/model/EngineeringNetworkDraft.java"));
         for(String forbidden:List.of("org.springframework","jakarta.persistence","com.fasterxml",".infrastructure."))assertFalse(s.contains(forbidden));

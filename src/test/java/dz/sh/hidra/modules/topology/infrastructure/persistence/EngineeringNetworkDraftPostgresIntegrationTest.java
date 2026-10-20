@@ -282,6 +282,9 @@ public class EngineeringNetworkDraftPostgresIntegrationTest {
         jdbc.execute("REVOKE ALL ON "+tables+" FROM c3_source_claim_app,c3_publication_app");
         jdbc.execute("GRANT SELECT ON "+tables+" TO c3_source_claim_app");
         jdbc.execute("GRANT SELECT,INSERT,UPDATE ON "+tables+" TO c3_publication_app");
+        // Graph-only privilege: metadata retains its original 31-fence ownership path.
+        jdbc.execute("REVOKE ALL ON public.hidra_topology_engineering_graph_snapshot FROM c3_source_claim_app,c3_publication_app");
+        jdbc.execute("GRANT SELECT,INSERT,UPDATE ON public.hidra_topology_engineering_graph_snapshot TO c3_publication_app");
         SecurityContextHolder.clearContext();
         cleanEvidence();
         flyway.validate();
@@ -1022,6 +1025,148 @@ public class EngineeringNetworkDraftPostgresIntegrationTest {
             .isEqualTo(201);
         http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/api/v1/topology/engineering-networks").header("Authorization","Bearer "+rawToken).contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(body.substring(0,body.length()-1)+",\"graph\":{}}"))
             .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isBadRequest());
+    }
+    @Test void signedBearerGraphVersionAppendAndHistoricalAsOfAreDraftOnly() throws Exception {
+        draftActor("LOCAL");
+        var original=create(UUID.randomUUID(),"graph-round-trip");
+        var id=original.draft().draftId();
+        String route="/api/v1/topology/engineering-networks/"+id+"/graph?companyPartyId="+COMPANY+"&pipelineSystemId="+network;
+        String graph="{\"expectedVersion\":1,\"nodes\":["
+            +"{\"id\":\"a\",\"kind\":\"JUNCTION\"},"
+            +"{\"id\":\"b\",\"kind\":\"JUNCTION\"}],"
+            +"\"ports\":[{\"id\":\"out\",\"nodeId\":\"a\",\"direction\":\"OUTLET\"},"
+            +"{\"id\":\"in\",\"nodeId\":\"b\",\"direction\":\"INLET\"}],"
+            +"\"branches\":[{\"id\":\"pipe\",\"kind\":\"PIPE\","
+            +"\"fromPortId\":\"out\",\"toPortId\":\"in\"}]}";
+        assertThat(nativeDecoder.decode(rawToken).getTokenValue()).isEqualTo(rawToken);
+        SecurityContextHolder.clearContext();
+        http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put(route)
+            .header("Authorization","Bearer "+rawToken)
+            .contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(graph))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.version").value(2))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.graphVersion").value(2))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.branches[0].id").value("pipe"));
+        http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(route+"&version=1")
+            .header("Authorization","Bearer "+rawToken))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.version").value(1))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.diagnostics[0]").value("GRAPH_NOT_AUTHORED"));
+        http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(route+"&version=2")
+            .header("Authorization","Bearer "+rawToken))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.graphVersion").value(2));
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_engineering_graph_snapshot WHERE draft_id=?",Long.class,id)).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT max(version) FROM public.hidra_topology_engineering_draft_version WHERE draft_id=?",Long.class,id)).isEqualTo(2);
+    }
+    @Test void ordinaryGraphSnapshotPrivilegesRemainDenied() throws Exception {
+        draftActor("LOCAL");
+        try(var c=DriverManager.getConnection(POSTGRES.getJdbcUrl(),"c3_source_claim_app","synthetic-c3-test-only");
+            var stmt=c.createStatement()) {
+            for(String query : java.util.List.of(
+                    "SELECT * FROM public.hidra_topology_engineering_graph_snapshot LIMIT 1",
+                    "TRUNCATE public.hidra_topology_engineering_graph_snapshot",
+                    "DELETE FROM public.hidra_topology_engineering_graph_snapshot WHERE false")) {
+                var forbidden=org.junit.jupiter.api.Assertions.assertThrows(SQLException.class,
+                    ()->stmt.execute(query));
+                assertThat(forbidden.getSQLState()).isEqualTo("42501");
+            }
+        }
+    }
+
+    @Test void graphSurvivesMetadataOnlySuccessorWithHistoricalSha() {
+        draftActor("LOCAL");var first=create(UUID.randomUUID(),"before");
+        var id=first.draft().draftId();
+        var g=new dz.sh.hidra.modules.topology.domain.model.EngineeringGraphDraft(List.of(),List.of(),List.of());
+        var owner=(dz.sh.hidra.modules.topology.application.port.in.EngineeringGraphDraftUseCase)drafts;
+        var write=new dz.sh.hidra.modules.topology.application.port.in.EngineeringGraphDraftUseCase.Command(
+            dz.sh.hidra.modules.topology.application.port.in.EngineeringGraphDraftUseCase.Kind.UPDATE,
+            COMPANY,network,id,1L,null,g);
+        var snap=owner.executeGraph(write);
+        drafts.execute(command(dz.sh.hidra.modules.topology.application.port.in.EngineeringNetworkDraftUseCase.Kind.UPDATE,
+            id,null,2L,"after"));
+        var query=new dz.sh.hidra.modules.topology.application.port.in.EngineeringGraphDraftUseCase.Command(
+            dz.sh.hidra.modules.topology.application.port.in.EngineeringGraphDraftUseCase.Kind.READ,
+            COMPANY,network,id,null,null,null);
+        var current=owner.executeGraph(query);
+        assertThat(current.version()).isEqualTo(3L);
+        assertThat(current.graphVersion()).isEqualTo(2L);
+        assertThat(current.graphSha256()).isEqualTo(snap.graphSha256());
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_engineering_graph_snapshot WHERE draft_id=?",
+            Long.class,id)).isEqualTo(1L);
+    }
+    @Test void graphCurrentStationWrongKindAndStatusFailClosed() {
+        draftActor("LOCAL");owners();var first=create(UUID.randomUUID(),"station");
+        var g=new dz.sh.hidra.modules.topology.domain.model.EngineeringGraphDraft(
+            List.of(new dz.sh.hidra.modules.topology.domain.model.EngineeringGraphDraft.Node(
+                "station",dz.sh.hidra.modules.topology.domain.model.EngineeringGraphDraft.NodeKind.STATION,FACILITY)),
+            List.of(),List.of());
+        var owner=(dz.sh.hidra.modules.topology.application.port.in.EngineeringGraphDraftUseCase)drafts;
+        var write=new dz.sh.hidra.modules.topology.application.port.in.EngineeringGraphDraftUseCase.Command(
+            dz.sh.hidra.modules.topology.application.port.in.EngineeringGraphDraftUseCase.Kind.UPDATE,
+            COMPANY,network,first.draft().draftId(),1L,null,g);
+        jdbc.update("UPDATE public.hidra_topology_facility SET facility_kind='DEPOT' WHERE id=?",FACILITY);
+        try {assertThatThrownBy(()->owner.executeGraph(write))
+            .isInstanceOf(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.class);}
+        finally {jdbc.update("UPDATE public.hidra_topology_facility SET facility_kind='STATION' WHERE id=?",FACILITY);}
+        jdbc.update("UPDATE public.hidra_topology_facility SET status='INACTIVE' WHERE id=?",FACILITY);
+        try {assertThatThrownBy(()->owner.executeGraph(write))
+            .isInstanceOf(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.class);}
+        finally {jdbc.update("UPDATE public.hidra_topology_facility SET status='ACTIVE' WHERE id=?",FACILITY);}
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_engineering_graph_snapshot WHERE draft_id=?",
+            Long.class,first.draft().draftId())).isZero();
+    }
+    @Test void revokedGraphWriteDoesNotCreateASecondMetadataVersion() {
+        var actor=draftActor("LOCAL");var first=create(UUID.randomUUID(),"revoked");
+        jdbc.update("UPDATE public.hidra_identity_user_permission_grant SET status='REVOKED',revoked_at=now() WHERE user_id=? AND permission_id='draft-permission-update'",actor.user());
+        var owner=(dz.sh.hidra.modules.topology.application.port.in.EngineeringGraphDraftUseCase)drafts;
+        var g=new dz.sh.hidra.modules.topology.domain.model.EngineeringGraphDraft(List.of(),List.of(),List.of());
+        var cmd=new dz.sh.hidra.modules.topology.application.port.in.EngineeringGraphDraftUseCase.Command(
+            dz.sh.hidra.modules.topology.application.port.in.EngineeringGraphDraftUseCase.Kind.UPDATE,
+            COMPANY,network,first.draft().draftId(),1L,null,g);
+        assertThatThrownBy(()->owner.executeGraph(cmd))
+            .isInstanceOf(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.class);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_engineering_draft_version WHERE draft_id=?",
+            Long.class,first.draft().draftId())).isEqualTo(1L);
+    }
+    @Test void twoConcurrentSameVersionGraphWritersCommitExactlyOneSuccessor() throws Exception {
+        draftActor("LOCAL");var first=create(UUID.randomUUID(),"concurrent");
+        var auth=SecurityContextHolder.getContext().getAuthentication();
+        var owner=(dz.sh.hidra.modules.topology.application.port.in.EngineeringGraphDraftUseCase)drafts;
+        var g=new dz.sh.hidra.modules.topology.domain.model.EngineeringGraphDraft(List.of(),List.of(),List.of());
+        var cmd=new dz.sh.hidra.modules.topology.application.port.in.EngineeringGraphDraftUseCase.Command(
+            dz.sh.hidra.modules.topology.application.port.in.EngineeringGraphDraftUseCase.Kind.UPDATE,
+            COMPANY,network,first.draft().draftId(),1L,null,g);
+        var latch=new CountDownLatch(1);var pool=Executors.newFixedThreadPool(2);var count=new AtomicInteger();
+        try {
+            var jobs=new ArrayList<Future<?>>();
+            for(int i=0;i<2;i++)jobs.add(pool.submit(()->{
+                SecurityContextHolder.getContext().setAuthentication(auth);
+                try {latch.await();owner.executeGraph(cmd);count.incrementAndGet();}
+                catch(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure expected){}
+                catch(InterruptedException e){Thread.currentThread().interrupt();throw new AssertionError(e);}
+                finally {SecurityContextHolder.clearContext();}
+            }));
+            latch.countDown();for(var j:jobs)j.get(10,TimeUnit.SECONDS);
+        }finally{pool.shutdownNow();}
+        assertThat(count.get()).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_engineering_graph_snapshot WHERE draft_id=?",
+            Long.class,first.draft().draftId())).isEqualTo(1L);
+    }
+    @Test void graphFinalGuardContainsThirtyFourRelationFences() {
+        draftActor("LOCAL");var first=create(UUID.randomUUID(),"guard");
+        var owner=(dz.sh.hidra.modules.topology.application.port.in.EngineeringGraphDraftUseCase)drafts;
+        var observed=new AtomicBoolean();
+        doAnswer(i->{java.util.List<dz.sh.hidra.platform.persistence.ProtectedRelationFence> f=i.getArgument(2);
+            assertThat(f).hasSize(34);
+            assertThat(f.stream().filter(x->x.mode()==dz.sh.hidra.platform.persistence.ProtectedRelationFence.Mode.SHARE_ROW_EXCLUSIVE).count()).isEqualTo(31L);
+            observed.set(true);return i.callRealMethod();})
+            .when(draftTarget()).finalGuard(any(),any(),anyList());
+        owner.executeGraph(new dz.sh.hidra.modules.topology.application.port.in.EngineeringGraphDraftUseCase.Command(
+            dz.sh.hidra.modules.topology.application.port.in.EngineeringGraphDraftUseCase.Kind.UPDATE,
+            COMPANY,network,first.draft().draftId(),1L,null,
+            new dz.sh.hidra.modules.topology.domain.model.EngineeringGraphDraft(List.of(),List.of(),List.of())));
+        assertThat(observed).isTrue();
     }
     @Test void disabledActualCatalogTriggerFailsBeforeAnyDraftInsert(){
         draftActor("LOCAL");UUID request=UUID.randomUUID();

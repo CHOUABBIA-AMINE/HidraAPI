@@ -45,6 +45,8 @@ public record EngineeringNetworkDraft(UUID contextId, String companyPartyId, Str
     public EngineeringNetworkDraft updated(Metadata next){
         return new EngineeringNetworkDraft(contextId,companyPartyId,pipelineSystemId,draftId,Math.addExact(version,1),next);
     }
+    /** An authored graph advances the one aggregate version without replacing metadata. */
+    public EngineeringNetworkDraft graphUpdated(){return updated(metadata);}
     public List<String> diagnostics(){
         var d=new ArrayList<String>();d.add("GRAPH_NOT_AUTHORED");
         if(metadata.title()==null)d.add("TITLE_NOT_SUPPLIED");

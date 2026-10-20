@@ -275,6 +275,14 @@
     "owner": "topology",
     "purpose": "Immutable metadata versions, predecessor digest and protected actor/time provenance; HAPI-587, current physical catalog capture pending hosted CI."
   },
+  "public.hidra_topology_engineering_graph_snapshot": {
+    "evidence": [
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringGraphDraftRepositoryAdapter.java",
+      "src/main/resources/db/migration/V20261019_002__p25_topology_engineering_graph_snapshots.sql"
+    ],
+    "owner": "topology",
+    "purpose": "Immutable authored engineering network graph snapshots bound to the shared metadata draft version; HAPI-588B CI-first physical PostgreSQL qualification pending."
+  },
   "public.hidra_topology_equipment": {
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/EquipmentJpaEntity.java",

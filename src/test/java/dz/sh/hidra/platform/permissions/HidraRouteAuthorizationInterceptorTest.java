@@ -113,20 +113,22 @@ class HidraRouteAuthorizationInterceptorTest {
 
 
     @Test
-    void engineeringDraftNativeOwnerOnlyHandlesExactFourCompiledOperations() throws Exception {
+    void engineeringDraftNativeOwnerOnlyHandlesExactSixCompiledOperations() throws Exception {
         var resolver = new HidraEffectivePermissionResolver(List.of());
         var interceptor = new HidraRouteAuthorizationInterceptor(resolver, naming, true, "jwt");
         var owner = new dz.sh.hidra.modules.topology.api.rest.controller.EngineeringNetworkDraftController(
             command -> { throw new AssertionError("No business execution from route test"); });
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
             "operator", "n/a", List.of(new SimpleGrantedAuthority("ROLE_OPERATOR"))));
-        String[] methods = {"create", "read", "update", "validate"};
-        String[] verbs = {"POST", "GET", "PUT", "POST"};
+        String[] methods = {"create", "read", "update", "validate", "readGraph", "updateGraph"};
+        String[] verbs = {"POST", "GET", "PUT", "POST", "GET", "PUT"};
         String[] routes = {
             "/api/v1/topology/engineering-networks",
             "/api/v1/topology/engineering-networks/{draftId}",
             "/api/v1/topology/engineering-networks/{draftId}",
-            "/api/v1/topology/engineering-networks/{draftId}/validate"
+            "/api/v1/topology/engineering-networks/{draftId}/validate",
+            "/api/v1/topology/engineering-networks/{draftId}/graph",
+            "/api/v1/topology/engineering-networks/{draftId}/graph"
         };
         for (int i=0; i<methods.length; i++) {
             final int selected = i;

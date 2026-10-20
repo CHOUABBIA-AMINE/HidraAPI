@@ -10001,3 +10001,9 @@ docs/roadmap/fixs/telemetry_corrected_baseline_validated.md:45 | TOP-COR-002 | t
 ~~~~~~~~
 
 <!-- task-register:payload:end -->
+
+### HAPI-588B CI-first implementation checkpoint — 2026-10-20
+
+**Registered stage:** HAPI-588 / HPR-P25-052B Package B, commit message `feat(topology): persist protected engineering graph draft versions`. This CI-FIRST source delivery includes 12 CREATE paths, 18 MODIFY paths, additive `V20261019_002`, bounded typed graph DTOs and API, the same engineering draft aggregate and shared monotonic metadata/graph version, native READ/UPDATE authority, 34 graph-specific physical fences with the existing independent 31-fence metadata path, owner-generation station witnesses, pinned provisional SQL templates, single physical final guard, and tracked synthetic/PG regression sources. The table ownership and 429-class test inventory are source-hash pinned. Engineering graph remains DRAFT-only: no installed station membership, numerical solver, hydraulic qualification, operational publication or control.
+
+**Truthful gate:** The source review and exact-anchor checks are not Java21 full Maven/Spring Boot, real JWT, PostgreSQL catalog/privilege/tamper, concurrency, or exact-SHA CI acceptance. Those cases must actually execute and pass. Runtime OpenAPI and physical PostgreSQL dictionary regeneration remain reserved for later Package C, not silently fabricated here. Preserve `HAPI-588 PARTIAL / REGISTERED_PENDING` and unchanged frozen ROADMAP/PHASES statuses until final registered acceptance. After publication verify commit parent/tree and observe Full/Fast/Docs CI created or started on the exact new SHA; STOP.

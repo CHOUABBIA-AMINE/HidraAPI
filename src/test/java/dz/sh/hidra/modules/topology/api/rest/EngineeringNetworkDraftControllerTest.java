@@ -47,6 +47,11 @@ class EngineeringNetworkDraftControllerTest {
         http.perform(put(url+"/"+id+"?companyPartyId=c&pipelineSystemId=n").contentType(MediaType.APPLICATION_JSON).content("{\"expectedVersion\":1,\"graph\":{}}")).andExpect(status().isBadRequest());
         http.perform(put(url+"/"+id+"?companyPartyId=c&pipelineSystemId=n").contentType(MediaType.APPLICATION_JSON).content("{}")).andExpect(status().isBadRequest());verifyNoInteractions(useCase);
     }
+    @Test void metadataOnlyStandaloneControllerNeverOpensGraphAuthorization() throws Exception {
+        http.perform(get(url+"/"+id+"/graph?companyPartyId=c&pipelineSystemId=n"))
+            .andExpect(status().isServiceUnavailable());
+        verifyNoInteractions(useCase);
+    }
     @Test void recognizedFailuresHaveSafeNonDisclosingStatus() throws Exception {
         when(useCase.execute(any())).thenThrow(new EngineeringNetworkDraftFailure(EngineeringNetworkDraftFailure.Reason.INDETERMINATE));
         http.perform(get(url+"/"+id+"?companyPartyId=c&pipelineSystemId=n")).andExpect(status().isServiceUnavailable()).andExpect(jsonPath("$.code").value("INDETERMINATE"));

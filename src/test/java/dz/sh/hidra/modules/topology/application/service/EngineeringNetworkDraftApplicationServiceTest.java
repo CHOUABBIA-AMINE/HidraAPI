@@ -33,6 +33,14 @@ import dz.sh.hidra.platform.persistence.ProtectedTransactionExecutor;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 class EngineeringNetworkDraftApplicationServiceTest {
     private Command create(){return new Command(Kind.CREATE,"c","n",null,UUID.randomUUID(),null,new Metadata(null,null,null));}
+    @Test void graphVersionAdvancesWithoutReplacingMetadata() {
+        var metadata=new Metadata("GZ2 draft",null,"synthetic");
+        var initial=new dz.sh.hidra.modules.topology.domain.model.EngineeringNetworkDraft(
+            UUID.randomUUID(),"c","n",UUID.randomUUID(),1,metadata);
+        var next=initial.graphUpdated();
+        assertEquals(2,next.version());assertSame(metadata,next.metadata());
+        assertEquals(1,initial.version());
+    }
     @Test void ambientTransactionNeverPreparesOrExecutes(){
         var c=mock(ProtectedEngineeringDraftAdmissionCoordinator.class);var r=mock(EngineeringNetworkDraftRepositoryPort.class);var e=mock(ProtectedTransactionExecutor.class);
         TransactionSynchronizationManager.setActualTransactionActive(true);

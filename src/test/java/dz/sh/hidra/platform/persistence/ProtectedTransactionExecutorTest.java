@@ -52,6 +52,14 @@ class ProtectedTransactionExecutorTest {
     final AtomicLong databaseXid = new AtomicLong(2);
     final AtomicInteger databasePid = new AtomicInteger(1);
 
+    @Test
+    void graphSqlProvisionalFamilyDoesNotGrantUnreviewedOwnerExecution() throws Exception {
+        String body=java.nio.file.Files.readString(java.nio.file.Path.of(
+            "src/main/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutor.java"));
+        org.junit.jupiter.api.Assertions.assertTrue(body.contains("INSERT INTO public.hidra_topology_engineering_graph_snapshot "));
+        org.junit.jupiter.api.Assertions.assertTrue(body.contains("caller.equals(DRAFT_COORDINATOR)"));
+        org.junit.jupiter.api.Assertions.assertTrue(body.contains("caller.equals(permit.owner)"));
+    }
     @BeforeEach
     void provider() throws Exception {
         raw = mock(Connection.class);

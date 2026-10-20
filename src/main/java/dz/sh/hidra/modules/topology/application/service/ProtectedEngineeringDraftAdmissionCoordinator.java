@@ -1,28 +1,11 @@
-/**
- *
- * @Project     : HidraAPI
- * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
- * @Author      : Abir MEDJERAB
- * @Owner       : Sonatrach / TRC : Digitalization Initiative
- *
- * @Name        : ProtectedEngineeringDraftAdmissionCoordinator
- * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-19
- *
- * @Type        : Class
- * @Layer       : Application
- * @Module      : topology
- * @Package     : dz.sh.hidra.modules.topology.application.service
- *
- * @Description : Implements the bounded company-scoped engineering draft contract.
- *
- */
+/** HAPI-588B candidate — reviewed metadata admission retained, graph paths bind native READ/UPDATE. */
 package dz.sh.hidra.modules.topology.application.service;
 
 import dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedEngineeringDraftAuthorizationContract;
 import dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedEngineeringDraftAuthorizationContract.*;
 import dz.sh.hidra.modules.party.application.contract.topology.TopologyProtectedPartyEligibilityContract;
 import dz.sh.hidra.modules.topology.application.port.in.EngineeringNetworkDraftUseCase.Command;
+import dz.sh.hidra.modules.topology.application.port.in.EngineeringNetworkDraftUseCase.Kind;
 import dz.sh.hidra.modules.topology.application.port.out.EngineeringNetworkDraftRepositoryPort;
 import dz.sh.hidra.platform.persistence.*;
 import java.time.Instant;
@@ -44,20 +27,35 @@ public class ProtectedEngineeringDraftAdmissionCoordinator {
     }
     @Transactional(propagation=Propagation.NEVER)
     public Prepared prepare(){if(TransactionSynchronizationManager.isActualTransactionActive())throw invalid();return new Prepared(this,identity.prepare());}
+
+    private static Action authorityAction(Kind kind){
+        return switch(Objects.requireNonNull(kind)){
+            case GRAPH_READ -> Action.READ;
+            case GRAPH_UPDATE -> Action.UPDATE;
+            default -> Action.valueOf(kind.name());
+        };
+    }
+    private static boolean graph(Kind kind){return kind==Kind.GRAPH_READ || kind==Kind.GRAPH_UPDATE;}
+
     @Transactional(propagation=Propagation.MANDATORY)
     public Admission acquire(Prepared p,Command cmd){
         try {
             executor.beginAdmission();
             if(p==null || p.owner!=this || p.thread!=Thread.currentThread() || !p.used.compareAndSet(false,true)
                 || !TransactionSynchronizationManager.isSynchronizationActive())throw invalid();
-            Request request=new Request(Action.valueOf(cmd.kind().name()),cmd.companyPartyId(),cmd.pipelineSystemId());
-            var i=identity.acquire(p.identity,request);var o=party.acquire(cmd.companyPartyId());var r=repository.acquire(cmd);
+            Request request=new Request(authorityAction(cmd.kind()),cmd.companyPartyId(),cmd.pipelineSystemId());
+            var i=identity.acquire(p.identity,request);
+            var o=party.acquire(cmd.companyPartyId());
+            var r=repository.acquire(cmd);
             var fences=new ArrayList<ProtectedRelationFence>();
             var fi=identity.finalFences(i);var fp=party.finalFences(o);var fr=repository.finalFences(r);
-            if(fi.size()!=24 || fp.size()!=2 || fr.size()!=5)throw invalid();
+            int topologyCount=graph(cmd.kind())?8:5;
+            int total=graph(cmd.kind())?34:31;
+            if(fi.size()!=24 || fp.size()!=2 || fr.size()!=topologyCount)throw invalid();
             fences.addAll(fi);fences.addAll(fp);fences.addAll(fr);
-            if(fences.stream().map(ProtectedRelationFence::relation).distinct().count()!=31)throw invalid();
-            var a=new Admission(this,request,i,o,r,List.copyOf(fences));TransactionSynchronizationManager.registerSynchronization(a);return a;
+            if(fences.stream().map(ProtectedRelationFence::relation).distinct().count()!=total)throw invalid();
+            var a=new Admission(this,request,i,o,r,List.copyOf(fences),cmd.kind());
+            TransactionSynchronizationManager.registerSynchronization(a);return a;
         }catch(RuntimeException e){executor.rejectAdmission();throw e;}
     }
     @Transactional(propagation=Propagation.MANDATORY)
@@ -74,16 +72,27 @@ public class ProtectedEngineeringDraftAdmissionCoordinator {
             a.permit=executor.sealAdmission();requireCurrent(a);return a.result;
         }catch(RuntimeException e){executor.rejectAdmission();throw e;}
     }
-    private static final Set<String> DRAFT_DML_HASHES=Set.of("e8f934e6f6ea4d39b81b5239ab77434447aff88ca147f9ba242bdb9dee3629d7","364c7d9ff7e4e8d307a15ab41d27f69c4a4359b084c5360b153ec94034d75630","ea65144cc041c124b9021fecc0670a6c647992c31f6c05881c472a015dd89035");
+
+    /** Independent exact reviewed hashes: never widen DML permit to arbitrary INSERT prefixes. */
+    private static final Set<String> DRAFT_DML_HASHES=Set.of(
+        "e8f934e6f6ea4d39b81b5239ab77434447aff88ca147f9ba242bdb9dee3629d7",
+        "364c7d9ff7e4e8d307a15ab41d27f69c4a4359b084c5360b153ec94034d75630",
+        "ea65144cc041c124b9021fecc0670a6c647992c31f6c05881c472a015dd89035");
+    private static final Set<String> GRAPH_DML_HASHES=Set.of(
+        "ea65144cc041c124b9021fecc0670a6c647992c31f6c05881c472a015dd89035", // metadata version
+        "b5213967046ec2eb90655dd7169405377db35603cc81103a8607b147628298e2"); // graph snapshot
     private static String digest(String sql){try{return HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256")
         .digest(sql.getBytes(java.nio.charset.StandardCharsets.UTF_8)));}catch(java.security.NoSuchAlgorithmException e){throw new IllegalStateException(e);}}
     private static boolean compiled(){return StackWalker.getInstance().walk(f->f.anyMatch(x->x.getClassName().equals(
         "dz.sh.hidra.modules.topology.application.service.EngineeringNetworkDraftApplicationService")));}
     @Transactional(propagation=Propagation.MANDATORY)
     public void beginProvisional(Admission a,Set<String> sql){try {
-        requireCurrent(a);if(!compiled() || !Set.of(Action.CREATE,Action.UPDATE).contains(a.request.action()) || sql==null
-            || sql.size()!=3 || !sql.stream().map(ProtectedEngineeringDraftAdmissionCoordinator::digest)
-                .collect(java.util.stream.Collectors.toUnmodifiableSet()).equals(DRAFT_DML_HASHES))throw invalid();
+        requireCurrent(a);
+        boolean graphWrite=a.kind==Kind.GRAPH_UPDATE;
+        if(!compiled() || !Set.of(Action.CREATE,Action.UPDATE).contains(a.request.action()) || sql==null
+            || sql.size()!=(graphWrite?2:3) || !sql.stream().map(ProtectedEngineeringDraftAdmissionCoordinator::digest)
+                .collect(java.util.stream.Collectors.toUnmodifiableSet()).equals(graphWrite?GRAPH_DML_HASHES:DRAFT_DML_HASHES))
+            throw invalid();
         executor.beginProvisional(a.permit,sql);
     }catch(RuntimeException e){executor.rejectAdmission();throw e;}}
     @Transactional(propagation=Propagation.MANDATORY)
@@ -108,10 +117,11 @@ public class ProtectedEngineeringDraftAdmissionCoordinator {
         private final TopologyProtectedEngineeringDraftAuthorizationContract.Admission identity;
         private final TopologyProtectedPartyEligibilityContract.Admission party;private final EngineeringNetworkDraftRepositoryPort.Admission repository;
         private final List<ProtectedRelationFence> fences;private final AtomicBoolean used=new AtomicBoolean();private boolean active=true;
+        private final Kind kind;
         private Contribution result;private ProtectedTransactionExecutor.ProvisionalPermit permit;
         private Admission(ProtectedEngineeringDraftAdmissionCoordinator o,Request q,TopologyProtectedEngineeringDraftAuthorizationContract.Admission i,
-            TopologyProtectedPartyEligibilityContract.Admission p,EngineeringNetworkDraftRepositoryPort.Admission r,List<ProtectedRelationFence> f){
-            owner=o;request=q;identity=i;party=p;repository=r;fences=f;}
+            TopologyProtectedPartyEligibilityContract.Admission p,EngineeringNetworkDraftRepositoryPort.Admission r,List<ProtectedRelationFence> f,Kind kind){
+            owner=o;request=q;identity=i;party=p;repository=r;fences=f;this.kind=kind;}
         @Override public void suspend(){active=false;}@Override public void afterCompletion(int status){active=false;}
         @Override public String toString(){return "Admission[opaque draft]";}
     }

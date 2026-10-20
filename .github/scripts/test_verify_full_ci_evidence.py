@@ -24,7 +24,7 @@ class FullEvidenceTest(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name) / 'source'
         self.root.mkdir()
-        self.manifest = fixture(self.root, postgres_shards=4)
+        self.manifest = fixture(self.root, postgres_shards=5)
         (self.root / 'pom.xml').write_text('<project/>')
         script = self.root / '.github/scripts/verify_ci_test_inventory.py'
         script.parent.mkdir(parents=True)
@@ -43,7 +43,7 @@ class FullEvidenceTest(unittest.TestCase):
         for lane in full.REQUIRED_LANES:
             lane_root = self.directory / lane
             lane_root.mkdir()
-            job = {'oracle': 'verify', 'postgres-0': 'postgres-integration', 'postgres-1': 'postgres-integration', 'postgres-2': 'postgres-integration', 'postgres-3': 'postgres-integration'}.get(lane, lane)
+            job = {'oracle': 'verify', 'postgres-0': 'postgres-integration', 'postgres-1': 'postgres-integration', 'postgres-2': 'postgres-integration', 'postgres-3': 'postgres-integration', 'postgres-4': 'postgres-integration'}.get(lane, lane)
             evidence = {'format': 1, 'source_sha': SHA, 'run_id': 5, 'run_attempt': 2,
                         'lane': lane, 'job': job, 'inventory_sha256': self.fingerprint,
                         'classifier_sha256': inventory.digest(script.read_bytes()), 'files': {}}
@@ -89,7 +89,7 @@ class FullEvidenceTest(unittest.TestCase):
         shutil.rmtree(self.directory / 'oracle')
         self.needs['verify']['result'] = 'skipped'
 
-    def test_development_requires_all_four_partitions_and_denies_release_equivalence(self):
+    def test_development_requires_all_five_partitions_and_denies_release_equivalence(self):
         self.prepare_development()
         result = self.development()
         self.assertEqual(result['mode'], 'development-partitioned')
@@ -98,8 +98,8 @@ class FullEvidenceTest(unittest.TestCase):
         self.assertFalse(result['fallback_required'])
         self.assertTrue(result['fallback_available'])
         self.assertFalse(result['optimized_adoption_eligible'])
-        self.assertEqual(result['classes'], 5)
-        self.assertEqual(result['counts'], dict(tests=5, failures=0, errors=0, skipped=0))
+        self.assertEqual(result['classes'], 6)
+        self.assertEqual(result['counts'], dict(tests=6, failures=0, errors=0, skipped=0))
         self.assertEqual(set(result['lane_evidence']), set(full.REQUIRED_LANES) - {'oracle'})
         with self.assertRaises(ValueError): self.aggregate()  # audit is still the default
 
@@ -116,13 +116,13 @@ class FullEvidenceTest(unittest.TestCase):
             with self.subTest(job=job), self.assertRaises(ValueError): self.development()
             self.needs[job]['result'] = 'success'
 
-    def test_development_missing_fourth_shard_and_corrupt_report_deny(self):
+    def test_development_missing_fifth_shard_and_corrupt_report_deny(self):
         self.prepare_development()
-        path = self.directory / 'postgres-3/evidence.json'
+        path = self.directory / 'postgres-4/evidence.json'
         old = path.read_bytes(); path.unlink()
         with self.assertRaises(ValueError): self.development()
         path.write_bytes(old)
-        next((self.directory / 'postgres-3/reports').glob('*.xml')).write_text('corrupt')
+        next((self.directory / 'postgres-4/reports').glob('*.xml')).write_text('corrupt')
         with self.assertRaises((ValueError, inventory.ET.ParseError)): self.development()
 
     def test_development_extra_oracle_receipt_and_unknown_mode_deny(self):
@@ -134,7 +134,7 @@ class FullEvidenceTest(unittest.TestCase):
         self.prepare_development()
         for mutation in ('omit', 'overlap', 'skip'):
             with self.subTest(mutation=mutation):
-                directory = self.directory / 'postgres-3'
+                directory = self.directory / 'postgres-4'
                 receipt = directory / 'evidence.json'; old_receipt = receipt.read_bytes()
                 original = next((directory / 'reports').glob('*.xml')); old_report = original.read_bytes()
                 if mutation == 'omit':

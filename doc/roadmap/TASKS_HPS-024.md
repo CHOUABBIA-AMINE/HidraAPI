@@ -582,6 +582,80 @@ new successful sample is not five comparable samples or a performance-adoption
 campaign. Retain registered message `ci: automate fast feedback and preserve full
 verification gates`. No release, tag, deployment or unrelated task is selected.
 
+### 2026-10-20 — Full779 acceptance and owner-selected five database sets
+
+Owner selected the next HAPI-045 stage and explicitly preferred five database
+sets. Current main `d15cfa28c598aedd8371a98c943b8919b3b7a52f` passed Full779,
+Fast103 and Documentation459. This stage prioritizes shorter development feedback
+with one additional isolated runner; it does not claim a cost optimum or change
+production/release policy. HidraAPI remains development-only.
+
+[Full779](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39432208352)
+job wall seconds: PostgreSQL0 282, PostgreSQL1 318, PostgreSQL2 373, PostgreSQL3
+347; unit/architecture 80; static 23; API/dictionary 170; gate 14. The audit job was
+intentionally skipped. The slowest DB job was 6m13s, compared with 7m52s for
+Full778. Job wall sum was 1607s (26m47s runner time), compared with 1509s for
+Full778. These are two individual natural runs, not comparable-configuration
+medians, billing amounts or controlled proof that the extra runner caused all
+of the difference. Four met the per-job seven-minute target in this sample;
+repeatable critical-path/cold-warm/cost qualification remains incomplete.
+
+Authenticated Full779 aggregate artifact 12268717648, ZIP SHA256
+`1f2e109c1cbce9c78d0b59875ca54b134ddfdf8ca6c5dd883bdc2b5f038cf605`,
+was downloaded and checked. Exact SHA/run/attempt/classifier/inventory, lane/file
+hashes, raw XML class/case/count/timing payloads and Java21 clean-verify lifecycle
+passed. Seven lane receipts cover 430 classes and 2606 cases exactly once, with
+zero failures/errors/skips. Actual current/base OpenAPI, PostgreSQL16 catalog,
+source bundle and reviewed physical dictionary passed `api_facts`. This accepts
+Full779's development scope; there was no independent oracle and the aggregate
+correctly denies same-run equivalence and release eligibility.
+
+**Five-set scope:** same seven paths as the preceding correction: ci.yml,
+ci-test-inventory.json, classifier and fixture, aggregate/release helper and
+fixture, and this owning phase file. Refresh scheduling weights from Full779's
+actual partition reports, retain original case/source provenance, set the DB
+matrix and inventory to five, and require the fifth receipt/job in development
+and audit/release verification. Every test/dependency/owner/case/source pin,
+Fast membership, historical archive policy, lifecycle, fork count, security
+deadline, retry and isolated database requirement is preserved. No Java, POM,
+Flyway, API, dictionary, Fast/release workflow or PROJECT_STATE change.
+
+Full779 DB suite sums total 1072.034s. With the refreshed weights, four sets model
+a largest suite sum of 268.046s; five model 214.465s, about 54s less. This is a
+scheduling estimate before setup/compile/container/queue overhead, not a promised
+elapsed-time improvement. Regrouping classes changes context reuse; runner and
+cache variation remain. Five is the owner's latency preference and its actual
+runner cost and speed must be measured by subsequent naturally authorized runs.
+
+| Five-set selection | Classes | Cases | Prior suite seconds summed |
+|---|---:|---:|---:|
+| PostgreSQL0 | 16 | 163 | 214.400 |
+| PostgreSQL1 | 18 | 145 | 214.393 |
+| PostgreSQL2 | 19 | 126 | 214.465 |
+| PostgreSQL3 | 22 | 225 | 214.388 |
+| PostgreSQL4 | 19 | 230 | 214.388 |
+
+Unit/architecture remains 336 classes and 1717 cases; the DB union remains 94
+classes and 889 cases. No additional obsolete tests are excluded. Manual audit
+continues to require the unrestricted oracle alongside all five partitions;
+development results cannot satisfy release proof.
+
+**Local validation:** 79 fixtures passed (62 classifier/aggregate/release and 17
+docs). Five-set positive coverage, missing fifth receipt, corrupt/omitted/
+overlapping/skipped fifth-set evidence and development release rejection are
+covered. YAML/manifest agree on five; the complete disjoint class/case union and
+all unchanged non-timing inventory metadata were checked. Full779 authenticated
+artifact verification passed. Full canonical checkout docs and Java21 Maven/
+PostgreSQL tests are not run locally (partial checkout, Java17 and no Maven);
+hosted exact-commit CI remains authoritative. No environment was provisioned.
+
+**Disposition:** HAPI-045 remains PARTIAL / IN_PROGRESS; Full779 development
+acceptance is recorded, five-set runtime acceptance and representative audit/
+cold-warm qualification remain pending. HAPI-046 and HAPI-436 do not advance.
+Retain exact registered message `ci: automate fast feedback and preserve full
+verification gates`. Publish only this bounded stage, confirm exact-SHA workflows
+queued/started and stop per AGENTS.md §11.1. No release, tag or deployment follows.
+
 <a id="hapi-046"></a>
 ## HAPI-046 — Timing, runner cost and adoption decision
 

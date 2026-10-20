@@ -18,10 +18,10 @@ import io
 import verify_ci_test_inventory as inventory
 import generate_data_dictionary as dictionary
 
-REQUIRED_LANES = ('static-validation', 'unit-architecture', 'postgres-0', 'postgres-1', 'postgres-2', 'postgres-3', 'api-contract', 'oracle')
+REQUIRED_LANES = ('static-validation', 'unit-architecture', 'postgres-0', 'postgres-1', 'postgres-2', 'postgres-3', 'postgres-4', 'api-contract', 'oracle')
 REQUIRED_NEEDS = ('static-validation', 'unit-architecture', 'postgres-integration', 'api-contract', 'verify')
 REQUIRED_JOB_NAMES = ('Static validation', 'Java 21 unit and architecture', 'PostgreSQL integration shard 0',
-                      'PostgreSQL integration shard 1', 'PostgreSQL integration shard 2', 'PostgreSQL integration shard 3', 'API contract and dictionary',
+                      'PostgreSQL integration shard 1', 'PostgreSQL integration shard 2', 'PostgreSQL integration shard 3', 'PostgreSQL integration shard 4', 'API contract and dictionary',
                       'Java 21 Maven verification', 'Full Verification Gate')
 API_FILES = ('target/openapi/hidra-api.json', 'target/openapi/hidra-api-base.json',
              'target/openapi/base-provenance.txt', 'target/database/schema.json',
@@ -143,7 +143,7 @@ def aggregate(root, directory, sha, run, attempt, needs, mode='audit'):
             raise ValueError('Wrong selection helper revision')
         expected_job = {'oracle': 'verify', 'postgres-0': 'postgres-integration',
                         'postgres-1': 'postgres-integration', 'postgres-2': 'postgres-integration',
-                        'postgres-3': 'postgres-integration'}.get(lane, lane)
+                        'postgres-3': 'postgres-integration', 'postgres-4': 'postgres-integration'}.get(lane, lane)
         if evidence.get('job') != expected_job:
             raise ValueError('Missing owning job identity')
         verify_files(evidence, path.parent)

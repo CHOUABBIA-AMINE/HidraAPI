@@ -24,8 +24,10 @@ def fixture(root, postgres_shards=2):
     source(root, 'SecondDatabaseTest', 'import org.testcontainers.containers.PostgreSQLContainer;\nclass SecondDatabaseTest {}\n')
     if postgres_shards >= 3:
         source(root, 'ThirdDatabaseTest', 'import org.testcontainers.containers.PostgreSQLContainer;\nclass ThirdDatabaseTest {}\n')
-    if postgres_shards == 4:
+    if postgres_shards >= 4:
         source(root, 'FourthDatabaseTest', 'import org.testcontainers.containers.PostgreSQLContainer;\nclass FourthDatabaseTest {}\n')
+    if postgres_shards == 5:
+        source(root, 'FifthDatabaseTest', 'import org.testcontainers.containers.PostgreSQLContainer;\nclass FifthDatabaseTest {}\n')
     classes = []
     for name, item in ci.discover(root).items():
         unit = name.endswith('UnitTest')
@@ -126,8 +128,18 @@ class InventoryTest(unittest.TestCase):
         self.assertEqual(set(names + lanes['unit-architecture']), set(lanes['oracle']))
         self.assertTrue(all(lanes[lane] for lane in ci.postgres_lanes(manifest)))
 
+    def test_five_shards_cover_each_class_once(self):
+        manifest = fixture(self.root, postgres_shards=5)
+        ci.validate(self.root, manifest)
+        lanes = ci.partitions(manifest)
+        names = [name for lane in ci.postgres_lanes(manifest) for name in lanes[lane]]
+        self.assertEqual(len(names), 5)
+        self.assertEqual(len(set(names)), 5)
+        self.assertEqual(set(names + lanes['unit-architecture']), set(lanes['oracle']))
+        self.assertTrue(all(lanes[lane] for lane in ci.postgres_lanes(manifest)))
+
     def test_unreviewed_or_empty_shard_count_denies(self):
-        for count in (0, 1, 5, True, '3', 3, 4):
+        for count in (0, 1, 6, True, '3', 3, 4, 5):
             with self.subTest(count=count):
                 self.manifest['postgres_shards'] = count
                 with self.assertRaises(ValueError): ci.partitions(self.manifest)

@@ -192,6 +192,7 @@ jobs:
         - 1
         - 2
         - 3
+        - 4
   api-contract:
     name: API contract and dictionary
     runs-on: ubuntu-latest

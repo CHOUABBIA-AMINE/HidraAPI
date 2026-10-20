@@ -266,9 +266,9 @@ Legacy IDs: CI-003C
 
 Priority: P0
 
-Implementation Status: PARTIAL
+Implementation Status: VERIFIED
 
-Planning Status: IN_PROGRESS
+Planning Status: COMPLETED
 
 Owning Module: `platform` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -950,6 +950,116 @@ qualification; HAPI-436 does not close. HidraAPI remains development-only, with
 no release, tag or production deployment selected. Manual independent diagnostic
 when actually needed: audit plus `serial_oracle: true`; normal audits leave the
 checkbox unchecked and use the parallel sets.
+
+### 2026-10-20 — HAPI-045 representative matrix and completion
+
+Owner reported the optional-mode test passing and selected the next stage.
+Exact main `887b84c68479a0df01e0825b52f347ce798a7ed5` passed Full784,
+Fast106 and Documentation464. Reconcile existing representative application
+changes and actual raw executions; no application mutation or benchmark rerun is
+needed. HAPI-045 is VERIFIED / COMPLETED within this development CI scope.
+This does not complete HAPI-046 performance/cost/adoption or parent HAPI-436.
+
+**Current implementation acceptance:**
+[Full784](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39445933061),
+attempt1, authenticated artifact12277231545, ZIP SHA256
+`9dbf449cb416721bba8f403c0a000a774449d4f8ff9a9c860bbaeccf27b1c436`.
+Downloaded receipt/file hashes, source/run/attempt/classifier/inventory, all raw
+class/case/count/timing payloads, Java21 clean-verify lifecycle, actual current/
+base API and physical dictionary/catalog were verified. The complete disjoint
+union is430 classes/2606 cases with zero failures/errors/skips. All seven Java
+execution sets report successful dependency-cache restoration; this is actual
+warm-cache evidence. The optional serial job was intentionally skipped, as required
+for default development. The aggregate truthfully denies independent same-run
+comparison and release eligibility. The 93 hosted validator fixtures passed with
+all required static checks; no live CI fault-injection campaign is claimed.
+
+Full784 workflow interval was369s (6m09s); its slowest DB job was348s (5m48s).
+These are single-run observations, not a repeatable-performance acceptance claim.
+No weights, set counts, deadlines, forks or retries change in this stage.
+
+**Representative revision recovered from actual GitHub history:**
+[accepted pre-feature to protected survey authoring](https://github.com/CHOUABBIA-AMINE/HidraAPI/compare/b49fbeadea2319f7349540aa5ac08d3d3afdebe4...067929306170ad69b453823a90bb7beeb6b8130d).
+This naturally authorized HAPI-589 feature changed15 runtime/configuration paths,
+including protected authorization/transaction code, an additive Flyway migration
+and GET/PUT API operations. Earlier notes left this matrix pending because only
+cumulative run results had been listed. The reconciliation below now binds the
+actual source delta, new methods, exact source hashes and raw invocation identities.
+One cohesive feature supplies all three required change categories; it is not
+three invented application changes or an exemption from representative coverage.
+
+GitHub's complete source comparison from feature source0679293 through current
+887b84c contains9 commits and11 changed paths, with no src/ or POM changes. The
+representative runtime/test blobs match current main. This permits those exact
+feature identities to be traced through the baseline and the later five-set runs;
+it does not assume that an unrelated green cumulative run proves a task.
+
+| Exact representative suite (package root dz.sh.hidra) | Executed cases | Added cases | Matched scope |
+|---|---:|---:|---|
+| modules.topology.SurveyRouteProfileBoundaryGuardrailTest | 3 | 3 | Owner/transport boundaries; exactly two registered operations |
+| modules.topology.api.rest.SurveyRouteProfileControllerTest | 5 | 5 | Strict DTOs, unknown/coerced fields, versions and non-disclosing errors |
+| modules.topology.application.service.SurveyRouteProfileApplicationServiceTest | 4 | 4 | Typed command, native owner, rollback and no uncertain-write retry |
+| modules.topology.infrastructure.persistence.EngineeringNetworkDraftPostgresIntegrationTest | 39 | 12 | Actual migrated database, negative references/privileges, rollback, history and concurrent writers |
+| modules.topology.infrastructure.persistence.adapter.SurveyRouteProfileCodecTest | 5 | 5 | Canonical bytes, malformed/truncated/noncanonical payload rejection |
+| platform.permissions.HidraRouteAuthorizationInterceptorTest | 8 | 1 | Exact authenticated native survey controller/method delegation |
+| platform.persistence.ProtectedTransactionExecutorTest | 37 | 1 | Diagnostic admission cannot mint a survey mutation permit; rollback |
+| Distinct suite total | 101 | 31 | Actual feature-source changes and unchanged current identities |
+
+All101 exact invocation identities, including31 methods added by the real GitHub
+diff, were independently matched in raw XML for Full777, Full781, Full783 and
+Full784. In Full777/781/783 the full partition union equals the separate unrestricted
+oracle; Full781 is the warm five-set audit and Full783 the instrumented cold
+five-set audit. Full784 is the accepted optional-mode/default execution, correctly
+without an oracle. These are executions of the same unchanged representative
+feature source across CI arrangements, not a claim that new application revisions
+were introduced after every CI change.
+
+**Migration and API evidence:** the actual added migration is
+`src/main/resources/db/migration/V20261020_001__p25_topology_survey_profile_snapshots.sql`,
+Git blob `929934e6add72be201b12d0a831e9660c88b0e7c`. It creates
+`public.hidra_topology_engineering_survey_snapshot`, owned graph/metadata references,
+digest/transaction constraints and the guarded same-transaction trigger.
+The 12 added PostgreSQL cases include
+`surveyDatabaseRejectsWrongTransactionDigestAndGraphBinding`,
+`surveyCatalogAndPrivilegeTamperingRejects`,
+`expiredSurveyGuardRollsBackBothRows`, historical exact reads and concurrent
+successor/facility-fence checks. Actual Flyway validation and current catalog/
+reviewed dictionary equality passed; a Docker skip is not counted as proof.
+
+The actual generated current API contains GET and PUT at
+`/api/v1/topology/engineering-networks/{draftId}/survey/{branchId}`; the changed
+controller/DTO snapshot and five transport cases are matched above. Same-run
+current/base compatibility and physical catalog equality in the warm/cold audits
+remain accepted. Physical source bundle SHA256 is unchanged:
+`be0f97cd7280aa97c0e84de040a632fbf494518e705fa10b358f793d136b9221`.
+No production-data upgrade, deployment or engineering calibration claim follows.
+
+**Acceptance disposition:**
+
+- Representative code/security, migration and API changes: source-and-case matrix above, independently matched against baseline/warm/cold/current raw evidence.
+- Warm/cold equality: Full781 and Full783 independent comparisons; Full784 records successful warm dependency restoration for every active Java lane. Cold is Maven dependency-repository state, not all machine caches.
+- Missing/failed/skipped/overlapping/stale/cancelled/wrong-attempt/cache-policy evidence: required helper checks and 93 fixtures remain; parallel-only evidence cannot claim oracle/release proof.
+- Explicit owner development adoption: five complete parallel sets, optional serial diagnostic, retained historical tests and truthful release restrictions remain as approved; no extra exclusions.
+- Applicable exact-source Full/Fast/Docs: passed on887b84c; this stage is documentation-only.
+
+**Exact stage scope:** only this owning HPS-024 record and the HAPI-045 status
+cells in ULTIMATE_ROADMAP.md and ULTIMATE_PHASES.md. Set HAPI-045 to VERIFIED /
+COMPLETED in all three; preserve every other task/status and immutable historical
+payload. No runtime/workflow/helper/inventory/dictionary/API/SQL/version change.
+The raw-artifact verification and representative101-case/31-added-method matrix
+checks passed;17 documentation-validator fixtures and targeted status/anchor/
+payload checks passed locally. Full canonical repository validation is left to
+hosted Documentation CI because the local checkout is partial. Retain registered
+message `ci: automate fast feedback and preserve full verification gates`.
+
+**Next:** HAPI-046 owns the separate comparable timing, runner cost and independent
+adoption/closure decision. Its prerequisite HAPI-045 is now satisfied; its existing
+status is not automatically promoted or its acceptance waived here. HAPI-436
+remains open. Use previous naturally completed runs and account for configuration/
+source/cache differences; do not create unchanged benchmark repeats to fill a
+sample quota. HidraAPI remains development-only. No production deployment, release,
+tag or unrelated task is selected. Observe Documentation CI queued/started, then
+stop per AGENTS.md §11.1.
 
 <a id="hapi-046"></a>
 ## HAPI-046 — Timing, runner cost and adoption decision

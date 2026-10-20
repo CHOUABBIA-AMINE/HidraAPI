@@ -724,6 +724,82 @@ Retain registered commit message `ci: automate fast feedback and preserve full
 verification gates`. Confirm documentation CI queued/started after publication,
 then stop per AGENTS.md §11.1.
 
+### 2026-10-20 — Full781 independent five-set oracle acceptance
+
+Owner selected the next HAPI-045 stage after manually dispatching the audit.
+Main `96af69e5c02ac246becbc608cb9443428a3f115a` has successful Documentation461
+and [Full781 audit](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39435132363),
+attempt1, event workflow_dispatch. Every required audit job succeeded, including
+the independent Java21 Maven verification. No retry or rerun was requested here.
+
+Authenticated aggregate artifact 12272213168 has ZIP SHA256
+`b88c3b3004570477d79f683fbbfab0512314fc3d591f31686139e768f11dd5ea`.
+The downloaded archive and all nine receipt/file hashes were checked against the
+exact source/run/attempt/inventory/classifier. The actual job list is the expected
+five DB jobs, unit/architecture, static, API/dictionary, oracle and full gate, all
+successful. Report payloads were recomputed from the hashed raw XML. Required
+Java21 clean-verify lifecycle/POM/package identity, owning job identity and static
+workflow/check identity agree.
+
+**Accepted independent equivalence:** the disjoint unit plus five DB sets and the
+separate unrestricted oracle each cover exactly 430 classes and 2606 cases.
+Both executions have zero failures/errors/skipped cases. This means 2606 unique
+required cases executed independently in both arrangements, not 5212 distinct
+cases. No omitted or overlapping class/case is accepted. Current/base OpenAPI,
+historical base identity, physical catalog, source bundle and PostgreSQL version
+match between the API lane and oracle via `api_facts`; reviewed dictionary equality
+also passed. Aggregate `same_run_equivalence: true` is now backed by this run.
+`release_eligible: true` describes full-CI evidence only, not release authorization,
+production deployment readiness or CI-003 performance adoption; the aggregate
+still sets `optimized_adoption_eligible: false`.
+
+Matched API SHA256:
+`4313e274aeb067b22992d75f623b11c4f77bc725e8a7895c817884da32629e21`.
+Matched physical catalog SHA256:
+`d8ef5265ef60620860627ae62ef5977daa5acbfb50581f1a0af1f1247e630032`.
+Source bundle SHA256 remains
+`be0f97cd7280aa97c0e84de040a632fbf494518e705fa10b358f793d136b9221`;
+base is `5a923ce0a91898d9ea17e0e97fa9f4f87d80faa1`.
+
+**Timing and cache limits:** DB jobs0..4 took 234/313/312/325/298s; unit 185s,
+static 27s, API/dictionary 150s, oracle 1271s and gate 13s. The 21m11s oracle job
+is intentionally confined to explicit audit mode; it does not replace the
+accepted development Full780 result of 5m48s. Do not count full audit workflow
+elapsed time as a default-development timing sample. No weights or scheduling
+changes follow from this audit. The five-set configuration is retained.
+
+Authenticated unit job118670054802 and DB3 job118670054519 logs both explicitly
+report a Maven dependency-cache primary-key hit and successful restoration of
+about119MB. This establishes warm dependency cache for those jobs only. It does
+not prove that all jobs were warm, that Spring/container state was shared or that
+a cold-cache run occurred. The test databases remain freshly migrated and isolated.
+No production data or calibration input is needed for this software qualification.
+
+| HAPI-045 obligation | Current disposition |
+|---|---|
+| Five-set development implementation and exact coverage | Accepted Full780 |
+| Independent same-run class/case/API/catalog equivalence | Accepted Full781 |
+| Negative omitted/failed/skipped/overlap/stale/attempt/dependency/release checks | Existing 79 local fixtures and successful hosted static validator run; no live fault injection claimed |
+| Warm dependency-cache evidence | Matched unit and DB3 logs only |
+| Cold-cache equivalence | Not established |
+| Representative code/security, migration and API revision qualification | Remaining source-specific matrix; current audit source follows CI/docs changes, not a new representative application revision |
+| Repeatable performance/cost adoption | HAPI-046, not completed by one development and one audit run |
+
+**Bounded stage:** only this owning task file changes. No runtime, workflow,
+classifier, test, inventory, migration, API, dictionary, version, release or tag
+changes. Artifact verification passed;17 documentation-validator fixtures and
+preserved task/status/anchor/payload checks passed locally. No new Java/service
+test execution is claimed for this documentation-only stage.
+
+**Disposition:** HAPI-045 remains PARTIAL / IN_PROGRESS, with independent audit
+acceptance now recorded rather than pending manual dispatch. Remaining work is
+cold-cache and representative-revision qualification using explicit or naturally
+authorized evidence, not repeated unchanged development benchmarks. HAPI-046 and
+HAPI-436 remain open. HidraAPI remains development-only with no production
+API/database deployment. No release, tag, deployment or unrelated task is selected.
+Retain exact registered message `ci: automate fast feedback and preserve full
+verification gates`; observe documentation CI queued/started and stop.
+
 <a id="hapi-046"></a>
 ## HAPI-046 — Timing, runner cost and adoption decision
 

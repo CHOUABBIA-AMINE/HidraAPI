@@ -656,6 +656,74 @@ Retain exact registered message `ci: automate fast feedback and preserve full
 verification gates`. Publish only this bounded stage, confirm exact-SHA workflows
 queued/started and stop per AGENTS.md §11.1. No release, tag or deployment follows.
 
+### 2026-10-20 — Full780 five-set development acceptance
+
+Owner selected the next HAPI-045 stage. Main
+`5a923ce0a91898d9ea17e0e97fa9f4f87d80faa1` passed Full780, Fast104 and
+Documentation460. Accept the five-set implementation within its development
+scope; retain five sets and current scheduling weights. No additional tuning or
+unchanged benchmark rerun is justified by this successful result.
+
+[Full780](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39433631502)
+started at 13:48:41Z and completed with workflow update at 13:54:29Z, an observed
+workflow interval of 348s (5m48s). Job wall seconds: PostgreSQL0 268, PostgreSQL1
+313, PostgreSQL2 330, PostgreSQL3 307, PostgreSQL4 293; unit/architecture 97,
+static 20, API/dictionary 183 and gate 10. The unrestricted audit oracle was
+intentionally skipped under the development policy; GitHub's skipped-job timestamps
+are not meaningful runtime and are excluded from runner sums.
+
+| Naturally completed configuration | Slowest DB job | Sum of executed job wall time |
+|---|---:|---:|
+| Full778, three DB sets | 7m52s | 25m09s |
+| Full779, four DB sets | 6m13s | 26m47s |
+| Full780, five DB sets | 5m30s | 30m21s |
+
+Five's slowest DB job is 43s shorter than four's in these samples, while summed
+job time is 214s higher. These are observations from individual runs with different
+scheduling weights/runner/context/cache conditions; they do not isolate causality,
+prove a stable speedup or represent GitHub billed minutes. The owner prefers five
+for shorter elapsed feedback. Full780 is below the seven-minute elapsed target;
+one sample does not satisfy HAPI-046's five-comparable-sample or cold/warm rules.
+
+Authenticated aggregate artifact 12268913382, ZIP SHA256
+`860f96dabc1f8f8e5adfb0ea691a792a33d4cb973f2ab34fedff77810f7822d1`,
+was downloaded and checked. Its eight receipts and hashed files match the exact
+SHA/run39433631502/attempt1/classifier/inventory. Raw report membership, invocation
+identities, counts/timings and Java21 clean-verify lifecycle agree. The complete
+disjoint union is 430 classes and 2606 cases, with zero failed, errored or skipped
+cases. DB cases by set are 163/145/126/225/230 (889 total); unit/architecture has
+1717 cases. No tests were deleted or newly archived. Development evidence correctly
+sets same-run equivalence and release eligibility false.
+
+Actual current/base OpenAPI and migrated physical PostgreSQL16 dictionary evidence
+passed `api_facts` against the unchanged source bundle and reviewed dictionary.
+The catalog is captured from a fresh migrated database, not a reused pre-green
+schema. This does not prove production-data upgrade or certify deployment.
+HidraAPI remains a development API without production deployment/data.
+
+**This stage writes only this owning task record.** No executable/configuration,
+source, test inventory, weight, migration, API or dictionary changes. Artifact
+verification and 17 documentation-validator fixtures passed locally; existing
+payload boundaries/anchors and all HAPI task/status fields are preserved. Hosted
+Full780 supplies Java21/PostgreSQL evidence for the implementation SHA. No new
+Java/service execution is claimed for this documentation-only stage.
+
+**Remaining qualification:** HAPI-045 stays PARTIAL / IN_PROGRESS because
+representative code/security, migration/API audit equivalence and cold/warm proof
+are not all established for the new arrangement. The next distinct verification
+is `.github/workflows/ci.yml` via `workflow_dispatch` on main with
+`verification_mode: audit`; this runs the independent oracle plus all five sets
+and checks same-run equivalence. It is an equivalence exercise, not a repeat of
+unchanged development timing. The connected GitHub tools expose no workflow-
+dispatch action, so this record does not claim that audit was launched. A manual
+operator run remains available at the workflow Actions page. No production
+calibration input is needed for this software qualification. HAPI-046/HAPI-436
+remain open; no release, tag or deployment is selected.
+
+Retain registered commit message `ci: automate fast feedback and preserve full
+verification gates`. Confirm documentation CI queued/started after publication,
+then stop per AGENTS.md §11.1.
+
 <a id="hapi-046"></a>
 ## HAPI-046 — Timing, runner cost and adoption decision
 

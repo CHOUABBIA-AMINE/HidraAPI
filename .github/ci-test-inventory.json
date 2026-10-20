@@ -6728,6 +6728,25 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "neverInfersPhysicalOrOperationalQualification",
+        "preservesHeadTransitionsAndEpochMonotonicity",
+        "preservesIncompleteEngineeringDiagnostics",
+        "rejectsConflictingReplayAndOverflow",
+        "rejectsInvalidScopeVersionEpochAndIdentity",
+        "rejectsMismatchedComponentReferences"
+      ],
+      "class": "dz.sh.hidra.modules.topology.domain.model.EngineeringRevisionPublicationTest",
+      "dependency_reason": "HAPI-590 Package A pure Java publication contract/codecs; hosted Java21 execution pending; zero is an unmeasured timing placeholder",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/domain/model/EngineeringRevisionPublicationTest.java",
+      "source_sha256": "a144a0edb94f1ec3cb1b816fb30ddeda565e93e83f2b5d79440cd66dce77c7d0",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0.007,
       "cases": [
         "preservesWithdrawnHistoryAndMonotonicEpoch",
@@ -7191,6 +7210,42 @@
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/EngineeringGraphDraftCodecTest.java",
       "source_sha256": "c7d9c21a6f2d91b33c7237abfae7b192201f2743f515d59d6dc54d0cf563c27d",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "preservesAbsentGraphAndSurveyDiagnostics",
+        "preservesOldSourceFormatsWithoutReinterpretation",
+        "rejectsComponentDigestOrContextSubstitution",
+        "rejectsTruncatedTrailingAndOversizedPayload",
+        "rejectsUnknownFormatAndNoncanonicalPayload",
+        "roundTripsCanonicalSourceBytesAndDecimalScales"
+      ],
+      "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.EngineeringRevisionPublicationCodecTest",
+      "dependency_reason": "HAPI-590 Package A pure Java publication contract/codecs; hosted Java21 execution pending; zero is an unmeasured timing placeholder",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/EngineeringRevisionPublicationCodecTest.java",
+      "source_sha256": "761823940b956bdfd42d9b050475b96f2d2a227fa601a0056e49bc333ee34000",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "preservesStrictDescendingEpochBoundary",
+        "rejectsCrossContextFilterAndAsOfSubstitution",
+        "rejectsMalformedOversizedAndNoncanonicalCursor",
+        "roundTripsContextBoundHighWaterCursor"
+      ],
+      "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.EngineeringRevisionPublicationCursorCodecTest",
+      "dependency_reason": "HAPI-590 Package A pure Java publication contract/codecs; hosted Java21 execution pending; zero is an unmeasured timing placeholder",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/EngineeringRevisionPublicationCursorCodecTest.java",
+      "source_sha256": "1e47b60a7a7ac4cf423debd5dd8ba0b528bcc50978dc7556ececd4d92a8287a6",
       "supports": []
     },
     {

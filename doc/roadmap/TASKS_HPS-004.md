@@ -6416,7 +6416,7 @@ Legacy IDs: HPR-P25-052D
 
 Priority: P1
 
-Implementation Status: NOT_IMPLEMENTED
+Implementation Status: PARTIAL
 
 Planning Status: REGISTERED_PENDING
 
@@ -7188,6 +7188,85 @@ hosted Docs supplies executable validation. Publish only the current four
 governance files with expected-head guard and verified parent/tree/blobs/message,
 confirm exact-SHA Docs creation/startup and stop. The next single stage is
 Package A after Docs success, not B/C or another optional design loop.
+
+### 2026-10-20 — HAPI-590 Package A snapshot contract and canonical codecs
+
+**Selected implementation stage:** `feat(topology): define governed publication snapshot contract`.
+Registration head `3690f57650118b267d172cb4eca9c9b481764ce3` passed
+[Documentation469](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39464626002).
+The owner's Next selects registered Package A only. HAPI-590 is now
+PARTIAL / REGISTERED_PENDING; earlier NOT_IMPLEMENTED statements remain
+dated history. HAPI-567/588/589 and accepted HAPI-046 timing are unchanged.
+
+**Implemented source:** immutable original component format/version/SHA256/
+canonical Base64, exact shared metadata version, optional as-of graph and ordered
+per-PIPE survey selections with graph version/digest linkage. Absent or stale
+survey selections retain explicit diagnostics; they cannot attach incompatible
+source bytes. Qualification is always false and the physical-qualification
+diagnostic is mandatory. Metadata missing-title/evidence and graph diagnostics
+are retained by codec validation; supplied survey values, decimal scales and
+diagnostic order remain unchanged. Snapshot and response collections are copied.
+
+Pure ledger types validate predecessor/epoch/state transitions, backward sampled
+time, microsecond precision, actor-scoped immutable replay outcomes, conflicting
+replay and epoch overflow. These are proposals and retained evidence, not
+authority or proof of an actual transaction. Eight mutually exclusive typed
+commands and safe typed failure reasons are defined. The repository's opaque
+Admission and immutable Observation live in its public port and reference no
+future B class; observations are provenance, never scalar permits.
+
+The new HIDRA_ENGINEERING_PUBLICATION_V1 envelope validates existing metadata,
+graph and survey codec formats and original canonical bytes. Encoding is bounded
+to32MiB, including envelope overhead; decoding rejects unknown formats,
+inconsistent source digests/references, malformed lengths/UTF-8/markers,
+truncation, trailing bytes and noncanonical roundtrips. History cursors use
+bounded canonical unpadded URL Base64, exact context/company/network/asOf,
+captured high-water epoch and strict descending before-epoch. Cursors are
+untrusted query data, without a signing-secret or authorization claim; actual
+ledger-boundary validation remains B's obligation.
+
+**Exact scope:** CREATE registered A1..9, MODIFY inventory and this phase record
+plus only HAPI-590's implementation cells in ROADMAP/PHASES. No deletion,
+migration, Identity permission, controller, protected service/coordinator,
+storage adapter, generated API/catalog or workflow change is included.
+There is no runtime publication path in A.
+
+**Actual new test identities (three classes, sixteen methods):**
+
+- dz.sh.hidra.modules.topology.domain.model.EngineeringRevisionPublicationTest (6):
+  - `neverInfersPhysicalOrOperationalQualification`
+  - `preservesHeadTransitionsAndEpochMonotonicity`
+  - `preservesIncompleteEngineeringDiagnostics`
+  - `rejectsConflictingReplayAndOverflow`
+  - `rejectsInvalidScopeVersionEpochAndIdentity`
+  - `rejectsMismatchedComponentReferences`
+- dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.EngineeringRevisionPublicationCodecTest (6):
+  - `preservesAbsentGraphAndSurveyDiagnostics`
+  - `preservesOldSourceFormatsWithoutReinterpretation`
+  - `rejectsComponentDigestOrContextSubstitution`
+  - `rejectsTruncatedTrailingAndOversizedPayload`
+  - `rejectsUnknownFormatAndNoncanonicalPayload`
+  - `roundTripsCanonicalSourceBytesAndDecimalScales`
+- dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.EngineeringRevisionPublicationCursorCodecTest (4):
+  - `preservesStrictDescendingEpochBoundary`
+  - `rejectsCrossContextFilterAndAsOfSubstitution`
+  - `rejectsMalformedOversizedAndNoncanonicalCursor`
+  - `roundTripsContextBoundHighWaterCursor`
+
+Inventory contains their exact source SHA256 pins and unmeasured zero timing
+weights. Existing cases, measured times, provenance, five database sets,
+fresh-schema policy and mandatory fallback are preserved.
+
+**Validation and stop:** in-memory source/header/path/case-identity, immutable
+collection, codec bounds/dispatch, registry-delta and inventory-preservation
+checks completed. SHA256 pin implementation was checked against the standard
+abc digest. Local command execution returned "No usable execution environment
+is available"; Java parsing/compilation, Maven and PostgreSQL tests were not
+executed locally and are not claimed passing. Hosted Full/Fast/Docs must execute
+the actual sources. Publish under expected-registration-head guard, verify
+parent/tree/message/raw blobs and the exact13-file scope, confirm same-SHA
+applicable workflows created/queued/started, then STOP. Review real A feedback
+before selecting Package B; A does not establish full HAPI-590 acceptance.
 
 <a id="hapi-592"></a>
 ## HAPI-592 — Topology operator/API/history qualification

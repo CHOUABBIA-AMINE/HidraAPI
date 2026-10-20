@@ -41,13 +41,18 @@ public class EngineeringNetworkDraftController {
     private final EngineeringNetworkDraftUseCase useCase;
     private final EngineeringGraphDraftUseCase graphUseCase;
 
+    private final dz.sh.hidra.modules.topology.application.port.in.SurveyRouteProfileUseCase surveyUseCase;
     @Autowired
-    public EngineeringNetworkDraftController(EngineeringNetworkDraftUseCase u, EngineeringGraphDraftUseCase g) {
-        useCase=Objects.requireNonNull(u); graphUseCase=Objects.requireNonNull(g);
+    public EngineeringNetworkDraftController(EngineeringNetworkDraftUseCase u, EngineeringGraphDraftUseCase g,
+            dz.sh.hidra.modules.topology.application.port.in.SurveyRouteProfileUseCase surveys) {
+        useCase=Objects.requireNonNull(u); graphUseCase=Objects.requireNonNull(g);surveyUseCase=Objects.requireNonNull(surveys);
+    }
+    public EngineeringNetworkDraftController(EngineeringNetworkDraftUseCase u,EngineeringGraphDraftUseCase g){
+        useCase=Objects.requireNonNull(u);graphUseCase=Objects.requireNonNull(g);surveyUseCase=null;
     }
     /** Retained only for existing standalone metadata tests; graph endpoints must fail closed. */
     public EngineeringNetworkDraftController(EngineeringNetworkDraftUseCase u) {
-        useCase=Objects.requireNonNull(u); graphUseCase=null;
+        useCase=Objects.requireNonNull(u); graphUseCase=null;surveyUseCase=null;
     }
     @Operation(operationId="createEngineeringNetworkDraft",summary="Create or replay a company-scoped engineering draft")
     @PostMapping public ResponseEntity<Draft> create(@RequestBody Create body){
@@ -107,5 +112,50 @@ public class EngineeringNetworkDraftController {
                 dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.Reason.UNAVAILABLE);
         return EngineeringGraphDraftResponses.Graph.from(graphUseCase.executeGraph(new EngineeringGraphDraftUseCase.Command(
                 EngineeringGraphDraftUseCase.Kind.READ,company,network,EngineeringNetworkDraft.uuid(id),null,version,null)));
+    }
+
+    private static dz.sh.hidra.modules.topology.domain.model.SurveyRouteProfile surveyFrom(
+            dz.sh.hidra.modules.topology.api.rest.request.SurveyRouteProfileRequests.Profile p){
+        if(p==null || p.horizontalCrs()==null || p.horizontalCrs().axes()==null || p.points()==null || p.sections()==null)throw new IllegalArgumentException("Survey profile required");
+        var c=p.horizontalCrs();var v=p.verticalReference();
+        return new dz.sh.hidra.modules.topology.domain.model.SurveyRouteProfile(p.branchId(),
+            new dz.sh.hidra.modules.topology.domain.model.SurveyRouteProfile.Crs(c.authority(),c.code(),c.axes().stream().map(a->new dz.sh.hidra.modules.topology.domain.model.SurveyRouteProfile.Axis(a.name(),a.unitIdentifier())).toList()),
+            v==null?null:new dz.sh.hidra.modules.topology.domain.model.SurveyRouteProfile.VerticalReference(v.datumAuthority(),v.datumCode(),v.unitIdentifier()),
+            p.chainageOriginReference(),dz.sh.hidra.modules.topology.domain.model.SurveyRouteProfile.Direction.valueOf(p.direction()),p.evidenceReference(),
+            p.points().stream().map(a->new dz.sh.hidra.modules.topology.domain.model.SurveyRouteProfile.Point(a.id(),dec(a.firstCoordinate()),dec(a.secondCoordinate()),dec(a.chainageMetres()),a.elevation()==null?null:dec(a.elevation()),dec(a.coordinatePrecision()),dec(a.chainagePrecisionMetres()),a.elevationPrecision()==null?null:dec(a.elevationPrecision()))).toList(),
+            p.sections().stream().map(a->new dz.sh.hidra.modules.topology.domain.model.SurveyRouteProfile.Section(a.id(),dec(a.startChainageMetres()),dec(a.endChainageMetres()),a.evidenceReference())).toList());
+    }
+    private static java.math.BigDecimal dec(String s){return dz.sh.hidra.modules.topology.api.rest.request.SurveyRouteProfileRequests.decimal(s);}
+    private static String decimal(java.math.BigDecimal d){return d==null?null:d.toString();}
+    private static dz.sh.hidra.modules.topology.api.rest.response.SurveyRouteProfileResponses.Survey surveyResponse(
+            dz.sh.hidra.modules.topology.application.port.in.SurveyRouteProfileUseCase.Result r){
+        dz.sh.hidra.modules.topology.api.rest.response.SurveyRouteProfileResponses.Profile profile=null;
+        if(r.profile()!=null){var p=r.profile();var c=p.horizontalCrs();var v=p.verticalReference();
+            profile=new dz.sh.hidra.modules.topology.api.rest.response.SurveyRouteProfileResponses.Profile(p.branchId(),
+                new dz.sh.hidra.modules.topology.api.rest.response.SurveyRouteProfileResponses.Crs(c.authority(),c.code(),c.axes().stream().map(a->new dz.sh.hidra.modules.topology.api.rest.response.SurveyRouteProfileResponses.Axis(a.name(),a.unitIdentifier())).toList()),
+                v==null?null:new dz.sh.hidra.modules.topology.api.rest.response.SurveyRouteProfileResponses.VerticalReference(v.datumAuthority(),v.datumCode(),v.unitIdentifier()),p.chainageOriginReference(),p.direction().name(),p.evidenceReference(),
+                p.points().stream().map(a->new dz.sh.hidra.modules.topology.api.rest.response.SurveyRouteProfileResponses.Point(a.id(),decimal(a.firstCoordinate()),decimal(a.secondCoordinate()),decimal(a.chainageMetres()),decimal(a.elevation()),decimal(a.coordinatePrecision()),decimal(a.chainagePrecisionMetres()),decimal(a.elevationPrecision()))).toList(),
+                p.sections().stream().map(a->new dz.sh.hidra.modules.topology.api.rest.response.SurveyRouteProfileResponses.Section(a.id(),decimal(a.startChainageMetres()),decimal(a.endChainageMetres()),a.evidenceReference())).toList());
+        }
+        return new dz.sh.hidra.modules.topology.api.rest.response.SurveyRouteProfileResponses.Survey(r.draftId(),r.branchId(),r.version(),r.surveyVersion(),r.surveySha256(),r.boundGraphVersion(),r.boundGraphSha256(),profile,"DRAFT",false,r.diagnostics());
+    }
+    private void requireSurvey(){if(surveyUseCase==null)throw new dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.Reason.UNAVAILABLE);}
+    @Operation(operationId="readEngineeringNetworkDraftSurvey",summary="Read an authorized current or as-of draft branch survey")
+    @GetMapping("/{draftId}/survey/{branchId}")
+    public dz.sh.hidra.modules.topology.api.rest.response.SurveyRouteProfileResponses.Survey readSurvey(
+            @PathVariable("draftId") String id,@PathVariable("branchId") String branch,
+            @RequestParam("companyPartyId") String company,@RequestParam("pipelineSystemId") String network,
+            @RequestParam(value="version",required=false) Long version){
+        requireSurvey();return surveyResponse(surveyUseCase.executeSurvey(new dz.sh.hidra.modules.topology.application.port.in.SurveyRouteProfileUseCase.Command(
+            dz.sh.hidra.modules.topology.application.port.in.SurveyRouteProfileUseCase.Kind.READ,company,network,EngineeringNetworkDraft.uuid(id),branch,null,version,null)));
+    }
+    @Operation(operationId="updateEngineeringNetworkDraftSurvey",summary="Append a survey at the next shared draft version")
+    @PutMapping("/{draftId}/survey/{branchId}")
+    public dz.sh.hidra.modules.topology.api.rest.response.SurveyRouteProfileResponses.Survey updateSurvey(
+            @PathVariable("draftId") String id,@PathVariable("branchId") String branch,
+            @RequestParam("companyPartyId") String company,@RequestParam("pipelineSystemId") String network,
+            @RequestBody dz.sh.hidra.modules.topology.api.rest.request.SurveyRouteProfileRequests.Update body){
+        requireSurvey();return surveyResponse(surveyUseCase.executeSurvey(new dz.sh.hidra.modules.topology.application.port.in.SurveyRouteProfileUseCase.Command(
+            dz.sh.hidra.modules.topology.application.port.in.SurveyRouteProfileUseCase.Kind.UPDATE,company,network,EngineeringNetworkDraft.uuid(id),branch,body.expectedVersion(),null,surveyFrom(body.profile()))));
     }
 }

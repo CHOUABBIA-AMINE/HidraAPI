@@ -1,5 +1,24 @@
-/** HAPI-588B candidate — reviewed metadata admission retained, graph paths bind native READ/UPDATE. */
+/**
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : ProtectedEngineeringDraftAdmissionCoordinator
+ * @CreatedOn   : 2025-06-26
+ * @UpdatedOn   : 2026-10-20
+ *
+ * @Type        : Class
+ * @Layer       : Application
+ * @Module      : topology
+ * @Package     : dz.sh.hidra.modules.topology.application.service
+ *
+ * @Description : Coordinates native draft authorization and exact provisional statements.
+ *
+ */
 package dz.sh.hidra.modules.topology.application.service;
+
 
 import dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedEngineeringDraftAuthorizationContract;
 import dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedEngineeringDraftAuthorizationContract.*;
@@ -30,12 +49,13 @@ public class ProtectedEngineeringDraftAdmissionCoordinator {
 
     private static Action authorityAction(Kind kind){
         return switch(Objects.requireNonNull(kind)){
-            case GRAPH_READ -> Action.READ;
-            case GRAPH_UPDATE -> Action.UPDATE;
+            case GRAPH_READ, SURVEY_READ -> Action.READ;
+            case GRAPH_UPDATE, SURVEY_UPDATE -> Action.UPDATE;
             default -> Action.valueOf(kind.name());
         };
     }
-    private static boolean graph(Kind kind){return kind==Kind.GRAPH_READ || kind==Kind.GRAPH_UPDATE;}
+    private static boolean survey(Kind kind){return kind==Kind.SURVEY_READ || kind==Kind.SURVEY_UPDATE;}
+    private static boolean graph(Kind kind){return kind==Kind.GRAPH_READ || kind==Kind.GRAPH_UPDATE || survey(kind);}
 
     @Transactional(propagation=Propagation.MANDATORY)
     public Admission acquire(Prepared p,Command cmd){
@@ -49,8 +69,8 @@ public class ProtectedEngineeringDraftAdmissionCoordinator {
             var r=repository.acquire(cmd);
             var fences=new ArrayList<ProtectedRelationFence>();
             var fi=identity.finalFences(i);var fp=party.finalFences(o);var fr=repository.finalFences(r);
-            int topologyCount=graph(cmd.kind())?8:5;
-            int total=graph(cmd.kind())?34:31;
+            int topologyCount=survey(cmd.kind())?9:graph(cmd.kind())?8:5;
+            int total=survey(cmd.kind())?35:graph(cmd.kind())?34:31;
             if(fi.size()!=24 || fp.size()!=2 || fr.size()!=topologyCount)throw invalid();
             fences.addAll(fi);fences.addAll(fp);fences.addAll(fr);
             if(fences.stream().map(ProtectedRelationFence::relation).distinct().count()!=total)throw invalid();
@@ -81,6 +101,7 @@ public class ProtectedEngineeringDraftAdmissionCoordinator {
     private static final Set<String> GRAPH_DML_HASHES=Set.of(
         "ea65144cc041c124b9021fecc0670a6c647992c31f6c05881c472a015dd89035", // metadata version
         "b5213967046ec2eb90655dd7169405377db35603cc81103a8607b147628298e2"); // graph snapshot
+    private static final Set<String> SURVEY_DML_HASHES=Set.of("ea65144cc041c124b9021fecc0670a6c647992c31f6c05881c472a015dd89035","8598cd80072021556e73a03078f80cea5018df673bcf5e3d7fd2c95720ef9999");
     private static String digest(String sql){try{return HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256")
         .digest(sql.getBytes(java.nio.charset.StandardCharsets.UTF_8)));}catch(java.security.NoSuchAlgorithmException e){throw new IllegalStateException(e);}}
     private static boolean compiled(){return StackWalker.getInstance().walk(f->f.anyMatch(x->x.getClassName().equals(
@@ -88,10 +109,10 @@ public class ProtectedEngineeringDraftAdmissionCoordinator {
     @Transactional(propagation=Propagation.MANDATORY)
     public void beginProvisional(Admission a,Set<String> sql){try {
         requireCurrent(a);
-        boolean graphWrite=a.kind==Kind.GRAPH_UPDATE;
+        boolean graphWrite=a.kind==Kind.GRAPH_UPDATE || a.kind==Kind.SURVEY_UPDATE;
         if(!compiled() || !Set.of(Action.CREATE,Action.UPDATE).contains(a.request.action()) || sql==null
             || sql.size()!=(graphWrite?2:3) || !sql.stream().map(ProtectedEngineeringDraftAdmissionCoordinator::digest)
-                .collect(java.util.stream.Collectors.toUnmodifiableSet()).equals(graphWrite?GRAPH_DML_HASHES:DRAFT_DML_HASHES))
+                .collect(java.util.stream.Collectors.toUnmodifiableSet()).equals(a.kind==Kind.SURVEY_UPDATE?SURVEY_DML_HASHES:graphWrite?GRAPH_DML_HASHES:DRAFT_DML_HASHES))
             throw invalid();
         executor.beginProvisional(a.permit,sql);
     }catch(RuntimeException e){executor.rejectAdmission();throw e;}}

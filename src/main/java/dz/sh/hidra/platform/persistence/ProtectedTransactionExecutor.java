@@ -229,7 +229,8 @@ public final class ProtectedTransactionExecutor {
                     ? (sql.startsWith("INSERT INTO public.hidra_topology_engineering_context ")
                         || sql.startsWith("INSERT INTO public.hidra_topology_engineering_draft ")
                         || sql.startsWith("INSERT INTO public.hidra_topology_engineering_draft_version ")
-                        || sql.startsWith("INSERT INTO public.hidra_topology_engineering_graph_snapshot "))
+                        || sql.startsWith("INSERT INTO public.hidra_topology_engineering_graph_snapshot ")
+                        || sql.startsWith("INSERT INTO public.hidra_topology_engineering_survey_snapshot "))
                     : (sql.startsWith("INSERT INTO public.hidra_topology_station_graph_")
                         || sql.startsWith("UPDATE public.hidra_topology_station_graph_head ")))) {
                 s.reject("provisional statement not reviewed");s.healthy();

@@ -183,4 +183,19 @@ class HidraRouteAuthorizationInterceptorTest {
         void handle() {
         }
     }
+
+    @Test void surveyDelegationRequiresExactNativeControllerMethodAndAuthentication() throws Exception {
+        var interceptor=new HidraRouteAuthorizationInterceptor(new HidraEffectivePermissionResolver(List.of()),naming,true,"jwt");
+        var owner=new dz.sh.hidra.modules.topology.api.rest.controller.EngineeringNetworkDraftController(command->{throw new AssertionError();});
+        String route="/api/v1/topology/engineering-networks/{draftId}/survey/{branchId}";
+        for(String method:List.of("readSurvey","updateSurvey")){
+            var m=java.util.Arrays.stream(owner.getClass().getDeclaredMethods()).filter(x->x.getName().equals(method)).findFirst().orElseThrow();var handler=new HandlerMethod(owner,m);
+            var req=new MockHttpServletRequest(method.equals("readSurvey")?"GET":"PUT",route);req.setAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE,route);
+            SecurityContextHolder.clearContext();assertThrows(AccessDeniedException.class,()->interceptor.preHandle(req,new MockHttpServletResponse(),handler));
+            SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("operator","n/a",List.of(new SimpleGrantedAuthority("ROLE_OPERATOR"))));
+            assertTrue(interceptor.preHandle(req,new MockHttpServletResponse(),handler));
+            req.setMethod("DELETE");assertThrows(AccessDeniedException.class,()->interceptor.preHandle(req,new MockHttpServletResponse(),handler));
+            req.setMethod(method.equals("readSurvey")?"GET":"PUT");assertThrows(AccessDeniedException.class,()->interceptor.preHandle(req,new MockHttpServletResponse(),handlerMethod()));
+        }
+    }
 }

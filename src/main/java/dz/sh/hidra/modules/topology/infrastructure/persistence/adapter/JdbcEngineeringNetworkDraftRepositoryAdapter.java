@@ -26,6 +26,7 @@ import dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFai
 import dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.Reason;
 import dz.sh.hidra.modules.topology.domain.model.EngineeringNetworkDraft;
 import dz.sh.hidra.modules.topology.application.port.out.EngineeringGraphDraftRepositoryPort;
+import dz.sh.hidra.modules.topology.application.port.out.SurveyRouteProfileRepositoryPort;
 import dz.sh.hidra.modules.topology.application.port.out.EngineeringGraphStationWitnessPort;
 import dz.sh.hidra.modules.topology.domain.model.EngineeringGraphDraft;
 import dz.sh.hidra.platform.persistence.*;
@@ -45,6 +46,8 @@ public class JdbcEngineeringNetworkDraftRepositoryAdapter implements Engineering
     private static final String VERSION_INS="INSERT INTO public.hidra_topology_engineering_draft_version (draft_id,version,payload_format,canonical_payload,sha256,predecessor_sha256,actor_binding_id,actor_session_id,actor_user_id,party_generation,sampled_at,valid_until,backend_pid,transaction_id) SELECT ?,?,?,?,?,?,?::uuid,?::uuid,?,?,?,?,?,? WHERE COALESCE((SELECT max(version) FROM public.hidra_topology_engineering_draft_version WHERE draft_id=?),0)=?";
     private static final Set<String> SQL=Set.of(CONTEXT_INS,DRAFT_INS,VERSION_INS);
     private static final Set<String> GRAPH_SQL=Set.of(VERSION_INS,JdbcEngineeringGraphDraftRepositoryAdapter.INSERT_SQL);
+    private static final Set<String> SURVEY_SQL=Set.of(VERSION_INS,JdbcSurveyRouteProfileRepositoryAdapter.INSERT_SQL);
+    private static final String SURVEY_RELATION="public.hidra_topology_engineering_survey_snapshot";
     private static final String FACILITY_OWNER_GENERATION="public.hidra_topology_facility_owner_generation";
     private static final List<String> GRAPH_RELATIONS=List.of(
         "public.hidra_topology_facility",
@@ -121,6 +124,52 @@ public class JdbcEngineeringNetworkDraftRepositoryAdapter implements Engineering
             WHERE k.conrelid='public.hidra_topology_engineering_graph_snapshot'::regclass
               AND (NOT k.convalidated OR k.condeferrable))
         """;
+    private static final String SURVEY_CATALOG="""
+        SELECT current_setting('session_replication_role')='origin'
+          AND NOT has_table_privilege(current_user,'public.hidra_topology_facility_owner_generation',
+            'INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES,TRIGGER')
+          AND NOT has_any_column_privilege(current_user,'public.hidra_topology_facility_owner_generation',
+            'INSERT,UPDATE,REFERENCES')
+          AND (SELECT count(*)=1 AND bool_and(c.relkind='r' AND c.relpersistence='p'
+            AND NOT c.relispartition AND NOT c.relrowsecurity AND NOT c.relforcerowsecurity
+            AND NOT pg_has_role(current_user,c.relowner,'MEMBER')
+            AND has_table_privilege(current_user,c.oid,'SELECT')
+            AND has_table_privilege(current_user,c.oid,'INSERT')
+            AND has_table_privilege(current_user,c.oid,'UPDATE')
+            AND NOT has_table_privilege(current_user,c.oid,'DELETE,TRUNCATE,TRIGGER')
+            AND NOT EXISTS (SELECT 1 FROM pg_inherits h WHERE h.inhrelid=c.oid OR h.inhparent=c.oid))
+           FROM pg_class c WHERE c.oid='public.hidra_topology_engineering_survey_snapshot'::regclass)
+          AND (SELECT count(*)=3 AND bool_and(t.tgenabled='O' AND t.tgqual IS NULL
+            AND t.tgnargs=0 AND t.tgparentid=0 AND t.tgconstraint=0
+            AND ((t.tgname='trg_p25_engineering_survey_same_transaction'
+                 AND t.tgfoid='public.hidra_p25_survey_snapshot_same_transaction()'::regprocedure AND t.tgtype=7)
+              OR (t.tgname IN ('trg_p25_engineering_survey_immutable','trg_p25_engineering_survey_no_truncate')
+                 AND t.tgfoid='public.hidra_p25_draft_immutable()'::regprocedure AND t.tgtype IN (26,34))))
+            FROM pg_trigger t WHERE NOT t.tgisinternal
+              AND t.tgrelid='public.hidra_topology_engineering_survey_snapshot'::regclass)
+          AND (SELECT count(*)=1 AND bool_and(p.prosecdef AND p.prokind='f' AND p.pronargs=0
+              AND p.prorettype='trigger'::regtype AND p.provolatile='v' AND NOT p.proleakproof
+              AND p.proconfig=ARRAY['search_path=pg_catalog, pg_temp']
+              AND p.prolang=(SELECT oid FROM pg_language WHERE lanname='plpgsql')
+              AND NOT pg_has_role(current_user,p.proowner,'MEMBER')
+              AND NOT has_function_privilege(current_user,p.oid,'EXECUTE')
+              AND md5(p.prosrc)='a65f0d43b26c1493b6f943b3d6f2963c')
+            FROM pg_proc p WHERE p.oid='public.hidra_p25_survey_snapshot_same_transaction()'::regprocedure)
+          AND NOT EXISTS (SELECT 1 FROM pg_constraint k
+            WHERE k.conrelid='public.hidra_topology_engineering_survey_snapshot'::regclass
+              AND (NOT k.convalidated OR k.condeferrable))
+
+          AND (SELECT count(*)=9 AND bool_and(a.attnotnull AND NOT a.attisdropped AND a.attidentity='' AND a.attgenerated='')
+            FROM pg_attribute a WHERE a.attrelid='public.hidra_topology_engineering_survey_snapshot'::regclass AND a.attnum>0)
+          AND (SELECT count(*)=11 AND count(*) FILTER(WHERE k.contype='c')=8
+              AND count(*) FILTER(WHERE k.contype='p' AND k.conkey=ARRAY[1,2,3]::smallint[])=1
+              AND count(*) FILTER(WHERE k.contype='f' AND k.conkey=ARRAY[1,3]::smallint[]
+                AND k.confrelid='public.hidra_topology_engineering_draft_version'::regclass AND k.confkey=ARRAY[1,2]::smallint[] AND k.confdeltype='r' AND k.confupdtype='a')=1
+              AND count(*) FILTER(WHERE k.contype='f' AND k.conkey=ARRAY[1,4]::smallint[]
+                AND k.confrelid='public.hidra_topology_engineering_graph_snapshot'::regclass AND k.confkey=ARRAY[1,2]::smallint[] AND k.confdeltype='r' AND k.confupdtype='a')=1
+              AND bool_and(k.convalidated AND NOT k.condeferrable)
+            FROM pg_constraint k WHERE k.conrelid='public.hidra_topology_engineering_survey_snapshot'::regclass)
+        """;
     private final JdbcTemplate jdbc;private final ProtectedTransactionExecutor executor;private final EntityManager em;
     private final EngineeringNetworkDraftCodec codec=new EngineeringNetworkDraftCodec();
     public JdbcEngineeringNetworkDraftRepositoryAdapter(JdbcTemplate j,ProtectedTransactionExecutor e,EntityManager em){jdbc=Objects.requireNonNull(j);executor=Objects.requireNonNull(e);this.em=Objects.requireNonNull(em);}
@@ -128,7 +177,8 @@ public class JdbcEngineeringNetworkDraftRepositoryAdapter implements Engineering
         final JdbcEngineeringNetworkDraftRepositoryAdapter owner=JdbcEngineeringNetworkDraftRepositoryAdapter.this;
         final Command command;final ConnectionHolder holder;final Connection connection;final Thread thread=Thread.currentThread();
         final int pid;final long xid;final String role,ordinary;boolean active=true,eligible,applied,newContext,replayed;
-        boolean graphBound;long graphSelected,graphObserved;
+        boolean graphBound,surveyBound;long graphSelected,graphObserved;
+        SurveyRouteProfileRepositoryPort.Snapshot surveySnapshot;
         EngineeringGraphDraftRepositoryPort.Snapshot graphSnapshot;
         List<EngineeringGraphStationWitnessPort.Witness> graphWitnesses=List.of();
         UUID contextId,draftId;long latest;String latestDigest,requestDigest;byte[] latestBytes;Result result;
@@ -153,7 +203,10 @@ public class JdbcEngineeringNetworkDraftRepositoryAdapter implements Engineering
             // Read-only generation roles may acquire ACCESS SHARE, never a DML-level lock.
             jdbc.execute("LOCK TABLE "+r+" IN "+(r.equals(FACILITY_OWNER_GENERATION)
                 ?"ACCESS SHARE":"SHARE ROW EXCLUSIVE")+" MODE NOWAIT");
+        if(survey(cmd.kind()))jdbc.execute("LOCK TABLE "+SURVEY_RELATION+" IN SHARE ROW EXCLUSIVE MODE NOWAIT");
         var principals=executor.publicationDatabaseIdentity();
+        if(survey(cmd.kind()) && (!Boolean.TRUE.equals(jdbc.queryForObject(SURVEY_CATALOG,Boolean.class))
+            || !Boolean.TRUE.equals(jdbc.queryForObject("SELECT NOT pg_has_role(?::name,c.relowner,'MEMBER') AND NOT has_table_privilege(?::name,c.oid,'SELECT,INSERT,UPDATE,DELETE,TRUNCATE,TRIGGER') AND NOT has_any_column_privilege(?::name,c.oid,'INSERT,UPDATE,REFERENCES') FROM pg_class c WHERE c.oid='public.hidra_topology_engineering_survey_snapshot'::regclass",Boolean.class,principals.ordinaryUser(),principals.ordinaryUser(),principals.ordinaryUser()))))throw fail(Reason.UNAVAILABLE);
         if(graph(cmd.kind()) && !Boolean.TRUE.equals(jdbc.queryForObject("""
             SELECT NOT pg_has_role(?::name,c.relowner,'MEMBER')
               AND NOT has_table_privilege(?::name,c.oid,'SELECT,INSERT,UPDATE,DELETE,TRUNCATE,TRIGGER')
@@ -182,10 +235,12 @@ public class JdbcEngineeringNetworkDraftRepositoryAdapter implements Engineering
         Ticket t=jdbc.queryForObject("SELECT pg_backend_pid(),txid_current(),current_user",(r,n)->new Ticket(cmd,h,r.getInt(1),r.getLong(2),r.getString(3),principals.ordinaryUser()));
         if(t==null)throw fail(Reason.UNAVAILABLE);TransactionSynchronizationManager.registerSynchronization(t);return t;
     }catch(RuntimeException e){executor.rejectAdmission();throw e;}}
-    private static boolean graph(Kind k){return k==Kind.GRAPH_READ || k==Kind.GRAPH_UPDATE;}
+    private static boolean survey(Kind k){return k==Kind.SURVEY_READ || k==Kind.SURVEY_UPDATE;}
+    private static boolean graph(Kind k){return k==Kind.GRAPH_READ || k==Kind.GRAPH_UPDATE || survey(k);}
     @Override public List<ProtectedRelationFence> finalFences(Admission a){var t=ticket(a);
         var relations=new ArrayList<>(RELATIONS);
         if(graph(t.command.kind()))relations.addAll(GRAPH_RELATIONS);
+        if(survey(t.command.kind()))relations.add(SURVEY_RELATION);
         return relations.stream().map(r->new ProtectedRelationFence(r,r.equals(FACILITY_OWNER_GENERATION)
             ?ProtectedRelationFence.Mode.ACCESS_SHARE:ProtectedRelationFence.Mode.SHARE_ROW_EXCLUSIVE)).toList();}
     private record Stored(long version,byte[] bytes,String digest) {}
@@ -221,11 +276,11 @@ public class JdbcEngineeringNetworkDraftRepositoryAdapter implements Engineering
         if(latest==null && (c.kind()!=Kind.CREATE || t.replayed))throw fail(Reason.UNAVAILABLE);
         t.latest=latest==null?0:latest.version();t.latestDigest=latest==null?null:latest.digest();t.latestBytes=latest==null?null:latest.bytes();
         if(c.expectedVersion()!=null && c.expectedVersion()!=t.latest)throw fail(Reason.CONFLICT);
-        if((c.kind()==Kind.UPDATE || c.kind()==Kind.GRAPH_UPDATE) && t.latest==Long.MAX_VALUE)throw fail(Reason.CONFLICT);
+        if((c.kind()==Kind.UPDATE || c.kind()==Kind.GRAPH_UPDATE || c.kind()==Kind.SURVEY_UPDATE) && t.latest==Long.MAX_VALUE)throw fail(Reason.CONFLICT);
         Stored output=t.replayed?stored(t.draftId,true):latest;
         if(t.replayed && (output==null || output.version()!=1 || !Arrays.equals(output.bytes(),bytesFor(c))))throw fail(Reason.UNAVAILABLE);
         var metadata=(c.kind()==Kind.UPDATE || (c.kind()==Kind.CREATE && !t.replayed))?c.metadata():codec.decode(output.bytes());
-        long version=c.kind()==Kind.CREATE?1:((c.kind()==Kind.UPDATE || c.kind()==Kind.GRAPH_UPDATE)?t.latest+1:t.latest);
+        long version=c.kind()==Kind.CREATE?1:((c.kind()==Kind.UPDATE || c.kind()==Kind.GRAPH_UPDATE || c.kind()==Kind.SURVEY_UPDATE)?t.latest+1:t.latest);
         var draft=c.kind()==Kind.GRAPH_UPDATE
             ? new EngineeringNetworkDraft(t.contextId,c.companyPartyId(),c.pipelineSystemId(),t.draftId,t.latest,metadata).graphUpdated()
             : new EngineeringNetworkDraft(t.contextId,c.companyPartyId(),c.pipelineSystemId(),t.draftId,version,metadata);
@@ -235,6 +290,7 @@ public class JdbcEngineeringNetworkDraftRepositoryAdapter implements Engineering
     @Override public boolean replay(Admission a){var t=ticket(a);if(!t.eligible)throw fail(Reason.UNAVAILABLE);return t.replayed;}
     @Override public Set<String> mutationSql(){return SQL;}
     @Override public Set<String> graphMutationSql(){return GRAPH_SQL;}
+    @Override public Set<String> surveyMutationSql(){return SURVEY_SQL;}
     @Override @Transactional(propagation=Propagation.MANDATORY)
     public long currentGraphDraft(Admission a,Long requestedVersion){
         var t=ticket(a);if(!graph(t.command.kind()) || !t.eligible)throw fail(Reason.UNAVAILABLE);
@@ -258,12 +314,12 @@ public class JdbcEngineeringNetworkDraftRepositoryAdapter implements Engineering
         if(t.command.kind()==Kind.GRAPH_UPDATE && (selected!=t.latest || snapshot==null
            || snapshot.version()!=selected || !snapshot.graph().equals(t.command.graph())))
             throw fail(Reason.UNAVAILABLE);
-        if(t.command.kind()==Kind.GRAPH_READ &&
+        if((t.command.kind()==Kind.GRAPH_READ || t.command.kind()==Kind.SURVEY_READ) &&
            selected!=(t.command.requestedVersion()==null?t.latest:t.command.requestedVersion()))
             throw fail(Reason.UNAVAILABLE);
-        if(t.command.kind()==Kind.GRAPH_UPDATE && observedVersion!=t.latest-1)
+        if((t.command.kind()==Kind.GRAPH_UPDATE || t.command.kind()==Kind.SURVEY_UPDATE) && observedVersion!=t.latest-1)
             throw fail(Reason.UNAVAILABLE);
-        if(t.command.kind()==Kind.GRAPH_READ && observedVersion!=t.latest)
+        if((t.command.kind()==Kind.GRAPH_READ || t.command.kind()==Kind.SURVEY_READ) && observedVersion!=t.latest)
             throw fail(Reason.UNAVAILABLE);
         if(snapshot!=null){
             var stations=snapshot.graph().nodes().stream()
@@ -276,13 +332,24 @@ public class JdbcEngineeringNetworkDraftRepositoryAdapter implements Engineering
         t.graphWitnesses=List.copyOf(witnesses);t.graphBound=true;
     }
     @Override @Transactional(propagation=Propagation.MANDATORY)
+    public void bindSurveyProof(Admission a,SurveyRouteProfileRepositoryPort.Snapshot snapshot){
+        var t=ticket(a);
+        if(!survey(t.command.kind()) || !t.graphBound || t.surveyBound || t.graphSnapshot==null
+            || t.graphSnapshot.graph().branches().stream().noneMatch(b->b.id().equals(t.command.branchId()) && b.kind()==EngineeringGraphDraft.BranchKind.PIPE))throw fail(Reason.UNAVAILABLE);
+        if(snapshot!=null && (!snapshot.profile().branchId().equals(t.command.branchId()) || snapshot.version()>t.graphSelected
+            || snapshot.graphVersion()!=t.graphSnapshot.version() || !snapshot.graphSha256().equals(t.graphSnapshot.sha256())))throw fail(Reason.UNAVAILABLE);
+        if(t.command.kind()==Kind.SURVEY_UPDATE && (snapshot==null || snapshot.version()!=t.latest
+            || !snapshot.profile().equals(t.command.survey()) || t.graphSelected!=t.latest))throw fail(Reason.UNAVAILABLE);
+        t.surveySnapshot=snapshot;t.surveyBound=true;
+    }
+    @Override @Transactional(propagation=Propagation.MANDATORY)
     public Result apply(Admission a,Contribution c){try {var t=ticket(a);if(!t.eligible || t.applied || c.backendPid()!=t.pid || c.transactionId()!=t.xid
             || !c.request().companyPartyId().equals(t.command.companyPartyId()) || !c.request().pipelineSystemId().equals(t.command.pipelineSystemId()))throw fail(Reason.UNAVAILABLE);
         if(t.command.kind()==Kind.CREATE && !t.replayed){
             if(t.newContext && jdbc.update(CONTEXT_INS,t.contextId,t.command.companyPartyId(),t.command.pipelineSystemId())!=1)throw fail(Reason.CONFLICT);
             if(jdbc.update(DRAFT_INS,t.draftId,t.contextId,t.command.creationRequestId(),t.requestDigest)!=1)throw fail(Reason.CONFLICT);
         }
-        if(t.command.kind()==Kind.UPDATE || t.command.kind()==Kind.GRAPH_UPDATE || (t.command.kind()==Kind.CREATE && !t.replayed)){
+        if(t.command.kind()==Kind.UPDATE || t.command.kind()==Kind.GRAPH_UPDATE || t.command.kind()==Kind.SURVEY_UPDATE || (t.command.kind()==Kind.CREATE && !t.replayed)){
             byte[] bytes=codec.encode(t.result.draft().metadata());String hash=EngineeringNetworkDraftCodec.digest(bytes);
             if(jdbc.update(VERSION_INS,t.draftId,t.result.draft().version(),EngineeringNetworkDraftCodec.FORMAT,bytes,hash,t.latestDigest,
                 c.bindingId(),c.sessionId(),c.userId(),c.partyGeneration(),Timestamp.from(c.sampledAt()),Timestamp.from(c.validUntil()),t.pid,t.xid,t.draftId,t.latest)!=1)throw fail(Reason.CONFLICT);
@@ -294,10 +361,10 @@ public class JdbcEngineeringNetworkDraftRepositoryAdapter implements Engineering
     public void flush(){physical();em.flush();}
     @Override @Transactional(propagation=Propagation.MANDATORY)
     public boolean finalGuard(Admission a,Contribution c,List<ProtectedRelationFence> fences){
-        var t=ticket(a);if(!t.applied || (graph(t.command.kind()) && !t.graphBound)
-             || fences.size()!=(graph(t.command.kind())?34:31)
-             || fences.stream().map(ProtectedRelationFence::relation).distinct().count()!=(graph(t.command.kind())?34:31)
-             || fences.stream().filter(f->f.mode()==ProtectedRelationFence.Mode.SHARE_ROW_EXCLUSIVE).count()!=(graph(t.command.kind())?30:28)
+        var t=ticket(a);if(!t.applied || (graph(t.command.kind()) && !t.graphBound) || (survey(t.command.kind()) && !t.surveyBound)
+             || fences.size()!=(survey(t.command.kind())?35:graph(t.command.kind())?34:31)
+             || fences.stream().map(ProtectedRelationFence::relation).distinct().count()!=(survey(t.command.kind())?35:graph(t.command.kind())?34:31)
+             || fences.stream().filter(f->f.mode()==ProtectedRelationFence.Mode.SHARE_ROW_EXCLUSIVE).count()!=(survey(t.command.kind())?31:graph(t.command.kind())?30:28)
             || fences.stream().filter(f->f.mode()==ProtectedRelationFence.Mode.ACCESS_SHARE).count()!=(graph(t.command.kind())?3:2)
             || fences.stream().filter(f->f.mode()==ProtectedRelationFence.Mode.SHARE).count()!=1)throw fail(Reason.UNAVAILABLE);
         String required=String.join(",",Collections.nCopies(fences.size(),"(?::regclass,?::text)"));
@@ -321,7 +388,7 @@ public class JdbcEngineeringNetworkDraftRepositoryAdapter implements Engineering
         var args=new ArrayList<Object>(Arrays.asList(Timestamp.from(c.sampledAt()),Timestamp.from(c.validUntil()),t.pid,t.xid,t.role,t.role,
             t.command.companyPartyId(),c.partyGeneration(),t.command.pipelineSystemId(),t.contextId,t.command.companyPartyId(),t.command.pipelineSystemId(),t.draftId,
             t.draftId,t.latest,t.latestDigest,t.latestBytes,t.draftId,t.result.draft().version(),codec.encode(t.result.draft().metadata())));
-        if(t.command.kind()==Kind.UPDATE || t.command.kind()==Kind.GRAPH_UPDATE || (t.command.kind()==Kind.CREATE && !t.replayed)){
+        if(t.command.kind()==Kind.UPDATE || t.command.kind()==Kind.GRAPH_UPDATE || t.command.kind()==Kind.SURVEY_UPDATE || (t.command.kind()==Kind.CREATE && !t.replayed)){
             guard+=" AND EXISTS(SELECT 1 FROM public.hidra_topology_engineering_draft_version v WHERE v.draft_id=? AND v.version=? AND v.actor_binding_id=?::uuid AND v.actor_session_id=?::uuid AND v.actor_user_id=? AND v.party_generation=? AND v.sampled_at=? AND v.valid_until=? AND v.backend_pid=? AND v.transaction_id=?)";
             args.addAll(Arrays.asList(t.draftId,t.latest,c.bindingId(),c.sessionId(),c.userId(),c.partyGeneration(),Timestamp.from(c.sampledAt()),Timestamp.from(c.validUntil()),t.pid,t.xid));
         }
@@ -362,6 +429,20 @@ public class JdbcEngineeringNetworkDraftRepositoryAdapter implements Engineering
                 args.add(t.command.companyPartyId());
             }
             guard+=" AND ("+GRAPH_CATALOG+")";
+        }
+        if(survey(t.command.kind())){
+            var snapshot=t.surveySnapshot;
+            if(snapshot==null){
+                guard+=" AND NOT EXISTS(SELECT 1 FROM public.hidra_topology_engineering_survey_snapshot ss WHERE ss.draft_id=? AND ss.branch_id=? AND ss.version<=?)";
+                args.addAll(Arrays.asList(t.draftId,t.command.branchId(),t.graphSelected));
+            }else{
+                byte[] bytes=new SurveyRouteProfileCodec().encode(snapshot.profile());
+                if(!SurveyRouteProfileCodec.sha256(bytes).equals(snapshot.sha256()))throw fail(Reason.UNAVAILABLE);
+                guard+=" AND EXISTS(SELECT 1 FROM public.hidra_topology_engineering_survey_snapshot ss JOIN public.hidra_topology_engineering_draft_version mv ON mv.draft_id=ss.draft_id AND mv.version=ss.version WHERE ss.draft_id=? AND ss.branch_id=? AND ss.version=? AND ss.graph_version=? AND ss.graph_sha256=? AND ss.payload_format=? AND ss.canonical_payload=? AND ss.sha256=? AND ss.sha256=encode(sha256(ss.canonical_payload),'hex') AND ss.transaction_id=mv.transaction_id AND ss.version<=? AND NOT EXISTS(SELECT 1 FROM public.hidra_topology_engineering_survey_snapshot later WHERE later.draft_id=ss.draft_id AND later.branch_id=ss.branch_id AND later.version>ss.version AND later.version<=?))";
+                args.addAll(Arrays.asList(t.draftId,t.command.branchId(),snapshot.version(),snapshot.graphVersion(),snapshot.graphSha256(),SurveyRouteProfileCodec.FORMAT,bytes,snapshot.sha256(),t.graphSelected,t.graphSelected));
+                if(t.command.kind()==Kind.SURVEY_UPDATE){guard+=" AND EXISTS(SELECT 1 FROM public.hidra_topology_engineering_survey_snapshot ss WHERE ss.draft_id=? AND ss.branch_id=? AND ss.version=? AND ss.transaction_id=?)";args.addAll(Arrays.asList(t.draftId,t.command.branchId(),snapshot.version(),t.xid));}
+            }
+            guard+=" AND ("+SURVEY_CATALOG+")";
         }
         if(t.command.kind()==Kind.CREATE){
             guard+=" AND EXISTS(SELECT 1 FROM public.hidra_topology_engineering_draft d WHERE d.id=? AND d.context_id=? AND d.creation_request_id=? AND d.request_sha256=?)";

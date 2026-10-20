@@ -35,30 +35,40 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Service
-public class EngineeringNetworkDraftApplicationService implements EngineeringNetworkDraftUseCase, EngineeringGraphDraftUseCase {
+public class EngineeringNetworkDraftApplicationService implements EngineeringNetworkDraftUseCase, EngineeringGraphDraftUseCase, dz.sh.hidra.modules.topology.application.port.in.SurveyRouteProfileUseCase {
     private final ProtectedEngineeringDraftAdmissionCoordinator coordinator;
     private final EngineeringNetworkDraftRepositoryPort repository;
     private final ProtectedTransactionExecutor executor;
     private final EngineeringGraphDraftRepositoryPort graphRepository;
     private final EngineeringGraphStationWitnessPort stationWitness;
 
+    private final dz.sh.hidra.modules.topology.application.port.out.SurveyRouteProfileRepositoryPort surveys;
+
     @Autowired
     public EngineeringNetworkDraftApplicationService(ProtectedEngineeringDraftAdmissionCoordinator c,
             EngineeringNetworkDraftRepositoryPort r, ProtectedTransactionExecutor e,
-            EngineeringGraphDraftRepositoryPort graphs, EngineeringGraphStationWitnessPort witnesses) {
+            EngineeringGraphDraftRepositoryPort graphs, EngineeringGraphStationWitnessPort witnesses,
+            dz.sh.hidra.modules.topology.application.port.out.SurveyRouteProfileRepositoryPort surveys) {
         coordinator=Objects.requireNonNull(c);repository=Objects.requireNonNull(r);executor=Objects.requireNonNull(e);
-        graphRepository=Objects.requireNonNull(graphs);stationWitness=Objects.requireNonNull(witnesses);
+        graphRepository=Objects.requireNonNull(graphs);stationWitness=Objects.requireNonNull(witnesses);this.surveys=surveys;
+    }
+    /** Retained isolated graph constructor; survey operations fail closed without a repository. */
+    public EngineeringNetworkDraftApplicationService(ProtectedEngineeringDraftAdmissionCoordinator c,
+            EngineeringNetworkDraftRepositoryPort r, ProtectedTransactionExecutor e,
+            EngineeringGraphDraftRepositoryPort graphs, EngineeringGraphStationWitnessPort witnesses) {
+        this(c,r,e,graphs,witnesses,null);
     }
     /** Retained for isolated metadata tests. It must never activate graph authoring. */
     public EngineeringNetworkDraftApplicationService(ProtectedEngineeringDraftAdmissionCoordinator c,
             EngineeringNetworkDraftRepositoryPort r, ProtectedTransactionExecutor e) {
         coordinator=Objects.requireNonNull(c);repository=Objects.requireNonNull(r);executor=Objects.requireNonNull(e);
-        graphRepository=null;stationWitness=null;
+        graphRepository=null;stationWitness=null;surveys=null;
     }
 
     @Override public EngineeringNetworkDraftUseCase.Result execute(EngineeringNetworkDraftUseCase.Command cmd) {
         Objects.requireNonNull(cmd);
-        if (cmd.kind()==EngineeringNetworkDraftUseCase.Kind.GRAPH_READ ||
+        if (cmd.kind()==EngineeringNetworkDraftUseCase.Kind.SURVEY_READ || cmd.kind()==EngineeringNetworkDraftUseCase.Kind.SURVEY_UPDATE ||
+                cmd.kind()==EngineeringNetworkDraftUseCase.Kind.GRAPH_READ ||
                 cmd.kind()==EngineeringNetworkDraftUseCase.Kind.GRAPH_UPDATE)
             throw new EngineeringNetworkDraftFailure(Reason.UNAVAILABLE); // graph must use typed endpoint
         requireNoOuterTransaction();
@@ -126,6 +136,52 @@ public class EngineeringNetworkDraftApplicationService implements EngineeringNet
             });
         } catch (RuntimeException failure) {throw translate(failure);}
     }
+    @Override public dz.sh.hidra.modules.topology.application.port.in.SurveyRouteProfileUseCase.Result executeSurvey(
+            dz.sh.hidra.modules.topology.application.port.in.SurveyRouteProfileUseCase.Command command){
+        Objects.requireNonNull(command);requireNoOuterTransaction();
+        if(surveys==null || graphRepository==null || stationWitness==null)throw new EngineeringNetworkDraftFailure(Reason.UNAVAILABLE);
+        boolean update=command.kind()==dz.sh.hidra.modules.topology.application.port.in.SurveyRouteProfileUseCase.Kind.UPDATE;
+        // Pure codec bounds checked before provisional storage; invalid payload remains a 400.
+        if(update)surveys.validateProfile(command.profile());
+        var kind=update?EngineeringNetworkDraftUseCase.Kind.SURVEY_UPDATE:EngineeringNetworkDraftUseCase.Kind.SURVEY_READ;
+        var cmd=new EngineeringNetworkDraftUseCase.Command(kind,command.companyPartyId(),command.pipelineSystemId(),command.draftId(),
+            null,command.expectedVersion(),null,command.requestedVersion(),null,command.branchId(),command.profile());
+        var a=new AtomicReference<ProtectedEngineeringDraftAdmissionCoordinator.Admission>();
+        var c=new AtomicReference<ProtectedEngineeringDraftAdmissionCoordinator.Contribution>();
+        try {var prepared=coordinator.prepare();
+            return executor.executePublication(()->{
+                var admission=coordinator.acquire(prepared,cmd);a.set(admission);c.set(coordinator.collect(admission));
+                var ticket=coordinator.repository(admission);
+                long observed=repository.currentGraphDraft(ticket,command.requestedVersion());
+                long graphAt=command.requestedVersion()==null?observed:command.requestedVersion();
+                var graph=graphRepository.asOf(command.draftId(),graphAt);
+                if(graph==null || graph.graph().branches().stream().noneMatch(b->b.id().equals(command.branchId())
+                    && b.kind()==dz.sh.hidra.modules.topology.domain.model.EngineeringGraphDraft.BranchKind.PIPE))
+                    throw new EngineeringNetworkDraftFailure(Reason.NOT_FOUND);
+                var witnesses=stationWitness.requireCurrent(command.companyPartyId(),graph.graph());
+                var snapshot=update?null:surveys.asOf(command.draftId(),command.branchId(),graphAt);
+                if(snapshot!=null && (snapshot.graphVersion()!=graph.version() || !snapshot.graphSha256().equals(graph.sha256())))
+                    throw new EngineeringNetworkDraftFailure(Reason.CONFLICT);
+                if(update)coordinator.beginProvisional(admission,repository.surveyMutationSql());
+                var base=repository.apply(ticket,c.get());
+                long selected=update?base.draft().version():graphAt;
+                if(update)snapshot=surveys.append(command.draftId(),selected,graph.version(),graph.sha256(),command.profile(),c.get().transactionId());
+                if(update && (snapshot==null || snapshot.version()!=selected || !command.profile().equals(snapshot.profile())))
+                    throw new EngineeringNetworkDraftFailure(Reason.UNAVAILABLE);
+                if(update)coordinator.endProvisional(admission);
+                repository.bindGraphProof(ticket,selected,graph,witnesses,observed);
+                repository.bindSurveyProof(ticket,snapshot);coordinator.requireCurrent(admission);
+                return new dz.sh.hidra.modules.topology.application.port.in.SurveyRouteProfileUseCase.Result(command.draftId(),command.branchId(),selected,
+                    snapshot==null?null:snapshot.version(),snapshot==null?null:snapshot.sha256(),snapshot==null?null:snapshot.graphVersion(),
+                    snapshot==null?null:snapshot.graphSha256(),snapshot==null?null:snapshot.profile(),
+                    snapshot==null?List.of("SURVEY_NOT_AUTHORED"):List.of("PHYSICAL_QUALIFICATION_NOT_ESTABLISHED"));
+            },repository::flush,()->{
+                if(!repository.finalGuard(coordinator.repository(a.get()),c.get(),coordinator.finalFences(a.get())))
+                    throw new EngineeringNetworkDraftFailure(Reason.UNAVAILABLE);
+            });
+        }catch(RuntimeException failure){throw translate(failure);}
+    }
+
     private static void requireNoOuterTransaction(){
         if(TransactionSynchronizationManager.isActualTransactionActive())
             throw new EngineeringNetworkDraftFailure(Reason.UNAVAILABLE);

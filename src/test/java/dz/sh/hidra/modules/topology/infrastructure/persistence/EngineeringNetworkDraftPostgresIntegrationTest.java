@@ -19,6 +19,11 @@
  */
 package dz.sh.hidra.modules.topology.infrastructure.persistence;
 
+import dz.sh.hidra.modules.topology.domain.model.SurveyRouteProfile;
+import dz.sh.hidra.modules.topology.application.port.in.SurveyRouteProfileUseCase;
+import dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.SurveyRouteProfileCodec;
+import java.math.BigDecimal;
+
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -282,6 +287,8 @@ public class EngineeringNetworkDraftPostgresIntegrationTest {
         jdbc.execute("REVOKE ALL ON "+tables+" FROM c3_source_claim_app,c3_publication_app");
         jdbc.execute("GRANT SELECT ON "+tables+" TO c3_source_claim_app");
         jdbc.execute("GRANT SELECT,INSERT,UPDATE ON "+tables+" TO c3_publication_app");
+        jdbc.execute("REVOKE ALL ON public.hidra_topology_engineering_survey_snapshot FROM c3_source_claim_app,c3_publication_app");
+        jdbc.execute("GRANT SELECT,INSERT,UPDATE ON public.hidra_topology_engineering_survey_snapshot TO c3_publication_app");
         // Graph-only privilege: metadata retains its original 31-fence ownership path.
         jdbc.execute("REVOKE ALL ON public.hidra_topology_engineering_graph_snapshot FROM c3_source_claim_app,c3_publication_app");
         jdbc.execute("GRANT SELECT,INSERT,UPDATE ON public.hidra_topology_engineering_graph_snapshot TO c3_publication_app");
@@ -1396,4 +1403,119 @@ public class EngineeringNetworkDraftPostgresIntegrationTest {
         assertThat(graphOwner().executeGraph(graphUpdate(id,1L,stationlessSerialParallelGraph())).version()).isEqualTo(2L);
     }
 
+
+    private SurveyRouteProfileUseCase surveyOwner(){return (SurveyRouteProfileUseCase)drafts;}
+    private SurveyRouteProfile surveyProfile(String branch){return new SurveyRouteProfile(branch,
+        new SurveyRouteProfile.Crs("SYNTHETIC","test",List.of(new SurveyRouteProfile.Axis("north","metre"),new SurveyRouteProfile.Axis("east","metre"))),null,"origin",SurveyRouteProfile.Direction.FROM_TO,"evidence",
+        List.of(new SurveyRouteProfile.Point("a",new BigDecimal("1.00"),new BigDecimal("2.000"),BigDecimal.ZERO,null,BigDecimal.ONE,BigDecimal.ONE,null),
+            new SurveyRouteProfile.Point("b",new BigDecimal("3.000"),new BigDecimal("4.00"),BigDecimal.TEN,null,BigDecimal.ONE,BigDecimal.ONE,null)),List.of());}
+    private SurveyRouteProfileUseCase.Command surveyWrite(UUID id,long version){return new SurveyRouteProfileUseCase.Command(SurveyRouteProfileUseCase.Kind.UPDATE,COMPANY,network,id,"parallel-a",version,null,surveyProfile("parallel-a"));}
+    private SurveyRouteProfileUseCase.Command surveyRead(UUID id,Long version){return new SurveyRouteProfileUseCase.Command(SurveyRouteProfileUseCase.Kind.READ,COMPANY,network,id,"parallel-a",null,version,null);}
+    private UUID surveyDraft(){var id=create(UUID.randomUUID(),"survey").draft().draftId();graphOwner().executeGraph(graphUpdate(id,1,stationlessSerialParallelGraph()));return id;}
+    private void surveyRows(UUID id,long version,long count){
+        assertThat(jdbc.queryForObject("SELECT max(version) FROM public.hidra_topology_engineering_draft_version WHERE draft_id=?",Long.class,id)).isEqualTo(version);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_engineering_survey_snapshot WHERE draft_id=?",Long.class,id)).isEqualTo(count);
+    }
+    @Test void realNativeProvidersRoundTripSurveyWithCurrentDeny() throws Exception {
+        for(String type:List.of("LOCAL","OIDC","LDAP","ACTIVE_DIRECTORY")){
+            var actor=draftActor(type);var id=surveyDraft();assertThat(surveyOwner().executeSurvey(surveyRead(id,null)).profile()).isNull();
+            var result=surveyOwner().executeSurvey(surveyWrite(id,2));assertThat(result.profile()).isEqualTo(surveyProfile("parallel-a"));
+            assertThat(surveyOwner().executeSurvey(surveyRead(id,null)).surveySha256()).isEqualTo(result.surveySha256());
+            SecurityContextHolder.clearContext();
+            try{http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/api/v1/topology/engineering-networks/"+id+"/survey/parallel-a?companyPartyId="+COMPANY+"&pipelineSystemId="+network).header("Authorization","Bearer "+rawToken))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.surveyVersion").value(3))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.profile.points[0].firstCoordinate").value("1.00"));}
+            finally{ambient(rawToken);}
+
+            jdbc.update("UPDATE public.hidra_identity_user_permission_grant SET effect='DENY' WHERE user_id=? AND permission_id='draft-permission-update' AND scope_reference_id=?",actor.user(),"topology-company:"+COMPANY);
+            assertThatThrownBy(()->surveyOwner().executeSurvey(surveyWrite(id,3))).isInstanceOf(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.class);
+            surveyRows(id,3,1);
+        }
+    }
+    @Test void surveyMetadataGraphInterleavingPreservesSharedVersions(){
+        draftActor("LOCAL");var id=surveyDraft();var original=surveyOwner().executeSurvey(surveyWrite(id,2));
+        drafts.execute(command(dz.sh.hidra.modules.topology.application.port.in.EngineeringNetworkDraftUseCase.Kind.UPDATE,id,null,3L,"metadata"));
+        var current=surveyOwner().executeSurvey(surveyRead(id,null));assertThat(current.version()).isEqualTo(4);assertThat(current.surveyVersion()).isEqualTo(3L);assertThat(current.surveySha256()).isEqualTo(original.surveySha256());
+        surveyOwner().executeSurvey(new SurveyRouteProfileUseCase.Command(SurveyRouteProfileUseCase.Kind.UPDATE,COMPANY,network,id,"parallel-b",4L,null,surveyProfile("parallel-b")));
+        surveyRows(id,5,2);assertThat(graphOwner().executeGraph(graphRead(id)).graphVersion()).isEqualTo(2L);
+        assertThatThrownBy(()->surveyOwner().executeSurvey(surveyWrite(id,4))).isInstanceOf(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.class);
+    }
+    @Test void surveyRejectsMissingForeignAndConnectorBranches(){
+        draftActor("LOCAL");var id=surveyDraft();for(String branch:List.of("missing","serial")){
+            assertThatThrownBy(()->surveyOwner().executeSurvey(new SurveyRouteProfileUseCase.Command(SurveyRouteProfileUseCase.Kind.UPDATE,COMPANY,network,id,branch,2L,null,surveyProfile(branch))))
+                .isInstanceOf(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.class).extracting("reason").isEqualTo(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.Reason.NOT_FOUND);
+        }
+        assertThatThrownBy(()->surveyOwner().executeSurvey(new SurveyRouteProfileUseCase.Command(SurveyRouteProfileUseCase.Kind.READ,"foreign",network,id,"parallel-a",null,null,null))).isInstanceOf(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.class);
+        surveyRows(id,2,0);
+    }
+    @Test void surveyGraphReauthoringConflictsUntilRebound(){
+        draftActor("LOCAL");var id=surveyDraft();surveyOwner().executeSurvey(surveyWrite(id,2));graphOwner().executeGraph(graphUpdate(id,3,stationlessSerialParallelGraph()));
+        assertThatThrownBy(()->surveyOwner().executeSurvey(surveyRead(id,null))).isInstanceOf(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.class).extracting("reason").isEqualTo(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.Reason.CONFLICT);
+        assertThat(surveyOwner().executeSurvey(surveyRead(id,3L)).boundGraphVersion()).isEqualTo(2L);
+        assertThat(surveyOwner().executeSurvey(surveyWrite(id,4)).boundGraphVersion()).isEqualTo(4L);surveyRows(id,5,2);
+    }
+    @Test void surveyExactHistoricalReadsRetainOriginalBytes(){
+        draftActor("LOCAL");var id=surveyDraft();var first=surveyOwner().executeSurvey(surveyWrite(id,2));byte[] bytes=jdbc.queryForObject("SELECT canonical_payload FROM public.hidra_topology_engineering_survey_snapshot WHERE draft_id=? AND version=3",byte[].class,id);
+        surveyOwner().executeSurvey(surveyWrite(id,3));var historical=surveyOwner().executeSurvey(surveyRead(id,3L));
+        assertThat(historical.surveySha256()).isEqualTo(first.surveySha256());assertThat(new SurveyRouteProfileCodec().encode(historical.profile())).isEqualTo(bytes);
+        assertThatThrownBy(()->surveyOwner().executeSurvey(surveyRead(id,99L))).isInstanceOf(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.class);
+    }
+    private void surveyRace(boolean graph) throws Exception {
+        draftActor("LOCAL");var id=surveyDraft();var auth=SecurityContextHolder.getContext().getAuthentication();var latch=new CountDownLatch(1);var pool=Executors.newFixedThreadPool(2);var count=new AtomicInteger();
+        try{var jobs=new ArrayList<Future<?>>();for(int n=0;n<2;n++){final int kind=n;jobs.add(pool.submit(()->{SecurityContextHolder.getContext().setAuthentication(auth);
+            try{latch.await();if(kind==0)surveyOwner().executeSurvey(surveyWrite(id,2));else if(graph)graphOwner().executeGraph(graphUpdate(id,2,stationlessSerialParallelGraph()));else drafts.execute(command(dz.sh.hidra.modules.topology.application.port.in.EngineeringNetworkDraftUseCase.Kind.UPDATE,id,null,2L,"race"));count.incrementAndGet();}
+            catch(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure expected){}catch(InterruptedException e){Thread.currentThread().interrupt();throw new AssertionError(e);}finally{SecurityContextHolder.clearContext();}}));}latch.countDown();for(var job:jobs)job.get(10,TimeUnit.SECONDS);
+        }finally{pool.shutdownNow();}assertThat(count.get()).isEqualTo(1);assertThat(jdbc.queryForObject("SELECT max(version) FROM public.hidra_topology_engineering_draft_version WHERE draft_id=?",Long.class,id)).isEqualTo(3L);
+    }
+    @Test void concurrentSurveyAndMetadataWritersHaveOneSuccessor() throws Exception {surveyRace(false);}
+    @Test void concurrentSurveyAndGraphWritersHaveOneSuccessor() throws Exception {surveyRace(true);}
+    private dz.sh.hidra.modules.topology.domain.model.EngineeringGraphDraft surveyStationGraph(){
+        var g=stationlessSerialParallelGraph();var nodes=new ArrayList<>(g.nodes());nodes.addAll(stationGraph().nodes());return new dz.sh.hidra.modules.topology.domain.model.EngineeringGraphDraft(nodes,g.ports(),g.branches());
+    }
+    @Test void surveyForeignOwnerAndOwnerAbaNeverReuseWitness(){
+        draftActor("LOCAL");owners();var id=create(UUID.randomUUID(),"station survey").draft().draftId();graphOwner().executeGraph(graphUpdate(id,1,surveyStationGraph()));var first=surveyOwner().executeSurvey(surveyWrite(id,2));
+        long before=jdbc.queryForObject("SELECT generation FROM public.hidra_topology_facility_owner_generation WHERE facility_id=?",Long.class,FACILITY);
+        String foreign="survey-foreign-"+id();jdbc.update("INSERT INTO public.hidra_party_party(id,code,party_type_id,legal_name,country_code,status,created_at,updated_at) VALUES(?,?,'k-party-type','Synthetic','DZ','ACTIVE',now(),now())",foreign,foreign);
+        jdbc.update("UPDATE public.hidra_topology_facility SET owner_party_id=? WHERE id=?",foreign,FACILITY);
+        try{assertThatThrownBy(()->surveyOwner().executeSurvey(surveyRead(id,null))).isInstanceOf(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.class);assertThatThrownBy(()->surveyOwner().executeSurvey(surveyWrite(id,3))).isInstanceOf(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.class);}
+        finally{jdbc.update("UPDATE public.hidra_topology_facility SET owner_party_id=? WHERE id=?",COMPANY,FACILITY);}
+        assertThat(jdbc.queryForObject("SELECT generation FROM public.hidra_topology_facility_owner_generation WHERE facility_id=?",Long.class,FACILITY)).isGreaterThan(before);
+        assertThat(surveyOwner().executeSurvey(surveyRead(id,null)).surveySha256()).isEqualTo(first.surveySha256());surveyRows(id,3,1);
+    }
+    @Test void surveyWriterFirstAndOwnerFirstPreserveFacilityFences() throws Exception {
+        draftActor("LOCAL");owners();var id=create(UUID.randomUUID(),"survey locks").draft().draftId();graphOwner().executeGraph(graphUpdate(id,1,surveyStationGraph()));
+        try(var writer=administrator.getConnection();var st=writer.createStatement()){writer.setAutoCommit(false);st.execute("LOCK TABLE public.hidra_topology_facility IN ROW EXCLUSIVE MODE");assertThatThrownBy(()->surveyOwner().executeSurvey(surveyWrite(id,2))).isInstanceOf(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.class);writer.rollback();}surveyRows(id,2,0);
+        var reached=new AtomicBoolean();doAnswer(i->{List<dz.sh.hidra.platform.persistence.ProtectedRelationFence> fences=i.getArgument(2);assertThat(fences).hasSize(35);
+            assertThat(fences.stream().filter(f->f.mode()==dz.sh.hidra.platform.persistence.ProtectedRelationFence.Mode.SHARE_ROW_EXCLUSIVE).count()).isEqualTo(31L);
+            try(var writer=administrator.getConnection();var st=writer.createStatement()){writer.setAutoCommit(false);st.execute("SET LOCAL lock_timeout='50ms'");try(var update=writer.prepareStatement("UPDATE public.hidra_topology_facility SET owner_party_id=owner_party_id WHERE id=?")){update.setString(1,FACILITY);assertThat(org.junit.jupiter.api.Assertions.assertThrows(SQLException.class,update::executeUpdate).getSQLState()).isEqualTo("55P03");}finally{writer.rollback();}}
+            reached.set(true);return i.callRealMethod();}).when(draftTarget()).finalGuard(any(),any(),anyList());surveyOwner().executeSurvey(surveyWrite(id,2));assertThat(reached).isTrue();surveyRows(id,3,1);
+    }
+    @Test void expiredSurveyGuardRollsBackBothRows(){
+        draftActor("LOCAL");var id=surveyDraft();var reached=new AtomicBoolean();doAnswer(i->{var c=(dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringDraftAdmissionCoordinator.Contribution)i.getArgument(1);i.getArguments()[1]=new dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringDraftAdmissionCoordinator.Contribution(c.request(),c.partyGeneration(),c.bindingId(),c.sessionId(),c.userId(),c.sampledAt(),c.sampledAt(),c.backendPid(),c.transactionId());reached.set(true);return i.callRealMethod();}).when(draftTarget()).finalGuard(any(),any(),anyList());
+        assertThatThrownBy(()->surveyOwner().executeSurvey(surveyWrite(id,2))).isInstanceOf(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.class);assertThat(reached).isTrue();surveyRows(id,2,0);
+    }
+    @Test void surveyCatalogAndPrivilegeTamperingRejects(){
+        draftActor("LOCAL");var id=surveyDraft();jdbc.execute("ALTER TABLE public.hidra_topology_engineering_survey_snapshot DISABLE TRIGGER trg_p25_engineering_survey_same_transaction");
+        try{assertThatThrownBy(()->surveyOwner().executeSurvey(surveyWrite(id,2))).isInstanceOf(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.class);}finally{jdbc.execute("ALTER TABLE public.hidra_topology_engineering_survey_snapshot ENABLE TRIGGER trg_p25_engineering_survey_same_transaction");}
+        jdbc.execute("GRANT DELETE ON public.hidra_topology_engineering_survey_snapshot TO c3_publication_app");try{assertThatThrownBy(()->surveyOwner().executeSurvey(surveyWrite(id,2))).isInstanceOf(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.class);}finally{jdbc.execute("REVOKE DELETE ON public.hidra_topology_engineering_survey_snapshot FROM c3_publication_app");}surveyRows(id,2,0);surveyOwner().executeSurvey(surveyWrite(id,2));
+    }
+    @Test void surveyDatabaseRejectsWrongTransactionDigestAndGraphBinding(){
+        draftActor("LOCAL");var id=surveyDraft();surveyOwner().executeSurvey(surveyWrite(id,2));
+        String insert="INSERT INTO public.hidra_topology_engineering_survey_snapshot (draft_id,branch_id,version,graph_version,graph_sha256,payload_format,canonical_payload,sha256,transaction_id) SELECT draft_id,branch_id,version+1,graph_version,graph_sha256,payload_format,canonical_payload,sha256,transaction_id FROM public.hidra_topology_engineering_survey_snapshot WHERE draft_id=?";
+        assertThatThrownBy(()->jdbc.update(insert,id)).isInstanceOf(org.springframework.dao.DataAccessException.class);
+        // Checks still reject a forged digest/graph when only the transaction trigger is deliberately disabled by admin.
+        jdbc.execute("ALTER TABLE public.hidra_topology_engineering_survey_snapshot DISABLE TRIGGER trg_p25_engineering_survey_same_transaction");
+        try{
+            for(String alteration:List.of("sha256=repeat('0',64)","graph_version=999")){
+                String sql=alteration.startsWith("sha256")?insert.replace("canonical_payload,sha256,transaction_id FROM","canonical_payload,repeat('0',64),transaction_id FROM"):insert.replace("version+1,graph_version,graph_sha256","version+1,999,graph_sha256");
+                assertThatThrownBy(()->jdbc.update(sql,id)).isInstanceOf(org.springframework.dao.DataAccessException.class);
+            }
+        }finally{jdbc.execute("ALTER TABLE public.hidra_topology_engineering_survey_snapshot ENABLE TRIGGER trg_p25_engineering_survey_same_transaction");}surveyRows(id,3,1);
+        for(String sql:List.of("SELECT * FROM public.hidra_topology_engineering_survey_snapshot","DELETE FROM public.hidra_topology_engineering_survey_snapshot WHERE false")){
+            try(var ordinary=DriverManager.getConnection(POSTGRES.getJdbcUrl(),"c3_source_claim_app","synthetic-c3-test-only");var st=ordinary.createStatement()){
+                assertThat(org.junit.jupiter.api.Assertions.assertThrows(SQLException.class,()->st.execute(sql)).getSQLState()).isEqualTo("42501");
+            }catch(SQLException e){throw new AssertionError(e);}
+        }
+    }
 }

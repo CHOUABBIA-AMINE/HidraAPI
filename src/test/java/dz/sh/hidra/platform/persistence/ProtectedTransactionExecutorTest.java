@@ -767,4 +767,12 @@ class ProtectedTransactionExecutorTest {
         assertThat(reached).isFalse();assertThat(commits).hasValue(0);
     }
 
+
+    @Test void diagnosticAdmissionCannotMintSurveyMutationPermit(){
+        assertThatThrownBy(()->run(()->{executor.beginAdmission();
+            var permit=executor.sealAdmission();assertThat(permit).isNull();
+            executor.beginProvisional(permit,java.util.Set.of("INSERT INTO public.hidra_topology_engineering_survey_snapshot (draft_id) VALUES (?)"));
+            return "forbidden";},()->{},this::guard)).isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class);
+        assertThat(commits).hasValue(0);assertThat(rollbacks).hasValue(1);
+    }
 }

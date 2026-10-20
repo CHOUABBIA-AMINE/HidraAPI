@@ -124,7 +124,9 @@ public final class HidraRouteAuthorizationInterceptor implements HandlerIntercep
                  "PUT /api/v1/topology/engineering-networks/{draftId} update",
                  "POST /api/v1/topology/engineering-networks/{draftId}/validate validate",
                  "GET /api/v1/topology/engineering-networks/{draftId}/graph readGraph",
-                 "PUT /api/v1/topology/engineering-networks/{draftId}/graph updateGraph" -> true;
+                 "PUT /api/v1/topology/engineering-networks/{draftId}/graph updateGraph",
+                 "GET /api/v1/topology/engineering-networks/{draftId}/survey/{branchId} readSurvey",
+                 "PUT /api/v1/topology/engineering-networks/{draftId}/survey/{branchId} updateSurvey" -> true;
             default -> false;
         };
     }

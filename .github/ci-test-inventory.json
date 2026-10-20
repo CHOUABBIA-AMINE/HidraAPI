@@ -6324,6 +6324,22 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "surveyHasOnlyTheTwoRegisteredOperations",
+        "surveyRepositoryIsProxyableAndDomainStaysPure",
+        "surveyUsesExistingDraftOwnerAndTransportOwnedDtos"
+      ],
+      "class": "dz.sh.hidra.modules.topology.SurveyRouteProfileBoundaryGuardrailTest",
+      "dependency_reason": "HAPI-589B survey authoring; actual hosted timing pending, zero is unmeasured",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/SurveyRouteProfileBoundaryGuardrailTest.java",
+      "source_sha256": "91f5ca87d78c66eed6c0c1cacdb64cc56a4069f9112fc49833d0abbd9daeecfd",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
         "graphReadDefaultsToCurrentAndSupportsExplicitHistoricalVersion",
         "graphResponseSerializesExplicitNodePortBranchDtos",
         "graphUpdateRejectsScalarCoercionAndUnknownNestedProperties",
@@ -6356,6 +6372,24 @@
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/api/rest/EngineeringNetworkDraftControllerTest.java",
       "source_sha256": "1ee6f9247f7496008d3c5a3cc8820dc621794a05a0a77b7181a828abb4edff6e",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "mapsStrictSurveyTransportWithoutDomainSerialization",
+        "preservesDecimalStringsAndRejectsInvalidOrOversizedValues",
+        "rejectsBadScopeVersionsAndBranchMismatch",
+        "rejectsNestedUnknownFieldsAndScalarCoercion",
+        "returnsRegisteredNonDisclosingErrors"
+      ],
+      "class": "dz.sh.hidra.modules.topology.api.rest.SurveyRouteProfileControllerTest",
+      "dependency_reason": "HAPI-589B survey authoring; actual hosted timing pending, zero is unmeasured",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/api/rest/SurveyRouteProfileControllerTest.java",
+      "source_sha256": "f3028459a497909f73721f01c63e11db2444ef91f6f2b3116682bbeb7f5aef79",
       "supports": []
     },
     {
@@ -6583,6 +6617,23 @@
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/application/service/StationRevisionOwnerQueryServiceTest.java",
       "source_sha256": "a30b704f3bc98b417ed73eb9543291ec81ceab44ebce73b9eac8d124ca549917",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "indeterminateSurveyWriteIsNotRetried",
+        "requiresTypedSurveyCommandAndMatchingBranch",
+        "rollsBackSurveyFailureAndRetainsCause",
+        "usesNativeReadUpdateOnOneDraftOwner"
+      ],
+      "class": "dz.sh.hidra.modules.topology.application.service.SurveyRouteProfileApplicationServiceTest",
+      "dependency_reason": "HAPI-589B survey authoring; actual hosted timing pending, zero is unmeasured",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/application/service/SurveyRouteProfileApplicationServiceTest.java",
+      "source_sha256": "c57d3d52b0cbdc693955ae6140be9011c6c1627bd663ef0122751efa90cce334",
       "supports": []
     },
     {
@@ -6886,8 +6937,11 @@
         "actualPublisherFenceWorksWhileStatementTriggersRejectUpdates",
         "committedNetworkRevocationAndPartyIneligibilityPreventReplay",
         "concurrentSameExpectedVersionCommitsAtMostOneSuccessor",
+        "concurrentSurveyAndGraphWritersHaveOneSuccessor",
+        "concurrentSurveyAndMetadataWritersHaveOneSuccessor",
         "disabledActualCatalogTriggerFailsBeforeAnyDraftInsert",
         "expiredGraphFinalGuardRollsBackBothVersionRows",
+        "expiredSurveyGuardRollsBackBothRows",
         "facilityWriterFirstPreventsBothGraphAndMetadataAppends",
         "graphCurrentStationWrongKindAndStatusFailClosed",
         "graphFinalGuardContainsThirtyFourRelationFences",
@@ -6900,10 +6954,19 @@
         "originalCreationReplayDoesNotRevertLaterMetadata",
         "realHttpBearerRoundTripAndSafeUnknownFieldRejection",
         "realNativeProvidersCreateReadUpdateAndValidateWithoutPublishing",
+        "realNativeProvidersRoundTripSurveyWithCurrentDeny",
         "revokedGraphWriteDoesNotCreateASecondMetadataVersion",
         "samePairReusesOneContextForIndependentCandidates",
         "signedBearerGraphVersionAppendAndHistoricalAsOfAreDraftOnly",
         "staleVersionNeverAppendsOrOverwrites",
+        "surveyCatalogAndPrivilegeTamperingRejects",
+        "surveyDatabaseRejectsWrongTransactionDigestAndGraphBinding",
+        "surveyExactHistoricalReadsRetainOriginalBytes",
+        "surveyForeignOwnerAndOwnerAbaNeverReuseWitness",
+        "surveyGraphReauthoringConflictsUntilRebound",
+        "surveyMetadataGraphInterleavingPreservesSharedVersions",
+        "surveyRejectsMissingForeignAndConnectorBranches",
+        "surveyWriterFirstAndOwnerFirstPreserveFacilityFences",
         "twoCompaniesHaveIsolatedContextsOnTheSameLogicalNetwork",
         "twoConcurrentSameVersionGraphWritersCommitExactlyOneSuccessor",
         "writerFirstLockPreventsProvisionalCreate"
@@ -6914,7 +6977,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/EngineeringNetworkDraftPostgresIntegrationTest.java",
-      "source_sha256": "18250362281db2a4c7035216e52254e8458bc325010e0344af034899b0f191bd",
+      "source_sha256": "73b0d7639d025b6c06469ab10394c703f0793246af0948f6756df4452a459716",
       "supports": []
     },
     {
@@ -7181,6 +7244,24 @@
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/StationInternalGraphRevisionCodecTest.java",
       "source_sha256": "332348f6b451718da77a6ecba1a23dbf387451cd7db4377b721c5c6ede7b20c9",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "preservesAxisPointAndSectionOrder",
+        "rejectsMalformedLengthsCountsUtf8AndMarkers",
+        "rejectsNoncanonicalDecimalsAndPayloadOverflow",
+        "rejectsUnknownFormatTruncationAndTrailingBytes",
+        "roundTripsAllDeclaredValuesAndScales"
+      ],
+      "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.SurveyRouteProfileCodecTest",
+      "dependency_reason": "HAPI-589B survey authoring; actual hosted timing pending, zero is unmeasured",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/SurveyRouteProfileCodecTest.java",
+      "source_sha256": "667b054105d0e56d7213baf6c3759e6e95883e05dae6c4647981b560cd05d3db",
       "supports": []
     },
     {
@@ -7952,7 +8033,8 @@
         "engineeringDraftNeverDelegatesAnonymousOrDifferentController",
         "forbidsMissingEffectivePermission",
         "permitsAnonymousDirectLoginBeforeRoutePermissionResolution",
-        "permitsMatchingEffectivePermission"
+        "permitsMatchingEffectivePermission",
+        "surveyDelegationRequiresExactNativeControllerMethodAndAuthentication"
       ],
       "class": "dz.sh.hidra.platform.permissions.HidraRouteAuthorizationInterceptorTest",
       "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
@@ -7960,7 +8042,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptorTest.java",
-      "source_sha256": "63f71ff49c8b90055daccd09b663381947d33939146d995b4925bee53301c00f",
+      "source_sha256": "60353dcc17617d5b69355b6e40b2838c15e046f05b94d5d77a6b9c4f34dd4b65",
       "supports": []
     },
     {
@@ -8038,6 +8120,7 @@
         "datasourceCloseDuringWorkPoisonsAttempt",
         "datasourceDelegateAndBuilderEscapesPoisonCaughtErrors",
         "diagnosticAdmissionCannotMintDraftMutationPermit",
+        "diagnosticAdmissionCannotMintSurveyMutationPermit",
         "dormantCallableStatementRetainsJdbcInterfaceAndBackReference",
         "dormantDatasourceKeepsOrdinaryJdbcSemantics",
         "elapsedBudgetRejectsBeforeGuard",
@@ -8069,7 +8152,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java",
-      "source_sha256": "cc5326e59a24ec3a4382548d95cdc56c9398b48da820e4c3d9752f6941927807",
+      "source_sha256": "d6b2df88124c85afd6d8595d1e46b873310d3927f3f460adb4c396254ddb6b91",
       "supports": []
     },
     {

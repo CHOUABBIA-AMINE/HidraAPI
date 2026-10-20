@@ -1,5 +1,24 @@
-/** HAPI-588B work-in-progress; graph proof must be consumed by one physical final SQL guard. */
+/**
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : EngineeringNetworkDraftRepositoryPort
+ * @CreatedOn   : 2025-06-26
+ * @UpdatedOn   : 2026-10-20
+ *
+ * @Type        : Interface
+ * @Layer       : Application
+ * @Module      : topology
+ * @Package     : dz.sh.hidra.modules.topology.application.port.out
+ *
+ * @Description : Binds draft evidence to one protected physical final guard.
+ *
+ */
 package dz.sh.hidra.modules.topology.application.port.out;
+
 import dz.sh.hidra.modules.topology.application.port.in.EngineeringNetworkDraftUseCase.*;
 import dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringDraftAdmissionCoordinator.Contribution;
 import dz.sh.hidra.platform.persistence.ProtectedRelationFence;
@@ -23,6 +42,8 @@ public interface EngineeringNetworkDraftRepositoryPort {
             List<EngineeringGraphStationWitnessPort.Witness> stations,long observedVersion){
         throw new IllegalStateException("Graph final guard not integrated");
     }
+    default Set<String> surveyMutationSql(){throw new IllegalStateException("Survey SQL not integrated");}
+    default void bindSurveyProof(Admission a,SurveyRouteProfileRepositoryPort.Snapshot snapshot){throw new IllegalStateException("Survey proof not integrated");}
     Result apply(Admission admission,Contribution contribution);
     void flush();
     boolean finalGuard(Admission admission,Contribution contribution,List<ProtectedRelationFence> fences);

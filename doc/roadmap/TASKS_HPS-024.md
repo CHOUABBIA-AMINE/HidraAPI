@@ -1070,9 +1070,9 @@ Legacy IDs: CI-003D
 
 Priority: P0
 
-Implementation Status: PARTIAL
+Implementation Status: VERIFIED
 
-Planning Status: IN_PROGRESS
+Planning Status: COMPLETED
 
 Owning Module: `platform` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -1317,6 +1317,87 @@ quota and do not repeat the already accepted cold equivalence audit. Until
 sufficient comparable evidence exists, report the measured subset above and
 leave HAPI-046/436 open; an independent ready task requires its own owner Next.
 
+
+### 2026-10-20 — HAPI-046 owner timing acceptance and development adoption
+
+The owner explicitly instructed "Do 046 than 436", then "Timing accepted next".
+This selects ordered HAPI-046 acceptance followed by HAPI-436's independent
+parent reconciliation. The owner accepts the already measured timing/cost
+evidence for this development API and removes the remaining sample-count/
+repeatability hold as a condition of development adoption. This is an explicit
+owner amendment of the original timing qualification gate, not a claim that
+five comparable Full runs, a repeatable cold-performance distribution or a
+long-term flake-rate bound were demonstrated. Original criteria and every dated
+measurement above remain historical evidence. No unchanged benchmark campaign
+is required to complete this accepted bounded scope.
+
+**Fresh exact-source verification.** Main
+`44c2f904d9e1abd4fb9d7158ff1f302ebab6f3be`, parent
+`df10b03ece7cfc53344ee0e3f7e89fab33abfec5`, tree
+`ad238c6474bac5afe54c4ce103b63be32b4ccb6e`, passed
+[Full785](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39459787957)
+and [Documentation467](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39457344569).
+Full785 is a completed workflow_dispatch, attempt1, development/cached,
+serial_oracle=false. All nine executed jobs succeeded; the optional serial
+job was intentionally skipped. Gate118758744100 confirms430 executable classes/
+2606 cases, zero failures/errors/skips, identical inventory SHA256
+`ee14f591e0f0ef84c89d6eda6e609fa7259748c506e03f0d56e4bde6d44b15b4`,
+successful cache restoration for all seven Java lanes and current/base API/
+actual PostgreSQL16.15 catalog/dictionary evidence. Source bundle SHA256 remains
+`be0f97cd7280aa97c0e84de040a632fbf494518e705fa10b358f793d136b9221`.
+Hosted aggregate artifact12283290924 has reported ZIP SHA256
+`ff2b70eafa634d0f3aac3d71900afa93f0da80157679ab9f82bc8aa669f6a9c2`.
+These facts are retrieved gate output/artifact metadata; no new local archive
+download or replay is claimed.
+
+Full785 ran16:42:23Z..16:48:13Z:350s (5m50s) workflow interval, slowest job332s,
+summed executed runner time1725s (28m45s),34 rounded job-minute proxies.
+Skipped-job timestamps are excluded. These are measured runner-time proxies,
+not monetary or billing amounts. Adding this observation to the earlier
+three five-set development workload observations gives four intervals
+348/377/369/350s and descriptive median359.5s (5m59.5s). Their instrumentation/
+policy differences remain as recorded; four is not five, and the current
+strictly comparable subsets remain smaller. The previously established warm
+Fast five-sample median106s (1m46s) remains accepted. Cold Full783 and warm
+Full781 independently establish correctness/cache scope, not additional
+default-development elapsed samples or a measured cold latency distribution.
+
+A complete GitHub comparison from Full784/Fast106 source887b84c to current44c2f90
+contains three commits and five Markdown-only changed paths. Executable,
+test, inventory, workflow/helper, API and schema behavior is unchanged.
+Therefore Fast106's exact unchanged selection/source evidence remains applicable;
+no nonexistent standalone Fast on44c2f90 is asserted. Full785 freshly exercises
+the complete current parallel selection and actual catalog gates.
+
+**Decision and scope.** Accept the measured latency/cost tradeoff for the owner's
+development use: complete unit/architecture plus five isolated DB sets, API/base
+compatibility, actual migrated dictionary validation and mandatory aggregate
+provenance/negative checks. Keep serial verification an explicit optional audit
+diagnostic; release verification still requires its independent oracle proof.
+No numerical production SLO, calibrated industrial latency, population failure/
+flake bound, cost optimum, paid-runner selection, production deployment or
+release readiness is accepted. Future workload growth is measured honestly in
+its own cohort; it does not invalidate this dated adoption or automatically
+reopen HAPI-046 merely to fill the superseded development quota.
+
+HAPI-046 is now VERIFIED/COMPLETED for this owner-amended development timing/
+cost/adoption obligation. The original five-sample criterion is superseded only
+as the remaining development acceptance hold by the owner's explicit timing
+acceptance. Existing helper values optimized_adoption_eligible=false and
+release_eligible=false for partition-only runs remain unchanged; governance
+acceptance does not grant release eligibility or independent same-run equality.
+
+This is the first of the owner's ordered two-commit governance sequence.
+Exact message: `ci: automate fast feedback and preserve full verification gates`.
+MODIFY only this owning phase record and HAPI-046's two status cells in
+ULTIMATE_ROADMAP.md and ULTIMATE_PHASES.md; zero CREATE/DELETE. The next commit
+independently reconciles HAPI-436, preserving one commit per task; advance main
+once to the final verified governance commit and observe final exact-SHA Docs
+startup, then stop. HAPI-436 is not marked complete in this first commit.
+In-memory arithmetic, raw status/source comparison, three-way field agreement,
+history/anchor and scope checks pass. The execution environment is unavailable;
+no local Python, Java/Maven, database or full canonical validation is claimed.
+Hosted Docs validates the final documentation-only sequence.
 
 <a id="hapi-434"></a>
 ## HAPI-434 — parallelize isolated test JVM execution

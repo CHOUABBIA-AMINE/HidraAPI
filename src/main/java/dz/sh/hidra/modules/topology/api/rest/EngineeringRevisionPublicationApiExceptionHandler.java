@@ -37,12 +37,15 @@ public class EngineeringRevisionPublicationApiExceptionHandler {
         var problem=ProblemDetail.forStatusAndDetail(HttpStatus.valueOf(status),
                 error.reason()==EngineeringRevisionPublicationFailure.Reason.INDETERMINATE
                     ?"Publication completion is indeterminate":"Publication operation unavailable");
+        problem.setInstance(java.net.URI.create("urn:hidra:engineering-publication"));
         problem.setProperty("code",error.reason().name());
         return ResponseEntity.status(status).body(problem);
     }
     @ExceptionHandler({IllegalArgumentException.class,java.time.DateTimeException.class,HttpMessageNotReadableException.class,
         MissingServletRequestParameterException.class,MethodArgumentTypeMismatchException.class})
     public ResponseEntity<ProblemDetail> invalid(Exception error) {
-        return ResponseEntity.badRequest().body(ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,"Invalid publication request"));
+        var problem=ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,"Invalid publication request");
+        problem.setInstance(java.net.URI.create("urn:hidra:engineering-publication"));
+        return ResponseEntity.badRequest().body(problem);
     }
 }

@@ -1134,10 +1134,14 @@ public class EngineeringRevisionPublicationPostgresIntegrationTest {
     }
 
     @Test void fourGenuineProvidersPublishAndReadExactSnapshots() throws Exception {
+        Head predecessor=null;
         for(String type:List.of("LOCAL","OIDC","LDAP","ACTIVE_DIRECTORY")) {
             publicationActor(type);var draft=create(UUID.randomUUID(),"published "+type).draft().draftId();
             var request=UUID.randomUUID();
-            String body="{\"requestId\":\""+request+"\",\"draftVersion\":1,\"expectedEpoch\":0}";
+            // All four providers publish candidates into the same company/network context ledger.
+            String body="{\"requestId\":\""+request+"\",\"draftVersion\":1,\"expectedEpoch\":"
+                +(predecessor==null?0:predecessor.epoch())
+                +(predecessor==null?"":",\"expectedRevisionId\":\""+predecessor.revisionId()+"\"")+"}";
             assertThat(nativeDecoder.decode(rawToken).getTokenValue()).isEqualTo(rawToken);
             SecurityContextHolder.clearContext();
             var response=http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(publicationUrl(draft,""))
@@ -1147,7 +1151,12 @@ public class EngineeringRevisionPublicationPostgresIntegrationTest {
             UUID revision=UUID.fromString(root.path("snapshot").path("revisionId").asText());
             ambient(rawToken);
             assertThat(root.path("snapshot").path("engineeringQualified").asBoolean()).isFalse();
-            assertThat(exact(draft,revision).publication().revisionId()).isEqualTo(revision);
+            var retained=exact(draft,revision);
+            assertThat(retained.publication().revisionId()).isEqualTo(revision);
+            assertThat(retained.observedHead().epoch()).isEqualTo(predecessor==null?1L:predecessor.epoch()+1);
+            if(predecessor!=null)
+                assertThat(exact(draft,predecessor.revisionId()).publication().revisionId()).isEqualTo(predecessor.revisionId());
+            predecessor=retained.observedHead();
             SecurityContextHolder.clearContext();
             http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(publicationUrl(draft,"/revisions/"+revision))
                     .header("Authorization","Bearer "+rawToken))

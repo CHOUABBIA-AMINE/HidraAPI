@@ -7477,6 +7477,64 @@ new-SHA Full/Fast/Docs creation/startup and STOP. Do not wait for completion or
 select C/acceptance or another roadmap task automatically. Real B failures must
 be repaired before dependent work proceeds.
 
+
+### 2026-10-20 — HAPI-590 Package B exact-source CI repair
+
+Owner Next refreshed live main `ee1c413ffdc049d0fc6fb6e1a84fdb0ac87daf05`,
+parent `d0a2d8ff21645c077498d5344f98c21d40ead4dc`, tree
+`e4797505587cfc9f493b8cd80d5c35564ddae24c`. Actual
+[Full787](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39479203705)
+and [Fast108](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39479203796)
+failed; [Docs471](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39479203782)
+passed. Failed implementation gates take precedence over C or any successor.
+This is a bounded B correction under its registered exact message
+`feat(topology): implement governed engineering publication`, not task acceptance.
+
+**Recovered failures and corrections:** Fast's actual controller denial assertion
+failed because Spring populated ProblemDetail.instance from the requested URL,
+echoing the revision UUID. Both publication error handlers now set the fixed
+scope-free instance `urn:hidra:engineering-publication`. The existing denial
+test keeps its UUID non-disclosure assertion and additionally requires that
+exact instance; no status, error code, protected lookup or authority is relaxed.
+
+Full's PostgreSQL shard3 ran239 cases with one failure, zero errors/skips:
+fourGenuineProvidersPublishAndReadExactSnapshots expected200 but received409.
+The loop used one company/network context across all four providers, retained
+its immutable ledger, yet submitted expectedEpoch0 for each new draft candidate.
+The test now carries the actually returned predecessor epoch/revision into the
+next provider's HTTP publication. It asserts exact epoch increments and reads
+the preceding retained snapshot through the next authorized candidate. Genuine
+signed LOCAL/OIDC/LDAP/ACTIVE_DIRECTORY producers, real HTTP security, separate
+database principals and success/unauthenticated/unknown-field assertions remain.
+The production CAS/context invariant is unchanged. All other thirteen publication
+PostgreSQL methods passed in that run; that does not establish full B acceptance.
+
+The API job successfully packaged/started the actual application and generated
+OpenAPI, then failed strict snapshot equality, as expected for B's new routes.
+That separate artifact drift remains pending C; no generated artifact is
+hand-authored here, no workflow/equality gate is weakened and no CI pass is
+claimed. Secondary missing lane-evidence uploads followed the failed checks.
+
+**Exact five MODIFY paths:** this phase record, publication API exception handler,
+its existing controller test, its existing PostgreSQL integration test and
+`.github/ci-test-inventory.json`. Zero CREATE/DELETE. The inventory refreshes
+only the two modified test source hashes; all case identities, timing weights,
+lane assignments, five database sets, policy and historical evidence remain.
+Frozen roadmap/phase status tables, migrations, authorization/transaction
+mechanics and every other source/artifact retain their prior bytes.
+HAPI-590 remains PARTIAL/REGISTERED_PENDING.
+
+**Actual validation and stop:** inspected complete changed source and exact-SHA
+job logs; in-memory original SHA256/source-pin verification, hash self-test,
+case preservation, two-hash-only inventory comparison and five-path scope checks
+passed. Shell execution is unavailable ("No usable execution environment is
+available"), so no local Java/Maven/PostgreSQL or canonical documentation-script
+pass is claimed. Publish with expected-ee1c413 guard, verify exact tree/parent/
+message/paths/blobs and confirm applicable new-SHA CI creation/startup, then STOP.
+Required test success remains pending; C artifact reconciliation is the next
+registered stage only after genuine B failures are resolved. No further task,
+benchmark, release or deployment is selected.
+
 <a id="hapi-592"></a>
 ## HAPI-592 — Topology operator/API/history qualification
 

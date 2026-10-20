@@ -88,6 +88,7 @@ class EngineeringRevisionPublicationControllerTest {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("transport-fixture",null,List.of()));
         doThrow(new EngineeringRevisionPublicationFailure(Reason.DENIED)).when(useCase).executePublication(any());
         mvc.perform(get(url("/revisions/"+revision))).andExpect(status().isForbidden())
+            .andExpect(jsonPath("$.instance").value("urn:hidra:engineering-publication"))
             .andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString(revision.toString()))));
     }
     @Test void preservesExplicitUnqualifiedStatusAndMissingValues() throws Exception {

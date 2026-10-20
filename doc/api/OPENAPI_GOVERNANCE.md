@@ -169,3 +169,57 @@ This HAPI-588C commit reconciles successful evidence; formal HAPI-588 acceptance
 remains a separate registered step after C's own applicable CI passes. It does
 not qualify an effective physical network, numerical solver, commissioning,
 deployment or operational control.
+
+## HAPI-590C generated publication artifact repair — 2026-10-21
+
+Owner Fail addresses the inherited canonical equality failure on
+`11084d86126b0a0a5851f4d8bd17b7fea3e1eb47`, Full789 run39501079650/attempt1.
+Fast110 and Docs475 passed, as did unit/architecture, static and all five
+PostgreSQL jobs. The API job118898431865 failed equality; its application build
+step8 and deterministic generation step9 succeeded. The manifest's success
+claim is scoped to those generation steps only. The failed API job/workflow
+and skipped standard dictionary/compatibility stages remain explicit.
+
+The actual generated member openapi/hidra-api.json was recovered from diagnostics
+artifact12300211836, ZIP SHA256
+`562dfebc21389185e2fc9750144d9d243d27378f807db4326d50e57bdb4088f0`.
+Member SHA256:
+`692060ef6b414abd09cd4f4099518703c49297e64c124e41e5704576ea652354`.
+Sorted compact canonical snapshot SHA256:
+`0464bf15e2afcdbb7c8275fe3347118a8b60da9979de27967a4938beebb39069`.
+Counts are257 paths/279 operations/267 schemas. The actual additions are eight
+publication routes/eight operations/nine schemas; every prior path item/schema,
+non-schema component, security declaration and other top-level contract value
+is unchanged, excluding only the validated generator-source SHA. No endpoint,
+field or response schema was manually authored. Strict local generated equality
+and the supported backward-compatibility comparison to the preceding canonical
+snapshot pass. Fresh repair-SHA generation and hosted compatibility still apply.
+
+The dictionary was independently rendered from the actual migrated PostgreSQL
+catalog retained in a successful11-case SimulationEquipmentParameterRevision
+PostgresIntegrationTest report in diagnostics artifact12300606228, same source/
+run/attempt, successful shard3 job118898432732. ZIP SHA256:
+`acce81c7576acceb07c7be4c00d64775d7211ce2a7fcd838adc75240d2cce798`.
+XML member:
+`surefire-reports/TEST-dz.sh.hidra.modules.simulation.infrastructure.persistence.SimulationEquipmentParameterRevisionPostgresIntegrationTest.xml`.
+Its contiguous Base64/gzip CATALOG_PART sequence reconstructed catalog SHA256
+`a320108f2affd477f3aaac7d9e4f76665d924b062a00439b8a1d545fc496d51c`.
+The unchanged generator validates the full source inventory against an exact-SHA
+checkout and reviewed ownership:158 migrations/470 JPA mappings/505 relations,
+zero unresolved owners, PostgreSQL16.15. Source bundle SHA256:
+`edcbccdd40dc9db169773adfdec7c1793260513d4a052a36916492ccef503152`.
+Rendered dictionary SHA256:
+`c3dfaa10a90a7872a5bdee22c1a5e59290135697ef20b6b25bcad14f2f19b1c7`,
+identical to the test's retained verification digest. Strict local dictionary
+check passes. No local database/catalog capture or production-data proof is
+claimed; this uses the actual hosted disposable migrated catalog. The standard
+API-lane capture/equality was skipped in Full789 and must succeed after repair.
+
+This is the registered five-path HAPI-590C artifact reconciliation, published
+with `docs(topology): reconcile governed publication artifacts`. No Java,
+test/inventory, migration, workflow, grant, equality/compatibility implementation,
+policy default or frozen registry state changes. The tooling obstacle is
+resolved, but HAPI-590's retained PARTIAL/BLOCKED status and separate acceptance
+gate remain pending. HAPI-778 is not marked accepted by this repair. Exact
+repair-SHA applicable CI must run; no full workflow success or software,
+engineering, deployment or operational acceptance is inferred here.

@@ -7573,6 +7573,91 @@ which has no registered dependency on HAPI-590. Its initial source review and
 next bounded design stage are recorded in TASKS_HPS-003.md.
 This hold does not authorize release, deployment, simulation or live OT work.
 
+
+### 2026-10-21 — HAPI-590 Package C actual-artifact repair after restored execution
+
+**Owner selection and exact stage:** Owner Fail selects the responsible inherited
+Full789 artifact failure, not a new HAPI-778 domain change. Exact source
+`11084d86126b0a0a5851f4d8bd17b7fea3e1eb47`, parent
+`f36fb4dcefb6dbb25df96510b10c64837c44570f`, tree
+`acdcf81a6541e8b1dd4507585ca1812631fedac9` failed
+[Full789](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39501079650);
+[Fast110](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39501079645)
+and [Docs475](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39501079637)
+passed. All five DB sets, unit/architecture and static jobs succeeded.
+The owner previously held HAPI-590 because artifact extraction was unavailable;
+execution access now works. This bounded repair resolves that concrete common
+gate using its already registered C scope, without changing HAPI-778 code.
+Exact message: `docs(topology): reconcile governed publication artifacts`.
+MODIFY only this phase record, doc/api/openapi.yaml, doc/api/OPENAPI_GOVERNANCE.md,
+.github/documentation-validation.json and doc/database/DATA_DICTIONARY.md.
+Zero CREATE/DELETE. Registry/index/task statuses, source, tests, inventory,
+migration history, ownership entries, workflows and all prior evidence remain.
+
+**Verified actual OpenAPI:** API job118898431865 built the current application
+(step8) and generated OpenAPI (step9) successfully, then failed canonical equality
+(step10). Standard dictionary capture, base generation and compatibility steps
+were skipped. The manifest scopes conclusion=success to generation only and
+explicitly records failed job/workflow conclusions; no gate is waived.
+Recovered artifact12300211836, run39501079650/attempt1, ZIP
+`562dfebc21389185e2fc9750144d9d243d27378f807db4326d50e57bdb4088f0`;
+member openapi/hidra-api.json SHA256
+`692060ef6b414abd09cd4f4099518703c49297e64c124e41e5704576ea652354`.
+The canonical sorted compact snapshot is copied from that object, with digest
+`0464bf15e2afcdbb7c8275fe3347118a8b60da9979de27967a4938beebb39069`.
+257 paths/279 operations/267 schemas: eight publication path items/operations
+and nine schemas added. Existing paths/schemas, all non-schema components/
+security and top-level objects remain unchanged apart from validated source SHA.
+Strict generated equality and supported local compatibility comparison to the
+preceding canonical snapshot pass; fresh hosted repair-SHA checks remain required.
+
+**Verified actual database artifact:** successful PostgreSQL shard3
+job118898432732 retained the actual catalog capture in the successful11-case
+SimulationEquipmentParameterRevisionPostgresIntegrationTest raw XML. Artifact
+12300606228 ZIP SHA256
+`acce81c7576acceb07c7be4c00d64775d7211ce2a7fcd838adc75240d2cce798`;
+member
+`surefire-reports/TEST-dz.sh.hidra.modules.simulation.infrastructure.persistence.SimulationEquipmentParameterRevisionPostgresIntegrationTest.xml`.
+Contiguous ordered CATALOG_PART Base64/gzip chunks reconstruct the document;
+catalog SHA256
+`a320108f2affd477f3aaac7d9e4f76665d924b062a00439b8a1d545fc496d51c`
+and actual recorded source SHA agree with the retained verification line.
+The unchanged generator verifies all exact-checkout migration/JPA hashes and
+reviewed ownership, then renders physical facts from that actual catalog.
+158 migrations/470 mappings/505 relations/zero unresolved owners; PostgreSQL16.15;
+source bundle
+`edcbccdd40dc9db169773adfdec7c1793260513d4a052a36916492ccef503152`;
+dictionary
+`c3dfaa10a90a7872a5bdee22c1a5e59290135697ef20b6b25bcad14f2f19b1c7`.
+That rendered digest matches the original test's verification digest exactly.
+No physical metadata was inferred, hand-authored or captured from a local DB.
+The ordinary API-lane dictionary step was skipped and must still pass after repair.
+
+**Current validation:** verified both ZIP digests against GitHub artifact metadata;
+validated raw report success, capture chunk ordering/source/catalog digests;
+regenerated canonical OpenAPI and source/ownership-backed physical dictionary
+with unchanged repository scripts. Strict runtime equality against the retained
+generated source, supported backward compatibility and strict dictionary equality
+pass locally. Canonical Python validator suites, documentation/inventory checks
+and git diff whitespace/scope validation are run before publication; exact
+results are recorded below. Java/Maven/PostgreSQL suites are not rerun locally;
+the existing exact-source hosted successes are evidence for their actual lanes,
+not a successful aggregate Full789.
+
+**Completed local checks:** all134 Python validator tests passed (Docs17, OpenAPI10, dictionary17, base resolver14, inventory31, full-evidence45). Canonical documentation validates128 documents/8277 links/24 modules/921 tasks/25 phases. CI inventory validates443 source classes (439 active plus4 retained historical) with all five database sets preserved. Strict generated OpenAPI equality, supported backward compatibility, strict actual-catalog dictionary equality and final git diff whitespace/scope checks pass. No new Java/PostgreSQL execution is claimed.
+
+**Status and stop:** HAPI-590 remains PARTIAL/BLOCKED pending required repair-SHA
+verification and its separately selected formal acceptance. This artifact commit
+is not software/engineering acceptance; neither child nor integrated dependencies
+are automatically unblocked. HAPI-778 remains PARTIAL/IN_PROGRESS with actual
+Fast110/Docs475 and Full789 lane successes; its domain code is untouched.
+After applicable exact-SHA CI is created/queued/started, report actual links/state
+and STOP. Failure feedback repairs the actual gate first. After required gates
+succeed, formal HAPI-590 acceptance and the active HAPI-778 scoped-authority/
+ownership review remain separately selected registered stages; no automatic
+acceptance, release, deployment, simulation or OT operation occurs.
+
+
 <a id="hapi-592"></a>
 ## HAPI-592 — Topology operator/API/history qualification
 

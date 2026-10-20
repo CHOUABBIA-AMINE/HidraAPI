@@ -34,11 +34,14 @@ owner choice before executable registration. It remains NOT_IMPLEMENTED/BLOCKED;
 the six proposed source files are not an implementation allowlist. See its owning
 phase record for the prepared lifecycle and exact next decision.
 
-[HAPI-045](TASKS_HPS-024.md#hapi-045) is VERIFIED/COMPLETED within the accepted
-development CI scope. [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent
-[HAPI-436](TASKS_HPS-024.md#hapi-436) remain PARTIAL/IN_PROGRESS; collect future
-naturally authorized comparable runs, without unchanged benchmark repeats.
-This pointer changes no task status, source scope or production/release policy.
+[HAPI-045](TASKS_HPS-024.md#hapi-045),
+[HAPI-046](TASKS_HPS-024.md#hapi-046) and parent
+[HAPI-436](TASKS_HPS-024.md#hapi-436) are VERIFIED/COMPLETED within the accepted
+development CI scope. HAPI-046 records the owner's explicit acceptance of the
+measured timing/cost evidence with its sample limitations; HAPI-436 separately
+reconciles all four child obligations. Five complete DB sets, the optional
+serial diagnostic and strict release evidence restrictions remain unchanged.
+This pointer selects no new benchmark, publication policy, source change or release.
 
 ## Phase files
 

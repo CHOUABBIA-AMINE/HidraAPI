@@ -1721,9 +1721,9 @@ Legacy IDs: HPR-CI-003, CI-003
 
 Priority: P0
 
-Implementation Status: PARTIAL
+Implementation Status: VERIFIED
 
-Planning Status: IN_PROGRESS
+Planning Status: COMPLETED
 
 Owning Module: `platform` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -1902,6 +1902,102 @@ Initial canonical adoption, 2026-10-16: Historical task retained independently; 
 No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
 
 Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+### 2026-10-20 — HAPI-436 independent integrated development CI closure
+
+The owner selected "Do 046 than 436" and then explicitly accepted timing.
+This is the second ordered governance task, after HAPI-046 acceptance commit
+`9d57ce16caac60dad48cf4e1199c26ac0b88ea54` (parent44c2f904d9e1abd4fb9d7158ff1f302ebab6f3be).
+The first task records the owner-amended timing criterion and its statistical
+limits; this parent does not duplicate or invent missing measurements.
+
+**Independent child-deliverable reconciliation.**
+
+| Child | Final bounded disposition | Evidence accepted for this parent |
+|---|---|---|
+| HAPI-043 / CI-003A | VERIFIED/COMPLETED | Retained measured-analysis/no-code-needed outcome, supplemented by exact run/job timing, queue-versus-workflow-versus-runner definitions in046. Historical source applicability stays dated. |
+| HAPI-044 / CI-003B | VERIFIED/COMPLETED | Retained bounded scheduling obligation; the later045 implementation/acceptance records establish complete disjoint five-set execution and isolated clean-verify lifecycles, without deleted cases, broadened exclusions or unsafe report/DB caches. |
+| HAPI-045 / CI-003C | VERIFIED/COMPLETED | Source-linked representative code/security, additive migration and API matrix:101 exact cases/31 added methods; Full777/781/783 independent partition/oracle equality, actual warm/cold dependency-repository proof, Full784 optional-mode acceptance and required negative fixture gates. |
+| HAPI-046 / CI-003D | VERIFIED/COMPLETED under explicit owner timing acceptance | Five comparable warm Fast runs median106s; dated development Full timing/cost analysis and newly verified Full785 at350s. Owner accepts the measured tradeoff and removes the remaining five-Full-sample/repeatability development hold. No statistically complete Full/cold/flake distribution is asserted. |
+
+The original child scopes remain separate. HAPI-043/044 acceptance is not
+reinterpreted as evidence that they independently implemented all later045
+machinery. Current adoption follows their complete combined delivery plus
+the explicit owner amendments, not a cumulative green-run shortcut.
+
+**Current source and integrated proof.** Full785/run39459787957 attempt1
+succeeded on44c2f904d9e1abd4fb9d7158ff1f302ebab6f3be; its final aggregate
+job118758744100 checks source/run/attempt/inventory, lane evidence, all430
+executable class/2606 case identities, successful Java21 clean-verify lifecycle
+and mandatory job completion, current/base OpenAPI compatibility and actual
+migrated PostgreSQL16.15 catalog/dictionary evidence. Counts are zero failed,
+errored or skipped required tests. The intentionally absent optional serial
+job is not a skipped test. All seven active Java execution lanes prove actual
+warm Maven dependency restoration.
+
+The source comparison from accepted Full784/Fast106 source887b84c to44c2f90
+contains only three governance commits/five Markdown paths; no workflow/helper,
+inventory, runtime/test, API or migration source changed. Full785 therefore
+freshly exercises the accepted current five-set implementation. Its hosted
+aggregate artifact12283290924 and reported ZIP SHA256
+`ff2b70eafa634d0f3aac3d71900afa93f0da80157679ab9f82bc8aa669f6a9c2`
+are recorded under046. No separate local ZIP replay is claimed in this parent
+review. HAPI-045's earlier independently checked raw artifacts remain its
+representative/warm/cold provenance rather than being replaced by job success.
+
+**Accepted integrated policy.** Development verification uses the complete
+reviewed unit/architecture selection and five isolated database sets, plus
+static, API/catalog and final aggregate gates. Fast remains an exact reviewed
+feedback subset and cannot substitute for Full acceptance. Tests use migrated
+disposable databases and actual dictionary equality; source-only or greenfield
+success does not waive the retained historical upgrade cases. No test is
+removed or deemed obsolete by this closure. Exact case/source provenance,
+negative receipt validation, missing/failed/skipped/overlapping/stale/cancelled/
+wrong-attempt rejection, supported API compatibility and security owner
+boundaries remain mandatory.
+
+The unrestricted serial oracle remains available only via the already approved
+explicit audit opt-in. Parallel-only receipts continue to report
+same_run_equivalence=false and release_eligible=false. Strict release
+recomputation still requires independent oracle evidence and actual success.
+The helper currently hardcodes optimized_adoption_eligible=false; that legacy
+machine field is preserved as a conservative evidence/release restriction.
+Owner acceptance of development scheduling does not require flipping it or
+claiming independent equivalence for a partition-only run. This parent closure
+selects no release-mode, release workflow, tag, deployment or production API.
+
+**Decision.** HAPI-436 is VERIFIED/COMPLETED for integrated development Fast/
+Full automation and its owner-approved five-set/optional-serial policy.
+All four child obligations are reconciled, with the046 timing amendment
+explicit rather than hidden. There is no remaining child implementation
+selected by this parent. Future defects still require repair; future workload
+growth retains source-linked coverage and honest timing. This is not an
+industrial availability, latency, cost-optimum, long-term flake-rate or SITE
+certification. Existing completed HPS-024 tasks retain their independent
+historical VERIFIED/IMPLEMENTED/NOT_VERIFIABLE dispositions; this decision
+does not relabel the entire phase as independently VERIFIED.
+
+**Exact scope and validation.** Registered message remains
+`ci: automate fast feedback and preserve full verification gates`.
+MODIFY this phase record, only HAPI-436's two status fields in
+ULTIMATE_ROADMAP.md/ULTIMATE_PHASES.md and the corresponding046/436 navigation
+paragraph in ULTIMATE_TASKS.md. Zero CREATE/DELETE. Every earlier task record,
+other status, ID/objective/priority/dependency/order and all executable/schema/
+API/dictionary/workflow/helper/inventory/version blobs are preserved.
+Available in-memory checks validate the child/header/registry/pointer agreement,
+exact restoration of original payload on reversal, all anchors and exact
+per-commit paths. The execution environment is unavailable, so no local Python,
+Java/Maven/PostgreSQL or full canonical-estate run is claimed. Final exact-SHA
+Documentation CI supplies executable validation of this documentation-only
+sequence. Verify both ordered commits' parent/tree/message/raw blobs and
+per-task scope, advance main once using the original expected-head guard,
+confirm final Docs startup and stop.
+
+HAPI-590 remains NOT_IMPLEMENTED/BLOCKED pending the previously documented
+publication-readiness choice. "Timing accepted" resolves046, not that separate
+business-policy decision. No publication option or downstream implementation
+is silently selected by closing CI governance.
+
 
 <a id="hapi-437"></a>
 ## HAPI-437 — secure operational workbench data exposure

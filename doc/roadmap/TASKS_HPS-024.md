@@ -1070,9 +1070,9 @@ Legacy IDs: CI-003D
 
 Priority: P0
 
-Implementation Status: NOT_VERIFIABLE
+Implementation Status: PARTIAL
 
-Planning Status: BLOCKED
+Planning Status: IN_PROGRESS
 
 Owning Module: `platform` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -1195,6 +1195,128 @@ doc/roadmap/ULTIMATE_ROADMAP.md:1273 | CI-003D | Evaluate repeatable timing/cost
 doc/model-remediation/RECONCILIATION.md:23335 | CI-003D | Evaluate repeatable timing/cost and make the independent adoption/closure decision. | At least five comparable samples per configuration, warm Fast median<=3m and Full critical-path median<=7m targets, cold-cache/failure/flake limits and runner-minute accounting. Unmet target means CI-003 remains open with fallback; no favorable single-run or assumed speedup.
 doc/model-remediation/RECONCILIATION.md:23733 | CI-003D | DEPENDENCY_PENDING | Timing, runner cost and adoption decision
 ~~~~~~~~
+
+### 2026-10-20 — HAPI-046 existing-run timing and runner-cost reconciliation
+
+Owner Next selects HAPI-046 after HAPI-045 acceptance. Exact main
+`96bbd74508e06f96476616764e420c866313a6bb`, parent
+`887b84c68479a0df01e0825b52f347ce798a7ed5`, tree
+`aad4405f1e0a316935b1ac4b70b35d0abdbf5899`, passed
+[Documentation465](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39448522073).
+The preceding executable configuration passed Full784/Fast106/Docs464 as
+reconciled under HAPI-045. This stage reads naturally completed runs only; it
+does not dispatch unchanged benchmarks or modify the accepted CI policy.
+Registered message remains `ci: automate fast feedback and preserve full verification gates`.
+
+**Measurement definitions and provenance.** The tables below use GitHub run
+attempt1 metadata and complete job lists retrieved for each exact run ID.
+Workflow interval is run_started_at to updated_at after completed success; it
+includes orchestration/queue gaps and is not a sum of test-case durations.
+Slowest job is actual completed_at minus started_at. Runner seconds sum only
+executed jobs; intentionally skipped oracle timestamps are excluded. Rounded
+job-minute proxies sum ceil(each executed job seconds/60). Neither proxy is a
+GitHub billing statement, monetary charge, multiplier-adjusted usage or CPU time.
+All observed job labels are ubuntu-latest; no paid runner capacity is selected.
+
+**Five comparable warm Fast observations.** All five use the identical Fast
+workflow blob `1c7294dc97fb8c5ecf297dd36c15d2690ba2061f`, unchanged
+335-class/1673-case Fast selection including exact case/source/support identities,
+and the same restored Maven dependency cache key. Each job log confirms actual
+cache restoration and zero test failures/errors/skips. Scheduling-only inventory
+differences outside the Fast selection do not change these selected inputs.
+
+| Fast run / exact source | Workflow interval, seconds | Executed job seconds |
+|---|---:|---:|
+| [102](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39430323649), 2cd16f45aa0fa324eb4f89107ff5d7f9f805b9a8 | 94 | 90 |
+| [103](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39432208147), d15cfa28c598aedd8371a98c943b8919b3b7a52f | 109 | 103 |
+| [104](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39433631521), 5a923ce0a91898d9ea17e0e97fa9f4f87d80faa1 | 100 | 96 |
+| [105](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39440924056), 11b1ca458d623ed4fcca269b7a82f00b88c0b8f9 | 106 | 101 |
+| [106](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39445933420), 887b84c68479a0df01e0825b52f347ce798a7ed5 | 114 | 109 |
+
+Observed workflow median106s (1m46s), job median101s; workflow range94..114s.
+The five-sample warm Fast <=180s criterion is met for these matched inputs.
+Each is two rounded job-minute proxies. This does not establish a cold Fast
+distribution, long-term flake rate or performance on other hosted runner images.
+
+**Full observations, separated by actual configuration.**
+
+| Full run / exact source | Configuration | Workflow seconds | Slowest executed job seconds | Summed runner seconds | Rounded job-minute proxy |
+|---|---|---:|---:|---:|---:|
+| [778](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39430323819), 2cd16f45aa0fa324eb4f89107ff5d7f9f805b9a8 | Three DB sets, development | 494 | 472 | 1509 | 29 |
+| [779](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39432208352), d15cfa28c598aedd8371a98c943b8919b3b7a52f | Four DB sets, development | 395 | 373 | 1607 | 31 |
+| [780](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39433631502), 5a923ce0a91898d9ea17e0e97fa9f4f87d80faa1 | Five DB sets, development, before cache-receipt instrumentation | 348 | 330 | 1821 | 36 |
+| [781](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39435132363), 96af69e5c02ac246becbc608cb9443428a3f115a | Five DB sets plus independent serial audit, warm | 1294 | 1271 | 3128 | 58 |
+| [782](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39440924194), 11b1ca458d623ed4fcca269b7a82f00b88c0b8f9 | Five DB sets, development, cache receipts | 377 | 352 | 1846 | 34 |
+| [783](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39441957834), 11b1ca458d623ed4fcca269b7a82f00b88c0b8f9 | Five DB sets plus independent serial audit, cold dependency repository | 1304 | 1279 | 3305 | 60 |
+| [784](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39445933061), 887b84c68479a0df01e0825b52f347ce798a7ed5 | Five DB sets, development, optional serial input defaults false | 369 | 348 | 1801 | 33 |
+
+Full780/782/784 have the identical five-set inventory blob
+`d44fbc666cf9f3ddf7e8c8bddcb26456231f760e`, inventory SHA256
+`ee14f591e0f0ef84c89d6eda6e609fa7259748c506e03f0d56e4bde6d44b15b4`.
+Their aggregate job outputs confirm430 executable classes/2606 cases, zero
+failures/errors/skips, current/base API verification and actual PostgreSQL16
+catalog/dictionary evidence, with source bundle SHA256
+`be0f97cd7280aa97c0e84de040a632fbf494518e705fa10b358f793d136b9221`.
+Full782/784 receipts explicitly prove successful cache restoration in all seven
+Java lanes; Full780 predates that instrumentation and is not upgraded to an
+instrumented cache observation by its success. Full784 also changes optional
+audit-input handling. These source/policy distinctions prevent claiming five
+strictly comparable samples from this table.
+
+For the three five-set development workload observations only, the descriptive
+workflow median is369s (6m09s), slowest-job median348s (5m48s), and runner-sum
+median1821s (30m21s). All three workflow intervals are below420s, but n=3 is not
+the required n>=5 and the instrumented/current-policy subsets are smaller.
+The serial audits' approximately21-minute paths cannot be substituted as
+extra development samples; their oracle deliberately performs additional work.
+Nor may their partition jobs be turned into invented parallel-only workflow
+completion times, because their real final gate waited for the serial oracle.
+
+The one-run three/four/five-set progression shows shorter elapsed feedback
+alongside higher summed runner time. It is not controlled causal evidence or
+proof that five is the cost optimum. Retain the owner's explicit preference
+for five sets and the already accepted complete selection/security/lifecycle/
+API/catalog checks. No extra shards, weight refresh, relaxed deadlines, case
+exclusions, source pin changes or retry policy are justified by these samples.
+
+**Failure/flake and adoption disposition.** All listed runs completed success
+on attempt1. This is a bounded observation, not an estimated population flake
+rate or permission to exclude earlier failures. Full775/776 and Fast99 remain
+failed historical runs of earlier feature/configuration states; they cannot be
+pooled into the later identical-input cohort or erased as obsolete. HAPI-045's
+accepted warm/cold independent equivalence and negative-validation fixtures
+remain applicable to their exact scope. No new fault-injection campaign or
+independent local replay of aggregate ZIPs was performed here; current Full
+facts above are retrieved hosted aggregate output, not newly replayed artifacts.
+
+HAPI-046 becomes PARTIAL / IN_PROGRESS: its prerequisite is satisfied and the
+Fast timing and runner-cost analysis are now concrete. Full comparable-sample/
+cold-cache/failure/flake qualification and independent final adoption remain
+open. HAPI-436 remains PARTIAL / IN_PROGRESS. The owner-approved development
+five-set/optional-serial policy continues; no optimized_adoption_eligible or
+release_eligible flag is changed and no independent equivalence is claimed for
+parallel-only runs. Keep the explicit serial diagnostic available under its
+existing opt-in. HidraAPI is a development-only API; no release, tag, production
+data or deployment is selected.
+
+**Exact publication scope and validation.** MODIFY this owning phase record
+and only HAPI-046's two status cells in ULTIMATE_ROADMAP.md and
+ULTIMATE_PHASES.md; zero CREATE/DELETE. Prior evidence bytes and every other
+task/status remain unchanged. Current environment is unavailable, so no local
+Python fixture, canonical-estate, Java/Maven or database execution is claimed.
+Available in-memory checks verify arithmetic, workflow/selection equality,
+three-way status agreement, exact preservation on reversal, anchors and the
+three-file scope. Hosted Docs supplies executable validation. Use expected-head
+guard, verify all blobs/tree/parent/message, confirm exact-SHA Documentation CI
+creation/startup and stop. No extra Full/Fast or benchmark dispatch occurs.
+
+**Remaining evidence source:** collect future naturally authorized development
+runs with the same complete workload, cache mode and execution policy, keeping
+configuration cohorts separate. Do not rerun unchanged Full merely to fill the
+quota and do not repeat the already accepted cold equivalence audit. Until
+sufficient comparable evidence exists, report the measured subset above and
+leave HAPI-046/436 open; an independent ready task requires its own owner Next.
+
 
 <a id="hapi-434"></a>
 ## HAPI-434 — parallelize isolated test JVM execution

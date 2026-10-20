@@ -8,7 +8,7 @@
   },
   "classes": [
     {
-      "baseline_seconds": 6.811,
+      "baseline_seconds": 3.748,
       "cases": [
         "apiMustNotDependOnInfrastructure",
         "applicationMustNotDependOnApiOrInfrastructure",
@@ -37,7 +37,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.041,
+      "baseline_seconds": 0.026,
       "cases": [
         "hra051ClassifiedDomainInvariantBatchRemainsComplete"
       ],
@@ -51,7 +51,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.128,
+      "baseline_seconds": 0.108,
       "cases": [
         "hra061RetiredMirrorsStayRetiredAndPersistenceModelsStayOwnedByInfrastructure"
       ],
@@ -65,7 +65,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.417,
+      "baseline_seconds": 0.331,
       "cases": [
         "crossModulePrivateImportsRemainClosed",
         "directWireDomainRepresentationLeakageRemainsAbsent",
@@ -83,7 +83,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 15.422,
+      "baseline_seconds": 10.408,
       "cases": [
         "contextLoads"
       ],
@@ -97,7 +97,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 16.563,
+      "baseline_seconds": 16.493,
       "cases": [
         "failsClosedAndRollsBackWhenExistingSameModuleOrphanIsDetected",
         "installsAndValidatesEveryClassifiedSameModuleForeignKey"
@@ -112,7 +112,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.088,
+      "baseline_seconds": 0.12,
       "cases": [
         "generatedMappersPreserveAllRemainingExactBoundaryContracts"
       ],
@@ -140,7 +140,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.002,
+      "baseline_seconds": 0.001,
       "cases": [
         "createDerivesActorFromSecurityContext"
       ],
@@ -154,7 +154,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.454,
+      "baseline_seconds": 0.097,
       "cases": [
         "derivesCanonicalReadAndExecutePermissions"
       ],
@@ -183,7 +183,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.008,
+      "baseline_seconds": 0.005,
       "cases": [
         "generatedAlarmResponseMappingPreservesExactContract",
         "generatedRaiseAlarmMappingPreservesExactContract"
@@ -198,7 +198,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.14,
+      "baseline_seconds": 0.044,
       "cases": [
         "boundedSuppressionDoesNotInvokeWorkflow",
         "openEndedSuppressionFailsClosedWhenWorkflowRejectsEvidence",
@@ -214,7 +214,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.005,
+      "baseline_seconds": 0.004,
       "cases": [
         "exactScopeMatchingIsDeterministic",
         "onlyActiveTimedSuppressionExpires",
@@ -236,7 +236,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 2.896,
+      "baseline_seconds": 3.044,
       "cases": [
         "closeCommittedFirstSerializesAndDeniesWaitingAcknowledgement",
         "liveAndDirectAcknowledgementsAreAtomicAndMultipleHistoryRowsRemainLegal",
@@ -252,7 +252,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 4.066,
+      "baseline_seconds": 4.084,
       "cases": [
         "acknowledgementCommittedFirstDoesNotPreventSubsequentExplicitCancellation",
         "flushedClosureAndAlarmUpdatesRollbackWhenEventAppendFails",
@@ -270,7 +270,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 3.784,
+      "baseline_seconds": 4.487,
       "cases": [
         "concurrentUsedCatalogFamilyChangeWaitsAndFailsAfterAlarmCommit",
         "creationLiveAndDirectPathsProduceExactlyOneEventAndRetainSnapshots",
@@ -289,7 +289,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 9.23,
+      "baseline_seconds": 7.484,
       "cases": [
         "delayedExpiryKeepsDueTimeAndDoesNotReopenCancelledAlarmOrMoveSnapshotBackwards",
         "directWritesCheckReasonAndUsedMetadataCannotBeReassignedOrDeleted",
@@ -315,7 +315,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 9.429,
+      "baseline_seconds": 9.47,
       "cases": [
         "migratedSchemaEnforcesSingleExactActiveScopeAndProvidesExpiryAuditTaxonomy"
       ],
@@ -329,7 +329,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.148,
+      "baseline_seconds": 0.029,
       "cases": [
         "scheduledTriggerUsesServerOwnedActorAndCorrelation"
       ],
@@ -343,7 +343,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.132,
+      "baseline_seconds": 0.039,
       "cases": [
         "aFailedRecordDoesNotKeepOtherDueRecordsActive",
         "eachCandidateCrossesTheTransactionalPortAndOnlyActualFinishesAreCounted"
@@ -358,7 +358,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.139,
+      "baseline_seconds": 0.029,
       "cases": [
         "delegatesToOrchestratorWithSystemActor"
       ],
@@ -372,7 +372,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.284,
+      "baseline_seconds": 0.074,
       "cases": [
         "alarmScopeRestoresAcknowledgedEvidenceAndRecordsLifecycleEvent",
         "expiresBroadScopeWithAuditButWithoutAlarmMutation",
@@ -388,7 +388,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.002,
+      "baseline_seconds": 0.004,
       "cases": [
         "authenticatedCreationUsesTheSecurityActor",
         "trustedInternalCreationUsesTheEstablishedServerSystemActor"
@@ -403,7 +403,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.139,
+      "baseline_seconds": 0.033,
       "cases": [
         "alarmScopeLocksAlarmAndRejectsActiveShelvingBeforeMutation",
         "createRejectsExistingExactActiveScope"
@@ -418,7 +418,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.145,
+      "baseline_seconds": 0.04,
       "cases": [
         "directSaveUpdatesStateAndWritesExactlyOneActionWhileReplayIsImmutable",
         "terminalAcknowledgementIsDeniedAndVisibilityClearEscalationRemainMeaningful",
@@ -434,7 +434,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.409,
+      "baseline_seconds": 0.108,
       "cases": [
         "clearBeforeCloseAndCancellationAreTheOnlyEligibilityRule",
         "directClosureSynchronizesTerminalFieldsAndOneEventWithOptionalReviewPreserved",
@@ -450,7 +450,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.146,
+      "baseline_seconds": 0.04,
       "cases": [
         "aNewAlarmCannotPretendToBeExistingLifecycleHistory",
         "catalogMembershipIsExactButInactiveHistoryIsNotReclassified",
@@ -467,7 +467,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.447,
+      "baseline_seconds": 0.117,
       "cases": [
         "activeOverlapIsRejectedBeforeAnyEvidenceWrite",
         "expiryRechecksDueBoundaryAndRetainsTheContractualInstant",
@@ -484,7 +484,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.007,
+      "baseline_seconds": 0.009,
       "cases": [
         "generatedRequestMappingsPreserveExactContracts",
         "generatedResponseMappingsPreserveExactContracts"
@@ -499,7 +499,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.112,
+      "baseline_seconds": 0.042,
       "cases": [
         "identicalPublishedResaveIsNoOp",
         "publishedPersistedVersionRejectsMutation",
@@ -515,7 +515,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.114,
+      "baseline_seconds": 0.048,
       "cases": [
         "commandFailsClosedBeforeTheServiceCanInventMissingClassificationOrScope",
         "domainRequiresGovernedInsightTypeAndScopeType",
@@ -532,7 +532,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.125,
+      "baseline_seconds": 0.044,
       "cases": [
         "adapterCapturesDefinitionVersionOnFirstPersistence",
         "adapterPreservesExistingCapturedDefinitionVersion",
@@ -550,7 +550,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.002,
+      "baseline_seconds": 0.003,
       "cases": [
         "jpaPersistsReadinessStatusAsEnumString",
         "migrationEnforcesScopeAndBoundedStatusWithoutCreatingCatalogSemantics",
@@ -567,7 +567,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.709,
+      "baseline_seconds": 0.2,
       "cases": [
         "applicationFailsClosedForUnsupportedAndMissingOwnerScopes",
         "domainRequiresScopeTypeTerminalCompletionAndFailedEvidence",
@@ -614,7 +614,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.304,
+      "baseline_seconds": 0.089,
       "cases": [
         "rejectsStaleExpectedTokenWithoutSaving",
         "renamesAssetWhenExpectedTokenMatchesAndPreservesOtherFields"
@@ -629,7 +629,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 3.696,
+      "baseline_seconds": 3.606,
       "cases": [
         "committedParentDeletionWinsAgainstConcurrentReferenceWrite",
         "legacyBlankTitleRequiresReconciliation",
@@ -648,7 +648,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.112,
+      "baseline_seconds": 0.03,
       "cases": [
         "absentAndMismatchedOwnerReferencesFailClosed",
         "actualOwnerIdentityIsAcceptedWithoutInventedAssignmentRule"
@@ -678,7 +678,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.127,
+      "baseline_seconds": 0.047,
       "cases": [
         "adapterDeniesBeforePersisting",
         "blankTitleFailsBeforePersistence",
@@ -702,7 +702,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.267,
+      "baseline_seconds": 0.062,
       "cases": [
         "appendsCatalogBackedScheduledJobExpiryEvidence",
         "failsClosedWhenExpiryAuditTaxonomyIsMissing"
@@ -717,7 +717,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.002,
+      "baseline_seconds": 0.005,
       "cases": [
         "failsClosedWhenAuditTaxonomyIsNotProvisioned",
         "resolvesCatalogCodesAndAppendsAuditEvent"
@@ -732,7 +732,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.003,
+      "baseline_seconds": 0.006,
       "cases": [
         "emitsSanitizedScalarEvidenceWithActualTimeAndNoInventedActor",
         "missingTaxonomyFailsRatherThanOmittingAudit",
@@ -748,7 +748,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.001,
+      "baseline_seconds": 0.002,
       "cases": [
         "resolvesRiskCreationTaxonomyAndAppendsAuditEvidence"
       ],
@@ -762,7 +762,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.137,
+      "baseline_seconds": 0.045,
       "cases": [
         "emitsSanitizedScalarEvidenceWithActualTimeAndNoInventedActor",
         "missingTaxonomyFailsRatherThanOmittingAudit",
@@ -778,7 +778,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 7.939,
+      "baseline_seconds": 8.652,
       "cases": [
         "accessOptionalReferencesAndImmutableStorageAreProtected",
         "actualJpaAccessDoesNotMergeExistingIds",
@@ -808,7 +808,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.286,
+      "baseline_seconds": 0.17,
       "cases": [
         "absentOptionalReferencesRemainLegal",
         "populatedReferencesResolveAndInsertFailuresCannotMerge",
@@ -824,7 +824,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.271,
+      "baseline_seconds": 0.251,
       "cases": [
         "fieldPathIsRequired",
         "hashOnlyMaskedEvidenceAndUnchangedRowsRemainLegal",
@@ -843,7 +843,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.005,
+      "baseline_seconds": 0.004,
       "cases": [
         "catalogFamiliesAreValidatedIndependentlyBeforePersist",
         "genericRepositoryCannotBypassPayloadOrFreeTextSanitation",
@@ -861,7 +861,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.033,
+      "baseline_seconds": 0.099,
       "cases": [
         "lifecycleIsNotApprovedByExistence",
         "malformedDuplicateTrailingScalarAndTooDeepJsonAreRejected",
@@ -882,7 +882,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.292,
+      "baseline_seconds": 0.063,
       "cases": [
         "missingEvidenceIsRejected",
         "wrongModuleTypeOrTicketCannotAttestEvidence"
@@ -897,7 +897,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.116,
+      "baseline_seconds": 0.039,
       "cases": [
         "generalDefinitionDefaultUsesSameSecretBoundary",
         "referenceLikeDefaultRemainsAllowedWithoutInventingReferenceSyntax",
@@ -929,7 +929,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.002,
+      "baseline_seconds": 0.003,
       "cases": [
         "commandRequiresNonblankOwningModule",
         "domainRequiresNonblankOwningModule",
@@ -945,7 +945,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.004,
+      "baseline_seconds": 0.003,
       "cases": [
         "derivesEvidenceAndQualifiedTimeOnServerAndReplaysOriginalQualification",
         "missingActualApprovalAndWithdrawnProductCannotRegister"
@@ -960,7 +960,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.406,
+      "baseline_seconds": 0.089,
       "cases": [
         "corruptionIsAnErrorRatherThanAnAbsentSource",
         "exportsCompleteQualifiedSyntheticFactsAndExactEvidence",
@@ -976,7 +976,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.007,
+      "baseline_seconds": 0.003,
       "cases": [
         "preservesSuppliedScaleNanosecondsOrderAndDefensiveLists",
         "rejectsFractionErrorsDuplicatesUncoveredComponentsAndSyntheticPromotion",
@@ -992,7 +992,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.26,
+      "baseline_seconds": 0.413,
       "cases": [
         "approvalAndOwnerActiveFlagsBothGovernFreshEligibility",
         "unknownAndUnapprovedRowsFailClosed"
@@ -1007,7 +1007,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.005,
+      "baseline_seconds": 0.012,
       "cases": [
         "invalidRequestsDoNotCallOwner",
         "mapsEveryDistinctFieldAndNormalizesOnlyRequestedIdentity",
@@ -1027,7 +1027,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 20.646,
+      "baseline_seconds": 14.042,
       "cases": [
         "actualWorkflowQualifiesOnlyItsExactRevisionAndWithdrawalIsReattested",
         "conflictingMethodReuseRollsBackNewAggregateAndOuterRollbackLeavesNoRevision",
@@ -1046,7 +1046,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 2.95,
+      "baseline_seconds": 2.868,
       "cases": [
         "committedParentDeletionWinsAgainstConcurrentReferenceWrite",
         "legacyOrphanFailsMigrationWithoutPartialConstraints",
@@ -1063,7 +1063,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.016,
+      "baseline_seconds": 0.018,
       "cases": [
         "rejectsEveryTruncationTrailingUnknownMagicAndInvalidUtf8",
         "retainsNegativeScaleAndRejectsAllocationExpandingScale",
@@ -1079,7 +1079,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.004,
+      "baseline_seconds": 0.002,
       "cases": [
         "migrationProtectsEveryPopulatedQuantityUnitReference",
         "quantityUnitRemainsOptionalAtTheDomainBoundary"
@@ -1094,7 +1094,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.425,
+      "baseline_seconds": 0.096,
       "cases": [
         "migrationEnforcesCompositeAgreementTransferPointRelationship",
         "repositoryAllowsCoherentAgreementTransferPointPair",
@@ -1111,7 +1111,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.301,
+      "baseline_seconds": 0.072,
       "cases": [
         "adapterDeniesBeforePersisting",
         "auditMustBelongToExactTicket",
@@ -1134,7 +1134,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.005,
+      "baseline_seconds": 0.008,
       "cases": [
         "acceptsMultipartMetadataAndFileWithoutClientStorageEvidence",
         "downloadsAsAttachmentWithExplicitNoRangeSemantics"
@@ -1149,7 +1149,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.292,
+      "baseline_seconds": 0.097,
       "cases": [
         "onlyOwnerProvenReferencesResolve"
       ],
@@ -1163,7 +1163,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.008,
+      "baseline_seconds": 0.01,
       "cases": [
         "authParentAndVersionMetadataFailBeforeStorage",
         "committedAndUnknownOutcomesPreservePossiblyReferencedContent",
@@ -1197,7 +1197,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.288,
+      "baseline_seconds": 0.066,
       "cases": [
         "ownerSeparatesDocumentAndStorageLookupsWithoutLifecycleInference"
       ],
@@ -1211,7 +1211,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 6.163,
+      "baseline_seconds": 6.015,
       "cases": [
         "competingDocumentCodesHaveOneWinner",
         "competingVersionNumbersHaveOneWinner",
@@ -1236,7 +1236,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.007,
+      "baseline_seconds": 0.012,
       "cases": [
         "storesReadsAndChecksumsBinaryContent"
       ],
@@ -1284,7 +1284,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.003,
+      "baseline_seconds": 0.004,
       "cases": [
         "missingTargetOrIneligibleRoleDeniedBeforeLinkSave",
         "neutralOwnerSnapshotsAndAuthenticatedActorUsed",
@@ -1301,7 +1301,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.007,
+      "baseline_seconds": 0.006,
       "cases": [
         "genericUploadDerivesUploaderDisplayAndValidatesParent",
         "optionalWorkflowAndPopulatedSupersessionFailClosedBeforePersistence",
@@ -1317,7 +1317,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.285,
+      "baseline_seconds": 0.072,
       "cases": [
         "listsAndLoadsCapas",
         "listsAndLoadsCases",
@@ -1333,7 +1333,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 6.194,
+      "baseline_seconds": 6.493,
       "cases": [
         "actualJpaClosureParentAndHistoryRollbackAndCommitTogether",
         "committedParentDeletionWinsAgainstConcurrentCapaInsert",
@@ -1359,7 +1359,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.003,
+      "baseline_seconds": 0.031,
       "cases": [
         "closedCopyPreservesNeutralReferencesAndUnrelatedFields",
         "existingGuardRejectsMissingClosedCancelledAndMissingAttestations",
@@ -1375,7 +1375,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.679,
+      "baseline_seconds": 0.497,
       "cases": [
         "actorSpoofingAndWorkflowMismatchCannotWriteEvidence",
         "replayedEvidenceIdCannotBeMerged",
@@ -1392,7 +1392,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.544,
+      "baseline_seconds": 0.751,
       "cases": [
         "currentPolicyDoesNotInventClosedParentExclusion",
         "freshWrongFamilyInactiveAndMissingMappingRejectWrites",
@@ -1413,7 +1413,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 2.31,
+      "baseline_seconds": 2.318,
       "cases": [
         "externalAuthenticationNormalizersMustNotDependOnExternalRolePermissionMappings",
         "identityControllersMustNotQueryPersistenceRepositoriesDirectly",
@@ -1434,7 +1434,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.57,
+      "baseline_seconds": 0.275,
       "cases": [
         "c3OpaqueCredentialCannotBeCallerConstructedOrPromotedByDiagnosticReader",
         "directoryCaptureEntryPointsRemainPrivateAndHaveOnlyReviewedCallers",
@@ -1467,7 +1467,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.213,
+      "baseline_seconds": 0.071,
       "cases": [
         "activeDirectoryLoginPreservesExplicitProviderSelection",
         "ldapLoginForwardsExplicitDirectoryProviderCredentialsAndMetadata"
@@ -1511,7 +1511,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.003,
+      "baseline_seconds": 0.002,
       "cases": [
         "evaluatesOnlyTheLinkedAuthenticatedOidcUser",
         "rejectsOtherUsersAndUnlinkedOrLocalPrincipals"
@@ -1526,7 +1526,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.124,
+      "baseline_seconds": 0.05,
       "cases": [
         "permissionRequestMapsApiOwnedScopeBeforeInvokingApplicationUseCase"
       ],
@@ -1540,7 +1540,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.007,
+      "baseline_seconds": 0.003,
       "cases": [
         "apiScopeRecordPreservesTheEstablishedWireComponentNames",
         "globalScopeNormalizationRemainsOwnedByTheDomainBoundary",
@@ -1557,7 +1557,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.002,
+      "baseline_seconds": 0.001,
       "cases": [
         "delegatesOwnerEligibilityAndKeepsCanonicalId"
       ],
@@ -1571,7 +1571,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.581,
+      "baseline_seconds": 0.167,
       "cases": [
         "createsRoleThroughDomainRepositoryPort",
         "rejectsDuplicateRoleCodeBeforeSave",
@@ -1588,7 +1588,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.003,
+      "baseline_seconds": 0.001,
       "cases": [
         "eligibilityRemainsOwnedByIdentityAndUsesSuppliedCurrentTime"
       ],
@@ -1602,7 +1602,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.008,
+      "baseline_seconds": 0.001,
       "cases": [
         "delegatesOwnerEligibilityAndKeepsCanonicalId"
       ],
@@ -1616,7 +1616,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.104,
+      "baseline_seconds": 0.032,
       "cases": [
         "delegatesDecisionToIdentityPermissionEvaluation"
       ],
@@ -1630,7 +1630,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.1,
+      "baseline_seconds": 0.031,
       "cases": [
         "anonymousAndIneligibleActorsFailClosed",
         "canonicalIdentitySnapshotsOverridePrincipalName"
@@ -1645,7 +1645,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 6.172,
+      "baseline_seconds": 4.695,
       "cases": [
         "bothCompanyAndFacilityGrantsAreRequired",
         "companiesFacilitiesAndUsersRemainIndependent",
@@ -1785,7 +1785,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.003,
+      "baseline_seconds": 0.005,
       "cases": [
         "arraysAndCoverageAreDefensiveAndStructuralEqualityIsStable",
         "exactVersionUuidGenerationsAndTagLengthAreRequired",
@@ -1801,7 +1801,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.014,
+      "baseline_seconds": 0.017,
       "cases": [
         "allNonPresentStatesHaveNoValues",
         "claimCoverageHasNoPermissionAuthority",
@@ -1829,7 +1829,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 1.354,
+      "baseline_seconds": 1.336,
       "cases": [
         "postgresHalfOpenEqualityMatchesCompiler",
         "postgresMicrosecondRoundTripsPreserveCandidate",
@@ -1846,7 +1846,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 13.892,
+      "baseline_seconds": 21.844,
       "cases": [
         "activeDirectoryCompletionRetainsActualTypeAndLdapSessionProtocol",
         "actualPostgresqlDeferredCommitFailureReturnsNoResultAndRollsBackEverything",
@@ -1888,7 +1888,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 5.752,
+      "baseline_seconds": 4.588,
       "cases": [
         "additiveGuardSupportsBothDirectoryTypesWithExistingFenceAndReplayRules",
         "changedCatalogAndSavepointBindingCannotBePromoted",
@@ -1909,7 +1909,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 11.997,
+      "baseline_seconds": 8.941,
       "cases": [
         "activeClaimDependentMappingWithoutClaimNameFailsClosed",
         "activeGroupRoleAndPermissionProvideOnlyNames",
@@ -1937,7 +1937,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 14.878,
+      "baseline_seconds": 10.892,
       "cases": [
         "beforeCommitWriteAndCallbackEvaluationCannotFollowGuard",
         "declaredStatementTimeoutOutageAbortsEveryProvisionalEffect",
@@ -1972,7 +1972,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 12.102,
+      "baseline_seconds": 24.928,
       "cases": [
         "activeClaimDependentMappingWithoutClaimNameFailsClosed",
         "activeGroupRoleAndPermissionProvideOnlyNames",
@@ -2006,7 +2006,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 17.274,
+      "baseline_seconds": 18.251,
       "cases": [
         "addedStaticRelationsBlockNativeDmlUntilRelease",
         "allIdentityFencesPrecedeTemporalSampleOnOneBackend",
@@ -2032,7 +2032,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 10.846,
+      "baseline_seconds": 7.587,
       "cases": [
         "downstreamFailureAfterFlushedChangesRollsBackBothOwners",
         "freshFullMigrationChainValidatesExistingJsonbSchemaWithoutNewSql",
@@ -2054,7 +2054,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 15.045,
+      "baseline_seconds": 15.952,
       "cases": [
         "admittedCollectorCannotManufactureAuthorityWithoutTheFullPrefix",
         "completeTimedEstateIncludesInactiveFutureDeny",
@@ -2078,7 +2078,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 14.357,
+      "baseline_seconds": 14.839,
       "cases": [
         "actualJpaAdapterOmitsVersionAndRollsBackHashAndGenerationTogether",
         "callerVersionIdentityChangesAndDeleteResetAreRejected",
@@ -2099,7 +2099,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 12.305,
+      "baseline_seconds": 9.228,
       "cases": [
         "freshFlywayAndNativeTriggerLockOrderAreReal",
         "generationRevocationWaitsOrFailsClosed",
@@ -2118,7 +2118,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 22.788,
+      "baseline_seconds": 16.32,
       "cases": [
         "allFourProvenanceBranchesRoundTripExactSyntheticStructuralTuples",
         "appendWaitingOnNativeTerminationReadsItsCommittedTerminalImage",
@@ -2168,7 +2168,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 17.165,
+      "baseline_seconds": 18.328,
       "cases": [
         "actualLocalProducerReceiptOnlyBecomesEligibleAfterCompletionCommit",
         "actualNativeDecoderSkewCannotExtendTheInjectedRealDeadline",
@@ -2207,7 +2207,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 49.189,
+      "baseline_seconds": 49.908,
       "cases": [
         "allFourRealBoundActorsLoadDatabaseAuthorityAtFencedSample",
         "bothCompanyAndFacilityRequireIndependentPermits",
@@ -2263,7 +2263,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 16.932,
+      "baseline_seconds": 12.085,
       "cases": [
         "companyGrantCannotAuthorizeAnotherNetwork",
         "eitherScopeDenyCannotProducePartialAuthority",
@@ -2281,7 +2281,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 23.686,
+      "baseline_seconds": 23.88,
       "cases": [
         "admittedNativeCredentialHasNoPublicConstructor",
         "allFourRealProducerBearersParticipateAtDatabaseSample",
@@ -2307,7 +2307,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 22.845,
+      "baseline_seconds": 28.8,
       "cases": [
         "capturedMappingGenerationDriftRejectsTheWholePair",
         "concurrentGrantWriterBlocksThroughCommitAndRollbackReleasesFences",
@@ -2331,7 +2331,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 12.118,
+      "baseline_seconds": 12.872,
       "cases": [
         "admissionMethodsCannotRunOutsideProtectedExecutorScope",
         "aggregateElapsedBudgetAbortsWholeWorkWithoutRetry",
@@ -2370,7 +2370,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 18.112,
+      "baseline_seconds": 19.735,
       "cases": [
         "callerVersionsIdentityMutationDeletionAndTruncationCannotResetEitherOwner",
         "copyMergeAndUpsertCannotBypassEitherGenerationGuard",
@@ -2414,7 +2414,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.277,
+      "baseline_seconds": 0.263,
       "cases": [
         "boundsRowsJsonAndUnsupportedEvidence",
         "c3QualifiedOverloadCannotBeReachedFromPublicStructuralEvidence",
@@ -2438,7 +2438,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.005,
+      "baseline_seconds": 0.113,
       "cases": [
         "assertionMustBeAuthenticatedAndBelongToEvaluatedUser",
         "capturesOnlyConfiguredClaimPathsAndNoBearerCredentials",
@@ -2454,7 +2454,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.004,
+      "baseline_seconds": 0.003,
       "cases": [
         "directoryAuthenticationCannotGrantPermissionsBeyondHidraAuthorization",
         "externalOidcRolesGroupsAndScopesCannotGrantHidraBusinessPermission"
@@ -2469,7 +2469,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.125,
+      "baseline_seconds": 0.041,
       "cases": [
         "activeGlobalGrantEnablesAdministrator",
         "disabledUserCannotEnableAdministrator",
@@ -2508,7 +2508,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.129,
+      "baseline_seconds": 0.044,
       "cases": [
         "ignoresExternalRoleAndGroupClaimsForHidraAuthorization",
         "legacyConstructorStaysDefaultOffAndCannotMintVerifiedClaimEvidence",
@@ -2529,7 +2529,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.013,
+      "baseline_seconds": 0.043,
       "cases": [
         "authenticatesLinkedLdapIdentityAndUsesOnlyHidraPermissions",
         "directoryOutageFailsClosedWithoutResolvingHidraIdentity",
@@ -2552,7 +2552,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.009,
+      "baseline_seconds": 0.007,
       "cases": [
         "authenticatedBindCallbackTransportsExactEntrySubjectRatherThanEarlierProfileSearch",
         "blankPrincipalOrCredentialsFailClosedBeforeDirectoryAccess",
@@ -2572,7 +2572,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.717,
+      "baseline_seconds": 0.463,
       "cases": [
         "attributeReadAndSelectionFailuresStayRedactedAndClearScope",
         "callbackAbsenceFalseResultAndDuplicateCallbackCannotMintReceipt",
@@ -2598,7 +2598,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 17.468,
+      "baseline_seconds": 12.477,
       "cases": [
         "authenticatesCredentialPersistedThroughIdentityRepositories"
       ],
@@ -2612,7 +2612,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 1.147,
+      "baseline_seconds": 0.868,
       "cases": [
         "activeGlobalAdministratorIsPropagatedToPrincipalAndSpringAuthority",
         "authenticatesPersistedActiveLocalCredentialAndReturnsNormalizedHidraPrincipal",
@@ -2633,7 +2633,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.009,
+      "baseline_seconds": 0.01,
       "cases": [
         "aggregateEnvelopeCannotBeBypassedAcrossSelectedNames",
         "duplicateListValuesAreRefusedNotSilentlyDeduplicated",
@@ -2661,7 +2661,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.016,
+      "baseline_seconds": 0.011,
       "cases": [
         "changedSourceSubjectDoesNotBecomeTrustedEvidence",
         "decoderFailureRejectsWithRedactedErrorAndWithoutLegacyFallback",
@@ -2681,7 +2681,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.291,
+      "baseline_seconds": 0.109,
       "cases": [
         "c3ClaimCredentialCannotBeConstructedOrReusedWithoutAPhysicalTransaction",
         "claimOwnerConnectionResourceCannotBeReplacedBeforeFirstConsumption",
@@ -2708,7 +2708,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.334,
+      "baseline_seconds": 0.172,
       "cases": [
         "adapterUsesOneQualifiedPairAndExportsOnlyItsActualScalarIdentity",
         "allNineDecisionPairsRequireTwoPermits",
@@ -2735,7 +2735,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.056,
+      "baseline_seconds": 0.135,
       "cases": [
         "absentAnonymousUnauthenticatedStringAndUnsupportedTokensDeny",
         "contractAndConstructorsEnforceNarrowReferenceBoundary",
@@ -2792,7 +2792,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.498,
+      "baseline_seconds": 0.274,
       "cases": [
         "actualNativeIssuerWireIsAcceptedWithoutChangingExistingClaimSchema",
         "afterCommitRegistrationCannotMoveToAnotherTransaction",
@@ -2852,7 +2852,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.008,
+      "baseline_seconds": 0.009,
       "cases": [
         "activePolicyDenialDominatesDirectAuthority",
         "applicableConstraintRestrictsExistingAuthority",
@@ -2875,7 +2875,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 2.179,
+      "baseline_seconds": 2.195,
       "cases": [
         "doesNotInventReasonForLegacyDelegation",
         "rejectsUnboundedBlankAndUnknownOptionalReferences"
@@ -2890,7 +2890,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.218,
+      "baseline_seconds": 0.067,
       "cases": [
         "optionalReferencesAreValidatedWithoutExclusiveSelectionRule",
         "requiresReasonAndBoundedValidity"
@@ -2905,7 +2905,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 5.458,
+      "baseline_seconds": 5.402,
       "cases": [
         "decisionEvidenceIsStoredAsJsonArraysRatherThanQuotedJsonStrings",
         "directDenialOverridesInheritedGrant",
@@ -2927,7 +2927,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.002,
+      "baseline_seconds": 0.001,
       "cases": [
         "actualEligibleActorIsAccepted",
         "missingAndWrongIdentityAreRejected"
@@ -2957,7 +2957,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.119,
+      "baseline_seconds": 0.038,
       "cases": [
         "activeOidcRequiresIssuerBeforePersistence",
         "issuerLookupDelegatesToActiveProviderSelection",
@@ -2976,7 +2976,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.003,
+      "baseline_seconds": 0.002,
       "cases": [
         "anonymousAndIneligibleActorsFailClosed",
         "canonicalIdentitySnapshotsOverridePrincipalName"
@@ -3006,7 +3006,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.002,
+      "baseline_seconds": 0.001,
       "cases": [
         "actualEligibleActorIsAccepted",
         "missingAndWrongIdentityAreRejected"
@@ -3021,7 +3021,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 2.16,
+      "baseline_seconds": 2.125,
       "cases": [
         "rejectsGuessingLegacyProtocol",
         "requiresKnownProtocolAndPreservesNullableLocalReferences"
@@ -3036,7 +3036,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.416,
+      "baseline_seconds": 0.127,
       "cases": [
         "expiryRecordsAnEndWithoutChangingLastActivity",
         "externalAuthenticationCarriesExactIdentityAndProtocol",
@@ -3069,7 +3069,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.219,
+      "baseline_seconds": 0.071,
       "cases": [
         "activeRoleGrantRejectsNonActivePermission",
         "disabledPermissionDoesNotExposeEffectiveGrantPermissionId",
@@ -3101,7 +3101,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 2.179,
+      "baseline_seconds": 2.188,
       "cases": [
         "enforcesDatabaseUniquenessAndAllowsMultipleAbsentEmails",
         "rejectsLegacyDuplicatesWithoutRewritingThem"
@@ -3116,7 +3116,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 2.164,
+      "baseline_seconds": 1.871,
       "cases": [
         "enforcesDirectGrantContractOnDatabaseWrites",
         "rejectsLegacyUnboundedGrant"
@@ -3131,7 +3131,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.002,
+      "baseline_seconds": 0.001,
       "cases": [
         "boundsEveryDirectGrantIncludingEmergencyAccess",
         "preservesDifferentRoleGrantContract"
@@ -3146,7 +3146,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.115,
+      "baseline_seconds": 0.037,
       "cases": [
         "activeUserMayReceiveOpenEndedGrantWithoutReason",
         "ordinaryGrantRejectsEveryInactiveStateBeforePersistence"
@@ -3161,7 +3161,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.204,
+      "baseline_seconds": 0.066,
       "cases": [
         "rejectsBlankUsernameBeforePersistence",
         "rejectsUnknownEmployeeThroughOwnerContract"
@@ -3176,7 +3176,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.082,
+      "baseline_seconds": 0.068,
       "cases": [
         "returnsIncidentDetailAndRejectsUnknownId",
         "returnsPagedIncidentViews"
@@ -3191,7 +3191,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 15.146,
+      "baseline_seconds": 11.404,
       "cases": [
         "actionCatalogAndDescriptionAreEnforced",
         "actualJpaClosureAndParentRollbackAndCommitTogether",
@@ -3221,7 +3221,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.277,
+      "baseline_seconds": 0.194,
       "cases": [
         "canonicalCloserAndServerTimeAreUsedForAtomicParentUpdate",
         "missingParentAndDuplicateClosureAreDenied",
@@ -3239,7 +3239,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.003,
+      "baseline_seconds": 0.002,
       "cases": [
         "creationTimeIsMandatory",
         "preservesDirectionalRelationshipAndOptionalComment",
@@ -3255,7 +3255,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.12,
+      "baseline_seconds": 0.084,
       "cases": [
         "closedAndDraftParentCannotReceiveActions",
         "missingParentCannotCreateResponseAction",
@@ -3271,7 +3271,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.088,
+      "baseline_seconds": 0.054,
       "cases": [
         "canonicalActorRequiredForNewIncidentAndHistoryIsPreserved",
         "closedRequiresAnOwnerIdentityAndSnapshot",
@@ -3289,7 +3289,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 6.868,
+      "baseline_seconds": 5.319,
       "cases": [
         "catalogsRequireActiveExactFamilies",
         "concurrentEndpointReparentAndMessageCannotBothCommit",
@@ -3312,7 +3312,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.396,
+      "baseline_seconds": 0.094,
       "cases": [
         "migrationProvidesConcurrencySafeCodeUniquenessWithoutOrganizationForeignKey",
         "rejectsDuplicateCodeBeforePersistence"
@@ -3327,7 +3327,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.555,
+      "baseline_seconds": 0.135,
       "cases": [
         "absentAndCompleteTrioRetainIndependentStatusSemantics",
         "absentAndExistingReferencesAreAccepted",
@@ -3348,7 +3348,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.575,
+      "baseline_seconds": 0.126,
       "cases": [
         "absentOptionalReferencesRemainLegal",
         "populatedRunAndCorrelatedEndpointAreAccepted",
@@ -3366,7 +3366,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.736,
+      "baseline_seconds": 0.161,
       "cases": [
         "commandNoLongerCarriesCallerOwnedRunNumber",
         "enforcesCountersCompletionOrderingAndManualActorProvenance",
@@ -3385,7 +3385,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 2.901,
+      "baseline_seconds": 2.422,
       "cases": [
         "committedParentDeletionWinsAgainstConcurrentReferenceWrite",
         "legacyOrphanFailsMigrationWithoutPartialConstraints",
@@ -3402,7 +3402,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 6.431,
+      "baseline_seconds": 6.604,
       "cases": [
         "actualJpaMissingDefectAndWrongTypeRollbackBeforeAnyCaseIsCommitted",
         "actualJpaReferenceWriteRollsBackAfterFlushAndCommitsCanonicalEvidenceOnSuccess",
@@ -3427,7 +3427,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.286,
+      "baseline_seconds": 0.074,
       "cases": [
         "adapterDeniesBeforePersisting",
         "changedHistoricalActorRequiresFreshEligibility",
@@ -3449,7 +3449,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.681,
+      "baseline_seconds": 1.006,
       "cases": [
         "applicationRejectsMissingDefectBeforeCaseSave",
         "applicationRetainsOptionalityAndDoesNotImposeDefectStateOrTargetRule",
@@ -3474,7 +3474,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.8,
+      "baseline_seconds": 0.175,
       "cases": [
         "failsClosedWhenOrganizationOwnerCannotResolve",
         "rejectsInactiveIntegrityProgramType",
@@ -3491,7 +3491,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.146,
+      "baseline_seconds": 0.034,
       "cases": [
         "onlyActualIntegrityRecommendationResolves"
       ],
@@ -3505,7 +3505,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.289,
+      "baseline_seconds": 0.075,
       "cases": [
         "existingSourceFindingPreservesProvenance",
         "migrationProtectsNullableSameModuleSourceFindingReference",
@@ -3522,7 +3522,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.208,
+      "baseline_seconds": 0.071,
       "cases": [
         "rejectsInvalidPaging",
         "returnsPagedCandidatesAndCandidateDetail",
@@ -3538,7 +3538,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.526,
+      "baseline_seconds": 0.172,
       "cases": [
         "applicationUsesTopologyOwnerSnapshotsAndRejectsCallerCodeMismatch",
         "dddKeepsExternalComputeIdempotencyBehindItsDeferredContractGate",
@@ -3558,7 +3558,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.32,
+      "baseline_seconds": 0.097,
       "cases": [
         "acceptsAbsentOwnerWithoutMakingItMandatory",
         "acceptsOwnerAndPreservesHistoricalSnapshot",
@@ -3580,7 +3580,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 1.865,
+      "baseline_seconds": 1.771,
       "cases": [
         "protectsWritesUpdatesAndDeletesWhilePreservingNull",
         "refusesLegacyOrphansWithoutRewritingEvidence"
@@ -3595,7 +3595,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.221,
+      "baseline_seconds": 0.066,
       "cases": [
         "acceptsAnyExistingCandidateWithoutInventingCasePrimaryEquality",
         "preservesOptionalCandidateAndNeutralExternalTarget",
@@ -3611,7 +3611,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 3.761,
+      "baseline_seconds": 3.296,
       "cases": [
         "deletionCommittedFirstDeniesConcurrentEvaluationReference",
         "deviationCommittedFirstDeniesConcurrentEvaluationReassignment",
@@ -3632,7 +3632,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.005,
+      "baseline_seconds": 0.004,
       "cases": [
         "scopesDeviationsByPlanTargetAndPreservesAuthoritativeComparisonValues"
       ],
@@ -3646,7 +3646,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.002,
+      "baseline_seconds": 0.003,
       "cases": [
         "migrationDoesNotIntroduceCrossModuleForeignKey",
         "rejectsUnknownPopulatedTelemetryPoint"
@@ -3661,7 +3661,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.507,
+      "baseline_seconds": 0.147,
       "cases": [
         "directRepositorySavesValidateBeforeFlush",
         "evaluationMustExistAndEachPopulatedContextMustAgree",
@@ -3680,7 +3680,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 1.946,
+      "baseline_seconds": 1.948,
       "cases": [
         "abortsLegacyChannelMismatchWithoutRepairingIt",
         "concurrentDuplicateIdCannotOverwriteFirstWriter",
@@ -3697,7 +3697,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.079,
+      "baseline_seconds": 0.167,
       "cases": [
         "persistsAndFlushesNewAttemptWithoutGenericSave",
         "rejectsAutomaticRetryForPermanentFailureAndCancellation",
@@ -3714,7 +3714,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 2.36,
+      "baseline_seconds": 7.865,
       "cases": [
         "abortsLegacyInconsistencyWithoutRewritingRows",
         "forwardRepairResolvesParameterCollisionAndRetainsMessageOwnership",
@@ -3732,7 +3732,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.215,
+      "baseline_seconds": 0.117,
       "cases": [
         "flushesValidMessageBeforeReturningToDispatchCaller",
         "rejectedReadyMessageNeverReachesAsyncPush",
@@ -3748,7 +3748,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.005,
+      "baseline_seconds": 0.003,
       "cases": [
         "migrationProtectsCatalogFamiliesAndOwnedReferences",
         "requiresSourceModuleAndSourceEventType"
@@ -3763,7 +3763,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.236,
+      "baseline_seconds": 0.129,
       "cases": [
         "activeTemplateRequiresActiveCurrentVersionAndActiveDefaultChannel",
         "migrationEnforcesSelectionAndReferenceIntegrity",
@@ -3796,7 +3796,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.71,
+      "baseline_seconds": 0.518,
       "cases": [
         "canonicalDomainModelsExposeCompleteArabicFrenchEnglishTriplets",
         "canonicalJpaEntitiesPersistCompleteArabicFrenchEnglishTriplets",
@@ -3814,7 +3814,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.007,
+      "baseline_seconds": 0.005,
       "cases": [
         "effectiveDatedModelsMustRetainHalfOpenIntervalGuards",
         "employeeContactAndDisplayDuplicatesMustRemainCompatibilityOnly",
@@ -3834,7 +3834,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.004,
+      "baseline_seconds": 0.007,
       "cases": [
         "birthFieldsMustRemainMappedToExpectedColumns",
         "compatibilityComponentsRemainMappedUntilTheirApprovedCutover",
@@ -3852,7 +3852,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.041,
+      "baseline_seconds": 0.036,
       "cases": [
         "canonicalJpaDiscriminatorsMustRemainEnumsStoredAsStrings",
         "canonicalPolymorphicDomainStateMustRemainTyped",
@@ -3871,7 +3871,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.965,
+      "baseline_seconds": 0.27,
       "cases": [
         "apiRequestsCannotCarryActorPermissionOrCorrelationSecurityFields",
         "assignmentBuildsSecurityContextOnlyFromAuthenticatedServerState",
@@ -3903,7 +3903,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.002,
+      "baseline_seconds": 0.005,
       "cases": [
         "carriesCanonicalOrganizationCode",
         "rejectsMissingValidFrom",
@@ -3934,7 +3934,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.002,
+      "baseline_seconds": 0.004,
       "cases": [
         "missingTargetAndRetiredTargetDoNotBecomeAssignable",
         "preservesOwnerIdAndCurrentDisplayWithoutEquatingItWithRegistryId",
@@ -3950,7 +3950,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.0,
+      "baseline_seconds": 0.001,
       "cases": [
         "resolvesExistenceThroughOrganizationOwnerRepository"
       ],
@@ -3964,7 +3964,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.002,
+      "baseline_seconds": 0.004,
       "cases": [
         "registrationCarriesBirthDataIntoSavedEmployeeAndSummary"
       ],
@@ -3978,7 +3978,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.002,
+      "baseline_seconds": 0.001,
       "cases": [
         "resolvesExistenceThroughOrganizationOwnerRepository"
       ],
@@ -4008,7 +4008,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.216,
+      "baseline_seconds": 0.06,
       "cases": [
         "entityBackedScopeUsesCurrentAuthoritativeOwnerDisplay",
         "globalScopeHasNoInventedOwnerDisplay"
@@ -4023,7 +4023,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.005,
+      "baseline_seconds": 0.006,
       "cases": [
         "globalReferenceRequiresNoOwnerLookup",
         "preservesOwnerNativeReferenceAndIgnoresDisplayLabelsAsIdentity",
@@ -4041,7 +4041,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.003,
+      "baseline_seconds": 0.006,
       "cases": [
         "createsContactPointForExistingEmployee",
         "rejectsMissingEmployeeTargetBeforeSave"
@@ -4056,7 +4056,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.23,
+      "baseline_seconds": 0.064,
       "cases": [
         "rejectsMissingTarget",
         "validatesEmployeeAgainstEmployeeRepositoryOnly",
@@ -4101,7 +4101,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.008,
+      "baseline_seconds": 0.009,
       "cases": [
         "adjacentHalfOpenPeriodIsAllowed",
         "assignmentUsesScopeWriteLockBeforeOverlapCheck",
@@ -4123,7 +4123,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.116,
+      "baseline_seconds": 0.032,
       "cases": [
         "delegatesCanonicalScopeAndNormalizedAssigneeQueries",
         "rejectsInvalidQueryIdentityBeforePersistence"
@@ -4138,7 +4138,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.006,
+      "baseline_seconds": 0.005,
       "cases": [
         "healthyAssignmentProducesNoFindingAndDoesNotMutateRepositories",
         "reportsMissingAssigneeWithoutRepairingAnything",
@@ -4178,7 +4178,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.228,
+      "baseline_seconds": 0.071,
       "cases": [
         "resolvesOrganizationUnitThroughOwnerRepository"
       ],
@@ -4192,7 +4192,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.002,
+      "baseline_seconds": 0.005,
       "cases": [
         "directEmployeeContactAccessorsRemainDeprecatedCompatibilityOnly",
         "employeeContactChannelsAreRepresentedByTypedOrganizationContactPoint",
@@ -4225,7 +4225,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.004,
+      "baseline_seconds": 0.007,
       "cases": [
         "acceptsFreeTextBirthplaceWithoutAdministrativeLocality",
         "enforcesHireTerminationChronology",
@@ -4244,7 +4244,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.003,
+      "baseline_seconds": 0.006,
       "cases": [
         "globalRegistryScopeHasNoTarget",
         "registeredPipelinePreservesOwningModuleIdentifier",
@@ -4262,7 +4262,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.007,
+      "baseline_seconds": 0.016,
       "cases": [
         "rejectsIncompleteHierarchySnapshotIdentity",
         "rejectsIncompleteResponsibilityAndShiftAssignments",
@@ -4299,7 +4299,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.001,
+      "baseline_seconds": 0.002,
       "cases": [
         "acceptsEmployeeAndOrganizationUnitTargets",
         "normalizesIdAndRejectsUnsupportedTargets"
@@ -4314,7 +4314,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.003,
+      "baseline_seconds": 0.004,
       "cases": [
         "acceptsGlobalWithoutTargetId",
         "normalizesEntityBackedTargetId",
@@ -4333,7 +4333,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.001,
+      "baseline_seconds": 0.004,
       "cases": [
         "allSupportedReferenceAndMasterModelsApplyTheSameCodePolicy",
         "normalizesStableBusinessCodesAndRejectsBlankValues"
@@ -4348,7 +4348,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.004,
+      "baseline_seconds": 0.005,
       "cases": [
         "generatesUuidText",
         "normalizesExistingStringIdentifier",
@@ -4365,7 +4365,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.001,
+      "baseline_seconds": 0.002,
       "cases": [
         "acceptsOnlyGovernedOrganizationSubjectTypes",
         "normalizesTargetIdAndRejectsUnsupportedDiscriminators"
@@ -4380,7 +4380,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.002,
+      "baseline_seconds": 0.001,
       "cases": [
         "parsesSupportedLegacyText",
         "rejectsBlankAndUnsupportedText"
@@ -4413,7 +4413,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.01,
+      "baseline_seconds": 0.006,
       "cases": [
         "genericMapperNoLongerDependsOnUnitOrEmployeeLegacyScopeState",
         "genericResponsibilityMapperUsesCanonicalRegistryId",
@@ -4429,7 +4429,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 20.884,
+      "baseline_seconds": 24.859,
       "cases": [
         "addsBirthColumnsIndexAndLocalityForeignKey",
         "persistsCanonicalBirthDataAndRejectsUnknownLocality"
@@ -4461,7 +4461,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 20.748,
+      "baseline_seconds": 25.567,
       "cases": [
         "canonicalResponsibilityRejectsMissingRegistryIdentity",
         "emptyDatabaseMigratesAndCanonicalResponsibilityUsesOnlyRegistryIdentity"
@@ -4476,7 +4476,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 26.253,
+      "baseline_seconds": 20.261,
       "cases": [
         "addsInternalForeignKeysAndClosedDiscriminatorChecks",
         "rejectsDirectOrphanBeforeAnyConstraintIsInstalled",
@@ -4548,7 +4548,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 47.61,
+      "baseline_seconds": 47.799,
       "cases": [
         "existingRegistryMigrationIsAdditiveAndPreservesLegacyColumns",
         "finalCleanupFailsClosedAndRecoversWhenNullScopeRowsExist",
@@ -4566,7 +4566,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 9.417,
+      "baseline_seconds": 9.464,
       "cases": [
         "emptyDatabaseProvisioningContainsRequiredActivePermissionsAndAuditTaxonomy"
       ],
@@ -4580,7 +4580,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.002,
+      "baseline_seconds": 0.001,
       "cases": [
         "createsUnpersistedEntityWithoutInventingRegistryId",
         "mapsPersistedEntityToCanonicalDomainIdentity"
@@ -4609,7 +4609,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.004,
+      "baseline_seconds": 0.005,
       "cases": [
         "mapsOrganizationUnitTypeEmbeddedLanguages",
         "mapsPositionEmbeddedDescriptions",
@@ -4625,7 +4625,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.006,
+      "baseline_seconds": 0.005,
       "cases": [
         "employeeRoundTripPreservesBirthAndCompatibilityState"
       ],
@@ -4639,7 +4639,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.001,
+      "baseline_seconds": 0.003,
       "cases": [
         "roundTripsCatalogTypeAndTypedEmployeeToPositionReportingSubjects"
       ],
@@ -4667,7 +4667,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.002,
+      "baseline_seconds": 0.001,
       "cases": [
         "supportsOrganizationUnitAndFailsClosedForOtherScopeTypes"
       ],
@@ -4681,7 +4681,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.115,
+      "baseline_seconds": 0.047,
       "cases": [
         "rejectsAbsentUnitBeforeLookup(String)[1]",
         "rejectsAbsentUnitBeforeLookup(String)[2]",
@@ -4717,7 +4717,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.002,
+      "baseline_seconds": 0.001,
       "cases": [
         "missingAndBlankUnitsDoNotResolve"
       ],
@@ -4746,7 +4746,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 1.929,
+      "baseline_seconds": 1.841,
       "cases": [
         "legacyNullFailsMigrationWithoutInventingReplacementIdentity",
         "mappingMatchesMandatoryReference",
@@ -4764,7 +4764,7 @@
       ]
     },
     {
-      "baseline_seconds": 1.888,
+      "baseline_seconds": 1.853,
       "cases": [
         "legacyNullFailsMigrationWithoutInventingReplacementIdentity",
         "mappingMatchesMandatoryReference",
@@ -4782,7 +4782,7 @@
       ]
     },
     {
-      "baseline_seconds": 0.115,
+      "baseline_seconds": 0.041,
       "cases": [
         "adapterRejectsHierarchyCycle",
         "adapterRejectsInactiveTypeForNewUnit",
@@ -4815,7 +4815,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.225,
+      "baseline_seconds": 0.072,
       "cases": [
         "adapterRejectsMissingOrInactiveEmployeeSubjects",
         "employeeSourceMayHaveOnlyOneActiveLineHierarchy",
@@ -4833,7 +4833,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 1.977,
+      "baseline_seconds": 1.721,
       "cases": [
         "legacyNullFailsMigrationWithoutInventingReplacementIdentity",
         "mappingMatchesMandatoryReference",
@@ -4869,7 +4869,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.214,
+      "baseline_seconds": 0.052,
       "cases": [
         "resolvesExistenceThroughPartyOwnerRepository"
       ],
@@ -4883,7 +4883,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.006,
+      "baseline_seconds": 0.007,
       "cases": [
         "blankIdentityDoesNotAccessRepository",
         "independentPartyIdentitiesDoNotShareEligibility",
@@ -4905,7 +4905,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.002,
+      "baseline_seconds": 0.001,
       "cases": [
         "resolvesPartyExistenceThroughOwnerRepositoryBoundary"
       ],
@@ -4919,7 +4919,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.228,
+      "baseline_seconds": 0.072,
       "cases": [
         "blankAndUnknownPartyReferencesAreDenied",
         "existenceReturnsCanonicalOwnerCodeWithoutInventedRoleRestriction"
@@ -4934,7 +4934,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 7.068,
+      "baseline_seconds": 7.625,
       "cases": [
         "actualJpaSaveAndFlushBumpsWitnessAndRollbackRestoresIt",
         "admissionRetainsRelationFencesAndExcludesWritersUntilCompletion",
@@ -4970,7 +4970,7 @@
       "timing_status": "unmeasured-new-suite"
     },
     {
-      "baseline_seconds": 0.013,
+      "baseline_seconds": 0.011,
       "cases": [
         "acquisitionRequiresAnActualBoundTransaction",
         "fabricatedAdmissionCannotReachOwnerRowsAndMarksRollback",
@@ -4993,7 +4993,7 @@
       "timing_status": "unmeasured-new-suite"
     },
     {
-      "baseline_seconds": 0.003,
+      "baseline_seconds": 0.002,
       "cases": [
         "migrationUsesConcurrencySafePartialUniqueIndex",
         "rejectsDuplicateActiveAssignmentBeforeSave"
@@ -5008,7 +5008,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.003,
+      "baseline_seconds": 0.002,
       "cases": [
         "additiveMigrationEnforcesPartyCodeUniqueness",
         "rejectsBlankLegalName",
@@ -5038,7 +5038,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.0,
+      "baseline_seconds": 0.001,
       "cases": [
         "mapsApplicationRevisionResultWithoutDomainRepresentation"
       ],
@@ -5066,7 +5066,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.267,
+      "baseline_seconds": 0.069,
       "cases": [
         "rejectsRevisionThatIsNoLongerCurrentWithoutSaving",
         "rejectsStaleExpectedTokenWithoutSaving",
@@ -5082,7 +5082,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.004,
+      "baseline_seconds": 0.005,
       "cases": [
         "appliesApproveDecisionToPlanningRevisionAfterWorkflowExecution",
         "propagatesWorkflowStaleTaskConflictWithoutChangingPlanningRevision",
@@ -5099,7 +5099,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.004,
+      "baseline_seconds": 0.005,
       "cases": [
         "rejectsBlankRelationshipIdentifiers",
         "rejectsInvalidPaging",
@@ -5115,7 +5115,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 20.441,
+      "baseline_seconds": 23.06,
       "cases": [
         "actualOwnerProvidersSaveCanonicalPartyAndRollbackTheFlushedRecord",
         "approvalHistoryCannotBeDeletedTruncatedOrRemappedAndRegisteredOwnersCannotBeDeleted",
@@ -5141,7 +5141,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 5.986,
+      "baseline_seconds": 5.971,
       "cases": [
         "approvedRevisionImmutabilityIsRetainedWhenTargetIntegrityIsInstalled",
         "committedNominationReparentWinsAgainstConcurrentTargetWrite",
@@ -5164,7 +5164,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 5.302,
+      "baseline_seconds": 5.349,
       "cases": [
         "approvedEvidenceCannotBeChangedDeletedOrTruncated",
         "competingPlanCodesHaveExactlyOneWinner",
@@ -5186,7 +5186,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.134,
+      "baseline_seconds": 0.041,
       "cases": [
         "ownerExportsHistoricalIdentityAndContextWithoutActiveEligibility"
       ],
@@ -5200,7 +5200,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.704,
+      "baseline_seconds": 0.167,
       "cases": [
         "adapterChecksDuplicateCodeAndFlushesValidatedSave",
         "auditTimestampsAreRequiredAndRatePairingIsNotInvented",
@@ -5224,7 +5224,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.014,
+      "baseline_seconds": 0.015,
       "cases": [
         "actualCatalogAdapterChecksBothExactFamiliesAndActiveFlag",
         "authoritativeDomainRequiresScopeType",
@@ -5262,7 +5262,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 1.512,
+      "baseline_seconds": 0.394,
       "cases": [
         "directAdapterSaveCannotBypassValidationAndUsesFlush",
         "exactFamilyMissingPolicyAndNumericShapeFailClosed",
@@ -5282,7 +5282,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.144,
+      "baseline_seconds": 0.035,
       "cases": [
         "closedPeriodDoesNotAllowNewPlanRevisions",
         "defaultsBlankTimeZoneToAfricaAlgiers",
@@ -5303,7 +5303,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 9.031,
+      "baseline_seconds": 8.949,
       "cases": [
         "artifactRequiresNonblankDocumentOrStorageShapeWithoutForeignModuleFk",
         "artifactRunForeignKeyAcceptsQueuedRunAndRejectsOrphans",
@@ -5330,7 +5330,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.634,
+      "baseline_seconds": 0.192,
       "cases": [
         "activeCurrentTemplateVersionMustBelongToDefinitionAndBeActive",
         "legacyCreationShapeNowCreatesDraftInsteadOfSkippingLifecycle",
@@ -5348,7 +5348,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.734,
+      "baseline_seconds": 0.212,
       "cases": [
         "checksumRequirementIsPreserved",
         "eachSuppliedOwnerReferenceMustExist",
@@ -5367,7 +5367,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.784,
+      "baseline_seconds": 0.209,
       "cases": [
         "falseZeroAndEachMatchingTypedFieldCountAsConcreteEvidence",
         "inactiveAndOptionalDefinitionsDoNotCreateRequiredDefaults",
@@ -5399,7 +5399,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.009,
+      "baseline_seconds": 0.013,
       "cases": [
         "allNonQueueableRequestStatesFail",
         "approvalRequiresStateAndOwnerConfirmation",
@@ -5420,7 +5420,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 9.741,
+      "baseline_seconds": 11.753,
       "cases": [
         "approvalLockExcludesConcurrentEvidenceMutation",
         "approvalProtectsSelectedCellAgainstWaitingMutation",
@@ -5443,7 +5443,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 1.631,
+      "baseline_seconds": 2.055,
       "cases": [
         "approvalStoresActualOwnerDecisionAndAuditReceiptAndAuditFailurePreventsParentSave",
         "approvedDomainRequiresRealApprovalMetadata",
@@ -5463,7 +5463,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 2.622,
+      "baseline_seconds": 0.672,
       "cases": [
         "alarmProviderUsesOnlyItsExactOwnedRepositories",
         "assetsProviderUsesOnlyItsExactOwnedRepositories",
@@ -5491,7 +5491,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.148,
+      "baseline_seconds": 0.038,
       "cases": [
         "adapterRejectsDuplicateMatrixCoordinate",
         "adapterRejectsWrongConsequenceCatalogFamily",
@@ -5509,7 +5509,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.006,
+      "baseline_seconds": 0.002,
       "cases": [
         "auditTaxonomyProvisioningIsRiskSpecific",
         "domainRequiresCompleteTypedScopePair",
@@ -5525,7 +5525,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.003,
+      "baseline_seconds": 0.002,
       "cases": [
         "equalEvidenceHasStableValueIdentityWithoutNormalizingRawFields",
         "replacementLeavesOriginalEvidenceAndMissingFieldsIntact"
@@ -5540,7 +5540,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.655,
+      "baseline_seconds": 0.139,
       "cases": [
         "rejectsDuplicateModelCodeBeforeSave",
         "rejectsUnsupportedSuppliedTopologyScopePair",
@@ -5556,7 +5556,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.416,
+      "baseline_seconds": 0.103,
       "cases": [
         "regulatorQualificationRequiresExactDigestActualApprovalAndCompatibleSources",
         "requiresActualApprovalAndBothOwnerAssessments"
@@ -5571,7 +5571,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.268,
+      "baseline_seconds": 0.062,
       "cases": [
         "changedMissingWithdrawnOwnerEvidenceIsUnavailable",
         "characteristicExpiryAtAnySelectedTimeMakesItUnavailable",
@@ -5589,7 +5589,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.006,
+      "baseline_seconds": 0.004,
       "cases": [
         "absentOriginAndInvalidIntervalsReject",
         "malformedCoordinatesAndFractionsReject",
@@ -5641,7 +5641,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.012,
+      "baseline_seconds": 0.011,
       "cases": [
         "acceptsSyntheticSteadyStateAndTransientInputs",
         "preservesDefensiveImmutableSelectionAcrossReplacementVersions",
@@ -5668,7 +5668,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.04,
+      "baseline_seconds": 0.038,
       "cases": [
         "acceptsCyclesParallelCrossKindLinksAndRetainsOrientations",
         "acceptsPipeOnlyAndEquipmentJoinedGraphsWithoutWeakeningB1",
@@ -5702,7 +5702,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.01,
+      "baseline_seconds": 0.008,
       "cases": [
         "acceptsBranchWithoutDependingOnEdgeOrientation",
         "acceptsMeshedCyclesAndDistinctParallelPipes",
@@ -5728,7 +5728,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.008,
+      "baseline_seconds": 0.007,
       "cases": [
         "explicitIsolationAndImmutableMetadataArePreserved",
         "refusesAbsentLimitsSetpointAndTemperatureOrDomainOutsideSuppliedRanges",
@@ -5778,7 +5778,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.011,
+      "baseline_seconds": 0.01,
       "cases": [
         "acceptsExplicitFullySyntheticConnectedUnion",
         "declaredOriginCannotMasqueradeAsSyntheticEvenWithIdenticalMapNumbers",
@@ -5801,7 +5801,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.011,
+      "baseline_seconds": 0.007,
       "cases": [
         "compressorInterpolationHasIndependentFourCornerArithmeticAndAnalyticDerivatives",
         "exactEndpointOneSidedConventionsAndUnknownMethods",
@@ -5822,7 +5822,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.061,
+      "baseline_seconds": 0.062,
       "cases": [
         "actualBranchAndMeshedTriangleHaveIndependentFlowsAndPressures",
         "actualPipeBranchAndMeshAcrossEquipmentAreMassConservative",
@@ -5867,7 +5867,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.006,
+      "baseline_seconds": 0.004,
       "cases": [
         "invalidRequestsDoNotCallOwner",
         "mapsEveryDistinctFieldAndNormalizesOnlyRequestedIdentity",
@@ -5887,7 +5887,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 11.051,
+      "baseline_seconds": 10.516,
       "cases": [
         "qualifiedRegulatorUsesRealOwnerExportsAndWithdrawnAuthorityFails",
         "realOwnerAdaptersWorkflowAndStoresReturnExactAdvisoryBundle"
@@ -5902,7 +5902,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.005,
+      "baseline_seconds": 0.004,
       "cases": [
         "absenceAndWrongIdentityRemainAbsent",
         "copiesEveryDistinctEvidenceFieldWithoutConversion",
@@ -5922,7 +5922,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.008,
+      "baseline_seconds": 0.005,
       "cases": [
         "invalidRequestsDoNotCallOwner",
         "preservesAllLegalFlagCombinationsAndRequestEchoWithoutPhysicalInput",
@@ -5943,7 +5943,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 26.602,
+      "baseline_seconds": 26.483,
       "cases": [
         "appendOnlySqlAndForgedQualificationCorruptionCannotQualify",
         "concurrentConflictingCharacteristicWritersRollbackLosingAggregate",
@@ -5967,7 +5967,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 7.433,
+      "baseline_seconds": 5.826,
       "cases": [
         "changeRequiredFieldsFamilyAndRetiredHistoryAreEnforced",
         "concurrentCandidateDeleteAndRecommendationInsertCannotBothCommit",
@@ -5988,7 +5988,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.122,
+      "baseline_seconds": 0.199,
       "cases": [
         "completeAggregateAndBothCharacteristicsRoundTrip",
         "independentCanonicalPrefixAndProvenanceDigestSensitivity",
@@ -6007,7 +6007,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.282,
+      "baseline_seconds": 0.096,
       "cases": [
         "missingWrongFamilyAndInactiveCatalogFailClosed",
         "ownerLookupRejectsMissingTargetAndAdmitsExistingTarget",
@@ -6041,7 +6041,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.549,
+      "baseline_seconds": 1.098,
       "cases": [
         "applicationPublicationSelectsAuditedPortAndLegacyPortFailsClosed",
         "genericSaveDuplicateIdMissingReceiptAndCompatibilityCannotBypassPublication",
@@ -6059,7 +6059,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.004,
+      "baseline_seconds": 0.006,
       "cases": [
         "exposesRequiredCatalogFamiliesThroughRunRepositoryBoundary",
         "rejectsMutationOfPersistedCompletedRun"
@@ -6090,7 +6090,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.258,
+      "baseline_seconds": 0.077,
       "cases": [
         "resolvesPointExistenceThroughTelemetryOwnerRepository"
       ],
@@ -6104,7 +6104,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.004,
+      "baseline_seconds": 0.005,
       "cases": [
         "absenceAndWrongIdentityRemainAbsent",
         "copiesEveryDistinctEvidenceFieldWithoutConversion",
@@ -6124,7 +6124,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.276,
+      "baseline_seconds": 0.418,
       "cases": [
         "optionalRateAndInactiveRolesAreExplicit",
         "rolesAreRequiredEvenForExistingEngineeringUnits",
@@ -6140,7 +6140,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.263,
+      "baseline_seconds": 0.065,
       "cases": [
         "ownerResolvesRealPointAndGovernedTrustWithoutInventedHighTrustThreshold"
       ],
@@ -6168,7 +6168,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.001,
+      "baseline_seconds": 0.002,
       "cases": [
         "migrationDefinesCompatibilityMetadataAndReferenceConstraints",
         "rejectsBlankFrenchName"
@@ -6200,7 +6200,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.133,
+      "baseline_seconds": 0.042,
       "cases": [
         "commandRequiresFrenchName",
         "domainRejectsSecretMaterialAndSourceInvalidLifecycleStates",
@@ -6217,7 +6217,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 2.321,
+      "baseline_seconds": 1.995,
       "cases": [
         "copiesApplicableSnapshotAndPreservesItAfterRebindingOrRetirement",
         "preservesLegitimateHistoricalSnapshotWhenPointIsNoLongerActive",
@@ -6235,7 +6235,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.129,
+      "baseline_seconds": 0.038,
       "cases": [
         "derivesValuesAndBindingFromEvidenceWithoutTrustUpgrade",
         "rejectsEveryNonPassingAssessmentAndUnacceptableLevelBeforeSave",
@@ -6252,7 +6252,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.01,
+      "baseline_seconds": 0.005,
       "cases": [
         "adaptersImplementPortsInsteadOfOwningDomainAuthority",
         "exactOwnedControllerRouteTuplesMustRemainNarrowlyBound",
@@ -6270,7 +6270,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.004,
+      "baseline_seconds": 0.006,
       "cases": [
         "domainAndContractsRemainFreeOfForeignPersistenceAndFrameworks",
         "finiteDraftSqlHashesAndPlatformIssuerNamesStayBound",
@@ -6287,7 +6287,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.011,
+      "baseline_seconds": 0.008,
       "cases": [
         "catalogFunctionFingerprintsMatchBothActualMigrationBodies",
         "eachAdapterUsesOnlyItsOwnerAndParticipatesWithoutNewTransactionOrClock",
@@ -6304,7 +6304,7 @@
       "timing_status": "unmeasured-new-suite"
     },
     {
-      "baseline_seconds": 0.506,
+      "baseline_seconds": 0.246,
       "cases": [
         "admissionCredentialsHaveNoPublicConstructorOrScalarFactory",
         "coordinatorUsesOnlyApprovedOwnerContractsAndTechnicalMechanics",
@@ -6322,7 +6322,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.007,
+      "baseline_seconds": 0.003,
       "cases": [
         "surveyHasOnlyTheTwoRegisteredOperations",
         "surveyRepositoryIsProxyableAndDomainStaysPure",
@@ -6338,7 +6338,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.152,
+      "baseline_seconds": 0.186,
       "cases": [
         "graphReadDefaultsToCurrentAndSupportsExplicitHistoricalVersion",
         "graphResponseSerializesExplicitNodePortBranchDtos",
@@ -6358,7 +6358,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.101,
+      "baseline_seconds": 0.099,
       "cases": [
         "createDistinguishesNewReceiptAndFreshlyAuthorizedReplay",
         "metadataOnlyStandaloneControllerNeverOpensGraphAuthorization",
@@ -6375,7 +6375,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.395,
+      "baseline_seconds": 0.954,
       "cases": [
         "mapsStrictSurveyTransportWithoutDomainSerialization",
         "preservesDecimalStringsAndRejectsInvalidOrOversizedValues",
@@ -6393,7 +6393,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.016,
+      "baseline_seconds": 0.011,
       "cases": [
         "acceptsExactEnumsAndNormalizesIdentitiesWithoutChangingScalars",
         "regulatorRequiresSeparateV2FormatWhileV1ExistingKindsRemainAccepted",
@@ -6427,7 +6427,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.004,
+      "baseline_seconds": 0.002,
       "cases": [
         "resolvesSupportedTypedTopologyIdentityAndRejectsUnknownType"
       ],
@@ -6441,7 +6441,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.005,
+      "baseline_seconds": 0.003,
       "cases": [
         "missingAndUnsupportedTypesDenyWithoutIdentityAliasing",
         "supportedOwnersReturnCanonicalSnapshotsWithoutInventingActiveOnlyPolicy"
@@ -6456,7 +6456,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.17,
+      "baseline_seconds": 0.116,
       "cases": [
         "ambientTransactionDoesNotEvenPrepareGraphAuthority",
         "graphAdapterCannotReplaceTheAuthoredGraphWithoutFailingTheProtectedWork",
@@ -6477,7 +6477,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.172,
+      "baseline_seconds": 0.121,
       "cases": [
         "ambientTransactionNeverPreparesOrExecutes",
         "eachAttemptPreparesFreshAuthorityWithoutAutomaticRetry",
@@ -6494,7 +6494,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.003,
+      "baseline_seconds": 0.004,
       "cases": [
         "missingAndUnsupportedTypesDenyWithoutIdentityAliasing",
         "supportedOwnersReturnCanonicalSnapshotsWithoutInventingActiveOnlyPolicy"
@@ -6509,7 +6509,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.348,
+      "baseline_seconds": 0.194,
       "cases": [
         "acquiresIdentityPartyFacilityInOrderBeforeCollecting",
         "anyCaughtOwnerFailurePoisonsAdmission",
@@ -6528,7 +6528,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.271,
+      "baseline_seconds": 0.142,
       "cases": [
         "acquiresHeadAndRevisionFencesBeforeCommonSample",
         "exactHistoryLookupDoesNotUseTheListingWindow",
@@ -6551,7 +6551,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.16,
+      "baseline_seconds": 0.083,
       "cases": [
         "supportsOnlyRegisteredTopologyScopeTypes"
       ],
@@ -6565,7 +6565,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.06,
+      "baseline_seconds": 0.073,
       "cases": [
         "absentFacilityDoesNotQueryParty",
         "asciiAndSupplementaryUnicodeAtStorageLimitAreNotTruncated",
@@ -6620,7 +6620,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.222,
+      "baseline_seconds": 0.129,
       "cases": [
         "indeterminateSurveyWriteIsNotRetried",
         "requiresTypedSurveyCommandAndMatchingBranch",
@@ -6637,7 +6637,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.005,
+      "baseline_seconds": 0.004,
       "cases": [
         "absentOwnerRemainsAbsentAndBlankOwnerIdIsRejected",
         "resolvesAllSupportedTopologyOwnersWithCurrentDisplayAndLifecycle"
@@ -6652,7 +6652,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.059,
+      "baseline_seconds": 0.031,
       "cases": [
         "doesNotTranslateIntegrityFailureIntoMissing",
         "exportsV2RegulatorIncidenceAndExactStoredIdentityWithoutRewritingV1",
@@ -6670,7 +6670,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.094,
+      "baseline_seconds": 0.047,
       "cases": [
         "reportsDocumentedButUnrepresentedGroupTypesAsUnsupported",
         "reportsMissingPipelineAsSupportedButAbsent"
@@ -6685,7 +6685,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.033,
+      "baseline_seconds": 0.016,
       "cases": [
         "acceptsParallelBranchesBetweenTheSamePortsWithDistinctIdentities",
         "acceptsSerialStationAndJunctionIncidenceWithoutDimensions",
@@ -6712,7 +6712,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.006,
+      "baseline_seconds": 0.004,
       "cases": [
         "canonicalCodecRetainsNullAndUnicodeAndRejectsTrailingOrOversizedBytes",
         "exactScopeBoundsAndOverflowAreRejected",
@@ -6728,7 +6728,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.004,
+      "baseline_seconds": 0.003,
       "cases": [
         "preservesWithdrawnHistoryAndMonotonicEpoch",
         "rejectsMissingOrOverflowedEpochAndInvalidPublicationState",
@@ -6744,7 +6744,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.004,
+      "baseline_seconds": 0.003,
       "cases": [
         "preservesSyntheticRevisionAndDistinctHistoryIdentity",
         "rejectsIdentityTimeAndPredecessorContradictions",
@@ -6775,7 +6775,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.103,
+      "baseline_seconds": 0.084,
       "cases": [
         "allowsMissingAndNegativeElevationsWithoutDefaults",
         "allowsNonzeroStartingChainageAndRepeatedCoordinates",
@@ -6802,7 +6802,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.032,
+      "baseline_seconds": 0.035,
       "cases": [
         "acceptsBranchWithoutEquipment",
         "acceptsBranchesMeshesCyclesAndParallelLinksInOriginalOrder",
@@ -6835,7 +6835,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.009,
+      "baseline_seconds": 0.003,
       "cases": [
         "draftDiagnosticsAreDeterministicAndImmutable",
         "nullRevisionRejected",
@@ -6851,7 +6851,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.006,
+      "baseline_seconds": 0.004,
       "cases": [
         "distinguishesSeriesBranchFromIndividualParallelUnitsWithoutNumerics",
         "incompleteDraftReturnsDeterministicDiagnosticsButCompleteRejects",
@@ -6867,7 +6867,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.534,
+      "baseline_seconds": 0.141,
       "cases": [
         "eachSupportedNamespaceResolvesItsOwnRealOwnerRepository",
         "sameIdInAnotherNamespaceDoesNotProveTheRequestedType",
@@ -6883,7 +6883,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.109,
+      "baseline_seconds": 0.028,
       "cases": [
         "everyTypedOwnerNamespaceResolvesWithoutAliasingOrGuessing"
       ],
@@ -6911,7 +6911,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 1.927,
+      "baseline_seconds": 6.733,
       "cases": [
         "actualCatalogConfirmsAllThreeReviewedTriggersAndImmutableSecurityDefiner",
         "differentTransactionCannotClaimParentMetadataVersion",
@@ -6929,7 +6929,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 103.012,
+      "baseline_seconds": 72.048,
       "cases": [
         "actualFinalGuardRejectsExpiredProvisionalVersionAndRetainsNoRows",
         "actualFinalGuardVerifiesCompleteOwnerFenceSubset",
@@ -6981,7 +6981,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 9.74,
+      "baseline_seconds": 17.772,
       "cases": [
         "actualJpaSaveAndFlushBumpsWitnessAndRollbackRestoresIt",
         "admissionRetainsRelationFencesAndExcludesWritersUntilCompletion",
@@ -7018,7 +7018,7 @@
       "timing_status": "unmeasured-new-suite"
     },
     {
-      "baseline_seconds": 113.363,
+      "baseline_seconds": 141.044,
       "cases": [
         "actualDeadlineCrossingRollsBackRealProvisionalRevisionAndEvent",
         "admissionFirstExcludesAuthorityWritersThroughCommitAndRollback",
@@ -7095,7 +7095,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 5.272,
+      "baseline_seconds": 4.384,
       "cases": [
         "allProvisionalEffectsRollbackOnFinalGuardOrCommitFailure",
         "fullFreshFlywaySchemaAndRevisionReplayRemainCompatible",
@@ -7119,7 +7119,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 11.125,
+      "baseline_seconds": 11.49,
       "cases": [
         "blankAndNullIdentitiesFailRatherThanReturnAbsence",
         "canonicalPermutationReplaysWithoutMutatingExactHistoryOrAnotherStation",
@@ -7146,7 +7146,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 16.383,
+      "baseline_seconds": 24.742,
       "cases": [
         "concurrentConflictingReplayHasExactlyOneWinner",
         "concurrentIdenticalReplayCommitsOneRowThroughRealTransactionProxies",
@@ -7169,7 +7169,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.028,
+      "baseline_seconds": 0.02,
       "cases": [
         "emptyAndDisconnectedDiagnosticsRemainDraftOnlyAfterDecode",
         "emptyDraftHasStableIndependentCanonicalBytes",
@@ -7194,7 +7194,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.235,
+      "baseline_seconds": 0.107,
       "cases": [
         "acquisitionRequiresAnActualBoundTransaction",
         "fabricatedAdmissionCannotReachOwnerRowsAndMarksRollback",
@@ -7217,7 +7217,7 @@
       "timing_status": "unmeasured-new-suite"
     },
     {
-      "baseline_seconds": 0.087,
+      "baseline_seconds": 0.072,
       "cases": [
         "bytesAreDefensivelyOwned",
         "draftAndOptionalFieldsRetainSuppliedMeaning",
@@ -7247,7 +7247,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.072,
+      "baseline_seconds": 0.102,
       "cases": [
         "preservesAxisPointAndSectionOrder",
         "rejectsMalformedLengthsCountsUtf8AndMarkers",
@@ -7265,7 +7265,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.025,
+      "baseline_seconds": 0.032,
       "cases": [
         "digestIncludesEveryMetadataFieldAndOrderedIncidence",
         "matchesIndependentExpectedBytesAndDigestIncludingNegativeDecimalScale",
@@ -7285,7 +7285,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.074,
+      "baseline_seconds": 0.059,
       "cases": [
         "supportsOnlyRegisteredAnalyticsTopologyScopesAndChecksOwnerExistence"
       ],
@@ -7299,7 +7299,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.07,
+      "baseline_seconds": 0.035,
       "cases": [
         "allFiveDocumentedLeakDetectionTypesAreSupportedEvenWhenTargetIsMissing",
         "resolvesOwnerSnapshotsAndFailsClosedForUnsupportedTypes"
@@ -7314,7 +7314,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 2.158,
+      "baseline_seconds": 2.121,
       "cases": [
         "conflictingLegacyTaxonomyAbortsWithoutInventingClassification",
         "legacyOrphanAttachmentAbortsWithoutRewritingIt",
@@ -7331,7 +7331,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.058,
+      "baseline_seconds": 0.037,
       "cases": [
         "allowsOptionalManufacturerAndCustomCatalogIdentityWithoutEnumClassification",
         "preservesHistoricalManufacturerSnapshotsOnEverySave",
@@ -7347,7 +7347,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.002,
+      "baseline_seconds": 0.001,
       "cases": [
         "rejectsUnknownPopulatedOwnerPartyReference"
       ],
@@ -7361,7 +7361,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.279,
+      "baseline_seconds": 0.172,
       "cases": [
         "unknownAndMissingTypedAssetsFailClosed"
       ],
@@ -7375,7 +7375,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.001,
+      "baseline_seconds": 0.003,
       "cases": [
         "migrationSeedsFormerValuesAndReplacesLegacyColumnWithCatalogForeignKey",
         "pipelineTypeIsOpenCatalogReferenceNotClosedEnum"
@@ -7390,7 +7390,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.01,
+      "baseline_seconds": 0.009,
       "cases": [
         "createRequiresAnExplicitKnownSystemTypeCode",
         "jpaUsesMandatoryCatalogReferenceColumn",
@@ -7407,7 +7407,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.125,
+      "baseline_seconds": 0.086,
       "cases": [
         "adapterRejectsUnknownCatalogReferenceAndDanglingSegment",
         "aggregateRejectsSelfConnection",
@@ -7424,7 +7424,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.002,
+      "baseline_seconds": 0.004,
       "cases": [
         "derivesActorAndPermissionsFromAuthenticatedSecurityContext"
       ],
@@ -7453,7 +7453,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.151,
+      "baseline_seconds": 0.036,
       "cases": [
         "onlyOwnerProvenReferencesResolve"
       ],
@@ -7467,7 +7467,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.002,
+      "baseline_seconds": 0.004,
       "cases": [
         "existenceIsOwnerControlledWithoutInventingApprovalLifecycle"
       ],
@@ -7481,7 +7481,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.006,
+      "baseline_seconds": 0.003,
       "cases": [
         "acceptsCompletedMatchingResponsibilityWorkflow",
         "rejectsCompletedNonApprovalDecision",
@@ -7497,7 +7497,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.141,
+      "baseline_seconds": 0.032,
       "cases": [
         "requiresCompletedReportingWorkflowWithApproveDecision"
       ],
@@ -7511,7 +7511,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.568,
+      "baseline_seconds": 0.146,
       "cases": [
         "propagatesInfrastructureFailures",
         "readsActualExactFinalEvidence",
@@ -7543,7 +7543,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.449,
+      "baseline_seconds": 0.144,
       "cases": [
         "actualFinalApprovalProducesCanonicalMetadataAndNonfinalDecisionRollsBack",
         "livePermissionDenialPropagatesWithoutInventingPermissions",
@@ -7559,7 +7559,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.722,
+      "baseline_seconds": 0.163,
       "cases": [
         "completesInstanceWhenTargetStepIsTerminal",
         "executesPermittedTransitionAndCreatesNextTask",
@@ -7577,7 +7577,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 10.451,
+      "baseline_seconds": 13.309,
       "cases": [
         "actualTransitionQualifiesOnlyExactDigestAndWithdrawalMakesItUnavailable"
       ],
@@ -7591,7 +7591,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.007,
+      "baseline_seconds": 0.005,
       "cases": [
         "differentTargetIsRejected",
         "mereExistenceAndWrongModuleAreInsufficient",
@@ -7611,7 +7611,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.009,
+      "baseline_seconds": 0.012,
       "cases": [
         "differentTargetIsRejected",
         "mereExistenceAndWrongModuleAreInsufficient",
@@ -7633,7 +7633,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.005,
+      "baseline_seconds": 0.004,
       "cases": [
         "existenceOrUnrelatedTargetDoesNotAttestClosure",
         "onlyActualFinalConfiguredApprovalByCloserAttests"
@@ -7648,7 +7648,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.009,
+      "baseline_seconds": 0.007,
       "cases": [
         "differentTargetIsRejected",
         "mereExistenceAndWrongModuleAreInsufficient",
@@ -7668,7 +7668,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.007,
+      "baseline_seconds": 0.005,
       "cases": [
         "differentTargetIsRejected",
         "mereExistenceAndWrongModuleAreInsufficient",
@@ -7708,7 +7708,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.007,
+      "baseline_seconds": 0.006,
       "cases": [
         "callerWildcardCannotBypassLiveTransitionPermission",
         "commentUsesServerSequenceTimeAndCanonicalActor",
@@ -7726,7 +7726,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.144,
+      "baseline_seconds": 0.051,
       "cases": [
         "additiveMigrationEnforcesVersionAndUniqueBusinessIdentity",
         "allowsLifecycleDeactivationWithoutStructuralMutation",
@@ -7745,7 +7745,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 7.315,
+      "baseline_seconds": 7.034,
       "cases": [
         "concurrentActionWritersAllocateContiguousServerSequences",
         "concurrentStartsAllowExactlyOneNonterminalTuple",
@@ -7768,7 +7768,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.011,
+      "baseline_seconds": 0.012,
       "cases": [
         "absentTargetDeniedWithoutSavingInstance",
         "callerCannotImpersonateStarter",
@@ -7789,7 +7789,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.008,
+      "baseline_seconds": 0.011,
       "cases": [
         "mandatoryDestinationAndActorEvidenceFailFast",
         "missingOrForeignOptionalReferencesFailClosed",
@@ -7821,7 +7821,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.003,
+      "baseline_seconds": 0.001,
       "cases": [
         "migrationProtectsUniquenessAndDefaultAssignmentRuleReference",
         "rejectsNegativeStepOrder"
@@ -7836,7 +7836,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.008,
+      "baseline_seconds": 0.007,
       "cases": [
         "actionableTaskRequiresExplicitAssignment",
         "claimAndCompletionRequirePairsAndChronology",
@@ -7872,7 +7872,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.366,
+      "baseline_seconds": 1.065,
       "cases": [
         "localAdministratorJwtIsAuthorizedOnlyWhileDatabaseGrantRemainsValid",
         "ordinaryUserCannotUseWildcardEvenIfPermissionSourceReturnsIt"
@@ -7887,7 +7887,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.146,
+      "baseline_seconds": 0.235,
       "cases": [
         "dispatchesLocalAndLdapRequestsOnlyToMatchingProviders",
         "failedSelectedLocalProviderDoesNotFallThroughToLdapProvider",
@@ -7904,7 +7904,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.054,
+      "baseline_seconds": 0.03,
       "cases": [
         "acceptsLdapsTransportInProduction",
         "permitsPlainLdapOnlyOutsideProductionLikeEnvironments",
@@ -7922,7 +7922,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.02,
+      "baseline_seconds": 0.015,
       "cases": [
         "declaresBothVerifiedBearerSecuritySchemes",
         "leavesVerifiedPublicOperationsExplicitlyUnauthenticated",
@@ -7939,7 +7939,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.013,
+      "baseline_seconds": 0.073,
       "cases": [
         "acceptsCompleteProductionRuntimeContract",
         "allowsNonProductionRuntimeWithoutProductionInputs",
@@ -7962,7 +7962,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.013,
+      "baseline_seconds": 0.024,
       "cases": [
         "exposesDocumentDownloadEvidenceHeadersForCrossOriginBrowserClients"
       ],
@@ -7976,7 +7976,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.079,
+      "baseline_seconds": 0.06,
       "cases": [
         "allAuthenticationSourcesIssueTokensAcceptedByProtectedApiSecurity(ProviderType, String)[1]",
         "allAuthenticationSourcesIssueTokensAcceptedByProtectedApiSecurity(ProviderType, String)[2]",
@@ -7993,7 +7993,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.015,
+      "baseline_seconds": 0.025,
       "cases": [
         "configurationRenderingRedactsSecrets",
         "disabledConfigurationDoesNotRequirePublisherSecrets",
@@ -8010,7 +8010,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.016,
+      "baseline_seconds": 0.007,
       "cases": [
         "mapsAuthorizationFailureTo403",
         "mapsMissingResourceTo404"
@@ -8025,7 +8025,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.14,
+      "baseline_seconds": 0.075,
       "cases": [
         "anonymousProtectedRouteStillRequiresPermission",
         "derivesIdentityRoadmapPermissionFormat",
@@ -8046,7 +8046,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.74,
+      "baseline_seconds": 0.619,
       "cases": [
         "admissionCannotBeNestedReopenedOrSealedTwice",
         "admissionCannotEscapeThreadConnectionOrTransaction",
@@ -8070,7 +8070,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.137,
+      "baseline_seconds": 0.081,
       "cases": [
         "closeReleasesBothOwnedPoolsExactlyOnce",
         "disabledPublisherRouteFailsBeforeConnection",
@@ -8090,7 +8090,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.005,
+      "baseline_seconds": 0.006,
       "cases": [
         "preservesExactImmutableRequirementData",
         "rejectsUnqualifiedOrUnsafeRelationNames",
@@ -8106,7 +8106,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.981,
+      "baseline_seconds": 0.79,
       "cases": [
         "additionalDatasourceConnectionPoisonsOwner",
         "admissionGrammarKeepsQuotedDataButRejectsWritableQueryForms",
@@ -8156,7 +8156,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.022,
+      "baseline_seconds": 0.012,
       "cases": [
         "bindsRealtimeBrokerCreationToRealtimeEnabledProperty"
       ],
@@ -8170,7 +8170,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.003,
+      "baseline_seconds": 0.001,
       "cases": [
         "publishesTransportAndRecoveryMetadataWithoutUnverifiedDomainPublishers"
       ],
@@ -8184,7 +8184,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.01,
+      "baseline_seconds": 0.006,
       "cases": [
         "bootstrapAdminReceivesWildcardWithoutInventingBusinessPermissions",
         "resolvesScopesAndIdentitySpecificPermissions",
@@ -8202,7 +8202,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.012,
+      "baseline_seconds": 0.003,
       "cases": [
         "doesNotClaimExternalIdpRegistrationWhenRepositoryValuesAreMissing",
         "reportsConfiguredRepositoryContractWhenIssuerAndClientArePresent"
@@ -8217,7 +8217,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.189,
+      "baseline_seconds": 0.152,
       "cases": [
         "callerSuppliedActorHeaderDoesNotPopulateAuthenticatedActorContext",
         "platformHeaderContractNoLongerPublishesActorIdentityHeader"
@@ -8232,7 +8232,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.019,
+      "baseline_seconds": 0.01,
       "cases": [
         "approvedResourceExposesOnlyExplicitFields",
         "blankConfigurationExposesNoResources",
@@ -8250,7 +8250,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 1.355,
+      "baseline_seconds": 3.133,
       "cases": [
         "credentialResourceHttpRoutesAreDeniedBeforePersistenceAndCannotSerializeHashMarker",
         "detailHttpResponseContainsOnlyApprovedFields",
@@ -8268,7 +8268,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 1.826,
+      "baseline_seconds": 1.433,
       "cases": [
         "configuredResourceMustExplicitlyExposeIdentifierField",
         "detailResponseContainsOnlyApprovedAttributesAndNeverPasswordHash",
@@ -8324,14 +8324,14 @@
       ]
     }
   ],
-  "postgres_shards": 3,
+  "postgres_shards": 4,
   "timing_baseline": {
-    "source_sha": "067929306170ad69b453823a90bb7beeb6b8130d",
-    "run_id": 39423247020,
-    "run_number": 777,
+    "source_sha": "2cd16f45aa0fa324eb4f89107ff5d7f9f805b9a8",
+    "run_id": 39430323819,
+    "run_number": 778,
     "run_attempt": 1,
-    "lane": "oracle",
-    "artifact_sha256": "9aa04df6a595ed37388f08125d16db7efcba4d52fa181dd01fdc4f83c80e93c3",
+    "lane": "disjoint development test lanes",
+    "artifact_sha256": "c9c9c3c94dd3274aa221051d962b4ffbe4e3d5b0211c3138a2c683820beb6d65",
     "metric": "Surefire testsuite time seconds; scheduling weights, not job elapsed or a speedup claim"
   }
 }

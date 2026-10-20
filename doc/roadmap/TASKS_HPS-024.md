@@ -505,6 +505,83 @@ naturally produced development run; future explicit audit evidence and comparabl
 new timings remain separate acceptance obligations. No production deployment,
 release, tag or additional task is selected.
 
+### 2026-10-20 — Full778 acceptance and measured fourth database set
+
+Owner selected the next HAPI-045 stage and asked why three database sets rather
+than four or five. Current main `2cd16f45aa0fa324eb4f89107ff5d7f9f805b9a8` has
+successful Full778, Fast102 and Documentation458. Full778 development verification
+is accepted within its exact scope: 430 classes, 2606 cases, zero failures/errors/
+skips; no independent oracle or release qualification is claimed.
+
+[Full778](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39430323819)
+started at 13:25:54Z and completed with workflow update at 13:34:08Z. Job wall
+measurements, excluding queue: static 21s, unit/architecture 70s, API/dictionary
+180s, PostgreSQL0 432s, PostgreSQL1 321s, PostgreSQL2 472s, gate 13s. The explicit
+audit oracle was intentionally skipped, as required for development mode. Job wall
+sum is 1509s (25m09s runner time before billing rounding); the slowest DB job was
+7m52s and missed the seven-minute target. Three was the smallest configuration
+suggested by Full777's oracle timings, not an optimum or a hard concurrency limit.
+This first hosted result justifies revising that choice; no unchanged benchmark
+workflow was rerun.
+
+The authenticated Full778 aggregate artifact 12268336552 has ZIP SHA256
+`c9c9c3c94dd3274aa221051d962b4ffbe4e3d5b0211c3138a2c683820beb6d65`.
+Downloaded receipt/file hashes, exact source/run/attempt/classifier/inventory,
+raw XML classes/cases/counts/timings and Java21 clean-verify lifecycle were checked.
+The six lane receipts cover the complete disjoint inventory and deny release
+eligibility. Current/base OpenAPI, actual PostgreSQL16 catalog and the reviewed
+physical dictionary passed `api_facts` against the unchanged migration/mapping
+sources. This accepts the development run, not same-run oracle equivalence.
+
+**Four versus five:** summing the actual database class times from Full778 gives
+1042.315 suite seconds. Deterministic weighted scheduling using those measurements
+produces the following estimates; no setup/compile/container/queue overhead is
+included and no speedup is promised.
+
+| Sets | Largest estimated suite sum | Change from preceding option |
+|---|---:|---:|
+| Three, refreshed weights | 347.442s (5m47s) | existing count, rebalanced |
+| Four | 260.590s (4m21s) | about 87s less suite work on the critical set |
+| Five | 208.482s (3m28s) | about 52s further reduction |
+
+Full778 DB-job overhead above reported suite sums ranged from about 53s to 74s.
+It varies with runner, compilation and Spring/container startup. Four supplies
+more timing headroom with one extra isolated runner; five adds another complete
+runner setup for a smaller estimated gain. Neither runner-cost neutrality nor
+repeatable sub-seven-minute elapsed time is established. If four still misses,
+inspect its actual timing evidence before deciding on five. Do not repeat runs
+solely to manufacture acceptance samples. Three-set weights came from a serial
+oracle; this correction uses actual partition executions, while acknowledging
+that regrouping classes can change context reuse and timings again.
+
+**Bounded correction:** preserve the previous HAPI-045 seven CI/record paths
+(exclude PROJECT_STATE, already correct): ci.yml matrix, inventory scheduling
+weights/provenance/count, classifier plus fixture, aggregate/release helper plus
+fixture, and this phase file. Four DB sets contain respectively 20/23/24/27 classes
+and 235/225/219/210 cases, with suite sums 260.581/260.590/260.587/260.557s.
+The 336 unit/architecture classes and 1717 cases are unchanged. Every active class
+still runs once in development CI. Required fourth-set evidence is enforced by
+the aggregate and strict audit/release job list. Manual audit remains available.
+No test source/case, archive selection, security deadline, retry, fork count,
+container isolation, API, POM, migration, dictionary or Fast/release workflow is
+changed. HidraAPI remains development-only with no production deployment/data.
+
+**Validation:** 78 local fixtures passed (61 inventory/aggregate/release plus 17
+docs), including four-set coverage, missing fourth receipt, corrupt/omitted/
+overlapping/skipped fourth-set reports and release rejection of development
+results. YAML matrix and manifest agree on four. Inventory comparison preserves
+every field inside class entries except timing weights and preserves all original
+case/source/dependency/owner/Fast/archive metadata. No Java21 Maven/PostgreSQL run
+was performed locally; existing Java is 17 and Maven is absent. Exact published
+CI follows, then stop at queue/start observation per AGENTS.md §11.1.
+
+**Disposition:** HAPI-045 remains PARTIAL / IN_PROGRESS. Development acceptance
+for Full778 is recorded; fourth-set runtime acceptance and representative audit/
+cold-warm qualification remain pending. HAPI-046/HAPI-436 are not completed; one
+new successful sample is not five comparable samples or a performance-adoption
+campaign. Retain registered message `ci: automate fast feedback and preserve full
+verification gates`. No release, tag, deployment or unrelated task is selected.
+
 <a id="hapi-046"></a>
 ## HAPI-046 — Timing, runner cost and adoption decision
 

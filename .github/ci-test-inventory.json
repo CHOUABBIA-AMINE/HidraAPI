@@ -6428,6 +6428,7 @@
         "graphAdapterCannotReplaceTheAuthoredGraphWithoutFailingTheProtectedWork",
         "graphPutCopiesMetadataAndAppendsSnapshotWithinSameProtectedWork",
         "historicalGraphReadDoesNotCreateAnotherMetadataOrGraphVersion",
+        "indeterminateGraphWriteRemainsIndeterminateAndIsNeverRetried",
         "invalidCurrentStationWitnessCannotOpenGraphProvisionalWindow",
         "metadataOnlyConstructorDoesNotActivateGraph",
         "transientPublicationFailureDoesNotRetryGraphOperation"
@@ -6438,7 +6439,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/application/service/EngineeringGraphDraftApplicationServiceTest.java",
-      "source_sha256": "44fd86881757fde4c824b4c521dfc008a4582253f0b4439de667fafe009e8963",
+      "source_sha256": "58c3f15abba5ac281d2af4437e68346a68207bcb430d49c4b28c6586801a28d8",
       "supports": []
     },
     {
@@ -6854,12 +6855,17 @@
       "cases": [
         "actualFinalGuardRejectsExpiredProvisionalVersionAndRetainsNoRows",
         "actualFinalGuardVerifiesCompleteOwnerFenceSubset",
+        "actualGraphTriggerAndPrivilegeTamperingRejectBeforeMutation",
         "actualPublisherFenceWorksWhileStatementTriggersRejectUpdates",
         "committedNetworkRevocationAndPartyIneligibilityPreventReplay",
         "concurrentSameExpectedVersionCommitsAtMostOneSuccessor",
         "disabledActualCatalogTriggerFailsBeforeAnyDraftInsert",
+        "expiredGraphFinalGuardRollsBackBothVersionRows",
+        "facilityWriterFirstPreventsBothGraphAndMetadataAppends",
         "graphCurrentStationWrongKindAndStatusFailClosed",
         "graphFinalGuardContainsThirtyFourRelationFences",
+        "graphForeignOwnerAndOwnerAbaNeverReuseAStaleStationWitness",
+        "graphOwnerFirstBlocksAConcurrentFacilityGenerationWriter",
         "graphStationRoundTripRequiresReadOnlyGenerationAuthority",
         "graphSurvivesMetadataOnlySuccessorWithHistoricalSha",
         "ordinaryDirectDmlAndDdlRemainDenied",
@@ -6881,7 +6887,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/EngineeringNetworkDraftPostgresIntegrationTest.java",
-      "source_sha256": "2348baafd7d6d0a6deed801b7a5fefe9e8bcd1205c5c283ac474d714cc197bbc",
+      "source_sha256": "18250362281db2a4c7035216e52254e8458bc325010e0344af034899b0f191bd",
       "supports": []
     },
     {

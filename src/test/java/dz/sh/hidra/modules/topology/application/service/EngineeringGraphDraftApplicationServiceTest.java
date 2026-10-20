@@ -246,4 +246,22 @@ class EngineeringGraphDraftApplicationServiceTest {
         verify(coordinator,never()).endProvisional(admission);
         verify(draftRepo,never()).bindGraphProof(any(),anyLong(),any(),anyList(),anyLong());
     }
+    @Test void indeterminateGraphWriteRemainsIndeterminateAndIsNeverRetried() {
+        var coordinator=mock(ProtectedEngineeringDraftAdmissionCoordinator.class);
+        var executor=mock(ProtectedTransactionExecutor.class);
+        var service=new EngineeringNetworkDraftApplicationService(coordinator,
+            mock(EngineeringNetworkDraftRepositoryPort.class),executor,
+            mock(EngineeringGraphDraftRepositoryPort.class),mock(EngineeringGraphStationWitnessPort.class));
+        var uncertain=mock(ProtectedTransactionExecutor.ExecutionFailure.class);
+        when(uncertain.outcome()).thenReturn(ProtectedTransactionExecutor.Outcome.INDETERMINATE);
+        doThrow(uncertain).when(executor).executePublication(any(),any(),any());
+        var write=new EngineeringGraphDraftUseCase.Command(EngineeringGraphDraftUseCase.Kind.UPDATE,
+            "c","n",UUID.randomUUID(),1L,null,new EngineeringGraphDraft(List.of(),List.of(),List.of()));
+        var failure=assertThrows(EngineeringNetworkDraftFailure.class,()->service.executeGraph(write));
+        assertEquals(EngineeringNetworkDraftFailure.Reason.INDETERMINATE,failure.reason());
+        assertSame(uncertain,failure.getCause());
+        verify(coordinator,times(1)).prepare();
+        verify(executor,times(1)).executePublication(any(),any(),any());
+    }
+
 }

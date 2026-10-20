@@ -1,4 +1,22 @@
-/** HAPI-588B work-in-progress: existing aggregate owner, one protected physical transaction. */
+/**
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : EngineeringNetworkDraftApplicationService
+ * @CreatedOn   : 2025-06-26
+ * @UpdatedOn   : 2026-10-20
+ *
+ * @Type        : Class
+ * @Layer       : Application
+ * @Module      : topology
+ * @Package     : dz.sh.hidra.modules.topology.application.service
+ *
+ * @Description : Coordinates protected metadata and graph operations in one physical transaction.
+ *
+ */
 package dz.sh.hidra.modules.topology.application.service;
 
 import dz.sh.hidra.modules.topology.application.port.in.EngineeringNetworkDraftUseCase;
@@ -116,18 +134,25 @@ public class EngineeringNetworkDraftApplicationService implements EngineeringNet
         if(failure instanceof EngineeringNetworkDraftFailure e)return e;
         if(failure instanceof ProtectedTransactionExecutor.ExecutionFailure execution){
             if(execution.outcome()==ProtectedTransactionExecutor.Outcome.INDETERMINATE)
-                return new EngineeringNetworkDraftFailure(Reason.INDETERMINATE);
+                return translated(Reason.INDETERMINATE,failure);
             Throwable cause=execution;
             while(cause!=null){
                 if(cause instanceof EngineeringNetworkDraftFailure e)return e;
                 if(cause instanceof org.springframework.security.access.AccessDeniedException)
-                    return new EngineeringNetworkDraftFailure(Reason.DENIED);
+                    return translated(Reason.DENIED,failure);
                 cause=cause.getCause();
             }
-            return new EngineeringNetworkDraftFailure(Reason.UNAVAILABLE);
+            return translated(Reason.UNAVAILABLE,failure);
         }
         if(failure instanceof org.springframework.security.access.AccessDeniedException)
-            return new EngineeringNetworkDraftFailure(Reason.DENIED);
-        return new EngineeringNetworkDraftFailure(Reason.UNAVAILABLE);
+            return translated(Reason.DENIED,failure);
+        return translated(Reason.UNAVAILABLE,failure);
     }
+    /** Preserve internal rollback evidence while the HTTP boundary exposes only the fixed reason. */
+    private static EngineeringNetworkDraftFailure translated(Reason reason, RuntimeException cause) {
+        var failure=new EngineeringNetworkDraftFailure(reason);
+        failure.initCause(cause);
+        return failure;
+    }
+
 }

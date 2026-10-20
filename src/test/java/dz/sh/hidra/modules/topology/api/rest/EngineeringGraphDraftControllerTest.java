@@ -1,3 +1,22 @@
+/**
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : EngineeringGraphDraftControllerTest
+ * @CreatedOn   : 2025-06-26
+ * @UpdatedOn   : 2026-10-20
+ *
+ * @Type        : Class
+ * @Layer       : Topology Test
+ * @Module      : topology
+ * @Package     : dz.sh.hidra.modules.topology.api.rest
+ *
+ * @Description : Verifies the protected engineering graph draft boundary.
+ *
+ */
 package dz.sh.hidra.modules.topology.api.rest;
 
 import dz.sh.hidra.modules.topology.api.rest.controller.EngineeringNetworkDraftController;
@@ -93,6 +112,9 @@ class EngineeringGraphDraftControllerTest {
                 "{\"expectedVersion\":\"1\",\"nodes\":[],\"ports\":[],\"branches\":[]}",
                 "{\"expectedVersion\":1.0,\"nodes\":[],\"ports\":[],\"branches\":[]}",
                 "{\"expectedVersion\":true,\"nodes\":[],\"ports\":[],\"branches\":[]}",
+                "{\"expectedVersion\":9223372036854775808,\"nodes\":[],\"ports\":[],\"branches\":[]}",
+                "{\"expectedVersion\":null,\"nodes\":[],\"ports\":[],\"branches\":[]}",
+                "{\"expectedVersion\":1,\"nodes\":{},\"ports\":[],\"branches\":[]}",
                 "{\"expectedVersion\":1,\"nodes\":[{\"id\":99,\"kind\":\"JUNCTION\"}],\"ports\":[],\"branches\":[]}",
                 "{\"expectedVersion\":1,\"nodes\":[{\"id\":\"n\",\"kind\":\"JUNCTION\",\"extra\":true}],\"ports\":[],\"branches\":[]}",
                 "{\"expectedVersion\":1,\"nodes\":[],\"ports\":[{\"id\":\"p\",\"nodeId\":\"n\",\"direction\":\"INLET\",\"extra\":true}],\"branches\":[]}",

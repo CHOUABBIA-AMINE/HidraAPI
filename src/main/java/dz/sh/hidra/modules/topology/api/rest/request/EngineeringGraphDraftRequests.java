@@ -7,7 +7,7 @@
  *
  * @Name        : EngineeringGraphDraftRequests
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-19
+ * @UpdatedOn   : 2026-10-20
  *
  * @Type        : Class
  * @Layer       : API
@@ -20,13 +20,11 @@
 package dz.sh.hidra.modules.topology.api.rest.request;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import java.io.IOException;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.ValueDeserializer;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DatabindException;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import java.util.Objects;
@@ -34,50 +32,31 @@ import java.util.Objects;
 public final class EngineeringGraphDraftRequests {
     private EngineeringGraphDraftRequests() { }
 
-    /** Reject scalar coercions that Jackson's default String deserializer might accept. */
-    public static final class StrictText extends JsonDeserializer<String> {
-        @Override public String deserialize(JsonParser parser, DeserializationContext context) throws IOException {
-            if (parser.currentToken() != JsonToken.VALUE_STRING)
-                throw JsonMappingException.from(parser, "Graph text must be a JSON string");
-            return parser.getText();
-        }
-    }
-    /** Do not turn a JSON float, boolean or numeric string into an expectedVersion. */
-    public static final class StrictVersion extends JsonDeserializer<Long> {
-        @Override public Long deserialize(JsonParser parser, DeserializationContext context) throws IOException {
-            if (parser.currentToken() != JsonToken.VALUE_NUMBER_INT)
-                throw JsonMappingException.from(parser, "Expected version must be a JSON integer");
-            try { return parser.getBigIntegerValue().longValueExact(); }
-            catch (ArithmeticException outOfRange) {
-                throw JsonMappingException.from(parser, "Version exceeds signed 64-bit range", outOfRange);
-            }
-        }
-    }
-    public record Node(@JsonDeserialize(using=StrictText.class) String id,
-                       @JsonDeserialize(using=StrictText.class) String kind,
-                       @JsonDeserialize(using=StrictText.class) String facilityId) {
+    public record Node(String id,
+                       String kind,
+                       String facilityId) {
         @JsonAnySetter public void unknown(String name, Object value) {
             throw new IllegalArgumentException("Unsupported graph node field");
         }
     }
-    public record Port(@JsonDeserialize(using=StrictText.class) String id,
-                       @JsonDeserialize(using=StrictText.class) String nodeId,
-                       @JsonDeserialize(using=StrictText.class) String direction) {
+    public record Port(String id,
+                       String nodeId,
+                       String direction) {
         @JsonAnySetter public void unknown(String name, Object value) {
             throw new IllegalArgumentException("Unsupported graph port field");
         }
     }
-    public record Branch(@JsonDeserialize(using=StrictText.class) String id,
-                         @JsonDeserialize(using=StrictText.class) String kind,
-                         @JsonDeserialize(using=StrictText.class) String fromPortId,
-                         @JsonDeserialize(using=StrictText.class) String toPortId) {
+    public record Branch(String id,
+                         String kind,
+                         String fromPortId,
+                         String toPortId) {
         @JsonAnySetter public void unknown(String name, Object value) {
             throw new IllegalArgumentException("Unsupported graph branch field");
         }
     }
     @JsonDeserialize(using=StrictUpdate.class)
     @Schema(name="EngineeringGraphDraftUpdateRequest")
-    public record Update(@JsonDeserialize(using=StrictVersion.class) Long expectedVersion,
+    public record Update(Long expectedVersion,
                          List<Node> nodes, List<Port> ports, List<Branch> branches) {
         @JsonAnySetter public void unknown(String name, Object value) {
             throw new IllegalArgumentException("Unsupported graph field");
@@ -95,46 +74,45 @@ public final class EngineeringGraphDraftRequests {
     }
 
     /** Read the JSON syntax before Jackson's permissive record/scalar coercion can occur. */
-    public static final class StrictUpdate extends JsonDeserializer<Update> {
-        private static void object(JsonParser p, com.fasterxml.jackson.databind.JsonNode value,
-                                   String... allowed) throws JsonMappingException {
+    public static final class StrictUpdate extends ValueDeserializer<Update> {
+        private static void object(JsonParser p, tools.jackson.databind.JsonNode value,
+                                   String... allowed) throws DatabindException {
             if (value == null || !value.isObject())
-                throw JsonMappingException.from(p, "Graph object required");
+                throw DatabindException.from(p, "Graph object required");
             var permitted = java.util.Set.of(allowed);
-            var keys = value.fieldNames();
-            while (keys.hasNext())
-                if (!permitted.contains(keys.next()))
-                    throw JsonMappingException.from(p, "Unsupported graph property");
+            for (String key : value.propertyNames())
+                if (!permitted.contains(key))
+                    throw DatabindException.from(p, "Unsupported graph property");
         }
-        private static String string(JsonParser p, com.fasterxml.jackson.databind.JsonNode value,
-                                     String field, boolean required) throws JsonMappingException {
+        private static String string(JsonParser p, tools.jackson.databind.JsonNode value,
+                                     String field, boolean required) throws DatabindException {
             var node = value.get(field);
             if (node == null || node.isNull()) {
-                if (required) throw JsonMappingException.from(p, "Required graph string missing");
+                if (required) throw DatabindException.from(p, "Required graph string missing");
                 return null;
             }
-            if (!node.isTextual()) throw JsonMappingException.from(p, "Graph values must be JSON strings");
-            return node.textValue();
+            if (!node.isString()) throw DatabindException.from(p, "Graph values must be JSON strings");
+            return node.stringValue();
         }
-        private static com.fasterxml.jackson.databind.JsonNode array(JsonParser p,
-                com.fasterxml.jackson.databind.JsonNode root, String field) throws JsonMappingException {
+        private static tools.jackson.databind.JsonNode array(JsonParser p,
+                tools.jackson.databind.JsonNode root, String field) throws DatabindException {
             var node = root.get(field);
             if (node == null || !node.isArray())
-                throw JsonMappingException.from(p, "Required graph array missing");
+                throw DatabindException.from(p, "Required graph array missing");
             return node;
         }
-        @Override public Update deserialize(JsonParser p, DeserializationContext context) throws IOException {
-            com.fasterxml.jackson.databind.JsonNode root = p.getCodec().readTree(p);
+        @Override public Update deserialize(JsonParser p, DeserializationContext context) {
+            tools.jackson.databind.JsonNode root = context.readTree(p);
             object(p,root,"expectedVersion","nodes","ports","branches");
             var versionNode=root.get("expectedVersion");
             if (versionNode == null || !versionNode.isIntegralNumber())
-                throw JsonMappingException.from(p, "Expected version must be an integer");
+                throw DatabindException.from(p, "Expected version must be an integer");
             final long version;
             try { version=versionNode.bigIntegerValue().longValueExact(); }
             catch (ArithmeticException range) {
-                throw JsonMappingException.from(p,"Expected version exceeds 64-bit range",range);
+                throw DatabindException.from(p,"Expected version exceeds 64-bit range",range);
             }
-            if(version < 1) throw JsonMappingException.from(p,"Expected version must be positive");
+            if(version < 1) throw DatabindException.from(p,"Expected version must be positive");
             var nodes = new java.util.ArrayList<Node>();
             for(var item:array(p,root,"nodes")) {
                 object(p,item,"id","kind","facilityId");

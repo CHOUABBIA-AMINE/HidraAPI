@@ -1,3 +1,22 @@
+/**
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : EngineeringGraphDraftApplicationServiceTest
+ * @CreatedOn   : 2025-06-26
+ * @UpdatedOn   : 2026-10-20
+ *
+ * @Type        : Class
+ * @Layer       : Topology Test
+ * @Module      : topology
+ * @Package     : dz.sh.hidra.modules.topology.application.service
+ *
+ * @Description : Verifies the protected engineering graph draft boundary.
+ *
+ */
 package dz.sh.hidra.modules.topology.application.service;
 
 import dz.sh.hidra.modules.topology.application.port.in.EngineeringGraphDraftUseCase;
@@ -40,8 +59,11 @@ class EngineeringGraphDraftApplicationServiceTest {
         var executor=mock(ProtectedTransactionExecutor.class);
         var service=new EngineeringNetworkDraftApplicationService(coordinator,mock(EngineeringNetworkDraftRepositoryPort.class),executor,
             mock(EngineeringGraphDraftRepositoryPort.class),mock(EngineeringGraphStationWitnessPort.class));
-        doThrow(new IllegalStateException("unavailable")).when(executor).executePublication(any(),any(),any());
-        assertThrows(EngineeringNetworkDraftFailure.class,()->service.executeGraph(read()));
+        var cause=new IllegalStateException("unavailable");
+        doThrow(cause).when(executor).executePublication(any(),any(),any());
+        var failure=assertThrows(EngineeringNetworkDraftFailure.class,()->service.executeGraph(read()));
+        assertSame(cause,failure.getCause());
+        assertEquals("Engineering draft UNAVAILABLE",failure.getMessage());
         verify(coordinator,times(1)).prepare();verify(executor,times(1)).executePublication(any(),any(),any());
     }
 

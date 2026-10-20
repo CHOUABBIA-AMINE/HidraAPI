@@ -104,3 +104,24 @@ The source SHA identifies the executable generator, not this subsequent repair c
 The repaired source still requires freshly generated exact-SHA equality, full tests
 and actual database dictionary capture/reconciliation before acceptance.
 The four-case/14-fixture-error failures are not presented as passing test evidence.
+
+## HAPI-588B generated snapshot repair — 2026-10-20
+
+The snapshot is copied from the actual `openapi/hidra-api.json` member in
+artifact12247149549 (run39386968386, attempt1, API job118509010097), generated
+from `5f21de85ed9320916ee545f28192aeb8516df27e`. The named generation step7
+succeeded; the job and workflow failed. The manifest scopes its success claim
+to generation only, with failed job/workflow conclusions recorded separately.
+No full-CI, compatibility, dictionary or engineering acceptance is claimed.
+
+Artifact ZIP SHA256: `8068c3274aaae5259945869583b6e88722d936edd59120fa49724adecd2a400c`.
+Actual generated member SHA256: `d9c87f4ea24b74da5688f92527dbe301cf128bde7c5d3e03207b05fb87cb9155`.
+Canonical sorted compact snapshot SHA256: `d1e8827a81a3009c793bfbd6945e95e5023442f693de98bc77465c69c12c1b77`.
+The document contains248 paths/269 operations/244 schemas. Every prior path item
+and schema is unchanged; the generated addition is one graph route, two operations
+and eight schemas. No endpoint/schema/security object was manually authored.
+Strict local snapshot validation and semantic equality to this retained generator
+passed. Fresh repair-SHA generation/equality and compatibility remain required.
+The physical dictionary was not produced because equality failed first; preserve
+the prior dictionary until actual migrated-catalog evidence is available.
+This targeted failure repair is not Package C completion or HAPI-588 acceptance.

@@ -1021,47 +1021,47 @@
   },
   "legacy_statuses": {
     "doc/operations/APPLICATION_HIGH_AVAILABILITY.md": {
-      "line": "APPROVED TARGET \u2014 HPR-P1-002",
+      "line": "APPROVED TARGET — HPR-P1-002",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     },
     "doc/operations/CI_CD_RELEASE_GUIDE.md": {
-      "line": "CONTROLLED PIPELINE IMPLEMENTED / LIVE PRODUCTION-EQUIVALENT EXECUTION PENDING \u2014 HPR-P1-018",
+      "line": "CONTROLLED PIPELINE IMPLEMENTED / LIVE PRODUCTION-EQUIVALENT EXECUTION PENDING — HPR-P1-018",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     },
     "doc/operations/DEPLOYMENT_RUNBOOK.md": {
-      "line": "APPROVED PRODUCT-NEUTRAL PROCEDURE \u2014 HPR-P1-007",
+      "line": "APPROVED PRODUCT-NEUTRAL PROCEDURE — HPR-P1-007",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     },
     "doc/operations/DISASTER_RECOVERY_OBJECTIVES.md": {
-      "line": "APPROVED TARGET \u2014 HPR-P1-004",
+      "line": "APPROVED TARGET — HPR-P1-004",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     },
     "doc/operations/DISASTER_RECOVERY_RUNBOOK.md": {
-      "line": "APPROVED PROCEDURE \u2014 HPR-P1-005",
+      "line": "APPROVED PROCEDURE — HPR-P1-005",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     },
     "doc/operations/ENVIRONMENT_CONFIGURATION.md": {
-      "line": "CURRENT CONFIGURATION CONTRACT + APPROVED OPERATING REQUIREMENTS \u2014 HPR-P1-007",
+      "line": "CURRENT CONFIGURATION CONTRACT + APPROVED OPERATING REQUIREMENTS — HPR-P1-007",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     },
     "doc/operations/HIGH_AVAILABILITY_ARCHITECTURE.md": {
-      "line": "APPROVED TARGET ARCHITECTURE \u2014 HPR-P1-006",
+      "line": "APPROVED TARGET ARCHITECTURE — HPR-P1-006",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     },
     "doc/operations/OBSERVABILITY_AND_SRE.md": {
-      "line": "OPERATING MODEL ESTABLISHED / P1 ALERTING IMPLEMENTED-PENDING-LIVE-EXERCISE \u2014 HPR-P1-010 + HPR-P1-019",
+      "line": "OPERATING MODEL ESTABLISHED / P1 ALERTING IMPLEMENTED-PENDING-LIVE-EXERCISE — HPR-P1-010 + HPR-P1-019",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     },
     "doc/operations/P1_OWNER_APPROVED_VALUES.md": {
-      "line": "OWNER-APPROVED \u2014 2026-10-05",
+      "line": "OWNER-APPROVED — 2026-10-05",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     },
     "doc/operations/P1_SURVIVABILITY_EXERCISE_EVIDENCE_2026-10-06.md": {
-      "line": "COMPLETED \u2014 2026-10-06",
+      "line": "COMPLETED — 2026-10-06",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     },
     "doc/operations/PRODUCTION_INFRASTRUCTURE_STACK.md": {
-      "line": "OWNER-APPROVED PRODUCTION INFRASTRUCTURE BASELINE \u2014 HPR-P1-013",
+      "line": "OWNER-APPROVED PRODUCTION INFRASTRUCTURE BASELINE — HPR-P1-013",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     }
   },
@@ -1102,35 +1102,36 @@
   ],
   "openapi": {
     "counts": {
-      "operations": 267,
-      "paths": 247,
-      "schemas": 236
+      "paths": 248,
+      "operations": 269,
+      "schemas": 244
     },
     "path": "doc/api/openapi.yaml",
     "provenance": {
-      "artifact_id": 12191249823,
-      "artifact_name": "hidra-ci-diagnostics-a98ef0ea115b85a80941be40406511334b4b477a-39264047957-1-api-contract",
+      "artifact_id": 12247149549,
+      "artifact_name": "hidra-ci-diagnostics-5f21de85ed9320916ee545f28192aeb8516df27e-39386968386-1-api-contract",
       "conclusion": "success",
       "conclusion_scope": "Publish deterministic OpenAPI contract generation step only",
       "generation_step": "Publish deterministic OpenAPI contract",
       "generation_step_conclusion": "success",
       "generation_step_number": 7,
       "job_conclusion": "failure",
-      "job_id": 118098882769,
-      "json_sha256": "1144f929d23a0b3d4bb63fc2bac645c6ca1a1cb9b9e59b91deeb8933305842ce",
+      "job_id": 118509010097,
+      "json_sha256": "d9c87f4ea24b74da5688f92527dbe301cf128bde7c5d3e03207b05fb87cb9155",
       "remaining_gates": [
         "exact repair-SHA runtime snapshot equality",
         "full verification",
-        "migrated database dictionary reconciliation"
+        "migrated database dictionary reconciliation",
+        "graph PostgreSQL root-cause repair"
       ],
       "run_attempt": 1,
-      "run_id": 39264047957,
-      "source_sha": "a98ef0ea115b85a80941be40406511334b4b477a",
+      "run_id": 39386968386,
+      "source_sha": "5f21de85ed9320916ee545f28192aeb8516df27e",
       "workflow_conclusion": "failure",
-      "zip_sha256": "db55d874636feba7df69dab8ac112403e06a79d820bdb23ae94af38fb0f70f75"
+      "zip_sha256": "8068c3274aaae5259945869583b6e88722d936edd59120fa49724adecd2a400c"
     },
-    "sha256": "b4e5f611148bce49e9855c5f5af944499e3a3cf69e995c3c7176b49ffd82546a",
-    "source_sha": "a98ef0ea115b85a80941be40406511334b4b477a"
+    "sha256": "d1e8827a81a3009c793bfbd6945e95e5023442f693de98bc77465c69c12c1b77",
+    "source_sha": "5f21de85ed9320916ee545f28192aeb8516df27e"
   },
   "register": "doc/governance/DOCUMENT_REGISTER.md",
   "register_areas": {

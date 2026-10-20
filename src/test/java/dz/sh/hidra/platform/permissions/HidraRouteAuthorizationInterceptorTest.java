@@ -7,7 +7,7 @@
  *
  * @Name        : HidraRouteAuthorizationInterceptorTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-17
+ * @UpdatedOn   : 2026-10-20
  *
  * @Type        : Class
  * @Layer       : Platform Test
@@ -198,4 +198,27 @@ class HidraRouteAuthorizationInterceptorTest {
             req.setMethod(method.equals("readSurvey")?"GET":"PUT");assertThrows(AccessDeniedException.class,()->interceptor.preHandle(req,new MockHttpServletResponse(),handlerMethod()));
         }
     }
+
+    @Test void publicationDelegatesOnlyEightAuthenticatedExactCompiledTuples() throws Exception {
+        var interceptor=new HidraRouteAuthorizationInterceptor(new HidraEffectivePermissionResolver(List.of()),naming,true,"jwt");
+        var owner=new dz.sh.hidra.modules.topology.api.rest.controller.EngineeringRevisionPublicationController(command->{throw new AssertionError();});
+        String base="/api/v1/topology/engineering-networks/{draftId}/publications";
+        String[] names={"publish","withdraw","reactivate","readExact","readCurrent","readEffective","listHistory","readRequest"};
+        String[] suffixes={"","/withdraw","/reactivate","/revisions/{revisionId}","/current","/effective","/history","/requests/{requestId}"};
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("operator","n/a",List.of(new SimpleGrantedAuthority("ROLE_OPERATOR"))));
+        for(int n=0;n<names.length;n++) {
+            final String name=names[n];String route=base+suffixes[n];
+            var method=java.util.Arrays.stream(owner.getClass().getDeclaredMethods()).filter(x->x.getName().equals(name)).findFirst().orElseThrow();
+            var handler=new HandlerMethod(owner,method);
+            var request=new MockHttpServletRequest(n<3?"POST":"GET",route);request.setAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE,route);
+            assertTrue(interceptor.preHandle(request,new MockHttpServletResponse(),handler));
+            var wrong=new MockHttpServletRequest("DELETE",route);wrong.setAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE,route);
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(wrong,new MockHttpServletResponse(),handler));
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(request,new MockHttpServletResponse(),handlerMethod()));
+            SecurityContextHolder.clearContext();
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(request,new MockHttpServletResponse(),handler));
+            SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("operator","n/a",List.of(new SimpleGrantedAuthority("ROLE_OPERATOR"))));
+        }
+    }
+
 }

@@ -283,6 +283,33 @@
     "owner": "topology",
     "purpose": "Immutable authored engineering network graph snapshots bound to the shared metadata draft version; HAPI-588B CI-first physical PostgreSQL qualification pending."
   },
+  "public.hidra_topology_engineering_publication_event": {
+    "evidence": [
+      "src/main/java/dz/sh/hidra/modules/topology/domain/model/EngineeringRevisionPublication.java",
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringRevisionPublicationRepositoryAdapter.java",
+      "src/main/resources/db/migration/V20261020_002__p25_topology_engineering_publications.sql"
+    ],
+    "owner": "topology",
+    "purpose": "Immutable context publication transition and actor-scoped request receipt; immediate committed software-ledger effective time."
+  },
+  "public.hidra_topology_engineering_publication_head": {
+    "evidence": [
+      "src/main/java/dz/sh/hidra/modules/topology/domain/model/EngineeringRevisionPublication.java",
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringRevisionPublicationRepositoryAdapter.java",
+      "src/main/resources/db/migration/V20261020_002__p25_topology_engineering_publications.sql"
+    ],
+    "owner": "topology",
+    "purpose": "Single current publication head per immutable company/network context; guarded epoch and retained ACTIVE/WITHDRAWN state."
+  },
+  "public.hidra_topology_engineering_publication_snapshot": {
+    "evidence": [
+      "src/main/java/dz/sh/hidra/modules/topology/domain/model/EngineeringRevisionPublication.java",
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringRevisionPublicationRepositoryAdapter.java",
+      "src/main/resources/db/migration/V20261020_002__p25_topology_engineering_publications.sql"
+    ],
+    "owner": "topology",
+    "purpose": "Immutable authored engineering-unqualified publication envelope; original metadata, graph and survey evidence remain pinned."
+  },
   "public.hidra_topology_engineering_survey_snapshot": {
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcSurveyRouteProfileRepositoryAdapter.java",

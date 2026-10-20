@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedOperationIdentityParticipant
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-18
+ * @UpdatedOn   : 2026-10-20
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -515,9 +515,10 @@ public class ProtectedOperationIdentityParticipant {
         Contribution c=contribute(admitted);Prepared p=admitted.prepared;
         Object resource=connectionResource();if(resource==null)throw unavailable();context(p);
         String code=dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedEngineeringDraftAuthorizationContract.permissionCode(request.action());
-        var company=new AuthorizationEvaluationRequest(c.evidence().userId(),code,"ENGINEERING_NETWORK_DRAFT",request.pipelineSystemId(),
+        String resourceType=dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedEngineeringDraftAuthorizationContract.resourceType(request.action());
+        var company=new AuthorizationEvaluationRequest(c.evidence().userId(),code,resourceType,request.pipelineSystemId(),
             new AuthorizationScope(ScopeType.CUSTOM,"topology-company:"+request.companyPartyId(),null));
-        var network=new AuthorizationEvaluationRequest(c.evidence().userId(),code,"ENGINEERING_NETWORK_DRAFT",request.pipelineSystemId(),
+        var network=new AuthorizationEvaluationRequest(c.evidence().userId(),code,resourceType,request.pipelineSystemId(),
             new AuthorizationScope(ScopeType.CUSTOM,"topology-network:"+request.pipelineSystemId(),null));
         var a=new QualifiedClaimRead(this,p.actual,p.locator,company,c,resource,true);
         var b=new QualifiedClaimRead(this,p.actual,p.locator,network,c,resource,true);

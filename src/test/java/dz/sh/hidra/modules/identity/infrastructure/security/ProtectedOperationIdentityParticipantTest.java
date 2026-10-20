@@ -1,10 +1,21 @@
 /**
- * @Project : HidraAPI @Product : Hidra - Hydrocarbon Intelligence for Data, Risk, and
- * Analytics @Author : Abir MEDJERAB @Owner : Sonatrach / TRC : Digitalization Initiative @Name :
- * ProtectedOperationIdentityParticipantTest @CreatedOn : 2025-06-26 @UpdatedOn : 2026-10-17 @Type :
- * Class @Layer : Identity Test @Module : identity @Package :
- * dz.sh.hidra.modules.identity.infrastructure.security @Description : Checks mocked participant
- * mechanics without asserting real PostgreSQL or producer provenance.
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : ProtectedOperationIdentityParticipantTest
+ * @CreatedOn   : 2025-06-26
+ * @UpdatedOn   : 2026-10-20
+ *
+ * @Type        : Class
+ * @Layer       : Identity Test
+ * @Module      : identity
+ * @Package     : dz.sh.hidra.modules.identity.infrastructure.security
+ *
+ * @Description : Checks mocked participant mechanics while keeping genuine publication provenance in PostgreSQL tests.
+ *
  */
 package dz.sh.hidra.modules.identity.infrastructure.security;
 
@@ -510,6 +521,19 @@ class ProtectedOperationIdentityParticipantTest {
 
     @Test void integratedNativeAdmissionRejectsNullBeforeAnyFenceOrClock() {
         assertThatThrownBy(()->participant.admit(null)).isInstanceOf(RuntimeException.class);verifyNoInteractions(fence);
+    }
+
+
+    @Test void publicationResourceMappingNeverChangesDraftOrMintsAClaimPair() {
+        var action=dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedEngineeringDraftAuthorizationContract.Action.class;
+        for(String verb:List.of("PUBLISH","WITHDRAW","REACTIVATE","READ")) {
+            var selected=Enum.valueOf(action,"PUBLICATION_"+verb);
+            assertThat(dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedEngineeringDraftAuthorizationContract.resourceType(selected))
+                .isEqualTo("ENGINEERING_NETWORK_PUBLICATION");
+            var request=new dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedEngineeringDraftAuthorizationContract.Request(selected,"company","network");
+            assertThatThrownBy(()->participant.qualifyDraftPair(null,request)).isInstanceOf(RuntimeException.class);
+        }
+        assertThat(ProtectedOperationIdentityParticipant.DraftClaimPair.class.getConstructors()).isEmpty();
     }
 
 }

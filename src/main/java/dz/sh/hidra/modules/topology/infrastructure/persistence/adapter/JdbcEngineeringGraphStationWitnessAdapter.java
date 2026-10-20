@@ -7,7 +7,7 @@
  *
  * @Name        : JdbcEngineeringGraphStationWitnessAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-19
+ * @UpdatedOn   : 2026-10-20
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -48,7 +48,8 @@ public class JdbcEngineeringGraphStationWitnessAdapter implements EngineeringGra
 
     private void requireProtectedOwner() {
         if (!StackWalker.getInstance().walk(frames -> frames.anyMatch(frame -> frame.getClassName().equals(
-                "dz.sh.hidra.modules.topology.application.service.EngineeringNetworkDraftApplicationService")))
+                "dz.sh.hidra.modules.topology.application.service.EngineeringNetworkDraftApplicationService") || frame.getClassName().equals(
+                "dz.sh.hidra.modules.topology.application.service.EngineeringRevisionPublicationApplicationService")))
             || !TransactionSynchronizationManager.isActualTransactionActive()
             || TransactionSynchronizationManager.isCurrentTransactionReadOnly())
             throw new IllegalStateException("Protected station witness owner required");

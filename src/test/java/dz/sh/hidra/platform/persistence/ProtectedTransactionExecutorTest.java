@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedTransactionExecutorTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-14
+ * @UpdatedOn   : 2026-10-20
  *
  * @Type        : Class
  * @Layer       : Platform Test
@@ -775,4 +775,18 @@ class ProtectedTransactionExecutorTest {
             return "forbidden";},()->{},this::guard)).isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class);
         assertThat(commits).hasValue(0);assertThat(rollbacks).hasValue(1);
     }
+
+    @Test void diagnosticAndOldOwnerPathsCannotMintPublicationMutationPermits() {
+        assertThatThrownBy(()->run(()->{
+            executor.beginAdmission();var permit=executor.sealAdmission();assertThat(permit).isNull();
+            executor.beginProvisional(permit,Set.of("INSERT INTO public.hidra_topology_engineering_publication_snapshot (revision_id) VALUES (?)"));
+            return "forbidden";
+        },()->{},this::guard)).isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class);
+        assertThat(commits).hasValue(0);assertThat(rollbacks).hasValue(1);
+        var reached=new AtomicBoolean();
+        assertThatThrownBy(()->executor.executePublication(()->{reached.set(true);return "forbidden";},()->{},this::guard))
+            .isInstanceOf(IllegalStateException.class);
+        assertThat(reached).isFalse();
+    }
+
 }

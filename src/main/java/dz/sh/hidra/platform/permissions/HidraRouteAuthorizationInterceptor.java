@@ -7,7 +7,7 @@
  *
  * @Name        : HidraRouteAuthorizationInterceptor
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-17
+ * @UpdatedOn   : 2026-10-20
  *
  * @Type        : Class
  * @Layer       : Platform
@@ -94,7 +94,8 @@ public final class HidraRouteAuthorizationInterceptor implements HandlerIntercep
         // permission is unrelated to those paired grants and must not replace them.
         // Only this exact compiled controller/method/route tuple delegates to that owner;
         // every other route retains the ordinary effective-permission check.
-        if (isOwnedEngineeringDraftRoute(handlerMethod, routePattern, request.getMethod())) {
+        if (isOwnedEngineeringDraftRoute(handlerMethod, routePattern, request.getMethod())
+                || isOwnedEngineeringPublicationRoute(handlerMethod,routePattern,request.getMethod())) {
             if (authentication == null || !authentication.isAuthenticated()
                     || authentication instanceof AnonymousAuthenticationToken) {
                 throw new AccessDeniedException("Engineering draft authentication required.");
@@ -127,6 +128,23 @@ public final class HidraRouteAuthorizationInterceptor implements HandlerIntercep
                  "PUT /api/v1/topology/engineering-networks/{draftId}/graph updateGraph",
                  "GET /api/v1/topology/engineering-networks/{draftId}/survey/{branchId} readSurvey",
                  "PUT /api/v1/topology/engineering-networks/{draftId}/survey/{branchId} updateSurvey" -> true;
+            default -> false;
+        };
+    }
+
+
+    private static boolean isOwnedEngineeringPublicationRoute(HandlerMethod handler,String routePattern,String method) {
+        if(handler==null || routePattern==null || method==null || !handler.getBeanType().getName().equals(
+            "dz.sh.hidra.modules.topology.api.rest.controller.EngineeringRevisionPublicationController"))return false;
+        return switch(method+" "+routePattern+" "+handler.getMethod().getName()) {
+            case "POST /api/v1/topology/engineering-networks/{draftId}/publications publish",
+                 "POST /api/v1/topology/engineering-networks/{draftId}/publications/withdraw withdraw",
+                 "POST /api/v1/topology/engineering-networks/{draftId}/publications/reactivate reactivate",
+                 "GET /api/v1/topology/engineering-networks/{draftId}/publications/revisions/{revisionId} readExact",
+                 "GET /api/v1/topology/engineering-networks/{draftId}/publications/current readCurrent",
+                 "GET /api/v1/topology/engineering-networks/{draftId}/publications/effective readEffective",
+                 "GET /api/v1/topology/engineering-networks/{draftId}/publications/history listHistory",
+                 "GET /api/v1/topology/engineering-networks/{draftId}/publications/requests/{requestId} readRequest" -> true;
             default -> false;
         };
     }

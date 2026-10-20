@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedEngineeringDraftAuthorizationPostgresIntegrationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-18
+ * @UpdatedOn   : 2026-10-20
  *
  * @Type        : Class
  * @Layer       : Identity Test
@@ -835,4 +835,29 @@ public class ProtectedEngineeringDraftAuthorizationPostgresIntegrationTest {
         var f=fixture("LOCAL");both(f,"create");prepare(f);
         assertThatThrownBy(()->tx().executeWithoutResult(status->reader.loadQualifiedDraftPair(null,request()))).isInstanceOf(RuntimeException.class);
     }
+
+    private void publicationGrant(Fixture f,String action,String effect,String scope) {
+        String code="topology:engineering-publication:"+action;
+        var found=jdbc.queryForList("SELECT id FROM public.hidra_identity_permission WHERE code=?",String.class,code);
+        String permission=found.isEmpty()?id():found.getFirst();
+        if(found.isEmpty())jdbc.update("INSERT INTO public.hidra_identity_permission(id,code,permission_domain,resource_type,action,sensitive,status,created_at,updated_at) VALUES(?,?,'topology','ENGINEERING_NETWORK_PUBLICATION',?,false,'ACTIVE',now(),now())",permission,code,action);
+        jdbc.update("INSERT INTO public.hidra_identity_user_permission_grant(id,user_id,permission_id,effect,scope_type,scope_reference_id,grant_reason,emergency_access,valid_from,valid_to,status,created_at) VALUES(?,?,?,?, 'CUSTOM',?,'synthetic publication authority',false,now()-interval '1 hour',now()+interval '1 hour','ACTIVE',now())",
+            id(),f.user(),permission,effect,scope);
+    }
+    @Test void publicationActionsRequireTheirOwnGenuineNativePairedResourceAndDeny() {
+        for(String type:List.of("LOCAL","OIDC","LDAP","ACTIVE_DIRECTORY")) {
+            cleanEvidence();var f=fixture(type);both(f,"update");
+            var publish=new Request(Action.PUBLICATION_PUBLISH,COMPANY,FACILITY);
+            var denied=run(originalSource(f),publish);assertThat(denied.companyDecision()).isNotEqualTo(Decision.PERMIT);
+            for(String action:List.of("publish","withdraw","reactivate","read")) {
+                publicationGrant(f,action,"GRANT","topology-company:"+COMPANY);
+                publicationGrant(f,action,"GRANT","topology-network:"+FACILITY);
+                var request=new Request(Action.valueOf("PUBLICATION_"+action.toUpperCase(Locale.ROOT)),COMPANY,FACILITY);
+                permit(run(originalSource(f),request));
+            }
+            publicationGrant(f,"publish","DENY","topology-network:"+FACILITY);
+            assertThat(run(originalSource(f),publish).networkDecision()).isEqualTo(Decision.DENY);
+        }
+    }
+
 }

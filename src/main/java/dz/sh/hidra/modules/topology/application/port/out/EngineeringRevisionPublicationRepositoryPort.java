@@ -30,19 +30,22 @@ public interface EngineeringRevisionPublicationRepositoryPort {
     interface Admission {}
     /** Materialized provenance only, produced after genuine paired current authorization. */
     record Observation(Scope scope, String actorUserId, String nativeBindingId, String sessionId,
-            long userGeneration, Instant sampledAt, Instant validUntil, int backendPid, long transactionId) {
+            long partyGeneration, Instant sampledAt, Instant validUntil, int backendPid, long transactionId) {
         public Observation {
             Objects.requireNonNull(scope); Objects.requireNonNull(actorUserId);
             Objects.requireNonNull(nativeBindingId); Objects.requireNonNull(sessionId);
             dz.sh.hidra.modules.topology.domain.model.EngineeringRevisionPublication.microseconds(sampledAt);
             dz.sh.hidra.modules.topology.domain.model.EngineeringRevisionPublication.microseconds(validUntil);
-            if (userGeneration < 0 || !sampledAt.isBefore(validUntil) || backendPid < 1 || transactionId < 1)
+            if (partyGeneration < 0 || !sampledAt.isBefore(validUntil) || backendPid < 1 || transactionId < 1)
                 throw new IllegalArgumentException("Invalid publication observation");
         }
     }
     Admission acquire(Command command);
     List<ProtectedRelationFence> finalFences(Admission admission);
     void eligible(Admission admission);
+    Scope scope(Admission admission);
+    void observe(Admission admission, Observation observation);
+    void resolve(Admission admission);
     Snapshot source(Admission admission);
     Head currentHead(Admission admission);
     Optional<Receipt> receipt(Admission admission);

@@ -7,7 +7,7 @@
  *
  * @Name        : ForensicRemediationClosureTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-09
+ * @UpdatedOn   : 2026-10-20
  *
  * @Type        : Test
  * @Layer       : Architecture Test
@@ -181,7 +181,8 @@ class ForensicRemediationClosureTest {
                 }
                 // HAPI-587: one compiled coordinator consumes the distinct public company/network contract.
                 // This is not a package-wide exemption and admits no foreign persistence type.
-                if (source.fqcn().equals("dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringDraftAdmissionCoordinator")
+                if ((source.fqcn().equals("dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringDraftAdmissionCoordinator")
+                        || source.fqcn().equals("dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringPublicationAdmissionCoordinator"))
                         && imported.equals("dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedEngineeringDraftAuthorizationContract")) {
                     continue;
                 }
@@ -326,4 +327,12 @@ class ForensicRemediationClosureTest {
             String kind,
             String fqcn
     ) { }
+
+    @Test void publicationCoordinatorAddsOnlyTheExactReviewedIdentityContract() throws Exception {
+        var path=Path.of("src/main/java/dz/sh/hidra/modules/topology/application/service/ProtectedEngineeringPublicationAdmissionCoordinator.java");
+        var imported=new HashSet<String>();
+        var matcher=IMPORT.matcher(Files.readString(path));
+        while(matcher.find())if(matcher.group(1).contains(".modules.identity."))imported.add(matcher.group(1));
+        assertEquals(Set.of("dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedEngineeringDraftAuthorizationContract"),imported);
+    }
 }

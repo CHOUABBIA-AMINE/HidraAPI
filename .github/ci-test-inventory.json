@@ -71,6 +71,7 @@
         "directWireDomainRepresentationLeakageRemainsAbsent",
         "fictionalModuleEventScaffoldingRemainsAbsent",
         "finalClosureEvidenceRecordsCompletedRerun",
+        "publicationCoordinatorAddsOnlyTheExactReviewedIdentityContract",
         "residualProjectionVocabularyRemainsRemovedAndDocumented"
       ],
       "class": "dz.sh.hidra.ForensicRemediationClosureTest",
@@ -79,7 +80,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java",
-      "source_sha256": "5a4f8be652620dddee928e7c6310b6986598088a83d95b991bda60aa2551745c",
+      "source_sha256": "660a97228510c471e2e2ef107681b98d4526404f3b083b583b6b2e488983e203",
       "supports": []
     },
     {
@@ -2269,6 +2270,7 @@
         "eitherScopeDenyCannotProducePartialAuthority",
         "fourGenuineProducersAndFourActionsRequireBothExactCustomScopes",
         "preparedEntryCannotBeReplayedOrMovedToAnotherActor",
+        "publicationActionsRequireTheirOwnGenuineNativePairedResourceAndDeny",
         "structuralOrStationEvidenceCannotEnterDraftQualifiedReader"
       ],
       "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.ProtectedEngineeringDraftAuthorizationPostgresIntegrationTest",
@@ -2277,7 +2279,7 @@
       "lane": "postgres-integration",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedEngineeringDraftAuthorizationPostgresIntegrationTest.java",
-      "source_sha256": "4380d5cea726157328e4991d1e6238cd0163baa15e139ff222c6304cee18c099",
+      "source_sha256": "a7cd42e41c33228e8644efdbbe2d0ddc830d063d54accd23fe03eaa6dc9b0735",
       "supports": []
     },
     {
@@ -2422,6 +2424,7 @@
         "hasNoJpaCacheWallClockDecisionPersistenceOrAuthorityExport",
         "preservesGrantOrderScopeWindowsAndDenyPrecedence",
         "preservesTypedAttributesAndConflicts",
+        "publicationDiagnosticsAndForgedPairsNeverSelectThePrivateQualifiedFamily",
         "rejectsCallerActorResourceAndScopeMismatches",
         "rejectsUnknownClaimCoverageInsteadOfAssumingAbsence",
         "requiresMatchingPhysicalCoordinatesAndCompleteIdentityFences",
@@ -2434,7 +2437,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java",
-      "source_sha256": "23127308c9b5107fe067042c6523546deee52859059d760e91e9760f2acf7b87",
+      "source_sha256": "0d0d56aa52190176c10f8315275ccbd43293b26b9f0bae0d34ebe940e4c63f0b",
       "supports": []
     },
     {
@@ -2695,6 +2698,7 @@
         "preparationRefusesAmbientTransaction",
         "preparedHandleHasNoPublicConstructorOrSensitiveText",
         "publicAndLegacyContextsCannotCreatePreparedHandle",
+        "publicationResourceMappingNeverChangesDraftOrMintsAClaimPair",
         "unavailableStorageDecoderAndCorruptOriginRemainErrors",
         "wireAndDecodedOwnerClaimsMustAgree"
       ],
@@ -2704,7 +2708,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipantTest.java",
-      "source_sha256": "e73f0c302c289576080889e8fc32b0a8b565fde1111ff7c6b49c4fb6b1a421bd",
+      "source_sha256": "b3dc91cd240cc8273776e705f3f4a7133ea83a3cc4c515ded9d1f61d65a92865",
       "supports": []
     },
     {
@@ -6287,6 +6291,24 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "domainAndTransportKeepOwnerAndFrameworkBoundaries",
+        "exactRoutesAndFinalGuardRemainClosed",
+        "onlyPublicationServiceAndCoordinatorReceiveTheirTechnicalPermit",
+        "publicationDmlTemplatesAndHashesRemainExact",
+        "publicationPermissionsCannotAliasDraftOrStationActions"
+      ],
+      "class": "dz.sh.hidra.modules.topology.EngineeringRevisionPublicationBoundaryGuardrailTest",
+      "dependency_reason": "HAPI-590B publication service, transport and source-boundary regressions; hosted execution/timing pending, zero is unmeasured",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/EngineeringRevisionPublicationBoundaryGuardrailTest.java",
+      "source_sha256": "6c998ad43d8953b528ca61b5f802c0f643029e9fe85c9021762ad6f283703a0f",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0.009,
       "cases": [
         "catalogFunctionFingerprintsMatchBothActualMigrationBodies",
@@ -6310,7 +6332,8 @@
         "coordinatorUsesOnlyApprovedOwnerContractsAndTechnicalMechanics",
         "existingReaderAndJContractsRemainUnchanged",
         "identityAdmissionAndCollectorHaveOnlyReviewedCallers",
-        "platformHasNoBusinessModuleDependencies"
+        "platformHasNoBusinessModuleDependencies",
+        "publicationAdmissionKeepsTheSingleClockAndPrivateSourceBoundaries"
       ],
       "class": "dz.sh.hidra.modules.topology.ProtectedStationAdmissionBoundaryGuardrailTest",
       "dependency_reason": "Registered HAPI-583 JVM/source or simulated provider checks; timing unmeasured",
@@ -6318,7 +6341,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java",
-      "source_sha256": "371572057f524056ffad90b359ea35c62658ad2c45a60613bd5a1097f91f433f",
+      "source_sha256": "e8c7b1353be6e643a639d5a2f91166f111b87565ee7c97743e2ce36e047ade51",
       "supports": []
     },
     {
@@ -6372,6 +6395,27 @@
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/api/rest/EngineeringNetworkDraftControllerTest.java",
       "source_sha256": "1ee6f9247f7496008d3c5a3cc8820dc621794a05a0a77b7181a828abb4edff6e",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "boundsHistoryAndBindsOpaqueCursor",
+        "keepsStorageAndIndeterminateDetailsPrivate",
+        "mapsAllEightRegisteredRoutesToTypedCommands",
+        "mapsStaleReplayAndOwnerHoldToConflict",
+        "preservesExplicitUnqualifiedStatusAndMissingValues",
+        "rejectsUnknownFieldsCoercionAndCallerAuthority",
+        "requiresExpectedEpochPredecessorAndRequestId",
+        "requiresNativeAuthenticationAndNonDisclosingScope"
+      ],
+      "class": "dz.sh.hidra.modules.topology.api.rest.EngineeringRevisionPublicationControllerTest",
+      "dependency_reason": "HAPI-590B publication service, transport and source-boundary regressions; hosted execution/timing pending, zero is unmeasured",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/api/rest/EngineeringRevisionPublicationControllerTest.java",
+      "source_sha256": "0d7792ec15f6e4e858d842995659dec54c8edf237cc7ef51d0bfca0c312b35e1",
       "supports": []
     },
     {
@@ -6491,6 +6535,27 @@
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/application/service/EngineeringNetworkDraftApplicationServiceTest.java",
       "source_sha256": "866d6e46cdaf6c4cbdb8bdfb597ca458462112640f012242604af2640ff6c37a",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "neverUsesListingWindowForExactRead",
+        "publishesExactVersionWithoutEngineeringPromotion",
+        "rejectsDraftUpdateAsPublicationAuthority",
+        "rejectsStaleHeadSourceAndConflictingReplay",
+        "replaysOriginalOutcomeAfterFreshAuthorityWithoutHeadMutation",
+        "requiresPublicationAuthorityBeforeAnyProtectedLookup",
+        "returnsOnlyAfterObservedCommitAndNeverRetriesIndeterminate",
+        "usesOnePublisherTransactionAndOneOwnerSample"
+      ],
+      "class": "dz.sh.hidra.modules.topology.application.service.EngineeringRevisionPublicationApplicationServiceTest",
+      "dependency_reason": "HAPI-590B publication service, transport and source-boundary regressions; hosted execution/timing pending, zero is unmeasured",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/application/service/EngineeringRevisionPublicationApplicationServiceTest.java",
+      "source_sha256": "570ffd62baddf3cdac3734e57b9d062d82e09f0bad426e8e519513e397101fac",
       "supports": []
     },
     {
@@ -6997,6 +7062,33 @@
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/EngineeringNetworkDraftPostgresIntegrationTest.java",
       "source_sha256": "73b0d7639d025b6c06469ab10394c703f0793246af0948f6756df4452a459716",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "catalogRoleAndLedgerTamperingFailClosed",
+        "concurrentDraftCandidatesHaveOneContextHeadCasWinner",
+        "currentDenyRevocationAndForeignScopeRevealNoPublicationData",
+        "draftEditsNeverRewritePublishedSnapshots",
+        "exactReadAndKeysetHistorySurviveMoreThanHundredEvents",
+        "expiredFinalGuardAndDirtyFlushRollBackAllPublicationEffects",
+        "fourGenuineProvidersPublishAndReadExactSnapshots",
+        "identicalReplayIsStableAndConflictingReplayIsRejected",
+        "observedCommitAndIndeterminateOutcomeNeverAutoRetry",
+        "ordinaryLoginCannotReadOrMutatePublicationStorage",
+        "sourceGraphSurveyDigestsAndIncompleteDiagnosticsRemainExact",
+        "stationOwnerAbaAndTransferMismatchHoldWithoutRebinding",
+        "withdrawReactivateAndEffectiveBoundariesPreserveHistory",
+        "writerFirstAndOwnerFirstRetainAllThirtyEightFences"
+      ],
+      "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.EngineeringRevisionPublicationPostgresIntegrationTest",
+      "dependency_reason": "HAPI-590B genuine native providers, separate PostgreSQL principals and publication ledger; hosted execution/timing pending, zero is unmeasured",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/EngineeringRevisionPublicationPostgresIntegrationTest.java",
+      "source_sha256": "e764a37474459dc2b9a3bbac3aee40b1cd7f9b703730d608a949afe25fa289ea",
       "supports": []
     },
     {
@@ -8089,6 +8181,7 @@
         "forbidsMissingEffectivePermission",
         "permitsAnonymousDirectLoginBeforeRoutePermissionResolution",
         "permitsMatchingEffectivePermission",
+        "publicationDelegatesOnlyEightAuthenticatedExactCompiledTuples",
         "surveyDelegationRequiresExactNativeControllerMethodAndAuthentication"
       ],
       "class": "dz.sh.hidra.platform.permissions.HidraRouteAuthorizationInterceptorTest",
@@ -8097,7 +8190,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptorTest.java",
-      "source_sha256": "60353dcc17617d5b69355b6e40b2838c15e046f05b94d5d77a6b9c4f34dd4b65",
+      "source_sha256": "bca8f1ed7c741713a969c1a7c0268d7abf3832f29faaa7d3c4fa3f6662087f62",
       "supports": []
     },
     {
@@ -8176,6 +8269,7 @@
         "datasourceDelegateAndBuilderEscapesPoisonCaughtErrors",
         "diagnosticAdmissionCannotMintDraftMutationPermit",
         "diagnosticAdmissionCannotMintSurveyMutationPermit",
+        "diagnosticAndOldOwnerPathsCannotMintPublicationMutationPermits",
         "dormantCallableStatementRetainsJdbcInterfaceAndBackReference",
         "dormantDatasourceKeepsOrdinaryJdbcSemantics",
         "elapsedBudgetRejectsBeforeGuard",
@@ -8207,7 +8301,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java",
-      "source_sha256": "d6b2df88124c85afd6d8595d1e46b873310d3927f3f460adb4c396254ddb6b91",
+      "source_sha256": "d6da1d1f2e12f8881acdd9410a28947cf97d12adb96554729050242ef553c048",
       "supports": []
     },
     {

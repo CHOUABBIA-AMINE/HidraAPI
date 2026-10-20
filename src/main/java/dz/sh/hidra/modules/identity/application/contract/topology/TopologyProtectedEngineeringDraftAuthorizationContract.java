@@ -7,7 +7,7 @@
  *
  * @Name        : TopologyProtectedEngineeringDraftAuthorizationContract
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-19
+ * @UpdatedOn   : 2026-10-20
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -25,7 +25,7 @@ import dz.sh.hidra.platform.persistence.ProtectedRelationFence;
 
 /** Scalar exported observations never substitute for the issuing owner's opaque admission. */
 public interface TopologyProtectedEngineeringDraftAuthorizationContract {
-    enum Action { CREATE, READ, UPDATE, VALIDATE }
+    enum Action { CREATE, READ, UPDATE, VALIDATE, PUBLICATION_PUBLISH, PUBLICATION_WITHDRAW, PUBLICATION_REACTIVATE, PUBLICATION_READ }
     enum Decision { PERMIT, DENY, INDETERMINATE }
     record Request(Action action,String companyPartyId,String pipelineSystemId){
         public Request {Objects.requireNonNull(action);exact(companyPartyId);exact(pipelineSystemId);}
@@ -39,7 +39,21 @@ public interface TopologyProtectedEngineeringDraftAuthorizationContract {
     Contribution contribute(Admission admission);
     void requireCurrent(Admission admission);
     List<ProtectedRelationFence> finalFences(Admission admission);
-    static String permissionCode(Action a){return "topology:engineering-draft:"+Objects.requireNonNull(a).name().toLowerCase(Locale.ROOT);}
+    static String permissionCode(Action a){
+        return switch(Objects.requireNonNull(a)) {
+            case PUBLICATION_PUBLISH -> "topology:engineering-publication:publish";
+            case PUBLICATION_WITHDRAW -> "topology:engineering-publication:withdraw";
+            case PUBLICATION_REACTIVATE -> "topology:engineering-publication:reactivate";
+            case PUBLICATION_READ -> "topology:engineering-publication:read";
+            default -> "topology:engineering-draft:"+a.name().toLowerCase(Locale.ROOT);
+        };
+    }
+    static String resourceType(Action a) {
+        return switch(Objects.requireNonNull(a)) {
+            case PUBLICATION_PUBLISH, PUBLICATION_WITHDRAW, PUBLICATION_REACTIVATE, PUBLICATION_READ -> "ENGINEERING_NETWORK_PUBLICATION";
+            default -> "ENGINEERING_NETWORK_DRAFT";
+        };
+    }
     record Contribution(Request request,Decision companyDecision,Decision networkDecision,
             String bindingId,String sessionId,String userId,Instant sampledAt,Instant validUntil,int backendPid,long transactionId){
         public Contribution {Objects.requireNonNull(request);Objects.requireNonNull(companyDecision);Objects.requireNonNull(networkDecision);

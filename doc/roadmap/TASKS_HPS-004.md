@@ -7268,6 +7268,215 @@ parent/tree/message/raw blobs and the exact13-file scope, confirm same-SHA
 applicable workflows created/queued/started, then STOP. Review real A feedback
 before selecting Package B; A does not establish full HAPI-590 acceptance.
 
+### 2026-10-20 — HAPI-590 Package B protected persistence and API integration
+
+**Selected registered stage:** `feat(topology): implement governed engineering publication`.
+A source `d0a2d8ff21645c077498d5344f98c21d40ead4dc`, parent
+`3690f57650118b267d172cb4eca9c9b481764ce3`, tree
+`fd46e96f84d4d9240d4020b1019682b022f65c5e` passed
+[Full786](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39473660710),
+[Fast107](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39473660641)
+and [Docs470](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39473660571).
+Those are actual exact-SHA successful runs, not evidence that the B source below
+has already executed. The owner Next selects B. HAPI-590 remains
+PARTIAL / REGISTERED_PENDING; no formal software or engineering acceptance,
+release, commissioning or deployment is recorded.
+
+**Pre-publication same-task dependency reconciliation:** section7 explicitly
+admits reconciliation of a discovered missing dependency/path within this task
+before mutation. A's public repository port had named the required Party
+generation as userGeneration, although the genuine exported Identity
+contribution supplies no user-generation scalar. It also lacked the resolved
+scope and pre-write observation/resolution seams required to read receipts,
+source and station witnesses before the provisional DML window. Add exactly
+one MODIFY to B:
+`src/main/java/dz/sh/hidra/modules/topology/application/port/out/EngineeringRevisionPublicationRepositoryPort.java`.
+Rename the scalar partyGeneration and add scope/observe/resolve; its immutable
+Observation remains provenance, not permission. The actual generation comes
+from Party's genuine same-transaction read. No invented Identity generation is
+stored. This reconciles B to **12 CREATE /17 MODIFY /0 DELETE**, without another
+optional design stage, endpoint, permission family or unrelated source change.
+The remaining registered union and C/acceptance scopes are unchanged.
+
+**Implemented protected path:** four exact publication actions/permission codes
+and ENGINEERING_NETWORK_PUBLICATION resource mapping through the existing
+private qualified native pair; the old four draft mappings and original
+station/draft behavior are preserved. No role/user grants or alternative claim
+pair constructor is added. A new compiled service/coordinator receives its own
+owner-bound technical permit and four independently SHA256-pinned publication
+DML templates. Old executor templates and hash sets are retained. The station
+witness accepts the exact new compiled service and still requires protected
+admission. Eight exact controller/method/verb/path tuples delegate only after
+authentication; mandatory native provenance and current paired authority remain
+inside the protected use case.
+
+The coordinator acquires genuine Identity24, Party2 and Topology12 fences,
+freezes38 distinct descriptors and collects one authorization sample. Modes
+remain34 SHARE_ROW_EXCLUSIVE/3 ACCESS_SHARE/1 SHARE. There is no protected
+context/source/head lookup before successful paired Identity authorization.
+The adapter resolves an existing exact context/draft and current Party/network/
+type eligibility; source and original replay receipt, station witnesses and
+intended immutable result resolve before provisional writes. Admission SQL's
+existing ban on UPDATE tokens is preserved: no SELECT FOR UPDATE escape is
+added to Platform. The new event trigger takes the existing context row FOR
+UPDATE before validating absent/existing head transitions, in addition to the
+held relation fences.
+
+**Source and lifecycle:** PUBLISH pins the current exact positive shared metadata
+version, original format/bytes/digests, as-of graph and applicable PIPE surveys.
+Survey selection filters the current bounded branch set and checks the total
+selected payload size before fetching survey payloads. Incompatible survey
+bindings become explicit SURVEY_GRAPH_STALE absences. Missing title/evidence,
+graph and survey values/diagnostics remain visible; qualification is always
+false. The complete envelope remains bounded to32MiB, with explicit rejection,
+no truncation and no physical-value inference.
+
+One immutable context ledger supports publish, withdraw/reactivate, exact/current/
+effective reads, actor-scoped request resolution and descending history.
+Head predecessors, state, monotonic positive epoch/overflow, backwards sampled
+time, request digest and replay are validated. Fresh authorization/owner
+eligibility precedes replay; identical input returns its original event and
+snapshot while separately reporting the observed current head. Changed input
+under the same context/actor/request key conflicts. A replay performs no DML.
+Exact lookup uses the exact revision key, independent of pagination.
+effective_at is the PostgreSQL authorization sample at microsecond precision;
+future asOf rejects. Canonical UTC transport spelling is Instant's exact Z
+form, at whole-second/millisecond/microsecond precision. Equal timestamps use
+descending epoch and transitions retain half-open committed ledger intervals.
+No caller effective time, actor or qualification fields exist.
+
+History limits1..100, captured high-water and strict before-epoch remain context/
+company/network/asOf bound. Token values are canonical untrusted query data,
+with actual ledger boundary/filter membership checked after authority.
+History batches retained publication station evidence and verifies current
+owner/kind/status/generation; current/exact/receipt/effective reads also retain
+the published owner-generation binding. A committed owner transfer or ABA
+holds old publication access without a context rebind or station-head edit.
+Station proof uses bounded parameter arrays rather than one query per point.
+
+**Physical schema and final proof:** additive
+`V20261020_002__p25_topology_engineering_publications.sql` creates exactly the
+three registered publication tables with validated nondeferrable keys/FKs/
+uniqueness/checks and immutable statement triggers (including zero-row
+UPDATE/DELETE). Context-row event validation and head guards enforce one
+successor and same-context event/revision/state/epoch. Snapshot engineering
+qualification is constrained false. New security-definer bodies have fixed
+safe search_path, are SHA256-pinned by admission and have no PUBLIC execution.
+Ordinary credentials receive no publication-table privileges. Runtime admission
+checks actual separate principals, inherited/elevated role capabilities,
+table/column grants, owners, trigger definitions/enabling, column/key/FK shape,
+constraint validation and pinned source/publication function bodies.
+Exactly three ownership entries are added. Actual catalog capture is pending;
+the physical dictionary is not fabricated or changed in B.
+
+Provisional work permits only snapshot INSERT, event INSERT and head INSERT/CAS
+UPDATE with exact affected counts. Managed state flushes before the one final
+MATERIALIZED-clock scalar statement. It binds s<=t<u, PID/XID/current principal,
+Party/network/context, frozen source/published bytes/digests/version membership,
+head/event/replay/native provenance, current station witnesses, actual roles/
+catalog and all38 required granted locks. Historical reads do not require a
+retained source version to remain latest; a new PUBLISH does. Extra unrelated
+locks do not invalidate the required-subset proof. There is no supporting owner
+lookup or SQL after the final guard. Aggregate500ms/lock250ms/statement750ms/
+idle1000ms limits, poison behavior, observed physical COMMIT delivery and explicit
+INDETERMINATE/no retry remain unchanged.
+
+**Executable source and inventory, not passing-test claims:** four new classes
+contain exactly the registered35 B methods. Seven existing admitted suites each
+add one publication-family method, preserving all previous identities. Their
+exact source SHA256 pins and case names are registered; the four new class
+weights are unmeasured zero, and existing measured weights, provenance,
+five database sets, fresh-schema policy and fallback remain unchanged.
+
+- dz.sh.hidra.modules.topology.application.service.EngineeringRevisionPublicationApplicationServiceTest:
+  - `neverUsesListingWindowForExactRead`
+  - `publishesExactVersionWithoutEngineeringPromotion`
+  - `rejectsDraftUpdateAsPublicationAuthority`
+  - `rejectsStaleHeadSourceAndConflictingReplay`
+  - `replaysOriginalOutcomeAfterFreshAuthorityWithoutHeadMutation`
+  - `requiresPublicationAuthorityBeforeAnyProtectedLookup`
+  - `returnsOnlyAfterObservedCommitAndNeverRetriesIndeterminate`
+  - `usesOnePublisherTransactionAndOneOwnerSample`
+- dz.sh.hidra.modules.topology.api.rest.EngineeringRevisionPublicationControllerTest:
+  - `boundsHistoryAndBindsOpaqueCursor`
+  - `keepsStorageAndIndeterminateDetailsPrivate`
+  - `mapsAllEightRegisteredRoutesToTypedCommands`
+  - `mapsStaleReplayAndOwnerHoldToConflict`
+  - `preservesExplicitUnqualifiedStatusAndMissingValues`
+  - `rejectsUnknownFieldsCoercionAndCallerAuthority`
+  - `requiresExpectedEpochPredecessorAndRequestId`
+  - `requiresNativeAuthenticationAndNonDisclosingScope`
+- dz.sh.hidra.modules.topology.infrastructure.persistence.EngineeringRevisionPublicationPostgresIntegrationTest:
+  - `catalogRoleAndLedgerTamperingFailClosed`
+  - `concurrentDraftCandidatesHaveOneContextHeadCasWinner`
+  - `currentDenyRevocationAndForeignScopeRevealNoPublicationData`
+  - `draftEditsNeverRewritePublishedSnapshots`
+  - `exactReadAndKeysetHistorySurviveMoreThanHundredEvents`
+  - `expiredFinalGuardAndDirtyFlushRollBackAllPublicationEffects`
+  - `fourGenuineProvidersPublishAndReadExactSnapshots`
+  - `identicalReplayIsStableAndConflictingReplayIsRejected`
+  - `observedCommitAndIndeterminateOutcomeNeverAutoRetry`
+  - `ordinaryLoginCannotReadOrMutatePublicationStorage`
+  - `sourceGraphSurveyDigestsAndIncompleteDiagnosticsRemainExact`
+  - `stationOwnerAbaAndTransferMismatchHoldWithoutRebinding`
+  - `withdrawReactivateAndEffectiveBoundariesPreserveHistory`
+  - `writerFirstAndOwnerFirstRetainAllThirtyEightFences`
+- dz.sh.hidra.modules.topology.EngineeringRevisionPublicationBoundaryGuardrailTest:
+  - `domainAndTransportKeepOwnerAndFrameworkBoundaries`
+  - `exactRoutesAndFinalGuardRemainClosed`
+  - `onlyPublicationServiceAndCoordinatorReceiveTheirTechnicalPermit`
+  - `publicationDmlTemplatesAndHashesRemainExact`
+  - `publicationPermissionsCannotAliasDraftOrStationActions`
+- dz.sh.hidra.ForensicRemediationClosureTest:
+  - `publicationCoordinatorAddsOnlyTheExactReviewedIdentityContract`
+- dz.sh.hidra.modules.topology.ProtectedStationAdmissionBoundaryGuardrailTest:
+  - `publicationAdmissionKeepsTheSingleClockAndPrivateSourceBoundaries`
+- dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipantTest:
+  - `publicationResourceMappingNeverChangesDraftOrMintsAClaimPair`
+- dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcProtectedAuthorizationEvidenceReaderTest:
+  - `publicationDiagnosticsAndForgedPairsNeverSelectThePrivateQualifiedFamily`
+- dz.sh.hidra.modules.identity.infrastructure.persistence.ProtectedEngineeringDraftAuthorizationPostgresIntegrationTest:
+  - `publicationActionsRequireTheirOwnGenuineNativePairedResourceAndDeny`
+- dz.sh.hidra.platform.persistence.ProtectedTransactionExecutorTest:
+  - `diagnosticAndOldOwnerPathsCannotMintPublicationMutationPermits`
+- dz.sh.hidra.platform.permissions.HidraRouteAuthorizationInterceptorTest:
+  - `publicationDelegatesOnlyEightAuthenticatedExactCompiledTuples`
+
+The new PostgreSQL fixture retains actual native LOCAL/OIDC/LDAP/AD producers,
+signed source/native token verification, the real HTTP security chain and
+independent actual admin/ordinary/publisher logins. Only external source/
+directory transport is synthetic. Positive protected publication controls
+precede ordinary42501 negatives. Cases cover current DENY/revocation/foreign
+scope, exact bytes and stale survey diagnostics, old snapshots after draft
+edits, competing candidates for one context head, fresh-auth replay, withdraw/
+reactivate/effective boundaries, more-than100 events and concurrent window
+stability, station owner transfer/ABA, writer-first/owner-first locks, expired
+final SQL, dirty managed flush and deliberately swallowed post-guard SQL
+rollback, and real trigger/body/column-grant/privilege/ledger tampering.
+The equal-microsecond ledger control uses explicitly identified administrator
+constraint-valid rows; it does not claim native authority for that admin.
+The physical commit timestamp is checked after actual service return.
+Injected acknowledgement classification is explicitly simulated and is not
+claimed as an induced unknown PostgreSQL COMMIT.
+
+**Validation and next gate:** static lexical/header/path, old-case/inventory/
+timing-policy, exact source/hash/SQL-template/function-body, native seam,
+38-fence and scope-preservation checks are recorded for this source. Local
+command execution still reports "No usable execution environment is available".
+Java parsing/compilation, Maven, Spring, PostgreSQL and documentation scripts
+were not executed locally; no new runtime pass is claimed. Hosted CI must
+execute the actual B sources. All generated OpenAPI/documentation/dictionary
+files retain their last truthful bytes: B is intentionally not artifact
+acceptance. Expected artifact drift does not waive genuine source, security,
+database or test failures. After actual B artifacts exist, C may reconcile
+them from their real exact-source runs.
+
+Publish this exact29-path tree under the expected-A-head guard with the registered
+message; verify parent/tree/message/raw blobs and zero deletions. Confirm exact
+new-SHA Full/Fast/Docs creation/startup and STOP. Do not wait for completion or
+select C/acceptance or another roadmap task automatically. Real B failures must
+be repaired before dependent work proceeds.
+
 <a id="hapi-592"></a>
 ## HAPI-592 — Topology operator/API/history qualification
 

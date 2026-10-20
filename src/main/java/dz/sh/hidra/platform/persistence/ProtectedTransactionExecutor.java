@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedTransactionExecutor
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-14
+ * @UpdatedOn   : 2026-10-20
  *
  * @Type        : Class
  * @Layer       : Platform
@@ -35,6 +35,18 @@ import javax.sql.DataSource;
 public final class ProtectedTransactionExecutor {
     private static final String DRAFT_SERVICE="dz.sh.hidra.modules.topology.application.service.EngineeringNetworkDraftApplicationService";
     private static final String DRAFT_COORDINATOR="dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringDraftAdmissionCoordinator";
+    private static final String PUBLICATION_SERVICE="dz.sh.hidra.modules.topology.application.service.EngineeringRevisionPublicationApplicationService";
+    private static final String PUBLICATION_COORDINATOR="dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringPublicationAdmissionCoordinator";
+    private static final Set<String> PUBLICATION_DML_HASHES=Set.of(
+        "321c4652f15f2da9f76f5ca12395cd899ac3d55c49e8039bdd46b96a1d8fb155",
+        "28c7c4023a6d0a597703912a57e0813c04b18fb6caf4d11a4cc91c50be5385b1",
+        "76b726f5c9ead80cfebb8cf1b9f109f7f36a5438465f760687f9c8225b62467a",
+        "845f50127991e910b122499565576ea758963779dfbcda3df382a92e38dc3ca1");
+    private static String statementDigest(String sql) {
+        try { return HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256")
+            .digest(sql.getBytes(java.nio.charset.StandardCharsets.UTF_8))); }
+        catch(java.security.NoSuchAlgorithmException impossible) { throw new IllegalStateException(impossible); }
+    }
     public enum Outcome {
         REJECTED_BEFORE_COMMIT,
         INDETERMINATE
@@ -71,7 +83,7 @@ public final class ProtectedTransactionExecutor {
     /** Select the private credential before any physical transaction; no business permission implied. */
     public <T> T executePublication(Supplier<T> work,Runnable flush,Runnable guard) {
         String caller=StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName();
-        if(!caller.equals(DRAFT_SERVICE) && !caller.equals(
+        if(!caller.equals(DRAFT_SERVICE) && !caller.equals(PUBLICATION_SERVICE) && !caller.equals(
             "dz.sh.hidra.modules.topology.application.service.ProtectedStationGraphOperationService"))
             throw new IllegalStateException("Unreviewed credential route caller");
         try(var route=credentialRouter().open()) {return execute(work,flush,guard);}
@@ -203,7 +215,7 @@ public final class ProtectedTransactionExecutor {
         // Only the genuine compiled owner K coordinator can receive an opaque mutation permit.
         // Other callers can still seal read-only diagnostic admission (legacy contract).
         String caller=StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName();
-        if(!caller.equals(DRAFT_COORDINATOR) && !caller.equals(
+        if(!caller.equals(DRAFT_COORDINATOR) && !caller.equals(PUBLICATION_COORDINATOR) && !caller.equals(
                     "dz.sh.hidra.modules.topology.application.service.ProtectedStationAdmissionCoordinator"))
             return null;
         var result=new ProvisionalPermit(this,s,caller);
@@ -214,7 +226,7 @@ public final class ProtectedTransactionExecutor {
     public void beginProvisional(ProvisionalPermit permit,Set<String> exactStatements) {
         var s=admissionScope();
         String caller=StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName();
-        if((!caller.equals(DRAFT_COORDINATOR) && !caller.equals(
+        if((!caller.equals(DRAFT_COORDINATOR) && !caller.equals(PUBLICATION_COORDINATOR) && !caller.equals(
                     "dz.sh.hidra.modules.topology.application.service.ProtectedStationAdmissionCoordinator"))
           || permit==null || !caller.equals(permit.owner) || permit.issuer!=this || permit.scope!=s
           || s.provisionalPermit!=permit || permit.opened || permit.consumed
@@ -225,7 +237,9 @@ public final class ProtectedTransactionExecutor {
         Set<String> allowed=Set.copyOf(exactStatements);
         for(String sql:allowed) {
             if(sql==null || sql.contains(";") || sql.contains("--") || sql.contains("/*")
-               || !(caller.equals(DRAFT_COORDINATOR)
+               || !(caller.equals(PUBLICATION_COORDINATOR)
+                    ? PUBLICATION_DML_HASHES.contains(statementDigest(sql))
+                    : caller.equals(DRAFT_COORDINATOR)
                     ? (sql.startsWith("INSERT INTO public.hidra_topology_engineering_context ")
                         || sql.startsWith("INSERT INTO public.hidra_topology_engineering_draft ")
                         || sql.startsWith("INSERT INTO public.hidra_topology_engineering_draft_version ")
@@ -242,7 +256,7 @@ public final class ProtectedTransactionExecutor {
     public void endProvisional(ProvisionalPermit permit) {
         var s=admissionScope();
         String caller=StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName();
-        if((!caller.equals(DRAFT_COORDINATOR) && !caller.equals(
+        if((!caller.equals(DRAFT_COORDINATOR) && !caller.equals(PUBLICATION_COORDINATOR) && !caller.equals(
                     "dz.sh.hidra.modules.topology.application.service.ProtectedStationAdmissionCoordinator"))
           || permit==null || !caller.equals(permit.owner) || permit.issuer!=this || permit.scope!=s || s.provisionalPermit!=permit
           || !permit.opened || permit.consumed || s.phase!=ProtectedOperationDataSource.Phase.PROVISIONAL) {

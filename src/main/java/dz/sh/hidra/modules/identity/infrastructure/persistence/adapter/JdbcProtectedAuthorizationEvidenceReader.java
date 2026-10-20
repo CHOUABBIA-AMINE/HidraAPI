@@ -7,7 +7,7 @@
  *
  * @Name        : JdbcProtectedAuthorizationEvidenceReader
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-18
+ * @UpdatedOn   : 2026-10-20
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -330,10 +330,14 @@ public class JdbcProtectedAuthorizationEvidenceReader {
                         || ("OIDC".equals(i.authenticationType())
                                 != (i.sourceExpiresAt() != null)))) throw invalid();
         if(draft){
-            if(!i.userId().equals(r.userId()) || !"ENGINEERING_NETWORK_DRAFT".equals(r.resourceType())
+            boolean publication=Set.of("topology:engineering-publication:publish","topology:engineering-publication:withdraw",
+                "topology:engineering-publication:reactivate","topology:engineering-publication:read").contains(r.permissionCode());
+            if(!i.userId().equals(r.userId()) || !(publication?"ENGINEERING_NETWORK_PUBLICATION":"ENGINEERING_NETWORK_DRAFT").equals(r.resourceType())
                 || !text(r.resourceReferenceId(),80) || r.scope()==null || r.scope().scopeType()!=ScopeType.CUSTOM
                 || !Set.of("topology:engineering-draft:create","topology:engineering-draft:read",
-                    "topology:engineering-draft:update","topology:engineering-draft:validate").contains(r.permissionCode()))throw invalid();
+                    "topology:engineering-draft:update","topology:engineering-draft:validate",
+                    "topology:engineering-publication:publish","topology:engineering-publication:withdraw",
+                    "topology:engineering-publication:reactivate","topology:engineering-publication:read").contains(r.permissionCode()))throw invalid();
             String ref=r.scope().scopeReferenceId();
             if(ref==null || !(ref.equals("topology-network:"+r.resourceReferenceId())
                 || (ref.startsWith("topology-company:") && text(ref.substring(17),80))))throw invalid();

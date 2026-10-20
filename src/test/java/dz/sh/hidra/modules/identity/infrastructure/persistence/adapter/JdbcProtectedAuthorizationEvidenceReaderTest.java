@@ -7,7 +7,7 @@
  *
  * @Name        : JdbcProtectedAuthorizationEvidenceReaderTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-15
+ * @UpdatedOn   : 2026-10-20
  *
  * @Type        : Class
  * @Layer       : Identity Test
@@ -633,6 +633,18 @@ class JdbcProtectedAuthorizationEvidenceReaderTest {
         var request=new dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedEngineeringDraftAuthorizationContract.Request(
             dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedEngineeringDraftAuthorizationContract.Action.READ,"company","network");
         assertThatThrownBy(()->reader.loadQualifiedDraftPair(null,request)).isInstanceOf(RuntimeException.class);
+    }
+
+
+    @Test void publicationDiagnosticsAndForgedPairsNeverSelectThePrivateQualifiedFamily() {
+        for(String action:List.of("publish","withdraw","reactivate","read")) {
+            var structural=new AuthorizationEvaluationRequest(USER,"topology:engineering-publication:"+action,"ENGINEERING_NETWORK_PUBLICATION","network",
+                new AuthorizationScope(ScopeType.CUSTOM,"topology-network:network",null));
+            assertThatThrownBy(()->reader.load(identity,structural,7,11)).isInstanceOf(RuntimeException.class);
+            var request=new dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedEngineeringDraftAuthorizationContract.Request(
+                dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedEngineeringDraftAuthorizationContract.Action.valueOf("PUBLICATION_"+action.toUpperCase(Locale.ROOT)),"company","network");
+            assertThatThrownBy(()->reader.loadQualifiedDraftPair(null,request)).isInstanceOf(RuntimeException.class);
+        }
     }
 
 }

@@ -4196,6 +4196,31 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "correctionRejectsIdentityCreationOrRecordedTimeSubstitution",
+        "correctionRetainsCompleteBeforeAfterAndCreationIdentity",
+        "distinguishesFutureEndFromEffectiveEnding",
+        "endsWithoutMutatingTheOriginalSnapshot",
+        "inactiveSourceCannotEndOrTransfer",
+        "rejectsForgedTransitionFieldsStatusAndSuccessor",
+        "rejectsInvalidSuccessorWithoutChangingTheSource",
+        "rejectsMissingReasonTimeAndBackwardRecordedClock",
+        "rejectsNonpositiveIntervalsAndFiniteEndExtension",
+        "rejectsTransferAtFiniteEndOrWithReusedIdentity",
+        "requiresPositiveVersionsStrictSuccessorAndNoOverflow",
+        "transfersWithOneEmployeeNewIdentityAndExactAdjacency"
+      ],
+      "class": "dz.sh.hidra.modules.organization.domain.model.EmployeeAppointmentChangeTest",
+      "dependency_reason": "Registered HAPI-778 Package A pure Java domain suite; no external service; duration unmeasured",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "organization",
+      "path": "src/test/java/dz/sh/hidra/modules/organization/domain/model/EmployeeAppointmentChangeTest.java",
+      "source_sha256": "32f1b1bb52eee1b462b3b9ea394f9c2cf5727d19b6ccc77ccf1fdf5a8ebb44fb",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0.002,
       "cases": [
         "directEmployeeContactAccessorsRemainDeprecatedCompatibilityOnly",
@@ -4300,6 +4325,31 @@
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/domain/model/ResponsibilityAssignmentTest.java",
       "source_sha256": "ffcb81d99c49be384743bbbfdd1edecbe273d0f6fa6d51c466d463022daa784e",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "adjacentIntervalsAreAllowedEvenWhenTheirTypesCannotOverlap",
+        "applyRequiresTheExactBeforeVersionAndSnapshot",
+        "equalTimeBoundariesAndOpenEndsUseHalfOpenCounting",
+        "everyOrderedTypePairObeysItsExplicitDecision",
+        "historicalNonActiveRecordsAreRetainedButDoNotOccupy",
+        "matrixAndPrimaryLimitMustBothAllowAProposal",
+        "policyAndReturnedSnapshotsAreDefensivelyCopied",
+        "primaryLimitUsesEffectiveConcurrencyRatherThanHistorySize",
+        "rejectsDuplicateNullAndMissingSnapshotInputs",
+        "requiresCompleteSymmetricMatrixAndExplicitLimits",
+        "singleHolderIsScopedToUnitAndPositionAndIncludesActing",
+        "transferValidatesTheFinalSetAndLeavesObservedStateIntactOnFailure"
+      ],
+      "class": "dz.sh.hidra.modules.organization.domain.policy.EmployeeAppointmentPolicyTest",
+      "dependency_reason": "Registered HAPI-778 Package A pure Java domain suite; no external service; duration unmeasured",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "organization",
+      "path": "src/test/java/dz/sh/hidra/modules/organization/domain/policy/EmployeeAppointmentPolicyTest.java",
+      "source_sha256": "587f8ceece6bc6182bb485fa9bc2cfbf83d0609ec183091221b05df810709656",
       "supports": []
     },
     {

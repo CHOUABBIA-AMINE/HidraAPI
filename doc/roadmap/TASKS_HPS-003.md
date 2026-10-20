@@ -19835,6 +19835,273 @@ verify raw blobs/tree/parent/message/scope, confirm exact-SHA applicable Docs
 creation/queueing/start and STOP. This source-review stage does not deliver
 the proposed lifecycle or claim acceptance of the failed publication task.
 
+
+### 2026-10-20 — HAPI-778 appointment lifecycle design and bounded Package A registration
+
+**Selected stage:** `docs(organization): define employee appointment lifecycle execution contract`.
+Exact main `9ab7ac909d964ad2f4a0b8fda3ae9832b7844870`, parent
+`ce9cdf0be134fa968eecc205c53a028303da8328`, tree
+`00bf250f8df482df3f09cce95e857dcaa19a632d`, passed
+[Docs473](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39499233834).
+The owner Next selects this design stage only. MODIFY only this HAPI-778
+record in TASKS_HPS-003.md; zero CREATE/DELETE. PARTIAL/IN_PROGRESS remains.
+HAPI-590 remains PARTIAL/BLOCKED under the prior explicit owner exception;
+its failed Full788 is not relabeled green. Neither this design nor a domain-only
+success will establish scoped runtime lifecycle acceptance.
+
+#### Verified source and limits
+
+Source paths in this section are rooted under
+`src/main/java/dz/sh/hidra/modules/organization/`, unless explicitly stated.
+
+| Retrieved source | Concrete finding and consequence |
+|---|---|
+| application/command/AssignEmployeeCommand.java; api/rest/request/AssignEmployeeRequest.java; api/rest/mapper/OrganizationRestMapper.java | Existing transport carries employee/unit/position/type/from/to, with no request key, expected version, correction reason or authoritative actor. Preserve the old contract until an explicitly registered compatible cutover. |
+| domain/model/EmployeeAssignment.java; domain/value/AssignmentType.java; domain/value/AssignmentStatus.java | Existing record validates a positive interval and separates membership from responsibility. Types are PRIMARY/SECONDARY/TEMPORARY/ACTING; statuses ACTIVE/SUSPENDED/ENDED/CANCELLED. Enum presence establishes no overlap matrix or occupancy policy. |
+| domain/model/Employee.java; domain/model/Position.java; domain/model/OrganizationUnit.java | Employee is separate from login identity; Position is a function/catalog with no unit/post-instance field. The reviewed records have no explicit company Party ownership reference. Do not infer company from employee number, parent-root, position code or request parameters. |
+| application/service/EmployeeAssignmentApplicationService.java; application/port/out/EmployeeAssignmentRepositoryPort.java; infrastructure/persistence/adapter/JpaEmployeeAssignmentRepositoryAdapter.java; infrastructure/persistence/repository/EmployeeAssignmentJpaRepository.java | Existing create path saves through the JPA mapper; no explicit transfer/correction/history/CAS method. All old create entry points must eventually participate in the same concurrency policy as new lifecycle operations. A second service must not leave an unconstrained bypass. |
+| infrastructure/persistence/entity/EmployeeAssignmentJpaEntity.java; infrastructure/persistence/mapper/OrganizationPersistenceMapper.java | Exact assignment fields map both ways; no mapped row version or correction journal. Timestamps are not an optimistic version. Preserve existing assignment IDs and raw history; a new version must be deliberate and migrated. |
+| application/port/in/OrganizationAdministrationQueryUseCase.java; infrastructure/query/JpaOrganizationAdministrationQueryAdapter.java; api/rest/controller/OrganizationAdministrationQueryController.java | Existing employee assignment listing exists; it is not absent. General assignments loads all rows then filters/pages in Java. Employee-specific listing returns an unbounded list ordered by validFrom alone. No reviewed position-occupant-history method or stable tie-breaker. These existing reads do not supply the required authorized bounded journal. |
+| application/service/ResponsibilityAssignmentApplicationService.java; application/command/ResponsibilityOperationContext.java; api/rest/controller/OrganizationResponsibilityController.java | Responsibility has its own workflow/audit and effective-interval handling. Reuse ownership principles, not its permission family or a caller-constructed context as appointment authority. Appointment changes never implicitly grant/revoke/transfer operational responsibilities. |
+| platform/permissions/HidraRouteAuthorizationInterceptor.java and platform/security/HidraEffectivePermissionResolver.java (outside Organization) | Ordinary Organization routes use route permission checks; the reviewed resolver yields permission codes, not resource/company-scoped native admission. Topology has exact compiled protected exceptions. Do not add a generic Organization exception or reinterpret token codes as scoped authority. |
+| src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java; Organization semantic, responsibility service and greenfield persistence tests under the matching test roots | Pure domain/inward boundaries and existing responsibility behaviors remain. Existing tests cover their named owner contracts, not appointment lifecycle completeness or two-company isolation. |
+
+The initial review's statement that SpringOrganizationController has no history
+route was limited to that controller. OrganizationAdministrationQueryController
+already exposes GET /employees/{id}/assignments and GET /assignments. Preserve
+that evidence; do not create a duplicate read API to correct an assumed absence.
+
+**Schema source recovery:** V20260611_002 creates the assignment table;
+V20260927_004 adds Organization-owned employee/unit/position RESTRICT FKs;
+V20260929_006 retires the old operational_scope columns from employee assignments;
+V20261006_004 hardens the required organization-unit reference.
+V20260929_003's temporal/index concurrency changes are for ResponsibilityAssignment,
+not proof of appointment overlap protection. No retired operational_scope fields
+may be repurposed as company ownership. Existing mapping and migrations stay
+immutable. The live tree is untruncated and contains158 migration filenames,
+ending V20261020_002 publication storage. This is a filename census plus review
+of the named scripts, not an executed catalog or exhaustive SQL-writer audit.
+No new migration version is reserved in this stage: runtime storage depends on
+the unresolved ownership/admission contract below. Recheck the live tail before
+any later explicit reservation.
+
+#### Target contract and invariant ownership
+
+Organization owns EmployeeAssignment membership and its lifecycle. One stable
+assignment identity retains its original employee identity; transfer creates a
+different assignment for that same employee, and correction records the exact
+before/after image of the retained identity. Domain types compute/validate
+immutable proposals; Application obtains current authorization, locks/versions,
+applies the domain proposal and persists the full result in one transaction.
+No actor name, expected version, policy object, request ID or domain proposal
+is permission by itself. Ports expose immutable values, not JPA entities.
+
+All effective intervals use [validFrom,validTo), with null validTo meaning an
+explicitly open end. Adjacent intervals do not overlap. Interval overlap is
+a.from<b.to AND b.from<a.to, treating absent ends as positive infinity.
+Recorded time is independent from effective time and is server-derived at
+runtime. No implicit scheduler, future status transition, employment termination,
+Identity grant or operational responsibility change is invented.
+
+END shortens an existing eligible interval without moving its start or changing
+employee/unit/position/type; its endpoint must be after the start and must not
+extend an already finite end. Preserve the original row/version in the journal.
+A future endpoint is an end-date plan and does not mean the appointment has
+already ended: keep ACTIVE until its effective boundary in current-as-of
+evaluation; ENDED represents an already effective ending. Runtime backdating/
+scheduling permissions and clock sampling require explicit later admission.
+
+TRANSFER atomically closes the selected source at t and starts one new destination
+assignment at t for the same employee, explicit unit/position/type/end and new ID.
+t is strictly after the source start and before its existing finite end.
+A transfer at an existing finite end is not a source-shortening transfer; use
+an independently admitted adjacent creation instead. No gap/overlap at t;
+destination reference/eligibility failure, conflict, authority loss or audit
+failure rolls back both changes. No auto-closing of other assignments.
+
+CORRECT retains assignment and employee IDs and createdAt, supplies an explicit
+nonblank reason, and records the complete prior and proposed values. Unit,
+position, type, interval or status correction is explicit, versioned and subject
+to current authority and policy; never overwrite audit history or silently
+rewrite another appointment. The domain can represent a correction, but its
+presence does not authorize retroactive business effects. No hard DELETE is
+part of the lifecycle.
+
+A change value contains kind, exact versioned before image, exact after image,
+optional transfer successor and reason. Its expected source version must be
+positive and its resulting source version exactly +1, rejecting overflow.
+The new transfer identity begins at version1. Proposed values are detached
+immutable EmployeeAssignment records; no mutable collection/array or framework
+type escapes. The before image must agree with the expected assignment identity
+and version at the later persistence boundary.
+
+#### Explicit concurrency and acting policy; no invented deployment default
+
+There is no source-established organization-wide overlap rule. Package A will
+provide an explicit immutable policy input with:
+- a complete symmetric pair matrix for PRIMARY/SECONDARY/TEMPORARY/ACTING
+  overlaps for one employee (including same-type diagonal);
+- a positive maximum concurrent PRIMARY count for that employee;
+- an explicit position-capacity mode: UNRESTRICTED or SINGLE_HOLDER, applied to
+  the (organizationUnitId,positionId) pair, never to a shared position code alone.
+
+All16 ordered matrix entries are required; asymmetry, unknown/missing type,
+absent policy or invalid limits fail. There is no global constant selecting
+the actual company's personnel policy, no HTTP-supplied override, and no
+deployment permissiveness inferred from existing unconstrained inserts.
+Synthetic tests must exercise both allowed and denied acting/secondary overlap
+and both capacity modes. Passing a policy is a calculation input, not evidence
+that a business owner approved it. Pair permission and PRIMARY count are
+independent checks; both must allow a candidate. SINGLE_HOLDER forbids overlap
+between different employees on the same unit/position pair, including ACTING;
+a business need for simultaneous cover must select an explicit different policy
+in a later admitted contract, not bypass the check by naming the type ACTING.
+
+Only ACTIVE records contribute to concurrent occupancy in this first policy
+contract. SUSPENDED/ENDED/CANCELLED remain historical data. Whether SUSPENDED
+reserves a post is a future explicit policy revision, not silently assumed.
+These are finite software-policy modes, not acceptance of an actual personnel
+rule. Runtime policy selection/version/authority and effective activation remain
+a required B prerequisite. Preserve four existing AssignmentType values.
+
+Policy evaluation receives the proposed final relevant snapshot and validates
+all overlaps/counts using effective-time intervals, not merely collection size.
+Transfer validation replaces the source with its shortened image and adds the
+successor before evaluation. Exact IDs must be unique; input collections are
+copied. A caller-supplied incomplete snapshot cannot prove database concurrency.
+Application/repository must later retrieve and lock the complete affected
+employee and unit/position sets at the same transaction sample.
+
+#### Required later runtime design, API and physical guarantees
+
+One READ COMMITTED transaction must bind authenticated actor/current grants,
+authoritative ownership/target eligibility, exact source versions, complete
+affected overlap sets, policy revision, request receipt and journal commit.
+Lock employee identities and all affected unit/position conflict keys in a
+documented global order, then assignment rows in stable ID order; serialize
+absence as well as existing rows. A nullable-row lock or application precheck
+alone cannot prevent first-insert races. All creation aliases and maintenance
+writers must obey the same protocol; constraint-valid direct SQL negatives
+must be included in PostgreSQL proof. Row CAS uses a real persisted version;
+no reliance on lastUpdated timestamps. Final admission must reject changed
+authority/ownership; transaction/audit/commit failures never return success.
+No automatic retry after an indeterminate physical commit.
+
+Request idempotency is actor + authoritative resource scope + requestId, with a
+canonical digest of typed command, expected versions and policy revision.
+Identical replay requires fresh current authority and returns its original
+immutable receipt, not a claim that the old result is current. Different input
+under the same key conflicts. Store immutable before/after, optional successor,
+effective/recorded time, native actor provenance, request/digest and policy
+revision. Bind journal and source updates transactionally; database enforcement
+must reject journal UPDATE/DELETE/TRUNCATE including empty statements.
+Fresh-schema tests use separate actual admin/runtime principals. Do not assume
+the current JPA save path provides these guarantees.
+
+Proposed lifecycle transport, not existing endpoints: POST /assignments/{id}/end,
+POST /assignments/{id}/transfer, POST /assignments/{id}/corrections under
+/api/v1/organization; scoped GET history by assignment, employee and unit/position.
+Commands require explicit requestId, expectedVersion, typed effective fields,
+reason and destination where applicable; reject actor/grants/policy claims and
+unknown/coerced fields. Preserve existing create aliases and read shapes until
+their explicit cutover/compatibility review. New reads use database-bounded
+keyset pagination with limit1..100, stable (recordedTime,eventId) ordering and
+a scope/filter-bound captured high-water boundary. Cursor values are untrusted
+query data, never authority. Exact historical version lookup is independent
+of page size and current projection. History preserves versions after transfer
+or correction without disclosing foreign employee/unit/position metadata.
+400 invalid transport,401 unauthenticated, non-disclosing403/404 by registered
+scope policy,409 CAS/replay/policy conflict and safe503 unavailable/indeterminate.
+No public route is registered by this design.
+
+**Concrete runtime blockers:** the reviewed owner records provide no authoritative
+company binding and no reviewed employee-appointment scoped authorization export.
+A hierarchy root or arbitrary company field cannot supply that authority.
+Before B, source-review genuine Identity and Organization/Party ownership contracts,
+decide whether admission is exact unit/employee-resource scoped or requires a
+separate company-ownership relation, register exact public exported types and
+temporal/concurrency proof. Do not use a public permission set/Boolean, stale
+JWT grant, generic Platform exception or foreign concrete adapter. Broader
+ownership changes require explicit bounded registration, not hidden scope growth.
+The current assignment create bypass and existing broad listing also need exact
+compatibility/writer remediation paths in B. These requirements do not block
+pure Package A or require industrial calibration values.
+
+#### Exact next executable Package A — pure domain only
+
+After this design's Docs succeeds, the next owner Next selects one stage:
+`feat(organization): define employee appointment lifecycle domain contract`.
+
+CREATE exactly:
+1. src/main/java/dz/sh/hidra/modules/organization/domain/model/EmployeeAppointmentChange.java
+2. src/main/java/dz/sh/hidra/modules/organization/domain/policy/EmployeeAppointmentPolicy.java
+3. src/test/java/dz/sh/hidra/modules/organization/domain/model/EmployeeAppointmentChangeTest.java
+4. src/test/java/dz/sh/hidra/modules/organization/domain/policy/EmployeeAppointmentPolicyTest.java
+
+MODIFY exactly:
+5. .github/ci-test-inventory.json — exact actual method names/source hashes for
+   these two classes, unmeasured timing weights; preserve every other class,
+   policy, five DB sets and historical evidence.
+6. doc/roadmap/TASKS_HPS-003.md — append only HAPI-778 implementation evidence;
+   retain PARTIAL/IN_PROGRESS.
+
+The four CREATE absences and two MODIFY presences were checked against the
+untruncated exact-head tree. The two new production types may contain focused
+nested immutable records/enums; do not add more files or duplicate Employee,
+Position, EmployeeAssignment, Party or ResponsibilityAssignment. Reuse existing
+AssignmentType/Status and validation exception. Canonical headers/author/date
+requirements apply. Java standard library plus Organization domain only;
+no Spring/JPA/Jackson/Platform/API/engine dependency. No wiring, runtime
+authorization, JPA mapping, existing service/controller, SQL or migration changes.
+Do not add a facade implying that an unattached proposal already persists.
+
+New domain methods must exercise:
+- valid END, finite-end nonextension, invalid/nonpositive interval and status/
+  effective-boundary distinction;
+- transfer same-employee/different-ID/exact adjacency, preserved original source,
+  destination finiteness and a late invalid-successor failure leaving inputs intact;
+- correction stable assignment/employee identity/createdAt, explicit reason and
+  complete before/after preservation;
+- positive expected version, strict next-version and overflow rejection;
+- defensive copy/duplicate-ID/null/unknown policy cases;
+- all four type matrix combinations with symmetric completeness validation;
+- adjacent intervals and count changes at equal-time boundaries, unbounded ends,
+  allowed/denied acting overlap and max PRIMARY across three staggered intervals;
+- UNRESTRICTED versus SINGLE_HOLDER for same unit/position, separate unit or
+  position independence, non-ACTIVE historical records and transfer final-set checks.
+
+These are required behavioral cases, not yet executable test identities.
+Register actual source method identities only once implemented. Focused JUnit
+tests and existing domain architecture checks are required in hosted CI.
+A's tests prove immutable software semantics with synthetic explicit policies,
+not owner-approved runtime policy, scoped authority, physical concurrency or
+database acceptance. HAPI-590 drift remains a known inherited Full gate;
+retain truthful lane-specific results, never mark the total workflow successful.
+
+**Separate continuation after A feedback:** register B's genuine ownership/
+authorization/storage/API/writer package under this same task before any runtime
+code. Then B runtime/test integration, actual-artifact reconciliation and
+separate full task acceptance remain distinct stages. No guessed B allowlist,
+new migration or business default is executable from this record. This avoids
+blocking useful A work while preserving the unresolved material authority and
+policy decisions.
+
+#### Current validation and publication
+
+Retrieved current main/parent/tree, AGENTS, ROADMAP/index, task/phase record,
+named source/mappers/security/migration/test files and exact-SHA Docs473 success.
+Verified unchanged HAPI-778 and HAPI-590 registry states, four absent A paths,
+two present A paths, no migration reservation and one-file append-only scope
+in memory. The attempt to batch an exhaustive migration-content census failed;
+it is expressly not claimed complete. No local Java/Maven/PostgreSQL or
+canonical documentation-script execution is available/claimed. No tests are
+newly run and no generated API/catalog is changed here.
+
+Publish only this phase blob using expected-9ab7ac9 guard and the selected exact
+design message, verify parent/tree/message/one-file diff/raw bytes, confirm
+applicable exact-SHA Docs created/queued/started and STOP. The next single
+registered stage is pure Package A, not B or formal acceptance.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

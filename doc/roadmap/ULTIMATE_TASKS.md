@@ -29,10 +29,15 @@ record; no prerequisite implementation should be repeated.
 
 The next sequential engineering task is
 [HAPI-590](TASKS_HPS-004.md#hapi-590), public governed revision publication and
-history. Its source-backed review records a specific publication-readiness
-owner choice before executable registration. It remains NOT_IMPLEMENTED/BLOCKED;
-the six proposed source files are not an implementation allowlist. See its owning
-phase record for the prepared lifecycle and exact next decision.
+history. The owner selected A: immutable governed authored snapshots explicitly
+engineering-unqualified, preserving missing values and diagnostics. The complete
+21-CREATE/23-MODIFY envelope is registered in its owning phase record, with no
+runtime delivery implied by registration. Status is NOT_IMPLEMENTED/
+REGISTERED_PENDING. After this registration passes Docs, the next single stage
+is Package A, `feat(topology): define governed publication snapshot contract`;
+B integration, C actual-artifact reconciliation and final acceptance remain
+separately selected in that registered order. No repeated readiness choice,
+context-cardinality question, benchmark or operational approval is selected.
 
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent

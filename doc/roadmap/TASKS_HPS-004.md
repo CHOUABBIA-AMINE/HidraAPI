@@ -6418,7 +6418,7 @@ Priority: P1
 
 Implementation Status: NOT_IMPLEMENTED
 
-Planning Status: BLOCKED
+Planning Status: REGISTERED_PENDING
 
 Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -6744,6 +6744,450 @@ blobs/tree/parent/message, confirm exact-SHA Docs creation/start and STOP.
 No runtime publication, operational approval, release, deployment or simulation
 is selected.
 
+
+### 2026-10-20 — HAPI-590 owner option A and complete staged executable registration
+
+**Owner decision and current stage.** The owner explicitly answered A to the
+publication-readiness choice: publish an immutable governed snapshot of the
+authored metadata/graph/survey, preserve missing values and diagnostics, and
+always identify it as engineering-unqualified. This resolves that specific
+HAPI-590 policy blocker. It does not select operational/hydraulic approval,
+physical-property inference, publication option B, network/context ownership
+transfer, station-head mutation, simulation or production deployment.
+
+Main `9376dcfef82bf4645f26fa9e04448378ce41ea75`, parent
+`9d57ce16caac60dad48cf4e1199c26ac0b88ea54`, tree
+`2626138842ddee929bc0e2dbc332448387f323eb`, passed
+[Documentation468](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39461329802).
+HAPI-567/588/589 and the separately accepted CI043..046/436 scopes remain
+complete. Full785/run39459787957 passed on44c2f90, with430 classes/2606 tests,
+zero failed/errored/skipped required cases, actual cache/API/catalog evidence
+and the same unchanged executable source; no standalone Full on9376dcf is
+invented. HAPI-046 timing acceptance is not reopened by this registration.
+
+This selected publication is registration only, message
+`docs(topology): register governed publication delivery`. Exact current writes:
+this phase record, HAPI-590's planning cells in ULTIMATE_ROADMAP.md and
+ULTIMATE_PHASES.md, and its navigation paragraph in ULTIMATE_TASKS.md.
+Implementation remains NOT_IMPLEMENTED; planning becomes REGISTERED_PENDING.
+All previous payload/status history is preserved. The six old source proposals
+are superseded only for future selected execution by the finite scopes below.
+
+**1. Exact snapshot and scope semantics.** One existing immutable company/network
+context is the publication aggregate key. Its multiple draft candidates share
+one publication head; candidate draft IDs do not create separate effective
+heads. Context/company/network identities must match authoritative existing
+rows after current paired authorization. No company rebind or transfer command
+is exposed; previous HAPI-587 cardinality/credential decisions are retained.
+
+A snapshot pins an exact positive shared metadata version, its original format/
+canonical bytes/digest, the graph selected as-of that version (or explicit
+absence), and each applicable per-PIPE survey selected as-of that version.
+Use the existing codecs to verify retained bytes and digests; never regenerate
+source values from lossy DTOs or overwrite source records. Components carry
+their original version/format/digest, with survey graph-version/digest binding.
+A stale survey bound to another graph is not silently attached: retain explicit
+SURVEY_GRAPH_STALE/absence diagnostics rather than pretending compatibility.
+No graph, elevations, diameter, roughness, evidence or survey is synthesized.
+
+Publishing an incomplete or empty authored draft is permitted under A, provided
+its authoritative metadata version exists and its encoded components are valid.
+The publication retains deterministic diagnostics, including
+PHYSICAL_QUALIFICATION_NOT_ESTABLISHED, and engineeringQualified=false.
+This field is server-defined and constrained false in the stored publication;
+no request may claim qualification. A published snapshot is not a
+TopologyPhysicalNetworkRevision or StationInternalGraphRevision and cannot
+change their stricter constructors or formats.
+
+New envelope format is HIDRA_ENGINEERING_PUBLICATION_V1, deterministic and
+bounded to32MiB in total; reject an oversized complete envelope explicitly,
+never truncate components or drop them to fit. Canonical component bytes may
+be represented as immutable canonical Base64 strings in domain/result records;
+the codec validates decoded bounds/digests and round-trip identity. Do not
+return mutable byte arrays, lazy entities or open JDBC results. Preserve source
+decimal scales and diagnostic ordering. Unknown envelope/source formats fail
+closed; future versions require explicit codec dispatch and replay proof.
+Snapshot construction uses bounded set-based reads, not one query per point
+or unbounded loading of all historical versions.
+
+**2. Lifecycle, replay and effective-time rules.** PUBLISH supplies requestId,
+exact draftId/version, expected context-head epoch and predecessor revision ID.
+Epoch0/null predecessor denotes no head; all existing-head operations require
+its exact positive epoch/revision. New publication revision/event IDs are
+server-generated UUIDs. PUBLISH appends a new immutable snapshot/event and
+advances the context head ACTIVE by exactly one epoch; a new candidate may
+replace either ACTIVE or WITHDRAWN head only with matching expected inputs.
+WITHDRAW requires ACTIVE and preserves its exact revision; REACTIVATE requires
+WITHDRAWN and the same retained revision. Epoch overflow, stale predecessor,
+mismatched state, absent source or conflicting replay returns409 without effects.
+
+Every mutating event records requestId and a canonical command digest. Uniqueness
+is (context_id,actor_user_id,request_id), permitting fresh native authentication
+for the same current actor. The digest includes the action, exact scope/source,
+expected epoch/predecessor and other typed command fields; exclude server-made
+IDs and fresh sampled clock/binding values. A repeated identical request,
+after fresh current authority and current owner eligibility, returns its original
+immutable outcome with replayed=true and no mutation even if later events have
+advanced the head. Changed inputs under that same key return409. A replay does
+not claim to be the current head. Final guard binds the actual observed current
+head and retained replay event separately. No automatic retry after uncertain
+COMMIT; an explicit subsequent authorized request may resolve its receipt.
+
+Effective time is immediate within this governed software ledger only.
+Set effective_at to the one authoritative PostgreSQL authorization sampled_at,
+with PostgreSQL microsecond precision. No client effectiveFrom/effectiveUntil,
+backdating, future scheduling or override clock fields are accepted. Require
+sampled_at>=the prior context event time; a backward clock invalidates the
+attempt rather than inventing a time. Equal microsecond times are ordered by
+the strictly increasing epoch. READ_EFFECTIVE(asOf) selects the latest committed
+event at/before asOf by effective_at DESC,epoch DESC: PUBLISH/REACTIVATE resolves
+that snapshot; WITHDRAW resolves no effective snapshot. Transitions define
+half-open intervals [event time,next event time), with the highest epoch
+winning at equal instants. Withdraw/reactivate never erase historical intervals.
+Reject asOf later than the current authorized database sample; exact ISO-8601
+UTC transport parsing and precision rules are explicit and tested. These are
+journal-as-of semantics over committed data, not physical operating intervals,
+retroactive engineering approval or a claim that a pre-commit observer saw an
+uncommitted publication.
+
+READ_EXACT is independent of history pagination and still requires current
+authority/owner evidence. Later draft edits cannot change published bytes,
+epoch or history; historical lookup does not require the old draft version to
+remain the latest. READ_CURRENT reports the retained head state and includes
+its snapshot only when ACTIVE. LIST_HISTORY uses limit1..100 and a deterministic
+descending-epoch keyset window. The bounded opaque cursor encodes version,
+context/company/network, optional asOf/filter, captured high-water epoch and
+strict before-epoch, with canonical encoding and authoritative ledger-boundary
+validation. Treat all cursor values as untrusted query data, never authority;
+it need not introduce a signing secret or claim cryptographic tamper resistance.
+A next page remains in the captured window even if later epochs are added.
+Cross-context/filter/time substitution, impossible boundaries, unknown versions
+and oversized/noncanonical cursors reject without foreign metadata disclosure.
+
+**3. Actual Identity and technical seams, not assumed authority.** Reuse the
+existing TopologyProtectedEngineeringDraftAuthorizationContract and its genuine
+participant as the company/network authorization transport. Extend Action with
+exact PUBLICATION_PUBLISH, PUBLICATION_WITHDRAW, PUBLICATION_REACTIVATE and
+PUBLICATION_READ values. Its permissionCode helper maps only those four to
+topology:engineering-publication:publish/withdraw/reactivate/read; the original
+four draft mappings stay byte-semantically unchanged. All four publication
+query kinds use PUBLICATION_READ; mutations use their distinct publication
+action. No draft UPDATE, generic route execute or station PUBLISH grant suffices.
+
+ProtectedOperationIdentityParticipant.qualifyDraftPair currently fixes resource
+type ENGINEERING_NETWORK_DRAFT. Add an exact action-to-resource mapping:
+publication actions use ENGINEERING_NETWORK_PUBLICATION, old actions retain
+ENGINEERING_NETWORK_DRAFT. Keep private issuer/actor/thread/connection/one-use
+claim-pair provenance. JdbcProtectedAuthorizationEvidenceReader currently pins
+only the four draft permission codes; add exactly the four publication codes
+with matching resource type through that genuine private qualified path.
+Diagnostic structural requests and fabricated pairs must still fail. No prefix
+wildcard, arbitrary permission argument, public pair constructor or generic
+Boolean permit is admitted. The existing participant owns the24 Identity fences;
+the new Topology coordinator imports only approved public Identity/Party
+contracts and Platform mechanics. No concrete foreign business adapter import.
+
+The new compiled service uses a new compiled coordinator and private publisher
+route on the same existing guarded DataSource/EntityManager/transaction manager.
+Extend ProtectedTransactionExecutor's exact service/coordinator identities only
+for this pair, with a separate owner permit and independently pinned finite
+publication DML hashes. It must not mint publication permits for the old draft,
+station or diagnostic callers. Preserve all old allowed DML texts/hashes and
+their existing behavior. JdbcEngineeringGraphStationWitnessAdapter permits
+exactly the new publication service in addition to its current compiled service;
+it still requires qualified admission and held relation fences. Do not call its
+supporting verifyCurrent SQL after the final guard.
+
+HidraRouteAuthorizationInterceptor delegates only the new controller's eight
+exact method/HTTP/path tuples below to its mandatory native protected use case;
+authenticate first. Existing controller tuples remain unchanged. Seed exactly
+the four publication permission definitions in the new migration with resource
+ENGINEERING_NETWORK_PUBLICATION, explicit action/domain/status/sensitivity
+metadata, and no role/user grants. Define the four sensitivity flags explicitly
+using the existing draft-family policy (false); this does not waive paired
+authority, current DENY, native provenance or any mandatory protected guard.
+
+**4. One physical transaction and38-lock final proof.** Prepare actual native
+authentication outside any transaction. Select publisher credentials before
+beginning a new writable READ COMMITTED transaction. Acquire Identity24 and
+Party2 owner fences, then the exact existing Topology source order:
+pipeline_system, pipeline_system_type, engineering_context, engineering_draft,
+engineering_draft_version (all ShareRowExclusive), facility (ShareRowExclusive),
+facility_owner_generation (AccessShare), engineering_graph_snapshot and
+engineering_survey_snapshot (ShareRowExclusive), then new publication_snapshot,
+publication_event,publication_head (ShareRowExclusive), all in public schema
+with hidra_topology_ prefixes and NOWAIT. Technical names below are exact new
+storage names. No protected context/head/source read precedes successful
+current paired Identity company/network authorization. Preauthorization
+acquisition may inspect technical catalog/roles/locks only.
+
+This union is38 distinct required relations:34 ShareRowExclusive,
+3 AccessShare and1 Share. Identity still owns22+2, Party2, Topology12.
+Freeze owner-defined descriptors after validating their actual opaque admissions,
+before the single authorization sample. Reject missing/duplicate/conflicting
+requirements; unrelated extra locks do not invalidate required-subset proof.
+After Identity contribution/common s/u, require active Party and matching live
+pipeline system/type/context. Resolve exact source/read target and current
+referenced-station owner/kind/status/generation witnesses before disclosure.
+A station owner/generation/context mismatch holds the operation fail-closed
+with generic conflict/denial, not an automatic transfer, stored relabel or
+silent station-head edit. HOLD is an operational refusal here, not an automatic
+read-side database mutation or invented transfer workflow.
+
+Allow only bounded provisional publication snapshot INSERT, event INSERT and
+head INSERT/CAS UPDATE templates. Required row counts are exact; no draft,
+Identity, Party, Facility or survey writes are permitted. Flush managed state
+before one final scalar statement with MATERIALIZED clock t and s<=t<u,
+PID/XID/session/current principal, current native/Party/network/station evidence,
+all38 required granted locks, exact frozen source/published bytes/digests,
+context/head/event/replay identities and intended epoch/state. For historical
+reads, verify retained source/version membership, not latest-draft equality.
+For PUBLISH verify the requested source version was current and frozen.
+Retain500ms aggregate,250ms lock,750ms statement and1000ms idle limits.
+Caught failures poison; unexpected dirty JPA DML and post-guard SQL roll back;
+no owner lookup, lazy load or SQL follows the one final guard. Return only
+materialized immutable data after observed physical COMMIT.
+
+**5. Additive schema and real role checks.** Reserve
+V20261020_002__p25_topology_engineering_publications.sql after verified live
+tail V20261020_001. Recheck collision before selected B; any intervening migration
+requires explicit same-task version reconciliation, never overwrite history.
+
+Create exactly:
+- public.hidra_topology_engineering_publication_snapshot: server revision UUID,
+  context/draft/shared-version references, explicit envelope format, bounded
+  canonical bytes, SHA256 and engineering_qualified=false constraint.
+- public.hidra_topology_engineering_publication_event: immutable event UUID,
+  context, positive unique context epoch, operation, prior/resulting revision,
+  resulting ACTIVE/WITHDRAWN state, actor-scoped request UUID/digest, native
+  binding/session/user provenance, Party and referenced-station generation
+  evidence as encoded snapshot data, s/u, effective_at, backend PID and xid.
+- public.hidra_topology_engineering_publication_head: one context PK, current
+  revision/positive epoch/state and last event FK.
+
+Use validated nondeferrable keys/FKs/unique/check constraints to bind snapshots
+to actual draft/context/version and events/head to the same context, epoch,
+state and revision. Event INSERT validation plus head transition guards must
+reject mismatched predecessor, wrong current transaction provenance, illegal
+state transitions, epoch reset/overflow and a head pointing at another event/
+snapshot. Serialize absent-head creation through the existing context row or
+equivalent reviewed lock in addition to the held table fences; do not rely on
+a nullable-head SELECT FOR UPDATE to lock a missing row. Order snapshot then
+event then head mutation; a replay performs none. Reject every UPDATE/DELETE/
+TRUNCATE on snapshot/event (including zero-row statements), head DELETE/TRUNCATE
+and invalid head UPDATE. Security-definer trigger functions have fixed safe
+search_path, immutable reviewed bodies and no PUBLIC execution.
+
+Ordinary login receives no privileges on the three new publication tables.
+Publisher has only SELECT/INSERT/UPDATE there: UPDATE is required for the
+selected PostgreSQL SHARE ROW EXCLUSIVE lock and is rejected on immutable
+tables by triggers; head UPDATE is the finite guarded CAS. Neither runtime
+principal owns tables/functions/schemas or inherits DDL/elevated/server-file/
+program capabilities. New admission verifies table/column grants, owner/
+function/trigger/constraint/catalog integrity and distinct actual session
+principals. Migration uses separate administrator ownership, no hardcoded
+deployment roles/passwords or automatic business grants. Tests use actual
+separate admin/ordinary/publisher LOGINS and the same disposable migrated DB.
+A protects ordinary credentials, not stolen publisher credentials or arbitrary
+process code able to read them. Update only the three new table ownership
+entries truthfully; actual physical dictionary regeneration waits for hosted
+catalog capture, never fabricated source-derived metadata.
+
+**6. Exact public API and transport.** All endpoints are on
+/api/v1/topology/engineering-networks/{draftId}/publications and require exact
+companyPartyId/pipelineSystemId scope. The existing draft's context determines
+the shared head; it is not chosen from an unverified body/context ID. A head
+may refer to another candidate draft in that same authorized context; response
+provenance identifies its actual source draft/version.
+
+| HTTP and suffix | Exact controller method | Meaning |
+|---|---|---|
+| POST base | publish | requestId,draftVersion,expectedEpoch,expectedRevisionId; no raw snapshot/actor/time/qualification input |
+| POST /withdraw | withdraw | requestId,expectedEpoch,expectedRevisionId |
+| POST /reactivate | reactivate | requestId,expectedEpoch,expectedRevisionId |
+| GET /revisions/{revisionId} | readExact | Exact retained context revision independent of page size |
+| GET /current | readCurrent | Context head state and active snapshot, if any |
+| GET /effective | readEffective | Required asOf timestamp, ledger-as-of semantics |
+| GET /history | listHistory | limit1..100, optional bounded cursor/asOf |
+| GET /requests/{requestId} | readRequest | Currently authorized actor's retained receipt; never cross-actor receipt lookup |
+
+Publication replay uses the mutation's current action authority, not only read.
+readRequest uses current PUBLICATION_READ and actual current native user.
+All methods authorize before protected lookup/disclosure. Strict transport-owned
+records bound UUIDs/versions/strings and unknown/coerced fields; no entities,
+callable SQL, raw IdP claims, grant lists, caller clocks/generations or permit
+scalars. Responses preserve snapshot format/version/digests and explicit
+engineeringQualified=false/diagnostics; no native secrets or physical SQL
+details.400 malformed/unsupported/unknown fields,401 missing native auth,
+generic403 denied authority, scoped404 absent target/receipt,409 stale inputs/
+conflicting replay/held owner mismatch,503 safe storage/fence/time/credential
+failure or explicitly classified INDETERMINATE. Never conflate unknown commit
+with rejection/success or automatically retry.
+
+**7. Complete finite execution envelope —21 CREATE /23 MODIFY /0 DELETE.**
+Paths are repository-root relative. All CREATE absences and MODIFY presences
+were verified at9376dcf; the migration version is currently unused. The entire
+union is registered now in three dependent packages, not selected runtime code
+by this registration. No further generic review stage or repeated A/B question
+is selected. Newly discovered material missing dependency/path is reconciled
+within this same task before mutation; it is not an unrelated-refactor license.
+
+**CREATE union, ordered by package (A1..9, B10..21):**
+1. `src/main/java/dz/sh/hidra/modules/topology/domain/model/EngineeringRevisionPublication.java`
+2. `src/main/java/dz/sh/hidra/modules/topology/application/port/in/EngineeringRevisionPublicationUseCase.java`
+3. `src/main/java/dz/sh/hidra/modules/topology/application/port/out/EngineeringRevisionPublicationRepositoryPort.java`
+4. `src/main/java/dz/sh/hidra/modules/topology/application/model/EngineeringRevisionPublicationFailure.java`
+5. `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/EngineeringRevisionPublicationCodec.java`
+6. `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/EngineeringRevisionPublicationCursorCodec.java`
+7. `src/test/java/dz/sh/hidra/modules/topology/domain/model/EngineeringRevisionPublicationTest.java`
+8. `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/EngineeringRevisionPublicationCodecTest.java`
+9. `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/EngineeringRevisionPublicationCursorCodecTest.java`
+10. `src/main/resources/db/migration/V20261020_002__p25_topology_engineering_publications.sql`
+11. `src/main/java/dz/sh/hidra/modules/topology/application/service/EngineeringRevisionPublicationApplicationService.java`
+12. `src/main/java/dz/sh/hidra/modules/topology/application/service/ProtectedEngineeringPublicationAdmissionCoordinator.java`
+13. `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringRevisionPublicationRepositoryAdapter.java`
+14. `src/main/java/dz/sh/hidra/modules/topology/api/rest/request/EngineeringRevisionPublicationRequests.java`
+15. `src/main/java/dz/sh/hidra/modules/topology/api/rest/response/EngineeringRevisionPublicationResponses.java`
+16. `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/EngineeringRevisionPublicationController.java`
+17. `src/main/java/dz/sh/hidra/modules/topology/api/rest/EngineeringRevisionPublicationApiExceptionHandler.java`
+18. `src/test/java/dz/sh/hidra/modules/topology/application/service/EngineeringRevisionPublicationApplicationServiceTest.java`
+19. `src/test/java/dz/sh/hidra/modules/topology/api/rest/EngineeringRevisionPublicationControllerTest.java`
+20. `src/test/java/dz/sh/hidra/modules/topology/EngineeringRevisionPublicationBoundaryGuardrailTest.java`
+21. `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/EngineeringRevisionPublicationPostgresIntegrationTest.java`
+
+**MODIFY union:**
+1. `src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyProtectedEngineeringDraftAuthorizationContract.java`
+2. `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipant.java`
+3. `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java`
+4. `src/main/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutor.java`
+5. `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringGraphStationWitnessAdapter.java`
+6. `src/main/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptor.java`
+7. `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipantTest.java`
+8. `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java`
+9. `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedEngineeringDraftAuthorizationPostgresIntegrationTest.java`
+10. `src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java`
+11. `src/test/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptorTest.java`
+12. `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+13. `src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java`
+14. `.github/database-dictionary-ownership.json`
+15. `.github/ci-test-inventory.json`
+16. `doc/roadmap/TASKS_HPS-004.md`
+17. `doc/roadmap/ULTIMATE_ROADMAP.md`
+18. `doc/roadmap/ULTIMATE_PHASES.md`
+19. `doc/api/openapi.yaml`
+20. `.github/documentation-validation.json`
+21. `doc/api/OPENAPI_GOVERNANCE.md`
+22. `doc/database/DATA_DICTIONARY.md`
+23. `doc/roadmap/ULTIMATE_TASKS.md`
+
+**Package A — pure snapshot contract/codecs.** After this registration's Docs
+success, one owner Next selects exact message
+`feat(topology): define governed publication snapshot contract`.
+CREATE union1..9 only; MODIFY .github/ci-test-inventory.json and this phase record,
+plus only HAPI-590's implementation cells in ROADMAP/PHASES
+NOT_IMPLEMENTED→PARTIAL (planning stays REGISTERED_PENDING).
+No migration, endpoint, Identity permission or runtime publication is delivered
+by A. Public ports must compile without referring to not-yet-created B classes;
+opaque repository Admission and immutable observation/result records live in
+the registered port/domain, not a dependency on B's coordinator. Register the
+actual new JVM cases/hashes with unmeasured timing rather than invented seconds.
+Domain stays pure Java; codec/cursor infrastructure cannot confer authority.
+Confirm same-SHA applicable Full/Fast/Docs startup and stop; repair actual
+failures before selecting B.
+
+**Package B — one coherent protected persistence/API integration.** After A's
+required CI succeeds, the next owner Next selects
+`feat(topology): implement governed engineering publication`.
+CREATE union10..21; MODIFY union1..16 only. This includes six production seams,
+seven existing regression suites, reviewed ownership, inventory and this phase
+record. Preserve all old case identities and original draft/station permission/
+SQL behavior. The existing four-action Identity test keeps its original cases;
+add publication-specific authority positives/negatives rather than silently
+reinterpret old methods as evidence of new permissions. Forensic adds only the
+new coordinator's exact approved public Identity import. Admission source guards
+add only the exact new service/coordinator/repository call sites and refresh the
+reader fingerprint solely for the reviewed eight-code/resource mapping extension;
+unchanged I/J owner fingerprints and all existing negative bans stay intact.
+Pin new SQL hashes independently; no broad caller/prefix exception. Platform
+remains technical and imports no business class.
+
+The new PostgreSQL fixture reuses/copies actual native producer setup patterns
+from existing accepted integration tests with real admin/runtime separation;
+do not use mock authority, fabricated qualified pairs or SET ROLE on a privileged
+session as proof of ordinary credentials. New genuine HTTP bearer tests retain
+the actual decoder/security chain. No new generic fixture/base-class path is
+authorized. Source/schema/runtime API and catalog collection are allowed even
+when strict committed artifact equality first reports the expected new-contract
+drift: retain those actual artifacts, then C reconciles them. Such an initial
+artifact mismatch is not accepted B success or a waived gate. Existing CI
+workflow, five DB sets, inventories' policy/baseline, deadlines, required
+historical tests and release machinery are PRESERVE. Record PARTIAL/
+REGISTERED_PENDING throughout B.
+
+**Package C — generated artifacts from actual B evidence only.** After B's
+actual API/schema artifacts exist, one owner Next selects
+`docs(topology): reconcile governed publication artifacts`.
+MODIFY only doc/api/openapi.yaml, .github/documentation-validation.json,
+doc/api/OPENAPI_GOVERNANCE.md, doc/database/DATA_DICTIONARY.md and this phase
+record. Generate canonical API from the actual application and dictionary from
+the actual migrated catalog plus reviewed ownership/source inventory. Record
+source SHA/run/attempt/job/member/ZIP digests and counts; never infer physical
+metadata or weaken equality/compatibility. Confirm exact-C-SHA Full/Fast/Docs
+as applicable, then stop. A/B failures are repaired before formal acceptance;
+C does not mask genuine Java/database/security failures as artifact drift.
+
+After required exact-source C verification, a separate documentation-only
+`docs(topology): record governed publication acceptance` may reconcile the
+complete original task plus the owner's A semantics and set VERIFIED/COMPLETED
+in this phase/ROADMAP/PHASES, with matching navigation-only index update.
+Only those four governance paths are admitted for acceptance. No HAPI-591,
+station configuration, engine, release or deployment starts automatically.
+
+**8. Fixed new JVM and genuine PostgreSQL identities —51 methods.**
+These are required future test sources, not executed tests:
+- EngineeringRevisionPublicationTest: `rejectsInvalidScopeVersionEpochAndIdentity`, `preservesIncompleteEngineeringDiagnostics`, `neverInfersPhysicalOrOperationalQualification`, `rejectsMismatchedComponentReferences`, `preservesHeadTransitionsAndEpochMonotonicity`, `rejectsConflictingReplayAndOverflow`.
+- EngineeringRevisionPublicationCodecTest: `roundTripsCanonicalSourceBytesAndDecimalScales`, `preservesAbsentGraphAndSurveyDiagnostics`, `rejectsUnknownFormatAndNoncanonicalPayload`, `rejectsTruncatedTrailingAndOversizedPayload`, `rejectsComponentDigestOrContextSubstitution`, `preservesOldSourceFormatsWithoutReinterpretation`.
+- EngineeringRevisionPublicationCursorCodecTest: `roundTripsContextBoundHighWaterCursor`, `rejectsMalformedOversizedAndNoncanonicalCursor`, `rejectsCrossContextFilterAndAsOfSubstitution`, `preservesStrictDescendingEpochBoundary`.
+- EngineeringRevisionPublicationApplicationServiceTest: `requiresPublicationAuthorityBeforeAnyProtectedLookup`, `usesOnePublisherTransactionAndOneOwnerSample`, `rejectsDraftUpdateAsPublicationAuthority`, `publishesExactVersionWithoutEngineeringPromotion`, `rejectsStaleHeadSourceAndConflictingReplay`, `replaysOriginalOutcomeAfterFreshAuthorityWithoutHeadMutation`, `neverUsesListingWindowForExactRead`, `returnsOnlyAfterObservedCommitAndNeverRetriesIndeterminate`.
+- EngineeringRevisionPublicationControllerTest: `mapsAllEightRegisteredRoutesToTypedCommands`, `rejectsUnknownFieldsCoercionAndCallerAuthority`, `requiresNativeAuthenticationAndNonDisclosingScope`, `preservesExplicitUnqualifiedStatusAndMissingValues`, `mapsStaleReplayAndOwnerHoldToConflict`, `boundsHistoryAndBindsOpaqueCursor`, `requiresExpectedEpochPredecessorAndRequestId`, `keepsStorageAndIndeterminateDetailsPrivate`.
+- EngineeringRevisionPublicationBoundaryGuardrailTest: `onlyPublicationServiceAndCoordinatorReceiveTheirTechnicalPermit`, `publicationDmlTemplatesAndHashesRemainExact`, `domainAndTransportKeepOwnerAndFrameworkBoundaries`, `publicationPermissionsCannotAliasDraftOrStationActions`, `exactRoutesAndFinalGuardRemainClosed`.
+- EngineeringRevisionPublicationPostgresIntegrationTest: `fourGenuineProvidersPublishAndReadExactSnapshots`, `ordinaryLoginCannotReadOrMutatePublicationStorage`, `currentDenyRevocationAndForeignScopeRevealNoPublicationData`, `sourceGraphSurveyDigestsAndIncompleteDiagnosticsRemainExact`, `draftEditsNeverRewritePublishedSnapshots`, `concurrentDraftCandidatesHaveOneContextHeadCasWinner`, `identicalReplayIsStableAndConflictingReplayIsRejected`, `withdrawReactivateAndEffectiveBoundariesPreserveHistory`, `exactReadAndKeysetHistorySurviveMoreThanHundredEvents`, `stationOwnerAbaAndTransferMismatchHoldWithoutRebinding`, `writerFirstAndOwnerFirstRetainAllThirtyEightFences`, `expiredFinalGuardAndDirtyFlushRollBackAllPublicationEffects`, `catalogRoleAndLedgerTamperingFailClosed`, `observedCommitAndIndeterminateOutcomeNeverAutoRetry`.
+
+Add meaningful publication-family negatives to the seven existing admitted
+suites while retaining their previous identities: genuine issuer transport/
+scope/resource mapping, diagnostic/forged-pair rejection, publication-vs-draft
+permission separation, exact compiled executor permit refusal, exact route
+delegation and source boundary/fingerprint checks. Do not claim new test cases
+until their executable source and exact inventory entries exist.
+
+PostgreSQL tests must include actual signed-native LOCAL/OIDC/LDAP/AD authority,
+the exact38-relation modes on one physical connection/common sample, authentic
+owner revocation/DENY/ABA, latest-source and frozen-old-source distinctions,
+snapshot bytes before/after draft edits, two drafts competing for one context
+head, positive constraint-valid SQL controls before ordinary42501 assertions,
+catalog/trigger/body/column-grant/role tamper rejection, state/head/ledger
+constraints, more-than100-event exact and keyset reads, equal-microsecond and
+withdraw/reactivate effective boundaries, same-key replay after fresh auth,
+poisoned dirty flush/final expiry/post-guard SQL rollback and commit outcome
+classification without retry. Separate known simulated acknowledgement failure
+from any actually induced unknown database COMMIT. No timing acceptance or
+industrial approval is inferred from these methods' names. Full required tests
+must execute without skips on the fresh migrated PostgreSQL16 schema.
+
+**9. Current disposition and stop.** The owner's A resolves publication readiness;
+HAPI-590 is now NOT_IMPLEMENTED/REGISTERED_PENDING, with the above complete
+decision-dependent scope. No runtime implementation, migration/permission,
+API artifact, table, role or test execution occurs in this registration.
+Current source-backed checks verified21 absent CREATE paths,23 present MODIFY
+paths, no migration collision, native authorization/resource/reader and
+compiled-permit seams, exact38-lock census and the seven new suites'51 required
+names. In-memory task/registry/pointer/history/anchor/scope preservation checks
+pass. The selected execution environment is unavailable, so local Python,
+canonical-estate/OpenAPI, Java/Maven/PostgreSQL execution is not claimed;
+hosted Docs supplies executable validation. Publish only the current four
+governance files with expected-head guard and verified parent/tree/blobs/message,
+confirm exact-SHA Docs creation/startup and stop. The next single stage is
+Package A after Docs success, not B/C or another optional design loop.
 
 <a id="hapi-592"></a>
 ## HAPI-592 — Topology operator/API/history qualification

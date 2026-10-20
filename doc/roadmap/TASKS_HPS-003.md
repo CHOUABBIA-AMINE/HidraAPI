@@ -20239,6 +20239,236 @@ applicable Full/Fast/Docs creation/queueing/startup, then STOP without waiting.
 Do not select the next review, runtime integration, artifact reconciliation,
 formal acceptance, release or deployment in this turn.
 
+
+### 2026-10-21 — HAPI-778 scoped-authority, ownership and writer review
+
+**Selected exact stage:** `docs(organization): review appointment scoped authority and ownership`.
+Owner Next selects the registered post-A review. Main
+`dd03f70940569e2cbb328f3bed4d68a60f3633b6`, parent
+`11084d86126b0a0a5851f4d8bd17b7fea3e1eb47`, tree
+`ee01b403cb4a534a26a9bc978fbcd129e9b5573b`, passed
+[Full790](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39514684725)
+and [Docs476](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39514684667).
+Full790's API/dictionary, unit/architecture, static, all five PostgreSQL jobs and
+aggregate gate succeeded. The optional serial diagnostic was skipped; no
+unrestricted serial run is claimed. Standalone Fast is path-filtered on that
+artifact-only scope; Fast110 passed the unchanged executable A source.
+This supersedes the earlier inherited-failure checkpoint for current CI only.
+HAPI-590's formal acceptance is still separate and its registry state is untouched.
+HAPI-778 remains PARTIAL/IN_PROGRESS. MODIFY only this task record; no CREATE/
+DELETE, runtime implementation, new grants or status-table edits.
+
+#### Verified authority boundaries
+
+Paths below are exact repository paths relative to
+src/main/java/dz/sh/hidra unless a different root is shown.
+
+| Existing source | Verified capability and limitation |
+|---|---|
+| modules/identity/domain/value/ScopeType.java; AuthorizationScope.java | ORGANIZATION_UNIT and CUSTOM scopes exist; there is no EMPLOYEE/company scope enum. Scope data is constructible and is not a credential. AuthorizationScope defaults absent type to GLOBAL, so a new appointment request must reject missing scope before construction. |
+| modules/identity/application/query/EvaluatePermissionQuery.java; application/service/TopologyScopedAccessQueryService.java | General evaluation accepts user/resource/scope inputs. The Topology query service documents its sequential decisions as not establishing ownership or atomic revocation. A new appointment owner cannot treat an evaluator Boolean as protected native admission. |
+| modules/identity/application/contract/topology/TopologyProtectedAuthorizationContract.java; TopologyProtectedEngineeringDraftAuthorizationContract.java | Genuine opaque Prepared/Admission, current native binding, paired decisions, one sample, PID/XID and held-fence exports exist for exact Topology families. No Organization appointment export is present in Identity's public contract inventory. |
+| modules/identity/infrastructure/security/ProtectedOperationIdentityParticipant.java; ProtectedTopologyAuthorizationParticipant.java; infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java | Private issuer/thread/connection/native provenance and one-use qualified claim families are implemented. Station and draft/publication families pin their resource/permission semantics. Neither is an arbitrary reusable permission parameter. Organization requires a separately registered family; changing a resource string or fabricating a pair is not integration. |
+| platform/persistence/ProtectedTransactionExecutor.java | Publisher credential entry, owner permits and finite SQL are restricted to exact reviewed services/coordinators. No appointment caller is admitted. Preserve all existing identities/hashes; no generic Organization or prefix exception is authorized by this review. |
+| modules/party/domain/model/Party.java; application/service/TopologyPartyReferenceQueryService.java | Party has legal/business identity and ACTIVE selection. exists() proves only existence. It proves neither employer status nor ownership of an employee, position or organization unit. |
+| modules/party/application/contract/topology/TopologyProtectedPartyEligibilityContract.java; infrastructure/persistence/adapter/JdbcTopologyProtectedPartyEligibilityAdapter.java | Actual same-transaction Party eligibility/generation with opaque tickets and role/catalog/fence validation exists. It is a Topology export and does not assert Organization ownership. Do not import its concrete adapter or expand its consumers implicitly. |
+| modules/organization/domain/model/Employee.java; Position.java; OrganizationUnit.java and corresponding infrastructure/persistence/entity types | The reviewed entities have no authoritative company Party reference. Unit hierarchy and position classification do not create one. Reparenting is not a company transfer. |
+| modules/organization/application/contract/workflow/WorkflowOrganizationContract.java; infrastructure/query/WorkflowOrganizationQueryAdapter.java | Workflow checks current ACTIVE employee/unit and effective assignment membership; membership is not an authorization grant. Appointment changes will affect this existing consumer, so it must be preserved and regression-tested, not silently replaced. |
+
+No Organization-specific Identity or Party protected export was found in the
+complete public contract path inventory. This is a concrete missing interface
+and authority-family registration, not missing owner calibration or production
+data. The library/project attachments are reference material; the above current
+exact-source review controls these implementation findings.
+
+#### Complete matched appointment persistence and query paths
+
+Repository-wide static searches for EmployeeAssignmentJpaEntity,
+EmployeeAssignmentRepositoryPort and hidra_org_employee_assignment found:
+
+1. Existing REST creation aliases in
+   modules/organization/api/rest/controller/SpringOrganizationController.java,
+   both calling AssignEmployeeUseCase through OrganizationRestMapper.
+2. The single matched application save call in
+   modules/organization/application/service/EmployeeAssignmentApplicationService.java,
+   delegating to application/port/out/EmployeeAssignmentRepositoryPort.java.
+3. The mapped adapter
+   modules/organization/infrastructure/persistence/adapter/JpaEmployeeAssignmentRepositoryAdapter.java,
+   using EmployeeAssignmentJpaRepository.save and OrganizationPersistenceMapper.
+   The Spring Data repository inherits generic mutation methods; a new lifecycle
+   service must not leave this bean as an unrestricted bypass.
+4. Existing organization listings in
+   modules/organization/infrastructure/query/JpaOrganizationAdministrationQueryAdapter.java,
+   exposed by OrganizationAdministrationQueryController. General assignment reads
+   load all rows before Java filtering/pagination; employee listing is unbounded.
+   These are real routes, not absent capabilities. Their authority and query
+   boundaries must be remediated within the eventual package.
+5. The actual Workflow membership reader
+   modules/organization/infrastructure/query/WorkflowOrganizationQueryAdapter.java
+   reads assignments.findAll() and applies employee/unit/status/effective-time
+   predicates. No mutation is present there; future changes must preserve the
+   membership semantics and prevent unbounded/internal cross-scope disclosure
+   from being mistaken for a public history grant.
+6. infrastructure/persistence/entity/EmployeeAssignmentJpaEntity.java,
+   infrastructure/persistence/mapper/OrganizationPersistenceMapper.java and
+   infrastructure/persistence/OrganizationPersistence.java carry the mapped
+   fields and table constant. They do not independently authorize callers.
+7. The three matched migration files under src/main/resources/db/migration:
+   V20260611_002__create_organization_tables.sql,
+   V20260927_004__enforce_organization_internal_reference_integrity.sql and
+   V20260929_006__retire_legacy_operational_scope_columns.sql. They create
+   storage/indexes, enforce Organization-owned references and remove obsolete
+   scope columns. No appointment journal, row-version or overlap enforcement
+   is supplied by those scripts. All migration bytes remain immutable.
+
+The source search found no appointment mutation in platform/workbench.
+This is a static matched-path census, not dynamic proof that arbitrary process
+code cannot reach inherited JPA or administrator SQL. Runtime role privileges,
+catalog enforcement, all registered create aliases and actual concurrent writers
+must be proved together in B. End/transfer/correction must not automatically
+change ResponsibilityAssignment, Workflow decisions or Identity grants.
+
+#### Concrete ownership choice before B implementation
+
+The existing data cannot distinguish the following two business contracts.
+They must not be collapsed into an inferred company model:
+
+**Option A — recommended, explicit company ownership for units.** Introduce an
+Organization-owned immutable company/unit binding with a neutral Party reference
+and authoritative eligibility through an Organization-specific Party export.
+Bind each appointment to its unit's exact binding revision; preserve historical
+binding/assignment linkage. No inherited hierarchy ownership and no silent
+rebind on parent changes. Initial scope permits transfers only within the same
+bound company; cross-company employment transfer is outside this package and
+requires a separate approved contract. Employee identity remains Organization-
+owned and reusable; its personal/history access still requires employee-specific
+authority. Binding a unit to a company does not assert that every employee
+record globally belongs to that company or that every ACTIVE Party is a legally
+qualified employer. Party eligibility semantics must be explicit in registration.
+
+**Option B — narrower, exact unit/employee authorization without company ownership.**
+Use genuine ORGANIZATION_UNIT grants plus an explicit employee-resource scope
+and current source/destination resource authority. No company field, Party
+binding or company-isolation claim is introduced. Two isolated grant domains
+can be tested, but this cannot satisfy a later requirement for authoritative
+company ownership or reporting; that requirement remains unmet, not waived.
+
+This review recommends A to retain company/resource governance, but does not
+record the owner's selection. A materially changes ownership semantics/schema
+and the permitted transfer boundary; B deliberately narrows the company claim.
+An explicit choice is required before either conditional runtime envelope below
+becomes executable. The currently registered pure domain Package A and its
+configurable policy semantics remain valid under either choice.
+
+#### Conditional protected authorization and policy activation contract
+
+For either option, proposed exact action family is CREATE, END, TRANSFER,
+CORRECT, READ_CURRENT, READ_HISTORY and READ_POLICY, with explicit permission
+definitions and no role/user grants. Permission/resource codes and qualified
+native request serialization must be fixed in the next admission record,
+not derived from a caller string. Requests carry explicit identifiers/action,
+never user ID, claims, grants, policy objects or authority scalars.
+Current native authentication is prepared outside the transaction and consumed
+once by the genuine Identity owner on the same physical connection as the
+appointment operation. Company/unit/employee/resource decisions, where applicable,
+use one authoritative sample and validity interval. Any DENY wins; missing or
+indeterminate evidence fails closed. Fresh request authorization is required on
+idempotent replay and exact historical reads. A read-only policy query is not
+policy activation authority.
+
+Option A additionally requires company-scoped and exact source/destination unit
+decisions, employee-history/identity access, current binding revision and Party
+eligibility. Option B requires exact source/destination unit and employee
+decisions, without calling an arbitrary requested company ID authoritative.
+No protected assignment lookup, foreign count, existence, history or policy
+payload is disclosed before the relevant current authority is established.
+
+Deployment policy selection is not inferred from enum names or request bodies.
+Persist versioned explicit matrices/PRIMARY limits/capacity mode with provenance;
+a lifecycle command uses the exact active policy revision or fails closed.
+Read access cannot edit policy, bootstrap activates no permissive default, and
+synthetic fixtures may explicitly supply policies. SUSPENDED occupancy remains
+the finite domain rule documented in A until a separately approved policy
+revision changes it. This is not approval of an actual personnel regulation.
+
+Required physical order: acquire genuine Identity fences and, for A, Party
+eligibility and binding fences; freeze descriptor requirements; authorize;
+resolve exact source/reference/policy state; lock all affected employee and
+unit/position conflict keys in stable order including absent-key serialization;
+apply domain proposal; finite source/journal/receipt writes; managed flush;
+one final time/native/owner/policy/version/lock guard; observed physical commit.
+One transaction must roll back source close, successor creation, receipt and
+journal together. Any technical executor extension needs exact new compiled
+caller identities and independent finite SQL hashes; old families remain unchanged.
+No exact lock census, private credential path or final SQL is invented by this
+review: the selected option determines the complete owning relations.
+
+#### Conditional implementation paths and acceptance
+
+These are proposed runtime placements, not executable CREATE paths today:
+
+- New public Identity export under
+  modules/identity/application/contract/organization/OrganizationProtectedAppointmentAuthorizationContract.java,
+  with its genuine participant under Identity infrastructure/security and private
+  family support in ProtectedOperationIdentityParticipant and the evidence reader.
+- For A only: a Party-owned export under
+  modules/party/application/contract/organization/OrganizationProtectedPartyEligibilityContract.java,
+  an Organization-owned binding model/repository and matching persistence adapter.
+  Party-owned state is read only through the export; no concrete foreign adapter
+  or cross-module JPA aggregate is imported.
+- Organization application inbound/outbound appointment lifecycle ports and a
+  protected service/coordinator; explicit API request/response mapping; one owned
+  append-only journal/receipt/version storage adapter. Pure A domain types are
+  reused rather than duplicated.
+- MODIFY the exact existing creation, persistence mapping/repository, listing,
+  Workflow membership reader and route/architecture-test seams listed above as
+  required by the selected scope. Existing API aliases and field compatibility
+  receive explicit migration/compatibility handling; an unprotected old save/read
+  path cannot remain merely to preserve a URL.
+
+Before code, replace these proposed placements with a finite package allowlist:
+all CREATE/MODIFY/test/inventory/ownership/schema/artifact paths, exact messages,
+source pin/permissions/resource types, lock census, SQL hashes and per-package
+acceptance. Reserve an additive Flyway filename only after rechecking the live
+tail, currently V20261020_002. No migration version is reserved here.
+
+Mandatory meaningful synthetic acceptance includes actual signed LOCAL/OIDC/
+LDAP/AD native producers; forged/wrong-thread/foreign-transaction/reused tickets;
+company mismatch or unit/employee foreign grant denial without disclosure;
+owner/binding or policy revocation before final guard; committed owner ABA;
+cross-unit transfer authority on both ends; missing/unknown policy rejection;
+concurrent first insertion and opposing transfer/CAS races; dirty flush/final
+expiry/poison rollback; immutable journal tamper controls using actual distinct
+admin/runtime logins; identical/conflicting replay after fresh authentication;
+stable employee and unit/position history across corrections and effective
+boundaries; unchanged Workflow member eligibility; and unsupported resource/
+action dispatch. No mock Boolean or copied Topology grant is authority proof.
+
+**Next registered decision-dependent stage:** after the owner's A/B selection,
+`docs(organization): register appointment ownership and authority implementation`.
+MODIFY only this HAPI-778 record in TASKS_HPS-003.md to close the selected
+contract and enumerate the exact code/test/migration package. This stage cannot
+silently choose an employer model or execute the proposed runtime paths above.
+No repeated generic readiness review is selected; one concrete ownership decision
+closes the material semantic fork.
+
+**Validation and publication:** refreshed live main/parent/tree and exact-source
+CI. Local checkout tree equals the authoritative dd03f709 tree despite its
+different unpublished local commit metadata. Read AGENTS, canonical roadmap,
+index, reconciliation placeholder and the current HAPI-778 stage; inspected
+the exact source/export/writer/query/migration paths above. Preserve all existing
+task bytes/anchors/statuses and append only this review. Run canonical Docs,
+offline OpenAPI and diff whitespace checks; record actual results below.
+No new Java/PostgreSQL run or acceptance is claimed. Publish this one-file
+review with the registered message and expected-dd03f709 guard, verify exact
+parent/tree/blob/scope and confirm applicable exact-SHA Docs created/queued/
+started, then STOP. Formal HAPI-590 acceptance, HAPI-778 runtime implementation,
+deployment and operational control remain separate.
+
+
+
+**Completed local checks:** canonical documentation validates128 documents/8277 relative links/24 modules/921 tasks/25 phases; offline OpenAPI validates257 paths/279 operations/267 schemas; git diff --check passes. Only this task's append-only review changed, with no task header, registry, source, API, dictionary, workflow or migration edits.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

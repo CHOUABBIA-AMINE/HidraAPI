@@ -6860,6 +6860,7 @@
         "disabledActualCatalogTriggerFailsBeforeAnyDraftInsert",
         "graphCurrentStationWrongKindAndStatusFailClosed",
         "graphFinalGuardContainsThirtyFourRelationFences",
+        "graphStationRoundTripRequiresReadOnlyGenerationAuthority",
         "graphSurvivesMetadataOnlySuccessorWithHistoricalSha",
         "ordinaryDirectDmlAndDdlRemainDenied",
         "ordinaryGraphSnapshotPrivilegesRemainDenied",
@@ -6880,7 +6881,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/EngineeringNetworkDraftPostgresIntegrationTest.java",
-      "source_sha256": "c69e104620dfa685ab6c20a236d100df2aca8acc4be773394bfe12cb51b22c34",
+      "source_sha256": "2348baafd7d6d0a6deed801b7a5fefe9e8bcd1205c5c283ac474d714cc197bbc",
       "supports": []
     },
     {

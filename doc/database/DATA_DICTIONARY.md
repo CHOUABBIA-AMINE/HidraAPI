@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `85e9850a2bdfc8429638b50534e252f0ef618f6a`
+Captured source SHA: `063fedd2a4e5a94d90999cd34177998c72176ef5`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `05901d8f05faef1f5fa2cb54490ce4e2ceea8f27ab035dd97097af894bc5cfc4`.
-Migrations: 155; JPA mappings: 470; catalog relations: 500; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `9dfd75ade23bb7b2162527345f209ab0173c53ec4eb1ba8054647cbd4bdc2e47`.
+Migrations: 156; JPA mappings: 470; catalog relations: 501; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -25040,6 +25040,7 @@ Immutable metadata versions, predecessor digest and protected actor/time provena
 - Evidence: [JdbcEngineeringNetworkDraftRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringNetworkDraftRepositoryAdapter.java)
 - Evidence: [V20261019_001__p25_topology_engineering_drafts.sql](../../src/main/resources/db/migration/V20261019_001__p25_topology_engineering_drafts.sql)
 - Migration mention (not inferred introduction): [V20261019_001__p25_topology_engineering_drafts.sql](../../src/main/resources/db/migration/V20261019_001__p25_topology_engineering_drafts.sql)
+- Migration mention (not inferred introduction): [V20261019_002__p25_topology_engineering_graph_snapshots.sql](../../src/main/resources/db/migration/V20261019_002__p25_topology_engineering_graph_snapshots.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -25101,6 +25102,59 @@ Immutable metadata versions, predecessor digest and protected actor/time provena
 - `p25_engineering_next_version`: CREATE TRIGGER p25_engineering_next_version BEFORE INSERT ON hidra_topology_engineering_draft_version FOR EACH ROW EXECUTE FUNCTION hidra_p25_draft_next_version()
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_draft_next_version()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_draft_next_version()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>DECLARE last_version bigint; last_digest text;<br>BEGIN<br> PERFORM id FROM public.hidra_topology_engineering_draft WHERE id=NEW.draft_id FOR UPDATE;<br> IF NOT FOUND THEN RAISE EXCEPTION 'Missing draft' USING ERRCODE='23503'; END IF;<br> SELECT version,sha256 INTO last_version,last_digest<br> FROM public.hidra_topology_engineering_draft_version WHERE draft_id=NEW.draft_id ORDER BY version DESC LIMIT 1;<br> IF (last_version IS NULL AND (NEW.version&lt;&gt;1 OR NEW.predecessor_sha256 IS NOT NULL))<br>    OR (last_version IS NOT NULL AND (last_version=9223372036854775807::bigint<br>        OR NEW.version&lt;&gt;last_version+1 OR NEW.predecessor_sha256 IS DISTINCT FROM last_digest)) THEN<br>  RAISE EXCEPTION 'Stale engineering draft version' USING ERRCODE='23514';<br> END IF;<br> RETURN NEW;<br>END;<br>$function$<br>
+
+### public.hidra_topology_engineering_graph_snapshot
+
+Owner: **topology**; relation kind: `r`.
+
+Immutable authored engineering network graph snapshots bound to the shared metadata draft version; HAPI-588B CI-first physical PostgreSQL qualification pending.
+
+- Evidence: [JdbcEngineeringGraphDraftRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringGraphDraftRepositoryAdapter.java)
+- Evidence: [V20261019_002__p25_topology_engineering_graph_snapshots.sql](../../src/main/resources/db/migration/V20261019_002__p25_topology_engineering_graph_snapshots.sql)
+- Migration mention (not inferred introduction): [V20261019_002__p25_topology_engineering_graph_snapshots.sql](../../src/main/resources/db/migration/V20261019_002__p25_topology_engineering_graph_snapshots.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| draft_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| version | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| payload_format | character varying(40) | False | None; identity=; generated= | No current mapped Java column | — |
+| canonical_payload | bytea | False | None; identity=; generated= | No current mapped Java column | — |
+| sha256 | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| transaction_id | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `fk_p25_engineering_graph_metadata_version`: FOREIGN KEY (draft_id, version) REFERENCES hidra_topology_engineering_draft_version(draft_id, version) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["draft_id", "version"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["draft_id", "version"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_topology_engineering_draft_version"}, "type": "f", "validated": true}
+- `hidra_topology_engineering_graph_snapsh_canonical_payload_check`: CHECK (octet_length(canonical_payload) &gt;= 16 AND octet_length(canonical_payload) &lt;= 1048576)
+  - Catalog attributes: {"columns": ["canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_graph_snapshot_check`: CHECK (sha256::text = encode(sha256(canonical_payload), 'hex'::text))
+  - Catalog attributes: {"columns": ["sha256", "canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_graph_snapshot_payload_format_check`: CHECK (payload_format::text = 'HIDRA_ENGINEERING_GRAPH_DRAFT_V1'::text)
+  - Catalog attributes: {"columns": ["payload_format"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_graph_snapshot_transaction_id_check`: CHECK (transaction_id &gt; 0)
+  - Catalog attributes: {"columns": ["transaction_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_graph_snapshot_version_check`: CHECK (version &gt; 0)
+  - Catalog attributes: {"columns": ["version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `pk_p25_engineering_graph_snapshot`: PRIMARY KEY (draft_id, version)
+  - Catalog attributes: {"columns": ["draft_id", "version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `pk_p25_engineering_graph_snapshot`: CREATE UNIQUE INDEX pk_p25_engineering_graph_snapshot ON public.hidra_topology_engineering_graph_snapshot USING btree (draft_id, version)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `trg_p25_engineering_graph_immutable`: CREATE TRIGGER trg_p25_engineering_graph_immutable BEFORE DELETE OR UPDATE ON hidra_topology_engineering_graph_snapshot FOR EACH STATEMENT EXECUTE FUNCTION hidra_p25_draft_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_draft_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_draft_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'Immutable engineering draft storage' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `trg_p25_engineering_graph_no_truncate`: CREATE TRIGGER trg_p25_engineering_graph_no_truncate BEFORE TRUNCATE ON hidra_topology_engineering_graph_snapshot FOR EACH STATEMENT EXECUTE FUNCTION hidra_p25_draft_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_draft_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_draft_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'Immutable engineering draft storage' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `trg_p25_engineering_graph_same_transaction`: CREATE TRIGGER trg_p25_engineering_graph_same_transaction BEFORE INSERT ON hidra_topology_engineering_graph_snapshot FOR EACH ROW EXECUTE FUNCTION hidra_p25_graph_snapshot_same_transaction()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_graph_snapshot_same_transaction()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_graph_snapshot_same_transaction()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    IF TG_RELID &lt;&gt; 'public.hidra_topology_engineering_graph_snapshot'::regclass<br>       OR TG_NAME &lt;&gt; 'trg_p25_engineering_graph_same_transaction'<br>       OR TG_WHEN &lt;&gt; 'BEFORE' OR TG_LEVEL &lt;&gt; 'ROW' OR TG_OP &lt;&gt; 'INSERT'<br>       OR TG_NARGS &lt;&gt; 0 THEN<br>        RAISE EXCEPTION 'Invalid graph snapshot insertion context' USING ERRCODE = '23514';<br>    END IF;<br>    IF NEW.transaction_id &lt;&gt; txid_current() OR NOT EXISTS (<br>        SELECT 1 FROM public.hidra_topology_engineering_draft_version AS v<br>        WHERE v.draft_id = NEW.draft_id AND v.version = NEW.version<br>          AND v.transaction_id = NEW.transaction_id<br>          AND v.payload_format = 'HIDRA_ENGINEERING_METADATA_V1'<br>          AND v.sha256 = encode(sha256(v.canonical_payload), 'hex')<br>    ) THEN<br>        RAISE EXCEPTION 'Graph and metadata versions must share a physical transaction'<br>            USING ERRCODE = '23514';<br>    END IF;<br>    RETURN NEW;<br>END;<br>$function$<br>
 
 ### public.hidra_topology_equipment
 

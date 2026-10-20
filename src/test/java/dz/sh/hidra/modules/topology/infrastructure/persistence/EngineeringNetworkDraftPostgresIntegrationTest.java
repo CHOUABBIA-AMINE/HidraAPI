@@ -7,7 +7,7 @@
  *
  * @Name        : EngineeringNetworkDraftPostgresIntegrationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-19
+ * @UpdatedOn   : 2026-10-20
  *
  * @Type        : Class
  * @Layer       : Topology Test
@@ -1159,7 +1159,13 @@ public class EngineeringNetworkDraftPostgresIntegrationTest {
         var observed=new AtomicBoolean();
         doAnswer(i->{java.util.List<dz.sh.hidra.platform.persistence.ProtectedRelationFence> f=i.getArgument(2);
             assertThat(f).hasSize(34);
-            assertThat(f.stream().filter(x->x.mode()==dz.sh.hidra.platform.persistence.ProtectedRelationFence.Mode.SHARE_ROW_EXCLUSIVE).count()).isEqualTo(31L);
+            assertThat(f.stream().filter(x->x.mode()==dz.sh.hidra.platform.persistence.ProtectedRelationFence.Mode.SHARE_ROW_EXCLUSIVE).count()).isEqualTo(30L);
+            assertThat(f.stream().filter(x->x.mode()==dz.sh.hidra.platform.persistence.ProtectedRelationFence.Mode.ACCESS_SHARE).count()).isEqualTo(3L);
+            assertThat(f).contains(
+                new dz.sh.hidra.platform.persistence.ProtectedRelationFence("public.hidra_topology_facility",
+                    dz.sh.hidra.platform.persistence.ProtectedRelationFence.Mode.SHARE_ROW_EXCLUSIVE),
+                new dz.sh.hidra.platform.persistence.ProtectedRelationFence("public.hidra_topology_facility_owner_generation",
+                    dz.sh.hidra.platform.persistence.ProtectedRelationFence.Mode.ACCESS_SHARE));
             observed.set(true);return i.callRealMethod();})
             .when(draftTarget()).finalGuard(any(),any(),anyList());
         owner.executeGraph(new dz.sh.hidra.modules.topology.application.port.in.EngineeringGraphDraftUseCase.Command(
@@ -1168,6 +1174,36 @@ public class EngineeringNetworkDraftPostgresIntegrationTest {
             new dz.sh.hidra.modules.topology.domain.model.EngineeringGraphDraft(List.of(),List.of(),List.of())));
         assertThat(observed).isTrue();
     }
+    @Test void graphStationRoundTripRequiresReadOnlyGenerationAuthority() {
+        draftActor("LOCAL");owners();var first=create(UUID.randomUUID(),"read-only station witness");
+        var graph=new dz.sh.hidra.modules.topology.domain.model.EngineeringGraphDraft(
+            List.of(new dz.sh.hidra.modules.topology.domain.model.EngineeringGraphDraft.Node(
+                "station",dz.sh.hidra.modules.topology.domain.model.EngineeringGraphDraft.NodeKind.STATION,FACILITY)),
+            List.of(),List.of());
+        var owner=(dz.sh.hidra.modules.topology.application.port.in.EngineeringGraphDraftUseCase)drafts;
+        var before=jdbc.queryForObject("SELECT generation FROM public.hidra_topology_facility_owner_generation WHERE facility_id=?",
+            Long.class,FACILITY);
+        assertThat(jdbc.queryForObject("SELECT has_table_privilege('c3_publication_app',"
+            +"'public.hidra_topology_facility_owner_generation','INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES,TRIGGER')",
+            Boolean.class)).isFalse();
+        var written=owner.executeGraph(new dz.sh.hidra.modules.topology.application.port.in.EngineeringGraphDraftUseCase.Command(
+            dz.sh.hidra.modules.topology.application.port.in.EngineeringGraphDraftUseCase.Kind.UPDATE,
+            COMPANY,network,first.draft().draftId(),1L,null,graph));
+        var read=new dz.sh.hidra.modules.topology.application.port.in.EngineeringGraphDraftUseCase.Command(
+            dz.sh.hidra.modules.topology.application.port.in.EngineeringGraphDraftUseCase.Kind.READ,
+            COMPANY,network,first.draft().draftId(),null,null,null);
+        assertThat(written.graph()).isEqualTo(graph);
+        assertThat(owner.executeGraph(read).graphSha256()).isEqualTo(written.graphSha256());
+        assertThat(jdbc.queryForObject("SELECT generation FROM public.hidra_topology_facility_owner_generation WHERE facility_id=?",
+            Long.class,FACILITY)).isEqualTo(before);
+        // A wider grant invalidates the read-only owner witness contract, rather than fixing LOCK.
+        jdbc.execute("GRANT UPDATE ON public.hidra_topology_facility_owner_generation TO c3_publication_app");
+        try {assertThatThrownBy(()->owner.executeGraph(read))
+            .isInstanceOf(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.class);}
+        finally {jdbc.execute("REVOKE UPDATE ON public.hidra_topology_facility_owner_generation FROM c3_publication_app");}
+        assertThat(owner.executeGraph(read).graphSha256()).isEqualTo(written.graphSha256());
+    }
+
     @Test void disabledActualCatalogTriggerFailsBeforeAnyDraftInsert(){
         draftActor("LOCAL");UUID request=UUID.randomUUID();
         jdbc.execute("ALTER TABLE public.hidra_topology_engineering_context DISABLE TRIGGER p25_engineering_context_immutable");

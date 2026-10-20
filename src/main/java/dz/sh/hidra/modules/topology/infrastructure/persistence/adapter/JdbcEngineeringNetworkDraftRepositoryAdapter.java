@@ -7,7 +7,7 @@
  *
  * @Name        : JdbcEngineeringNetworkDraftRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-19
+ * @UpdatedOn   : 2026-10-20
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -45,9 +45,10 @@ public class JdbcEngineeringNetworkDraftRepositoryAdapter implements Engineering
     private static final String VERSION_INS="INSERT INTO public.hidra_topology_engineering_draft_version (draft_id,version,payload_format,canonical_payload,sha256,predecessor_sha256,actor_binding_id,actor_session_id,actor_user_id,party_generation,sampled_at,valid_until,backend_pid,transaction_id) SELECT ?,?,?,?,?,?,?::uuid,?::uuid,?,?,?,?,?,? WHERE COALESCE((SELECT max(version) FROM public.hidra_topology_engineering_draft_version WHERE draft_id=?),0)=?";
     private static final Set<String> SQL=Set.of(CONTEXT_INS,DRAFT_INS,VERSION_INS);
     private static final Set<String> GRAPH_SQL=Set.of(VERSION_INS,JdbcEngineeringGraphDraftRepositoryAdapter.INSERT_SQL);
+    private static final String FACILITY_OWNER_GENERATION="public.hidra_topology_facility_owner_generation";
     private static final List<String> GRAPH_RELATIONS=List.of(
         "public.hidra_topology_facility",
-        "public.hidra_topology_facility_owner_generation",
+        FACILITY_OWNER_GENERATION,
         "public.hidra_topology_engineering_graph_snapshot");
     private static final List<String> RELATIONS=List.of("public.hidra_topology_pipeline_system","public.hidra_topology_pipeline_system_type",
         "public.hidra_topology_engineering_context","public.hidra_topology_engineering_draft","public.hidra_topology_engineering_draft_version");
@@ -87,6 +88,10 @@ public class JdbcEngineeringNetworkDraftRepositoryAdapter implements Engineering
         """;
     private static final String GRAPH_CATALOG="""
         SELECT current_setting('session_replication_role')='origin'
+          AND NOT has_table_privilege(current_user,'public.hidra_topology_facility_owner_generation',
+            'INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES,TRIGGER')
+          AND NOT has_any_column_privilege(current_user,'public.hidra_topology_facility_owner_generation',
+            'INSERT,UPDATE,REFERENCES')
           AND (SELECT count(*)=1 AND bool_and(c.relkind='r' AND c.relpersistence='p'
             AND NOT c.relispartition AND NOT c.relrowsecurity AND NOT c.relforcerowsecurity
             AND NOT pg_has_role(current_user,c.relowner,'MEMBER')
@@ -143,7 +148,11 @@ public class JdbcEngineeringNetworkDraftRepositoryAdapter implements Engineering
     @Override @Transactional(propagation=Propagation.MANDATORY)
     public Admission acquire(Command cmd){try {
         var h=physical();for(String r:RELATIONS)jdbc.execute("LOCK TABLE "+r+" IN SHARE ROW EXCLUSIVE MODE NOWAIT");
-        if(graph(cmd.kind()))for(String r:GRAPH_RELATIONS)jdbc.execute("LOCK TABLE "+r+" IN SHARE ROW EXCLUSIVE MODE NOWAIT");
+        if(graph(cmd.kind()))for(String r:GRAPH_RELATIONS)
+            // Facility DML is fenced at the master; its trigger owns generation writes.
+            // Read-only generation roles may acquire ACCESS SHARE, never a DML-level lock.
+            jdbc.execute("LOCK TABLE "+r+" IN "+(r.equals(FACILITY_OWNER_GENERATION)
+                ?"ACCESS SHARE":"SHARE ROW EXCLUSIVE")+" MODE NOWAIT");
         var principals=executor.publicationDatabaseIdentity();
         if(graph(cmd.kind()) && !Boolean.TRUE.equals(jdbc.queryForObject("""
             SELECT NOT pg_has_role(?::name,c.relowner,'MEMBER')
@@ -177,7 +186,8 @@ public class JdbcEngineeringNetworkDraftRepositoryAdapter implements Engineering
     @Override public List<ProtectedRelationFence> finalFences(Admission a){var t=ticket(a);
         var relations=new ArrayList<>(RELATIONS);
         if(graph(t.command.kind()))relations.addAll(GRAPH_RELATIONS);
-        return relations.stream().map(r->new ProtectedRelationFence(r,ProtectedRelationFence.Mode.SHARE_ROW_EXCLUSIVE)).toList();}
+        return relations.stream().map(r->new ProtectedRelationFence(r,r.equals(FACILITY_OWNER_GENERATION)
+            ?ProtectedRelationFence.Mode.ACCESS_SHARE:ProtectedRelationFence.Mode.SHARE_ROW_EXCLUSIVE)).toList();}
     private record Stored(long version,byte[] bytes,String digest) {}
     private Stored stored(UUID id,boolean first){
         var rows=jdbc.query("SELECT version,payload_format,canonical_payload,sha256 FROM public.hidra_topology_engineering_draft_version WHERE draft_id=? ORDER BY version "+(first?"ASC":"DESC")+" LIMIT 1",
@@ -287,8 +297,8 @@ public class JdbcEngineeringNetworkDraftRepositoryAdapter implements Engineering
         var t=ticket(a);if(!t.applied || (graph(t.command.kind()) && !t.graphBound)
              || fences.size()!=(graph(t.command.kind())?34:31)
              || fences.stream().map(ProtectedRelationFence::relation).distinct().count()!=(graph(t.command.kind())?34:31)
-             || fences.stream().filter(f->f.mode()==ProtectedRelationFence.Mode.SHARE_ROW_EXCLUSIVE).count()!=(graph(t.command.kind())?31:28)
-            || fences.stream().filter(f->f.mode()==ProtectedRelationFence.Mode.ACCESS_SHARE).count()!=2
+             || fences.stream().filter(f->f.mode()==ProtectedRelationFence.Mode.SHARE_ROW_EXCLUSIVE).count()!=(graph(t.command.kind())?30:28)
+            || fences.stream().filter(f->f.mode()==ProtectedRelationFence.Mode.ACCESS_SHARE).count()!=(graph(t.command.kind())?3:2)
             || fences.stream().filter(f->f.mode()==ProtectedRelationFence.Mode.SHARE).count()!=1)throw fail(Reason.UNAVAILABLE);
         String required=String.join(",",Collections.nCopies(fences.size(),"(?::regclass,?::text)"));
         String guard="""

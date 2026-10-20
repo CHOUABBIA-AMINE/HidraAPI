@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedStationAdmissionBoundaryGuardrailTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-18
+ * @UpdatedOn   : 2026-10-20
  *
  * @Type        : Class
  * @Layer       : Test
@@ -38,7 +38,8 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
                 ?Set.of("ProtectedStationAdmissionCoordinator.java","JdbcStationGraphProtectedPublicationAdapter.java","ProtectedEngineeringDraftAdmissionCoordinator.java","JdbcEngineeringNetworkDraftRepositoryAdapter.java")
                 :method.equals("requireAdmission")
                     ?Set.of("ProtectedStationAdmissionCoordinator.java","ProtectedEngineeringDraftAdmissionCoordinator.java",
-                        "JdbcEngineeringGraphDraftRepositoryAdapter.java","JdbcEngineeringGraphStationWitnessAdapter.java")
+                        "JdbcEngineeringGraphDraftRepositoryAdapter.java","JdbcEngineeringGraphStationWitnessAdapter.java",
+                        "JdbcSurveyRouteProfileRepositoryAdapter.java")
                     :Set.of("ProtectedStationAdmissionCoordinator.java","ProtectedEngineeringDraftAdmissionCoordinator.java");
             assertEquals(expected,found);
         }

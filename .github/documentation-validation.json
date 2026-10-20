@@ -1102,46 +1102,72 @@
   ],
   "openapi": {
     "counts": {
-      "paths": 248,
-      "operations": 269,
-      "schemas": 244
+      "paths": 249,
+      "operations": 271,
+      "schemas": 258
     },
     "path": "doc/api/openapi.yaml",
     "provenance": {
-      "source_sha": "e8f4f631ff45d75dbd761ee4372453e1f76721fe",
-      "run_id": 39400041135,
+      "source_sha": "6c846f80671614c4774cf4f63cc52728f9124d1b",
+      "run_id": 39414979009,
       "run_attempt": 1,
-      "job_id": 118552180381,
-      "artifact_id": 12255170844,
-      "artifact_name": "hidra-full-ci-evidence-e8f4f631ff45d75dbd761ee4372453e1f76721fe-39400041135-1",
-      "artifact_member": "hidra-ci-e8f4f631ff45d75dbd761ee4372453e1f76721fe-39400041135-1-api-contract/files/target/openapi/hidra-api.json",
-      "zip_sha256": "2f3e80bea58775cf4980dd65873c0956603b21bf9cc5a937123e3db7b56e3622",
-      "json_sha256": "1fed7799a2ad3e5d74e04f1184b1471936625273d00b0dbf1511628fa56b592f",
+      "job_id": 118601692959,
+      "artifact_id": 12262045063,
+      "artifact_name": "hidra-ci-diagnostics-6c846f80671614c4774cf4f63cc52728f9124d1b-39414979009-1-api-contract",
+      "artifact_member": "openapi/hidra-api.json",
+      "zip_sha256": "6e4240449d86254ca8842cd5b10ca88cb0744d48f7830558f9a2173157de50e1",
+      "json_sha256": "3583f85b6dcd100be7b82253dedd9719ef850fd5e4c64409f13fe61b14f5c910",
       "conclusion": "success",
-      "conclusion_scope": "Exact-source Full CI, all lane jobs, generation, snapshot equality, compatibility and physical dictionary checks",
+      "conclusion_scope": "Only successful source build and deterministic OpenAPI generation step 7; failed job/workflow are not accepted",
       "generation_step": "Publish deterministic OpenAPI contract",
       "generation_step_number": 7,
       "generation_step_conclusion": "success",
-      "job_conclusion": "success",
-      "workflow_conclusion": "success",
-      "base_sha": "2702a010bdb659a9a238672a90b7e2b2214fd2bf",
+      "job_conclusion": "failure",
+      "workflow_conclusion": "failure",
+      "failed_step": "Enforce canonical OpenAPI snapshot equality",
+      "compatibility_review": "Local supported comparison against the preceding accepted canonical snapshot; existing paths and schemas byte-structurally unchanged",
       "remaining_gates": [
-        "Package C exact-SHA CI",
-        "formal HAPI-588 acceptance"
+        "Exact repair-SHA Full/Fast/Docs",
+        "Successful same-run API equality and compatibility",
+        "Actual migrated dictionary regeneration after ownership registration",
+        "Formal HAPI-589 acceptance"
       ],
-      "database_evidence": {
-        "member": "hidra-ci-e8f4f631ff45d75dbd761ee4372453e1f76721fe-39400041135-1-api-contract/files/target/database/schema.json",
-        "catalog_sha256": "101d9e2b1e5b959ab8d541e03e87ff2ce09ddc5ac6c079064ce7b965d74d2cca",
-        "source_bundle_sha256": "9dfd75ade23bb7b2162527345f209ab0173c53ec4eb1ba8054647cbd4bdc2e47",
-        "dictionary_sha256": "bf652f851ad9885925bbc44496f5758cc616fc9783f84a3b1d4f8dc6e6d9d9aa",
-        "migrations": 156,
-        "jpa_mappings": 470,
-        "relations": 501,
-        "unresolved_owners": 0
+      "prior_accepted_provenance": {
+        "source_sha": "e8f4f631ff45d75dbd761ee4372453e1f76721fe",
+        "run_id": 39400041135,
+        "run_attempt": 1,
+        "job_id": 118552180381,
+        "artifact_id": 12255170844,
+        "artifact_name": "hidra-full-ci-evidence-e8f4f631ff45d75dbd761ee4372453e1f76721fe-39400041135-1",
+        "artifact_member": "hidra-ci-e8f4f631ff45d75dbd761ee4372453e1f76721fe-39400041135-1-api-contract/files/target/openapi/hidra-api.json",
+        "zip_sha256": "2f3e80bea58775cf4980dd65873c0956603b21bf9cc5a937123e3db7b56e3622",
+        "json_sha256": "1fed7799a2ad3e5d74e04f1184b1471936625273d00b0dbf1511628fa56b592f",
+        "conclusion": "success",
+        "conclusion_scope": "Exact-source Full CI, all lane jobs, generation, snapshot equality, compatibility and physical dictionary checks",
+        "generation_step": "Publish deterministic OpenAPI contract",
+        "generation_step_number": 7,
+        "generation_step_conclusion": "success",
+        "job_conclusion": "success",
+        "workflow_conclusion": "success",
+        "base_sha": "2702a010bdb659a9a238672a90b7e2b2214fd2bf",
+        "remaining_gates": [
+          "Package C exact-SHA CI",
+          "formal HAPI-588 acceptance"
+        ],
+        "database_evidence": {
+          "member": "hidra-ci-e8f4f631ff45d75dbd761ee4372453e1f76721fe-39400041135-1-api-contract/files/target/database/schema.json",
+          "catalog_sha256": "101d9e2b1e5b959ab8d541e03e87ff2ce09ddc5ac6c079064ce7b965d74d2cca",
+          "source_bundle_sha256": "9dfd75ade23bb7b2162527345f209ab0173c53ec4eb1ba8054647cbd4bdc2e47",
+          "dictionary_sha256": "bf652f851ad9885925bbc44496f5758cc616fc9783f84a3b1d4f8dc6e6d9d9aa",
+          "migrations": 156,
+          "jpa_mappings": 470,
+          "relations": 501,
+          "unresolved_owners": 0
+        }
       }
     },
-    "sha256": "c06cac659168aa5c433b72eb57bc2c76367fc083fb6c8791cee2c2f814247461",
-    "source_sha": "e8f4f631ff45d75dbd761ee4372453e1f76721fe"
+    "sha256": "fec5cdcdfc2da9a100998dcdef1dfde223629552a8e52faf90032ed48de1acf5",
+    "source_sha": "6c846f80671614c4774cf4f63cc52728f9124d1b"
   },
   "register": "doc/governance/DOCUMENT_REGISTER.md",
   "register_areas": {

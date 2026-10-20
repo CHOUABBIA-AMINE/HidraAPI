@@ -283,6 +283,14 @@
     "owner": "topology",
     "purpose": "Immutable authored engineering network graph snapshots bound to the shared metadata draft version; HAPI-588B CI-first physical PostgreSQL qualification pending."
   },
+  "public.hidra_topology_engineering_survey_snapshot": {
+    "evidence": [
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcSurveyRouteProfileRepositoryAdapter.java",
+      "src/main/resources/db/migration/V20261020_001__p25_topology_survey_profile_snapshots.sql"
+    ],
+    "owner": "topology",
+    "purpose": "Immutable per-branch draft survey snapshots bound to the shared metadata version and authored graph version/digest; HAPI-589B, not physical qualification or publication."
+  },
   "public.hidra_topology_equipment": {
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/EquipmentJpaEntity.java",

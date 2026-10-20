@@ -249,6 +249,58 @@ class FullEvidenceTest(unittest.TestCase):
         self.assertFalse(result['dependency_cache']['postgres-0']['cache_hit'])
         with self.assertRaises(ValueError): full.aggregate(self.root, self.directory, SHA, 5, 2, self.needs, dependency_cache='unknown')
 
+    def test_parallel_audit_has_full_coverage_without_claiming_equivalence_or_release(self):
+        self.prepare_development()  # remove oracle and require its job to be intentionally skipped
+        result = full.aggregate(self.root, self.directory, SHA, 5, 2, self.needs,
+                                mode='audit', serial_oracle=False)
+        self.assertEqual(result['mode'], 'audit-partitioned')
+        self.assertEqual(result['verification_mode'], 'audit')
+        self.assertFalse(result['serial_oracle'])
+        self.assertFalse(result['same_run_equivalence'])
+        self.assertFalse(result['release_eligible'])
+        self.assertEqual(result['classes'], 6)
+        self.assertEqual(result['counts']['tests'], 6)
+        with self.assertRaises(ValueError): self.aggregate()  # default internal/release audit remains strict
+
+    def test_parallel_cold_audit_preserves_all_cache_checks(self):
+        self.cold_receipts(); self.prepare_development()
+        result = full.aggregate(self.root, self.directory, SHA, 5, 2, self.needs,
+                                mode='audit', dependency_cache='cold', serial_oracle=False)
+        self.assertEqual(result['dependency_cache_mode'], 'cold')
+        self.assertEqual(len(result['dependency_cache']), 7)
+        self.change('postgres-4', dependency_cache={})
+        with self.assertRaises(ValueError): full.aggregate(self.root, self.directory, SHA, 5, 2,
+                                                          self.needs, mode='audit', dependency_cache='cold', serial_oracle=False)
+
+    def test_parallel_audit_rejects_unexpected_oracle_and_hidden_failure(self):
+        with self.assertRaises(ValueError): full.aggregate(self.root, self.directory, SHA, 5, 2,
+                                                          self.needs, mode='audit', serial_oracle=False)
+        self.prepare_development()
+        self.needs['verify']['result'] = 'failure'
+        with self.assertRaises(ValueError): full.aggregate(self.root, self.directory, SHA, 5, 2,
+                                                          self.needs, mode='audit', serial_oracle=False)
+
+    def test_serial_oracle_opt_in_retains_complete_independent_comparison(self):
+        result = full.aggregate(self.root, self.directory, SHA, 5, 2, self.needs, mode='audit', serial_oracle=True)
+        self.assertTrue(result['same_run_equivalence'])
+        self.assertTrue(result['serial_oracle'])
+        self.assertTrue(result['release_eligible'])
+        for mode, value in [('development', True), ('audit', 'false')]:
+            with self.subTest(mode=mode, value=value), self.assertRaises(ValueError):
+                full.aggregate(self.root, self.directory, SHA, 5, 2, self.needs, mode=mode, serial_oracle=value)
+
+    def test_aggregate_cli_requires_explicit_serial_flag(self):
+        env = {'GITHUB_SHA': SHA, 'GITHUB_RUN_ID': '5', 'GITHUB_RUN_ATTEMPT': '2',
+               'HIDRA_CI_NEEDS': json.dumps(self.needs)}
+        for flags in ([], ['--serial-oracle']):
+            args = ['evidence', '--root', str(self.root), 'aggregate', '--mode', 'audit',
+                    '--directory', str(self.directory)] + flags
+            with self.subTest(flags=flags), patch('sys.argv', args), patch.dict(os.environ, env), \
+                    patch.object(full, 'aggregate', return_value={'fixture': True}) as call, \
+                    patch('sys.stdout', new_callable=io.StringIO):
+                self.assertEqual(full.main(), 0)
+                self.assertIs(call.call_args.args[-1], bool(flags))
+
     def test_sha_attempt_classifier_and_job_mismatch_deny(self):
         for field, value in [('source_sha', 'b' * 40), ('run_id', 6), ('run_attempt', 1),
                              ('inventory_sha256', 'c' * 64), ('job', 'fast')]:

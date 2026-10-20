@@ -873,6 +873,84 @@ HAPI-436 do not advance. No repeated benchmark campaign, release, tag or product
 deployment is selected. HidraAPI remains development-only. Publish this bounded
 stage, observe applicable exact-SHA CI queued/started and stop per AGENTS.md §11.1.
 
+### 2026-10-20 — cold Full783 acceptance and optional serial diagnostic
+
+Owner explicitly approved the proposal to keep the slow unrestricted serial
+oracle optional for this development-only API, reported Full783 passing and
+selected the next HAPI-045 stage. This is a bounded owner-selected amendment of
+the earlier requirement that every manual audit include the oracle. Default
+push/PR and manual audit execution now use the complete parallel sets. The
+serial oracle remains available only through a separate explicit audit opt-in;
+parallel-only success never claims independent same-run equivalence.
+
+Current parent `11b1ca458d623ed4fcca269b7a82f00b88c0b8f9` passed Full782,
+Fast105 and Documentation463. [Full783](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39441957834)
+was independently checked as an actual cold-cache audit on that exact source,
+attempt1. Authenticated aggregate artifact12276945252 has ZIP SHA256
+`e23cc9a8562a0e75bb80157d5ea40c3d7637127b53a612cab1eb93318bdf23e7`.
+Archive/receipt/file hashes, source/run/attempt/classifier/inventory, actual job
+success, raw class/case/count/timing reports and Java21 clean-verify lifecycle
+agree. All eight Java lane cache observations passed cold-mode validation: no
+cache restoration, zero initial entries and the expected new runner-temporary
+Maven dependency repository. Independent oracle and partition union each cover
+430 classes/2606 cases with zero failures/errors/skips; current/base OpenAPI and
+actual migrated catalog/dictionary agree. Cold Maven dependency-repository
+equivalence is now accepted within this source/configuration, not pending.
+This does not claim cold Java distributions, Maven wrapper or Docker image caches.
+
+Full783's oracle job took1279s (21m19s); DB sets0..4 took315/340/356/340/314s,
+unit116s, static21s, API208s and gate16s. This explicit audit proves correctness
+and cache provenance; its serial critical path is not a default-development
+latency sample. No timing rerun was requested in this stage.
+
+**Approved execution semantics:** new boolean workflow input `serial_oracle`
+defaults false. Job `verify` requires workflow_dispatch, `verification_mode:
+audit` AND `serial_oracle: true`. Both development and audit otherwise execute
+all active cases through unit/architecture plus five isolated DB sets, with the
+existing API/base compatibility and actual dictionary lane. Dependency cache
+selection remains independent (`cached` default, `cold` optional). No test case,
+class/source pin, archive, scheduling weight, fork count, deadline or retry changes.
+
+The aggregate receives the oracle opt-in explicitly from the workflow. Without
+it, only the oracle job may be intentionally skipped; all other required jobs,
+lanes/classes/cases/lifecycle/cache/API/catalog evidence remain mandatory. An
+unexpected oracle artifact or failed/cancelled oracle cannot be hidden as a skip.
+Parallel audit receipts say `mode: audit-partitioned`, `serial_oracle: false`,
+`same_run_equivalence: false` and `release_eligible: false`. With the opt-in, all
+independent same-run comparison requirements remain and the serial job must
+succeed. Internal release recomputation remains strict and requires oracle
+success/evidence; a parallel-only audit cannot qualify a release. This preserves
+future release controls without running the serial diagnostic by default.
+
+**Exact write scope:** `.github/workflows/ci.yml`,
+`.github/scripts/verify_full_ci_evidence.py`,
+`.github/scripts/test_verify_full_ci_evidence.py`, `PROJECT_STATE.md` and this
+owning phase file. PROJECT_STATE records the approved optional policy rather
+than the superseded always-serial audit wording. No CREATE/DELETE, inventory,
+classifier, Java, POM, Flyway, dictionary, API, Fast/release workflow or version
+changes. Retain registered commit message `ci: automate fast feedback and
+preserve full verification gates`.
+
+**Local validation:**93 fixtures passed (76 classifier/aggregate/release and17
+docs). New cases exercise parallel audit positive coverage, cold-cache parallel
+audit and retained negative checks, unexpected oracle/hidden failure rejection,
+explicit serial comparison, invalid flags and CLI opt-in defaults. Existing
+release rejection, missing/stale/skipped/overlapping report/cache checks remain.
+YAML parsed with serial default false, matching job/gate predicates and all five
+DB matrix members. Full783 raw artifact verification passed. No new local
+Java21/Maven/PostgreSQL execution was performed or environment provisioned;
+hosted exact-commit CI follows publication, then stop at queue/start observation.
+
+**Disposition:** keep HAPI-045 PARTIAL / IN_PROGRESS pending hosted acceptance of
+this optional-mode correction and the remaining representative code/security,
+migration and API revision qualification. Warm Full781 and cold Full783
+independent equality are recorded, so do not ask for the same cold audit again
+merely to repeat evidence. HAPI-046 still owns comparable timing/cost/adoption
+qualification; HAPI-436 does not close. HidraAPI remains development-only, with
+no release, tag or production deployment selected. Manual independent diagnostic
+when actually needed: audit plus `serial_oracle: true`; normal audits leave the
+checkbox unchecked and use the parallel sets.
+
 <a id="hapi-046"></a>
 ## HAPI-046 — Timing, runner cost and adoption decision
 

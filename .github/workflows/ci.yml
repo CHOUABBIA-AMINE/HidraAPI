@@ -1,6 +1,6 @@
 name: HidraAPI CI
 # HIDRA_CI_FORMAT: partition-shadow-v1
-# Development API: complete disjoint partitions by default; manual audit retains unrestricted fallback.
+# Development API: complete disjoint partitions in both modes; serial diagnostic requires explicit opt-in.
 # No production deployment or release qualification is implied by development mode.
 'on':
   push:
@@ -20,12 +20,17 @@ name: HidraAPI CI
   workflow_dispatch:
     inputs:
       verification_mode:
-        description: Development partitions or full independent oracle audit
+        description: Development or audit partitions; serial oracle is a separate opt-in
         type: choice
         options:
         - development
         - audit
         default: development
+        required: true
+      serial_oracle:
+        description: Optional slow unrestricted diagnostic comparison (audit mode only)
+        type: boolean
+        default: false
         required: true
       dependency_cache:
         description: Maven dependency restore policy; cold proves an empty isolated repository
@@ -475,8 +480,8 @@ jobs:
         if-no-files-found: warn
         retention-days: 14
   verify:
-    # Explicit audit only: the development partitions already run every active class.
-    if: github.event_name == 'workflow_dispatch' && inputs.verification_mode == 'audit'
+    # Explicit diagnostic opt-in only: development and audit partitions cover every active class.
+    if: github.event_name == 'workflow_dispatch' && inputs.verification_mode == 'audit' && inputs.serial_oracle
     name: Java 21 Maven verification
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -805,8 +810,18 @@ jobs:
     - name: Require complete test coverage, provenance and mode-specific evidence
       env:
         HIDRA_CI_NEEDS: ${{ toJSON(needs) }}
+        HIDRA_SERIAL_ORACLE: ${{ github.event_name == 'workflow_dispatch' && inputs.verification_mode == 'audit' && inputs.serial_oracle }}
         HIDRA_CI_MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.verification_mode == 'audit' && 'audit' || 'development' }}
-      run: python3 .github/scripts/verify_full_ci_evidence.py aggregate --dependency-cache "$HIDRA_DEPENDENCY_CACHE_MODE" --mode "$HIDRA_CI_MODE" --directory target/full-ci-evidence
+      shell: bash
+      run: |
+        set -euo pipefail
+        oracle_args=()
+        if [ "$HIDRA_SERIAL_ORACLE" = true ]; then
+          oracle_args+=(--serial-oracle)
+        fi
+        python3 .github/scripts/verify_full_ci_evidence.py aggregate \
+          --dependency-cache "$HIDRA_DEPENDENCY_CACHE_MODE" --mode "$HIDRA_CI_MODE" \
+          "${oracle_args[@]}" --directory target/full-ci-evidence
     - name: Retain authenticated full evidence bundle
       uses: actions/upload-artifact@v4
       with:

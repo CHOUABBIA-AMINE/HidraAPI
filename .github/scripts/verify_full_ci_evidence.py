@@ -171,16 +171,19 @@ def verify_cache(evidence, mode):
     return cache
 
 
-def aggregate(root, directory, sha, run, attempt, needs, mode='audit', dependency_cache='cached'):
+def aggregate(root, directory, sha, run, attempt, needs, mode='audit', dependency_cache='cached', serial_oracle=None):
     manifest, fingerprint = inventory.read_manifest(root)
     inventory.validate(root, manifest)
     if mode not in ('audit', 'development'):
         raise ValueError('Unknown verification mode')
+    use_oracle = mode == 'audit' if serial_oracle is None else serial_oracle
+    if type(use_oracle) is not bool or use_oracle and mode != 'audit':
+        raise ValueError('Serial oracle is available only for an explicit audit')
     test_lanes = ('unit-architecture',) + inventory.postgres_lanes(manifest)
     required_lanes = ('static-validation',) + test_lanes + ('api-contract',)
-    if mode == 'audit':
+    if use_oracle:
         required_lanes += ('oracle',)
-    expected_needs = {key: ('skipped' if mode == 'development' and key == 'verify' else 'success')
+    expected_needs = {key: ('skipped' if not use_oracle and key == 'verify' else 'success')
                       for key in REQUIRED_NEEDS}
     if set(needs) != set(expected_needs) or any(needs[key].get('result') != result for key, result in expected_needs.items()):
         raise ValueError('Mandatory dependency failed, skipped, cancelled or absent')
@@ -212,7 +215,7 @@ def aggregate(root, directory, sha, run, attempt, needs, mode='audit', dependenc
     if static['files'].get('files/ci.yml') != inventory.digest((root / '.github/workflows/ci.yml').read_bytes()):
         raise ValueError('Static evidence workflow differs from candidate')
     all_cases, all_classes = [], []
-    for lane in test_lanes + (('oracle',) if mode == 'audit' else ()):
+    for lane in test_lanes + (('oracle',) if use_oracle else ()):
         evidence, path = documents[lane]
         result = inventory.check_reports(manifest, lane, path.parent / 'reports')
         lifecycle = evidence.get('lifecycle', {})
@@ -235,7 +238,7 @@ def aggregate(root, directory, sha, run, attempt, needs, mode='audit', dependenc
         raise ValueError('Partition/inventory class and case coverage failed')
     api = api_facts(documents['api-contract'][0], documents['api-contract'][1].parent, root, sha)
     counts = {'tests': len(all_cases), 'failures': 0, 'errors': 0, 'skipped': 0}
-    if mode == 'audit':
+    if use_oracle:
         oracle, path = documents['oracle']
         if (sorted(all_classes) != oracle['classes']
                 or inventory.canonical(sorted(all_cases)) != inventory.canonical(oracle['cases'])
@@ -245,11 +248,11 @@ def aggregate(root, directory, sha, run, attempt, needs, mode='audit', dependenc
             raise ValueError('Partition/oracle API, base or physical catalog mismatch')
     return {'format': 'partition-shadow-v1', 'source_sha': sha, 'run_id': run,
             'run_attempt': attempt, 'inventory_sha256': fingerprint,
-            'mode': manifest['mode'] if mode == 'audit' else 'development-partitioned',
+            'mode': manifest['mode'] if use_oracle else mode + '-partitioned',
             'dependency_cache_mode': dependency_cache,
             'dependency_cache': {lane: item[0]['dependency_cache'] for lane, item in documents.items() if lane != 'static-validation'},
-            'fallback_required': mode == 'audit', 'fallback_available': True, 'verification_mode': mode,
-            'same_run_equivalence': mode == 'audit', 'release_eligible': mode == 'audit',
+            'serial_oracle': use_oracle, 'fallback_required': use_oracle, 'fallback_available': True, 'verification_mode': mode,
+            'same_run_equivalence': use_oracle, 'release_eligible': use_oracle,
             'optimized_adoption_eligible': False,
             'classes': len(all_classes), 'counts': counts, 'api': api,
             'needs': needs, 'lane_evidence': {lane: inventory.digest(path.read_bytes())
@@ -405,6 +408,7 @@ def main():
     gate_args = commands.add_parser('aggregate')
     gate_args.add_argument('--directory', type=Path, required=True)
     gate_args.add_argument('--mode', choices=('audit', 'development'), default='audit')
+    gate_args.add_argument('--serial-oracle', action='store_true', help='Require the independent unrestricted audit run')
     gate_args.add_argument('--dependency-cache', choices=('cached', 'cold'), default='cached')
     release_args = commands.add_parser('release')
     release_args.add_argument('--sha', required=True)
@@ -418,7 +422,7 @@ def main():
             stamp(root, args.kind, args.output)
         elif args.command == 'aggregate':
             result = aggregate(root, args.directory, os.environ['GITHUB_SHA'], int(os.environ['GITHUB_RUN_ID']),
-                               int(os.environ['GITHUB_RUN_ATTEMPT']), json.loads(os.environ['HIDRA_CI_NEEDS']), args.mode, args.dependency_cache)
+                               int(os.environ['GITHUB_RUN_ATTEMPT']), json.loads(os.environ['HIDRA_CI_NEEDS']), args.mode, args.dependency_cache, args.serial_oracle)
             (args.directory / 'gate.json').write_bytes(inventory.canonical(result))
             print(json.dumps(result, sort_keys=True))
         else:

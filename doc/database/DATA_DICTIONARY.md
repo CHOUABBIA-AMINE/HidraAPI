@@ -6,7 +6,7 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `063fedd2a4e5a94d90999cd34177998c72176ef5`
+Captured source SHA: `e8f4f631ff45d75dbd761ee4372453e1f76721fe`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
 Generator format: 1; source bundle SHA-256: `9dfd75ade23bb7b2162527345f209ab0173c53ec4eb1ba8054647cbd4bdc2e47`.
 Migrations: 156; JPA mappings: 470; catalog relations: 501; unresolved owners: 0.

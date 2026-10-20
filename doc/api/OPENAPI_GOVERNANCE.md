@@ -125,3 +125,47 @@ passed. Fresh repair-SHA generation/equality and compatibility remain required.
 The physical dictionary was not produced because equality failed first; preserve
 the prior dictionary until actual migrated-catalog evidence is available.
 This targeted failure repair is not Package C completion or HAPI-588 acceptance.
+
+## HAPI-588C successful runtime artifact reconciliation — 2026-10-20
+
+The current snapshot and physical dictionary now identify successful executable
+source `e8f4f631ff45d75dbd761ee4372453e1f76721fe`, Full CI #771,
+run39400041135/attempt1. All seven jobs succeeded, including the unrestricted
+Maven oracle, both PostgreSQL shards, API contract and dictionary, and full gate.
+Fast #96/run39400041256 and Docs #445/run39400041231 also succeeded on this SHA.
+The prior failed-run repair provenance above remains historical evidence.
+
+Artifacts were recovered from the authenticated full evidence bundle12255170844,
+ZIP SHA256 `2f3e80bea58775cf4980dd65873c0956603b21bf9cc5a937123e3db7b56e3622`.
+API job118552180381 and oracle job118552179948 produced byte-identical OpenAPI,
+catalog JSON and rendered dictionary outputs. Named generation/equality/catalog/
+compatibility steps all succeeded. Bundle file hashes and raw test reports were
+rechecked locally:2555 cases/425 classes, zero failures/errors/skips, matching
+partition/oracle cases. This does not approve optimized-only CI; the bundle still
+requires unrestricted fallback and reports optimized adoption ineligible.
+
+Generated OpenAPI member SHA256:
+`1fed7799a2ad3e5d74e04f1184b1471936625273d00b0dbf1511628fa56b592f`.
+Canonical snapshot SHA256:
+`c06cac659168aa5c433b72eb57bc2c76367fc083fb6c8791cee2c2f814247461`.
+Counts remain248 paths/269 operations/244 schemas. Removing only the generator
+SHA yields exact equality to the prior reviewed snapshot: every path, schema,
+security declaration and array order is retained. Supported compatibility also
+passes against the actual generated base `2702a010bdb659a9a238672a90b7e2b2214fd2bf`.
+
+Catalog member SHA256:
+`101d9e2b1e5b959ab8d541e03e87ff2ce09ddc5ac6c079064ce7b965d74d2cca`.
+Migration/JPA source bundle:
+`9dfd75ade23bb7b2162527345f209ab0173c53ec4eb1ba8054647cbd4bdc2e47`.
+Rendered dictionary SHA256:
+`bf652f851ad9885925bbc44496f5758cc616fc9783f84a3b1d4f8dc6e6d9d9aa`.
+The unchanged generator revalidated156 migrations/470 mappings/501 relations,
+zero unresolved owners, against the recovered source files and actual PostgreSQL
+16.15 catalog. Local rendering equals the hosted dictionary byte for byte and
+strict --check passes. Only its capture SHA differs from the prior dictionary;
+no physical field or ownership declaration is edited.
+
+This HAPI-588C commit reconciles successful evidence; formal HAPI-588 acceptance
+remains a separate registered step after C's own applicable CI passes. It does
+not qualify an effective physical network, numerical solver, commissioning,
+deployment or operational control.

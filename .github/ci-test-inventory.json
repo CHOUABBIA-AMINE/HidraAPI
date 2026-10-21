@@ -8711,6 +8711,40 @@
         "unavailableCatalogAfterBothFencesRollsBackWithoutEvidence"
       ],
       "baseline_seconds": 0.0
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "activeReferenceReturnsExactOneRowShapeAndPhysicalCoordinates",
+        "changedTableOwnerAndReplicaModeAreRejected",
+        "committedStatusAndDeleteReinsertAbaAdvanceFreshObservations",
+        "completeFreshChainAndExactRestrictedFunctionCatalog",
+        "disabledTriggerAndChangedGuardBodyAreRejected",
+        "explicitConfigurationGrantNeedsNoDirectPartyTablePrivileges",
+        "missingInactiveAndMalformedIdentifiersRejectUniformly",
+        "nullMissingAndNonliveGenerationCannotProduceAnObservation",
+        "ordinaryPublisherAndPublicExecutionAreDeniedBeforeSelectorDisclosure",
+        "originalPartyTriggerDefinitionsAndBodiesArePreserved",
+        "publicExecuteGrantCannotCreateConfigurationAuthority",
+        "readOnlyAndOtherIsolationLevelsReject",
+        "repeatedCallsKeepPhysicalCoordinatesWithoutWritingPartyOrGeneration",
+        "retainedOwnerLocksExcludeIndependentStatusAndDeleteWritersUntilRollback",
+        "rlsWrongColumnShapeAndMissingPositiveConstraintAreRejected",
+        "securityDefinerWrapperCannotLaunderUnauthorizedOriginalLogin",
+        "sessionRoleSwitchCannotMasqueradeAsOriginalConfigurationLogin",
+        "unsafeOwnerMembershipAndElevatedLoginsReject",
+        "unsafeSchemaAndInheritedDataPrivilegesReject",
+        "withdrawnExecuteGrantCannotReuseAnEarlierObservation",
+        "writerFirstPreventsAdmissionForExistingAndAbsentSelectors"
+      ],
+      "class": "dz.sh.hidra.modules.party.infrastructure.persistence.OrganizationConfigurationReferencePostgresIntegrationTest",
+      "dependency_reason": "Actual PostgreSQL16/Flyway, distinct configuration/ordinary/publisher/writer logins, Party-owned SQL function ACL/catalog/generation/retained-lock and transaction proof. New class timing is unmeasured.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "party",
+      "path": "src/test/java/dz/sh/hidra/modules/party/infrastructure/persistence/OrganizationConfigurationReferencePostgresIntegrationTest.java",
+      "source_sha256": "8a11ce321f9d529edaeb85f392dfca22367cd5889fe82d5f44ba7a7e0e944cf7",
+      "supports": []
     }
   ],
   "format": 1,

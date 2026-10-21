@@ -22441,6 +22441,185 @@ Docs creation/queue/start and STOP. No permission question or repeated productio
 data request is needed. Development API only, synthetic fixtures, no production
 database/release/tag/deployment or other task/status changes.
 
+
+
+### 2026-10-21 — HAPI-778 Party configuration reference owner bridge implemented
+
+**Selected exact stage:** `feat(party): guard organization configuration references`.
+Owner Next selects the registered four-path prerequisite. Main
+54c186c8565130ee6b62eeae5cfa41f981f3024d, parent
+77b52a5987b557b0e9d62739d89feb7874e2a98d,
+treeb574484cf456b74632f73292ed188844dd833d3d and successful
+[Docs487](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39598086772)
+were refreshed with AGENTS, ROADMAP, reconciliation, owning task, exact source and
+the untruncated tree. The last executable baseline is31b18c9 with
+Full797/Fast117/Docs485 success. This submission is source implementation,
+not new hosted PostgreSQL or full lifecycle acceptance.
+
+**Exact four-path scope, zero DELETE:**
+
+- CREATE src/main/resources/db/migration/V20261021_001__party_organization_configuration_reference.sql
+- CREATE src/test/java/dz/sh/hidra/modules/party/infrastructure/persistence/OrganizationConfigurationReferencePostgresIntegrationTest.java
+- MODIFY .github/ci-test-inventory.json, append only the actual new class entry
+- MODIFY doc/roadmap/TASKS_HPS-003.md, append only this HAPI-778 evidence
+
+No existing migration, native/Party Java export, Organization runtime, Platform,
+public route, permission/grant bootstrap, credential configuration, status table,
+dictionary/OpenAPI snapshot or attachment is modified. Both CREATE paths and
+normalized migration version20261021.001 were absent at the recovered main.
+The existing158-script chain and every previous source/case hash are preserved.
+
+#### Actual additive function and administrative boundary
+
+The migration creates exactly
+public.hidra_party_require_organization_configuration_reference(text), returning
+one (party_id varchar, generation bigint, backend_pid integer, transaction_id bigint)
+observation after current Party ACTIVE/present/generation checks. It creates no
+table/login, changes no Party/generation row and issues no native permission or
+employer assertion. Its real function body is the owner export, not a scalar
+claim accepted from the Organization caller. The configured administrator must
+invoke it in the actual activation transaction and retain the resulting locks;
+a copied tuple cannot stand in for a call.
+
+SECURITY DEFINER, VOLATILE, PARALLEL UNSAFE and CALLED ON NULL INPUT are explicit;
+search_path is fixed to pg_catalog,pg_temp. PUBLIC EXECUTE is revoked in the same
+transactional Flyway migration, with no grants to any login. Only an environment
+administrator's explicit configuration-login grant enables use. The function
+also rejects a later PUBLIC EXECUTE ACL even for an otherwise valid caller.
+That rejects an accidental public privilege expansion instead of treating all
+ordinary/publisher sessions as configuration administrators.
+
+The function checks session_user's actual EXECUTE and safety posture. It does
+not use current_user as the original caller inside a SECURITY DEFINER chain.
+Thus a genuine config login can use the future Organization owner procedure,
+while a separately executable owner wrapper cannot launder ordinary/publisher
+sessions. Role switching, owner membership, superuser/BYPASSRLS/CREATEDB/
+CREATEROLE/replication/server-file/program/data-wide privileges, schema CREATE,
+Party mutation and generation mutation privileges fail closed. The configuration
+login needs no direct SELECT or mutation privilege on either Party table.
+The existing Java B2 application export and its one-use opaque tickets are
+unchanged; this new primitive is database-configuration eligibility only.
+
+Require actual writable READ COMMITTED/origin replication mode. Exact identifiers
+are bounded to80 code points, with null/empty/control/trim/Unicode-space boundary
+rejection rather than normalization. Actual IDs, generation join and ACTIVE
+status comparisons use explicit pg_catalog C collation. Required text-column
+default collations, types, lengths and nullability are checked, preventing a
+different collation from silently widening an exact reference comparison.
+
+The owner function acquires public.hidra_party_party SHARE ROW EXCLUSIVE NOWAIT,
+then public.hidra_party_eligibility_generation ACCESS SHARE NOWAIT, and validates
+their actual retained locks. They remain held through the invoking transaction.
+It reuses the reviewed owner catalog checks against actual caller identity:
+persistent ordinary/non-inherited/non-partitioned/no-RLS tables, safe ownership,
+exact generation columns/positive constraint/PK, validated nondeferrable owner
+constraints, actual owner function shape and bodies, and all three exact enabled
+trigger identities/attributes. Extra checks pin root ID/status shape, default
+collations and table ownership to the genuine export owner. Positive results
+contain actual pg_backend_pid/txid_current and exactly one matching row.
+
+The two existing generation trigger bodies remain byte-identical. Independently
+computed SHA256 pins, replacing MD5 only in the NEW routine's own checks:
+write d7dff6250bd1542dfd341a8749ae705a7cbcd0e4b5fc0f2ec92b236c639fd477;
+truncate be146fe4ce203bd9b84902dd5f349a501e16b86df8a57fbb7c567ec750640c8d.
+Existing Java guards/old migration bytes and pins are not rewritten.
+Missing/retired/malformed/corrupt/unsafe/unavailable invocation rejects with a
+uniform23514 message and no successful empty/default tuple. An original login
+without EXECUTE is rejected by PostgreSQL with42501 before routine execution.
+No query cache, native sample, independent transaction or relaxed fence is added.
+
+Migration source SHA256:
+e9d42b79939ff19cbde5217e55290c784c42d3491ce714505ae314f545da6b6a.
+Exact new function prosrc SHA256, including its source body's surrounding
+newlines:
+afb671ce66da46b0910d95bc3aba1f729947d7c33cb25e838cb74ba767fb5ba0.
+These are authored source-byte pins, not a newly observed physical catalog.
+Hosted tests compare actual pg_proc.prosrc and catalog flags to the migration.
+
+#### Real authored PostgreSQL proof and source-linked inventory
+
+OrganizationConfigurationReferencePostgresIntegrationTest contains21 actual
+@Test methods, source SHA256
+8a11ce321f9d529edaeb85f392dfca22367cd5889fe82d5f44ba7a7e0e944cf7.
+They run a complete fresh PostgreSQL16/Flyway chain and genuine isolated
+configuration/ordinary/publisher/writer logins, separate from the migration owner.
+No mock owner, native-permission Boolean or copied B2 native suite is substituted.
+
+The methods cover complete migration/callable definition/ACL/result-field/body
+evidence; preserved original trigger source; real one-row PID/XID/generation;
+no direct table privilege; ordinary/publisher denial; accidental PUBLIC ACL
+rejection; null/blank/control/Unicode/size/exact-case and inactive/missing inputs;
+missing/nonlive/null/zero generation constraints; read-only/wrong isolation;
+owner/membership/elevated/schema/inherited-data privileges; physical role switch;
+unauthorized and legitimate SECURITY DEFINER wrapper calls; withdrawn EXECUTE
+after an earlier observation; independent committed status and delete/reinsert
+ABA; repeated same-transaction observations without data writes; actual retained
+locks excluding independent UPDATE/DELETE writers until rollback; writer-first
+existing/absent admission; disabled trigger/altered body; RLS/type/collation/
+constraint tampering; changed table owner and replica mode.
+
+Concurrency uses two real independently authenticated JDBC connections, NOWAIT
+and bounded lock_timeout. It does not infer ordering from a sleep. Transactions
+check actual lock rows/SQL states, release on rollback and subsequent writer
+success, including unchanged source/generation after blocked or rolled-back work.
+Each positive fixture is actually eligible before the corresponding tamper;
+negative schema cases are not a proof based on an empty green database.
+The earlier-observation/withdrawn-grant case requires another actual invocation,
+rather than treating a previously returned generation as a capability.
+
+Only one source-hashed class/case list is appended to the raw CI manifest.
+All old manifest bytes, class/case/hash/timing/support/archive policy and prior
+partition ownership are retained. New duration0 is explicitly unmeasured.
+Active447 classes/2844 cases, fast348 and unit349; PostgreSQL sets now
+16/18/19/26/19, four historical archives unchanged. The canonical partitioner
+selects the new class in shard3; no timing improvement or fabricated measured
+weight is asserted. Every previous native/Party/Organization test remains selected.
+
+#### Actual local validation, remaining artifact obligation and B3 handoff
+
+The new test parsed successfully with the installed Java17 JavacTask compiler
+module: syntax only, not Java21 type checking. All31 canonical test-inventory
+classifier self-tests passed; the17 documentation and10 OpenAPI validator
+self-tests also passed. Verified actual method/source hashes, raw old-inventory
+byte preservation, complete disjoint selection, old partition ownership, new
+canonical header/package, source/migration scope, additive version absence,
+whitespace, SQL quote/dollar/parenthesis/IF/loop lexical balance and exact
+non-mutating function footprint. Trigger-body hashes were independently derived
+from the immutable old migration and checked against its established MD5 values.
+No SQL lexer or source check is represented as PostgreSQL execution.
+
+Java21/Maven/JUnit/PostgreSQL/Docker and a PostgreSQL parser are unavailable
+locally and were not installed/provisioned. No hosted new case, physical catalog,
+runtime acceptance or whole-estate documentation pass is claimed before CI.
+
+The dictionary snapshot is intentionally unchanged: adding this migration changes
+the source migration census from158 to159 even though it adds no table. The
+current generator's strict equality must remain enabled. Use actual hosted
+schema.json/run/attempt evidence for the already registered artifact correction
+if CI reports that expected drift; do not handwrite catalog metadata or waive the
+gate. If a runtime/compile failure appears, repair the responsible prerequisite
+first under this same four-path envelope and exact message.
+
+After genuine prerequisite feedback and required actual artifact reconciliation,
+the next runtime stage remains
+`feat(organization): persist protected appointment lifecycle and history`.
+Its22 CREATE/26 MODIFY envelope, eight SQL templates and acceptance matrix stand
+with the two recorded source corrections: reserve Organization002 after Party001;
+use public.hidra_org_unit, not the nonexistent proposed unit alias. Its database
+binding activator must call this real Party-owned SQL function BEFORE Organization
+locks, verify returned exact Party/PID/XID, retain owner locks and pin the genuine
+routine definition/owner/ACL. It may not query Party-private rows or accept a
+supplied scalar instead. The application appointment path still uses the genuine
+Java Party export. Existing ACL administration, native sample/500ms budget,
+writer closure, journal/receipt/rollback and non-disclosure requirements remain.
+
+Publish exactly these four blobs with the selected registered message and
+expected54c186c main guard. Verify remote raw blobs, exact two additions/two
+modifications, one parent/tree/message and expected ref; confirm applicable
+exact-SHA Full/Fast/Docs creation/queue/start and STOP without waiting.
+HAPI-778 stays PARTIAL/IN_PROGRESS, B3 runtime is not implemented by this
+prerequisite. Development API only; no production data/release/tag/deployment.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

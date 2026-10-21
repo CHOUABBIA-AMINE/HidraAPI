@@ -8686,7 +8686,7 @@
         "truncateCascadeAndWitnessForgeryAreRejected",
         "writerFirstMakesAdmissionFailNowaitForExistingAndAbsentRows"
       ],
-      "baseline_seconds": 0.0
+      "baseline_seconds": 0
     },
     {
       "class": "dz.sh.hidra.modules.party.infrastructure.persistence.adapter.JdbcOrganizationProtectedPartyEligibilityAdapterTest",
@@ -8710,7 +8710,7 @@
         "scalarCoordinatesNeverImplementThePrivateAdmissionType",
         "unavailableCatalogAfterBothFencesRollsBackWithoutEvidence"
       ],
-      "baseline_seconds": 0.0
+      "baseline_seconds": 0
     },
     {
       "baseline_seconds": 0,
@@ -8744,6 +8744,25 @@
       "owner": "party",
       "path": "src/test/java/dz/sh/hidra/modules/party/infrastructure/persistence/OrganizationConfigurationReferencePostgresIntegrationTest.java",
       "source_sha256": "4cdc0f36b4a81076ffaf5a9b71dc7e9babef82683d39522af81bb8c9012476c9",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "absentMembershipReturnsFalseWithoutForeignMaterialization",
+        "activeMembershipUsesBoundedExactPredicateInsteadOfFindAll",
+        "expiredUnitAndNullSampleFailClosed",
+        "inactiveEmployeeIsRejectedBeforeAssignmentLookup",
+        "nativeSqlPredicateIsExactAndHalfOpenWithoutGlobalScan",
+        "nonexistentUnitIsRejectedBeforeAnyEmployeeOrAssignmentLookup"
+      ],
+      "class": "dz.sh.hidra.modules.organization.infrastructure.query.WorkflowOrganizationAppointmentMembershipTest",
+      "dependency_reason": "New bounded Workflow owner-membership regression; Mockito and JPA annotation reflection, no external service. Unmeasured timing.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "organization",
+      "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/query/WorkflowOrganizationAppointmentMembershipTest.java",
+      "source_sha256": "9c4d81bd66e82c66b3890cef588f15d620d121d5e0741672bfcda2f05ff2481a",
       "supports": []
     }
   ],

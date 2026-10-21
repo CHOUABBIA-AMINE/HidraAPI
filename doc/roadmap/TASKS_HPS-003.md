@@ -22790,6 +22790,63 @@ system/synthetic evidence only: no production data, calibration, release,
 deployment, or live OT control.
 
 
+
+### 2026-10-21 — HAPI-778 B3A bounded Workflow membership implementation
+
+**Execution package:** B3A of the already selected HAPI-778 B3 large implementation.
+This is a concrete independent read-only slice of the registered B3 allowed paths,
+not a new standalone task, new API or completed protected lifecycle. Owner Next
+selected B3 after exact-head
+`1b80cf095a4986802f8b20529777bc8c6b9459b8` passed
+[Full800](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39607354688)
+and [Docs490](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39607096265).
+All five PostgreSQL shards, unit/architecture, static, API/dictionary and full
+evidence gate passed; the optional serial Maven verification was skipped.
+The repository owner allows splitting large tasks into coherent A/B/C packages
+under their parent while retaining its governing stage and dependent gates.
+This bounded package's exact message is
+`perf(organization): bound workflow appointment membership lookup`.
+The broader B3 runtime message `feat(organization): persist protected appointment
+lifecycle and history` remains registered and unexecuted.
+
+**Scope:** MODIFY only
+`src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/repository/EmployeeAssignmentJpaRepository.java`,
+`src/main/java/dz/sh/hidra/modules/organization/infrastructure/query/WorkflowOrganizationQueryAdapter.java`,
+`.github/ci-test-inventory.json`, and this append-only HAPI-778 phase record;
+CREATE exactly
+`src/test/java/dz/sh/hidra/modules/organization/infrastructure/query/WorkflowOrganizationAppointmentMembershipTest.java`; DELETE none. These paths are all inside B3's previously
+registered allowlist. No schema, migration, API/DTO, Domain, Identity, Party,
+native protection, authorization, Workflow writer or CI-workflow change.
+
+**Implement:** Replace the existing unbounded `assignments.findAll().stream().anyMatch`
+with one parameterized native SQL EXISTS against the existing Organization-owned
+assignment table. Preserve exact employee/unit input comparison, ACTIVE assignment,
+inclusive `valid_from` and exclusive `valid_to`, same-time ACTIVE unit/employee
+checks and fail-closed unknown/missing states. The query returns one Boolean
+and never exposes appointment history, another employee or a permission.
+No existing JPA write path is redirected in this limited slice; B3 must still
+retire unguarded save as part of its protected-writer cutover.
+
+**Tests:** New actual six-case Mockito/JPA-annotation regression class
+`WorkflowOrganizationAppointmentMembershipTest`, source SHA256
+`9c4d81bd66e82c66b3890cef588f15d620d121d5e0741672bfcda2f05ff2481a`, unit/architecture lane and fast-eligible with unmeasured
+weight. Cases include active and missing membership, absent unit, inactive
+employee, expired or absent sample and exact native half-open SQL contract.
+Preserve every prior inventory class, case, lane and historical timing weight.
+These are isolated source/unit proofs; physical PostgreSQL and complete B3
+concurrency/authorization acceptance remain pending. CI-first validation runs
+on the new exact commit; no claim of hosted pass precedes actual CI.
+Do not promote HAPI-778 from PARTIAL/IN_PROGRESS.
+
+**Next remaining stage:** Continue the registered B3 protected appointment
+configuration/storage, application ports, coordinator, guarded transaction,
+new lifecycle endpoints, provenance and adversarial tests after this bounded
+slice's exact-SHA CI feedback; B3 artifact reconciliation and final acceptance
+remain separate. Original B3 migration reservation is corrected to
+`V20261021_003__organization_appointment_ownership_lifecycle.sql` after Party002.
+No production/SITE data, deployment or numerical simulation is selected.
+
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

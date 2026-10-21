@@ -47,8 +47,8 @@ public class WorkflowOrganizationQueryAdapter implements WorkflowOrganizationCon
     public boolean eligibleMember(String employeeId,String unitId,Instant at) {
         if(employeeId==null || availableUnit(unitId,at).isEmpty()
             || employees.findById(employeeId).filter(e->e.status()==EmployeeStatus.ACTIVE).isEmpty()) return false;
-        return assignments.findAll().stream().anyMatch(a->employeeId.equals(a.employeeId())
-            && unitId.equals(a.organizationUnitId()) && a.status()==AssignmentStatus.ACTIVE
-            && !at.isBefore(a.validFrom()) && (a.validTo()==null || at.isBefore(a.validTo())));
+        // The owner checks above are unchanged. SQL performs the same exact-ID,
+        // ACTIVE and half-open time predicate without materializing foreign rows.
+        return assignments.existsActiveMembershipAt(employeeId,unitId,at);
     }
 }

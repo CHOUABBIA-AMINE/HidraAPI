@@ -246,4 +246,93 @@ class EmployeeAppointmentBoundaryGuardrailTest {
         assertFalse(positionHistory.contains("PrivateHistoryEvent"));
         assertEquals(9, useCase.getDeclaredMethods().length);
     }
+
+    @Test void protectedRepositoryPreviewRejectsUnboundedAndUnorderedOwnerPairs() {
+        var pair = new dz.sh.hidra.modules.identity.application.contract.organization
+                .OrganizationProtectedAppointmentAuthorizationContract.CompanyUnit("company", "unit");
+        var snapshot = new dz.sh.hidra.modules.organization.application.port.out
+                .ProtectedEmployeeAppointmentRepositoryPort.DescriptorPreview(
+                        java.util.List.of(pair), "employee", "assignment", false);
+        assertEquals("company", snapshot.companyUnits().get(0).companyPartyId());
+        assertDoesNotThrow(snapshot::requireBounded);
+        assertThrows(IllegalArgumentException.class, () ->
+                new dz.sh.hidra.modules.organization.application.port.out
+                        .ProtectedEmployeeAppointmentRepositoryPort.DescriptorPreview(
+                                java.util.List.of(pair), "employee", "assignment", true).requireBounded());
+        assertThrows(IllegalArgumentException.class, () ->
+                new dz.sh.hidra.modules.organization.application.port.out
+                        .ProtectedEmployeeAppointmentRepositoryPort.DescriptorPreview(
+                                java.util.List.of(pair, pair), "employee", "assignment", false));
+        assertThrows(IllegalArgumentException.class, () ->
+                new dz.sh.hidra.modules.organization.application.port.out
+                        .ProtectedEmployeeAppointmentRepositoryPort.DescriptorPreview(
+                                java.util.List.of(pair), "employee", " assignment", false));
+    }
+
+    @Test void protectedRepositoryPreviewIsDefensiveAndNeverCredentialsOrAuthority() {
+        var pair = new dz.sh.hidra.modules.identity.application.contract.organization
+                .OrganizationProtectedAppointmentAuthorizationContract.CompanyUnit("company", "unit");
+        var input = new java.util.ArrayList<dz.sh.hidra.modules.identity.application.contract.organization
+                .OrganizationProtectedAppointmentAuthorizationContract.CompanyUnit>();
+        input.add(pair);
+        var preview = new dz.sh.hidra.modules.organization.application.port.out
+                .ProtectedEmployeeAppointmentRepositoryPort.DescriptorPreview(input, null, null, false);
+        input.clear();
+        assertEquals(1, preview.companyUnits().size());
+        assertThrows(UnsupportedOperationException.class, () -> preview.companyUnits().clear());
+        for (var component : preview.getClass().getRecordComponents()) {
+            String name = component.getName().toLowerCase(java.util.Locale.ROOT);
+            assertFalse(name.contains("permission") || name.contains("token")
+                    || name.contains("actor") || name.contains("credential")
+                    || name.contains("session") || name.contains("ticket"));
+        }
+    }
+
+    @Test void protectedRepositoryHasNoUnguardedCrudOrAdapterImports() throws Exception {
+        var port = dz.sh.hidra.modules.organization.application.port.out
+                .ProtectedEmployeeAppointmentRepositoryPort.class;
+        assertTrue(port.isInterface());
+        var names = java.util.Arrays.stream(port.getDeclaredMethods())
+                .map(java.lang.reflect.Method::getName).toList();
+        for (String forbidden : java.util.List.of("save", "delete", "deleteAll", "findAll", "flush",
+                "getOne", "getReferenceById")) assertFalse(names.contains(forbidden));
+        assertTrue(names.contains("acquire") && names.contains("requireCurrent")
+                && names.contains("mutate") && names.contains("positionHistory"));
+        var admission = port.getDeclaredClasses();
+        assertTrue(java.util.Arrays.stream(admission).anyMatch(c ->
+                c.getSimpleName().equals("Admission") && c.isInterface()));
+        for (var method : port.getDeclaredMethods()) {
+            String types = method.toGenericString();
+            assertFalse(types.contains("jakarta.persistence")
+                    || types.contains("org.springframework.data")
+                    || types.contains("infrastructure.persistence")
+                    || types.contains("java.sql.Connection"));
+            if (java.util.Set.of("mutate", "positionHistory", "privateHistory",
+                    "exactVersion", "readPolicy").contains(method.getName()))
+                assertEquals(port.getDeclaredClasses()[java.util.Arrays.stream(port.getDeclaredClasses())
+                        .map(Class::getSimpleName).toList().indexOf("Admission")],
+                        method.getParameterTypes()[0]);
+        }
+    }
+
+    @Test void protectedRepositorySeparatesPrivateFromRedactedHistoryAndCurrentPolicy() throws Exception {
+        var port = dz.sh.hidra.modules.organization.application.port.out
+                .ProtectedEmployeeAppointmentRepositoryPort.class;
+        assertTrue(port.getMethod("privateHistory",
+                dz.sh.hidra.modules.organization.application.port.out
+                        .ProtectedEmployeeAppointmentRepositoryPort.Admission.class,
+                EmployeeAppointmentQuery.History.class).getGenericReturnType()
+                .getTypeName().contains("PrivateHistoryEvent"));
+        String position = port.getMethod("positionHistory",
+                dz.sh.hidra.modules.organization.application.port.out
+                        .ProtectedEmployeeAppointmentRepositoryPort.Admission.class,
+                EmployeeAppointmentQuery.History.class).getGenericReturnType().getTypeName();
+        assertTrue(position.contains("PositionHistoryEvent"));
+        assertFalse(position.contains("PrivateHistoryEvent"));
+        assertEquals(dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.PolicyView.class,
+                port.getMethod("readPolicy",
+                        dz.sh.hidra.modules.organization.application.port.out
+                                .ProtectedEmployeeAppointmentRepositoryPort.Admission.class,
+                        EmployeeAppointmentQuery.Policy.class).getReturnType());
+    }
 }

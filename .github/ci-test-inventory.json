@@ -8782,16 +8782,20 @@
         "mutationReceiptDistinguishesNewEventFromHistoricalReplayAndRequiresShape",
         "pagesRejectUnboundedLimitsAndMalformedCursors",
         "positionResultRedactsEmployeeAndPrivateActorFieldsStructurally",
+        "protectedRepositoryHasNoUnguardedCrudOrAdapterImports",
+        "protectedRepositoryPreviewIsDefensiveAndNeverCredentialsOrAuthority",
+        "protectedRepositoryPreviewRejectsUnboundedAndUnorderedOwnerPairs",
+        "protectedRepositorySeparatesPrivateFromRedactedHistoryAndCurrentPolicy",
         "timestampsRejectNanosecondsWithoutSilentRounding",
         "transferRequiresTypedDestinationPinsAndAdjacentIntervalProposalInputs"
       ],
       "class": "dz.sh.hidra.modules.organization.EmployeeAppointmentBoundaryGuardrailTest",
-      "dependency_reason": "HAPI-778 B3B immutable selectors and B3C pinned private/redacted result and inbound port boundaries; synthetic pure Java/JUnit, no protected runtime or PostgreSQL execution; weight unmeasured.",
+      "dependency_reason": "HAPI-778 B3B/B3C application boundary and B3D owner-issued repository admission/query protocol; pure synthetic JUnit, no service context or DB, timing unmeasured.",
       "fast": true,
       "lane": "unit-architecture",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/EmployeeAppointmentBoundaryGuardrailTest.java",
-      "source_sha256": "5de88cb514c3c5213eba26c9f20a2231fd375232bd3610439b8f7fa06686cc6a",
+      "source_sha256": "2a280b77564d36aa4da9af787f961fe6b5874ce8e01138a59d1fa23ff0894e1b",
       "supports": []
     }
   ],

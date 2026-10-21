@@ -23081,6 +23081,59 @@ after actual producer artifacts exist. Do not promote HAPI-778 to
 COMPLETED, claim full workflow or deploy anything. This project remains
 development-only; no production data, plant calibration or live OT access.
 
+
+### 2026-10-21 — HAPI-778 B3D protected repository port and guarded transport boundaries
+
+**Predecessor:** GitHub main `1bb34f0f3eb2bc2ff55a994059235c7e16cb7447`, tree `36463d48d7a939b67d8cbff65dbdb3884fccb29b`; [Full805](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39621331561),
+[Fast124](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39621331540)
+and [Docs495](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39621331419)
+all completed successfully on this exact SHA. HAPI-778 remains PARTIAL/IN_PROGRESS.
+The HAPI-590 dependency remains independently BLOCKED; this is not an owner-policy
+approval or activation of a production system.
+
+**Selected B3D source subpackage:** The already approved B3 package is still
+registered under exact message `feat(organization): persist protected appointment lifecycle and history`.
+CREATE only `src/main/java/dz/sh/hidra/modules/organization/application/port/out/ProtectedEmployeeAppointmentRepositoryPort.java`. MODIFY only `src/test/java/dz/sh/hidra/modules/organization/EmployeeAppointmentBoundaryGuardrailTest.java`,
+`.github/ci-test-inventory.json`, and this append-only HAPI-778 record. DELETE none.
+All paths are in the existing finite B3 implementation envelope. No new
+Java service bean, JDBC adapter, schema/migration, native ticket producer,
+transaction-executor allowlist, route, grant, public DTO, runtime OpenAPI,
+history permission, CI workflow or policy default is added.
+
+**Implemented contract:** The pure application outbound port no longer offers
+a generic save/delete/findAll bypass. Its bounded descriptor preview is
+internal and non-authoritative, preserves canonical company/unit ordering and
+fails closed on overflow. The actual persistence adapter must check the native
+Identity issuer-owned Admission plus separately valid Party owner Admissions,
+then retain the strict lock/physical sample/transaction/final guard ordering.
+The port's own Admission is an opaque marker that an adapter MUST authenticate;
+a constructed marker/preview is never a granted operation. Mutations demand
+this marker and a typed command; history/versions/policy results are separated
+into private and redacted position variants, with no pre-admission count or
+cursor exposure. The port itself has no implementation, no delegated write,
+and no exposure as an HTTP operation: the old writer is not falsely claimed
+to be protected by the new interface.
+
+**Cases and evidence:** Four new structural/boundary test cases check
+canonical/overflowed previews, defensive copies, absence of generic CRUD
+and JPA imports, typed issuer-admission requirement, and position redaction.
+The 16 existing tests remain; the class now has 20 registered cases. Source
+SHA256: `2a280b77564d36aa4da9af787f961fe6b5874ce8e01138a59d1fa23ff0894e1b`. The existing five independent PostgreSQL shards,
+timing weights, and unrelated inventory content are preserved. Only static
+source/structure and inventory validation were performed before publishing;
+the source package has not run a local Maven or PostgreSQL test in this task.
+Exact-SHA GitHub Full/Fast/Docs is the pending acceptance gate.
+
+**Next distinct B3 subpackage:** Implement and test the genuine guarded
+storage/coordinator path only after checking the actual B3D CI result; reserve
+the corrected `V20261021_003__organization_appointment_ownership_lifecycle.sql`
+version against the live migration tree. The following scopes still require
+controlled activation, caller-constrained ProtectedTransactionExecutor changes,
+real PostgreSQL physical security/locking/receipt and concurrency proofs,
+legacy writer cutover, protected REST reads/commands, artifact reconciliation
+and final task acceptance. Never treat this interface as verified physical
+publication, a simulator, deployment or SITE data.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

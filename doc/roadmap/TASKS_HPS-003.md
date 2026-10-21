@@ -21357,6 +21357,54 @@ HAPI-778 remains incomplete. HidraAPI remains development-only with synthetic
 fixtures. No production database, release, tag or deployment action is taken.
 
 
+
+### 2026-10-21 — HAPI-778 B2C test compilation repair
+
+Owner Fail selects repair of main6b2facf09405fa25d330c202e4a1a4d78063c8b1,
+parent942925beec27752e7dca2b6b82a7b0106a89fd5a and
+treeb7468840a16ac8f749f734bc7e9711b02fa36d94. Refreshed actual source,
+AGENTS, ROADMAP, reconciliation and this owning task before mutation.
+
+[Full794](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39588271272)
+and [Fast114](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39588271212)
+FAILED at Maven testCompile. All six Full test lanes and Fast report the same
+three cannot-find-symbol errors: assertFalse(boolean) at lines208/209/210 in
+ForensicRemediationClosureTest. The new negative export checks used that JUnit
+assertion without importing it. These are compilation failures before test
+execution, not failed authorization assertions or PostgreSQL results. Missing
+Surefire/evidence/artifact errors and the failed final gate are downstream
+effects. The optimized oracle gate did not execute. Static validation, API/
+dictionary and [Documentation482](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39588271284)
+passed; they do not establish B2C runtime acceptance.
+
+**Exact responsible three-path repair:** MODIFY
+src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java by adding only
+the explicit static org.junit.jupiter.api.Assertions.assertFalse import;
+MODIFY .github/ci-test-inventory.json by updating only that class's actual
+source_sha256; append only this HAPI-778 evidence. No CREATE/DELETE, production
+behavior, assertion, case identity, export rule, workflow, five-shard partition,
+timing weight, migration, schema, API/dictionary or other inventory metadata
+changes. All seven forensic test cases and every prior case remain required.
+The repaired source SHA-256 is
+717aaf06984c32308331eab6cc0ace1003006822f23772237489d4051aaea4f3.
+Active selection remains446 classes/2822 cases with unchanged lane membership.
+
+**Actual local validation:** the repaired Java file passed Java17 JavacTask
+syntax parsing. Reviewed the exact one-line import diff, unchanged case list,
+source hash, inventory-only hash replacement and whitespace. Java21/Maven/JUnit
+remain unavailable locally; no environment was provisioned and no passing
+type-check/runtime result is claimed. Hosted test compilation and all actual
+runtime cases must execute after this correction; further runtime failures,
+if any, remain to be diagnosed from actual feedback rather than presumed absent.
+
+Use the existing registered B2 message
+`feat(identity): qualify native appointment and party reference authority`
+for this bounded repair, with expected6b2facf main guard. Verify exact three-path
+tree/raw blobs/parent/message, confirm applicable Full/Fast/Docs creation/queue/
+start on the corrected SHA, and STOP. B3 is not selected. HAPI-778 remains
+PARTIAL/IN_PROGRESS and B2C acceptance remains pending. HidraAPI remains
+development-only; there is no production data, release or deployment action.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

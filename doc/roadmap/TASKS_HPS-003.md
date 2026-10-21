@@ -22911,6 +22911,57 @@ reconciliation and final acceptance. No production data, deployment,
 industrial calibration or autonomous OT access.
 
 
+
+### 2026-10-21 — HAPI-778 B3B Full802 compilation repair
+
+Owner Fail selects the responsible compiler failure in the previously published
+B3B immutable appointment command package, not a successor runtime stage.
+Refreshed main `93e0698ba6f6356ae7d28d3ebcc4a6c5bb02359f` with tree
+`737e0838827cb56b15cd83d1a224f7e6fc4558f8`.
+[Full802](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39613132546)
+and [Fast121](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39613132573)
+failed while [Docs492](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39613132542)
+passed. Full802 Java21 unit/architecture job119266988365 and API-contract
+job119266988012 both report three identical Java compiler errors at
+`EmployeeAppointmentCommand.java` lines53,77,104. The record component
+accessor `reason()` shadows the enclosing private static validator
+`reason(String)` when the record constructors call `reason(reason)`;
+the compiler says required no arguments, found String. PostgreSQL shards
+also stopped at the same project compilation gate, before their intended
+tests executed. Missing Surefire reports and downstream full evidence
+failure are consequences, not independent database-schema failures.
+
+**Repair scope:** MODIFY only
+`src/main/java/dz/sh/hidra/modules/organization/application/command/EmployeeAppointmentCommand.java`
+and append this exact diagnosis/evidence to
+`doc/roadmap/TASKS_HPS-003.md`. DELETE/CREATE none. Retain the
+B3 registered exact commit message
+`feat(organization): persist protected appointment lifecycle and history`;
+this is a correction of its selected B3B package. All three record
+constructors now invoke the existing private static validation helper with
+the explicit enclosing interface qualifier
+`EmployeeAppointmentCommand.reason(reason)`.
+No constructor signature, validation rule, reason byte-preservation,
+JPA, migration, Party/Identity/native authority, permission, endpoint,
+test class/case, CI inventory, governance status table or workflow changes.
+
+**Validation:** Exact-code structural comparison shows only the three
+necessary invocation substitutions; compilation for the same private
+interface-static helper qualified from a nested Java record succeeded
+with the already installed Java21 javac in a focused compiler example.
+This small example does not compile the full repository or establish a
+JUnit/PostgreSQL runtime pass. Unchanged11 B3B boundary tests remain
+registered and must be run in CI. Hosted exact-SHA Full/Fast/Docs
+feedback, including the actual compiler and all five PostgreSQL jobs,
+is required before proceeding. Do not weaken CI assertions or
+duplicate the original protected transaction contract.
+
+Publish with expected-head guard directly to main; validate SHA, parent,
+tree, message, two path blobs; confirm applicable exact-SHA workflows
+started or queued, then STOP. HAPI-778 remains PARTIAL/IN_PROGRESS,
+HAPI-590 stays BLOCKED, deployment and SITE acceptance absent.
+
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

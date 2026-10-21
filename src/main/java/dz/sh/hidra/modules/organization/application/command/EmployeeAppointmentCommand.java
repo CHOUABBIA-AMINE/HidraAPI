@@ -50,7 +50,7 @@ public sealed interface EmployeeAppointmentCommand permits
             assignmentId = identifier(assignmentId, "Assignment selector");
             nextVersion(expectedVersion);
             timestamp(endAt, "Effective end");
-            reason = reason(reason);
+            reason = EmployeeAppointmentCommand.reason(reason);
         }
 
         @Override public Kind kind() { return Kind.END; }
@@ -74,7 +74,7 @@ public sealed interface EmployeeAppointmentCommand permits
             interval(effectiveAt, successorValidTo);
             positive(expectedDestinationBindingRevision, "Destination binding revision");
             positive(expectedDestinationPolicyRevision, "Destination policy revision");
-            reason = reason(reason);
+            reason = EmployeeAppointmentCommand.reason(reason);
         }
 
         @Override public Kind kind() { return Kind.TRANSFER; }
@@ -101,7 +101,7 @@ public sealed interface EmployeeAppointmentCommand permits
                     "Ended appointment needs an ending boundary");
             positive(expectedDestinationBindingRevision, "Destination binding revision");
             positive(expectedDestinationPolicyRevision, "Destination policy revision");
-            reason = reason(reason);
+            reason = EmployeeAppointmentCommand.reason(reason);
         }
 
         @Override public Kind kind() { return Kind.CORRECT; }

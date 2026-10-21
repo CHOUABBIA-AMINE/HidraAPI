@@ -8764,6 +8764,30 @@
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/query/WorkflowOrganizationAppointmentMembershipTest.java",
       "source_sha256": "9c4d81bd66e82c66b3890cef588f15d620d121d5e0741672bfcda2f05ff2481a",
       "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "contractsContainNoActorPermissionOrCredentials",
+        "correctRejectsMissingStatusAndInvalidEndedInterval",
+        "createRejectsMissingOrUnsafeSelectorsAndType",
+        "createRequiresExplicitPositivePinsAndHalfOpenInterval",
+        "createRetainsExplicitTypeCompanyAndRevisions",
+        "distinctHistoryScopesNeverPermitMixedSelectors",
+        "endCarriesCasAndReasonWithoutTreatingItAsPermission",
+        "exactVersionAndPolicyQueriesRequireExplicitSelectors",
+        "pagesRejectUnboundedLimitsAndMalformedCursors",
+        "timestampsRejectNanosecondsWithoutSilentRounding",
+        "transferRequiresTypedDestinationPinsAndAdjacentIntervalProposalInputs"
+      ],
+      "class": "dz.sh.hidra.modules.organization.EmployeeAppointmentBoundaryGuardrailTest",
+      "dependency_reason": "HAPI-778 B3B immutable application selector and temporal/ownership contract unit tests; pure Java/JUnit, no service context or database; new class weight unmeasured.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "organization",
+      "path": "src/test/java/dz/sh/hidra/modules/organization/EmployeeAppointmentBoundaryGuardrailTest.java",
+      "source_sha256": "2657c31e5ab5fc2ff91b6ef9501e0cab794538c5277271c04aa4e1fdf53301e7",
+      "supports": []
     }
   ],
   "format": 1,

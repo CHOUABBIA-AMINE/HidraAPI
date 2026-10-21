@@ -22847,6 +22847,70 @@ remain separate. Original B3 migration reservation is corrected to
 No production/SITE data, deployment or numerical simulation is selected.
 
 
+
+### 2026-10-21 — HAPI-778 B3B immutable appointment ingress contracts
+
+Owner Next selects a bounded B3B implementation package under the already
+registered HAPI-778 B3 protected appointment lifecycle. Exact previous main
+`d52084602346e39fcca29c45d4396aacdc82ccd0`, tree
+`dbd4630a00d6c69f07e441c339368f5a30eb05a6`.
+[Full801](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39610417737),
+[Fast120](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39610417684)
+and [Docs491](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39610417823)
+are successful at that SHA. All five PostgreSQL shards and full gate succeeded;
+the optional separate serial Java21 Maven verification was skipped.
+B3A's read-only Workflow membership SQL is thus CI-passed in its accepted scope;
+this does not qualify the remaining protected write lifecycle.
+
+**Exact selected B3 commit message:** `feat(organization): persist protected appointment lifecycle and history`.
+B3B is an immutable input/query contract package, not completion of that parent.
+All five files are in the previously registered B3 allowlist. CREATE exactly:
+
+- `src/main/java/dz/sh/hidra/modules/organization/application/command/EmployeeAppointmentCommand.java`
+- `src/main/java/dz/sh/hidra/modules/organization/application/query/EmployeeAppointmentQuery.java`
+- `src/test/java/dz/sh/hidra/modules/organization/EmployeeAppointmentBoundaryGuardrailTest.java`
+
+MODIFY only `.github/ci-test-inventory.json` to add the genuine test class
+and this append-only phase file. DELETE none. No prior migration, current JPA
+writer, admission/executor, REST route, security grant, identity/Party contract,
+CI workflow, approved OpenAPI or physical dictionary changes.
+
+**Contract behavior:** sealed immutable command variants CREATE/END/TRANSFER/
+CORRECT accept only explicit request/company/employee/assignment/position/unit
+selectors, typed assignment values, expected CAS source versions, pinned
+binding/policy revisions, exact PostgreSQL-microsecond effective timestamps
+and valid half-open intervals; change requests demand a nonblank bounded reason.
+IDs retain exact unnormalized bytes, rejecting control/surrogate/unsafe
+boundary whitespace; ambiguity is never converted to a valid selector.
+History query scopes isolate assignment, employee and unit/position selectors;
+limits are1..100, opaque cursor is syntactically bounded without claiming
+cryptographic validation. Exact version and current policy queries remain
+separate typed selectors. These types do NOT carry actor/permission/ticket/
+credential material and do not grant authority or certify existence, current
+binding, native sample, Party eligibility, overlap or authorization.
+All those owner, physical catalog, time, transaction, audit and no-disclosure
+checks remain required in the later protected coordinator/repository.
+
+**Evidence/acceptance:** eleven actual JUnit cases in
+`EmployeeAppointmentBoundaryGuardrailTest` (source SHA256
+`2657c31e5ab5fc2ff91b6ef9501e0cab794538c5277271c04aa4e1fdf53301e7`), fast-eligible unit/architecture lane, explicitly
+unmeasured timing. Existing test entries, case IDs, historical archives,
+weights and all5 database sets retain their identities. This source/package
+does not claim local Java21, Maven, PostgreSQL, route or Full CI validation.
+After exact-SHA Full/Fast/Docs creation/start, stop and await results.
+HAPI-778 remains PARTIAL/IN_PROGRESS, HAPI-590 BLOCKED.
+
+**Remaining B3:** typed results/inbound/outbound ports, protected application
+service and coordinator, database-only binding and policy activation,
+versioned appointment schema (corrected reservation
+`V20261021_003__organization_appointment_ownership_lifecycle.sql`),
+event/receipt/final database guard, changed legacy routes and reads,
+actual multi-principal and independent-connection PostgreSQL concurrency,
+replay/rollback/temporal proofs, and separate actual OpenAPI/catalog
+reconciliation and final acceptance. No production data, deployment,
+industrial calibration or autonomous OT access.
+
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

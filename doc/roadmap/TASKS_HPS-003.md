@@ -22722,6 +22722,74 @@ created/queued/started, then STOP without waiting or advancing B3. HAPI-778 stay
 PARTIAL/IN_PROGRESS. Development API only; synthetic fixtures, no production
 release, tag, database or deployment.
 
+
+### 2026-10-21 — HAPI-778 Full799 physical dictionary artifact reconciliation
+
+Owner Fail selects the already registered HAPI-778 artifact-reconciliation
+subset, with exact registered message
+`docs(organization): reconcile appointment API and catalog artifacts`.
+Refreshed exact main 1590778abde4b13ec9a19862ca3ea5f7e4e7abe6, parent
+e77f98bdc65e42aad13c69099779a1d9c11f4e34, tree
+27bfdefc988b94bfe609e40af78c1194a5c8689d; read current AGENTS,
+ULTIMATE_ROADMAP, task index, this owning HPS-003 record, live source
+and exact-SHA GitHub Actions results. No new runtime task is selected.
+
+[Full799](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39603386490)
+failed in the API-contract/dictionary job119233294988 at the current migrated
+dictionary gate; its final evidence gate then rejected the failed dependency.
+All five PostgreSQL integration shards, Java21 unit/architecture and static
+validation passed. Runtime canonical OpenAPI equality passed:257 paths,
+279 operations and267 schemas. [Fast119](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39603386504)
+and [Docs489](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39603386512)
+passed on the same head. This is not a Full799 acceptance.
+
+Actual archived job diagnostics: artifact12347431745,
+`hidra-ci-diagnostics-1590778abde4b13ec9a19862ca3ea5f7e4e7abe6-39603386490-1-api-contract`;
+downloaded ZIP SHA256
+`0e089a2573c6b16eb34c23965b4c832f64a2b1afb44bf23a21bb8e07360595f1`.
+Actual `database/verification.json` (SHA256
+`5b937b1380aee8489d00a1120e0e6d89a64230437e3bb8d8145bf68042a98536`)
+reports `Data dictionary FAILED: Physical dictionary drift; review regenerated metadata/content`.
+Actual `database/schema.json` (SHA256
+`55033df65c8dd8a50e87689012fa8d7a2bb9e96dc28cec4977ae1e5ea16b85b7`)
+contains160 successful actual migrations,470 JPA mappings,505 relations,
+zero unresolved owner discrepancies under unchanged reviewed metadata and
+source bundle SHA256
+`93ef42c7c22ce63670b1bb1f91de505895f6ff8ffd6a9cd4c109d54376911d32`.
+Prior successful [Full797](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39593004910)
+actual database artifact12341429438 contains158 migrations and505 relations.
+Canonical comparison of every physical relation and all source JPA mappings
+between these two original artifacts found zero changes. The two added migration
+sources V20261021_001 and V20261021_002 alter one Party callable routine
+without any captured physical relation change. Each genuinely mentions only
+the two existing Party relation names shown in the strict generator census.
+Thus reconcile only the verified source provenance, migration count/bundle digest
+and those four source-linked migration mentions in the CURRENT physical dictionary;
+preserve all505 physical relation metadata blocks and their ownership evidence.
+
+**Exact MODIFY subset of pre-registered four-path artifact stage:**
+`doc/database/DATA_DICTIONARY.md` and this append-only
+`doc/roadmap/TASKS_HPS-003.md` only. No API operation/DTO changed:
+`doc/api/openapi.yaml` and `.github/documentation-validation.json`
+stay byte-for-byte unchanged, as do every migration, test, generated OpenAPI
+and CI workflow. The physical dictionary reconciliation is deterministic
+from genuine schema/source evidence, not guessed table metadata or a waived
+equality gate. The installed strict generator/CI will independently compare
+all regenerated catalog content against this committed candidate. No Java,
+SQL or physics/runtime behavior is changed or accepted by this docs stage.
+
+Publish only the two documentation blobs to main with expected-head guard and
+the already registered exact message. Preserve frozen status tables and this
+task's PARTIAL/IN_PROGRESS disposition. Observe exact-SHA applicable Docs CI
+creation/start, then STOP. The full HidraAPI CI excludes docs-only push;
+explicit `HidraAPI CI` workflow_dispatch on main is necessary to obtain a
+new complete Full acceptance; no prior Full result substitutes. After Full
+success, resume the separately registered B3 Organization protected lifecycle
+implementation; do not execute B3 or acceptance in this stage. Development
+system/synthetic evidence only: no production data, calibration, release,
+deployment, or live OT control.
+
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

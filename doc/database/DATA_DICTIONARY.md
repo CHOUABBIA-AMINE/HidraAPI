@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `11084d86126b0a0a5851f4d8bd17b7fea3e1eb47`
+Captured source SHA: `1590778abde4b13ec9a19862ca3ea5f7e4e7abe6`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `edcbccdd40dc9db169773adfdec7c1793260513d4a052a36916492ccef503152`.
-Migrations: 158; JPA mappings: 470; catalog relations: 505; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `93ef42c7c22ce63670b1bb1f91de505895f6ff8ffd6a9cd4c109d54376911d32`.
+Migrations: 160; JPA mappings: 470; catalog relations: 505; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -17552,6 +17552,8 @@ Owner-issued monotone live/tombstone witness for protected ACTIVE Party eligibil
 - Evidence: [V20261018_001__p25_party_eligibility_generations.sql](../../src/main/resources/db/migration/V20261018_001__p25_party_eligibility_generations.sql)
 - Evidence: [JdbcTopologyProtectedPartyEligibilityAdapter.java](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JdbcTopologyProtectedPartyEligibilityAdapter.java)
 - Migration mention (not inferred introduction): [V20261018_001__p25_party_eligibility_generations.sql](../../src/main/resources/db/migration/V20261018_001__p25_party_eligibility_generations.sql)
+- Migration mention (not inferred introduction): [V20261021_001__party_organization_configuration_reference.sql](../../src/main/resources/db/migration/V20261021_001__party_organization_configuration_reference.sql)
+- Migration mention (not inferred introduction): [V20261021_002__party_configuration_reference_collation_guard.sql](../../src/main/resources/db/migration/V20261021_002__party_configuration_reference_collation_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -17868,6 +17870,8 @@ Persisted PartyJpaEntity state; semantic authority remains with party.
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261004_004__hmr_004_party_party.sql](../../src/main/resources/db/migration/V20261004_004__hmr_004_party_party.sql)
 - Migration mention (not inferred introduction): [V20261018_001__p25_party_eligibility_generations.sql](../../src/main/resources/db/migration/V20261018_001__p25_party_eligibility_generations.sql)
+- Migration mention (not inferred introduction): [V20261021_001__party_organization_configuration_reference.sql](../../src/main/resources/db/migration/V20261021_001__party_organization_configuration_reference.sql)
+- Migration mention (not inferred introduction): [V20261021_002__party_configuration_reference_collation_guard.sql](../../src/main/resources/db/migration/V20261021_002__party_configuration_reference_collation_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

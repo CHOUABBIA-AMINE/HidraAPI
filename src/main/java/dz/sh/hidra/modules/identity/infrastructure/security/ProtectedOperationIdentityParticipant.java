@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedOperationIdentityParticipant
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-20
+ * @UpdatedOn   : 2026-10-21
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -290,6 +290,10 @@ public class ProtectedOperationIdentityParticipant {
      */
     @Transactional(propagation = Propagation.MANDATORY)
     public Contribution consumeClaims(QualifiedClaimRead qualified, AuthorizationEvaluationRequest request) {
+        if (qualified != null && qualified.organization != null) {
+            try { organizationChildContext(qualified.organization); }
+            catch (RuntimeException failure) { poisonOrganization(qualified.organization); throw failure; }
+        }
         if (qualified == null || !qualified.used.compareAndSet(false, true)) throw denied();
         if (qualified.owner != this
                 || qualified.origin != Thread.currentThread()
@@ -350,6 +354,10 @@ public class ProtectedOperationIdentityParticipant {
     @Transactional(propagation = Propagation.MANDATORY)
     public void requireCurrentClaims(
             QualifiedClaimRead qualified, AuthorizationEvaluationRequest request) {
+        if (qualified != null && qualified.organization != null) {
+            try { organizationChildContext(qualified.organization); }
+            catch (RuntimeException failure) { poisonOrganization(qualified.organization); throw failure; }
+        }
         if (qualified == null || !qualified.used.get()
                 || qualified.owner != this
                 || qualified.origin != Thread.currentThread()
@@ -566,6 +574,179 @@ public class ProtectedOperationIdentityParticipant {
         return TransactionSynchronizationManager.getResource(jdbc.getDataSource());
     }
 
+    /** One native sample issues an entire appointment family; no draft/station credential is reused. */
+    public OrganizationClaimGroup qualifyOrganizationGroup(Admitted admitted,
+            dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.Request request) {
+        OrganizationClaimGroup group = null;
+        try {
+            Objects.requireNonNull(request);
+            var holder = organizationHolder();
+            Contribution contribution = contribute(admitted);
+            group = new OrganizationClaimGroup(this, admitted, request, contribution, holder);
+            var children = new java.util.ArrayList<QualifiedClaimRead>();
+            for (var required : request.requirements()) {
+                var scope = required.kind() == dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.ResourceKind.UNIT
+                        ? ScopeType.ORGANIZATION_UNIT : ScopeType.CUSTOM;
+                var evaluation = new AuthorizationEvaluationRequest(contribution.evidence().userId(),
+                        dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.permissionCode(request.action(), required.kind()),
+                        required.kind().resourceType(), required.reference(),
+                        new AuthorizationScope(scope, required.reference(), null));
+                var child = new QualifiedClaimRead(this, admitted.prepared.actual, admitted.prepared.locator,
+                        evaluation, contribution, holder, false, group);
+                children.add(child);
+            }
+            group.children = List.copyOf(children);
+            TransactionSynchronizationManager.registerSynchronization(group);
+            organizationContext(group);
+            return group;
+        } catch (RuntimeException failure) { poisonOrganization(group); throw failure; }
+    }
+
+    /** Synchronous Identity-private transport. Public structural construction grants nothing. */
+    public record OrganizationReads(List<QualifiedClaimRead> credentials,
+            List<AuthorizationEvaluationRequest> requests, Contribution contribution) {
+        public OrganizationReads { credentials = List.copyOf(credentials); requests = List.copyOf(requests); }
+    }
+
+    public OrganizationReads consumeOrganizationGroup(OrganizationClaimGroup group,
+            dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.Request request) {
+        try {
+            organizationContext(group);
+            if (!group.request.equals(request) || !group.used.compareAndSet(false, true)) throw denied();
+            return new OrganizationReads(group.children,
+                    group.children.stream().map(c -> c.request).toList(), group.contribution);
+        } catch (RuntimeException failure) { poisonOrganization(group); throw failure; }
+    }
+
+    public void requireCurrentOrganizationGroup(OrganizationClaimGroup group,
+            dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.Request request) {
+        try {
+            organizationContext(group);
+            if (!group.used.get() || !group.request.equals(request)) throw denied();
+            for (var child : group.children) requireCurrentClaims(child, child.request);
+            // Retained locks exclude other writers, but an own-transaction/savepoint write must
+            // never shorten the bound derived at the original sample. Mirror the existing
+            // temporal collector's fixed columns; this recheck does not issue another sample.
+            String futureBoundaries = List.of(
+                    "authorization_policy_version:effective_from:effective_to",
+                    "group_role_grant:valid_from:valid_to", "login_session:started_at:expires_at",
+                    "operation_binding:issued_at:expires_at", "operation_binding:source_expires_at",
+                    "role_permission_grant:valid_from:valid_to", "subject_security_attribute:valid_from:valid_to",
+                    "user:locked_until", "user_group_membership:valid_from:valid_to",
+                    "user_permission_grant:valid_from:valid_to", "user_role_grant:valid_from:valid_to")
+                    .stream().flatMap(projection -> {
+                        String[] parts = projection.split(":");
+                        return java.util.Arrays.stream(parts).skip(1).map(column ->
+                                "SELECT " + column + " AS boundary FROM public.hidra_identity_" + parts[0]);
+                    }).collect(java.util.stream.Collectors.joining(" UNION ALL "));
+            if (!Boolean.TRUE.equals(jdbc.queryForObject(
+                    "SELECT NOT EXISTS (SELECT 1 FROM (" + futureBoundaries
+                            + ") organization_boundaries WHERE boundary>?::timestamptz AND boundary<?::timestamptz)",
+                    Boolean.class, java.sql.Timestamp.from(group.contribution.evidence().observedAt()),
+                    java.sql.Timestamp.from(group.contribution.validUntil())))) throw denied();
+            var contribution = group.contribution;
+            if (!Boolean.TRUE.equals(jdbc.queryForObject(
+                    "WITH organization_clock AS MATERIALIZED (SELECT pg_catalog.clock_timestamp() AS t) "
+                            + "SELECT t>=? AND t<? AND pg_catalog.pg_backend_pid()=? AND pg_catalog.txid_current()=? FROM organization_clock",
+                    Boolean.class, java.sql.Timestamp.from(contribution.evidence().observedAt()),
+                    java.sql.Timestamp.from(contribution.validUntil()), contribution.backendPid(), contribution.transactionId()))) throw denied();
+            context(group.admitted.prepared);
+        } catch (RuntimeException failure) { poisonOrganization(group); throw failure; }
+    }
+
+    /** Only a consumed genuine child in its own consumed group can request a final graph recheck. */
+    public OrganizationReads currentOrganizationReads(OrganizationClaimGroup group,
+            dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.Request request) {
+        requireCurrentOrganizationGroup(group, request);
+        return new OrganizationReads(group.children, group.children.stream().map(c -> c.request).toList(), group.contribution);
+    }
+
+    public Contribution currentOrganizationClaims(QualifiedClaimRead child, AuthorizationEvaluationRequest request) {
+        try {
+            if (!organizationCredential(child)) throw denied();
+            requireCurrentClaims(child, request);
+            return child.contribution;
+        } catch (RuntimeException failure) { poisonOrganization(child == null ? null : child.organization); throw failure; }
+    }
+
+    public boolean organizationCredential(QualifiedClaimRead child) {
+        return child != null && child.owner == this && child.used.get() && !child.engineeringDraft
+                && child.organization != null && child.organization.owner == this
+                && child.organization.used.get() && child.organization.children.contains(child);
+    }
+
+    public void invalidateOrganizationGroup(OrganizationClaimGroup group) { poisonOrganization(group); }
+
+    private org.springframework.jdbc.datasource.ConnectionHolder organizationHolder() {
+        if (!TransactionSynchronizationManager.isActualTransactionActive()
+                || !TransactionSynchronizationManager.isSynchronizationActive()
+                || TransactionSynchronizationManager.isCurrentTransactionReadOnly()
+                || !(connectionResource() instanceof org.springframework.jdbc.datasource.ConnectionHolder holder)
+                || holder.isRollbackOnly()) throw denied();
+        try {
+            if (org.springframework.transaction.interceptor.TransactionAspectSupport.currentTransactionStatus().isRollbackOnly()) throw denied();
+        } catch (org.springframework.transaction.NoTransactionException absent) { /* TransactionTemplate caller. */ }
+        return holder;
+    }
+
+    private void organizationContext(OrganizationClaimGroup group) {
+        organizationChildContext(group);
+        var holder = group.holder;
+        requireAdmitted(group.admitted);
+        var c = group.contribution;
+        var p = group.admitted.prepared;
+        settingsMatch(p.locator);
+        var stored = bindings.findByNativeIssuerAndJti(p.locator.nativeIssuer(), p.locator.jti()).orElseThrow(ProtectedOperationIdentityParticipant::denied);
+        registry.validatePersistentOrigin(stored);
+        var now = jdbc.queryForObject("SELECT pg_catalog.clock_timestamp()", java.sql.Timestamp.class);
+        if (!stored.equals(p.locator) || now == null || now.toInstant().isBefore(c.evidence().observedAt())
+                || !now.toInstant().isBefore(c.validUntil()) || !states.current(stored, now.toInstant())
+                || !Boolean.TRUE.equals(jdbc.queryForObject(
+                        "SELECT pg_catalog.pg_backend_pid()=? AND pg_catalog.txid_current()=?",
+                        Boolean.class, c.backendPid(), c.transactionId()))) throw denied();
+        for (var child : group.children) {
+            if (child.organization != group || child.owner != this || child.engineeringDraft
+                    || child.contribution != c || child.transactionResource != holder
+                    || child.actual != p.actual || child.origin != group.thread) throw denied();
+        }
+    }
+
+    private void organizationChildContext(OrganizationClaimGroup group) {
+        var holder = organizationHolder();
+        if (group == null || group.owner != this || !group.active || group.thread != Thread.currentThread()
+                || group.holder != holder || group.connection != holder.getConnection()) throw denied();
+        context(group.admitted.prepared);
+    }
+
+    private void poisonOrganization(OrganizationClaimGroup group) {
+        if (group != null) { group.holder.setRollbackOnly(); group.active = false; }
+        if (connectionResource() instanceof org.springframework.jdbc.datasource.ConnectionHolder h) h.setRollbackOnly();
+        try { org.springframework.transaction.interceptor.TransactionAspectSupport.currentTransactionStatus().setRollbackOnly(); }
+        catch (org.springframework.transaction.NoTransactionException absent) { /* Direct template caller. */ }
+    }
+
+    public static final class OrganizationClaimGroup implements org.springframework.transaction.support.TransactionSynchronization {
+        private final ProtectedOperationIdentityParticipant owner;
+        private final Admitted admitted;
+        private final dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.Request request;
+        private final Contribution contribution;
+        private final org.springframework.jdbc.datasource.ConnectionHolder holder;
+        private final java.sql.Connection connection;
+        private final Thread thread = Thread.currentThread();
+        private final AtomicBoolean used = new AtomicBoolean();
+        private volatile boolean active = true;
+        private List<QualifiedClaimRead> children = List.of();
+        private OrganizationClaimGroup(ProtectedOperationIdentityParticipant owner, Admitted admitted,
+                dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.Request request,
+                Contribution contribution, org.springframework.jdbc.datasource.ConnectionHolder holder) {
+            this.owner = owner; this.admitted = admitted; this.request = request; this.contribution = contribution;
+            this.holder = holder; this.connection = holder.getConnection();
+        }
+        @Override public void suspend() { active = false; }
+        @Override public void afterCompletion(int status) { active = false; }
+        @Override public String toString() { return "OrganizationClaimGroup[opaque]"; }
+    }
+
     /** Opaque one-shot claim-read credential. No public factory and no authority via fields. */
     public static final class QualifiedClaimRead {
         private final ProtectedOperationIdentityParticipant owner;
@@ -577,6 +758,7 @@ public class ProtectedOperationIdentityParticipant {
         private final Object transactionResource;
         private final AtomicBoolean used = new AtomicBoolean();
         private final boolean engineeringDraft;
+        private final OrganizationClaimGroup organization;
 
         private QualifiedClaimRead(
                 ProtectedOperationIdentityParticipant owner, Authentication actual,
@@ -589,7 +771,16 @@ public class ProtectedOperationIdentityParticipant {
                 ProtectedOperationIdentityParticipant owner, Authentication actual,
                 OperationAuthenticationBinding locator, AuthorizationEvaluationRequest request,
                 Contribution contribution, Object transactionResource,boolean engineeringDraft) {
+            this(owner, actual, locator, request, contribution, transactionResource, engineeringDraft, null);
+        }
+
+        private QualifiedClaimRead(
+                ProtectedOperationIdentityParticipant owner, Authentication actual,
+                OperationAuthenticationBinding locator, AuthorizationEvaluationRequest request,
+                Contribution contribution, Object transactionResource, boolean engineeringDraft,
+                OrganizationClaimGroup organization) {
             this.engineeringDraft=engineeringDraft;
+            this.organization=organization;
             this.owner = owner;
             this.actual = actual;
             this.locator = locator;

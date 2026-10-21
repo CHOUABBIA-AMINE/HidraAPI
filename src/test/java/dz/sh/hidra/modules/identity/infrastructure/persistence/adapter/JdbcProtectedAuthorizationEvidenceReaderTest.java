@@ -7,7 +7,7 @@
  *
  * @Name        : JdbcProtectedAuthorizationEvidenceReaderTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-20
+ * @UpdatedOn   : 2026-10-21
  *
  * @Type        : Class
  * @Layer       : Identity Test
@@ -39,6 +39,30 @@ import java.time.Instant;
 import java.util.*;
 
 class JdbcProtectedAuthorizationEvidenceReaderTest {
+    @Test void structuralAppointmentRequestsCannotSelectQualifiedOrganizationFamily() {
+        for (var action : dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.Action.values()) {
+            for (var kind : dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.ResourceKind.values()) {
+                if (action == dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.Action.READ_POLICY
+                        && kind == dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.ResourceKind.EMPLOYEE) continue;
+                var scope = kind == dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.ResourceKind.UNIT
+                        ? ScopeType.ORGANIZATION_UNIT : ScopeType.CUSTOM;
+                var request = new AuthorizationEvaluationRequest(USER,
+                        dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.permissionCode(action, kind),
+                        kind.resourceType(), "exact", new AuthorizationScope(scope, "exact", null));
+                assertThatThrownBy(() -> reader.load(identity, request, 7, 11)).isInstanceOf(RuntimeException.class);
+            }
+        }
+    }
+
+    @Test void organizationReaderRejectsMissingNativeOwnerBeforeAnySql() {
+        var request = new dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.Request(
+                dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.Action.READ_POLICY,
+                List.of(new dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.CompanyUnit("company", "unit")), null);
+        clearInvocations(jdbc);
+        assertThatThrownBy(() -> reader.loadQualifiedOrganizationGroup(null, request)).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> reader.recheckOrganizationGroup(null, request)).isInstanceOf(RuntimeException.class);
+        verifyNoInteractions(jdbc);
+    }
     private static final Instant AT = Instant.parse("2026-10-15T10:00:00Z");
     private static final String USER = "user", PROVIDER = "provider", PERMISSION = "permission";
     private final JdbcTemplate jdbc = mock(JdbcTemplate.class);
@@ -605,7 +629,17 @@ class JdbcProtectedAuthorizationEvidenceReaderTest {
                                                 .getDeclaredMethods())
                                 .filter(m -> java.lang.reflect.Modifier.isPublic(m.getModifiers())))
                 .extracting(java.lang.reflect.Method::getName)
-                .containsExactlyInAnyOrder("load", "loadQualified", "loadQualifiedPair", "loadQualifiedDraftPair");
+                .containsExactlyInAnyOrder("load", "loadQualified", "loadQualifiedPair", "loadQualifiedDraftPair",
+                        "loadQualifiedOrganizationGroup", "recheckOrganizationGroup");
+        for (String name : List.of("loadQualifiedOrganizationGroup", "recheckOrganizationGroup")) {
+            assertThat(Arrays.stream(JdbcProtectedAuthorizationEvidenceReader.class.getDeclaredMethods())
+                    .filter(m -> m.getName().equals(name))).singleElement().satisfies(method -> {
+                assertThat(method.getParameterTypes()).containsExactly(
+                        dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipant.OrganizationClaimGroup.class,
+                        dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.Request.class);
+                assertThat(method.getReturnType()).isEqualTo(JdbcProtectedAuthorizationEvidenceReader.OrganizationAuthorizationEvidence.class);
+            });
+        }
         assertThat(Arrays.stream(JdbcProtectedAuthorizationEvidenceReader.class.getDeclaredMethods())
                 .filter(m -> m.getName().equals("loadQualifiedDraftPair")))
             .singleElement().satisfies(method -> {

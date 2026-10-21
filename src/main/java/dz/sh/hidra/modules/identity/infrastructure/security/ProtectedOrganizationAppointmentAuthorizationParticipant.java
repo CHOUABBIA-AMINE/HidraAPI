@@ -1,0 +1,223 @@
+/**
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : ProtectedOrganizationAppointmentAuthorizationParticipant
+ * @CreatedOn   : 2025-06-26
+ * @UpdatedOn   : 2026-10-21
+ *
+ * @Type        : Class
+ * @Layer       : Infrastructure
+ * @Module      : identity
+ * @Package     : dz.sh.hidra.modules.identity.infrastructure.security
+ *
+ * @Description : Qualifies a bounded appointment decision group using one genuine native admission.
+ *
+ */
+package dz.sh.hidra.modules.identity.infrastructure.security;
+
+import dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract;
+import dz.sh.hidra.modules.identity.domain.service.AuthorizationPolicyEvaluator;
+import dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcIdentityAuthorityFence;
+import dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcProtectedAuthorizationEvidenceReader;
+import dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcProtectedAuthorizationEvidenceReader.OrganizationAuthorizationEvidence;
+import dz.sh.hidra.platform.persistence.ProtectedRelationFence;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.ConnectionHolder;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.NoTransactionException;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+
+/** All ticket checks execute inside the body so a foreign thread also poisons the original holder. */
+@Component
+public class ProtectedOrganizationAppointmentAuthorizationParticipant
+        implements OrganizationProtectedAppointmentAuthorizationContract {
+    private final ProtectedOperationIdentityParticipant identity;
+    private final JdbcProtectedAuthorizationEvidenceReader reader;
+    private final JdbcTemplate jdbc;
+    private final AuthorizationPolicyEvaluator evaluator = new AuthorizationPolicyEvaluator();
+
+    public ProtectedOrganizationAppointmentAuthorizationParticipant(ProtectedOperationIdentityParticipant identity,
+            JdbcProtectedAuthorizationEvidenceReader reader, JdbcTemplate jdbc) {
+        this.identity = Objects.requireNonNull(identity);
+        this.reader = Objects.requireNonNull(reader);
+        this.jdbc = Objects.requireNonNull(jdbc);
+    }
+
+    @Override @Transactional(propagation = Propagation.NEVER)
+    public Prepared prepare() {
+        var actual = SecurityContextHolder.getContext().getAuthentication();
+        var prepared = identity.prepare();
+        if (actual == null || !actual.isAuthenticated()
+                || actual != SecurityContextHolder.getContext().getAuthentication()) throw denied();
+        return new Entry(this, prepared, actual);
+    }
+
+    @Override public Admission acquire(Prepared prepared, Request request) {
+        try {
+            Objects.requireNonNull(request); // Structural rejection precedes native consumption.
+            var holder = holder();
+            if (!(prepared instanceof Entry entry)) throw denied();
+            current(entry);
+            if (!entry.used.compareAndSet(false, true)) throw denied();
+            entry.holder = holder;
+            var admitted = identity.admit(entry.prepared);
+            var ticket = new Ticket(this, entry, request, admitted, holder);
+            TransactionSynchronizationManager.registerSynchronization(ticket);
+            return ticket;
+        } catch (RuntimeException failure) { poison(prepared); throw failure; }
+    }
+
+    @Override public Contribution contribute(Admission admission) {
+        try {
+            var ticket = ticket(admission);
+            if (!ticket.used.compareAndSet(false, true)) throw denied();
+            ticket.group = identity.qualifyOrganizationGroup(ticket.admitted, ticket.request);
+            ticket.graphs = reader.loadQualifiedOrganizationGroup(ticket.group, ticket.request);
+            Contribution contribution = evaluate(ticket.request, ticket.graphs);
+            if (contribution.overallDecision() != Decision.PERMIT) throw denied();
+            ticket.complete = true;
+            ticket(ticket);
+            identity.requireCurrentOrganizationGroup(ticket.group, ticket.request);
+            return contribution;
+        } catch (RuntimeException failure) { poison(admission); throw failure; }
+    }
+
+    @Override public void requireCurrent(Admission admission) {
+        try {
+            var ticket = ticket(admission);
+            if (!ticket.complete) throw denied();
+            var current = reader.recheckOrganizationGroup(ticket.group, ticket.request);
+            // Value comparison catches deleted evidence as well as changed normalized authority.
+            if (!ticket.graphs.equals(current) || evaluate(ticket.request, current).overallDecision() != Decision.PERMIT) throw denied();
+            identity.requireCurrentOrganizationGroup(ticket.group, ticket.request);
+        } catch (RuntimeException failure) { poison(admission); throw failure; }
+    }
+
+    @Override public List<ProtectedRelationFence> finalFences(Admission admission) {
+        requireCurrent(admission);
+        return JdbcIdentityAuthorityFence.requiredRelationFences();
+    }
+
+    private Contribution evaluate(Request request, OrganizationAuthorizationEvidence graphs) {
+        var bound = graphs.contribution();
+        var requirements = request.requirements();
+        if (requirements.size() != graphs.requests().size()) throw denied();
+        var decisions = new ArrayList<ResourceDecision>();
+        for (int i = 0; i < requirements.size(); i++) {
+            var expected = requirements.get(i);
+            var actual = graphs.requests().get(i);
+            var scope = expected.kind() == ResourceKind.UNIT
+                    ? dz.sh.hidra.modules.identity.domain.value.ScopeType.ORGANIZATION_UNIT
+                    : dz.sh.hidra.modules.identity.domain.value.ScopeType.CUSTOM;
+            if (!bound.evidence().userId().equals(actual.userId())
+                    || !OrganizationProtectedAppointmentAuthorizationContract.permissionCode(request.action(), expected.kind()).equals(actual.permissionCode())
+                    || !expected.kind().resourceType().equals(actual.resourceType())
+                    || !expected.reference().equals(actual.resourceReferenceId()) || actual.scope() == null
+                    || actual.scope().scopeType() != scope
+                    || !expected.reference().equals(actual.scope().scopeReferenceId())
+                    || actual.scope().scopeCodeSnapshot() != null) throw denied();
+            var value = evaluator.evaluate(actual, graphs.evidence().get(i), bound.evidence().observedAt()).decision();
+            Decision decision = switch (value) {
+                case PERMIT -> Decision.PERMIT;
+                case DENY -> Decision.DENY;
+                case INDETERMINATE -> Decision.INDETERMINATE;
+                default -> throw denied();
+            };
+            decisions.add(new ResourceDecision(expected, decision));
+        }
+        return new Contribution(request, decisions, bound.evidence().bindingId(), bound.evidence().sessionId(),
+                bound.evidence().userId(), bound.evidence().observedAt(), bound.validUntil(), bound.backendPid(), bound.transactionId());
+    }
+
+    private Ticket ticket(Admission admission) {
+        if (!(admission instanceof Ticket ticket) || ticket.owner != this || !ticket.active
+                || ticket.thread != Thread.currentThread() || holder() != ticket.holder
+                || ticket.connection != ticket.holder.getConnection()) throw denied();
+        current(ticket.entry);
+        identity.requireAdmitted(ticket.admitted);
+        return ticket;
+    }
+
+    private void current(Entry entry) {
+        if (entry.owner != this || entry.thread != Thread.currentThread()
+                || entry.actual != SecurityContextHolder.getContext().getAuthentication()
+                || !entry.actual.isAuthenticated()) throw denied();
+    }
+
+    private ConnectionHolder holder() {
+        if (!TransactionSynchronizationManager.isActualTransactionActive()
+                || !TransactionSynchronizationManager.isSynchronizationActive()
+                || TransactionSynchronizationManager.isCurrentTransactionReadOnly() || jdbc.getDataSource() == null
+                || !(TransactionSynchronizationManager.getResource(jdbc.getDataSource()) instanceof ConnectionHolder holder)
+                || holder.isRollbackOnly()) throw denied();
+        try { if (TransactionAspectSupport.currentTransactionStatus().isRollbackOnly()) throw denied(); }
+        catch (NoTransactionException absent) { /* Direct TransactionTemplate caller. */ }
+        return holder;
+    }
+
+    private void poison(Object candidate) {
+        if (candidate instanceof Ticket t) {
+            t.holder.setRollbackOnly(); t.active = false;
+            identity.invalidateOrganizationGroup(t.group);
+        } else if (candidate instanceof Entry e && e.holder != null) e.holder.setRollbackOnly();
+        for (Object resource : TransactionSynchronizationManager.getResourceMap().values()) {
+            if (resource instanceof ConnectionHolder holder) holder.setRollbackOnly();
+        }
+        try { TransactionAspectSupport.currentTransactionStatus().setRollbackOnly(); }
+        catch (NoTransactionException absent) { /* Direct TransactionTemplate caller. */ }
+    }
+
+    private static AccessDeniedException denied() { return new AccessDeniedException("Appointment authorization denied."); }
+
+    private static final class Entry implements Prepared {
+        private final ProtectedOrganizationAppointmentAuthorizationParticipant owner;
+        private final ProtectedOperationIdentityParticipant.Prepared prepared;
+        private final Authentication actual;
+        private final Thread thread = Thread.currentThread();
+        private final AtomicBoolean used = new AtomicBoolean();
+        private volatile ConnectionHolder holder;
+        private Entry(ProtectedOrganizationAppointmentAuthorizationParticipant owner,
+                ProtectedOperationIdentityParticipant.Prepared prepared, Authentication actual) {
+            this.owner = owner; this.prepared = prepared; this.actual = actual;
+        }
+        @Override public String toString() { return "Prepared[opaque appointment Identity]"; }
+    }
+
+    private static final class Ticket implements Admission, TransactionSynchronization {
+        private final ProtectedOrganizationAppointmentAuthorizationParticipant owner;
+        private final Entry entry;
+        private final Request request;
+        private final ProtectedOperationIdentityParticipant.Admitted admitted;
+        private final ConnectionHolder holder;
+        private final java.sql.Connection connection;
+        private final Thread thread = Thread.currentThread();
+        private final AtomicBoolean used = new AtomicBoolean();
+        private volatile boolean active = true;
+        private boolean complete;
+        private ProtectedOperationIdentityParticipant.OrganizationClaimGroup group;
+        private OrganizationAuthorizationEvidence graphs;
+        private Ticket(ProtectedOrganizationAppointmentAuthorizationParticipant owner, Entry entry, Request request,
+                ProtectedOperationIdentityParticipant.Admitted admitted, ConnectionHolder holder) {
+            this.owner = owner; this.entry = entry; this.request = request; this.admitted = admitted;
+            this.holder = holder; this.connection = holder.getConnection();
+        }
+        @Override public void suspend() { active = false; }
+        @Override public void afterCompletion(int status) { active = false; }
+        @Override public String toString() { return "Admission[opaque appointment Identity]"; }
+    }
+}

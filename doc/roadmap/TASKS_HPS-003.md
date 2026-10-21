@@ -21150,6 +21150,213 @@ reviewed. HAPI-778 and full B2 are not complete. HidraAPI remains a development
 API; no production data, release or deployment action is taken.
 
 
+### 2026-10-21 — HAPI-778 B2C native appointment group and exact owner exports
+
+Owner Next recovered main 942925beec27752e7dca2b6b82a7b0106a89fd5a,
+parent dd73a1b5832828922af736f025316da329d58029 and
+tree 2d925e9d0f4e695812b1edbd281148d0d5d0d071. Actual exact-head
+[Full793](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39581261095),
+[Fast113](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39581261027) and
+[Documentation481](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39581261289)
+all completed successfully. B2B's finite scalar contract is green. The attached
+Project pack is a historical snapshot; current GitHub governance/source remains
+authoritative. HAPI-778 stays PARTIAL/IN_PROGRESS; closed CI tasks and the frozen
+HAPI-590 disposition are preserved.
+
+**Selected registered message:**
+`feat(identity): qualify native appointment and party reference authority`.
+This implements B2C's existing twelve-path allowlist, without another contract-only
+subdivision. CREATE exactly the registered ProtectedOrganizationAppointmentAuthorizationParticipant
+and ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTest paths.
+MODIFY exactly the registered native participant, JDBC evidence reader, appointment
+participant unit test, native participant unit test, reader unit test, authentication
+boundary test, ArchitectureGuardrailTest, ForensicRemediationClosureTest, test
+inventory and this task record. These are two additions and ten modifications;
+no deletion. No Party implementation, B2B production contract, old native producer,
+workflow/POM, executor, migration, Organization runtime route/service/storage,
+permission catalog/grant or generated API/catalog artifact is changed.
+
+#### Native sample, finite family and final evidence
+
+The concrete owner export implements the existing prepare/acquire/contribute/
+requireCurrent/finalFences lifecycle. Preparation delegates genuine native crypto
+and persistent origin validation outside the transaction. Acquisition accepts
+only its private issuing-instance/thread/current-Authentication preparation and
+the immutable validated Request in an actual writable READ COMMITTED bound
+transaction. Native admission retains the existing NOWAIT Identity relation and
+claim fences, role, physical holder/connection/PID/XID and synchronization checks.
+No public Boolean permission, copied claim, actor ID or scalar Contribution is
+an admission input. No independent transaction or runtime executor route is added.
+
+One native contribution produces the complete private OrganizationClaimGroup.
+Its constructor is private. Every immutable private child credential retains the
+same contribution object, native binding/session/user/sample, expiry, current
+Authentication, originating thread and physical resource. The group request
+retains all canonical ownership descriptors. Fixed-kind company and employee
+requests use CUSTOM with the actual exact ID; units use ORGANIZATION_UNIT with
+the actual unit ID. Resource reference equals scope reference; code snapshot is
+absent. Fixed Action/ResourceKind switches select only the previously registered
+twenty organization:appointment-KIND:ACTION names and exact resource types.
+There is no employee/read-policy combination, prefixed scope escape, arbitrary
+permission, new grant or engineeringDraft=true path.
+
+The private final group reference on QualifiedClaimRead is an explicit family
+discriminator. Existing station/draft/publication credential constructors and
+code/resource sets are retained. Diagnostic/native single-claim credentials do
+not become Organization credentials. Only a consumed genuine group exposes its
+private one-use children to the qualified reader. Public structural reader result
+records cannot issue a group or authenticate a caller. All original credential
+fields remain private final; no old credential immutability assertion is relaxed.
+
+The reader loads every graph before returning any result. Existing actual native
+origin, captured source-claim companion, mapping-generation, role/catalog and held
+fence checks apply to each child. The real AuthorizationPolicyEvaluator evaluates
+all decisions at the one native observedAt. Every expected requirement/code/
+resource/scope/user is checked against the returned graph before aggregation.
+Any DENY or uncertainty rejects and poisons admission; no partially permitted
+Contribution is returned. Only complete PERMIT observations leave contribute,
+and even those scalars remain non-authoritative without the live private ticket.
+
+validUntil is the existing genuine native temporal collector's finite earliest
+boundary, including native/source expiry and the fenced grant, membership,
+attribute, policy and supported-expression time census. The collector is not
+called again to mint another authority sample for other resources. Current native
+origin/state/settings, DB time, PID/XID and exact role/fences are checked again.
+Child checks retain their exact one-use/authentication/connection checks while
+the complete owner freshness checks bracket the whole graph group; they do not
+repeat the whole native census for each child.
+
+requireCurrent reloads all graphs with the same consumed genuine children and
+same original sample, without consuming/issuing another credential. It requires
+value-equal normalized graphs and a fresh all-PERMIT evaluation. In addition,
+a fixed census of the existing temporal collector's exact columns rejects any
+visible future boundary between the original sample and retained validUntil.
+This catches a shortened deadline introduced inside the same transaction,
+including a JDBC savepoint/subtransaction, that relation locks alone cannot
+exclude. It does not mint a new native sample or widen the original interval.
+Deleted or changed contributing authority is detected by graph reloading/value
+comparison or native state/origin checks. Other transactions remain excluded
+by retained owner fences. No new mutable authority table or grant interpretation is introduced.
+
+The final native-group owner query materializes one actual database clock and
+checks the retained sample/expiry/PID/XID interval after evidence and boundary
+checks; current Authentication is checked again afterwards. finalFences invokes
+the full current check before returning immutable scalar relation requirements.
+B3 still needs its own final atomic SQL/physical commit protocol: this export
+does not turn a pre-commit observation into a completed appointment write.
+
+All new public ticket-validation bodies enforce the actual bound transaction
+themselves. They deliberately do not depend on MANDATORY advice rejecting a
+wrong-thread call before the body can invalidate its original ticket/holder.
+No method starts a transaction. Issuer/thread/authentication/connection/role/XID
+substitution, suspension, completion, replay, physical/advised rollback-only,
+missing context, expired native authority and failed graphs invalidate the ticket
+and poison its original holder plus any current holder. Native group methods
+also poison their issuing holder. Final native fences and opaque ticket ownership
+remain required even if somebody constructs a PERMIT scalar observation.
+
+#### Exact architecture admission and actual test registration
+
+Architecture and source-import classifiers admit only the exact Identity
+OrganizationProtectedAppointmentAuthorizationContract and Party
+OrganizationProtectedPartyEligibilityContract roots/nested public types, only
+to the Organization module. Positive/negative classifier cases retain rejection
+of private siblings, private OrganizationClaimGroup and unrelated module callers.
+There is no new wildcard package export. The native/reader public surface and
+caller tests explicitly enumerate the new genuine group seams; all original
+station/draft/publication seams/cases and diagnostic rejection checks remain.
+
+Added 42 real declared JUnit cases:27 in the new PostgreSQL class and15 across
+the six existing unit/architecture classes. The PostgreSQL suite uses actual
+Spring/Flyway/PostgreSQL16, real native crypto/completion/origin/fences/evaluator
+and distinct migration/runtime database identities. Only external directory/OIDC
+transport is synthetic. Cases cover genuine LOCAL/OIDC/LDAP/ACTIVE_DIRECTORY
+with all seven actions; exact company/unit/employee scopes/resources and wrong
+scope/action/reference/catalog denial; every missing/denying company/employee/
+source/destination requirement; explicit DENY over supported-but-unknown policy
+evidence and unsupported-policy fail-closed behavior; multicompany/multiunit
+single-native-contribution history and unit history without employee permission;
+fabricated/foreign/replayed tickets; changed Authentication/thread/holder/XID/
+role, suspension/completion/rollback-only; committed session and provider/credential
+ABA revocation, claim-mapping generation change; own-transaction grant/provider
+revocation and savepoint deadline shortening; actual final DB expiry/rollback; retained fence exclusion of a
+competing writer; and genuine diagnostic-family rejection. The guarded fixture
+also exercises actual physical execution/final-time insertion; no new production
+executor identity or DML authority is reserved by this read/qualification stage.
+
+Unit cases add mock-only ticket/rollback/family mechanics, all exact native group
+resource coordinates/single contribution, final expiry equality, diagnostic
+exclusion and private/caller/export shape checks. The existing 26 scalar contract
+cases remain. Mock mechanics are not PostgreSQL proof; registered PG cases have
+not run locally. No existing test class or case was renamed, removed or archived.
+
+Inventory changes contain only actual changed source hashes/case additions and
+one source-hashed PostgreSQL class. All prior cases, lane/fast ownership, measured
+historical weights, support/archive policy and other metadata remain. The new
+class weight0 is explicitly unmeasured. Selection is 446 active classes/2822 cases,
+fast348 and unit349, with the same five PostgreSQL sets now16/18/19/25/19 and
+the same four historical archives. Existing PostgreSQL membership is retained;
+the one new class joins the canonical measured-weight partitioner. No timing or
+speedup is fabricated from source changes or an unrun test.
+
+**Actual local checks:** all ten changed/new Java files parsed successfully via
+the installed Java17 JavacTask compiler module (syntax only). All 31 canonical
+inventory-classifier self-tests passed. Exact old-case preservation, changed
+case/source hashes, unchanged inventory metadata, complete disjoint full
+selection and fast/unit membership were checked, as were new canonical headers,
+whitespace, scope and retained reader source restrictions. The local checkout is
+partial and Maven/Java21/JUnit/PostgreSQL are unavailable; none was provisioned.
+No Java21 type checking, JUnit/architecture/native/provider/PG runtime or canonical
+full-estate Docs validator success is claimed locally. All runtime and whole
+repository checks remain hosted-CI obligations. API/schema/migrations/dictionary
+are unchanged, so no inferred physical artifact is generated.
+
+#### Next bounded B3 admission registration, before any Organization runtime code
+
+After reviewing actual B2C Full/Fast/Docs feedback, first repair any responsible
+failure. If green, the next registered bounded supporting stage under this same
+HAPI-778 task is B3's exact executable preflight. Exact message:
+`docs(organization): register protected appointment lifecycle execution`.
+Its sole allowed write is this HAPI-778 record in doc/roadmap/TASKS_HPS-003.md,
+append-only; no status/index/registry, Java/test, migration, API or catalog write.
+The purpose is to close the still-required concrete B3 runtime allowlist and SQL
+protocol from current source, rather than infer an executable storage envelope
+from the newly completed Identity interface. No business or deployment value
+request is required: previously accepted explicit policy/binding semantics and
+synthetic fixtures remain the input.
+
+Recover the prior HAPI-778 matched assignment creation aliases, CRUD/list/history
+writers/readers/mappers/controller/security routes and Workflow membership
+consumers, then refresh their exact source and all migrations. Enumerate every
+CREATE/MODIFY/test/generated-artifact path individually, preserve compatibility
+dispositions and freeze the additive migration filename after a live collision
+check. The previous V20261021_001__organization_appointment_ownership_lifecycle.sql
+candidate remains unexecuted, not automatically reserved by this Identity stage.
+Specify current binding/policy pointers and immutable revisions, assignment
+version/pin, durable absence/conflict/idempotency keys, journal/receipt integrity,
+actual runtime/admin privileges and schema/trigger/function checks. Freeze one
+universal all-writer owner/key/assignment lock order and finite SQL/DML hashes
+plus exact executor caller identities/final guard, using these real Identity and
+Party exports. Cover source/destination and every returned historical ownership
+descriptor before rows/counts/metadata; no omission-based disclosure.
+
+The preflight must register concrete concurrency/absence/ABA/CAS/replay/history/
+compatibility/Workflow/rollback/unknown-commit tests and actual hosted API/catalog
+artifact reconciliation paths before admitting runtime code. Preserve the exact
+B3 runtime message `feat(organization): persist protected appointment lifecycle and history` and the separately registered artifact/acceptance stages. If an
+unregistered material owner prerequisite remains, record that concrete gap and
+stop instead of inventing authority, a permissive policy or another runtime
+write path. This supporting registration closes B3 scope; it is not B3 behavior
+and cannot promote HAPI-778 or full capability acceptance.
+
+**Publication:** two additions/ten modifications only, exact B2 message, verified
+raw blobs/tree/parent and expected942925b main guard. Confirm applicable Full,
+Fast and Docs creation/queue/start on the published SHA and STOP under AGENTS.md
+section11.1. B2C implementation awaits actual CI and case-level acceptance;
+HAPI-778 remains incomplete. HidraAPI remains development-only with synthetic
+fixtures. No production database, release, tag or deployment action is taken.
+
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

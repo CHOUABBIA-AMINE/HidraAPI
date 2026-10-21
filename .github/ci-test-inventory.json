@@ -10,6 +10,46 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "anotherIssuerRejectsTicketAndPoisonsItsOriginalHolder",
+        "changedDatabaseRoleFailsFinalNativeFenceCheck",
+        "claimMappingGenerationChangeRequiresFreshNativeAuthentication",
+        "committedNativeSessionRevocationBeforeConsumptionDenies",
+        "committedProviderAndCredentialAbaCannotRestorePreparedOrigin",
+        "completedAndSuspendedTicketsCannotBeReused",
+        "differentActionAndExactReferenceCannotBorrowGrants",
+        "eachCompanyEmployeeSourceAndDestinationDenialRollsBack",
+        "exactIdentifiersWithWrongScopeTypesCannotBorrowAuthority",
+        "explicitDenyWinsOverSupportedButUnknownPolicyEvidence",
+        "fabricatedPreparationAndAdmissionNeverReachAuthority",
+        "finalExpiryUsesActualDatabaseTimeAndRollsBack",
+        "finalOwnerCheckRejectsInTransactionGrantAndProviderRevocation",
+        "fourGenuineOriginsAndAllSevenActionsUseExactAppointmentResources",
+        "genuineDiagnosticCredentialCannotSelectAppointmentOwnerFamily",
+        "holderReplacementAndRollbackOnlyStateInvalidateAdmission",
+        "missingCatalogAndEveryMissingResourceGrantFailClosed",
+        "multiCompanyMultiUnitHistoryHasOneNativeSampleAndAllDecisions",
+        "physicalCommitChangesXidAndLosesRetainedFences",
+        "preparationAndAdmissionCannotBeReplayed",
+        "replacedAuthenticationFailsFinalOwnerCheckAndRollsBack",
+        "retainedNativeGroupBlocksCompetingAuthorityWriter",
+        "savepointWriteCannotShortenOriginalTemporalBound",
+        "scalarDiagnosticCannotEnterOrganizationQualifiedReader",
+        "unitHistoryViewRequiresNoUnrelatedEmployeePermission",
+        "wrongResourceCatalogAndUnknownPolicyRemainFailClosed",
+        "wrongThreadCallPoisonsOriginalPhysicalTransaction"
+      ],
+      "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTest",
+      "dependency_reason": "HAPI-778 B2C genuine native appointment group qualification; real Spring/Flyway/PostgreSQL and synthetic LOCAL/OIDC/LDAP/AD transport; duration unmeasured",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTest.java",
+      "source_sha256": "f96dcba3fab3c277689f582f723801b74f0be4ded06c6076ef1cf3c36bf59e6b",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
         "anyUncertainRequirementPreventsAllPermitObservation",
         "contributionCopiesDecisionsAndRetainsOneNativeSample",
         "contributionRejectsExpiredOrNonpositivePhysicalCoordinates",
@@ -24,6 +64,11 @@
         "historicalUnitSharedAcrossCompanyPairsRetainsBothCompanyRequirements",
         "identifierLimitUsesCodePointsWithoutSilentlyNormalizing",
         "maximumHistoryGroupRetainsAllCompaniesUnitsAndEmployeeDecisions",
+        "participantPreparationCannotBeReplayedOrConsumedByAnotherIssuer",
+        "participantRejectsChangedAuthenticationAndMissingPhysicalContext",
+        "participantRejectsFabricatedTicketsAndPoisonsCurrentHolder",
+        "participantRejectsFinalFencesBeforeCompleteContribution",
+        "participantWrongThreadFailurePoisonsOriginalHolder",
         "permissionDispatchRejectsEmployeePolicyAndNullDispatchInputs",
         "permissionVocabularyIsExactlyTwentyExplicitActionResourceDefinitions",
         "policyReadRejectsEmployeeAndRequiresCompanyAndUnit",
@@ -43,7 +88,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOrganizationAppointmentAuthorizationParticipantTest.java",
-      "source_sha256": "dc6686f0c7b969a9f8c4aa177080d784b494ac8bc09a307a32814e8ecc2063a5",
+      "source_sha256": "6050f5a57679508986aec8dc2b7178bab7e29ed76a5ada82ae69a56d4e6621d5",
       "supports": []
     },
     {
@@ -114,6 +159,7 @@
       "cases": [
         "apiMustNotDependOnInfrastructure",
         "applicationMustNotDependOnApiOrInfrastructure",
+        "appointmentOwnerExportsAdmitOnlyTheirExactRootsAndNestedData",
         "businessDomainMustNotDependOnFrameworkOrPlatformInfrastructure",
         "businessModulesMustNotReachIntoOtherModuleInternals",
         "controllersMustNotAccessOutboundOrPersistenceRepositoriesDirectly",
@@ -135,7 +181,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java",
-      "source_sha256": "a6de4149a326589bce556d1a51094a19194ed2754bc8003b74996b39ea5ebd59",
+      "source_sha256": "5eb093947ce5343c4885aea7e91873290582062405fac1a4817340a29884eef2",
       "supports": []
     },
     {
@@ -169,6 +215,7 @@
     {
       "baseline_seconds": 0.264,
       "cases": [
+        "appointmentImportsDoNotOpenPrivateSiblingsOrOtherConsumers",
         "crossModulePrivateImportsRemainClosed",
         "directWireDomainRepresentationLeakageRemainsAbsent",
         "fictionalModuleEventScaffoldingRemainsAbsent",
@@ -182,7 +229,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java",
-      "source_sha256": "660a97228510c471e2e2ef107681b98d4526404f3b083b583b6b2e488983e203",
+      "source_sha256": "065ef64aef4ebe7e48014e3dc0631b4a6c643a7aa5dc1d93c64d0e1820df0d77",
       "supports": []
     },
     {
@@ -1539,6 +1586,8 @@
     {
       "baseline_seconds": 0.263,
       "cases": [
+        "appointmentGroupHasPrivateIssuerConstructionAndNoIndependentTransaction",
+        "appointmentNativeAndReaderSeamsHaveOnlyExactReviewedCallers",
         "c3OpaqueCredentialCannotBeCallerConstructedOrPromotedByDiagnosticReader",
         "directoryCaptureEntryPointsRemainPrivateAndHaveOnlyReviewedCallers",
         "exactExternalSubjectAndIssuerKeepBoundaryWhitespaceAndUnicode",
@@ -1566,7 +1615,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java",
-      "source_sha256": "be8f29614dd7d348ed48345ecb60569b40d666d43d9fcd4acb2005d16b719c8b",
+      "source_sha256": "aaed934e05a45b2569e8bd7b91c3a033847f33c6be510691dbb39e118c2fb616",
       "supports": []
     },
     {
@@ -2524,6 +2573,7 @@
         "c3QualifiedOverloadCannotBeReachedFromPublicStructuralEvidence",
         "fakeDraftPairCannotBypassGenuineIssuerTransport",
         "hasNoJpaCacheWallClockDecisionPersistenceOrAuthorityExport",
+        "organizationReaderRejectsMissingNativeOwnerBeforeAnySql",
         "preservesGrantOrderScopeWindowsAndDenyPrecedence",
         "preservesTypedAttributesAndConflicts",
         "publicationDiagnosticsAndForgedPairsNeverSelectThePrivateQualifiedFamily",
@@ -2531,6 +2581,7 @@
         "rejectsUnknownClaimCoverageInsteadOfAssumingAbsence",
         "requiresMatchingPhysicalCoordinatesAndCompleteIdentityFences",
         "requiresWritableReadCommittedParticipation",
+        "structuralAppointmentRequestsCannotSelectQualifiedOrganizationFamily",
         "structuralDiagnosticEvidenceCannotSelectEngineeringDraftFamily"
       ],
       "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcProtectedAuthorizationEvidenceReaderTest",
@@ -2539,7 +2590,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java",
-      "source_sha256": "0d0d56aa52190176c10f8315275ccbd43293b26b9f0bae0d34ebe940e4c63f0b",
+      "source_sha256": "e22d228859d518448d4a9470f29770669df77e360e127c54d81c88fc2f5d82b6",
       "supports": []
     },
     {
@@ -2788,6 +2839,10 @@
     {
       "baseline_seconds": 0.235,
       "cases": [
+        "appointmentChildrenShareOneNativeSampleAndExactFiniteScopes",
+        "appointmentGroupFinalExpiryEqualityFailsBeforeEvidenceDisclosure",
+        "appointmentGroupRejectsAnotherIssuerAndPoisonsOriginalHolder",
+        "appointmentGroupWrongThreadPoisonsOriginalHolderWithoutTransactionAdvice",
         "c3ClaimCredentialCannotBeConstructedOrReusedWithoutAPhysicalTransaction",
         "claimOwnerConnectionResourceCannotBeReplacedBeforeFirstConsumption",
         "claimQualificationRejectsNativeDeadlineEqualityOrFutureIssuedSample",
@@ -2810,7 +2865,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipantTest.java",
-      "source_sha256": "b3dc91cd240cc8273776e705f3f4a7133ea83a3cc4c515ded9d1f61d65a92865",
+      "source_sha256": "f3c00d63680a35e41e18b20917f4e2378b8e9e6970f71b0076dacacc3e7a1e4a",
       "supports": []
     },
     {

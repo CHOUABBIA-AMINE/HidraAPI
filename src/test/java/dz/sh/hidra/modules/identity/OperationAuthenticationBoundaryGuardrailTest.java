@@ -32,6 +32,37 @@ import java.util.Set;
 import java.util.UUID;
 
 class OperationAuthenticationBoundaryGuardrailTest {
+    @Test void appointmentGroupHasPrivateIssuerConstructionAndNoIndependentTransaction() throws Exception {
+        var group = dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipant.OrganizationClaimGroup.class;
+        assertThat(group.getDeclaredConstructors()).allMatch(c -> java.lang.reflect.Modifier.isPrivate(c.getModifiers()));
+        var implementation = dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOrganizationAppointmentAuthorizationParticipant.class;
+        for (var method : implementation.getDeclaredMethods()) {
+            if (Set.of("acquire", "contribute", "requireCurrent", "finalFences").contains(method.getName())) {
+                assertThat(method.getAnnotation(org.springframework.transaction.annotation.Transactional.class)).isNull();
+            }
+        }
+        String source = Files.readString(IDENTITY.resolve("infrastructure/security/ProtectedOrganizationAppointmentAuthorizationParticipant.java"));
+        assertThat(source).contains("holder.setRollbackOnly()", "private static final class Ticket", "recheckOrganizationGroup(")
+                .doesNotContain("REQUIRES_NEW", "EvaluatePermissionUseCase", "Instant.now(", "reader.load(", "engineeringDraft=true");
+    }
+
+    @Test void appointmentNativeAndReaderSeamsHaveOnlyExactReviewedCallers() throws Exception {
+        var expected = java.util.Map.of(
+                "qualifyOrganizationGroup", Set.of("infrastructure/security/ProtectedOrganizationAppointmentAuthorizationParticipant.java"),
+                "consumeOrganizationGroup", Set.of("infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java"),
+                "currentOrganizationReads", Set.of("infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java"),
+                "loadQualifiedOrganizationGroup", Set.of("infrastructure/security/ProtectedOrganizationAppointmentAuthorizationParticipant.java"),
+                "recheckOrganizationGroup", Set.of("infrastructure/security/ProtectedOrganizationAppointmentAuthorizationParticipant.java"));
+        for (var entry : expected.entrySet()) {
+            var actual = new java.util.HashSet<String>();
+            try (var paths = Files.walk(IDENTITY)) {
+                for (var file : paths.filter(p -> p.toString().endsWith(".java")).toList()) {
+                    if (Files.readString(file).contains("." + entry.getKey() + "(")) actual.add(IDENTITY.relativize(file).toString().replace('\\', '/'));
+                }
+            }
+            assertThat(actual).isEqualTo(entry.getValue());
+        }
+    }
     private static final Instant NOW = Instant.parse("2026-10-14T07:00:00Z");
     private static final Path IDENTITY = Path.of("src/main/java/dz/sh/hidra/modules/identity");
 

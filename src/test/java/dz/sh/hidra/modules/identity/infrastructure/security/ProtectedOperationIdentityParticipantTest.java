@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedOperationIdentityParticipantTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-20
+ * @UpdatedOn   : 2026-10-21
  *
  * @Type        : Class
  * @Layer       : Identity Test
@@ -154,6 +154,77 @@ class ProtectedOperationIdentityParticipantTest {
             TransactionSynchronizationManager.unbindResource(claimDataSource);
         SecurityContextHolder.clearContext();
         TransactionSynchronizationManager.clear();
+    }
+
+    private dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.Request appointmentRequest() {
+        var action = dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.Action.TRANSFER;
+        return new dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.Request(action,
+                List.of(new dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.CompanyUnit("company", "unit-a"),
+                        new dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.CompanyUnit("company", "unit-b")), "employee");
+    }
+
+    private ProtectedOperationIdentityParticipant.OrganizationClaimGroup appointmentGroup() {
+        TransactionSynchronizationManager.setActualTransactionActive(false);
+        var prepared = participant.prepare();
+        TransactionSynchronizationManager.setActualTransactionActive(true);
+        TransactionSynchronizationManager.initSynchronization();
+        TransactionSynchronizationManager.bindResource(claimDataSource,
+                new org.springframework.jdbc.datasource.ConnectionHolder(mock(java.sql.Connection.class)));
+        when(fence.collect((JdbcIdentityAuthorityFence.Admission) isNull()))
+                .thenReturn(new Candidate(issued.plusSeconds(1), b.expiresAt(), 13, 42L, List.of(), List.of(), 1, 0));
+        when(jdbc.queryForObject("SELECT pg_catalog.clock_timestamp()", java.sql.Timestamp.class))
+                .thenReturn(java.sql.Timestamp.from(issued.plusSeconds(2)));
+        when(jdbc.queryForObject(startsWith("WITH organization_clock"), eq(Boolean.class),
+                any(), any(), anyInt(), anyLong())).thenReturn(true);
+        when(jdbc.queryForObject(startsWith("SELECT NOT EXISTS (SELECT 1 FROM ("), eq(Boolean.class),
+                any(), any())).thenReturn(true);
+        return participant.qualifyOrganizationGroup(participant.admit(prepared), appointmentRequest());
+    }
+
+    @Test void appointmentChildrenShareOneNativeSampleAndExactFiniteScopes() {
+        var group = appointmentGroup();
+        var reads = participant.consumeOrganizationGroup(group, appointmentRequest());
+        assertThat(reads.credentials()).hasSize(4);
+        assertThat(reads.requests()).extracting(AuthorizationEvaluationRequest::resourceType)
+                .containsExactly("ORGANIZATION_COMPANY", "ORGANIZATION_UNIT", "ORGANIZATION_UNIT", "ORGANIZATION_EMPLOYEE");
+        assertThat(reads.requests()).extracting(r -> r.scope().scopeType())
+                .containsExactly(ScopeType.CUSTOM, ScopeType.ORGANIZATION_UNIT, ScopeType.ORGANIZATION_UNIT, ScopeType.CUSTOM);
+        for (int i = 0; i < reads.credentials().size(); i++) {
+            var request = reads.requests().get(i);
+            assertThat(request.resourceReferenceId()).isEqualTo(request.scope().scopeReferenceId());
+            assertThat(participant.consumeClaims(reads.credentials().get(i), request)).isSameAs(reads.contribution());
+            assertThat(participant.organizationCredential(reads.credentials().get(i))).isTrue();
+            assertThat(participant.engineeringDraftCredential(reads.credentials().get(i))).isFalse();
+        }
+        participant.requireCurrentOrganizationGroup(group, appointmentRequest());
+        verify(fence, times(1)).collect((JdbcIdentityAuthorityFence.Admission) isNull());
+        assertThatThrownBy(() -> participant.consumeOrganizationGroup(group, appointmentRequest())).isInstanceOf(AccessDeniedException.class);
+        assertThat(((org.springframework.jdbc.datasource.ConnectionHolder)TransactionSynchronizationManager.getResource(claimDataSource)).isRollbackOnly()).isTrue();
+    }
+
+    @Test void appointmentGroupWrongThreadPoisonsOriginalHolderWithoutTransactionAdvice() throws Exception {
+        var group = appointmentGroup();
+        var worker = Executors.newSingleThreadExecutor();
+        try {
+            worker.submit(() -> assertThatThrownBy(() -> participant.consumeOrganizationGroup(group, appointmentRequest()))
+                    .isInstanceOf(AccessDeniedException.class)).get(5, TimeUnit.SECONDS);
+        } finally { worker.shutdownNow(); }
+        assertThat(((org.springframework.jdbc.datasource.ConnectionHolder)TransactionSynchronizationManager.getResource(claimDataSource)).isRollbackOnly()).isTrue();
+    }
+
+    @Test void appointmentGroupRejectsAnotherIssuerAndPoisonsOriginalHolder() {
+        var group = appointmentGroup();
+        var other = new ProtectedOperationIdentityParticipant(bindings, states, provider, issuer, registry, fence, jdbc, 65536);
+        assertThatThrownBy(() -> other.consumeOrganizationGroup(group, appointmentRequest())).isInstanceOf(AccessDeniedException.class);
+        assertThat(((org.springframework.jdbc.datasource.ConnectionHolder)TransactionSynchronizationManager.getResource(claimDataSource)).isRollbackOnly()).isTrue();
+    }
+
+    @Test void appointmentGroupFinalExpiryEqualityFailsBeforeEvidenceDisclosure() {
+        var group = appointmentGroup();
+        when(jdbc.queryForObject("SELECT pg_catalog.clock_timestamp()", java.sql.Timestamp.class))
+                .thenReturn(java.sql.Timestamp.from(b.expiresAt()));
+        assertThatThrownBy(() -> participant.consumeOrganizationGroup(group, appointmentRequest())).isInstanceOf(AccessDeniedException.class);
+        assertThat(((org.springframework.jdbc.datasource.ConnectionHolder)TransactionSynchronizationManager.getResource(claimDataSource)).isRollbackOnly()).isTrue();
     }
 
     private AuthorizationEvaluationRequest claimRequest() {

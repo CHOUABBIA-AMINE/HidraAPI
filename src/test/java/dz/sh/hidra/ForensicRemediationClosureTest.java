@@ -7,7 +7,7 @@
  *
  * @Name        : ForensicRemediationClosureTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-20
+ * @UpdatedOn   : 2026-10-21
  *
  * @Type        : Test
  * @Layer       : Architecture Test
@@ -186,10 +186,28 @@ class ForensicRemediationClosureTest {
                         && imported.equals("dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedEngineeringDraftAuthorizationContract")) {
                     continue;
                 }
+                if (organizationOwnerExport(source.fqcn(), imported)) continue;
                 violations.add(source.fqcn() + " -> " + imported);
             }
         }
         assertTrue(violations.isEmpty(), () -> "Unapproved cross-module imports: " + violations);
+    }
+
+    private static boolean organizationOwnerExport(String source, String imported) {
+        return source.startsWith("dz.sh.hidra.modules.organization.") && Set.of(
+                "dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract",
+                "dz.sh.hidra.modules.party.application.contract.organization.OrganizationProtectedPartyEligibilityContract")
+                .stream().anyMatch(root -> imported.equals(root) || imported.startsWith(root + "."));
+    }
+
+    @Test void appointmentImportsDoNotOpenPrivateSiblingsOrOtherConsumers() {
+        String source = "dz.sh.hidra.modules.organization.application.service.AppointmentCoordinator";
+        String root = "dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract";
+        assertTrue(organizationOwnerExport(source, root));
+        assertTrue(organizationOwnerExport(source, root + ".Admission"));
+        assertFalse(organizationOwnerExport(source, root + "Sibling"));
+        assertFalse(organizationOwnerExport(source, "dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipant.OrganizationClaimGroup"));
+        assertFalse(organizationOwnerExport("dz.sh.hidra.modules.topology.application.service.Other", root));
     }
 
     @Test

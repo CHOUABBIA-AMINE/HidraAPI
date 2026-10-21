@@ -7,7 +7,7 @@
  *
  * @Name        : JdbcProtectedAuthorizationEvidenceReader
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-20
+ * @UpdatedOn   : 2026-10-21
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -135,14 +135,23 @@ public class JdbcProtectedAuthorizationEvidenceReader {
     public AuthorizationEvidence loadQualified(
             ProtectedOperationIdentityParticipant.QualifiedClaimRead credential,
             AuthorizationEvaluationRequest request) {
+        return loadClaims(credential, request, false);
+    }
+
+    private AuthorizationEvidence loadClaims(
+            ProtectedOperationIdentityParticipant.QualifiedClaimRead credential,
+            AuthorizationEvaluationRequest request, boolean organizationRecheck) {
         try {
             if (participant == null || bindings == null || companions == null
                     || registry == null || catalog == null) throw invalid();
-            var contribution = participant.consumeClaims(credential, request);
+            var contribution = organizationRecheck
+                    ? participant.currentOrganizationClaims(credential, request)
+                    : participant.consumeClaims(credential, request);
             Evidence evidence = contribution.evidence();
             int pid = contribution.backendPid();
             long xid = contribution.transactionId();
-            validate(evidence, request, pid, xid, participant.engineeringDraftCredential(credential));
+            validate(evidence, request, pid, xid, participant.engineeringDraftCredential(credential),
+                    participant.organizationCredential(credential));
             coordinates(pid, xid);
             heldClaims();
             OperationAuthenticationBinding original =
@@ -240,6 +249,53 @@ public class JdbcProtectedAuthorizationEvidenceReader {
             AuthorizationEvidence facility,
             ProtectedOperationIdentityParticipant.Contribution contribution) {}
 
+    /** Only a private native group may load this family. All children precede disclosure. */
+    public OrganizationAuthorizationEvidence loadQualifiedOrganizationGroup(
+            ProtectedOperationIdentityParticipant.OrganizationClaimGroup group,
+            dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.Request request) {
+        try {
+            if (participant == null) throw invalid();
+            var reads = participant.consumeOrganizationGroup(group, request);
+            var evidence = new java.util.ArrayList<AuthorizationEvidence>();
+            for (int i = 0; i < reads.credentials().size(); i++) {
+                evidence.add(loadClaims(reads.credentials().get(i), reads.requests().get(i), false));
+            }
+            participant.requireCurrentOrganizationGroup(group, request);
+            return new OrganizationAuthorizationEvidence(reads.requests(), evidence, reads.contribution());
+        } catch (RuntimeException failure) {
+            if (participant != null) participant.invalidateOrganizationGroup(group);
+            throw invalid();
+        }
+    }
+
+    /** Re-read under retained fences without issuing or consuming another credential/sample. */
+    public OrganizationAuthorizationEvidence recheckOrganizationGroup(
+            ProtectedOperationIdentityParticipant.OrganizationClaimGroup group,
+            dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.Request request) {
+        try {
+            if (participant == null) throw invalid();
+            var reads = participant.currentOrganizationReads(group, request);
+            var evidence = new java.util.ArrayList<AuthorizationEvidence>();
+            for (int i = 0; i < reads.credentials().size(); i++) {
+                evidence.add(loadClaims(reads.credentials().get(i), reads.requests().get(i), true));
+            }
+            participant.requireCurrentOrganizationGroup(group, request);
+            return new OrganizationAuthorizationEvidence(reads.requests(), evidence, reads.contribution());
+        } catch (RuntimeException failure) {
+            if (participant != null) participant.invalidateOrganizationGroup(group);
+            throw invalid();
+        }
+    }
+
+    public record OrganizationAuthorizationEvidence(List<AuthorizationEvaluationRequest> requests,
+            List<AuthorizationEvidence> evidence, ProtectedOperationIdentityParticipant.Contribution contribution) {
+        public OrganizationAuthorizationEvidence {
+            requests = List.copyOf(requests); evidence = List.copyOf(evidence);
+            if (requests.isEmpty() || requests.size() != evidence.size()) throw invalid();
+            Objects.requireNonNull(contribution);
+        }
+    }
+
     private void heldClaims() {
         if (!RELATIONS.stream().map(PREFIX::concat).toList()
                     .equals(jdbc.queryForList(HELD, String.class))) throw invalid();
@@ -292,6 +348,9 @@ public class JdbcProtectedAuthorizationEvidenceReader {
         validate(i,r,pid,xid,false);
     }
     private void validate(Evidence i, AuthorizationEvaluationRequest r, int pid, long xid,boolean draft) {
+        validate(i, r, pid, xid, draft, false);
+    }
+    private void validate(Evidence i, AuthorizationEvaluationRequest r, int pid, long xid,boolean draft, boolean organization) {
         if (!TransactionSynchronizationManager.isActualTransactionActive()
                 || TransactionSynchronizationManager.isCurrentTransactionReadOnly()
                 || i == null
@@ -329,7 +388,24 @@ public class JdbcProtectedAuthorizationEvidenceReader {
                         || i.externalGeneration() <= 0
                         || ("OIDC".equals(i.authenticationType())
                                 != (i.sourceExpiresAt() != null)))) throw invalid();
-        if(draft){
+        if (organization) {
+            if (draft || !i.userId().equals(r.userId()) || r.scope() == null
+                    || !text(r.resourceReferenceId(), 80)
+                    || !r.resourceReferenceId().equals(r.scope().scopeReferenceId())
+                    || r.scope().scopeCodeSnapshot() != null) throw invalid();
+            boolean exact = false;
+            for (var action : dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.Action.values()) {
+                for (var kind : dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.ResourceKind.values()) {
+                    if (action == dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.Action.READ_POLICY
+                            && kind == dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.ResourceKind.EMPLOYEE) continue;
+                    var type = kind == dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.ResourceKind.UNIT
+                            ? ScopeType.ORGANIZATION_UNIT : ScopeType.CUSTOM;
+                    if (kind.resourceType().equals(r.resourceType()) && type == r.scope().scopeType()
+                            && dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.permissionCode(action, kind).equals(r.permissionCode())) exact = true;
+                }
+            }
+            if (!exact) throw invalid();
+        } else if(draft){
             boolean publication=Set.of("topology:engineering-publication:publish","topology:engineering-publication:withdraw",
                 "topology:engineering-publication:reactivate","topology:engineering-publication:read").contains(r.permissionCode());
             if(!i.userId().equals(r.userId()) || !(publication?"ENGINEERING_NETWORK_PUBLICATION":"ENGINEERING_NETWORK_DRAFT").equals(r.resourceType())

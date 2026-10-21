@@ -157,6 +157,27 @@ class ArchitectureGuardrailTest {
      */
     private static final Map<String, Set<String>> TRANSITIONAL_CROSS_MODULE_DEPENDENCIES = Map.of();
 
+    private static final Set<String> ORGANIZATION_OWNER_EXPORTS = Set.of(
+            "dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract",
+            "dz.sh.hidra.modules.party.application.contract.organization.OrganizationProtectedPartyEligibilityContract");
+
+    private static boolean isOrganizationOwnerExport(String source, String target) {
+        return source.startsWith("dz.sh.hidra.modules.organization.")
+                && ORGANIZATION_OWNER_EXPORTS.stream().anyMatch(root -> target.equals(root) || target.startsWith(root + "$"));
+    }
+
+    @Test void appointmentOwnerExportsAdmitOnlyTheirExactRootsAndNestedData() {
+        String source = "dz.sh.hidra.modules.organization.application.service.AppointmentCoordinator";
+        for (String root : ORGANIZATION_OWNER_EXPORTS) {
+            assertFalse(isForbiddenCrossModuleDependency(source, root));
+            assertFalse(isForbiddenCrossModuleDependency(source, root + "$Admission"));
+            assertTrue(isForbiddenCrossModuleDependency(source, root + "Sibling"));
+            assertTrue(isForbiddenCrossModuleDependency("dz.sh.hidra.modules.topology.application.service.Other", root));
+        }
+        assertTrue(isForbiddenCrossModuleDependency(source,
+                "dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipant$OrganizationClaimGroup"));
+    }
+
     @Test
     void transactionalOrganizationResponsibilityServicesMustRemainProxyable() {
         assertFalse(
@@ -327,6 +348,7 @@ class ArchitectureGuardrailTest {
                 if (isTransitionallyAllowed(source.getName(), target.getName())) {
                     continue;
                 }
+                if (isOrganizationOwnerExport(source.getName(), target.getName())) continue;
 
                 violations.add(source.getName() + " -> " + target.getName());
             }
@@ -608,6 +630,7 @@ class ArchitectureGuardrailTest {
         if (isExplicitlyExported(targetPackage)) {
             return false;
         }
+        if (isOrganizationOwnerExport(sourceClassName, targetClassName)) return false;
         return !isTransitionallyAllowed(sourceClassName, targetClassName);
     }
 

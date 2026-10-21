@@ -33,6 +33,93 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /** These are scalar contract cases, not evidence of native credentials or database admission. */
 class ProtectedOrganizationAppointmentAuthorizationParticipantTest {
+    @Test void participantRejectsFabricatedTicketsAndPoisonsCurrentHolder() {
+        try (var fixture = new Mechanics()) {
+            assertThrows(RuntimeException.class, () -> fixture.service.acquire(new Prepared(){}, fixture.request));
+            assertTrue(fixture.holder.isRollbackOnly());
+            org.mockito.Mockito.verifyNoInteractions(fixture.reader);
+        }
+        try (var fixture = new Mechanics()) {
+            assertThrows(RuntimeException.class, () -> fixture.service.contribute(new Admission(){}));
+            assertTrue(fixture.holder.isRollbackOnly());
+        }
+    }
+
+    @Test void participantPreparationCannotBeReplayedOrConsumedByAnotherIssuer() {
+        try (var fixture = new Mechanics()) {
+            fixture.service.acquire(fixture.prepared, fixture.request);
+            assertThrows(RuntimeException.class, () -> fixture.service.acquire(fixture.prepared, fixture.request));
+            assertTrue(fixture.holder.isRollbackOnly());
+        }
+        try (var fixture = new Mechanics()) {
+            var other = new ProtectedOrganizationAppointmentAuthorizationParticipant(fixture.identity, fixture.reader, fixture.jdbc);
+            assertThrows(RuntimeException.class, () -> other.acquire(fixture.prepared, fixture.request));
+            assertTrue(fixture.holder.isRollbackOnly());
+        }
+    }
+
+    @Test void participantRejectsFinalFencesBeforeCompleteContribution() {
+        try (var fixture = new Mechanics()) {
+            var admission = fixture.service.acquire(fixture.prepared, fixture.request);
+            assertThrows(RuntimeException.class, () -> fixture.service.finalFences(admission));
+            assertTrue(fixture.holder.isRollbackOnly());
+            org.mockito.Mockito.verifyNoInteractions(fixture.reader);
+        }
+    }
+
+    @Test void participantRejectsChangedAuthenticationAndMissingPhysicalContext() {
+        try (var fixture = new Mechanics()) {
+            var admission = fixture.service.acquire(fixture.prepared, fixture.request);
+            org.springframework.security.core.context.SecurityContextHolder.clearContext();
+            assertThrows(RuntimeException.class, () -> fixture.service.contribute(admission));
+            assertTrue(fixture.holder.isRollbackOnly());
+        }
+        try (var fixture = new Mechanics()) {
+            org.springframework.transaction.support.TransactionSynchronizationManager.setActualTransactionActive(false);
+            assertThrows(RuntimeException.class, () -> fixture.service.acquire(fixture.prepared, fixture.request));
+            assertTrue(fixture.holder.isRollbackOnly());
+        }
+    }
+
+    @Test void participantWrongThreadFailurePoisonsOriginalHolder() throws Exception {
+        try (var fixture = new Mechanics()) {
+            var admission = fixture.service.acquire(fixture.prepared, fixture.request);
+            var worker = java.util.concurrent.Executors.newSingleThreadExecutor();
+            try { worker.submit(() -> assertThrows(RuntimeException.class,
+                    () -> fixture.service.requireCurrent(admission))).get(5, java.util.concurrent.TimeUnit.SECONDS); }
+            finally { worker.shutdownNow(); }
+            assertTrue(fixture.holder.isRollbackOnly());
+        }
+    }
+
+    /** Mock mechanics only. PostgreSQL cases separately exercise real native origins and graphs. */
+    private static final class Mechanics implements AutoCloseable {
+        final ProtectedOperationIdentityParticipant identity = org.mockito.Mockito.mock(ProtectedOperationIdentityParticipant.class);
+        final dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcProtectedAuthorizationEvidenceReader reader =
+                org.mockito.Mockito.mock(dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcProtectedAuthorizationEvidenceReader.class);
+        final org.springframework.jdbc.core.JdbcTemplate jdbc = org.mockito.Mockito.mock(org.springframework.jdbc.core.JdbcTemplate.class);
+        final javax.sql.DataSource dataSource = org.mockito.Mockito.mock(javax.sql.DataSource.class);
+        final org.springframework.jdbc.datasource.ConnectionHolder holder = new org.springframework.jdbc.datasource.ConnectionHolder(org.mockito.Mockito.mock(java.sql.Connection.class));
+        final ProtectedOrganizationAppointmentAuthorizationParticipant service = new ProtectedOrganizationAppointmentAuthorizationParticipant(identity, reader, jdbc);
+        final Request request = new Request(Action.CREATE, List.of(new CompanyUnit("company", "unit")), "employee");
+        final Prepared prepared;
+        Mechanics() {
+            org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(
+                    org.springframework.security.authentication.UsernamePasswordAuthenticationToken.authenticated("synthetic", "", List.of()));
+            org.mockito.Mockito.when(identity.prepare()).thenReturn(org.mockito.Mockito.mock(ProtectedOperationIdentityParticipant.Prepared.class));
+            org.mockito.Mockito.when(identity.admit(org.mockito.ArgumentMatchers.any())).thenReturn(org.mockito.Mockito.mock(ProtectedOperationIdentityParticipant.Admitted.class));
+            org.mockito.Mockito.when(jdbc.getDataSource()).thenReturn(dataSource);
+            prepared = service.prepare();
+            org.springframework.transaction.support.TransactionSynchronizationManager.setActualTransactionActive(true);
+            org.springframework.transaction.support.TransactionSynchronizationManager.initSynchronization();
+            org.springframework.transaction.support.TransactionSynchronizationManager.bindResource(dataSource, holder);
+        }
+        @Override public void close() {
+            org.springframework.transaction.support.TransactionSynchronizationManager.unbindResource(dataSource);
+            org.springframework.transaction.support.TransactionSynchronizationManager.clear();
+            org.springframework.security.core.context.SecurityContextHolder.clearContext();
+        }
+    }
     private static final CompanyUnit A1 = new CompanyUnit("company-a", "unit-1");
     private static final CompanyUnit A2 = new CompanyUnit("company-a", "unit-2");
     private static final CompanyUnit B3 = new CompanyUnit("company-b", "unit-3");

@@ -20978,6 +20978,178 @@ exceptions now. Full B2 and HAPI-778 are not completed by B2A. HidraAPI remains 
 development API; no release, production database or deployment action follows.
 
 
+### 2026-10-21 — HAPI-778 B2B finite Identity appointment contract
+
+Owner Next recovered main dd73a1b5832828922af736f025316da329d58029,
+tree fbb5954cfcacf9dce7ddb5ff9d17bbce3e130858, and actual successful
+[Full792](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39577768060),
+[Fast112](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39577768027) and
+[Documentation480](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39577768144)
+on that exact SHA. B2A's Party owner slice is green. HAPI-045/HAPI-046/HAPI-436
+remain closed under their recorded development acceptance; their historical
+timings, five PostgreSQL partitions and archive policy are preserved.
+
+**Source-backed subdivision within B2:** current native Identity exposes one
+qualified claim or a fixed company/facility pair. Draft/publication pairs use
+their existing engineeringDraft discriminator and resource semantics. They
+cannot safely represent an appointment request of up to100 ownership pairs,
+potentially201 distinct company/unit/employee decisions, by routing the new
+request through a draft credential or repeatedly consuming native preparation.
+The existing reader validates its fixed resource/code families separately.
+Therefore B2B delivers the finite request/observation contract and its genuine
+scalar tests first. B2C retains the native group implementation and full runtime
+qualification from the original B2 handoff. This is a bounded subdivision of the
+same registered task/message, not a completed native export or replacement for
+the original acceptance matrix. HAPI-778 stays PARTIAL/IN_PROGRESS.
+
+**Exact four-path scope**, all within the previously admitted B2 envelope:
+
+CREATE:
+
+- src/main/java/dz/sh/hidra/modules/identity/application/contract/organization/OrganizationProtectedAppointmentAuthorizationContract.java
+- src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOrganizationAppointmentAuthorizationParticipantTest.java
+
+MODIFY only .github/ci-test-inventory.json and this HAPI-778 record. DELETE none.
+Both CREATE paths are absent at the reviewed parent. The test class occupies
+its registered B2 path and currently tests scalar contract behavior only; it
+will be extended in place for the actual participant. No concrete participant,
+Spring bean, dispatcher route, architecture export exception, migration,
+permission catalog/grant, producer, Organization runtime, API/dictionary,
+workflow, POM or old test is changed by this slice.
+
+The contract exposes opaque Prepared/Admission marker types and the intended
+prepare/acquire/contribute/requireCurrent/finalFences lifecycle. There is no
+implementation or ticket factory. Its immutable Request carries a fixed Action,
+canonical distinct company/unit pairs and an optional exact employee selector.
+Identifiers are bounded to80 Unicode code points, retain exact case/content,
+reject missing/blank/padded/control/malformed-surrogate forms and are never
+silently trimmed. Lists are defensively copied. Company/unit pairs must already
+be in String order by company then unit; invalid ordering and duplicates reject.
+All reads allow at most100 pairs. CREATE/END require one pair plus employee;
+TRANSFER/CORRECT allow one or two same-company pairs plus employee; READ_POLICY
+forbids employee. READ_CURRENT/HISTORY support unit views or employee-specific
+views. These are request descriptors, not evidence of actual ownership.
+
+Requirements are a deterministic immutable sequence: distinct sorted companies,
+distinct sorted units, then optional employee. An historical unit represented
+under multiple company pins retains every company requirement while sharing the
+same exact unit decision. Equal scalar IDs across resource kinds remain distinct.
+The original pairs remain available for B3's separate current/pinned-ownership
+check. A100-company/100-unit employee history needs all201 decisions. No response
+row, count or metadata may be disclosed based only on this structural coverage.
+
+Fixed enum switches map the seven actions and three resource kinds to the
+previously registered20 lower-case organization:appointment-KIND:ACTION names
+and exact ORGANIZATION_COMPANY/ORGANIZATION_UNIT/ORGANIZATION_EMPLOYEE resource
+types. EMPLOYEE/READ_POLICY rejects. No arbitrary permission or scope is accepted;
+this mapping creates neither durable definitions nor grants. Missing actual
+catalog/grants must still fail closed when B2C executes the real reader.
+
+Contribution contains exactly the ordered requirements' observations and one
+native binding/session/user/sample/expiry/PID/XID tuple. Missing, duplicated,
+foreign, extra or reordered decisions reject structurally. Scalar aggregation
+returns DENY if any decision denies, otherwise INDETERMINATE if any is uncertain,
+otherwise PERMIT. This aggregation does not evaluate a policy or confer authority.
+Contributions and relation lists remain freely constructible data; only B2C's
+private issuer-owned live Admission will be acceptable to owner lifecycle checks.
+Positive coordinates and sample-before-expiry are shape checks, not proof of a
+live transaction, real sample, current grant or bounded native/evidence expiry.
+
+**Registered tests:**26 ordinary JUnit cases exercise every action/cardinality,
+same-company rule,100/101 boundary, canonical pair order, input/list immutability,
+all represented companies/units, equal cross-kind IDs, Unicode code-point limits,
+malformed identifiers, all20 exact permission/resource mappings, unsupported
+dispatch, locale independence, complete decision coverage, missing destination/
+employee, foreign/duplicate/extra/reordered observations, every denial position,
+uncertainty, observation immutability, native metadata shape and201-decision
+maximum history. They do not mock native authentication or claim PostgreSQL proof.
+No prior class or case was renamed/dropped. The added source-hashed class is
+owned by Identity in unit-architecture/fast; duration0 is explicitly unmeasured.
+All prior inventory entries and non-class metadata remain equal. Active selection
+is now445 classes/2780 cases, fast348, unit349, PostgreSQL16/18/19/24/19,
+with the same four historical archives and unchanged PostgreSQL membership.
+
+**Actual local validation:** the installed Java17 compiler module type-checked
+the production contract with the existing ProtectedRelationFence source. A
+standalone standard-Java harness passed110 scalar assertions, including all20
+codes, action bounds,100/101 reads, identifier failures, missing coverage and DENY
+precedence. This harness is scratch-only and is not counted among registered
+JUnit cases. Both new Java files also passed JavacTask syntax parsing. All31
+canonical inventory-classifier self-tests passed. Source/case hashes, inventory
+preservation and disjoint complete partition selection were checked. Whitespace,
+canonical headers and exact changed-file scope were reviewed. Maven, JUnit and
+the javac executable remain unavailable; no environment was provisioned. No
+Java21/JUnit/native/provider/PostgreSQL/architecture runtime or full-estate Docs
+validator success is claimed locally. The local checkout remains partial.
+
+#### Next B2C — native appointment group and exact export qualification
+
+After reviewing B2B's actual applicable CI feedback, continue the same exact
+message `feat(identity): qualify native appointment and party reference authority`.
+The remaining original B2 obligations and acceptance matrix are retained in full.
+The exact remaining twelve-path scope is:
+
+CREATE:
+
+- src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOrganizationAppointmentAuthorizationParticipant.java
+- src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTest.java
+
+MODIFY:
+
+- src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipant.java
+- src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java
+- src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOrganizationAppointmentAuthorizationParticipantTest.java
+- src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipantTest.java
+- src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java
+- src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java
+- src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java
+- src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java
+- .github/ci-test-inventory.json
+- doc/roadmap/TASKS_HPS-003.md, only this HAPI-778 evidence
+
+No widening of the admitted production contract or completed Party slice is
+implied. Refresh source/governance/CI before implementing. One genuine native
+admission must issue the whole bounded Organization group and its private
+one-use child credentials under a dedicated owner-family discriminator, never
+engineeringDraft=true, resource prefix escape or independently prepared samples.
+Every child shares actual binding/session/user/sample, expiry, authentication
+instance, thread and physical connection/PID/XID. Resource reference equals
+exact scope reference: company/employee CUSTOM with their actual IDs and unit
+ORGANIZATION_UNIT with its actual unit ID. The fixed resource kind selects the
+exact permission. Use the genuine qualified reader and AuthorizationPolicyEvaluator
+under all existing fences; all requirements must be evaluated at one sample.
+Missing/unknown catalog, uncertainty and denial fail closed, with DENY precedence
+and native/evidence expiry intersection. Keep old station/draft/publication code
+sets and diagnostics intact.
+
+All invalid opaque-ticket paths must invalidate and poison the original physical
+holder plus any current transaction, including wrong-thread calls that cannot
+reach a MANDATORY-advised body. Require issuer/thread/current Authentication/
+connection/PID/XID/liveness, no suspension/completion/replay/rollback-only and
+fresh native/grant/provider/claim checks through final expiry. requireCurrent and
+finalFences must retain owner authority; structural Contributions cannot substitute.
+Architecture admission must allow only the two exact Identity/Party Organization
+exports and test private sibling/fabricated-ticket rejection, with no wildcard.
+
+Implement genuine signed/completed synthetic LOCAL/OIDC/LDAP/ACTIVE_DIRECTORY
+PostgreSQL cases, every company/employee/source/destination denial, DENY precedence,
+multiunit/multicompany same-sample decisions, finite bounds/family substitution,
+missing/unknown catalog/policy uncertainty, forged/replayed/wrong-thread/auth/XID/
+suspended/completed/rollback-only tickets, revocations, final expiry and rollback.
+All current native/Topology/Party regression cases remain required. Unit mechanics
+and this contract's scalar tests cannot replace genuine runtime evidence. B2C
+must still close B3's exact paths, additive migration/role rules, universal
+all-writer lock order, hashed DML/final guards and generated-artifact handoff
+before B3 code is admitted. B3 runtime is not selected by this contract slice.
+
+**Publication/stop:** verify two additions/two modifications only, exact B2
+message, raw blob bytes, parent/tree and expected-dd73a1b main guard. Confirm
+exact-SHA applicable Full/Fast/Docs creation/queue/start and STOP under AGENTS.md
+section11.1. Hosted runtime acceptance remains pending until actual results are
+reviewed. HAPI-778 and full B2 are not complete. HidraAPI remains a development
+API; no production data, release or deployment action is taken.
+
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

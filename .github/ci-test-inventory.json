@@ -8768,6 +8768,7 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "authorizedOutputPinsOriginalCompanyAndPolicyWithoutInferringCurrentState",
         "contractsContainNoActorPermissionOrCredentials",
         "correctRejectsMissingStatusAndInvalidEndedInterval",
         "createRejectsMissingOrUnsafeSelectorsAndType",
@@ -8776,17 +8777,21 @@
         "distinctHistoryScopesNeverPermitMixedSelectors",
         "endCarriesCasAndReasonWithoutTreatingItAsPermission",
         "exactVersionAndPolicyQueriesRequireExplicitSelectors",
+        "historyPageDefensivelyCopiesEntriesAndNeverDisclosesTotals",
+        "inboundUseCaseReturnsDistinctPrivateAndRedactedHistoryTypes",
+        "mutationReceiptDistinguishesNewEventFromHistoricalReplayAndRequiresShape",
         "pagesRejectUnboundedLimitsAndMalformedCursors",
+        "positionResultRedactsEmployeeAndPrivateActorFieldsStructurally",
         "timestampsRejectNanosecondsWithoutSilentRounding",
         "transferRequiresTypedDestinationPinsAndAdjacentIntervalProposalInputs"
       ],
       "class": "dz.sh.hidra.modules.organization.EmployeeAppointmentBoundaryGuardrailTest",
-      "dependency_reason": "HAPI-778 B3B immutable application selector and temporal/ownership contract unit tests; pure Java/JUnit, no service context or database; new class weight unmeasured.",
+      "dependency_reason": "HAPI-778 B3B immutable selectors and B3C pinned private/redacted result and inbound port boundaries; synthetic pure Java/JUnit, no protected runtime or PostgreSQL execution; weight unmeasured.",
       "fast": true,
       "lane": "unit-architecture",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/EmployeeAppointmentBoundaryGuardrailTest.java",
-      "source_sha256": "2657c31e5ab5fc2ff91b6ef9501e0cab794538c5277271c04aa4e1fdf53301e7",
+      "source_sha256": "5de88cb514c3c5213eba26c9f20a2231fd375232bd3610439b8f7fa06686cc6a",
       "supports": []
     }
   ],

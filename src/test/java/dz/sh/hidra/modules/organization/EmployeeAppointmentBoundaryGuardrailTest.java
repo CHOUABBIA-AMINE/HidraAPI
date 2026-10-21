@@ -160,4 +160,90 @@ class EmployeeAppointmentBoundaryGuardrailTest {
             }
         }
     }
+
+    private static dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.PinnedVersion pinned() {
+        var assignment = new dz.sh.hidra.modules.organization.domain.model.EmployeeAssignment(
+                "assignment", "employee-private", "unit", "position", AssignmentType.PRIMARY,
+                FROM, TO, AssignmentStatus.ACTIVE, FROM, FROM);
+        var revision = new dz.sh.hidra.modules.organization.domain.model.EmployeeAppointmentChange
+                .VersionedAssignment(1, assignment);
+        var binding = new dz.sh.hidra.modules.organization.domain.model.OrganizationUnitCompanyBinding(
+                "binding", 2, "unit", "company", FROM);
+        return new dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.PinnedVersion(
+                new dz.sh.hidra.modules.organization.domain.model.CompanyBoundEmployeeAppointment(revision, binding),
+                "policy", 3);
+    }
+
+    @Test void authorizedOutputPinsOriginalCompanyAndPolicyWithoutInferringCurrentState() {
+        var pinned = pinned();
+        assertEquals("company", pinned.companyPartyId());
+        assertEquals(1, pinned.appointmentVersion());
+        assertEquals("binding", pinned.snapshot().binding().id());
+        assertEquals(2, pinned.snapshot().binding().revision());
+        assertThrows(InvalidOrganizationValueException.class, () ->
+                new dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.PinnedVersion(
+                        pinned.snapshot(), "policy", 0));
+    }
+
+    @Test void positionResultRedactsEmployeeAndPrivateActorFieldsStructurally() {
+        var redacted = dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult
+                .PositionVersion.redact(pinned());
+        assertEquals("assignment", redacted.assignmentId());
+        assertEquals("company", redacted.companyPartyId());
+        assertEquals("unit", redacted.organizationUnitId());
+        for (var component : redacted.getClass().getRecordComponents()) {
+            var name = component.getName().toLowerCase(java.util.Locale.ROOT);
+            assertFalse(name.contains("employee") || name.contains("name") || name.contains("actor")
+                    || name.contains("permission") || name.contains("token") || name.contains("session"));
+        }
+    }
+
+    @Test void mutationReceiptDistinguishesNewEventFromHistoricalReplayAndRequiresShape() {
+        var p = pinned();
+        var result = new dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult
+                .MutationReceipt(EmployeeAppointmentCommand.Kind.CREATE, "req", "evt", FROM,
+                        false, null, p, null);
+        assertFalse(result.historicalReplay());
+        assertThrows(InvalidOrganizationValueException.class, () ->
+                new dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult
+                        .MutationReceipt(EmployeeAppointmentCommand.Kind.TRANSFER, "req", "evt", FROM,
+                                true, p, p, null));
+        assertThrows(InvalidOrganizationValueException.class, () ->
+                new dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult
+                        .MutationReceipt(EmployeeAppointmentCommand.Kind.CREATE, "req", "evt", FROM,
+                                false, p, p, null));
+    }
+
+    @Test void historyPageDefensivelyCopiesEntriesAndNeverDisclosesTotals() {
+        var original = new java.util.ArrayList<dz.sh.hidra.modules.organization.application.dto
+                .EmployeeAppointmentResult.PrivateHistoryEvent>();
+        original.add(new dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult
+                .PrivateHistoryEvent("evt", EmployeeAppointmentCommand.Kind.CREATE, FROM, null, pinned(), null));
+        var page = new dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult
+                .HistoryPage<>(original, "opaque", true);
+        original.clear();
+        assertEquals(1, page.entries().size());
+        assertThrows(UnsupportedOperationException.class, () -> page.entries().clear());
+        assertThrows(InvalidOrganizationValueException.class, () ->
+                new dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult
+                        .HistoryPage<>(java.util.List.of(), null, true));
+        assertThrows(InvalidOrganizationValueException.class, () ->
+                new dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult
+                        .HistoryPage<>(java.util.List.of(), "cursor", false));
+        assertEquals(3, page.getClass().getRecordComponents().length);
+    }
+
+    @Test void inboundUseCaseReturnsDistinctPrivateAndRedactedHistoryTypes() throws Exception {
+        var useCase = dz.sh.hidra.modules.organization.application.port.in
+                .EmployeeAppointmentLifecycleUseCase.class;
+        assertTrue(useCase.isInterface());
+        var privateHistory = useCase.getMethod("employeeHistory", EmployeeAppointmentQuery.History.class)
+                .getGenericReturnType().getTypeName();
+        var positionHistory = useCase.getMethod("positionHistory", EmployeeAppointmentQuery.History.class)
+                .getGenericReturnType().getTypeName();
+        assertTrue(privateHistory.contains("PrivateHistoryEvent"));
+        assertTrue(positionHistory.contains("PositionHistoryEvent"));
+        assertFalse(positionHistory.contains("PrivateHistoryEvent"));
+        assertEquals(9, useCase.getDeclaredMethods().length);
+    }
 }

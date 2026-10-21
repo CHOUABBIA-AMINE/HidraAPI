@@ -23021,6 +23021,66 @@ IN_PROGRESS, HAPI-590 BLOCKED. HidraAPI remains development-only;
 no production operation, calibration, SITE evidence or OT control.
 
 
+
+### 2026-10-21 — HAPI-778 B3C pinned results and private/redacted inbound contract
+
+**Selected finite B3C slice:** The user Next follows exact-head 2efd548dbb263df055610d21f1059d57ebbbde03
+(tree 3f6ac82e5c499beb897f85b8a7fa83d0f5b65580): [Full804](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39618616046),
+[Fast123](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39618616009)
+and [Docs494](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39618616078)
+all succeeded on that SHA. The prior B3B selectors and rerun-evidence repair
+are accepted only to their tested development scope. HAPI-778 remains
+PARTIAL/IN_PROGRESS, HAPI-590 stays independently BLOCKED.
+
+**Exact parent B3 message:** `feat(organization): persist protected appointment lifecycle and history`.
+This is one bounded subpackage of the already registered B3 allowlist, not an
+independently registered new task. CREATE only
+`src/main/java/dz/sh/hidra/modules/organization/application/dto/EmployeeAppointmentResult.java`
+and
+`src/main/java/dz/sh/hidra/modules/organization/application/port/in/EmployeeAppointmentLifecycleUseCase.java`.
+MODIFY only
+`src/test/java/dz/sh/hidra/modules/organization/EmployeeAppointmentBoundaryGuardrailTest.java`,
+`.github/ci-test-inventory.json` and this append-only HAPI-778 record.
+DELETE none. All are listed in the original B3 package. No JDBC/JPA adapter,
+schema, trigger, permissions, REST endpoint, external owner port, native issuer,
+config activation or CI workflow changes.
+
+**Specific contract:** Private authorized assignment/employee results preserve
+the exact Organization-owned versioned appointment plus its historical
+Company binding and an explicit policy revision. Position-occupant outputs
+are separately typed and structurally REDACT employee identity, credentials
+and principals. Each event shape distinguishes CREATE, END, TRANSFER and
+CORRECT; a mutation receipt explicitly distinguishes an historical replay
+from a newly recorded result. History pages defensively copy a bounded
+at-most-100 entry list, expose no unauthorized total, and never treat opaque
+cursor syntax as authority. Policy views require an explicit complete
+policy/version. The inbound use-case separates mutation methods, private
+history and position-redacted history; it has no implementation or new route
+in this slice. Constructing an immutable result is not a protected database
+receipt, native permission, fresh owner decision or committed lifecycle fact.
+
+**Review and validation:** Five new JUnit boundary cases supplement the
+unchanged original 11 cases (16 in total), covering preserved pins,
+structural employee redaction, event-shape/replay semantics, immutable
+pagination and typed interface methods. Test source SHA256:
+`5de88cb514c3c5213eba26c9f20a2231fd375232bd3610439b8f7fa06686cc6a`. New timing remains unmeasured, and original five PostgreSQL
+sets and unrelated test metadata remain unchanged. Code/structure,
+inventory count, file allowlist and source SHA256 were checked before
+publication. No local full Java21/Maven or PostgreSQL execution is claimed:
+hosted Full/Fast/Docs at the resulting exact SHA are required to qualify
+this bounded stage. Existing physical fresh-schema/reader/writer and
+concurrent first-key guarantees are not yet implemented or tested.
+
+**Next separate B3 package after actual exact-SHA CI feedback:** Implement
+the protected outbound port and transactional coordinator/JDBC adapter
+against genuine Party and Identity owner contracts, migration/versioned
+physical guards, narrow guarded legacy-write cutover, and adversarial
+PostgreSQL/authorization tests in separately scoped coherent B3
+subpackages. Reconcile runtime OpenAPI and physical dictionary only
+after actual producer artifacts exist. Do not promote HAPI-778 to
+COMPLETED, claim full workflow or deploy anything. This project remains
+development-only; no production data, plant calibration or live OT access.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

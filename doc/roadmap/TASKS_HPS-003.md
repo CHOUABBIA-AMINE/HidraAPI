@@ -20868,6 +20868,116 @@ Fast and Docs created/queued/started for the published SHA, then STOP.
 Actual CI feedback must qualify B1 before selecting B2; this record does not
 mark the parent capability complete or start another package.
 
+### 2026-10-21 — HAPI-778 B2A Party new-reference eligibility slice
+
+Owner Next recovered actual current main
+92cc40d1d6cccae4c1a6e4fd0213fca6c6addeb2, parent
+2cb6a32a8b34ded27a475eb8b345d31b483444a9, and successful Full791/Fast111/
+Documentation479. B1's registered ownership-value implementation is green.
+HAPI-046 and HAPI-436 are already VERIFIED/COMPLETED under the separately recorded
+owner timing acceptance; neither CI task is reopened by this continuation.
+
+**Bounded B2 staging:** execute the Party eligibility half of the previously
+registered B2 envelope first, as B2A under the same HAPI-778 task and exact B2
+message `feat(identity): qualify native appointment and party reference authority`.
+This is not a new standalone task, a replacement B2 contract or a claim that all
+B2 Identity/native requirements have been delivered. It isolates the actual Party
+owner capability and its PostgreSQL qualification before the private Identity
+claim group is integrated. HAPI-778 remains PARTIAL/IN_PROGRESS. B2B retains the
+remaining exact registered Identity paths, permission/action/input/claim-group
+protocol, native-origin tests and architecture exceptions; B3 runtime is not
+selected or authorized by this slice.
+
+**Exact six-path implementation scope (subset of admitted B2 paths):**
+
+CREATE:
+
+- src/main/java/dz/sh/hidra/modules/party/application/contract/organization/OrganizationProtectedPartyEligibilityContract.java
+- src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JdbcOrganizationProtectedPartyEligibilityAdapter.java
+- src/test/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JdbcOrganizationProtectedPartyEligibilityAdapterTest.java
+- src/test/java/dz/sh/hidra/modules/party/infrastructure/persistence/OrganizationProtectedPartyEligibilityPostgresIntegrationTest.java
+
+MODIFY only .github/ci-test-inventory.json and this owning task record. DELETE
+none. All four CREATE paths are absent at the reviewed parent tree. Existing
+Topology/Party exports, tests and native producers remain exact. No migration,
+POM, executor, write hash, permission/grant, runtime route/service/storage,
+API/dictionary or workflow modification. No Party legal-employer or company
+ownership meaning is introduced.
+
+The new Organization-facing Party export has acquire/read/requireCurrent/
+finalFences. Its marker Admission is not a public credential factory. The configured
+adapter accepts only its private-constructor, issuing-instance ticket and exact
+canonical Party ID. It reuses the existing Party root and persistent eligibility
+generation mechanism. Existing relation/catalog/function-body/trigger/role and
+held-fence SQL guard text is byte-identical to the actual Party owner mechanism;
+it is not imported through the Topology public contract or adapter. SELECTABLE
+means the actual ACTIVE Party state supported by that mechanism, not a new
+business eligibility rule.
+
+Read consumes the ticket once and retains the actual Party generation, present/
+ACTIVE state and physical PID/XID. requireCurrent rechecks the current owner row
+against that retained scalar snapshot, actual connection/holder, role, thread,
+transaction liveness, physical rollback flag, available advised transaction
+rollback state and held fences. finalFences first requires that current ticket;
+its returned scalar fence list never becomes authority. A generation increase
+from status changes or delete/reinsert cannot restore a retained witness merely
+by returning the Party to ACTIVE.
+
+Ticket-validation methods enforce the actual bound transaction inside their
+bodies rather than relying on MANDATORY advice before entry. This lets a bad
+cross-thread call reject and mark the ticket's original holder rollback-only;
+it does not escape through an interceptor before owner invalidation. Acquisition
+still uses MANDATORY propagation, and no method starts an independent transaction.
+Failed checks invalidate the ticket and poison both its original holder and any
+current bound holder. Structural Contributions remain constructible data and
+cannot authorize a read, company association, permission or mutation. Historical
+consumers must retain old pins separately; this new export is for current
+new-reference eligibility only.
+
+**Registered tests:** 11 standalone Mockito/transaction-context cases and31
+actual PostgreSQL/Flyway cases. Tests cover exact ID/scalar bounds, no query before
+valid context, fabricated/foreign/replayed/expired tickets, current checks before
+read, physical connection/XID/role substitution, cross-thread poisoning,
+suspension/completion/rollback-only state, lost fences, status/delete/reinsert
+ABA, current generation, actual distinct migration/runtime role privileges,
+trigger/function/RLS/schema/inheritance tamper, NOWAIT admission, held-fence
+writer exclusion, swallowed-error rollback, ordinary JDBC/JPA generation updates
+and rollback/tombstone behavior. They exercise the new owner separately from
+the retained Topology export; existing tests are not renamed or removed.
+
+Inventory additions contain only these two actual source-hashed test classes,
+all42 declared case identities, explicit Party ownership/dependencies and correct
+unit/fast versus PostgreSQL classification. All prior class/case/support/archive/
+selection metadata remain byte-equivalent as parsed. New duration0 is explicitly
+unmeasured. Complete active selection becomes444 classes/2754 cases; fast347,
+unit348, with the unchanged five PostgreSQL sets and four historical archives.
+No runtime pass is inferred from registration or syntax inspection.
+
+**Local validation:** the available Java17 compiler module parsed all four Java
+files successfully through JavacTask; this is syntax-only, not Java21 type
+checking or JUnit execution. All31 inventory-classifier self-tests passed.
+New source/case hashes, preserved inventory metadata, complete disjoint selection,
+canonical author/date headers, whitespace/import independence and unchanged
+catalog/role/fence guard text were checked. Maven and the javac executable are
+absent; no environment was installed. Java21 compilation, architecture/JUnit,
+Spring/native integration and live PostgreSQL cases remain hosted-CI obligations.
+The local checkout is partial, so no full-repository inventory or canonical-estate
+validator success is claimed. Source syntax, Python checks and registered cases
+are never substituted for hosted runtime proof.
+
+**Publication/next:** four additions and two modifications only, one exact B2
+message/parent/tree/blob scope and expected-head guard on main. Observe exact-SHA
+Full/Fast/Docs creation/queue/start and STOP per AGENTS.md §11.1. Actual B2A CI
+feedback must be reviewed before the next B2B slice. That next slice implements
+the still-registered native Identity claim group, exact20 permission definitions
+(with no automatic grants), bounded canonical company/unit/employee request
+forms, family discrimination and genuine LOCAL/OIDC/LDAP/ACTIVE_DIRECTORY plus
+revocation/denial/uncertainty qualification. Exact public export architecture
+admission remains with that integration rather than adding unused wildcard
+exceptions now. Full B2 and HAPI-778 are not completed by B2A. HidraAPI remains a
+development API; no release, production database or deployment action follows.
+
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

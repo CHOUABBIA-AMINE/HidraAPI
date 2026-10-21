@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `1590778abde4b13ec9a19862ca3ea5f7e4e7abe6`
+Captured source SHA: `8a402671f2b56b1996abed0875881ce7140d0ddb`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `93ef42c7c22ce63670b1bb1f91de505895f6ff8ffd6a9cd4c109d54376911d32`.
-Migrations: 160; JPA mappings: 470; catalog relations: 505; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `5c541b41bae7043fa6378c0af90c7f34756bd41a8621c36c2499a28167eb6231`.
+Migrations: 162; JPA mappings: 470; catalog relations: 513; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -8191,6 +8191,7 @@ Persisted AttributeDefinitionJpaEntity state; semantic authority remains with id
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8418,6 +8419,7 @@ Persisted AuthorizationPolicyJpaEntity state; semantic authority remains with id
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8463,6 +8465,7 @@ Persisted AuthorizationPolicyRuleJpaEntity state; semantic authority remains wit
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8512,6 +8515,7 @@ Persisted AuthorizationPolicyVersionJpaEntity state; semantic authority remains 
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8561,6 +8565,7 @@ Immutable bounded original OIDC or authenticated LDAP/AD attribute observations 
 - Evidence: [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8618,6 +8623,7 @@ Persisted ExternalGroupMappingJpaEntity state; semantic authority remains with i
 - Migration mention (not inferred introduction): [V20261016_001__p25_identity_external_mapping_generations.sql](../../src/main/resources/db/migration/V20261016_001__p25_identity_external_mapping_generations.sql)
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8684,6 +8690,7 @@ External identity link with database-owned monotonic security generation and ord
 - Migration mention (not inferred introduction): [V20261013_001__p25_identity_operation_binding.sql](../../src/main/resources/db/migration/V20261013_001__p25_identity_operation_binding.sql)
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8755,6 +8762,7 @@ Database-owned per-provider committed external mapping generation; not an OIDC/L
 - Migration mention (not inferred introduction): [V20261016_001__p25_identity_external_mapping_generations.sql](../../src/main/resources/db/migration/V20261016_001__p25_identity_external_mapping_generations.sql)
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8796,6 +8804,7 @@ Persisted ExternalPermissionMappingJpaEntity state; semantic authority remains w
 - Migration mention (not inferred introduction): [V20261016_001__p25_identity_external_mapping_generations.sql](../../src/main/resources/db/migration/V20261016_001__p25_identity_external_mapping_generations.sql)
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8858,6 +8867,7 @@ Persisted ExternalRoleMappingJpaEntity state; semantic authority remains with id
 - Migration mention (not inferred introduction): [V20261016_001__p25_identity_external_mapping_generations.sql](../../src/main/resources/db/migration/V20261016_001__p25_identity_external_mapping_generations.sql)
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8920,6 +8930,7 @@ Persisted GroupJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8970,6 +8981,7 @@ Persisted GroupRoleGrantJpaEntity state; semantic authority remains with identit
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9029,6 +9041,7 @@ Identity-owned LOCAL credentials with database-enforced monotonic security gener
 - Migration mention (not inferred introduction): [V20261013_001__p25_identity_operation_binding.sql](../../src/main/resources/db/migration/V20261013_001__p25_identity_operation_binding.sql)
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9088,6 +9101,7 @@ Persisted LoginSessionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261013_001__p25_identity_operation_binding.sql](../../src/main/resources/db/migration/V20261013_001__p25_identity_operation_binding.sql)
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9156,6 +9170,7 @@ Immutable format-one native bearer/session provenance snapshots with private pro
 - Migration mention (not inferred introduction): [V20261013_001__p25_identity_operation_binding.sql](../../src/main/resources/db/migration/V20261013_001__p25_identity_operation_binding.sql)
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9278,6 +9293,7 @@ Persisted PermissionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261019_001__p25_topology_engineering_drafts.sql](../../src/main/resources/db/migration/V20261019_001__p25_topology_engineering_drafts.sql)
 - Migration mention (not inferred introduction): [V20261020_002__p25_topology_engineering_publications.sql](../../src/main/resources/db/migration/V20261020_002__p25_topology_engineering_publications.sql)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9343,6 +9359,7 @@ Identity provider with database-owned monotonic security generation and ordinary
 - Migration mention (not inferred introduction): [V20261016_001__p25_identity_external_mapping_generations.sql](../../src/main/resources/db/migration/V20261016_001__p25_identity_external_mapping_generations.sql)
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9431,6 +9448,7 @@ Persisted RoleJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261006_011__hmr_086_delegation_contract.sql](../../src/main/resources/db/migration/V20261006_011__hmr_086_delegation_contract.sql)
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9481,6 +9499,7 @@ Persisted RolePermissionGrantJpaEntity state; semantic authority remains with id
 - Migration mention (not inferred introduction): [V20261004_011__hmr_011_identity_permission.sql](../../src/main/resources/db/migration/V20261004_011__hmr_011_identity_permission.sql)
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9533,6 +9552,7 @@ Persisted SubjectSecurityAttributeJpaEntity state; semantic authority remains wi
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9684,6 +9704,7 @@ Persisted UserJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261013_001__p25_identity_operation_binding.sql](../../src/main/resources/db/migration/V20261013_001__p25_identity_operation_binding.sql)
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9746,6 +9767,7 @@ Persisted UserGroupMembershipJpaEntity state; semantic authority remains with id
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9806,6 +9828,7 @@ Persisted UserPermissionGrantJpaEntity state; semantic authority remains with id
 - Migration mention (not inferred introduction): [V20261006_013__hmr_088_direct_permission_bounds.sql](../../src/main/resources/db/migration/V20261006_013__hmr_088_direct_permission_bounds.sql)
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9874,6 +9897,7 @@ Persisted UserRoleGrantJpaEntity state; semantic authority remains with identity
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -16260,6 +16284,506 @@ Persisted AdministrativeStateJpaEntity state; semantic authority remains with or
 
 None captured in this catalog category.
 
+### public.hidra_org_appointment_binding_head
+
+Owner: **organization**; relation kind: `r`.
+
+Monotonic active unit/company binding pointer linked to its configuration event.
+
+- Evidence: [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Evidence: [EmployeeAppointmentLifecyclePostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261021_004__organization_appointment_configuration_successor.sql](../../src/main/resources/db/migration/V20261021_004__organization_appointment_configuration_successor.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| organization_unit_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| binding_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| revision | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| generation | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| last_event_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| event_kind | character varying(16) | False | 'BINDING'::character varying; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_org_appointment_binding_event_kind_organization_unit_fkey`: FOREIGN KEY (event_kind, organization_unit_id, binding_id, revision, last_event_id) REFERENCES hidra_org_appointment_configuration_event(kind, scope_id, identity_id, revision, event_id)
+  - Catalog attributes: {"columns": ["event_kind", "organization_unit_id", "binding_id", "revision", "last_event_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["kind", "scope_id", "identity_id", "revision", "event_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_org_appointment_configuration_event"}, "type": "f", "validated": true}
+- `hidra_org_appointment_binding_head_check`: CHECK (generation = revision)
+  - Catalog attributes: {"columns": ["generation", "revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_binding_head_event_kind_check`: CHECK (event_kind::text = 'BINDING'::text)
+  - Catalog attributes: {"columns": ["event_kind"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_binding_head_organization_unit_id_fkey`: FOREIGN KEY (organization_unit_id) REFERENCES hidra_org_unit(id)
+  - Catalog attributes: {"columns": ["organization_unit_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_org_unit"}, "type": "f", "validated": true}
+- `hidra_org_appointment_binding_head_pkey`: PRIMARY KEY (organization_unit_id)
+  - Catalog attributes: {"columns": ["organization_unit_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_org_appointment_binding_head_revision_check`: CHECK (revision &gt; 0)
+  - Catalog attributes: {"columns": ["revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_binding_organization_unit_id_binding_fkey`: FOREIGN KEY (organization_unit_id, binding_id, revision, company_party_id) REFERENCES hidra_org_appointment_binding_revision(organization_unit_id, binding_id, revision, company_party_id)
+  - Catalog attributes: {"columns": ["organization_unit_id", "binding_id", "revision", "company_party_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["organization_unit_id", "binding_id", "revision", "company_party_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_org_appointment_binding_revision"}, "type": "f", "validated": true}
+
+#### Indexes
+
+- `hidra_org_appointment_binding_head_pkey`: CREATE UNIQUE INDEX hidra_org_appointment_binding_head_pkey ON public.hidra_org_appointment_binding_head USING btree (organization_unit_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `appointment_binding_head_retain`: CREATE TRIGGER appointment_binding_head_retain BEFORE DELETE OR TRUNCATE ON hidra_org_appointment_binding_head FOR EACH STATEMENT EXECUTE FUNCTION hidra_org_appointment_configuration_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_org_appointment_configuration_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_org_appointment_configuration_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog'<br>AS $function$<br>BEGIN RAISE EXCEPTION 'Immutable appointment configuration' USING ERRCODE='23514'; END;<br>$function$<br>
+- `appointment_binding_head_transition`: CREATE TRIGGER appointment_binding_head_transition BEFORE INSERT OR UPDATE ON hidra_org_appointment_binding_head FOR EACH ROW EXECUTE FUNCTION hidra_org_appointment_head_transition()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_org_appointment_head_transition()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_org_appointment_head_transition()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'public'<br> SET "TimeZone" TO 'UTC'<br>AS $function$<br>DECLARE k text; scope text; ident text;<br>BEGIN<br> k:=CASE WHEN TG_TABLE_NAME LIKE '%binding%' THEN 'BINDING' ELSE 'POLICY' END;<br> scope:=CASE WHEN k='BINDING' THEN pg_catalog.to_jsonb(NEW)-&gt;&gt;'organization_unit_id' ELSE pg_catalog.to_jsonb(NEW)-&gt;&gt;'company_party_id' END;<br> ident:=CASE WHEN k='BINDING' THEN pg_catalog.to_jsonb(NEW)-&gt;&gt;'binding_id' ELSE pg_catalog.to_jsonb(NEW)-&gt;&gt;'policy_id' END;<br> IF TG_OP='INSERT' AND NEW.revision&lt;&gt;1 OR TG_OP='UPDATE' AND<br>   (OLD.revision=9223372036854775807 OR NEW.revision&lt;&gt;OLD.revision+1 OR NEW.generation&lt;&gt;OLD.generation+1 OR<br>    (pg_catalog.to_jsonb(NEW)-CASE WHEN k='BINDING' THEN ARRAY['revision','generation','last_event_id','company_party_id']<br>      ELSE ARRAY['revision','generation','last_event_id'] END) IS DISTINCT FROM<br>    (pg_catalog.to_jsonb(OLD)-CASE WHEN k='BINDING' THEN ARRAY['revision','generation','last_event_id','company_party_id']<br>      ELSE ARRAY['revision','generation','last_event_id'] END)) OR<br>   NOT EXISTS(SELECT 1 FROM public.hidra_org_appointment_configuration_event e WHERE e.event_id=NEW.last_event_id<br>     AND e.kind=k AND e.scope_id=scope AND e.identity_id=ident AND e.revision=NEW.revision<br>     AND e.company_party_id=NEW.company_party_id AND e.prior_revision=CASE WHEN TG_OP='INSERT' THEN 0 ELSE OLD.revision END<br>     AND e.backend_pid=pg_catalog.pg_backend_pid() AND e.transaction_id=pg_catalog.txid_current() AND e.database_admin=session_user) THEN<br>  RAISE EXCEPTION 'Invalid appointment configuration head' USING ERRCODE='23514'; END IF;<br> RETURN NEW;<br>END;<br>$function$<br>
+
+### public.hidra_org_appointment_binding_revision
+
+Owner: **organization**; relation kind: `r`.
+
+Immutable explicit unit/company revision and actual configuration-administrator provenance.
+
+- Evidence: [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Evidence: [EmployeeAppointmentLifecyclePostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261021_004__organization_appointment_configuration_successor.sql](../../src/main/resources/db/migration/V20261021_004__organization_appointment_configuration_successor.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| binding_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| revision | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| organization_unit_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| party_generation | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| recorded_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| database_admin | name | False | None; identity=; generated= | No current mapped Java column | — |
+| backend_pid | integer | False | None; identity=; generated= | No current mapped Java column | — |
+| transaction_id | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `appointment_binding_revision_complete`: TRIGGER DEFERRABLE INITIALLY DEFERRED
+  - Catalog attributes: {"columns": [], "deferrable": true, "initially_deferred": true, "reference": null, "type": "t", "validated": true}
+- `hidra_org_appointment_binding_organization_unit_id_binding__key`: UNIQUE (organization_unit_id, binding_id, revision, company_party_id)
+  - Catalog attributes: {"columns": ["organization_unit_id", "binding_id", "revision", "company_party_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_org_appointment_binding_organization_unit_id_revision_key`: UNIQUE (organization_unit_id, revision)
+  - Catalog attributes: {"columns": ["organization_unit_id", "revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_org_appointment_binding_revisio_organization_unit_id_fkey`: FOREIGN KEY (organization_unit_id) REFERENCES hidra_org_unit(id)
+  - Catalog attributes: {"columns": ["organization_unit_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_org_unit"}, "type": "f", "validated": true}
+- `hidra_org_appointment_binding_revision_backend_pid_check`: CHECK (backend_pid &gt; 0)
+  - Catalog attributes: {"columns": ["backend_pid"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_binding_revision_binding_id_check`: CHECK (hidra_org_appointment_exact_id(binding_id::text))
+  - Catalog attributes: {"columns": ["binding_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_binding_revision_company_party_id_check`: CHECK (hidra_org_appointment_exact_id(company_party_id::text))
+  - Catalog attributes: {"columns": ["company_party_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_binding_revision_party_generation_check`: CHECK (party_generation &gt; 0)
+  - Catalog attributes: {"columns": ["party_generation"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_binding_revision_pkey`: PRIMARY KEY (binding_id, revision)
+  - Catalog attributes: {"columns": ["binding_id", "revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_org_appointment_binding_revision_revision_check`: CHECK (revision &gt; 0)
+  - Catalog attributes: {"columns": ["revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_binding_revision_transaction_id_check`: CHECK (transaction_id &gt; 0)
+  - Catalog attributes: {"columns": ["transaction_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_org_appointment_binding_organization_unit_id_binding__key`: CREATE UNIQUE INDEX hidra_org_appointment_binding_organization_unit_id_binding__key ON public.hidra_org_appointment_binding_revision USING btree (organization_unit_id, binding_id, revision, company_party_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_org_appointment_binding_organization_unit_id_revision_key`: CREATE UNIQUE INDEX hidra_org_appointment_binding_organization_unit_id_revision_key ON public.hidra_org_appointment_binding_revision USING btree (organization_unit_id, revision)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_org_appointment_binding_revision_pkey`: CREATE UNIQUE INDEX hidra_org_appointment_binding_revision_pkey ON public.hidra_org_appointment_binding_revision USING btree (binding_id, revision)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `appointment_binding_revision_complete`: CREATE CONSTRAINT TRIGGER appointment_binding_revision_complete AFTER INSERT ON hidra_org_appointment_binding_revision DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION hidra_org_appointment_configuration_complete()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_org_appointment_configuration_complete()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_org_appointment_configuration_complete()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'public'<br> SET "TimeZone" TO 'UTC'<br>AS $function$<br>DECLARE e public.hidra_org_appointment_configuration_event%ROWTYPE; image jsonb; prior_image jsonb; linked boolean;<br>BEGIN<br> IF TG_TABLE_NAME='hidra_org_appointment_configuration_event' THEN<br>  e:=NEW;<br> ELSE<br>  SELECT * INTO e FROM public.hidra_org_appointment_configuration_event<br>   WHERE kind=CASE WHEN TG_TABLE_NAME LIKE '%binding%' THEN 'BINDING' ELSE 'POLICY' END<br>    AND identity_id=CASE WHEN TG_TABLE_NAME LIKE '%binding%' THEN pg_catalog.to_jsonb(NEW)-&gt;&gt;'binding_id' ELSE pg_catalog.to_jsonb(NEW)-&gt;&gt;'policy_id' END<br>    AND revision=NEW.revision;<br>  IF NOT FOUND THEN RAISE EXCEPTION 'Incomplete appointment configuration' USING ERRCODE='23514'; END IF;<br> END IF;<br> PERFORM public.hidra_org_appointment_configuration_context(CASE WHEN e.kind='BINDING' THEN<br>  'public.hidra_org_activate_appointment_binding(text,text,text,bigint)' ELSE<br>  'public.hidra_org_activate_appointment_policy(text,text,bigint,jsonb)' END);<br> IF e.kind='BINDING' THEN<br>  SELECT pg_catalog.to_jsonb(r) INTO image FROM public.hidra_org_appointment_binding_revision r<br>   WHERE binding_id=e.identity_id AND revision=e.revision AND organization_unit_id=e.scope_id AND company_party_id=e.company_party_id;<br>  SELECT pg_catalog.to_jsonb(r) INTO prior_image FROM public.hidra_org_appointment_binding_revision r<br>   WHERE binding_id=e.identity_id AND revision=e.prior_revision AND organization_unit_id=e.scope_id;<br>  SELECT EXISTS(SELECT 1 FROM public.hidra_org_appointment_binding_head h<br>    WHERE h.organization_unit_id=e.scope_id AND h.binding_id=e.identity_id AND h.revision&gt;=e.revision)<br>    INTO linked;<br> ELSE<br>  SELECT pg_catalog.to_jsonb(r) INTO image FROM public.hidra_org_appointment_policy_revision r<br>   WHERE policy_id=e.identity_id AND revision=e.revision AND company_party_id=e.scope_id AND company_party_id=e.company_party_id;<br>  SELECT pg_catalog.to_jsonb(r) INTO prior_image FROM public.hidra_org_appointment_policy_revision r<br>   WHERE policy_id=e.identity_id AND revision=e.prior_revision AND company_party_id=e.scope_id;<br>  SELECT EXISTS(SELECT 1 FROM public.hidra_org_appointment_policy_head h<br>    WHERE h.company_party_id=e.scope_id AND h.policy_id=e.identity_id AND h.revision&gt;=e.revision)<br>    INTO linked;<br> END IF;<br> IF image IS NULL OR image IS DISTINCT FROM e.after_payload OR<br>    prior_image IS DISTINCT FROM e.before_payload OR NOT linked OR e.backend_pid&lt;&gt;pg_catalog.pg_backend_pid() OR<br>    e.transaction_id&lt;&gt;pg_catalog.txid_current() OR e.database_admin&lt;&gt;session_user OR<br>    image-&gt;&gt;'database_admin'&lt;&gt;session_user::text OR (image-&gt;&gt;'transaction_id')::bigint&lt;&gt;e.transaction_id OR<br>    (image-&gt;&gt;'backend_pid')::integer&lt;&gt;e.backend_pid OR (image-&gt;&gt;'recorded_at')::timestamptz&lt;&gt;e.recorded_at THEN<br>  RAISE EXCEPTION 'Incomplete appointment configuration' USING ERRCODE='23514'; END IF;<br> RETURN NULL;<br>END;<br>$function$<br>
+- `appointment_binding_revision_immutable`: CREATE TRIGGER appointment_binding_revision_immutable BEFORE DELETE OR UPDATE OR TRUNCATE ON hidra_org_appointment_binding_revision FOR EACH STATEMENT EXECUTE FUNCTION hidra_org_appointment_configuration_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_org_appointment_configuration_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_org_appointment_configuration_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog'<br>AS $function$<br>BEGIN RAISE EXCEPTION 'Immutable appointment configuration' USING ERRCODE='23514'; END;<br>$function$<br>
+
+### public.hidra_org_appointment_configuration_event
+
+Owner: **organization**; relation kind: `r`.
+
+Immutable atomic configuration activation before/after journal.
+
+- Evidence: [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Evidence: [EmployeeAppointmentLifecyclePostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261021_004__organization_appointment_configuration_successor.sql](../../src/main/resources/db/migration/V20261021_004__organization_appointment_configuration_successor.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| event_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| kind | character varying(16) | False | None; identity=; generated= | No current mapped Java column | — |
+| scope_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| identity_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| prior_revision | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| revision | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| before_payload | jsonb | True | None; identity=; generated= | No current mapped Java column | — |
+| after_payload | jsonb | False | None; identity=; generated= | No current mapped Java column | — |
+| canonical_payload | bytea | False | None; identity=; generated= | No current mapped Java column | — |
+| sha256 | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| database_admin | name | False | None; identity=; generated= | No current mapped Java column | — |
+| recorded_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| backend_pid | integer | False | None; identity=; generated= | No current mapped Java column | — |
+| transaction_id | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `appointment_configuration_event_complete`: TRIGGER DEFERRABLE INITIALLY DEFERRED
+  - Catalog attributes: {"columns": [], "deferrable": true, "initially_deferred": true, "reference": null, "type": "t", "validated": true}
+- `hidra_org_appointment_configu_kind_scope_id_identity_id_rev_key`: UNIQUE (kind, scope_id, identity_id, revision, event_id)
+  - Catalog attributes: {"columns": ["kind", "scope_id", "identity_id", "revision", "event_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_org_appointment_configuration__kind_scope_id_revision_key`: UNIQUE (kind, scope_id, revision)
+  - Catalog attributes: {"columns": ["kind", "scope_id", "revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_org_appointment_configuration_even_company_party_id_check`: CHECK (hidra_org_appointment_exact_id(company_party_id::text))
+  - Catalog attributes: {"columns": ["company_party_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_configuration_event_backend_pid_check`: CHECK (backend_pid &gt; 0)
+  - Catalog attributes: {"columns": ["backend_pid"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_configuration_event_check`: CHECK (revision = (prior_revision + 1))
+  - Catalog attributes: {"columns": ["revision", "prior_revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_configuration_event_check1`: CHECK (sha256::text = encode(sha256(canonical_payload), 'hex'::text))
+  - Catalog attributes: {"columns": ["sha256", "canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_configuration_event_check2`: CHECK ((prior_revision = 0) = (before_payload IS NULL))
+  - Catalog attributes: {"columns": ["prior_revision", "before_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_configuration_event_check3`: CHECK (canonical_payload = convert_to(jsonb_build_object('kind', kind, 'scope', scope_id, 'identity', identity_id, 'priorRevision', prior_revision, 'revision', revision, 'company', company_party_id, 'before', before_payload, 'after', after_payload)::text, 'UTF8'::name))
+  - Catalog attributes: {"columns": ["canonical_payload", "kind", "scope_id", "identity_id", "prior_revision", "revision", "company_party_id", "before_payload", "after_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_configuration_event_identity_id_check`: CHECK (hidra_org_appointment_exact_id(identity_id::text))
+  - Catalog attributes: {"columns": ["identity_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_configuration_event_kind_check`: CHECK (kind::text = ANY (ARRAY['BINDING'::character varying, 'POLICY'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["kind"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_configuration_event_pkey`: PRIMARY KEY (event_id)
+  - Catalog attributes: {"columns": ["event_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_org_appointment_configuration_event_prior_revision_check`: CHECK (prior_revision &gt;= 0 AND prior_revision &lt; '9223372036854775807'::bigint)
+  - Catalog attributes: {"columns": ["prior_revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_configuration_event_scope_id_check`: CHECK (hidra_org_appointment_exact_id(scope_id::text))
+  - Catalog attributes: {"columns": ["scope_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_configuration_event_transaction_id_check`: CHECK (transaction_id &gt; 0)
+  - Catalog attributes: {"columns": ["transaction_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_org_appointment_configu_kind_scope_id_identity_id_rev_key`: CREATE UNIQUE INDEX hidra_org_appointment_configu_kind_scope_id_identity_id_rev_key ON public.hidra_org_appointment_configuration_event USING btree (kind, scope_id, identity_id, revision, event_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_org_appointment_configuration__kind_scope_id_revision_key`: CREATE UNIQUE INDEX hidra_org_appointment_configuration__kind_scope_id_revision_key ON public.hidra_org_appointment_configuration_event USING btree (kind, scope_id, revision)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_org_appointment_configuration_event_pkey`: CREATE UNIQUE INDEX hidra_org_appointment_configuration_event_pkey ON public.hidra_org_appointment_configuration_event USING btree (event_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `appointment_configuration_event_complete`: CREATE CONSTRAINT TRIGGER appointment_configuration_event_complete AFTER INSERT ON hidra_org_appointment_configuration_event DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION hidra_org_appointment_configuration_complete()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_org_appointment_configuration_complete()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_org_appointment_configuration_complete()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'public'<br> SET "TimeZone" TO 'UTC'<br>AS $function$<br>DECLARE e public.hidra_org_appointment_configuration_event%ROWTYPE; image jsonb; prior_image jsonb; linked boolean;<br>BEGIN<br> IF TG_TABLE_NAME='hidra_org_appointment_configuration_event' THEN<br>  e:=NEW;<br> ELSE<br>  SELECT * INTO e FROM public.hidra_org_appointment_configuration_event<br>   WHERE kind=CASE WHEN TG_TABLE_NAME LIKE '%binding%' THEN 'BINDING' ELSE 'POLICY' END<br>    AND identity_id=CASE WHEN TG_TABLE_NAME LIKE '%binding%' THEN pg_catalog.to_jsonb(NEW)-&gt;&gt;'binding_id' ELSE pg_catalog.to_jsonb(NEW)-&gt;&gt;'policy_id' END<br>    AND revision=NEW.revision;<br>  IF NOT FOUND THEN RAISE EXCEPTION 'Incomplete appointment configuration' USING ERRCODE='23514'; END IF;<br> END IF;<br> PERFORM public.hidra_org_appointment_configuration_context(CASE WHEN e.kind='BINDING' THEN<br>  'public.hidra_org_activate_appointment_binding(text,text,text,bigint)' ELSE<br>  'public.hidra_org_activate_appointment_policy(text,text,bigint,jsonb)' END);<br> IF e.kind='BINDING' THEN<br>  SELECT pg_catalog.to_jsonb(r) INTO image FROM public.hidra_org_appointment_binding_revision r<br>   WHERE binding_id=e.identity_id AND revision=e.revision AND organization_unit_id=e.scope_id AND company_party_id=e.company_party_id;<br>  SELECT pg_catalog.to_jsonb(r) INTO prior_image FROM public.hidra_org_appointment_binding_revision r<br>   WHERE binding_id=e.identity_id AND revision=e.prior_revision AND organization_unit_id=e.scope_id;<br>  SELECT EXISTS(SELECT 1 FROM public.hidra_org_appointment_binding_head h<br>    WHERE h.organization_unit_id=e.scope_id AND h.binding_id=e.identity_id AND h.revision&gt;=e.revision)<br>    INTO linked;<br> ELSE<br>  SELECT pg_catalog.to_jsonb(r) INTO image FROM public.hidra_org_appointment_policy_revision r<br>   WHERE policy_id=e.identity_id AND revision=e.revision AND company_party_id=e.scope_id AND company_party_id=e.company_party_id;<br>  SELECT pg_catalog.to_jsonb(r) INTO prior_image FROM public.hidra_org_appointment_policy_revision r<br>   WHERE policy_id=e.identity_id AND revision=e.prior_revision AND company_party_id=e.scope_id;<br>  SELECT EXISTS(SELECT 1 FROM public.hidra_org_appointment_policy_head h<br>    WHERE h.company_party_id=e.scope_id AND h.policy_id=e.identity_id AND h.revision&gt;=e.revision)<br>    INTO linked;<br> END IF;<br> IF image IS NULL OR image IS DISTINCT FROM e.after_payload OR<br>    prior_image IS DISTINCT FROM e.before_payload OR NOT linked OR e.backend_pid&lt;&gt;pg_catalog.pg_backend_pid() OR<br>    e.transaction_id&lt;&gt;pg_catalog.txid_current() OR e.database_admin&lt;&gt;session_user OR<br>    image-&gt;&gt;'database_admin'&lt;&gt;session_user::text OR (image-&gt;&gt;'transaction_id')::bigint&lt;&gt;e.transaction_id OR<br>    (image-&gt;&gt;'backend_pid')::integer&lt;&gt;e.backend_pid OR (image-&gt;&gt;'recorded_at')::timestamptz&lt;&gt;e.recorded_at THEN<br>  RAISE EXCEPTION 'Incomplete appointment configuration' USING ERRCODE='23514'; END IF;<br> RETURN NULL;<br>END;<br>$function$<br>
+- `appointment_configuration_event_immutable`: CREATE TRIGGER appointment_configuration_event_immutable BEFORE DELETE OR UPDATE OR TRUNCATE ON hidra_org_appointment_configuration_event FOR EACH STATEMENT EXECUTE FUNCTION hidra_org_appointment_configuration_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_org_appointment_configuration_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_org_appointment_configuration_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog'<br>AS $function$<br>BEGIN RAISE EXCEPTION 'Immutable appointment configuration' USING ERRCODE='23514'; END;<br>$function$<br>
+
+### public.hidra_org_appointment_event
+
+Owner: **organization**; relation kind: `r`.
+
+Immutable appointment lifecycle event storage; native writer and final guard not yet active.
+
+- Evidence: [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Evidence: [EmployeeAppointmentLifecyclePostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| event_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| operation | character varying(16) | False | None; identity=; generated= | No current mapped Java column | — |
+| assignment_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| successor_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| employee_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| policy_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| policy_revision | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| canonical_payload | bytea | False | None; identity=; generated= | No current mapped Java column | — |
+| command_sha256 | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_binding_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_session_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_user_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| sampled_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| valid_until | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| backend_pid | integer | False | None; identity=; generated= | No current mapped Java column | — |
+| transaction_id | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_org_appointment_event_actor_user_id_check`: CHECK (hidra_org_appointment_exact_id(actor_user_id::text))
+  - Catalog attributes: {"columns": ["actor_user_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_event_assignment_id_check`: CHECK (hidra_org_appointment_exact_id(assignment_id::text))
+  - Catalog attributes: {"columns": ["assignment_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_event_backend_pid_check`: CHECK (backend_pid &gt; 0)
+  - Catalog attributes: {"columns": ["backend_pid"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_event_canonical_payload_check`: CHECK (octet_length(canonical_payload) &gt;= 16 AND octet_length(canonical_payload) &lt;= 1048576)
+  - Catalog attributes: {"columns": ["canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_event_check`: CHECK (valid_until &gt; sampled_at)
+  - Catalog attributes: {"columns": ["valid_until", "sampled_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_event_check1`: CHECK ((operation::text = 'TRANSFER'::text) = (successor_id IS NOT NULL))
+  - Catalog attributes: {"columns": ["operation", "successor_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_event_check2`: CHECK (successor_id IS NULL OR successor_id::text &lt;&gt; assignment_id::text)
+  - Catalog attributes: {"columns": ["successor_id", "assignment_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_event_command_sha256_check`: CHECK (command_sha256::text ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["command_sha256"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_event_company_party_id_check`: CHECK (hidra_org_appointment_exact_id(company_party_id::text))
+  - Catalog attributes: {"columns": ["company_party_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_event_company_party_id_policy_id_pol_fkey`: FOREIGN KEY (company_party_id, policy_id, policy_revision) REFERENCES hidra_org_appointment_policy_revision(company_party_id, policy_id, revision)
+  - Catalog attributes: {"columns": ["company_party_id", "policy_id", "policy_revision"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["company_party_id", "policy_id", "revision"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_org_appointment_policy_revision"}, "type": "f", "validated": true}
+- `hidra_org_appointment_event_employee_id_check`: CHECK (hidra_org_appointment_exact_id(employee_id::text))
+  - Catalog attributes: {"columns": ["employee_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_event_operation_check`: CHECK (operation::text = ANY (ARRAY['CREATE'::character varying, 'END'::character varying, 'TRANSFER'::character varying, 'CORRECT'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["operation"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_event_pkey`: PRIMARY KEY (event_id)
+  - Catalog attributes: {"columns": ["event_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_org_appointment_event_policy_revision_check`: CHECK (policy_revision &gt; 0)
+  - Catalog attributes: {"columns": ["policy_revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_event_successor_id_check`: CHECK (successor_id IS NULL OR hidra_org_appointment_exact_id(successor_id::text))
+  - Catalog attributes: {"columns": ["successor_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_event_transaction_id_check`: CHECK (transaction_id &gt; 0)
+  - Catalog attributes: {"columns": ["transaction_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `appointment_event_assignment_history`: CREATE INDEX appointment_event_assignment_history ON public.hidra_org_appointment_event USING btree (assignment_id, sampled_at, event_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+- `appointment_event_employee_history`: CREATE INDEX appointment_event_employee_history ON public.hidra_org_appointment_event USING btree (employee_id, sampled_at, event_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+- `appointment_event_successor_history`: CREATE INDEX appointment_event_successor_history ON public.hidra_org_appointment_event USING btree (successor_id, sampled_at, event_id) WHERE (successor_id IS NOT NULL)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+- `hidra_org_appointment_event_pkey`: CREATE UNIQUE INDEX hidra_org_appointment_event_pkey ON public.hidra_org_appointment_event USING btree (event_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `appointment_event_immutable`: CREATE TRIGGER appointment_event_immutable BEFORE DELETE OR UPDATE OR TRUNCATE ON hidra_org_appointment_event FOR EACH STATEMENT EXECUTE FUNCTION hidra_org_appointment_configuration_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_org_appointment_configuration_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_org_appointment_configuration_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog'<br>AS $function$<br>BEGIN RAISE EXCEPTION 'Immutable appointment configuration' USING ERRCODE='23514'; END;<br>$function$<br>
+
+### public.hidra_org_appointment_lock_key
+
+Owner: **organization**; relation kind: `r`.
+
+Permanent typed employee, occupancy and request lock-key namespace; publisher path not yet active.
+
+- Evidence: [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Evidence: [EmployeeAppointmentLifecyclePostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| kind | character varying(16) | False | None; identity=; generated= | No current mapped Java column | — |
+| key_one | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| key_two | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| key_three | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_org_appointment_lock_key_check`: CHECK (kind::text = 'EMPLOYEE'::text AND key_two::text = ''::text AND key_three::text = ''::text OR kind::text = 'OCCUPANCY'::text AND hidra_org_appointment_exact_id(key_two::text) AND key_three::text = ''::text OR kind::text = 'REQUEST'::text AND key_two::text ~ '^[0-9a-f]{64}$'::text AND hidra_org_appointment_exact_id(key_three::text))
+  - Catalog attributes: {"columns": ["kind", "key_two", "key_three"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_lock_key_key_one_check`: CHECK (hidra_org_appointment_exact_id(key_one::text))
+  - Catalog attributes: {"columns": ["key_one"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_lock_key_kind_check`: CHECK (kind::text = ANY (ARRAY['EMPLOYEE'::character varying, 'OCCUPANCY'::character varying, 'REQUEST'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["kind"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_lock_key_pkey`: PRIMARY KEY (kind, key_one, key_two, key_three)
+  - Catalog attributes: {"columns": ["kind", "key_one", "key_two", "key_three"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `hidra_org_appointment_lock_key_pkey`: CREATE UNIQUE INDEX hidra_org_appointment_lock_key_pkey ON public.hidra_org_appointment_lock_key USING btree (kind, key_one, key_two, key_three)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `appointment_lock_key_immutable`: CREATE TRIGGER appointment_lock_key_immutable BEFORE DELETE OR UPDATE OR TRUNCATE ON hidra_org_appointment_lock_key FOR EACH STATEMENT EXECUTE FUNCTION hidra_org_appointment_configuration_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_org_appointment_configuration_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_org_appointment_configuration_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog'<br>AS $function$<br>BEGIN RAISE EXCEPTION 'Immutable appointment configuration' USING ERRCODE='23514'; END;<br>$function$<br>
+
+### public.hidra_org_appointment_policy_head
+
+Owner: **organization**; relation kind: `r`.
+
+Monotonic company appointment-policy pointer linked to its configuration event.
+
+- Evidence: [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Evidence: [EmployeeAppointmentLifecyclePostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261021_004__organization_appointment_configuration_successor.sql](../../src/main/resources/db/migration/V20261021_004__organization_appointment_configuration_successor.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| policy_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| revision | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| generation | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| last_event_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| event_kind | character varying(16) | False | 'POLICY'::character varying; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_org_appointment_policy__company_party_id_policy_id_r_fkey`: FOREIGN KEY (company_party_id, policy_id, revision) REFERENCES hidra_org_appointment_policy_revision(company_party_id, policy_id, revision)
+  - Catalog attributes: {"columns": ["company_party_id", "policy_id", "revision"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["company_party_id", "policy_id", "revision"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_org_appointment_policy_revision"}, "type": "f", "validated": true}
+- `hidra_org_appointment_policy__event_kind_company_party_id__fkey`: FOREIGN KEY (event_kind, company_party_id, policy_id, revision, last_event_id) REFERENCES hidra_org_appointment_configuration_event(kind, scope_id, identity_id, revision, event_id)
+  - Catalog attributes: {"columns": ["event_kind", "company_party_id", "policy_id", "revision", "last_event_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["kind", "scope_id", "identity_id", "revision", "event_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_org_appointment_configuration_event"}, "type": "f", "validated": true}
+- `hidra_org_appointment_policy_head_check`: CHECK (generation = revision)
+  - Catalog attributes: {"columns": ["generation", "revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_policy_head_company_party_id_check`: CHECK (hidra_org_appointment_exact_id(company_party_id::text))
+  - Catalog attributes: {"columns": ["company_party_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_policy_head_event_kind_check`: CHECK (event_kind::text = 'POLICY'::text)
+  - Catalog attributes: {"columns": ["event_kind"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_policy_head_pkey`: PRIMARY KEY (company_party_id)
+  - Catalog attributes: {"columns": ["company_party_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_org_appointment_policy_head_revision_check`: CHECK (revision &gt; 0)
+  - Catalog attributes: {"columns": ["revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_org_appointment_policy_head_pkey`: CREATE UNIQUE INDEX hidra_org_appointment_policy_head_pkey ON public.hidra_org_appointment_policy_head USING btree (company_party_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `appointment_policy_head_retain`: CREATE TRIGGER appointment_policy_head_retain BEFORE DELETE OR TRUNCATE ON hidra_org_appointment_policy_head FOR EACH STATEMENT EXECUTE FUNCTION hidra_org_appointment_configuration_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_org_appointment_configuration_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_org_appointment_configuration_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog'<br>AS $function$<br>BEGIN RAISE EXCEPTION 'Immutable appointment configuration' USING ERRCODE='23514'; END;<br>$function$<br>
+- `appointment_policy_head_transition`: CREATE TRIGGER appointment_policy_head_transition BEFORE INSERT OR UPDATE ON hidra_org_appointment_policy_head FOR EACH ROW EXECUTE FUNCTION hidra_org_appointment_head_transition()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_org_appointment_head_transition()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_org_appointment_head_transition()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'public'<br> SET "TimeZone" TO 'UTC'<br>AS $function$<br>DECLARE k text; scope text; ident text;<br>BEGIN<br> k:=CASE WHEN TG_TABLE_NAME LIKE '%binding%' THEN 'BINDING' ELSE 'POLICY' END;<br> scope:=CASE WHEN k='BINDING' THEN pg_catalog.to_jsonb(NEW)-&gt;&gt;'organization_unit_id' ELSE pg_catalog.to_jsonb(NEW)-&gt;&gt;'company_party_id' END;<br> ident:=CASE WHEN k='BINDING' THEN pg_catalog.to_jsonb(NEW)-&gt;&gt;'binding_id' ELSE pg_catalog.to_jsonb(NEW)-&gt;&gt;'policy_id' END;<br> IF TG_OP='INSERT' AND NEW.revision&lt;&gt;1 OR TG_OP='UPDATE' AND<br>   (OLD.revision=9223372036854775807 OR NEW.revision&lt;&gt;OLD.revision+1 OR NEW.generation&lt;&gt;OLD.generation+1 OR<br>    (pg_catalog.to_jsonb(NEW)-CASE WHEN k='BINDING' THEN ARRAY['revision','generation','last_event_id','company_party_id']<br>      ELSE ARRAY['revision','generation','last_event_id'] END) IS DISTINCT FROM<br>    (pg_catalog.to_jsonb(OLD)-CASE WHEN k='BINDING' THEN ARRAY['revision','generation','last_event_id','company_party_id']<br>      ELSE ARRAY['revision','generation','last_event_id'] END)) OR<br>   NOT EXISTS(SELECT 1 FROM public.hidra_org_appointment_configuration_event e WHERE e.event_id=NEW.last_event_id<br>     AND e.kind=k AND e.scope_id=scope AND e.identity_id=ident AND e.revision=NEW.revision<br>     AND e.company_party_id=NEW.company_party_id AND e.prior_revision=CASE WHEN TG_OP='INSERT' THEN 0 ELSE OLD.revision END<br>     AND e.backend_pid=pg_catalog.pg_backend_pid() AND e.transaction_id=pg_catalog.txid_current() AND e.database_admin=session_user) THEN<br>  RAISE EXCEPTION 'Invalid appointment configuration head' USING ERRCODE='23514'; END IF;<br> RETURN NEW;<br>END;<br>$function$<br>
+
+### public.hidra_org_appointment_policy_revision
+
+Owner: **organization**; relation kind: `r`.
+
+Immutable complete explicit appointment-overlap policy revision and canonical bytes.
+
+- Evidence: [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Evidence: [EmployeeAppointmentLifecyclePostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261021_004__organization_appointment_configuration_successor.sql](../../src/main/resources/db/migration/V20261021_004__organization_appointment_configuration_successor.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| policy_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| revision | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| policy | jsonb | False | None; identity=; generated= | No current mapped Java column | — |
+| canonical_payload | bytea | False | None; identity=; generated= | No current mapped Java column | — |
+| sha256 | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| party_generation | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| recorded_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| database_admin | name | False | None; identity=; generated= | No current mapped Java column | — |
+| backend_pid | integer | False | None; identity=; generated= | No current mapped Java column | — |
+| transaction_id | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `appointment_policy_revision_complete`: TRIGGER DEFERRABLE INITIALLY DEFERRED
+  - Catalog attributes: {"columns": [], "deferrable": true, "initially_deferred": true, "reference": null, "type": "t", "validated": true}
+- `hidra_org_appointment_policy__company_party_id_policy_id_re_key`: UNIQUE (company_party_id, policy_id, revision)
+  - Catalog attributes: {"columns": ["company_party_id", "policy_id", "revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_org_appointment_policy_revi_company_party_id_revision_key`: UNIQUE (company_party_id, revision)
+  - Catalog attributes: {"columns": ["company_party_id", "revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_org_appointment_policy_revision_backend_pid_check`: CHECK (backend_pid &gt; 0)
+  - Catalog attributes: {"columns": ["backend_pid"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_policy_revision_check`: CHECK (sha256::text = encode(sha256(canonical_payload), 'hex'::text))
+  - Catalog attributes: {"columns": ["sha256", "canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_policy_revision_check1`: CHECK (canonical_payload = convert_to(policy::text, 'UTF8'::name))
+  - Catalog attributes: {"columns": ["canonical_payload", "policy"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_policy_revision_company_party_id_check`: CHECK (hidra_org_appointment_exact_id(company_party_id::text))
+  - Catalog attributes: {"columns": ["company_party_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_policy_revision_party_generation_check`: CHECK (party_generation &gt; 0)
+  - Catalog attributes: {"columns": ["party_generation"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_policy_revision_pkey`: PRIMARY KEY (policy_id, revision)
+  - Catalog attributes: {"columns": ["policy_id", "revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_org_appointment_policy_revision_policy_check`: CHECK (hidra_org_appointment_policy_valid(policy))
+  - Catalog attributes: {"columns": ["policy"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_policy_revision_policy_id_check`: CHECK (hidra_org_appointment_exact_id(policy_id::text))
+  - Catalog attributes: {"columns": ["policy_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_policy_revision_revision_check`: CHECK (revision &gt; 0)
+  - Catalog attributes: {"columns": ["revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_policy_revision_transaction_id_check`: CHECK (transaction_id &gt; 0)
+  - Catalog attributes: {"columns": ["transaction_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_org_appointment_policy__company_party_id_policy_id_re_key`: CREATE UNIQUE INDEX hidra_org_appointment_policy__company_party_id_policy_id_re_key ON public.hidra_org_appointment_policy_revision USING btree (company_party_id, policy_id, revision)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_org_appointment_policy_revi_company_party_id_revision_key`: CREATE UNIQUE INDEX hidra_org_appointment_policy_revi_company_party_id_revision_key ON public.hidra_org_appointment_policy_revision USING btree (company_party_id, revision)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_org_appointment_policy_revision_pkey`: CREATE UNIQUE INDEX hidra_org_appointment_policy_revision_pkey ON public.hidra_org_appointment_policy_revision USING btree (policy_id, revision)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `appointment_policy_revision_complete`: CREATE CONSTRAINT TRIGGER appointment_policy_revision_complete AFTER INSERT ON hidra_org_appointment_policy_revision DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION hidra_org_appointment_configuration_complete()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_org_appointment_configuration_complete()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_org_appointment_configuration_complete()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'public'<br> SET "TimeZone" TO 'UTC'<br>AS $function$<br>DECLARE e public.hidra_org_appointment_configuration_event%ROWTYPE; image jsonb; prior_image jsonb; linked boolean;<br>BEGIN<br> IF TG_TABLE_NAME='hidra_org_appointment_configuration_event' THEN<br>  e:=NEW;<br> ELSE<br>  SELECT * INTO e FROM public.hidra_org_appointment_configuration_event<br>   WHERE kind=CASE WHEN TG_TABLE_NAME LIKE '%binding%' THEN 'BINDING' ELSE 'POLICY' END<br>    AND identity_id=CASE WHEN TG_TABLE_NAME LIKE '%binding%' THEN pg_catalog.to_jsonb(NEW)-&gt;&gt;'binding_id' ELSE pg_catalog.to_jsonb(NEW)-&gt;&gt;'policy_id' END<br>    AND revision=NEW.revision;<br>  IF NOT FOUND THEN RAISE EXCEPTION 'Incomplete appointment configuration' USING ERRCODE='23514'; END IF;<br> END IF;<br> PERFORM public.hidra_org_appointment_configuration_context(CASE WHEN e.kind='BINDING' THEN<br>  'public.hidra_org_activate_appointment_binding(text,text,text,bigint)' ELSE<br>  'public.hidra_org_activate_appointment_policy(text,text,bigint,jsonb)' END);<br> IF e.kind='BINDING' THEN<br>  SELECT pg_catalog.to_jsonb(r) INTO image FROM public.hidra_org_appointment_binding_revision r<br>   WHERE binding_id=e.identity_id AND revision=e.revision AND organization_unit_id=e.scope_id AND company_party_id=e.company_party_id;<br>  SELECT pg_catalog.to_jsonb(r) INTO prior_image FROM public.hidra_org_appointment_binding_revision r<br>   WHERE binding_id=e.identity_id AND revision=e.prior_revision AND organization_unit_id=e.scope_id;<br>  SELECT EXISTS(SELECT 1 FROM public.hidra_org_appointment_binding_head h<br>    WHERE h.organization_unit_id=e.scope_id AND h.binding_id=e.identity_id AND h.revision&gt;=e.revision)<br>    INTO linked;<br> ELSE<br>  SELECT pg_catalog.to_jsonb(r) INTO image FROM public.hidra_org_appointment_policy_revision r<br>   WHERE policy_id=e.identity_id AND revision=e.revision AND company_party_id=e.scope_id AND company_party_id=e.company_party_id;<br>  SELECT pg_catalog.to_jsonb(r) INTO prior_image FROM public.hidra_org_appointment_policy_revision r<br>   WHERE policy_id=e.identity_id AND revision=e.prior_revision AND company_party_id=e.scope_id;<br>  SELECT EXISTS(SELECT 1 FROM public.hidra_org_appointment_policy_head h<br>    WHERE h.company_party_id=e.scope_id AND h.policy_id=e.identity_id AND h.revision&gt;=e.revision)<br>    INTO linked;<br> END IF;<br> IF image IS NULL OR image IS DISTINCT FROM e.after_payload OR<br>    prior_image IS DISTINCT FROM e.before_payload OR NOT linked OR e.backend_pid&lt;&gt;pg_catalog.pg_backend_pid() OR<br>    e.transaction_id&lt;&gt;pg_catalog.txid_current() OR e.database_admin&lt;&gt;session_user OR<br>    image-&gt;&gt;'database_admin'&lt;&gt;session_user::text OR (image-&gt;&gt;'transaction_id')::bigint&lt;&gt;e.transaction_id OR<br>    (image-&gt;&gt;'backend_pid')::integer&lt;&gt;e.backend_pid OR (image-&gt;&gt;'recorded_at')::timestamptz&lt;&gt;e.recorded_at THEN<br>  RAISE EXCEPTION 'Incomplete appointment configuration' USING ERRCODE='23514'; END IF;<br> RETURN NULL;<br>END;<br>$function$<br>
+- `appointment_policy_revision_immutable`: CREATE TRIGGER appointment_policy_revision_immutable BEFORE DELETE OR UPDATE OR TRUNCATE ON hidra_org_appointment_policy_revision FOR EACH STATEMENT EXECUTE FUNCTION hidra_org_appointment_configuration_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_org_appointment_configuration_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_org_appointment_configuration_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog'<br>AS $function$<br>BEGIN RAISE EXCEPTION 'Immutable appointment configuration' USING ERRCODE='23514'; END;<br>$function$<br>
+
+### public.hidra_org_appointment_receipt
+
+Owner: **organization**; relation kind: `r`.
+
+Immutable scoped request/command receipt storage; native final-guard creation not yet active.
+
+- Evidence: [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Evidence: [EmployeeAppointmentLifecyclePostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| event_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_user_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| scope_key | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| request_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| command_sha256 | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| canonical_result | bytea | False | None; identity=; generated= | No current mapped Java column | — |
+| guarded_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| backend_pid | integer | False | None; identity=; generated= | No current mapped Java column | — |
+| transaction_id | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_org_appointment_receipt_actor_user_id_check`: CHECK (hidra_org_appointment_exact_id(actor_user_id::text))
+  - Catalog attributes: {"columns": ["actor_user_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_receipt_actor_user_id_scope_key_reque_key`: UNIQUE (actor_user_id, scope_key, request_id)
+  - Catalog attributes: {"columns": ["actor_user_id", "scope_key", "request_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_org_appointment_receipt_backend_pid_check`: CHECK (backend_pid &gt; 0)
+  - Catalog attributes: {"columns": ["backend_pid"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_receipt_canonical_result_check`: CHECK (octet_length(canonical_result) &gt;= 16 AND octet_length(canonical_result) &lt;= 1048576)
+  - Catalog attributes: {"columns": ["canonical_result"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_receipt_command_sha256_check`: CHECK (command_sha256::text ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["command_sha256"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_receipt_event_id_fkey`: FOREIGN KEY (event_id) REFERENCES hidra_org_appointment_event(event_id)
+  - Catalog attributes: {"columns": ["event_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["event_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_org_appointment_event"}, "type": "f", "validated": true}
+- `hidra_org_appointment_receipt_pkey`: PRIMARY KEY (event_id)
+  - Catalog attributes: {"columns": ["event_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_org_appointment_receipt_request_id_check`: CHECK (hidra_org_appointment_exact_id(request_id::text))
+  - Catalog attributes: {"columns": ["request_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_receipt_scope_key_check`: CHECK (scope_key::text ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["scope_key"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_appointment_receipt_transaction_id_check`: CHECK (transaction_id &gt; 0)
+  - Catalog attributes: {"columns": ["transaction_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_org_appointment_receipt_actor_user_id_scope_key_reque_key`: CREATE UNIQUE INDEX hidra_org_appointment_receipt_actor_user_id_scope_key_reque_key ON public.hidra_org_appointment_receipt USING btree (actor_user_id, scope_key, request_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_org_appointment_receipt_pkey`: CREATE UNIQUE INDEX hidra_org_appointment_receipt_pkey ON public.hidra_org_appointment_receipt USING btree (event_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `appointment_receipt_immutable`: CREATE TRIGGER appointment_receipt_immutable BEFORE DELETE OR UPDATE OR TRUNCATE ON hidra_org_appointment_receipt FOR EACH STATEMENT EXECUTE FUNCTION hidra_org_appointment_configuration_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_org_appointment_configuration_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_org_appointment_configuration_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog'<br>AS $function$<br>BEGIN RAISE EXCEPTION 'Immutable appointment configuration' USING ERRCODE='23514'; END;<br>$function$<br>
+
 ### public.hidra_org_contact_point
 
 Owner: **organization**; relation kind: `r`.
@@ -16375,6 +16899,7 @@ Persisted EmployeeJpaEntity state; semantic authority remains with organization.
 - Migration mention (not inferred introduction): [V20260928_001__add_employee_birth_data.sql](../../src/main/resources/db/migration/V20260928_001__add_employee_birth_data.sql)
 - Migration mention (not inferred introduction): [V20260928_002__backfill_employee_contact_points.sql](../../src/main/resources/db/migration/V20260928_002__backfill_employee_contact_points.sql)
 - Migration mention (not inferred introduction): [V20261004_028__hmr_028_organization_reporting_line.sql](../../src/main/resources/db/migration/V20261004_028__hmr_028_organization_reporting_line.sql)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -16486,6 +17011,7 @@ Persisted EmployeeAssignmentJpaEntity state; semantic authority remains with org
 - Migration mention (not inferred introduction): [V20260611_002__create_organization_tables.sql](../../src/main/resources/db/migration/V20260611_002__create_organization_tables.sql)
 - Migration mention (not inferred introduction): [V20260927_004__enforce_organization_internal_reference_integrity.sql](../../src/main/resources/db/migration/V20260927_004__enforce_organization_internal_reference_integrity.sql)
 - Migration mention (not inferred introduction): [V20260929_006__retire_legacy_operational_scope_columns.sql](../../src/main/resources/db/migration/V20260929_006__retire_legacy_operational_scope_columns.sql)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -16654,6 +17180,7 @@ Persisted PositionJpaEntity state; semantic authority remains with organization.
 - Migration mention (not inferred introduction): [V20260927_005__retire_organization_multilingual_compatibility_columns.sql](../../src/main/resources/db/migration/V20260927_005__retire_organization_multilingual_compatibility_columns.sql)
 - Migration mention (not inferred introduction): [V20261004_020__hmr_020_organization_position.sql](../../src/main/resources/db/migration/V20261004_020__hmr_020_organization_position.sql)
 - Migration mention (not inferred introduction): [V20261004_028__hmr_028_organization_reporting_line.sql](../../src/main/resources/db/migration/V20261004_028__hmr_028_organization_reporting_line.sql)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -16975,6 +17502,8 @@ Persisted OrganizationUnitJpaEntity state; semantic authority remains with organ
 - Migration mention (not inferred introduction): [V20260929_006__retire_legacy_operational_scope_columns.sql](../../src/main/resources/db/migration/V20260929_006__retire_legacy_operational_scope_columns.sql)
 - Migration mention (not inferred introduction): [V20261004_028__hmr_028_organization_reporting_line.sql](../../src/main/resources/db/migration/V20261004_028__hmr_028_organization_reporting_line.sql)
 - Migration mention (not inferred introduction): [V20261004_032__hmr_032_organization_organization_unit.sql](../../src/main/resources/db/migration/V20261004_032__hmr_032_organization_organization_unit.sql)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261021_004__organization_appointment_configuration_successor.sql](../../src/main/resources/db/migration/V20261021_004__organization_appointment_configuration_successor.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -17554,6 +18083,7 @@ Owner-issued monotone live/tombstone witness for protected ACTIVE Party eligibil
 - Migration mention (not inferred introduction): [V20261018_001__p25_party_eligibility_generations.sql](../../src/main/resources/db/migration/V20261018_001__p25_party_eligibility_generations.sql)
 - Migration mention (not inferred introduction): [V20261021_001__party_organization_configuration_reference.sql](../../src/main/resources/db/migration/V20261021_001__party_organization_configuration_reference.sql)
 - Migration mention (not inferred introduction): [V20261021_002__party_configuration_reference_collation_guard.sql](../../src/main/resources/db/migration/V20261021_002__party_configuration_reference_collation_guard.sql)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -17872,6 +18402,7 @@ Persisted PartyJpaEntity state; semantic authority remains with party.
 - Migration mention (not inferred introduction): [V20261018_001__p25_party_eligibility_generations.sql](../../src/main/resources/db/migration/V20261018_001__p25_party_eligibility_generations.sql)
 - Migration mention (not inferred introduction): [V20261021_001__party_organization_configuration_reference.sql](../../src/main/resources/db/migration/V20261021_001__party_organization_configuration_reference.sql)
 - Migration mention (not inferred introduction): [V20261021_002__party_configuration_reference_collation_guard.sql](../../src/main/resources/db/migration/V20261021_002__party_configuration_reference_collation_guard.sql)
+- Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

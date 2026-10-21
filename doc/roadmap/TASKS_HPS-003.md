@@ -21405,6 +21405,137 @@ start on the corrected SHA, and STOP. B3 is not selected. HAPI-778 remains
 PARTIAL/IN_PROGRESS and B2C acceptance remains pending. HidraAPI remains
 development-only; there is no production data, release or deployment action.
 
+
+### 2026-10-21 — HAPI-778 B2C runtime rollback and fixture repair
+
+Owner Fail selects responsible repair of main74600fb46648e1014ac66d122038d27a96d4acc5,
+parent6b2facf09405fa25d330c202e4a1a4d78063c8b1 and
+treeca9707d0b0c53dbc5305cb1ed6f30c2f6ab08afd. Refreshed exact main, AGENTS,
+ROADMAP, reconciliation, owning phase and current implementation/test sources.
+
+[Full795](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39588928084)
+and [Fast115](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39588928004)
+compiled and executed tests, then FAILED. Documentation483, Static validation,
+API/dictionary and PostgreSQL shards0/1/2/4 succeeded. This is not overall Full
+acceptance. Fast1816 and unit1860 cases each had only two failures, both in
+ProtectedStationAdmissionBoundaryGuardrailTest: its exact admit caller set
+omitted the registered Organization participant, and its reader byte pin still
+described the pre-B2C reader. All six tests in that guardrail remain required.
+
+PostgreSQL shard3 reported27 appointment cases:11 assertion failures, four
+execution errors and twelve passes. The four positive-path errors were SQL
+after final guard: the fixture called finalFences (multiple actual owner queries)
+inside the executor's GUARD callback, whose first query seals the transaction.
+This violated the existing one-scalar-statement final phase; it is not permission
+to loosen the executor or move authority checks past physical commit.
+
+The swallowed-failure cases also exposed a real rollback defect. Ticket rejection
+set the bound ConnectionHolder rollback-only, but ordinary JPA TransactionTemplate
+completion did not reject it. There was no advised transaction status available
+for these body-enforced export calls, so the JDBC flag alone was insufficient.
+Several tests expected an outer commit exception and observed none. Invalid
+credentials were rejected by the body; the missing guarantee was physical JPA
+rollback after a hostile caller swallowed that rejection. This repair strengthens
+the owner implementation rather than removing the rollback assertions.
+
+The DENY/uncertainty fixture used subject.attributes.missing, which the existing
+protected syntax compiler deliberately rejects as an unclassified reference.
+Consequently the graph spy never received a result. A supported static expression
+must reach actual evaluator uncertainty to test DENY precedence.
+
+**Exact eight-path responsible repair scope (MODIFY only):**
+
+- src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOrganizationAppointmentAuthorizationParticipant.java
+- src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipant.java
+- src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTest.java
+- src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOrganizationAppointmentAuthorizationParticipantTest.java
+- src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipantTest.java
+- src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java
+- .github/ci-test-inventory.json
+- doc/roadmap/TASKS_HPS-003.md, only append this HAPI-778 evidence
+
+The station guardrail is the one additional responsible test path outside B2C's
+original twelve paths, admitted here specifically by the actual failed assertions
+and Owner Fail. It is not a Topology runtime change. CREATE/DELETE none. No
+executor/DataSource/transaction-manager, reader, public contract, native producer,
+Party, workflow/POM, migration/schema, permission/grant, generated API/dictionary,
+status table or other task changes are authorized by this repair.
+
+**Implemented corrections:** owner tickets and private native groups retain a
+SQL-free beforeCommit veto on invalidation or a poisoned original holder.
+Failure handling also installs a SQL-free synchronization on current bound
+holders, covering fabricated/pre-admission failures that have no real ticket.
+Cross-thread failures still poison/invalidate the original holder and ticket;
+the original transaction's already-registered callback observes that state
+without using an EntityManager or JDBC connection on the foreign thread.
+Existing actual issuer/thread/authentication/connection/XID/role/fence/expiry/
+replay checks, one native sample and one-use private children remain intact.
+
+The veto throws ordinary AccessDeniedException. Source review of Spring's
+AbstractPlatformTransactionManager.processCommit confirms why a callback must
+not manufacture UnexpectedRollbackException: that exception has a special
+already-rolled-back path, while ordinary runtime failure invokes the manager's
+physical rollback path. No callback issues SQL or changes guard-phase rules.
+The narrow completion assertions now accept AccessDeniedException from this
+veto or UnexpectedRollbackException from genuine manager rollback-only handling,
+while retaining the original rejection calls and physical rollback obligation.
+Neither a broad arbitrary-runtime assertion nor successful commit is accepted.
+
+The PostgreSQL suite adds swallowedOwnerFailureRollsBackJdbcAndJpaWrites.
+It executes a sentinel insert through actual JDBC and, separately, the actual
+JPA native-update path with flush; swallows a genuine owner rejection; requires
+one of the two explicit rejection/rollback completion exceptions; then checks
+from outside the transaction that the row count did not increase. This is
+registered physical rollback proof, not a claim that an in-memory flag suffices.
+Unit mechanics additionally invoke the original commit synchronizations and
+verify they reject without adding any JDBC calls. All previous cross-thread,
+foreign issuer, fabricated, replay, suspension, role/XID, native/grant/provider/
+claim revocation, savepoint deadline and expiry cases remain registered.
+
+The fixture's flush callback now flushes JPA, executes optional guard preparation
+and calls finalFences before the executor enters GUARD. GUARD contains only the
+original scalar clock-bounded receipt INSERT query. The real500ms executor
+budget, one-final-statement restriction, closed scalar result and observed
+physical commit rules are unchanged. No new production executor caller or DML
+hash authority is introduced.
+
+The uncertainty fixture now uses known static subject.type with supported
+NUMBER literal1, while actual HUMAN evidence is text. The real syntax compiler
+can admit that expression and the evaluator must mark the type mismatch
+INDETERMINATE. The case now checks the company graph is INDETERMINATE and the
+unit graph with an explicit direct DENY is DENY, then retains owner rejection.
+The separate unsupported-policy fail-closed case is preserved.
+
+The station guard adds only ProtectedOrganizationAppointmentAuthorizationParticipant.java
+to the existing two exact admit callers. collectFenced/acquireNowait callers
+and all previous exact caller identities remain. The reader's new exact
+SHA-256 fa487dcc653e31eef9cf70754e88669a8548e5b882f4918419a18bbb42e7e350
+was independently computed against the unchanged current reader. Its B2C-only
+qualified family/wrapper changes were reviewed against the pre-B2C source;
+legacy station/draft/publication sets and structural diagnostic exclusion are
+retained. The four existing Party/Topology J-contract/adapter pins remain
+byte-identical. No wildcard caller, removed byte pin or relaxed assertion replaces
+these guards. The reader itself is unchanged by this repair.
+
+**Validation actually performed:** six repaired Java sources parsed successfully
+with the installed Java17 compiler module; this is syntax only. All31 canonical
+inventory-classifier self-tests passed. Verified actual source/case hashes,
+all previous case identities, exact lane selection/timing/archive metadata,
+reader pin and whitespace. The inventory changes only the four responsible
+test-class hashes and one actual added PG case. It remains446 active classes,
+now2823 cases, fast348, unit349, PostgreSQL16/18/19/25/19 and four archives.
+No source check or new test registration is a runtime pass. Java21/Maven/JUnit/
+PostgreSQL are unavailable locally and were not provisioned; hosted compilation,
+all affected runtime cases and final Full acceptance remain pending.
+
+Use the existing exact B2 message
+`feat(identity): qualify native appointment and party reference authority`.
+Verify eight modifications only, raw blobs/parent/tree/message and expected74600fb
+main guard. Confirm applicable exact-SHA Full/Fast/Docs creation/queue/start,
+then STOP. Repair actual further failures before B3. HAPI-778 remains
+PARTIAL/IN_PROGRESS. This development-only repair performs no production data,
+release, tag or deployment operation.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

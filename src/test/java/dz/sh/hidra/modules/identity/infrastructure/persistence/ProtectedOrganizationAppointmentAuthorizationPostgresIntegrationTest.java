@@ -286,10 +286,12 @@ public class ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTes
                     inside.run();
                     return result;
                 },
-                em::flush,
                 () -> {
+                    em.flush();
                     guardAction.run();
                     assertThat(paired.finalFences(ticket.get())).isNotEmpty();
+                },
+                () -> {
                     var c = saved.get();
                     Integer count =
                             jdbc.queryForObject(
@@ -769,9 +771,9 @@ public class ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTes
 
     @Test void fabricatedPreparationAndAdmissionNeverReachAuthority() {
         assertThatThrownBy(() -> tx().executeWithoutResult(s -> { c3SelectRestrictedRole(); rejected(() -> paired.acquire(new OrganizationProtectedAppointmentAuthorizationContract.Prepared(){}, request())); }))
-                .isInstanceOf(org.springframework.transaction.UnexpectedRollbackException.class);
+                .isInstanceOfAny(org.springframework.security.access.AccessDeniedException.class, org.springframework.transaction.UnexpectedRollbackException.class);
         assertThatThrownBy(() -> tx().executeWithoutResult(s -> { c3SelectRestrictedRole(); rejected(() -> paired.contribute(new OrganizationProtectedAppointmentAuthorizationContract.Admission(){})); }))
-                .isInstanceOf(org.springframework.transaction.UnexpectedRollbackException.class);
+                .isInstanceOfAny(org.springframework.security.access.AccessDeniedException.class, org.springframework.transaction.UnexpectedRollbackException.class);
     }
 
     @Test void preparationAndAdmissionCannotBeReplayed() {
@@ -781,7 +783,7 @@ public class ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTes
         assertThatThrownBy(() -> tx().executeWithoutResult(s -> {
             c3SelectRestrictedRole(); var a = paired.acquire(p2, request()); paired.contribute(a);
             rejected(() -> paired.contribute(a));
-        })).isInstanceOf(org.springframework.transaction.UnexpectedRollbackException.class);
+        })).isInstanceOfAny(org.springframework.security.access.AccessDeniedException.class, org.springframework.transaction.UnexpectedRollbackException.class);
     }
 
     @Test void anotherIssuerRejectsTicketAndPoisonsItsOriginalHolder() {
@@ -790,7 +792,7 @@ public class ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTes
         assertThatThrownBy(() -> tx().executeWithoutResult(s -> {
             c3SelectRestrictedRole(); var a = paired.acquire(p, request());
             rejected(() -> other.contribute(a));
-        })).isInstanceOf(org.springframework.transaction.UnexpectedRollbackException.class);
+        })).isInstanceOfAny(org.springframework.security.access.AccessDeniedException.class, org.springframework.transaction.UnexpectedRollbackException.class);
     }
 
     @Test void replacedAuthenticationFailsFinalOwnerCheckAndRollsBack() {
@@ -798,7 +800,7 @@ public class ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTes
         assertThatThrownBy(() -> tx().executeWithoutResult(s -> {
             c3SelectRestrictedRole(); var a = paired.acquire(p, request()); paired.contribute(a);
             SecurityContextHolder.clearContext(); rejected(() -> paired.requireCurrent(a));
-        })).isInstanceOf(org.springframework.transaction.UnexpectedRollbackException.class);
+        })).isInstanceOfAny(org.springframework.security.access.AccessDeniedException.class, org.springframework.transaction.UnexpectedRollbackException.class);
     }
 
     @Test void wrongThreadCallPoisonsOriginalPhysicalTransaction() {
@@ -809,7 +811,28 @@ public class ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTes
             try { worker.submit(() -> rejected(() -> paired.requireCurrent(a))).get(10, TimeUnit.SECONDS); }
             catch (Exception failure) { throw new IllegalStateException(failure); }
             finally { worker.shutdownNow(); }
-        })).isInstanceOf(org.springframework.transaction.UnexpectedRollbackException.class);
+        })).isInstanceOfAny(org.springframework.security.access.AccessDeniedException.class, org.springframework.transaction.UnexpectedRollbackException.class);
+    }
+
+    @Test void swallowedOwnerFailureRollsBackJdbcAndJpaWrites() {
+        for (boolean throughJpa : List.of(false, true)) {
+            var f = fixture("LOCAL"); both(f, "create"); var p = prepare(f);
+            int count = jdbc.queryForObject("SELECT count(*) FROM " + receipt(), Integer.class);
+            int sentinel = receipts.incrementAndGet();
+            assertThatThrownBy(() -> tx().executeWithoutResult(s -> {
+                c3SelectRestrictedRole(); var a = paired.acquire(p, request()); paired.contribute(a);
+                if (throughJpa) {
+                    assertThat(em.createNativeQuery("INSERT INTO " + receipt() + "(id) VALUES (?1)")
+                            .setParameter(1, sentinel).executeUpdate()).isEqualTo(1);
+                    em.flush();
+                } else assertThat(jdbc.update("INSERT INTO " + receipt() + "(id) VALUES (?)", sentinel)).isEqualTo(1);
+                // The hostile caller swallows owner rejection. Manager completion must still
+                // throw and the already-executed JDBC/JPA insert must physically roll back.
+                SecurityContextHolder.clearContext();
+                rejected(() -> paired.requireCurrent(a));
+            })).isInstanceOfAny(org.springframework.security.access.AccessDeniedException.class, org.springframework.transaction.UnexpectedRollbackException.class);
+            assertThat(jdbc.queryForObject("SELECT count(*) FROM " + receipt(), Integer.class)).isEqualTo(count);
+        }
     }
 
     @Test void completedAndSuspendedTicketsCannotBeReused() {
@@ -823,7 +846,7 @@ public class ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTes
             var nested = new TransactionTemplate(manager); nested.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
             nested.executeWithoutResult(n -> {});
             rejected(() -> paired.requireCurrent(a));
-        })).isInstanceOf(org.springframework.transaction.UnexpectedRollbackException.class);
+        })).isInstanceOfAny(org.springframework.security.access.AccessDeniedException.class, org.springframework.transaction.UnexpectedRollbackException.class);
     }
 
     @Test void holderReplacementAndRollbackOnlyStateInvalidateAdmission() {
@@ -834,13 +857,13 @@ public class ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTes
             TransactionSynchronizationManager.bindResource(ds, new org.springframework.jdbc.datasource.ConnectionHolder(mock(Connection.class)));
             try { rejected(() -> paired.requireCurrent(a)); }
             finally { TransactionSynchronizationManager.unbindResource(ds); TransactionSynchronizationManager.bindResource(ds, original); }
-        })).isInstanceOf(org.springframework.transaction.UnexpectedRollbackException.class);
+        })).isInstanceOfAny(org.springframework.security.access.AccessDeniedException.class, org.springframework.transaction.UnexpectedRollbackException.class);
         var next = prepare(f);
         assertThatThrownBy(() -> tx().executeWithoutResult(s -> {
             c3SelectRestrictedRole(); var a = paired.acquire(next, request()); paired.contribute(a);
             ((org.springframework.jdbc.datasource.ConnectionHolder)TransactionSynchronizationManager.getResource(jdbc.getDataSource())).setRollbackOnly();
             rejected(() -> paired.requireCurrent(a));
-        })).isInstanceOf(org.springframework.transaction.UnexpectedRollbackException.class);
+        })).isInstanceOfAny(org.springframework.security.access.AccessDeniedException.class, org.springframework.transaction.UnexpectedRollbackException.class);
     }
 
     @Test void physicalCommitChangesXidAndLosesRetainedFences() {
@@ -850,7 +873,7 @@ public class ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTes
             try { ((org.springframework.jdbc.datasource.ConnectionHolder)TransactionSynchronizationManager.getResource(jdbc.getDataSource())).getConnection().commit(); }
             catch (SQLException failure) { throw new IllegalStateException(failure); }
             rejected(() -> paired.requireCurrent(a));
-        })).isInstanceOf(org.springframework.transaction.UnexpectedRollbackException.class);
+        })).isInstanceOfAny(org.springframework.security.access.AccessDeniedException.class, org.springframework.transaction.UnexpectedRollbackException.class);
     }
 
     @Test void changedDatabaseRoleFailsFinalNativeFenceCheck() {
@@ -859,7 +882,7 @@ public class ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTes
             c3SelectRestrictedRole(); var a = paired.acquire(p, request()); paired.contribute(a);
             jdbc.queryForObject("SELECT set_config('role','none',true)", String.class);
             rejected(() -> paired.requireCurrent(a));
-        })).isInstanceOf(org.springframework.transaction.UnexpectedRollbackException.class);
+        })).isInstanceOfAny(org.springframework.security.access.AccessDeniedException.class, org.springframework.transaction.UnexpectedRollbackException.class);
     }
 
     @Test void committedProviderAndCredentialAbaCannotRestorePreparedOrigin() {
@@ -897,7 +920,7 @@ public class ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTes
                 c3SelectRestrictedRole(); var a = paired.acquire(p, request()); paired.contribute(a);
                 jdbc.update("UPDATE " + T + table + " SET status=?", table.equals("provider") ? "INACTIVE" : "REVOKED");
                 rejected(() -> paired.requireCurrent(a));
-            })).isInstanceOf(org.springframework.transaction.UnexpectedRollbackException.class);
+            })).isInstanceOfAny(org.springframework.security.access.AccessDeniedException.class, org.springframework.transaction.UnexpectedRollbackException.class);
         }
     }
 
@@ -913,7 +936,7 @@ public class ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTes
                 connection.releaseSavepoint(savepoint);
             } catch (SQLException failure) { throw new IllegalStateException(failure); }
             rejected(() -> paired.requireCurrent(a));
-        })).isInstanceOf(org.springframework.transaction.UnexpectedRollbackException.class);
+        })).isInstanceOfAny(org.springframework.security.access.AccessDeniedException.class, org.springframework.transaction.UnexpectedRollbackException.class);
     }
 
     @Test void committedNativeSessionRevocationBeforeConsumptionDenies() {
@@ -938,19 +961,24 @@ public class ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTes
             c3SelectRestrictedRole(); var a = paired.acquire(p, request()); var c = paired.contribute(a);
             jdbc.queryForList("SELECT pg_sleep(GREATEST(0, EXTRACT(EPOCH FROM ?::timestamptz-clock_timestamp()))+0.05)", Timestamp.from(c.validUntil()));
             rejected(() -> paired.requireCurrent(a));
-        })).isInstanceOf(org.springframework.transaction.UnexpectedRollbackException.class);
+        })).isInstanceOfAny(org.springframework.security.access.AccessDeniedException.class, org.springframework.transaction.UnexpectedRollbackException.class);
     }
 
     @Test void explicitDenyWinsOverSupportedButUnknownPolicyEvidence() {
         var f = fixture("LOCAL"); both(f, "create");
         grant(f, "create", ResourceKind.UNIT, "DENY", FACILITY);
-        policy("PERMIT", "{\"op\":\"eq\",\"attribute\":\"subject.attributes.missing\",\"type\":\"STRING\",\"value\":\"x\"}");
+        // Known static fact + supported NUMBER literal: syntax is admitted, actual HUMAN text
+        // cannot supply numeric evidence. This reaches evaluator uncertainty, not syntax rejection.
+        policy("PERMIT", "{\"op\":\"eq\",\"attribute\":\"subject.type\",\"type\":\"NUMBER\",\"value\":1}");
         var captured = new AtomicReference<JdbcProtectedAuthorizationEvidenceReader.OrganizationAuthorizationEvidence>();
         doAnswer(i -> { var graph = (JdbcProtectedAuthorizationEvidenceReader.OrganizationAuthorizationEvidence)i.callRealMethod(); captured.set(graph); return graph; })
                 .when(readerTarget()).loadQualifiedOrganizationGroup(any(), any());
         try {
             rejected(() -> run(prepare(f), request()));
             var graph = captured.get(); assertThat(graph).isNotNull();
+            assertThat(new dz.sh.hidra.modules.identity.domain.service.AuthorizationPolicyEvaluator()
+                    .evaluate(graph.requests().get(0), graph.evidence().get(0), graph.contribution().evidence().observedAt()).decision())
+                    .isEqualTo(AuthorizationDecisionValue.INDETERMINATE);
             assertThat(new dz.sh.hidra.modules.identity.domain.service.AuthorizationPolicyEvaluator()
                     .evaluate(graph.requests().get(1), graph.evidence().get(1), graph.contribution().evidence().observedAt()).decision())
                     .isEqualTo(AuthorizationDecisionValue.DENY);
@@ -980,7 +1008,7 @@ public class ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTes
             c3SelectRestrictedRole(); var diagnostic = participant.qualifyClaims(nativePreparation, request);
             assertThat(participant.organizationCredential(diagnostic)).isFalse();
             rejected(() -> reader.loadQualified(diagnostic, request));
-        })).isInstanceOf(org.springframework.transaction.UnexpectedRollbackException.class);
+        })).isInstanceOfAny(org.springframework.security.access.AccessDeniedException.class, org.springframework.transaction.UnexpectedRollbackException.class);
     }
 
     @Test void scalarDiagnosticCannotEnterOrganizationQualifiedReader() {
@@ -988,7 +1016,7 @@ public class ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTes
         assertThatThrownBy(() -> tx().executeWithoutResult(s -> {
             c3SelectRestrictedRole();
             assertThatThrownBy(() -> reader.loadQualifiedOrganizationGroup(null, request())).isInstanceOf(RuntimeException.class);
-        })).isInstanceOf(org.springframework.transaction.UnexpectedRollbackException.class);
+        })).isInstanceOfAny(org.springframework.security.access.AccessDeniedException.class, org.springframework.transaction.UnexpectedRollbackException.class);
     }
 
 }

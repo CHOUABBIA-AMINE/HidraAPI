@@ -172,14 +172,28 @@ public class ProtectedOrganizationAppointmentAuthorizationParticipant
 
     private void poison(Object candidate) {
         if (candidate instanceof Ticket t) {
-            t.holder.setRollbackOnly(); t.active = false;
+            rollbackHolder(t.holder); t.active = false;
             identity.invalidateOrganizationGroup(t.group);
-        } else if (candidate instanceof Entry e && e.holder != null) e.holder.setRollbackOnly();
+        } else if (candidate instanceof Entry e && e.holder != null) rollbackHolder(e.holder);
         for (Object resource : TransactionSynchronizationManager.getResourceMap().values()) {
-            if (resource instanceof ConnectionHolder holder) holder.setRollbackOnly();
+            if (resource instanceof ConnectionHolder holder) rollbackHolder(holder);
         }
         try { TransactionAspectSupport.currentTransactionStatus().setRollbackOnly(); }
         catch (NoTransactionException absent) { /* Direct TransactionTemplate caller. */ }
+    }
+
+    private static void rollbackHolder(ConnectionHolder holder) {
+        holder.setRollbackOnly();
+        // JpaTransactionManager need not consult its bound JDBC holder's rollback flag.
+        // A SQL-free synchronization vetoes commit even after the caller swallowed the failure.
+        if (TransactionSynchronizationManager.isSynchronizationActive()
+                && TransactionSynchronizationManager.getResourceMap().containsValue(holder)) {
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override public void beforeCommit(boolean readOnly) {
+                    if (holder.isRollbackOnly()) throw new org.springframework.security.access.AccessDeniedException("Appointment owner rejected transaction");
+                }
+            });
+        }
     }
 
     private static AccessDeniedException denied() { return new AccessDeniedException("Appointment authorization denied."); }
@@ -217,6 +231,9 @@ public class ProtectedOrganizationAppointmentAuthorizationParticipant
             this.holder = holder; this.connection = holder.getConnection();
         }
         @Override public void suspend() { active = false; }
+        @Override public void beforeCommit(boolean readOnly) {
+            if (!active || holder.isRollbackOnly()) throw new org.springframework.security.access.AccessDeniedException("Appointment admission invalidated");
+        }
         @Override public void afterCompletion(int status) { active = false; }
         @Override public String toString() { return "Admission[opaque appointment Identity]"; }
     }

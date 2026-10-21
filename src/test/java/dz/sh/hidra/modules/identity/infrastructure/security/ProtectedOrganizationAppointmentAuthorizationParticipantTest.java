@@ -37,6 +37,12 @@ class ProtectedOrganizationAppointmentAuthorizationParticipantTest {
         try (var fixture = new Mechanics()) {
             assertThrows(RuntimeException.class, () -> fixture.service.acquire(new Prepared(){}, fixture.request));
             assertTrue(fixture.holder.isRollbackOnly());
+            var synchronizations = org.springframework.transaction.support.TransactionSynchronizationManager.getSynchronizations();
+            assertFalse(synchronizations.isEmpty());
+            int jdbcCalls = org.mockito.Mockito.mockingDetails(fixture.jdbc).getInvocations().size();
+            assertThrows(org.springframework.security.access.AccessDeniedException.class,
+                    () -> synchronizations.forEach(s -> s.beforeCommit(false)));
+            assertEquals(jdbcCalls, org.mockito.Mockito.mockingDetails(fixture.jdbc).getInvocations().size());
             org.mockito.Mockito.verifyNoInteractions(fixture.reader);
         }
         try (var fixture = new Mechanics()) {

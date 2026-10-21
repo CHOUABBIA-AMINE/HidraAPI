@@ -210,6 +210,9 @@ class ProtectedOperationIdentityParticipantTest {
                     .isInstanceOf(AccessDeniedException.class)).get(5, TimeUnit.SECONDS);
         } finally { worker.shutdownNow(); }
         assertThat(((org.springframework.jdbc.datasource.ConnectionHolder)TransactionSynchronizationManager.getResource(claimDataSource)).isRollbackOnly()).isTrue();
+        int calls = mockingDetails(jdbc).getInvocations().size();
+        assertThatThrownBy(() -> group.beforeCommit(false)).isInstanceOf(AccessDeniedException.class);
+        assertThat(mockingDetails(jdbc).getInvocations()).hasSize(calls);
     }
 
     @Test void appointmentGroupRejectsAnotherIssuerAndPoisonsOriginalHolder() {

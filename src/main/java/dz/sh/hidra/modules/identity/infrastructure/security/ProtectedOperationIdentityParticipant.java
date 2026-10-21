@@ -719,10 +719,22 @@ public class ProtectedOperationIdentityParticipant {
     }
 
     private void poisonOrganization(OrganizationClaimGroup group) {
-        if (group != null) { group.holder.setRollbackOnly(); group.active = false; }
-        if (connectionResource() instanceof org.springframework.jdbc.datasource.ConnectionHolder h) h.setRollbackOnly();
+        if (group != null) { organizationRollbackHolder(group.holder); group.active = false; }
+        if (connectionResource() instanceof org.springframework.jdbc.datasource.ConnectionHolder h) organizationRollbackHolder(h);
         try { org.springframework.transaction.interceptor.TransactionAspectSupport.currentTransactionStatus().setRollbackOnly(); }
         catch (org.springframework.transaction.NoTransactionException absent) { /* Direct template caller. */ }
+    }
+
+    private static void organizationRollbackHolder(org.springframework.jdbc.datasource.ConnectionHolder holder) {
+        holder.setRollbackOnly();
+        if (TransactionSynchronizationManager.isSynchronizationActive()
+                && TransactionSynchronizationManager.getResourceMap().containsValue(holder)) {
+            TransactionSynchronizationManager.registerSynchronization(new org.springframework.transaction.support.TransactionSynchronization() {
+                @Override public void beforeCommit(boolean readOnly) {
+                    if (holder.isRollbackOnly()) throw new org.springframework.security.access.AccessDeniedException("Organization native authority rejected transaction");
+                }
+            });
+        }
     }
 
     public static final class OrganizationClaimGroup implements org.springframework.transaction.support.TransactionSynchronization {
@@ -743,6 +755,9 @@ public class ProtectedOperationIdentityParticipant {
             this.holder = holder; this.connection = holder.getConnection();
         }
         @Override public void suspend() { active = false; }
+        @Override public void beforeCommit(boolean readOnly) {
+            if (!active || holder.isRollbackOnly()) throw new org.springframework.security.access.AccessDeniedException("Organization native group invalidated");
+        }
         @Override public void afterCompletion(int status) { active = false; }
         @Override public String toString() { return "OrganizationClaimGroup[opaque]"; }
     }

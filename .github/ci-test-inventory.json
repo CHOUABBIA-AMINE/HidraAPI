@@ -34,6 +34,7 @@
         "retainedNativeGroupBlocksCompetingAuthorityWriter",
         "savepointWriteCannotShortenOriginalTemporalBound",
         "scalarDiagnosticCannotEnterOrganizationQualifiedReader",
+        "swallowedOwnerFailureRollsBackJdbcAndJpaWrites",
         "unitHistoryViewRequiresNoUnrelatedEmployeePermission",
         "wrongResourceCatalogAndUnknownPolicyRemainFailClosed",
         "wrongThreadCallPoisonsOriginalPhysicalTransaction"
@@ -44,7 +45,7 @@
       "lane": "postgres-integration",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTest.java",
-      "source_sha256": "f96dcba3fab3c277689f582f723801b74f0be4ded06c6076ef1cf3c36bf59e6b",
+      "source_sha256": "12e73370c8762ccd6a9b55b66130f47d1d660c179ff31edc917ad58f5116b5b7",
       "supports": []
     },
     {
@@ -88,7 +89,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOrganizationAppointmentAuthorizationParticipantTest.java",
-      "source_sha256": "6050f5a57679508986aec8dc2b7178bab7e29ed76a5ada82ae69a56d4e6621d5",
+      "source_sha256": "be698d44f2d0fd7483811bc6694761a405dd3fd2fecc2393a38d84e46d3d6196",
       "supports": []
     },
     {
@@ -2865,7 +2866,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipantTest.java",
-      "source_sha256": "f3c00d63680a35e41e18b20917f4e2378b8e9e6970f71b0076dacacc3e7a1e4a",
+      "source_sha256": "7496e059ec24b603bcfbd8d72429685a4e9e955d467cedc78c97e36fed22c761",
       "supports": []
     },
     {
@@ -6548,7 +6549,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java",
-      "source_sha256": "e8c7b1353be6e643a639d5a2f91166f111b87565ee7c97743e2ce36e047ade51",
+      "source_sha256": "cdf0021814cbf315b89cb25409f06b05d34b913b931c45dc953230fc757d1e2d",
       "supports": []
     },
     {

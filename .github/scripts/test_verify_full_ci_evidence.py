@@ -136,6 +136,92 @@ class FullEvidenceTest(unittest.TestCase):
         shutil.rmtree(self.directory / 'oracle')
         self.needs['verify']['result'] = 'skipped'
 
+    def test_partial_rerun_recovers_same_sha_successful_old_lane_only(self):
+        self.prepare_development()
+        static = self.directory / 'static-validation/evidence.json'
+        receipt = json.loads(static.read_text())
+        receipt['run_attempt'] = 1
+        static.write_bytes(inventory.canonical(receipt))
+        job = {'name': 'Static validation', 'head_sha': SHA, 'run_attempt': 1,
+               'workflow_name': 'HidraAPI CI', 'status': 'completed', 'conclusion': 'success'}
+        with patch.object(full, 'pages', return_value=[job]) as api:
+            result = self.development()
+        self.assertEqual(result['lane_run_attempts']['static-validation'], 1)
+        self.assertEqual(result['lane_run_attempts']['postgres-3'], 2)
+        self.assertTrue(all(value == 2 for lane, value in result['lane_run_attempts'].items()
+                            if lane != 'static-validation'))
+        api.assert_called_once_with('actions/runs/5/attempts/1/jobs', 'jobs')
+
+    def test_partial_rerun_fails_closed_without_positive_exact_job_evidence(self):
+        self.prepare_development()
+        receipt = self.directory / 'postgres-1/evidence.json'
+        old = json.loads(receipt.read_text()); old['run_attempt'] = 1
+        old['dependency_cache']['run_attempt'] = 1
+        receipt.write_bytes(inventory.canonical(old))
+        valid = {'name': 'PostgreSQL integration shard 1', 'head_sha': SHA,
+                 'run_attempt': 1, 'workflow_name': 'HidraAPI CI',
+                 'status': 'completed', 'conclusion': 'success'}
+        for invalid in ({'conclusion': 'failure'}, {'status': 'queued'},
+                        {'run_attempt': 2}, {'head_sha': 'b' * 40},
+                        {'name': 'PostgreSQL integration shard 0'},
+                        {'workflow_name': 'other'}):
+            job = dict(valid, **invalid)
+            with self.subTest(invalid=invalid), patch.object(full, 'pages', return_value=[job]):
+                with self.assertRaises(ValueError):
+                    self.development()
+        with patch.object(full, 'pages', return_value=[valid, valid]):
+            with self.assertRaises(ValueError): self.development()
+        with patch.object(full, 'pages', side_effect=ValueError('GitHub API unavailable')):
+            with self.assertRaises(ValueError): self.development()
+
+    def test_partial_rerun_never_uses_forged_or_conflicting_receipts(self):
+        self.prepare_development()
+        receipt = self.directory / 'unit-architecture/evidence.json'
+        original = json.loads(receipt.read_text())
+        stale = copy.deepcopy(original); stale['run_attempt'] = 1
+        stale['dependency_cache']['run_attempt'] = 1
+        prior = self.directory / 'older-unit'; prior.mkdir()
+        shutil.copytree(self.directory / 'unit-architecture/reports', prior / 'reports')
+        (prior / 'evidence.json').write_bytes(inventory.canonical(stale))
+        jobs = [{'name': 'Java 21 unit and architecture', 'head_sha': SHA, 'run_attempt': 1,
+                 'workflow_name': 'HidraAPI CI', 'status': 'completed', 'conclusion': 'success'}]
+        # A valid latest attempt dominates a valid previous success.
+        result = self.development()
+        self.assertEqual(result['lane_run_attempts']['unit-architecture'], 2)
+        # Duplicates within the same attempt are never accepted.
+        stale['run_attempt'] = 2; stale['dependency_cache']['run_attempt'] = 2
+        (prior / 'evidence.json').write_bytes(inventory.canonical(stale))
+        with self.assertRaises(ValueError): self.development()
+        stale['run_attempt'] = 1; stale['dependency_cache']['run_attempt'] = 1
+        (prior / 'evidence.json').write_bytes(inventory.canonical(stale))
+        original['run_attempt'] = 3
+        receipt.write_bytes(inventory.canonical(original))
+        with self.assertRaises(ValueError): self.development()
+        receipt.write_bytes(inventory.canonical(original | {'run_attempt': 2}))
+
+    def test_audit_rejects_older_attempt_even_with_successful_job_receipt(self):
+        receipt = self.directory / 'static-validation/evidence.json'
+        doc = json.loads(receipt.read_text()); doc['run_attempt'] = 1
+        receipt.write_bytes(inventory.canonical(doc))
+        verified = {'name': 'Static validation', 'head_sha': SHA, 'run_attempt': 1,
+                    'workflow_name': 'HidraAPI CI', 'status': 'completed', 'conclusion': 'success'}
+        with patch.object(full, 'pages', return_value=[verified]):
+            with self.assertRaises(ValueError):
+                self.aggregate()
+
+    def test_partial_rerun_cannot_bypass_audit_or_failed_dependency(self):
+        self.prepare_development()
+        receipt = self.directory / 'static-validation/evidence.json'
+        original = json.loads(receipt.read_text())
+        earlier = dict(original, run_attempt=1)
+        receipt.write_bytes(inventory.canonical(earlier))
+        self.needs['postgres-integration']['result'] = 'failure'
+        with self.assertRaises(ValueError): self.development()
+        self.needs['postgres-integration']['result'] = 'success'
+        self.needs['verify']['result'] = 'success'
+        with self.assertRaises(ValueError): self.aggregate()  # audit is single-attempt strict
+
+
     def test_development_requires_all_five_partitions_and_denies_release_equivalence(self):
         self.prepare_development()
         result = self.development()

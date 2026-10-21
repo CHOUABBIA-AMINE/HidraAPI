@@ -22962,6 +22962,65 @@ started or queued, then STOP. HAPI-778 remains PARTIAL/IN_PROGRESS,
 HAPI-590 stays BLOCKED, deployment and SITE acceptance absent.
 
 
+
+### 2026-10-21 — HAPI-778 B3B CI803 exact-run evidence recovery
+
+Owner Fail repairs CI #803's final evidence gate after the owner-authorized
+B3B command compile fix. Exact baseline main
+`b4c4cbeacb97cfd38575cfd6900b7007ed45f193`, tree
+`055787eebd259a3815decc81fbcc8e457edf8f50`.
+[Full803](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39614296846)
+attempt1 failed only postgres-3; attempt2 reported all mandatory lane jobs
+successful, with the retried postgres-3 executing319 tests, zero failures,
+zero errors and zero skipped. [Fast122](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39614296738)
+and [Docs493](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39614297379)
+succeeded. Full803 attempt2 still failed because the final gate downloaded
+only attempt2-named artifacts; the successful lanes retained their authentic
+attempt1 artifacts, so `verify_full_ci_evidence.py aggregate` correctly
+rejected missing full lane evidence. This is a CI fan-in/rerun defect, not a
+reason to skip the protected Identity test or alter any SQL constraint.
+
+**Bounded recovery / exact scope:** MODIFY only
+`.github/workflows/ci.yml`,
+`.github/scripts/verify_full_ci_evidence.py`,
+`.github/scripts/test_verify_full_ci_evidence.py`, and append this
+source/CI evidence to `doc/roadmap/TASKS_HPS-003.md`. No runtime source,
+production/service/Identity/Party/Organization control, migration, test
+inventory or release workflow changes. The new workflow download pattern
+retrieves all `hidra-ci-<sha>-<run>-*` lane artifacts across attempts for
+the same GitHub run. The verifier gathers all required lane receipts,
+allows separate attempt identities only in the development partition mode,
+rejects duplicate lane/attempt and overlapping/extra/missing receipts,
+selects the latest actual receipt per lane, validates every selected
+file/report/manifest/source/POM/Java21/cache/API/dictionary hash and the
+full union of required classes/cases with zero failures/errors/skips.
+Each selected older-attempt lane additionally requires GitHub REST
+attestation of exact repository/run/attempt, original matching job name,
+current source SHA, completed success and matching workflow name; auth is
+via scoped built-in actions-read `github.token`. A failed/missing/
+unreachable/ambiguous attestation rejects the gate. The new
+`lane_run_attempts` receipt preserves auditable per-lane provenance.
+Audit mode still rejects earlier-attempt artifacts and requires its
+explicit independent serial oracle; release eligibility is not expanded.
+No weakened dependency result, empty fixture, fake green DB or fallback
+to another run/SHA is accepted.
+
+**Tests / evidence:** five new Python negative/positive regression tests
+cover successful same-run recovery, failed/wrong/ambiguous GitHub job
+attestations, latest-attempt precedence, duplicate/invalid receipts,
+failed dependency rejection and audit-mode single-attempt protection.
+All previously registered CI inventory classes, five PostgreSQL shards
+and gating/oracle checks remain unchanged. Source-structure review of
+the intended changes completed before publishing. No local Maven,
+PostgreSQL or static Python execution is claimed; the new exact-SHA
+Fast/Full/Docs CI validates syntax and runtime on publication.
+
+Continue HAPI-778 B3 protected appointments only after the *new* exact-SHA
+Full verification gate reports success. HAPI-778 remains PARTIAL/
+IN_PROGRESS, HAPI-590 BLOCKED. HidraAPI remains development-only;
+no production operation, calibration, SITE evidence or OT control.
+
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

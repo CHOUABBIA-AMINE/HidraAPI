@@ -171,6 +171,35 @@ def verify_cache(evidence, mode):
     return cache
 
 
+
+def verify_earlier_lane_job(lane, sha, run, attempt):
+    """Require actual completed success in the selected older attempt of this run.
+
+    This guard is only reached for a development-mode partial rerun. GitHub
+    must attest the job identity and exact SHA in its attempt-specific REST
+    response. No rerun is permitted to substitute another run, SHA, job or
+    failed artifact to complete the coverage gate.
+    """
+    job_names = {'static-validation': 'Static validation',
+                 'unit-architecture': 'Java 21 unit and architecture',
+                 'api-contract': 'API contract and dictionary',
+                 'oracle': 'Java 21 Maven verification'}
+    for index in range(5):
+        job_names[f'postgres-{index}'] = f'PostgreSQL integration shard {index}'
+    expected = job_names.get(lane)
+    if expected is None or type(attempt) is not int or attempt < 1:
+        raise ValueError('Unknown earlier lane job')
+    jobs = pages(f'actions/runs/{run}/attempts/{attempt}/jobs', 'jobs')
+    matches = [job for job in jobs if job.get('name') == expected]
+    if len(matches) != 1:
+        raise ValueError('Missing or ambiguous earlier job')
+    job = matches[0]
+    if (job.get('status') != 'completed' or job.get('conclusion') != 'success'
+            or job.get('head_sha') != sha or job.get('run_attempt') != attempt
+            or job.get('workflow_name') != 'HidraAPI CI'):
+        raise ValueError('Earlier lane lacks exact-SHA successful job attestation')
+
+
 def aggregate(root, directory, sha, run, attempt, needs, mode='audit', dependency_cache='cached', serial_oracle=None):
     manifest, fingerprint = inventory.read_manifest(root)
     inventory.validate(root, manifest)
@@ -187,14 +216,23 @@ def aggregate(root, directory, sha, run, attempt, needs, mode='audit', dependenc
                       for key in REQUIRED_NEEDS}
     if set(needs) != set(expected_needs) or any(needs[key].get('result') != result for key, result in expected_needs.items()):
         raise ValueError('Mandatory dependency failed, skipped, cancelled or absent')
-    documents = {}
+    # GitHub "rerun failed jobs" retains successful lane artifacts in older
+    # attempts. Pick one latest artifact per required lane, never a missing lane.
+    # Older-attempt success is attested against GitHub's exact-run/attempt job
+    # API; local receipts and names alone cannot authorize fallback.
+    candidates = {}
     for path in sorted(directory.rglob('evidence.json')):
         evidence = json.loads(path.read_text())
         lane = evidence.get('lane')
-        if lane not in required_lanes or lane in documents:
-            raise ValueError('Extra, overlapping or duplicate evidence lane')
-        if (evidence.get('format'), evidence.get('source_sha'), evidence.get('run_id'), evidence.get('run_attempt'), evidence.get('inventory_sha256')) != (1, sha, run, attempt, fingerprint):
-            raise ValueError('Wrong SHA, run, attempt or classifier')
+        lane_attempt = evidence.get('run_attempt')
+        if lane not in required_lanes:
+            raise ValueError('Extra or unexpected evidence lane')
+        if (evidence.get('format'), evidence.get('source_sha'), evidence.get('run_id'),
+                evidence.get('inventory_sha256')) != (1, sha, run, fingerprint):
+            raise ValueError('Wrong SHA, run or classifier')
+        if (type(lane_attempt) is not int or lane_attempt < 1 or lane_attempt > attempt
+                or mode != 'development' and lane_attempt != attempt):
+            raise ValueError('Wrong or unapproved evidence attempt')
         classifier = inventory.digest((root / '.github/scripts/verify_ci_test_inventory.py').read_bytes())
         if evidence.get('classifier_sha256') != classifier:
             raise ValueError('Wrong selection helper revision')
@@ -203,12 +241,24 @@ def aggregate(root, directory, sha, run, attempt, needs, mode='audit', dependenc
                         'postgres-3': 'postgres-integration', 'postgres-4': 'postgres-integration'}.get(lane, lane)
         if evidence.get('job') != expected_job:
             raise ValueError('Missing owning job identity')
+        by_attempt = candidates.setdefault(lane, {})
+        if lane_attempt in by_attempt:
+            raise ValueError('Duplicate lane within the same run attempt')
+        by_attempt[lane_attempt] = (evidence, path)
+    if set(candidates) != set(required_lanes):
+        raise ValueError('Missing full lane evidence')
+    documents = {}
+    lane_attempts = {}
+    for lane in required_lanes:
+        lane_attempt = max(candidates[lane])
+        evidence, path = candidates[lane][lane_attempt]
+        if lane_attempt < attempt:
+            verify_earlier_lane_job(lane, sha, run, lane_attempt)
         verify_files(evidence, path.parent)
         if lane != 'static-validation':
             verify_cache(evidence, dependency_cache)
         documents[lane] = (evidence, path)
-    if set(documents) != set(required_lanes):
-        raise ValueError('Missing full lane evidence')
+        lane_attempts[lane] = lane_attempt
     static, _ = documents['static-validation']
     if static.get('checks') != list(STATIC_CHECKS):
         raise ValueError('Missing required static validator')
@@ -255,7 +305,8 @@ def aggregate(root, directory, sha, run, attempt, needs, mode='audit', dependenc
             'same_run_equivalence': use_oracle, 'release_eligible': use_oracle,
             'optimized_adoption_eligible': False,
             'classes': len(all_classes), 'counts': counts, 'api': api,
-            'needs': needs, 'lane_evidence': {lane: inventory.digest(path.read_bytes())
+            'needs': needs, 'lane_run_attempts': lane_attempts,
+            'lane_evidence': {lane: inventory.digest(path.read_bytes())
                                              for lane, (_, path) in documents.items()}}
 
 

@@ -23204,6 +23204,93 @@ expiry/rollback behavior, then the restricted executor caller/permit and
 migration-backed JDBC writer with adversarial fresh-schema PostgreSQL
 acceptance. No physical guard has been silently skipped or marked passed.
 
+### 2026-10-21 — HAPI-778 B3F transaction-bound historical read-owner qualification
+
+**Selected bounded B3 package:** Owner Next follows main
+`8237ec5040332221f9e0992a416a039c8cd1f5de`, parent
+`fc35536f92fc114b598818166f73b8180f9938b6`, tree
+`00f342d9fde7a5914649f655c042de0603a2e11f`.
+[Full809](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39631504435),
+[Fast128](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39631504480)
+and [Docs499](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39631504428)
+completed successfully on that exact SHA. This qualifies the prior bounded
+B3E source and responsible guardrail repairs, not complete appointment storage.
+The exact existing B3 message remains
+`feat(organization): persist protected appointment lifecycle and history`.
+
+**MODIFY only four previously allowed paths:**
+`src/main/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinator.java`,
+`src/test/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinatorTest.java`,
+`.github/ci-test-inventory.json` and this append-only HAPI-778 phase record.
+CREATE/DELETE none. No migration, JPA/JDBC implementation, executor caller or
+statement allowlist, owner export, current writer, route, grant, workflow,
+OpenAPI, dictionary, index or frozen status-table change is selected here.
+Canonical Java headers are restored on the two modified Java files.
+
+**Implemented internal read boundary:** After one-use preparation and bounded
+selector preview, acquire the genuine Identity owner ticket before the
+Organization repository ticket. Re-read the complete descriptor closure under
+those owner fences and require exact equality before consuming Identity's one
+native sample. Reject missing/overflowed/changed descriptors, swapped native
+requests, DENY or INDETERMINATE; require both issuing owners to recheck their
+own tickets. No caller-provided observation becomes authority. An opaque
+private-constructor handle remains tied to its coordinator, thread and exact
+registered transaction synchronization; suspended, completed, foreign-transaction
+or invalidated handles cannot be reused. Rejection poisons retained original
+JDBC holders even across threads; a SQL-free beforeCommit callback vetoes
+invalidated work. Current expiry, PID/XID, database role and physical relation
+checks remain the issuing owners' actual obligations, not locally invented
+clocks or scalar checks.
+
+Historical/policy/position/exact-version reads do not create a new Party
+reference. They therefore pass an empty Party admission list instead of
+requiring current ACTIVE/selectable status for retained historical companies.
+Employee history still includes every represented company/unit in the exact
+native request; position/policy requests retain their employee-free shape.
+The write path must distinguish a genuinely new reference from an admitted
+historical replay before enforcing fresh Party eligibility; this read-only
+package neither chooses an alternate replay policy nor activates a writer.
+
+**Scope limits:** The coordinator remains unwired. This read handle exposes
+no payload, issuer ticket, count, cursor, mutation permit or scalar credential.
+It does not seal executor admission, supply a final physical SQL guard or
+complete a protected transaction. No mock is described as a genuine issued
+database/native ticket. The actual repository implementation, complete
+current/pinned ownership validation and physical PostgreSQL proofs remain
+required before use-case/REST wiring or workflow acceptance.
+
+**Tests and actual local checks:** Fifteen new JUnit methods supplement all
+six unchanged B3E cases: ordered acquisition and sampling, changing/absent/
+overflowed locked closure, wrong sample request and non-PERMIT decisions,
+missing issuer tickets, issuer recheck failures, cross-thread original-holder
+poisoning, SQL-free commit veto, suspension/completion/replaced transaction,
+foreign coordinator, readonly/reused preparation, complete historical company
+coverage, typed policy/position/exact selectors, callback invalidation and
+opaque credentials. The class has21 registered cases, source SHA256
+`8c2bb21f7829a21227a5794289efbc8bfb487cec66b914b2bca4ac3b58312775`.
+These are synthetic Mockito/transaction-lifetime checks, not PostgreSQL tests.
+All other inventory entries, five PostgreSQL sets, timings and case identities
+remain unchanged; new timing is explicitly unmeasured. Local inventory,
+canonical documentation, offline OpenAPI and whitespace checks passed before
+publication. Local Maven is absent and installed Java is17, so no local
+Java21 compilation/JUnit/PostgreSQL pass is claimed or provisioned. Exact-SHA
+hosted Full/Fast/Docs remain the acceptance gate for this source package.
+
+**Next separate B3 package:** Migration-backed Organization storage/guards and
+write admission with actual Identity/Party issuer validation, replay-aware
+new-reference checks, complete conflict/CAS/journal/receipt protocol and
+adversarial PostgreSQL tests. The six fixed provisional statement templates,
+executor permissions and legacy cutover must remain separately bounded and
+source-reviewed. Actual OpenAPI/catalog artifact reconciliation and final
+acceptance follow their registered gates. HAPI-778 remains PARTIAL/IN_PROGRESS;
+HAPI-590 remains independently PARTIAL/BLOCKED. Development-only, synthetic
+data; no deployment, SITE, plant calibration or autonomous OT control.
+
+Publish the four-path subset directly to main with the expected-HEAD guard;
+verify parent/tree/message/blobs, confirm applicable exact-SHA CI creation or
+startup and STOP without waiting for completion or starting another package.
+
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

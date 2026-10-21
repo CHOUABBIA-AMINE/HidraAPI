@@ -1,3 +1,22 @@
+/**
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : ProtectedEmployeeAppointmentAdmissionCoordinator
+ * @CreatedOn   : 2025-06-26
+ * @UpdatedOn   : 2026-10-21
+ *
+ * @Type        : Class
+ * @Layer       : Application
+ * @Module      : organization
+ * @Package     : dz.sh.hidra.modules.organization.application.service
+ *
+ * @Description : Coordinates one-use descriptor closure and transaction-bound protected appointment read admission.
+ *
+ */
 package dz.sh.hidra.modules.organization.application.service;
 
 import dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract;
@@ -13,6 +32,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.jdbc.datasource.ConnectionHolder;
+import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /**
@@ -137,6 +158,117 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
             executor.rejectAdmission();
             throw denied();
         }
+    }
+
+    /**
+     * Qualify a read without demanding current Party selectability for historical
+     * pins. This does not expose a row, seal executor admission or issue DML authority.
+     * The storage owner must authenticate its own ticket and the native ticket.
+     */
+    ReadAdmission acquireRead(Prepared prepared, EmployeeAppointmentQuery query) {
+        ReadAdmission result = null;
+        try {
+            Objects.requireNonNull(query);
+            Request request = begin(prepared, query);
+            // begin has only performed the untrusted pre-lock preview. Identity
+            // owns the first relation fences; Organization must acquire its own
+            // fences before re-reading the complete current/historical closure.
+            var nativeAdmission = Objects.requireNonNull(identity.acquire(prepared.nativeIdentity, request));
+            var expected = new ProtectedEmployeeAppointmentRepositoryPort.DescriptorPreview(
+                    request.companyUnits(), request.employeeId(), assignmentSelector(query), false);
+            var repositoryAdmission = Objects.requireNonNull(storage.acquire(nativeAdmission, List.of(), expected));
+            var locked = Objects.requireNonNull(storage.preview(query));
+            locked.requireBounded();
+            if (!expected.equals(locked) || !request.equals(requestFor(null, query, locked))) throw denied();
+            result = new ReadAdmission(this, nativeAdmission, repositoryAdmission);
+            TransactionSynchronizationManager.registerSynchronization(result);
+            var sample = Objects.requireNonNull(identity.contribute(nativeAdmission));
+            if (!request.equals(sample.request())
+                    || sample.overallDecision()
+                        != OrganizationProtectedAppointmentAuthorizationContract.Decision.PERMIT) throw denied();
+            result.sample = sample;
+            requireCurrentRead(result);
+            return result;
+        } catch (RuntimeException failure) {
+            invalidate(result);
+            executor.rejectAdmission();
+            throw denied();
+        }
+    }
+
+    /** Rechecks genuine issuing owners; the opaque handle alone is never authority. */
+    void requireCurrentRead(ReadAdmission admission) {
+        try {
+            if (admission == null || admission.owner != this || !admission.active
+                    || admission.thread != Thread.currentThread() || admission.sample == null
+                    || !TransactionSynchronizationManager.isActualTransactionActive()
+                    || !TransactionSynchronizationManager.isSynchronizationActive()
+                    || TransactionSynchronizationManager.isCurrentTransactionReadOnly()
+                    || !TransactionSynchronizationManager.getSynchronizations().contains(admission)) throw denied();
+            identity.requireCurrent(admission.identityAdmission);
+            storage.requireCurrent(admission.repositoryAdmission);
+            // An owner callback may invalidate/suspend the transaction. Never let
+            // a swallowed invalidation restore the handle on the callback return.
+            if (!admission.active || !TransactionSynchronizationManager.isActualTransactionActive()
+                    || TransactionSynchronizationManager.isCurrentTransactionReadOnly()
+                    || !TransactionSynchronizationManager.isSynchronizationActive()
+                    || !TransactionSynchronizationManager.getSynchronizations().contains(admission)) throw denied();
+        } catch (RuntimeException failure) {
+            invalidate(admission);
+            executor.rejectAdmission();
+            throw denied();
+        }
+    }
+
+    private static String assignmentSelector(EmployeeAppointmentQuery query) {
+        if (query instanceof EmployeeAppointmentQuery.ExactVersion exact) return exact.assignmentId();
+        if (query instanceof EmployeeAppointmentQuery.History history) return history.assignmentId();
+        return null;
+    }
+
+    private void invalidate(ReadAdmission admission) {
+        if (admission != null && admission.owner == this) admission.invalidate();
+    }
+
+    /**
+     * Private transaction-lifetime gate. It deliberately exports neither native
+     * scalars, storage tickets nor a protected payload. No mutation permit is issued.
+     */
+    static final class ReadAdmission implements TransactionSynchronization {
+        private final ProtectedEmployeeAppointmentAdmissionCoordinator owner;
+        private final OrganizationProtectedAppointmentAuthorizationContract.Admission identityAdmission;
+        private final ProtectedEmployeeAppointmentRepositoryPort.Admission repositoryAdmission;
+        private final Thread thread = Thread.currentThread();
+        private final List<ConnectionHolder> holders;
+        private volatile boolean active = true;
+        private OrganizationProtectedAppointmentAuthorizationContract.Contribution sample;
+
+        private ReadAdmission(ProtectedEmployeeAppointmentAdmissionCoordinator owner,
+                OrganizationProtectedAppointmentAuthorizationContract.Admission identityAdmission,
+                ProtectedEmployeeAppointmentRepositoryPort.Admission repositoryAdmission) {
+            this.owner = owner;
+            this.identityAdmission = identityAdmission;
+            this.repositoryAdmission = repositoryAdmission;
+            this.holders = TransactionSynchronizationManager.getResourceMap().values().stream()
+                    .filter(ConnectionHolder.class::isInstance).map(ConnectionHolder.class::cast).distinct().toList();
+        }
+
+        private void invalidate() {
+            active = false;
+            // Poison the original holder even when rejection happens on a foreign
+            // thread with no bound transaction. beforeCommit supplies a SQL-free veto.
+            holders.forEach(ConnectionHolder::setRollbackOnly);
+        }
+        @Override public void beforeCommit(boolean readOnly) {
+            if (!active || sample == null || thread != Thread.currentThread() || readOnly
+                    || holders.stream().anyMatch(ConnectionHolder::isRollbackOnly)) {
+                invalidate();
+                throw denied();
+            }
+        }
+        @Override public void suspend() { invalidate(); }
+        @Override public void afterCompletion(int status) { active = false; }
+        @Override public String toString() { return "ReadAdmission[opaque appointment owners]"; }
     }
 
     private static AccessDeniedException denied() {

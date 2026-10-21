@@ -10,20 +10,35 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "absentOrOverflowedLockedDescriptorsCannotQualify",
         "absentPhysicalTransactionCannotDiscoverOwnerDescriptors",
+        "changedLockedHistoryClosureIsDeniedBeforeSampling",
+        "changedNativeOrStorageEvidenceInvalidatesHandleAndVetoesCommit",
+        "denyUncertaintyOrSubstitutedNativeRequestCannotQualifyRead",
+        "failedNativeAcquisitionCannotReachOrganizationOrParty",
+        "foreignCoordinatorCannotReuseAnIssuedReadHandle",
+        "foreignThreadReadHandlePoisonsOriginalHolderAndCommitVeto",
+        "historicalCompaniesRemainCompleteWithoutCurrentPartyEligibility",
         "historicalReadRequiresAllHistoricCompanyAndUnitPermissions",
+        "invalidationDuringOwnerRecheckCannotRestoreReadHandle",
         "mapsTypedCommandsAndQueriesToFixedNativeActions",
+        "missingRepositoryTicketCannotConsumeNativeSample",
+        "policyPositionAndExactVersionReadsKeepTheirDistinctSelectors",
         "preparationCallsNativeOwnerOnlyOutsideTransaction",
         "preparationIsOneUseAndPreviewFailureCannotBecomeAuthority",
-        "rejectsSwappedCompanyUnitEmployeeOrPositionIdentity"
+        "readAdmissionLocksIdentityBeforeOrganizationAndSamplesAfterLockedClosure",
+        "readOnlyTransactionAndReusedPreparationCannotAcquireReadAuthority",
+        "readTicketCannotBeConstructedOrExposeOwnerCredentials",
+        "rejectsSwappedCompanyUnitEmployeeOrPositionIdentity",
+        "suspendedCompletedOrDifferentTransactionCannotReuseReadHandle"
       ],
       "class": "dz.sh.hidra.modules.organization.application.service.ProtectedEmployeeAppointmentAdmissionCoordinatorTest",
-      "dependency_reason": "HAPI-778 B3E typed descriptor-closure and one-use pre-admission coordinator: synthetic JUnit only; no native permit or PostgreSQL execution yet; duration unmeasured.",
+      "dependency_reason": "HAPI-778 B3F descriptor closure, ordered read-owner acquisition and transaction-lifetime rejection mechanics; synthetic JUnit/Mockito only, not native PostgreSQL or final-guard proof; duration unmeasured.",
       "fast": true,
       "lane": "unit-architecture",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinatorTest.java",
-      "source_sha256": "2c408da1c29785c38e4426c32bea90496c6026261061e89afc02abbd30989bd0",
+      "source_sha256": "8c2bb21f7829a21227a5794289efbc8bfb487cec66b914b2bca4ac3b58312775",
       "supports": []
     },
     {

@@ -8835,6 +8835,7 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "appliedRevisionOneConfigurationSurvivesForwardSuccessorRepair",
         "authoredRoutineBodiesAndCatalogPrivilegesMatchInstalledStorageContract",
         "bindingReactivationKeepsOriginalRevisionAndStrictSuccessorCas",
         "configurationLoginHasNoDirectStorageWriteOrPartyTableAuthority",
@@ -8856,7 +8857,7 @@
       "lane": "postgres-integration",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java",
-      "source_sha256": "258df07821cd31279d2c288a38816f1315fc175206203523a17771e4f93ecccf",
+      "source_sha256": "226ac45892a5b89aa0fbcaa861e7534c10744a33e016f8df252571ccf832ec6d",
       "supports": []
     }
   ],

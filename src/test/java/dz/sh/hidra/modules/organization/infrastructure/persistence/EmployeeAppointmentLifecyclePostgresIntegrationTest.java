@@ -48,13 +48,19 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
     private static final String POLICY = "public.hidra_org_activate_appointment_policy(text,text,bigint,jsonb)";
     private static final String PARTY = "public.hidra_party_require_organization_configuration_reference(text)";
     private static final String MIGRATION = "src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql";
+    private static final String SUCCESSOR_MIGRATION = "src/main/resources/db/migration/V20261021_004__organization_appointment_configuration_successor.sql";
     private static final List<String> TABLES = List.of("binding_revision", "binding_head", "policy_revision", "policy_head",
             "configuration_event", "lock_key", "event", "receipt");
     @Container static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:16");
     private String partyType, unitType;
+    private String upgradeCompany, upgradeUnit, upgradeBinding, upgradePolicy;
+    private long originalConfigurationChecksum;
 
     @BeforeAll void migrateAndSeparatePrincipals() throws Exception {
-        Flyway.configure().dataSource(POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword()).load().migrate();
+        Flyway.configure().dataSource(POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword())
+                .target("20261021.003").load().migrate();
+        originalConfigurationChecksum = count("SELECT checksum FROM public.flyway_schema_history WHERE script=?",
+                Path.of(MIGRATION).getFileName().toString());
         for (String role : List.of(CONFIG, ORDINARY, PUBLISHER)) {
             admin("CREATE ROLE " + role + " LOGIN PASSWORD '" + PASSWORD + "'");
             admin("GRANT USAGE ON SCHEMA public TO " + role);
@@ -63,6 +69,19 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
         partyType = "party-type-" + UUID.randomUUID(); unitType = "unit-type-" + UUID.randomUUID();
         admin("INSERT INTO public.hidra_party_type(id,code,status,created_at,updated_at) VALUES (?,?,'ACTIVE',now(),now())", partyType, partyType);
         admin("INSERT INTO public.hidra_org_unit_type(id,code,kind,active,created_at,updated_at) VALUES (?,?,'STATION',true,now(),now())", unitType, unitType);
+        // Persist real revision-one facts under the already-applied003 routines.
+        // The forward repair must preserve these rows, checksum and explicit ACLs.
+        upgradeCompany = company("ACTIVE"); upgradeUnit = unit();
+        upgradeBinding = "upgrade-binding-" + UUID.randomUUID();
+        upgradePolicy = "upgrade-policy-" + UUID.randomUUID();
+        try (var c = login(CONFIG)) {
+            binding(c, upgradeBinding, upgradeUnit, upgradeCompany, 0);
+            policy(c, upgradePolicy, upgradeCompany, 0, policyValue());
+            c.commit();
+        }
+        Flyway.configure().dataSource(POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword()).load().migrate();
+        assertEquals(originalConfigurationChecksum, count("SELECT checksum FROM public.flyway_schema_history WHERE script=?",
+                Path.of(MIGRATION).getFileName().toString()));
     }
 
     private Connection owner() throws SQLException {
@@ -252,8 +271,33 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
         assertEquals(1,count("SELECT count(*) FROM public.hidra_org_appointment_configuration_event WHERE identity_id=?",id));
     }
 
+    @Test void appliedRevisionOneConfigurationSurvivesForwardSuccessorRepair() throws Exception {
+        assertEquals(originalConfigurationChecksum, count("SELECT checksum FROM public.flyway_schema_history WHERE script=?",
+                Path.of(MIGRATION).getFileName().toString()));
+        assertEquals(1, count("SELECT count(*) FROM public.flyway_schema_history WHERE script=? AND success",
+                Path.of(SUCCESSOR_MIGRATION).getFileName().toString()));
+        assertEquals(1, count("SELECT revision FROM public.hidra_org_appointment_binding_head WHERE binding_id=?", upgradeBinding));
+        assertEquals(1, count("SELECT revision FROM public.hidra_org_appointment_policy_head WHERE policy_id=?", upgradePolicy));
+        try (var c = login(CONFIG)) {
+            binding(c, upgradeBinding, upgradeUnit, upgradeCompany, 1);
+            policy(c, upgradePolicy, upgradeCompany, 1, policyValue());
+            c.commit();
+        }
+        assertEquals(2, count("SELECT revision FROM public.hidra_org_appointment_binding_head WHERE binding_id=?", upgradeBinding));
+        assertEquals(2, count("SELECT revision FROM public.hidra_org_appointment_policy_head WHERE policy_id=?", upgradePolicy));
+        assertEquals(2, count("SELECT count(*) FROM public.hidra_org_appointment_binding_revision WHERE binding_id=?", upgradeBinding));
+        assertEquals(2, count("SELECT count(*) FROM public.hidra_org_appointment_policy_revision WHERE policy_id=?", upgradePolicy));
+        assertEquals(4, count("SELECT count(*) FROM public.hidra_org_appointment_configuration_event WHERE identity_id IN (?,?)",
+                upgradeBinding, upgradePolicy));
+        try (var c = login(CONFIG)) {
+            state("40001", () -> binding(c, upgradeBinding, upgradeUnit, upgradeCompany, 1));
+            c.rollback();
+        }
+    }
+
     @Test void authoredRoutineBodiesAndCatalogPrivilegesMatchInstalledStorageContract() throws Exception {
         String source=Files.readString(Path.of(MIGRATION));
+        String successorSource=Files.readString(Path.of(SUCCESSOR_MIGRATION));
         var tags=List.of("exact","policy","immutable","context","locks","binding","activate_policy","complete","head");
         var signatures=List.of("hidra_org_appointment_exact_id(text)","hidra_org_appointment_policy_valid(jsonb)",
                 "hidra_org_appointment_configuration_immutable()","hidra_org_appointment_configuration_context(text)",
@@ -261,7 +305,8 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
                 "hidra_org_activate_appointment_policy(text,text,bigint,jsonb)",
                 "hidra_org_appointment_configuration_complete()","hidra_org_appointment_head_transition()");
         for(int i=0;i<tags.size();i++) {
-            String body=source.split(java.util.regex.Pattern.quote("AS $"+tags.get(i)+"$"),2)[1]
+            String owningSource=List.of("context", "binding", "activate_policy").contains(tags.get(i)) ? successorSource : source;
+            String body=owningSource.split(java.util.regex.Pattern.quote("AS $"+tags.get(i)+"$"),2)[1]
                     .split(java.util.regex.Pattern.quote("$"+tags.get(i)+"$;"),2)[0];
             String actual=(String)catalog("SELECT prosrc FROM pg_proc WHERE oid=?::regprocedure","public."+signatures.get(i));
             assertEquals(HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(body.getBytes(StandardCharsets.UTF_8))),

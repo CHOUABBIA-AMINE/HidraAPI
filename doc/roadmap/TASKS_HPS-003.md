@@ -23407,6 +23407,79 @@ verify exact parent/tree/message/blobs, confirm Full/Fast/Docs creation or start
 on the new SHA and STOP without waiting or starting a second stage.
 
 
+### 2026-10-21 — HAPI-778 Full811 explicit configuration successor repair
+
+Owner Fail selects the responsible runtime failure, not another implementation
+package. Exact main `3972516d1dfadda47428f090f09d94c22c97f575`, parent
+`0e6e368d0c507ea1d98e2a9cfdc265ddce10e49c`, tree
+`cbc7249bce655214bedfa639305b134eeb8f028e` were refreshed.
+[Full811](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39638079819)
+failed; [Fast130](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39638079702)
+and [Docs501](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39638079715)
+succeeded. Four PostgreSQL shards and unit/architecture/static passed. Shard3
+job119354018556 ran333 cases with zero assertion failures, two errors and zero
+skips. Both errors are second binding/policy activation, rejected by
+hidra_org_appointment_head_transition. The appointment class ran14 cases,
+12 without failure/error and two errors; this is not class acceptance.
+
+**Root cause and bounded repair:** PostgreSQL invokes BEFORE INSERT triggers
+before resolving INSERT ON CONFLICT DO UPDATE. The activation routines offered
+a revision2 candidate to the INSERT guard, which correctly requires revision1,
+so a valid update never reached the UPDATE guard. Preserve the correct head
+invariant and all negative tests. Add only
+`src/main/resources/db/migration/V20261021_004__organization_appointment_configuration_successor.sql`.
+It replaces binding/policy activation with explicit INSERT for absent heads and
+exact-key/expected-revision UPDATE for existing heads, requiring an affected
+row or stale-configuration rejection. The context routine's two embedded
+activation-body hashes follow these exact authored replacements. CREATE OR
+REPLACE retains routine signatures, fixed settings and existing explicit ACLs.
+No trigger, constraint, table, lock, CAS rule, initial revision, Party export,
+provenance, permission grant or endpoint is changed. Version004 was absent in
+the refreshed tree. Applied003 remains byte-for-byte unchanged, SHA256
+`c6027f57bcd78dc6a1b0d627cf3d3081669962bbc553e29a194e8c6aaf51faa5`.
+This necessary additive correction is admitted under B3's migration-preservation
+rule, with no new business scope.
+
+**Exact scope:** CREATE only that004 migration. MODIFY only
+`src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java`,
+`.github/ci-test-inventory.json` and this append-only HAPI-778 record. DELETE
+none. Retain exact B3 message
+`feat(organization): persist protected appointment lifecycle and history`.
+No dictionary/ownership/OpenAPI/workflow or unrelated source change is selected.
+
+**Meaningful upgrade proof:** Setup migrates through003, persists real revision1
+binding/policy facts through the restricted configuration login, then applies
+the complete forward chain. Retain003's actual Flyway checksum and initial rows.
+A new actual PostgreSQL case advances both existing heads to2, verifies retained
+revisions and four activation events, then rejects stale expected revision1.
+All original14 cases remain, including the two failing successor cases and the
+concurrency/immutable/privilege/catalog checks. Installed body checks use004 only
+for the three replaced routines and003 for every unchanged guard/helper. The
+class has15 cases; updated source SHA256
+`226ac45892a5b89aa0fbcaa861e7534c10744a33e016f8df252571ccf832ec6d`.
+All other entries/cases/timings and five-set policy are preserved.
+
+**Separate dictionary failure, not waived:** API/dictionary job119354018122
+failed the unchanged migrated-catalog equality gate. Its actual diagnostic
+artifact12365440007 (Full811/attempt1/api-contract), ZIP SHA256
+`4cec24a579602e3515f99a32be2691966eefd4592ccf11c418ffeaf88174803e`,
+was downloaded; database/verification.json reports physical dictionary drift.
+The final Full gate rejected failed dependencies; that is a consequence, not
+grounds to skip a lane or relax proof. Preserve the committed dictionary until
+reconciliation from the repaired chain's actual catalog/history artifact.
+An811 catalog cannot establish actual new004 history/checksum. Runtime repair
+comes first; the registered artifact stage remains required after hosted
+feedback. No Full success or production-data evidence is claimed here.
+
+**Validation and stop:** Check authored source/body hashes, additive-only scope,
+inventory preservation, canonical docs/offline OpenAPI and whitespace before
+publication. Local Maven/Java21/PostgreSQL runtime execution is not claimed;
+hosted feedback must validate the actual upgrade and cases. Publish main with
+expected3972516 guard; verify parent/tree/message/four blobs, confirm exact-SHA
+Full/Fast/Docs creation/start and STOP. HAPI-778 remains PARTIAL/IN_PROGRESS.
+No dependent stage, deployment, SITE acceptance or new package is selected.
+
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

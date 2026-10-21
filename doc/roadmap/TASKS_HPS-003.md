@@ -20674,6 +20674,200 @@ raw blob, confirm exact-SHA applicable Docs created/queued/started, then STOP.
 
 **Completed registration checks:** Docs passed128 documents/8277 relative links/24 modules/921 tasks/25 phases; offline OpenAPI passed257 paths/279 operations/267 schemas; git diff --check passed. All six B1 CREATE paths and the candidate migration are absent in the exact current recursive tree. No Java, native-provider or PostgreSQL tests were run by this documentation-only stage.
 
+
+### 2026-10-21 — HAPI-778 B1 explicit ownership values implemented
+
+**Selected exact message:** `feat(organization): model explicit appointment ownership bindings`.
+Owner Next selects the registered eight-path B1 package. Main
+2cb6a32a8b34ded27a475eb8b345d31b483444a9, parent
+a25d229e2a6e79ff569f1f527b98b2894ad7e44f, tree
+e120effea3b5bc2e635ae024efc37ba74e1a7386 and successful
+[Docs478](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39516223813)
+were recovered. The last executable baseline remains dd03f709 and
+[Full790](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39514684725),
+whose success was rechecked. The two intervening commits only append task
+evidence. HAPI-778 stays PARTIAL/IN_PROGRESS, with runtime/acceptance outstanding;
+the frozen HAPI-590 disposition is unchanged.
+
+**Implemented scope:** exactly the six registered CREATE paths and two MODIFY
+paths from B1. OrganizationUnitCompanyBinding normalizes the explicit binding,
+unit and Party identifiers, requires a positive revision and explicit recordedAt,
+and retains every immutable fact in equality. CompanyBoundEmployeeAppointment
+retains the complete versioned appointment and binding value and rejects a
+different unit. EmployeeAppointmentOwnershipPolicy validates creation at version
+one and exact proposal-to-bound-snapshot equality, preserves the source binding
+on END and same-unit changes, requires a transfer successor, forbids an
+extraneous successor, checks every company, and rejects contradictory facts
+under the same binding ID/revision. Unit-changing correction retains its
+before-image and must carry a matching destination pin in the same company.
+A newly created transfer successor may pin a different explicit current revision,
+including a same-unit move; the source pin remains unchanged. Current revision
+selection still belongs to the later runtime owner, not this pure evaluator.
+
+No existing lifecycle model was changed. There is no legal-employer assertion,
+implicit company lookup, grant, framework/persistence dependency or runtime
+wiring in these three domain types. Overlap/capacity validation remains the
+separate existing EmployeeAppointmentPolicy. Authorization and actual current
+binding/Party/policy evidence are required at B2/B3 before operational use.
+
+**Tests and inventory:** 24 @Test methods across the three new registered test
+classes cover normalization/missing values, revision limits and time, complete
+equality, historical pin retention, unit mismatch, create version, end pin
+substitution, both transfer company cases, source pin retention, successor
+revision, correction before-image/destination/company cases, contradictory
+pin identities, null arguments, version/field substitution and missing/extra
+successors. All previous inventory entries and metadata remain equal to main;
+only three real source-hashed classes/case lists were added, owned by
+unit-architecture and selected by fast. Duration zero is explicitly unmeasured,
+not a fabricated runtime baseline.
+
+#### B2 source correction and exact executable handoff
+
+Current Permission.java accepts only lower-case context:resource:action codes.
+JdbcProtectedAuthorizationEvidenceReader also requires the permission catalog's
+resource_type to equal the requested resource. Thus the prior dotted-code
+proposal and one-code/three-resource shorthand cannot execute against current
+Identity. This source-backed correction supersedes that shorthand without
+changing the selected company/unit/employee decisions or relaxing validation.
+
+B2 uses exactly these code templates, expanding action only through a fixed
+enum switch: organization:appointment-company:ACTION with
+ORGANIZATION_COMPANY, organization:appointment-unit:ACTION with
+ORGANIZATION_UNIT, and organization:appointment-employee:ACTION with
+ORGANIZATION_EMPLOYEE. ACTION is exactly create, end, transfer, correct,
+read-current, read-history or read-policy; the employee/read-policy combination
+is unsupported. This is a finite set of20 permission definitions, no grants.
+B2 tests insert synthetic catalog fixtures; durable definitions belong to B3's
+additive migration. Missing catalog/grants remains DENY/INDETERMINATE.
+No dotted alias or Permission/domain/ScopeType weakening is authorized.
+
+**Next single executable package, after actual B1 CI feedback:**
+`feat(identity): qualify native appointment and party reference authority`.
+
+The exact B2 production CREATE allowlist, relative to
+src/main/java/dz/sh/hidra, is:
+
+1. modules/identity/application/contract/organization/OrganizationProtectedAppointmentAuthorizationContract.java
+2. modules/identity/infrastructure/security/ProtectedOrganizationAppointmentAuthorizationParticipant.java
+3. modules/party/application/contract/organization/OrganizationProtectedPartyEligibilityContract.java
+4. modules/party/infrastructure/persistence/adapter/JdbcOrganizationProtectedPartyEligibilityAdapter.java
+
+The exact B2 production MODIFY allowlist, under the same root, is:
+
+1. modules/identity/infrastructure/security/ProtectedOperationIdentityParticipant.java
+2. modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java
+
+The four B2 test CREATE paths, relative to src/test/java/dz/sh/hidra, are:
+
+1. modules/identity/infrastructure/security/ProtectedOrganizationAppointmentAuthorizationParticipantTest.java
+2. modules/identity/infrastructure/persistence/ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTest.java
+3. modules/party/infrastructure/persistence/adapter/JdbcOrganizationProtectedPartyEligibilityAdapterTest.java
+4. modules/party/infrastructure/persistence/OrganizationProtectedPartyEligibilityPostgresIntegrationTest.java
+
+The five B2 test MODIFY paths, under that test root, are:
+
+1. modules/identity/infrastructure/security/ProtectedOperationIdentityParticipantTest.java
+2. modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java
+3. modules/identity/OperationAuthenticationBoundaryGuardrailTest.java
+4. ArchitectureGuardrailTest.java
+5. ForensicRemediationClosureTest.java
+
+Additionally MODIFY only .github/ci-test-inventory.json and this HAPI-778 record.
+Total B2 envelope: eight CREATE and nine MODIFY paths; DELETE none.
+All CREATE paths are absent in the reviewed main tree. No migration, executor,
+Organization runtime route/service/storage, old Party adapter/contract or
+native producer modification is admitted in B2. Existing exact tests remain
+regressions; new PostgreSQL classes join the ordinary five-shard inventory.
+Architecture changes admit only the two exact public Organization exports,
+with positive/negative tests for private sibling types and fabricated tickets;
+no wildcard private-package exception or unrelated export cleanup is allowed.
+
+#### B2 native and owner protocol to implement
+
+The Identity request has the fixed action, exact bounded company/unit descriptors
+and an employee selector when required. Descriptors are immutable scalar request
+data, never ownership evidence. Missing identifiers/scope, unsupported combinations,
+duplicates or noncanonical ordering fail before authority consumption.
+Allow at most100 distinct company/unit descriptor pairs per read request.
+CREATE/END require one pair; TRANSFER/CORRECT one or two pairs in one company.
+READ_POLICY carries no employee; mutation requests require one exact employee.
+READ_CURRENT/READ_HISTORY support a unit/position view without employee details
+or an employee-specific view requiring the employee decision. History spanning
+companies must include every represented company and unit in the same group;
+a caller cannot omit a foreign historical pin and still receive that row/count.
+These limits bound technical evaluation, not deployed personnel policy.
+
+Prepare genuine native authentication outside the transaction. Consume it once
+into one private Organization claim group, all action-specific resource requests
+using the same contribution/sample, native binding/session/user, validUntil,
+thread, current Authentication object, physical connection, backend PID and XID.
+Company/employee use CUSTOM with exact respective ID; units use ORGANIZATION_UNIT
+with exact unit ID. Resource reference equals scope reference. Fixed resource
+kind determines the permission code. The contract accepts no arbitrary code,
+claims, user ID, Boolean authorization result or public credential factory.
+One-use private child credentials and an owner-family discriminator must prevent
+station/draft/publication/diagnostic credentials crossing into Organization.
+No resource prefix escape or engineeringDraft=true shortcut is acceptable.
+
+The qualified reader loads every graph under existing native/Identity fences,
+then the real AuthorizationPolicyEvaluator evaluates every decision at the
+single sample. Any DENY wins; missing/indeterminate fails closed. Expiry is
+bounded by all relevant native/evidence limits. Opaque Prepared/Admission tickets
+must reject another issuer, thread, Authentication, connection/XID, suspension,
+rollback-only state, completed transaction and replay; all failure paths poison
+the physical transaction. Export requireCurrent and finalFences, keeping final
+scalar authority with the genuine owner. Constructible contributions and fence
+lists never become credentials. Preserve current station/draft/publication
+permission sets and all existing diagnostics' non-authority behavior.
+
+Party's new export implements acquire/read/requireCurrent/finalFences with its
+own opaque issuer-bound ticket and actual current ACTIVE/selectable status plus
+eligibility generation. Reuse the existing Party tables/generation mechanism and
+actual non-owner role/catalog/trigger/fence checks, not the foreign Topology
+contract or adapter as a cross-module dependency. Retain the sampled generation
+and recheck it in requireCurrent; check physical PID/XID/connection/role/thread,
+liveness and held fences, including committed status/delete/reinsert ABA.
+Historical reads can retain retired pins without invoking new-reference
+eligibility; write admission must invoke the export. B2 adds no Party meaning
+beyond technical new-reference eligibility and no Organization ownership claim.
+B3 must match all requested descriptors against current/pinned Organization
+state before disclosing or writing anything.
+
+Mandatory B2 tests include genuine signed/completed LOCAL, OIDC, LDAP and
+ACTIVE_DIRECTORY origins, synthetic transport only; exact permission/resource/
+scope and action dispatch; company/employee/source/destination unit denial and
+explicit DENY precedence; multi-unit/multi-company read decisions in one sample;
+missing/unknown catalog/policy uncertainty; finite input bounds and family
+substitution; fabricated/replayed/wrong-thread/wrong-authentication/wrong-XID/
+suspended/completed/rollback-only tickets; native/grant/provider/claim revocation,
+final expiry and rollback; Party ACTIVE/retired/missing, committed ABA, catalog
+tamper and actual distinct administrator/runtime role privileges.
+Mock mechanics are useful unit tests but cannot replace those PostgreSQL cases.
+Run all prior native/Topology/Party regression cases without dropping/renaming
+them to accommodate the new family. No executor caller or SQL-write hash is
+needed in this read/qualification-only package. B3 must still register its exact
+runtime paths, additive migration, role rules, all-writer lock order, DML hashes
+and final guard tests before implementation, using the previously closed relation
+requirements; no such runtime authority is implied here.
+
+**Local validation:** canonical test inventory validation passed (346 fast,
+347 unit/architecture,442 active oracle classes; PostgreSQL shards16/18/19/23/19;
+four separately archived historical classes). All31 inventory-classifier
+self-tests passed. Canonical Docs passed128 documents/8277 relative links/
+24 modules/921 tasks/25 phases. Offline OpenAPI passed257 paths/279 operations/
+267 schemas. Whitespace/source import/header and inventory-preservation checks
+passed. The24 new Java tests are registered but have NOT run locally.
+Only Java17 runtime is installed; Maven/JUnit are unavailable and a focused
+javac attempt returned command not found (127). No Java21 compilation,
+architecture execution, native-provider runtime or PostgreSQL result is claimed.
+
+**Publication:** only the B1 eight paths, exact registered message, one parent
+2cb6a32 and expected-head guard on main. Verify raw blobs, tree, message,
+six additions/two modifications and no other path; confirm applicable Full,
+Fast and Docs created/queued/started for the published SHA, then STOP.
+Actual CI feedback must qualify B1 before selecting B2; this record does not
+mark the parent capability complete or start another package.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

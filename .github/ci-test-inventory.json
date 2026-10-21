@@ -8743,7 +8743,7 @@
       "lane": "postgres-integration",
       "owner": "party",
       "path": "src/test/java/dz/sh/hidra/modules/party/infrastructure/persistence/OrganizationConfigurationReferencePostgresIntegrationTest.java",
-      "source_sha256": "8a11ce321f9d529edaeb85f392dfca22367cd5889fe82d5f44ba7a7e0e944cf7",
+      "source_sha256": "4cdc0f36b4a81076ffaf5a9b71dc7e9babef82683d39522af81bb8c9012476c9",
       "supports": []
     }
   ],

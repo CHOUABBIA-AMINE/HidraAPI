@@ -22620,6 +22620,108 @@ exact-SHA Full/Fast/Docs creation/queue/start and STOP without waiting.
 HAPI-778 stays PARTIAL/IN_PROGRESS, B3 runtime is not implemented by this
 prerequisite. Development API only; no production data/release/tag/deployment.
 
+
+### 2026-10-21 — HAPI-778 Full798 owner-bridge failure repair
+
+Owner Fail selects only the responsible Party configuration prerequisite repair.
+Refreshed main e77f98bdc65e42aad13c69099779a1d9c11f4e34,
+parent54c186c8565130ee6b62eeae5cfa41f981f3024d,
+treeed96c5fc689320fcc41369a6c6b7ed1d9e0a88cc, current AGENTS,
+ROADMAP, reconciliation, this owning record and the untruncated source tree.
+[Full798](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39601203978)
+failed: PostgreSQL shard3 ran319 cases with two assertion failures, no errors or
+skips. The other four PostgreSQL shards, unit/architecture and static validation
+succeeded. [Fast118](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39601203899)
+failed before Maven/test execution: wget could not fetch Maven3.9.11 from Maven
+Central. This is not a test or compiler failure; no workflow change is selected.
+[Docs488](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39601203848)
+succeeded. Neither Full nor Fast is accepted.
+
+**Concrete scope correction within the same responsible repair:** preserve the
+published159 migrations, including Party001 and its applied checksum. The earlier
+four-path repair envelope cannot supply this missing catalog guard by editing an
+already applied migration. Its single SQL path is therefore replaced by CREATE
+src/main/resources/db/migration/V20261021_002__party_configuration_reference_collation_guard.sql.
+MODIFY only the existing OrganizationConfigurationReferencePostgresIntegrationTest,
+.github/ci-test-inventory.json and this append-only HAPI-778 record. Zero DELETE;
+no other source or prior migration changes. Retain the registered exact message
+`feat(party): guard organization configuration references`. This is an additive
+correction of the selected implementation, not another runtime feature or task.
+
+Party002 occupies the next actual version, currently absent. The unexecuted B3
+Organization002 reservation must consequently become
+src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql.
+The earlier Organization001/002 candidates never existed or ran. All other B3
+paths/templates and gates are unchanged. This avoids installing a later Party
+version ahead of an eventual lower Organization version with Flyway out-of-order
+execution disabled. Recheck collisions before B3 implementation.
+
+**Actual faults and repair:** the collation-tamper assertion at test line390
+reported no SQLException. Party001 checked generation names/types/typmods but
+omitted attcollation, contradicting the previous implementation's claim that all
+required text collations were checked. Party002 replaces only the same owner
+routine, adding the exact ordered generation-column collation vector
+(default-collation OID,0,0). Its signature, result, ACL restriction, owner fences,
+caller checks, original trigger hashes, exception behavior and other body bytes
+are retained. CREATE OR REPLACE preserves function identity/owner and explicit
+ACLs; PUBLIC remains revoked. No table, trigger, login, Party row or generation
+write is added. Party001 is not rewritten or repaired in Flyway history.
+
+The role-switch assertion at line288 expected23514 but received42501: the
+alternate effective role lacked EXECUTE and PostgreSQL rejected before entering
+the routine. The fixture now explicitly grants that disposable NOLOGIN role
+schema USAGE and EXECUTE, verifies actual session_user/current_user and effective
+EXECUTE, then retains the23514 body-level role-switch rejection. Positive
+observations precede and follow the negative case; membership/EXECUTE are revoked
+in cleanup. Ordinary/publisher denial and all other negative cases remain.
+
+The same21 test methods remain. Setup now migrates the fresh full chain through
+published Party001 first, records its actual Flyway checksum, applies the additive
+upgrade, verifies successful Party002 and unchanged original checksum, then runs
+all real-role/corruption/lock/ABA cases. Future appended migrations are allowed;
+no brittle total migration count or exact-one-upgrade assumption is introduced.
+The actual final function prosrc is independently compared to Party002 source.
+Only this class's source_sha256 changes in the inventory; all case identities,
+weights, lane ownership, old source hashes and historical archives remain.
+
+Party002 source SHA256:
+c846de4e5ed584b56457a9b887de24b26237d532a154f43d1b01555681556425.
+Party002 function prosrc SHA256:
+140edf12c793bbbcae48449c12e0f5eac8d7fef24a72a6b65eecf991bf1c3000.
+Repaired test source SHA256:
+4cdc0f36b4a81076ffaf5a9b71dc7e9babef82683d39522af81bb8c9012476c9.
+These are source pins, not claimed hosted runtime acceptance.
+
+**Separate genuine artifact failure:** downloaded actual Full798 API-contract
+job119225858624 diagnostic artifact12346362046, source e77f98b/run39601203978/
+attempt1. ZIP SHA2566fd348b954a355991065927523eb5d568c42235ca79f0d63b91f549b98c104c8;
+member database/verification.json states: Physical dictionary drift; review
+regenerated metadata/content. The artifact contains database/schema.json and the
+unchanged generated OpenAPI, not a completed dictionary acceptance bundle.
+Thus the expected migration-census drift is confirmed rather than guessed.
+Preserve the dictionary/OpenAPI and strict equality now; Party002 changes the
+census again to160. Use the next actual hosted catalog for the already registered
+`docs(organization): reconcile appointment API and catalog artifacts` follow-up,
+with actual source/run/attempt/member hashes. Never edit collected catalog source
+metadata to pretend e77f98b included Party002. B3 remains gated on repaired runtime
+feedback and truthful artifact reconciliation; no full-green claim is made.
+
+**Actual local validation:** repaired Java parsed with installed Java17 JavacTask
+(syntax only);31 inventory-classifier,17 documentation-validator and10 OpenAPI-
+validator self-tests passed. Exact raw manifest comparison retains all other
+entries/bytes and all21 method IDs, existing canonical partitions, append-only
+phase/status/anchor preservation and independent Git blob hashes are checked
+before publication. No Java21 type check, Maven/JUnit/PostgreSQL execution or
+full-checkout validation was run locally; these tools remain unavailable and no
+environment was provisioned. Hosted CI supplies runtime acceptance.
+
+Publish exactly one additive SQL plus the three listed modifications, with
+expectede77f98b ref guard and exact registered feature message. Verify remote
+raw blobs/tree/parent/message/exact scope, confirm new exact-SHA Full/Fast/Docs
+created/queued/started, then STOP without waiting or advancing B3. HAPI-778 stays
+PARTIAL/IN_PROGRESS. Development API only; synthetic fixtures, no production
+release, tag, database or deployment.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

@@ -59,7 +59,14 @@ class OrganizationConfigurationReferencePostgresIntegrationTest {
     record Observation(String partyId, long generation, int backendPid, long transactionId) {}
 
     @BeforeAll void migrateAndSeparateActualLogins() throws Exception {
-        Flyway.configure().dataSource(POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword()).load().migrate();
+        // Exercise the additive upgrade from the published 001 version, retaining its history/checksum.
+        Flyway.configure().dataSource(POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword())
+                .target("20261021.001").load().migrate();
+        long originalChecksum = number(catalog("SELECT checksum FROM public.flyway_schema_history WHERE script='V20261021_001__party_organization_configuration_reference.sql'"));
+        var upgrade = Flyway.configure().dataSource(POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword()).load().migrate();
+        assertTrue(upgrade.migrationsExecuted >= 1);
+        assertEquals(1, number(catalog("SELECT count(*) FROM public.flyway_schema_history WHERE success AND script='V20261021_002__party_configuration_reference_collation_guard.sql'")));
+        assertEquals(originalChecksum, number(catalog("SELECT checksum FROM public.flyway_schema_history WHERE script='V20261021_001__party_organization_configuration_reference.sql'")));
         for (String role : List.of(CONFIG, ORDINARY, PUBLISHER, WRITER)) {
             admin("CREATE ROLE " + role + " LOGIN PASSWORD '" + PASSWORD + "'");
             admin("GRANT USAGE ON SCHEMA public TO " + role);
@@ -167,7 +174,7 @@ class OrganizationConfigurationReferencePostgresIntegrationTest {
         assertEquals(3, number(catalog("SELECT count(*) FROM pg_trigger WHERE tgrelid IN ('public.hidra_party_party'::regclass,'public.hidra_party_eligibility_generation'::regclass) AND NOT tgisinternal")));
         assertEquals(Boolean.TRUE, catalog("SELECT bool_and(tgenabled='O') FROM pg_trigger WHERE tgrelid IN ('public.hidra_party_party'::regclass,'public.hidra_party_eligibility_generation'::regclass) AND NOT tgisinternal"));
         // Compare the whole new routine body independently to its actual additive migration.
-        String source = Files.readString(Path.of("src/main/resources/db/migration/V20261021_001__party_organization_configuration_reference.sql"));
+        String source = Files.readString(Path.of("src/main/resources/db/migration/V20261021_002__party_configuration_reference_collation_guard.sql"));
         String body = source.split("AS \\$configuration_reference\\$", 2)[1].split("\\$configuration_reference\\$;", 2)[0];
         String actual = (String) catalog("SELECT prosrc FROM pg_proc WHERE oid=?::regprocedure", SIGNATURE);
         assertEquals(HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(body.getBytes(StandardCharsets.UTF_8))),
@@ -283,10 +290,22 @@ class OrganizationConfigurationReferencePostgresIntegrationTest {
 
     @Test void sessionRoleSwitchCannotMasqueradeAsOriginalConfigurationLogin() throws Exception {
         String id = fixture("ACTIVE"); admin("CREATE ROLE cfg_reference_alternate");
+        // Let execution reach the body: otherwise SET ROLE loses EXECUTE and fails earlier with 42501.
+        admin("GRANT USAGE ON SCHEMA public TO cfg_reference_alternate");
+        admin("GRANT EXECUTE ON FUNCTION " + SIGNATURE + " TO cfg_reference_alternate");
         admin("GRANT cfg_reference_alternate TO " + CONFIG);
+        assertEquals(id, observe(id).partyId());
         try (Connection connection = login(CONFIG)) {
-            execute(connection, "SET LOCAL ROLE cfg_reference_alternate"); rejected(connection, id); connection.rollback();
-        } finally { admin("REVOKE cfg_reference_alternate FROM " + CONFIG); }
+            execute(connection, "SET LOCAL ROLE cfg_reference_alternate");
+            assertEquals(CONFIG, scalar(connection, "SELECT session_user"));
+            assertEquals("cfg_reference_alternate", scalar(connection, "SELECT current_user"));
+            assertEquals(Boolean.TRUE, scalar(connection, "SELECT has_function_privilege(current_user,?::regprocedure,'EXECUTE')", SIGNATURE));
+            rejected(connection, id); connection.rollback();
+        } finally {
+            admin("REVOKE cfg_reference_alternate FROM " + CONFIG);
+            admin("REVOKE EXECUTE ON FUNCTION " + SIGNATURE + " FROM cfg_reference_alternate");
+        }
+        assertEquals(id, observe(id).partyId());
     }
 
     @Test void securityDefinerWrapperCannotLaunderUnauthorizedOriginalLogin() throws Exception {

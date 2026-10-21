@@ -21627,6 +21627,600 @@ B3 is not selected. HAPI-778 remains PARTIAL/IN_PROGRESS; repair further actual
 failures before advancement. HidraAPI remains a development API with synthetic
 fixtures, no production data, release, tag or deployment action.
 
+
+
+### 2026-10-21 — HAPI-778 B3 protected lifecycle execution registered
+
+**Selected stage:** `docs(organization): register protected appointment lifecycle execution`.
+Owner Next selects the one-file B3 preflight registered by B2C. Authoritative main
+31b18c9c3884aec11c612273b0b830a127a33349, parent
+3affd9ac4f63e27f3304fdd38b32ee0245ff27a1, tree
+a894cedc0ca8a25149e5aa1d0d7f29d1c7944e69 passed
+[Full797](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39593004910),
+[Fast117](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39593004897)
+and [Docs485](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39593005003).
+Full's static, unit/architecture, API/dictionary, five PostgreSQL jobs and final
+coverage gate succeeded. The Java21 Maven verification job was conditionally
+skipped; this is no claim of an additional serial run. B2C's registered native
+and Party qualification cases are accepted to their executed synthetic scope,
+including the repaired six-resource history path. No speedup percentage or
+industrial acceptance is inferred. HAPI-778 remains PARTIAL/IN_PROGRESS.
+
+This publication appends only this HAPI-778 entry in
+`doc/roadmap/TASKS_HPS-003.md`. No implementation, schema, API, inventory, registry,
+index or attachment changes occur now. The following finite B3 package is the
+next executable stage after this registration's actual Docs feedback; it needs
+no further generic planning checkpoint. Its exact message remains
+`feat(organization): persist protected appointment lifecycle and history`.
+
+#### Refreshed source, compatibility and dependency closure
+
+Current AGENTS, ROADMAP, reconciliation and this owning task were recovered.
+The uploaded project pack is reference material, not a replacement execution
+pointer. All158 migration bodies were retrieved at this SHA. Only
+V20260611_002, V20260927_004 and V20260929_006 contain the assignment table name:
+they create its original columns/indexes, add internal reference integrity and
+retire operational_scope columns. None provides an appointment version/pin,
+policy, journal or overlap protocol. The tail remains V20261020_002. Reserve
+exactly the additive migration named in the CREATE list below; its filename and
+all proposed CREATE paths are absent in the current untruncated tree. Recheck
+collisions before implementation; preserve every old migration byte.
+
+GitHub's indexed symbol searches were resolved to current exact-tree source
+blobs, not treated as a fresh exhaustive dynamic audit. The matched write chain
+is SpringOrganizationController -> AssignEmployeeUseCase ->
+EmployeeAssignmentApplicationService -> EmployeeAssignmentRepositoryPort ->
+JpaEmployeeAssignmentRepositoryAdapter -> EmployeeAssignmentJpaRepository.save.
+The command and both explicit/generated mappers are actual compatibility seams.
+The JPA entity has no version; the immutable domain record deliberately remains
+unchanged. JpaOrganizationAdministrationQueryAdapter loads all assignments for
+Java-side filtering/paging and returns an unbounded employee-specific list.
+WorkflowOrganizationQueryAdapter also uses assignments.findAll for its existing
+ACTIVE employee/unit/effective-membership predicate. No matched Workflow writer
+or operational-responsibility side effect is authorized.
+
+B3 replaces these paths rather than leaving a second writer. The old repository
+adapter's save must reject without issuing SQL; new writes require the opaque
+repository admission through the new port. Narrow EmployeeAssignmentJpaRepository
+to explicit read methods instead of inherited JpaRepository mutation access.
+Keep domain mapping/read compatibility; add nullable persisted metadata for
+retained legacy rows, never map a missing pin/version into fabricated authority.
+Direct EntityManager writes are covered by database constraints/triggers and
+actual negative tests. No new mutation may use an unguarded JPA save/flush.
+
+Both POST /api/v1/organization/employees/assignments and /assign-employee retain
+their URL, original fields and string assignment-ID response and delegate to the
+new protected CREATE path. Preserve the old type/from omissions only as explicit
+legacy translation: PRIMARY and the genuine native sample, respectively, with
+all policy/authority checks still required. Add optional requestId to the old
+request and command, including an old six-argument Java convenience constructor.
+An omitted legacy requestId receives a new server UUID per invocation; it does
+not promise client retry deduplication. An explicit key has full replay/conflict
+semantics. New lifecycle commands require an explicit requestId and typed fields;
+no omission default is added to those commands. No actor/policy/grant payload is
+accepted. Both MapStruct source and target fields must remain explicitly matched.
+
+Retain old GET /assignments and GET /employees/{id}/assignments response shapes.
+Replace their scans with authorized SQL-bound reads: size1..100, bounded legacy
+page0..1000, stable (valid_from,id) order and SQL count only for a completely
+authorized descriptor closure. An unfiltered global list is denied uniformly;
+unit or employee selection is required. The old employee list returns at most100;
+if more exist, reject uniformly with a pagination-required conflict and direct
+clients to the new cursor API, never silently truncate. No unauthorized existence,
+foreign count or legacy unbound detail may leak. These deliberate development
+cutover restrictions are acceptance cases, not claims of unchanged broad access.
+
+Workflow remains an internal membership Boolean, not an appointment history or
+Identity grant. Replace findAll with an exact SQL EXISTS by employee/unit/status
+and half-open interval while preserving current employee/unit ACTIVE and temporal
+checks, including retained legacy assignments. This does not grant Workflow new
+history access or change ResponsibilityAssignment, workflow decisions or grants.
+
+#### Domain, configuration authority and physical storage contract
+
+Reuse EmployeeAppointmentChange, EmployeeAppointmentPolicy,
+OrganizationUnitCompanyBinding, CompanyBoundEmployeeAppointment and
+EmployeeAppointmentOwnershipPolicy. No duplicate Employee/Position/Party identity
+or framework dependency in Domain is permitted. Application commands/results may
+use focused nested immutable records/enums; public ports expose no JPA entity,
+JDBC connection or mutable evidence. SQL and crypto live in the adapter. The
+coordinator imports only the two actual public Organization Identity/Party
+contracts plus Organization ports and technical Platform types.
+
+B2's20 exact permission definitions are inserted by the additive migration with
+catalog shape validation, no role/user grants. No dotted aliases, generic company
+permission or employee/read-policy combination is introduced. Binding/policy
+administration is not covered by any of those20 ordinary permissions.
+
+B3 configuration activation is an explicit database-admin boundary, with no HTTP
+administration endpoint: migration-owned SECURITY DEFINER procedures
+hidra_org_activate_appointment_binding and hidra_org_activate_appointment_policy,
+PUBLIC execute revoked, fixed search_path=pg_catalog,public, individually granted
+only to a distinct trusted configuration login by the environment administrator.
+Never grant it to the ordinary application or protected publisher principal.
+Migration does not create a login/password or activate a default. Procedures
+require the expected current revision (zero for absence), positive exact successor,
+normalized typed input, actual session_user provenance, complete policy validation,
+and the universal locks below. A binding operation validates current Party
+ACTIVE/selectable plus retained eligibility-generation locks and exact unit;
+this is an administrator operation, not a scalar replacement for the B2 application
+export. Procedure/catalog checks and real three-principal tests are mandatory.
+No ordinary caller/GUC/JSON actor or READ_POLICY privilege can activate config.
+The configured operator's policy values remain explicit software inputs, not an
+inferred personnel regulation or mandatory plant-data request.
+
+Proposed Organization-owned relations, in addition to the existing assignment:
+
+- hidra_org_appointment_binding_revision: immutable (binding_id,revision), exact
+  unit/company/recorded time and admin provenance; unique (unit,revision), one
+  binding identity belongs to one unit; no Party-owned aggregate foreign key.
+- hidra_org_appointment_binding_head: unit PK -> exact binding revision, monotonic
+  revision/generation and immutable last activation receipt. No delete/reset/ABA.
+- hidra_org_appointment_policy_revision: immutable (policy_id,revision), exact
+  company, complete symmetric16-cell matrix, positive PRIMARY limit, explicit
+  capacity mode, canonical bytes/hash, admin and recorded time.
+- hidra_org_appointment_policy_head: company PK -> exact policy revision plus
+  monotonic generation/activation receipt. No default row or implicit activation.
+- hidra_org_appointment_configuration_event: immutable activation before/after,
+  expected/resulting generation, company/unit, canonical digest, actual database
+  administrator and recorded time; complete pointer/event bijection.
+- hidra_org_appointment_lock_key: permanent typed unique
+  (kind,key_one,key_two,key_three), no UPDATE/DELETE/TRUNCATE. EMPLOYEE uses exact
+  employee; OCCUPANCY uses exact unit/position; REQUEST uses native actor user,
+  canonical scope digest and requestId. Unused key components are explicit empty
+  strings; never ambiguous delimiter concatenation. No absence-only row lock.
+- hidra_org_appointment_event: immutable UUID event, operation, source/successor,
+  employee/company, pinned policy, canonical full before/after/successor payload,
+  reason, command digest, native binding/session/user, sample/validUntil, PID/XID.
+  The canonical payload contains the exact typed command and every full snapshot;
+  the database recomputes command_sha256 from its exact retained UTF-8 command
+  bytes and checks the decoded command/payload against actual OLD/NEW rows.
+  CREATE has no before and version1 after; END/CORRECT have exactly one +1 source;
+  TRANSFER has exactly one +1 source and one distinct version1 successor. A deferred
+  completeness check rejects missing/extra rows for that event.
+  Full pinned binding facts accompany every snapshot. Event order uses
+  (sampled_at,event_id); do not use mutable assignment timestamps as versions.
+- hidra_org_appointment_receipt: immutable event link, native actor, exact scope
+  digest/requestId and command digest, full immutable result, commit-guard time
+  and PID/XID. Unique (actor_user_id,scope_key,request_id), event uniqueness and
+  deferred source/event/receipt consistency; a receipt is historical, not current
+  permission. No automatic retry after an indeterminate commit.
+
+Assignment gains appointment_version bigint, binding_id/binding_revision,
+policy_id/policy_revision and last_event_id. A wholly null metadata tuple denotes
+retained legacy data; protected rows require the full tuple, positive version,
+composite owned FKs, valid enums/half-open interval and expected +1 transition.
+Employee/createdAt never change on a retained identity. No unbound row receives
+an inferred company, permissive policy, version or journal in migration. Retain
+raw legacy rows; protected writes/history refuse an unresolved pin uniformly.
+Only the separately authorized config administrator may see unresolved totals.
+No legacy adoption/backfill endpoint is selected; development fixtures explicitly
+establish bindings/policies before new writes.
+
+The active target-company policy validates the COMPLETE affected employee and
+unit/position conflict snapshot, including other companies internally, so a shared
+employee identity cannot evade concurrency by selecting a company. No foreign
+peer detail is returned on a generic conflict. Missing peer ownership/policy
+needed to evaluate safely fails closed. Persist the evaluated policy revision;
+SUSPENDED/ENDED/CANCELLED occupancy remains Package A's explicit finite rule.
+Changing a policy pointer governs subsequent changes; it does not rewrite history,
+retroactively certify old rows or silently change personnel status.
+
+Runtime catalog validation rejects superuser/elevated/inherited-owner roles,
+mutable/temporary/partitioned/inherited/RLS tables, writable schema/search-path
+escape, invalid/unvalidated/deferrable-in-the-wrong-place constraints, missing or
+disabled/truncated/replaced triggers/functions, wrong owner/security-definer/ACLs,
+wrong indexes/columns/generations and unsupported session_replication_role.
+Pin actual pg_get_functiondef/prosrc, trigger definitions and constraint bodies
+from the authored migration and compare them at runtime; derive real hashes before
+B3 publication, never insert invented physical catalog values into this preflight.
+Prove direct constraint-valid SQL cannot commit orphan/forged events/receipts,
+CAS bypass or incomplete transfers. Statement guards reject UPDATE/DELETE/TRUNCATE
+on immutable relations even when zero rows match. Deferred checks bind the source
+version, event and final receipt in one XID. Rollback removes every provisional
+source/successor/key/event/receipt write. Trusted migration-owner DDL remains an
+administrative boundary; do not claim immunity to a superuser disabling guards.
+
+#### One universal lock, authorization and finalization protocol
+
+All application writers and both config procedures use this class order, NOWAIT
+for owner relation fences and bounded transaction/statement timeouts. A conflict
+fails safely; it never increases the executor's500ms aggregate budget:
+
+1. Genuine Identity/native24 relation fences in their existing fixed order.
+   Database-only config procedures take the same exact relation-lock order under
+   their distinct administrative ACL; they do not mint native Identity tickets
+   or claim an application-user PERMIT. Application writes use the genuine export.
+2. Party's2 existing owner fences in their existing fixed order for writes/new
+   references; authorized historical retention does not require current ACTIVE.
+3. Organization relation fences in this fixed order: employee, organization_unit,
+   position, binding_revision, binding_head, policy_revision, policy_head,
+   configuration_event, lock_key, employee_assignment, appointment_event,
+   appointment_receipt (all exact public.hidra_org_ names; the full names are
+   defined above/below). The exact12 are public.hidra_org_employee,
+   public.hidra_org_organization_unit, public.hidra_org_position,
+   public.hidra_org_appointment_binding_revision,
+   public.hidra_org_appointment_binding_head,
+   public.hidra_org_appointment_policy_revision,
+   public.hidra_org_appointment_policy_head,
+   public.hidra_org_appointment_configuration_event,
+   public.hidra_org_appointment_lock_key, public.hidra_org_employee_assignment,
+   public.hidra_org_appointment_event, public.hidra_org_appointment_receipt.
+   Use SHARE ROW EXCLUSIVE for mutable owner relations,
+   ACCESS SHARE for immutable revisions/events while observing; config writers
+   take the corresponding mutually conflicting owner fences before head changes.
+   Never take a row/key lock then request an earlier owner fence. The conservative
+   assignment relation fence serializes first-key creation before any privileged
+   INSERT, including empty tables; concurrency optimization requires later proof.
+4. A bounded internal SELECT-only descriptor preview may precede owner locks
+   solely to construct B2's exact request (including the old alias's server-derived
+   company/unit selectors). It never returns data or authority and takes no row/
+   explicit owner lock; no mutable decision relies on that preview. Acquire the
+   Identity fences first using those selector values, then Party/Organization in
+   the order above. Re-read under retained owner fences and require exact closure
+   equality, or reject uniformly. This avoids taking an Organization owner fence
+   before the native owner merely to discover the request's descriptors.
+   Freeze current/pinned descriptor closure and active policy revisions privately.
+   Acquire actual native admission for the fixed action and all exact descriptors;
+   evaluate every required resource at one native sample before payload/counts.
+   Internal bounded discovery is not permission or a disclosed result. Limit101
+   proves overflow of the100-descriptor technical bound and fails uniformly.
+   Caller descriptors/cursors are selectors only; require exact complete equality
+   with discovered source/destination/returned-history pins before disclosure.
+5. Under retained relation fences resolve the exact source before version,
+   current destination binding/policy and complete conflict observations. END and
+   same-unit CORRECT retain the source pin; moved CORRECT/TRANSFER require the
+   current destination pin; all before/after/successor companies agree. Reject
+   cross-company mutation and never rewrite historical pins on rebind. Validate
+   employee/unit/position eligibility, pure domain/ownership policy and overflow.
+   Conflict discovery loads the source plus all ACTIVE rows for the affected
+   employee or either unit/position, with a combined1025-row overflow probe and
+   admitted1024-row bound. No omitted peer can prove completeness.
+   Check an admitted existing receipt before demanding CAS against the current
+   projection: an identical original typed command/digest may return its historical
+   result after fresh native authorization for every recorded result descriptor;
+   changed input, versions or policy under the same key conflicts without payload.
+   A new request must satisfy current CAS. No replay turns an old version into
+   mutation authority. Finish all owner/evidence queries and pure proposal work
+   before opening the provisional phase; freeze the exact key/row/result set.
+6. Seal admission once, obtain only the exact compiled coordinator's one-use
+   permit, and open one provisional block admitting only the six fixed templates.
+   Insert then lock EMPLOYEE keys sorted by ID; insert then lock OCCUPANCY keys
+   sorted (unit,position); lock source assignment rows sorted by ID; then insert
+   and lock REQUEST keys sorted (actor,scope,requestId). KEY_INS/KEY_LOCK/SOURCE_LOCK
+   must return the exact expected key/row version. The earlier relation fences
+   serialize absence and retain the entire observed conflict/source set until
+   these locks exist. Config procedures use the same order for affected keys.
+   Persist source close/correction or creation, optional transfer successor and
+   exactly one event using only ASSIGNMENT_INS/ASSIGNMENT_CAS/EVENT_INS. CAS must
+   affect exactly1. No owner callback, arbitrary SQL, new evidence query or ORM
+   flush runs inside PROVISIONAL; the two exact lock SELECTs use executeQuery.
+   A replay performs no new mutation/key/event and follows the read final guard.
+7. Close the provisional block once, then recheck owner admission outside that
+   phase and materialize detached results. Both transfer rows/event stay in the
+   same physical transaction; receipt/audit/guard failures roll back all changes.
+   A swallowed SQL/owner failure poisons the transaction rather than allowing a
+   second provisional block or an alternate write path.
+8. In FLUSHING, flush any managed work, recheck actual Identity and Party tickets,
+   all current/pinned heads/revisions, policy, retained locks, role/catalog, full
+   final evidence graphs and version/event consistency. After this, GUARD issues
+   exactly ONE scalar statement: actual database time within [sample,validUntil),
+   same physical PID/XID and exact owner lock/state proof; write guard creates the
+   immutable receipt only if every condition holds. Read guard is non-mutating.
+   No owner query, ORM lazy load, refresh or serialization SQL follows GUARD.
+   SQL-free beforeCommit invalidation veto and observed physical commit remain
+   required. Swallowed failure, rollback-only, suspension or unknown commit never
+   returns a successful result; INDETERMINATE has safe reconciliation semantics.
+
+The Organization ticket also derives an operation-validUntil no later than the
+native validUntil or any applicable unit/employee eligibility end. Evaluate
+current unit/employee eligibility at the same native sample, include scheduled
+expiry even without another writer, and pass this narrower bound to the final
+database clock guard. Do not mint a second native sample, stretch Identity's
+window or mistake retained locks for protection against time itself.
+
+Only EmployeeAppointmentLifecycleApplicationService may enter the existing private
+credential route, reusing the already separated protected publisher datasource;
+only ProtectedEmployeeAppointmentAdmissionCoordinator may receive/use this new
+family's permit. Extend exact fully-qualified comparisons in the executor and
+reviewed tests, preserving every prior caller and hash. No prefix/wildcard,
+public permit factory, generic callback or new credential/configuration property
+is needed. The ordinary login must lack appointment DML/guard-function and config
+activation authority; the publisher must lack schema ownership/config activation,
+DELETE/TRUNCATE/TRIGGER and privilege escalation. Prove actual session_user/current_user
+and no ordinary-to-publisher membership/SET ROLE bridge. Tests use genuine logins,
+not merely a role label or a mocked datasource.
+
+#### Frozen finite SQL interface for the subsequent implementation
+
+The following are literal single-line UTF-8 templates, without a terminal newline.
+Their SHA256 values are calculated from these exact proposed bytes; they are not
+claims of executed SQL. Adapter and coordinator/executor must agree exactly on
+KEY_INS, KEY_LOCK, SOURCE_LOCK, ASSIGNMENT_INS, ASSIGNMENT_CAS and EVENT_INS.
+The two exact SELECT lock probes use executeQuery within PROVISIONAL because
+the existing admission parser rejects FOR UPDATE outside that phase. No
+additional provisional statement may be admitted. Guards are separate final-phase templates, not
+provisional DML. Placeholders bind values; no dynamic relation/column/permission.
+The two migration-owned guard functions must enforce the window/physical/state/
+fence/receipt obligations above and reject arbitrary or missing records; caller
+scalars are not native authority. Bodies/catalog hashes are authored and verified
+within B3 before publication, with no later generic registration needed.
+
+KEY_INS — SHA256 `516725eb3d2d0fa98f75e73c62186d730c22b44b15d648ed03b1f4e88cba1af4`
+
+```sql
+INSERT INTO public.hidra_org_appointment_lock_key (kind,key_one,key_two,key_three) VALUES (?,?,?,?) ON CONFLICT (kind,key_one,key_two,key_three) DO NOTHING
+```
+
+ASSIGNMENT_INS — SHA256 `e1e6cbcbc2281f495441c7d63ead7d54dda6babfa4c8b1ad1fadbafb250454ee`
+
+```sql
+INSERT INTO public.hidra_org_employee_assignment (id,employee_id,organization_unit_id,position_id,assignment_type,valid_from,valid_to,status,created_at,updated_at,appointment_version,binding_id,binding_revision,policy_id,policy_revision,last_event_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?::uuid)
+```
+
+ASSIGNMENT_CAS — SHA256 `5a891a894c55c6ebd50cf78641cf19a3c6ad748b4e8b4365eeab6b446424f424`
+
+```sql
+UPDATE public.hidra_org_employee_assignment SET organization_unit_id=?,position_id=?,assignment_type=?,valid_from=?,valid_to=?,status=?,updated_at=?,appointment_version=?,binding_id=?,binding_revision=?,policy_id=?,policy_revision=?,last_event_id=?::uuid WHERE id=? AND employee_id=? AND appointment_version=?
+```
+
+EVENT_INS — SHA256 `db6d602e42ead6338d10af03c3086056a4c5d50e4b1b978b355c749d4dc57bda`
+
+```sql
+INSERT INTO public.hidra_org_appointment_event (event_id,operation,assignment_id,successor_id,employee_id,company_party_id,policy_id,policy_revision,canonical_payload,command_sha256,actor_binding_id,actor_session_id,actor_user_id,sampled_at,valid_until,backend_pid,transaction_id) VALUES (?::uuid,?,?,?,?,?,?,?,?,?,?::uuid,?::uuid,?,?,?,?,?)
+```
+
+WRITE_GUARD — SHA256 `83d6d54a3568f688dec2908aae0218dce099bea51312934909ed4dda0a524d29`
+
+```sql
+WITH observed AS MATERIALIZED (SELECT pg_catalog.clock_timestamp() AS t) SELECT public.hidra_org_appointment_final_guard(?::uuid,?::uuid,?::uuid,?,?,?,?,?::timestamptz,?::timestamptz,?,?,t) FROM observed
+```
+
+READ_GUARD — SHA256 `0b8a4baaef583bb8bccc878e0d255a295b2d63c7dc31d7d8af3a2e3b50261e51`
+
+```sql
+WITH observed AS MATERIALIZED (SELECT pg_catalog.clock_timestamp() AS t) SELECT public.hidra_org_appointment_read_guard(?::jsonb,?::timestamptz,?::timestamptz,?,?,t) FROM observed
+```
+
+
+KEY_LOCK — SHA256 `0991e6595ce13ba5b556da137e0211bc72ecc982a10a01feac5bcb2f9294c896`
+
+```sql
+SELECT kind,key_one,key_two,key_three FROM public.hidra_org_appointment_lock_key WHERE kind=? AND key_one=? AND key_two=? AND key_three=? FOR UPDATE NOWAIT
+```
+
+SOURCE_LOCK — SHA256 `9d331551beaa09d534325126e04d71625f123dd606e5ca99f79b5e37edbec4d5`
+
+```sql
+SELECT id,appointment_version FROM public.hidra_org_employee_assignment WHERE id=? ORDER BY id FOR UPDATE NOWAIT
+```
+
+#### Exact next B3 implementation allowlist
+
+CREATE the following paths, each absent at the reviewed head:
+
+```text
+src/main/java/dz/sh/hidra/modules/organization/application/command/EmployeeAppointmentCommand.java
+src/main/java/dz/sh/hidra/modules/organization/application/query/EmployeeAppointmentQuery.java
+src/main/java/dz/sh/hidra/modules/organization/application/dto/EmployeeAppointmentResult.java
+src/main/java/dz/sh/hidra/modules/organization/application/port/in/EmployeeAppointmentLifecycleUseCase.java
+src/main/java/dz/sh/hidra/modules/organization/application/port/out/ProtectedEmployeeAppointmentRepositoryPort.java
+src/main/java/dz/sh/hidra/modules/organization/application/service/EmployeeAppointmentLifecycleApplicationService.java
+src/main/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinator.java
+src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JdbcProtectedEmployeeAppointmentRepositoryAdapter.java
+src/main/java/dz/sh/hidra/modules/organization/api/rest/controller/EmployeeAppointmentLifecycleController.java
+src/main/java/dz/sh/hidra/modules/organization/api/rest/request/EmployeeAppointmentLifecycleRequest.java
+src/main/java/dz/sh/hidra/modules/organization/api/rest/response/EmployeeAppointmentResponse.java
+src/main/java/dz/sh/hidra/modules/organization/api/rest/mapper/EmployeeAppointmentRestMapper.java
+src/main/java/dz/sh/hidra/modules/organization/api/rest/EmployeeAppointmentApiExceptionHandler.java
+src/test/java/dz/sh/hidra/modules/organization/application/service/EmployeeAppointmentLifecycleApplicationServiceTest.java
+src/test/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinatorTest.java
+src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java
+src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java
+src/test/java/dz/sh/hidra/modules/organization/api/rest/controller/EmployeeAppointmentLifecycleControllerTest.java
+src/test/java/dz/sh/hidra/modules/organization/api/rest/EmployeeAppointmentApiExceptionHandlerTest.java
+src/test/java/dz/sh/hidra/modules/organization/EmployeeAppointmentBoundaryGuardrailTest.java
+src/test/java/dz/sh/hidra/modules/organization/infrastructure/query/WorkflowOrganizationAppointmentMembershipTest.java
+src/main/resources/db/migration/V20261021_001__organization_appointment_ownership_lifecycle.sql
+```
+
+MODIFY the following existing paths, and no others:
+
+```text
+src/main/java/dz/sh/hidra/modules/organization/application/command/AssignEmployeeCommand.java
+src/main/java/dz/sh/hidra/modules/organization/application/service/EmployeeAssignmentApplicationService.java
+src/main/java/dz/sh/hidra/modules/organization/application/port/in/OrganizationAdministrationQueryUseCase.java
+src/main/java/dz/sh/hidra/modules/organization/api/rest/request/AssignEmployeeRequest.java
+src/main/java/dz/sh/hidra/modules/organization/api/rest/controller/SpringOrganizationController.java
+src/main/java/dz/sh/hidra/modules/organization/api/rest/controller/OrganizationAdministrationQueryController.java
+src/main/java/dz/sh/hidra/modules/organization/api/rest/mapper/OrganizationRestMapper.java
+src/main/java/dz/sh/hidra/modules/organization/api/rest/mapper/OrganizationGeneratedRestMapper.java
+src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JpaEmployeeAssignmentRepositoryAdapter.java
+src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/repository/EmployeeAssignmentJpaRepository.java
+src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/entity/EmployeeAssignmentJpaEntity.java
+src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/mapper/OrganizationPersistenceMapper.java
+src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/OrganizationPersistence.java
+src/main/java/dz/sh/hidra/modules/organization/infrastructure/query/JpaOrganizationAdministrationQueryAdapter.java
+src/main/java/dz/sh/hidra/modules/organization/infrastructure/query/WorkflowOrganizationQueryAdapter.java
+src/main/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutor.java
+src/main/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptor.java
+src/test/java/dz/sh/hidra/modules/organization/semantic/EmployeeAssignmentSemanticRemediationTest.java
+src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/OrganizationCanonicalScopePersistenceMappingTest.java
+src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/OrganizationGreenfieldScopePersistenceTest.java
+src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java
+src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java
+src/test/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptorTest.java
+.github/ci-test-inventory.json
+.github/database-dictionary-ownership.json
+doc/roadmap/TASKS_HPS-003.md
+```
+
+DELETE none. The port contains issuer-owned Prepared/Admission marker transports
+and immutable nested observations/pages/versioned snapshots; it is not an
+attestation constructor. The application service implements command, read and
+legacy-create orchestration; the coordinator owns one-use authorization/permits;
+the JDBC adapter owns SQL/catalog/lock/version/journal storage. Reuse existing
+Domain and owner exports without changing them. Add only exact, source-necessary
+statement/caller expectations to the station guard; preserve all old source pins
+and legacy families except the executor's reviewed additional exact caller count.
+The ordinary guardrail that pins the reader keeps its current reader hash: B3
+does not modify Identity reader/native or Party implementations.
+
+The new exception advice is scoped exactly to the three Organization controllers
+listed here and explicit appointment exceptions, with unhandled unrelated errors
+still following their existing path. Existing semantic cases retain missing/
+inactive-unit rejection and normalized successful creation, now through mocked
+protected orchestration; mocked mechanics never substitute for the new genuine
+PostgreSQL suites. Existing JPA tests retain raw mapping/reference assertions and
+add null-legacy/full-protected metadata cases; no case is dropped or archived.
+The ownership dictionary maps exactly the eight new owned relations to the actual
+migration/adapter. CI inventory records only implemented test methods/source
+hashes, real lane ownership and explicitly unmeasured new weights; retain every
+other class/case/timing and the existing five measured PostgreSQL sets. No workflow,
+POM, security producer, generic error handler or new module-wide exception is in
+this implementation envelope.
+
+#### Routes, strict values and non-disclosing reads
+
+New controller mappings under /api/v1/organization (method names after semicolons):
+
+- POST /assignments/{id}/end; end
+- POST /assignments/{id}/transfer; transfer
+- POST /assignments/{id}/corrections; correct
+- GET /assignments/{id}/history; assignmentHistory
+- GET /assignments/{id}/versions/{version}; exactVersion
+- GET /employees/{employeeId}/appointment-history; employeeHistory
+- GET /units/{unitId}/positions/{positionId}/appointment-history; positionHistory
+- GET /units/{unitId}/appointment-policy; readPolicy
+
+HidraRouteAuthorizationInterceptor delegates ONLY those exact controller/method/
+HTTP/route tuples and the two existing create aliases and two existing assignment
+read tuples to the new owner after non-anonymous authentication. Every sibling,
+wrong verb/controller/method and all other routes retain ordinary checks. No
+organization prefix exception, forged permission scalar or module-wide bypass.
+
+Typed new commands require requestId, positive expected assignment version,
+expected destination binding/policy revisions as applicable, effective fields,
+explicit type/status for correction and nonblank reason. Target selectors carry
+company/unit descriptors as untrusted inputs. Server resolves all actual pins.
+Reject unknown/duplicate/coerced fields, empty identifiers, invalid enums, mixed
+companies, oversized payload/cursor, nonpositive intervals and unsupported
+precision before mutation. Timestamp canonicalization must round-trip exactly at
+PostgreSQL microsecond precision; never silently lose nanoseconds in CAS/digests.
+No hard DELETE, cross-company transfer, implicit employment change or policy edit.
+
+New pages use limit1..100, stable (sampled_at,event_id), captured immutable upper
+boundary and cursor bound to selector/filter/order. Validate cursor syntax/bounds
+but do not trust its scope. Obtain and authorize the complete descriptor closure
+for the selected historical rows before returning even count/cursor metadata;
+foreign versions outside a page cannot be hidden to claim the selected assignment
+has only authorized history. Employee-specific pages require employee authority;
+unit/position pages without it return occupancy identity/version/interval/pin
+only, omitting employee ID/name and personal fields. Exact version lookup has its
+own current authorization and never depends on a page having included the row.
+Party retirement does not erase authorized immutable history. Policy read requires
+only the actual company/unit READ_POLICY decisions and never activates policy.
+
+Return400 for invalid transport,401 unauthenticated, uniform403 for unavailable
+or unauthorized protected selectors regardless of existence,409 for admitted
+version/policy/overlap/replay conflicts, and safe503 for unavailable/indeterminate
+execution. Only after complete authorization may an absent exact version yield404.
+An identical replay returns its original detached receipt/result, explicitly
+historical and subject to fresh current authorization; no stale PERMIT is cached.
+
+#### Required meaningful hosted proofs and subsequent artifact stage
+
+The eight new suites divide real behavior, not implementation-mirroring tests:
+
+1. Application/coordinator mechanics: exact fixed action mapping, complete
+   descriptor closure, same-sample decisions, Party write eligibility, issuer/
+   thread/auth/holder/XID/role/rollback/one-use checks, final expiry, SQL-free
+   veto, denied-path no repository result and no SQL after the scalar guard.
+2. Lifecycle PostgreSQL: complete fresh Flyway chain, actual restricted ordinary,
+   publisher and config-administrator logins; explicit synthetic company/unit/
+   policy fixtures; genuine signed/completed LOCAL/OIDC/LDAP/ACTIVE_DIRECTORY
+   origins through the real B2 exports; both create aliases; actual END/TRANSFER/
+   CORRECT with exact before/after, pins/versions/reason, journal and receipt.
+   Company/employee/source/destination denial, uncertainty/DENY precedence,
+   cross-company rejection, absent/unbound state and no pre-authorization leaks.
+3. Temporal and physical rollback: policy/binding/Party/native/grant revocation,
+   committed ABA before admission, in-transaction and savepoint shortening,
+   exact expiry, dirty JDBC/JPA flush, swallowed rejection and foreign-thread
+   invalidation. Prove source, successor, journal and receipt counts from outside
+   the transaction, including final-guard failure and unknown commit handling.
+4. Independent-connection concurrency: first insertion into empty employee and
+   occupancy keys; overlapping allowed/disallowed acting/secondary/PRIMARY;
+   equal boundary adjacency; SINGLE_HOLDER same-unit/position across employees;
+   opposing transfers, same-version corrections, competing config-head updates,
+   identical/conflicting request races and serializable absence under NOWAIT.
+   Assert one committed result or explicit conflict, no deadlock/partial transfer,
+   no sleep-based assumed ordering and all lock classes in universal order.
+5. Database attacks: raw constraint-valid SQL, source/version/employee/pin
+   substitution, forged/orphan/duplicate receipt or event, missing event at commit,
+   incomplete transfer, zero-row UPDATE/DELETE and TRUNCATE; wrong/mutable catalog,
+   function/trigger replacement, disabled guards, unsafe role membership/schema,
+   bootstrap activation and publisher/ordinary privilege bypass. Use actual
+   catalog/transaction assertions, never fixture row counts as schema proof.
+6. History/API: correction/transfer/retirement retention, stable no-gap/no-duplicate
+   pagination while another transaction appends, filter/high-water tamper, exact
+   versions, complete multi-company historical closure, employee redaction and
+   non-disclosing foreign count/existence/cursor; old route shapes and documented
+   bounded-list changes; strict JSON,400/401/403/404/409/503 and response materialization.
+7. Replay/Workflow: same input receipt under fresh native auth; changed input or
+   policy/version conflicts; revoked current rights deny replay without payload;
+   unchanged exact ACTIVE employee/unit/effective-membership Boolean after
+   create/end/transfer/correction, retained legacy membership and no responsibility
+   or workflow-state side effects. Verify bounded EXISTS replaces findAll.
+8. Architecture and executor: pure Domain, public owner exports only, exact route/
+   compiled service/coordinator callers, independent literal SQL hash comparison,
+   fake sibling/foreign tickets denied, all prior pins/callers/families retained.
+   The real500ms budget remains a behavioral acceptance gate, not an ignored test.
+
+Run focused new suites plus existing domain/native/Party/Organization/Workflow/
+Platform regressions through source-linked inventory and Full/Fast/Docs. A missing
+service or Docker skip is not a PostgreSQL pass. Never remove cases or raise
+budgets to obtain green. Broadening scope for a newly found material owner gap
+requires recording that concrete gap; it cannot be hidden in another module.
+
+After B3 actual CI feedback, repair responsible runtime failures first. The next
+separately selected artifact stage uses the already registered exact message
+`docs(organization): reconcile appointment API and catalog artifacts` and MODIFY
+only these paths: doc/api/openapi.yaml, .github/documentation-validation.json,
+doc/database/DATA_DICTIONARY.md and this HAPI-778 record. Use the actual B3 SHA/
+run/attempt/job and artifact member plus byte hashes. Current workflow emits
+hidra-api-openapi-<sha>-<run>-<attempt>-oracle with hidra-api.json and
+hidra-database-schema-<sha>-<run>-<attempt>-oracle with schema.json and
+DATA_DICTIONARY.md; the API-contract lane's corresponding artifacts may be used
+when that is the actual producer. Read its recorded member names rather than
+assuming a bundle layout. Render dictionary from actual migrated schema using
+the existing generator/ownership map; reconcile OpenAPI from actual /v3/api-docs.
+Preserve preexisting routes/schemas and document actual supported changes. Do
+not handwrite catalog metadata, fabricate generation success, waive artifact
+equality or describe this preflight as a new runtime API. An initial B3 artifact
+drift is pending reconciliation, never whole-workflow acceptance. Final separate
+`docs(organization): record protected appointment lifecycle acceptance` remains
+case-level exact-SHA review; this registration does not authorize status promotion,
+release, deployment, live OT access or autonomous control.
+
+#### Registration checks and publication boundary
+
+Actual local checks: canonical documentation validator's17 self-tests and OpenAPI
+validator's10 self-tests passed; these test the validators, not a complete checkout.
+Verified the untruncated exact tree, all CREATE absences/MODIFY presences,158
+migration bodies and collision-free version, literal SQL SHA256 calculations,
+unique paths, retained task/status/anchor bytes and append-only scope. Incremental
+phase-anchor/link/whitespace/size checks are recorded before publication. The
+partial local checkout cannot establish the whole documentation/OpenAPI estate;
+no new Java21/Maven/JUnit/PostgreSQL execution, generated API or physical catalog
+is claimed by this documentation-only stage. Hosted Docs remains mandatory.
+
+Publish exactly this phase blob with the selected registration message and
+expected31b18c9 main guard. Verify raw blob/tree/one parent/message/one-file scope,
+confirm applicable exact-SHA Docs created/queued/started and STOP. The next owner
+Next selects the finite B3 runtime envelope above after actual feedback; it does
+not select artifact reconciliation or task acceptance automatically. Development
+API only, synthetic fixtures and no production data/release/deployment.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

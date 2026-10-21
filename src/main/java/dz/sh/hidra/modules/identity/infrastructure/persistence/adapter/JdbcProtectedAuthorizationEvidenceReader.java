@@ -141,7 +141,14 @@ public class JdbcProtectedAuthorizationEvidenceReader {
     private AuthorizationEvidence loadClaims(
             ProtectedOperationIdentityParticipant.QualifiedClaimRead credential,
             AuthorizationEvaluationRequest request, boolean organizationRecheck) {
+        return loadClaims(credential, request, organizationRecheck, new Rows());
+    }
+
+    private AuthorizationEvidence loadClaims(
+            ProtectedOperationIdentityParticipant.QualifiedClaimRead credential,
+            AuthorizationEvaluationRequest request, boolean organizationRecheck, Rows rows) {
         try {
+            rows.beginGraph();
             if (participant == null || bindings == null || companions == null
                     || registry == null || catalog == null) throw invalid();
             var contribution = organizationRecheck
@@ -190,7 +197,7 @@ public class JdbcProtectedAuthorizationEvidenceReader {
                     qualified = new QualifiedClaims(proof.coverage(), original.authenticationType());
                 }
             }
-            AuthorizationEvidence result = read(evidence, request, new Rows(), qualified);
+            AuthorizationEvidence result = read(evidence, request, rows, qualified);
             // Recheck actual origin and claim generation after the complete graph load.
             participant.requireCurrentClaims(credential, request);
             if (selected != null && !selected.equals(catalog.selectVersioned(original.providerId())))
@@ -257,8 +264,11 @@ public class JdbcProtectedAuthorizationEvidenceReader {
             if (participant == null) throw invalid();
             var reads = participant.consumeOrganizationGroup(group, request);
             var evidence = new java.util.ArrayList<AuthorizationEvidence>();
+            // Private to this synchronous read: retained owner fences exclude other writers.
+            // A final recheck always creates a fresh Rows, including after own-transaction writes.
+            var rows = new Rows(true);
             for (int i = 0; i < reads.credentials().size(); i++) {
-                evidence.add(loadClaims(reads.credentials().get(i), reads.requests().get(i), false));
+                evidence.add(loadClaims(reads.credentials().get(i), reads.requests().get(i), false, rows));
             }
             participant.requireCurrentOrganizationGroup(group, request);
             return new OrganizationAuthorizationEvidence(reads.requests(), evidence, reads.contribution());
@@ -276,8 +286,11 @@ public class JdbcProtectedAuthorizationEvidenceReader {
             if (participant == null) throw invalid();
             var reads = participant.currentOrganizationReads(group, request);
             var evidence = new java.util.ArrayList<AuthorizationEvidence>();
+            // Private to this synchronous read: retained owner fences exclude other writers.
+            // A final recheck always creates a fresh Rows, including after own-transaction writes.
+            var rows = new Rows(true);
             for (int i = 0; i < reads.credentials().size(); i++) {
-                evidence.add(loadClaims(reads.credentials().get(i), reads.requests().get(i), true));
+                evidence.add(loadClaims(reads.credentials().get(i), reads.requests().get(i), true, rows));
             }
             participant.requireCurrentOrganizationGroup(group, request);
             return new OrganizationAuthorizationEvidence(reads.requests(), evidence, reads.contribution());
@@ -1012,23 +1025,30 @@ public class JdbcProtectedAuthorizationEvidenceReader {
         }
     }
 
+    private record RowQuery(String sql, List<Object> parameters) {}
+
     /**
-     * One combined owner-row budget, including inactive and future candidates. No per-row query.
+     * One combined owner-row budget per graph, including inactive and future candidates.
+     * Group-local reuse never survives a reader invocation or bypasses this budget.
      */
     private final class Rows {
         private int count;
+        private final Map<RowQuery, List<Row>> shared;
+
+        Rows() { this(false); }
+        Rows(boolean share) { shared = share ? new HashMap<>() : null; }
+
+        // Cache hits still count toward each graph's original 1024-row limit.
+        void beginGraph() { count = 0; }
 
         List<Row> get(String table, String columns, String where, Object... args) {
-            List<Row> result =
-                    jdbc.query(
-                            "SELECT "
-                                    + columns
-                                    + " FROM "
-                                    + PREFIX
-                                    + table
-                                    + " WHERE "
-                                    + where
-                                    + " ORDER BY id LIMIT 1025",
+            String sql = "SELECT " + columns + " FROM " + PREFIX + table + " WHERE "
+                    + where + " ORDER BY id LIMIT 1025";
+            var key = new RowQuery(sql,
+                    Collections.unmodifiableList(new ArrayList<>(Arrays.asList(args))));
+            List<Row> result = shared == null ? null : shared.get(key);
+            if (result == null) {
+                result = jdbc.query(sql,
                             (rs, n) -> {
                                 Map<String, Object> fields = new HashMap<>();
                                 var meta = rs.getMetaData();
@@ -1037,6 +1057,8 @@ public class JdbcProtectedAuthorizationEvidenceReader {
                                 return new Row(fields);
                             },
                             args);
+                if (shared != null) shared.put(key, List.copyOf(result));
+            }
             count += result.size();
             if (count > 1024) throw invalid();
             return result;

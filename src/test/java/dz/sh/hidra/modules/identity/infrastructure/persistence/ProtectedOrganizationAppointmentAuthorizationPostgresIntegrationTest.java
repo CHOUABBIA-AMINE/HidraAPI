@@ -737,18 +737,24 @@ public class ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTes
         all(f, request);
         clearInvocations(identityTarget());
         var result = run(prepare(f), request); permit(result);
-        assertThat(result.decisions()).hasSize(6);
+        assertThat(result.decisions()).hasSize(6).extracting(ResourceDecision::requirement)
+                .containsExactlyElementsOf(request.requirements());
         verify(identityTarget(), times(1)).contribute(any(ProtectedOperationIdentityParticipant.Admitted.class));
     }
 
     @Test void missingCatalogAndEveryMissingResourceGrantFailClosed() {
         var f = fixture("LOCAL");
         rejected(() -> run(prepare(f), request()));
-        for (var missing : request().requirements()) {
-            cleanEvidence();
-            for (var required : request().requirements()) if (!required.equals(missing))
-                grant(f, "create", required.kind(), "GRANT", required.reference());
-            rejected(() -> run(prepare(f), request()));
+        var history = new Request(Action.READ_HISTORY, List.of(new CompanyUnit("company-a", "unit-1"),
+                new CompanyUnit("company-a", "unit-2"), new CompanyUnit("company-b", "unit-3")), EMPLOYEE);
+        for (var requested : List.of(request(), history)) {
+            String action = requested.action() == Action.CREATE ? "create" : "read-history";
+            for (var missing : requested.requirements()) {
+                cleanEvidence();
+                for (var required : requested.requirements()) if (!required.equals(missing))
+                    grant(f, action, required.kind(), "GRANT", required.reference());
+                rejected(() -> run(prepare(f), requested));
+            }
         }
     }
 
@@ -915,9 +921,12 @@ public class ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTes
 
     @Test void finalOwnerCheckRejectsInTransactionGrantAndProviderRevocation() {
         for (String table : List.of("user_permission_grant", "provider")) {
-            var f = fixture("LOCAL"); both(f, "create"); var p = prepare(f);
+            var f = fixture("LOCAL");
+            var history = new Request(Action.READ_HISTORY, List.of(new CompanyUnit("company-a", "unit-1"),
+                    new CompanyUnit("company-a", "unit-2"), new CompanyUnit("company-b", "unit-3")), EMPLOYEE);
+            all(f, history); var p = prepare(f);
             assertThatThrownBy(() -> tx().executeWithoutResult(s -> {
-                c3SelectRestrictedRole(); var a = paired.acquire(p, request()); paired.contribute(a);
+                c3SelectRestrictedRole(); var a = paired.acquire(p, history); paired.contribute(a);
                 jdbc.update("UPDATE " + T + table + " SET status=?", table.equals("provider") ? "INACTIVE" : "REVOKED");
                 rejected(() -> paired.requireCurrent(a));
             })).isInstanceOfAny(org.springframework.security.access.AccessDeniedException.class, org.springframework.transaction.UnexpectedRollbackException.class);

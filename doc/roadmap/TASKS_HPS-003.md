@@ -21536,6 +21536,97 @@ then STOP. Repair actual further failures before B3. HAPI-778 remains
 PARTIAL/IN_PROGRESS. This development-only repair performs no production data,
 release, tag or deployment operation.
 
+
+
+### 2026-10-21 — HAPI-778 B2C bounded group-read performance repair
+
+Owner Fail selects responsible repair of main3affd9ac4f63e27f3304fdd38b32ee0245ff27a1,
+parent74600fb46648e1014ac66d122038d27a96d4acc5,
+tree0324f24a6468cb47edffb808c4f5f59f3059512d.
+Recovered current AGENTS, ROADMAP, reconciliation, this task, source and actual
+[Full796](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39591082023)
+feedback before mutation. [Fast116](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39591081948)
+and [Documentation484](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39591082036)
+succeeded. Full Static, Java21 unit/architecture, API/dictionary and PostgreSQL
+shards0/1/2/4 succeeded; shard3 and its dependent final gate failed. The Maven
+verification gate was skipped, not a pass.
+
+Shard3 ran298 cases with zero assertion failures and one error. Of28 appointment
+cases,27 passed, including the physical JDBC/JPA swallowed-failure rollback
+proof. multiCompanyMultiUnitHistoryHasOneNativeSampleAndAllDecisions errored at
+ProtectedTransactionExecutor.execute line159: aggregate500ms work budget.
+Its recorded test duration0.881s includes fixture/preparation overhead and is
+not a measured protected-work duration or proposed new timeout. Earlier stopped
+container connection warnings are not the reported failing case. No timing
+improvement is claimed before renewed CI.
+
+**Exact responsible five-path MODIFY-only scope:**
+
+- src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java
+- src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTest.java
+- src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java
+- .github/ci-test-inventory.json
+- doc/roadmap/TASKS_HPS-003.md, append only this HAPI-778 evidence
+
+The reader is already in B2C's registered implementation scope. This responsible
+performance repair does not extend the prior rollback repair into unrelated
+runtime owners. No CREATE/DELETE, public contract, native issuer/collector,
+executor/DataSource/transaction manager, workflow/POM, migration/schema,
+generated artifact, task status or CI lane change is made.
+
+Source review found each of the six resource graphs independently loading the
+same subject, role, mapping and policy rows, on initial load and final reload.
+The Organization group reader now shares exact SQL-plus-ordered-parameter query
+results only among its private synchronous children in one reader invocation.
+The private cache has no field on the component, ticket or group, no external
+factory and no lifetime beyond that invocation. It is allocated independently
+for each initial load and each final recheck. Retained owner locks exclude
+concurrent writers during that synchronous read; there is no caller callback
+between graph reads. Own-transaction changes between public owner calls are
+observed by the fresh final-read cache.
+
+The original per-graph1024 owner-row budget remains: each graph resets its
+counter, and every cache hit still charges its complete row count. SQL still
+uses ORDER BY id LIMIT1025 and exact predicates; different permissions and
+ordered parameters cannot borrow a cached result. Every resource's normalized
+graph and actual evaluator result are retained. Legacy diagnostic, station,
+draft and publication reads use unshared Rows. No claim companion, persistent
+origin, mapping generation, native state, holder/thread/authentication, PID/XID,
+one-use credential, temporal-boundary or final database-time check is cached,
+removed or weakened. The500ms aggregate executor limit and single scalar GUARD
+statement are unchanged.
+
+The existing six-resource OIDC history test still runs through the genuine
+protected executor and now also requires the exact ordered six requirements.
+The existing missing-catalog/resource-grant case retains its CREATE coverage
+and additionally removes each of the six history grants independently; repeated
+company/unit permission codes must not merge exact resource authority.
+The existing in-transaction grant/provider revocation case now uses a genuine
+six-resource history group and still requires final owner rejection and outer
+rollback completion, guarding cache isolation between initial and final reads.
+All28 existing PG case identities and assertions remain registered. The station
+guard retains all six cases, exact callers and four legacy J pins; only the
+reviewed whole-reader SHA pin and its explanatory comment change.
+
+**Actual local checks:** the three changed Java files parsed with the installed
+Java17 compiler module (syntax only); all31 canonical inventory-classifier
+self-tests passed. Source/case hashes, unchanged case identities, exact cache
+lifetime/key/row charging, reader restrictions, whitespace, baseline blobs and
+complete disjoint inventory selection were reviewed. Inventory changes only
+two actual test source hashes. Active446 classes/2823 cases, fast348, unit349,
+PostgreSQL16/18/19/25/19, all historical weights and four archives are unchanged.
+No runtime result or speedup is fabricated. Java21/Maven/JUnit/PostgreSQL and
+the full-estate documentation validator remain unavailable locally and were
+not provisioned; actual hosted acceptance is pending.
+
+Use registered B2 message
+`feat(identity): qualify native appointment and party reference authority`.
+Verify the exact five modified blobs/tree, one parent, message and expected3affd9a
+main guard; confirm exact-SHA Full/Fast/Docs creation/queue/start, then STOP.
+B3 is not selected. HAPI-778 remains PARTIAL/IN_PROGRESS; repair further actual
+failures before advancement. HidraAPI remains a development API with synthetic
+fixtures, no production data, release, tag or deployment action.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

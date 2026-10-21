@@ -156,6 +156,70 @@
     "owner": "leakdetection",
     "purpose": "Leakdetection-owned case state; physical prefix is hidra_leak_detection."
   },
+  "public.hidra_org_appointment_binding_head": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql",
+      "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java"
+    ],
+    "owner": "organization",
+    "purpose": "Monotonic active unit/company binding pointer linked to its configuration event."
+  },
+  "public.hidra_org_appointment_binding_revision": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql",
+      "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java"
+    ],
+    "owner": "organization",
+    "purpose": "Immutable explicit unit/company revision and actual configuration-administrator provenance."
+  },
+  "public.hidra_org_appointment_configuration_event": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql",
+      "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java"
+    ],
+    "owner": "organization",
+    "purpose": "Immutable atomic configuration activation before/after journal."
+  },
+  "public.hidra_org_appointment_event": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql",
+      "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java"
+    ],
+    "owner": "organization",
+    "purpose": "Immutable appointment lifecycle event storage; native writer and final guard not yet active."
+  },
+  "public.hidra_org_appointment_lock_key": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql",
+      "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java"
+    ],
+    "owner": "organization",
+    "purpose": "Permanent typed employee, occupancy and request lock-key namespace; publisher path not yet active."
+  },
+  "public.hidra_org_appointment_policy_head": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql",
+      "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java"
+    ],
+    "owner": "organization",
+    "purpose": "Monotonic company appointment-policy pointer linked to its configuration event."
+  },
+  "public.hidra_org_appointment_policy_revision": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql",
+      "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java"
+    ],
+    "owner": "organization",
+    "purpose": "Immutable complete explicit appointment-overlap policy revision and canonical bytes."
+  },
+  "public.hidra_org_appointment_receipt": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql",
+      "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java"
+    ],
+    "owner": "organization",
+    "purpose": "Immutable scoped request/command receipt storage; native final-guard creation not yet active."
+  },
   "public.hidra_org_operational_scope": {
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/entity/OperationalScopeJpaEntity.java"

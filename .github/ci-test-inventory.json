@@ -8831,6 +8831,33 @@
       "path": "src/test/java/dz/sh/hidra/modules/organization/EmployeeAppointmentBoundaryGuardrailTest.java",
       "source_sha256": "2a280b77564d36aa4da9af787f961fe6b5874ce8e01138a59d1fa23ff0894e1b",
       "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "authoredRoutineBodiesAndCatalogPrivilegesMatchInstalledStorageContract",
+        "bindingReactivationKeepsOriginalRevisionAndStrictSuccessorCas",
+        "configurationLoginHasNoDirectStorageWriteOrPartyTableAuthority",
+        "disabledOrReplacedStorageGuardFailsConfigurationBeforePublication",
+        "fullFreshFlywayInventoryHasEightOwnedTablesAndNoActivatedDefaults",
+        "immutableRowsAndHeadsRejectZeroRowUpdatesDeletesAndTruncate",
+        "inactiveMissingOrMalformedCompanyAndUnitCannotCreateFacts",
+        "independentConnectionActivationContendsWithoutDeadlockAndThenRejectsStaleCas",
+        "ordinaryAndPublisherCannotActivateDiscoverOrMutateConfiguration",
+        "policyActivationRequiresCompleteExplicitSymmetricMatrixAndRetainsDigest",
+        "policyRevisionsAreAtomicAndCannotChangeTheirCompanyOrIdentity",
+        "publicExecuteOrMisgrantedTableWriteCannotBecomeConfigurationAuthority",
+        "restrictedActivationPinsActualAdminCompanyAndPhysicalCoordinates",
+        "transactionRollbackRemovesRevisionHeadAndAuditTogether"
+      ],
+      "class": "dz.sh.hidra.modules.organization.infrastructure.persistence.EmployeeAppointmentLifecyclePostgresIntegrationTest",
+      "dependency_reason": "HAPI-778 storage package: real fresh-schema, restricted configuration logins, immutable catalog and independent-connection activation CAS; duration unmeasured; lifecycle/native writer acceptance remains pending.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "organization",
+      "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java",
+      "source_sha256": "258df07821cd31279d2c288a38816f1315fc175206203523a17771e4f93ecccf",
+      "supports": []
     }
   ],
   "format": 1,

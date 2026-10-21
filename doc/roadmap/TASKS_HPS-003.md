@@ -23291,6 +23291,122 @@ verify parent/tree/message/blobs, confirm applicable exact-SHA CI creation or
 startup and STOP without waiting for completion or starting another package.
 
 
+### 2026-10-21 — HAPI-778 consolidated storage package: configuration and immutable schema
+
+**Selection and prerequisite:** Owner Next follows exact main
+`0e6e368d0c507ea1d98e2a9cfdc265ddce10e49c`, parent
+`8237ec5040332221f9e0992a416a039c8cd1f5de`, tree
+`8a624805d3f09e818f4dd2252eef8e2ac4944147`.
+[Full810](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39634438901),
+[Fast129](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39634438706)
+and [Docs500](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39634438884)
+completed successfully at that SHA. The owner challenged unnecessary micro-packages;
+source review consolidated the remaining work into two substantial implementation
+packages, followed by actual generated-artifact reconciliation and final acceptance.
+Those are delivery targets, not a guarantee of four commits or a waiver of any
+registered invariant. Meaningful tests accompany each implementation. This commit
+is concrete configuration/schema work inside the first protected-storage package;
+it does not claim that package's JDBC lifecycle/receipt path is complete.
+
+**Exact message:** `feat(organization): persist protected appointment lifecycle and history`.
+CREATE only the previously registered
+`src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql`
+and
+`src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java`.
+MODIFY only `.github/ci-test-inventory.json`,
+`.github/database-dictionary-ownership.json` and this append-only HAPI-778 record.
+DELETE none. Prior migrations, current domain/owner exports, JPA writer,
+application/REST wiring, executor permissions, source pins and status tables
+remain unchanged. The reserved003 version was collision-free on this main.
+
+**Source-backed correction:** The original B3 lock-list text incorrectly named
+`public.hidra_org_organization_unit`. Actual `OrganizationUnitJpaEntity` has
+`@Table(name="hidra_org_unit")`, the original Organization migration creates
+`hidra_org_unit`, and current migrations contain no `hidra_org_organization_unit`.
+Use the real `public.hidra_org_unit` at the same position between employee and
+position in the universal order. No table rename, alias or second unit aggregate
+is introduced. This append explicitly corrects the historical identifier;
+all other fixed Identity/Party/Organization fence ordering is retained.
+
+**Implemented storage:** All eight previously specified owned relations now
+have authored DDL: binding revisions/head, policy revisions/head, configuration
+activation events, permanent typed lock keys, lifecycle events and receipts.
+Configuration stores exact owned references, positive successor revisions and
+monotonic heads, explicit complete symmetric16-cell overlap policy, PRIMARY
+limit, capacity mode, canonical bytes/hash and actual session administrator,
+time, PID and XID. Head transitions and deferred revision/event completeness
+checks bind atomic activation and immutable historical before/after evidence.
+UPDATE/DELETE/TRUNCATE of immutable relations and DELETE/TRUNCATE of heads
+are rejected at statement level, including zero-row statements. Ledger events
+and receipts have bounded fields, owned policy references, history indexes and
+scoped request uniqueness. No ordinary/publisher ledger DML privilege is granted.
+
+Two SECURITY DEFINER activation routines have a fixed pg_catalog/public path
+and UTC canonical timestamp rendering, with PUBLIC EXECUTE revoked. Activation
+requires an explicitly granted distinct non-elevated session login with no direct
+configuration-table write/owner/schema authority. It rejects PUBLIC EXECUTE,
+unsafe roles, direct storage write grants, unsupported transaction mode,
+non-permanent/inherited/partitioned/RLS configuration tables, changed subordinate
+function bodies/settings/ACLs and disabled configuration triggers. Fixed NOWAIT
+fences precede mutations in the existing native24, Party2 and Organization12
+order, with the source-correct unit name. The genuine Party configuration export
+validates active new references and retained eligibility generation under its
+own existing catalog/lock checks. Expected-head CAS and same-transaction
+configuration events prohibit reset, skipped successor or identity reassignment.
+No policy/binding default, login/password, user/role permission grant, employment
+rule, adoption/backfill or administrative HTTP endpoint is added.
+
+**Important remaining physical boundary:** This is not the protected appointment
+writer. The existing assignment projection is untouched; its version/pin cutover,
+legacy bypass retirement, final native-issuer-backed SQL guards, complete
+source/event/receipt consistency, SQL-free post-guard behavior and guarded JDBC
+adapter remain unfinished within the storage/integration packages. The new
+ledger tables are ungranted and inactive; their mere presence does not prove
+native authorization, a qualified lifecycle mutation, replay or industrial
+acceptance. Existing trusted migration-owner DDL remains an administrative
+boundary. Do not describe incomplete ledger controls as a complete raw-SQL
+attack defense or deploy this as a finished personnel workflow.
+
+**Tests and current evidence:** Fourteen genuine Testcontainers/PostgreSQL methods
+are implemented in the new registered class. They cover the complete fresh
+Flyway inventory, eight physical relations, actual distinct config/ordinary/
+publisher session logins, explicit binding/policy activation and provenance,
+complete/invalid/asymmetric policies, stale/rebound revisions, unavailable Party/
+unit selectors, privilege/PUBLIC-grant attacks, atomic rollback observed from
+another connection, immutable zero-row DML/TRUNCATE, disabled/replaced guards,
+independent-connection NOWAIT contention and source/catalog function hashes.
+Source SHA256:
+`258df07821cd31279d2c288a38816f1315fc175206203523a17771e4f93ecccf`.
+The class belongs to the actual PostgreSQL integration lane, not Fast;
+its duration is unmeasured. Preserve every old inventory entry/case/timing and
+the existing five complete database sets. Ownership metadata identifies only
+these eight real relations using this authored migration and actual test source.
+Local inventory, documentation, offline OpenAPI, migration-source hashes,
+append-only scope and whitespace are checked. No local Maven/Java21/PostgreSQL
+execution is claimed; required hosted cases may not be counted as passed when
+Docker is unavailable or skipped.
+
+**Artifact and continuation gate:** Preserve the existing physical dictionary;
+no actual newly migrated catalog is available locally. New physical metadata
+must be regenerated from the resulting CI schema artifact and independently
+compared by the unchanged dictionary gate, using the already registered
+`docs(organization): reconcile appointment API and catalog artifacts` scope.
+An initial physical dictionary drift is a pending acceptance/follow-up obligation,
+not a passing Full result or grounds to weaken the gate. Repair responsible SQL,
+test or contract failures first. Then continue the same consolidated storage
+package with the actual guarded adapter, assignment metadata and complete
+journal/receipt protocol; applied003 bytes must remain immutable and any further
+SQL must use a separately source-registered additive migration. The integrated
+workflow/REST cutover, real native lifecycle/concurrency proofs, final artifacts
+and acceptance remain required. HAPI-778 stays PARTIAL/IN_PROGRESS; HAPI-590
+remains independently PARTIAL/BLOCKED. Development-only synthetic data;
+no deployment, SITE, calibration or autonomous OT control.
+
+Publish this five-path subset directly to main with the expected-head guard;
+verify exact parent/tree/message/blobs, confirm Full/Fast/Docs creation or startup
+on the new SHA and STOP without waiting or starting a second stage.
+
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

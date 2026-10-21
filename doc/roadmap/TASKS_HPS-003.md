@@ -23134,6 +23134,76 @@ legacy writer cutover, protected REST reads/commands, artifact reconciliation
 and final task acceptance. Never treat this interface as verified physical
 publication, a simulator, deployment or SITE data.
 
+
+### 2026-10-21 — HAPI-778 B3E one-use admission request closure (non-wired)
+
+**Predecessor exact-SHA evidence:** Main
+`455cafff86185ad6c0da94e17327368bc7539097`; on this SHA
+[Full806](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39623475194),
+[Fast125](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39623475214),
+and [Docs496](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39623475192)
+all completed successfully. The completed B3D scope adds only a typed
+repository contract; it does not constitute appointment persistence.
+
+**Single bounded B3E subpackage:** CREATE
+`src/main/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinator.java`
+and
+`src/test/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinatorTest.java`.
+MODIFY only `.github/ci-test-inventory.json` and this append-only
+HAPI-778 section. DELETE none. Exact registered B3 commit message:
+`feat(organization): persist protected appointment lifecycle and history`.
+This is wholly within the approved B3 create/modify allowlist, not a new task
+or an expansion of external owner interfaces.
+
+**Behavior at this intentionally narrow boundary:** The non-Spring-wired,
+constructor-injected coordinator calls the actual Identity preparation
+contract only outside an ambient transaction, stores it in a non-publicly
+constructible one-use, thread/issuer-bound Prepared handle, and accepts
+a descriptor-only preview only under the existing executor admission phase
+inside a writable synchronization-active transaction. It deterministically
+builds Identity's native fixed action/typed company/unit/employee request,
+rejects swapped company, unit, employee and assignment references,
+rejects unsafe position/employee mixing, preserves every distinct historical
+company/unit in the request (not merely the caller's selected company),
+rejects preview overflows and cross-company protected mutation. The
+preparation cannot be replayed after the first attempt. A rejected path
+calls the existing executor's rejectAdmission and returns a uniform denial.
+
+**Security and runtime limitation:** The package-private begin method yields
+a *request descriptor*, not an authorization result. This B3E does NOT call
+Identity acquire/contribute, Party eligibility or the Organization repository
+acquire/reader, does NOT emit a native admission or permit, and does NOT read,
+mutate or return protected appointment rows. It is deliberately NOT a Spring
+bean: no newly active endpoint, permission, migration, role, SQL, executor
+caller exception or legacy writer cutover is introduced. Identity/Party
+fields injected here are for the subsequent full owner coordinator path;
+they are not asserted to have executed. The next package must perform
+real issuer/transaction/same-sample/fence verification and guarded persistence,
+including physical PostgreSQL and concurrent first-key proof, before this
+component may be wired into a protected use case.
+
+**Bounded tests and CI inventory:** Six new JUnit methods check exact native
+action selection, swapped descriptor denial, whole historical company
+coverage, pre-transaction native preparation, no owner discovery without an
+actual writable transaction, and one-use rejection under a synthetic
+transaction-manager context. Source SHA256:
+`2c408da1c29785c38e4426c32bea90496c6026261061e89afc02abbd30989bd0`.
+The new test class is assigned to the existing unit-architecture lane as
+unmeasured synthetic coverage. All previous test cases, measured lane weights
+and five separate PostgreSQL CI sets are retained. No Maven or PostgreSQL
+runtime execution is claimed before the next exact-SHA CI; source/inventory
+checks are not native ticket, actual database, security-role or production
+acceptance evidence. HAPI-778 remains PARTIAL/IN_PROGRESS; HAPI-590 remains
+PARTIAL/BLOCKED. Development-only, no OT control, SITE or deployment.
+
+**Next separate B3 package after exact-SHA CI:** Consume the genuine Identity
+and Party owner admissions and current Organization repository issuer ticket
+under fixed relation fence order and identical XID/PID. Implement complete
+fresh descriptor equivalence, one-time same-sample authorization and current
+expiry/rollback behavior, then the restricted executor caller/permit and
+migration-backed JDBC writer with adversarial fresh-schema PostgreSQL
+acceptance. No physical guard has been silently skipped or marked passed.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

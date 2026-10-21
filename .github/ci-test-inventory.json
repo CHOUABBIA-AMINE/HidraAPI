@@ -10,6 +10,25 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "absentPhysicalTransactionCannotDiscoverOwnerDescriptors",
+        "historicalReadRequiresAllHistoricCompanyAndUnitPermissions",
+        "mapsTypedCommandsAndQueriesToFixedNativeActions",
+        "preparationCallsNativeOwnerOnlyOutsideTransaction",
+        "preparationIsOneUseAndPreviewFailureCannotBecomeAuthority",
+        "rejectsSwappedCompanyUnitEmployeeOrPositionIdentity"
+      ],
+      "class": "dz.sh.hidra.modules.organization.application.service.ProtectedEmployeeAppointmentAdmissionCoordinatorTest",
+      "dependency_reason": "HAPI-778 B3E typed descriptor-closure and one-use pre-admission coordinator: synthetic JUnit only; no native permit or PostgreSQL execution yet; duration unmeasured.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "organization",
+      "path": "src/test/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinatorTest.java",
+      "source_sha256": "2c408da1c29785c38e4426c32bea90496c6026261061e89afc02abbd30989bd0",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
         "anotherIssuerRejectsTicketAndPoisonsItsOriginalHolder",
         "changedDatabaseRoleFailsFinalNativeFenceCheck",
         "claimMappingGenerationChangeRequiresFreshNativeAuthentication",

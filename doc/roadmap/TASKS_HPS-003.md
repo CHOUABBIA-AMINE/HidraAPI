@@ -22221,6 +22221,226 @@ Next selects the finite B3 runtime envelope above after actual feedback; it does
 not select artifact reconciliation or task acceptance automatically. Development
 API only, synthetic fixtures and no production data/release/deployment.
 
+
+
+### 2026-10-21 — HAPI-778 B3 source-admission correction: Party configuration owner bridge
+
+Owner Next selected B3 from main77b52a5987b557b0e9d62739d89feb7874e2a98d,
+parent31b18c9c3884aec11c612273b0b830a127a33349,
+tree8602d8786ac437fdf685be115e616b9f7576b45a.
+[Docs486](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39596930258)
+succeeded. The executable baseline remains31b18c9, with Full797/Fast117/Docs485
+success. No CI failure is invented. Current AGENTS, ROADMAP, reconciliation,
+owning task and exact source/tree were refreshed before mutation.
+
+The mandatory implementation review found a concrete owner-boundary gap in the
+preceding preflight. That preflight was registered too early: its database-only
+binding activator cannot use the existing Java-only Party ticket export.
+This is a correction of that registration, not completion of B3 or a reason to
+weaken Party checks. Preserve HAPI-778 PARTIAL/IN_PROGRESS and every frozen status.
+B3 runtime writes are on a source-admission hold until the bounded prerequisite
+below is implemented and its actual feedback repaired. This is the explicit
+material-owner-gap stop rule in the preceding registration; it is not a local
+environment or industrial-calibration hold.
+
+#### Exact source findings and why the frozen scope is insufficient
+
+The existing approved ownership rule says: "Party-owned state is read only through
+the export". The preflight nevertheless put activation in an Organization-owned
+SECURITY DEFINER procedure and required it to validate current ACTIVE Party status,
+generation and retained locks. Calling private Party tables from that procedure
+would create another Party eligibility implementation outside its owner.
+
+The actual export at
+src/main/java/dz/sh/hidra/modules/party/application/contract/organization/OrganizationProtectedPartyEligibilityContract.java
+has acquire/read/requireCurrent/finalFences with opaque Java Admission.
+Its actual implementation at
+src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JdbcOrganizationProtectedPartyEligibilityAdapter.java
+requires the issuing adapter, actual Spring transaction/synchronization,
+ConnectionHolder/connection/thread/role, consumed ticket, exact PID/XID,
+complete catalog/trigger/function checks, held SHARE ROW EXCLUSIVE Party and
+ACCESS SHARE generation fences, and current ACTIVE/present positive generation.
+The existing migration V20261018_001__p25_party_eligibility_generations.sql exports
+only two revoked trigger functions, not a callable configuration reference check.
+SQL cannot invoke an opaque Java ticket, and passing the constructible Contribution
+or a caller-supplied Boolean/generation would not bridge that gap.
+
+B3's48-path allowlist contains no Party source/migration/test extension. Adding an
+Organization copy of those Party-private rules, bypassing them for an administrator,
+or expanding the old trigger functions would contradict the retained owner boundary.
+The gap therefore needs one explicit Party-owned SQL reference export for the
+already selected database-administration boundary. No additional employer policy,
+personnel default, native permission or production value decision is required.
+
+A separate literal source error was also found: the fixed Organization fence list
+spelled public.hidra_org_organization_unit. OrganizationUnitJpaEntity @Table and
+V20260611_002 both identify public.hidra_org_unit. Replace only that proposed lock
+relation in the subsequent B3 implementation; never create an alias/table to make
+the incorrect proposed name exist. All other existing relation identities remain.
+
+**Current corrective publication scope:** append only this HAPI-778 record in
+doc/roadmap/TASKS_HPS-003.md, using the responsible registration's existing exact
+message `docs(organization): register protected appointment lifecycle execution`.
+Zero Java/test/SQL/runtime/API/artifact/status/attachment edits; no placeholder
+runtime classes or partial schema are introduced.
+
+#### Exact next executable prerequisite, not another generic review
+
+After this correction's Docs feedback, the next owner Next selects one concrete
+code package under HAPI-778:
+
+`feat(party): guard organization configuration references`
+
+CREATE exactly:
+- src/main/resources/db/migration/V20261021_001__party_organization_configuration_reference.sql
+- src/test/java/dz/sh/hidra/modules/party/infrastructure/persistence/OrganizationConfigurationReferencePostgresIntegrationTest.java
+
+MODIFY exactly:
+- .github/ci-test-inventory.json, only the actual new class/cases/source hash,
+  proper PostgreSQL lane and explicit unmeasured weight; retain all existing
+  classes/cases, five measured shards, weights, archives and metadata
+- doc/roadmap/TASKS_HPS-003.md, append only this task's actual implementation,
+  validation and ensuing B3 handoff evidence
+
+DELETE none. These two CREATE paths are absent from the current untruncated tree;
+the two MODIFY paths exist. This is a four-path implementation envelope, not a
+new standalone task or a permission grant. Existing B2 Java contracts/adapters,
+old migrations, Identity/native/Platform, Organization runtime, routes and all
+previous test sources are unchanged by this prerequisite.
+
+The additive migration supplies exactly the Party-owned public SQL entry
+public.hidra_party_require_organization_configuration_reference(text).
+It returns a single current observation: exact Party ID, positive eligibility
+generation, backend PID and transaction ID, after checking actual ACTIVE/present
+state. Inputs and returned scalars never become a transferable attestation.
+Every Organization activation must INVOKE this genuine owner function in its
+actual transaction; it cannot accept a copied tuple instead. No table, status,
+generation or trigger write, permissive fallback or new business grant is added.
+
+The function's responsibility is technical new-reference eligibility only.
+It does not certify a legal employer, employee ownership, labor policy or native
+application-user authorization. The existing Java export remains the only B2
+application admission family. The SQL export is confined to the explicitly
+selected database configuration control plane; it does not become a generic
+application shortcut.
+
+Use SECURITY DEFINER with fixed search_path=pg_catalog,pg_temp and fully qualified
+owner relations. Revoke PUBLIC EXECUTE immediately. Environment administration
+may explicitly grant only the distinct trusted configuration login; migration
+creates no login/password, membership or default activation. Ordinary application
+and protected publisher logins must have no EXECUTE. Check the actual session_user's
+EXECUTE and safety posture inside the function, so an unrelated SECURITY DEFINER
+wrapper cannot launder an unauthorized original login through its effective owner.
+Do not mistake current_user inside SECURITY DEFINER for the actual caller.
+
+Require the actual writable READ COMMITTED transaction, origin replication mode,
+non-elevated/non-owner/non-owner-member caller, safe schema privileges and genuine
+owner table/catalog/trigger/function shape. Retain the existing actual generation
+guard bodies and three trigger identities without replacing them. Validate
+existing owner functions/constraints/trigger definitions against the reviewed
+migration, not just the presence of table names or two test rows.
+
+Acquire the same exact Party owner locks, in their established order:
+public.hidra_party_party SHARE ROW EXCLUSIVE NOWAIT, then
+public.hidra_party_eligibility_generation ACCESS SHARE NOWAIT.
+They remain held until the invoking physical transaction completes. Validate
+ACTIVE Party plus present=true generation>0 under those locks and return actual
+pg_backend_pid/txid_current. Missing/retired/malformed/corrupt/unsafe/unavailable
+evidence rejects uniformly, never returns a positive-looking empty/default record.
+Repeated calls are fresh owner observations, not one-use Java credentials.
+A previously observed scalar is not an alternative invocation. No extra native
+sample or grant evaluator is introduced in this administrative SQL primitive.
+
+Required actual PostgreSQL16 tests, using distinct genuine database logins:
+- fresh complete migration chain; exact signature/result fields/owner/SECURITY
+  DEFINER/search_path/volatility/parallel/ACL definition; old Party triggers and
+  generation guard bodies unchanged; PUBLIC/ordinary/publisher EXECUTE denied
+- explicit configuration login, ACTIVE Party and real generation, exact current
+  PID/XID and one-row observation; missing/inactive/null/blank/oversized identifiers
+  uniformly reject without disclosing owner details
+- superuser/owner/member/elevated/schema-writing/read-only/wrong-isolation and
+  unauthorized SECURITY DEFINER-wrapper invocation rejected
+- actual independent connection status/delete/reinsert ABA between transactions
+  advances the observed generation; a stale tuple cannot stand in for a new call
+- independent concurrent status/delete writer cannot pass the retained owner lock;
+  rollback releases it and leaves Party/generation content unchanged
+- altered catalog/disabled trigger/wrong function body or generation corruption
+  fails closed; schema checks must not rely only on an ACTIVE fixture row
+
+Keep test identities truthful: these are required behaviors, not invented
+already-authored @Test methods. Reuse source-backed fixture patterns without
+duplicating the existing full B2 native-origin suite or changing its cases.
+Register only real new methods when authored, and run existing native/Party
+regressions through unchanged inventory selection. Local syntax/source checks
+are useful; hosted PostgreSQL execution and exact-SHA CI remain mandatory proof.
+
+#### Narrow B3 correction after the owner bridge
+
+The bridge must precede Organization activation storage. The original proposed
+Organization migration filename was absent and never executed. Supersede only its
+reservation: B3 CREATE now uses
+src/main/resources/db/migration/V20261021_002__organization_appointment_ownership_lifecycle.sql,
+instead of the unexecuted V20261021_001 Organization candidate. The new Party001
+and Organization002 filenames are both absent now; check collisions again before
+each implementation. No existing migration version or contents are rewritten.
+
+B3 otherwise retains its22 CREATE/26 MODIFY envelope, eight literal SQL templates
+and hashes, registered exact runtime message and meaningful acceptance matrix.
+Its activation procedure invokes the actual Party-owned SQL export before taking
+Organization owner locks, checks the returned exact Party/PID/XID and retains its
+locks; it never reads Party-private rows itself. Pin the genuine owner's callable
+function definition/owner/ACL along with the other catalog checks. Administrative
+permission still comes from the actual separated configuration login and procedure
+ACL, not from this structural result or READ_POLICY. Runtime appointment commands
+continue to use the genuine Java Party export unchanged. Correct the unit table
+name as above. No new Platform executor wildcard or Organization Java file is
+needed for this dependency correction.
+
+After the prerequisite's actual CI feedback, first repair responsible failures.
+A function-only Flyway addition still changes the dictionary's source migration
+census: the actual generator includes len(source.migrations). Do not claim that
+zero new tables implies unchanged dictionary equality. The existing registered
+artifact message
+`docs(organization): reconcile appointment API and catalog artifacts`
+may be selected for the responsible actual dictionary/phase/provenance subset of
+its four existing paths, using genuine hosted schema.json and source/run/attempt
+hashes. Preserve unchanged OpenAPI; do not fabricate a new API snapshot. No new
+ownership-map relation is needed for a function-only migration. A stale dictionary
+gate is a failure to reconcile, not an accepted Full workflow.
+
+Once the genuine prerequisite and required artifact repair are green, the next
+code stage is the existing B3 runtime message
+`feat(organization): persist protected appointment lifecycle and history`
+with only the two explicit source corrections above. No second generic B3 design
+review or new business-data request is selected. B3/C/final acceptance remain
+separate. This correction does not claim implementation of any endpoint, journal,
+receipt, binding/policy table, concurrency protocol or full appointment lifecycle.
+
+#### Actual corrective validation and stop
+
+Refreshed exact main/parent/tree/Docs486, governing records and actual Party
+contract/adapter/trigger migration, generator and unit mapping. Verified all
+four future CREATE absences (bridge SQL/test, superseded Organization001 and
+corrected Organization002), present inventory/phase, one-file append-only history
+and unchanged statuses/anchors. Run the available17 documentation-validator and10
+OpenAPI-validator self-tests plus incremental phase links/fences/whitespace checks;
+record their actual results before publication. No Java21/Maven/JUnit/PostgreSQL
+environment was provisioned or run; missing local tools did not cause this hold.
+The concrete unavailable owner interface did.
+
+
+**Completed local correction checks:** all17 documentation-validator self-tests and
+all10 OpenAPI-validator self-tests passed. Exact baseline blob, append-only byte
+reversal, unchanged task anchors/statuses, new links/fences/whitespace and all
+four absent candidate paths/two present paths passed incremental checks. These
+are not full-estate Docs or Java/PostgreSQL runtime acceptance.
+
+Publish only the corrective phase blob with expected77b52a5 guard; independently
+verify raw blob/tree/one parent/message/one-file scope, confirm exact-SHA applicable
+Docs creation/queue/start and STOP. No permission question or repeated production
+data request is needed. Development API only, synthetic fixtures, no production
+database/release/tag/deployment or other task/status changes.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

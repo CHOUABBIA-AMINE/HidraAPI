@@ -22,6 +22,9 @@ package dz.sh.hidra.modules.organization.infrastructure.persistence.adapter;
 import dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract;
 import dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.CompanyUnit;
 import dz.sh.hidra.modules.organization.application.command.EmployeeAppointmentCommand;
+import dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult;
+import dz.sh.hidra.modules.organization.domain.policy.EmployeeAppointmentPolicy;
+import dz.sh.hidra.modules.organization.domain.value.AssignmentType;
 import dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery;
 import dz.sh.hidra.modules.organization.application.port.out.ProtectedEmployeeAppointmentRepositoryPort.DescriptorPreview;
 import dz.sh.hidra.modules.organization.application.port.out.ProtectedEmployeeAppointmentRepositoryPort;
@@ -562,6 +565,110 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
         }
     }
 
+    private static final String POLICY_SQL = """
+            SELECT p.policy_id,p.revision,(p.policy->>'maxConcurrentPrimary')::integer,
+                   p.policy->>'positionCapacity',f.key,s.key,s.value::text,
+                   b.binding_id,b.revision,bh.last_event_id,ph.last_event_id
+              FROM public.hidra_org_appointment_binding_head bh
+              JOIN public.hidra_org_appointment_binding_revision b
+                ON b.organization_unit_id=bh.organization_unit_id AND b.binding_id=bh.binding_id
+               AND b.revision=bh.revision AND b.company_party_id=bh.company_party_id
+              JOIN public.hidra_org_appointment_policy_head ph ON ph.company_party_id=b.company_party_id
+              JOIN public.hidra_org_appointment_policy_revision p
+                ON p.company_party_id=ph.company_party_id AND p.policy_id=ph.policy_id AND p.revision=ph.revision
+              JOIN public.hidra_org_appointment_configuration_event be ON be.event_id=bh.last_event_id
+              JOIN public.hidra_org_appointment_configuration_event pe ON pe.event_id=ph.last_event_id
+             CROSS JOIN LATERAL pg_catalog.jsonb_each(p.policy->'overlaps') f
+             CROSS JOIN LATERAL pg_catalog.jsonb_each(f.value) s
+             WHERE bh.organization_unit_id=? AND bh.company_party_id=?
+               AND bh.generation=bh.revision AND ph.generation=ph.revision
+               AND bh.event_kind='BINDING' AND ph.event_kind='POLICY'
+               AND be.kind='BINDING' AND be.scope_id=b.organization_unit_id
+               AND be.identity_id=b.binding_id AND be.revision=b.revision
+               AND be.company_party_id=b.company_party_id AND be.after_payload=pg_catalog.to_jsonb(b)
+               AND pe.kind='POLICY' AND pe.scope_id=p.company_party_id
+               AND pe.identity_id=p.policy_id AND pe.revision=p.revision
+               AND pe.company_party_id=p.company_party_id AND pe.after_payload=pg_catalog.to_jsonb(p)
+               AND p.canonical_payload=pg_catalog.convert_to(p.policy::text,'UTF8')
+               AND p.sha256=pg_catalog.encode(pg_catalog.sha256(p.canonical_payload),'hex')
+               AND pg_catalog.jsonb_typeof(p.policy)='object'
+               AND (SELECT count(*) FROM pg_catalog.jsonb_object_keys(p.policy))=3
+               AND pg_catalog.jsonb_exists_all(p.policy,ARRAY['overlaps','maxConcurrentPrimary','positionCapacity'])
+               AND pg_catalog.jsonb_typeof(p.policy->'maxConcurrentPrimary')='number'
+               AND (p.policy->>'maxConcurrentPrimary') ~ '^[1-9][0-9]{0,9}$'
+               AND pg_catalog.jsonb_typeof(p.policy->'positionCapacity')='string'
+               AND (SELECT count(*) FROM pg_catalog.jsonb_object_keys(p.policy->'overlaps'))=4
+               AND (SELECT count(*) FROM pg_catalog.jsonb_object_keys(f.value))=4
+               AND pg_catalog.jsonb_typeof(s.value)='boolean'
+             ORDER BY f.key COLLATE "C",s.key COLLATE "C"
+             LIMIT 17
+            """;
+
+    private record PolicyCell(String policyId, long revision, int primaryLimit, String capacity,
+                              String first, String second, String allowed, String bindingId,
+                              long bindingRevision, String bindingEvent, String policyEvent) { }
+
+    private record PolicyObservation(EmployeeAppointmentQuery.Policy selector,
+                                     EmployeeAppointmentResult.PolicyView view,
+                                     String bindingId, long bindingRevision,
+                                     String bindingEvent, String policyEvent) { }
+
+    /**
+     * Materializes a detached policy only for the exact genuine READ_POLICY
+     * sample. Current immutable binding/policy revisions and both administrator
+     * activation events must agree under the retained owner fences. This is an
+     * internal admission-phase read, not a final guarded/committed HTTP result.
+     * No Party ACTIVE check or personnel-policy default is inferred.
+     */
+    public EmployeeAppointmentResult.PolicyView readPolicy(
+            ProtectedEmployeeAppointmentRepositoryPort.Admission admission,
+            EmployeeAppointmentQuery.Policy query) {
+        StorageAdmission ticket = null;
+        try {
+            ticket = ticket(admission);
+            requireCurrent(ticket);
+            Objects.requireNonNull(query);
+            var expected = new OrganizationProtectedAppointmentAuthorizationContract.Request(
+                    OrganizationProtectedAppointmentAuthorizationContract.Action.READ_POLICY,
+                    List.of(new CompanyUnit(query.companyPartyId(), query.unitId())), null);
+            if (!expected.equals(ticket.sample.request()) || !ticket.parties.isEmpty()
+                    || !preview(query).equals(ticket.preview)
+                    || (ticket.policy != null && !query.equals(ticket.policy.selector()))) throw denied();
+            var cells = jdbc.query(POLICY_SQL, (r, i) -> new PolicyCell(
+                    r.getString(1),r.getLong(2),r.getInt(3),r.getString(4),r.getString(5),r.getString(6),
+                    r.getString(7),r.getString(8),r.getLong(9),r.getString(10),r.getString(11)),
+                    query.unitId(),query.companyPartyId());
+            if (cells == null || cells.size() != 16) throw denied();
+            var first = cells.get(0);
+            var matrix = new java.util.HashMap<EmployeeAppointmentPolicy.TypePair,Boolean>();
+            for (var cell : cells) {
+                if (!Objects.equals(first.policyId(),cell.policyId()) || first.revision()!=cell.revision()
+                        || first.primaryLimit()!=cell.primaryLimit() || !Objects.equals(first.capacity(),cell.capacity())
+                        || !Objects.equals(first.bindingId(),cell.bindingId())
+                        || first.bindingRevision()!=cell.bindingRevision()
+                        || !Objects.equals(first.bindingEvent(),cell.bindingEvent())
+                        || !Objects.equals(first.policyEvent(),cell.policyEvent())
+                        || !("true".equals(cell.allowed()) || "false".equals(cell.allowed()))) throw denied();
+                var pair = new EmployeeAppointmentPolicy.TypePair(
+                        AssignmentType.valueOf(cell.first()),AssignmentType.valueOf(cell.second()));
+                if (matrix.put(pair,Boolean.valueOf(cell.allowed())) != null) throw denied();
+            }
+            var value = new EmployeeAppointmentPolicy(matrix,first.primaryLimit(),
+                    EmployeeAppointmentPolicy.PositionCapacity.valueOf(first.capacity()));
+            var view = new EmployeeAppointmentResult.PolicyView(query.companyPartyId(),query.unitId(),
+                    first.policyId(),first.revision(),value);
+            var observed = new PolicyObservation(query,view,first.bindingId(),first.bindingRevision(),
+                    first.bindingEvent(),first.policyEvent());
+            if (ticket.policy != null && !ticket.policy.equals(observed)) throw denied();
+            ticket.policy = observed;
+            requireCurrent(ticket);
+            return view;
+        } catch (RuntimeException failure) {
+            poison(ticket == null ? admission : ticket);
+            throw denied();
+        }
+    }
+
     private StorageAdmission ticket(ProtectedEmployeeAppointmentRepositoryPort.Admission admission) {
         if (!(admission instanceof StorageAdmission t) || t.issuer != this || !t.active
                 || !t.sameContext() || context() != t.holder
@@ -665,6 +772,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
         private final AtomicBoolean used = new AtomicBoolean();
         private volatile boolean active = true;
         private OrganizationProtectedAppointmentAuthorizationContract.Contribution sample;
+        private PolicyObservation policy;
         private List<ProtectedRelationFence> nativeFences = List.of(), proofFences = List.of();
 
         private StorageAdmission(ConnectionHolder holder, Authentication authentication,

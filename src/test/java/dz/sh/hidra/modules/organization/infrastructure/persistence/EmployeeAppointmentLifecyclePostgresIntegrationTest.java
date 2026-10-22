@@ -1246,11 +1246,18 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
                 org.mockito.Mockito.mock(dz.sh.hidra.modules.identity.application.contract.organization
                         .OrganizationProtectedAppointmentAuthorizationContract.Admission.class);
         final JdbcProtectedEmployeeAppointmentRepositoryAdapter storage;
+        final dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.Policy policyQuery;
         final org.springframework.security.core.Authentication authentication =
                 new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
                         "synthetic-storage-test", "unused", List.of());
 
         StorageFixture() throws Exception {
+            this(null);
+        }
+
+        StorageFixture(dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.Policy query)
+                throws Exception {
+            policyQuery = query;
             admin("CREATE ROLE " + role + " LOGIN PASSWORD '" + PASSWORD + "'");
             admin("GRANT USAGE ON SCHEMA public TO " + role);
             for (String table : STORAGE_TABLES)
@@ -1277,9 +1284,13 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
                 var f = retainedProjection;
                 var request = new dz.sh.hidra.modules.identity.application.contract.organization
                         .OrganizationProtectedAppointmentAuthorizationContract.Request(
-                        dz.sh.hidra.modules.identity.application.contract.organization
-                                .OrganizationProtectedAppointmentAuthorizationContract.Action.READ_HISTORY,
-                        List.of(new CompanyUnit(f.company(),f.unit())),f.employee());
+                        policyQuery == null ? dz.sh.hidra.modules.identity.application.contract.organization
+                                .OrganizationProtectedAppointmentAuthorizationContract.Action.READ_HISTORY
+                                : dz.sh.hidra.modules.identity.application.contract.organization
+                                .OrganizationProtectedAppointmentAuthorizationContract.Action.READ_POLICY,
+                        policyQuery == null ? List.of(new CompanyUnit(f.company(),f.unit()))
+                                : List.of(new CompanyUnit(policyQuery.companyPartyId(),policyQuery.unitId())),
+                        policyQuery == null ? f.employee() : null);
                 return jdbc.queryForObject("SELECT pg_backend_pid(),txid_current(),clock_timestamp()",
                         (row,index) -> new dz.sh.hidra.modules.identity.application.contract.organization
                                 .OrganizationProtectedAppointmentAuthorizationContract.Contribution(
@@ -1299,6 +1310,8 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
                 acquire() {
             jdbc.execute("SELECT " + lockFunction + "()");
             var f = retainedProjection;
+            if (policyQuery != null)
+                return storage.acquire(nativeTicket,List.of(),storage.preview(policyQuery));
             return storage.acquire(nativeTicket, List.of(),
                     new dz.sh.hidra.modules.organization.application.port.out
                             .ProtectedEmployeeAppointmentRepositoryPort.DescriptorPreview(
@@ -1515,6 +1528,131 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
                     status.setRollbackOnly();return null;
                 });
             }
+        }
+    }
+
+    private static dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.Policy
+            policyQuery(String company, String unit) {
+        return new dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.Policy(company,unit);
+    }
+
+    @Test void storagePolicyReadMaterializesEveryExplicitCellUnderItsExactNativeScope() throws Exception {
+        var p=projection();
+        var query=policyQuery(p.company(),p.unit());
+        try(var f=new StorageFixture(query)) {
+            f.tx.execute(status -> {
+                var ticket=f.acquire();var sample=f.storage.contribute(ticket);
+                assertNull(sample.request().employeeId());
+                assertEquals(2,sample.request().requirements().size());
+                var result=f.storage.readPolicy(ticket,query);
+                assertEquals(p.company(),result.companyPartyId());assertEquals(p.unit(),result.organizationUnitId());
+                assertEquals(p.policy(),result.policyId());assertEquals(1,result.revision());
+                assertEquals(1,result.policy().maxConcurrentPrimary());
+                assertEquals(dz.sh.hidra.modules.organization.domain.policy.EmployeeAppointmentPolicy
+                        .PositionCapacity.SINGLE_HOLDER,result.policy().positionCapacity());
+                assertEquals(16,result.policy().overlapsAllowed().size());
+                for(var a:AssignmentType.values()) for(var b:AssignmentType.values())
+                    assertEquals(Boolean.FALSE,result.policy().overlapsAllowed().get(
+                            new dz.sh.hidra.modules.organization.domain.policy.EmployeeAppointmentPolicy.TypePair(a,b)));
+                assertThrows(UnsupportedOperationException.class,() -> result.policy().overlapsAllowed().clear());
+                assertEquals(result,f.storage.readPolicy(ticket,query));
+                org.mockito.Mockito.verify(f.identity,org.mockito.Mockito.times(1)).contribute(f.nativeTicket);
+                status.setRollbackOnly();return null;
+            });
+        }
+    }
+
+    @Test void storagePolicyReadUsesTheActivatedSuccessorWithoutRewritingHistoricalRevision() throws Exception {
+        var p=projection();
+        String selected=policyValue().replace("\"maxConcurrentPrimary\":1","\"maxConcurrentPrimary\":7")
+                .replace("SINGLE_HOLDER","UNRESTRICTED").replace("false","true");
+        try(var c=login(CONFIG)) {policy(c,p.policy(),p.company(),1,selected);c.commit();}
+        var query=policyQuery(p.company(),p.unit());
+        try(var f=new StorageFixture(query)) {
+            f.tx.execute(status -> {
+                var ticket=f.acquire();f.storage.contribute(ticket);
+                var result=f.storage.readPolicy(ticket,query);
+                assertEquals(2,result.revision());assertEquals(7,result.policy().maxConcurrentPrimary());
+                assertEquals(dz.sh.hidra.modules.organization.domain.policy.EmployeeAppointmentPolicy
+                        .PositionCapacity.UNRESTRICTED,result.policy().positionCapacity());
+                assertTrue(result.policy().overlapsAllowed().values().stream().allMatch(Boolean.TRUE::equals));
+                assertEquals(1,f.jdbc.queryForObject("SELECT (policy->>'maxConcurrentPrimary')::integer FROM public.hidra_org_appointment_policy_revision WHERE policy_id=? AND revision=1",Integer.class,p.policy()));
+                status.setRollbackOnly();return null;
+            });
+        }
+    }
+
+    @Test void storagePolicyReadRequiresTheCurrentUnitCompanyBindingAfterReassignment() throws Exception {
+        var p=projection();var other=projection();
+        try(var c=login(CONFIG)) {binding(c,p.binding(),p.unit(),other.company(),1);c.commit();}
+        for(String company:List.of(p.company(),other.company())) {
+            var query=policyQuery(company,p.unit());
+            try(var f=new StorageFixture(query)) {
+                f.tx.execute(status -> {
+                    var ticket=f.acquire();f.storage.contribute(ticket);
+                    if(company.equals(p.company())) {
+                        assertEquals("Protected appointment admission unavailable",assertThrows(AccessDeniedException.class,
+                                () -> f.storage.readPolicy(ticket,query)).getMessage());
+                        assertTrue(f.holder().isRollbackOnly());
+                    } else assertEquals(other.policy(),f.storage.readPolicy(ticket,query).policyId());
+                    status.setRollbackOnly();return null;
+                });
+            }
+        }
+    }
+
+    @Test void storagePolicyReadRejectsMissingBindingOrPolicyWithoutFallback() throws Exception {
+        var p=projection();String company=company("ACTIVE"),unit=unit();
+        try(var c=login(CONFIG)) {binding(c,"binding-"+UUID.randomUUID(),unit,company,0);c.commit();}
+        for(var query:List.of(policyQuery(company,unit),policyQuery(p.company(),unit()),
+                policyQuery("unknown-company","unknown-unit"))) {
+            try(var f=new StorageFixture(query)) {
+                f.tx.execute(status -> {
+                    var ticket=f.acquire();f.storage.contribute(ticket);
+                    assertEquals("Protected appointment admission unavailable",assertThrows(AccessDeniedException.class,
+                            () -> f.storage.readPolicy(ticket,query)).getMessage());
+                    assertTrue(f.holder().isRollbackOnly());status.setRollbackOnly();return null;
+                });
+            }
+        }
+    }
+
+    @Test void storagePolicyReadRejectsHistoryAuthorityUnqualifiedTicketsAndSelectorSubstitution() throws Exception {
+        var query=policyQuery(retainedProjection.company(),retainedProjection.unit());
+        try(var f=new StorageFixture()) {
+            f.tx.execute(status -> {
+                var ticket=f.acquire();f.storage.contribute(ticket);
+                assertThrows(AccessDeniedException.class,() -> f.storage.readPolicy(ticket,query));
+                assertTrue(f.holder().isRollbackOnly());status.setRollbackOnly();return null;
+            });
+        }
+        try(var f=new StorageFixture(query)) {
+            f.tx.execute(status -> {
+                var ticket=f.acquire();
+                assertThrows(AccessDeniedException.class,() -> f.storage.readPolicy(ticket,query));
+                assertTrue(f.holder().isRollbackOnly());status.setRollbackOnly();return null;
+            });
+            f.tx.execute(status -> {
+                var ticket=f.acquire();f.storage.contribute(ticket);f.storage.readPolicy(ticket,query);
+                assertThrows(AccessDeniedException.class,() -> f.storage.readPolicy(ticket,
+                        policyQuery(query.companyPartyId(),"another-unit")));
+                assertTrue(f.holder().isRollbackOnly());status.setRollbackOnly();return null;
+            });
+        }
+    }
+
+    @Test void storagePolicyReadRetainsNativeRevocationChecksWithoutDemandingCurrentPartyEligibility() throws Exception {
+        var p=projection();var query=policyQuery(p.company(),p.unit());
+        admin("UPDATE public.hidra_party_party SET status='SUSPENDED' WHERE id=?",p.company());
+        try(var f=new StorageFixture(query)) {
+            f.tx.execute(status -> {
+                var ticket=f.acquire();f.storage.contribute(ticket);
+                assertEquals(p.policy(),f.storage.readPolicy(ticket,query).policyId());
+                org.mockito.Mockito.doThrow(new IllegalStateException("native issuer revoked"))
+                        .when(f.identity).requireCurrent(f.nativeTicket);
+                assertThrows(AccessDeniedException.class,() -> f.storage.readPolicy(ticket,query));
+                assertTrue(f.holder().isRollbackOnly());status.setRollbackOnly();return null;
+            });
         }
     }
 

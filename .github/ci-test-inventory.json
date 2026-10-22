@@ -8984,6 +8984,12 @@
         "storageAdmissionRejectsUnqualifiedForeignCompletedAndWrongThreadTickets",
         "storageAdmissionRetainsActualOwnerFencesAndConsumesItsNativeOwnerOnce",
         "storageLockPrivilegeCannotActivateAConfigurationWithoutItsAdministratorEvent",
+        "storagePolicyReadMaterializesEveryExplicitCellUnderItsExactNativeScope",
+        "storagePolicyReadRejectsHistoryAuthorityUnqualifiedTicketsAndSelectorSubstitution",
+        "storagePolicyReadRejectsMissingBindingOrPolicyWithoutFallback",
+        "storagePolicyReadRequiresTheCurrentUnitCompanyBindingAfterReassignment",
+        "storagePolicyReadRetainsNativeRevocationChecksWithoutDemandingCurrentPartyEligibility",
+        "storagePolicyReadUsesTheActivatedSuccessorWithoutRewritingHistoricalRevision",
         "transactionRollbackRemovesRevisionHeadAndAuditTogether",
         "transferCommandPinsEveryDestinationValueAndVersion",
         "typedCommandFunctionsAndDeferredTriggerMatchRestrictedPhysicalCatalog",
@@ -8996,7 +9002,7 @@
       "lane": "postgres-integration",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java",
-      "source_sha256": "f844e0ebc8e609ef423e1e4d44db7c8635c4c4dd233d2d43590a1daae386dac0",
+      "source_sha256": "4ad3f5715316da89bfe78f78eda7aebb7e752b86017bbbc26b89a7d79edc4914",
       "supports": []
     }
   ],

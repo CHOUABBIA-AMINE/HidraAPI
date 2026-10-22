@@ -25159,6 +25159,87 @@ Publish only the seven paths with expected-2911d17 guard, verify parent/tree/
 message/raw blobs/scope, confirm applicable exact-SHA workflows queued/started,
 then STOP. The next stage continues the same B3 runtime envelope.
 
+### 2026-10-22 — HAPI-778 B3 scoped immutable policy materialization
+
+**Selection and exact message:** Owner Next continues the registered B3 envelope
+from main b970d05d8d9cba9c746b6e402865594836988c7d, tree
+e6e8a8aa16bad5be02f27218baa9a53d6e480315.
+[Full832](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39842690279),
+[Fast145](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39842690250)
+and [Docs522](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39842690284)
+completed SUCCESS on that exact source. These conclusions accept the previous
+slice's CI gates, not the complete appointment lifecycle. Current AGENTS,
+roadmap/index/reconciliation, B3 registration and latest evidence, repository,
+public owner contracts, actual configuration SQL and existing test were reviewed.
+Use `feat(organization): persist protected appointment lifecycle and history`.
+
+**Finite scope — four MODIFY, no CREATE/DELETE:**
+
+- src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JdbcProtectedEmployeeAppointmentRepositoryAdapter.java
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java
+- .github/ci-test-inventory.json, only the preceding test's real cases and source digest
+- this append-only HAPI-778 evidence in doc/roadmap/TASKS_HPS-003.md
+
+**Implemented:** The existing non-bean adapter materializes the existing immutable
+PolicyView only from its privately qualified storage admission and the genuine
+native READ_POLICY request for exactly one company/unit pair and no employee.
+History authority, an unqualified ticket, another selector, stale issuer or
+physical context fails uniformly and poisons the actual transaction. The native
+contribution is consumed once by storage, never recreated from caller scalars.
+
+One fixed bounded SELECT joins both current heads to their exact immutable
+binding/policy revisions and administrator activation events. It checks current
+company/unit ownership, head generations, event kind/scope/identity/revision,
+full after-image equality and policy canonical bytes/digest. No old ownership
+pin, unrelated company's policy, absent configuration or default substitutes for
+the current selection. The query expands all sixteen explicit matrix cells;
+exact key counts, typed values, enum membership, complete symmetric Domain
+construction, positive PRIMARY limit and explicit capacity mode are required.
+LIMIT17 probes excess cells. The detached map is immutable. The private ticket
+freezes selector, revisions, activation IDs and resulting policy; repeated reads
+revalidate that observation and the retained native/physical/catalog/time checks.
+
+READ_POLICY does not establish a new Party reference and does not demand current
+Party ACTIVE status. It still requires fresh native company/unit authority.
+No employee identity or configuration administrator credential is returned.
+This is an admission-phase materializer for the later guarded application path:
+it supplies no final read guard, observed commit or public route and cannot
+stand alone as a protected HTTP response or mutation authorization. The adapter
+remains unwired and still does not implement the complete repository port.
+
+**Authored coverage and limits:** Six new cases preserve all58 existing cases
+and increase the PostgreSQL class to64: exact scope/full matrix/immutability;
+activated successor plus retained old policy; unit reassignment; missing binding
+or policy without fallback; history/unqualified/substituted selectors; and native
+revocation while policy reading does not demand current Party eligibility.
+Fixtures use the actual migrated catalog, restricted storage login, explicit
+administrator configuration and real transactions. Upstream native Identity is
+still explicitly mocked, with the existing test-only physical fence definer;
+these are not genuine native PERMIT, final-guard or integrated writer proofs.
+The sole updated source digest is
+4ad3f5715316da89bfe78f78eda7aebb7e752b86017bbbc26b89a7d79edc4914.
+
+**Local checks:** Java17 compiler-API parsing of both changed Java files passes,
+syntax only; no Java21 type analysis or JUnit/PostgreSQL run is claimed. Canonical
+inventory validates353 fast/354 unit-architecture/454 active oracle classes,
+four historical classes and unchanged seven partitions12/15/13/14/16/15/15.
+All32 inventory self-tests pass. Offline docs validates128 documents,8380
+relative links,24 modules,921 tasks and25 phases; offline OpenAPI retains257
+paths/279 operations/267 schemas. Diff whitespace passes. Maven/Java21 and local
+PostgreSQL services are unavailable; exact-source hosted CI must verify actual
+compilation and database execution. No environment is provisioned solely to test.
+
+**Remaining B3 / stop:** Command/CAS/conflict/reference-use/replay classification,
+write policy evaluation, owner deadline narrowing, complete history results and
+cursors, provisional DML, proof-bearing final read/write guards and receipt,
+atomic application/legacy/REST cutover and integrated native acceptance remain.
+All165 migration bytes, dictionary, Identity/Party contracts, executor SQL pins,
+workflows, API and frozen statuses are unchanged. HAPI-778 stays
+PARTIAL/IN_PROGRESS and HAPI-590 separately PARTIAL/BLOCKED. Publish only these
+four paths on main with expected-b970d05 guard; verify parent/tree/message/raw
+blobs/scope, observe applicable exact-SHA workflows queued/started, then STOP.
+Next continues this same registered B3 runtime envelope after actual CI feedback.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

@@ -24182,6 +24182,78 @@ Publish only these four paths with expected64170de4 guard; verify exact
 parent/tree/message/blobs, confirm applicable exact-SHA Full/Fast/Docs creation
 or startup and STOP without waiting or automatically advancing another stage.
 
+### 2026-10-22 — HAPI-778 Full820 physical dictionary drift repair
+
+**Owner Fail; verified exact-source diagnosis:** Main
+`f6b8bb77b9303f04b1e340ef6dfb93131ba8dbd4`, parent `64170de4d5cd994055ada053f41097c502f9ab8c`,
+tree `ba902699adcb94b595f08f76c0f4db7ba10548ca`.
+[Full820](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39762953691)
+completed FAILURE solely because the API-contract/database-dictionary job
+(119771356395) rejected the checked CURRENT dictionary with the literal
+`Physical dictionary drift; review regenerated metadata/content`.
+The actual generator succeeded in capturing
+`target/database/schema.json` from the disposable PostgreSQL16.15 chain.
+The diagnostics artifact
+`hidra-ci-diagnostics-f6b8bb77b9303f04b1e340ef6dfb93131ba8dbd4-39762953691-1-api-contract`
+contains that 6,315,482-byte catalog capture and its failed verification
+message, not a successfully checked dictionary. Java21 unit/architecture,
+five separate PostgreSQL shards and static-validation passed, while the full
+gate failed because the API/dictionary job failed. Exact-head [Fast137](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39762953693)
+and [Docs510](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39762955134)
+passed. No Java, Flyway, SQL test, authorization or production failure is
+invented from this artifact.
+
+**Root cause and authorized repair:** The just-added immutable
+`V20261022_002__organization_appointment_typed_command_integrity.sql`
+preserved prior migrations and introduced an additional deferred constraint
+trigger on `public.hidra_org_appointment_event`. Its actual fresh-schema
+catalog reports `appointment_command_complete` in both the constraints
+and triggers arrays with function identity
+`public.hidra_org_appointment_typed_command_complete()`. The reviewed
+CURRENT dictionary still had163 migrations and excluded this new physical
+evidence. This is the registered docs-only B3 catalog reconciliation, with
+exact commit message
+`docs(organization): reconcile appointment API and catalog artifacts`.
+
+**Finite MODIFY scope:** Only `doc/database/DATA_DICTIONARY.md` and this
+append-only HAPI-778 record in `doc/roadmap/TASKS_HPS-003.md`. CREATE/DELETE
+none. Preserve ROADMAP, PHASES, task index, prior evidence and every old
+migration/source/test/CI workflow. The dictionary correction uses the actual
+hosted `schema.json` counts of164 migrations,470 JPA mappings,513 catalog
+relations, zero unresolved owners and source-bundle SHA256
+`5c511864b5d8bd5c32353fa0ba86957c9d78ed6dfd92d303688f14869d7fed5c`.
+The fresh catalog's new deferred constraint and enabled trigger definitions,
+owner function identity and actual function source are transcribed using the
+unchanged generator's canonical `pg_get_functiondef`/Markdown escaping
+rules, with exactly one additional migration mention on the event table.
+The formerly reviewed catalog sections, JPA annotations, indexed columns,
+ownership evidence and artifacts outside the event section are unchanged.
+Captured source SHA header is intentionally historical: the generator's
+`comparable_markdown` normalizes only that line.
+
+**Validation and limitations:** Actual hosted run evidence and migration
+source were inspected. The source-bundle fingerprint and counters were
+compared against authentic captured schema; the new trigger, constraint
+and PostgreSQL function rendering were checked against the corresponding
+catalog fields. This is a bounded source/captured-catalog reconciliation,
+not a local full fresh-schema invocation of the Python generator. There was
+no local Java21/Maven/PostgreSQL test execution. The next exact-SHA
+hosted Full CI must check byte-for-byte dictionary equality against a
+new disposable database, along with Fast and Docs checks.
+This commit provides **no** new native Identity/Party authorization, ledger
+receipt, guarded JDBC writer, HTTP workflow, deployment or industrial
+acceptance. HAPI-778 remains PARTIAL/IN_PROGRESS; HAPI-590 remains
+independently PARTIAL/BLOCKED.
+
+**Stop condition:** Publish these exact two changed paths to existing main
+under expected head `f6b8bb77b9303f04b1e340ef6dfb93131ba8dbd4`; verify exact parent/tree/blobs/message;
+confirm applicable documentation CI creation/start and, when available,
+Full/Fast exact-SHA run creation/start. If Full is not automatically
+triggered by docs-only paths, do not claim a Full pass; provide the existing
+HidraAPI CI workflow browser dispatch steps, then STOP for owner CI feedback.
+Do not advance the registered JDBC/native protected-storage stage until
+exact-head Full CI validates the repaired physical dictionary.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

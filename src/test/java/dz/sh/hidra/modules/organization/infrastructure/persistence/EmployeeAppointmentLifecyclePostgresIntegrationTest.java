@@ -126,7 +126,7 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
     }
     private String position() throws SQLException {
         String id = "position-" + UUID.randomUUID();
-        admin("INSERT INTO public.hidra_org_position(id,code,status,created_at,updated_at) VALUES (?,?,'ACTIVE',now(),now())", id, id);
+        admin("INSERT INTO public.hidra_org_position(id,code,level,status,created_at,updated_at) VALUES (?,?,'ENGINEER','ACTIVE',now(),now())", id, id);
         return id;
     }
 

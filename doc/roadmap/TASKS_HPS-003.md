@@ -23681,6 +23681,83 @@ Publish only these6 paths with expected8ea971a guard, verify parent/tree/message
 blobs, confirm exact-SHA applicable CI creation or startup and STOP.
 
 
+### 2026-10-22 — HAPI-778 Full814 position fixture correction
+
+Owner Fail selects repair of the actual responsible test failure, not a later
+implementation stage. Exact main `251d3cef63d2233948bd95298417f38e09433671`,
+parent `8ea971a587bba542ed5790908c9ff5134d83b790`, tree
+`15b5a935acf8d06bf68b7260f00e317f1861c974`, failed
+[Full814](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39722657936).
+Fast132 and Docs504 succeeded. Full's static, unit/architecture and PostgreSQL
+sets0/1/2/4 succeeded; PostgreSQL set3 and API/dictionary failed. The final gate
+also failed because required evidence was incomplete. The optional serial Java21
+Maven verification was skipped; no serial runtime pass is claimed.
+
+**Actual test root cause:** Job119639445497 reports
+`EmployeeAppointmentLifecyclePostgresIntegrationTest.migrateAndSeparatePrincipals:84->position:129`
+with PostgreSQL23502: null `hidra_org_position.level`. This failure occurs in
+BeforeAll, before the28 appointment methods can establish their required proof.
+The320-test job summary contains one error and no assertion failures; it is not
+evidence that all28 lifecycle cases ran. Do not promote their acceptance.
+
+Current `PositionLevel` includes ENGINEER, `PositionJpaEntity.level` is required,
+and the immutable V20261004_020 migration already enforces populated level for new
+rows and physical NOT NULL on the fresh-schema path. The new fixture accidentally
+used the earlier table shape. Preserve those real domain/database constraints.
+Change only its synthetic INSERT to supply explicit `level='ENGINEER'` alongside
+the existing ACTIVE status. This is disposable test data, not a personnel default,
+backfill or production calibration input. No migration or runtime code changes.
+
+**Exact three-path MODIFY scope, zero CREATE/DELETE:**
+
+- `src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java`, only that fixture INSERT
+- `.github/ci-test-inventory.json`, only this class's real source SHA256
+- `doc/roadmap/TASKS_HPS-003.md`, append only this HAPI-778 repair evidence
+
+Retain all28 method identities, assertions, actual PostgreSQL lane, explicitly
+unmeasured duration0, five measured sets, all other sources/cases/weights/archive
+and inventory metadata. New source SHA256:
+`5c9be6e68615b1b899c969a245279ea23a11389c43674c45be0757d22779ebc0`.
+Use the responsible registered runtime message
+`feat(organization): persist protected appointment lifecycle and history`.
+HAPI-778 remains PARTIAL/IN_PROGRESS and HAPI-590 remains independently blocked.
+
+**Independent artifact failure:** Job119639445294 successfully built the current
+application and passed canonical OpenAPI equality. Its real verification artifact
+says `Physical dictionary drift; review regenerated metadata/content`.
+This is still a failing gate. API diagnostics artifact12402086213 belongs to
+run39722657936/attempt1/exact251d3cef and its downloaded ZIP SHA256 matches GitHub:
+`2051170273024f8155e8ab8c4b6fc4be5358b206766ff90b5b3c3451406247b0`.
+Actual `database/schema.json` SHA256 is
+`0a9f5b527212ad88b1411c92239f6a529a0afb54274aa3d583405879124e815e`,
+source bundle `0720b4dd8c0b231f58c23c0d5bc4a066d13d78a045d0ba449fd75bf64a265f69`,
+with163 migrated scripts and513 relations. Its physical position columns confirm
+the required level; employee and unit fixture INSERTs also supply every required
+column without a default. This catalog is real hosted evidence, not inferred DDL.
+
+Repair this test setup first, retaining immutable migration bytes. Then use the
+separately registered artifact stage
+`docs(organization): reconcile appointment API and catalog artifacts` for the
+genuine dictionary/phase subset once responsible runtime feedback is known.
+This fixture-only correction does not alter the migration/JPA source bundle.
+The archived actual catalog is available for that reconciliation, subject to
+exact-source/provenance checks. Preserve OpenAPI and current dictionary now;
+neither workflow nor equality gate is weakened. No guarded writer, native
+authorization, complete lifecycle or deployment acceptance is inferred.
+
+**Validation and publication:** Local Java17 syntax parsing passed for the changed
+test file (syntax only, not typechecking or runtime). Source-linked inventory,
+documentation (128 documents/921 tasks/25 phases), offline OpenAPI (257 paths/
+279 operations/267 schemas), append-only/scope/hash and whitespace checks passed.
+The one fixture-line diff and hash-only inventory update were independently
+compared to exact251d3cef. No local Maven/Java21/PostgreSQL environment is installed or provisioned;
+the28 real PostgreSQL cases remain to be executed by hosted CI after setup repair.
+Publish only these3 paths with expected251d3cef guard; independently verify exact
+blobs/tree/one parent/message, confirm applicable exact-SHA CI creation/queue/start
+and STOP. Do not wait for completion or automatically begin dictionary repair or
+another runtime stage. This remains a development API using synthetic fixtures.
+
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

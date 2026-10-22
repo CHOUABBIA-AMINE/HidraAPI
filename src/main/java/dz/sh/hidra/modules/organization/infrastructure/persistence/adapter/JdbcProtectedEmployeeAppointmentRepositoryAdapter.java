@@ -19,8 +19,10 @@
  */
 package dz.sh.hidra.modules.organization.infrastructure.persistence.adapter;
 
+import dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract;
 import dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.CompanyUnit;
 import dz.sh.hidra.modules.organization.application.command.EmployeeAppointmentCommand;
+import dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery;
 import dz.sh.hidra.modules.organization.application.port.out.ProtectedEmployeeAppointmentRepositoryPort.DescriptorPreview;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -105,6 +107,142 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
                     source.employeeId(), sourceId, false);
         } catch (RuntimeException inaccessible) {
             // A failed/foreign/unbound lookup is indistinguishable to the caller.
+            throw denied();
+        }
+    }
+
+
+    /*
+     * Only hardcoded predicates are appended. These are immutable event-snapshot
+     * descriptors for an untrusted PREVIEW, not a history reader or an owner
+     * fence. Require complete history: 1025 events indicates that the fixed
+     * 1024-event discovery bound was exceeded, never an authorized partial set.
+     */
+    private static final String HISTORICAL_SQL = """
+            WITH sampled AS (
+                SELECT e.event_id,e.employee_id,e.company_party_id,
+                       pg_catalog.convert_from(e.canonical_payload,'UTF8')::jsonb AS body
+                  FROM public.hidra_org_appointment_event e
+                 WHERE %s
+                 ORDER BY e.sampled_at,e.event_id
+                 LIMIT 1025
+            ), snapshots AS (
+                SELECT e.event_id,e.employee_id,e.company_party_id,s.snapshot
+                  FROM sampled e
+                 CROSS JOIN LATERAL (VALUES
+                     (e.body->'before'),(e.body->'after'),(e.body->'successor')
+                 ) AS s(snapshot)
+                 WHERE s.snapshot IS NOT NULL AND s.snapshot <> 'null'::jsonb
+            )
+            SELECT s.employee_id,b.company_party_id,b.organization_unit_id,
+                   s.snapshot->'assignment'->>'id' AS assignment_id,
+                   (s.snapshot->'assignment'->>'appointment_version')::bigint AS version,
+                   (SELECT count(*) FROM sampled) AS observed_events
+              FROM snapshots s
+              JOIN public.hidra_org_appointment_binding_revision b
+                ON b.binding_id=s.snapshot->'assignment'->>'binding_id'
+               AND b.revision=(s.snapshot->'assignment'->>'binding_revision')::bigint
+               AND b.organization_unit_id=s.snapshot->'assignment'->>'organization_unit_id'
+               AND b.company_party_id=s.company_party_id
+             WHERE s.snapshot->'assignment'->>'employee_id'=s.employee_id
+               AND s.snapshot->'binding'->>'company_party_id'=b.company_party_id
+               AND s.snapshot->'binding'->>'binding_id'=b.binding_id
+               AND %s
+            """;
+
+    private record Historical(String employee, String company, String unit,
+                              String assignment, long version, long eventCount) { }
+
+    /**
+     * Internal read-descriptor discovery for policy/position selectors and
+     * exact protected history. Every event's before/after/successor binding is
+     * matched against the immutable revision; no mutable binding head, cursor,
+     * current employee directory, or JPA entity becomes authority.
+     *
+     * The caller MUST later reacquire and compare the complete owner closure
+     * under native Identity and Organization relation fences. No result/count/
+     * existence may escape before authorization. POSITION and POLICY are only
+     * supplied selectors; actual target/position matching is deferred to the
+     * guarded read adapter. This class is deliberately not wired.
+     */
+    public DescriptorPreview preview(EmployeeAppointmentQuery query) {
+        Objects.requireNonNull(query, "Read selector required");
+        if (query instanceof EmployeeAppointmentQuery.Policy policy) {
+            return new DescriptorPreview(List.of(
+                    new CompanyUnit(policy.companyPartyId(), policy.unitId())), null, null, false);
+        }
+        if (query instanceof EmployeeAppointmentQuery.History position
+                && position.scope() == EmployeeAppointmentQuery.Scope.POSITION) {
+            return new DescriptorPreview(List.of(
+                    new CompanyUnit(position.companyPartyId(), position.unitId())),
+                    null, null, false);
+        }
+
+        final String statement;
+        final Object[] parameters;
+        final String wantedEmployee;
+        final String wantedAssignment;
+        final Long wantedVersion;
+        if (query instanceof EmployeeAppointmentQuery.ExactVersion exact) {
+            statement = HISTORICAL_SQL.formatted(
+                    "e.assignment_id=? OR e.successor_id=?",
+                    "s.snapshot->'assignment'->>'id'=? AND (s.snapshot->'assignment'->>'appointment_version')::bigint=?");
+            parameters = new Object[]{exact.assignmentId(), exact.assignmentId(),
+                    exact.assignmentId(), exact.version()};
+            wantedAssignment = exact.assignmentId();
+            wantedEmployee = null;
+            wantedVersion = exact.version();
+        } else if (query instanceof EmployeeAppointmentQuery.History history
+                && history.scope() == EmployeeAppointmentQuery.Scope.ASSIGNMENT) {
+            statement = HISTORICAL_SQL.formatted(
+                    "e.assignment_id=? OR e.successor_id=?",
+                    "s.snapshot->'assignment'->>'id'=?");
+            parameters = new Object[]{history.assignmentId(), history.assignmentId(),
+                    history.assignmentId()};
+            wantedAssignment = history.assignmentId();
+            wantedEmployee = null;
+            wantedVersion = null;
+        } else if (query instanceof EmployeeAppointmentQuery.History history
+                && history.scope() == EmployeeAppointmentQuery.Scope.EMPLOYEE) {
+            statement = HISTORICAL_SQL.formatted(
+                    "e.employee_id=?",
+                    "s.snapshot->'assignment'->>'employee_id'=?");
+            parameters = new Object[]{history.employeeId(), history.employeeId()};
+            wantedAssignment = null;
+            wantedEmployee = history.employeeId();
+            wantedVersion = null;
+        } else {
+            throw denied();
+        }
+
+        try {
+            List<Historical> records = jdbc.query(statement,
+                    (rs, row) -> new Historical(rs.getString(1), rs.getString(2),
+                            rs.getString(3), rs.getString(4), rs.getLong(5), rs.getLong(6)),
+                    parameters);
+            if (records == null || records.isEmpty()) throw denied();
+            var owners = new TreeSet<>(OWNER_ORDER);
+            String employee = null;
+            boolean selectedCompany = false;
+            for (Historical record : records) {
+                if (record == null || record.eventCount() > 1024 || record.eventCount() < 1
+                        || record.employee() == null || record.assignment() == null
+                        || record.company() == null || record.unit() == null
+                        || wantedEmployee != null && !wantedEmployee.equals(record.employee())
+                        || wantedAssignment != null && !wantedAssignment.equals(record.assignment())
+                        || wantedVersion != null && wantedVersion.longValue() != record.version()
+                        || employee != null && !employee.equals(record.employee())) throw denied();
+                employee = record.employee();
+                owners.add(new CompanyUnit(record.company(), record.unit()));
+                selectedCompany |= query.companyPartyId().equals(record.company());
+                if (owners.size() > OrganizationProtectedAppointmentAuthorizationContract.MAX_READ_PAIRS)
+                    throw denied();
+            }
+            if (!selectedCompany || employee == null) throw denied();
+            return new DescriptorPreview(new ArrayList<>(owners), employee,
+                    wantedAssignment, false);
+        } catch (RuntimeException unavailable) {
+            // Missing/foreign/legacy/incomplete source is intentionally indistinguishable.
             throw denied();
         }
     }

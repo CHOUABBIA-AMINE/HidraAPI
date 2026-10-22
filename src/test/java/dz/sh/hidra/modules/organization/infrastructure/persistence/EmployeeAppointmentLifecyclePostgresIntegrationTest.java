@@ -900,4 +900,67 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
         assertNull(selectors.assignmentId());
         // A valid selector never grants current ownership or mutation access.
     }
+
+    @Test void jdbcReadPreviewDerivesExactPinnedHistoryFromImmutableEventSnapshots() {
+        var adapter = new JdbcProtectedEmployeeAppointmentRepositoryAdapter(
+                new JdbcTemplate(new DriverManagerDataSource(
+                        POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword())));
+        var f = retainedProjection;
+        var pair = List.of(new CompanyUnit(f.company(), f.unit()));
+        var byAssignment = adapter.preview(
+                dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery
+                        .History.assignment(f.company(), f.id(), 20, null));
+        assertEquals(pair, byAssignment.companyUnits());
+        assertEquals(f.employee(), byAssignment.employeeId());
+        assertEquals(f.id(), byAssignment.assignmentId());
+        var byEmployee = adapter.preview(
+                dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery
+                        .History.employee(f.company(), f.employee(), 20, null));
+        assertEquals(pair, byEmployee.companyUnits());
+        assertEquals(f.employee(), byEmployee.employeeId());
+        assertNull(byEmployee.assignmentId());
+        var exact = adapter.preview(
+                new dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery
+                        .ExactVersion(f.company(), f.id(), 1));
+        assertEquals(pair, exact.companyUnits());
+        assertEquals(f.id(), exact.assignmentId());
+        assertEquals(f.employee(), exact.employeeId());
+        // This exact revision was committed before the typed-command upgrade;
+        // retained historical bytes are not retroactively rewritten.
+    }
+
+    @Test void jdbcReadPreviewRejectsForeignMissingLegacyAndWrongRevisionWithoutDisclosure() {
+        var adapter = new JdbcProtectedEmployeeAppointmentRepositoryAdapter(
+                new JdbcTemplate(new DriverManagerDataSource(
+                        POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword())));
+        var q = dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History
+                .assignment(retainedProjection.company(), retainedLegacyId, 20, null);
+        assertEquals("Protected appointment admission unavailable",
+                assertThrows(AccessDeniedException.class, () -> adapter.preview(q)).getMessage());
+        var other = dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History
+                .assignment("foreign-company", retainedProjection.id(), 20, null);
+        assertEquals("Protected appointment admission unavailable",
+                assertThrows(AccessDeniedException.class, () -> adapter.preview(other)).getMessage());
+        var missing = dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History
+                .employee(retainedProjection.company(), "unknown-synthetic-employee", 20, null);
+        assertEquals("Protected appointment admission unavailable",
+                assertThrows(AccessDeniedException.class, () -> adapter.preview(missing)).getMessage());
+        var wrongVersion = new dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.ExactVersion(
+                retainedProjection.company(), retainedProjection.id(), 2);
+        assertEquals("Protected appointment admission unavailable",
+                assertThrows(AccessDeniedException.class, () -> adapter.preview(wrongVersion)).getMessage());
+        // Position and policy previews intentionally carry only caller selectors.
+        var position = adapter.preview(
+                dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History
+                        .position("requested-company", "requested-unit", "requested-position", 20, null));
+        assertEquals(List.of(new CompanyUnit("requested-company", "requested-unit")),
+                position.companyUnits());
+        assertNull(position.employeeId());
+        var policy = adapter.preview(
+                new dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.Policy(
+                        "requested-company", "requested-unit"));
+        assertEquals(List.of(new CompanyUnit("requested-company", "requested-unit")),
+                policy.companyUnits());
+        assertNull(policy.assignmentId());
+    }
 }

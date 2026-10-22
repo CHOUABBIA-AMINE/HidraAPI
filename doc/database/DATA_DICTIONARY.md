@@ -8,8 +8,8 @@ CURRENT
 
 Captured source SHA: `58330499d4f1416507e5ea672219d17343eb2c72`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `5c511864b5d8bd5c32353fa0ba86957c9d78ed6dfd92d303688f14869d7fed5c`.
-Migrations: 164; JPA mappings: 470; catalog relations: 513; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `ee11752dcc271cdfc8cec09567d8390a2fe99a8e38b4534f747de01f4c34e285`.
+Migrations: 165; JPA mappings: 470; catalog relations: 516; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -8192,6 +8192,7 @@ Persisted AttributeDefinitionJpaEntity state; semantic authority remains with id
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261022_003__identity_organization_appointment_commit_proof.sql](../../src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8420,6 +8421,7 @@ Persisted AuthorizationPolicyJpaEntity state; semantic authority remains with id
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261022_003__identity_organization_appointment_commit_proof.sql](../../src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8466,6 +8468,7 @@ Persisted AuthorizationPolicyRuleJpaEntity state; semantic authority remains wit
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261022_003__identity_organization_appointment_commit_proof.sql](../../src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8516,6 +8519,7 @@ Persisted AuthorizationPolicyVersionJpaEntity state; semantic authority remains 
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261022_003__identity_organization_appointment_commit_proof.sql](../../src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8566,6 +8570,7 @@ Immutable bounded original OIDC or authenticated LDAP/AD attribute observations 
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261022_003__identity_organization_appointment_commit_proof.sql](../../src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8624,6 +8629,7 @@ Persisted ExternalGroupMappingJpaEntity state; semantic authority remains with i
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261022_003__identity_organization_appointment_commit_proof.sql](../../src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8691,6 +8697,7 @@ External identity link with database-owned monotonic security generation and ord
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261022_003__identity_organization_appointment_commit_proof.sql](../../src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8763,6 +8770,7 @@ Database-owned per-provider committed external mapping generation; not an OIDC/L
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261022_003__identity_organization_appointment_commit_proof.sql](../../src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8805,6 +8813,7 @@ Persisted ExternalPermissionMappingJpaEntity state; semantic authority remains w
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261022_003__identity_organization_appointment_commit_proof.sql](../../src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8868,6 +8877,7 @@ Persisted ExternalRoleMappingJpaEntity state; semantic authority remains with id
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261022_003__identity_organization_appointment_commit_proof.sql](../../src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8931,6 +8941,7 @@ Persisted GroupJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261022_003__identity_organization_appointment_commit_proof.sql](../../src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8982,6 +8993,7 @@ Persisted GroupRoleGrantJpaEntity state; semantic authority remains with identit
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261022_003__identity_organization_appointment_commit_proof.sql](../../src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9042,6 +9054,7 @@ Identity-owned LOCAL credentials with database-enforced monotonic security gener
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261022_003__identity_organization_appointment_commit_proof.sql](../../src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9102,6 +9115,7 @@ Persisted LoginSessionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261022_003__identity_organization_appointment_commit_proof.sql](../../src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9171,6 +9185,7 @@ Immutable format-one native bearer/session provenance snapshots with private pro
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261022_003__identity_organization_appointment_commit_proof.sql](../../src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9277,6 +9292,151 @@ Immutable format-one native bearer/session provenance snapshots with private pro
 
 comment: "Identity-owned immutable bearer/session association; structural SQL validity is not producer verification or permission."
 
+### public.hidra_identity_org_commit_key_event
+
+Owner: **identity**; relation kind: `r`.
+
+Immutable Identity key activation/revocation metadata and monotonic administrative generations; never raw secrets.
+
+- Evidence: [V20261022_003__identity_organization_appointment_commit_proof.sql](../../src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql)
+- Evidence: [OrganizationAppointmentCommitProofPostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/OrganizationAppointmentCommitProofPostgresIntegrationTest.java)
+- Migration mention (not inferred introduction): [V20261022_003__identity_organization_appointment_commit_proof.sql](../../src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| revision | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| key_id | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| audience | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| publisher | name | False | None; identity=; generated= | No current mapped Java column | — |
+| active | boolean | False | None; identity=; generated= | No current mapped Java column | — |
+| fingerprint | bytea | True | None; identity=; generated= | No current mapped Java column | — |
+| administrator | name | False | None; identity=; generated= | No current mapped Java column | — |
+| recorded_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_identity_org_commit_key_event_check`: CHECK (active = (fingerprint IS NOT NULL))
+  - Catalog attributes: {"columns": ["active", "fingerprint"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_identity_org_commit_key_event_fingerprint_check`: CHECK (fingerprint IS NULL OR octet_length(fingerprint) = 32)
+  - Catalog attributes: {"columns": ["fingerprint"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_identity_org_commit_key_event_pkey`: PRIMARY KEY (revision)
+  - Catalog attributes: {"columns": ["revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_identity_org_commit_key_event_revision_check`: CHECK (revision &gt; 0)
+  - Catalog attributes: {"columns": ["revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_identity_org_commit_key_event_pkey`: CREATE UNIQUE INDEX hidra_identity_org_commit_key_event_pkey ON public.hidra_identity_org_commit_key_event USING btree (revision)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `hidra_identity_org_key_event_immutable`: CREATE TRIGGER hidra_identity_org_key_event_immutable BEFORE DELETE OR UPDATE OR TRUNCATE ON hidra_identity_org_commit_key_event FOR EACH STATEMENT EXECUTE FUNCTION hidra_identity_org_commit_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_identity_org_commit_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_identity_org_commit_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog'<br>AS $function$<br>BEGIN RAISE EXCEPTION 'Immutable Identity commit-proof state'; END $function$<br>
+
+### public.hidra_identity_org_commit_key_head
+
+Owner: **identity**; relation kind: `r`.
+
+Private current purpose-specific key, database audience and publisher generation; only restricted Identity administration.
+
+- Evidence: [V20261022_003__identity_organization_appointment_commit_proof.sql](../../src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql)
+- Evidence: [OrganizationAppointmentCommitProofPostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/OrganizationAppointmentCommitProofPostgresIntegrationTest.java)
+- Migration mention (not inferred introduction): [V20261022_003__identity_organization_appointment_commit_proof.sql](../../src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| singleton | boolean | False | true; identity=; generated= | No current mapped Java column | — |
+| key_id | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| revision | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| audience | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| publisher | name | False | None; identity=; generated= | No current mapped Java column | — |
+| active | boolean | False | None; identity=; generated= | No current mapped Java column | — |
+| key_bytes | bytea | True | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_identity_org_commit_key_head_check`: CHECK (active AND octet_length(key_bytes) = 32 OR NOT active AND key_bytes IS NULL)
+  - Catalog attributes: {"columns": ["active", "key_bytes"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_identity_org_commit_key_head_check1`: CHECK (NOT active OR key_bytes IS NOT NULL)
+  - Catalog attributes: {"columns": ["active", "key_bytes"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_identity_org_commit_key_head_key_id_check`: CHECK (key_id::text ~ '^[a-zA-Z0-9][a-zA-Z0-9._-]{0,63}$'::text)
+  - Catalog attributes: {"columns": ["key_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_identity_org_commit_key_head_pkey`: PRIMARY KEY (singleton)
+  - Catalog attributes: {"columns": ["singleton"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_identity_org_commit_key_head_revision_fkey`: FOREIGN KEY (revision) REFERENCES hidra_identity_org_commit_key_event(revision)
+  - Catalog attributes: {"columns": ["revision"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["revision"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_identity_org_commit_key_event"}, "type": "f", "validated": true}
+- `hidra_identity_org_commit_key_head_revision_key`: UNIQUE (revision)
+  - Catalog attributes: {"columns": ["revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_identity_org_commit_key_head_singleton_check`: CHECK (singleton)
+  - Catalog attributes: {"columns": ["singleton"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_identity_org_commit_key_head_pkey`: CREATE UNIQUE INDEX hidra_identity_org_commit_key_head_pkey ON public.hidra_identity_org_commit_key_head USING btree (singleton)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `hidra_identity_org_commit_key_head_revision_key`: CREATE UNIQUE INDEX hidra_identity_org_commit_key_head_revision_key ON public.hidra_identity_org_commit_key_head USING btree (revision)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `hidra_identity_org_key_head_no_reset`: CREATE TRIGGER hidra_identity_org_key_head_no_reset BEFORE DELETE OR TRUNCATE ON hidra_identity_org_commit_key_head FOR EACH STATEMENT EXECUTE FUNCTION hidra_identity_org_commit_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_identity_org_commit_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_identity_org_commit_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog'<br>AS $function$<br>BEGIN RAISE EXCEPTION 'Immutable Identity commit-proof state'; END $function$<br>
+
+### public.hidra_identity_org_commit_proof_use
+
+Owner: **identity**; relation kind: `r`.
+
+Immutable transaction-bound one-use proof nonce and event/digest provenance; event UUID is an opaque reference.
+
+- Evidence: [V20261022_003__identity_organization_appointment_commit_proof.sql](../../src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql)
+- Evidence: [OrganizationAppointmentCommitProofPostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/OrganizationAppointmentCommitProofPostgresIntegrationTest.java)
+- Migration mention (not inferred introduction): [V20261022_003__identity_organization_appointment_commit_proof.sql](../../src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| revision | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| nonce | bytea | False | None; identity=; generated= | No current mapped Java column | — |
+| key_id | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| backend_pid | integer | False | None; identity=; generated= | No current mapped Java column | — |
+| transaction_id | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| event_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| command_sha256 | bytea | False | None; identity=; generated= | No current mapped Java column | — |
+| payload_sha256 | bytea | False | None; identity=; generated= | No current mapped Java column | — |
+| consumed_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_identity_org_commit_proof_use_backend_pid_check`: CHECK (backend_pid &gt; 0)
+  - Catalog attributes: {"columns": ["backend_pid"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_identity_org_commit_proof_use_command_sha256_check`: CHECK (octet_length(command_sha256) = 32)
+  - Catalog attributes: {"columns": ["command_sha256"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_identity_org_commit_proof_use_event_id_key`: UNIQUE (event_id)
+  - Catalog attributes: {"columns": ["event_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_identity_org_commit_proof_use_nonce_check`: CHECK (octet_length(nonce) = 32)
+  - Catalog attributes: {"columns": ["nonce"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_identity_org_commit_proof_use_payload_sha256_check`: CHECK (octet_length(payload_sha256) = 32)
+  - Catalog attributes: {"columns": ["payload_sha256"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_identity_org_commit_proof_use_pkey`: PRIMARY KEY (revision, nonce)
+  - Catalog attributes: {"columns": ["revision", "nonce"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_identity_org_commit_proof_use_transaction_id_check`: CHECK (transaction_id &gt; 0)
+  - Catalog attributes: {"columns": ["transaction_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_identity_org_commit_proof_use_event_id_key`: CREATE UNIQUE INDEX hidra_identity_org_commit_proof_use_event_id_key ON public.hidra_identity_org_commit_proof_use USING btree (event_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_identity_org_commit_proof_use_pkey`: CREATE UNIQUE INDEX hidra_identity_org_commit_proof_use_pkey ON public.hidra_identity_org_commit_proof_use USING btree (revision, nonce)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `hidra_identity_org_proof_use_immutable`: CREATE TRIGGER hidra_identity_org_proof_use_immutable BEFORE DELETE OR UPDATE OR TRUNCATE ON hidra_identity_org_commit_proof_use FOR EACH STATEMENT EXECUTE FUNCTION hidra_identity_org_commit_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_identity_org_commit_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_identity_org_commit_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog'<br>AS $function$<br>BEGIN RAISE EXCEPTION 'Immutable Identity commit-proof state'; END $function$<br>
+
 ### public.hidra_identity_permission
 
 Owner: **identity**; relation kind: `r`.
@@ -9294,6 +9454,7 @@ Persisted PermissionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261019_001__p25_topology_engineering_drafts.sql](../../src/main/resources/db/migration/V20261019_001__p25_topology_engineering_drafts.sql)
 - Migration mention (not inferred introduction): [V20261020_002__p25_topology_engineering_publications.sql](../../src/main/resources/db/migration/V20261020_002__p25_topology_engineering_publications.sql)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261022_003__identity_organization_appointment_commit_proof.sql](../../src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9360,6 +9521,7 @@ Identity provider with database-owned monotonic security generation and ordinary
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261022_003__identity_organization_appointment_commit_proof.sql](../../src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9449,6 +9611,7 @@ Persisted RoleJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261022_003__identity_organization_appointment_commit_proof.sql](../../src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9500,6 +9663,7 @@ Persisted RolePermissionGrantJpaEntity state; semantic authority remains with id
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261022_003__identity_organization_appointment_commit_proof.sql](../../src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9553,6 +9717,7 @@ Persisted SubjectSecurityAttributeJpaEntity state; semantic authority remains wi
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261022_003__identity_organization_appointment_commit_proof.sql](../../src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9705,6 +9870,7 @@ Persisted UserJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261022_003__identity_organization_appointment_commit_proof.sql](../../src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9768,6 +9934,7 @@ Persisted UserGroupMembershipJpaEntity state; semantic authority remains with id
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261022_003__identity_organization_appointment_commit_proof.sql](../../src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9829,6 +9996,7 @@ Persisted UserPermissionGrantJpaEntity state; semantic authority remains with id
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261022_003__identity_organization_appointment_commit_proof.sql](../../src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9898,6 +10066,7 @@ Persisted UserRoleGrantJpaEntity state; semantic authority remains with identity
 - Migration mention (not inferred introduction): [V20261017_001__p25_identity_bound_source_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_001__p25_identity_bound_source_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261017_002__p25_identity_directory_claim_evidence.sql](../../src/main/resources/db/migration/V20261017_002__p25_identity_directory_claim_evidence.sql)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261022_003__identity_organization_appointment_commit_proof.sql](../../src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

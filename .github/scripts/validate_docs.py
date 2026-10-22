@@ -161,6 +161,12 @@ def local_target(root, parent, dest):
 def validate_links(root, path, text, anchor_cache=None):
     anchor_cache = {} if anchor_cache is None else anchor_cache
     count = 0
+    # Only the physical dictionary is a generated SQL catalogue, not Markdown
+    # prose. Its backtick-prefixed constraint/index/trigger definitions can
+    # contain adjacent PostgreSQL regex classes that look like reference links.
+    # Preserve verification of all real Evidence / Migration mention links.
+    if path.relative_to(root).as_posix() == 'doc/database/DATA_DICTIONARY.md':
+        text = re.sub(r'^- `[^`\n]+`: [^\n]*$', '', text, flags=re.M)
     for dest in links(text):
         if not dest:
             raise ValueError(f'{path}: empty link destination')

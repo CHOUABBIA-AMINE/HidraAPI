@@ -24809,6 +24809,87 @@ do not describe this repair publication as full green acceptance. HAPI-778 stays
 PARTIAL/IN_PROGRESS; HAPI-590 remains separately PARTIAL/BLOCKED. Resume B3 only
 after prerequisite CI/artifact acceptance.
 
+### 2026-10-22 — HAPI-778 Full825 fresh-schema Identity commit-proof dictionary repair
+
+**Owner Fail / live exact-source gate:** Main
+`62c924c67676a4288c15a53117319f8386069ed3`, parent `bc9e7bb1534085fe1fc5ed6767f033ec36364720`,
+tree `028d6082d12592fad21cf5d598f5cf7a9a0bcc05`. The
+[HidraAPI CI #825](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39786848802)
+completed FAILURE only in API contract/database-dictionary job 119852219476
+(and dependent Full gate); source and actual isolated PostgreSQL schema
+were captured successfully but the required CURRENT dictionary comparison
+failed. Static validation, unit/architecture and all five disjoint
+PostgreSQL integration shards passed. Exact-SHA
+[Fast #139](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39786848798)
+and [Docs #515](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39786848796)
+passed. None of these passing lanes proves a currently accepted Full CI.
+
+**Grounded catalog evidence:** The CI #825 API-contract diagnostics artifact
+`hidra-ci-diagnostics-62c924c67676a4288c15a53117319f8386069ed3-39786848802-1-api-contract`
+(artifact 12429441776) contains the authentic `database/schema.json`
+captured from disposable PostgreSQL16.15 after applying the current
+165-migration Flyway chain. That capture records 470 JPA mappings,
+516 physical relations and source bundle SHA256
+`ee11752dcc271cdfc8cec09567d8390a2fe99a8e38b4534f747de01f4c34e285`.
+The formerly reviewed dictionary represented 164 migrations and 513
+relations. The difference is exactly the three Identity-owned
+`public.hidra_identity_org_commit_key_event`,
+`public.hidra_identity_org_commit_key_head` and
+`public.hidra_identity_org_commit_proof_use` private tables created
+by the registered `V20261022_003__identity_organization_appointment_commit_proof.sql`.
+Their catalog columns, defaults, nullability, CHECK/PK/unique/composite FK
+constraints, indexes, triggers, function-definition evidence and Identity
+ownership/purpose evidence are preserved; the 24 existing Identity relations
+mentioned by that migration receive only their actual migration-source links.
+All three table segments were independently rendered from the captured
+JSON with the unchanged generator's Markdown/JSON escaping and byte-length
+checks. No catalogue objects or grants are inferred from guessed DDL.
+
+**Selected bounded docs repair and exact registered message:**
+`docs(organization): reconcile appointment API and catalog artifacts`.
+MODIFY only `doc/database/DATA_DICTIONARY.md`,
+`.github/scripts/validate_docs.py`,
+`.github/scripts/test_validate_docs.py` and this append-only
+`doc/roadmap/TASKS_HPS-003.md` HAPI-778 evidence record.
+CREATE/DELETE none. ROADMAP/PHASES/index remain unchanged. The reviewed
+CURRENT data dictionary changes only the generation counts/bundle hash,
+three newly catalogued table sections and generator-determined migration
+mentions. Preserve the old captured-source SHA line per the generator's
+explicit comparable_markdown exception; never claim that old source
+was the new source.
+
+**Exact Markdown validator issue and bounded test:** One catalog-authored
+CHECK contains two adjacent PostgreSQL regex classes
+`[a-zA-Z0-9][a-zA-Z0-9._-]`. The existing Markdown reference parser
+mistakes those SQL bytes for a reference link. Only in the exact generated
+`doc/database/DATA_DICTIONARY.md` path, mask the generator-owned
+`- `constraint/index/trigger`: ...` catalogue definition lines
+before reference parsing; retain existing masking of generated function
+evidence. All real Evidence and Migration mention Markdown links and
+all unrelated documents continue to undergo the original validation.
+New Python validator regression verifies the actual pattern, a valid
+evidence link, ordinary-document rejection, genuine missing targets
+and unresolved real references. No relaxed status, task registry,
+OpenAPI, API, database or security assertion is authorized.
+
+**Testing / unresolved gate:** SQL source/history and all previous migration
+bytes are unchanged. Reconstructed dictionary sections used actual
+CI #825 catalog facts and ownership metadata, not production data.
+These source and structural checks are not a local rerun of the full
+generator; local Java21/Maven/PostgreSQL hosted CI is the acceptance gate.
+Publish under expected head `62c924c67676a4288c15a53117319f8386069ed3`; verify exact SHA/parent/tree/
+four-file scope/message and confirm relevant exact-head Docs CI starts.
+Full CI ignores docs-only paths: if no exact-head Full run starts, provide
+the explicit GitHub Actions HidraAPI CI manual dispatch
+(`verification_mode=development`, `serial_oracle=false`,
+`dependency_cache=cached`, branch `main`). Do not claim Full pass.
+
+**Status / stop:** HAPI-778 remains PARTIAL/IN_PROGRESS and
+HAPI-590 independently PARTIAL/BLOCKED. No native writer, event receipt,
+API cutover, production employee data, schema reset, deployment,
+calibration, SITE or OT action. Resume guarded JDBC/native appointment
+implementation only after the exact-head dictionary/CI gate passes.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

@@ -99,6 +99,23 @@ class DocumentationTests(unittest.TestCase):
             with self.subTest(text=text), self.assertRaises(ValueError):
                 validator.links(text)
 
+    def test_generated_dictionary_constraint_regex_is_not_a_reference_link(self):
+        dictionary = self.root / 'doc/database/DATA_DICTIONARY.md'
+        dictionary.parent.mkdir(parents=True, exist_ok=True)
+        sql = ("- `hidra_identity_org_commit_key_head_key_id_check`: "
+               "CHECK (key_id::text ~ '^[a-zA-Z0-9][a-zA-Z0-9._-]{0,63}$'::text)\n"
+               "  - Function evidence: CHECK '^[1-9][0-9]{0,18}$'\n")
+        actual = sql + "[reviewed owner](../modules/demo.md)\n"
+        self.assertEqual(validator.validate_links(self.root, dictionary, actual), 1)
+        # An ordinary document must still reject the same false-link-shaped SQL.
+        with self.assertRaisesRegex(ValueError, 'Unresolved reference link'):
+            validator.validate_links(self.root, self.root / 'doc/README.md', sql)
+        # Evidence links stay checked, even in the narrowly exempt dictionary.
+        with self.assertRaisesRegex(ValueError, 'Missing/case-mismatched target'):
+            validator.validate_links(self.root, dictionary, actual + "[missing](missing.md)\n")
+        with self.assertRaisesRegex(ValueError, 'Unresolved reference link'):
+            validator.validate_links(self.root, dictionary, actual + "[broken][missing]\n")
+
     def test_generated_physical_sql_evidence_is_not_markdown_reference(self):
         # A canonical source-evidence line is rendered SQL, including regex
         # character classes; they are not Markdown reference links.

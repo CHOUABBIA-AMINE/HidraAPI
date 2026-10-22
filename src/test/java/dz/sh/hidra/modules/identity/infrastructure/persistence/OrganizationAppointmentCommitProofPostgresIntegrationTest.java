@@ -340,5 +340,102 @@ class OrganizationAppointmentCommitProofPostgresIntegrationTest {
             context(c,true);c.rollback();
         }
     }
+
+    private static String disposableMigrationDatabase() throws SQLException {
+        String database="proof_migration_"+UUID.randomUUID().toString().replace("-","");
+        try(var c=owner()){sql(c,"CREATE DATABASE "+database);}
+        return POSTGRES.getJdbcUrl().replace("/"+POSTGRES.getDatabaseName(),"/"+database);
+    }
+    private static Connection migrationOwner(String url) throws SQLException {
+        return DriverManager.getConnection(url,POSTGRES.getUsername(),POSTGRES.getPassword());
+    }
+    private static void dropMigrationDatabase(String url) throws SQLException {
+        String database=url.substring(url.lastIndexOf('/')+1).split("\\?")[0];
+        if(!database.matches("proof_migration_[0-9a-f]{32}"))throw new IllegalArgumentException("Unexpected fixture database");
+        try(var c=owner()){sql(c,"DROP DATABASE "+database+" WITH (FORCE)");}
+    }
+
+    @Test void publicCleanRebuildReusesOnlyValidatedCryptoNamespaceAndExtension() throws Exception {
+        String url=disposableMigrationDatabase();
+        try {
+            var flyway=Flyway.configure().dataSource(url,POSTGRES.getUsername(),POSTGRES.getPassword())
+                    .schemas("public").cleanDisabled(false).load();
+            flyway.migrate();
+            long extension,cryptoSchema;
+            try(var c=migrationOwner(url)){
+                extension=number(c,"SELECT oid FROM pg_extension WHERE extname='pgcrypto'");
+                cryptoSchema=number(c,"SELECT oid FROM pg_namespace WHERE nspname='hidra_identity_crypto'");
+            }
+            flyway.clean();
+            try(var c=migrationOwner(url)){
+                assertEquals(extension,number(c,"SELECT oid FROM pg_extension WHERE extname='pgcrypto'"));
+                assertEquals(cryptoSchema,number(c,"SELECT oid FROM pg_namespace WHERE nspname='hidra_identity_crypto'"));
+            }
+            flyway.migrate();flyway.validate();
+            try(var c=migrationOwner(url)){
+                sql(c,"SELECT public.hidra_identity_org_commit_catalog()");
+                assertEquals(extension,number(c,"SELECT oid FROM pg_extension WHERE extname='pgcrypto'"));
+                assertEquals(0,number(c,"SELECT count(*) FROM public.hidra_identity_org_commit_key_head"));
+                assertEquals(0,number(c,"SELECT count(*) FROM public.hidra_identity_org_commit_proof_use"));
+            }
+        } finally {dropMigrationDatabase(url);}
+    }
+
+    @Test void inheritedApplicationDefaultsCannotGrantPrivateProofObjectsAndRemainUnchanged() throws Exception {
+        String url=disposableMigrationDatabase();
+        try {
+            Flyway.configure().dataSource(url,POSTGRES.getUsername(),POSTGRES.getPassword())
+                    .target("20261022.002").load().migrate();
+            try(var c=migrationOwner(url)){
+                sql(c,"ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT,INSERT,UPDATE,DELETE ON TABLES TO "
+                        +ORDINARY+","+PUBLISHER+","+CONFIG);
+                sql(c,"ALTER DEFAULT PRIVILEGES GRANT EXECUTE ON FUNCTIONS TO "+ORDINARY+","+PUBLISHER+","+CONFIG);
+            }
+            var flyway=Flyway.configure().dataSource(url,POSTGRES.getUsername(),POSTGRES.getPassword()).load();
+            flyway.migrate();flyway.validate();
+            try(var c=migrationOwner(url)){
+                sql(c,"SELECT public.hidra_identity_org_commit_catalog()");
+                for(var role:List.of(ORDINARY,PUBLISHER,CONFIG)){
+                    for(var table:TABLES)
+                        assertEquals(0,number(c,"SELECT CASE WHEN has_table_privilege('"+role+"','public."+table
+                                +"','SELECT,INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES,TRIGGER') THEN 1 ELSE 0 END"));
+                    for(var routine:List.of(ADMIN_FN,VERIFY_FN,CONTEXT_FN,
+                            "hidra_identity_crypto.hmac(bytea,bytea,text)"))
+                        assertEquals(0,number(c,"SELECT CASE WHEN has_function_privilege('"+role+"','"+routine
+                                +"','EXECUTE') THEN 1 ELSE 0 END"));
+                }
+                // Only the new private object's inherited ACLs were removed, never the defaults.
+                sql(c,"CREATE TABLE public.proof_default_acl_control(id integer)");
+                sql(c,"CREATE FUNCTION public.proof_default_acl_control() RETURNS integer LANGUAGE sql AS 'SELECT 1'");
+                assertEquals(1,number(c,"SELECT CASE WHEN has_table_privilege('"+ORDINARY
+                        +"','public.proof_default_acl_control','SELECT') AND has_function_privilege('"+ORDINARY
+                        +"','public.proof_default_acl_control()','EXECUTE') THEN 1 ELSE 0 END"));
+            }
+        } finally {dropMigrationDatabase(url);}
+    }
+
+    @Test void retainedCryptoNamespaceWithForeignAclOrObjectIsRejectedWithoutLaundering() throws Exception {
+        String url=disposableMigrationDatabase();
+        try {
+            var flyway=Flyway.configure().dataSource(url,POSTGRES.getUsername(),POSTGRES.getPassword())
+                    .schemas("public").cleanDisabled(false).load();
+            flyway.migrate();flyway.clean();
+            try(var c=migrationOwner(url)){sql(c,"GRANT USAGE ON SCHEMA hidra_identity_crypto TO PUBLIC");}
+            assertThrows(org.flywaydb.core.api.FlywayException.class,flyway::migrate);
+            try(var c=migrationOwner(url)){
+                assertEquals(1,number(c,"SELECT count(*) FROM pg_namespace n,LATERAL aclexplode(n.nspacl) a "
+                        +"WHERE n.nspname='hidra_identity_crypto' AND a.grantee=0 AND a.privilege_type='USAGE'"));
+                sql(c,"REVOKE ALL ON SCHEMA hidra_identity_crypto FROM PUBLIC");
+                sql(c,"CREATE FUNCTION hidra_identity_crypto.unexpected_fixture() RETURNS integer LANGUAGE sql AS 'SELECT 1'");
+            }
+            assertThrows(org.flywaydb.core.api.FlywayException.class,flyway::migrate);
+            try(var c=migrationOwner(url)){
+                assertEquals(1,number(c,"SELECT count(*) FROM pg_proc WHERE oid='hidra_identity_crypto.unexpected_fixture()'::regprocedure"));
+                sql(c,"DROP FUNCTION hidra_identity_crypto.unexpected_fixture()");
+            }
+            flyway.migrate();flyway.validate();
+        } finally {dropMigrationDatabase(url);}
+    }
 }
+
 

@@ -24727,6 +24727,88 @@ proof-bearing final statement. HAPI-778 remains PARTIAL/IN_PROGRESS and HAPI-590
 remains independently PARTIAL/BLOCKED. No route, production secret, deployment,
 release or OT action is performed; no remaining-commit count is asserted.
 
+### 2026-10-22 — Full824 appointment proof migration compatibility repair
+
+**Selected repair:** `fix(identity): isolate appointment proof migration privileges`.
+The owner's Fail instruction selects correction of Full824 on main
+`bc9e7bb1534085fe1fc5ed6767f033ec36364720`, tree
+`af39cf278925aa77869e1c31177a8fc2ad1c90eb`. No dependent B3 writer stage
+is selected. Docs514 and Fast138 passed. Full824's Java21 unit/architecture,
+static validation and PostgreSQL shard4 passed; shards0/1/2/3 and the API
+dictionary lane failed, so the aggregate gate correctly failed.
+
+**Recovered causes:** Raw job119841798106 identifies the private catalog's table
+ACL rejection during migration003. Existing station/publication fixtures install
+application-wide ALTER DEFAULT PRIVILEGES before Flyway; REVOKE FROM PUBLIC alone
+did not remove those explicit role grants from the three newly created private
+tables. Raw jobs119841798542/119841798917 identify schema42P06: public-only
+Flyway clean preserves the private pgcrypto namespace, while migration003
+previously attempted unconditional CREATE SCHEMA on rebuild. These are migration
+compatibility defects, not an instruction to weaken the verifier or test gates.
+
+The genuine API diagnostic artifact12428680131 (ZIP SHA256
+`c2691073f2abb8fb50b2423cb196ca6a3138b91f98aecb7ad5045d35cc4ad7af`)
+contains schema.json and reports physical dictionary drift after successful
+capture of165 migrations,470 JPA mappings and516 relations. Its635 captured
+migration/JPA source digests were recovered and verified. Shard3 diagnostic
+artifact12427738773 (ZIP SHA256
+`044cba98f99198293d2f56b741439625d503dfe8e4b7031865517600ddd02c7c`)
+has raw Surefire reports: all14 new commit-proof PostgreSQL tests and all32
+native appointment PostgreSQL tests passed, with zero errors/failures/skips.
+Those exact-source successes do not erase the other failed lanes or accept
+this new repair's added cases.
+
+**Bounded repair scope — MODIFY only four existing prerequisite paths:**
+
+~~~~~~~~text
+src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql
+src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/OrganizationAppointmentCommitProofPostgresIntegrationTest.java
+.github/ci-test-inventory.json
+doc/roadmap/TASKS_HPS-003.md
+~~~~~~~~
+
+CREATE/DELETE none. Repair the newly introduced, CI-failing migration003 in
+place because a later migration cannot run before its failing installation.
+All164 previously accepted migrations remain byte-for-byte unchanged. No deployed
+database or Flyway repair/checksum manipulation is involved.
+
+The migration validates an existing crypto namespace's exact owner, closed ACLs,
+absence of relations and extension membership of every contained function before
+reuse. It never silently relocates an extension, launders a foreign namespace
+grant/object or grants application schema creation. Fresh initialization and
+retained safe namespace rebuild use the same pgcrypto identity checks. On only
+the newly created three private relations and package/crypto functions, remove
+inherited non-owner default ACL grants. Preserve the environment's default ACL
+policy and every old object. No new login, ordinary privilege, key, public
+verifier or signer is introduced; runtime catalog checks remain strict.
+
+Three real isolated-database regressions preserve all14 existing primitive cases:
+full public clean/rebuild retains the same extension/namespace identities and
+empty key/use state; inherited table/function defaults do not grant private proof
+objects while subsequent control objects still receive unchanged defaults; unsafe
+retained namespace ACLs/foreign functions reject without modifying those objects.
+The source-linked inventory updates only that class's cases/hash, preserving all
+other entries, weights, lanes, archive policy and five PostgreSQL partitions.
+
+**Validation and publication:** Java compiler-API parsing, exact four-file scope,
+existing-case preservation, source hash/inventory checks and documentation/
+inventory-validator self-tests are local checks only. Maven/PostgreSQL are absent
+locally; the three new database cases and repaired migration require hosted CI.
+Publish this one repair with expected-bc9e7bb guard, verify parent/tree/blobs/
+message and confirm applicable exact-SHA workflows queued/started, then stop.
+No Java runtime proof behavior, routes, provisional SQL, dictionary ownership,
+physical dictionary or unrelated tests/workflows are changed.
+
+**Remaining acceptance:** The existing physical dictionary is intentionally
+preserved. Although Full824 supplied authentic schema evidence, editing003 changes
+the migration source bundle; that old capture must not be relabeled as evidence
+for the repaired source. Use the next hosted migrated-schema artifact for the
+already registered bounded dictionary reconciliation. The API dictionary lane
+therefore remains an explicit follow-up obligation until that artifact update;
+do not describe this repair publication as full green acceptance. HAPI-778 stays
+PARTIAL/IN_PROGRESS; HAPI-590 remains separately PARTIAL/BLOCKED. Resume B3 only
+after prerequisite CI/artifact acceptance.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

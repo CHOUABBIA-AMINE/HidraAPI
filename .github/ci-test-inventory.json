@@ -52,8 +52,11 @@
         "everyFrameByteAndEveryMacByteTamperRejects",
         "frozenJavaSqlFrameHmacUuidUnicodeAndMicrosecondVectorAgree",
         "independentlyChangedRealExpectationCannotBorrowValidMac",
+        "inheritedApplicationDefaultsCannotGrantPrivateProofObjectsAndRemainUnchanged",
         "keyCasRotationRevocationAndHistoryCannotResetOrRetainOldKey",
         "metadataRequiresNativeFencesAndNeverDisclosesKey",
+        "publicCleanRebuildReusesOnlyValidatedCryptoNamespaceAndExtension",
+        "retainedCryptoNamespaceWithForeignAclOrObjectIsRejectedWithoutLaundering",
         "retainedKeyFenceStopsConcurrentAdministrationAndOldGenerationCannotRedeem",
         "rollbackAndPostVerifierFailureLeaveNoOrphanConsumptionOrReceipt",
         "separatedLoginsCannotReadKeysChangeStateOrCallPrivateVerifier",
@@ -67,7 +70,7 @@
       "lane": "postgres-integration",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/OrganizationAppointmentCommitProofPostgresIntegrationTest.java",
-      "source_sha256": "40ccece56a70774620c4c9c6b65687686ec743d605606f72bb819b324f29b213",
+      "source_sha256": "dac246fe683224c47e60a41b7fe3f87028fe4ba16562540dd2fdd89637504828",
       "supports": []
     },
     {
@@ -9024,4 +9027,5 @@
     "metric": "Surefire testsuite time seconds; scheduling weights, not job elapsed or a speedup claim"
   }
 }
+
 

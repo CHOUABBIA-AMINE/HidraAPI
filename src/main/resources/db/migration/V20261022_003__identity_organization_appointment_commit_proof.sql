@@ -1,5 +1,23 @@
 -- HAPI-778: private Identity commit-proof verifier. No key, login, grant or writer activation.
-CREATE SCHEMA hidra_identity_crypto;
+-- Flyway clean may rebuild public while retaining this extension-owned namespace.
+-- Reuse only the same migration owner's closed namespace; never launder foreign ACLs.
+DO $$
+DECLARE own oid := (SELECT oid FROM pg_catalog.pg_roles WHERE rolname=current_user);
+BEGIN
+    IF EXISTS (SELECT 1 FROM pg_catalog.pg_namespace WHERE nspname='hidra_identity_crypto') THEN
+        IF NOT EXISTS (SELECT 1 FROM pg_catalog.pg_namespace WHERE nspname='hidra_identity_crypto' AND nspowner=own)
+          OR EXISTS (SELECT 1 FROM pg_catalog.pg_namespace n,
+              LATERAL pg_catalog.aclexplode(coalesce(n.nspacl,pg_catalog.acldefault('n',n.nspowner))) a
+              WHERE n.nspname='hidra_identity_crypto' AND a.grantee<>own)
+          OR EXISTS (SELECT 1 FROM pg_catalog.pg_class WHERE relnamespace='hidra_identity_crypto'::regnamespace)
+          OR EXISTS (SELECT 1 FROM pg_catalog.pg_proc p WHERE p.pronamespace='hidra_identity_crypto'::regnamespace
+              AND NOT EXISTS (SELECT 1 FROM pg_catalog.pg_depend d JOIN pg_catalog.pg_extension e ON e.oid=d.refobjid
+                  WHERE d.classid='pg_catalog.pg_proc'::regclass AND d.objid=p.oid AND d.deptype='e' AND e.extname='pgcrypto'))
+          THEN RAISE EXCEPTION 'Unsafe retained Identity crypto namespace'; END IF;
+    ELSE
+        CREATE SCHEMA hidra_identity_crypto;
+    END IF;
+END $$;
 REVOKE ALL ON SCHEMA hidra_identity_crypto FROM PUBLIC;
 DO $$
 BEGIN
@@ -62,6 +80,21 @@ CREATE TABLE public.hidra_identity_org_commit_proof_use (
 );
 REVOKE ALL ON public.hidra_identity_org_commit_key_event,
     public.hidra_identity_org_commit_key_head, public.hidra_identity_org_commit_proof_use FROM PUBLIC;
+
+-- Application-wide default grants must not leak into these newly created private relations.
+-- Remove only inherited ACLs on this package's objects, without changing environment defaults.
+DO $$
+DECLARE target regclass; grantee record;
+BEGIN
+    FOREACH target IN ARRAY ARRAY['public.hidra_identity_org_commit_key_event'::regclass,
+        'public.hidra_identity_org_commit_key_head'::regclass,'public.hidra_identity_org_commit_proof_use'::regclass] LOOP
+        FOR grantee IN SELECT DISTINCT r.rolname FROM pg_catalog.pg_class c,
+            LATERAL pg_catalog.aclexplode(c.relacl) a JOIN pg_catalog.pg_roles r ON r.oid=a.grantee
+            WHERE c.oid=target AND a.grantee<>c.relowner LOOP
+            EXECUTE pg_catalog.format('REVOKE ALL PRIVILEGES ON TABLE %s FROM %I',target,grantee.rolname);
+        END LOOP;
+    END LOOP;
+END $$;
 
 CREATE FUNCTION public.hidra_identity_org_commit_immutable() RETURNS trigger
 LANGUAGE plpgsql SET search_path=pg_catalog AS $$
@@ -366,5 +399,20 @@ EXCEPTION WHEN OTHERS THEN
 END $$;
 REVOKE ALL ON FUNCTION public.hidra_identity_org_commit_verify_consume(bytea,bytea,jsonb) FROM PUBLIC;
 
-DO $$ BEGIN PERFORM public.hidra_identity_org_commit_catalog(); END $$;
+-- Likewise, a pre-existing default routine ACL cannot publish a private verifier/signing bridge.
+DO $$
+DECLARE target record; grantee record;
+BEGIN
+    FOR target IN SELECT p.oid,p.proowner FROM pg_catalog.pg_proc p
+       WHERE p.pronamespace='hidra_identity_crypto'::regnamespace
+          OR (p.pronamespace='public'::regnamespace AND p.proname LIKE 'hidra_identity_org_commit_%') LOOP
+        FOR grantee IN SELECT DISTINCT r.rolname FROM pg_catalog.pg_proc p,
+            LATERAL pg_catalog.aclexplode(p.proacl) a JOIN pg_catalog.pg_roles r ON r.oid=a.grantee
+            WHERE p.oid=target.oid AND a.grantee<>target.proowner LOOP
+            EXECUTE pg_catalog.format('REVOKE ALL PRIVILEGES ON FUNCTION %s FROM %I',target.oid::regprocedure,grantee.rolname);
+        END LOOP;
+    END LOOP;
+    PERFORM public.hidra_identity_org_commit_catalog();
+END $$;
+
 

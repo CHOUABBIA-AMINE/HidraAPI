@@ -7,14 +7,14 @@
  *
  * @Name        : ProtectedEmployeeAppointmentAdmissionCoordinator
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-21
+ * @UpdatedOn   : 2026-10-22
  *
  * @Type        : Class
  * @Layer       : Application
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.application.service
  *
- * @Description : Coordinates one-use descriptor closure and transaction-bound protected appointment read admission.
+ * @Description : Coordinates one-use descriptor closure and transaction-bound protected appointment owner admission.
  *
  */
 package dz.sh.hidra.modules.organization.application.service;
@@ -224,6 +224,146 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
         if (query instanceof EmployeeAppointmentQuery.ExactVersion exact) return exact.assignmentId();
         if (query instanceof EmployeeAppointmentQuery.History history) return history.assignmentId();
         return null;
+    }
+
+    /**
+     * Qualifies owners for a command, never a mutation permit or completed write.
+     * Party fences precede Organization; current selectability is consumed only
+     * after the storage owner has classified the exact authenticated request.
+     */
+    WriteAdmission acquireWrite(Prepared prepared, EmployeeAppointmentCommand command) {
+        WriteAdmission result = null;
+        try {
+            Request request = begin(prepared, Objects.requireNonNull(command));
+            var nativeAdmission = Objects.requireNonNull(identity.acquire(prepared.nativeIdentity, request));
+            result = new WriteAdmission(this, nativeAdmission, command, request);
+            TransactionSynchronizationManager.registerSynchronization(result);
+            // acquire takes Party relation fences, but does not require ACTIVE.
+            result.partyAdmission = Objects.requireNonNull(party.acquire(command.companyPartyId()));
+            var expected = new ProtectedEmployeeAppointmentRepositoryPort.DescriptorPreview(
+                    request.companyUnits(), request.employeeId(), assignmentSelector(command), false);
+            result.repositoryAdmission = Objects.requireNonNull(
+                    storage.acquire(nativeAdmission, List.of(result.partyAdmission), expected));
+            var locked = Objects.requireNonNull(storage.preview(command));
+            locked.requireBounded();
+            if (!expected.equals(locked) || !request.equals(requestFor(command, null, locked))) throw denied();
+            var sample = Objects.requireNonNull(identity.contribute(nativeAdmission));
+            if (!request.equals(sample.request())
+                    || sample.overallDecision()
+                        != OrganizationProtectedAppointmentAuthorizationContract.Decision.PERMIT) throw denied();
+            result.sample = sample;
+            result.referenceUse = Objects.requireNonNull(
+                    storage.referenceUse(result.repositoryAdmission, command, sample));
+            requireReferenceShape(result);
+            if (result.referenceUse == ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.CURRENT) {
+                var eligibility = Objects.requireNonNull(party.read(result.partyAdmission));
+                if (!command.companyPartyId().equals(eligibility.partyId())
+                        || eligibility.backendPid() != sample.backendPid()
+                        || eligibility.transactionId() != sample.transactionId()) throw denied();
+                result.eligibility = eligibility;
+            }
+            requireCurrentWrite(result);
+            return result;
+        } catch (RuntimeException failure) {
+            if (result != null) result.invalidate();
+            executor.rejectAdmission();
+            throw denied();
+        }
+    }
+
+    /** Revalidate all issuing owners; an enum, scalar sample or opaque handle is never authority. */
+    void requireCurrentWrite(WriteAdmission admission) {
+        try {
+            if (admission == null || admission.owner != this || !admission.ready()) throw denied();
+            identity.requireCurrent(admission.identityAdmission);
+            if (admission.referenceUse == ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.CURRENT)
+                party.requireCurrent(admission.partyAdmission);
+            storage.requireCurrent(admission.repositoryAdmission);
+            if (storage.referenceUse(admission.repositoryAdmission, admission.command, admission.sample)
+                    != admission.referenceUse) throw denied();
+            requireReferenceShape(admission);
+            if (!admission.ready()) throw denied();
+        } catch (RuntimeException failure) {
+            // A foreign coordinator/thread must still poison the original transaction.
+            if (admission != null) admission.invalidate();
+            executor.rejectAdmission();
+            throw denied();
+        }
+    }
+
+    private static void requireReferenceShape(WriteAdmission admission) {
+        var use = admission.referenceUse;
+        if (use == null) throw denied();
+        if (use == ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY) return;
+        boolean needsCurrent = admission.command instanceof EmployeeAppointmentCommand.Create
+                || admission.command instanceof EmployeeAppointmentCommand.Transfer
+                || admission.command instanceof EmployeeAppointmentCommand.Correct
+                    && admission.request.companyUnits().size() == 2;
+        if ((use == ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.CURRENT) != needsCurrent) throw denied();
+    }
+
+    private static String assignmentSelector(EmployeeAppointmentCommand command) {
+        if (command instanceof EmployeeAppointmentCommand.End end) return end.assignmentId();
+        if (command instanceof EmployeeAppointmentCommand.Transfer transfer) return transfer.assignmentId();
+        if (command instanceof EmployeeAppointmentCommand.Correct correct) return correct.assignmentId();
+        return null;
+    }
+
+    /**
+     * Private SQL-free lifetime veto. No payload, owner credentials or executor
+     * permit leaves this handle. Physical commit/final SQL guards remain required.
+     */
+    static final class WriteAdmission implements TransactionSynchronization {
+        private final ProtectedEmployeeAppointmentAdmissionCoordinator owner;
+        private final OrganizationProtectedAppointmentAuthorizationContract.Admission identityAdmission;
+        private final EmployeeAppointmentCommand command;
+        private final Request request;
+        private final Thread thread = Thread.currentThread();
+        private final List<ConnectionHolder> holders;
+        private volatile boolean active = true;
+        private OrganizationProtectedPartyEligibilityContract.Admission partyAdmission;
+        private ProtectedEmployeeAppointmentRepositoryPort.Admission repositoryAdmission;
+        private OrganizationProtectedAppointmentAuthorizationContract.Contribution sample;
+        private OrganizationProtectedPartyEligibilityContract.Contribution eligibility;
+        private ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse referenceUse;
+
+        private WriteAdmission(ProtectedEmployeeAppointmentAdmissionCoordinator owner,
+                OrganizationProtectedAppointmentAuthorizationContract.Admission identityAdmission,
+                EmployeeAppointmentCommand command, Request request) {
+            this.owner = owner;
+            this.identityAdmission = identityAdmission;
+            this.command = command;
+            this.request = request;
+            holders = TransactionSynchronizationManager.getResourceMap().values().stream()
+                    .filter(ConnectionHolder.class::isInstance).map(ConnectionHolder.class::cast).distinct().toList();
+        }
+
+        private boolean ready() {
+            return active && thread == Thread.currentThread()
+                    && sample != null && repositoryAdmission != null && partyAdmission != null && referenceUse != null
+                    && (referenceUse != ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.CURRENT
+                        || eligibility != null)
+                    && TransactionSynchronizationManager.isActualTransactionActive()
+                    && TransactionSynchronizationManager.isSynchronizationActive()
+                    && !TransactionSynchronizationManager.isCurrentTransactionReadOnly()
+                    && TransactionSynchronizationManager.getSynchronizations().contains(this)
+                    && TransactionSynchronizationManager.getResourceMap().values().containsAll(holders)
+                    && holders.stream().noneMatch(ConnectionHolder::isRollbackOnly);
+        }
+
+        private void invalidate() {
+            active = false;
+            holders.forEach(ConnectionHolder::setRollbackOnly);
+        }
+        @Override public void beforeCommit(boolean readOnly) {
+            if (readOnly || !ready()) {
+                invalidate();
+                throw denied();
+            }
+        }
+        @Override public void suspend() { invalidate(); }
+        @Override public void afterCompletion(int status) { active = false; }
+        @Override public String toString() { return "WriteAdmission[opaque appointment owners]"; }
     }
 
     private void invalidate(ReadAdmission admission) {

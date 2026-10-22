@@ -23938,6 +23938,119 @@ PARTIAL/BLOCKED. Expected-head publish from `20d67dee8946ea4551ec7b09ed5c3c2170e
 commit/parent/tree/paths, confirm applicable CI started, then STOP before
 another registered stage. Development-only synthetic acceptance; no deployment.
 
+### 2026-10-22 — HAPI-778 replay-aware write-owner qualification
+
+Owner Next continues the registered B3 protected-storage package from exact main
+`767bc2da3ec480eea0e9a35408c8cf38535f57e4`, parent
+`20d67dee8946ea4551ec7b09ed5c3c2170e083d2`, tree
+`d2c07bb7fdfb832266faf6c832a8c77733865b95`.
+[Full818](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39750967478),
+[Fast135](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39750967516)
+and [Docs508](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39750967488)
+all completed SUCCESS on that exact source. Full's unit/architecture, all five
+PostgreSQL sets, static, API/dictionary and aggregate jobs succeeded; the optional
+serial oracle was skipped. This records actual job conclusions, not a new raw
+report audit or complete appointment-workflow acceptance.
+
+**Exact B3 message:** `feat(organization): persist protected appointment lifecycle and history`.
+MODIFY only these five previously admitted paths; CREATE/DELETE none:
+
+- `src/main/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinator.java`
+- `src/main/java/dz/sh/hidra/modules/organization/application/port/out/ProtectedEmployeeAppointmentRepositoryPort.java`
+- `src/test/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinatorTest.java`
+- `.github/ci-test-inventory.json`
+- `doc/roadmap/TASKS_HPS-003.md`, append only this HAPI-778 evidence
+
+**Source-backed Party sequencing:** The unchanged genuine
+`JdbcOrganizationProtectedPartyEligibilityAdapter.acquire` obtains the Party
+relation fences and an issuer-bound transaction ticket without querying ACTIVE
+status. Its separate one-use `read` consumes current Party identity/generation/
+ACTIVE evidence. Thus write qualification can preserve Identity, Party,
+Organization relation-lock order while postponing new-reference selectability
+until after the exact scoped replay has been classified. Do not equate an
+unconsumed Party marker with verified eligibility. This source inspection is not
+new PostgreSQL execution or a change to Party's owner contract.
+
+**Implemented coordination:** One-use native preparation and bounded preview
+precede genuine Identity acquisition. Register a private write-lifetime veto,
+acquire Party's exact company ticket, then acquire Organization with the exact
+descriptor closure. Re-read and require identical bounded closure before
+consuming the single native contribution; request substitution, DENY and
+INDETERMINATE reject before classifying a receipt or reading Party eligibility.
+The coordinator never derives authority from caller-constructed scalars.
+
+The storage port gains a mandatory `referenceUse` operation on its opaque
+Admission, exact immutable command and original native contribution. Its
+implementation must authenticate both issuing owners, retained physical fences
+and the full frozen command/actor/request/result closure, inspecting an identical
+scoped immutable receipt before current-projection CAS. Only that owner-validated
+receipt can classify REPLAY. RETAINED is a fresh END or same-unit CORRECT keeping
+its source binding. CURRENT is a fresh CREATE, TRANSFER or moved CORRECT.
+Missing/conflicting evidence must throw; null is rejected. The enum is an
+internal observation, not an authorization ticket, digest match, receipt or
+permission. No default implementation silently permits an unimplemented check.
+
+CURRENT consumes the genuine Party ticket exactly once and requires the selected
+company and physical PID/XID to match the original native sample. Each boundary
+then rechecks actual Identity, required Party eligibility and Organization issuer
+tickets, and requires unchanged owner-validated reference classification.
+REPLAY/RETAINED do not demand current ACTIVE Party status and do not consume its
+eligibility read; the acquired Party relation fences still retain universal
+ordering. The future adapter must independently verify these physical fences
+and reject fabricated/stale tickets, not use the marker list as authority.
+This package does not implement the receipt lookup or assert that such a lookup
+has passed a genuine PostgreSQL/native test.
+
+Private-constructor write handles retain the issuing coordinator, immutable
+command/request/sample, original thread, registered synchronization and original
+JDBC holders. Replaced/suspended/completed/read-only transactions, lost holders,
+owner failures and changed classification permanently invalidate the handle.
+Foreign coordinator/thread rejection poisons the original holder, and its
+SQL-free beforeCommit veto rejects swallowed failures. No owner callback after
+invalidation can restore validity. The callback itself performs no owner query.
+These mechanics supplement, never replace, the remaining physical final clock/
+native guards, executor state machine and observed commit requirement.
+
+**Meaningful authored tests:** Preserve all21 existing JUnit method identities
+and add19, bringing this class to40. Cases cover ordered owner acquisition,
+single sampling, fresh CREATE/TRANSFER/moved CORRECT, retained END/same-unit
+CORRECT, replay of each command after Party retirement, missing owner tickets,
+changed/missing/overflowed closure, non-PERMIT/substituted samples, absent/
+conflicting/impossible classifications, wrong Party identity/PID/XID, unavailable
+eligibility, classification changes, issuer revocation, callback invalidation,
+cross-thread/foreign-coordinator poisoning, suspended/completed/replaced holders,
+read-only/reused preparation, opaque credentials and SQL-free commit veto.
+Mockito owner tickets and transaction callbacks are synthetic mechanics only;
+no mock is represented as actual native, PostgreSQL or physical rollback proof.
+The source SHA256 is
+`eb993e5c2a70a176ef34073a085526dd14507c9d3c2ce258f5e969583fde5b4a`.
+Only that inventory entry's cases, source hash and bounded dependency description
+change. All prior cases, other entries/metadata, unmeasured duration0, archive
+policy and five measured PostgreSQL partitions remain intact.
+
+**Validation and limitations:** All three changed Java files parsed with the
+installed Java17 compiler module (syntax only). All31 inventory-validator
+self-tests and all17 documentation-validator fixtures passed. These fixture
+checks do not claim a full-repository documentation validation. Exact source-case/hash, unchanged-other-entry and unchanged
+partition comparisons, canonical header and whitespace checks passed. No local
+Java21/Maven/JUnit/PostgreSQL execution is claimed or provisioned; hosted runtime
+acceptance remains pending. Prior read coordination and every migration byte,
+physical dictionary, OpenAPI, owner export, SQL allowlist, workflow and registry
+status are preserved.
+
+**Remaining registered work:** The coordinator remains unwired and exposes no
+payload or mutation permit. No JDBC adapter, storage receipt classifier, active
+policy/conflict/CAS writer, database-time final receipt/guard, application service
+or REST cutover is activated here. Those substantive storage/integration duties,
+genuine PostgreSQL/native concurrency/rollback/security proofs, actual generated
+artifacts and parent acceptance remain required in the existing B3 packages.
+HAPI-778 stays PARTIAL/IN_PROGRESS; HAPI-590 stays independently PARTIAL/BLOCKED.
+Development-only synthetic data; no deployment, release, SITE, calibration or OT.
+
+Publish only these five paths under the expected767bc2da guard, verify exact
+parent/tree/blobs/message and confirm applicable exact-SHA Full/Fast/Docs creation
+or startup. STOP without waiting for completion or advancing another stage.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

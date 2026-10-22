@@ -7,14 +7,14 @@
  *
  * @Name        : ProtectedEmployeeAppointmentAdmissionCoordinatorTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-21
+ * @UpdatedOn   : 2026-10-22
  *
  * @Type        : Class
  * @Layer       : Test
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.application.service
  *
- * @Description : Verifies synthetic protected appointment descriptor, owner-order and read-ticket rejection mechanics.
+ * @Description : Verifies synthetic protected appointment descriptor, owner-order and transaction-ticket rejection mechanics.
  *
  */
 package dz.sh.hidra.modules.organization.application.service;
@@ -408,6 +408,360 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
             var ticket = f.acquire();
             doAnswer(call -> { ticket.suspend(); return null; }).when(f.storage).requireCurrent(f.storageTicket);
             assertThrows(AccessDeniedException.class, () -> f.coordinator.requireCurrentRead(ticket));
+            assertThrows(AccessDeniedException.class, () -> ticket.beforeCommit(false));
+        }
+    }
+
+    private static EmployeeAppointmentCommand.End endCommand() {
+        return new EmployeeAppointmentCommand.End("req", "company", "assignment", 2, START, "reason");
+    }
+
+    private static EmployeeAppointmentCommand.Transfer transferCommand() {
+        return new EmployeeAppointmentCommand.Transfer("req", "company", "assignment", 2,
+                "zz-unit", "position", AssignmentType.PRIMARY, START, null, 1, 1, "reason");
+    }
+
+    private static EmployeeAppointmentCommand.Correct correctCommand(boolean moved) {
+        return new EmployeeAppointmentCommand.Correct("req", "company", "assignment", 2,
+                moved ? "zz-unit" : "unit", "position", AssignmentType.PRIMARY,
+                dz.sh.hidra.modules.organization.domain.value.AssignmentStatus.ACTIVE,
+                START, null, 1, 1, "reason");
+    }
+
+    /** All owner tickets are mocked; this fixture is not native/PostgreSQL acceptance. */
+    private static final class WriteFixture implements AutoCloseable {
+        final OrganizationProtectedAppointmentAuthorizationContract identity =
+                mock(OrganizationProtectedAppointmentAuthorizationContract.class);
+        final OrganizationProtectedPartyEligibilityContract party = mock(OrganizationProtectedPartyEligibilityContract.class);
+        final ProtectedEmployeeAppointmentRepositoryPort storage = mock(ProtectedEmployeeAppointmentRepositoryPort.class);
+        final ProtectedTransactionExecutor executor = mock(ProtectedTransactionExecutor.class);
+        final OrganizationProtectedAppointmentAuthorizationContract.Admission nativeTicket =
+                mock(OrganizationProtectedAppointmentAuthorizationContract.Admission.class);
+        final OrganizationProtectedPartyEligibilityContract.Admission partyTicket =
+                mock(OrganizationProtectedPartyEligibilityContract.Admission.class);
+        final ProtectedEmployeeAppointmentRepositoryPort.Admission storageTicket =
+                mock(ProtectedEmployeeAppointmentRepositoryPort.Admission.class);
+        final ProtectedEmployeeAppointmentAdmissionCoordinator coordinator =
+                new ProtectedEmployeeAppointmentAdmissionCoordinator(identity, party, storage, executor);
+        final ProtectedEmployeeAppointmentAdmissionCoordinator.Prepared prepared;
+        final EmployeeAppointmentCommand command;
+        final ProtectedEmployeeAppointmentRepositoryPort.DescriptorPreview descriptors;
+        final Request request;
+        final Contribution sample;
+        final Object resourceKey = new Object();
+        final ConnectionHolder holder = new ConnectionHolder(mock(java.sql.Connection.class));
+
+        WriteFixture() { this(create(), ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.CURRENT); }
+
+        WriteFixture(EmployeeAppointmentCommand command, ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse use) {
+            this.command = command;
+            boolean moved = command instanceof EmployeeAppointmentCommand.Transfer
+                    || command instanceof EmployeeAppointmentCommand.Correct c
+                        && c.correctedOrganizationUnitId().equals("zz-unit");
+            descriptors = new ProtectedEmployeeAppointmentRepositoryPort.DescriptorPreview(
+                    moved ? List.of(new CompanyUnit("company", "unit"), new CompanyUnit("company", "zz-unit"))
+                            : List.of(new CompanyUnit("company", "unit")),
+                    "employee", command instanceof EmployeeAppointmentCommand.Create ? null : "assignment", false);
+            request = ProtectedEmployeeAppointmentAdmissionCoordinator.requestFor(command, null, descriptors);
+            sample = permitted(request);
+            when(identity.prepare()).thenReturn(mock(OrganizationProtectedAppointmentAuthorizationContract.Prepared.class));
+            prepared = coordinator.prepare();
+            TransactionSynchronizationManager.setActualTransactionActive(true);
+            TransactionSynchronizationManager.setCurrentTransactionReadOnly(false);
+            TransactionSynchronizationManager.initSynchronization();
+            TransactionSynchronizationManager.bindResource(resourceKey, holder);
+            when(storage.preview(command)).thenReturn(descriptors);
+            when(identity.acquire(any(), eq(request))).thenReturn(nativeTicket);
+            when(party.acquire("company")).thenReturn(partyTicket);
+            when(storage.acquire(nativeTicket, List.of(partyTicket), descriptors)).thenReturn(storageTicket);
+            when(identity.contribute(nativeTicket)).thenReturn(sample);
+            when(storage.referenceUse(storageTicket, command, sample)).thenReturn(use);
+            when(party.read(partyTicket)).thenReturn(
+                    new OrganizationProtectedPartyEligibilityContract.Contribution("company", 9, 17, 23));
+        }
+
+        ProtectedEmployeeAppointmentAdmissionCoordinator.WriteAdmission acquire() {
+            return coordinator.acquireWrite(prepared, command);
+        }
+
+        @Override public void close() {
+            TransactionSynchronizationManager.unbindResourceIfPossible(resourceKey);
+            TransactionSynchronizationManager.clear();
+        }
+    }
+
+    @Test void writeLocksIdentityPartyOrganizationBeforeOneSampleAndEligibilityRead() {
+        try (var f = new WriteFixture()) {
+            f.acquire();
+            var order = inOrder(f.executor, f.storage, f.identity, f.party);
+            order.verify(f.executor).beginAdmission();
+            order.verify(f.storage).preview(f.command);
+            order.verify(f.identity).acquire(any(), eq(f.request));
+            order.verify(f.party).acquire("company");
+            order.verify(f.storage).acquire(f.nativeTicket, List.of(f.partyTicket), f.descriptors);
+            order.verify(f.storage).preview(f.command);
+            order.verify(f.identity).contribute(f.nativeTicket);
+            order.verify(f.storage).referenceUse(f.storageTicket, f.command, f.sample);
+            order.verify(f.party).read(f.partyTicket);
+            order.verify(f.identity).requireCurrent(f.nativeTicket);
+            order.verify(f.party).requireCurrent(f.partyTicket);
+            order.verify(f.storage).requireCurrent(f.storageTicket);
+            verify(f.identity, times(1)).contribute(f.nativeTicket);
+            verify(f.storage, never()).mutate(any(), any());
+        }
+    }
+
+    @Test void newCreateTransferAndMovedCorrectionConsumeCurrentPartyEligibility() {
+        for (var command : List.of(create(), transferCommand(), correctCommand(true))) {
+            try (var f = new WriteFixture(command, ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.CURRENT)) {
+                f.acquire();
+                verify(f.party).read(f.partyTicket);
+                verify(f.party).requireCurrent(f.partyTicket);
+                verify(f.storage, never()).mutate(any(), any());
+            }
+        }
+    }
+
+    @Test void retainedEndAndSameUnitCorrectionDoNotDemandCurrentPartyStatus() {
+        for (var command : List.of(endCommand(), correctCommand(false))) {
+            try (var f = new WriteFixture(command, ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.RETAINED)) {
+                doThrow(new IllegalStateException("retired company")).when(f.party).read(any());
+                f.acquire();
+                verify(f.party).acquire("company");
+                verify(f.party, never()).read(any());
+                verify(f.party, never()).requireCurrent(any());
+                verify(f.identity).requireCurrent(f.nativeTicket);
+            }
+        }
+    }
+
+    @Test void exactReplayOfEveryCommandRequiresFreshNativeAuthorityWithoutActiveParty() {
+        for (var command : List.of(create(), endCommand(), transferCommand(), correctCommand(true))) {
+            try (var f = new WriteFixture(command, ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY)) {
+                doThrow(new IllegalStateException("retired company")).when(f.party).read(any());
+                f.acquire();
+                verify(f.identity).acquire(any(), eq(f.request));
+                verify(f.identity).contribute(f.nativeTicket);
+                verify(f.identity).requireCurrent(f.nativeTicket);
+                verify(f.party, never()).read(any());
+                verify(f.party, never()).requireCurrent(any());
+                verify(f.storage, never()).mutate(any(), any());
+            }
+        }
+    }
+
+    @Test void invalidNativeWriteTicketStopsBeforePartyOrStorageAcquisition() {
+        try (var f = new WriteFixture()) {
+            when(f.identity.acquire(any(), any())).thenReturn(null);
+            assertThrows(AccessDeniedException.class, f::acquire);
+            verifyNoInteractions(f.party);
+            verify(f.storage, never()).acquire(any(), anyList(), any());
+            verify(f.executor).rejectAdmission();
+        }
+    }
+
+    @Test void missingPartyOrStorageTicketVetoesTheOriginalWriteTransaction() {
+        for (boolean absentParty : List.of(true, false)) {
+            try (var f = new WriteFixture()) {
+                if (absentParty) when(f.party.acquire(any())).thenReturn(null);
+                else when(f.storage.acquire(any(), anyList(), any())).thenReturn(null);
+                assertThrows(AccessDeniedException.class, f::acquire);
+                assertTrue(f.holder.isRollbackOnly());
+                for (var callback : TransactionSynchronizationManager.getSynchronizations())
+                    assertThrows(AccessDeniedException.class, () -> callback.beforeCommit(false));
+                verify(f.identity, never()).contribute(any());
+                verify(f.party, never()).read(any());
+            }
+        }
+    }
+
+    @Test void changedMissingOrOverflowedLockedWriteClosureCannotConsumeNativeSample() {
+        for (int variant = 0; variant < 3; variant++) {
+            try (var f = new WriteFixture()) {
+                var changed = variant == 0 ? preview("company", "other", "employee", null)
+                        : variant == 1 ? null : new ProtectedEmployeeAppointmentRepositoryPort.DescriptorPreview(
+                                f.descriptors.companyUnits(), "employee", null, true);
+                when(f.storage.preview(f.command)).thenReturn(f.descriptors, changed);
+                assertThrows(AccessDeniedException.class, f::acquire);
+                verify(f.identity, never()).contribute(any());
+                verify(f.storage, never()).referenceUse(any(), any(), any());
+                verify(f.party, never()).read(any());
+                assertTrue(f.holder.isRollbackOnly());
+            }
+        }
+    }
+
+    @Test void deniedUncertainOrSubstitutedWriteSampleCannotClassifyAReceipt() {
+        for (int variant = 0; variant < 3; variant++) {
+            try (var f = new WriteFixture()) {
+                var request = variant == 2 ? new Request(Action.END, f.request.companyUnits(), "employee") : f.request;
+                var decision = variant == 0 ? Decision.DENY : variant == 1 ? Decision.INDETERMINATE : Decision.PERMIT;
+                when(f.identity.contribute(f.nativeTicket)).thenReturn(new Contribution(request,
+                        request.requirements().stream().map(r -> new ResourceDecision(r, decision)).toList(),
+                        "binding", "session", "user", START, START.plusSeconds(1), 17, 23));
+                assertThrows(AccessDeniedException.class, f::acquire);
+                verify(f.storage, never()).referenceUse(any(), any(), any());
+                verify(f.party, never()).read(any());
+                assertTrue(f.holder.isRollbackOnly());
+            }
+        }
+    }
+
+    @Test void absentConflictingOrImpossibleReferenceUseCannotQualifyWrite() {
+        for (int variant = 0; variant < 4; variant++) {
+            var command = variant == 3 ? endCommand() : create();
+            var use = variant == 3 ? ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.CURRENT
+                    : ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.RETAINED;
+            try (var f = new WriteFixture(command, use)) {
+                if (variant == 0) when(f.storage.referenceUse(any(), any(), any())).thenReturn(null);
+                if (variant == 1) when(f.storage.referenceUse(any(), any(), any()))
+                        .thenThrow(new IllegalStateException("request key conflict"));
+                assertThrows(AccessDeniedException.class, f::acquire);
+                verify(f.party, never()).read(any());
+                assertTrue(f.holder.isRollbackOnly());
+            }
+        }
+    }
+
+    @Test void wrongPartyIdentityOrPhysicalCoordinatesCannotQualifyCurrentReference() {
+        for (int variant = 0; variant < 3; variant++) {
+            try (var f = new WriteFixture()) {
+                when(f.party.read(f.partyTicket)).thenReturn(new OrganizationProtectedPartyEligibilityContract.Contribution(
+                        variant == 0 ? "other" : "company", 9, variant == 1 ? 18 : 17, variant == 2 ? 24 : 23));
+                assertThrows(AccessDeniedException.class, f::acquire);
+                assertTrue(f.holder.isRollbackOnly());
+                verify(f.storage, never()).mutate(any(), any());
+            }
+        }
+    }
+
+    @Test void absentOrInactivePartyContributionPoisonsCurrentReferenceTransaction() {
+        for (boolean missing : List.of(true, false)) {
+            try (var f = new WriteFixture()) {
+                if (missing) when(f.party.read(f.partyTicket)).thenReturn(null);
+                else when(f.party.read(f.partyTicket)).thenThrow(new IllegalStateException("inactive"));
+                assertThrows(AccessDeniedException.class, f::acquire);
+                assertTrue(f.holder.isRollbackOnly());
+            }
+        }
+    }
+
+    @Test void changedWriteClassificationCannotTurnCurrentReferenceIntoReplay() {
+        try (var f = new WriteFixture()) {
+            var ticket = f.acquire();
+            when(f.storage.referenceUse(any(), any(), any()))
+                    .thenReturn(ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY);
+            assertThrows(AccessDeniedException.class, () -> f.coordinator.requireCurrentWrite(ticket));
+            assertTrue(f.holder.isRollbackOnly());
+            assertThrows(AccessDeniedException.class, () -> ticket.beforeCommit(false));
+        }
+    }
+
+    @Test void changedIdentityPartyOrRepositoryEvidencePermanentlyInvalidatesWrite() {
+        for (int variant = 0; variant < 3; variant++) {
+            try (var f = new WriteFixture()) {
+                var ticket = f.acquire();
+                if (variant == 0) doThrow(new IllegalStateException("revoked")).when(f.identity).requireCurrent(any());
+                if (variant == 1) doThrow(new IllegalStateException("generation")).when(f.party).requireCurrent(any());
+                if (variant == 2) doThrow(new IllegalStateException("lost fence")).when(f.storage).requireCurrent(any());
+                assertThrows(AccessDeniedException.class, () -> f.coordinator.requireCurrentWrite(ticket));
+                assertTrue(f.holder.isRollbackOnly());
+                clearInvocations(f.identity, f.party, f.storage);
+                assertThrows(AccessDeniedException.class, () -> f.coordinator.requireCurrentWrite(ticket));
+                verifyNoInteractions(f.identity, f.party, f.storage);
+            }
+        }
+    }
+
+    @Test void writeOwnerCallbackCannotResurrectAnInvalidatedTicket() {
+        try (var f = new WriteFixture()) {
+            var ticket = f.acquire();
+            doAnswer(call -> { ticket.suspend(); return null; }).when(f.storage).requireCurrent(any());
+            assertThrows(AccessDeniedException.class, () -> f.coordinator.requireCurrentWrite(ticket));
+            assertTrue(f.holder.isRollbackOnly());
+            assertThrows(AccessDeniedException.class, () -> ticket.beforeCommit(false));
+        }
+    }
+
+    @Test void foreignThreadWriteRecheckPoisonsOriginalHolderAndCommit() throws Exception {
+        try (var f = new WriteFixture()) {
+            var ticket = f.acquire();
+            var failure = new java.util.concurrent.atomic.AtomicReference<Throwable>();
+            var thread = new Thread(() -> {
+                try { f.coordinator.requireCurrentWrite(ticket); }
+                catch (Throwable rejected) { failure.set(rejected); }
+            });
+            thread.start();
+            thread.join(5000);
+            assertFalse(thread.isAlive());
+            assertInstanceOf(AccessDeniedException.class, failure.get());
+            assertTrue(f.holder.isRollbackOnly());
+            assertThrows(AccessDeniedException.class, () -> ticket.beforeCommit(false));
+        }
+    }
+
+    @Test void foreignCoordinatorWriteRejectionPoisonsTheIssuingTransaction() {
+        try (var f = new WriteFixture()) {
+            var ticket = f.acquire();
+            var other = new ProtectedEmployeeAppointmentAdmissionCoordinator(f.identity, f.party, f.storage, f.executor);
+            clearInvocations(f.identity, f.party, f.storage);
+            assertThrows(AccessDeniedException.class, () -> other.requireCurrentWrite(ticket));
+            verifyNoInteractions(f.identity, f.party, f.storage);
+            assertTrue(f.holder.isRollbackOnly());
+        }
+    }
+
+    @Test void suspendedCompletedOrReplacedTransactionCannotReuseWriteHandle() {
+        for (int variant = 0; variant < 4; variant++) {
+            try (var f = new WriteFixture()) {
+                var ticket = f.acquire();
+                if (variant == 0) ticket.suspend();
+                if (variant == 1) ticket.afterCompletion(TransactionSynchronization.STATUS_COMMITTED);
+                if (variant == 2) {
+                    TransactionSynchronizationManager.clearSynchronization();
+                    TransactionSynchronizationManager.initSynchronization();
+                }
+                if (variant == 3) {
+                    TransactionSynchronizationManager.unbindResource(f.resourceKey);
+                    TransactionSynchronizationManager.bindResource(f.resourceKey, new ConnectionHolder(mock(java.sql.Connection.class)));
+                }
+                clearInvocations(f.identity, f.party, f.storage);
+                assertThrows(AccessDeniedException.class, () -> f.coordinator.requireCurrentWrite(ticket));
+                verifyNoInteractions(f.identity, f.party, f.storage);
+                assertTrue(f.holder.isRollbackOnly());
+            }
+        }
+    }
+
+    @Test void readonlyOrReusedPreparationCannotStartWriteOwnerQualification() {
+        try (var f = new WriteFixture()) {
+            TransactionSynchronizationManager.setCurrentTransactionReadOnly(true);
+            assertThrows(AccessDeniedException.class, f::acquire);
+            verify(f.storage, never()).preview(any(EmployeeAppointmentCommand.class));
+            verifyNoInteractions(f.party);
+        }
+        try (var f = new WriteFixture()) {
+            f.acquire();
+            assertThrows(AccessDeniedException.class, f::acquire);
+            verify(f.identity, times(1)).acquire(any(), any());
+            verify(f.party, times(1)).acquire(any());
+        }
+    }
+
+    @Test void writeHandleIsOpaqueAndItsCommitVetoPerformsNoOwnerSql() {
+        var type = ProtectedEmployeeAppointmentAdmissionCoordinator.WriteAdmission.class;
+        assertEquals(0, type.getConstructors().length);
+        for (var constructor : type.getDeclaredConstructors())
+            assertTrue(java.lang.reflect.Modifier.isPrivate(constructor.getModifiers()));
+        for (var field : type.getDeclaredFields())
+            assertTrue(java.lang.reflect.Modifier.isPrivate(field.getModifiers()));
+        try (var f = new WriteFixture()) {
+            var ticket = f.acquire();
+            assertEquals("WriteAdmission[opaque appointment owners]", ticket.toString());
+            clearInvocations(f.identity, f.party, f.storage, f.executor);
+            ticket.beforeCommit(false);
+            verifyNoInteractions(f.identity, f.party, f.storage, f.executor);
+            f.holder.setRollbackOnly();
             assertThrows(AccessDeniedException.class, () -> ticket.beforeCommit(false));
         }
     }

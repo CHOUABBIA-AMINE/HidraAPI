@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedEmployeeAppointmentRepositoryPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-21
+ * @UpdatedOn   : 2026-10-22
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -41,6 +41,9 @@ public interface ProtectedEmployeeAppointmentRepositoryPort {
 
     /** Issued only by the actual protected storage adapter; caller implementations are rejected. */
     interface Admission { }
+
+    /** Storage observation only; only its live issuing Admission can establish this classification. */
+    enum ReferenceUse { CURRENT, RETAINED, REPLAY }
 
     /**
      * Selector-only, internal, bounded preview before native Identity admission.
@@ -82,10 +85,16 @@ public interface ProtectedEmployeeAppointmentRepositoryPort {
 
     /**
      * Acquires Organization's exact owner fences only after genuine Identity then
-     * Party fences. No implementation may accept a fabricated or stale ticket,
+     * Party fences. Party acquisition retains fences without consuming selectability;
+     * CURRENT writes consume that eligibility only after locked replay classification.
+     * No implementation may accept a fabricated or stale ticket,
      * cross-transaction holder, non-owning database principal or incomplete set
      * of company/unit descriptors. Recheck Party only for fresh new references;
-     * preserved historical pins remain historical evidence.
+     * preserved historical pins remain historical evidence. For writes, acquire
+     * may retain the not-yet-consumed Party ticket to preserve relation-lock order,
+     * but that marker alone may never establish eligibility. Validate physical
+     * Party fences independently; CURRENT reference use additionally requires the
+     * genuine Party read/current checks before mutate or any protected result.
      */
     Admission acquire(
             OrganizationProtectedAppointmentAuthorizationContract.Admission identityAdmission,
@@ -94,6 +103,21 @@ public interface ProtectedEmployeeAppointmentRepositoryPort {
 
     /** Recheck all issuer/physical/owner evidence and fail closed before any row is exposed. */
     void requireCurrent(Admission admission);
+
+    /**
+     * Under retained owner fences, authenticate this storage admission and its
+     * genuine native issuer, match the single contribution and exact command,
+     * and classify the scoped request BEFORE current projection CAS. REPLAY
+     * requires an identical immutable receipt for the sampled actor, command and
+     * complete result descriptors; missing/conflicting receipts are never replay.
+     * RETAINED is only a new END or same-unit CORRECT retaining the source pin.
+     * CURRENT means a fresh CREATE, TRANSFER or moved CORRECT. Repeated calls
+     * must revalidate the same frozen classification, not silently reclassify it.
+     * A scalar enum or caller-constructed contribution alone conveys no authority.
+     * No mutation, receipt creation or protected result may be returned here.
+     */
+    ReferenceUse referenceUse(Admission admission, EmployeeAppointmentCommand command,
+            OrganizationProtectedAppointmentAuthorizationContract.Contribution contribution);
 
     /**
      * One guarded atomic lifecycle operation under the original request key,

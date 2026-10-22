@@ -37,6 +37,7 @@ import dz.sh.hidra.modules.organization.infrastructure.persistence.adapter.JdbcP
 import java.time.Instant;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.security.access.AccessDeniedException;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeAll;
@@ -178,8 +179,12 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
     }
 
     private static void insertProjection(Connection c, Projection f, UUID event) throws SQLException {
-        execute(c, "INSERT INTO public.hidra_org_employee_assignment(id,employee_id,organization_unit_id,position_id,assignment_type,valid_from,status,created_at,updated_at,appointment_version,binding_id,binding_revision,policy_id,policy_revision,last_event_id) VALUES (?,?,?,?,'PRIMARY',transaction_timestamp()-interval '1 day','ACTIVE',transaction_timestamp(),transaction_timestamp(),1,?,1,?,1,?::uuid)",
-                f.id(), f.employee(), f.unit(), f.position(), f.binding(), f.policy(), event);
+        insertProjection(c, f, event, 1);
+    }
+
+    private static void insertProjection(Connection c, Projection f, UUID event, long bindingRevision) throws SQLException {
+        execute(c, "INSERT INTO public.hidra_org_employee_assignment(id,employee_id,organization_unit_id,position_id,assignment_type,valid_from,status,created_at,updated_at,appointment_version,binding_id,binding_revision,policy_id,policy_revision,last_event_id) VALUES (?,?,?,?,'PRIMARY',transaction_timestamp()-interval '1 day','ACTIVE',transaction_timestamp(),transaction_timestamp(),1,?,?,?,1,?::uuid)",
+                f.id(), f.employee(), f.unit(), f.position(), f.binding(), bindingRevision, f.policy(), event);
     }
 
     private static String snapshot(Connection c, String id) throws SQLException {
@@ -235,8 +240,12 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
 
     /** Owner-authored structural fixture only, never a native authorization proof. */
     private static UUID completeCreate(Connection c, Projection f) throws SQLException {
+        return completeCreate(c, f, 1);
+    }
+
+    private static UUID completeCreate(Connection c, Projection f, long bindingRevision) throws SQLException {
         UUID event = UUID.randomUUID();
-        insertProjection(c, f, event);
+        insertProjection(c, f, event, bindingRevision);
         insertEvent(c, f, event, "CREATE", null, payload(c, f, "CREATE", "null", "null"), false);
         insertReceipt(c, event);
         execute(c, "SET CONSTRAINTS ALL IMMEDIATE");
@@ -949,18 +958,266 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
                 retainedProjection.company(), retainedProjection.id(), 2);
         assertEquals("Protected appointment admission unavailable",
                 assertThrows(AccessDeniedException.class, () -> adapter.preview(wrongVersion)).getMessage());
-        // Position and policy previews intentionally carry only caller selectors.
-        var position = adapter.preview(
-                dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History
-                        .position("requested-company", "requested-unit", "requested-position", 20, null));
-        assertEquals(List.of(new CompanyUnit("requested-company", "requested-unit")),
-                position.companyUnits());
-        assertNull(position.employeeId());
+        // Empty/unavailable position history now fails uniformly; policy is still selector-only.
+        assertEquals("Protected appointment admission unavailable",
+                assertThrows(AccessDeniedException.class, () -> adapter.preview(
+                        dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History
+                                .position("requested-company", "requested-unit", "requested-position", 20, null)))
+                        .getMessage());
         var policy = adapter.preview(
                 new dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.Policy(
                         "requested-company", "requested-unit"));
         assertEquals(List.of(new CompanyUnit("requested-company", "requested-unit")),
                 policy.companyUnits());
         assertNull(policy.assignmentId());
+    }
+
+    private Projection historicalDestination(Projection source) throws Exception {
+        var destination = new Projection("assignment-" + UUID.randomUUID(), source.company(), unit(),
+                source.employee(), position(), "binding-" + UUID.randomUUID(), source.policy());
+        try (var c = login(CONFIG)) {
+            binding(c, destination.binding(), destination.unit(), destination.company(), 0);
+            c.commit();
+        }
+        return destination;
+    }
+
+    private static JdbcProtectedEmployeeAppointmentRepositoryAdapter previewOn(Connection c) {
+        return new JdbcProtectedEmployeeAppointmentRepositoryAdapter(
+                new JdbcTemplate(new SingleConnectionDataSource(c, true)));
+    }
+
+    /** Real structural ledger fixture; always rolled back, never a native writer proof. */
+    private static Proposal historicalMove(Connection c, Projection source, Projection destination,
+                                           String operation) throws SQLException {
+        completeCreate(c, source);
+        String before = snapshot(c, source.id());
+        UUID event = UUID.randomUUID();
+        String successorId = null, successor = "null";
+        Projection after = source;
+        if (operation.equals("TRANSFER")) {
+            execute(c, "UPDATE public.hidra_org_employee_assignment SET appointment_version=2,last_event_id=?::uuid,valid_to=transaction_timestamp(),status='ENDED' WHERE id=?",
+                    event, source.id());
+            successorId = destination.id();
+            execute(c, "INSERT INTO public.hidra_org_employee_assignment(id,employee_id,organization_unit_id,position_id,assignment_type,valid_from,status,created_at,updated_at,appointment_version,binding_id,binding_revision,policy_id,policy_revision,last_event_id) SELECT ?::varchar,employee_id,?::varchar,?::varchar,assignment_type,valid_to,'ACTIVE',updated_at,updated_at,1,?::varchar,1,policy_id,policy_revision,last_event_id FROM public.hidra_org_employee_assignment WHERE id=?",
+                    successorId, destination.unit(), destination.position(), destination.binding(), source.id());
+            successor = snapshot(c, successorId);
+        } else {
+            execute(c, "UPDATE public.hidra_org_employee_assignment SET appointment_version=2,last_event_id=?::uuid,organization_unit_id=?,position_id=?,binding_id=? WHERE id=?",
+                    event, destination.unit(), destination.position(), destination.binding(), source.id());
+            after = new Projection(source.id(), source.company(), destination.unit(), source.employee(),
+                    destination.position(), destination.binding(), source.policy());
+        }
+        String body = payload(c, after, operation, before, successor);
+        insertEvent(c, source, event, operation, successorId, body, false);
+        insertReceipt(c, event);
+        execute(c, "SET CONSTRAINTS ALL IMMEDIATE");
+        execute(c, "SET CONSTRAINTS ALL DEFERRED");
+        return new Proposal(event, successorId, body);
+    }
+
+    private static List<CompanyUnit> historicalPairs(Projection first, Projection second) {
+        return java.util.stream.Stream.of(new CompanyUnit(first.company(), first.unit()),
+                new CompanyUnit(second.company(), second.unit()))
+                .distinct().sorted(java.util.Comparator.comparing(CompanyUnit::companyPartyId)
+                        .thenComparing(CompanyUnit::organizationUnitId)).toList();
+    }
+
+    @Test void jdbcPositionHistoryClosesAllPinnedCompaniesWithoutEmployeeDisclosure() throws Exception {
+        var original = projection();
+        var other = projection();
+        try (var config = login(CONFIG)) {
+            binding(config, original.binding(), original.unit(), other.company(), 1);
+            config.commit();
+        }
+        var laterOccupant = new Projection("assignment-" + UUID.randomUUID(), other.company(),
+                original.unit(), other.employee(), original.position(), original.binding(), other.policy());
+        try (var c = projectionTransaction()) {
+            completeCreate(c, original);
+            completeCreate(c, laterOccupant, 2);
+            var adapter = previewOn(c);
+            var history = dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History
+                    .position(original.company(), original.unit(), original.position(), 1, "opaque-page");
+            var owners = adapter.preview(history);
+            assertEquals(historicalPairs(original, laterOccupant), owners.companyUnits());
+            assertNull(owners.employeeId());
+            assertNull(owners.assignmentId());
+            var request = new dz.sh.hidra.modules.identity.application.contract.organization
+                    .OrganizationProtectedAppointmentAuthorizationContract.Request(
+                    dz.sh.hidra.modules.identity.application.contract.organization
+                            .OrganizationProtectedAppointmentAuthorizationContract.Action.READ_HISTORY,
+                    owners.companyUnits(), null);
+            assertEquals(3, request.requirements().size());
+            assertTrue(request.requirements().stream().noneMatch(r -> r.kind()
+                    == dz.sh.hidra.modules.identity.application.contract.organization
+                            .OrganizationProtectedAppointmentAuthorizationContract.ResourceKind.EMPLOYEE));
+            assertEquals(owners, adapter.preview(
+                    dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History
+                            .position(other.company(), original.unit(), original.position(), 100, null)));
+            assertEquals("Protected appointment admission unavailable",
+                    assertThrows(AccessDeniedException.class, () -> adapter.preview(
+                            dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History
+                                    .position("foreign-company", original.unit(), original.position(), 20, null)))
+                            .getMessage());
+            c.rollback();
+        }
+    }
+
+    @Test void jdbcTransferHistoryIncludesCounterpartUnitsFromEveryReturnedEventSlot() throws Exception {
+        var source = projection();
+        var destination = historicalDestination(source);
+        try (var c = projectionTransaction()) {
+            var event = historicalMove(c, source, destination, "TRANSFER");
+            var adapter = previewOn(c);
+            var expected = historicalPairs(source, destination);
+            for (String assignment : List.of(source.id(), event.successorId())) {
+                var owners = adapter.preview(
+                        dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History
+                                .assignment(source.company(), assignment, 1, "opaque-page"));
+                assertEquals(expected, owners.companyUnits());
+                assertEquals(source.employee(), owners.employeeId());
+                assertEquals(assignment, owners.assignmentId());
+            }
+            assertEquals(expected, adapter.preview(
+                    dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History
+                            .employee(source.company(), source.employee(), 100, null)).companyUnits());
+            for (var selected : List.of(source, destination)) {
+                var owners = adapter.preview(
+                        dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History
+                                .position(source.company(), selected.unit(), selected.position(), 1, null));
+                assertEquals(expected, owners.companyUnits());
+                assertNull(owners.employeeId());
+                assertNull(owners.assignmentId());
+            }
+            c.rollback();
+        }
+    }
+
+    @Test void jdbcCorrectionHistoryFindsThePriorPositionAndRetainsBothOwnerPairs() throws Exception {
+        var source = projection();
+        var destination = historicalDestination(source);
+        try (var c = projectionTransaction()) {
+            historicalMove(c, source, destination, "CORRECT");
+            var adapter = previewOn(c);
+            for (var selected : List.of(source, destination)) {
+                var owners = adapter.preview(
+                        dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History
+                                .position(source.company(), selected.unit(), selected.position(), 1, null));
+                assertEquals(historicalPairs(source, destination), owners.companyUnits());
+                assertNull(owners.employeeId());
+            }
+            assertEquals(historicalPairs(source, destination), adapter.preview(
+                    dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History
+                            .assignment(source.company(), source.id(), 100, null)).companyUnits());
+            c.rollback();
+        }
+    }
+
+    @Test void jdbcExactVersionKeepsOnlyItsPinAfterValidatingTheCompleteEvent() throws Exception {
+        var source = projection();
+        var destination = historicalDestination(source);
+        try (var c = projectionTransaction()) {
+            historicalMove(c, source, destination, "TRANSFER");
+            var adapter = previewOn(c);
+            var ending = adapter.preview(
+                    new dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.ExactVersion(
+                            source.company(), source.id(), 2));
+            assertEquals(List.of(new CompanyUnit(source.company(), source.unit())), ending.companyUnits());
+            assertEquals(source.employee(), ending.employeeId());
+            var successor = adapter.preview(
+                    new dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.ExactVersion(
+                            source.company(), destination.id(), 1));
+            assertEquals(List.of(new CompanyUnit(destination.company(), destination.unit())),
+                    successor.companyUnits());
+            assertEquals(source.employee(), successor.employeeId());
+            c.rollback();
+        }
+    }
+
+    @Test void jdbcHistoryRejectsAnInvalidEventInsteadOfDroppingItsSnapshot() throws Exception {
+        var first = projection();
+        var second = new Projection("assignment-" + UUID.randomUUID(), first.company(), first.unit(),
+                first.employee(), first.position(), first.binding(), first.policy());
+        try (var c = projectionTransaction()) {
+            completeCreate(c, first);
+            UUID event = completeCreate(c, second);
+            var adapter = previewOn(c);
+            var query = dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History
+                    .employee(first.company(), first.employee(), 20, null);
+            assertDoesNotThrow(() -> adapter.preview(query));
+            // Administrator fault injection only, rolled back with the whole fixture.
+            // Keep another valid event so an INNER JOIN omission would falsely succeed.
+            execute(c, "ALTER TABLE public.hidra_org_appointment_event DISABLE TRIGGER USER");
+            for (String invalid : List.of(
+                    "jsonb_set(p,'{after,assignment,binding_revision}','999999'::jsonb)",
+                    "jsonb_set(p,'{after,assignment,employee_id}',to_jsonb('foreign-employee'::text))",
+                    "jsonb_set(p,'{after,binding,recorded_at}',to_jsonb('1900-01-01T00:00:00Z'::text))",
+                    "jsonb_set(p,'{after}','null'::jsonb)")) {
+                var savepoint = c.setSavepoint();
+                execute(c, "UPDATE public.hidra_org_appointment_event e SET canonical_payload=convert_to(("
+                        + invalid + ")::text,'UTF8') FROM (SELECT convert_from(canonical_payload,'UTF8')::jsonb p FROM public.hidra_org_appointment_event WHERE event_id=?::uuid) v WHERE e.event_id=?::uuid",
+                        event, event);
+                assertEquals("Protected appointment admission unavailable",
+                        assertThrows(AccessDeniedException.class, () -> adapter.preview(query)).getMessage());
+                c.rollback(savepoint);
+                c.releaseSavepoint(savepoint);
+            }
+            c.rollback();
+        }
+        assertEquals(0, count("SELECT count(*) FROM public.hidra_org_employee_assignment WHERE id IN (?,?)",
+                first.id(), second.id()));
+    }
+
+    @Test void jdbcHistoryRejectsEventOverflowRegardlessOfPageLimit() throws Exception {
+        var fixture = projection();
+        try (var c = projectionTransaction()) {
+            execute(c, """
+                    INSERT INTO public.hidra_org_employee_assignment
+                        (id,employee_id,organization_unit_id,position_id,assignment_type,valid_from,status,
+                         created_at,updated_at,appointment_version,binding_id,binding_revision,
+                         policy_id,policy_revision,last_event_id)
+                    SELECT 'history-bound-'||g,?::varchar,?::varchar,?::varchar,'PRIMARY',
+                           transaction_timestamp()-interval '1 day','ACTIVE',transaction_timestamp(),
+                           transaction_timestamp(),1,?::varchar,1,?::varchar,1,gen_random_uuid()
+                      FROM generate_series(1,1025) g
+                    """, fixture.employee(), fixture.unit(), fixture.position(), fixture.binding(), fixture.policy());
+            execute(c, """
+                    INSERT INTO public.hidra_org_appointment_event
+                        (event_id,operation,assignment_id,employee_id,company_party_id,policy_id,policy_revision,
+                         canonical_payload,command_sha256,actor_binding_id,actor_session_id,actor_user_id,
+                         sampled_at,valid_until,backend_pid,transaction_id)
+                    SELECT a.last_event_id,'CREATE',a.id,a.employee_id,?::varchar,a.policy_id,1,
+                           convert_to(p.body::text,'UTF8'),encode(sha256(convert_to((p.body->'command')::text,'UTF8')),'hex'),
+                           gen_random_uuid(),gen_random_uuid(),'synthetic-actor',transaction_timestamp(),
+                           transaction_timestamp()+interval '1 hour',pg_backend_pid(),txid_current()
+                      FROM public.hidra_org_employee_assignment a
+                     CROSS JOIN LATERAL (SELECT jsonb_build_object(
+                         'command',jsonb_build_object('kind','CREATE','companyPartyId',?::text,'requestId',a.id,
+                             'employeeId',a.employee_id,'organizationUnitId',a.organization_unit_id,
+                             'positionId',a.position_id,'assignmentType',a.assignment_type,
+                             'validFrom',a.valid_from,'validTo',a.valid_to,
+                             'expectedBindingRevision',a.binding_revision,'expectedPolicyRevision',a.policy_revision),
+                         'before',NULL,'after',public.hidra_org_appointment_snapshot(a),'successor',NULL) body) p
+                     WHERE a.employee_id=?
+                    """, fixture.company(), fixture.company(), fixture.employee());
+            execute(c, """
+                    INSERT INTO public.hidra_org_appointment_receipt
+                        (event_id,actor_user_id,scope_key,request_id,command_sha256,canonical_result,
+                         guarded_at,backend_pid,transaction_id)
+                    SELECT event_id,actor_user_id,repeat('a',64),
+                           convert_from(canonical_payload,'UTF8')::jsonb->'command'->>'requestId',
+                           command_sha256,canonical_payload,sampled_at,backend_pid,transaction_id
+                      FROM public.hidra_org_appointment_event WHERE employee_id=?
+                    """, fixture.employee());
+            execute(c, "SET CONSTRAINTS ALL IMMEDIATE");
+            var adapter = previewOn(c);
+            assertEquals("Protected appointment admission unavailable",
+                    assertThrows(AccessDeniedException.class, () -> adapter.preview(
+                            dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History
+                                    .employee(fixture.company(), fixture.employee(), 1, null))).getMessage());
+            c.rollback();
+        }
+        assertEquals(0, count("SELECT count(*) FROM public.hidra_org_appointment_event WHERE employee_id=?",
+                fixture.employee()));
     }
 }

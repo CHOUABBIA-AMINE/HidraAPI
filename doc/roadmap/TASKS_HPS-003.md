@@ -24932,6 +24932,103 @@ A hard 1024-event discovery bound and 100 distinct owner-pair bound reject rathe
 
 **Remaining registered stage:** Native/Party/Organization fence-issued admission and rechecks, complete protected historical descriptor closure, policy/conflict/CAS/replay classification, guarded JDBC DML, same-XID Identity commit proof and immutable receipt, legacy/REST atomic cutover, source-linked authorization and concurrency proof, and final parent acceptance remain unfinished. Publish with expected-head guard, verify exact parent/tree/four paths and applicable Full/Fast/Docs startup, then STOP.
 
+
+### 2026-10-22 — HAPI-778 B3 complete historical descriptor closure
+
+**Selected parent/message:** `feat(organization): persist protected appointment lifecycle and history`.
+Owner Next continues the registered B3 repository implementation from main
+62ba1b6e02b7fbb4fcd7ef1628755d291ecc8d0d, parent
+d62cb8290f2450dbb7b7e88e93b578efd83ae4aa, tree
+6cb3f5d3d7f308a032df49c832cadf47d92b0ffc.
+[Full830](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39812958246),
+[Fast143](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39812958648)
+and [Docs520](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39812958101)
+are SUCCESS. Current AGENTS, roadmap, index, reconciliation, full B3 registration,
+owner contracts, result/query shapes, actual immutable storage SQL and latest
+phase evidence were recovered before mutation. Older pack/checkpoint pointers
+do not override this current registered work.
+
+**Bounded implementation — four MODIFY paths, no CREATE/DELETE:**
+
+- src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JdbcProtectedEmployeeAppointmentRepositoryAdapter.java
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java
+- .github/ci-test-inventory.json
+- this HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+This closes the historical descriptor discovery gap from the prior slice within
+the admitted B3 envelope. Position queries now select actual immutable events
+where ANY before/after/successor matches the requested exact unit and position.
+Assignment, employee and position HISTORY then accumulate every owner pair of
+all snapshots in those selected events, including a transfer's other unit or a
+correction's previous position. This is necessary because the already admitted
+history result shape can contain the complete event. A source assignment filter
+must not silently omit successor ownership that its result would disclose.
+Exact-version queries still select only the requested version's pin after
+validating the selected events. History closure ignores page limit/cursor so a
+one-row page cannot become a scope-exclusion mechanism.
+
+Position discovery supports multiple occupants and historical company revisions
+of the same unit but returns neither an employee selector nor assignment selector.
+It requires the requested company/unit pair to occur in the discovered closure;
+an unrelated company is insufficient even if it occurs on another event unit.
+No current binding head or employee directory is consulted. Empty/unavailable
+position history now fails with the same uniform admission error as other
+unavailable histories, superseding its prior selector-only preview behavior.
+POLICY remains selector-only; mutation preview behavior is unchanged.
+
+All observed required snapshot slots, their event employee/assignment linkage,
+positive version, full immutable binding JSON and matching owned policy revision
+are checked. LEFT JOIN diagnostics preserve invalid/missing revision rows rather
+than hiding them; any invalid snapshot/event shape anywhere in the sampled set
+rejects the whole preview. The fixed1024-event and100-owner-pair bounds remain;
+overflow rejects without truncation. Queries have fixed SQL predicates and
+bound selector parameters. No lock, write, principal switch, permission decision,
+public history page, counter, cursor or API result is produced by discovery.
+
+**Six real PostgreSQL regression additions:** The existing43 cases are retained
+and the class now has49 actual @Test methods. New cases cover multiple employee
+occupants and historical companies after an actual binding-head advance without
+an employee requirement; transfer source/successor/employee/position closure on
+both units; moved-correction prior/destination positions; exact source/successor
+version pins; incomplete/foreign/tampered snapshots remaining visible to failure
+detection beside another valid event; and1025 actual events rejecting despite
+page limit1. Fixtures use the actual migrated schema, explicit configuration
+principal, snapshot/typed-command/deferred integrity functions and matching
+structural receipts. New appointment rows/events are rolled back after checks.
+The administrator fault-injection case disables event triggers only inside its
+disposable rolled-back transaction; it is not an authorized runtime mutation or
+a claim that the ordinary login can tamper. These tests prove discovery/structural
+behavior when executed, not native admission or guarded commit authority.
+Only this class's case list and source hash change in the inventory; all other
+entries, original timing weights, archive policy and seven partitions remain.
+
+**Completed local checks:** Java17 compiler-API parsing accepts both changed
+Java sources (syntax only, no type analysis/runtime). Canonical test inventory
+validation passes353 fast/354 unit-architecture/454 active oracle classes,
+four historical classes, and seven PostgreSQL partitions12/15/13/14/16/15/15.
+All32 inventory-classifier self-tests pass. Docs validates128 documents/
+8380 relative links/24 modules/921 tasks/25 phases before this evidence append.
+Offline OpenAPI validates257 paths/279 operations/267 schemas; whitespace checks
+pass. Full Java21/Maven/JUnit/PostgreSQL execution remains hosted; no local
+runtime result, native authority proof or accepted parent capability is claimed.
+All165 migration bytes, physical dictionary, API/OpenAPI, Identity/Party source,
+executor admission/SQL hashes, route wiring and frozen task statuses are unchanged.
+
+**Remaining registered B3 work:** implement the private real repository admission
+issuer and owner/physical/catalog fences; repeat complete closure under retained
+locks; finish policy/conflict/CAS/replay classification and bounded history pages;
+perform guarded DML plus final same-XID Identity proof/immutable receipt; wire
+the atomic application/legacy/REST path and execute its native, role-separated,
+concurrency and rollback acceptance. This discovery class remains non-bean and
+does not implement the repository port. No controller may use preview results
+as authority. HAPI-778 stays PARTIAL/IN_PROGRESS and HAPI-590 separately
+PARTIAL/BLOCKED. The next implementation stays in the existing B3 envelope,
+not a new generic readiness review.
+
+**Publication/stop:** publish only these four paths with the registered message
+and expected-62ba1b6 guard; verify parent/tree/message/raw blobs/scope, confirm
+applicable exact-SHA Full/Fast/Docs created/queued/started, then STOP for feedback.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

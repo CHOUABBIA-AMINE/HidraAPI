@@ -26,8 +26,12 @@ def fixture(root, postgres_shards=2):
         source(root, 'ThirdDatabaseTest', 'import org.testcontainers.containers.PostgreSQLContainer;\nclass ThirdDatabaseTest {}\n')
     if postgres_shards >= 4:
         source(root, 'FourthDatabaseTest', 'import org.testcontainers.containers.PostgreSQLContainer;\nclass FourthDatabaseTest {}\n')
-    if postgres_shards == 5:
+    if postgres_shards >= 5:
         source(root, 'FifthDatabaseTest', 'import org.testcontainers.containers.PostgreSQLContainer;\nclass FifthDatabaseTest {}\n')
+    if postgres_shards >= 6:
+        source(root, 'SixthDatabaseTest', 'import org.testcontainers.containers.PostgreSQLContainer;\nclass SixthDatabaseTest {}\n')
+    if postgres_shards >= 7:
+        source(root, 'SeventhDatabaseTest', 'import org.testcontainers.containers.PostgreSQLContainer;\nclass SeventhDatabaseTest {}\n')
     classes = []
     for name, item in ci.discover(root).items():
         unit = name.endswith('UnitTest')
@@ -151,6 +155,18 @@ class InventoryTest(unittest.TestCase):
         self.assertEqual(len(set(names)), 5)
         self.assertEqual(set(names + lanes['unit-architecture']), set(lanes['oracle']))
         self.assertTrue(all(lanes[lane] for lane in ci.postgres_lanes(manifest)))
+
+    def test_seven_shards_cover_each_class_once(self):
+        manifest = fixture(self.root, postgres_shards=7)
+        ci.validate(self.root, manifest)
+        lanes = ci.partitions(manifest)
+        names = [name for lane in ci.postgres_lanes(manifest) for name in lanes[lane]]
+        self.assertEqual(len(ci.postgres_lanes(manifest)), 7)
+        self.assertEqual(len(names), 7)
+        self.assertEqual(len(set(names)), 7)
+        self.assertEqual(set(names + lanes['unit-architecture']), set(lanes['oracle']))
+        self.assertTrue(all(lanes[lane] for lane in ci.postgres_lanes(manifest)))
+        self.assertEqual(lanes, ci.partitions(copy.deepcopy(manifest)))
 
     def test_unreviewed_or_empty_shard_count_denies(self):
         for count in (0, 1, 6, True, '3', 3, 4, 5):

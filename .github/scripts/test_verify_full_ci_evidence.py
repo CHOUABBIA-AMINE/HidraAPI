@@ -67,7 +67,7 @@ class FullEvidenceTest(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name) / 'source'
         self.root.mkdir()
-        self.manifest = fixture(self.root, postgres_shards=5)
+        self.manifest = fixture(self.root, postgres_shards=7)
         (self.root / 'pom.xml').write_text('<project/>')
         script = self.root / '.github/scripts/verify_ci_test_inventory.py'
         script.parent.mkdir(parents=True)
@@ -86,7 +86,7 @@ class FullEvidenceTest(unittest.TestCase):
         for lane in full.REQUIRED_LANES:
             lane_root = self.directory / lane
             lane_root.mkdir()
-            job = {'oracle': 'verify', 'postgres-0': 'postgres-integration', 'postgres-1': 'postgres-integration', 'postgres-2': 'postgres-integration', 'postgres-3': 'postgres-integration', 'postgres-4': 'postgres-integration'}.get(lane, lane)
+            job = {'oracle': 'verify', 'postgres-0': 'postgres-integration', 'postgres-1': 'postgres-integration', 'postgres-2': 'postgres-integration', 'postgres-3': 'postgres-integration', 'postgres-4': 'postgres-integration', 'postgres-5': 'postgres-integration', 'postgres-6': 'postgres-integration'}.get(lane, lane)
             evidence = {'format': 1, 'source_sha': SHA, 'run_id': 5, 'run_attempt': 2,
                         'lane': lane, 'job': job, 'inventory_sha256': self.fingerprint,
                         'classifier_sha256': inventory.digest(script.read_bytes()), 'files': {}}
@@ -222,7 +222,7 @@ class FullEvidenceTest(unittest.TestCase):
         with self.assertRaises(ValueError): self.aggregate()  # audit is single-attempt strict
 
 
-    def test_development_requires_all_five_partitions_and_denies_release_equivalence(self):
+    def test_development_requires_all_seven_partitions_and_denies_release_equivalence(self):
         self.prepare_development()
         result = self.development()
         self.assertEqual(result['mode'], 'development-partitioned')
@@ -231,8 +231,8 @@ class FullEvidenceTest(unittest.TestCase):
         self.assertFalse(result['fallback_required'])
         self.assertTrue(result['fallback_available'])
         self.assertFalse(result['optimized_adoption_eligible'])
-        self.assertEqual(result['classes'], 6)
-        self.assertEqual(result['counts'], dict(tests=6, failures=0, errors=0, skipped=0))
+        self.assertEqual(result['classes'], 8)
+        self.assertEqual(result['counts'], dict(tests=8, failures=0, errors=0, skipped=0))
         self.assertEqual(set(result['lane_evidence']), set(full.REQUIRED_LANES) - {'oracle'})
         with self.assertRaises(ValueError): self.aggregate()  # audit is still the default
 
@@ -257,6 +257,17 @@ class FullEvidenceTest(unittest.TestCase):
         path.write_bytes(old)
         next((self.directory / 'postgres-4/reports').glob('*.xml')).write_text('corrupt')
         with self.assertRaises((ValueError, inventory.ET.ParseError)): self.development()
+
+    def test_development_missing_sixth_or_seventh_shard_denies(self):
+        self.prepare_development()
+        for index in (5, 6):
+            with self.subTest(index=index):
+                path = self.directory / f'postgres-{index}/evidence.json'
+                original = path.read_bytes()
+                path.unlink()
+                with self.assertRaises(ValueError):
+                    self.development()
+                path.write_bytes(original)
 
     def test_development_extra_oracle_receipt_and_unknown_mode_deny(self):
         self.needs['verify']['result'] = 'skipped'
@@ -305,7 +316,7 @@ class FullEvidenceTest(unittest.TestCase):
         result = full.aggregate(self.root, self.directory, SHA, 5, 2, self.needs, dependency_cache='cold')
         self.assertTrue(result['same_run_equivalence'])
         self.assertEqual(result['dependency_cache_mode'], 'cold')
-        self.assertEqual(len(result['dependency_cache']), 8)
+        self.assertEqual(len(result['dependency_cache']), 10)
         with self.assertRaises(ValueError): self.aggregate()
 
     def test_missing_or_mixed_cache_evidence_denies(self):
@@ -344,8 +355,8 @@ class FullEvidenceTest(unittest.TestCase):
         self.assertFalse(result['serial_oracle'])
         self.assertFalse(result['same_run_equivalence'])
         self.assertFalse(result['release_eligible'])
-        self.assertEqual(result['classes'], 6)
-        self.assertEqual(result['counts']['tests'], 6)
+        self.assertEqual(result['classes'], 8)
+        self.assertEqual(result['counts']['tests'], 8)
         with self.assertRaises(ValueError): self.aggregate()  # default internal/release audit remains strict
 
     def test_parallel_cold_audit_preserves_all_cache_checks(self):
@@ -353,7 +364,7 @@ class FullEvidenceTest(unittest.TestCase):
         result = full.aggregate(self.root, self.directory, SHA, 5, 2, self.needs,
                                 mode='audit', dependency_cache='cold', serial_oracle=False)
         self.assertEqual(result['dependency_cache_mode'], 'cold')
-        self.assertEqual(len(result['dependency_cache']), 7)
+        self.assertEqual(len(result['dependency_cache']), 9)
         self.change('postgres-4', dependency_cache={})
         with self.assertRaises(ValueError): full.aggregate(self.root, self.directory, SHA, 5, 2,
                                                           self.needs, mode='audit', dependency_cache='cold', serial_oracle=False)

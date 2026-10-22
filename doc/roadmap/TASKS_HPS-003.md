@@ -24051,6 +24051,137 @@ Publish only these five paths under the expected767bc2da guard, verify exact
 parent/tree/blobs/message and confirm applicable exact-SHA Full/Fast/Docs creation
 or startup. STOP without waiting for completion or advancing another stage.
 
+### 2026-10-22 — HAPI-778 typed-command and projection equality
+
+Owner Next continues the existing B3 protected-storage package from exact main
+`64170de4d5cd994055ada053f41097c502f9ab8c`, parent
+`767bc2da3ec480eea0e9a35408c8cf38535f57e4`, tree
+`a8b7609aa0e45a60cf8ee5fc17b27882b4e7725b`.
+[Full819](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39760097990),
+[Fast136](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39760097820)
+and [Docs509](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39760097970)
+completed SUCCESS on that source. This accepts the preceding synthetic
+write-coordination package within its recorded limits, not an active JDBC
+writer, genuine application mutation or final receipt guard.
+
+**Registered storage obligation selected:** B3 explicitly requires the decoded
+typed command to match actual OLD/NEW snapshots. Projection001 currently checks
+kind/company/request and recomputes command_sha256, while validating full
+snapshots and version/ledger structure separately. Its command object does not
+yet bind employee/unit/position/type, expected source/destination revisions,
+effective times or correction status to those snapshots. Rehashing substituted
+command values must not make this required equality true. Complete this
+existing structural invariant before wiring the unfinished native writer.
+This is not a new business policy or a standalone task.
+
+**Exact message:** `feat(organization): persist protected appointment lifecycle and history`.
+CREATE only the source-checked collision-free additive migration
+`src/main/resources/db/migration/V20261022_002__organization_appointment_typed_command_integrity.sql`.
+MODIFY only
+`src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java`,
+`.github/ci-test-inventory.json` (that actual class entry only), and this append-only
+HAPI-778 phase record. DELETE none. Earlier migrations/routine bodies and all
+existing rows remain unchanged. No new table, ownership-map entry, grant, actor,
+default, controller, native owner export or executor statement is added.
+
+**Physical implementation:** A new deferred AFTER INSERT constraint trigger on
+the immutable lifecycle event checks its full typed command against the retained
+before/after/successor projection shapes. Existing projection/ledger checks still
+bind those shapes to actual OLD/NEW rows and the matching receipt in one physical
+transaction. The new check supplements those controls without replacing them.
+CREATE binds employee, unit, position, type, effective interval and binding/policy
+revisions. Existing status/transition invariants remain in their current owners;
+no additional CREATE status policy is introduced.
+END binds source ID, observed version and ending boundary. TRANSFER binds source
+ID/version plus every destination ID/type/revision and successor interval.
+CORRECT binds source ID/version, target unit/position/type/status, interval and
+destination revisions. Each operation requires exactly its command field set;
+missing nullable fields, unknown keys, string/boolean numeric coercion and
+fractional/nonpositive/overflowed versions reject.
+
+Timestamp values require JSON strings with explicit offsets, valid calendar
+values and at most six fractional digits, and must denote exactly the physical
+snapshot instant. JSON null is allowed only when the corresponding physical
+value is null; SQL NULL or a missing field is never equivalent. Equivalent
+explicit-offset spellings are compared as instants without rewriting retained
+command bytes. Nonblank change reasons retain their original content, permit
+the existing tab/newline policy and reject the other ISO controls. Identifier/
+reason length checks count supplementary Unicode characters as two UTF-16 units,
+matching the existing Java command's80/2000-unit limits. No trimming, case folding,
+alias or Unicode normalization is introduced. Parsing/data failures reject with
+constraint state23514 rather than silently rounding or accepting a partial shape.
+
+Both new functions are SECURITY INVOKER with fixed pg_catalog path and UTC
+rendering; PUBLIC EXECUTE is revoked. There is no application/publisher/config
+grant, privilege bridge or active mutation path. Historical events are not
+rescanned, rewritten or retroactively labeled as satisfying the new contract.
+The unchanged native/Party tickets, policy/conflict discovery, scoped replay
+digest, final database clock/receipt and legacy cutover remain independent duties.
+A valid typed command and matching rows still do not prove native authorization.
+
+**Real authored upgrade/negative proofs:** Retain all28 prior JUnit method IDs
+and add11, for39 total in the actual PostgreSQL class. Setup now migrates through
+Projection001, commits one explicitly authored owner-only structural event with
+the earlier three-field command and its receipt, then applies the remaining
+chain. A new case verifies the Projection001 checksum, original projection and
+unchanged canonical event/receipt bytes after the additive upgrade. The existing
+fresh-chain census asserts exactly that one explicit event/receipt, rather than
+mistaking this pre-upgrade fixture for a migration default. Existing complete
+CREATE/END/CORRECT/TRANSFER fixtures now supply every genuine typed command field;
+their original transition, privilege, catalog, rollback and forgery assertions
+remain. None is represented as a genuine native-authorized workflow.
+
+New independent cases cover substituted CREATE selectors/type, missing/extra
+fields, nullable-key membership, bound revisions without coercion, END source/
+version/time, every TRANSFER destination/value, every CORRECT target/status/
+interval, bounded/uncoerced reasons, explicit-zone/calendar/microsecond times,
+UTF-16 identifier/reason bounds and actual routine/trigger/ACL catalog shape.
+Negative command tests recompute a valid digest and matching receipt, then prove
+physical commit rejection and outside-connection absence of source/event/receipt.
+Invalid request IDs separately force the new named constraint before the existing
+receipt identifier/length constraint could intercept that test. Valid retained
+reason bytes, explicit offset equivalence, nullable times and80-unit supplementary
+request IDs have positive checks. The new trigger, body hashes, invoker settings,
+enabled/initially-deferred state and lack of PUBLIC/ordinary/publisher/config
+EXECUTE are checked against the real installed PostgreSQL catalog in hosted CI.
+
+Test source SHA256:
+`f71cf5711ceed22da8c6ff9a4109d4fdacc60d37cbe7128f166b024976167cde`.
+Migration source SHA256:
+`626f45ec3c8b4e65117ba86c489300617acfb582ff155660508699b82ebd0e51`.
+Authored prosrc SHA256: command_time
+`0c6b5b29cdda3e556ead9fdbea9fc7ce41dba5af4e5280f343f1d3d27fcbf5ff`;
+typed_command
+`9a7129f9c2971fd12bc7572714cfdda5e79dc798b8131b50dd32529636967ce9`.
+These are source hashes, not invented physical catalog execution evidence.
+Inventory changes preserve every other source/case, metadata value, weight,
+archive policy and all five PostgreSQL partitions. New duration stays unmeasured.
+
+**Actual local validation:** The changed Java test parsed with the installed
+Java17 compiler module, syntax only. All31 inventory-validator self-tests and17
+documentation-validator fixtures passed. Source-case/hash/partition comparisons,
+additive-only file scope, append-only history and whitespace checks are performed.
+No local Maven/Java21/JUnit/PostgreSQL or SQL parser result is claimed or provisioned;
+the new39-case runtime/catalog/upgrade proof remains a hosted-CI obligation.
+Fixture checks are not full-repository documentation validation.
+
+**Artifact and next gate:** Preserve the current physical dictionary and OpenAPI.
+This migration changes the real migration census and event trigger evidence;
+dictionary regeneration must use the resulting hosted catalog, never inferred DDL.
+The unchanged equality gate may therefore fail pending the registered
+`docs(organization): reconcile appointment API and catalog artifacts` follow-up.
+Inspect/repair actual runtime failures first, then reconcile authentic catalog
+evidence. Do not describe that pending gate as a successful Full run.
+Continue the existing guarded JDBC/native/replay/final-receipt package only after
+the exact-source required gates pass; REST/legacy integration and final parent
+acceptance remain unfinished. HAPI-778 stays PARTIAL/IN_PROGRESS and HAPI-590
+independently PARTIAL/BLOCKED. Development-only synthetic data; no production
+personnel data, release, deployment, SITE acceptance, calibration or OT control.
+
+Publish only these four paths with expected64170de4 guard; verify exact
+parent/tree/message/blobs, confirm applicable exact-SHA Full/Fast/Docs creation
+or startup and STOP without waiting or automatically advancing another stage.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

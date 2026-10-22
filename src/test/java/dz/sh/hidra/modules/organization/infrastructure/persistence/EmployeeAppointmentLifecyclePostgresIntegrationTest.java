@@ -50,6 +50,7 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
     private static final String MIGRATION = "src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql";
     private static final String SUCCESSOR_MIGRATION = "src/main/resources/db/migration/V20261021_004__organization_appointment_configuration_successor.sql";
     private static final String PROJECTION_MIGRATION = "src/main/resources/db/migration/V20261022_001__organization_appointment_projection_integrity.sql";
+    private static final String COMMAND_MIGRATION = "src/main/resources/db/migration/V20261022_002__organization_appointment_typed_command_integrity.sql";
     private static final List<String> TABLES = List.of("binding_revision", "binding_head", "policy_revision", "policy_head",
             "configuration_event", "lock_key", "event", "receipt");
     @Container static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:16");
@@ -57,6 +58,10 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
     private String upgradeCompany, upgradeUnit, upgradeBinding, upgradePolicy;
     private long originalConfigurationChecksum;
     private String retainedLegacyId;
+    private Projection retainedProjection;
+    private UUID retainedEvent;
+    private String retainedPayload;
+    private long originalProjectionChecksum;
 
     @BeforeAll void migrateAndSeparatePrincipals() throws Exception {
         Flyway.configure().dataSource(POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword())
@@ -85,6 +90,22 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
         retainedLegacyId = "legacy-" + UUID.randomUUID();
         admin("INSERT INTO public.hidra_org_employee_assignment(id,employee_id,organization_unit_id,position_id,assignment_type,valid_from,status,created_at,updated_at) VALUES (?,?,?,?,'PRIMARY',now(),'ACTIVE',now(),now())",
                 retainedLegacyId, legacyEmployee, upgradeUnit, legacyPosition);
+        Flyway.configure().dataSource(POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword())
+                .target("20261022.001").load().migrate();
+        originalProjectionChecksum = count("SELECT checksum FROM public.flyway_schema_history WHERE script=?",
+                Path.of(PROJECTION_MIGRATION).getFileName().toString());
+        retainedProjection = projection();
+        try (var c = projectionTransaction()) {
+            retainedEvent = UUID.randomUUID();
+            insertProjection(c, retainedProjection, retainedEvent);
+            String oldBody = payload(c, retainedProjection, "CREATE", "null", "null");
+            oldBody = scalar(c, "SELECT jsonb_set(p,'{command}',jsonb_build_object('kind','CREATE','companyPartyId',p->'command'->'companyPartyId','requestId',p->'command'->'requestId'))::text FROM (SELECT ?::jsonb p) v", oldBody).toString();
+            insertEvent(c, retainedProjection, retainedEvent, "CREATE", null, oldBody, false);
+            insertReceipt(c, retainedEvent);
+            retainedPayload = scalar(c, "SELECT encode(canonical_payload,'hex') FROM public.hidra_org_appointment_event WHERE event_id=?::uuid",
+                    retainedEvent).toString();
+            c.commit();
+        }
         Flyway.configure().dataSource(POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword()).load().migrate();
         assertEquals(originalConfigurationChecksum, count("SELECT checksum FROM public.flyway_schema_history WHERE script=?",
                 Path.of(MIGRATION).getFileName().toString()));
@@ -158,8 +179,39 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
     }
 
     private static String payload(Connection c, Projection f, String operation, String before, String successor) throws SQLException {
-        return scalar(c, "SELECT jsonb_build_object('command',jsonb_build_object('kind',?::text,'companyPartyId',?::text,'requestId',?::text),'before',?::jsonb,'after',public.hidra_org_appointment_snapshot(a),'successor',?::jsonb)::text FROM public.hidra_org_employee_assignment a WHERE id=?",
-                operation, f.company(), "request-" + UUID.randomUUID(), before, successor, f.id()).toString();
+        return scalar(c, """
+            WITH source AS (SELECT a, ?::text operation, ?::text company, ?::text request,
+                                   ?::jsonb prior, ?::jsonb successor
+                            FROM public.hidra_org_employee_assignment a WHERE id=?),
+            shape AS (SELECT *,to_jsonb(a) after_row,prior->'assignment' before_row,
+                                successor->'assignment' successor_row FROM source)
+            SELECT jsonb_build_object('command',
+                jsonb_build_object('kind',operation,'companyPartyId',company,'requestId',request) ||
+                CASE operation
+                WHEN 'CREATE' THEN jsonb_build_object(
+                    'employeeId',after_row->'employee_id','organizationUnitId',after_row->'organization_unit_id',
+                    'positionId',after_row->'position_id','assignmentType',after_row->'assignment_type',
+                    'validFrom',after_row->'valid_from','validTo',after_row->'valid_to',
+                    'expectedBindingRevision',after_row->'binding_revision','expectedPolicyRevision',after_row->'policy_revision')
+                WHEN 'END' THEN jsonb_build_object(
+                    'assignmentId',after_row->'id','expectedVersion',before_row->'appointment_version',
+                    'endAt',after_row->'valid_to','reason','Synthetic change')
+                WHEN 'TRANSFER' THEN jsonb_build_object(
+                    'assignmentId',after_row->'id','expectedVersion',before_row->'appointment_version',
+                    'destinationOrganizationUnitId',successor_row->'organization_unit_id','destinationPositionId',successor_row->'position_id',
+                    'destinationType',successor_row->'assignment_type','effectiveAt',successor_row->'valid_from',
+                    'successorValidTo',successor_row->'valid_to','expectedDestinationBindingRevision',successor_row->'binding_revision',
+                    'expectedDestinationPolicyRevision',successor_row->'policy_revision','reason','Synthetic change')
+                WHEN 'CORRECT' THEN jsonb_build_object(
+                    'assignmentId',after_row->'id','expectedVersion',before_row->'appointment_version',
+                    'correctedOrganizationUnitId',after_row->'organization_unit_id','correctedPositionId',after_row->'position_id',
+                    'correctedType',after_row->'assignment_type','correctedStatus',after_row->'status',
+                    'correctedValidFrom',after_row->'valid_from','correctedValidTo',after_row->'valid_to',
+                    'expectedDestinationBindingRevision',after_row->'binding_revision',
+                    'expectedDestinationPolicyRevision',after_row->'policy_revision','reason','Synthetic change')
+                END,
+                'before',prior,'after',public.hidra_org_appointment_snapshot(a),'successor',successor)::text FROM shape
+            """, operation, f.company(), "request-" + UUID.randomUUID(), before, successor, f.id()).toString();
     }
 
     private static void insertEvent(Connection c, Projection f, UUID event, String operation, String successorId,
@@ -209,8 +261,10 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
         for(String table:TABLES) assertEquals(1,count("SELECT count(*) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relname=? AND c.relkind='r' AND c.relpersistence='p' AND NOT c.relrowsecurity","hidra_org_appointment_"+table));
         // No configuration is silently created by the migration. Ignore test-created explicit facts.
         assertEquals(0,count("SELECT count(*) FROM public.hidra_org_appointment_configuration_event WHERE database_admin<>?",CONFIG));
-        assertEquals(0,count("SELECT count(*) FROM public.hidra_org_appointment_event"));
-        assertEquals(0,count("SELECT count(*) FROM public.hidra_org_appointment_receipt"));
+        // Exactly one explicit pre-upgrade fixture is retained, never a migration default.
+        assertEquals(1,count("SELECT count(*) FROM public.hidra_org_appointment_event"));
+        assertEquals(1,count("SELECT count(*) FROM public.hidra_org_appointment_receipt"));
+        assertEquals(1,count("SELECT count(*) FROM public.hidra_org_appointment_event WHERE event_id=?::uuid",retainedEvent));
     }
 
     @Test void restrictedActivationPinsActualAdminCompanyAndPhysicalCoordinates() throws Exception {
@@ -566,6 +620,181 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
             state("23514", c::commit); c.rollback();
             assertEquals(0, count("SELECT count(*) FROM public.hidra_org_employee_assignment WHERE id=?", f.id()));
         }
+    }
+
+    private record Proposal(UUID event, String successorId, String body) {}
+
+    private static Proposal proposal(Connection c, Projection f, String operation) throws SQLException {
+        if (operation.equals("CREATE")) {
+            UUID event = UUID.randomUUID();
+            insertProjection(c, f, event);
+            return new Proposal(event, null, payload(c, f, operation, "null", "null"));
+        }
+        completeCreate(c, f);
+        String before = snapshot(c, f.id());
+        UUID event = UUID.randomUUID();
+        String change = operation.equals("CORRECT") ? "assignment_type='ACTING'" : "valid_to=transaction_timestamp(),status='ENDED'";
+        execute(c, "UPDATE public.hidra_org_employee_assignment SET appointment_version=2,last_event_id=?::uuid," + change + " WHERE id=?", event, f.id());
+        String successorId = null, successor = "null";
+        if (operation.equals("TRANSFER")) {
+            successorId = "successor-" + UUID.randomUUID();
+            execute(c, "INSERT INTO public.hidra_org_employee_assignment(id,employee_id,organization_unit_id,position_id,assignment_type,valid_from,valid_to,status,created_at,updated_at,appointment_version,binding_id,binding_revision,policy_id,policy_revision,last_event_id) SELECT ?::varchar,employee_id,organization_unit_id,position_id,assignment_type,valid_to,NULL,'ACTIVE',updated_at,updated_at,1,binding_id,binding_revision,policy_id,policy_revision,last_event_id FROM public.hidra_org_employee_assignment WHERE id=?", successorId, f.id());
+            successor = snapshot(c, successorId);
+        }
+        return new Proposal(event, successorId, payload(c, f, operation, before, successor));
+    }
+
+    private static String replaceCommand(Connection c, String body, String key, String json) throws SQLException {
+        return scalar(c, "SELECT jsonb_set(?::jsonb,ARRAY['command',?::text],?::jsonb)::text", body, key, json).toString();
+    }
+
+    private void rejectsCommandValue(String operation, String key, String json) throws Exception {
+        var f = projection();
+        try (var c = projectionTransaction()) {
+            var p = proposal(c, f, operation);
+            String bad = replaceCommand(c, p.body(), key, json);
+            // Recompute a valid digest and matching receipt: hashing a forged command
+            // must not make it describe the real projection or immutable prior state.
+            insertEvent(c, f, p.event(), operation, p.successorId(), bad, false);
+            if (key.equals("requestId")) {
+                // Probe the new typed-command check before the receipt's existing
+                // varchar/exact-ID constraint could reject the same bad selector.
+                state("23514", () -> execute(c, "SET CONSTRAINTS appointment_command_complete IMMEDIATE"));
+            } else {
+                insertReceipt(c, p.event());
+                state("23514", c::commit);
+            }
+            c.rollback();
+            assertEquals(0, count("SELECT count(*) FROM public.hidra_org_employee_assignment WHERE id=? OR last_event_id=?::uuid", f.id(), p.event()));
+            assertEquals(0, count("SELECT count(*) FROM public.hidra_org_appointment_event WHERE assignment_id=?", f.id()));
+            assertEquals(0, count("SELECT count(*) FROM public.hidra_org_appointment_receipt WHERE event_id=?::uuid", p.event()));
+        }
+    }
+
+    @Test void typedCommandUpgradePreservesPriorChecksumsAndImmutableHistoricalBytes() throws Exception {
+        assertEquals(originalProjectionChecksum, count("SELECT checksum FROM public.flyway_schema_history WHERE script=?",
+                Path.of(PROJECTION_MIGRATION).getFileName().toString()));
+        assertEquals(1, count("SELECT count(*) FROM public.flyway_schema_history WHERE script=? AND success",
+                Path.of(COMMAND_MIGRATION).getFileName().toString()));
+        assertEquals(retainedPayload, catalog("SELECT encode(canonical_payload,'hex') FROM public.hidra_org_appointment_event WHERE event_id=?::uuid", retainedEvent));
+        assertEquals(retainedPayload, catalog("SELECT encode(canonical_result,'hex') FROM public.hidra_org_appointment_receipt WHERE event_id=?::uuid", retainedEvent));
+        assertEquals(3, count("SELECT count(*) FROM public.hidra_org_appointment_event e CROSS JOIN LATERAL jsonb_object_keys(convert_from(e.canonical_payload,'UTF8')::jsonb->'command') k WHERE event_id=?::uuid", retainedEvent));
+        assertEquals(1, count("SELECT appointment_version FROM public.hidra_org_employee_assignment WHERE id=?", retainedProjection.id()));
+    }
+
+    @Test void createCommandCannotSubstituteEmployeeUnitPositionOrTypeEvenWithNewDigest() throws Exception {
+        for (String key : List.of("employeeId", "organizationUnitId", "positionId", "assignmentType"))
+            rejectsCommandValue("CREATE", key, "\"substituted\"");
+    }
+
+    @Test void typedCommandRequiresExactFieldMembershipAndNoMissingNullableFields() throws Exception {
+        rejectsCommandValue("CREATE", "unexpected", "true");
+        var f = projection();
+        for (String key : List.of("validTo", "employeeId", "expectedPolicyRevision")) try (var c = projectionTransaction()) {
+            var p = proposal(c, f, "CREATE");
+            String bad = scalar(c, "SELECT (?::jsonb #- ARRAY['command',?::text])::text", p.body(), key).toString();
+            insertEvent(c, f, p.event(), "CREATE", null, bad, false);
+            insertReceipt(c, p.event());
+            state("23514", c::commit);
+            c.rollback();
+        }
+        assertEquals(0, count("SELECT count(*) FROM public.hidra_org_employee_assignment WHERE id=?", f.id()));
+    }
+
+    @Test void createCommandPinsBindingAndPolicyRevisionsWithoutCoercion() throws Exception {
+        for (String key : List.of("expectedBindingRevision", "expectedPolicyRevision"))
+            for (String json : List.of("2", "\"1\"", "1.0", "null", "true", "9223372036854775808"))
+                rejectsCommandValue("CREATE", key, json);
+    }
+
+    @Test void endCommandPinsTheObservedSourceIdentityVersionAndEndingBoundary() throws Exception {
+        rejectsCommandValue("END", "assignmentId", "\"another-assignment\"");
+        for (String json : List.of("2", "\"1\"", "1.0", "0", "null"))
+            rejectsCommandValue("END", "expectedVersion", json);
+        rejectsCommandValue("END", "endAt", "\"2000-01-01T00:00:00Z\"");
+        rejectsCommandValue("END", "endAt", "null");
+    }
+
+    @Test void transferCommandPinsEveryDestinationValueAndVersion() throws Exception {
+        for (String key : List.of("destinationOrganizationUnitId", "destinationPositionId", "destinationType"))
+            rejectsCommandValue("TRANSFER", key, "\"substituted\"");
+        for (String key : List.of("expectedVersion", "expectedDestinationBindingRevision", "expectedDestinationPolicyRevision"))
+            rejectsCommandValue("TRANSFER", key, "2");
+        rejectsCommandValue("TRANSFER", "effectiveAt", "\"2000-01-01T00:00:00Z\"");
+        rejectsCommandValue("TRANSFER", "successorValidTo", "\"2100-01-01T00:00:00Z\"");
+    }
+
+    @Test void correctionCommandPinsTargetStatusIntervalAndRevisions() throws Exception {
+        for (String key : List.of("assignmentId", "correctedOrganizationUnitId", "correctedPositionId", "correctedType", "correctedStatus"))
+            rejectsCommandValue("CORRECT", key, "\"substituted\"");
+        for (String key : List.of("expectedVersion", "expectedDestinationBindingRevision", "expectedDestinationPolicyRevision"))
+            rejectsCommandValue("CORRECT", key, "2");
+        rejectsCommandValue("CORRECT", "correctedValidFrom", "\"2000-01-01T00:00:00Z\"");
+        rejectsCommandValue("CORRECT", "correctedValidTo", "\"2100-01-01T00:00:00Z\"");
+    }
+
+    @Test void commandReasonsRequireUncoercedNonblankBoundedPreservedText() throws Exception {
+        for (String json : List.of("null", "42", "false", "\"\"", "\"   \"", "\"\\t\\n\"", "\"\\u2005\"",
+                "\"bad\\rcontrol\"", "\"" + "x".repeat(2001) + "\"",
+                "\"" + new String(Character.toChars(0x1f600)).repeat(1001) + "\""))
+            rejectsCommandValue("CORRECT", "reason", json);
+        var f = projection();
+        try (var c = projectionTransaction()) {
+            var p = proposal(c, f, "CORRECT");
+            String body = replaceCommand(c, p.body(), "reason", "\" retained\\tline\\ntext \"");
+            insertEvent(c, f, p.event(), "CORRECT", null, body, false); insertReceipt(c, p.event());
+            execute(c, "SET CONSTRAINTS ALL IMMEDIATE");
+            assertEquals(" retained\tline\ntext ", scalar(c, "SELECT convert_from(canonical_payload,'UTF8')::jsonb->'command'->>'reason' FROM public.hidra_org_appointment_event WHERE event_id=?::uuid", p.event()));
+            c.rollback();
+        }
+    }
+
+    @Test void commandTimesRejectImplicitZonesInvalidDatesAndSubmicrosecondPrecision() throws Exception {
+        for (String json : List.of("null", "123", "\"infinity\"", "\"2026-10-22\"",
+                "\"2026-10-22T10:00:00\"", "\"2026-02-30T10:00:00Z\"",
+                "\"2026-10-22T10:00:00.0000001Z\"", "\"2026-10-22T10:00:00.0000000Z\""))
+            rejectsCommandValue("CREATE", "validFrom", json);
+        try (var c = owner()) {
+            assertEquals(Boolean.TRUE, scalar(c, "SELECT public.hidra_org_appointment_command_time_matches(?::jsonb,?::jsonb)",
+                    "\"2026-10-22T11:00:00+01:00\"", "\"2026-10-22T10:00:00+00:00\""));
+            assertEquals(Boolean.TRUE, scalar(c, "SELECT public.hidra_org_appointment_command_time_matches('null'::jsonb,'null'::jsonb)"));
+            assertEquals(Boolean.FALSE, scalar(c, "SELECT public.hidra_org_appointment_command_time_matches(NULL,'null'::jsonb)"));
+        }
+    }
+
+    @Test void commandIdentifierLengthsUseJavaUtf16BoundsWithoutTrimmingOrAliases() throws Exception {
+        rejectsCommandValue("CREATE", "requestId", "\" leading\"");
+        rejectsCommandValue("CREATE", "requestId", "\"trailing \"");
+        rejectsCommandValue("CREATE", "requestId", "\"" + "x".repeat(81) + "\"");
+        // 41 supplementary characters fit SQL varchar(80) but exceed Java's 80 UTF-16 units.
+        String supplementary = new String(Character.toChars(0x1f600));
+        rejectsCommandValue("CREATE", "requestId", "\"" + supplementary.repeat(41) + "\"");
+        var f = projection();
+        try (var c = projectionTransaction()) {
+            var p = proposal(c, f, "CREATE");
+            String body = replaceCommand(c, p.body(), "requestId", "\"" + supplementary.repeat(40) + "\"");
+            insertEvent(c, f, p.event(), "CREATE", null, body, false); insertReceipt(c, p.event());
+            execute(c, "SET CONSTRAINTS ALL IMMEDIATE");
+            c.rollback();
+        }
+    }
+
+    @Test void typedCommandFunctionsAndDeferredTriggerMatchRestrictedPhysicalCatalog() throws Exception {
+        String source = Files.readString(Path.of(COMMAND_MIGRATION));
+        var tags = List.of("command_time", "typed_command");
+        var signatures = List.of("public.hidra_org_appointment_command_time_matches(jsonb,jsonb)",
+                "public.hidra_org_appointment_typed_command_complete()");
+        for (int i = 0; i < tags.size(); i++) {
+            String body = source.split(java.util.regex.Pattern.quote("AS $" + tags.get(i) + "$"), 2)[1]
+                    .split(java.util.regex.Pattern.quote("$" + tags.get(i) + "$;"), 2)[0];
+            assertEquals(body, catalog("SELECT prosrc FROM pg_proc WHERE oid=?::regprocedure", signatures.get(i)));
+            assertEquals(Boolean.FALSE, catalog("SELECT prosecdef FROM pg_proc WHERE oid=?::regprocedure", signatures.get(i)));
+            assertEquals(1, count("SELECT count(*) FROM pg_proc WHERE oid=?::regprocedure AND 'search_path=pg_catalog'=ANY(proconfig) AND EXISTS(SELECT 1 FROM unnest(proconfig) x WHERE lower(x)='timezone=utc')", signatures.get(i)));
+            for (String role : List.of(ORDINARY, PUBLISHER, CONFIG))
+                assertEquals(Boolean.FALSE, catalog("SELECT has_function_privilege(?,?,'EXECUTE')", role, signatures.get(i)));
+            assertEquals(0, count("SELECT count(*) FROM pg_proc p CROSS JOIN LATERAL aclexplode(coalesce(p.proacl,acldefault('f',p.proowner))) a WHERE p.oid=?::regprocedure AND a.grantee=0 AND a.privilege_type='EXECUTE'", signatures.get(i)));
+        }
+        assertEquals(1, count("SELECT count(*) FROM pg_trigger WHERE tgrelid='public.hidra_org_appointment_event'::regclass AND tgname='appointment_command_complete' AND tgdeferrable AND tginitdeferred AND tgenabled='O' AND tgfoid='public.hidra_org_appointment_typed_command_complete()'::regprocedure AND tgqual IS NULL"));
     }
 
     @Test void projectionFunctionsConstraintsAndDeferredTriggersHaveActualCatalogShape() throws Exception {

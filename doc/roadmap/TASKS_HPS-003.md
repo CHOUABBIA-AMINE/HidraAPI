@@ -23910,6 +23910,34 @@ release, deployment, calibration, SITE acceptance or OT actuation is selected.
 lease `fa31a08b8f5c220daba1e597ec33f534a846df89`, verify exact parent/tree/blobs/message and confirm applicable
 Full/Fast/Docs creation or startup. STOP without automatically advancing.
 
+### 2026-10-22 — HAPI-778 Full817/Fast134 testCompile repair
+
+Owner Fail. Exact main `20d67dee8946ea4551ec7b09ed5c3c2170e083d2` / tree `c29d87b93e65891c4735846328a05764988e676c`:
+[Full817](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39748982011)
+and [Fast134](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39748982028)
+completed failure, [Docs507](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39748982006)
+passed. Unit job 119724463555 and fast job 119724462808 confirm one
+`testCompile` error: AssertJ's varargs assertion cannot type `String` for
+`Set<?>` in `ProtectedTransactionExecutorTest.java:67`. All five database shards
+were blocked before tests; the API/dictionary and static lanes succeeded.
+
+Exact B3 repair message: `feat(organization): persist protected appointment lifecycle and history`.
+MODIFY only `src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java`,
+`.github/ci-test-inventory.json`, and this append-only HAPI-778 task record.
+The test now compares the reflected exact set to `Set.of` with all six original
+registered digests; no unchecked cast, changed hash, loss of cardinality,
+source permission, SQL admission, guard, migration or runtime wiring.
+The source-linked inventory updates only that test source SHA256
+`86660bf66a1cf480fd7f7e2526042a7b26c779b56380cdc85cc7e110c9307db9`
+to `bb0446abcccd274eb3156d3a59e13585f5853730b1495aa399f9842f30e4fd2d`.
+Test case ID, other metadata, timing and all five PostgreSQL partitions stay unchanged.
+In-memory exact source/JSON and scope checks were performed; local Maven and
+PostgreSQL execution was not claimed. Hosted Full/Fast/Docs on the new SHA
+remain required. HAPI-778 stays PARTIAL/IN_PROGRESS; HAPI-590 remains
+PARTIAL/BLOCKED. Expected-head publish from `20d67dee8946ea4551ec7b09ed5c3c2170e083d2`, verify resulting
+commit/parent/tree/paths, confirm applicable CI started, then STOP before
+another registered stage. Development-only synthetic acceptance; no deployment.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

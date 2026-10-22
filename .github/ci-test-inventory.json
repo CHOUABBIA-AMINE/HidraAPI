@@ -8545,7 +8545,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java",
-      "source_sha256": "86660bf66a1cf480fd7f7e2526042a7b26c779b56380cdc85cc7e110c9307db9",
+      "source_sha256": "bb0446abcccd274eb3156d3a59e13585f5853730b1495aa399f9842f30e4fd2d",
       "supports": []
     },
     {

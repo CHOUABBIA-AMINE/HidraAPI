@@ -64,13 +64,13 @@ class ProtectedTransactionExecutorTest {
     @Test void appointmentProvisionalTemplatesRequireExactHashesAndCompiledCaller() throws Exception {
         var field=ProtectedTransactionExecutor.class.getDeclaredField("APPOINTMENT_PROVISIONAL_HASHES");
         field.setAccessible(true);
-        assertThat((Set<?>)field.get(null)).containsExactlyInAnyOrder(
+        assertThat(field.get(null)).isEqualTo(Set.of(
                 "516725eb3d2d0fa98f75e73c62186d730c22b44b15d648ed03b1f4e88cba1af4",
                 "0991e6595ce13ba5b556da137e0211bc72ecc982a10a01feac5bcb2f9294c896",
                 "9d331551beaa09d534325126e04d71625f123dd606e5ca99f79b5e37edbec4d5",
                 "e1e6cbcbc2281f495441c7d63ead7d54dda6babfa4c8b1ad1fadbafb250454ee",
                 "5a891a894c55c6ebd50cf78641cf19a3c6ad748b4e8b4365eeab6b446424f424",
-                "db6d602e42ead6338d10af03c3086056a4c5d50e4b1b978b355c749d4dc57bda");
+                "db6d602e42ead6338d10af03c3086056a4c5d50e4b1b978b355c749d4dc57bda"));
         String body=java.nio.file.Files.readString(java.nio.file.Path.of(
                 "src/main/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutor.java"));
         assertThat(body).contains("caller.equals(APPOINTMENT_COORDINATOR)",

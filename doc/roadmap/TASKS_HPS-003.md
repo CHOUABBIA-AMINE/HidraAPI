@@ -25029,6 +25029,136 @@ not a new generic readiness review.
 and expected-62ba1b6 guard; verify parent/tree/message/raw blobs/scope, confirm
 applicable exact-SHA Full/Fast/Docs created/queued/started, then STOP for feedback.
 
+
+### 2026-10-22 — HAPI-778 B3 private storage admission and retained owner fences
+
+**Selected message:** `feat(organization): persist protected appointment lifecycle and history`.
+Owner Next continues the existing B3 envelope from main
+2911d17a930e001810c37b602a1e6c12f22bfad5, parent
+62ba1b6e02b7fbb4fcd7ef1628755d291ecc8d0d, tree
+858db3a4cde7781f30e26cd86fba2681d091776e.
+[Full831](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39834467843),
+[Fast144](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39834467867)
+and [Docs521](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39834467850)
+passed. Current governance, the exact B3 registration and later proof amendment,
+actual owner exports/implementations, coordinator/repository port, current
+migrations, CURRENT physical dictionary and existing tests were inspected.
+No business ownership choice or new owner export is introduced.
+
+**Exact scope — seven MODIFY, no CREATE/DELETE:**
+
+- src/main/java/dz/sh/hidra/modules/organization/application/port/out/ProtectedEmployeeAppointmentRepositoryPort.java
+- src/main/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinator.java
+- src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JdbcProtectedEmployeeAppointmentRepositoryAdapter.java
+- src/test/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinatorTest.java
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java
+- .github/ci-test-inventory.json
+- this HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+**Delivered behavior:** The existing non-bean JDBC class gains private
+issuer/thread/Authentication/ConnectionHolder/connection/PID/XID/role-bound storage
+tickets, ordered twelve-relation Organization NOWAIT acquisition and retained
+physical/catalog checks. The actual relation is public.hidra_org_unit, matching
+the accepted migration, not the original preflight's superseded organization_unit
+spelling. Existing selector/history discovery is preserved.
+
+A newly acquired storage ticket is UNQUALIFIED: native authenticity and permission
+are not asserted by its marker or scalar preview. After the coordinator repeats
+and compares locked descriptors, the new repository-port contribute operation
+consumes the configured genuine Identity issuer once and retains its returned
+observation privately. The coordinator retrieves that observation through storage
+instead of consuming Identity a second time. The original Identity -> Party ->
+Organization -> locked closure -> native sample sequence remains. This closes
+the missing public-protocol seam without adding a foreign private import, an
+owner observation factory, arbitrary Boolean or another Identity contract.
+
+The private observation must match the frozen company/unit/employee descriptors,
+PERMIT result and actual PID/XID. Reads require no Party markers; writes require
+one retained Party marker and the actual Party fences, plus the three genuine
+Identity commit-key fences. Party acquisition markers still prove no selectability:
+CURRENT/RETAINED/REPLAY classification and actual Party eligibility consumption
+remain coordinator/later storage duties. No new reference is activated here.
+The genuine native owner validates its own ticket. Its exact24 relation list and
+the exact3 key-fence list are checked, not just a caller-supplied count.
+
+Subsequent storage requireCurrent checks the private issuer/context, original
+native owner, held native/Party/Organization/key locks, actual connection/PID/XID/
+role, current database time within the original sample window, and the catalog.
+Reuse, another issuer/thread/Authentication/transaction, suspension/completion,
+rollback-only state or any failed callback invalidates the ticket and poisons the
+actual holder, including the original holder on a foreign-thread failure.
+The SQL-free beforeCommit callback vetoes a changed authentication/holder state.
+This is retained admission infrastructure; it does not replace the executor's
+one final SQL guard or establish a successful guarded lifecycle commit.
+
+**Actual source/catalog pins and privilege boundary:** Twelve fingerprints are
+derived from the reviewed CURRENT dictionary's captured column/default/identity/
+generated, constraint/validation/deferment, index and trigger/function-definition
+facts, reversing only the generator's documented Markdown escaping. Runtime
+comparison uses the same pg_catalog definitions and a fixed C-ordered UTF8 frame.
+Fifteen routine prosrc digests derive from actual latest authored migration bodies,
+including accepted forward replacements. No catalog body or hash is guessed.
+Regular permanent same-owner tables, no RLS/partition/inheritance, closed schemas,
+safe search path, separated non-elevated login, no owner membership, closed
+configuration-function execution and immutable/configuration/receipt DML
+restrictions are checked. The role/catalog/clock checks do not return private
+SQL or identity causes.
+
+The existing003 migration explicitly reserves review of publisher SELECT/UPDATE
+needed for owner locks. PostgreSQL16's actual LockTableAclCheck uses table-level
+UPDATE/DELETE/TRUNCATE for SHARE ROW EXCLUSIVE; generation-only column UPDATE is
+insufficient. Admission therefore permits table UPDATE on the two configuration
+heads for locking while still denying their INSERT/REFERENCES, configuration
+routine execution and revision/config-event writes. Pinned head-transition and
+deferred triggers require a new same-XID administrator event that this login
+cannot create; UPDATE is not configuration activation authority. No production
+role, grant, function, migration or schema is changed by this Java/test package.
+
+**Tests and evidence limits:** All40 coordinator cases remain, now checking the
+storage-owned sample handoff and no direct coordinator native consumption.
+Nine new cases increase the existing PostgreSQL class from49 to58, preserving
+every old case: actual12 held Organization relations and single consumption;
+unqualified/foreign/completed/wrong-thread tickets; Authentication/suspension/
+issuer-revocation rejection; removed constraint/disabled trigger; unsafe schema
+and head INSERT privileges; actual NOWAIT contention; configuration-head UPDATE
+and activation refusal by the lock-capable login; native scope/PID substitution;
+and actual Spring beforeCommit veto after Authentication replacement.
+
+These cases use disposable migrated PostgreSQL and actual separate Organization
+logins, constraints, triggers and transaction holders. Upstream Identity is
+explicitly mocked in this fixture. Its test-only closed definer acquires real
+native relation locks solely for physical mechanics; it is NOT a genuine native
+producer, user PERMIT, key proof or end-to-end authority result. Existing genuine
+native suites remain unchanged regressions. Full native LOCAL/OIDC/LDAP/AD
+composition, proof-bearing write/receipt and final executor timing/commit tests
+are still required before integration acceptance. No mock result is relabeled
+as production authentication or complete protected-writer proof.
+
+**Completed local checks:** Java17 compiler-API parsing of all five changed Java
+sources passes (syntax only, no type analysis/JUnit). Canonical source-linked
+inventory validates353 fast/354 unit-architecture/454 active classes, four
+historical classes and seven partitions12/15/13/14/16/15/15; all32 inventory
+self-tests pass. Existing cases/entries/weights/lanes/archive policy are preserved;
+only these two existing suites' actual hashes and nine method identities change.
+Docs passes128 documents/8380 relative links/24 modules/921 tasks/25 phases;
+offline OpenAPI passes257 paths/279 operations/267 schemas; diff whitespace passes.
+Maven/PostgreSQL services are unavailable locally; runtime catalog fingerprint
+compatibility, new database cases and Java21 compilation await hosted CI.
+No local runtime or parent acceptance is claimed.
+
+**Remaining B3 and stop:** The adapter remains non-bean and does not yet implement
+the full protected repository port. Actual command/policy/pinned-state admission,
+reference-use/CAS/conflict/replay classification, narrowed owner deadlines,
+history materialization/cursors, provisional DML, proof-bearing final SQL and
+immutable receipt, atomic application/legacy/REST cutover and native integration
+acceptance remain. No successful lifecycle result, source mutation or route is
+introduced by this stage. All165 migration bytes, dictionary, Identity/Party,
+executor SQL/caller pins, workflows and frozen statuses are unchanged.
+HAPI-778 remains PARTIAL/IN_PROGRESS; HAPI-590 separately PARTIAL/BLOCKED.
+Publish only the seven paths with expected-2911d17 guard, verify parent/tree/
+message/raw blobs/scope, confirm applicable exact-SHA workflows queued/started,
+then STOP. The next stage continues the same B3 runtime envelope.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

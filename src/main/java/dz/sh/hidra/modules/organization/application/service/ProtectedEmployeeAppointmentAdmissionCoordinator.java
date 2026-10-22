@@ -182,7 +182,7 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
             if (!expected.equals(locked) || !request.equals(requestFor(null, query, locked))) throw denied();
             result = new ReadAdmission(this, nativeAdmission, repositoryAdmission);
             TransactionSynchronizationManager.registerSynchronization(result);
-            var sample = Objects.requireNonNull(identity.contribute(nativeAdmission));
+            var sample = Objects.requireNonNull(storage.contribute(repositoryAdmission));
             if (!request.equals(sample.request())
                     || sample.overallDecision()
                         != OrganizationProtectedAppointmentAuthorizationContract.Decision.PERMIT) throw denied();
@@ -247,7 +247,7 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
             var locked = Objects.requireNonNull(storage.preview(command));
             locked.requireBounded();
             if (!expected.equals(locked) || !request.equals(requestFor(command, null, locked))) throw denied();
-            var sample = Objects.requireNonNull(identity.contribute(nativeAdmission));
+            var sample = Objects.requireNonNull(storage.contribute(result.repositoryAdmission));
             if (!request.equals(sample.request())
                     || sample.overallDecision()
                         != OrganizationProtectedAppointmentAuthorizationContract.Decision.PERMIT) throw denied();

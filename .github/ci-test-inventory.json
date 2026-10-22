@@ -123,7 +123,7 @@
       "lane": "unit-architecture",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinatorTest.java",
-      "source_sha256": "eb993e5c2a70a176ef34073a085526dd14507c9d3c2ce258f5e969583fde5b4a",
+      "source_sha256": "f08337746dd97edd8912361a977ecfc351df3d84f5e2951aa2186b4e37dde739",
       "supports": []
     },
     {
@@ -8975,6 +8975,15 @@
         "receiptMustMatchActorResultAndExclusiveGuardWindow",
         "restrictedActivationPinsActualAdminCompanyAndPhysicalCoordinates",
         "sameUnitCorrectionRetainsItsPinAndCrossCompanyCorrectionFails",
+        "storageAdmissionBeforeCommitVetoIsSqlFreeAfterAuthenticationReplacement",
+        "storageAdmissionCannotWaitPastAnEarlierOrganizationWriterFence",
+        "storageAdmissionCatalogPinsRejectDisabledTriggersAndRemovedConstraints",
+        "storageAdmissionRejectsAuthenticationSwapSuspensionAndIssuerRevocation",
+        "storageAdmissionRejectsNativeScopeAndPhysicalCoordinateSubstitution",
+        "storageAdmissionRejectsSchemaCreationPrivilegeAndConfigurationWriteEscalation",
+        "storageAdmissionRejectsUnqualifiedForeignCompletedAndWrongThreadTickets",
+        "storageAdmissionRetainsActualOwnerFencesAndConsumesItsNativeOwnerOnce",
+        "storageLockPrivilegeCannotActivateAConfigurationWithoutItsAdministratorEvent",
         "transactionRollbackRemovesRevisionHeadAndAuditTogether",
         "transferCommandPinsEveryDestinationValueAndVersion",
         "typedCommandFunctionsAndDeferredTriggerMatchRestrictedPhysicalCatalog",
@@ -8987,7 +8996,7 @@
       "lane": "postgres-integration",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java",
-      "source_sha256": "65ddfd7b0c646bf981c12d45e389c5f129db812000b73994cabc885c8a343e2b",
+      "source_sha256": "f844e0ebc8e609ef423e1e4d44db7c8635c4c4dd233d2d43590a1daae386dac0",
       "supports": []
     }
   ],

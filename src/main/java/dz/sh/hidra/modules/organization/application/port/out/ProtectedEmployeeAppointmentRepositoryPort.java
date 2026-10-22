@@ -101,6 +101,13 @@ public interface ProtectedEmployeeAppointmentRepositoryPort {
             List<OrganizationProtectedPartyEligibilityContract.Admission> partyAdmissions,
             DescriptorPreview preview);
 
+    /**
+     * After locked descriptor equality, consume the genuine native contribution
+     * once inside the storage issuer. The returned scalar is retained privately
+     * by that issuer; callers cannot qualify storage by supplying a contribution.
+     */
+    OrganizationProtectedAppointmentAuthorizationContract.Contribution contribute(Admission admission);
+
     /** Recheck all issuer/physical/owner evidence and fail closed before any row is exposed. */
     void requireCurrent(Admission admission);
 

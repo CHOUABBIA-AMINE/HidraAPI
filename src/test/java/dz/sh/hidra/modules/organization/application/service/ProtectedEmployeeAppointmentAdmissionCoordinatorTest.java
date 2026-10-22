@@ -200,7 +200,7 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
             when(storage.preview(query)).thenReturn(descriptors);
             when(identity.acquire(any(), eq(request))).thenReturn(nativeTicket);
             when(storage.acquire(eq(nativeTicket), eq(List.of()), eq(descriptors))).thenReturn(storageTicket);
-            when(identity.contribute(nativeTicket)).thenReturn(permitted(request));
+            when(storage.contribute(storageTicket)).thenReturn(permitted(request));
         }
 
         ProtectedEmployeeAppointmentAdmissionCoordinator.ReadAdmission acquire() {
@@ -222,12 +222,13 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
             order.verify(f.identity).acquire(any(), eq(f.request));
             order.verify(f.storage).acquire(f.nativeTicket, List.of(), f.descriptors);
             order.verify(f.storage).preview(f.query);
-            order.verify(f.identity).contribute(f.nativeTicket);
+            order.verify(f.storage).contribute(f.storageTicket);
             order.verify(f.identity).requireCurrent(f.nativeTicket);
             order.verify(f.storage).requireCurrent(f.storageTicket);
             f.coordinator.requireCurrentRead(ticket);
-            verify(f.identity, times(1)).contribute(f.nativeTicket);
+            verify(f.storage, times(1)).contribute(f.storageTicket);
             verifyNoInteractions(f.party);
+            verify(f.identity, never()).contribute(any());
             // Owner qualification alone neither seals the executor nor authorizes a write.
             verify(f.executor, never()).sealAdmission();
             verify(f.storage, never()).mutate(any(), any());
@@ -239,7 +240,7 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
             when(f.storage.preview(f.query)).thenReturn(f.descriptors,
                     preview("company", "other-unit", "employee", "assignment"));
             assertThrows(AccessDeniedException.class, f::acquire);
-            verify(f.identity, never()).contribute(any());
+            verify(f.storage, never()).contribute(any());
             verify(f.executor).rejectAdmission();
             verify(f.storage, never()).privateHistory(any(), any());
         }
@@ -252,7 +253,7 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
                         f.descriptors.companyUnits(), "employee", "assignment", true);
                 when(f.storage.preview(f.query)).thenReturn(f.descriptors, invalid);
                 assertThrows(AccessDeniedException.class, f::acquire);
-                verify(f.identity, never()).contribute(any());
+                verify(f.storage, never()).contribute(any());
                 verify(f.executor).rejectAdmission();
             }
         }
@@ -265,7 +266,7 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
                         ? new Request(Action.READ_CURRENT, f.request.companyUnits(), "employee") : f.request;
                 Decision decision = variant == 0 ? Decision.DENY
                         : variant == 1 ? Decision.INDETERMINATE : Decision.PERMIT;
-                when(f.identity.contribute(f.nativeTicket)).thenReturn(new Contribution(request,
+                when(f.storage.contribute(f.storageTicket)).thenReturn(new Contribution(request,
                         request.requirements().stream().map(r -> new ResourceDecision(r, decision)).toList(),
                         "binding", "session", "user", START, START.plusSeconds(1), 17, 23));
                 assertThrows(AccessDeniedException.class, f::acquire);
@@ -282,7 +283,7 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
             when(f.identity.acquire(any(), any())).thenThrow(new IllegalStateException("owner unavailable"));
             assertThrows(AccessDeniedException.class, f::acquire);
             verify(f.storage, never()).acquire(any(), anyList(), any());
-            verify(f.identity, never()).contribute(any());
+            verify(f.storage, never()).contribute(any());
             verifyNoInteractions(f.party);
             verify(f.executor).rejectAdmission();
         }
@@ -292,7 +293,7 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
         try (var f = new ReadFixture()) {
             when(f.storage.acquire(any(), anyList(), any())).thenReturn(null);
             assertThrows(AccessDeniedException.class, f::acquire);
-            verify(f.identity, never()).contribute(any());
+            verify(f.storage, never()).contribute(any());
             verify(f.executor).rejectAdmission();
         }
     }
@@ -370,7 +371,7 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
             f.acquire();
             assertThrows(AccessDeniedException.class, f::acquire);
             verify(f.identity, times(1)).acquire(any(), any());
-            verify(f.identity, times(1)).contribute(any());
+            verify(f.storage, times(1)).contribute(any());
         }
     }
 
@@ -474,7 +475,7 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
             when(identity.acquire(any(), eq(request))).thenReturn(nativeTicket);
             when(party.acquire("company")).thenReturn(partyTicket);
             when(storage.acquire(nativeTicket, List.of(partyTicket), descriptors)).thenReturn(storageTicket);
-            when(identity.contribute(nativeTicket)).thenReturn(sample);
+            when(storage.contribute(storageTicket)).thenReturn(sample);
             when(storage.referenceUse(storageTicket, command, sample)).thenReturn(use);
             when(party.read(partyTicket)).thenReturn(
                     new OrganizationProtectedPartyEligibilityContract.Contribution("company", 9, 17, 23));
@@ -500,14 +501,15 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
             order.verify(f.party).acquire("company");
             order.verify(f.storage).acquire(f.nativeTicket, List.of(f.partyTicket), f.descriptors);
             order.verify(f.storage).preview(f.command);
-            order.verify(f.identity).contribute(f.nativeTicket);
+            order.verify(f.storage).contribute(f.storageTicket);
             order.verify(f.storage).referenceUse(f.storageTicket, f.command, f.sample);
             order.verify(f.party).read(f.partyTicket);
             order.verify(f.identity).requireCurrent(f.nativeTicket);
             order.verify(f.party).requireCurrent(f.partyTicket);
             order.verify(f.storage).requireCurrent(f.storageTicket);
-            verify(f.identity, times(1)).contribute(f.nativeTicket);
+            verify(f.storage, times(1)).contribute(f.storageTicket);
             verify(f.storage, never()).mutate(any(), any());
+            verify(f.identity, never()).contribute(any());
         }
     }
 
@@ -541,7 +543,7 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
                 doThrow(new IllegalStateException("retired company")).when(f.party).read(any());
                 f.acquire();
                 verify(f.identity).acquire(any(), eq(f.request));
-                verify(f.identity).contribute(f.nativeTicket);
+                verify(f.storage).contribute(f.storageTicket);
                 verify(f.identity).requireCurrent(f.nativeTicket);
                 verify(f.party, never()).read(any());
                 verify(f.party, never()).requireCurrent(any());
@@ -569,7 +571,7 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
                 assertTrue(f.holder.isRollbackOnly());
                 for (var callback : TransactionSynchronizationManager.getSynchronizations())
                     assertThrows(AccessDeniedException.class, () -> callback.beforeCommit(false));
-                verify(f.identity, never()).contribute(any());
+                verify(f.storage, never()).contribute(any());
                 verify(f.party, never()).read(any());
             }
         }
@@ -583,7 +585,7 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
                                 f.descriptors.companyUnits(), "employee", null, true);
                 when(f.storage.preview(f.command)).thenReturn(f.descriptors, changed);
                 assertThrows(AccessDeniedException.class, f::acquire);
-                verify(f.identity, never()).contribute(any());
+                verify(f.storage, never()).contribute(any());
                 verify(f.storage, never()).referenceUse(any(), any(), any());
                 verify(f.party, never()).read(any());
                 assertTrue(f.holder.isRollbackOnly());
@@ -596,7 +598,7 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
             try (var f = new WriteFixture()) {
                 var request = variant == 2 ? new Request(Action.END, f.request.companyUnits(), "employee") : f.request;
                 var decision = variant == 0 ? Decision.DENY : variant == 1 ? Decision.INDETERMINATE : Decision.PERMIT;
-                when(f.identity.contribute(f.nativeTicket)).thenReturn(new Contribution(request,
+                when(f.storage.contribute(f.storageTicket)).thenReturn(new Contribution(request,
                         request.requirements().stream().map(r -> new ResourceDecision(r, decision)).toList(),
                         "binding", "session", "user", START, START.plusSeconds(1), 17, 23));
                 assertThrows(AccessDeniedException.class, f::acquire);

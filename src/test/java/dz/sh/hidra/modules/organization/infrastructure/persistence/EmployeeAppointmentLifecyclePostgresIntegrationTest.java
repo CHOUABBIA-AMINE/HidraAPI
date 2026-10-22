@@ -1220,4 +1220,311 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
         assertEquals(0, count("SELECT count(*) FROM public.hidra_org_appointment_event WHERE employee_id=?",
                 fixture.employee()));
     }
+
+    private static final List<String> STORAGE_TABLES = List.of("employee","unit","position",
+            "appointment_binding_revision","appointment_binding_head","appointment_policy_revision",
+            "appointment_policy_head","appointment_configuration_event","appointment_lock_key",
+            "employee_assignment","appointment_event","appointment_receipt");
+
+    /**
+     * Real restricted Organization storage/transactions; upstream Identity alone
+     * is mocked. The test-only definer retains real native relation locks but is
+     * explicitly NOT a native preparation, permission or cryptographic proof.
+     */
+    private final class StorageFixture implements AutoCloseable {
+        final String role = "storage_" + UUID.randomUUID().toString().replace("-", "");
+        final String lockFunction = "public.fixture_storage_fences_" + role;
+        final DriverManagerDataSource dataSource;
+        final JdbcTemplate jdbc;
+        final org.springframework.transaction.support.TransactionTemplate tx;
+        final dz.sh.hidra.modules.identity.application.contract.organization
+                .OrganizationProtectedAppointmentAuthorizationContract identity =
+                org.mockito.Mockito.mock(dz.sh.hidra.modules.identity.application.contract.organization
+                        .OrganizationProtectedAppointmentAuthorizationContract.class);
+        final dz.sh.hidra.modules.identity.application.contract.organization
+                .OrganizationProtectedAppointmentAuthorizationContract.Admission nativeTicket =
+                org.mockito.Mockito.mock(dz.sh.hidra.modules.identity.application.contract.organization
+                        .OrganizationProtectedAppointmentAuthorizationContract.Admission.class);
+        final JdbcProtectedEmployeeAppointmentRepositoryAdapter storage;
+        final org.springframework.security.core.Authentication authentication =
+                new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
+                        "synthetic-storage-test", "unused", List.of());
+
+        StorageFixture() throws Exception {
+            admin("CREATE ROLE " + role + " LOGIN PASSWORD '" + PASSWORD + "'");
+            admin("GRANT USAGE ON SCHEMA public TO " + role);
+            for (String table : STORAGE_TABLES)
+                admin("GRANT SELECT ON public.hidra_org_" + table + " TO " + role);
+            for (String table : List.of("employee","unit","position","appointment_lock_key","employee_assignment"))
+                admin("GRANT UPDATE ON public.hidra_org_" + table + " TO " + role);
+            for (String table : List.of("appointment_binding_head","appointment_policy_head"))
+                admin("GRANT UPDATE ON public.hidra_org_" + table + " TO " + role);
+            admin("CREATE FUNCTION " + lockFunction + "() RETURNS void LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog AS $fixture$ BEGIN LOCK TABLE public.hidra_identity_attribute_definition IN SHARE ROW EXCLUSIVE MODE NOWAIT; LOCK TABLE public.hidra_identity_authorization_policy IN SHARE ROW EXCLUSIVE MODE NOWAIT; LOCK TABLE public.hidra_identity_authorization_policy_rule IN SHARE ROW EXCLUSIVE MODE NOWAIT; LOCK TABLE public.hidra_identity_authorization_policy_version IN SHARE ROW EXCLUSIVE MODE NOWAIT; LOCK TABLE public.hidra_identity_external_group_mapping IN SHARE ROW EXCLUSIVE MODE NOWAIT; LOCK TABLE public.hidra_identity_external_identity IN SHARE ROW EXCLUSIVE MODE NOWAIT; LOCK TABLE public.hidra_identity_external_permission_mapping IN SHARE ROW EXCLUSIVE MODE NOWAIT; LOCK TABLE public.hidra_identity_external_role_mapping IN SHARE ROW EXCLUSIVE MODE NOWAIT; LOCK TABLE public.hidra_identity_group IN SHARE ROW EXCLUSIVE MODE NOWAIT; LOCK TABLE public.hidra_identity_group_role_grant IN SHARE ROW EXCLUSIVE MODE NOWAIT; LOCK TABLE public.hidra_identity_local_credential IN SHARE ROW EXCLUSIVE MODE NOWAIT; LOCK TABLE public.hidra_identity_login_session IN SHARE ROW EXCLUSIVE MODE NOWAIT; LOCK TABLE public.hidra_identity_operation_binding IN SHARE ROW EXCLUSIVE MODE NOWAIT; LOCK TABLE public.hidra_identity_permission IN SHARE ROW EXCLUSIVE MODE NOWAIT; LOCK TABLE public.hidra_identity_provider IN SHARE ROW EXCLUSIVE MODE NOWAIT; LOCK TABLE public.hidra_identity_role IN SHARE ROW EXCLUSIVE MODE NOWAIT; LOCK TABLE public.hidra_identity_role_permission_grant IN SHARE ROW EXCLUSIVE MODE NOWAIT; LOCK TABLE public.hidra_identity_subject_security_attribute IN SHARE ROW EXCLUSIVE MODE NOWAIT; LOCK TABLE public.hidra_identity_user IN SHARE ROW EXCLUSIVE MODE NOWAIT; LOCK TABLE public.hidra_identity_user_group_membership IN SHARE ROW EXCLUSIVE MODE NOWAIT; LOCK TABLE public.hidra_identity_user_permission_grant IN SHARE ROW EXCLUSIVE MODE NOWAIT; LOCK TABLE public.hidra_identity_user_role_grant IN SHARE ROW EXCLUSIVE MODE NOWAIT; LOCK TABLE public.hidra_identity_external_mapping_generation IN ACCESS SHARE MODE NOWAIT; LOCK TABLE public.hidra_identity_bound_source_claim_evidence IN SHARE MODE NOWAIT; END; $fixture$");
+            admin("REVOKE ALL ON FUNCTION " + lockFunction + "() FROM PUBLIC");
+            admin("GRANT EXECUTE ON FUNCTION " + lockFunction + "() TO " + role);
+            dataSource = new DriverManagerDataSource(POSTGRES.getJdbcUrl(), role, PASSWORD);
+            jdbc = new JdbcTemplate(dataSource);
+            tx = new org.springframework.transaction.support.TransactionTemplate(
+                    new org.springframework.jdbc.datasource.DataSourceTransactionManager(dataSource));
+            tx.setIsolationLevel(java.sql.Connection.TRANSACTION_READ_COMMITTED);
+            storage = new JdbcProtectedEmployeeAppointmentRepositoryAdapter(jdbc, identity);
+            org.springframework.security.core.context.SecurityContextHolder.getContext()
+                    .setAuthentication(authentication);
+            org.mockito.Mockito.when(identity.finalFences(nativeTicket)).thenReturn(
+                    dz.sh.hidra.modules.identity.infrastructure.persistence.adapter
+                            .JdbcIdentityAuthorityFence.requiredRelationFences());
+            org.mockito.Mockito.when(identity.contribute(nativeTicket)).thenAnswer(call -> {
+                var f = retainedProjection;
+                var request = new dz.sh.hidra.modules.identity.application.contract.organization
+                        .OrganizationProtectedAppointmentAuthorizationContract.Request(
+                        dz.sh.hidra.modules.identity.application.contract.organization
+                                .OrganizationProtectedAppointmentAuthorizationContract.Action.READ_HISTORY,
+                        List.of(new CompanyUnit(f.company(),f.unit())),f.employee());
+                return jdbc.queryForObject("SELECT pg_backend_pid(),txid_current(),clock_timestamp()",
+                        (row,index) -> new dz.sh.hidra.modules.identity.application.contract.organization
+                                .OrganizationProtectedAppointmentAuthorizationContract.Contribution(
+                                request,request.requirements().stream().map(r ->
+                                    new dz.sh.hidra.modules.identity.application.contract.organization
+                                            .OrganizationProtectedAppointmentAuthorizationContract.ResourceDecision(
+                                            r,dz.sh.hidra.modules.identity.application.contract.organization
+                                                    .OrganizationProtectedAppointmentAuthorizationContract.Decision.PERMIT))
+                                    .toList(),
+                                "synthetic-binding","synthetic-session","synthetic-user",
+                                row.getTimestamp(3).toInstant(),row.getTimestamp(3).toInstant().plusSeconds(60),
+                                row.getInt(1),row.getLong(2)));
+            });
+        }
+
+        dz.sh.hidra.modules.organization.application.port.out.ProtectedEmployeeAppointmentRepositoryPort.Admission
+                acquire() {
+            jdbc.execute("SELECT " + lockFunction + "()");
+            var f = retainedProjection;
+            return storage.acquire(nativeTicket, List.of(),
+                    new dz.sh.hidra.modules.organization.application.port.out
+                            .ProtectedEmployeeAppointmentRepositoryPort.DescriptorPreview(
+                            List.of(new CompanyUnit(f.company(),f.unit())),f.employee(),f.id(),false));
+        }
+
+        org.springframework.jdbc.datasource.ConnectionHolder holder() {
+            return (org.springframework.jdbc.datasource.ConnectionHolder)
+                    org.springframework.transaction.support.TransactionSynchronizationManager
+                            .getResource(dataSource);
+        }
+
+        @Override public void close() {
+            org.springframework.security.core.context.SecurityContextHolder.clearContext();
+        }
+    }
+
+    @Test void storageAdmissionRetainsActualOwnerFencesAndConsumesItsNativeOwnerOnce() throws Exception {
+        try (var f = new StorageFixture()) {
+            f.tx.execute(status -> {
+                var ticket = f.acquire();
+                var sample = f.storage.contribute(ticket);
+                assertEquals(retainedProjection.employee(),sample.request().employeeId());
+                assertDoesNotThrow(() -> f.storage.requireCurrent(ticket));
+                assertEquals(12, f.jdbc.queryForObject("""
+                        SELECT count(DISTINCT c.relname) FROM pg_locks l
+                        JOIN pg_class c ON c.oid=l.relation JOIN pg_namespace n ON n.oid=c.relnamespace
+                        WHERE pid=pg_backend_pid() AND granted AND locktype='relation' AND n.nspname='public'
+                          AND c.relname IN ('hidra_org_employee','hidra_org_unit','hidra_org_position',
+                            'hidra_org_appointment_binding_revision','hidra_org_appointment_binding_head',
+                            'hidra_org_appointment_policy_revision','hidra_org_appointment_policy_head',
+                            'hidra_org_appointment_configuration_event','hidra_org_appointment_lock_key',
+                            'hidra_org_employee_assignment','hidra_org_appointment_event','hidra_org_appointment_receipt')
+                        """,Integer.class));
+                assertEquals("StorageAdmission[opaque]",ticket.toString());
+                assertThrows(AccessDeniedException.class,() -> f.storage.contribute(ticket));
+                assertTrue(f.holder().isRollbackOnly());
+                org.mockito.Mockito.verify(f.identity,org.mockito.Mockito.times(1)).contribute(f.nativeTicket);
+                status.setRollbackOnly();
+                return null;
+            });
+        }
+    }
+
+    @Test void storageAdmissionRejectsUnqualifiedForeignCompletedAndWrongThreadTickets() throws Exception {
+        try (var f = new StorageFixture()) {
+            var saved = new dz.sh.hidra.modules.organization.application.port.out
+                    .ProtectedEmployeeAppointmentRepositoryPort.Admission[1];
+            f.tx.execute(status -> {
+                saved[0]=f.acquire();
+                assertThrows(AccessDeniedException.class,() -> f.storage.requireCurrent(saved[0]));
+                assertTrue(f.holder().isRollbackOnly());
+                status.setRollbackOnly();return null;
+            });
+            f.tx.execute(status -> {
+                assertThrows(AccessDeniedException.class,() -> f.storage.requireCurrent(saved[0]));
+                assertTrue(f.holder().isRollbackOnly());
+                status.setRollbackOnly();return null;
+            });
+            f.tx.execute(status -> {
+                var ticket=f.acquire();f.storage.contribute(ticket);
+                var other=new JdbcProtectedEmployeeAppointmentRepositoryAdapter(f.jdbc,f.identity);
+                assertThrows(AccessDeniedException.class,() -> other.requireCurrent(ticket));
+                assertTrue(f.holder().isRollbackOnly());
+                status.setRollbackOnly();return null;
+            });
+            f.tx.execute(status -> {
+                var ticket=f.acquire();f.storage.contribute(ticket);
+                var worker=java.util.concurrent.Executors.newSingleThreadExecutor();
+                try {
+                    var failure=worker.submit(() -> assertThrows(AccessDeniedException.class,
+                            () -> f.storage.requireCurrent(ticket)));
+                    assertNotNull(failure.get(5,java.util.concurrent.TimeUnit.SECONDS));
+                } catch(Exception unexpected) { throw new AssertionError(unexpected); }
+                finally {worker.shutdownNow();}
+                assertTrue(f.holder().isRollbackOnly());
+                status.setRollbackOnly();return null;
+            });
+        }
+    }
+
+    @Test void storageAdmissionRejectsAuthenticationSwapSuspensionAndIssuerRevocation() throws Exception {
+        try (var f = new StorageFixture()) {
+            for (int variant=0;variant<3;variant++) {
+                final int failure=variant;
+                f.tx.execute(status -> {
+                    var ticket=f.acquire();f.storage.contribute(ticket);
+                    if(failure==0)
+                        org.springframework.security.core.context.SecurityContextHolder.clearContext();
+                    else if(failure==1)
+                        org.springframework.transaction.support.TransactionSynchronizationManager
+                                .getSynchronizations().forEach(s -> s.suspend());
+                    else org.mockito.Mockito.doThrow(new IllegalStateException("native owner revoked"))
+                            .when(f.identity).requireCurrent(f.nativeTicket);
+                    assertThrows(AccessDeniedException.class,() -> f.storage.requireCurrent(ticket));
+                    assertTrue(f.holder().isRollbackOnly());
+                    status.setRollbackOnly();return null;
+                });
+                org.springframework.security.core.context.SecurityContextHolder.getContext()
+                        .setAuthentication(f.authentication);
+            }
+        }
+    }
+
+    @Test void storageAdmissionCatalogPinsRejectDisabledTriggersAndRemovedConstraints() throws Exception {
+        try (var f = new StorageFixture()) {
+            admin("ALTER TABLE public.hidra_org_appointment_event DISABLE TRIGGER appointment_event_immutable");
+            try {
+                f.tx.execute(status -> {
+                    assertThrows(AccessDeniedException.class,f::acquire);
+                    assertTrue(f.holder().isRollbackOnly());
+                    status.setRollbackOnly();return null;
+                });
+            } finally {
+                admin("ALTER TABLE public.hidra_org_appointment_event ENABLE TRIGGER appointment_event_immutable");
+            }
+            String definition=catalog("SELECT pg_get_constraintdef(oid) FROM pg_constraint WHERE conrelid='public.hidra_org_employee_assignment'::regclass AND conname='appointment_metadata_complete'").toString();
+            admin("ALTER TABLE public.hidra_org_employee_assignment DROP CONSTRAINT appointment_metadata_complete");
+            try {
+                f.tx.execute(status -> {
+                    assertThrows(AccessDeniedException.class,f::acquire);
+                    assertTrue(f.holder().isRollbackOnly());
+                    status.setRollbackOnly();return null;
+                });
+            } finally {
+                admin("ALTER TABLE public.hidra_org_employee_assignment ADD CONSTRAINT appointment_metadata_complete "+definition);
+            }
+            org.mockito.Mockito.verify(f.identity,org.mockito.Mockito.never()).contribute(f.nativeTicket);
+        }
+    }
+
+    @Test void storageAdmissionRejectsSchemaCreationPrivilegeAndConfigurationWriteEscalation() throws Exception {
+        try (var f = new StorageFixture()) {
+            admin("GRANT CREATE ON SCHEMA public TO "+f.role);
+            try {
+                f.tx.execute(status -> {
+                    assertThrows(AccessDeniedException.class,f::acquire);
+                    assertTrue(f.holder().isRollbackOnly());
+                    status.setRollbackOnly();return null;
+                });
+            } finally {admin("REVOKE CREATE ON SCHEMA public FROM "+f.role);}
+            admin("GRANT INSERT ON public.hidra_org_appointment_binding_head TO "+f.role);
+            try {
+                f.tx.execute(status -> {
+                    assertThrows(AccessDeniedException.class,f::acquire);
+                    assertTrue(f.holder().isRollbackOnly());
+                    status.setRollbackOnly();return null;
+                });
+            } finally {admin("REVOKE INSERT ON public.hidra_org_appointment_binding_head FROM "+f.role);}
+            org.mockito.Mockito.verify(f.identity,org.mockito.Mockito.never()).contribute(f.nativeTicket);
+        }
+    }
+
+    @Test void storageAdmissionCannotWaitPastAnEarlierOrganizationWriterFence() throws Exception {
+        try (var f=new StorageFixture();var blocker=owner()) {
+            blocker.setAutoCommit(false);
+            execute(blocker,"LOCK TABLE public.hidra_org_employee IN SHARE ROW EXCLUSIVE MODE");
+            f.tx.execute(status -> {
+                assertThrows(AccessDeniedException.class,f::acquire);
+                assertTrue(f.holder().isRollbackOnly());
+                status.setRollbackOnly();return null;
+            });
+            blocker.rollback();
+            org.mockito.Mockito.verify(f.identity,org.mockito.Mockito.never()).contribute(f.nativeTicket);
+        }
+    }
+
+
+    @Test void storageLockPrivilegeCannotActivateAConfigurationWithoutItsAdministratorEvent() throws Exception {
+        try(var f=new StorageFixture();var c=login(f.role)) {
+            state("23514",() -> execute(c,
+                    "UPDATE public.hidra_org_appointment_binding_head SET revision=revision+1,generation=generation+1 WHERE organization_unit_id=?",
+                    retainedProjection.unit()));
+            c.rollback();
+            state("23514",() -> execute(c,
+                    "UPDATE public.hidra_org_appointment_policy_head SET revision=revision+1,generation=generation+1 WHERE company_party_id=?",
+                    retainedProjection.company()));
+            c.rollback();
+            state("42501",() -> execute(c,
+                    "SELECT public.hidra_org_activate_appointment_binding(?::text,?::text,?::text,1::bigint)",
+                    retainedProjection.binding(),retainedProjection.unit(),retainedProjection.company()));
+            c.rollback();
+        }
+    }
+
+
+    @Test void storageAdmissionRejectsNativeScopeAndPhysicalCoordinateSubstitution() throws Exception {
+        try(var f=new StorageFixture()) {
+            for(boolean wrongScope:List.of(true,false)) {
+                f.tx.execute(status -> {
+                    var ticket=f.acquire();
+                    var reference=retainedProjection;
+                    var request=new dz.sh.hidra.modules.identity.application.contract.organization
+                            .OrganizationProtectedAppointmentAuthorizationContract.Request(
+                            dz.sh.hidra.modules.identity.application.contract.organization
+                                    .OrganizationProtectedAppointmentAuthorizationContract.Action.READ_HISTORY,
+                            List.of(new CompanyUnit(reference.company(),
+                                    wrongScope?"foreign-unit":reference.unit())),reference.employee());
+                    var sample=f.jdbc.queryForObject("SELECT pg_backend_pid(),txid_current(),clock_timestamp()",
+                            (row,index) -> new dz.sh.hidra.modules.identity.application.contract.organization
+                                    .OrganizationProtectedAppointmentAuthorizationContract.Contribution(
+                                    request,request.requirements().stream().map(r ->
+                                        new dz.sh.hidra.modules.identity.application.contract.organization
+                                                .OrganizationProtectedAppointmentAuthorizationContract.ResourceDecision(
+                                                r,dz.sh.hidra.modules.identity.application.contract.organization
+                                                        .OrganizationProtectedAppointmentAuthorizationContract.Decision.PERMIT))
+                                        .toList(),
+                                    "synthetic-binding","synthetic-session","synthetic-user",
+                                    row.getTimestamp(3).toInstant(),row.getTimestamp(3).toInstant().plusSeconds(60),
+                                    row.getInt(1)+(wrongScope?0:1),row.getLong(2)));
+                    org.mockito.Mockito.when(f.identity.contribute(f.nativeTicket)).thenReturn(sample);
+                    assertThrows(AccessDeniedException.class,() -> f.storage.contribute(ticket));
+                    assertTrue(f.holder().isRollbackOnly());
+                    status.setRollbackOnly();return null;
+                });
+            }
+        }
+    }
+
+    @Test void storageAdmissionBeforeCommitVetoIsSqlFreeAfterAuthenticationReplacement() throws Exception {
+        try (var f=new StorageFixture()) {
+            assertThrows(AccessDeniedException.class,() -> f.tx.execute(status -> {
+                var ticket=f.acquire();f.storage.contribute(ticket);
+                org.springframework.security.core.context.SecurityContextHolder.clearContext();
+                return null; // Actual Spring beforeCommit must veto this otherwise read-only fixture.
+            }));
+        }
+    }
 }

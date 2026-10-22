@@ -99,6 +99,27 @@ class DocumentationTests(unittest.TestCase):
             with self.subTest(text=text), self.assertRaises(ValueError):
                 validator.links(text)
 
+    def test_generated_physical_sql_evidence_is_not_markdown_reference(self):
+        # A canonical source-evidence line is rendered SQL, including regex
+        # character classes; they are not Markdown reference links.
+        text = (
+            "  - Function evidence: CREATE FUNCTION f() AS $function$<br>"
+            "IF v !~ '^[1-9][0-9]{0,18}$' THEN RETURN false; END;<br>$function$<br>\n"
+            "[real](modules/demo.md)\n"
+        )
+        self.assertEqual(
+            validator.validate_links(self.root, self.root / 'doc/README.md', text), 1
+        )
+        # A genuine missing Markdown reference remains a hard failure next
+        # to the identical opaque SQL line. No generic reference bypass.
+        with self.assertRaisesRegex(ValueError, 'Unresolved reference link'):
+            validator.links(text + "[broken][missing]\n")
+        with self.assertRaisesRegex(ValueError, 'Unresolved reference link'):
+            validator.links("[1-9][0-9]\n")
+        # Only the precise canonical evidence prefix is exempt.
+        with self.assertRaisesRegex(ValueError, 'Unresolved reference link'):
+            validator.links("  - Other evidence: [1-9][0-9]\n")
+
     def test_unknown_status_and_path_specific_historical_exception(self):
         self.append('doc/old.md', '\nHistorical provenance stays intact.\n')
         self.check()

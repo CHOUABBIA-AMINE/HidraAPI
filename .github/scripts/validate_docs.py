@@ -79,6 +79,11 @@ def destination(value):
 
 def links(text):
     text = without_fences(text)
+    # Generated physical SQL is one escaped HTML line, not Markdown prose.
+    # Regex character classes such as [1-9][0-9] are not reference links.
+    # Scope this exemption strictly to generator-owned function evidence;
+    # all surrounding Markdown links and reference definitions remain checked.
+    text = re.sub(r'^  - Function evidence: [^\n]*$', '', text, flags=re.M)
     # Inline code is an example, not a link or reference definition.
     text = re.sub(r'(`+)(.*?)\1', lambda m: ' ' * len(m[0]), text)
     definitions = {}

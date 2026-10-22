@@ -24254,6 +24254,81 @@ HidraAPI CI workflow browser dispatch steps, then STOP for owner CI feedback.
 Do not advance the registered JDBC/native protected-storage stage until
 exact-head Full CI validates the repaired physical dictionary.
 
+### 2026-10-22 — HAPI-778 Full821 / Docs511 catalog rendering and link-validation repair
+
+**Owner Fail, exact-head evidence:** Main
+`41e9453597e653685b2f25e4f3b676ec48a6477a`, tree `36925a517c60569cd7df3252d6b068f0f0ba6c61`.
+[Full CI #821](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39766580340)
+completed FAILURE; [Documentation #511](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39764509176)
+completed FAILURE. Unit/architecture and all five PostgreSQL shards succeeded
+under Full #821. Its API-contract job 119783418150 failed the unchanged
+physical dictionary `--check` and its static-validation job 119783418326,
+as well as Docs job 119776504009, reported
+`Documentation validation FAILED: Unresolved reference link: 0-9`.
+The Full gate consequently failed for missing required successful jobs.
+This is not a claim of PostgreSQL test failure, new application code failure
+or operational/production data problem.
+
+**Identified dual defect:** Previous catalog reconciliation incorrectly
+used JavaScript string replacement for a SQL function body containing the
+literal end-of-regex `$'` sequence. JavaScript interpreted that replacement
+token as the suffix of the old document, injecting the old trigger definition
+inside the new regular expression `^[1-9][0-9]{0,18}$` and corrupting
+the published dictionary. In addition, the existing Markdown link scanner
+mistook adjacent SQL regular-expression classes `[1-9][0-9]` in the
+generator-owned `  - Function evidence:` line for Markdown reference links.
+This second issue would reject the correct generated catalog too.
+
+**Authorized bounded correction:** Exact commit message
+`docs(organization): reconcile appointment API and catalog artifacts`.
+MODIFY only `doc/database/DATA_DICTIONARY.md`,
+`.github/scripts/validate_docs.py`, `.github/scripts/test_validate_docs.py`
+and this append-only record. CREATE/DELETE none. The dictionary rebuild
+starts from the previous fully reviewed pre-002 `DATA_DICTIONARY.md`,
+adds precisely the new physical constraint and trigger to the appointment
+event, and uses a literal callback replacement for the unchanged
+PostgreSQL-trigger function source (not JavaScript replacement-pattern
+interpretation). The actual Full820/Full821 disposable `schema.json`
+supports the new trigger, function identity, counts 164 migrations,
+470 JPA mappings,513 relations, zero unresolved owners and the true source
+bundle hash `5c511864b5d8bd5c32353fa0ba86957c9d78ed6dfd92d303688f14869d7fed5c`.
+The compared PostgreSQL `pg_get_functiondef` is 5907 characters and
+its unchanged Markdown `Function evidence` renderer is 6476 characters,
+including all original SQL bytes. The defect-laden source is discarded;
+outside this one physical event section and the provenance counters, the
+reviewed pre-002 dictionary stays identical.
+
+The validator continues to reject broken ordinary links, missing anchors,
+duplicate references and invalid canonical navigation. The only addition
+is skipping *one precisely prefixed generator-owned physical SQL evidence line*
+in the Markdown link parser; this SQL field is not authored Markdown prose.
+A new focused fixture verifies the canonical SQL `[1-9][0-9]` text is
+not resolved as a reference and neighboring broken Markdown references,
+including identical bracket text without the prefix, still fail. Existing
+fixture tests and governance checks are not deleted or weakened.
+
+**Verification limits and acceptance:** The authoring checks verify exactly
+one new constraint and one new enabled trigger, preserve the previous event
+trigger, compare captured physical catalog function/definition shape and
+source bundle metadata, and reject the originally corrupted SQL span.
+The actual hosted regenerated dictionary and all validation suites remain
+the acceptance gate; no local fresh-schema PostgreSQL, full Java21/Maven
+or hosted test result is claimed by this preparation. The source/migration,
+JPA entities, native Identity/Party tickets, permission grants,
+database writer, test inventory, five database partitions and legacy REST
+remain untouched. Status stays HAPI-778 PARTIAL/IN_PROGRESS and HAPI-590
+PARTIAL/BLOCKED. No production data, deployment, calibration, SITE
+qualification or OT actuation.
+
+**Publication and STOP:** Publish only these four file paths to existing
+main using an expected-head lease at `41e9453597e653685b2f25e4f3b676ec48a6477a`; verify exact resulting
+parent/tree/blobs/message and confirm Full/Fast/Docs workflow creation or
+startup, then STOP without waiting. Full CI might require explicit
+workflow_dispatch because of documentation-only path filters: in that case,
+provide exact browser steps, never claim Full ran, and await owner feedback.
+Repair failed new CI first; next HAPI-778 guarded JDBC/native/receipt
+stage remains unexecuted.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

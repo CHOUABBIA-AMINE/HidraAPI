@@ -7,7 +7,7 @@
  *
  * @Name        : EmployeeAssignmentJpaEntity
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-29
+ * @UpdatedOn   : 2026-10-22
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -27,6 +27,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.Instant;
+import java.util.UUID;
 
     /**
      * Database-backed JPA entity for EmployeeAssignment.
@@ -67,6 +68,26 @@ import java.time.Instant;
 
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    // Hydration only. Protected SQL owns these values; legacy domain mapping
+    // neither invents ownership nor lets Hibernate advance a protected version.
+    @Column(name = "appointment_version", insertable = false, updatable = false)
+    private Long appointmentVersion;
+
+    @Column(name = "binding_id", length = 80, insertable = false, updatable = false)
+    private String bindingId;
+
+    @Column(name = "binding_revision", insertable = false, updatable = false)
+    private Long bindingRevision;
+
+    @Column(name = "policy_id", length = 80, insertable = false, updatable = false)
+    private String policyId;
+
+    @Column(name = "policy_revision", insertable = false, updatable = false)
+    private Long policyRevision;
+
+    @Column(name = "last_event_id", insertable = false, updatable = false)
+    private UUID lastEventId;
 
         protected EmployeeAssignmentJpaEntity() {
             // Required by JPA.
@@ -145,5 +166,12 @@ import java.time.Instant;
     public Instant updatedAt() {
         return updatedAt;
     }
+
+    public Long appointmentVersion() { return appointmentVersion; }
+    public String bindingId() { return bindingId; }
+    public Long bindingRevision() { return bindingRevision; }
+    public String policyId() { return policyId; }
+    public Long policyRevision() { return policyRevision; }
+    public UUID lastEventId() { return lastEventId; }
 
     }

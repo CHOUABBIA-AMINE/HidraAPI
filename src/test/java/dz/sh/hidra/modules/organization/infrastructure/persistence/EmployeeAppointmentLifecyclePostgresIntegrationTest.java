@@ -7,7 +7,7 @@
  *
  * @Name        : EmployeeAppointmentLifecyclePostgresIntegrationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-21
+ * @UpdatedOn   : 2026-10-22
  *
  * @Type        : Class
  * @Layer       : Test
@@ -49,12 +49,14 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
     private static final String PARTY = "public.hidra_party_require_organization_configuration_reference(text)";
     private static final String MIGRATION = "src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql";
     private static final String SUCCESSOR_MIGRATION = "src/main/resources/db/migration/V20261021_004__organization_appointment_configuration_successor.sql";
+    private static final String PROJECTION_MIGRATION = "src/main/resources/db/migration/V20261022_001__organization_appointment_projection_integrity.sql";
     private static final List<String> TABLES = List.of("binding_revision", "binding_head", "policy_revision", "policy_head",
             "configuration_event", "lock_key", "event", "receipt");
     @Container static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:16");
     private String partyType, unitType;
     private String upgradeCompany, upgradeUnit, upgradeBinding, upgradePolicy;
     private long originalConfigurationChecksum;
+    private String retainedLegacyId;
 
     @BeforeAll void migrateAndSeparatePrincipals() throws Exception {
         Flyway.configure().dataSource(POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword())
@@ -79,6 +81,10 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
             policy(c, upgradePolicy, upgradeCompany, 0, policyValue());
             c.commit();
         }
+        String legacyEmployee = employee(), legacyPosition = position();
+        retainedLegacyId = "legacy-" + UUID.randomUUID();
+        admin("INSERT INTO public.hidra_org_employee_assignment(id,employee_id,organization_unit_id,position_id,assignment_type,valid_from,status,created_at,updated_at) VALUES (?,?,?,?,'PRIMARY',now(),'ACTIVE',now(),now())",
+                retainedLegacyId, legacyEmployee, upgradeUnit, legacyPosition);
         Flyway.configure().dataSource(POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword()).load().migrate();
         assertEquals(originalConfigurationChecksum, count("SELECT checksum FROM public.flyway_schema_history WHERE script=?",
                 Path.of(MIGRATION).getFileName().toString()));
@@ -112,6 +118,70 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
         String id="unit-"+UUID.randomUUID();
         admin("INSERT INTO public.hidra_org_unit(id,code,unit_type_id,status,valid_from,created_at,updated_at) VALUES (?,?,?,'ACTIVE',now()-interval '1 day',now(),now())",id,id,unitType);
         return id;
+    }
+    private String employee() throws SQLException {
+        String id = "employee-" + UUID.randomUUID();
+        admin("INSERT INTO public.hidra_org_employee(id,employee_number,employee_type,status,created_at,updated_at) VALUES (?,?,'PERMANENT','ACTIVE',now(),now())", id, id);
+        return id;
+    }
+    private String position() throws SQLException {
+        String id = "position-" + UUID.randomUUID();
+        admin("INSERT INTO public.hidra_org_position(id,code,status,created_at,updated_at) VALUES (?,?,'ACTIVE',now(),now())", id, id);
+        return id;
+    }
+
+    private record Projection(String id, String company, String unit, String employee, String position,
+                              String binding, String policy) {}
+
+    private Projection projection() throws SQLException {
+        var f = new Projection("assignment-" + UUID.randomUUID(), company("ACTIVE"), unit(), employee(), position(),
+                "binding-" + UUID.randomUUID(), "policy-" + UUID.randomUUID());
+        try (var c = login(CONFIG)) {
+            binding(c, f.binding(), f.unit(), f.company(), 0);
+            policy(c, f.policy(), f.company(), 0, policyValue());
+            c.commit();
+        }
+        return f;
+    }
+
+    private Connection projectionTransaction() throws SQLException {
+        var c = owner(); c.setAutoCommit(false); return c;
+    }
+
+    private static void insertProjection(Connection c, Projection f, UUID event) throws SQLException {
+        execute(c, "INSERT INTO public.hidra_org_employee_assignment(id,employee_id,organization_unit_id,position_id,assignment_type,valid_from,status,created_at,updated_at,appointment_version,binding_id,binding_revision,policy_id,policy_revision,last_event_id) VALUES (?,?,?,?,'PRIMARY',transaction_timestamp()-interval '1 day','ACTIVE',transaction_timestamp(),transaction_timestamp(),1,?,1,?,1,?::uuid)",
+                f.id(), f.employee(), f.unit(), f.position(), f.binding(), f.policy(), event);
+    }
+
+    private static String snapshot(Connection c, String id) throws SQLException {
+        return scalar(c, "SELECT public.hidra_org_appointment_snapshot(a)::text FROM public.hidra_org_employee_assignment a WHERE id=?", id).toString();
+    }
+
+    private static String payload(Connection c, Projection f, String operation, String before, String successor) throws SQLException {
+        return scalar(c, "SELECT jsonb_build_object('command',jsonb_build_object('kind',?::text,'companyPartyId',?::text,'requestId',?::text),'before',?::jsonb,'after',public.hidra_org_appointment_snapshot(a),'successor',?::jsonb)::text FROM public.hidra_org_employee_assignment a WHERE id=?",
+                operation, f.company(), "request-" + UUID.randomUUID(), before, successor, f.id()).toString();
+    }
+
+    private static void insertEvent(Connection c, Projection f, UUID event, String operation, String successorId,
+                                    String payload, boolean wrongDigest) throws SQLException {
+        execute(c, "INSERT INTO public.hidra_org_appointment_event(event_id,operation,assignment_id,successor_id,employee_id,company_party_id,policy_id,policy_revision,canonical_payload,command_sha256,actor_binding_id,actor_session_id,actor_user_id,sampled_at,valid_until,backend_pid,transaction_id) SELECT ?::uuid,?::text,?::text,?::text,?::text,?::text,?::text,1,convert_to(p::text,'UTF8'),CASE WHEN ?::boolean THEN repeat('0',64) ELSE encode(sha256(convert_to((p->'command')::text,'UTF8')),'hex') END,?::uuid,?::uuid,'synthetic-actor',transaction_timestamp(),transaction_timestamp()+interval '1 hour',pg_backend_pid(),txid_current() FROM (SELECT ?::jsonb p) v",
+                event, operation, f.id(), successorId, f.employee(), f.company(), f.policy(), wrongDigest,
+                UUID.randomUUID(), UUID.randomUUID(), payload);
+    }
+
+    private static void insertReceipt(Connection c, UUID event) throws SQLException {
+        execute(c, "INSERT INTO public.hidra_org_appointment_receipt(event_id,actor_user_id,scope_key,request_id,command_sha256,canonical_result,guarded_at,backend_pid,transaction_id) SELECT event_id,actor_user_id,repeat('a',64),(convert_from(canonical_payload,'UTF8')::jsonb)->'command'->>'requestId',command_sha256,canonical_payload,sampled_at,backend_pid,transaction_id FROM public.hidra_org_appointment_event WHERE event_id=?::uuid", event);
+    }
+
+    /** Owner-authored structural fixture only, never a native authorization proof. */
+    private static UUID completeCreate(Connection c, Projection f) throws SQLException {
+        UUID event = UUID.randomUUID();
+        insertProjection(c, f, event);
+        insertEvent(c, f, event, "CREATE", null, payload(c, f, "CREATE", "null", "null"), false);
+        insertReceipt(c, event);
+        execute(c, "SET CONSTRAINTS ALL IMMEDIATE");
+        execute(c, "SET CONSTRAINTS ALL DEFERRED");
+        return event;
     }
     private static Object binding(Connection c,String id,String unit,String company,long expected) throws SQLException {
         return scalar(c,"SELECT public.hidra_org_activate_appointment_binding(?::text,?::text,?::text,?::bigint)",id,unit,company,expected);
@@ -292,6 +362,227 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
         try (var c = login(CONFIG)) {
             state("40001", () -> binding(c, upgradeBinding, upgradeUnit, upgradeCompany, 1));
             c.rollback();
+        }
+    }
+
+    @Test void projectionUpgradeRetainsLegacyRowsWithoutInventingPins() throws Exception {
+        assertEquals(1, count("SELECT count(*) FROM public.hidra_org_employee_assignment WHERE id=? AND appointment_version IS NULL AND binding_id IS NULL AND binding_revision IS NULL AND policy_id IS NULL AND policy_revision IS NULL AND last_event_id IS NULL", retainedLegacyId));
+        assertEquals(1, count("SELECT count(*) FROM public.flyway_schema_history WHERE script=? AND success", Path.of(PROJECTION_MIGRATION).getFileName().toString()));
+        try (var c = projectionTransaction()) {
+            state("23514", () -> execute(c, "UPDATE public.hidra_org_employee_assignment SET appointment_version=1,binding_id=?,binding_revision=1,policy_id=?,policy_revision=1,last_event_id=?::uuid WHERE id=?",
+                    upgradeBinding, upgradePolicy, UUID.randomUUID(), retainedLegacyId));
+            c.rollback();
+        }
+    }
+
+    @Test void projectionRejectsPartialMetadataAndNonInitialVersions() throws Exception {
+        var f = projection();
+        for (String column : List.of("appointment_version", "binding_id", "binding_revision", "policy_id", "policy_revision", "last_event_id")) {
+            String value = column.endsWith("_id") ? column.equals("last_event_id") ? "gen_random_uuid()" : "'unresolved'" : "1";
+            try (var c = projectionTransaction()) {
+                state("23514", () -> execute(c, "INSERT INTO public.hidra_org_employee_assignment(id,employee_id,organization_unit_id,position_id,assignment_type,valid_from,status,created_at,updated_at," + column + ") VALUES (?,?,?,?,'PRIMARY',now(),'ACTIVE',now(),now()," + value + ")", f.id(), f.employee(), f.unit(), f.position()));
+                c.rollback();
+            }
+        }
+        try (var c = projectionTransaction()) {
+            state("23514", () -> execute(c, "INSERT INTO public.hidra_org_employee_assignment(id,employee_id,organization_unit_id,position_id,assignment_type,valid_from,status,created_at,updated_at,appointment_version,binding_id,binding_revision,policy_id,policy_revision,last_event_id) VALUES (?,?,?,?,'PRIMARY',now(),'ACTIVE',now(),now(),2,?,1,?,1,?::uuid)", f.id(), f.employee(), f.unit(), f.position(), f.binding(), f.policy(), UUID.randomUUID()));
+            c.rollback();
+        }
+    }
+
+    @Test void legacyInsertWithOrdinaryLoginNeedsNoPrivateHelperExecutePrivilege() throws Exception {
+        var f = projection();
+        assertEquals(Boolean.FALSE, catalog("SELECT has_function_privilege(?, 'public.hidra_org_appointment_exact_id(text)','EXECUTE')", ORDINARY));
+        admin("GRANT INSERT ON public.hidra_org_employee_assignment TO " + ORDINARY);
+        try (var c = login(ORDINARY)) {
+            execute(c, "INSERT INTO public.hidra_org_employee_assignment(id,employee_id,organization_unit_id,position_id,assignment_type,valid_from,status,created_at,updated_at) VALUES (?,?,?,?,'PRIMARY',now(),'ACTIVE',now(),now())", f.id(), f.employee(), f.unit(), f.position());
+            execute(c, "SET CONSTRAINTS ALL IMMEDIATE");
+            c.rollback();
+        } finally { admin("REVOKE INSERT ON public.hidra_org_employee_assignment FROM " + ORDINARY); }
+        assertEquals(0, count("SELECT count(*) FROM public.hidra_org_employee_assignment WHERE id=?", f.id()));
+    }
+
+    @Test void protectedProjectionNeedsRealRevisionReferencesAndMatchingUnit() throws Exception {
+        var f = projection();
+        for (String badColumn : List.of("binding_revision", "policy_revision")) try (var c = projectionTransaction()) {
+            insertProjection(c, f, UUID.randomUUID());
+            // A valid version transition still cannot refer to an absent immutable revision.
+            state("23503", () -> execute(c, "UPDATE public.hidra_org_employee_assignment SET " + badColumn + "=999,appointment_version=2,last_event_id=?::uuid WHERE id=?", UUID.randomUUID(), f.id()));
+            c.rollback();
+        }
+        try (var c = projectionTransaction()) {
+            var wrongUnit = new Projection(f.id(), f.company(), unit(), f.employee(), f.position(), f.binding(), f.policy());
+            UUID event = UUID.randomUUID();
+            insertProjection(c, wrongUnit, event);
+            insertEvent(c, wrongUnit, event, "CREATE", null, payload(c, wrongUnit, "CREATE", "null", "null"), false);
+            insertReceipt(c, event);
+            state("23514", () -> execute(c, "SET CONSTRAINTS ALL IMMEDIATE"));
+            c.rollback();
+        }
+    }
+
+    @Test void committingSourceWithoutEventRollsBackThePhysicalProjection() throws Exception {
+        var f = projection();
+        try (var c = projectionTransaction()) {
+            insertProjection(c, f, UUID.randomUUID());
+            assertTrue(assertThrows(SQLException.class, c::commit).getSQLState().startsWith("23"));
+            c.rollback();
+        }
+        assertEquals(0, count("SELECT count(*) FROM public.hidra_org_employee_assignment WHERE id=?", f.id()));
+    }
+
+    @Test void committingEventWithoutReceiptRollsBackSourceAndEvent() throws Exception {
+        var f = projection(); UUID event = UUID.randomUUID();
+        try (var c = projectionTransaction()) {
+            insertProjection(c, f, event);
+            insertEvent(c, f, event, "CREATE", null, payload(c, f, "CREATE", "null", "null"), false);
+            state("23514", c::commit);
+            c.rollback();
+        }
+        assertEquals(0, count("SELECT count(*) FROM public.hidra_org_employee_assignment WHERE id=?", f.id()));
+        assertEquals(0, count("SELECT count(*) FROM public.hidra_org_appointment_event WHERE event_id=?::uuid", event));
+    }
+
+    @Test void eventCannotSubstituteSnapshotCommandDigestOrPhysicalTransaction() throws Exception {
+        var f = projection();
+        for (String fault : List.of("snapshot", "digest", "transaction")) try (var c = projectionTransaction()) {
+            UUID event = UUID.randomUUID(); insertProjection(c, f, event);
+            String body = payload(c, f, "CREATE", "null", "null");
+            if (fault.equals("snapshot")) body = scalar(c, "SELECT jsonb_set(?::jsonb,'{after,assignment,employee_id}',to_jsonb('substituted'::text))::text", body).toString();
+            if (fault.equals("transaction")) {
+                execute(c, "INSERT INTO public.hidra_org_appointment_event(event_id,operation,assignment_id,employee_id,company_party_id,policy_id,policy_revision,canonical_payload,command_sha256,actor_binding_id,actor_session_id,actor_user_id,sampled_at,valid_until,backend_pid,transaction_id) SELECT ?::uuid,'CREATE',?::text,?::text,?::text,?::text,1,convert_to(p::text,'UTF8'),encode(sha256(convert_to((p->'command')::text,'UTF8')),'hex'),gen_random_uuid(),gen_random_uuid(),'synthetic-actor',transaction_timestamp(),transaction_timestamp()+interval '1 hour',pg_backend_pid(),txid_current()+1 FROM (SELECT ?::jsonb p) v", event, f.id(), f.employee(), f.company(), f.policy(), body);
+            } else insertEvent(c, f, event, "CREATE", null, body, fault.equals("digest"));
+            insertReceipt(c, event);
+            state("23514", () -> execute(c, "SET CONSTRAINTS ALL IMMEDIATE"));
+            c.rollback();
+            assertEquals(0, count("SELECT count(*) FROM public.hidra_org_employee_assignment WHERE id=?", f.id()));
+            assertEquals(0, count("SELECT count(*) FROM public.hidra_org_appointment_receipt WHERE event_id=?::uuid", event));
+        }
+    }
+
+    @Test void receiptMustMatchActorResultAndExclusiveGuardWindow() throws Exception {
+        var f = projection();
+        for (String fault : List.of("actor", "result", "expiry")) try (var c = projectionTransaction()) {
+            UUID event = UUID.randomUUID(); insertProjection(c, f, event);
+            insertEvent(c, f, event, "CREATE", null, payload(c, f, "CREATE", "null", "null"), false);
+            String actor = fault.equals("actor") ? "'another-actor'" : "actor_user_id";
+            String result = fault.equals("result") ? "convert_to('{\"substituted\":true}','UTF8')" : "canonical_payload";
+            String time = fault.equals("expiry") ? "valid_until" : "sampled_at";
+            execute(c, "INSERT INTO public.hidra_org_appointment_receipt(event_id,actor_user_id,scope_key,request_id,command_sha256,canonical_result,guarded_at,backend_pid,transaction_id) SELECT event_id," + actor + ",repeat('a',64),(convert_from(canonical_payload,'UTF8')::jsonb)->'command'->>'requestId',command_sha256," + result + "," + time + ",backend_pid,transaction_id FROM public.hidra_org_appointment_event WHERE event_id=?::uuid", event);
+            state("23514", () -> execute(c, "SET CONSTRAINTS ALL IMMEDIATE"));
+            c.rollback();
+        }
+    }
+
+    @Test void orphanEventForgedBeforeAndIncompleteTransferCannotCommit() throws Exception {
+        var f = projection();
+        try (var c = projectionTransaction()) {
+            var savepoint = c.setSavepoint(); UUID event = UUID.randomUUID();
+            insertProjection(c, f, event);
+            String body = payload(c, f, "CREATE", "null", "null");
+            c.rollback(savepoint);
+            insertEvent(c, f, event, "CREATE", null, body, false); insertReceipt(c, event);
+            state("23514", c::commit); c.rollback();
+            assertEquals(0, count("SELECT count(*) FROM public.hidra_org_appointment_event WHERE event_id=?::uuid", event));
+        }
+        for (String operation : List.of("END", "TRANSFER")) try (var c = projectionTransaction()) {
+            completeCreate(c, f);
+            String before = snapshot(c, f.id()); UUID event = UUID.randomUUID();
+            execute(c, "UPDATE public.hidra_org_employee_assignment SET appointment_version=2,last_event_id=?::uuid,valid_to=transaction_timestamp(),status='ENDED' WHERE id=?", event, f.id());
+            if (operation.equals("END")) before = scalar(c, "SELECT jsonb_set(?::jsonb,'{assignment,employee_id}',to_jsonb('forged-before'::text))::text", before).toString();
+            insertEvent(c, f, event, operation, operation.equals("TRANSFER") ? "missing-successor" : null,
+                    payload(c, f, operation, before, "null"), false);
+            insertReceipt(c, event);
+            state("23514", c::commit); c.rollback();
+            assertEquals(0, count("SELECT count(*) FROM public.hidra_org_employee_assignment WHERE id=?", f.id()));
+            assertEquals(0, count("SELECT count(*) FROM public.hidra_org_appointment_receipt WHERE event_id=?::uuid", event));
+        }
+    }
+
+    @Test void protectedIdentityVersionAndOwnershipCannotBeResetThroughRawSql() throws Exception {
+        var f = projection();
+        for (String change : List.of("appointment_version=appointment_version", "appointment_version=appointment_version+2",
+                "appointment_version=2,employee_id='substituted'", "appointment_version=2,id='substituted'",
+                "appointment_version=2,created_at=created_at-interval '1 second'",
+                "appointment_version=NULL,binding_id=NULL,binding_revision=NULL,policy_id=NULL,policy_revision=NULL,last_event_id=NULL")) {
+            try (var c = projectionTransaction()) {
+                completeCreate(c, f);
+                state("23514", () -> execute(c, "UPDATE public.hidra_org_employee_assignment SET " + change + " WHERE id=?", f.id()));
+                c.rollback();
+            }
+        }
+        try (var c = projectionTransaction()) {
+            completeCreate(c, f);
+            state("23514", () -> execute(c, "DELETE FROM public.hidra_org_employee_assignment WHERE id=?", f.id()));
+            c.rollback();
+        }
+        try (var c = projectionTransaction()) {
+            state("23514", () -> execute(c, "TRUNCATE public.hidra_org_employee_assignment CASCADE"));
+            c.rollback();
+        }
+    }
+
+    @Test void completeCreateEndCorrectionAndTransferPassStructuralProofThenRollbackTogether() throws Exception {
+        var f = projection();
+        for (String operation : List.of("CREATE", "END", "CORRECT", "TRANSFER")) try (var c = projectionTransaction()) {
+            UUID first = completeCreate(c, f), event = first;
+            if (!operation.equals("CREATE")) {
+                String before = snapshot(c, f.id()); event = UUID.randomUUID();
+                String change = operation.equals("CORRECT") ? "assignment_type='ACTING'" : "valid_to=transaction_timestamp(),status='ENDED'";
+                execute(c, "UPDATE public.hidra_org_employee_assignment SET appointment_version=2,last_event_id=?::uuid," + change + " WHERE id=?", event, f.id());
+                String successorId = null, successor = "null";
+                if (operation.equals("TRANSFER")) {
+                    successorId = "successor-" + UUID.randomUUID();
+                    execute(c, "INSERT INTO public.hidra_org_employee_assignment(id,employee_id,organization_unit_id,position_id,assignment_type,valid_from,valid_to,status,created_at,updated_at,appointment_version,binding_id,binding_revision,policy_id,policy_revision,last_event_id) SELECT ?::varchar,employee_id,organization_unit_id,position_id,assignment_type,valid_to,NULL,'ACTIVE',updated_at,updated_at,1,binding_id,binding_revision,policy_id,policy_revision,last_event_id FROM public.hidra_org_employee_assignment WHERE id=?", successorId, f.id());
+                    successor = snapshot(c, successorId);
+                }
+                insertEvent(c, f, event, operation, successorId, payload(c, f, operation, before, successor), false);
+                insertReceipt(c, event);
+                execute(c, "SET CONSTRAINTS ALL IMMEDIATE");
+                assertEquals(2L, ((Number)scalar(c, "SELECT appointment_version FROM public.hidra_org_employee_assignment WHERE id=?", f.id())).longValue());
+                assertEquals(before, scalar(c, "SELECT (convert_from(canonical_payload,'UTF8')::jsonb->'before')::text FROM public.hidra_org_appointment_event WHERE event_id=?::uuid", event));
+            }
+            c.rollback();
+            assertEquals(0, count("SELECT count(*) FROM public.hidra_org_employee_assignment WHERE id=? OR last_event_id=?::uuid", f.id(), event));
+            assertEquals(0, count("SELECT count(*) FROM public.hidra_org_appointment_event WHERE assignment_id=?", f.id()));
+            assertEquals(0, count("SELECT count(*) FROM public.hidra_org_appointment_receipt WHERE event_id=?::uuid OR event_id=?::uuid", first, event));
+        }
+    }
+
+    @Test void sameUnitCorrectionRetainsItsPinAndCrossCompanyCorrectionFails() throws Exception {
+        var f = projection(); var destination = projection();
+        try (var c = login(CONFIG)) { binding(c, f.binding(), f.unit(), f.company(), 1); c.commit(); }
+        for (boolean crossCompany : List.of(false, true)) try (var c = projectionTransaction()) {
+            completeCreate(c, f);
+            String before = snapshot(c, f.id()); UUID event = UUID.randomUUID();
+            Projection result = f;
+            if (crossCompany) {
+                execute(c, "UPDATE public.hidra_org_employee_assignment SET appointment_version=2,last_event_id=?::uuid,organization_unit_id=?,position_id=?,binding_id=?,policy_id=? WHERE id=?",
+                        event, destination.unit(), destination.position(), destination.binding(), destination.policy(), f.id());
+                result = new Projection(f.id(), destination.company(), destination.unit(), f.employee(), destination.position(), destination.binding(), destination.policy());
+            } else execute(c, "UPDATE public.hidra_org_employee_assignment SET appointment_version=2,last_event_id=?::uuid,binding_revision=2 WHERE id=?", event, f.id());
+            insertEvent(c, result, event, "CORRECT", null, payload(c, result, "CORRECT", before, "null"), false);
+            insertReceipt(c, event);
+            state("23514", c::commit); c.rollback();
+            assertEquals(0, count("SELECT count(*) FROM public.hidra_org_employee_assignment WHERE id=?", f.id()));
+        }
+    }
+
+    @Test void projectionFunctionsConstraintsAndDeferredTriggersHaveActualCatalogShape() throws Exception {
+        String source = Files.readString(Path.of(PROJECTION_MIGRATION));
+        var tags = List.of("projection_transition", "projection_snapshot", "projection_complete", "ledger_complete");
+        var signatures = List.of("hidra_org_appointment_projection_transition()", "hidra_org_appointment_snapshot(public.hidra_org_employee_assignment)",
+                "hidra_org_appointment_projection_complete()", "hidra_org_appointment_ledger_complete()");
+        for (int i = 0; i < tags.size(); i++) {
+            String body = source.split(java.util.regex.Pattern.quote("AS $" + tags.get(i) + "$"), 2)[1].split(java.util.regex.Pattern.quote("$" + tags.get(i) + "$;"), 2)[0];
+            assertEquals(body, catalog("SELECT prosrc FROM pg_proc WHERE oid=?::regprocedure", "public." + signatures.get(i)));
+            assertEquals(0, count("SELECT count(*) FROM pg_proc p CROSS JOIN LATERAL aclexplode(coalesce(p.proacl,acldefault('f',p.proowner))) a WHERE p.oid=?::regprocedure AND a.grantee=0 AND a.privilege_type='EXECUTE'", "public." + signatures.get(i)));
+        }
+        assertEquals(3, count("SELECT count(*) FROM pg_trigger WHERE tgname IN ('appointment_projection_complete','appointment_event_complete','appointment_receipt_complete') AND tgdeferrable AND tginitdeferred AND tgenabled='O' AND tgqual IS NULL"));
+        assertEquals(5, count("SELECT count(*) FROM pg_constraint WHERE conrelid='public.hidra_org_employee_assignment'::regclass AND conname IN ('appointment_metadata_complete','appointment_protected_values','appointment_binding_revision_fk','appointment_policy_revision_fk','appointment_last_event_fk') AND convalidated"));
+        for (String role : List.of(ORDINARY, PUBLISHER)) {
+            assertEquals(Boolean.FALSE, catalog("SELECT has_table_privilege(?, 'public.hidra_org_appointment_event','INSERT,UPDATE,DELETE,TRUNCATE')", role));
+            assertEquals(Boolean.FALSE, catalog("SELECT has_table_privilege(?, 'public.hidra_org_appointment_receipt','INSERT,UPDATE,DELETE,TRUNCATE')", role));
         }
     }
 

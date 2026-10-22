@@ -23554,6 +23554,133 @@ PARTIAL/IN_PROGRESS and HAPI-590 independently PARTIAL/BLOCKED. No deployment,
 release, production data, calibration, SITE or autonomous OT action is selected.
 
 
+### 2026-10-22 — HAPI-778 protected projection and ledger integrity
+
+Owner Next continues the existing protected-storage delivery package. Exact
+main `8ea971a587bba542ed5790908c9ff5134d83b790`, tree
+`b3fad60b79d44f2ed3419b091189ce038b3e1779`, passed
+[Full813](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39676526492)
+and [Docs503](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39676309111).
+The prior physical dictionary reconciliation therefore has actual exact-head
+Full acceptance. Current governance, owning task, source, migrations and CI were
+refreshed before this continuation. HAPI-778 stays PARTIAL/IN_PROGRESS.
+
+**Selected exact message:** `feat(organization): persist protected appointment lifecycle and history`.
+This is storage implementation inside that registered parent, not completion of
+the storage package or selection of final acceptance. Preserve applied003/004
+and every earlier migration byte. The following collision-free additive filename
+is admitted for the parent's already specified assignment/version/ledger contract:
+
+- CREATE `src/main/resources/db/migration/V20261022_001__organization_appointment_projection_integrity.sql`
+- MODIFY `src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/entity/EmployeeAssignmentJpaEntity.java`
+- MODIFY `src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java`
+- MODIFY `src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/OrganizationCanonicalScopePersistenceMappingTest.java`
+- MODIFY `.github/ci-test-inventory.json`, only the two actual test entries'
+  source hashes and new method identities
+- MODIFY `doc/roadmap/TASKS_HPS-003.md`, append only this HAPI-778 record
+
+DELETE none. No other module, executor, controller, grant, policy default,
+deployment, release, registry or task status is changed. The existing assignment
+relation already has its Organization ownership mapping; no new relation or
+ownership-map entry is invented.
+
+**Actual physical implementation:** The assignment gains nullable version,
+binding ID/revision, policy ID/revision and last-event UUID. An all-null tuple
+retains legacy data; partial tuples reject. Protected rows have positive versions,
+real immutable revision FKs, deferred last-event FK, exact identifiers, finite
+type/status values, valid half-open intervals and creation/update consistency.
+Insert starts at1; update advances exactly1, keeps ID/employee/createdAt, changes
+event and never goes backward in recorded time. No legacy row can be adopted by
+filling metadata, and protected metadata cannot be removed. Protected DELETE and
+statement-level TRUNCATE reject. Existing unbound legacy operations remain until
+the separately integrated writer cutover; their continued presence is explicit.
+
+Deferred row proof compares the event's exact after/successor snapshot with the
+actual projection and compares before with actual OLD, including the full pinned
+immutable binding. Unit/binding/policy/company equality, physical PID/XID,
+native-sample field equality, immutable identity and END/TRANSFER source semantics
+are checked. Same-unit correction retains its old binding; cross-company change
+rejects. Source and event checks require exactly1 affected row, or exactly2 for a
+TRANSFER with a distinct adjacent version1 successor for the same employee.
+An event without a source and a source without its event cannot commit.
+
+The internal storage envelope has exactly `command`, `before`, `after`,
+`successor`; a snapshot contains `assignment` (the exact database row) and
+`binding` (the exact immutable binding revision). Canonical bytes are PostgreSQL
+JSONB text in UTF-8 with UTC timestamp rendering. The retained command object
+contains kind/company/request selectors and its SHA256 is recomputed from its
+canonical bytes. The receipt retains the same complete immutable envelope and
+must match event actor, command digest, request, PID/XID and the half-open sample/
+expiry window. Both event and receipt schedule deferred completeness checks.
+The enclosing immutable event supplies event/actor/time metadata for the eventual
+detached application result; no public response shape is added here.
+
+**Explicit remaining authority boundary:** These are structural storage controls,
+not an authorization credential or a complete guarded writer. No DML/EXECUTE grant
+is added for either ordinary or publisher login. New functions are SECURITY
+INVOKER with fixed paths, PUBLIC EXECUTE revoked, and convey no administrator
+bridge. Trusted owner-authored complete fixtures can satisfy structural proof;
+they do not prove a genuine native PERMIT. Full typed-command/result consistency,
+scope-digest derivation, active destination/config/policy and conflict observation,
+native/Party issuer rechecks, runtime catalog pins, database-clock final guards,
+receipt creation exclusively by that guard and executor integration remain
+unfinished. Caller-supplied sample/PID/XID or a matching JSON object cannot replace
+those pending owner tickets. No raw-SQL authorization-attack acceptance is claimed.
+The legacy repository/REST cutover remains atomic integration work, not performed
+by this migration. No HTTP lifecycle endpoint is activated here.
+
+JPA hydrates the six nullable fields read-only; it neither fabricates legacy pins
+nor writes/increments protected metadata. The existing immutable domain record
+and mapping compatibility remain intact. Database transition checks also reject
+attempts to mutate protected state without advancing its event/version.
+
+**Authored tests and truthful evidence:** Preserve all15 prior PostgreSQL methods
+and add13 actual methods, bringing this existing class to28. They cover a row
+persisted before the additive upgrade, partial tuples, absent revision FKs,
+unit/pin mismatch, source/event/receipt commit failures and outside-transaction
+rollback counts, forged snapshots/digests/physical coordinates, receipt actor/
+result/expiry mismatch, orphan events, incomplete transfers, identity/version/
+metadata reset/delete/truncate, retained same-unit pin and cross-company refusal.
+An actual ordinary-login legacy insert, with only its old table INSERT privilege,
+also proves that the all-null path needs no EXECUTE on private protected helpers.
+Protected identifier checks sit in a separate trigger branch rather than adding
+private helper ACL requirements to the legacy constraint-expression plan.
+Positive owner-authored CREATE/END/CORRECT/TRANSFER structural fixtures force
+deferred checks and then roll back; none is represented as an authenticated
+application workflow. Add one mapping case retaining the original3 cases.
+The inventory changes only these two entries and preserves every other class,
+case, five PostgreSQL sets, timing weight, archive and metadata value. Existing
+unmeasured database weight remains0; no duration or speedup is invented.
+
+Migration source SHA256:
+`1cb697a9bd84384d9a4c7f3b758f78ea5687f048b37589cfe30b470fe3651bc8`.
+Authored prosrc SHA256 values (not a newly inspected physical catalog): transition
+`525d6eef06bb05e09fa6bfe32dc04ff953286d2cf4fdf2b548d1626b4c160ec9`, snapshot
+`4d5932127c531b2fb2906dee47c9f98607fa080cd6d7a57c94bb3902026c8962`, projection completeness
+`0f6d9118185119c3239b052d2ba53e969e4ada9a4353e7a0e6d351702b1a97a6`, ledger completeness
+`2ad3f0c7c64d18e0934454232c72afc1808e5ca8f2ad6b66e93f0f25d09a238b`.
+Hosted tests compare installed bodies, validated constraints, deferred/enabled
+triggers and retained restricted-role ACLs against the real source/catalog.
+
+**Local validation:** Java17 compiler-module parsing passed for the3 changed Java
+files (syntax only, no typecheck/runtime result). Strict source-linked inventory,
+documentation and offline OpenAPI validation passed; whitespace was checked.
+Maven/Java21/PostgreSQL were not installed/provisioned locally. The28 PostgreSQL
+cases and new mapping case have not been executed locally and remain hosted-CI
+acceptance obligations. No test skip or source review is counted as a runtime pass.
+
+**Artifact and next gate:** Preserve current physical dictionary and OpenAPI.
+The new migration and mapped columns require genuine hosted-catalog dictionary
+regeneration under the existing exact artifact message
+`docs(organization): reconcile appointment API and catalog artifacts`; expected
+dictionary drift is a pending failing gate, never accepted Full evidence.
+First inspect and repair actual SQL/test failures on the resulting exact SHA;
+then reconcile its actual catalog artifact and continue the unfinished guarded
+JDBC/native/receipt path. No task is promoted and no deployment is selected.
+Publish only these6 paths with expected8ea971a guard, verify parent/tree/message/
+blobs, confirm exact-SHA applicable CI creation or startup and STOP.
+
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

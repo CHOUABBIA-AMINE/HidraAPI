@@ -7,7 +7,7 @@
  *
  * @Name        : OrganizationCanonicalScopePersistenceMappingTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-29
+ * @UpdatedOn   : 2026-10-22
  *
  * @Type        : Class
  * @Layer       : Organization Test
@@ -122,6 +122,23 @@ class OrganizationCanonicalScopePersistenceMappingTest {
                         "operationalScopeCode",
                         "operationalScopeName"
                 );
+    }
+
+    @Test
+    void legacyMappingDoesNotInventProtectedOwnershipOrVersion() throws Exception {
+        EmployeeAssignment assignment = new EmployeeAssignment("legacy", "employee", "unit", "position",
+                AssignmentType.PRIMARY, NOW, null, AssignmentStatus.ACTIVE, NOW, NOW);
+        EmployeeAssignmentJpaEntity entity = OrganizationPersistenceMapper.toEntity(assignment);
+        for (String name : java.util.List.of("appointmentVersion", "bindingId", "bindingRevision",
+                "policyId", "policyRevision", "lastEventId")) {
+            Field field = EmployeeAssignmentJpaEntity.class.getDeclaredField(name);
+            field.setAccessible(true);
+            assertThat(field.get(entity)).isNull();
+            var column = field.getAnnotation(jakarta.persistence.Column.class);
+            assertThat(column.insertable()).isFalse();
+            assertThat(column.updatable()).isFalse();
+        }
+        assertThat(OrganizationPersistenceMapper.toDomain(entity)).isEqualTo(assignment);
     }
 
 }

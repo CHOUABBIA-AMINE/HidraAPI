@@ -8950,6 +8950,8 @@
         "immutableRowsAndHeadsRejectZeroRowUpdatesDeletesAndTruncate",
         "inactiveMissingOrMalformedCompanyAndUnitCannotCreateFacts",
         "independentConnectionActivationContendsWithoutDeadlockAndThenRejectsStaleCas",
+        "jdbcMutationPreviewRejectsLegacyAbsentAndForeignSourcesWithoutDisclosure",
+        "jdbcMutationPreviewUsesImmutableSourceBindingAndCanonicalTargetSelectors",
         "legacyInsertWithOrdinaryLoginNeedsNoPrivateHelperExecutePrivilege",
         "ordinaryAndPublisherCannotActivateDiscoverOrMutateConfiguration",
         "orphanEventForgedBeforeAndIncompleteTransferCannotCommit",
@@ -8976,7 +8978,7 @@
       "lane": "postgres-integration",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java",
-      "source_sha256": "f71cf5711ceed22da8c6ff9a4109d4fdacc60d37cbe7128f166b024976167cde",
+      "source_sha256": "8ffa20248b3076ac5819055f87db1f87f71cc354470e5457d196ee23de8a0c4c",
       "supports": []
     }
   ],

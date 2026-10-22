@@ -24890,6 +24890,20 @@ API cutover, production employee data, schema reset, deployment,
 calibration, SITE or OT action. Resume guarded JDBC/native appointment
 implementation only after the exact-head dictionary/CI gate passes.
 
+### 2026-10-22 — HAPI-778 B3 bounded JDBC mutation-descriptor discovery
+
+**Registered parent / exact commit message:** `feat(organization): persist protected appointment lifecycle and history`. Owner Next continues the accepted B3 implementation scope, not a new task or a stage claiming full lifecycle completion. Exact prior main `70b260e2cd8e8e77fa824e882cbabbd4dad677ec` passed Full CI #827, Fast #140 and Docs #517. The CI seven-shard adjustment is left unchanged.
+
+**Bounded delivery — one CREATE, three MODIFY, zero DELETE:** CREATE `src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JdbcProtectedEmployeeAppointmentRepositoryAdapter.java`; MODIFY `src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java`, `.github/ci-test-inventory.json` (this real test class's case names and source hash only), and this append-only HAPI-778 evidence record. No other Java, SQL/Flyway, CI/workflow, API/OpenAPI, data dictionary, ownership table, task status or policy change. All165 existing Flyway scripts retain their bytes.
+
+The new class is a **SELECT-only, not-wired** first portion of the existing registered protected JDBC repository, not yet a `ProtectedEmployeeAppointmentRepositoryPort` implementation or Spring component. CREATE returns its untrusted supplied company/unit/employee selector without a database claim. END, TRANSFER and CORRECT resolve source employee, unit and company using the source assignment's **immutable (binding_id,revision,unit)** relationship, never the current mutable binding head or an inferred company. They require complete protected projection metadata, reject zero/duplicate/unbound/foreign source rows with the same non-disclosing error, and return a distinct String-ordered one/two company/unit descriptor closure. A proposed destination is still only a selector, not a verified current binding. Parameterized SQL includes no write, lock, role change or user-visible result.
+
+**Actual test addition:** Two methods in the existing disposable PostgreSQL16/Flyway appointment class exercise the retained committed protected row, canonical transfer source/destination closure, failed absent/legacy/foreign selectors, uniform failures and selector-only CREATE. The test's two new cases are reflected in the source-linked inventory, with every existing case, class, shard, measured workload and policy retained. New adapter source is non-registered with Spring and does not enable any HTTP, mutation or history path. Local Java21/Maven/PostgreSQL execution is not claimed: hosted exact-SHA CI must execute these two cases. Source hashing and inventory equality checks are pre-publication structural checks only.
+
+**Remaining B3 acceptance:** A private actual `ProtectedEmployeeAppointmentRepositoryPort` admission issuer; native/Party/Organization fence sequencing and *locked* descriptor equality; full policy/conflict/CAS/replay classification; protected provisional SQL; independently verified current Identity proof, one final SQL guard with same-transaction proof-use/receipt; atomic application service and compatible legacy/REST cutover; complete native, ordinary/publisher/admin, rollback/concurrency/history and source-linked acceptance are **not** supplied by this slice. HAPI-778 remains PARTIAL/IN_PROGRESS and HAPI-590 independently PARTIAL/BLOCKED. No deployment or SITE acceptance is implied. Subsequent work stays within the admitted B3 envelope and must not wire this preview alone into authority.
+
+**Publication/stop:** Use exact `main` expected-head guard, verify all four blobs and single parent, observe new exact-SHA workflow creation/start, and stop pending acceptance feedback.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

@@ -30,6 +30,14 @@ import java.sql.SQLException;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.UUID;
+import dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.CompanyUnit;
+import dz.sh.hidra.modules.organization.application.command.EmployeeAppointmentCommand;
+import dz.sh.hidra.modules.organization.domain.value.AssignmentType;
+import dz.sh.hidra.modules.organization.infrastructure.persistence.adapter.JdbcProtectedEmployeeAppointmentRepositoryAdapter;
+import java.time.Instant;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.security.access.AccessDeniedException;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -835,5 +843,61 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
         }
         assertEquals(0,count("SELECT count(*) FROM pg_trigger WHERE NOT tgisinternal AND tgrelid::regclass::text LIKE 'hidra_org_appointment_%' AND tgenabled<>'O'"));
         assertEquals(0,count("SELECT count(*) FROM public.hidra_org_appointment_configuration_event WHERE sha256<>encode(sha256(canonical_payload),'hex') OR transaction_id<=0 OR backend_pid<=0"));
+    }
+
+    @Test void jdbcMutationPreviewUsesImmutableSourceBindingAndCanonicalTargetSelectors() {
+        var dataSource = new DriverManagerDataSource(
+                POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword());
+        var adapter = new JdbcProtectedEmployeeAppointmentRepositoryAdapter(
+                new JdbcTemplate(dataSource));
+        var f = retainedProjection;
+        var ending = new EmployeeAppointmentCommand.End(
+                "request-preview", f.company(), f.id(), 1,
+                Instant.parse("2026-10-23T10:00:00Z"), "synthetic end");
+        var source = adapter.preview(ending);
+        assertEquals(f.employee(), source.employeeId());
+        assertEquals(f.id(), source.assignmentId());
+        assertEquals(List.of(new CompanyUnit(f.company(), f.unit())), source.companyUnits());
+
+        var transfer = new EmployeeAppointmentCommand.Transfer(
+                "request-transfer", f.company(), f.id(), 1, "unverified-destination",
+                f.position(), AssignmentType.ACTING,
+                Instant.parse("2026-10-23T10:00:00Z"), null, 1, 1,
+                "synthetic transfer");
+        var proposed = adapter.preview(transfer);
+        var expected = new java.util.ArrayList<>(List.of(
+                new CompanyUnit(f.company(), f.unit()),
+                new CompanyUnit(f.company(), "unverified-destination")));
+        expected.sort(java.util.Comparator.comparing(CompanyUnit::companyPartyId)
+                .thenComparing(CompanyUnit::organizationUnitId));
+        assertEquals(expected, proposed.companyUnits());
+        // Preview never asserts the destination's existence or its eligibility.
+    }
+
+    @Test void jdbcMutationPreviewRejectsLegacyAbsentAndForeignSourcesWithoutDisclosure() {
+        var adapter = new JdbcProtectedEmployeeAppointmentRepositoryAdapter(
+                new JdbcTemplate(new DriverManagerDataSource(
+                        POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword())));
+        var f = retainedProjection;
+        var at = Instant.parse("2026-10-23T10:00:00Z");
+        for (String id : List.of(retainedLegacyId, "missing-synthetic-source")) {
+            var denied = new EmployeeAppointmentCommand.End(
+                    "request-denied", f.company(), id, 1, at, "synthetic reason");
+            assertEquals("Protected appointment admission unavailable",
+                    assertThrows(AccessDeniedException.class,
+                            () -> adapter.preview(denied)).getMessage());
+        }
+        var foreign = new EmployeeAppointmentCommand.End(
+                "request-foreign", "foreign-company", f.id(), 1, at, "synthetic reason");
+        assertEquals("Protected appointment admission unavailable",
+                assertThrows(AccessDeniedException.class,
+                        () -> adapter.preview(foreign)).getMessage());
+        var create = new EmployeeAppointmentCommand.Create(
+                "request-create", f.company(), f.employee(), f.unit(), f.position(),
+                AssignmentType.PRIMARY, at, null, 1, 1);
+        var selectors = adapter.preview(create);
+        assertEquals(List.of(new CompanyUnit(f.company(), f.unit())), selectors.companyUnits());
+        assertNull(selectors.assignmentId());
+        // A valid selector never grants current ownership or mutation access.
     }
 }

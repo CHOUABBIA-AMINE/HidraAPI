@@ -66,12 +66,14 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
         String publication="\"dz.sh.hidra.modules.topology.application.service.ProtectedStationGraphOperationService\"";
         String draft="\"dz.sh.hidra.modules.topology.application.service.EngineeringNetworkDraftApplicationService\"";
         String draftCoordinator="\"dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringDraftAdmissionCoordinator\"";
+        String appointment="\"dz.sh.hidra.modules.organization.application.service.ProtectedEmployeeAppointmentAdmissionCoordinator\"";
         for(String name:List.of("ProtectedTransactionExecutor","ProtectedOperationDataSource")) {
             String s=source("platform/persistence/"+name+".java");
             // L pins the compiled issuer by name, without importing or linking a business class.
             assertEquals(name.equals("ProtectedTransactionExecutor")?3:0,s.split(java.util.regex.Pattern.quote(approved),-1).length-1);
             assertEquals(name.equals("ProtectedTransactionExecutor")?1:0,s.split(java.util.regex.Pattern.quote(publication),-1).length-1);
-            assertFalse(s.replace(approved,"\"reviewed-caller\"").replace(publication,"\"reviewed-publication-caller\"").replace(draft,"\"reviewed-draft\"").replace(draftCoordinator,"\"reviewed-draft-coordinator\"").replace("\"dz.sh.hidra.modules.topology.application.service.EngineeringRevisionPublicationApplicationService\"","\"reviewed-publication-service\"").replace("\"dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringPublicationAdmissionCoordinator\"","\"reviewed-publication-coordinator\"").contains("dz.sh.hidra.modules."));
+            assertEquals(name.equals("ProtectedTransactionExecutor")?1:0,s.split(java.util.regex.Pattern.quote(appointment),-1).length-1);
+            assertFalse(s.replace(appointment,"\"reviewed-appointment-caller\"").replace(approved,"\"reviewed-caller\"").replace(publication,"\"reviewed-publication-caller\"").replace(draft,"\"reviewed-draft\"").replace(draftCoordinator,"\"reviewed-draft-coordinator\"").replace("\"dz.sh.hidra.modules.topology.application.service.EngineeringRevisionPublicationApplicationService\"","\"reviewed-publication-service\"").replace("\"dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringPublicationAdmissionCoordinator\"","\"reviewed-publication-coordinator\"").contains("dz.sh.hidra.modules."));
         }
     }
     // B2C's reviewed group-local row reuse updates the exact reader pin; legacy J pins stay fixed.

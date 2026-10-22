@@ -23846,6 +23846,70 @@ package. Final artifact/parent acceptance remains separate. No release, producti
 data, deployment, calibration, SITE or autonomous OT action is selected.
 
 
+### 2026-10-22 — HAPI-778 B3 exact provisional SQL admission allowlist
+
+**Selected single bounded implementation:** Owner Next follows main
+`fa31a08b8f5c220daba1e597ec33f534a846df89`, parent `58330499d4f1416507e5ea672219d17343eb2c72`,
+tree `b4d6fe02a7cc36f9bf442d3cc5663006878f9f9d`. [HidraAPI CI #816](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39746762459)
+completed SUCCESS for this exact SHA; Docs #506 also completed SUCCESS.
+This accepts the previous physical dictionary reconciliation within the
+current development evidence gate, not the unfinished appointment workflow.
+
+**Exact registered B3 commit message:**
+`feat(organization): persist protected appointment lifecycle and history`.
+MODIFY only `src/main/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutor.java`, `src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java`,
+`src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java`, `.github/ci-test-inventory.json` and this append-only
+HAPI-778 record in `doc/roadmap/TASKS_HPS-003.md`. No CREATE/DELETE.
+These are existing paths in the approved B3 allowlist. No migration/physical
+dictionary, source grant, actor/principal, Party/Identity owner export,
+new endpoint or runtime wiring is changed.
+
+**Executable technical boundary:** Preserve every previously approved draft,
+station and publication executor caller and SQL family. The protected executor
+now recognizes only the named compiled Organization appointment coordinator
+for provisional admission and checks a separate exact SHA256 allowlist
+of the six previously frozen KEY_INS, KEY_LOCK, SOURCE_LOCK, ASSIGNMENT_INS,
+ASSIGNMENT_CAS and EVENT_INS SQL templates. The six source templates were
+rehashed in memory and compared against their registered literal digests before
+the change; all six matched. Every provisional caller still requires the
+nontransferable same-scope single-use permit, permitted phase, no extra SQL,
+and the executor's existing limits. Guard functions remain distinct final-phase
+SQL and are not added to provisional DML. Ordinary callers cannot mint the
+appointment permit. Existing topology statement families and budgets are
+preserved; no prefix wildcard accepts arbitrary Organization INSERT/UPDATE.
+
+**Testing and limitation:** One new
+`ProtectedTransactionExecutorTest.appointmentProvisionalTemplatesRequireExactHashesAndCompiledCaller`
+reflectively asserts precisely the six fixed SHA256 members and tests the
+compiled-caller and no-generic-Organization-prefix source boundary. The existing
+topology guardrail recognizes exactly one literal Organization compiled
+caller and preserves the prohibition on other platform-to-module dependencies.
+The source-linked test inventory updates only these two actual source SHA256
+values and the new test method; it does not fabricate a measured duration or
+change lane allocations. Test source digests are
+`86660bf66a1cf480fd7f7e2526042a7b26c779b56380cdc85cc7e110c9307db9` (executor) and
+`21552c98dd78d5bd61f541586f5d2700156e10c828be272f6ba41128ae473cc6` (topology guardrail).
+JSON syntax, unchanged all-other inventory entries, old-entry source fingerprints,
+six frozen SQL hashes and exact replacement counts were checked in memory.
+No Maven/Spring/PostgreSQL runtime was executed locally: hosted Full/Fast/Docs
+on the published source remains the acceptance gate. The new test is a technical
+guardrail, not PostgreSQL admission or native mutation proof.
+
+**Remaining B3 scope:** The coordinator still has only read admission; the
+actual native Identity/Party WRITE admission, Organization policy and row-lock
+closure, guarded JDBC mutations, database-time final receipt, private history
+and atomic legacy REST cutover remain unimplemented. No Spring bean, SQL role
+grant, mutation permit issuance by the coordinator or HTTP endpoint is enabled
+by this change. HAPI-778 stays PARTIAL/IN_PROGRESS; HAPI-590 stays separately
+PARTIAL/BLOCKED. After actual exact-SHA CI feedback, continue the registered
+guarded writer/coordinator package with meaningful synthetic PostgreSQL,
+rollback/concurrency and API/security tests. No production personnel records,
+release, deployment, calibration, SITE acceptance or OT actuation is selected.
+
+**Publication gate:** Publish these five paths to main under expected-head
+lease `fa31a08b8f5c220daba1e597ec33f534a846df89`, verify exact parent/tree/blobs/message and confirm applicable
+Full/Fast/Docs creation or startup. STOP without automatically advancing.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

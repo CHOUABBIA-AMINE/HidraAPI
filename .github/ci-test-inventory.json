@@ -6584,7 +6584,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java",
-      "source_sha256": "6e4668dd4d4742481032c11516e840ac6011f2a889031578b2dafdc74ab68e99",
+      "source_sha256": "21552c98dd78d5bd61f541586f5d2700156e10c828be272f6ba41128ae473cc6",
       "supports": []
     },
     {
@@ -8501,6 +8501,7 @@
       "cases": [
         "additionalDatasourceConnectionPoisonsOwner",
         "admissionGrammarKeepsQuotedDataButRejectsWritableQueryForms",
+        "appointmentProvisionalTemplatesRequireExactHashesAndCompiledCaller",
         "afterCommitCallbackErrorWithholdsCommittedResult",
         "ambientTransactionRejectsWithoutCreatingProtectedWork",
         "batchStreamingAndStatementUnwrapReject",
@@ -8544,7 +8545,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java",
-      "source_sha256": "d6da1d1f2e12f8881acdd9410a28947cf97d12adb96554729050242ef553c048",
+      "source_sha256": "86660bf66a1cf480fd7f7e2526042a7b26c779b56380cdc85cc7e110c9307db9",
       "supports": []
     },
     {

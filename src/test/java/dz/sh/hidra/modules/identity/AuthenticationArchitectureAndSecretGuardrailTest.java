@@ -7,7 +7,7 @@
  *
  * @Name        : AuthenticationArchitectureAndSecretGuardrailTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-14
+ * @UpdatedOn   : 2026-10-22
  *
  * @Type        : Class
  * @Layer       : Test
@@ -62,6 +62,7 @@ class AuthenticationArchitectureAndSecretGuardrailTest {
             Set.of(
                     "hidra.security.bootstrap.password",
                     "hidra.platform.security.jwt.hmac-secret",
+                    "hidra.identity.organization-commit-proof.signing-key-base64",
                     "hidra.platform.security.ldap.bind-password");
 
     @Test
@@ -74,6 +75,17 @@ class AuthenticationArchitectureAndSecretGuardrailTest {
                 .resideInAnyPackage(
                         "org.springframework.ldap..", "org.springframework.security.ldap..")
                 .check(PRODUCTION_CLASSES);
+    }
+
+    @Test
+    void appointmentCommitProofMustRemainPrivateToNativeIdentityInfrastructure() {
+        noClasses().that().resideInAnyPackage("dz.sh.hidra.modules..api..", "dz.sh.hidra.platform..")
+                .should().dependOnClassesThat().haveSimpleName("OrganizationAppointmentCommitProofCodec")
+                .check(PRODUCTION_CLASSES);
+        var codec = productionClass("dz.sh.hidra.modules.identity.infrastructure.security.OrganizationAppointmentCommitProofCodec");
+        assertTrue(codec.getMethods().stream().noneMatch(m ->
+                m.getModifiers().contains(com.tngtech.archunit.core.domain.JavaModifier.PUBLIC)
+                && m.getRawReturnType().getSimpleName().equals("CommitProof")));
     }
 
     @Test
@@ -315,3 +327,4 @@ class AuthenticationArchitectureAndSecretGuardrailTest {
         }
     }
 }
+

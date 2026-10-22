@@ -7,7 +7,7 @@
  *
  * @Name        : OrganizationProtectedAppointmentAuthorizationContract
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-21
+ * @UpdatedOn   : 2026-10-22
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -154,6 +154,39 @@ public interface OrganizationProtectedAppointmentAuthorizationContract {
     /** Recheck current authority before exposing scalar relation requirements. */
     List<ProtectedRelationFence> finalFences(Admission admission);
 
+    /** Single-use issuer operation; only a private completed mutating admission can authenticate it. */
+    CommitProof issueCommitProof(Admission admission, CommitIntent intent);
+    /** Additional already-held Identity key fences, acquired before downstream owner fences. */
+    List<ProtectedRelationFence> commitProofFences(Admission admission);
+
+    record CommitIntent(java.util.UUID eventId, String commandSha256, String payloadSha256,
+            Instant operationValidUntil) {
+        public CommitIntent {
+            Objects.requireNonNull(eventId, "Event required");
+            if (commandSha256 == null || !commandSha256.matches("[0-9a-f]{64}")
+                    || payloadSha256 == null || !payloadSha256.matches("[0-9a-f]{64}"))
+                throw new IllegalArgumentException("Exact SHA256 required");
+            Objects.requireNonNull(operationValidUntil, "Deadline required");
+            if (operationValidUntil.getNano() % 1000 != 0)
+                throw new IllegalArgumentException("Exact microseconds required");
+            Math.addExact(Math.multiplyExact(operationValidUntil.getEpochSecond(), 1_000_000L),
+                    operationValidUntil.getNano() / 1000);
+        }
+        @Override public String toString() { return "CommitIntent[redacted]"; }
+    }
+
+    /** Transport construction conveys no authority; SQL must authenticate every byte. */
+    record CommitProof(byte[] frame, byte[] mac) {
+        public CommitProof {
+            if (frame == null || frame.length == 0 || frame.length > 4096 || mac == null || mac.length != 32)
+                throw new IllegalArgumentException("Bounded commit proof required");
+            frame = frame.clone(); mac = mac.clone();
+        }
+        @Override public byte[] frame() { return frame.clone(); }
+        @Override public byte[] mac() { return mac.clone(); }
+        @Override public String toString() { return "CommitProof[redacted]"; }
+    }
+
     /** The complete catalog vocabulary is twenty definitions; this method creates no grant. */
     static String permissionCode(Action action, ResourceKind kind) {
         Objects.requireNonNull(action, "Action required");
@@ -223,3 +256,4 @@ public interface OrganizationProtectedAppointmentAuthorizationContract {
         }
     }
 }
+

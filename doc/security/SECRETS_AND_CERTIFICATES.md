@@ -1,5 +1,65 @@
 # HidraAPI Secrets and Certificates
 
+## Identity appointment commit-proof key (development prerequisite, 2026-10-22)
+
+The purpose-specific binding is `hidra.identity.organization-commit-proof`:
+`enabled` defaults to false; `key-id`, positive `key-revision` and
+`signing-key-base64` are mandatory when enabled. The secret is exactly 32
+cryptographically random bytes encoded as canonical padded Base64. Supply it
+through external configuration with restricted process access. There is no
+repository key, development default or JWT-secret reuse. Disabled mode preserves
+existing native authentication/read behavior and refuses proof issuance.
+
+An environment administrator first verifies PostgreSQL 16 pgcrypto availability,
+the migration-owned `hidra_identity_crypto` namespace, ownership and private
+routine ACLs. An existing extension in another namespace is rejected, never
+silently relocated. Migration `V20261022_003` creates no login, key or application
+grant. Give a distinct non-elevated Identity key administrator EXECUTE only on
+`public.hidra_identity_org_commit_admin(bigint,text,uuid,name,bytea)`.
+It must have no application/publisher membership, schema CREATE, direct key-table
+rights or owner/elevated-role membership. Use its actual login, without SET ROLE.
+
+Provision through a restricted administrative client with parameter binding and
+secret-safe connection/server logging; neither SQL statement text, parameters,
+error context nor audit payload may record key bytes. This document deliberately
+contains no secret-bearing invocation. The routine takes the expected current
+revision (zero only for an empty installation), key ID, environment/database
+audience UUID, exact publisher login and new key bytes. It atomically records
+metadata, advances the revision and replaces current private bytes. History
+contains only identity, revision, fingerprint, audience, publisher, status,
+administrator session login and time. No raw old key is retained in history.
+
+Explicitly grant the publisher only the metadata routine
+`public.hidra_identity_org_commit_key_context(boolean)`; never grant it SELECT
+or DML on the three proof relations, crypto schema access, administration or
+private verifier EXECUTE. Metadata contains only key ID/revision, audience,
+publisher and physical PID/XID. The future trusted Organization final-guard
+function owner may call the private verifier internally, with expected context
+derived from the actual lifecycle event and complete pinned snapshots. There is
+no ordinary scalar-to-proof or arbitrary SQL signing API.
+
+Activate matching external process configuration explicitly. A key/generation,
+audience, publisher or physical transaction mismatch rejects. HMAC-SHA256 is a
+keyed authentication proof, not an asymmetric signature or non-repudiation.
+The compiled native issuer retains private admission ownership and signs once.
+Full process compromise and trusted migration/database/key administrators remain
+trust boundaries.
+
+For retirement, invoke the same restricted administrative routine with a null
+new key and the exact current metadata/revision. Revocation advances the revision
+and removes current secret bytes. Rotation requires a new monotonic CAS revision;
+there is no delete/reset, ABA restoration or implicit dual-key grace. A retained
+write key fence makes concurrent administration fail NOWAIT; retry administration
+only after that transaction ends. Coordinate process configuration deliberately;
+stale instances fail closed. No production rotation cadence or rollout is selected.
+
+Keep raw proofs out of REST DTOs, JWTs, audit text and diagnostics. SQL consumption
+stores only nonce, key generation, transaction/event/digest provenance. Native24
+fences precede proof3, then Party2 and Organization12; final old-family fences
+remain 24 and the existing aggregate 500ms budget remains in force. Synthetic
+tests use disposable keys and distinct logins. This prerequisite activates no
+Organization writer, route, production key or deployment.
+
 ## Status
 
 CURRENT for repository-backed secret handling.
@@ -383,3 +443,4 @@ HPR-P0-014 establishes the operating sequence, but these still depend on P1 prod
 - monitoring/notification product.
 
 These do not block the repository runbook baseline, but must be filled from actual production architecture before claiming automated production execution.
+

@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedOrganizationAppointmentAuthorizationParticipantTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-21
+ * @UpdatedOn   : 2026-10-22
  *
  * @Type        : Class
  * @Layer       : Test
@@ -33,6 +33,42 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /** These are scalar contract cases, not evidence of native credentials or database admission. */
 class ProtectedOrganizationAppointmentAuthorizationParticipantTest {
+    @Test void fabricatedAndIncompleteAdmissionsCannotReachCommitProofIssuer() {
+        try (var fixture = new Mechanics()) {
+            assertThrows(RuntimeException.class, () -> fixture.service.issueCommitProof(new Admission(){}, intent()));
+            assertTrue(fixture.holder.isRollbackOnly());
+            org.mockito.Mockito.verifyNoInteractions(fixture.reader);
+        }
+        try (var fixture = new Mechanics()) {
+            var admission=fixture.service.acquire(fixture.prepared,fixture.request);
+            assertThrows(RuntimeException.class, () -> fixture.service.issueCommitProof(admission,intent()));
+            assertTrue(fixture.holder.isRollbackOnly());
+        }
+    }
+    @Test void foreignThreadCannotRequestCommitProofOrExportKeyFences() throws Exception {
+        try (var fixture = new Mechanics()) {
+            var admission=fixture.service.acquire(fixture.prepared,fixture.request);
+            var worker=java.util.concurrent.Executors.newSingleThreadExecutor();
+            try { worker.submit(() -> assertThrows(RuntimeException.class,
+                    () -> fixture.service.issueCommitProof(admission,intent()))).get(5,java.util.concurrent.TimeUnit.SECONDS); }
+            finally { worker.shutdownNow(); }
+            assertTrue(fixture.holder.isRollbackOnly());
+        }
+        try (var fixture = new Mechanics()) {
+            assertThrows(RuntimeException.class,() -> fixture.service.commitProofFences(new Admission(){}));
+            assertTrue(fixture.holder.isRollbackOnly());
+        }
+    }
+    @Test void proofFencesAreThreeAdditionalRequirementsWithoutChangingNativeTwentyFour() {
+        var fences=dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcOrganizationAppointmentCommitProofKeyAdapter.requiredRelationFences();
+        assertEquals(3,fences.size());
+        var old=dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcIdentityAuthorityFence.requiredRelationFences();
+        assertEquals(24,old.size());
+        assertTrue(fences.stream().noneMatch(old::contains));
+    }
+    private static CommitIntent intent() {
+        return new CommitIntent(java.util.UUID.randomUUID(),"ab".repeat(32),"cd".repeat(32),SAMPLE.plusSeconds(1));
+    }
     @Test void participantRejectsFabricatedTicketsAndPoisonsCurrentHolder() {
         try (var fixture = new Mechanics()) {
             assertThrows(RuntimeException.class, () -> fixture.service.acquire(new Prepared(){}, fixture.request));
@@ -458,3 +494,4 @@ class ProtectedOrganizationAppointmentAuthorizationParticipantTest {
                 SAMPLE, SAMPLE.plusSeconds(30), 12, 34);
     }
 }
+

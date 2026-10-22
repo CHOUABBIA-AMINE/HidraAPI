@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-21
+ * @UpdatedOn   : 2026-10-22
  *
  * @Type        : Class
  * @Layer       : Identity Test
@@ -122,6 +122,9 @@ public class ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTes
     }
 
     @Autowired JdbcTemplate jdbc;
+    @Autowired dz.sh.hidra.modules.identity.infrastructure.configuration.OrganizationAppointmentCommitProofProperties commitProofProperties;
+    private boolean commitProofMode;
+    private long commitProofRevision;
     @MockitoSpyBean JdbcProtectedAuthorizationEvidenceReader reader;
     @Autowired jakarta.persistence.EntityManager em;
     @Autowired Flyway flyway;
@@ -219,6 +222,9 @@ public class ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTes
 
     @AfterEach
     void clear() {
+        commitProofMode=false;
+        commitProofProperties.setEnabled(false);
+        commitProofProperties.initialize();
         ReflectionTestUtils.setField(oidc, "verifiedClaimReceiptEnabled", false);
         ReflectionTestUtils.setField(ldap, "verifiedClaimReceiptEnabled", false);
         directPort.finishVerification();
@@ -563,6 +569,8 @@ public class ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTes
             jdbc.execute("GRANT USAGE ON SCHEMA public TO " + role);
             jdbc.execute(
                     "GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA public TO " + role);
+            jdbc.execute("REVOKE ALL ON public.hidra_identity_org_commit_key_event,"
+                    + "public.hidra_identity_org_commit_key_head,public.hidra_identity_org_commit_proof_use FROM " + role);
             jdbc.execute(
                     "REVOKE ALL ON public.hidra_identity_external_mapping_generation FROM " + role);
             jdbc.execute(
@@ -612,6 +620,9 @@ public class ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTes
      * automatically resets on completion.
      */
     private void c3SelectRestrictedRole() {
+        if (commitProofMode)
+            assertThat(jdbc.queryForObject("SELECT set_config('session_authorization',?,true)",
+                    String.class,"c3_source_claim_app")).isEqualTo("c3_source_claim_app");
         assertThat(
                         jdbc.queryForObject(
                                 "SELECT set_config('role',?,true)",
@@ -715,6 +726,128 @@ public class ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTes
                 assertThat(result.userId()).isEqualTo(f.user());
                 assertThat(result.decisions()).extracting(ResourceDecision::requirement).containsExactlyElementsOf(request.requirements());
             }
+        }
+    }
+
+    private void enableCommitProofFixture() {
+        String admin="c3_proof_key_admin";
+        if (!Boolean.TRUE.equals(jdbc.queryForObject("SELECT EXISTS(SELECT 1 FROM pg_roles WHERE rolname=?)",Boolean.class,admin)))
+            jdbc.execute("CREATE ROLE "+admin+" LOGIN PASSWORD 'synthetic-proof-native-only'");
+        jdbc.execute("GRANT USAGE ON SCHEMA public TO "+admin);
+        jdbc.execute("GRANT EXECUTE ON FUNCTION public.hidra_identity_org_commit_admin(bigint,text,uuid,name,bytea) TO "+admin);
+        jdbc.execute("GRANT EXECUTE ON FUNCTION public.hidra_identity_org_commit_key_context(boolean) TO c3_source_claim_app");
+        long previous=jdbc.queryForObject("SELECT coalesce(max(revision),0) FROM public.hidra_identity_org_commit_key_event",Long.class);
+        var adminJdbc=new JdbcTemplate(new org.springframework.jdbc.datasource.DriverManagerDataSource(
+                POSTGRES.getJdbcUrl(),admin,"synthetic-proof-native-only"));
+        commitProofRevision=adminJdbc.queryForObject("SELECT public.hidra_identity_org_commit_admin(?,?::text,?::uuid,?::name,?)",
+                Long.class,previous,"native-test-key","11111111-1111-1111-1111-111111111111","c3_source_claim_app",new byte[32]);
+        commitProofProperties.setEnabled(true);commitProofProperties.setKeyId("native-test-key");
+        commitProofProperties.setKeyRevision(commitProofRevision);
+        commitProofProperties.setSigningKeyBase64(Base64.getEncoder().encodeToString(new byte[32]));
+        commitProofProperties.initialize();commitProofMode=true;
+    }
+
+    @Test void fourGenuineNativeOriginsIssueProofMatchingIndependentSqlFrame() throws Exception {
+        enableCommitProofFixture();
+        for(String type:List.of("LOCAL","OIDC","LDAP","ACTIVE_DIRECTORY")) {
+            var f=fixture(type);all(f,request());var p=originalSource(f);
+            tx().executeWithoutResult(status -> {
+                c3SelectRestrictedRole();
+                var a=paired.acquire(p,request());var c=paired.contribute(a);permit(c);
+                var intent=new OrganizationProtectedAppointmentAuthorizationContract.CommitIntent(UUID.randomUUID(),
+                        "ab".repeat(32),"cd".repeat(32),c.validUntil());
+                var proof=paired.issueCommitProof(a,intent);
+                assertThat(paired.finalFences(a)).hasSize(24);assertThat(paired.commitProofFences(a)).hasSize(3);
+                assertThat(proof.toString()).isEqualTo("CommitProof[redacted]");
+                var expected=new LinkedHashMap<String,Object>();
+                expected.put("binding",c.bindingId());expected.put("session",c.sessionId());expected.put("actor",c.userId());
+                expected.put("action",request().action().name());expected.put("pairs",request().companyUnits().stream()
+                        .map(pair->List.of(pair.companyPartyId(),pair.organizationUnitId())).toList());
+                expected.put("employee",request().employeeId());
+                expected.put("sampled",proofMicros(c.sampledAt()));expected.put("nativeUntil",proofMicros(c.validUntil()));
+                expected.put("operationUntil",proofMicros(intent.operationValidUntil()));expected.put("event",intent.eventId().toString());
+                expected.put("command",intent.commandSha256());expected.put("payload",intent.payloadSha256());
+                try {
+                    var independent=new JdbcTemplate(new org.springframework.jdbc.datasource.DriverManagerDataSource(
+                            POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword()));
+                    var prefix=independent.queryForObject("SELECT public.hidra_identity_org_commit_prefix(?::uuid,?::text,?::text,?)",
+                            byte[].class,"11111111-1111-1111-1111-111111111111","c3_source_claim_app","native-test-key",commitProofRevision);
+                    var nonce=Arrays.copyOfRange(proof.frame(),prefix.length,prefix.length+32);
+                    var sqlFrame=independent.queryForObject("SELECT public.hidra_identity_org_commit_frame(?,?,?::jsonb,?,?)",
+                            byte[].class,prefix,nonce,JSON.writeValueAsString(expected),c.backendPid(),c.transactionId());
+                    assertThat(proof.frame()).isEqualTo(sqlFrame);
+                    var mac=javax.crypto.Mac.getInstance("HmacSHA256");mac.init(new SecretKeySpec(new byte[32],"HmacSHA256"));
+                    assertThat(proof.mac()).isEqualTo(mac.doFinal(sqlFrame));
+                } catch(Exception failure) {throw new AssertionError(failure);}
+            });
+        }
+    }
+    private static long proofMicros(Instant value) {
+        assertThat(value.getNano()%1000).isZero();
+        return Math.addExact(Math.multiplyExact(value.getEpochSecond(),1_000_000L),value.getNano()/1000);
+    }
+
+    @Test void secondIssuanceAndChangedAuthenticationPoisonGenuineAdmission() {
+        enableCommitProofFixture();
+        for(boolean changeAuthentication:List.of(false,true)) {
+            var f=fixture("LOCAL");all(f,request());var p=originalSource(f);
+            assertThatThrownBy(()->tx().executeWithoutResult(status -> {
+                c3SelectRestrictedRole();var a=paired.acquire(p,request());var c=paired.contribute(a);
+                var intent=new OrganizationProtectedAppointmentAuthorizationContract.CommitIntent(UUID.randomUUID(),
+                        "ab".repeat(32),"cd".repeat(32),c.validUntil());
+                paired.issueCommitProof(a,intent);
+                if(changeAuthentication) SecurityContextHolder.clearContext();
+                rejected(()->paired.issueCommitProof(a,intent));
+            })).isInstanceOf(RuntimeException.class);
+        }
+    }
+
+    @Test void disabledProofAndReadAdmissionCannotBecomeCommitAuthority() {
+        var f=fixture("LOCAL");all(f,request());var p=originalSource(f);
+        assertThatThrownBy(()->tx().executeWithoutResult(status -> {
+            c3SelectRestrictedRole();var a=paired.acquire(p,request());var c=paired.contribute(a);
+            rejected(()->paired.issueCommitProof(a,new OrganizationProtectedAppointmentAuthorizationContract.CommitIntent(
+                    UUID.randomUUID(),"ab".repeat(32),"cd".repeat(32),c.validUntil())));
+        })).isInstanceOf(RuntimeException.class);
+        enableCommitProofFixture();
+        var read=new Request(Action.READ_HISTORY,request().companyUnits(),EMPLOYEE);all(f,read);var next=originalSource(f);
+        assertThatThrownBy(()->tx().executeWithoutResult(status -> {
+            c3SelectRestrictedRole();var a=paired.acquire(next,read);var c=paired.contribute(a);
+            rejected(()->paired.issueCommitProof(a,new OrganizationProtectedAppointmentAuthorizationContract.CommitIntent(
+                    UUID.randomUUID(),"ab".repeat(32),"cd".repeat(32),c.validUntil())));
+        })).isInstanceOf(RuntimeException.class);
+    }
+
+    @Test void missingDeniedAndRevokedNativeAuthorityCannotAuthenticateCommitIntent() {
+        enableCommitProofFixture();
+        for(var missing:request().requirements()) {
+            cleanEvidence();var f=fixture("LOCAL");
+            for(var required:request().requirements()) if(!required.equals(missing))
+                grant(f,"create",required.kind(),"GRANT",required.reference());
+            var p=originalSource(f);
+            assertThatThrownBy(()->tx().executeWithoutResult(status -> {
+                c3SelectRestrictedRole();var a=paired.acquire(p,request());rejected(()->paired.contribute(a));
+                rejected(()->paired.issueCommitProof(a,new OrganizationProtectedAppointmentAuthorizationContract.CommitIntent(
+                        UUID.randomUUID(),"ab".repeat(32),"cd".repeat(32),Instant.now().truncatedTo(ChronoUnit.MICROS))));
+            })).isInstanceOf(RuntimeException.class);
+        }
+        for(boolean revoke:List.of(false,true)) {
+            cleanEvidence();var f=fixture("LOCAL");all(f,request());
+            if(!revoke) grant(f,"create",ResourceKind.UNIT,"DENY",FACILITY);
+            var p=originalSource(f);
+            assertThatThrownBy(()->tx().executeWithoutResult(status -> {
+                c3SelectRestrictedRole();var a=paired.acquire(p,request());
+                if(revoke) {
+                    var c=paired.contribute(a);
+                    jdbc.update("UPDATE "+T+"user_permission_grant SET status='REVOKED' WHERE user_id=?",f.user());
+                    rejected(()->paired.issueCommitProof(a,new OrganizationProtectedAppointmentAuthorizationContract.CommitIntent(
+                            UUID.randomUUID(),"ab".repeat(32),"cd".repeat(32),c.validUntil())));
+                } else {
+                    rejected(()->paired.contribute(a));
+                    rejected(()->paired.issueCommitProof(a,new OrganizationProtectedAppointmentAuthorizationContract.CommitIntent(
+                            UUID.randomUUID(),"ab".repeat(32),"cd".repeat(32),Instant.now().truncatedTo(ChronoUnit.MICROS))));
+                }
+            })).isInstanceOf(RuntimeException.class);
         }
     }
 
@@ -1029,3 +1162,4 @@ public class ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTes
     }
 
 }
+

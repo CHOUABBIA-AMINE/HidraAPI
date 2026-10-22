@@ -7,7 +7,7 @@
  *
  * @Name        : IdentityModuleConfiguration
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-22
  *
  * @Type        : Record
  * @Layer       : Infrastructure
@@ -30,7 +30,11 @@ public record IdentityModuleConfiguration(
         boolean authorizationDecisionPersistenceEnabled
 ) {
 
+    /** Purpose-specific infrastructure binding; disabled until explicitly provisioned. */
+    public static final String ORGANIZATION_COMMIT_PROOF_PREFIX = "hidra.identity.organization-commit-proof";
+
     public static IdentityModuleConfiguration defaults() {
         return new IdentityModuleConfiguration(false, true);
     }
 }
+

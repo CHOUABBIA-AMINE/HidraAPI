@@ -24626,6 +24626,107 @@ HAPI-590 stays separately PARTIAL/BLOCKED. The original five-stage estimate is
 no longer a dependable remaining-commit count: this explicitly approved
 prerequisite must be implemented and accepted before writer activation.
 
+### 2026-10-22 — Identity transaction-bound appointment proof implementation
+
+**Selected stage:** `feat(identity): bind appointment commit proofs to native admission`.
+The owner-approved prerequisite above is implemented from main
+`b57db9eb8173886427b84ff83acfb8a50f9869e6`, tree
+`016e97b5a33f7d90dc00c864119674b1e18cb2f2`. Exact-source
+[Docs513](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39779626459)
+passed; the prior runtime source retains Full822/823 success. This record
+does not assert runtime acceptance of the new package.
+
+**Published scope:** Exactly the registered seven CREATE and ten MODIFY paths;
+DELETE none. The approved contract gains bounded defensive-copy CommitIntent/
+CommitProof transport and single-use native issuer/fence operations. Only this
+participant's private completed mutating Admission can issue; original
+Authentication identity, thread, holder, native group/PERMIT graph, expiry and
+physical coordinates are rechecked. Foreign, suspended, completed, incomplete,
+read-action or replayed tickets poison their original transaction. Disabled
+configuration refuses signing while preserving existing authentication/read
+behavior. The purpose-specific external key has no default or public getter;
+codec signing operations are package-private and representations are redacted.
+
+The frozen version1 binary frame uses big-endian lengths/counts, UUIDs, exact
+signed epoch microseconds, all requested scope pairs, native actor/sample/
+deadline, physical PID/XID, database audience/publisher/key generation, fresh
+32-byte nonce and event/command/full-envelope digests. Standard JCA HmacSHA256
+authenticates it; an independent Python struct/uuid/hmac vector fixes all349
+frame bytes and the32-byte MAC. SQL reproduces Java UTF-16 ordering, including
+supplementary/BMP unit identifiers. Non-exact/overflowed times, ambiguous digest
+encodings and oversized/invalid transports reject.
+
+Migration `V20261022_003__identity_organization_appointment_commit_proof.sql`
+adds exactly the three registered Identity relations. The fixed private crypto
+namespace and pgcrypto function/extension identity are checked. Administrative
+CAS generations replace current key bytes and retain immutable metadata only;
+revocation removes current secret material and advances the generation. No
+login, key, permission grant or writer credential is installed. Actual
+session_user provenance, non-elevated separated callers, fixed search paths,
+ownership, table/column ACLs, trigger state and private function ACLs are checked.
+The metadata operation discloses only key identity/generation, audience,
+publisher and physical coordinates.
+
+Native24 precedes the3 new NOWAIT key fences; the private ticket retains key
+context and subsequent metadata checks only verify already-held locks. Existing
+finalFences still returns24; commitProofFences exports only the3 additions.
+Party/Organization lock acquisition, sibling families, all six provisional SQL
+hashes, the existing read guard and the aggregate500ms budget are unchanged.
+Key administration respects the same order and cannot rotate through a retained
+write key fence.
+
+The private SQL verifier checks current key/audience/publisher, native/key
+fences, actual PID/XID/time and exact canonical expected context, compares all32
+MAC bytes without an early mismatch return, and inserts one immutable nonce-use
+record. PUBLIC/ordinary/publisher/configuration verifier EXECUTE is absent.
+The future trusted Organization final-guard owner must derive its expected JSON
+object from the actual lifecycle event and complete pinned snapshots; that
+integration is not activated here. Its receipt and nonce must be one final SQL
+statement/physical commit. The new synthetic guard fixture tests primitive
+atomicity only, not the unfinished Organization lifecycle/receipt workflow.
+
+**Tests and truthful local validation:**
+
+- Added real source-linked properties/codec tests and14 new PostgreSQL primitive
+  tests: independent frame/HMAC/Unicode/negative-microsecond parity, every frame/
+  MAC byte tamper, authentic MACs for other contexts, missing/changed expected
+  scope/result/event, expiry/key mismatch, actual separated logins, private ACLs,
+  key CAS/revocation/rotation, immutable history, catalog substitution, retained
+  fence concurrency, single redemption, cross-XID replay and rollback/fault
+  atomicity. These tests require PostgreSQL; the new class cannot silently
+  skip for absent Docker.
+- Existing native PostgreSQL tests now include completed LOCAL/OIDC/LDAP/AD proof
+  issuance with independent SQL/JCA parity, second issuance and changed
+  Authentication rejection, disabled/read refusal, missing grants, DENY and
+  own-transaction revocation. Existing native expiry, transaction/holder/thread,
+  sibling-origin and scope tests and all their assertions remain.
+- Java compiler-API parsing passed for the candidate Java sources. An isolated
+  Java17 harness compiled and executed the actual production contract/codec/
+  properties against annotation/metadata substitutes: independent frame/MAC,
+  defensive copies, exact precision/overflow and configuration smoke checks
+  passed. This is not JUnit, Spring binding, Java21 or PostgreSQL execution.
+- All18 existing documentation-validator self-tests passed. Source-linked
+  inventory checks preserve every previous case and unrelated entry, lanes,
+  measured weights and archive policy; three new classes have weight0 and the
+  five PostgreSQL partitions remain disjoint. Ownership metadata adds only the
+  three actual relations with migration/test evidence.
+- Maven and PostgreSQL tooling are absent locally. No full environment was
+  provisioned. Required hosted Java/JUnit/Flyway/pgcrypto/ACL/concurrency and full
+  documentation/inventory checks remain pending; no skipped test is a runtime
+  pass. The existing physical dictionary is preserved until an authentic hosted
+  migrated-catalog artifact supplies regeneration evidence.
+
+**Stop and next acceptance gate:** Publish this one coherent registered package
+with expected-b57db9eb guard, verify exact parent/tree/message and all17 path
+changes, then confirm applicable workflows queued/started on the published SHA
+and stop. Subsequent CI failures must be repaired before dependent work; the
+already registered artifact reconciliation must consume the genuine hosted
+schema artifact for these3 added relations. Only after prerequisite acceptance
+may B3 resume its guarded JDBC writer/native/receipt integration with the amended
+proof-bearing final statement. HAPI-778 remains PARTIAL/IN_PROGRESS and HAPI-590
+remains independently PARTIAL/BLOCKED. No route, production secret, deployment,
+release or OT action is performed; no remaining-commit count is asserted.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

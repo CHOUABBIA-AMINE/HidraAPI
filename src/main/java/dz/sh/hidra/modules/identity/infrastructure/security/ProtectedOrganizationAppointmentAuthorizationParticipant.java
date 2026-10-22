@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedOrganizationAppointmentAuthorizationParticipant
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-21
+ * @UpdatedOn   : 2026-10-22
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -22,6 +22,8 @@ package dz.sh.hidra.modules.identity.infrastructure.security;
 import dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract;
 import dz.sh.hidra.modules.identity.domain.service.AuthorizationPolicyEvaluator;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcIdentityAuthorityFence;
+import dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcOrganizationAppointmentCommitProofKeyAdapter;
+import dz.sh.hidra.modules.identity.infrastructure.configuration.OrganizationAppointmentCommitProofProperties;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcProtectedAuthorizationEvidenceReader;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcProtectedAuthorizationEvidenceReader.OrganizationAuthorizationEvidence;
 import dz.sh.hidra.platform.persistence.ProtectedRelationFence;
@@ -49,13 +51,25 @@ public class ProtectedOrganizationAppointmentAuthorizationParticipant
     private final ProtectedOperationIdentityParticipant identity;
     private final JdbcProtectedAuthorizationEvidenceReader reader;
     private final JdbcTemplate jdbc;
+    private final OrganizationAppointmentCommitProofProperties proofProperties;
+    private final JdbcOrganizationAppointmentCommitProofKeyAdapter proofKeys;
     private final AuthorizationPolicyEvaluator evaluator = new AuthorizationPolicyEvaluator();
 
     public ProtectedOrganizationAppointmentAuthorizationParticipant(ProtectedOperationIdentityParticipant identity,
             JdbcProtectedAuthorizationEvidenceReader reader, JdbcTemplate jdbc) {
+        this(identity, reader, jdbc, new OrganizationAppointmentCommitProofProperties(), null);
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public ProtectedOrganizationAppointmentAuthorizationParticipant(ProtectedOperationIdentityParticipant identity,
+            JdbcProtectedAuthorizationEvidenceReader reader, JdbcTemplate jdbc,
+            OrganizationAppointmentCommitProofProperties proofProperties,
+            JdbcOrganizationAppointmentCommitProofKeyAdapter proofKeys) {
         this.identity = Objects.requireNonNull(identity);
         this.reader = Objects.requireNonNull(reader);
         this.jdbc = Objects.requireNonNull(jdbc);
+        this.proofProperties = Objects.requireNonNull(proofProperties);
+        this.proofKeys = proofKeys;
     }
 
     @Override @Transactional(propagation = Propagation.NEVER)
@@ -77,6 +91,9 @@ public class ProtectedOrganizationAppointmentAuthorizationParticipant
             entry.holder = holder;
             var admitted = identity.admit(entry.prepared);
             var ticket = new Ticket(this, entry, request, admitted, holder);
+            // Native24 precedes these3; no Party/Organization fence has been acquired yet.
+            if (proofProperties.isEnabled() && !request.action().name().startsWith("READ"))
+                ticket.keyContext = Objects.requireNonNull(proofKeys).acquire();
             TransactionSynchronizationManager.registerSynchronization(ticket);
             return ticket;
         } catch (RuntimeException failure) { poison(prepared); throw failure; }
@@ -105,12 +122,35 @@ public class ProtectedOrganizationAppointmentAuthorizationParticipant
             // Value comparison catches deleted evidence as well as changed normalized authority.
             if (!ticket.graphs.equals(current) || evaluate(ticket.request, current).overallDecision() != Decision.PERMIT) throw denied();
             identity.requireCurrentOrganizationGroup(ticket.group, ticket.request);
+            if (ticket.keyContext != null) proofKeys.requireCurrent(ticket.keyContext);
         } catch (RuntimeException failure) { poison(admission); throw failure; }
     }
 
     @Override public List<ProtectedRelationFence> finalFences(Admission admission) {
         requireCurrent(admission);
         return JdbcIdentityAuthorityFence.requiredRelationFences();
+    }
+
+    @Override public CommitProof issueCommitProof(Admission admission, CommitIntent intent) {
+        try {
+            requireCurrent(admission);
+            var ticket = ticket(admission);
+            if (ticket.keyContext == null || ticket.request.action().name().startsWith("READ")
+                    || !ticket.proofIssued.compareAndSet(false, true)) throw denied();
+            var proof = proofProperties.issuerCodec().issue(evaluate(ticket.request, ticket.graphs),
+                    Objects.requireNonNull(intent), ticket.keyContext);
+            // Detect an authentication/holder/key change during the cryptographic operation.
+            requireCurrent(admission);
+            return proof;
+        } catch (RuntimeException failure) { poison(admission); throw failure; }
+    }
+
+    @Override public List<ProtectedRelationFence> commitProofFences(Admission admission) {
+        try {
+            requireCurrent(admission);
+            if (ticket(admission).keyContext == null) throw denied();
+            return JdbcOrganizationAppointmentCommitProofKeyAdapter.requiredRelationFences();
+        } catch (RuntimeException failure) { poison(admission); throw failure; }
     }
 
     private Contribution evaluate(Request request, OrganizationAuthorizationEvidence graphs) {
@@ -222,6 +262,8 @@ public class ProtectedOrganizationAppointmentAuthorizationParticipant
         private final Thread thread = Thread.currentThread();
         private final AtomicBoolean used = new AtomicBoolean();
         private volatile boolean active = true;
+        private final AtomicBoolean proofIssued = new AtomicBoolean();
+        private JdbcOrganizationAppointmentCommitProofKeyAdapter.Context keyContext;
         private boolean complete;
         private ProtectedOperationIdentityParticipant.OrganizationClaimGroup group;
         private OrganizationAuthorizationEvidence graphs;
@@ -238,3 +280,4 @@ public class ProtectedOrganizationAppointmentAuthorizationParticipant
         @Override public String toString() { return "Admission[opaque appointment Identity]"; }
     }
 }
+

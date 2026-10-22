@@ -143,6 +143,7 @@
         "fabricatedPreparationAndAdmissionNeverReachAuthority",
         "finalExpiryUsesActualDatabaseTimeAndRollsBack",
         "finalOwnerCheckRejectsInTransactionGrantAndProviderRevocation",
+        "fixtureWarmupOnlyRecognizesTransientNowaitSqlstate",
         "fourGenuineNativeOriginsIssueProofMatchingIndependentSqlFrame",
         "fourGenuineOriginsAndAllSevenActionsUseExactAppointmentResources",
         "genuineDiagnosticCredentialCannotSelectAppointmentOwnerFamily",
@@ -168,7 +169,7 @@
       "lane": "postgres-integration",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTest.java",
-      "source_sha256": "33b2ab8776e8f5057f49cf4146059974c6eda0642b58b996091c9752ed40e697",
+      "source_sha256": "c9de6cdbec104d8c0feec7c049f0f5e40e9ec729b8f4800f15ac9402eae591e9",
       "supports": []
     },
     {

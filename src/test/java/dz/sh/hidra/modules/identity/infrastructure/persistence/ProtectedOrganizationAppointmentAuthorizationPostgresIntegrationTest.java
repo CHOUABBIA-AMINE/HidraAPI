@@ -205,19 +205,65 @@ public class ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTes
         // Warm the full qualified pair/evaluator path outside the protected executor budget.
         var f = fixture("LOCAL");
         both(f, "create");
-        var p = prepare(f);
-        tx().executeWithoutResult(
-                        s -> {
-                            c3SelectRestrictedRole();
-                            // The guard may insert a sentinel, but must not require row disclosure.
-                            assertThat(jdbc.queryForObject(
-                                    "SELECT has_table_privilege(current_user,?,'INSERT') AND NOT "
-                                            + "has_column_privilege(current_user,?,'id','SELECT')",
-                                    Boolean.class, receipt(), receipt())).isTrue();
-                            paired.contribute(paired.acquire(p, request()));
-                        });
+        warmUpQualifiedAdmission(f);
         cleanEvidence();
         clearInvocations(readerTarget(), identityTarget());
+    }
+
+    /**
+     * The preliminary native warmup is fixture setup only, not a protected
+     * operation, authorization retry, or a relaxation of NOWAIT. Under hosted
+     * parallel workload an unrelated transaction can transiently own an
+     * Identity relation before this test has begun. Discard the entire failed
+     * physical transaction and its single-use native preparation before trying
+     * setup again. A persistent 55P03 or any other error must still fail setup.
+     */
+    private void warmUpQualifiedAdmission(Fixture f) {
+        for (int attempt = 1; attempt <= 4; attempt++) {
+            var fresh = prepare(f);
+            try {
+                tx().executeWithoutResult(s -> {
+                    c3SelectRestrictedRole();
+                    // The guard may insert a sentinel, but must not require row disclosure.
+                    assertThat(jdbc.queryForObject(
+                            "SELECT has_table_privilege(current_user,?,'INSERT') AND NOT "
+                                    + "has_column_privilege(current_user,?,'id','SELECT')",
+                            Boolean.class, receipt(), receipt())).isTrue();
+                    paired.contribute(paired.acquire(fresh, request()));
+                });
+                return;
+            } catch (RuntimeException failure) {
+                if (attempt == 4 || !transientWarmupLockConflict(failure)) throw failure;
+                try {
+                    Thread.sleep(40L * attempt);
+                } catch (InterruptedException interrupted) {
+                    Thread.currentThread().interrupt();
+                    throw new IllegalStateException("Interrupted appointment fixture setup", interrupted);
+                }
+            }
+        }
+        throw new IllegalStateException("Unreachable appointment fixture setup");
+    }
+
+    private static boolean transientWarmupLockConflict(Throwable cause) {
+        for (Throwable cursor = cause; cursor != null && cursor != cursor.getCause();
+                cursor = cursor.getCause()) {
+            if (cursor instanceof SQLException sql && "55P03".equals(sql.getSQLState())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Test void fixtureWarmupOnlyRecognizesTransientNowaitSqlstate() {
+        assertThat(transientWarmupLockConflict(new RuntimeException(
+                new SQLException("native lock busy", "55P03")))).isTrue();
+        assertThat(transientWarmupLockConflict(new RuntimeException(
+                new SQLException("foreign key violation", "23503")))).isFalse();
+        assertThat(transientWarmupLockConflict(new RuntimeException(
+                new SQLException("backend unavailable", "08006")))).isFalse();
+        assertThat(transientWarmupLockConflict(
+                new IllegalStateException("native authorization denied"))).isFalse();
     }
 
     @AfterEach

@@ -24329,6 +24329,303 @@ provide exact browser steps, never claim Full ran, and await owner feedback.
 Repair failed new CI first; next HAPI-778 guarded JDBC/native/receipt
 stage remains unexecuted.
 
+### 2026-10-22 — Owner-approved Identity appointment commit-proof prerequisite
+
+**Approval and current evidence:** The owner explicitly approved extending B3
+with an Identity-issued, transaction-bound proof that SQL verifies before
+creating an appointment receipt. Exact main
+`a9e9966a81715af659c1a8daaf1de5963a4e691f`, parent
+`41e9453597e653685b2f25e4f3b676ec48a6477a`, tree
+`afe4557aa7b2163ba37872a48437a736b9c9fb71`, passes
+[Full823](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39775587998),
+[Full822](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39768650475)
+and [Docs512](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39768650483).
+The physical dictionary repair is therefore CI-accepted on the exact current
+source. These run conclusions do not complete HAPI-778 or the native writer.
+
+**Current single stage — scope registration only:** Exact existing message
+`docs(organization): register protected appointment lifecycle execution`.
+MODIFY only this append-only HAPI-778 record in
+`doc/roadmap/TASKS_HPS-003.md`; CREATE/DELETE none. No executable file, migration,
+secret, dependency, role, key, API, dictionary, registry status or workflow is
+changed now. Approval selects the prerequisite below; it does not authorize a
+release, production rollout, key provisioning in a real environment or OT action.
+
+#### Source-backed boundary and explicit supersession
+
+The genuine Organization-facing Identity participant owns private Admission
+tickets, evaluates its complete request at one native sample and rechecks
+current authority. Its public Contribution and final relation list are scalar
+observations, not database-verifiable issuer credentials. The old frozen
+WRITE_GUARD passes identifiers/digests/times/PID/XID but no cryptographic
+issuer proof. Organization must not infer native origin from those inputs.
+
+The approved prerequisite adds authenticated commit proofs without changing
+Identity's permission vocabulary, original LOCAL/OIDC/LDAP/ACTIVE_DIRECTORY
+verification or the Domain. It supersedes B3's earlier prohibition on an
+additional secret/configuration input only for the new purpose-specific signing
+key below, and supersedes its future scalar-only WRITE_GUARD signature. The old
+preflight is retained as historical evidence. All six provisional SQL templates
+and their exact hashes, READ_GUARD, transaction deadlines, existing route
+boundaries and migration history remain unchanged. New write activation must
+require this proof; absence/disabled configuration is never a scalar fallback.
+
+#### One finite executable prerequisite after this registration passes Docs
+
+Exact next runtime message:
+`feat(identity): bind appointment commit proofs to native admission`.
+CREATE only these seven paths, all absent at the inspected main:
+
+~~~~~~~~text
+src/main/java/dz/sh/hidra/modules/identity/infrastructure/configuration/OrganizationAppointmentCommitProofProperties.java
+src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/OrganizationAppointmentCommitProofCodec.java
+src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcOrganizationAppointmentCommitProofKeyAdapter.java
+src/main/resources/db/migration/V20261022_003__identity_organization_appointment_commit_proof.sql
+src/test/java/dz/sh/hidra/modules/identity/infrastructure/configuration/OrganizationAppointmentCommitProofPropertiesTest.java
+src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/OrganizationAppointmentCommitProofCodecTest.java
+src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/OrganizationAppointmentCommitProofPostgresIntegrationTest.java
+~~~~~~~~
+
+MODIFY only these ten existing paths:
+
+~~~~~~~~text
+src/main/java/dz/sh/hidra/modules/identity/application/contract/organization/OrganizationProtectedAppointmentAuthorizationContract.java
+src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOrganizationAppointmentAuthorizationParticipant.java
+src/main/java/dz/sh/hidra/modules/identity/infrastructure/configuration/IdentityModuleConfiguration.java
+src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOrganizationAppointmentAuthorizationParticipantTest.java
+src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTest.java
+src/test/java/dz/sh/hidra/modules/identity/AuthenticationArchitectureAndSecretGuardrailTest.java
+.github/ci-test-inventory.json
+.github/database-dictionary-ownership.json
+doc/security/SECRETS_AND_CERTIFICATES.md
+doc/roadmap/TASKS_HPS-003.md
+~~~~~~~~
+
+DELETE none. Keep the prerequisite one coherent issuer/codec/database-verifier
+package with meaningful unit and PostgreSQL tests. No additional generic design
+stage or contract-only subpackage is selected. Migration003 is collision-free
+at this SHA; recheck live sequencing before authoring it. Preserve all164 applied
+scripts byte-for-byte. If a real unexpected prerequisite is discovered, report
+it rather than silently broadening this envelope.
+
+#### Native issuer and proof transport
+
+Extend the existing approved Organization Identity contract, not another generic
+signer/export. Add CommitIntent(eventId UUID, commandSha256, payloadSha256,
+operationValidUntil), CommitProof(frame bytes, MAC bytes) and the two methods:
+`issueCommitProof(Admission, CommitIntent)` and
+`commitProofFences(Admission)`. Intent digests must be exact lowercase32-byte
+SHA256 encodings and eventId nonnull; expiry must be exact PostgreSQL
+microseconds, after the original sample and no later than native validUntil.
+Intent contains no actor, session, user, PID, XID, permission, key, audience or
+caller-selected authorized scope. Proof byte arrays are defensively copied,
+strictly bounded and redacted by toString; constructing this transport is not
+authority. Do not return it in REST, JWT, audit text, diagnostics or normal logs.
+
+Only the actual participant's private, completed and still-current mutating
+Admission can issue. Reuse its exact Request, complete PERMIT graph, genuine
+native actor/binding/session, original sample/deadline and physical coordinates.
+Recheck original Authentication object, thread, transaction, holder, native
+origin and graph through the existing owners. Refuse read actions, fabricated/
+foreign/replayed/suspended/completed admissions, unavailable or non-PERMIT
+evidence and any attempted broader/longer intent. One issuer use per Admission;
+a fresh application replay obtains fresh native authority but creates no new
+lifecycle receipt and cannot reuse an old commit proof. No public sign(bytes),
+caller-built credential, scalar actor header or GUC can reach the signing key.
+Full process compromise and trusted database/key administrators remain explicit
+trust boundaries; no cryptographic non-repudiation or immunity to them is claimed.
+
+#### Authenticated encoding and independent key material
+
+Use HMAC-SHA256, described accurately as a keyed message-authentication proof,
+not an asymmetric digital signature. Java uses the standard JCA implementation;
+PostgreSQL verification uses pgcrypto hmac(bytea,bytea,text), never a plain hash,
+home-grown HMAC, JWT-secret reuse or a database function that signs arbitrary
+input. Official PostgreSQL16
+[pgcrypto documentation](https://www.postgresql.org/docs/16/pgcrypto.html)
+supports this API and records its OpenSSL dependency. None of the164 exact
+current migration sources references pgcrypto:161 were recovered locally and
+matched by Git blob hash, the remaining3 were retrieved by their live blob SHA.
+This is source/dependency inspection, not extension availability proof.
+
+The additive migration may install pgcrypto in a fixed migration-owned
+`hidra_identity_crypto` namespace. Verify actual installed namespace/owner/
+function identity and dependency availability in PostgreSQL16 CI. Do not move
+an existing extension, grant schema CREATE to an application role, install
+unreviewed crypto software at runtime or silently accept an unsafe pre-existing
+placement. A bad catalog fails closed. No POM or workflow change is admitted.
+
+New configuration prefix: `hidra.identity.organization-commit-proof`, with
+enabled=false, key-id, positive key-revision and signing-key-base64. Disabled
+configuration loads no key and preserves existing authentication/read behavior;
+calling proof issuance while disabled rejects. Enabled configuration requires
+an explicitly supplied32-byte random key, exact key identity/revision and safe
+encoding. There is no repository/development key default. Use external secret
+binding and test-only synthetic material; redact every accessor representation,
+bind value, exception and diagnostic. This approval does not change JWT rotation,
+select a production secret manager or authorize production-secret handling.
+
+The wire frame is versioned, unambiguous and deterministic. Freeze the exact
+Java/SQL byte vectors in the implementation tests: UTF-8 domain
+`HIDRA/IDENTITY/ORG-APPOINTMENT-COMMIT/1`, protocol version, database audience UUID,
+observed publisher session login, key ID/revision, issuer-generated32-byte nonce,
+native binding/session UUIDs, actor user ID, fixed action, complete canonical
+company/unit vector and employee, native sample/deadline, narrowed operation
+deadline, PID/XID, event UUID, command SHA256 and canonical full-envelope SHA256.
+Text/vector fields use explicit big-endian lengths/counts; UUIDs and digests have
+fixed binary widths. Timestamps are signed64-bit epoch microseconds without
+rounding; reject non-exact/overflowed values. Mutation vectors contain at most
+two distinct pairs, retain the existing Java String ordering and reject duplicate
+or incomplete pairs. The SQL codec must reproduce UTF-16 ordering for supplementary
+Unicode as well as BMP identifiers; locale/collation defaults may not change it.
+Bound the whole frame to4096 bytes and MAC to32. MAC comparison must inspect all
+32 bytes without an early mismatch return.
+
+The participant derives these authority/context fields from its private ticket
+and retained database key context, not CommitIntent. SQL derives the expected
+command/payload hashes and resource scope from the real event and complete pinned
+before/after/successor snapshots. It must reject a valid MAC for another action,
+scope, actor, database, publisher, event, result, key generation or transaction.
+The original native deadline is signed and cannot be extended by Organization.
+
+#### Identity-owned verifier storage, provisioning and lock order
+
+The migration owns exactly three new logical Identity relations:
+
+- `public.hidra_identity_org_commit_key_event`: immutable administrative key
+  activation/revocation metadata and monotonic revision history; fingerprint,
+  audience, publisher and administrator provenance only, never a retained raw key.
+- `public.hidra_identity_org_commit_key_head`: current key ID/revision, audience,
+  explicitly allowed publisher login, active/revoked state and private current key
+  bytes. Restricted activation replaces the old secret; old secret material must
+  not be copied into immutable history. No delete/reset/ABA or default key.
+- `public.hidra_identity_org_commit_proof_use`: immutable consumed key/revision/
+  nonce and transaction/event/digest provenance, unique one-use key. No raw proof,
+  raw key or unrelated claims. Event UUID is an opaque cross-owner reference,
+  not a foreign aggregate or cross-module ownership transfer.
+
+No ordinary, publisher or Organization configuration role gets key-table
+SELECT/DML, key activation, crypto namespace ownership or a signing API.
+Key activation/revocation is an explicit Identity-owned SECURITY DEFINER
+administrative routine with a fixed safe path and PUBLIC EXECUTE revoked;
+the environment administrator explicitly grants it to a distinct non-elevated
+Identity key administrator. Migration creates no login/password, grant or active
+key. Use session_user provenance, expected-revision CAS, immutable metadata and
+restricted role/catalog checks. Key revision changes/revocation atomically reject
+subsequent old proofs, with no implicit dual-key grace or production rotation
+cadence inferred. Runtime and DB key mismatch always rejects. Document the actual
+development provisioning/retirement contract in the admitted secrets document;
+never put a real secret or secret-bearing SQL invocation in repository examples.
+
+For proof-enabled write actions, after the existing native24 Identity fences and
+BEFORE Party/Organization fences, acquire these additional Identity relation
+fences in order: key_event ACCESS SHARE, key_head SHARE,
+proof_use SHARE ROW EXCLUSIVE, all NOWAIT. A tightly scoped metadata routine may
+return only key identity/revision, audience, allowed publisher and retained
+physical coordinates to the actual key adapter; it returns neither key bytes
+nor a MAC and authenticates the actual session login/catalog/transaction.
+The native participant retains its opaque key context in its own private Ticket.
+Do not acquire an earlier Identity/key fence late during FLUSHING or GUARD.
+Key administration observes the corresponding order and never requests an earlier
+owner fence after a later one. Initial writes use explicit fixture provisioning.
+
+Preserve the existing Identity finalFences24 contract for old clients/families;
+the new commitProofFences exports only these3 additional already-held requirements.
+The Organization writer's final complete union is therefore41 distinct relations:
+Identity24 + proof3 + Party2 + Organization12. Existing station/draft/publication
+counts and global fence helpers remain unchanged. Recheck catalog settings,
+physical holder/PID/XID/session user, key generation and issuer evidence before
+emitting the proof and again during the final existing native checks. The500ms
+aggregate deadline and all statement/lock timeouts are unchanged.
+
+SQL verification/nonce consumption is a private Identity-owned SECURITY DEFINER
+routine, fixed safe path, PUBLIC EXECUTE revoked. Its EXECUTE remains unavailable
+to ordinary/publisher/Organization-config clients; the trusted Organization final
+guard's function owner can invoke it internally. It verifies the authenticated
+frame against the expected real event context and retained locks, current key
+generation/audience/publisher and actual database time/PID/XID. It discloses no
+key or computed MAC. An administrative key holder remains trusted, not an
+ordinary application caller.
+
+Nonce consumption and actual appointment receipt insertion must be in the same
+single external final SQL statement/physical transaction. A second redemption
+rejects; rollback removes consumption and every provisional key/source/successor/
+event/receipt write. Any post-verification failure must abort rather than commit
+an orphan proof-use row. Copying a proof to another transaction fails even after
+an aborted attempt. A receipt is not returned until physical commit is observed.
+Replays/history follow the non-mutating read guard with fresh native authorization;
+they do not redeem old proof bytes or create another lifecycle event/receipt.
+
+#### Exact downstream Organization amendment
+
+After the coherent prerequisite passes required CI, resume the existing B3
+guarded JDBC/native/receipt package with its already admitted paths. The
+coordinator privately retains the proof; finish owner/graph/key/expiry checks
+before GUARD. The single final write statement additionally binds its frame and
+MAC as bytea, while SQL derives the expected context from the real event. This
+supersedes only the earlier WRITE_GUARD template, not any provisional hash:
+
+~~~~~~~~sql
+WITH observed AS MATERIALIZED (SELECT pg_catalog.clock_timestamp() AS t) SELECT public.hidra_org_appointment_final_guard(?::uuid,?::uuid,?::uuid,?,?,?,?,?::timestamptz,?::timestamptz,?,?,?::bytea,?::bytea,t) FROM observed
+~~~~~~~~
+
+SHA256 of those literal single-line UTF-8 bytes, no terminal newline:
+`4691e7803cd1b3619472ddc29872a9f893adb5decbadbfe05e94779196e4a01b`.
+This is an authored interface hash, not installed/executed SQL. No old scalar-only
+overload may remain callable by the publisher after activation. Native/Party
+rechecks, current/pinned configuration, complete conflicts, CAS, journal/receipt,
+SQL-free beforeCommit veto, unknown-commit handling and no-SQL-after-GUARD still
+apply. A valid MAC supplements these rules; it never replaces them.
+
+#### Meaningful acceptance and subsequent artifact gate
+
+Preserve all existing tests, cases, assertions, migrations, permission definitions,
+source-linked inventory metadata and the five database sets. Add only real
+implemented source/case entries with unmeasured weights. Required proof includes:
+
+- Independent known-answer HMAC vectors plus Java/SQL frame, digest, MAC and
+  microsecond/UUID/Unicode parity; ambiguous encodings, extra/truncated bytes,
+  wrong length/key/revision/audience/publisher/domain/action/scope/event/result,
+  reordered/omitted resources and modified actor/PID/XID/window all reject.
+- Genuine existing signed/completed LOCAL, OIDC, LDAP and ACTIVE_DIRECTORY
+  admissions, complete scoped PERMIT, missing-grant/DENY/revocation and expiry;
+  caller-built contributions/markers, readonly/read-action tickets, another
+  issuer/thread/holder or suspended/completed transaction cannot sign.
+- Real separated ordinary/publisher/Organization-config/Identity-key-admin
+  PostgreSQL logins. No direct key read, SQL signing oracle, scalar-only receipt,
+  role-switch bridge, default key, elevated caller or unsafe extension/routine/
+  table/trigger/ACL/catalog substitution. Safe logs/DTOs contain no key/proof.
+- Single native issuance, second nonce redemption, cross-transaction replay,
+  rollback and outside-connection absence of consumed nonce/receipt; final guard
+  integration must later prove those properties together with actual source/
+  event writes. Issuer-only tests do not complete that downstream workflow.
+- Rotation/revocation and key-status ABA, key-admin CAS, original migration/
+  historical metadata preservation, concurrent key administration versus a retained
+  write key fence, unchanged sibling auth families and unchanged deadline budget.
+
+The prerequisite must not activate new HTTP routes, ordinary grants, Organization
+writer credentials or a general-purpose cryptographic service. Missing deployment
+keys do not block configurable software tests; use test-only synthetic keys and
+fresh-schema PostgreSQL. The owner still supplies deployment configuration later.
+Actual extension/catalog/nonce/secret-ACL tests are required, not a Docker skip.
+Update ownership metadata only for the3 real Identity relations and this actual
+migration/test. Preserve the dictionary until authentic hosted schema evidence is
+available, then use the existing bounded artifact reconciliation stage; no
+physical metadata may be invented.
+
+**Registration validation and stop:** Current AGENTS, registry/index, owning phase,
+legacy reconciliation and exact-head CI were refreshed. Each proposed CREATE
+path was absent and each MODIFY path present at the inspected tree. The authored
+future write-statement hash was calculated locally. All18 current documentation
+validator self-tests passed; exact append-only and one-file scope checks are
+required before publication. This is not Java/JUnit/PostgreSQL/crypto execution
+or complete repository documentation validation. Publish only the current phase
+record with expecteda9e9966a guard, verify exact parent/tree/blob/message and
+confirm Docs CI creation/start, then STOP. HAPI-778 stays PARTIAL/IN_PROGRESS;
+HAPI-590 stays separately PARTIAL/BLOCKED. The original five-stage estimate is
+no longer a dependable remaining-commit count: this explicitly approved
+prerequisite must be implemented and accepted before writer activation.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

@@ -9004,6 +9004,28 @@
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java",
       "source_sha256": "4ad3f5715316da89bfe78f78eda7aebb7e752b86017bbbc26b89a7d79edc4914",
       "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "classificationIsFrozenToTheExactCommandAndRechecksNativeRevocation",
+        "committedCreateReceiptReplaysOnlyForItsOriginalActorAndExactCommand",
+        "freshCommandsClassifyCurrentOrRetainedWithoutCreatingLedgerRows",
+        "freshMutationRejectsStaleCasAndRetainedBindingRevisionSubstitution",
+        "independentSourceWriterCannotPassTheRetainedClassificationFence",
+        "originalCorrectionReplaysFromHistoricalPinsAfterLaterMoveRebindingAndPartySuspension",
+        "receiptKeyRejectsChangedReasonVersionNullableBoundaryAndPolicyRevision",
+        "replayRefusesAnIncompleteHistoricalOwnershipClosure",
+        "scalarContributionCopyCannotQualifyClassificationOrRestoreAPoisonedTicket"
+      ],
+      "class": "dz.sh.hidra.modules.organization.infrastructure.persistence.EmployeeAppointmentConcurrencyPostgresIntegrationTest",
+      "dependency_reason": "Actual PostgreSQL16 committed synthetic ledger, restricted login, exact command/actor/scope replay before source CAS and retained fence contention; native issuer is mocked and integrated writer acceptance remains pending; duration unmeasured.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "organization",
+      "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java",
+      "source_sha256": "714af942f3055e1edce34720f90da95f4bf419b9e525b4e022685718727446c3",
+      "supports": []
     }
   ],
   "format": 1,

@@ -25240,6 +25240,114 @@ four paths on main with expected-b970d05 guard; verify parent/tree/message/raw
 blobs/scope, observe applicable exact-SHA workflows queued/started, then STOP.
 Next continues this same registered B3 runtime envelope after actual CI feedback.
 
+### 2026-10-23 — HAPI-778 B3 exact command, retained source and committed replay classification
+
+**Selection / exact message:** Owner Continue selects one further slice of the
+existing B3 runtime envelope from main a67e3905a5a4646b05c6ca3219f7f0e179a363ff,
+tree a8c6da6b855850b167dfb09522862def6d9e6fbe.
+[Full833](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39849884769),
+[Fast146](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39849884786)
+and [Docs523](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39849884787)
+completed SUCCESS on that exact source. Current governance, B3 and its owner
+proof amendments, actual owner exports, storage/coordinator, immutable SQL and
+existing tests were inspected. No repeated design registration, new business
+ownership choice, owner export or task is introduced. Exact message remains
+`feat(organization): persist protected appointment lifecycle and history`.
+
+**Finite scope — one CREATE, three MODIFY, no DELETE:**
+
+- CREATE src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java, already admitted in B3
+- MODIFY src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JdbcProtectedEmployeeAppointmentRepositoryAdapter.java
+- MODIFY .github/ci-test-inventory.json, one new real class only
+- MODIFY this append-only HAPI-778 evidence in doc/roadmap/TASKS_HPS-003.md
+
+**Implemented command/key framing:** A private explicit serializer covers every
+field of all four immutable command types, including nullable end boundaries,
+versions/revisions, exact identifiers, enums, microsecond instants and unchanged
+reason text. PostgreSQL jsonb text supplies the existing ledger's canonical
+UTF8 command bytes and SHA256; record toString, ambiguous concatenation and
+coerced/omitted fields are not used. The request-key scope is the SHA256 of the
+canonical PostgreSQL jsonb object containing family=organization-appointment-v1
+and companyPartyId. Native actor user and exact request ID remain separate typed
+unique-key components. This stable company namespace deliberately survives unit
+movement/rebinding and makes changed input under the same actor/company/request
+conflict. It conveys no company or employee authority. The later key publisher
+and final receipt guard must use this same frame.
+
+**Locked classification:** The adapter authenticates its private ticket, actual
+retained owner/physical/catalog/time checks, original native contribution by
+object identity, exact mutating action and complete locked descriptor equality.
+A caller-constructed equal Contribution cannot qualify it. An immutable receipt
+for the sampled actor, canonical company scope and request is inspected BEFORE
+source CAS. REPLAY requires exact canonical command/digest, event operation and
+company, original receipt/event actor agreement, full retained canonical result,
+historical guard window and PID/XID consistency. All before/after/successor pins
+are checked through immutable binding/policy revisions, and the resulting full
+owner closure must equal the freshly authorized native request.
+
+To support this ordering after later projection changes, mutation preview first
+discovers exact-command receipt snapshots. Before a native sample the actor is
+unknown: these candidates are only untrusted selectors, never a returned result
+or replay decision. Discovery is bounded to1024 events (1025 overflow probe),
+one employee and at most two same-company owner pairs. The private classifier
+then selects only the actual native actor's unique receipt. Missing, changed,
+ambiguous or incomplete evidence cannot silently become replay. Historical pins
+are never replaced by a current assignment or binding head.
+
+Without an admitted receipt, a fresh source must retain complete immutable
+company/unit binding and policy references and exactly match expectedVersion.
+END and same-unit CORRECT classify RETAINED; the latter must retain its exact
+source binding revision. CREATE, TRANSFER and moved CORRECT classify CURRENT.
+The private ticket freezes command, canonical frame, reference use and complete
+source snapshot or receipt event; repeated classification rechecks the same
+observation. Failure poisons the actual holder and cannot be repaired by another
+scalar or command. No eligibility read, policy/conflict evaluation, provisional
+write, new receipt, mutation result, permit or public route is produced here.
+
+**Authored PostgreSQL evidence:** A separate full-Flyway PostgreSQL16 test class
+has nine real methods and an isolated database, preserving every existing suite
+and its fresh-schema counts. Setup commits genuine structurally checked synthetic
+CREATE and two CORRECT events/receipts in separate physical transactions. The
+original correction is retried after version3, another unit move, a historical
+unit's company rebind and suspension of the original Party. Tests cover fresh
+reference classifications without DML, actor-specific CREATE replay, historical
+closure before CAS, changed reason/version/null boundary/policy conflict,
+stale CAS/retained-binding substitution, equal scalar-copy refusal and permanent
+poisoning, omitted historical owner refusal, frozen commands/current native
+revocation on replay, and actual independent source-writer NOWAIT contention.
+
+Storage uses a real separated restricted login and actual retained locks. The
+closed test-only definer acquires native/key/Party locks for mechanics; Identity
+is explicitly mocked. Administrator-authored committed ledger fixtures prove
+structural replay and transaction ordering, NOT genuine native authorization,
+cryptographic commit-proof provenance, an end-to-end protected writer or complete
+concurrency acceptance. Those proofs remain mandatory before integration.
+New suite source SHA256:
+714af942f3055e1edce34720f90da95f4bf419b9e525b4e022685718727446c3.
+
+**Local validation / remaining:** Java17 compiler-API syntax parsing passes for
+both changed Java sources, without Java21 type analysis or JUnit execution.
+Inventory validates353 fast/354 unit-architecture/455 active oracle classes,
+four historical classes and seven disjoint PostgreSQL partitions
+12/16/13/14/16/15/15. The new class has an explicit unmeasured zero scheduling
+weight; no old weights, entries or lane membership change. All32 inventory
+self-tests pass. Offline docs validates128 documents/8380 relative links/24
+modules/921 tasks/25 phases; offline OpenAPI retains257 paths/279 operations/267
+schemas; whitespace passes. Maven/Java21 and local PostgreSQL are unavailable;
+new runtime/source verification awaits exact-SHA hosted CI under CI-first policy.
+
+The adapter remains non-bean, incomplete and unwired. Current destination/policy
+and employee/unit/position eligibility, complete conflict/proposal admission,
+operation deadline narrowing, post-DML evidence transitions, guarded history
+materialization/cursors, provisional SQL, proof-bearing final read/write guard
+and receipt, atomic application/legacy/REST cutover and full native/concurrency
+acceptance remain. All165 migration bytes, Identity/Party contracts, executor
+pins, dictionary, API/workflows and frozen statuses stay unchanged. HAPI-778
+remains PARTIAL/IN_PROGRESS; HAPI-590 independently PARTIAL/BLOCKED. Publish only
+these four paths with expected-a67e390 main guard, verify parent/tree/message/raw
+blobs/scope, observe exact-SHA Full/Fast/Docs queued/started and STOP. The next
+registered work continues this same B3 runtime envelope after actual CI feedback.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

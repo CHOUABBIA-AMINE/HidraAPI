@@ -47,6 +47,7 @@ import java.util.Objects;
 import java.util.TreeSet;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.access.AccessDeniedException;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * An isolated first JDBC slice of the registered protected repository. This is
@@ -99,6 +100,10 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
      */
     public DescriptorPreview preview(EmployeeAppointmentCommand command) {
         Objects.requireNonNull(command, "Mutation command required");
+        try {
+            var replay = replayPreview(command, null);
+            if (replay != null) return replay;
+        } catch (RuntimeException unavailable) { throw denied(); }
         if (command instanceof EmployeeAppointmentCommand.Create create) {
             return new DescriptorPreview(List.of(new CompanyUnit(
                     create.companyPartyId(), create.organizationUnitId())),
@@ -773,6 +778,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
         private volatile boolean active = true;
         private OrganizationProtectedAppointmentAuthorizationContract.Contribution sample;
         private PolicyObservation policy;
+        private MutationClassification mutation;
         private List<ProtectedRelationFence> nativeFences = List.of(), proofFences = List.of();
 
         private StorageAdmission(ConnectionHolder holder, Authentication authentication,
@@ -795,6 +801,196 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
         @Override public void suspend() { poison(this); }
         @Override public void afterCompletion(int status) { active=false; }
         @Override public String toString() { return "StorageAdmission[opaque]"; }
+    }
+
+    private static final JsonMapper COMMAND_JSON = JsonMapper.builder().build();
+
+    /** Explicit membership; preserve nullable fields, exact identifiers/reasons and microsecond instants. */
+    private static String commandJson(EmployeeAppointmentCommand command) {
+        var fields = new java.util.LinkedHashMap<String,Object>();
+        fields.put("kind",command.kind().name());fields.put("requestId",command.requestId());
+        fields.put("companyPartyId",command.companyPartyId());
+        if (command instanceof EmployeeAppointmentCommand.Create c) {
+            fields.put("employeeId",c.employeeId());fields.put("organizationUnitId",c.organizationUnitId());
+            fields.put("positionId",c.positionId());fields.put("assignmentType",c.assignmentType().name());
+            fields.put("validFrom",c.validFrom().toString());
+            fields.put("validTo",c.validTo()==null?null:c.validTo().toString());
+            fields.put("expectedBindingRevision",c.expectedBindingRevision());
+            fields.put("expectedPolicyRevision",c.expectedPolicyRevision());
+        } else {
+            fields.put("assignmentId",sourceId(command));
+            if (command instanceof EmployeeAppointmentCommand.End c) {
+                fields.put("expectedVersion",c.expectedVersion());fields.put("endAt",c.endAt().toString());
+                fields.put("reason",c.reason());
+            } else if (command instanceof EmployeeAppointmentCommand.Transfer c) {
+                fields.put("expectedVersion",c.expectedVersion());
+                fields.put("destinationOrganizationUnitId",c.destinationOrganizationUnitId());
+                fields.put("destinationPositionId",c.destinationPositionId());
+                fields.put("destinationType",c.destinationType().name());fields.put("effectiveAt",c.effectiveAt().toString());
+                fields.put("successorValidTo",c.successorValidTo()==null?null:c.successorValidTo().toString());
+                fields.put("expectedDestinationBindingRevision",c.expectedDestinationBindingRevision());
+                fields.put("expectedDestinationPolicyRevision",c.expectedDestinationPolicyRevision());
+                fields.put("reason",c.reason());
+            } else if (command instanceof EmployeeAppointmentCommand.Correct c) {
+                fields.put("expectedVersion",c.expectedVersion());
+                fields.put("correctedOrganizationUnitId",c.correctedOrganizationUnitId());
+                fields.put("correctedPositionId",c.correctedPositionId());fields.put("correctedType",c.correctedType().name());
+                fields.put("correctedStatus",c.correctedStatus().name());
+                fields.put("correctedValidFrom",c.correctedValidFrom().toString());
+                fields.put("correctedValidTo",c.correctedValidTo()==null?null:c.correctedValidTo().toString());
+                fields.put("expectedDestinationBindingRevision",c.expectedDestinationBindingRevision());
+                fields.put("expectedDestinationPolicyRevision",c.expectedDestinationPolicyRevision());
+                fields.put("reason",c.reason());
+            } else throw denied();
+        }
+        return COMMAND_JSON.writeValueAsString(fields);
+    }
+
+    private static String sourceId(EmployeeAppointmentCommand command) {
+        return command instanceof EmployeeAppointmentCommand.End c ? c.assignmentId()
+                : command instanceof EmployeeAppointmentCommand.Transfer c ? c.assignmentId()
+                : command instanceof EmployeeAppointmentCommand.Correct c ? c.assignmentId() : null;
+    }
+
+    /* Actor is intentionally unknown during preview. Candidate receipts are only
+     * untrusted selectors; actual replay is selected by the genuine sampled user.
+     * Exact command matching and complete snapshot closure prevent mutable source
+     * ownership from replacing the original receipt's historical descriptors. */
+    private DescriptorPreview replayPreview(EmployeeAppointmentCommand command, String eventId) {
+        String predicate = eventId == null ? """
+                e.event_id IN (SELECT r.event_id FROM public.hidra_org_appointment_receipt r
+                    WHERE r.request_id=? AND e.company_party_id=?
+                      AND pg_catalog.convert_from(e.canonical_payload,'UTF8')::jsonb->'command'=?::jsonb)
+                """ : "e.event_id=?::uuid";
+        Object[] values = eventId == null
+                ? new Object[]{command.requestId(),command.companyPartyId(),commandJson(command)}
+                : new Object[]{eventId};
+        var rows = jdbc.query(HISTORICAL_SQL.formatted(predicate,"TRUE"),
+                (r,i) -> new Historical(r.getString(1),r.getString(2),r.getString(3),r.getString(4),
+                        r.getLong(5),r.getLong(6),r.getBoolean(7)),values);
+        if (rows == null) throw denied();
+        if (rows.isEmpty()) { if (eventId != null) throw denied(); return null; }
+        var pairs = new TreeSet<>(OWNER_ORDER);
+        String employee = null;
+        boolean sourceSeen = sourceId(command)==null;
+        for (var row : rows) {
+            if (row.incomplete() || row.eventCount()<1 || row.eventCount()>1024 || row.version()<1
+                    || row.employee()==null || row.assignment()==null || row.unit()==null
+                    || !command.companyPartyId().equals(row.company())
+                    || employee!=null && !employee.equals(row.employee())) throw denied();
+            employee=row.employee();pairs.add(new CompanyUnit(row.company(),row.unit()));
+            sourceSeen |= Objects.equals(sourceId(command),row.assignment());
+        }
+        if (!sourceSeen || pairs.size()>2 || employee==null
+                || command instanceof EmployeeAppointmentCommand.Create c && !c.employeeId().equals(employee)) throw denied();
+        return new DescriptorPreview(new ArrayList<>(pairs),employee,sourceId(command),false);
+    }
+
+    /* Stable company namespace, independent of mutable/current or historical unit
+     * sets. Actor and request ID remain separate typed unique-key components.
+     * PostgreSQL jsonb text is the same canonical byte framing used by the ledger. */
+    private static final String COMMAND_FRAME_SQL = """
+            SELECT pg_catalog.encode(pg_catalog.sha256(pg_catalog.convert_to(?::jsonb::text,'UTF8')),'hex'),
+                   pg_catalog.encode(pg_catalog.sha256(pg_catalog.convert_to(pg_catalog.jsonb_build_object(
+                       'family','organization-appointment-v1','companyPartyId',?::text)::text,'UTF8')),'hex')
+            """;
+    private record CommandFrame(String commandDigest, String scopeDigest) { }
+
+    private static final String RECEIPT_SQL = """
+            SELECT r.event_id::text,
+                   (r.command_sha256=? AND e.command_sha256=r.command_sha256
+                    AND e.command_sha256=pg_catalog.encode(pg_catalog.sha256(pg_catalog.convert_to(
+                        (pg_catalog.convert_from(e.canonical_payload,'UTF8')::jsonb->'command')::text,'UTF8')),'hex')
+                    AND pg_catalog.convert_from(e.canonical_payload,'UTF8')::jsonb->'command'=?::jsonb
+                    AND e.canonical_payload=pg_catalog.convert_to(
+                        pg_catalog.convert_from(e.canonical_payload,'UTF8')::jsonb::text,'UTF8')
+                    AND r.canonical_result=e.canonical_payload AND e.actor_user_id=r.actor_user_id
+                    AND e.company_party_id=? AND e.operation=?
+                    AND r.request_id=pg_catalog.convert_from(e.canonical_payload,'UTF8')::jsonb->'command'->>'requestId'
+                    AND r.backend_pid=e.backend_pid AND r.transaction_id=e.transaction_id
+                    AND r.guarded_at>=e.sampled_at AND r.guarded_at<e.valid_until) AS valid
+              FROM public.hidra_org_appointment_receipt r
+              LEFT JOIN public.hidra_org_appointment_event e ON e.event_id=r.event_id
+             WHERE r.actor_user_id=? AND r.scope_key=? AND r.request_id=?
+             LIMIT 2
+            """;
+    private record ReceiptCandidate(String eventId, boolean valid) { }
+
+    private static final String CLASSIFICATION_SOURCE_SQL = """
+            SELECT a.appointment_version,a.organization_unit_id,a.binding_revision,
+                   pg_catalog.jsonb_build_object('assignment',pg_catalog.to_jsonb(a),
+                       'binding',pg_catalog.to_jsonb(b),'policy',pg_catalog.to_jsonb(p))::text
+              FROM public.hidra_org_employee_assignment a
+              JOIN public.hidra_org_appointment_binding_revision b ON b.binding_id=a.binding_id
+               AND b.revision=a.binding_revision AND b.organization_unit_id=a.organization_unit_id
+              JOIN public.hidra_org_appointment_policy_revision p ON p.policy_id=a.policy_id
+               AND p.revision=a.policy_revision AND p.company_party_id=b.company_party_id
+             WHERE a.id=? AND a.employee_id=? AND b.company_party_id=?
+               AND a.appointment_version>0 AND a.last_event_id IS NOT NULL
+             LIMIT 2
+            """;
+    private record ClassificationSource(long version, String unit, long bindingRevision, String snapshot) { }
+    private record MutationClassification(EmployeeAppointmentCommand command, CommandFrame frame,
+            ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse use, String retainedEvidence) { }
+
+    /**
+     * Classifies only under the genuine native sample and retained owner fences.
+     * Receipts precede current projection CAS. This grants no write/result permit:
+     * policy/conflict/eligibility/proposal/final-proof checks remain mandatory.
+     */
+    public ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse referenceUse(
+            ProtectedEmployeeAppointmentRepositoryPort.Admission admission, EmployeeAppointmentCommand command,
+            OrganizationProtectedAppointmentAuthorizationContract.Contribution contribution) {
+        StorageAdmission ticket = null;
+        try {
+            ticket=ticket(admission);requireCurrent(ticket);Objects.requireNonNull(command);
+            if (contribution!=ticket.sample || ticket.parties.size()!=1
+                    || !command.kind().name().equals(ticket.sample.request().action().name())
+                    || ticket.mutation!=null && !ticket.mutation.command().equals(command)
+                    || !ticket.preview.equals(preview(command))) throw denied();
+            String json=commandJson(command);
+            var frame=jdbc.queryForObject(COMMAND_FRAME_SQL,
+                    (r,i) -> new CommandFrame(r.getString(1),r.getString(2)),json,command.companyPartyId());
+            if (frame==null) throw denied();
+            var receipts=jdbc.query(RECEIPT_SQL,(r,i) -> new ReceiptCandidate(r.getString(1),r.getBoolean(2)),
+                    frame.commandDigest(),json,command.companyPartyId(),command.kind().name(),
+                    ticket.sample.userId(),frame.scopeDigest(),command.requestId());
+            if (receipts==null || receipts.size()>1) throw denied();
+            ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse use;
+            String evidence;
+            if (!receipts.isEmpty()) {
+                var receipt=receipts.get(0);
+                if (!receipt.valid() || receipt.eventId()==null
+                        || !ticket.preview.equals(replayPreview(command,receipt.eventId()))) throw denied();
+                use=ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY;
+                evidence=receipt.eventId();
+            } else if (command instanceof EmployeeAppointmentCommand.Create) {
+                use=ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.CURRENT;evidence=null;
+            } else {
+                var rows=jdbc.query(CLASSIFICATION_SOURCE_SQL,(r,i) -> new ClassificationSource(
+                        r.getLong(1),r.getString(2),r.getLong(3),r.getString(4)),
+                        sourceId(command),ticket.preview.employeeId(),command.companyPartyId());
+                if (rows==null || rows.size()!=1) throw denied();
+                var row=rows.get(0);
+                long version=command instanceof EmployeeAppointmentCommand.End c ? c.expectedVersion()
+                        : command instanceof EmployeeAppointmentCommand.Transfer c ? c.expectedVersion()
+                        : ((EmployeeAppointmentCommand.Correct)command).expectedVersion();
+                if (row.version()!=version) throw denied();
+                boolean retained=command instanceof EmployeeAppointmentCommand.End
+                        || command instanceof EmployeeAppointmentCommand.Correct c
+                           && c.correctedOrganizationUnitId().equals(row.unit());
+                if (retained && command instanceof EmployeeAppointmentCommand.Correct c
+                        && c.expectedDestinationBindingRevision()!=row.bindingRevision()) throw denied();
+                use=retained ? ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.RETAINED
+                        : ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.CURRENT;
+                evidence=row.snapshot();
+            }
+            var observed=new MutationClassification(command,frame,use,evidence);
+            if (ticket.mutation!=null && !ticket.mutation.equals(observed)) throw denied();
+            ticket.mutation=observed;requireCurrent(ticket);return use;
+        } catch (RuntimeException failure) {
+            poison(ticket==null?admission:ticket);throw denied();
+        }
     }
 
     private record Observed(String employeeId, String unitId, String companyId) { }

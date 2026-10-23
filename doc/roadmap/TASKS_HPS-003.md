@@ -26209,6 +26209,92 @@ guard, verify parent/tree/message/blobs/scope, confirm exact-SHA Full/Fast/Docs
 created/queued/started and STOP. Runtime CI, dictionary reconciliation and the
 separate observed Identity fixture failure remain open acceptance gates.
 
+### 2026-10-23 — HAPI-778 Full843 authenticated catalog artifact reconciliation
+
+**Selection / message:** Owner Fail refreshes exact main
+18defeb89f811b97a6674f130da637a83d2481e4,
+parent14b07402a4cbd8b393947be3a5327d92a487b895,
+treeac4909d09d3be9478178d090b7049bb2ee1659bf.
+[Full843](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39970440148)
+FAILED only in API/dictionary job120471375370 and its dependent aggregate gate.
+[Fast156](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39970440053)
+and [Docs533](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39970440109)
+SUCCEEDED. All seven PostgreSQL shards, Java21 unit/architecture and static
+validation succeeded; the optional serial oracle was skipped. This selects only
+the already registered artifact repair with exact message
+`docs(organization): reconcile appointment API and catalog artifacts`.
+
+**Runtime feedback:** PostgreSQL shard1 job120471375518's source-linked artifact
+12509032016 has archive SHA256
+602235d3f0029573b0e5090fd10ae71f2c926d0d8fa49b7a3c947ab12c84d425.
+Its reports/TEST-dz.sh.hidra.modules.organization.infrastructure.persistence.EmployeeAppointmentConcurrencyPostgresIntegrationTest.xml
+member has SHA256
+4cedc7990c26feee564373bd7f9d347351a111e56da4ec635c98f6f5964ba623.
+All51 exact inventory case identities executed, zero failures/errors/skips,
+including the canonical fingerprint/closed ACL regression, archived42702
+reproduction with forward guard commit and raw SQL final-guard positive cases.
+Shard5 job120471375574's artifact12508358508 has archive SHA256
+402291af7f061658a3a7cb3a55cea2a4a9481c6782c2cb97ccc79e80169692e6.
+Its reports/TEST-dz.sh.hidra.modules.identity.infrastructure.persistence.ProtectedAuthorizationEvidencePostgresIntegrationTest.xml
+member has SHA256
+3259373ea5f5c94fa9c9f89267756bc8f703516c72d45ce2b59e42e98276f26a.
+All43 exact inventory case identities executed, zero failures/errors/skips,
+including the previous BeforeEach-failed c3SameTransactionMappingEditAfterClaimSelectionRejectsBeforeCommitGuard.
+No Identity source, deadline or assertion change was needed. This run does not
+establish the internal cause of the previous transient fixture failure, nor
+prove application lifecycle integration or every real-executor timing path.
+
+**Authentic producer / failed gate:** API-contract lane run39970440148 attempt1
+captured PostgreSQL16.15 migrated catalog at this exact source; verification.json
+contains Data dictionary FAILED: Physical dictionary drift; review regenerated
+metadata/content. The follow-on missing API-contract success artifact is a
+consequence of that failure, not a separate runtime OpenAPI mismatch. Diagnostic
+artifact12508692379, hidra-ci-diagnostics-18defeb89f811b97a6674f130da637a83d2481e4-39970440148-1-api-contract,
+was retrieved and its archive SHA256 verified:
+dff73cdebc601f1cb1f328e787374abdbdaf461f50361082ac3809ece8d7ac43.
+Actual member database/schema.json SHA256:
+e700db70319f735eece2b92ffdccc9c96857dc5f2ae7a3fe8ad4a5aac7f21a03.
+Its source SHA, source bundle, exact migrations/JPA mapping bytes and complete
+successful Flyway history validate against current source using the existing
+generator. Source bundle SHA256:
+2b3034f3038a57afe84639cdfb8601b83c6422c33301b9e40058c7cf7c6bdc84.
+It captures168 migrations,470 JPA mappings,516 relations and zero unresolved
+owners. No catalog metadata was inferred from SQL or an older artifact.
+
+**Finite scope — two MODIFY, zero CREATE/DELETE:**
+- doc/database/DATA_DICTIONARY.md, deterministic existing generator output
+- this append-only HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+The dictionary retains the actual capture SHA rather than substituting this
+future documentation commit. Output SHA256:
+d68e0142825d88670568d5fae3b83c1a3bc8acb6dd2241074678d4d3e1b8dba7.
+Reviewed drift is generation provenance/count165 to168 plus source-linked
+mentions of the three added migrations; no relation/column/constraint/index/
+trigger definitions or ownership overrides changed. Member openapi/hidra-api.json
+SHA25627a0e015d09940de10c779ce0df8629455a08c03fe2aac5e3b6ad7dea7e03583
+passes existing exact-source validation and runtime semantic equality:257 paths,
+279 operations,267 schemas. Therefore canonical OpenAPI and its manifest retain
+bytes. All production/test/inventory/CI sources and168 migration bodies retain
+bytes; frozen roadmap/phase statuses and other tasks are unchanged.
+
+**Validation / acceptance limit:** Existing generator --input/--source-sha with
+reviewed ownership --check passes, reviewed_dictionary_checked=true. All17
+generator self-tests pass. Both report case sets equal current inventory.
+Documentation and whitespace validation are run before publication. No local
+Maven/Java21/PostgreSQL/Docker environment is provisioned and no local runtime
+pass is claimed. Full843 remains FAILED; this repair requires fresh hosted
+catalog equality and the complete exact-SHA Full gate. Previous green shard
+results do not substitute for that acceptance.
+
+**Stop / remaining:** Publish exactly these two paths using expected-18defeb main
+guard; verify parent/tree/message/blobs/scope and applicable Full/Fast/Docs
+creation/queue/start, then STOP without waiting. HAPI-778 stays PARTIAL/IN_PROGRESS;
+HAPI-590 independently PARTIAL/BLOCKED. Remaining B3 read guard, Java managed-
+flush/final-proof/receipt integration, real-executor/native commit acceptance,
+history/cursors, application/private publisher/legacy/REST cutover and governance
+closure remain. No next runtime stage, deployment, simulator or OT is selected.
+
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

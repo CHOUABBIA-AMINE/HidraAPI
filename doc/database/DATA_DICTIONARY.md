@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `58330499d4f1416507e5ea672219d17343eb2c72`
+Captured source SHA: `18defeb89f811b97a6674f130da637a83d2481e4`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `ee11752dcc271cdfc8cec09567d8390a2fe99a8e38b4534f747de01f4c34e285`.
-Migrations: 165; JPA mappings: 470; catalog relations: 516; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `2b3034f3038a57afe84639cdfb8601b83c6422c33301b9e40058c7cf7c6bdc84`.
+Migrations: 168; JPA mappings: 470; catalog relations: 516; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -16463,6 +16463,9 @@ Monotonic active unit/company binding pointer linked to its configuration event.
 - Evidence: [EmployeeAppointmentLifecyclePostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 - Migration mention (not inferred introduction): [V20261021_004__organization_appointment_configuration_successor.sql](../../src/main/resources/db/migration/V20261021_004__organization_appointment_configuration_successor.sql)
+- Migration mention (not inferred introduction): [V20261023_001__organization_appointment_final_write_guard.sql](../../src/main/resources/db/migration/V20261023_001__organization_appointment_final_write_guard.sql)
+- Migration mention (not inferred introduction): [V20261023_002__organization_appointment_final_guard_clock_scope.sql](../../src/main/resources/db/migration/V20261023_002__organization_appointment_final_guard_clock_scope.sql)
+- Migration mention (not inferred introduction): [V20261023_003__organization_appointment_fingerprint_visibility.sql](../../src/main/resources/db/migration/V20261023_003__organization_appointment_fingerprint_visibility.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -16516,6 +16519,9 @@ Immutable explicit unit/company revision and actual configuration-administrator 
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 - Migration mention (not inferred introduction): [V20261021_004__organization_appointment_configuration_successor.sql](../../src/main/resources/db/migration/V20261021_004__organization_appointment_configuration_successor.sql)
 - Migration mention (not inferred introduction): [V20261022_001__organization_appointment_projection_integrity.sql](../../src/main/resources/db/migration/V20261022_001__organization_appointment_projection_integrity.sql)
+- Migration mention (not inferred introduction): [V20261023_001__organization_appointment_final_write_guard.sql](../../src/main/resources/db/migration/V20261023_001__organization_appointment_final_write_guard.sql)
+- Migration mention (not inferred introduction): [V20261023_002__organization_appointment_final_guard_clock_scope.sql](../../src/main/resources/db/migration/V20261023_002__organization_appointment_final_guard_clock_scope.sql)
+- Migration mention (not inferred introduction): [V20261023_003__organization_appointment_fingerprint_visibility.sql](../../src/main/resources/db/migration/V20261023_003__organization_appointment_fingerprint_visibility.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -16582,6 +16588,8 @@ Immutable atomic configuration activation before/after journal.
 - Evidence: [EmployeeAppointmentLifecyclePostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 - Migration mention (not inferred introduction): [V20261021_004__organization_appointment_configuration_successor.sql](../../src/main/resources/db/migration/V20261021_004__organization_appointment_configuration_successor.sql)
+- Migration mention (not inferred introduction): [V20261023_001__organization_appointment_final_write_guard.sql](../../src/main/resources/db/migration/V20261023_001__organization_appointment_final_write_guard.sql)
+- Migration mention (not inferred introduction): [V20261023_003__organization_appointment_fingerprint_visibility.sql](../../src/main/resources/db/migration/V20261023_003__organization_appointment_fingerprint_visibility.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -16663,6 +16671,9 @@ Immutable appointment lifecycle event storage; native writer and final guard not
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 - Migration mention (not inferred introduction): [V20261022_001__organization_appointment_projection_integrity.sql](../../src/main/resources/db/migration/V20261022_001__organization_appointment_projection_integrity.sql)
 - Migration mention (not inferred introduction): [V20261022_002__organization_appointment_typed_command_integrity.sql](../../src/main/resources/db/migration/V20261022_002__organization_appointment_typed_command_integrity.sql)
+- Migration mention (not inferred introduction): [V20261023_001__organization_appointment_final_write_guard.sql](../../src/main/resources/db/migration/V20261023_001__organization_appointment_final_write_guard.sql)
+- Migration mention (not inferred introduction): [V20261023_002__organization_appointment_final_guard_clock_scope.sql](../../src/main/resources/db/migration/V20261023_002__organization_appointment_final_guard_clock_scope.sql)
+- Migration mention (not inferred introduction): [V20261023_003__organization_appointment_fingerprint_visibility.sql](../../src/main/resources/db/migration/V20261023_003__organization_appointment_fingerprint_visibility.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -16755,6 +16766,9 @@ Permanent typed employee, occupancy and request lock-key namespace; publisher pa
 - Evidence: [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 - Evidence: [EmployeeAppointmentLifecyclePostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261023_001__organization_appointment_final_write_guard.sql](../../src/main/resources/db/migration/V20261023_001__organization_appointment_final_write_guard.sql)
+- Migration mention (not inferred introduction): [V20261023_002__organization_appointment_final_guard_clock_scope.sql](../../src/main/resources/db/migration/V20261023_002__organization_appointment_final_guard_clock_scope.sql)
+- Migration mention (not inferred introduction): [V20261023_003__organization_appointment_fingerprint_visibility.sql](../../src/main/resources/db/migration/V20261023_003__organization_appointment_fingerprint_visibility.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -16795,6 +16809,9 @@ Monotonic company appointment-policy pointer linked to its configuration event.
 - Evidence: [EmployeeAppointmentLifecyclePostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 - Migration mention (not inferred introduction): [V20261021_004__organization_appointment_configuration_successor.sql](../../src/main/resources/db/migration/V20261021_004__organization_appointment_configuration_successor.sql)
+- Migration mention (not inferred introduction): [V20261023_001__organization_appointment_final_write_guard.sql](../../src/main/resources/db/migration/V20261023_001__organization_appointment_final_write_guard.sql)
+- Migration mention (not inferred introduction): [V20261023_002__organization_appointment_final_guard_clock_scope.sql](../../src/main/resources/db/migration/V20261023_002__organization_appointment_final_guard_clock_scope.sql)
+- Migration mention (not inferred introduction): [V20261023_003__organization_appointment_fingerprint_visibility.sql](../../src/main/resources/db/migration/V20261023_003__organization_appointment_fingerprint_visibility.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -16847,6 +16864,9 @@ Immutable complete explicit appointment-overlap policy revision and canonical by
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 - Migration mention (not inferred introduction): [V20261021_004__organization_appointment_configuration_successor.sql](../../src/main/resources/db/migration/V20261021_004__organization_appointment_configuration_successor.sql)
 - Migration mention (not inferred introduction): [V20261022_001__organization_appointment_projection_integrity.sql](../../src/main/resources/db/migration/V20261022_001__organization_appointment_projection_integrity.sql)
+- Migration mention (not inferred introduction): [V20261023_001__organization_appointment_final_write_guard.sql](../../src/main/resources/db/migration/V20261023_001__organization_appointment_final_write_guard.sql)
+- Migration mention (not inferred introduction): [V20261023_002__organization_appointment_final_guard_clock_scope.sql](../../src/main/resources/db/migration/V20261023_002__organization_appointment_final_guard_clock_scope.sql)
+- Migration mention (not inferred introduction): [V20261023_003__organization_appointment_fingerprint_visibility.sql](../../src/main/resources/db/migration/V20261023_003__organization_appointment_fingerprint_visibility.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -16919,6 +16939,9 @@ Immutable scoped request/command receipt storage; native final-guard creation no
 - Evidence: [EmployeeAppointmentLifecyclePostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 - Migration mention (not inferred introduction): [V20261022_001__organization_appointment_projection_integrity.sql](../../src/main/resources/db/migration/V20261022_001__organization_appointment_projection_integrity.sql)
+- Migration mention (not inferred introduction): [V20261023_001__organization_appointment_final_write_guard.sql](../../src/main/resources/db/migration/V20261023_001__organization_appointment_final_write_guard.sql)
+- Migration mention (not inferred introduction): [V20261023_002__organization_appointment_final_guard_clock_scope.sql](../../src/main/resources/db/migration/V20261023_002__organization_appointment_final_guard_clock_scope.sql)
+- Migration mention (not inferred introduction): [V20261023_003__organization_appointment_fingerprint_visibility.sql](../../src/main/resources/db/migration/V20261023_003__organization_appointment_fingerprint_visibility.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -17089,6 +17112,9 @@ Persisted EmployeeJpaEntity state; semantic authority remains with organization.
 - Migration mention (not inferred introduction): [V20260928_002__backfill_employee_contact_points.sql](../../src/main/resources/db/migration/V20260928_002__backfill_employee_contact_points.sql)
 - Migration mention (not inferred introduction): [V20261004_028__hmr_028_organization_reporting_line.sql](../../src/main/resources/db/migration/V20261004_028__hmr_028_organization_reporting_line.sql)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261023_001__organization_appointment_final_write_guard.sql](../../src/main/resources/db/migration/V20261023_001__organization_appointment_final_write_guard.sql)
+- Migration mention (not inferred introduction): [V20261023_002__organization_appointment_final_guard_clock_scope.sql](../../src/main/resources/db/migration/V20261023_002__organization_appointment_final_guard_clock_scope.sql)
+- Migration mention (not inferred introduction): [V20261023_003__organization_appointment_fingerprint_visibility.sql](../../src/main/resources/db/migration/V20261023_003__organization_appointment_fingerprint_visibility.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -17202,6 +17228,9 @@ Persisted EmployeeAssignmentJpaEntity state; semantic authority remains with org
 - Migration mention (not inferred introduction): [V20260929_006__retire_legacy_operational_scope_columns.sql](../../src/main/resources/db/migration/V20260929_006__retire_legacy_operational_scope_columns.sql)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 - Migration mention (not inferred introduction): [V20261022_001__organization_appointment_projection_integrity.sql](../../src/main/resources/db/migration/V20261022_001__organization_appointment_projection_integrity.sql)
+- Migration mention (not inferred introduction): [V20261023_001__organization_appointment_final_write_guard.sql](../../src/main/resources/db/migration/V20261023_001__organization_appointment_final_write_guard.sql)
+- Migration mention (not inferred introduction): [V20261023_002__organization_appointment_final_guard_clock_scope.sql](../../src/main/resources/db/migration/V20261023_002__organization_appointment_final_guard_clock_scope.sql)
+- Migration mention (not inferred introduction): [V20261023_003__organization_appointment_fingerprint_visibility.sql](../../src/main/resources/db/migration/V20261023_003__organization_appointment_fingerprint_visibility.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -17397,6 +17426,9 @@ Persisted PositionJpaEntity state; semantic authority remains with organization.
 - Migration mention (not inferred introduction): [V20261004_020__hmr_020_organization_position.sql](../../src/main/resources/db/migration/V20261004_020__hmr_020_organization_position.sql)
 - Migration mention (not inferred introduction): [V20261004_028__hmr_028_organization_reporting_line.sql](../../src/main/resources/db/migration/V20261004_028__hmr_028_organization_reporting_line.sql)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261023_001__organization_appointment_final_write_guard.sql](../../src/main/resources/db/migration/V20261023_001__organization_appointment_final_write_guard.sql)
+- Migration mention (not inferred introduction): [V20261023_002__organization_appointment_final_guard_clock_scope.sql](../../src/main/resources/db/migration/V20261023_002__organization_appointment_final_guard_clock_scope.sql)
+- Migration mention (not inferred introduction): [V20261023_003__organization_appointment_fingerprint_visibility.sql](../../src/main/resources/db/migration/V20261023_003__organization_appointment_fingerprint_visibility.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -17720,6 +17752,9 @@ Persisted OrganizationUnitJpaEntity state; semantic authority remains with organ
 - Migration mention (not inferred introduction): [V20261004_032__hmr_032_organization_organization_unit.sql](../../src/main/resources/db/migration/V20261004_032__hmr_032_organization_organization_unit.sql)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 - Migration mention (not inferred introduction): [V20261021_004__organization_appointment_configuration_successor.sql](../../src/main/resources/db/migration/V20261021_004__organization_appointment_configuration_successor.sql)
+- Migration mention (not inferred introduction): [V20261023_001__organization_appointment_final_write_guard.sql](../../src/main/resources/db/migration/V20261023_001__organization_appointment_final_write_guard.sql)
+- Migration mention (not inferred introduction): [V20261023_002__organization_appointment_final_guard_clock_scope.sql](../../src/main/resources/db/migration/V20261023_002__organization_appointment_final_guard_clock_scope.sql)
+- Migration mention (not inferred introduction): [V20261023_003__organization_appointment_fingerprint_visibility.sql](../../src/main/resources/db/migration/V20261023_003__organization_appointment_fingerprint_visibility.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -18300,6 +18335,8 @@ Owner-issued monotone live/tombstone witness for protected ACTIVE Party eligibil
 - Migration mention (not inferred introduction): [V20261021_001__party_organization_configuration_reference.sql](../../src/main/resources/db/migration/V20261021_001__party_organization_configuration_reference.sql)
 - Migration mention (not inferred introduction): [V20261021_002__party_configuration_reference_collation_guard.sql](../../src/main/resources/db/migration/V20261021_002__party_configuration_reference_collation_guard.sql)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261023_001__organization_appointment_final_write_guard.sql](../../src/main/resources/db/migration/V20261023_001__organization_appointment_final_write_guard.sql)
+- Migration mention (not inferred introduction): [V20261023_003__organization_appointment_fingerprint_visibility.sql](../../src/main/resources/db/migration/V20261023_003__organization_appointment_fingerprint_visibility.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -18619,6 +18656,9 @@ Persisted PartyJpaEntity state; semantic authority remains with party.
 - Migration mention (not inferred introduction): [V20261021_001__party_organization_configuration_reference.sql](../../src/main/resources/db/migration/V20261021_001__party_organization_configuration_reference.sql)
 - Migration mention (not inferred introduction): [V20261021_002__party_configuration_reference_collation_guard.sql](../../src/main/resources/db/migration/V20261021_002__party_configuration_reference_collation_guard.sql)
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261023_001__organization_appointment_final_write_guard.sql](../../src/main/resources/db/migration/V20261023_001__organization_appointment_final_write_guard.sql)
+- Migration mention (not inferred introduction): [V20261023_002__organization_appointment_final_guard_clock_scope.sql](../../src/main/resources/db/migration/V20261023_002__organization_appointment_final_guard_clock_scope.sql)
+- Migration mention (not inferred introduction): [V20261023_003__organization_appointment_fingerprint_visibility.sql](../../src/main/resources/db/migration/V20261023_003__organization_appointment_fingerprint_visibility.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

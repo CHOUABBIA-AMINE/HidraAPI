@@ -736,6 +736,22 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         assertEquals("2",finalCount("hidra_org_employee_assignment",f.employee()));
     }
 
+    /** Only static identifiers enter assertion diagnostics; never print SQL payloads or proof bytes. */
+    private static String markFixtureRejections(String source,String family) {
+        String token="RAISE EXCEPTION 'Appointment finalization unavailable'";
+        var out=new StringBuilder();int offset=0,index=0,found;
+        while((found=source.indexOf(token,offset))>=0){
+            out.append(source,offset,found).append("RAISE EXCEPTION 'Fixture invariant ")
+                    .append(family).append(String.format(java.util.Locale.ROOT,"%02d",++index)).append("'");
+            offset=found+token.length();
+        }
+        assertTrue(index>0);return out.append(source.substring(offset)).toString();
+    }
+    private static String safeFixtureMarker(SQLException failure) {
+        var matcher=java.util.regex.Pattern.compile("Fixture invariant [CG][0-9]{2}").matcher(failure.getMessage());
+        return matcher.find()?matcher.group():"no fixture marker; SQLSTATE="+failure.getSQLState();
+    }
+
     @Test void archivedFinalGuardReproducesAmbiguousSweepColumnWhileForwardGuardCommits() throws Exception {
         // Test-only diagnostic clone of immutable001, with no redacting handler: expose only SQLSTATE.
         // The installed guard keeps generic diagnostics; no production function/ACL is weakened.
@@ -743,12 +759,24 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         try(var in=getClass().getResourceAsStream("/db/migration/V20261023_001__organization_appointment_final_write_guard.sql")){
             assertNotNull(in);archived=new String(in.readAllBytes(),java.nio.charset.StandardCharsets.UTF_8);
         }
+        int contextStart=archived.indexOf("CREATE FUNCTION public.hidra_org_appointment_final_context()");
+        int contextEnd=archived.indexOf("$context$;",contextStart)+"$context$;".length();
+        String context=markFixtureRejections(archived.substring(contextStart,contextEnd),"C")
+                .replace("CREATE FUNCTION public.hidra_org_appointment_final_context()","CREATE FUNCTION public.fixture_final_context()");
+        context=context.replace("PERFORM public.hidra_identity_org_commit_caller();",
+                "BEGIN PERFORM public.hidra_identity_org_commit_caller(); EXCEPTION WHEN OTHERS THEN RAISE EXCEPTION 'Fixture invariant C08'; END;")
+                .replace("PERFORM public.hidra_identity_org_commit_locks();",
+                "BEGIN PERFORM public.hidra_identity_org_commit_locks(); EXCEPTION WHEN OTHERS THEN RAISE EXCEPTION 'Fixture invariant C09'; END;");
+        admin(context);
+        admin("REVOKE ALL ON FUNCTION public.fixture_final_context() FROM PUBLIC");
         int start=archived.indexOf("CREATE FUNCTION public.hidra_org_appointment_final_guard(");
         int end=archived.indexOf("$guard$;",start)+"$guard$;".length();
         String diagnostic=archived.substring(start,end)
                 .replace("CREATE FUNCTION public.hidra_org_appointment_final_guard(","CREATE FUNCTION public.fixture_ambiguous_final_guard(")
                 .replace("EXCEPTION WHEN OTHERS THEN\n RAISE EXCEPTION USING ERRCODE='P0001',MESSAGE='Appointment finalization unavailable';\n","");
         assertFalse(diagnostic.contains("EXCEPTION WHEN OTHERS"));
+        diagnostic=markFixtureRejections(diagnostic,"G").replace(
+                "PERFORM public.hidra_org_appointment_final_context();","PERFORM public.fixture_final_context();");
         admin(diagnostic);
         admin("REVOKE ALL ON FUNCTION public.fixture_ambiguous_final_guard(uuid,uuid,uuid,text,text,text,text,timestamptz,timestamptz,integer,bigint,bytea,bytea,timestamptz) FROM PUBLIC");
         var f=fixture(false);
@@ -757,7 +785,7 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
             var proof=g.proof();var save=g.c.setSavepoint();
             var failure=assertThrows(SQLException.class,() -> g.guardSql(proof,g.request,
                     FINAL_SQL.replace("public.hidra_org_appointment_final_guard(","public.fixture_ambiguous_final_guard(")));
-            assertEquals("42702",failure.getSQLState()); // ambiguous_column, without printing fields/frame/MAC.
+            assertEquals("42702",failure.getSQLState(),safeFixtureMarker(failure)); // No protected values in assertion diagnostics.
             g.c.rollback(save);g.c.releaseSavepoint(save);
             g.guard(proof);g.c.commit();
         }

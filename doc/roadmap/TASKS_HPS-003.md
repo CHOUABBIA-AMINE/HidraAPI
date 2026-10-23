@@ -26046,6 +26046,75 @@ PARTIAL/BLOCKED. Publish only these five paths with expected-b43ee9f main guard,
 verify exact parent/tree/message/blobs/scope, confirm exact-SHA Full/Fast/Docs
 creation/queue/start and STOP. No dependent finalization stage is executed.
 
+### 2026-10-23 — HAPI-778 Full841 test-only invariant localization; runtime remains failing
+
+**Selection / exact message:** Owner Fail refreshes main
+a6918e997932d44e59827e636ff811e2d02519e8,
+parentb43ee9f37d7f03da638a73a10ec75b4d3f2b8238,
+tree2383a569377127e99addaa79ab66ffdff130f333.
+[Full841](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39964465364)
+FAILED; [Fast154](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39964465078)
+and [Docs531](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39964465058)
+SUCCEEDED. Current governance/task evidence and responsible source were refreshed.
+Retain the existing B3 message
+`feat(organization): persist protected appointment lifecycle and history`.
+
+**Evidence superseding the earlier cause inference:** PostgreSQL shard1
+job120450604894 reports175 tests, four errors and one failure. The same four
+positive final-guard methods still error. The newly authored archived-guard
+regression expected42702 but actually observedP0001. Therefore the previous
+clock/column correction did NOT close the observed runtime failure; an earlier
+explicit invariant or nested private rejection is reached before the sweep.
+Do not relabel that source correction as a CI-proven root-cause repair. Other
+six PostgreSQL shards, unit/architecture/static and runtime OpenAPI equality pass.
+API/dictionary job120450604643 and final aggregate gate also fail. The current
+167-migration dictionary remains unreconciled, independently of this SQL failure.
+
+**Responsible diagnostic limitation:** The archived test removed only the outer
+guard's redacting handler. The invoked context helper and explicit guard branches
+still emitted the same generic P0001, so the regression did not identify which
+pre-sweep invariant failed. Changing another production rule from those logs
+would be speculation. This bounded publication improves only that test diagnostic;
+it is NOT a functional runtime repair or full-green claim.
+
+**Finite scope — three MODIFY, zero CREATE/DELETE:**
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java
+- .github/ci-test-inventory.json, only that suite's source_sha256
+- this append-only HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+The existing regression now creates isolated, PUBLIC-revoked fixture clones of
+both immutable001 context and archived guard. Explicit generic raise sites are
+replaced only in those clones by static C/G numeric invariant markers. Native
+caller/held-lock callbacks receive two additional fixture-only static markers.
+The installed production routines, migrations, callbacks, privilege rules and
+exception redaction are untouched. All50 methods and their acceptance assertions,
+including expected42702 and the subsequent real forward-guard commit, remain.
+An assertion extracts only a static marker or SQLSTATE; it never prints the raw
+exception, command, actor, payload, signing key, frame or MAC. A new hosted failure
+must thus expose the responsible invariant safely before a targeted SQL repair.
+Fixture function names stay outside the closed production routine namespace;
+they exist only in the disposable test database. No production instrumentation,
+permission broadening, new migration, timeout increase or weakened check occurs.
+
+**Actual checks / limitations:** The changed Java test parses with installed
+Java17 compiler API, syntax only. Canonical inventory validates353 fast/354
+unit-architecture/455 oracle/four historical classes and unchanged partitions
+12/16/13/14/16/15/15; all32 inventory self-tests pass. All case identities, other
+entries/lanes/weights/policies are preserved. Test SHA256
+14e61137d5d897f550296b2645f622c80a81b7d8d8ecae678859b07fa12bd201.
+Whitespace passes; canonical docs is rerun before publication. Local Maven/
+Java21/PostgreSQL/Docker are unavailable and are not provisioned merely for tests.
+No new hosted diagnostic, repaired runtime case, successful guard or accepted
+parent is claimed. All167 migration bodies and production bytes remain unchanged.
+
+**Stop / required feedback:** Publish these three paths with expected-a6918e9
+main guard, verify exact parent/tree/message/blobs/scope, confirm exact-SHA
+Full/Fast/Docs creation/queue/start, then STOP. Runtime final guard and dictionary
+are still failed/open acceptance gates; further B3 work is not selected. Use the
+actual next invariant marker to repair the responsible condition, then reconcile
+the authentic exact-source physical dictionary under its registered artifact
+stage. HAPI-778 remains PARTIAL/IN_PROGRESS, HAPI-590 independently PARTIAL/BLOCKED.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

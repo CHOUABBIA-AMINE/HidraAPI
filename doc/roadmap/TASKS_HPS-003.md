@@ -26501,6 +26501,65 @@ application/legacy/REST cutover and final acceptance remain unfinished. No
 deployment, release, simulator or OT action is selected by this increment.
 
 
+### 2026-10-23 — HAPI-778 Full846 authenticated POLICY read catalog reconciliation
+
+**Selection / message:** Owner Next refreshes main
+83e0996f6daa6f8541fadecd85017aea39468944,
+parent79bfb9375db30fc35d40df1362a0a219ede98ecf,
+tree7d88e6026da7968dec30824a95a211a514dd62d2.
+[Full846](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40002678866)
+FAILED in API/dictionary job120582556221 and its dependent aggregate gate.
+[Fast158](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40002678994)
+and [Docs536](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40002679097)
+SUCCEEDED. Static, unit/architecture and all seven PostgreSQL shard jobs succeeded;
+the optional serial oracle was skipped. These are observed job conclusions,
+not a new independent raw-case acceptance review. The registered artifact stage
+uses exact message `docs(organization): reconcile appointment API and catalog artifacts`.
+
+**Authentic producer / diagnosed failure:** API-contract run40002678866 attempt1
+captured the actual169-migration PostgreSQL16.15 catalog. Its verification.json
+reports Physical dictionary drift; review regenerated metadata/content. Missing
+success-lane evidence is consequential. Diagnostic artifact12523107105 archive
+SHA256 is2b93c4b89f036f270fe323ae731729d89d08d18b93ac9dfbd4488786c83a06e9;
+member database/schema.json SHA256 is
+231ab0e4bb184f1e21e5746ccf24ce64de9bf12c8cc9ae8216c7e366566bf123.
+The existing generator validates exact capture SHA, all migration/JPA source bytes,
+complete successful Flyway history and catalog references. Source bundle SHA256
+4c095fc1df24946b526d40f6af9d2baec4070c15035f06fa8c8eb7b28da3fadc;
+169 migrations,470 JPA mappings,516 relations,zero unresolved owners.
+No catalog facts are inferred from SQL or from the older168-migration capture.
+
+**Finite scope — two MODIFY, zero CREATE/DELETE:**
+- doc/database/DATA_DICTIONARY.md, existing deterministic generator output
+- this append-only record in doc/roadmap/TASKS_HPS-003.md
+
+Reviewed dictionary drift consists only of capture/source-bundle/count provenance
+and mentions of V20261023_004__organization_appointment_policy_read_guard.sql.
+All physical relation/column/constraint/index/trigger definitions and ownership
+metadata retain their previous content. Generated dictionary SHA256 is
+7095dc1d684e2f43164aa1171f5fdbbf84a5f09b05c73d4ea3027b381cd3ea13.
+Actual capture SHA is retained. Runtime OpenAPI member SHA256
+41712b4d0afa6ac4009b76826ad2ee58e06b1d35e213f4fa30777be0e7cbd24e
+passes exact-source runtime equality:257 paths,279 operations,267 schemas.
+Canonical OpenAPI/manifest,all169 migrations,production/tests,CI inventory/workflows,
+frozen statuses and other task records retain bytes.
+
+**Actual validation / limits:** All17 dictionary generator self-tests pass;
+existing generator --input/--source-sha/--ownership/--check succeeds against the
+authentic catalog. Documentation, whitespace, append-only and exact-two-path
+checks are run before publication. No local Java21/Maven/PostgreSQL/Docker run
+is claimed or provisioned. Full846 remains FAILED; hosted catalog equality and
+complete exact-SHA Full verification remain required after this repair.
+
+**Stop / remaining:** Publish these two paths with expected-83e0996 main guard;
+verify parent/tree/message/blobs/scope and applicable exact-SHA CI creation,
+queueing or startup, then STOP. HAPI-778 remains PARTIAL/IN_PROGRESS and HAPI-590
+independently PARTIAL/BLOCKED. Next registered B3 work remains Java final-read
+preparation/guard integration and bounded HISTORY/exact-version/replay coverage,
+with managed-flush/real-executor/native composition, private publisher/application/
+legacy/REST cutover and final acceptance still open. This artifact repair selects
+no further runtime stage, deployment, release, simulator or OT action.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

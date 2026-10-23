@@ -1665,4 +1665,180 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
             }));
         }
     }
+
+    private static final String READ_GUARD_SIGNATURE=
+            "public.hidra_org_appointment_read_guard(jsonb,timestamptz,timestamptz,integer,bigint,timestamptz)";
+    private static final String READ_GUARD_SQL="WITH observed AS MATERIALIZED (SELECT pg_catalog.clock_timestamp() AS t) SELECT public.hidra_org_appointment_read_guard(?::jsonb,?::timestamptz,?::timestamptz,?,?,t) FROM observed";
+
+    /** Independent full-row expected image. It is a raw SQL fixture, never native authority. */
+    private static String policyReadImage(JdbcTemplate jdbc,Projection p) {
+        return jdbc.queryForObject("""
+                SELECT jsonb_build_object('kind','POLICY','bindingHead',to_jsonb(bh),
+                    'bindingRevision',to_jsonb(b),'bindingEvent',to_jsonb(be),'policyHead',to_jsonb(ph),
+                    'policyRevision',to_jsonb(pr),'policyEvent',to_jsonb(pe))::text
+                  FROM public.hidra_org_appointment_binding_head bh
+                  JOIN public.hidra_org_appointment_binding_revision b ON b.binding_id=bh.binding_id AND b.revision=bh.revision
+                  JOIN public.hidra_org_appointment_configuration_event be ON be.event_id=bh.last_event_id
+                  JOIN public.hidra_org_appointment_policy_head ph ON ph.company_party_id=bh.company_party_id
+                  JOIN public.hidra_org_appointment_policy_revision pr ON pr.policy_id=ph.policy_id AND pr.revision=ph.revision
+                  JOIN public.hidra_org_appointment_configuration_event pe ON pe.event_id=ph.last_event_id
+                 WHERE bh.company_party_id=? AND bh.organization_unit_id=?
+                """,String.class,p.company(),p.unit());
+    }
+
+    private static Boolean policyReadGuard(JdbcTemplate jdbc,String image,Instant sample,Instant until,int pid,long xid) {
+        return jdbc.queryForObject(READ_GUARD_SQL,Boolean.class,image,java.sql.Timestamp.from(sample),
+                java.sql.Timestamp.from(until),pid,xid);
+    }
+
+    private void grantPolicyReadGuard(StorageFixture f) throws SQLException {
+        admin("GRANT EXECUTE ON FUNCTION "+READ_GUARD_SIGNATURE+" TO "+f.role);
+    }
+
+    private static void organizationReadFences(JdbcTemplate jdbc) {
+        for(String table:List.of("employee","unit","position","appointment_binding_revision","appointment_binding_head",
+                "appointment_policy_revision","appointment_policy_head","appointment_configuration_event","appointment_lock_key",
+                "employee_assignment","appointment_event","appointment_receipt")){
+            boolean immutable=List.of("appointment_binding_revision","appointment_policy_revision","appointment_configuration_event",
+                    "appointment_event","appointment_receipt").contains(table);
+            jdbc.execute("LOCK TABLE public.hidra_org_"+table+" IN "+(immutable?"ACCESS SHARE":"SHARE ROW EXCLUSIVE")+" MODE NOWAIT");
+        }
+    }
+
+    @Test void policyReadGuardAcceptsExactGraphWithoutPartyOrProofFencesAndNeverWrites() throws Exception {
+        var p=projection();var query=policyQuery(p.company(),p.unit());
+        admin("UPDATE public.hidra_party_party SET status='SUSPENDED' WHERE id=?",p.company());
+        long events=count("SELECT count(*) FROM public.hidra_org_appointment_event");
+        long receipts=count("SELECT count(*) FROM public.hidra_org_appointment_receipt");
+        long uses=count("SELECT count(*) FROM public.hidra_identity_org_commit_proof_use");
+        long keys=count("SELECT count(*) FROM public.hidra_org_appointment_lock_key");
+        try(var f=new StorageFixture(query)){
+            grantPolicyReadGuard(f);
+            f.tx.execute(status -> {
+                f.jdbc.execute("SET LOCAL TIME ZONE 'UTC'");
+                var admission=f.acquire();var sample=f.storage.contribute(admission);
+                assertEquals(p.policy(),f.storage.readPolicy(admission,query).policyId());
+                String image=policyReadImage(f.jdbc,p);
+                assertEquals(0,f.jdbc.queryForObject("""
+                        SELECT count(*) FROM pg_locks WHERE pid=pg_backend_pid() AND granted
+                          AND relation IN ('public.hidra_party_party'::regclass,
+                            'public.hidra_party_eligibility_generation'::regclass,
+                            'public.hidra_identity_org_commit_key_event'::regclass,
+                            'public.hidra_identity_org_commit_key_head'::regclass,
+                            'public.hidra_identity_org_commit_proof_use'::regclass)
+                        """,Integer.class));
+                assertEquals(Boolean.TRUE,policyReadGuard(f.jdbc,image,sample.sampledAt(),sample.validUntil(),sample.backendPid(),sample.transactionId()));
+                return null; // No owner query after the final scalar. Native issuer remains mocked.
+            });
+        }
+        assertEquals(events,count("SELECT count(*) FROM public.hidra_org_appointment_event"));
+        assertEquals(receipts,count("SELECT count(*) FROM public.hidra_org_appointment_receipt"));
+        assertEquals(uses,count("SELECT count(*) FROM public.hidra_identity_org_commit_proof_use"));
+        assertEquals(keys,count("SELECT count(*) FROM public.hidra_org_appointment_lock_key"));
+    }
+
+    @Test void policyReadGuardRejectsChangedFullRowsMissingFieldsAndUnsupportedReadKinds() throws Exception {
+        var p=projection();var query=policyQuery(p.company(),p.unit());
+        for(int attack=0;attack<5;attack++)try(var f=new StorageFixture(query)){
+            grantPolicyReadGuard(f);final int variant=attack;
+            f.tx.execute(status -> {
+                f.jdbc.execute("SET LOCAL TIME ZONE 'UTC'");var admission=f.acquire();var sample=f.storage.contribute(admission);
+                String original=policyReadImage(f.jdbc,p);
+                String changed=f.jdbc.queryForObject(switch(variant){
+                    case 0 -> "SELECT jsonb_set(?::jsonb,'{policyRevision,sha256}',to_jsonb(repeat('0',64)))::text";
+                    case 1 -> "SELECT jsonb_set(?::jsonb,'{bindingHead,generation}','999'::jsonb)::text";
+                    case 2 -> "SELECT (?::jsonb - 'bindingEvent')::text";
+                    case 3 -> "SELECT jsonb_set(?::jsonb,'{kind}','\"HISTORY\"'::jsonb)::text";
+                    default -> "SELECT (?::jsonb || jsonb_build_object('unreviewed',true))::text";
+                },String.class,original);
+                assertThrows(org.springframework.dao.DataAccessException.class,() -> policyReadGuard(f.jdbc,changed,
+                        sample.sampledAt(),sample.validUntil(),sample.backendPid(),sample.transactionId()));
+                status.setRollbackOnly();return null;
+            });
+        }
+    }
+
+    @Test void policyReadGuardRejectsExpiredFutureAndDifferentPhysicalCoordinates() throws Exception {
+        var p=projection();var query=policyQuery(p.company(),p.unit());
+        for(int attack=0;attack<4;attack++)try(var f=new StorageFixture(query)){
+            grantPolicyReadGuard(f);final int variant=attack;
+            f.tx.execute(status -> {
+                f.jdbc.execute("SET LOCAL TIME ZONE 'UTC'");var admission=f.acquire();var sample=f.storage.contribute(admission);
+                String image=policyReadImage(f.jdbc,p);
+                assertThrows(org.springframework.dao.DataAccessException.class,() -> policyReadGuard(f.jdbc,image,
+                        variant==0?sample.sampledAt().minusSeconds(120):variant==1?sample.sampledAt().plusSeconds(120):sample.sampledAt(),
+                        variant==0?sample.sampledAt().minusSeconds(60):variant==1?sample.validUntil().plusSeconds(120):sample.validUntil(),
+                        variant==2?sample.backendPid()+1:sample.backendPid(),variant==3?sample.transactionId()+1:sample.transactionId()));
+                status.setRollbackOnly();return null;
+            });
+        }
+    }
+
+    @Test void policyReadGuardRejectsSnapshotFromBeforePolicySuccessorOrCompanyRebinding() throws Exception {
+        for(boolean rebind:List.of(false,true)){
+            var p=projection();var query=policyQuery(p.company(),p.unit());
+            try(var f=new StorageFixture(query)){
+                grantPolicyReadGuard(f);
+                String old=f.tx.execute(status -> {f.jdbc.execute("SET LOCAL TIME ZONE 'UTC'");return policyReadImage(f.jdbc,p);});
+                String other=rebind?company("ACTIVE"):null;
+                try(var c=login(CONFIG)){
+                    if(rebind)binding(c,p.binding(),p.unit(),other,1);
+                    else policy(c,p.policy(),p.company(),1,policyValue().replace("\"maxConcurrentPrimary\":1","\"maxConcurrentPrimary\":7"));
+                    c.commit();
+                }
+                f.tx.execute(status -> {
+                    f.jdbc.execute("SET LOCAL TIME ZONE 'UTC'");f.acquire();var sample=f.identity.contribute(f.nativeTicket);
+                    assertThrows(org.springframework.dao.DataAccessException.class,() -> policyReadGuard(f.jdbc,old,
+                            sample.sampledAt(),sample.validUntil(),sample.backendPid(),sample.transactionId()));
+                    status.setRollbackOnly();return null;
+                });
+            }
+        }
+    }
+
+    @Test void policyReadGuardIndependentlyRequiresNativeAndOrganizationFences() throws Exception {
+        var p=projection();var query=policyQuery(p.company(),p.unit());
+        for(boolean nativeOnly:List.of(false,true))try(var f=new StorageFixture(query)){
+            grantPolicyReadGuard(f);f.tx.execute(status -> {
+                f.jdbc.execute("SET LOCAL TIME ZONE 'UTC'");
+                if(nativeOnly)f.jdbc.execute("SELECT "+f.lockFunction+"()");else organizationReadFences(f.jdbc);
+                var sample=f.identity.contribute(f.nativeTicket);String image=policyReadImage(f.jdbc,p);
+                assertThrows(org.springframework.dao.DataAccessException.class,() -> policyReadGuard(f.jdbc,image,
+                        sample.sampledAt(),sample.validUntil(),sample.backendPid(),sample.transactionId()));
+                status.setRollbackOnly();return null;
+            });
+        }
+    }
+
+    @Test void policyReadGuardRejectsReceiptWritePrivilegeAndRetainsClosedAclAndFixedPath() throws Exception {
+        var p=projection();var query=policyQuery(p.company(),p.unit());
+        try(var ordinary=login(ORDINARY)){
+            assertEquals(Boolean.FALSE,scalar(ordinary,"SELECT has_function_privilege(session_user,?,'EXECUTE')",READ_GUARD_SIGNATURE));
+        }
+        assertEquals(0,count("""
+                SELECT count(*) FROM pg_proc p,LATERAL aclexplode(coalesce(p.proacl,acldefault('f',p.proowner))) a
+                 WHERE p.oid='public.hidra_org_appointment_read_guard(jsonb,timestamptz,timestamptz,integer,bigint,timestamptz)'::regprocedure
+                   AND a.grantee=0 AND a.privilege_type='EXECUTE'
+                """));
+        assertEquals(Boolean.TRUE,catalog("""
+                SELECT prosecdef AND cardinality(proconfig)=2 AND 'search_path=pg_catalog'=ANY(proconfig)
+                   AND EXISTS(SELECT 1 FROM unnest(proconfig) setting WHERE lower(setting)='timezone=utc')
+                  FROM pg_proc WHERE oid='public.hidra_org_appointment_read_guard(jsonb,timestamptz,timestamptz,integer,bigint,timestamptz)'::regprocedure
+                """));
+        try(var f=new StorageFixture(query)){
+            grantPolicyReadGuard(f);admin("GRANT INSERT ON public.hidra_org_appointment_receipt TO "+f.role);
+            f.tx.execute(status -> {
+                f.jdbc.execute("SET LOCAL TIME ZONE 'UTC'");f.jdbc.execute("SELECT "+f.lockFunction+"()");organizationReadFences(f.jdbc);
+                var sample=f.identity.contribute(f.nativeTicket);String image=policyReadImage(f.jdbc,p);
+                assertThrows(org.springframework.dao.DataAccessException.class,() -> policyReadGuard(f.jdbc,image,
+                        sample.sampledAt(),sample.validUntil(),sample.backendPid(),sample.transactionId()));
+                status.setRollbackOnly();return null;
+            });
+        }
+    }
+
+    @Test void policyReadGuardTemplateRemainsTheRegisteredNonMutatingScalar() throws Exception {
+        assertEquals("0b8a4baaef583bb8bccc878e0d255a295b2d63c7dc31d7d8af3a2e3b50261e51",
+                HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(READ_GUARD_SQL.getBytes(StandardCharsets.UTF_8))));
+    }
 }

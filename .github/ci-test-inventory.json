@@ -8981,6 +8981,13 @@
         "ordinaryAndPublisherCannotActivateDiscoverOrMutateConfiguration",
         "orphanEventForgedBeforeAndIncompleteTransferCannotCommit",
         "policyActivationRequiresCompleteExplicitSymmetricMatrixAndRetainsDigest",
+        "policyReadGuardAcceptsExactGraphWithoutPartyOrProofFencesAndNeverWrites",
+        "policyReadGuardIndependentlyRequiresNativeAndOrganizationFences",
+        "policyReadGuardRejectsChangedFullRowsMissingFieldsAndUnsupportedReadKinds",
+        "policyReadGuardRejectsExpiredFutureAndDifferentPhysicalCoordinates",
+        "policyReadGuardRejectsReceiptWritePrivilegeAndRetainsClosedAclAndFixedPath",
+        "policyReadGuardRejectsSnapshotFromBeforePolicySuccessorOrCompanyRebinding",
+        "policyReadGuardTemplateRemainsTheRegisteredNonMutatingScalar",
         "policyRevisionsAreAtomicAndCannotChangeTheirCompanyOrIdentity",
         "projectionFunctionsConstraintsAndDeferredTriggersHaveActualCatalogShape",
         "projectionRejectsPartialMetadataAndNonInitialVersions",
@@ -9018,7 +9025,7 @@
       "lane": "postgres-integration",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java",
-      "source_sha256": "4ad3f5715316da89bfe78f78eda7aebb7e752b86017bbbc26b89a7d79edc4914",
+      "source_sha256": "3a6422eae3f3e17dd0a6a57e5e38605010c61f5c6670fe5ff6a674459b952daa",
       "supports": []
     },
     {

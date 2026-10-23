@@ -63,9 +63,10 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import tools.jackson.databind.json.JsonMapper;
 
 /**
- * Genuine committed PostgreSQL ledger and separated login mechanics. Identity's
- * issuer is explicitly mocked; the closed fixture definer acquires actual locks
- * only. No native PERMIT, cryptographic commit proof or guarded writer is claimed.
+ * Migrated PostgreSQL, separated logins and actual atomic SQL proof/receipt checks.
+ * Independent fixture HMAC frames use synthetic native fields. Identity's issuer
+ * and the protected executor are mocked; no genuine native authorization, real
+ * protected-executor deadline or application/HTTP acceptance is established.
  */
 @Testcontainers(disabledWithoutDocker = true)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -207,6 +208,7 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         String partyIdOverride;
         final EmployeeAppointmentCommand command;
         String actor="synthetic-actor";
+        Contribution lastSample;
         long backdateSeconds;
         ProtectedEmployeeAppointmentRepositoryPort.DescriptorPreview previewOverride;
         Session(EmployeeAppointmentCommand command) throws Exception {
@@ -239,9 +241,10 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
             when(identity.contribute(nativeTicket)).thenAnswer(call -> {
                 var preview=previewOverride==null?storage.preview(command):previewOverride;
                 var request=new Request(Action.valueOf(command.kind().name()),preview.companyUnits(),preview.employeeId());
-                return jdbc.queryForObject("SELECT pg_backend_pid(),txid_current(),clock_timestamp()",(r,i) ->
+                lastSample=jdbc.queryForObject("SELECT pg_backend_pid(),txid_current(),clock_timestamp()",(r,i) ->
                         new Contribution(request,request.requirements().stream().map(q -> new ResourceDecision(q,Decision.PERMIT)).toList(),
                                 "00000000-0000-0000-0000-000000000001","00000000-0000-0000-0000-000000000002",actor,r.getTimestamp(3).toInstant().minusSeconds(backdateSeconds),r.getTimestamp(3).toInstant().plusSeconds(60),r.getInt(1),r.getLong(2)));
+                return lastSample;
             });
         }
         ProtectedEmployeeAppointmentRepositoryPort.Admission acquire(){
@@ -404,6 +407,164 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
 
     // Intentionally unauthenticated transport: only the later SQL verifier can authenticate it.
     private static CommitProof syntheticProof(){return new CommitProof(new byte[]{1,2,3},new byte[32]);}
+
+    /** Independent fixture encoder for the real SQL verifier, using synthetic native fields.
+     * Actual Identity issuance and the real protected executor remain separate acceptance. */
+    private void enableJavaFinalGuard(ProvisionalSession p,boolean invalidMac) throws Exception {
+        admin("GRANT EXECUTE ON FUNCTION "+FINAL_GUARD+" TO "+p.s.role);
+        long prior;try(var c=owner()){prior=Long.parseLong(scalar(c,"SELECT coalesce(max(revision),0) FROM public.hidra_identity_org_commit_key_event"));}
+        final long revision;
+        try(var keyAdmin=DriverManager.getConnection(POSTGRES.getJdbcUrl(),"final_proof_admin",PASSWORD)){
+            revision=Long.parseLong(scalar(keyAdmin,"SELECT public.hidra_identity_org_commit_admin(?,'final-test-key',?::uuid,?::name,?)",
+                    prior,SQL_AUDIENCE.toString(),p.s.role,sqlKey()));
+        }
+        when(p.s.identity.issueCommitProof(eq(p.s.nativeTicket),any())).thenAnswer(call -> {
+            var intent=call.getArgument(1,CommitIntent.class);var sample=p.s.lastSample;
+            finalEvents.put(sample.request().employeeId(),intent.eventId());
+            var bytes=new java.io.ByteArrayOutputStream();var out=new java.io.DataOutputStream(bytes);
+            proofText(out,"HIDRA/IDENTITY/ORG-APPOINTMENT-COMMIT/1");out.writeInt(1);proofUuid(out,SQL_AUDIENCE);
+            proofText(out,p.s.role);proofText(out,"final-test-key");out.writeLong(revision);
+            var nonce=new byte[32];new java.security.SecureRandom().nextBytes(nonce);out.write(nonce);
+            proofUuid(out,UUID.fromString(sample.bindingId()));proofUuid(out,UUID.fromString(sample.sessionId()));
+            proofText(out,sample.userId());proofText(out,sample.request().action().name());out.writeInt(sample.request().companyUnits().size());
+            for(var pair:sample.request().companyUnits()){proofText(out,pair.companyPartyId());proofText(out,pair.organizationUnitId());}
+            proofText(out,sample.request().employeeId());out.writeLong(micros(sample.sampledAt()));
+            out.writeLong(micros(sample.validUntil()));out.writeLong(micros(intent.operationValidUntil()));
+            out.writeInt(sample.backendPid());out.writeLong(sample.transactionId());proofUuid(out,intent.eventId());
+            out.write(java.util.HexFormat.of().parseHex(intent.commandSha256()));out.write(java.util.HexFormat.of().parseHex(intent.payloadSha256()));
+            var frame=bytes.toByteArray();var encoder=javax.crypto.Mac.getInstance("HmacSHA256");
+            encoder.init(new javax.crypto.spec.SecretKeySpec(sqlKey(),"HmacSHA256"));var mac=encoder.doFinal(frame);
+            if(invalidMac)mac[0]^=1;
+            return new CommitProof(frame,mac);
+        });
+    }
+
+    @Test void javaFinalGuardCommitsExactCreateEndCorrectionAndTransferWithReceiptAndNonce() throws Exception {
+        for(int kind=0;kind<5;kind++){
+            var f=fixture(kind!=0);
+            EmployeeAppointmentCommand command=switch(kind){
+                case 0 -> create(f,id());case 1 -> end(f,1);
+                case 2 -> correction(f,id(),1,f.units().get(0));case 3 -> correction(f,id(),1,f.units().get(1));
+                default -> new EmployeeAppointmentCommand.Transfer(id(),f.company(),f.assignment(),1,f.units().get(1),f.position(),
+                        AssignmentType.PRIMARY,START.plusSeconds(3600),null,1,1,REASON);
+            };
+            try(var p=new ProvisionalSession(command)){
+                enableJavaFinalGuard(p,false);
+                p.s.tx.execute(status -> {
+                    p.persist();p.invoke("prepareCommitProof",p.write);p.invoke("prepareFinalWrite",p.write);
+                    clearInvocations(p.s.identity,p.s.party);
+                    p.invoke("finalizeWrite",p.write);verifyNoInteractions(p.s.identity,p.s.party);
+                    return null; // No owner SQL after GUARD; actual transaction commit runs both lifetime vetoes.
+                });
+            }
+            assertEquals("1",finalCount("hidra_org_appointment_receipt",f.employee()));
+            assertEquals("1",finalCount("hidra_identity_org_commit_proof_use",f.employee()));
+            try(var c=owner()){
+                assertEquals(kind==4?"2":"1",scalar(c,"SELECT count(*) FROM public.hidra_org_employee_assignment WHERE employee_id=?",f.employee()));
+                assertEquals(kind==0?"1":"2",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_event WHERE employee_id=?",f.employee()));
+            }
+        }
+    }
+
+    @Test void javaFinalGuardRollbackRemovesReceiptNonceEventProjectionAndKeys() throws Exception {
+        var f=fixture(false);
+        try(var p=new ProvisionalSession(create(f,id()))){
+            enableJavaFinalGuard(p,false);p.s.tx.execute(status -> {
+                p.persist();p.invoke("prepareCommitProof",p.write);p.invoke("prepareFinalWrite",p.write);
+                p.invoke("finalizeWrite",p.write);status.setRollbackOnly();return null;
+            });
+        }
+        assertEquals("0",finalCount("hidra_org_appointment_receipt",f.employee()));
+        assertEquals("0",finalCount("hidra_identity_org_commit_proof_use",f.employee()));
+        try(var c=owner()){
+            assertEquals("0",scalar(c,"SELECT count(*) FROM public.hidra_org_employee_assignment WHERE employee_id=?",f.employee()));
+            assertEquals("0",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_event WHERE employee_id=?",f.employee()));
+            assertEquals("0",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_lock_key WHERE kind='EMPLOYEE' AND key_one=?",f.employee()));
+        }
+    }
+
+    @Test void javaFinalGuardRejectsForgedMacAndSwallowedFailureCannotCommitOrRetry() throws Exception {
+        var f=fixture(false);
+        try(var p=new ProvisionalSession(create(f,id()))){
+            enableJavaFinalGuard(p,true);
+            assertThrows(RuntimeException.class,() -> p.s.tx.execute(status -> {
+                p.persist();p.invoke("prepareCommitProof",p.write);p.invoke("prepareFinalWrite",p.write);
+                assertThrows(AccessDeniedException.class,() -> p.invoke("finalizeWrite",p.write));
+                assertTrue(p.s.poisoned());assertThrows(AccessDeniedException.class,() -> p.invoke("finalizeWrite",p.write));
+                return null;
+            }));
+        }
+        assertEquals("0",finalCount("hidra_org_appointment_receipt",f.employee()));
+        assertEquals("0",finalCount("hidra_identity_org_commit_proof_use",f.employee()));
+        try(var c=owner()){assertEquals("0",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_event WHERE employee_id=?",f.employee()));}
+    }
+
+    @Test void preparedFinalWriteWithoutGuardStillVetoesPhysicalCommit() throws Exception {
+        var f=fixture(false);
+        try(var p=new ProvisionalSession(create(f,id()))){
+            enableJavaFinalGuard(p,false);
+            assertThrows(RuntimeException.class,() -> p.s.tx.execute(status -> {
+                p.persist();p.invoke("prepareCommitProof",p.write);p.invoke("prepareFinalWrite",p.write);
+                return null; // A prepared argument image is never a successful database guard.
+            }));
+        }
+        assertEquals("0",finalCount("hidra_org_appointment_receipt",f.employee()));
+        assertEquals("0",finalCount("hidra_identity_org_commit_proof_use",f.employee()));
+        try(var c=owner()){assertEquals("0",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_event WHERE employee_id=?",f.employee()));}
+    }
+
+    @Test void javaFinalGuardRejectsProjectionOrLegacyPeerMutationAfterFinalPreparation() throws Exception {
+        for(boolean peer:List.of(false,true)){
+            var f=fixture(false);
+            try(var p=new ProvisionalSession(create(f,id()))){
+                enableJavaFinalGuard(p,false);p.s.tx.execute(status -> {
+                    p.persist();p.invoke("prepareCommitProof",p.write);p.invoke("prepareFinalWrite",p.write);
+                    if(peer)p.s.jdbc.update("INSERT INTO public.hidra_org_employee_assignment(id,employee_id,organization_unit_id,position_id,assignment_type,valid_from,status,created_at,updated_at) VALUES (?,?,?,?,'PRIMARY',?,'ACTIVE',now(),now())",
+                            id(),f.employee(),f.units().get(2),f.position(),java.sql.Timestamp.from(START));
+                    else p.s.jdbc.update("UPDATE public.hidra_org_employee_assignment SET appointment_version=2,last_event_id=?::uuid WHERE employee_id=?",id(),f.employee());
+                    assertThrows(AccessDeniedException.class,() -> p.invoke("finalizeWrite",p.write));
+                    assertTrue(p.s.poisoned());status.setRollbackOnly();return null;
+                });
+            }
+            assertEquals("0",finalCount("hidra_org_appointment_receipt",f.employee()));
+            assertEquals("0",finalCount("hidra_identity_org_commit_proof_use",f.employee()));
+        }
+    }
+
+    @Test void javaFinalPreparationRejectsRevokedAuthorityAndPostGuardAuthenticationSwapVetoesCommit() throws Exception {
+        for(boolean revoke:List.of(false,true)){
+            var f=fixture(false);
+            try(var p=new ProvisionalSession(create(f,id()))){
+                enableJavaFinalGuard(p,false);
+                assertThrows(RuntimeException.class,() -> p.s.tx.execute(status -> {
+                    p.persist();p.invoke("prepareCommitProof",p.write);
+                    if(revoke){
+                        doThrow(new AccessDeniedException("revoked")).when(p.s.identity).requireCurrent(p.s.nativeTicket);
+                        assertThrows(AccessDeniedException.class,() -> p.invoke("prepareFinalWrite",p.write));
+                    }else{
+                        p.invoke("prepareFinalWrite",p.write);p.invoke("finalizeWrite",p.write);
+                        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("replacement",null,List.of()));
+                    }
+                    return null;
+                }));
+            }
+            assertEquals("0",finalCount("hidra_org_appointment_receipt",f.employee()));
+            assertEquals("0",finalCount("hidra_identity_org_commit_proof_use",f.employee()));
+        }
+    }
+
+    @Test void finalWriteStorageRejectsDirectCallsAndPinsTheExactScalarStatement() throws Exception {
+        for(boolean guard:List.of(false,true)){
+            var f=fixture(false);
+            try(var s=new Session(create(f,id()))){s.tx.execute(status -> {
+                var admission=qualified(s);
+                assertThrows(AccessDeniedException.class,() -> {if(guard)s.storage.finalizeWrite(admission);else s.storage.prepareFinalWrite(admission);});
+                assertTrue(s.poisoned());status.setRollbackOnly();return null;
+            });}
+        }
+        var field=JdbcProtectedEmployeeAppointmentRepositoryAdapter.class.getDeclaredField("WRITE_GUARD");field.setAccessible(true);
+        assertEquals(FINAL_SQL,field.get(null));
+    }
 
     @Test void storageDerivesCommitIntentFromExactPersistedUtf8EventForEveryFreshCommand() throws Exception {
         for(int kind=0;kind<5;kind++){

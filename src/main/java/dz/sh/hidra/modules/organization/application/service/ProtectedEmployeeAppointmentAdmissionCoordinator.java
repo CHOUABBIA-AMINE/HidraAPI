@@ -274,7 +274,8 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
     /** Revalidate all issuing owners; an enum, scalar sample or opaque handle is never authority. */
     void requireCurrentWrite(WriteAdmission admission) {
         try {
-            if (admission == null || admission.owner != this || !admission.ready()) throw denied();
+            if (admission == null || admission.owner != this || !admission.ready()
+                    || admission.guardAttempted) throw denied();
             identity.requireCurrent(admission.identityAdmission);
             if (admission.referenceUse == ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.CURRENT)
                 party.requireCurrent(admission.partyAdmission);
@@ -340,6 +341,38 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
         }
     }
 
+    /** FLUSHING callback after managed work: no new intent, sample or proof issuance. */
+    void prepareFinalWrite(WriteAdmission admission) {
+        try {
+            requireCurrentWrite(admission);
+            if (!admission.proofRequested || !admission.provisionalClosed || admission.finalPrepared
+                    || admission.referenceUse == ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY) throw denied();
+            storage.prepareFinalWrite(admission.repositoryAdmission);
+            if (!admission.ready()) throw denied();
+            admission.finalPrepared = true;
+        } catch (RuntimeException failure) {
+            if (admission != null) admission.invalidate();
+            executor.rejectAdmission();
+            throw denied();
+        }
+    }
+
+    /** GUARD callback: validation here and after storage returns is deliberately SQL-free. */
+    void finalizeWrite(WriteAdmission admission) {
+        try {
+            if (admission == null || admission.owner != this || !admission.ready()
+                    || !admission.finalPrepared || admission.guardAttempted) throw denied();
+            admission.guardAttempted = true;
+            storage.finalizeWrite(admission.repositoryAdmission);
+            if (!admission.ready()) throw denied();
+            admission.guarded = true;
+        } catch (RuntimeException failure) {
+            if (admission != null) admission.invalidate();
+            executor.rejectAdmission();
+            throw denied();
+        }
+    }
+
     private static void requireReferenceShape(WriteAdmission admission) {
         var use = admission.referenceUse;
         if (use == null) throw denied();
@@ -376,6 +409,7 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
         private OrganizationProtectedPartyEligibilityContract.Contribution eligibility;
         private ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse referenceUse;
         private boolean provisionalStarted, provisionalClosed, proofRequested;
+        private boolean finalPrepared, guardAttempted, guarded;
 
         private WriteAdmission(ProtectedEmployeeAppointmentAdmissionCoordinator owner,
                 OrganizationProtectedAppointmentAuthorizationContract.Admission identityAdmission,
@@ -406,7 +440,7 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
             holders.forEach(ConnectionHolder::setRollbackOnly);
         }
         @Override public void beforeCommit(boolean readOnly) {
-            if (readOnly || !ready() || provisionalStarted) {
+            if (readOnly || !ready() || provisionalStarted && (!finalPrepared || !guarded)) {
                 invalidate();
                 throw denied();
             }

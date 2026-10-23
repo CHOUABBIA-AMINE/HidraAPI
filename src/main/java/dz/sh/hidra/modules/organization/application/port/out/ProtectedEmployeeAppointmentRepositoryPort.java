@@ -158,6 +158,15 @@ public interface ProtectedEmployeeAppointmentRepositoryPort {
      * No caller supplies an intent/proof, and this does not qualify a final guard or commit. */
     void prepareCommitProof(Admission admission);
 
+    /** After managed flush, repeat the complete owner/graph checks and privately freeze
+     * the sole final write statement's arguments. No receipt or commit is established. */
+    void prepareFinalWrite(Admission admission);
+
+    /** GUARD callback only: one scalar statement authenticates the retained native proof
+     * and creates the receipt atomically. No further owner SQL is permitted afterward;
+     * the executor must still observe physical commit before returning any result. */
+    void finalizeWrite(Admission admission);
+
     /**
      * One guarded atomic lifecycle operation under the original request key,
      * exact source CAS and pinned revisions. CREATE has no source, END and

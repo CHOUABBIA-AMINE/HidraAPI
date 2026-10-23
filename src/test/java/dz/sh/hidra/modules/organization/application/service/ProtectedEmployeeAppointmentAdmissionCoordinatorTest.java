@@ -571,6 +571,84 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
         }
     }
 
+    @Test void finalPreparationRechecksOwnersAndGuardAndBeforeCommitPerformNoOwnerCallbacks() {
+        try(var f=new WriteFixture()) {
+            var ticket=f.acquire();provisionalFixture(f);f.coordinator.persistProvisional(ticket);
+            f.coordinator.prepareCommitProof(ticket);clearInvocations(f.identity,f.party,f.storage,f.executor);
+            f.coordinator.prepareFinalWrite(ticket);
+            var order=inOrder(f.identity,f.party,f.storage);
+            order.verify(f.identity).requireCurrent(f.nativeTicket);
+            order.verify(f.party).requireCurrent(f.partyTicket);
+            order.verify(f.storage).requireCurrent(f.storageTicket);
+            order.verify(f.storage).verifyProvisional(f.storageTicket);
+            order.verify(f.storage).prepareFinalWrite(f.storageTicket);
+            clearInvocations(f.identity,f.party,f.storage,f.executor);
+            f.coordinator.finalizeWrite(ticket);ticket.beforeCommit(false);
+            verify(f.storage,times(1)).finalizeWrite(f.storageTicket);
+            verifyNoMoreInteractions(f.storage);verifyNoInteractions(f.identity,f.party,f.executor);
+            assertFalse(f.holder.isRollbackOnly());
+        }
+    }
+
+    @Test void finalGuardRequiresProofAndFinalPreparationAndCannotBeRetried() {
+        for(int phase=0;phase<3;phase++)try(var f=new WriteFixture()) {
+            var ticket=f.acquire();provisionalFixture(f);f.coordinator.persistProvisional(ticket);
+            if(phase>0)f.coordinator.prepareCommitProof(ticket);
+            if(phase>1){f.coordinator.prepareFinalWrite(ticket);f.coordinator.finalizeWrite(ticket);}
+            assertThrows(AccessDeniedException.class,() -> f.coordinator.finalizeWrite(ticket));
+            verify(f.storage,times(phase>1?1:0)).finalizeWrite(any());
+            assertTrue(f.holder.isRollbackOnly());
+        }
+    }
+
+    @Test void swallowedFinalGuardFailureSuspensionOrInvalidationAlwaysVetoesCommit() {
+        for(int variant=0;variant<3;variant++)try(var f=new WriteFixture()) {
+            var ticket=f.acquire();provisionalFixture(f);f.coordinator.persistProvisional(ticket);
+            f.coordinator.prepareCommitProof(ticket);f.coordinator.prepareFinalWrite(ticket);
+            final int attack=variant;
+            doAnswer(call -> {
+                if(attack==0)throw new IllegalStateException("guard unavailable");
+                if(attack==1)ticket.suspend();else f.holder.setRollbackOnly();
+                return null;
+            }).when(f.storage).finalizeWrite(f.storageTicket);
+            assertThrows(AccessDeniedException.class,() -> f.coordinator.finalizeWrite(ticket));
+            assertThrows(AccessDeniedException.class,() -> ticket.beforeCommit(false));
+            assertThrows(AccessDeniedException.class,() -> f.coordinator.finalizeWrite(ticket));
+            verify(f.storage,times(1)).finalizeWrite(f.storageTicket);assertTrue(f.holder.isRollbackOnly());
+        }
+    }
+
+    @Test void preparedGuardCannotRunOnAnotherCoordinatorOrThread() throws Exception {
+        for(boolean otherThread:List.of(false,true))try(var f=new WriteFixture()) {
+            var ticket=f.acquire();provisionalFixture(f);f.coordinator.persistProvisional(ticket);
+            f.coordinator.prepareCommitProof(ticket);f.coordinator.prepareFinalWrite(ticket);
+            clearInvocations(f.identity,f.party,f.storage);
+            if(otherThread){
+                var failure=new java.util.concurrent.atomic.AtomicReference<Throwable>();
+                var thread=new Thread(() -> {try{f.coordinator.finalizeWrite(ticket);}catch(Throwable e){failure.set(e);}});
+                thread.start();thread.join(5000);assertFalse(thread.isAlive());
+                assertInstanceOf(AccessDeniedException.class,failure.get());
+            }else{
+                var foreign=new ProtectedEmployeeAppointmentAdmissionCoordinator(f.identity,f.party,f.storage,f.executor);
+                assertThrows(AccessDeniedException.class,() -> foreign.finalizeWrite(ticket));
+            }
+            verifyNoInteractions(f.identity,f.party,f.storage);assertTrue(f.holder.isRollbackOnly());
+        }
+    }
+
+    @Test void missingOrRepeatedFinalPreparationAndPostGuardOwnerReadPoisonTheTicket() {
+        for(int variant=0;variant<3;variant++)try(var f=new WriteFixture()) {
+            var ticket=f.acquire();provisionalFixture(f);f.coordinator.persistProvisional(ticket);
+            if(variant>0){f.coordinator.prepareCommitProof(ticket);f.coordinator.prepareFinalWrite(ticket);}
+            if(variant==2){
+                f.coordinator.finalizeWrite(ticket);clearInvocations(f.identity,f.party,f.storage);
+                assertThrows(AccessDeniedException.class,() -> f.coordinator.requireCurrentWrite(ticket));
+                verifyNoInteractions(f.identity,f.party,f.storage);
+            }else assertThrows(AccessDeniedException.class,() -> f.coordinator.prepareFinalWrite(ticket));
+            assertTrue(f.holder.isRollbackOnly());assertThrows(AccessDeniedException.class,() -> ticket.beforeCommit(false));
+        }
+    }
+
     private static EmployeeAppointmentCommand.Transfer transferCommand() {
         return new EmployeeAppointmentCommand.Transfer("req", "company", "assignment", 2,
                 "zz-unit", "position", AssignmentType.PRIMARY, START, null, 1, 1, "reason");

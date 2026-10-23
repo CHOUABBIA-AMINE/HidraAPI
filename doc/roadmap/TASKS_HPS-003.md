@@ -26295,6 +26295,108 @@ history/cursors, application/private publisher/legacy/REST cutover and governanc
 closure remain. No next runtime stage, deployment, simulator or OT is selected.
 
 
+### 2026-10-23 — HAPI-778 B3 Java final write preparation and one-use SQL guard
+
+**Selection / message:** Owner Next refreshes exact main
+702fa90a3685cad9291ebf4135b42127c92d7566,
+parent18defeb89f811b97a6674f130da637a83d2481e4,
+treed0a80f7e13317e02bf59aac128cff644df143cca.
+[Full844](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39994381962)
+and [Docs534](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39972425236)
+completed SUCCESS. Full844's static, Java21 unit/architecture, all seven
+PostgreSQL shards, API/dictionary job120553981980 and final gate120556763868
+succeeded; the optional serial oracle was skipped. Its full evidence artifact
+12518344553 has archive SHA256
+38ac4db72ad0cbccc0f658fbb652086c91cb2c0deabb1dc2ddbb5de9de73918b.
+The authentic168-migration dictionary equality gate is therefore clear. No
+browser dispatch was needed. Retain the registered B3 runtime message
+`feat(organization): persist protected appointment lifecycle and history`.
+
+**Finite scope — seven MODIFY, zero CREATE/DELETE:**
+- src/main/java/dz/sh/hidra/modules/organization/application/port/out/ProtectedEmployeeAppointmentRepositoryPort.java
+- src/main/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinator.java
+- src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JdbcProtectedEmployeeAppointmentRepositoryAdapter.java
+- src/test/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinatorTest.java
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java
+- .github/ci-test-inventory.json, only the two suites' added cases/source hashes
+- this append-only HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+**Bounded implementation:** Add prepareFinalWrite and finalizeWrite to the
+existing storage/coordinator contract. The first is a FLUSHING callback intended
+after managed flush, not an implementation of the managed flush itself. It
+requires the original completed provisional block and one privately retained
+Identity proof, rechecks actual issuer/Party/physical/catalog/owner evidence,
+complete post-write source/successor/conflicts/policy/binding/eligibility/event
+graphs, and verifies the exact original event/command/payload/deadline intent.
+It freezes only storage-owned scalar parameters and a defensive proof copy;
+no caller supplies a frame, intent, sample, result or receipt argument.
+
+The GUARD callback performs SQL-free original-ticket/thread/holder checks and
+executes exactly the registered WRITE_GUARD statement, literal SHA256
+4691e7803cd1b3619472ddc29872a9f893adb5decbadbfe05e94779196e4a01b.
+It binds the original native deadline, allowing SQL to enforce the narrower
+persisted operation deadline independently. The accepted SQL guard authenticates
+the MAC and atomically consumes the nonce, inserts the receipt and evaluates
+deferred constraints. Only an exact scalar true plus unchanged local context
+sets the private guarded state. No native/Party callback, catalog query or result
+query follows this statement; the proof transport is discarded on return.
+Repeated guard attempts and later owner/storage queries poison the same holder.
+Failure, suspension, rollback-only or authentication replacement cannot restore
+the ticket. Both SQL-free beforeCommit vetoes continue to reject unfinished
+provisional writes; they admit that block only after this successful guard.
+Preparation or a bounded proof transport alone still cannot commit.
+
+No service/bean, repository-port implementation, credential route, REST operation
+or public writer is activated. Managed flush/executor composition and genuine
+native issuance remain independent integration work; these callbacks must not
+be described as the complete lifecycle application or real500ms executor proof.
+Read/replay/history guard work remains open and never invokes this write guard.
+All168 migrations, SQL function/catalog pins, dictionary, OpenAPI, Identity/Party
+owner code, executor hashes/deadlines and frozen task statuses retain bytes.
+
+**Authored acceptance, pending hosted execution:** Preserve all51 coordinator
+cases and add five (56 total), checking owner ordering before preparation,
+no owner callbacks in GUARD/beforeCommit, missing proof/preparation, repeated
+attempts, swallowed failures/suspension/rollback-only, foreign coordinator/thread
+and post-guard owner-query refusal. Preserve all51 PostgreSQL cases and add
+seven (58 total): actual Java-callback/SQL guard commits for CREATE/END/same-unit
+CORRECT/moved CORRECT/TRANSFER with outside-connection receipt/nonce/projection/
+event checks; full rollback; forged MAC with swallowed failure/retry refusal;
+prepared-without-guard commit veto; same-XID projection/legacy-peer substitution
+after preparation; authority revocation before preparation and authentication
+replacement after GUARD; direct storage-call refusal and exact statement bytes.
+
+The PostgreSQL fixture uses actual migrated storage, separate publisher/key-admin
+logins, real Party checks, unchanged production callbacks and an independent
+HMAC encoder with synthetic native fields. Identity and the protected executor
+are mocked; TransactionTemplate observes actual physical commit/rollback but
+does not prove genuine native authority, JPA managed flush, executor SQL sealing/
+500ms budget, HTTP, SITE or production acceptance. No old test assertion is
+removed or weakened and no production callback is disabled by a fixture.
+Coordinator source SHA256:
+4bb1d06e2222d346e0957be8a502d15892947dec7a42dd5b3117ba19348b9115.
+PostgreSQL source SHA256:
+6734f73bee8d96cfc1e37b772826877d4e5eb79f727b8d0786056196380dfddb.
+
+**Actual available validation:** Five changed Java files pass installed Java17
+compiler-API syntax parsing only, not type/JUnit/runtime validation. Canonical
+inventory passes353 fast/354 unit-architecture/455 active oracle/four historical
+classes and unchanged seven partitions12/16/13/14/16/15/15; all32 inventory
+self-tests pass. Old case sets and every other inventory entry are preserved.
+Source inspection verifies the exact final SQL hash and no owner query after it.
+Documentation/whitespace and append-only/scope checks run before publication.
+No Java21/Maven/PostgreSQL/Docker environment is provisioned solely for testing;
+hosted execution of all new cases and exact-SHA Full/Fast/Docs remain required.
+
+**Stop / remaining:** Publish exactly these seven paths under expected-702fa90
+main guard, verify parent/tree/message/blobs/scope, confirm exact-SHA Full/Fast/
+Docs creation/queue/start and STOP. HAPI-778 remains PARTIAL/IN_PROGRESS;
+HAPI-590 independently PARTIAL/BLOCKED. After feedback, complete the non-mutating
+read guard, managed-flush/real-executor/native composition, bounded history and
+cursors, private publisher/application/legacy/REST cutover and acceptance.
+No deployment, simulator, release or OT action is selected by this increment.
+
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

@@ -66,7 +66,8 @@ import tools.jackson.databind.json.JsonMapper;
  * implemented. Preview data is only an UNTRUSTED selector for the native
  * admission request; it is not authorization, current Party eligibility, or
  * permission to return a record. Its provisional writer remains unwired and
- * cannot commit until the independent final proof/receipt protocol is complete.
+ * can commit only after its independent SQL proof/receipt guard succeeds. The
+ * managed-flush/executor/application composition remains separately unwired.
  */
 public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
     private static final String SOURCE_DESCRIPTOR_SQL = """
@@ -710,7 +711,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
     }
 
     private StorageAdmission ticket(ProtectedEmployeeAppointmentRepositoryPort.Admission admission) {
-        if (!(admission instanceof StorageAdmission t) || t.issuer != this || !t.active
+        if (!(admission instanceof StorageAdmission t) || t.issuer != this || !t.active || t.guardAttempted
                 || !t.sameContext() || context() != t.holder
                 || !TransactionSynchronizationManager.getSynchronizations().contains(t)) throw denied();
         return t;
@@ -787,7 +788,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
     private void poison(Object admission) {
         if (admission instanceof JdbcProtectedEmployeeAppointmentRepositoryAdapter.StorageAdmission t) {
             t.active = false;
-            t.commitIntent=null;t.commitProof=null;
+            t.commitIntent=null;t.commitProof=null;t.finalWrite=null;t.guarded=false;
             t.holder.setRollbackOnly();
         }
         if (source != null && TransactionSynchronizationManager.getResource(source) instanceof ConnectionHolder h)
@@ -822,6 +823,8 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
         private final AtomicBoolean proofRequested = new AtomicBoolean();
         private OrganizationProtectedAppointmentAuthorizationContract.CommitIntent commitIntent;
         private OrganizationProtectedAppointmentAuthorizationContract.CommitProof commitProof;
+        private FinalWrite finalWrite;
+        private boolean guardAttempted, guarded;
         private OrganizationProtectedPartyEligibilityContract.Contribution partySample;
         private List<ProtectedRelationFence> nativeFences = List.of(), proofFences = List.of();
 
@@ -840,10 +843,10 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
                     && authentication.isAuthenticated() && holder.getConnection()==connection;
         }
         @Override public void beforeCommit(boolean readOnly) {
-            if (readOnly || sample==null || !sameContext() || provisionalStarted) { poison(this); throw denied(); }
+            if (readOnly || sample==null || !sameContext() || provisionalStarted && !guarded) { poison(this); throw denied(); }
         }
         @Override public void suspend() { poison(this); }
-        @Override public void afterCompletion(int status) { active=false;commitIntent=null;commitProof=null; }
+        @Override public void afterCompletion(int status) { active=false;commitIntent=null;commitProof=null;finalWrite=null; }
         @Override public String toString() { return "StorageAdmission[opaque]"; }
     }
 
@@ -1289,6 +1292,53 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
             t.commitProof=new OrganizationProtectedAppointmentAuthorizationContract.CommitProof(proof.frame(),proof.mac());
         }catch(RuntimeException failure){poison(t==null?admission:t);throw denied();}
     }
+    /** Freeze only storage-owned event/sample/proof arguments after every final owner query.
+     * This method belongs in FLUSHING after managed work; it does not execute the guard. */
+    public void prepareFinalWrite(ProtectedEmployeeAppointmentRepositoryPort.Admission admission) {
+        StorageAdmission t=null;
+        try {
+            t=ticket(admission);
+            if(!coordinatorCaller() || t.finalWrite!=null || t.commitIntent==null || t.commitProof==null
+                    || !t.proofRequested.get() || t.plan==null || t.provisional==null)throw denied();
+            verifyProvisional(t);
+            var expected=new OrganizationProtectedAppointmentAuthorizationContract.CommitIntent(
+                    java.util.UUID.fromString(t.provisional.event()),t.mutation.frame().commandDigest(),
+                    sha256(t.provisional.payload().getBytes(java.nio.charset.StandardCharsets.UTF_8)),t.plan.validUntil());
+            if(!expected.equals(t.commitIntent) || ticket(t)!=t)throw denied();
+            t.finalWrite=new FinalWrite(t.provisional.event(),t.sample.bindingId(),t.sample.sessionId(),
+                    t.sample.userId(),t.mutation.frame().scopeDigest(),t.plan.command().requestId(),
+                    t.mutation.frame().commandDigest(),t.sample.sampledAt(),t.sample.validUntil(),t.pid,t.xid,
+                    new OrganizationProtectedAppointmentAuthorizationContract.CommitProof(t.commitProof.frame(),t.commitProof.mac()));
+        }catch(RuntimeException failure){poison(t==null?admission:t);throw denied();}
+    }
+
+    /** Exactly one final scalar SQL statement. No owner callback or query follows it. */
+    public void finalizeWrite(ProtectedEmployeeAppointmentRepositoryPort.Admission admission) {
+        StorageAdmission t=null;
+        try {
+            t=ticket(admission);
+            if(!coordinatorCaller() || t.finalWrite==null || t.guarded)throw denied();
+            t.guardAttempted=true;
+            if(!Boolean.TRUE.equals(jdbc.queryForObject(WRITE_GUARD,Boolean.class,t.finalWrite.parameters()))
+                    || !t.sameContext() || context()!=t.holder
+                    || !TransactionSynchronizationManager.getSynchronizations().contains(t))throw denied();
+            t.guarded=true;
+        }catch(RuntimeException failure){poison(t==null?admission:t);throw denied();}
+        finally {if(t!=null){t.commitProof=null;t.finalWrite=null;}}
+    }
+
+    private static boolean coordinatorCaller() {
+        return StackWalker.getInstance().walk(frames -> frames.anyMatch(f -> f.getClassName().equals(
+                "dz.sh.hidra.modules.organization.application.service.ProtectedEmployeeAppointmentAdmissionCoordinator")));
+    }
+    private record FinalWrite(String event,String binding,String session,String actor,String scope,String request,
+            String command,Instant sampled,Instant until,int pid,long xid,
+            OrganizationProtectedAppointmentAuthorizationContract.CommitProof proof) {
+        Object[] parameters(){return new Object[]{event,binding,session,actor,scope,request,command,
+                timestamp(sampled),timestamp(until),pid,xid,proof.frame(),proof.mac()};}
+    }
+    private static final String WRITE_GUARD="WITH observed AS MATERIALIZED (SELECT pg_catalog.clock_timestamp() AS t) SELECT public.hidra_org_appointment_final_guard(?::uuid,?::uuid,?::uuid,?,?,?,?,?::timestamptz,?::timestamptz,?,?,?::bytea,?::bytea,t) FROM observed";
+
     private static String sha256(byte[] bytes) {
         try {
             return java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(bytes));

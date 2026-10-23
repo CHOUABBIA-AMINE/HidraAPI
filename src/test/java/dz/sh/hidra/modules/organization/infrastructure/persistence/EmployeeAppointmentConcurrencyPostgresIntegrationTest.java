@@ -599,8 +599,9 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         }
         SqlProof proof() throws Exception {return proof(f.units().get(0),payloadDigest);}
         void guard(SqlProof proof) throws SQLException {guard(proof,request);}
-        void guard(SqlProof proof,String requested) throws SQLException {
-            assertEquals("t",scalar(c,FINAL_SQL,event.toString(),binding.toString(),session.toString(),actor,scope,requested,
+        void guard(SqlProof proof,String requested) throws SQLException {guardSql(proof,requested,FINAL_SQL);}
+        void guardSql(SqlProof proof,String requested,String statement) throws SQLException {
+            assertEquals("t",scalar(c,statement,event.toString(),binding.toString(),session.toString(),actor,scope,requested,
                     commandDigest,sampled.toString(),until.toString(),pid,xid,proof.frame(),proof.mac()));
         }
         @Override public void close() throws Exception {try{c.rollback();}finally{c.close();login.close();}}
@@ -733,6 +734,35 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         assertEquals("1",finalCount("hidra_org_appointment_receipt",f.employee()));
         assertEquals("1",finalCount("hidra_identity_org_commit_proof_use",f.employee()));
         assertEquals("2",finalCount("hidra_org_employee_assignment",f.employee()));
+    }
+
+    @Test void archivedFinalGuardReproducesAmbiguousSweepColumnWhileForwardGuardCommits() throws Exception {
+        // Test-only diagnostic clone of immutable001, with no redacting handler: expose only SQLSTATE.
+        // The installed guard keeps generic diagnostics; no production function/ACL is weakened.
+        String archived;
+        try(var in=getClass().getResourceAsStream("/db/migration/V20261023_001__organization_appointment_final_write_guard.sql")){
+            assertNotNull(in);archived=new String(in.readAllBytes(),java.nio.charset.StandardCharsets.UTF_8);
+        }
+        int start=archived.indexOf("CREATE FUNCTION public.hidra_org_appointment_final_guard(");
+        int end=archived.indexOf("$guard$;",start)+"$guard$;".length();
+        String diagnostic=archived.substring(start,end)
+                .replace("CREATE FUNCTION public.hidra_org_appointment_final_guard(","CREATE FUNCTION public.fixture_ambiguous_final_guard(")
+                .replace("EXCEPTION WHEN OTHERS THEN\n RAISE EXCEPTION USING ERRCODE='P0001',MESSAGE='Appointment finalization unavailable';\n","");
+        assertFalse(diagnostic.contains("EXCEPTION WHEN OTHERS"));
+        admin(diagnostic);
+        admin("REVOKE ALL ON FUNCTION public.fixture_ambiguous_final_guard(uuid,uuid,uuid,text,text,text,text,timestamptz,timestamptz,integer,bigint,bytea,bytea,timestamptz) FROM PUBLIC");
+        var f=fixture(false);
+        try(var g=new FinalSqlSession(f,false,false)){
+            admin("GRANT EXECUTE ON FUNCTION public.fixture_ambiguous_final_guard(uuid,uuid,uuid,text,text,text,text,timestamptz,timestamptz,integer,bigint,bytea,bytea,timestamptz) TO "+g.login.role);
+            var proof=g.proof();var save=g.c.setSavepoint();
+            var failure=assertThrows(SQLException.class,() -> g.guardSql(proof,g.request,
+                    FINAL_SQL.replace("public.hidra_org_appointment_final_guard(","public.fixture_ambiguous_final_guard(")));
+            assertEquals("42702",failure.getSQLState()); // ambiguous_column, without printing fields/frame/MAC.
+            g.c.rollback(save);g.c.releaseSavepoint(save);
+            g.guard(proof);g.c.commit();
+        }
+        assertEquals("1",finalCount("hidra_org_appointment_receipt",f.employee()));
+        assertEquals("1",finalCount("hidra_identity_org_commit_proof_use",f.employee()));
     }
 
     private EmployeeAppointmentCommand.Create create(Fixture f,String request){

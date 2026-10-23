@@ -25960,6 +25960,92 @@ integration, real-executor/native commit acceptance, complete history/cursors,
 application/private publisher/legacy/REST cutover and governance closure. No
 future stage, simulator, release, deployment or live OT action is executed here.
 
+### 2026-10-23 — HAPI-778 Full840 final guard clock/sweep ambiguity repair
+
+**Selection / message:** Owner Fail selects responsible repair from exact main
+b43ee9f37d7f03da638a73a10ec75b4d3f2b8238,
+parentb24973e8d9285375685643bc3d7f527310e8d32c,
+tree6a61a98c1f6bb41a914a7ca86194a54bc833a44d.
+[Full840](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39962641571)
+FAILED; [Fast153](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39962641524)
+and [Docs530](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39962641478)
+SUCCEEDED. Current governance/task evidence, source and exact failed job logs
+were refreshed. Retain B3's exact message
+`feat(organization): persist protected appointment lifecycle and history`.
+
+**Observed failures:** PostgreSQL shard1 job120444246403 executed174 tests with
+four errors, all within the49-case EmployeeAppointmentConcurrencyPostgresIntegrationTest:
+realFinalSqlGuardAllowsExactHalfOpenAdjacencyWithoutFalsePrimaryPeak,
+realFinalSqlGuardCannotRedeemEventTwiceEvenInSameTransaction,
+realFinalSqlGuardRollbackRemovesProjectionKeysEventReceiptAndNonce and
+realFinalSqlGuardAuthenticatesAndCommitsReceiptAndNonceAtomically. Logs contain
+the deliberately redacted Appointment finalization unavailable, not an exposed
+inner SQLSTATE. Other six PostgreSQL shards, unit/architecture, static validation
+and exact runtime OpenAPI equality succeeded; the final evidence gate failed.
+
+API/dictionary job120444246351 separately failed dictionary equality. Its actual
+diagnostic artifact12506095345, archive SHA256
+865f9701445e995f589dbe84f6ef3a112c413d6eb6cabb6d5ddc58a038cc5b54,
+contains database/schema.json and database/verification.json; the latter states
+Physical dictionary drift; review regenerated metadata/content. This is not a
+functional SQL-installation failure or an OpenAPI drift claim.
+
+**Concrete source defect / inference limits:** The new guard declares a PL/pgSQL
+at_time variable and also uses unqualified at_time columns in the PRIMARY
+boundary/totals/window query. That is a concrete variable/column collision on
+the path reached by the four positive cases. Its causal attribution is source-
+backed inference because the production exception handler intentionally masks
+the inner SQLSTATE. Do not claim the failed logs independently exposed42702.
+The added hosted regression must establish that diagnostic and the repaired
+positive commit, rather than treating the negative generic-error tests as proof.
+
+**Exact finite repair scope — one CREATE, four MODIFY:**
+- CREATE src/main/resources/db/migration/V20261023_002__organization_appointment_final_guard_clock_scope.sql
+- MODIFY src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JdbcProtectedEmployeeAppointmentRepositoryAdapter.java
+- MODIFY src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java
+- MODIFY .github/ci-test-inventory.json, only that suite's new case/source hash
+- MODIFY this append-only HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+The collision-free additive successor replaces only the existing guard body:
+rename the local receipt clock guarded_at_time and qualify totals/window
+references through their relation alias. Signature, policy, bounds, locks,
+cryptographic verifier/nonce consumption, receipt, deferred checks, ACL/path/UTC,
+redacted production diagnostics and every other invariant remain. All166 earlier
+migration bodies, including001, were compared with exact HEAD and stay unchanged.
+The adapter changes only the latest guard prosrc pin to
+539cc2ba27be9e3439141b851ca06640cb91f525d9b6f9aaf8147dce3a2019a5.
+No route, proof source, grant, caller, timeout, workflow or registry is weakened.
+
+**Regression authored:** Preserve all49 existing cases/assertions and add
+archivedFinalGuardReproducesAmbiguousSweepColumnWhileForwardGuardCommits
+(50 total). It creates an isolated test-only diagnostic clone from immutable001,
+removing only that clone's redacting handler. Under a real restricted login,
+independent test HMAC and complete valid fixture, require SQLSTATE42702 without
+printing fields/frame/MAC, roll back the failed attempt to a savepoint, then
+require the installed forward guard to commit exactly one receipt and nonce.
+The installed production guard/handler/callbacks are never changed by the test.
+This is authored regression coverage, pending hosted PostgreSQL execution.
+Test SHA256506ae6003b795bea0f7cc9cec547332a1b4a73a753bc57bf118ef28333e36383.
+
+**Actual checks:** Both changed Java files parse with available Java17 compiler
+API, syntax only. Canonical inventory passes353 fast/354 unit-architecture/455
+oracle/four historical classes and unchanged seven PostgreSQL partitions
+12/16/13/14/16/15/15. All32 inventory self-tests pass. Static source checks confirm
+clock/column separation, exact forward function pin and all166 preserved prior
+migration bodies. Whitespace passes. Local Maven/Java21/PostgreSQL/Docker are
+unavailable and are not provisioned solely for tests; no SQL runtime fix/pass is
+claimed before hosted evidence. Documentation validation is rerun before publish.
+
+**Dictionary / stop:** The new167-migration source needs a fresh exact-source
+catalog/history artifact; the old166 artifact cannot prove its migration identity
+or latest function body. Preserve the existing dictionary rather than fabricate
+physical metadata. The separately registered artifact-reconciliation stage remains
+required after actual runtime feedback; this repair does not claim that second
+failed gate closed. HAPI-778 stays PARTIAL/IN_PROGRESS and HAPI-590 independently
+PARTIAL/BLOCKED. Publish only these five paths with expected-b43ee9f main guard,
+verify exact parent/tree/message/blobs/scope, confirm exact-SHA Full/Fast/Docs
+creation/queue/start and STOP. No dependent finalization stage is executed.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

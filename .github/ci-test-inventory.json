@@ -9022,6 +9022,7 @@
         "activeHalfOpenIntervalsPermitAnExactlyAdjacentAppointment",
         "actualProvisionalCreateEndCorrectionAndTransferMatchFrozenCanonicalEventsAndRollBack",
         "actualSameTransactionPartyGenerationChangeInvalidatesTheRetainedCurrentSample",
+        "archivedFinalGuardReproducesAmbiguousSweepColumnWhileForwardGuardCommits",
         "boundedProofTransportAloneNeverAuthorizesReceiptOrPhysicalCommit",
         "callerConsumedPartyScalarCannotReplaceTheStorageOwnedOneUseRead",
         "classificationIsFrozenToTheExactCommandAndRechecksNativeRevocation",
@@ -9075,7 +9076,7 @@
       "lane": "postgres-integration",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java",
-      "source_sha256": "03fb39c4206a98c550657514813c5f0313dfe79041cccef6b0693f4bf2e58594",
+      "source_sha256": "506ae6003b795bea0f7cc9cec547332a1b4a73a753bc57bf118ef28333e36383",
       "supports": []
     }
   ],

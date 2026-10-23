@@ -71,6 +71,7 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
     private UUID retainedEvent;
     private String retainedPayload;
     private long originalProjectionChecksum;
+    private final java.util.Set<UUID> historyFixtureEvents=new java.util.HashSet<>();
 
     @BeforeAll void migrateAndSeparatePrincipals() throws Exception {
         Flyway.configure().dataSource(POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword())
@@ -279,8 +280,8 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
         // No configuration is silently created by the migration. Ignore test-created explicit facts.
         assertEquals(0,count("SELECT count(*) FROM public.hidra_org_appointment_configuration_event WHERE database_admin<>?",CONFIG));
         // Exactly one explicit pre-upgrade fixture is retained, never a migration default.
-        assertEquals(1,count("SELECT count(*) FROM public.hidra_org_appointment_event"));
-        assertEquals(1,count("SELECT count(*) FROM public.hidra_org_appointment_receipt"));
+        assertEquals(1+historyFixtureEvents.size(),count("SELECT count(*) FROM public.hidra_org_appointment_event"));
+        assertEquals(1+historyFixtureEvents.size(),count("SELECT count(*) FROM public.hidra_org_appointment_receipt"));
         assertEquals(1,count("SELECT count(*) FROM public.hidra_org_appointment_event WHERE event_id=?::uuid",retainedEvent));
     }
 
@@ -1247,6 +1248,7 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
                         .OrganizationProtectedAppointmentAuthorizationContract.Admission.class);
         final JdbcProtectedEmployeeAppointmentRepositoryAdapter storage;
         final dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.Policy policyQuery;
+        final dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery readQuery;
         final org.springframework.security.core.Authentication authentication =
                 new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
                         "synthetic-storage-test", "unused", List.of());
@@ -1255,9 +1257,10 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
             this(null);
         }
 
-        StorageFixture(dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.Policy query)
+        StorageFixture(dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery query)
                 throws Exception {
-            policyQuery = query;
+            readQuery = query;
+            policyQuery = query instanceof dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.Policy p ? p : null;
             admin("CREATE ROLE " + role + " LOGIN PASSWORD '" + PASSWORD + "'");
             admin("GRANT USAGE ON SCHEMA public TO " + role);
             for (String table : STORAGE_TABLES)
@@ -1282,15 +1285,16 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
                             .JdbcIdentityAuthorityFence.requiredRelationFences());
             org.mockito.Mockito.when(identity.contribute(nativeTicket)).thenAnswer(call -> {
                 var f = retainedProjection;
+                var descriptors=readQuery==null?null:storage.preview(readQuery);
                 var request = new dz.sh.hidra.modules.identity.application.contract.organization
                         .OrganizationProtectedAppointmentAuthorizationContract.Request(
-                        policyQuery == null ? dz.sh.hidra.modules.identity.application.contract.organization
-                                .OrganizationProtectedAppointmentAuthorizationContract.Action.READ_HISTORY
-                                : dz.sh.hidra.modules.identity.application.contract.organization
-                                .OrganizationProtectedAppointmentAuthorizationContract.Action.READ_POLICY,
-                        policyQuery == null ? List.of(new CompanyUnit(f.company(),f.unit()))
-                                : List.of(new CompanyUnit(policyQuery.companyPartyId(),policyQuery.unitId())),
-                        policyQuery == null ? f.employee() : null);
+                        policyQuery != null ? dz.sh.hidra.modules.identity.application.contract.organization
+                                .OrganizationProtectedAppointmentAuthorizationContract.Action.READ_POLICY
+                                : readQuery instanceof dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.ExactVersion
+                                ? dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.Action.READ_CURRENT
+                                : dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.Action.READ_HISTORY,
+                        descriptors==null ? List.of(new CompanyUnit(f.company(),f.unit())) : descriptors.companyUnits(),
+                        descriptors==null ? f.employee() : descriptors.employeeId());
                 return jdbc.queryForObject("SELECT pg_backend_pid(),txid_current(),clock_timestamp()",
                         (row,index) -> new dz.sh.hidra.modules.identity.application.contract.organization
                                 .OrganizationProtectedAppointmentAuthorizationContract.Contribution(
@@ -1310,8 +1314,8 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
                 acquire() {
             jdbc.execute("SELECT " + lockFunction + "()");
             var f = retainedProjection;
-            if (policyQuery != null)
-                return storage.acquire(nativeTicket,List.of(),storage.preview(policyQuery));
+            if (readQuery != null)
+                return storage.acquire(nativeTicket,List.of(),storage.preview(readQuery));
             return storage.acquire(nativeTicket, List.of(),
                     new dz.sh.hidra.modules.organization.application.port.out
                             .ProtectedEmployeeAppointmentRepositoryPort.DescriptorPreview(
@@ -1840,6 +1844,198 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
     @Test void policyReadGuardTemplateRemainsTheRegisteredNonMutatingScalar() throws Exception {
         assertEquals("0b8a4baaef583bb8bccc878e0d255a295b2d63c7dc31d7d8af3a2e3b50261e51",
                 HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(READ_GUARD_SQL.getBytes(StandardCharsets.UTF_8))));
+    }
+
+    private static dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History employeeHistory(
+            Projection p,int limit,String cursor) {
+        return dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History
+                .employee(p.company(),p.employee(),limit,cursor);
+    }
+
+    private UUID commitCreate(Projection p) throws Exception {
+        try(var c=projectionTransaction()){var id=completeCreate(c,p);c.commit();historyFixtureEvents.add(id);return id;}
+    }
+
+    private void commitMove(Projection p,Projection destination,String kind) throws Exception {
+        try(var c=projectionTransaction()) {
+            historicalMove(c,p,destination,kind);
+            var ids=new java.util.ArrayList<UUID>();
+            try(var statement=c.prepareStatement("SELECT event_id FROM public.hidra_org_appointment_event WHERE employee_id=?")) {
+                statement.setString(1,p.employee());try(var rows=statement.executeQuery()) {
+                    while(rows.next())ids.add(rows.getObject(1,UUID.class));
+                }
+            }
+            c.commit();historyFixtureEvents.addAll(ids);
+        }
+    }
+
+    private Projection peer(Projection p) {
+        return new Projection("assignment-"+UUID.randomUUID(),p.company(),p.unit(),p.employee(),p.position(),p.binding(),p.policy());
+    }
+
+    private dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.HistoryPage<
+            dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.PrivateHistoryEvent> historyPage(
+            dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History query) throws Exception {
+        try(var f=new StorageFixture(query)) {
+            return f.tx.execute(status -> {
+                f.jdbc.execute("SET LOCAL TIME ZONE 'UTC'");var ticket=f.acquire();f.storage.contribute(ticket);
+                var result=f.storage.privateHistory(ticket,query);status.setRollbackOnly();return result;
+            });
+        }
+    }
+
+    @Test void protectedHistoryMaterializesPrivateAssignmentEmployeeAndRedactedPositionViews() throws Exception {
+        var p=projection();var id=commitCreate(p);
+        var employee=historyPage(employeeHistory(p,20,null));
+        var assignment=historyPage(dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History
+                .assignment(p.company(),p.id(),20,null));
+        assertEquals(employee,assignment);assertEquals(1,employee.entries().size());
+        assertEquals(id.toString(),employee.entries().get(0).eventId());
+        assertEquals(p.employee(),employee.entries().get(0).after().snapshot().appointment().assignment().employeeId());
+        var query=dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History
+                .position(p.company(),p.unit(),p.position(),20,null);
+        try(var f=new StorageFixture(query)) {
+            f.tx.execute(status -> {
+                var ticket=f.acquire();f.storage.contribute(ticket);var page=f.storage.positionHistory(ticket,query);
+                assertEquals(p.id(),page.entries().get(0).after().assignmentId());
+                String output=tools.jackson.databind.json.JsonMapper.builder().build().writeValueAsString(page);
+                assertFalse(output.contains(p.employee()));assertFalse(output.contains("actor_user_id"));
+                assertFalse(output.contains("employeeId"));assertNull(page.nextCursor());
+                assertThrows(UnsupportedOperationException.class,()->page.entries().clear());
+                status.setRollbackOnly();return null;
+            });
+        }
+    }
+
+    @Test void protectedHistoryUsesStableHighWaterWithoutDuplicatesWhenNewEventsAppend() throws Exception {
+        var p=projection();commitCreate(p);commitCreate(peer(p));commitCreate(peer(p));
+        var initial=historyPage(employeeHistory(p,100,null));
+        var first=historyPage(employeeHistory(p,1,null));assertTrue(first.hasNext());
+        var appended=commitCreate(peer(p));
+        var seen=new java.util.ArrayList<String>();seen.add(first.entries().get(0).eventId());
+        String cursor=first.nextCursor();
+        while(cursor!=null) {
+            var next=historyPage(employeeHistory(p,1,cursor));
+            assertEquals(1,next.entries().size());seen.add(next.entries().get(0).eventId());cursor=next.nextCursor();
+            assertTrue(seen.size()<=3);
+        }
+        assertEquals(initial.entries().stream().map(e->e.eventId()).toList(),seen);
+        assertFalse(seen.contains(appended.toString()));assertEquals(3,new java.util.HashSet<>(seen).size());
+        assertEquals(4,historyPage(employeeHistory(p,100,null)).entries().size());
+    }
+
+    @Test void protectedHistoryCursorRejectsSelectorLimitHighWaterDigestAndNoncanonicalEncodingChanges() throws Exception {
+        var p=projection();commitCreate(p);commitCreate(peer(p));
+        String cursor=historyPage(employeeHistory(p,1,null)).nextCursor();
+        var parts=new String(java.util.Base64.getUrlDecoder().decode(cursor),StandardCharsets.US_ASCII).split("\\|",-1);
+        for(int variant=0;variant<5;variant++) {
+            var changed=parts.clone();String forged;
+            if(variant==0)changed[1]=UUID.randomUUID().toString();
+            if(variant==1)changed[5]="0".repeat(64);
+            if(variant==2)changed[0]="0".repeat(64);
+            forged=variant==3?cursor+"=":java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(
+                    String.join("|",changed).getBytes(StandardCharsets.US_ASCII));
+            var query=employeeHistory(p,variant==4?2:1,forged);
+            assertThrows(AccessDeniedException.class,()->historyPage(query));
+        }
+        var query=dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History.assignment(
+                p.company(),p.id(),1,cursor);
+        assertThrows(AccessDeniedException.class,()->historyPage(query));
+    }
+
+    @Test void protectedExactVersionRetainsBeforeAndSuccessorPinsAfterCorrectionAndTransfer() throws Exception {
+        for(String kind:List.of("CORRECT","TRANSFER")) {
+            var p=projection();var destination=historicalDestination(p);
+            commitMove(p,destination,kind);
+            for(long version:List.of(1L,2L)) {
+                var query=new dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.ExactVersion(p.company(),p.id(),version);
+                try(var f=new StorageFixture(query)) {
+                    f.tx.execute(status -> {
+                        var ticket=f.acquire();f.storage.contribute(ticket);var value=f.storage.exactVersion(ticket,query);
+                        assertEquals(version,value.appointmentVersion());assertEquals(p.id(),value.assignmentId());
+                        assertEquals(version==1 || kind.equals("TRANSFER")?p.binding():destination.binding(),value.snapshot().binding().id());
+                        status.setRollbackOnly();return null;
+                    });
+                }
+            }
+            var page=historyPage(employeeHistory(p,20,null));assertEquals(2,page.entries().size());
+            if(kind.equals("TRANSFER")) {
+                var transfer=page.entries().stream().filter(e->e.successor()!=null).findFirst().orElseThrow();
+                assertEquals(destination.binding(),transfer.successor().snapshot().binding().id());
+                var successor=new dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.ExactVersion(
+                        p.company(),destination.id(),1);
+                try(var f=new StorageFixture(successor)) {
+                    f.tx.execute(status -> {
+                        var ticket=f.acquire();f.storage.contribute(ticket);var value=f.storage.exactVersion(ticket,successor);
+                        assertEquals(destination.id(),value.assignmentId());assertEquals(destination.binding(),value.snapshot().binding().id());
+                        status.setRollbackOnly();return null;
+                    });
+                }
+            }
+        }
+    }
+
+    @Test void protectedHistoryRequiresWholeClosureAndCannotBorrowPolicyOrExactAuthority() throws Exception {
+        var p=projection();var destination=historicalDestination(p);
+        commitMove(p,destination,"TRANSFER");
+        var query=employeeHistory(p,1,null);
+        try(var f=new StorageFixture(query)) {
+            f.tx.execute(status -> {
+                var ticket=f.acquire();f.storage.contribute(ticket);
+                assertEquals(historicalPairs(p,destination),f.storage.preview(query).companyUnits());
+                assertThrows(AccessDeniedException.class,()->f.storage.positionHistory(ticket,
+                        dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History.position(
+                                p.company(),p.unit(),p.position(),1,null)));
+                assertTrue(f.holder().isRollbackOnly());status.setRollbackOnly();return null;
+            });
+        }
+        try(var f=new StorageFixture(policyQuery(p.company(),p.unit()))) {
+            f.tx.execute(status -> {
+                var ticket=f.acquire();f.storage.contribute(ticket);
+                assertThrows(AccessDeniedException.class,()->f.storage.privateHistory(ticket,query));
+                status.setRollbackOnly();return null;
+            });
+        }
+        var exact=new dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.ExactVersion(p.company(),p.id(),1);
+        try(var f=new StorageFixture(exact)) {
+            f.tx.execute(status -> {
+                var ticket=f.acquire();f.storage.contribute(ticket);
+                assertThrows(AccessDeniedException.class,()->f.storage.privateHistory(ticket,query));
+                status.setRollbackOnly();return null;
+            });
+        }
+    }
+
+    @Test void protectedHistoryRetainsImmutableOwnershipAfterPartyRetirementAndCompanyRebinding() throws Exception {
+        var p=projection();commitCreate(p);String other=company("ACTIVE");
+        try(var c=login(CONFIG)){binding(c,p.binding(),p.unit(),other,1);c.commit();}
+        admin("UPDATE public.hidra_party_party SET status='SUSPENDED' WHERE id=?",p.company());
+        var page=historyPage(employeeHistory(p,20,null));assertEquals(p.company(),page.entries().get(0).after().companyPartyId());
+        assertEquals(1,page.entries().get(0).after().snapshot().binding().revision());
+        var foreign=dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History.assignment(other,p.id(),1,null);
+        assertThrows(AccessDeniedException.class,()->historyPage(foreign));
+    }
+
+    @Test void protectedHistoryRejectsRevokedOwnerAndChangedAuthenticationBeforeMaterialization() throws Exception {
+        var p=projection();commitCreate(p);var query=employeeHistory(p,20,null);
+        for(boolean revoke:List.of(false,true))try(var f=new StorageFixture(query)) {
+            f.tx.execute(status -> {
+                var ticket=f.acquire();f.storage.contribute(ticket);
+                if(revoke)org.mockito.Mockito.doThrow(new AccessDeniedException("synthetic revoke")).when(f.identity).requireCurrent(f.nativeTicket);
+                else org.springframework.security.core.context.SecurityContextHolder.clearContext();
+                assertThrows(AccessDeniedException.class,()->f.storage.privateHistory(ticket,query));
+                assertTrue(f.holder().isRollbackOnly());status.setRollbackOnly();return null;
+            });
+        }
+    }
+
+    @Test void protectedHistoryWithoutItsOwnFinalGuardCannotPhysicallyCommit() throws Exception {
+        var p=projection();commitCreate(p);var query=employeeHistory(p,20,null);
+        try(var f=new StorageFixture(query)) {
+            assertThrows(AccessDeniedException.class,()->f.tx.execute(status -> {
+                var ticket=f.acquire();f.storage.contribute(ticket);f.storage.privateHistory(ticket,query);return null;
+            }));
+        }
     }
 
     /** Real storage and commit; only native Identity and the protected executor are mocked. */

@@ -9004,6 +9004,14 @@
         "projectionFunctionsConstraintsAndDeferredTriggersHaveActualCatalogShape",
         "projectionRejectsPartialMetadataAndNonInitialVersions",
         "projectionUpgradeRetainsLegacyRowsWithoutInventingPins",
+        "protectedExactVersionRetainsBeforeAndSuccessorPinsAfterCorrectionAndTransfer",
+        "protectedHistoryCursorRejectsSelectorLimitHighWaterDigestAndNoncanonicalEncodingChanges",
+        "protectedHistoryMaterializesPrivateAssignmentEmployeeAndRedactedPositionViews",
+        "protectedHistoryRejectsRevokedOwnerAndChangedAuthenticationBeforeMaterialization",
+        "protectedHistoryRequiresWholeClosureAndCannotBorrowPolicyOrExactAuthority",
+        "protectedHistoryRetainsImmutableOwnershipAfterPartyRetirementAndCompanyRebinding",
+        "protectedHistoryUsesStableHighWaterWithoutDuplicatesWhenNewEventsAppend",
+        "protectedHistoryWithoutItsOwnFinalGuardCannotPhysicallyCommit",
         "protectedIdentityVersionAndOwnershipCannotBeResetThroughRawSql",
         "protectedProjectionNeedsRealRevisionReferencesAndMatchingUnit",
         "publicExecuteOrMisgrantedTableWriteCannotBecomeConfigurationAuthority",
@@ -9037,7 +9045,7 @@
       "lane": "postgres-integration",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java",
-      "source_sha256": "1de28f42ccf6d44da93bca982852aa1f1177110a4ccaaab4b821da99dc969370",
+      "source_sha256": "91828ddecbf653770d95b1a002a006b481027517f8bf57c610f844336e27ce07",
       "supports": []
     },
     {

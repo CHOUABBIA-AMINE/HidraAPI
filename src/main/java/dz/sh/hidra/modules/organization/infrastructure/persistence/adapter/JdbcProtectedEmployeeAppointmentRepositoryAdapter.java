@@ -236,6 +236,212 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
                               String assignment, long version, long eventCount,
                               boolean incomplete) { }
 
+    private record JournalEvent(String id, EmployeeAppointmentCommand.Kind kind, Instant sampled,
+            EmployeeAppointmentResult.PinnedVersion before, EmployeeAppointmentResult.PinnedVersion after,
+            EmployeeAppointmentResult.PinnedVersion successor, String evidence) { }
+    private record JournalObservation(EmployeeAppointmentQuery selector, List<JournalEvent> events) { }
+    private record JournalSelection(String predicate, Object[] arguments) { }
+
+    private static JournalSelection journalSelection(EmployeeAppointmentQuery query) {
+        if (query instanceof EmployeeAppointmentQuery.ExactVersion q)
+            return new JournalSelection("e.assignment_id=? OR e.successor_id=?",new Object[]{q.assignmentId(),q.assignmentId()});
+        if (query instanceof EmployeeAppointmentQuery.History q) return switch(q.scope()) {
+            case ASSIGNMENT -> new JournalSelection("e.assignment_id=? OR e.successor_id=?",new Object[]{q.assignmentId(),q.assignmentId()});
+            case EMPLOYEE -> new JournalSelection("e.employee_id=?",new Object[]{q.employeeId()});
+            case POSITION -> new JournalSelection("""
+                    EXISTS(SELECT 1 FROM (VALUES
+                      (pg_catalog.convert_from(e.canonical_payload,'UTF8')::jsonb->'before'),
+                      (pg_catalog.convert_from(e.canonical_payload,'UTF8')::jsonb->'after'),
+                      (pg_catalog.convert_from(e.canonical_payload,'UTF8')::jsonb->'successor')) candidate(snapshot)
+                      WHERE snapshot->'assignment'->>'organization_unit_id'=?
+                        AND snapshot->'assignment'->>'position_id'=?)
+                    """,new Object[]{q.unitId(),q.positionId()});
+        };
+        throw denied();
+    }
+
+    /* LEFT JOIN retains missing receipts as rejection evidence, never silently drops an event.
+     * The complete immutable journal is authorized before paging, even for a one-row page. */
+    private static final String JOURNAL_SQL="""
+            WITH selected AS (
+              SELECT e.*,pg_catalog.convert_from(e.canonical_payload,'UTF8')::jsonb body
+                FROM public.hidra_org_appointment_event e WHERE %s
+               ORDER BY e.sampled_at,e.event_id LIMIT 1025)
+            SELECT e.event_id::text,e.operation,e.sampled_at,
+                   e.body->'before',e.body->'after',e.body->'successor',
+                   (r.event_id=e.event_id AND r.actor_user_id=e.actor_user_id
+                    AND r.command_sha256=e.command_sha256 AND r.canonical_result=e.canonical_payload
+                    AND r.request_id=e.body->'command'->>'requestId'
+                    AND e.body->'command'->>'kind'=e.operation
+                    AND e.body->'command'->>'companyPartyId'=e.company_party_id
+                    AND r.backend_pid=e.backend_pid AND r.transaction_id=e.transaction_id
+                    AND r.guarded_at>=e.sampled_at AND r.guarded_at<e.valid_until
+                    AND e.canonical_payload=pg_catalog.convert_to(e.body::text,'UTF8')
+                    AND e.command_sha256=pg_catalog.encode(pg_catalog.sha256(pg_catalog.convert_to(
+                        (e.body->'command')::text,'UTF8')),'hex')) IS TRUE,
+                   pg_catalog.jsonb_build_object('event',pg_catalog.to_jsonb(e)-'body',
+                       'receipt',pg_catalog.to_jsonb(r))::text
+              FROM selected e LEFT JOIN public.hidra_org_appointment_receipt r ON r.event_id=e.event_id
+             ORDER BY e.sampled_at,e.event_id
+            """;
+
+    private List<JournalEvent> journal(ProtectedEmployeeAppointmentRepositoryPort.Admission admission,
+            EmployeeAppointmentQuery query) {
+        StorageAdmission t=null;
+        try {
+            t=ticket(admission);requireCurrent(t);
+            var descriptors=preview(query);
+            var action=query instanceof EmployeeAppointmentQuery.ExactVersion
+                    ? OrganizationProtectedAppointmentAuthorizationContract.Action.READ_CURRENT
+                    : OrganizationProtectedAppointmentAuthorizationContract.Action.READ_HISTORY;
+            var expected=new OrganizationProtectedAppointmentAuthorizationContract.Request(
+                    action,descriptors.companyUnits(),descriptors.employeeId());
+            if(!descriptors.equals(t.preview) || !expected.equals(t.sample.request()) || !t.parties.isEmpty()
+                    || t.mutation!=null || t.policy!=null
+                    || t.journalRead!=null && !query.equals(t.journalRead.selector()))throw denied();
+            var selection=journalSelection(query);
+            var events=jdbc.query(JOURNAL_SQL.formatted(selection.predicate()),(r,i) -> {
+                if(!r.getBoolean(7))throw denied();
+                var event=new JournalEvent(r.getString(1),EmployeeAppointmentCommand.Kind.valueOf(r.getString(2)),
+                        r.getTimestamp(3).toInstant(),pinned(r.getString(4)),pinned(r.getString(5)),
+                        pinned(r.getString(6)),r.getString(8));
+                // Reuse the immutable result's operation/slot shape validation.
+                new EmployeeAppointmentResult.PrivateHistoryEvent(event.id(),event.kind(),event.sampled(),
+                        event.before(),event.after(),event.successor());
+                return event;
+            },selection.arguments());
+            if(events==null || events.isEmpty() || events.size()>1024)throw denied();
+            var observed=new JournalObservation(query,List.copyOf(events));
+            if(t.journalRead!=null && !t.journalRead.equals(observed))throw denied();
+            t.journalRead=observed;requireCurrent(t);
+            return observed.events();
+        }catch(RuntimeException failure){poison(t==null?admission:t);throw denied();}
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Map<String,Object> object(Object value) {
+        if(!(value instanceof Map<?,?> map))throw denied();
+        return (Map<String,Object>)map;
+    }
+    private static String text(Map<String,Object> value,String key) {
+        if(!(value.get(key) instanceof String s))throw denied();
+        return exact(s);
+    }
+    private static Instant time(Map<String,Object> value,String key,boolean nullable) {
+        if(nullable && value.get(key)==null)return null;
+        return Instant.parse(text(value,key));
+    }
+    private static long number(Map<String,Object> value,String key) {
+        if(!(value.get(key) instanceof Number n))throw denied();
+        long result=Long.parseLong(n.toString());if(result<=0)throw denied();return result;
+    }
+    private static EmployeeAppointmentResult.PinnedVersion pinned(String json) {
+        if(json==null || json.equals("null"))return null;
+        var value=object(COMMAND_JSON.readValue(json,Map.class));
+        var a=object(value.get("assignment"));var b=object(value.get("binding"));
+        var assignment=new EmployeeAssignment(text(a,"id"),text(a,"employee_id"),text(a,"organization_unit_id"),
+                text(a,"position_id"),AssignmentType.valueOf(text(a,"assignment_type")),time(a,"valid_from",false),
+                time(a,"valid_to",true),AssignmentStatus.valueOf(text(a,"status")),time(a,"created_at",false),time(a,"updated_at",false));
+        var binding=new OrganizationUnitCompanyBinding(text(b,"binding_id"),number(b,"revision"),
+                text(b,"organization_unit_id"),text(b,"company_party_id"),time(b,"recorded_at",false));
+        return new EmployeeAppointmentResult.PinnedVersion(new CompanyBoundEmployeeAppointment(
+                new EmployeeAppointmentChange.VersionedAssignment(number(a,"appointment_version"),assignment),binding),
+                text(a,"policy_id"),number(a,"policy_revision"));
+    }
+
+    /** Internal detached materialization only; no final HISTORY guard or public route is activated. */
+    public EmployeeAppointmentResult.HistoryPage<EmployeeAppointmentResult.PrivateHistoryEvent> privateHistory(
+            ProtectedEmployeeAppointmentRepositoryPort.Admission admission,EmployeeAppointmentQuery.History query) {
+        try {
+            if(query.scope()==EmployeeAppointmentQuery.Scope.POSITION)throw denied();
+            var page=historySlice(journal(admission,query),query);
+            return new EmployeeAppointmentResult.HistoryPage<>(page.events().stream().map(e ->
+                    new EmployeeAppointmentResult.PrivateHistoryEvent(e.id(),e.kind(),e.sampled(),
+                            e.before(),e.after(),e.successor())).toList(),page.cursor(),page.cursor()!=null);
+        }catch(RuntimeException failure){poison(admission);throw denied();}
+    }
+
+    /** Position output never contains an employee, actor, command or private journal image. */
+    public EmployeeAppointmentResult.HistoryPage<EmployeeAppointmentResult.PositionHistoryEvent> positionHistory(
+            ProtectedEmployeeAppointmentRepositoryPort.Admission admission,EmployeeAppointmentQuery.History query) {
+        try {
+            if(query.scope()!=EmployeeAppointmentQuery.Scope.POSITION)throw denied();
+            var page=historySlice(journal(admission,query),query);
+            return new EmployeeAppointmentResult.HistoryPage<>(page.events().stream().map(e ->
+                    new EmployeeAppointmentResult.PositionHistoryEvent(e.id(),e.kind(),e.sampled(),
+                            redact(e.before()),redact(e.after()),redact(e.successor()))).toList(),page.cursor(),page.cursor()!=null);
+        }catch(RuntimeException failure){poison(admission);throw denied();}
+    }
+    private static EmployeeAppointmentResult.PositionVersion redact(EmployeeAppointmentResult.PinnedVersion p) {
+        return p==null?null:EmployeeAppointmentResult.PositionVersion.redact(p);
+    }
+
+    public EmployeeAppointmentResult.PinnedVersion exactVersion(
+            ProtectedEmployeeAppointmentRepositoryPort.Admission admission,EmployeeAppointmentQuery.ExactVersion query) {
+        try {
+            var versions=new ArrayList<EmployeeAppointmentResult.PinnedVersion>();
+            for(var event:journal(admission,query)) for(var snapshot:new EmployeeAppointmentResult.PinnedVersion[]{
+                    event.before(),event.after(),event.successor()})
+                if(snapshot!=null && snapshot.assignmentId().equals(query.assignmentId())
+                        && snapshot.appointmentVersion()==query.version())versions.add(snapshot);
+            if(versions.isEmpty() || versions.stream().anyMatch(v -> !v.equals(versions.get(0)))
+                    || !query.companyPartyId().equals(versions.get(0).companyPartyId()))throw denied();
+            return versions.get(0);
+        }catch(RuntimeException failure){poison(admission);throw denied();}
+    }
+
+    private record HistorySlice(List<JournalEvent> events,String cursor) { }
+    private static String selectorHash(EmployeeAppointmentQuery.History q) {
+        return sha256(COMMAND_JSON.writeValueAsString(java.util.Arrays.asList(
+                "appointment-history-v1",q.scope().name(),q.companyPartyId(),q.assignmentId(),q.employeeId(),
+                q.unitId(),q.positionId(),q.limit(),"sampled_at,event_id:ascending")).getBytes(java.nio.charset.StandardCharsets.UTF_8));
+    }
+    private static int compare(JournalEvent a,JournalEvent b) {
+        int time=a.sampled().compareTo(b.sampled());return time==0?a.id().compareTo(b.id()):time;
+    }
+    private static String journalDigest(List<JournalEvent> events) {
+        return sha256(COMMAND_JSON.writeValueAsString(events.stream().map(JournalEvent::evidence).toList())
+                .getBytes(java.nio.charset.StandardCharsets.UTF_8));
+    }
+    private static HistorySlice historySlice(List<JournalEvent> all,EmployeeAppointmentQuery.History query) {
+        String scope=selectorHash(query);int upper=all.size()-1,start=0;
+        if(query.cursor()!=null) {
+            String[] parts=decodeCursor(query.cursor());
+            if(!parts[0].equals(scope))throw denied();
+            upper=-1;int after=-1;
+            for(int i=0;i<all.size();i++) {
+                if(all.get(i).id().equals(parts[1]) && all.get(i).sampled().toString().equals(parts[2]))upper=i;
+                if(all.get(i).id().equals(parts[3]) && all.get(i).sampled().toString().equals(parts[4]))after=i;
+            }
+            if(upper<0 || after<0 || after>=upper || !parts[5].equals(journalDigest(all.subList(0,upper+1))))throw denied();
+            start=after+1;
+        }
+        for(int i=1;i<all.size();i++)if(compare(all.get(i-1),all.get(i))>=0)throw denied();
+        int end=Math.min(start+query.limit(),upper+1);
+        var page=List.copyOf(all.subList(start,end));String next=null;
+        if(end<=upper) {
+            var high=all.get(upper);var after=all.get(end-1);
+            next=encodeCursor(new String[]{scope,high.id(),high.sampled().toString(),after.id(),
+                    after.sampled().toString(),journalDigest(all.subList(0,upper+1))});
+        }
+        return new HistorySlice(page,next);
+    }
+    private static String encodeCursor(String[] parts) {
+        return java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(
+                String.join("|",parts).getBytes(java.nio.charset.StandardCharsets.US_ASCII));
+    }
+    private static String[] decodeCursor(String value) {
+        if(value.length()>2048)throw denied();
+        var bytes=java.util.Base64.getUrlDecoder().decode(value);
+        String decoded=new String(bytes,java.nio.charset.StandardCharsets.US_ASCII);
+        String[] parts=decoded.split("\\|",-1);
+        if(parts.length!=6 || !encodeCursor(parts).equals(value) || !parts[0].matches("[0-9a-f]{64}")
+                || !parts[5].matches("[0-9a-f]{64}"))throw denied();
+        for(int i:new int[]{1,3})if(!java.util.UUID.fromString(parts[i]).toString().equals(parts[i]))throw denied();
+        for(int i:new int[]{2,4})if(!Instant.parse(parts[i]).toString().equals(parts[i]))throw denied();
+        return parts;
+    }
+
     /**
      * Internal read-descriptor discovery for policy/position selectors and
      * exact protected history. Every event's before/after/successor binding is
@@ -822,6 +1028,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
         private volatile boolean active = true;
         private OrganizationProtectedAppointmentAuthorizationContract.Contribution sample;
         private PolicyObservation policy;
+        private JournalObservation journalRead;
         private MutationClassification mutation;
         private MutationPlan plan;
         private ProvisionalWrite provisional;
@@ -851,7 +1058,8 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
                     && authentication.isAuthenticated() && holder.getConnection()==connection;
         }
         @Override public void beforeCommit(boolean readOnly) {
-            if (readOnly || sample==null || !sameContext() || (provisionalStarted || readPreparationStarted) && !guarded) { poison(this); throw denied(); }
+            if (readOnly || sample==null || !sameContext()
+                    || (provisionalStarted || readPreparationStarted || journalRead!=null) && !guarded) { poison(this); throw denied(); }
         }
         @Override public void suspend() { poison(this); }
         @Override public void afterCompletion(int status) { active=false;commitIntent=null;commitProof=null;finalWrite=null;finalRead=null; }

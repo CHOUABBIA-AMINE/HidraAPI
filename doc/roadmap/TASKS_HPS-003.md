@@ -26660,6 +26660,114 @@ native composition, followed by private publisher/application/legacy/REST cutove
 and final acceptance. This increment selects no further stage, deployment,
 release, numerical simulator or OT action.
 
+### 2026-10-23 — HAPI-778 B3 complete bounded journal materialization package
+
+**Selection / evidence:** Owner Next explicitly requests larger implementation
+scopes. Main609d3cb9a5ea2f2b07420936f8fcaf5ba0f3ff55,
+parentd7fe9fe2ee5b68101fbdd4ec669f4b3acff1dc39,
+treee0606f66577ee54cdc4f6454c1973e43db571748.
+[Full848 attempt2](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40015380615),
+[Fast159](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40015380859)
+and [Docs538](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40015380668)
+completed SUCCESS on that source. Full attempt1 failed only Identity
+ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTest's
+completedAndSuspendedTicketsCannotBeReused on55P03 at native NOWAIT acquisition
+of hidra_identity_permission; its lock holder was not identified. Owner Fail
+reran failed jobs with unchanged source/tests/locks; attempt2 succeeded. This
+does not prove that transient fixture contention's internal cause or justify
+weakening NOWAIT. The previous POLICY increment is now CI-supported within its
+recorded synthetic scope; real-executor integration remains open.
+
+**Selected implementation / exact message:** Continue the registered B3 runtime
+envelope with `feat(organization): persist protected appointment lifecycle and history`.
+Implement the entire internal journal-materialization layer together: assignment,
+employee and redacted position history, exact-version snapshots, complete
+descriptor/receipt checks and bounded cursor pagination. This is one coherent
+source package rather than separate commits for each method. Current governance,
+B3 scope, immutable ledger/snapshot contracts, DTOs and fixtures were refreshed.
+
+**Finite scope — four MODIFY, zero CREATE/DELETE:**
+- src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JdbcProtectedEmployeeAppointmentRepositoryAdapter.java
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java
+- .github/ci-test-inventory.json, only that suite's added cases/source hash
+- this append-only HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+**Implemented source:** The storage owner rechecks the genuine sampled native
+READ_HISTORY or READ_CURRENT action and exact company/unit/employee closure,
+original issuer/physical holder, retained native/Organization fences and current
+catalog before loading a protected journal. Caller descriptors/cursors never
+provide authority. The entire selected history is discovered/authorized before
+any page or cursor metadata, with the existing1025 overflow probe and1024-event
+admission bound. A LEFT JOIN retains missing receipt rows as rejection evidence;
+every row must match event/receipt actor, request, command digest, canonical
+result bytes, original PID/XID and exclusive guard window. Existing immutable
+snapshot discovery separately validates all before/after/successor bindings,
+policy references and operation shapes. No mutable head replaces historical pins.
+
+Materialize detached domain-backed PinnedVersion values and typed private events.
+Exact-version reads select only matching assignment/version snapshots and reject
+contradictory copies; their authority is independent of a history page. Position
+history maps every slot through PositionVersion.redact and never exports employee,
+actor, command or raw evidence. The storage ticket retains a private full journal
+observation and rejects a different query or changed observation on reuse.
+
+Pages use limit1..100 and stable ascending(sampled_at,event_id), with canonical
+UUID ordering. A bounded canonical Base64URL cursor contains the independent
+selector/filter/limit/order hash, captured high-water timestamp/event, last-returned
+timestamp/event and a digest of the captured immutable journal prefix. All cursor
+coordinates must match the freshly read authorized journal; invalid shape,
+noncanonical encoding, cross-selector/limit or changed prefix fails uniformly.
+Later events after the high-water boundary do not shift page membership; newly
+inserted/changed rows inside that prefix cause rejection rather than silent gaps.
+This is an untrusted context-bound selector with consistency checks, not a signed
+credential, permission cache or new secret/configuration property. Every page
+requires fresh complete authorization. Consistent UTC fixture rendering is explicit.
+
+**Fail-closed integration boundary:** This adapter remains non-bean and does not
+yet implement the complete repository port. No application service, REST route,
+public result or replay completion is activated. Any materialized journal makes
+the storage beforeCommit synchronization reject an attempted physical commit
+unless a matching final guard has succeeded. The accepted final guard still
+supports POLICY only; no history/exact-version read can borrow it. Full HISTORY/
+exact-version/replay final SQL graph acceptance, native/executor/managed-flush
+composition and commit-before-disclosure remain required follow-ups, not claims
+of completion by this materializer. All169 migrations, SQL/function/catalog pins,
+dictionary/OpenAPI, Identity/Party/executor implementations and deadlines retain
+bytes. HAPI-778 remains PARTIAL/IN_PROGRESS; HAPI-590 independently PARTIAL/BLOCKED.
+
+**Authored verification, pending hosted runtime:** Preserve all77 existing cases
+and add eight (85 total): all private/redacted output shapes and immutable pages;
+multi-page no-gap/no-duplicate high-water continuation across a separate committed
+append; selector/limit/high-water/digest/noncanonical cursor rejection; historical
+source/correction/transfer version pins; complete multi-unit closure and refusal
+to borrow POLICY/exact-version authority; Party retirement/company rebind retention;
+native revocation/authentication replacement; and actual physical commit veto
+without a HISTORY guard. Fixtures use real PostgreSQL storage, ledger constraints
+and separate transactions/logins with mocked native Identity. They are not genuine
+native/executor or HTTP proof. The existing fresh-schema count assertions now
+account explicitly for the tracked IDs of these newly committed structural test
+fixtures, preserving rejection of unexpected extra events/receipts and the retained
+upgrade fixture. No prior test identity or invariant is removed. Source SHA256:
+91828ddecbf653770d95b1a002a006b481027517f8bf57c610f844336e27ce07.
+
+**Actual available checks:** Java17 compiler-API syntax parsing passes both
+changed Java files, not type resolution/JUnit. Canonical inventory and all32
+inventory self-tests pass, retaining353 fast/354 unit-architecture/455 oracle/
+four historical classes and partitions12/16/13/14/16/15/15. All prior cases and
+other inventory entries/timings remain. Documentation, snapshot, whitespace,
+append-only and exact-scope validation run before publication. No local Java21/
+Maven/PostgreSQL/Docker environment is provisioned; new runtime assertions await
+the new exact-SHA CI. No hosted pass is preclaimed.
+
+**Stop / remaining:** Publish these four paths with expected-609d3cb main guard,
+verify parent/tree/message/blobs/scope, confirm exact-SHA applicable CI creation/
+queue/start and STOP. The next coherent B3 package is final HISTORY/exact-version/
+replay graph guards and their coordinator integration, followed by real native/
+executor/managed-flush composition and application/private-publisher/legacy/REST
+cutover. Generated artifact reconciliation and final case-level acceptance remain
+separate registered stages. Larger scopes do not select deployment, release,
+simulation or OT access and do not waive any acceptance gate.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

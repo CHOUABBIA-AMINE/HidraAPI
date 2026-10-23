@@ -9036,6 +9036,7 @@
         "everyFreshKindBuildsStablePrivatePlansWithoutMutatingTheDatabase",
         "explicitPositionCapacityControlsOtherEmployeesWithoutInferringADefault",
         "fabricatedForeignIssuerAndWrongCompanyPartyTicketsCannotQualifyStorage",
+        "finalFingerprintPreservesAcceptedPinsWithCanonicalPublicVisibilityAndClosedAcl",
         "finalSqlFunctionsHaveClosedAclAndNoOrdinaryReceiptOrPrivateVerifierAccess",
         "foreignThreadPartyConsumptionPoisonsTheOriginalPhysicalHolder",
         "freshCommandsClassifyCurrentOrRetainedWithoutCreatingLedgerRows",
@@ -9076,7 +9077,7 @@
       "lane": "postgres-integration",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java",
-      "source_sha256": "14e61137d5d897f550296b2645f622c80a81b7d8d8ecae678859b07fa12bd201",
+      "source_sha256": "cbe8966c43d7ed4fd30477cb92d7ed2abc6f5eaf9f186077ea49b5003711466c",
       "supports": []
     }
   ],

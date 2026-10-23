@@ -26115,6 +26115,100 @@ actual next invariant marker to repair the responsible condition, then reconcile
 the authentic exact-source physical dictionary under its registered artifact
 stage. HAPI-778 remains PARTIAL/IN_PROGRESS, HAPI-590 independently PARTIAL/BLOCKED.
 
+### 2026-10-23 — HAPI-778 Full842 C03 catalog rendering visibility repair
+
+**Selection / exact message:** Owner Fail refreshes main
+14b07402a4cbd8b393947be3a5327d92a487b895,
+parenta6918e997932d44e59827e636ff811e2d02519e8,
+tree9661afa3d5a75511f5ae4e753c26d1007aac98ce.
+[Full842](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39966387112)
+FAILED; [Fast155](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39966387141)
+and [Docs532](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39966386932)
+SUCCEEDED. Governance/task/source and actual failed-job logs were refreshed.
+Use `feat(organization): persist protected appointment lifecycle and history`.
+
+**Actual diagnostic:** PostgreSQL shard1 job120457238268 still has four positive
+guard errors and the diagnostic regression failure. Its safe output now states
+Fixture invariant C03 ==> expected42702 but wasP0001. This localizes rejection
+to the context's accepted physical-fingerprint/forbidden relation-privilege
+comparison, before policy/sweep/proof consumption. The recorded original clock
+collision was not the first observed failing gate. No actual42702 is claimed
+from this run.
+
+**Source-backed repair:** The accepted fingerprints use PostgreSQL metadata
+rendering with public objects visible, as in the current JDBC query and original
+catalog capture. The new SQL helper instead forces search_path=pg_catalog.
+pg_get_constraintdef/pg_get_indexdef/pg_get_functiondef render schema-qualified
+references when public objects are not visible, changing the hashed frame despite
+unchanged physical schema. C03 itself identifies the compound comparison, not
+the exact disjunct; the new real catalog regression must confirm this source-
+backed rendering explanation rather than labeling it already CI-proven.
+
+**Finite scope — one CREATE, four MODIFY:**
+- CREATE src/main/resources/db/migration/V20261023_003__organization_appointment_fingerprint_visibility.sql
+- MODIFY src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JdbcProtectedEmployeeAppointmentRepositoryAdapter.java
+- MODIFY src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java
+- MODIFY .github/ci-test-inventory.json, only that suite's added case/source hash
+- MODIFY this append-only HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+This collision-free additive migration changes the fingerprint helper's fixed
+rendering context to pg_catalog,public and updates the final context's exact
+helper-path expectation. Its fully qualified metadata queries and function body
+remain unchanged. No object lookup is delegated to a user-writable schema: the
+caller/catalog gate rejects public CREATE before fingerprinting; PUBLIC EXECUTE
+stays revoked and no grant is added. Other new routines retain pg_catalog-only
+paths and UTC. Every physical fingerprint, old routine pin, actual relation-
+privilege rejection, owner/fence check and final guard policy/crypto/receipt rule
+remains unchanged. All167 existing migration bodies were byte-compared to HEAD
+and preserved. The adapter changes only the latest final_context prosrc pin:
+2cba4bcde5ca4fe134feb8d48fc48ef6d0735df69980aeebbaa1dcc37fd44582.
+The helper's prosrc is unchanged; only its validated proconfig changes.
+
+**Authored regressions:** Preserve all50 cases and add
+finalFingerprintPreservesAcceptedPinsWithCanonicalPublicVisibilityAndClosedAcl
+(51 total). Under actual migrated PostgreSQL it clones the archived helper only
+in the isolated fixture namespace, requires its pg_catalog-only result to differ
+from the exact previously accepted assignment fingerprint, and requires the
+installed helper to equal that unchanged fingerprint. It checks the fixed path,
+no restricted-login public CREATE and no helper EXECUTE. The existing archived-
+guard regression now composes the current context003 with archived guard001 so
+it can reach the original sweep while preserving static safe C/G diagnostics,
+expected42702 and the subsequent actual installed-guard commit. No assertion,
+production handler or security gate is removed or weakened.
+Test source SHA256cbe8966c43d7ed4fd30477cb92d7ed2abc6f5eaf9f186077ea49b5003711466c.
+
+**Other observed gates:** API/dictionary job120457237974 still fails; runtime
+OpenAPI equality succeeds. PostgreSQL shard5 job120457238515 additionally reports
+one ProtectedAuthorizationEvidencePostgresIntegrationTest BeforeEach initialize
+failure before c3SameTransactionMappingEditAfterClaimSelectionRejectsBeforeCommitGuard,
+with0.533s case elapsed and a redacted DataAccessException-to-unavailable path
+at ProtectedOperationIdentityParticipant.contribute163. Logs do not establish
+its exact lock owner or internal cause; it is not proven to be caused by this
+Organization helper. Other five PostgreSQL shards, unit/architecture and static
+jobs succeeded. No Identity source/fixture, timeout,500ms deadline, retries or CI
+selection is altered here. That observed failure remains an exact-source gate;
+if repeated it must be separately diagnosed, never called passing or ignored.
+
+**Actual validation:** Both changed Java files pass available Java17 compiler-
+API syntax parsing only. Canonical inventory validates353 fast/354 unit-
+architecture/455 oracle/four historical classes and unchanged seven partitions
+12/16/13/14/16/15/15; all32 inventory self-tests pass. Source inspection confirms
+latest helper/context body hashes match adapter pins and all167 prior migrations
+retain bytes. Whitespace passes; documentation is rerun before publication.
+Local Maven/Java21/PostgreSQL/Docker are unavailable and are not provisioned
+solely for tests. SQL installation, the rendering regression and positive guard
+runtime acceptance remain pending hosted feedback; no successful repair/commit
+or full-green result is claimed yet.
+
+**Stop / remaining:** The new168-migration chain needs its own authentic migrated
+catalog/history artifact. Preserve the existing dictionary until the registered
+artifact stage; never synthesize new migration identity/catalog facts from the
+old167 capture. HAPI-778 stays PARTIAL/IN_PROGRESS, HAPI-590 independently
+PARTIAL/BLOCKED. Publish exactly these five paths with expected-14b0740 main
+guard, verify parent/tree/message/blobs/scope, confirm exact-SHA Full/Fast/Docs
+created/queued/started and STOP. Runtime CI, dictionary reconciliation and the
+separate observed Identity fixture failure remain open acceptance gates.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

@@ -759,10 +759,14 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         try(var in=getClass().getResourceAsStream("/db/migration/V20261023_001__organization_appointment_final_write_guard.sql")){
             assertNotNull(in);archived=new String(in.readAllBytes(),java.nio.charset.StandardCharsets.UTF_8);
         }
-        int contextStart=archived.indexOf("CREATE FUNCTION public.hidra_org_appointment_final_context()");
-        int contextEnd=archived.indexOf("$context$;",contextStart)+"$context$;".length();
-        String context=markFixtureRejections(archived.substring(contextStart,contextEnd),"C")
-                .replace("CREATE FUNCTION public.hidra_org_appointment_final_context()","CREATE FUNCTION public.fixture_final_context()");
+        String currentContext;
+        try(var in=getClass().getResourceAsStream("/db/migration/V20261023_003__organization_appointment_fingerprint_visibility.sql")){
+            assertNotNull(in);currentContext=new String(in.readAllBytes(),java.nio.charset.StandardCharsets.UTF_8);
+        }
+        int contextStart=currentContext.indexOf("CREATE OR REPLACE FUNCTION public.hidra_org_appointment_final_context()");
+        int contextEnd=currentContext.indexOf("$context$;",contextStart)+"$context$;".length();
+        String context=markFixtureRejections(currentContext.substring(contextStart,contextEnd),"C")
+                .replace("CREATE OR REPLACE FUNCTION public.hidra_org_appointment_final_context()","CREATE FUNCTION public.fixture_final_context()");
         context=context.replace("PERFORM public.hidra_identity_org_commit_caller();",
                 "BEGIN PERFORM public.hidra_identity_org_commit_caller(); EXCEPTION WHEN OTHERS THEN RAISE EXCEPTION 'Fixture invariant C08'; END;")
                 .replace("PERFORM public.hidra_identity_org_commit_locks();",
@@ -791,6 +795,29 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         }
         assertEquals("1",finalCount("hidra_org_appointment_receipt",f.employee()));
         assertEquals("1",finalCount("hidra_identity_org_commit_proof_use",f.employee()));
+    }
+
+    @Test void finalFingerprintPreservesAcceptedPinsWithCanonicalPublicVisibilityAndClosedAcl() throws Exception {
+        String archived;
+        try(var in=getClass().getResourceAsStream("/db/migration/V20261023_001__organization_appointment_final_write_guard.sql")){
+            assertNotNull(in);archived=new String(in.readAllBytes(),java.nio.charset.StandardCharsets.UTF_8);
+        }
+        int start=archived.indexOf("CREATE FUNCTION public.hidra_org_appointment_final_fingerprint(");
+        int end=archived.indexOf("$fingerprint$;",start)+"$fingerprint$;".length();
+        admin(archived.substring(start,end).replace("CREATE FUNCTION public.hidra_org_appointment_final_fingerprint(","CREATE FUNCTION public.fixture_old_fingerprint("));
+        admin("REVOKE ALL ON FUNCTION public.fixture_old_fingerprint(regclass) FROM PUBLIC");
+        String relation="public.hidra_org_employee_assignment";
+        String accepted="32d8113ab0f7d677837cd66c471351efd25ca3b0c05f76aacaeda9aab4b8c406";
+        try(var c=owner()){
+            assertNotEquals(accepted,scalar(c,"SELECT public.fixture_old_fingerprint(?::regclass)",relation));
+            assertEquals(accepted,scalar(c,"SELECT public.hidra_org_appointment_final_fingerprint(?::regclass)",relation));
+            assertEquals("search_path=pg_catalog, public",scalar(c,"SELECT proconfig[1] FROM pg_proc WHERE oid='public.hidra_org_appointment_final_fingerprint(regclass)'::regprocedure"));
+        }
+        var f=fixture(false);
+        try(var login=new Session(create(f,id()));var c=login.source.getConnection()){
+            assertEquals("f",scalar(c,"SELECT has_schema_privilege(current_user,'public','CREATE')"));
+            assertEquals("f",scalar(c,"SELECT has_function_privilege(current_user,'public.hidra_org_appointment_final_fingerprint(regclass)','EXECUTE')"));
+        }
     }
 
     private EmployeeAppointmentCommand.Create create(Fixture f,String request){

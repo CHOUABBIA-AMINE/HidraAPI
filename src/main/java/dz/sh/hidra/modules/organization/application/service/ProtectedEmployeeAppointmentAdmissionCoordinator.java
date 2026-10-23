@@ -279,6 +279,12 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
             if (admission.referenceUse == ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.CURRENT)
                 party.requireCurrent(admission.partyAdmission);
             storage.requireCurrent(admission.repositoryAdmission);
+            if (admission.provisionalStarted) {
+                if (!admission.provisionalClosed) throw denied();
+                storage.verifyProvisional(admission.repositoryAdmission);
+                if (!admission.ready()) throw denied();
+                return;
+            }
             if (storage.referenceUse(admission.repositoryAdmission, admission.command, admission.sample)
                     != admission.referenceUse) throw denied();
             requireReferenceShape(admission);
@@ -286,6 +292,31 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
             if (!admission.ready()) throw denied();
         } catch (RuntimeException failure) {
             // A foreign coordinator/thread must still poison the original transaction.
+            if (admission != null) admission.invalidate();
+            executor.rejectAdmission();
+            throw denied();
+        }
+    }
+
+    /** One private permit, one fixed block, no owner callback until it closes.
+     * No result is returned, and commit stays vetoed until final receipt support exists. */
+    void persistProvisional(WriteAdmission admission) {
+        try {
+            requireCurrentWrite(admission);
+            if (admission.provisionalStarted
+                    || admission.referenceUse == ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY) throw denied();
+            var statements = Objects.requireNonNull(
+                    storage.prepareProvisional(admission.repositoryAdmission, admission.command));
+            if (statements.size() != 6) throw denied();
+            admission.provisionalStarted = true;
+            var permit = Objects.requireNonNull(executor.sealAdmission());
+            executor.beginProvisional(permit, statements);
+            storage.persistProvisional(admission.repositoryAdmission);
+            if (!admission.ready()) throw denied();
+            executor.endProvisional(permit);
+            admission.provisionalClosed = true;
+            requireCurrentWrite(admission);
+        } catch (RuntimeException failure) {
             if (admission != null) admission.invalidate();
             executor.rejectAdmission();
             throw denied();
@@ -327,6 +358,7 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
         private OrganizationProtectedAppointmentAuthorizationContract.Contribution sample;
         private OrganizationProtectedPartyEligibilityContract.Contribution eligibility;
         private ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse referenceUse;
+        private boolean provisionalStarted, provisionalClosed;
 
         private WriteAdmission(ProtectedEmployeeAppointmentAdmissionCoordinator owner,
                 OrganizationProtectedAppointmentAuthorizationContract.Admission identityAdmission,
@@ -357,7 +389,7 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
             holders.forEach(ConnectionHolder::setRollbackOnly);
         }
         @Override public void beforeCommit(boolean readOnly) {
-            if (readOnly || !ready()) {
+            if (readOnly || !ready() || provisionalStarted) {
                 invalidate();
                 throw denied();
             }

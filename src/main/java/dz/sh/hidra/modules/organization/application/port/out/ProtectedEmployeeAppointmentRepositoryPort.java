@@ -26,6 +26,7 @@ import dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResul
 import dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Repository boundary, NOT a generic JPA CRUD port. The owning adapter must
@@ -141,6 +142,17 @@ public interface ProtectedEmployeeAppointmentRepositoryPort {
      * no provisional permit, DML, result, receipt or observed-commit assertion.
      */
     void prepareMutation(Admission admission, EmployeeAppointmentCommand command);
+
+    /** Freeze keys, row parameters and PostgreSQL canonical event bytes before sealing admission. */
+    Set<String> prepareProvisional(Admission admission, EmployeeAppointmentCommand command);
+
+    /** Only the compiled coordinator calls this once inside its executor's six-template block.
+     * No owner query, evidence discovery, flush, receipt or protected result is permitted here. */
+    void persistProvisional(Admission admission);
+
+    /** After closing PROVISIONAL, verify the frozen post-write graph under the original owners.
+     * This is not final proof/receipt acceptance or an observed successful commit. */
+    void verifyProvisional(Admission admission);
 
     /**
      * One guarded atomic lifecycle operation under the original request key,

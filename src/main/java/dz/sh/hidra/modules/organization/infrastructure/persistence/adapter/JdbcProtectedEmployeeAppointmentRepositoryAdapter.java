@@ -41,6 +41,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.sql.DataSource;
 import org.springframework.jdbc.datasource.ConnectionHolder;
@@ -64,7 +65,8 @@ import tools.jackson.databind.json.JsonMapper;
  * port until its complete lifecycle, final database guard and receipt are
  * implemented. Preview data is only an UNTRUSTED selector for the native
  * admission request; it is not authorization, current Party eligibility, or
- * permission to return a record. It never changes the database.
+ * permission to return a record. Its provisional writer remains unwired and
+ * cannot commit until the independent final proof/receipt protocol is complete.
  */
 public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
     private static final String SOURCE_DESCRIPTOR_SQL = """
@@ -811,6 +813,8 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
         private PolicyObservation policy;
         private MutationClassification mutation;
         private MutationPlan plan;
+        private ProvisionalWrite provisional;
+        private boolean provisionalStarted, provisionalWritten;
         private OrganizationProtectedPartyEligibilityContract.Contribution partySample;
         private List<ProtectedRelationFence> nativeFences = List.of(), proofFences = List.of();
 
@@ -829,7 +833,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
                     && authentication.isAuthenticated() && holder.getConnection()==connection;
         }
         @Override public void beforeCommit(boolean readOnly) {
-            if (readOnly || sample==null || !sameContext()) { poison(this); throw denied(); }
+            if (readOnly || sample==null || !sameContext() || provisionalStarted) { poison(this); throw denied(); }
         }
         @Override public void suspend() { poison(this); }
         @Override public void afterCompletion(int status) { active=false; }
@@ -1252,6 +1256,172 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
             if(ticket.plan!=null && !ticket.plan.equals(planned))throw denied();
             ticket.plan=planned;requireCurrent(ticket);
         }catch(RuntimeException failure){poison(ticket==null?admission:ticket);throw denied();}
+    }
+
+    // Literal bytes are frozen by the B3 contract and independently pinned in the executor.
+    private static final String KEY_INS="INSERT INTO public.hidra_org_appointment_lock_key (kind,key_one,key_two,key_three) VALUES (?,?,?,?) ON CONFLICT (kind,key_one,key_two,key_three) DO NOTHING";
+    private static final String KEY_LOCK="SELECT kind,key_one,key_two,key_three FROM public.hidra_org_appointment_lock_key WHERE kind=? AND key_one=? AND key_two=? AND key_three=? FOR UPDATE NOWAIT";
+    private static final String SOURCE_LOCK="SELECT id,appointment_version FROM public.hidra_org_employee_assignment WHERE id=? ORDER BY id FOR UPDATE NOWAIT";
+    private static final String ASSIGNMENT_INS="INSERT INTO public.hidra_org_employee_assignment (id,employee_id,organization_unit_id,position_id,assignment_type,valid_from,valid_to,status,created_at,updated_at,appointment_version,binding_id,binding_revision,policy_id,policy_revision,last_event_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?::uuid)";
+    private static final String ASSIGNMENT_CAS="UPDATE public.hidra_org_employee_assignment SET organization_unit_id=?,position_id=?,assignment_type=?,valid_from=?,valid_to=?,status=?,updated_at=?,appointment_version=?,binding_id=?,binding_revision=?,policy_id=?,policy_revision=?,last_event_id=?::uuid WHERE id=? AND employee_id=? AND appointment_version=?";
+    private static final String EVENT_INS="INSERT INTO public.hidra_org_appointment_event (event_id,operation,assignment_id,successor_id,employee_id,company_party_id,policy_id,policy_revision,canonical_payload,command_sha256,actor_binding_id,actor_session_id,actor_user_id,sampled_at,valid_until,backend_pid,transaction_id) VALUES (?::uuid,?,?,?,?,?,?,?,?,?,?::uuid,?::uuid,?,?,?,?,?)";
+    private static final Set<String> PROVISIONAL_SQL=Set.of(KEY_INS,KEY_LOCK,SOURCE_LOCK,ASSIGNMENT_INS,ASSIGNMENT_CAS,EVENT_INS);
+    private record LockKey(String kind,String one,String two,String three) {
+        Object[] parameters(){return new Object[]{kind,one,two,three};}
+    }
+    private record ProvisionalWrite(String event,List<LockKey> occupancyKeys,LockKey employeeKey,LockKey requestKey,
+            String before,String after,String successor,String payload) { }
+    private static Object timestamp(Instant value){return value==null?null:java.sql.Timestamp.from(value);}
+
+    private String snapshot(EmployeeAppointmentResult.PinnedVersion value,String event) {
+        if(value==null)return null;
+        var version=value.snapshot().appointment();var a=version.assignment();var b=value.snapshot().binding();
+        var row=new java.util.LinkedHashMap<String,Object>();
+        row.put("id",a.id());row.put("employee_id",a.employeeId());row.put("organization_unit_id",a.organizationUnitId());
+        row.put("position_id",a.positionId());row.put("assignment_type",a.assignmentType().name());
+        row.put("valid_from",a.validFrom().toString());row.put("valid_to",a.validTo()==null?null:a.validTo().toString());
+        row.put("status",a.status().name());row.put("created_at",a.createdAt().toString());row.put("updated_at",a.updatedAt().toString());
+        row.put("appointment_version",version.version());row.put("binding_id",b.id());row.put("binding_revision",b.revision());
+        row.put("policy_id",value.policyId());row.put("policy_revision",value.policyRevision());row.put("last_event_id",event);
+        String json=COMMAND_JSON.writeValueAsString(row);
+        return jdbc.queryForObject("""
+                SELECT pg_catalog.jsonb_build_object('assignment',pg_catalog.to_jsonb(a),'binding',pg_catalog.to_jsonb(b))::text
+                  FROM pg_catalog.jsonb_populate_record(NULL::public.hidra_org_employee_assignment,?::jsonb) a
+                  JOIN public.hidra_org_appointment_binding_revision b ON b.binding_id=a.binding_id
+                   AND b.revision=a.binding_revision AND b.organization_unit_id=a.organization_unit_id
+                  JOIN public.hidra_org_appointment_policy_revision p ON p.policy_id=a.policy_id
+                   AND p.revision=a.policy_revision AND p.company_party_id=b.company_party_id
+                """,String.class,json);
+    }
+    private String actualSnapshot(String id) {
+        return jdbc.queryForObject("""
+                SELECT pg_catalog.jsonb_build_object('assignment',pg_catalog.to_jsonb(a),'binding',pg_catalog.to_jsonb(b))::text
+                  FROM public.hidra_org_employee_assignment a
+                  JOIN public.hidra_org_appointment_binding_revision b ON b.binding_id=a.binding_id
+                   AND b.revision=a.binding_revision AND b.organization_unit_id=a.organization_unit_id WHERE a.id=?
+                """,String.class,id);
+    }
+
+    /** All canonicalization and evidence discovery precede PROVISIONAL. No payload or permit escapes. */
+    public Set<String> prepareProvisional(ProtectedEmployeeAppointmentRepositoryPort.Admission admission,EmployeeAppointmentCommand command) {
+        StorageAdmission t=null;
+        try {
+            t=ticket(admission);
+            if(t.provisionalStarted || t.provisional!=null)throw denied();
+            prepareMutation(t,command);
+            if(t.plan==null || t.mutation.use()==ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY)throw denied();
+            // Native UUIDs are required by the physical event, before attempting any key/DML.
+            java.util.UUID.fromString(t.sample.bindingId());java.util.UUID.fromString(t.sample.sessionId());
+            var p=t.plan;String event=java.util.UUID.randomUUID().toString();
+            String before=p.before()==null?null:actualSnapshot(sourceId(command));
+            String after=Objects.requireNonNull(snapshot(p.after(),event));
+            String successor=p.successor()==null?null:Objects.requireNonNull(snapshot(p.successor(),event));
+            String payload=jdbc.queryForObject("SELECT pg_catalog.jsonb_build_object('command',?::jsonb,'before',?::jsonb,'after',?::jsonb,'successor',?::jsonb)::text",
+                    String.class,commandJson(command),before,after,successor);
+            if(payload==null || payload.getBytes(java.nio.charset.StandardCharsets.UTF_8).length>1048576)throw denied();
+            var slots=new TreeSet<Occupancy>(Comparator.comparing(Occupancy::unit).thenComparing(Occupancy::position));
+            for(var fact:p.eligibility())slots.add(fact.occupancy());
+            t.provisional=new ProvisionalWrite(event,slots.stream().map(s -> new LockKey("OCCUPANCY",s.unit(),s.position(),"")).toList(),
+                    new LockKey("EMPLOYEE",t.preview.employeeId(),"",""),
+                    new LockKey("REQUEST",t.sample.userId(),t.mutation.frame().scopeDigest(),command.requestId()),before,after,successor,payload);
+            requireCurrent(t);return PROVISIONAL_SQL;
+        }catch(RuntimeException failure){poison(t==null?admission:t);throw denied();}
+    }
+    private void lockKey(LockKey key) {
+        int inserted=jdbc.update(KEY_INS,key.parameters());if(inserted!=0 && inserted!=1)throw denied();
+        var rows=jdbc.query(KEY_LOCK,(r,i) -> new LockKey(r.getString(1),r.getString(2),r.getString(3),r.getString(4)),key.parameters());
+        if(!List.of(key).equals(rows))throw denied();
+    }
+    private Object[] insertParameters(EmployeeAppointmentResult.PinnedVersion value,String event) {
+        var a=value.snapshot().appointment().assignment();var b=value.snapshot().binding();
+        return new Object[]{a.id(),a.employeeId(),a.organizationUnitId(),a.positionId(),a.assignmentType().name(),
+                timestamp(a.validFrom()),timestamp(a.validTo()),a.status().name(),timestamp(a.createdAt()),timestamp(a.updatedAt()),
+                value.snapshot().appointment().version(),b.id(),b.revision(),value.policyId(),value.policyRevision(),event};
+    }
+    /** The compiled coordinator owns the permit. Only six frozen statements run in this body. */
+    public void persistProvisional(ProtectedEmployeeAppointmentRepositoryPort.Admission admission) {
+        StorageAdmission t=null;
+        try {
+            t=ticket(admission);
+            if(!StackWalker.getInstance().walk(frames -> frames.anyMatch(f -> f.getClassName().equals(
+                    "dz.sh.hidra.modules.organization.application.service.ProtectedEmployeeAppointmentAdmissionCoordinator")))
+                    || t.provisional==null || t.plan==null || t.provisionalStarted)throw denied();
+            t.provisionalStarted=true;
+            var w=t.provisional;var p=t.plan;
+            lockKey(w.employeeKey());for(var key:w.occupancyKeys())lockKey(key);
+            if(p.before()!=null){
+                var rows=jdbc.query(SOURCE_LOCK,(r,i) -> r.getString(1)+"/"+r.getLong(2),sourceId(p.command()));
+                if(!List.of(sourceId(p.command())+"/"+p.before().snapshot().appointment().version()).equals(rows))throw denied();
+            }
+            lockKey(w.requestKey());
+            if(p.before()==null){if(jdbc.update(ASSIGNMENT_INS,insertParameters(p.after(),w.event()))!=1)throw denied();}
+            else {
+                var a=p.after().snapshot().appointment().assignment();var b=p.after().snapshot().binding();
+                if(jdbc.update(ASSIGNMENT_CAS,a.organizationUnitId(),a.positionId(),a.assignmentType().name(),timestamp(a.validFrom()),
+                        timestamp(a.validTo()),a.status().name(),timestamp(a.updatedAt()),p.after().snapshot().appointment().version(),
+                        b.id(),b.revision(),p.after().policyId(),p.after().policyRevision(),w.event(),a.id(),a.employeeId(),
+                        p.before().snapshot().appointment().version())!=1)throw denied();
+            }
+            if(p.successor()!=null && jdbc.update(ASSIGNMENT_INS,insertParameters(p.successor(),w.event()))!=1)throw denied();
+            if(jdbc.update(EVENT_INS,w.event(),p.command().kind().name(),p.after().snapshot().appointment().assignment().id(),
+                    p.successor()==null?null:p.successor().snapshot().appointment().assignment().id(),t.preview.employeeId(),p.command().companyPartyId(),
+                    p.policy().id(),p.policy().revision(),w.payload().getBytes(java.nio.charset.StandardCharsets.UTF_8),t.mutation.frame().commandDigest(),
+                    t.sample.bindingId(),t.sample.sessionId(),t.sample.userId(),timestamp(t.sample.sampledAt()),timestamp(p.validUntil()),t.pid,t.xid)!=1)throw denied();
+            t.provisionalWritten=true;
+        }catch(RuntimeException failure){poison(t==null?admission:t);throw denied();}
+    }
+
+    /** Observe post-write facts without rerunning the obsolete pre-write CAS or classifying a new replay. */
+    public void verifyProvisional(ProtectedEmployeeAppointmentRepositoryPort.Admission admission) {
+        StorageAdmission t=null;
+        try {
+            t=ticket(admission);requireCurrent(t);
+            if(!t.provisionalStarted || !t.provisionalWritten || t.provisional==null)throw denied();
+            var p=t.plan;var w=t.provisional;
+            if(!w.after().equals(actualSnapshot(p.after().snapshot().appointment().assignment().id()))
+                    || p.successor()!=null && !w.successor().equals(actualSnapshot(p.successor().snapshot().appointment().assignment().id()))
+                    || !p.policy().equals(writePolicy(p.command().companyPartyId())))throw denied();
+            if(p.destination()!=null){
+                var rows=jdbc.query(CURRENT_BINDING_SQL,(r,i) -> new BindingObservation(new OrganizationUnitCompanyBinding(
+                        exact(r.getString(1)),r.getLong(2),exact(r.getString(3)),exact(r.getString(4)),instant(r,5)),r.getString(6)),
+                        p.destination().value().organizationUnitId(),p.command().companyPartyId());
+                if(!List.of(p.destination()).equals(rows))throw denied();
+            }
+            for(var fact:p.eligibility())if(!fact.equals(eligibility(t.preview.employeeId(),fact.occupancy(),t.sample.sampledAt(),t.sample.validUntil())))throw denied();
+            // Retained relation fences prevent a concurrent writer. Same-XID foreign-peer edits still reject.
+            for(var peer:p.peers()){
+                if(p.before()!=null && peer.value().equals(p.before()))continue;
+                var rows=jdbc.query(APPOINTMENT_SNAPSHOT_SQL+" WHERE a.id=? LIMIT 2",JdbcProtectedEmployeeAppointmentRepositoryAdapter::appointment,
+                        peer.value().snapshot().appointment().assignment().id());
+                if(!List.of(peer).equals(rows))throw denied();
+            }
+            var slots=p.eligibility().stream().map(Eligibility::occupancy).toList();
+            var first=slots.get(0);var last=slots.get(slots.size()-1);
+            var finalPeers=jdbc.query(APPOINTMENT_SNAPSHOT_SQL+"""
+                     WHERE a.id=? OR a.id=? OR (a.status='ACTIVE' AND (a.employee_id=?
+                        OR (a.organization_unit_id=? AND a.position_id=?) OR (a.organization_unit_id=? AND a.position_id=?)))
+                     ORDER BY a.id COLLATE "C" LIMIT 1025
+                    """,JdbcProtectedEmployeeAppointmentRepositoryAdapter::appointment,
+                    p.after().snapshot().appointment().assignment().id(),p.successor()==null?null:p.successor().snapshot().appointment().assignment().id(),
+                    t.preview.employeeId(),first.unit(),first.position(),last.unit(),last.position());
+            var expected=new ArrayList<EmployeeAppointmentResult.PinnedVersion>();
+            for(var peer:p.peers())if(!peer.value().equals(p.before()))expected.add(peer.value());
+            expected.add(p.after());if(p.successor()!=null)expected.add(p.successor());
+            expected.sort(Comparator.comparing(v -> v.snapshot().appointment().assignment().id()));
+            if(finalPeers==null || finalPeers.size()>1024 || !expected.equals(finalPeers.stream().map(AppointmentObservation::value).toList()))throw denied();
+            check("""
+                    SELECT operation=? AND assignment_id=? AND successor_id IS NOT DISTINCT FROM ?::varchar
+                       AND employee_id=? AND company_party_id=? AND policy_id=? AND policy_revision=?
+                       AND canonical_payload=? AND command_sha256=? AND actor_binding_id=?::uuid
+                       AND actor_session_id=?::uuid AND actor_user_id=? AND sampled_at=?::timestamptz
+                       AND valid_until=?::timestamptz AND backend_pid=? AND transaction_id=?
+                      FROM public.hidra_org_appointment_event WHERE event_id=?::uuid
+                    """,p.command().kind().name(),p.after().snapshot().appointment().assignment().id(),
+                    p.successor()==null?null:p.successor().snapshot().appointment().assignment().id(),t.preview.employeeId(),p.command().companyPartyId(),
+                    p.policy().id(),p.policy().revision(),w.payload().getBytes(java.nio.charset.StandardCharsets.UTF_8),t.mutation.frame().commandDigest(),
+                    t.sample.bindingId(),t.sample.sessionId(),t.sample.userId(),timestamp(t.sample.sampledAt()),timestamp(p.validUntil()),t.pid,t.xid,w.event());
+            requireCurrent(t);
+        }catch(RuntimeException failure){poison(t==null?admission:t);throw denied();}
     }
 
     private record Observed(String employeeId, String unitId, String companyId) { }

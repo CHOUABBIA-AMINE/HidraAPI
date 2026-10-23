@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedEmployeeAppointmentAdmissionCoordinatorTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-22
+ * @UpdatedOn   : 2026-10-23
  *
  * @Type        : Class
  * @Layer       : Test
@@ -29,6 +29,7 @@ import dz.sh.hidra.modules.party.application.contract.organization.OrganizationP
 import dz.sh.hidra.platform.persistence.ProtectedTransactionExecutor;
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.datasource.ConnectionHolder;
 import org.springframework.transaction.support.TransactionSynchronization;
@@ -415,6 +416,82 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
 
     private static EmployeeAppointmentCommand.End endCommand() {
         return new EmployeeAppointmentCommand.End("req", "company", "assignment", 2, START, "reason");
+    }
+
+    private static final Set<String> MOCK_STATEMENTS=Set.of("key-insert","key-lock","source-lock","insert","cas","event");
+    private static void provisionalFixture(WriteFixture f) {
+        when(f.storage.prepareProvisional(f.storageTicket,f.command)).thenReturn(MOCK_STATEMENTS);
+        when(f.executor.sealAdmission()).thenReturn(mock(ProtectedTransactionExecutor.ProvisionalPermit.class));
+    }
+
+    @Test void provisionalBlockClosesBeforeAnyPostWriteOwnerCheckAndNeverReturnsAReceipt() {
+        try(var f=new WriteFixture()) {
+            var ticket=f.acquire();provisionalFixture(f);clearInvocations(f.executor,f.identity,f.party,f.storage);
+            f.coordinator.persistProvisional(ticket);
+            var order=inOrder(f.executor,f.identity,f.party,f.storage);
+            order.verify(f.storage).prepareProvisional(f.storageTicket,f.command);
+            order.verify(f.executor).sealAdmission();order.verify(f.executor).beginProvisional(any(),eq(MOCK_STATEMENTS));
+            order.verify(f.storage).persistProvisional(f.storageTicket);order.verify(f.executor).endProvisional(any());
+            order.verify(f.identity).requireCurrent(f.nativeTicket);order.verify(f.party).requireCurrent(f.partyTicket);
+            order.verify(f.storage).requireCurrent(f.storageTicket);order.verify(f.storage).verifyProvisional(f.storageTicket);
+            verify(f.storage,times(1)).referenceUse(any(),any(),any());
+            verify(f.storage,never()).mutate(any(),any());
+            assertThrows(AccessDeniedException.class,() -> ticket.beforeCommit(false));
+            assertTrue(f.holder.isRollbackOnly());
+        }
+    }
+
+    @Test void provisionalPermitCannotBeReopenedAndReplayNeverObtainsOne() {
+        try(var f=new WriteFixture()) {
+            var ticket=f.acquire();provisionalFixture(f);f.coordinator.persistProvisional(ticket);
+            assertThrows(AccessDeniedException.class,() -> f.coordinator.persistProvisional(ticket));
+            verify(f.executor,times(1)).sealAdmission();verify(f.storage,times(1)).persistProvisional(any());
+            assertTrue(f.holder.isRollbackOnly());
+        }
+        try(var f=new WriteFixture(create(),ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY)) {
+            var ticket=f.acquire();
+            assertThrows(AccessDeniedException.class,() -> f.coordinator.persistProvisional(ticket));
+            verify(f.executor,never()).sealAdmission();verify(f.storage,never()).persistProvisional(any());
+        }
+    }
+
+    @Test void preparationAndMissingPermitFailuresCannotOpenProvisional() {
+        for(int variant=0;variant<3;variant++)try(var f=new WriteFixture()) {
+            var ticket=f.acquire();provisionalFixture(f);
+            if(variant==0)when(f.storage.prepareProvisional(any(),any())).thenThrow(new IllegalStateException("prepare"));
+            if(variant==1)when(f.storage.prepareProvisional(any(),any())).thenReturn(Set.of("partial"));
+            if(variant==2)when(f.executor.sealAdmission()).thenReturn(null);
+            assertThrows(AccessDeniedException.class,() -> f.coordinator.persistProvisional(ticket));
+            verify(f.executor,never()).beginProvisional(any(),any());verify(f.storage,never()).persistProvisional(any());
+            assertTrue(f.holder.isRollbackOnly());
+        }
+    }
+
+    @Test void anyProvisionalBoundaryFailurePoisonsTheOriginalHolderWithoutRetryOrOwnerCallbackInsideBlock() {
+        for(int variant=0;variant<4;variant++)try(var f=new WriteFixture()) {
+            var ticket=f.acquire();provisionalFixture(f);
+            if(variant==0)doThrow(new IllegalStateException("begin")).when(f.executor).beginProvisional(any(),any());
+            if(variant==1)doThrow(new IllegalStateException("write")).when(f.storage).persistProvisional(any());
+            if(variant==2)doThrow(new IllegalStateException("end")).when(f.executor).endProvisional(any());
+            if(variant==3)doThrow(new IllegalStateException("post-write")).when(f.storage).verifyProvisional(any());
+            clearInvocations(f.identity,f.party);
+            assertThrows(AccessDeniedException.class,() -> f.coordinator.persistProvisional(ticket));
+            verify(f.identity,times(variant==3?2:1)).requireCurrent(any());
+            verify(f.party,times(variant==3?2:1)).requireCurrent(any());
+            assertThrows(AccessDeniedException.class,() -> ticket.beforeCommit(false));
+            assertThrows(AccessDeniedException.class,() -> f.coordinator.persistProvisional(ticket));
+            verify(f.executor,times(1)).beginProvisional(any(),any());assertTrue(f.holder.isRollbackOnly());
+        }
+    }
+
+    @Test void foreignCoordinatorCannotWriteOrConsumeTheOriginalPermit() {
+        try(var f=new WriteFixture()) {
+            var ticket=f.acquire();provisionalFixture(f);
+            var foreign=new ProtectedEmployeeAppointmentAdmissionCoordinator(f.identity,f.party,f.storage,f.executor);
+            assertThrows(AccessDeniedException.class,() -> foreign.persistProvisional(ticket));
+            verify(f.executor,never()).sealAdmission();verify(f.storage,never()).persistProvisional(any());
+            assertTrue(f.holder.isRollbackOnly());
+        }
     }
 
     private static EmployeeAppointmentCommand.Transfer transferCommand() {

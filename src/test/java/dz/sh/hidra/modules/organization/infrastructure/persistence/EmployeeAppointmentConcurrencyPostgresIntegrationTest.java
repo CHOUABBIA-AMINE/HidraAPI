@@ -28,12 +28,14 @@ import dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcIdent
 import dz.sh.hidra.modules.organization.application.command.EmployeeAppointmentCommand;
 import dz.sh.hidra.modules.organization.application.port.out.ProtectedEmployeeAppointmentRepositoryPort;
 import dz.sh.hidra.modules.organization.application.port.out.ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse;
+import dz.sh.hidra.modules.organization.application.service.ProtectedEmployeeAppointmentAdmissionCoordinator;
 import dz.sh.hidra.modules.organization.domain.value.AssignmentStatus;
 import dz.sh.hidra.modules.organization.domain.value.AssignmentType;
 import dz.sh.hidra.modules.organization.infrastructure.persistence.adapter.JdbcProtectedEmployeeAppointmentRepositoryAdapter;
 import dz.sh.hidra.modules.party.application.contract.organization.OrganizationProtectedPartyEligibilityContract;
 import dz.sh.hidra.modules.party.infrastructure.persistence.adapter.JdbcOrganizationProtectedPartyEligibilityAdapter;
 import dz.sh.hidra.platform.persistence.ProtectedRelationFence;
+import dz.sh.hidra.platform.persistence.ProtectedTransactionExecutor;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -236,7 +238,7 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
                 var request=new Request(Action.valueOf(command.kind().name()),preview.companyUnits(),preview.employeeId());
                 return jdbc.queryForObject("SELECT pg_backend_pid(),txid_current(),clock_timestamp()",(r,i) ->
                         new Contribution(request,request.requirements().stream().map(q -> new ResourceDecision(q,Decision.PERMIT)).toList(),
-                                "synthetic-binding","synthetic-session",actor,r.getTimestamp(3).toInstant().minusSeconds(backdateSeconds),r.getTimestamp(3).toInstant().plusSeconds(60),r.getInt(1),r.getLong(2)));
+                                "00000000-0000-0000-0000-000000000001","00000000-0000-0000-0000-000000000002",actor,r.getTimestamp(3).toInstant().minusSeconds(backdateSeconds),r.getTimestamp(3).toInstant().plusSeconds(60),r.getInt(1),r.getLong(2)));
             });
         }
         ProtectedEmployeeAppointmentRepositoryPort.Admission acquire(){
@@ -249,6 +251,152 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         }
         boolean poisoned(){return ((ConnectionHolder)TransactionSynchronizationManager.getResource(source)).isRollbackOnly();}
         @Override public void close(){SecurityContextHolder.clearContext();}
+    }
+
+    /** Test-only port composition, no production bean. Real storage/Party, mocked Identity and executor. */
+    private final class ProvisionalSession implements AutoCloseable {
+        final Session s;
+        final ProtectedTransactionExecutor executor=mock(ProtectedTransactionExecutor.class);
+        final ProtectedEmployeeAppointmentAdmissionCoordinator coordinator;
+        final ProtectedEmployeeAppointmentAdmissionCoordinator.Prepared prepared;
+        Object write;
+        ProvisionalSession(EmployeeAppointmentCommand command) throws Exception {
+            s=new Session(command);
+            s.actor="provisional-actor";
+            admin("GRANT INSERT ON public.hidra_org_appointment_lock_key,public.hidra_org_employee_assignment,public.hidra_org_appointment_event TO "+s.role);
+            admin("GRANT EXECUTE ON FUNCTION public.hidra_org_appointment_exact_id(text) TO "+s.role);
+            var port=mock(ProtectedEmployeeAppointmentRepositoryPort.class,call -> {
+                try {return s.storage.getClass().getMethod(call.getMethod().getName(),call.getMethod().getParameterTypes()).invoke(s.storage,call.getArguments());}
+                catch(java.lang.reflect.InvocationTargetException failure){throw failure.getCause();}
+            });
+            when(s.identity.prepare()).thenReturn(mock(OrganizationProtectedAppointmentAuthorizationContract.Prepared.class));
+            when(s.identity.acquire(any(),any())).thenAnswer(call -> {s.jdbc.execute("SELECT public.fixture_"+s.role+"()");return s.nativeTicket;});
+            when(executor.sealAdmission()).thenReturn(mock(ProtectedTransactionExecutor.ProvisionalPermit.class));
+            coordinator=new ProtectedEmployeeAppointmentAdmissionCoordinator(s.identity,s.party,port,executor);
+            prepared=coordinator.prepare();
+        }
+        Object invoke(String name,Object... args) {
+            try {
+                var method=java.util.Arrays.stream(coordinator.getClass().getDeclaredMethods()).filter(m -> m.getName().equals(name)).findFirst().orElseThrow();
+                method.setAccessible(true);return method.invoke(coordinator,args);
+            }catch(java.lang.reflect.InvocationTargetException failure){
+                if(failure.getCause() instanceof RuntimeException runtime)throw runtime;
+                throw new AssertionError(failure.getCause());
+            }catch(ReflectiveOperationException failure){throw new AssertionError(failure);}
+        }
+        void persist(){write=invoke("acquireWrite",prepared,s.command);invoke("persistProvisional",write);}
+        @Override public void close(){s.close();}
+    }
+
+    @Test void actualProvisionalCreateEndCorrectionAndTransferMatchFrozenCanonicalEventsAndRollBack() throws Exception {
+        for(int kind=0;kind<5;kind++){
+            var f=fixture(kind!=0);
+            EmployeeAppointmentCommand command=switch(kind){
+                case 0 -> create(f,id());
+                case 1 -> end(f,1);
+                case 2 -> correction(f,id(),1,f.units().get(0));
+                case 3 -> correction(f,id(),1,f.units().get(1));
+                default -> new EmployeeAppointmentCommand.Transfer(id(),f.company(),f.assignment(),1,f.units().get(1),f.position(),
+                        AssignmentType.PRIMARY,START.plusSeconds(3600),null,1,1,REASON);
+            };
+            try(var p=new ProvisionalSession(command)){
+                p.s.tx.execute(status -> {
+                    p.persist();
+                    assertDoesNotThrow(() -> p.invoke("requireCurrentWrite",p.write));
+                    assertEquals(command instanceof EmployeeAppointmentCommand.Transfer?2:1,p.s.jdbc.queryForObject("SELECT count(*) FROM public.hidra_org_employee_assignment WHERE employee_id=?",Integer.class,f.employee()));
+                    assertEquals(1,p.s.jdbc.queryForObject("SELECT count(*) FROM public.hidra_org_appointment_event WHERE employee_id=? AND actor_user_id=?",Integer.class,f.employee(),p.s.actor));
+                    assertEquals(0,p.s.jdbc.queryForObject("SELECT count(*) FROM public.hidra_org_appointment_receipt WHERE event_id IN (SELECT event_id FROM public.hidra_org_appointment_event WHERE employee_id=? AND actor_user_id=?)",Integer.class,f.employee(),p.s.actor));
+                    verify(p.executor,times(1)).beginProvisional(any(),argThat(sql -> sql.size()==6));
+                    verify(p.executor,times(1)).endProvisional(any());
+                    status.setRollbackOnly();return null;
+                });
+            }
+            try(var c=owner()){
+                assertEquals(kind==0?"0":"1",scalar(c,"SELECT count(*) FROM public.hidra_org_employee_assignment WHERE employee_id=?",f.employee()));
+                assertEquals("0",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_lock_key WHERE kind='EMPLOYEE' AND key_one=?",f.employee()));
+                assertEquals(kind==0?"0":"1",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_event WHERE employee_id=?",f.employee()));
+            }
+        }
+    }
+
+    @Test void swallowedProvisionalFailureAndMissingFinalReceiptVetoPhysicalCommit() throws Exception {
+        for(boolean failWrite:List.of(false,true)){
+            var f=fixture(false);var command=create(f,id());
+            try(var p=new ProvisionalSession(command)){
+                if(failWrite)admin("REVOKE INSERT ON public.hidra_org_appointment_event FROM "+p.s.role);
+                var failure=assertThrows(RuntimeException.class,() -> p.s.tx.execute(status -> {
+                    if(failWrite)assertThrows(AccessDeniedException.class,p::persist);else p.persist();
+                    return null; // Deliberately swallow the write failure or omit final proof/receipt.
+                }));
+                assertTrue(failure instanceof AccessDeniedException || failure instanceof org.springframework.transaction.UnexpectedRollbackException);
+            }
+            try(var c=owner()){
+                assertEquals("0",scalar(c,"SELECT count(*) FROM public.hidra_org_employee_assignment WHERE employee_id=?",f.employee()));
+                assertEquals("0",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_event WHERE employee_id=?",f.employee()));
+                assertEquals("0",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_lock_key WHERE kind='EMPLOYEE' AND key_one=?",f.employee()));
+            }
+        }
+    }
+
+    @Test void sameTransactionPostWriteProjectionAndPeerSubstitutionCannotPassFrozenEvidence() throws Exception {
+        for(boolean peer:List.of(false,true)){
+            var f=fixture(false);var command=create(f,id());
+            try(var p=new ProvisionalSession(command)){p.s.tx.execute(status -> {
+                p.persist();
+                if(peer){
+                    // A legacy ACTIVE row in the same physical transaction must not evade the complete post-write conflict probe.
+                    p.s.jdbc.update("INSERT INTO public.hidra_org_employee_assignment(id,employee_id,organization_unit_id,position_id,assignment_type,valid_from,status,created_at,updated_at) VALUES (?,?,?,?,'PRIMARY',?,'ACTIVE',now(),now())",
+                            id(),f.employee(),f.units().get(2),f.position(),java.sql.Timestamp.from(START));
+                }else{
+                    // The old plan remains a value, never permission to accept another source version/event.
+                    p.s.jdbc.update("UPDATE public.hidra_org_employee_assignment SET appointment_version=appointment_version+1,last_event_id=?::uuid WHERE employee_id=?",id(),f.employee());
+                }
+                assertThrows(AccessDeniedException.class,() -> p.invoke("requireCurrentWrite",p.write));
+                assertTrue(p.s.poisoned());status.setRollbackOnly();return null;
+            });}
+        }
+    }
+
+    @Test void directStorageCallCannotWriteAndReplayCannotCreateKeysOrEvents() throws Exception {
+        var f=fixture(false);var command=create(f,id());
+        try(var s=new Session(command)){s.tx.execute(status -> {
+            var ticket=qualified(s);s.storage.contributeParty(ticket);s.storage.prepareMutation(ticket,command);
+            var statements=s.storage.prepareProvisional(ticket,command);
+            var hashes=statements.stream().map(sql -> {
+                try{return java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(sql.getBytes(java.nio.charset.StandardCharsets.UTF_8)));}
+                catch(java.security.NoSuchAlgorithmException failure){throw new AssertionError(failure);}
+            }).collect(java.util.stream.Collectors.toSet());
+            assertEquals(java.util.Set.of("516725eb3d2d0fa98f75e73c62186d730c22b44b15d648ed03b1f4e88cba1af4","0991e6595ce13ba5b556da137e0211bc72ecc982a10a01feac5bcb2f9294c896","9d331551beaa09d534325126e04d71625f123dd606e5ca99f79b5e37edbec4d5","e1e6cbcbc2281f495441c7d63ead7d54dda6babfa4c8b1ad1fadbafb250454ee","5a891a894c55c6ebd50cf78641cf19a3c6ad748b4e8b4365eeab6b446424f424","db6d602e42ead6338d10af03c3086056a4c5d50e4b1b978b355c749d4dc57bda"),hashes);
+            assertThrows(AccessDeniedException.class,() -> s.storage.persistProvisional(ticket));
+            assertEquals(0,s.jdbc.queryForObject("SELECT count(*) FROM public.hidra_org_employee_assignment WHERE employee_id=?",Integer.class,f.employee()));
+            status.setRollbackOnly();return null;
+        });}
+        try(var p=new ProvisionalSession(create(baseline,baseline.createRequest()))){p.s.actor="synthetic-actor";p.s.tx.execute(status -> {
+            p.write=p.invoke("acquireWrite",p.prepared,p.s.command);
+            assertThrows(AccessDeniedException.class,() -> p.invoke("persistProvisional",p.write));
+            verify(p.executor,never()).beginProvisional(any(),any());status.setRollbackOnly();return null;
+        });}
+    }
+
+    @Test void transferSuccessorOrEventFailureRollsBackTheSourceCloseAndEveryProvisionalKey() throws Exception {
+        for(boolean successorFailure:List.of(true,false)){
+            var f=fixture();
+            var command=new EmployeeAppointmentCommand.Transfer(id(),f.company(),f.assignment(),1,f.units().get(1),f.position(),
+                    AssignmentType.PRIMARY,START.plusSeconds(3600),null,1,1,REASON);
+            try(var p=new ProvisionalSession(command)){
+                admin("REVOKE INSERT ON public."+(successorFailure?"hidra_org_employee_assignment":"hidra_org_appointment_event")+" FROM "+p.s.role);
+                var failure=assertThrows(RuntimeException.class,() -> p.s.tx.execute(status -> {
+                    assertThrows(AccessDeniedException.class,p::persist);return null;
+                }));
+                assertTrue(failure instanceof AccessDeniedException || failure instanceof org.springframework.transaction.UnexpectedRollbackException);
+            }
+            try(var c=owner()){
+                assertEquals("1",scalar(c,"SELECT count(*) FROM public.hidra_org_employee_assignment WHERE employee_id=?",f.employee()));
+                assertEquals("1",scalar(c,"SELECT appointment_version FROM public.hidra_org_employee_assignment WHERE id=? AND valid_to IS NULL",f.assignment()));
+                assertEquals("1",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_event WHERE employee_id=?",f.employee()));
+                assertEquals("0",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_lock_key WHERE kind='EMPLOYEE' AND key_one=?",f.employee()));
+            }
+        }
     }
 
     private EmployeeAppointmentCommand.Create create(Fixture f,String request){

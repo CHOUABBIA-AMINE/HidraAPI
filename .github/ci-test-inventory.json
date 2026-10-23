@@ -80,6 +80,7 @@
         "absentOrInactivePartyContributionPoisonsCurrentReferenceTransaction",
         "absentOrOverflowedLockedDescriptorsCannotQualify",
         "absentPhysicalTransactionCannotDiscoverOwnerDescriptors",
+        "anyProvisionalBoundaryFailurePoisonsTheOriginalHolderWithoutRetryOrOwnerCallbackInsideBlock",
         "changedIdentityPartyOrRepositoryEvidencePermanentlyInvalidatesWrite",
         "changedLockedHistoryClosureIsDeniedBeforeSampling",
         "changedMissingOrOverflowedLockedWriteClosureCannotConsumeNativeSample",
@@ -91,6 +92,7 @@
         "exactReplayOfEveryCommandRequiresFreshNativeAuthorityWithoutActiveParty",
         "failedNativeAcquisitionCannotReachOrganizationOrParty",
         "foreignCoordinatorCannotReuseAnIssuedReadHandle",
+        "foreignCoordinatorCannotWriteOrConsumeTheOriginalPermit",
         "foreignCoordinatorWriteRejectionPoisonsTheIssuingTransaction",
         "foreignThreadReadHandlePoisonsOriginalHolderAndCommitVeto",
         "foreignThreadWriteRecheckPoisonsOriginalHolderAndCommit",
@@ -104,8 +106,11 @@
         "mutationPlanFailureVetoesCurrentRetainedAndReplayQualification",
         "newCreateTransferAndMovedCorrectionConsumeCurrentPartyEligibility",
         "policyPositionAndExactVersionReadsKeepTheirDistinctSelectors",
+        "preparationAndMissingPermitFailuresCannotOpenProvisional",
         "preparationCallsNativeOwnerOnlyOutsideTransaction",
         "preparationIsOneUseAndPreviewFailureCannotBecomeAuthority",
+        "provisionalBlockClosesBeforeAnyPostWriteOwnerCheckAndNeverReturnsAReceipt",
+        "provisionalPermitCannotBeReopenedAndReplayNeverObtainsOne",
         "readAdmissionLocksIdentityBeforeOrganizationAndSamplesAfterLockedClosure",
         "readOnlyTransactionAndReusedPreparationCannotAcquireReadAuthority",
         "readTicketCannotBeConstructedOrExposeOwnerCredentials",
@@ -125,7 +130,7 @@
       "lane": "unit-architecture",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinatorTest.java",
-      "source_sha256": "46ea8dba6418b3366b5cb85e60f5b2756034700643288931b001d0844147184b",
+      "source_sha256": "e56eaea6db0e793b772312983cec9f9531bc2f71845cacf1e690d841e1094cb6",
       "supports": []
     },
     {
@@ -9011,6 +9016,7 @@
       "baseline_seconds": 0,
       "cases": [
         "activeHalfOpenIntervalsPermitAnExactlyAdjacentAppointment",
+        "actualProvisionalCreateEndCorrectionAndTransferMatchFrozenCanonicalEventsAndRollBack",
         "actualSameTransactionPartyGenerationChangeInvalidatesTheRetainedCurrentSample",
         "callerConsumedPartyScalarCannotReplaceTheStorageOwnedOneUseRead",
         "classificationIsFrozenToTheExactCommandAndRechecksNativeRevocation",
@@ -9020,6 +9026,7 @@
         "completeEmployeeConflictsIncludeProtectedPeersFromAnotherCompany",
         "completeTypeMatrixAndPrimaryLimitAreIndependentlyEnforced",
         "currentEmployeeUnitAndPositionEligibilityMustHoldAtTheNativeSample",
+        "directStorageCallCannotWriteAndReplayCannotCreateKeysOrEvents",
         "everyFreshKindBuildsStablePrivatePlansWithoutMutatingTheDatabase",
         "explicitPositionCapacityControlsOtherEmployeesWithoutInferringADefault",
         "fabricatedForeignIssuerAndWrongCompanyPartyTicketsCannotQualifyStorage",
@@ -9035,8 +9042,11 @@
         "replayRefusesAnIncompleteHistoricalOwnershipClosure",
         "retainedAndReplayPlanningNeverConsumesCurrentPartySelectability",
         "retainedPlanningKeepsTheOriginalCompanyPinAfterRebindAndPartySuspension",
+        "sameTransactionPostWriteProjectionAndPeerSubstitutionCannotPassFrozenEvidence",
         "scalarContributionCopyCannotQualifyClassificationOrRestoreAPoisonedTicket",
         "scheduledEmployeeExpiryNarrowsThePhysicalWindowWithoutWaitingOrAnotherWriter",
+        "swallowedProvisionalFailureAndMissingFinalReceiptVetoPhysicalCommit",
+        "transferSuccessorOrEventFailureRollsBackTheSourceCloseAndEveryProvisionalKey",
         "unboundLegacyConflictCannotDisappearThroughAnInnerJoinOrInventedPin"
       ],
       "class": "dz.sh.hidra.modules.organization.infrastructure.persistence.EmployeeAppointmentConcurrencyPostgresIntegrationTest",
@@ -9045,7 +9055,7 @@
       "lane": "postgres-integration",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java",
-      "source_sha256": "f3e6dd3d7a391b35cff5d87bcbcce7a509210ba2a21911dcabee088583bbb0e5",
+      "source_sha256": "a74718d2d905cf010d235d0ad57029ac6d54dab148a6c573516365ec5a0ba904",
       "supports": []
     }
   ],

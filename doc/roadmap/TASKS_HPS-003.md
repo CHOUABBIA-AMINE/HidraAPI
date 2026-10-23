@@ -25574,6 +25574,116 @@ verify parent/tree/message/raw blobs/scope, confirm exact-SHA Full/Fast/Docs
 queued/started, then STOP. Next continues the same registered B3 runtime envelope
 after actual CI feedback.
 
+### 2026-10-23 — HAPI-778 B3 one-use provisional lifecycle writes and post-write evidence
+
+**Selection / exact message:** Owner Next continues the registered B3 runtime
+envelope from main db1cac25917dde80a9414c82032b17b7e310fcdc,
+tree70fe9e52864a0a06429982f1f7f4af16575fbd7d.
+[Full836](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39943103613),
+[Fast149](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39943103582)
+and [Docs526](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39943103676)
+completed SUCCESS on that exact source. Current governance/index/reconciliation,
+the B3 registration and later owner/proof amendments, actual source and immutable
+migrations were inspected. Use the existing registered message
+`feat(organization): persist protected appointment lifecycle and history`.
+
+**Finite scope — seven MODIFY, zero CREATE/DELETE:**
+
+- src/main/java/dz/sh/hidra/modules/organization/application/port/out/ProtectedEmployeeAppointmentRepositoryPort.java
+- src/main/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinator.java
+- src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JdbcProtectedEmployeeAppointmentRepositoryAdapter.java
+- src/test/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinatorTest.java
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java
+- .github/ci-test-inventory.json, only these two real suites' case lists/source hashes
+- this append-only HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+**Implemented source:** The repository protocol now freezes provisional work,
+persists it without returning a result, and verifies post-write evidence. The
+non-bean JDBC adapter first revalidates its private mutation plan and original
+native/Party owners, rejects replay, validates native binding/session UUIDs and
+freezes a private event ID, exact PostgreSQL jsonb canonical payload and ordered
+employee/occupancy/request keys. Nullable values, full physical assignment and
+immutable binding images, original source image, policy pins and typed command
+are retained; payloads over1MiB reject. All discovery/canonicalization precedes
+PROVISIONAL. No caller can supply the proposed rows, keys, payload or native actor.
+
+The coordinator alone seals admission and receives the existing compiled-caller
+executor's private one-use permit, then opens one block for all six registered
+literal SQL templates. The adapter requires that compiled coordinator in its
+call chain and a live privately prepared storage ticket. EMPLOYEE then sorted
+OCCUPANCY keys are inserted/locked; the exact source/version is locked; REQUEST
+is inserted/locked last. Lock SELECTs use executeQuery through JdbcTemplate.
+The source is inserted or updated with exact version CAS, an optional transfer
+successor is inserted, and exactly one complete event is appended. Every insert/
+CAS must affect one row, and every returned lock tuple/version must match.
+Only KEY_INS/KEY_LOCK/SOURCE_LOCK/ASSIGNMENT_INS/ASSIGNMENT_CAS/EVENT_INS run in
+the block. No owner callback, new evidence query, receipt write or ORM flush
+runs there. Private started/written flags forbid reuse and preserve failure.
+
+After the coordinator closes the block, actual owners/catalog/fences/time are
+checked again. Post-write qualification deliberately stops invoking obsolete
+pre-write source CAS/receipt classification. It instead compares exact physical
+after/successor images, the original policy and destination activation graphs,
+eligibility/deadline facts, all unchanged peer evidence, a complete1025-row
+post-write conflict probe with1024-row bound, and every event field/byte against
+the frozen plan and original sample. Same-XID additions or substituted projections
+fail closed. No second native sample or new replay classification is minted.
+
+**Mandatory incomplete-finalization veto:** Neither successful provisional DML
+nor post-write qualification authorizes commit. Both coordinator and storage
+SQL-free beforeCommit callbacks reject any started provisional operation until
+the separate final proof/receipt protocol is implemented. Swallowed failures
+poison the original holders. The adapter remains non-bean, does not implement
+the full repository port, and has no application/REST wiring. No successful
+mutation receipt or observed successful lifecycle commit is exposed here.
+
+**Authored acceptance coverage:** Preserve all42 coordinator tests and add5
+(47 total): block/owner ordering and absent result, one-use/replay refusal,
+preparation/permit rejection, failure at every block boundary with no retry,
+and foreign-coordinator poisoning. Preserve all28 PostgreSQL suite methods and
+add5 (33 total): real provisional CREATE/END/retained and moved CORRECT/TRANSFER
+with canonical post-write checks and outside-connection rollback; swallowed DML
+failure and missing-finalization commit veto; same-XID projection/peer injection;
+exact six statement hashes, direct-storage and replay refusal; successor/event
+failure rolling back the source close, successor, event and new keys.
+
+The new test-only composition delegates the repository port to actual storage
+and genuine Party, using real separated PostgreSQL logins and transactions.
+Identity and the executor remain explicitly mocked, and test-only physical
+native/key locks are not native authority. The disposable writer receives only
+the three necessary INSERT grants and exact-id helper EXECUTE in addition to
+the existing reviewed SELECT/lock grants; it receives no receipt INSERT or key
+read/config/schema authority. Native binding/session fixture values now use
+synthetic UUIDs required by real event storage. This is authored database DML/
+rollback coverage, not genuine native proof, real-executor500ms end-to-end,
+final guard, application composition, HTTP or industrial acceptance.
+
+**Source-linked validation:** Coordinator SHA256
+e56eaea6db0e793b772312983cec9f9531bc2f71845cacf1e690d841e1094cb6;
+PostgreSQL suite SHA256
+a74718d2d905cf010d235d0ad57029ac6d54dab148a6c573516365ec5a0ba904.
+All five changed Java files parse with the available Java17 compiler API,
+syntax only. Canonical inventory validates353 fast/354 unit-architecture/455
+active oracle classes, four historical classes, and unchanged seven PostgreSQL
+partitions12/16/13/14/16/15/15; all32 inventory self-tests pass. Offline docs
+validates128 documents/8380 links/24 modules/921 tasks/25 phases before this
+link-neutral insertion. Offline OpenAPI retains257 paths/279 operations/267
+schemas. Whitespace passes. Java21/Maven/JUnit/PostgreSQL are unavailable locally
+and are not provisioned solely for tests; hosted compilation/runtime acceptance
+of this exact source remains pending.
+
+**Remaining / stop:** Final independent native commit-proof consumption, final
+scalar read/write guards and immutable receipt, managed-flush/final evidence
+protocol and observed successful commit remain next B3 duties. Complete history/
+cursors, application/private publisher route, compatible legacy/REST cutover,
+genuine native plus real-executor concurrency/rollback acceptance and artifact/
+governance closure remain. No migration, native/Party implementation, executor
+hash/caller, route, dictionary, OpenAPI, CI workflow or frozen registry status
+changes; all165 Flyway bodies retain their bytes. HAPI-778 stays PARTIAL/
+IN_PROGRESS; HAPI-590 stays independently PARTIAL/BLOCKED. Publish only these
+seven paths with expected-db1cac2 main guard, verify exact parent/tree/message/
+blobs/scope and confirm exact-SHA Full/Fast/Docs creation/queue/start, then STOP.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

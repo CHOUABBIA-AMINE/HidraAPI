@@ -154,6 +154,10 @@ public interface ProtectedEmployeeAppointmentRepositoryPort {
      * This is not final proof/receipt acceptance or an observed successful commit. */
     void verifyProvisional(Admission admission);
 
+    /** Request and privately retain one Identity proof for the frozen provisional event.
+     * No caller supplies an intent/proof, and this does not qualify a final guard or commit. */
+    void prepareCommitProof(Admission admission);
+
     /**
      * One guarded atomic lifecycle operation under the original request key,
      * exact source CAS and pinned revisions. CREATE has no source, END and

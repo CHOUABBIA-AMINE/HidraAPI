@@ -494,6 +494,83 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
         }
     }
 
+    @Test void proofHandoffOccursAfterClosedProvisionalAndRechecksOwnersWithoutReturningBytes() throws Exception {
+        try(var f=new WriteFixture()) {
+            var ticket=f.acquire();provisionalFixture(f);f.coordinator.persistProvisional(ticket);
+            clearInvocations(f.executor,f.identity,f.party,f.storage);
+            f.coordinator.prepareCommitProof(ticket);
+            var order=inOrder(f.identity,f.party,f.storage);
+            order.verify(f.identity).requireCurrent(f.nativeTicket);
+            order.verify(f.party).requireCurrent(f.partyTicket);
+            order.verify(f.storage).requireCurrent(f.storageTicket);
+            order.verify(f.storage).verifyProvisional(f.storageTicket);
+            order.verify(f.storage).prepareCommitProof(f.storageTicket);
+            order.verify(f.identity).requireCurrent(f.nativeTicket);
+            order.verify(f.party).requireCurrent(f.partyTicket);
+            order.verify(f.storage).requireCurrent(f.storageTicket);
+            order.verify(f.storage).verifyProvisional(f.storageTicket);
+            verify(f.identity,never()).issueCommitProof(any(),any()); // Intent belongs to storage.
+            verifyNoInteractions(f.executor);
+            assertEquals(void.class,ProtectedEmployeeAppointmentAdmissionCoordinator.class.getDeclaredMethod(
+                    "prepareCommitProof",ProtectedEmployeeAppointmentAdmissionCoordinator.WriteAdmission.class).getReturnType());
+            assertThrows(AccessDeniedException.class,() -> ticket.beforeCommit(false));
+            assertTrue(f.holder.isRollbackOnly());
+        }
+    }
+
+    @Test void proofPreparationRequiresCompletedProvisionalAndCanNeverBeRepeated() {
+        try(var f=new WriteFixture()) {
+            var ticket=f.acquire();
+            assertThrows(AccessDeniedException.class,() -> f.coordinator.prepareCommitProof(ticket));
+            verify(f.storage,never()).prepareCommitProof(any());assertTrue(f.holder.isRollbackOnly());
+        }
+        try(var f=new WriteFixture()) {
+            var ticket=f.acquire();provisionalFixture(f);f.coordinator.persistProvisional(ticket);
+            f.coordinator.prepareCommitProof(ticket);
+            assertThrows(AccessDeniedException.class,() -> f.coordinator.prepareCommitProof(ticket));
+            verify(f.storage,times(1)).prepareCommitProof(f.storageTicket);assertTrue(f.holder.isRollbackOnly());
+        }
+        try(var f=new WriteFixture(create(),ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY)) {
+            var ticket=f.acquire();
+            assertThrows(AccessDeniedException.class,() -> f.coordinator.prepareCommitProof(ticket));
+            verify(f.storage,never()).prepareCommitProof(any());
+        }
+    }
+
+    @Test void proofCallbackFailureOrSuspensionPoisonsOriginalHolderAndCannotRetry() {
+        for(boolean suspend:List.of(false,true))try(var f=new WriteFixture()) {
+            var ticket=f.acquire();provisionalFixture(f);f.coordinator.persistProvisional(ticket);
+            doAnswer(call -> {
+                if(suspend){ticket.suspend();return null;}
+                throw new IllegalStateException("proof unavailable");
+            }).when(f.storage).prepareCommitProof(f.storageTicket);
+            assertThrows(AccessDeniedException.class,() -> f.coordinator.prepareCommitProof(ticket));
+            assertTrue(f.holder.isRollbackOnly());
+            assertThrows(AccessDeniedException.class,() -> f.coordinator.prepareCommitProof(ticket));
+            verify(f.storage,times(1)).prepareCommitProof(f.storageTicket);
+            assertThrows(AccessDeniedException.class,() -> ticket.beforeCommit(false));
+        }
+    }
+
+    @Test void foreignCoordinatorOrThreadCannotPrepareProofForTheOriginalWrite() throws Exception {
+        for(boolean otherThread:List.of(false,true))try(var f=new WriteFixture()) {
+            var ticket=f.acquire();provisionalFixture(f);f.coordinator.persistProvisional(ticket);
+            clearInvocations(f.identity,f.party,f.storage);
+            if(otherThread){
+                var failure=new java.util.concurrent.atomic.AtomicReference<Throwable>();
+                var thread=new Thread(() -> {
+                    try{f.coordinator.prepareCommitProof(ticket);}catch(Throwable rejected){failure.set(rejected);}
+                });
+                thread.start();thread.join(5000);assertFalse(thread.isAlive());
+                assertInstanceOf(AccessDeniedException.class,failure.get());
+            }else{
+                var foreign=new ProtectedEmployeeAppointmentAdmissionCoordinator(f.identity,f.party,f.storage,f.executor);
+                assertThrows(AccessDeniedException.class,() -> foreign.prepareCommitProof(ticket));
+            }
+            verifyNoInteractions(f.identity,f.party,f.storage);assertTrue(f.holder.isRollbackOnly());
+        }
+    }
+
     private static EmployeeAppointmentCommand.Transfer transferCommand() {
         return new EmployeeAppointmentCommand.Transfer("req", "company", "assignment", 2,
                 "zz-unit", "position", AssignmentType.PRIMARY, START, null, 1, 1, "reason");

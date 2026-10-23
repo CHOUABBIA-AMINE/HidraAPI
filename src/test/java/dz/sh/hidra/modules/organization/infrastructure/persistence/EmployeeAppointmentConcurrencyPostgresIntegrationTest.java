@@ -399,6 +399,130 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         }
     }
 
+    // Intentionally unauthenticated transport: only the later SQL verifier can authenticate it.
+    private static CommitProof syntheticProof(){return new CommitProof(new byte[]{1,2,3},new byte[32]);}
+
+    @Test void storageDerivesCommitIntentFromExactPersistedUtf8EventForEveryFreshCommand() throws Exception {
+        for(int kind=0;kind<5;kind++){
+            var f=fixture(kind!=0);
+            EmployeeAppointmentCommand command=switch(kind){
+                case 0 -> create(f,id());
+                case 1 -> end(f,1);
+                case 2 -> correction(f,id(),1,f.units().get(0));
+                case 3 -> correction(f,id(),1,f.units().get(1));
+                default -> new EmployeeAppointmentCommand.Transfer(id(),f.company(),f.assignment(),1,f.units().get(1),f.position(),
+                        AssignmentType.PRIMARY,START.plusSeconds(3600),null,1,1,REASON);
+            };
+            try(var p=new ProvisionalSession(command)){
+                var captured=new java.util.concurrent.atomic.AtomicReference<CommitIntent>();
+                when(p.s.identity.issueCommitProof(eq(p.s.nativeTicket),any())).thenAnswer(call -> {
+                    var intent=call.getArgument(1,CommitIntent.class);captured.set(intent);
+                    var expected=p.s.jdbc.queryForObject("SELECT event_id::text,command_sha256,encode(sha256(canonical_payload),'hex'),valid_until FROM public.hidra_org_appointment_event WHERE employee_id=? AND actor_user_id=?",
+                            (r,i) -> new CommitIntent(UUID.fromString(r.getString(1)),r.getString(2),r.getString(3),r.getTimestamp(4).toInstant()),f.employee(),p.s.actor);
+                    assertEquals(expected,intent);return syntheticProof();
+                });
+                p.s.tx.execute(status -> {
+                    p.persist();assertNull(p.invoke("prepareCommitProof",p.write));assertNotNull(captured.get());
+                    verify(p.s.identity,times(1)).issueCommitProof(eq(p.s.nativeTicket),any());
+                    verify(p.s.identity,times(1)).contribute(p.s.nativeTicket);
+                    var order=inOrder(p.executor,p.s.identity);
+                    order.verify(p.executor).endProvisional(any());
+                    order.verify(p.s.identity).issueCommitProof(eq(p.s.nativeTicket),eq(captured.get()));
+                    assertEquals(0,p.s.jdbc.queryForObject("SELECT count(*) FROM public.hidra_org_appointment_receipt WHERE event_id=?::uuid",Integer.class,captured.get().eventId().toString()));
+                    status.setRollbackOnly();return null;
+                });
+            }
+            try(var c=owner()){
+                assertEquals(kind==0?"0":"1",scalar(c,"SELECT count(*) FROM public.hidra_org_employee_assignment WHERE employee_id=?",f.employee()));
+                assertEquals(kind==0?"0":"1",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_event WHERE employee_id=?",f.employee()));
+            }
+        }
+    }
+
+    @Test void boundedProofTransportAloneNeverAuthorizesReceiptOrPhysicalCommit() throws Exception {
+        var f=fixture(false);
+        try(var p=new ProvisionalSession(create(f,id()))){
+            when(p.s.identity.issueCommitProof(eq(p.s.nativeTicket),any())).thenReturn(syntheticProof());
+            assertThrows(RuntimeException.class,() -> p.s.tx.execute(status -> {
+                p.persist();p.invoke("prepareCommitProof",p.write);return null;
+            }));
+        }
+        try(var c=owner()){
+            assertEquals("0",scalar(c,"SELECT count(*) FROM public.hidra_org_employee_assignment WHERE employee_id=?",f.employee()));
+            assertEquals("0",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_event WHERE employee_id=?",f.employee()));
+            assertEquals("0",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_lock_key WHERE kind='EMPLOYEE' AND key_one=?",f.employee()));
+        }
+    }
+
+    @Test void missingOrFailedNativeProofPoisonsOriginalTransactionWithoutAnotherIssuerAttempt() throws Exception {
+        for(boolean throwsFailure:List.of(false,true)){
+            var f=fixture(false);
+            try(var p=new ProvisionalSession(create(f,id()))){
+                if(throwsFailure)when(p.s.identity.issueCommitProof(any(),any())).thenThrow(new IllegalStateException("native proof unavailable"));
+                assertThrows(RuntimeException.class,() -> p.s.tx.execute(status -> {
+                    p.persist();
+                    assertThrows(AccessDeniedException.class,() -> p.invoke("prepareCommitProof",p.write));
+                    assertTrue(p.s.poisoned());
+                    assertThrows(AccessDeniedException.class,() -> p.invoke("prepareCommitProof",p.write));
+                    verify(p.s.identity,times(1)).issueCommitProof(eq(p.s.nativeTicket),any());
+                    return null; // Deliberately swallow; beforeCommit must still veto.
+                }));
+            }
+            try(var c=owner()){
+                assertEquals("0",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_event WHERE employee_id=?",f.employee()));
+            }
+        }
+    }
+
+    @Test void nativeProofCallbackCannotSubstitutePostWriteStateAuthenticationOrAuthority() throws Exception {
+        for(int variant=0;variant<3;variant++){
+            var f=fixture(false);final int changed=variant;
+            try(var p=new ProvisionalSession(create(f,id()))){
+                when(p.s.identity.issueCommitProof(eq(p.s.nativeTicket),any())).thenAnswer(call -> {
+                    if(changed==0)p.s.jdbc.update("UPDATE public.hidra_org_employee_assignment SET appointment_version=appointment_version+1,last_event_id=?::uuid WHERE employee_id=?",id(),f.employee());
+                    if(changed==1)SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("replacement",null,List.of()));
+                    if(changed==2)doThrow(new AccessDeniedException("revoked")).when(p.s.identity).requireCurrent(p.s.nativeTicket);
+                    return syntheticProof();
+                });
+                p.s.tx.execute(status -> {
+                    p.persist();
+                    assertThrows(AccessDeniedException.class,() -> p.invoke("prepareCommitProof",p.write));
+                    assertTrue(p.s.poisoned());
+                    verify(p.s.identity,times(1)).issueCommitProof(eq(p.s.nativeTicket),any());
+                    status.setRollbackOnly();return null;
+                });
+            }
+            try(var c=owner()){
+                assertEquals("0",scalar(c,"SELECT count(*) FROM public.hidra_org_employee_assignment WHERE employee_id=?",f.employee()));
+            }
+        }
+    }
+
+    @Test void proofPreparationRejectsDirectEarlyAndRepeatedStorageUse() throws Exception {
+        var f=fixture(false);
+        try(var s=new Session(create(f,id()))){s.tx.execute(status -> {
+            var ticket=qualified(s);
+            assertThrows(AccessDeniedException.class,() -> s.storage.prepareCommitProof(ticket));
+            verify(s.identity,never()).issueCommitProof(any(),any());assertTrue(s.poisoned());
+            status.setRollbackOnly();return null;
+        });}
+        try(var p=new ProvisionalSession(create(f,id()))){p.s.tx.execute(status -> {
+            p.write=p.invoke("acquireWrite",p.prepared,p.s.command);
+            assertThrows(AccessDeniedException.class,() -> p.invoke("prepareCommitProof",p.write));
+            verify(p.s.identity,never()).issueCommitProof(any(),any());
+            status.setRollbackOnly();return null;
+        });}
+        try(var p=new ProvisionalSession(create(f,id()))){
+            when(p.s.identity.issueCommitProof(eq(p.s.nativeTicket),any())).thenReturn(syntheticProof());
+            p.s.tx.execute(status -> {
+                p.persist();p.invoke("prepareCommitProof",p.write);
+                assertThrows(AccessDeniedException.class,() -> p.invoke("prepareCommitProof",p.write));
+                verify(p.s.identity,times(1)).issueCommitProof(eq(p.s.nativeTicket),any());assertTrue(p.s.poisoned());
+                status.setRollbackOnly();return null;
+            });
+        }
+    }
+
     private EmployeeAppointmentCommand.Create create(Fixture f,String request){
         return new EmployeeAppointmentCommand.Create(request,f.company(),f.employee(),f.units().get(0),f.position(),AssignmentType.PRIMARY,START,null,1,1);
     }

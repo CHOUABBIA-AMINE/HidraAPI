@@ -784,6 +784,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
     private void poison(Object admission) {
         if (admission instanceof JdbcProtectedEmployeeAppointmentRepositoryAdapter.StorageAdmission t) {
             t.active = false;
+            t.commitIntent=null;t.commitProof=null;
             t.holder.setRollbackOnly();
         }
         if (source != null && TransactionSynchronizationManager.getResource(source) instanceof ConnectionHolder h)
@@ -815,6 +816,9 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
         private MutationPlan plan;
         private ProvisionalWrite provisional;
         private boolean provisionalStarted, provisionalWritten;
+        private final AtomicBoolean proofRequested = new AtomicBoolean();
+        private OrganizationProtectedAppointmentAuthorizationContract.CommitIntent commitIntent;
+        private OrganizationProtectedAppointmentAuthorizationContract.CommitProof commitProof;
         private OrganizationProtectedPartyEligibilityContract.Contribution partySample;
         private List<ProtectedRelationFence> nativeFences = List.of(), proofFences = List.of();
 
@@ -836,7 +840,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
             if (readOnly || sample==null || !sameContext() || provisionalStarted) { poison(this); throw denied(); }
         }
         @Override public void suspend() { poison(this); }
-        @Override public void afterCompletion(int status) { active=false; }
+        @Override public void afterCompletion(int status) { active=false;commitIntent=null;commitProof=null; }
         @Override public String toString() { return "StorageAdmission[opaque]"; }
     }
 
@@ -1256,6 +1260,36 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
             if(ticket.plan!=null && !ticket.plan.equals(planned))throw denied();
             ticket.plan=planned;requireCurrent(ticket);
         }catch(RuntimeException failure){poison(ticket==null?admission:ticket);throw denied();}
+    }
+
+    /** Freeze the intent from storage-owned bytes and consume only the original native issuer.
+     * A bounded transport is retained privately, never treated as authenticated SQL authority. */
+    public void prepareCommitProof(ProtectedEmployeeAppointmentRepositoryPort.Admission admission) {
+        StorageAdmission t=null;
+        try {
+            t=ticket(admission);
+            if(!StackWalker.getInstance().walk(frames -> frames.anyMatch(f -> f.getClassName().equals(
+                    "dz.sh.hidra.modules.organization.application.service.ProtectedEmployeeAppointmentAdmissionCoordinator")))
+                    || !t.provisionalStarted || !t.provisionalWritten || t.provisional==null || t.plan==null
+                    || t.mutation.use()==ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY
+                    || !t.proofRequested.compareAndSet(false,true))throw denied();
+            verifyProvisional(t);
+            var intent=new OrganizationProtectedAppointmentAuthorizationContract.CommitIntent(
+                    java.util.UUID.fromString(t.provisional.event()),t.mutation.frame().commandDigest(),
+                    sha256(t.provisional.payload().getBytes(java.nio.charset.StandardCharsets.UTF_8)),t.plan.validUntil());
+            var proof=Objects.requireNonNull(identity.issueCommitProof(t.nativeAdmission,intent));
+            // An issuer callback can revoke/suspend, switch authentication, or alter same-XID facts.
+            // Never retain its response without repeating the exact original post-write graph.
+            verifyProvisional(t);
+            if(ticket(t)!=t)throw denied();
+            t.commitIntent=intent;
+            t.commitProof=new OrganizationProtectedAppointmentAuthorizationContract.CommitProof(proof.frame(),proof.mac());
+        }catch(RuntimeException failure){poison(t==null?admission:t);throw denied();}
+    }
+    private static String sha256(byte[] bytes) {
+        try {
+            return java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(bytes));
+        }catch(java.security.NoSuchAlgorithmException unavailable){throw denied();}
     }
 
     // Literal bytes are frozen by the B3 contract and independently pinned in the executor.

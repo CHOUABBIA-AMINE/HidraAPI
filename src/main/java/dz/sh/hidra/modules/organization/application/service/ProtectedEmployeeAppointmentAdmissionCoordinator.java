@@ -323,6 +323,23 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
         }
     }
 
+    /** One storage-owned proof handoff after closing PROVISIONAL; never returns proof bytes.
+     * Final database authentication/receipt and observed commit remain mandatory. */
+    void prepareCommitProof(WriteAdmission admission) {
+        try {
+            requireCurrentWrite(admission);
+            if (!admission.provisionalStarted || !admission.provisionalClosed || admission.proofRequested
+                    || admission.referenceUse == ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY) throw denied();
+            admission.proofRequested = true;
+            storage.prepareCommitProof(admission.repositoryAdmission);
+            requireCurrentWrite(admission);
+        } catch (RuntimeException failure) {
+            if (admission != null) admission.invalidate();
+            executor.rejectAdmission();
+            throw denied();
+        }
+    }
+
     private static void requireReferenceShape(WriteAdmission admission) {
         var use = admission.referenceUse;
         if (use == null) throw denied();
@@ -358,7 +375,7 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
         private OrganizationProtectedAppointmentAuthorizationContract.Contribution sample;
         private OrganizationProtectedPartyEligibilityContract.Contribution eligibility;
         private ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse referenceUse;
-        private boolean provisionalStarted, provisionalClosed;
+        private boolean provisionalStarted, provisionalClosed, proofRequested;
 
         private WriteAdmission(ProtectedEmployeeAppointmentAdmissionCoordinator owner,
                 OrganizationProtectedAppointmentAuthorizationContract.Admission identityAdmission,

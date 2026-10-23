@@ -25744,6 +25744,110 @@ After actual feedback, the next registered work continues B3 final native
 commit-proof consumption, final guards and immutable receipt; history/application/
 legacy/REST integration and full acceptance remain open. No next stage is run.
 
+### 2026-10-23 — HAPI-778 B3 storage-owned one-use native commit-proof handoff
+
+**Selection / exact message:** Owner Next continues the existing B3 runtime
+registration from main9e47a1a2bebfb53d8f090e20689be1212411f118,
+parent9a6a8946e0c845aeb15a25eeb04edbd0ee63ab62,
+tree556d3be81b2330e02380140c5a8ca8f4fce31b28.
+[Full838](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39956400253),
+[Fast151](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39956400164)
+and [Docs528](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39956400179)
+completed SUCCESS. All seven Full PostgreSQL shards, unit/architecture,
+static, API/dictionary and final evidence jobs succeeded; the optional serial
+Java21 oracle was skipped, not claimed as an additional executed suite.
+Current AGENTS, canonical roadmap/index/reconciliation, B3 definition and proof
+amendment, actual owner exports/issuer, executor, immutable migrations and
+current coordinator/storage/tests were inspected. Use the registered message
+`feat(organization): persist protected appointment lifecycle and history`.
+
+**Finite scope — seven MODIFY, zero CREATE/DELETE:**
+- src/main/java/dz/sh/hidra/modules/organization/application/port/out/ProtectedEmployeeAppointmentRepositoryPort.java
+- src/main/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinator.java
+- src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JdbcProtectedEmployeeAppointmentRepositoryAdapter.java
+- src/test/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinatorTest.java
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java
+- .github/ci-test-inventory.json, only these two suites' added cases/source hashes
+- this append-only HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+**Implemented handoff:** The port gains one void prepareCommitProof operation,
+with only the original opaque storage admission as input. The coordinator
+requires its own live write handle, completed/closed provisional block and
+non-replay classification. A private requested flag is set before invoking
+storage; owner/post-write rechecks surround the call. Foreign coordinator/thread,
+reentry/reuse, missing provisional work, owner failure or callback invalidation
+poisons the original holders. No proof, event selector, digest or receipt is
+returned to an application caller, and the coordinator cannot supply an intent.
+
+Storage authenticates its own original ticket and requires the compiled
+coordinator in the call chain, a written private provisional plan and a one-use
+atomic proof request. It rechecks original Identity/Party owners, physical
+connection/authentication, role/catalog/fences, original time window and the
+complete frozen post-write graph before invoking Identity. CommitIntent is
+derived solely from the private generated event UUID, canonical command SHA256,
+SHA256 of the exact frozen UTF8 payload bytes and narrowed operationValidUntil.
+Only the original native admission is sent to the existing Identity-owned
+issueCommitProof operation. No current actor, second sample, alternate Identity
+export, arbitrary intent argument or caller-supplied proof can substitute.
+
+After the issuer returns, storage repeats the complete original post-write
+verification and ticket check before privately retaining defensive-copy proof
+transport and intent. Null/unavailable proof, changed same-XID projection,
+revoked authority, changed authentication or a suspended/poisoned ticket rejects
+without a second issuer attempt. Failure and completion discard retained proof
+references. This is an actual production-source handoff to the existing native
+issuer, not an independent cryptographic verifier. Bounded frame/MAC construction
+never proves authenticity; the later database verifier must authenticate every
+byte and consume the nonce in the same physical guarded transaction.
+
+**Acceptance authored, not locally executed:** Preserve all47 coordinator cases
+and add four (51 total): post-provisional ordering/no returned bytes; early,
+replay and repeat rejection; throwing/suspending callback rollback; foreign
+coordinator/thread original-holder poisoning. Preserve all33 PostgreSQL suite
+methods and add five (38 total): compare issuer intent with actual persisted
+event UUID/command/payload digest/deadline for CREATE, END, retained/moved CORRECT
+and TRANSFER, including UTF8/control-character reasons; bounded transport alone
+cannot create receipt/commit; missing/throwing proof is one-use and swallowed
+failure still vetoes; same-XID projection/authentication/authority callback
+changes reject; direct/early/repeated calls cannot issue another proof.
+
+Database tests retain real migrated PostgreSQL, separate logins, genuine Party
+and actual provisional DML. Identity and executor remain explicitly mocked;
+the deliberately unauthenticated proof bytes are transport fixtures, not genuine
+HMAC/native authority evidence. Tests compare Java payload hashes with PostgreSQL
+sha256(canonical_payload) on actual event rows. No new fixture privileges or key
+read/receipt-write permission are granted. SQL-free coordinator/storage
+beforeCommit vetoes still forbid every provisional commit, including after
+successful proof preparation. The adapter remains non-bean, incomplete and
+unwired to application/REST. No successful lifecycle result is exposed.
+
+**Validation actually performed:** Five changed Java files pass installed Java17
+compiler-API parsing (syntax only, no type analysis/JUnit). Canonical inventory
+passes353 fast/354 unit-architecture/455 active oracle/four historical classes;
+seven PostgreSQL partitions remain12/16/13/14/16/15/15. All32 inventory self-tests
+pass; every old method, unrelated entry, lane, weight and policy is preserved.
+Coordinator test SHA256
+6a004bbc65aab8d08b1c23478d6e6a231451e1256c5c4a8abb5a8baf37f77b70;
+PostgreSQL test SHA256
+afa0d668c231b207312d9bda5fd47dd3715a36eb02f777d8fbadac7090f4cd7c.
+Offline docs passes128 documents/8380 links/24 modules/921 tasks/25 phases before
+this link-valid insertion; offline OpenAPI passes257 paths/279 operations/267
+schemas. Whitespace passes. Local Java21/Maven/PostgreSQL are unavailable;
+no environment is provisioned merely to run tests. Hosted compilation/runtime
+verification of this exact new source remains required.
+
+**Remaining / stop:** Final proof authentication/nonce consumption by the scalar
+SQL guard, read/write guards and immutable receipt, managed-flush/final evidence
+protocol and observed successful commit remain next within B3. Full history/
+cursors, application/private publisher route, legacy/REST cutover, genuine native
+plus real-executor500ms/concurrency/rollback acceptance and artifact/governance
+closure remain. No migration, owner implementation/export, executor SQL/caller,
+route, dictionary, OpenAPI, workflow or frozen status changes; all165 Flyway
+bodies retain their bytes. HAPI-778 stays PARTIAL/IN_PROGRESS and HAPI-590
+independently PARTIAL/BLOCKED. Publish exactly these seven paths with
+expected-9e47a1a main guard; verify parent/tree/message/blobs/scope, confirm
+exact-SHA Full/Fast/Docs creation/queue/start and STOP without awaiting completion.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

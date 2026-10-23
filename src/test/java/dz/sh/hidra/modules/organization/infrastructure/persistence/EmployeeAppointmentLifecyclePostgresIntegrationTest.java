@@ -1841,4 +1841,137 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
         assertEquals("0b8a4baaef583bb8bccc878e0d255a295b2d63c7dc31d7d8af3a2e3b50261e51",
                 HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(READ_GUARD_SQL.getBytes(StandardCharsets.UTF_8))));
     }
+
+    /** Real storage and commit; only native Identity and the protected executor are mocked. */
+    private final class FinalPolicySession implements AutoCloseable {
+        final StorageFixture f;
+        final dz.sh.hidra.modules.organization.application.service.ProtectedEmployeeAppointmentAdmissionCoordinator coordinator;
+        final dz.sh.hidra.modules.organization.application.service.ProtectedEmployeeAppointmentAdmissionCoordinator.Prepared prepared;
+        Object read;
+        FinalPolicySession(Projection p) throws Exception {
+            f=new StorageFixture(policyQuery(p.company(),p.unit()));grantPolicyReadGuard(f);
+            var port=org.mockito.Mockito.mock(dz.sh.hidra.modules.organization.application.port.out
+                    .ProtectedEmployeeAppointmentRepositoryPort.class,call -> {
+                try{return f.storage.getClass().getMethod(call.getMethod().getName(),call.getMethod().getParameterTypes())
+                        .invoke(f.storage,call.getArguments());}
+                catch(java.lang.reflect.InvocationTargetException failure){throw failure.getCause();}
+            });
+            org.mockito.Mockito.when(f.identity.prepare()).thenReturn(org.mockito.Mockito.mock(
+                    dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.Prepared.class));
+            org.mockito.Mockito.when(f.identity.acquire(org.mockito.ArgumentMatchers.any(),org.mockito.ArgumentMatchers.any()))
+                    .thenAnswer(call -> {f.jdbc.execute("SELECT "+f.lockFunction+"()");return f.nativeTicket;});
+            coordinator=new dz.sh.hidra.modules.organization.application.service.ProtectedEmployeeAppointmentAdmissionCoordinator(
+                    f.identity,org.mockito.Mockito.mock(dz.sh.hidra.modules.party.application.contract.organization
+                            .OrganizationProtectedPartyEligibilityContract.class),port,
+                    org.mockito.Mockito.mock(dz.sh.hidra.platform.persistence.ProtectedTransactionExecutor.class));
+            prepared=coordinator.prepare();
+        }
+        Object invoke(String name,Object... args) {
+            try {
+                var method=java.util.Arrays.stream(coordinator.getClass().getDeclaredMethods())
+                        .filter(m -> m.getName().equals(name)).findFirst().orElseThrow();
+                method.setAccessible(true);return method.invoke(coordinator,args);
+            }catch(java.lang.reflect.InvocationTargetException failure){
+                if(failure.getCause() instanceof RuntimeException runtime)throw runtime;
+                throw new AssertionError(failure.getCause());
+            }catch(ReflectiveOperationException failure){throw new AssertionError(failure);}
+        }
+        void prepare() {
+            f.jdbc.execute("SET LOCAL TIME ZONE 'UTC'");
+            read=invoke("acquireRead",prepared,f.policyQuery);invoke("prepareFinalRead",read);
+        }
+        @Override public void close(){f.close();}
+    }
+
+    @Test void javaFinalPolicyCallbacksCommitWithoutOwnerQueriesPartyOrProofWrites() throws Exception {
+        var p=projection();admin("UPDATE public.hidra_party_party SET status='SUSPENDED' WHERE id=?",p.company());
+        long events=count("SELECT count(*) FROM public.hidra_org_appointment_event");
+        long receipts=count("SELECT count(*) FROM public.hidra_org_appointment_receipt");
+        long uses=count("SELECT count(*) FROM public.hidra_identity_org_commit_proof_use");
+        long keys=count("SELECT count(*) FROM public.hidra_org_appointment_lock_key");
+        try(var session=new FinalPolicySession(p)) {
+            session.f.tx.execute(status -> {
+                session.prepare();org.mockito.Mockito.clearInvocations(session.f.identity);
+                session.invoke("finalizeRead",session.read);
+                org.mockito.Mockito.verifyNoInteractions(session.f.identity);
+                return null; // Actual physical commit, no post-GUARD SQL.
+            });
+        }
+        assertEquals(events,count("SELECT count(*) FROM public.hidra_org_appointment_event"));
+        assertEquals(receipts,count("SELECT count(*) FROM public.hidra_org_appointment_receipt"));
+        assertEquals(uses,count("SELECT count(*) FROM public.hidra_identity_org_commit_proof_use"));
+        assertEquals(keys,count("SELECT count(*) FROM public.hidra_org_appointment_lock_key"));
+    }
+
+    @Test void javaFinalPolicyPreparationWithoutGuardVetoesPhysicalCommit() throws Exception {
+        try(var session=new FinalPolicySession(projection())) {
+            assertThrows(AccessDeniedException.class,() -> session.f.tx.execute(status -> {session.prepare();return null;}));
+        }
+    }
+
+    @Test void javaFinalPolicyGuardRejectsUnsafePrivilegeGrantedAfterPreparationAndCannotRetry() throws Exception {
+        try(var session=new FinalPolicySession(projection())) {
+            session.f.tx.execute(status -> {
+                session.prepare();
+                try{admin("GRANT INSERT ON public.hidra_org_appointment_receipt TO "+session.f.role);}
+                catch(SQLException failure){throw new AssertionError(failure);}
+                assertThrows(AccessDeniedException.class,() -> session.invoke("finalizeRead",session.read));
+                assertTrue(session.f.holder().isRollbackOnly());
+                assertThrows(AccessDeniedException.class,() -> session.invoke("finalizeRead",session.read));
+                status.setRollbackOnly();return null;
+            });
+        }
+    }
+
+    @Test void javaFinalPolicyGuardRejectsAuthenticationReplacementAndPostGuardQueries() throws Exception {
+        for(boolean afterGuard:List.of(false,true))try(var session=new FinalPolicySession(projection())) {
+            session.f.tx.execute(status -> {
+                session.prepare();
+                if(afterGuard) {
+                    session.invoke("finalizeRead",session.read);
+                    assertThrows(AccessDeniedException.class,() -> session.invoke("requireCurrentRead",session.read));
+                } else {
+                    org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(
+                            new org.springframework.security.authentication.UsernamePasswordAuthenticationToken("replacement","unused",List.of()));
+                    assertThrows(AccessDeniedException.class,() -> session.invoke("finalizeRead",session.read));
+                }
+                assertTrue(session.f.holder().isRollbackOnly());status.setRollbackOnly();return null;
+            });
+        }
+    }
+
+    @Test void javaFinalPolicyCallbacksRejectDirectStorageAndRepeatGuardInvocations() throws Exception {
+        var p=projection();
+        for(boolean guard:List.of(false,true))try(var f=new StorageFixture(policyQuery(p.company(),p.unit()))) {
+            f.tx.execute(status -> {
+                var ticket=f.acquire();f.storage.contribute(ticket);f.storage.readPolicy(ticket,f.policyQuery);
+                assertThrows(AccessDeniedException.class,() -> {
+                    if(guard)f.storage.finalizeRead(ticket);else f.storage.prepareFinalRead(ticket);
+                });
+                assertTrue(f.holder().isRollbackOnly());status.setRollbackOnly();return null;
+            });
+        }
+        try(var session=new FinalPolicySession(p)) {
+            session.f.tx.execute(status -> {
+                session.prepare();session.invoke("finalizeRead",session.read);
+                assertThrows(AccessDeniedException.class,() -> session.invoke("finalizeRead",session.read));
+                assertTrue(session.f.holder().isRollbackOnly());status.setRollbackOnly();return null;
+            });
+        }
+        var field=JdbcProtectedEmployeeAppointmentRepositoryAdapter.class.getDeclaredField("READ_GUARD");
+        field.setAccessible(true);assertEquals(READ_GUARD_SQL,field.get(null));
+    }
+
+    @Test void javaFinalPolicyPreparationRejectsRevokedNativeOwnerBeforeFreezing() throws Exception {
+        try(var session=new FinalPolicySession(projection())) {
+            session.f.tx.execute(status -> {
+                session.f.jdbc.execute("SET LOCAL TIME ZONE 'UTC'");
+                session.read=session.invoke("acquireRead",session.prepared,session.f.policyQuery);
+                org.mockito.Mockito.doThrow(new AccessDeniedException("synthetic revoked"))
+                        .when(session.f.identity).requireCurrent(session.f.nativeTicket);
+                assertThrows(AccessDeniedException.class,() -> session.invoke("prepareFinalRead",session.read));
+                assertTrue(session.f.holder().isRollbackOnly());status.setRollbackOnly();return null;
+            });
+        }
+    }
 }

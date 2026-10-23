@@ -167,6 +167,15 @@ public interface ProtectedEmployeeAppointmentRepositoryPort {
      * the executor must still observe physical commit before returning any result. */
     void finalizeWrite(Admission admission);
 
+    /** FLUSHING callback: revalidate the already materialized POLICY observation and
+     * privately freeze its full-row image and original native physical/time coordinates.
+     * No caller supplies guard parameters. Other read kinds remain unsupported. */
+    void prepareFinalRead(Admission admission);
+
+    /** GUARD callback: execute exactly one non-mutating scalar read guard, with no
+     * subsequent owner SQL. Disclosure still requires observed physical commit. */
+    void finalizeRead(Admission admission);
+
     /**
      * One guarded atomic lifecycle operation under the original request key,
      * exact source CAS and pinned revisions. CREATE has no source, END and

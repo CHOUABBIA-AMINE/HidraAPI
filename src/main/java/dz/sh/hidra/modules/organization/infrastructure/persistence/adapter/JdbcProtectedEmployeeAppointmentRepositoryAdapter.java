@@ -607,7 +607,11 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
     private static final String POLICY_SQL = """
             SELECT p.policy_id,p.revision,(p.policy->>'maxConcurrentPrimary')::integer,
                    p.policy->>'positionCapacity',f.key,s.key,s.value::text,
-                   b.binding_id,b.revision,bh.last_event_id,ph.last_event_id
+                   b.binding_id,b.revision,bh.last_event_id,ph.last_event_id,
+                   pg_catalog.jsonb_build_object('kind','POLICY','bindingHead',pg_catalog.to_jsonb(bh),
+                       'bindingRevision',pg_catalog.to_jsonb(b),'bindingEvent',pg_catalog.to_jsonb(be),
+                       'policyHead',pg_catalog.to_jsonb(ph),'policyRevision',pg_catalog.to_jsonb(p),
+                       'policyEvent',pg_catalog.to_jsonb(pe))::text
               FROM public.hidra_org_appointment_binding_head bh
               JOIN public.hidra_org_appointment_binding_revision b
                 ON b.organization_unit_id=bh.organization_unit_id AND b.binding_id=bh.binding_id
@@ -645,12 +649,12 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
 
     private record PolicyCell(String policyId, long revision, int primaryLimit, String capacity,
                               String first, String second, String allowed, String bindingId,
-                              long bindingRevision, String bindingEvent, String policyEvent) { }
+                              long bindingRevision, String bindingEvent, String policyEvent, String image) { }
 
     private record PolicyObservation(EmployeeAppointmentQuery.Policy selector,
                                      EmployeeAppointmentResult.PolicyView view,
                                      String bindingId, long bindingRevision,
-                                     String bindingEvent, String policyEvent) { }
+                                     String bindingEvent, String policyEvent, String image) { }
 
     /**
      * Materializes a detached policy only for the exact genuine READ_POLICY
@@ -675,7 +679,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
                     || (ticket.policy != null && !query.equals(ticket.policy.selector()))) throw denied();
             var cells = jdbc.query(POLICY_SQL, (r, i) -> new PolicyCell(
                     r.getString(1),r.getLong(2),r.getInt(3),r.getString(4),r.getString(5),r.getString(6),
-                    r.getString(7),r.getString(8),r.getLong(9),r.getString(10),r.getString(11)),
+                    r.getString(7),r.getString(8),r.getLong(9),r.getString(10),r.getString(11),r.getString(12)),
                     query.unitId(),query.companyPartyId());
             if (cells == null || cells.size() != 16) throw denied();
             var first = cells.get(0);
@@ -683,7 +687,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
             var view = new EmployeeAppointmentResult.PolicyView(query.companyPartyId(),query.unitId(),
                     first.policyId(),first.revision(),value);
             var observed = new PolicyObservation(query,view,first.bindingId(),first.bindingRevision(),
-                    first.bindingEvent(),first.policyEvent());
+                    first.bindingEvent(),first.policyEvent(),first.image());
             if (ticket.policy != null && !ticket.policy.equals(observed)) throw denied();
             ticket.policy = observed;
             requireCurrent(ticket);
@@ -703,6 +707,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
                     || first.primaryLimit()!=cell.primaryLimit() || !Objects.equals(first.capacity(),cell.capacity())
                     || !Objects.equals(first.bindingId(),cell.bindingId()) || first.bindingRevision()!=cell.bindingRevision()
                     || !Objects.equals(first.bindingEvent(),cell.bindingEvent()) || !Objects.equals(first.policyEvent(),cell.policyEvent())
+                    || first.image()==null || !Objects.equals(first.image(),cell.image())
                     || !("true".equals(cell.allowed()) || "false".equals(cell.allowed()))) throw denied();
             var pair=new EmployeeAppointmentPolicy.TypePair(AssignmentType.valueOf(cell.first()),AssignmentType.valueOf(cell.second()));
             if(matrix.put(pair,Boolean.valueOf(cell.allowed()))!=null)throw denied();
@@ -789,7 +794,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
     private void poison(Object admission) {
         if (admission instanceof JdbcProtectedEmployeeAppointmentRepositoryAdapter.StorageAdmission t) {
             t.active = false;
-            t.commitIntent=null;t.commitProof=null;t.finalWrite=null;t.guarded=false;
+            t.commitIntent=null;t.commitProof=null;t.finalWrite=null;t.finalRead=null;t.guarded=false;
             t.holder.setRollbackOnly();
         }
         if (source != null && TransactionSynchronizationManager.getResource(source) instanceof ConnectionHolder h)
@@ -825,6 +830,8 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
         private OrganizationProtectedAppointmentAuthorizationContract.CommitIntent commitIntent;
         private OrganizationProtectedAppointmentAuthorizationContract.CommitProof commitProof;
         private FinalWrite finalWrite;
+        private FinalRead finalRead;
+        private boolean readPreparationStarted;
         private boolean guardAttempted, guarded;
         private OrganizationProtectedPartyEligibilityContract.Contribution partySample;
         private List<ProtectedRelationFence> nativeFences = List.of(), proofFences = List.of();
@@ -844,10 +851,10 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
                     && authentication.isAuthenticated() && holder.getConnection()==connection;
         }
         @Override public void beforeCommit(boolean readOnly) {
-            if (readOnly || sample==null || !sameContext() || provisionalStarted && !guarded) { poison(this); throw denied(); }
+            if (readOnly || sample==null || !sameContext() || (provisionalStarted || readPreparationStarted) && !guarded) { poison(this); throw denied(); }
         }
         @Override public void suspend() { poison(this); }
-        @Override public void afterCompletion(int status) { active=false;commitIntent=null;commitProof=null;finalWrite=null; }
+        @Override public void afterCompletion(int status) { active=false;commitIntent=null;commitProof=null;finalWrite=null;finalRead=null; }
         @Override public String toString() { return "StorageAdmission[opaque]"; }
     }
 
@@ -1137,7 +1144,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
     private WritePolicy writePolicy(String company) {
         var rows=jdbc.query(WRITE_POLICY_SQL,(r,i) -> new WritePolicyCell(new PolicyCell(
                 r.getString(1),r.getLong(2),r.getInt(3),r.getString(4),r.getString(5),r.getString(6),r.getString(7),
-                null,0,null,r.getString(8)),r.getString(9)),company);
+                null,0,null,r.getString(8),r.getString(9)),r.getString(9)),company);
         if(rows==null || rows.size()!=16)throw denied();
         var first=rows.get(0);
         if(rows.stream().anyMatch(c -> !first.evidence().equals(c.evidence())))throw denied();
@@ -1327,6 +1334,40 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
         }catch(RuntimeException failure){poison(t==null?admission:t);throw denied();}
         finally {if(t!=null){t.commitProof=null;t.finalWrite=null;}}
     }
+
+    /** POLICY-only final preparation; freeze the same statement's detached view and full graph. */
+    public void prepareFinalRead(ProtectedEmployeeAppointmentRepositoryPort.Admission admission) {
+        StorageAdmission t=null;
+        try {
+            t=ticket(admission);
+            if(!coordinatorCaller() || t.policy==null || t.readPreparationStarted || t.provisionalStarted
+                    || t.mutation!=null || t.finalWrite!=null || !t.parties.isEmpty())throw denied();
+            t.readPreparationStarted=true;
+            readPolicy(t,t.policy.selector());
+            if(ticket(t)!=t)throw denied();
+            t.finalRead=new FinalRead(t.policy.image(),t.sample.sampledAt(),t.sample.validUntil(),t.pid,t.xid);
+        }catch(RuntimeException failure){poison(t==null?admission:t);throw denied();}
+    }
+
+    /** One non-mutating scalar statement; never query an owner after GUARD. */
+    public void finalizeRead(ProtectedEmployeeAppointmentRepositoryPort.Admission admission) {
+        StorageAdmission t=null;
+        try {
+            t=ticket(admission);
+            if(!coordinatorCaller() || t.finalRead==null || t.finalWrite!=null || t.guarded)throw denied();
+            t.guardAttempted=true;
+            if(!Boolean.TRUE.equals(jdbc.queryForObject(READ_GUARD,Boolean.class,t.finalRead.parameters()))
+                    || !t.sameContext() || context()!=t.holder
+                    || !TransactionSynchronizationManager.getSynchronizations().contains(t))throw denied();
+            t.guarded=true;
+        }catch(RuntimeException failure){poison(t==null?admission:t);throw denied();}
+        finally {if(t!=null)t.finalRead=null;}
+    }
+
+    private record FinalRead(String image,Instant sampled,Instant until,int pid,long xid) {
+        Object[] parameters(){return new Object[]{image,timestamp(sampled),timestamp(until),pid,xid};}
+    }
+    private static final String READ_GUARD="WITH observed AS MATERIALIZED (SELECT pg_catalog.clock_timestamp() AS t) SELECT public.hidra_org_appointment_read_guard(?::jsonb,?::timestamptz,?::timestamptz,?,?,t) FROM observed";
 
     private static boolean coordinatorCaller() {
         return StackWalker.getInstance().walk(frames -> frames.anyMatch(f -> f.getClassName().equals(

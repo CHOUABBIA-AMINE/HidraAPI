@@ -1044,4 +1044,109 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
             verifyNoInteractions(f.identity, f.storage, f.executor);
         }
     }
+
+    private static ReadFixture policyFixture() {
+        var f=new ReadFixture(new EmployeeAppointmentQuery.Policy("company","unit"),
+                preview("company","unit",null,null));
+        when(f.storage.readPolicy(f.storageTicket,(EmployeeAppointmentQuery.Policy)f.query))
+                .thenReturn(mock(dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.PolicyView.class));
+        return f;
+    }
+
+    @Test void finalPolicyReadPreparesWithOwnersThenGuardsWithoutOwnerCallbacks() {
+        try(var f=policyFixture()) {
+            var ticket=f.acquire();clearInvocations(f.identity,f.party,f.storage,f.executor);
+            f.coordinator.prepareFinalRead(ticket);
+            var order=inOrder(f.identity,f.storage);
+            order.verify(f.identity).requireCurrent(f.nativeTicket);
+            order.verify(f.storage).requireCurrent(f.storageTicket);
+            order.verify(f.storage).readPolicy(f.storageTicket,(EmployeeAppointmentQuery.Policy)f.query);
+            order.verify(f.storage).prepareFinalRead(f.storageTicket);
+            clearInvocations(f.identity,f.party,f.storage,f.executor);
+            f.coordinator.finalizeRead(ticket);ticket.beforeCommit(false);
+            verify(f.storage).finalizeRead(f.storageTicket);
+            verifyNoMoreInteractions(f.storage);verifyNoInteractions(f.identity,f.party,f.executor);
+            verify(f.storage,never()).prepareCommitProof(any());
+        }
+    }
+
+    @Test void finalPolicyReadRejectsMissingPreparationUnsupportedHistoryAndRepeat() {
+        try(var f=policyFixture()) {
+            var ticket=f.acquire();assertThrows(AccessDeniedException.class,() -> f.coordinator.finalizeRead(ticket));
+            assertTrue(f.holder.isRollbackOnly());verify(f.storage,never()).finalizeRead(any());
+        }
+        try(var f=new ReadFixture()) {
+            var ticket=f.acquire();assertThrows(AccessDeniedException.class,() -> f.coordinator.prepareFinalRead(ticket));
+            verify(f.storage,never()).prepareFinalRead(any());
+        }
+        for(boolean afterGuard:List.of(false,true))try(var f=policyFixture()) {
+            var ticket=f.acquire();f.coordinator.prepareFinalRead(ticket);
+            if(afterGuard)f.coordinator.finalizeRead(ticket);
+            assertThrows(AccessDeniedException.class,() -> {
+                if(afterGuard)f.coordinator.finalizeRead(ticket);else f.coordinator.prepareFinalRead(ticket);
+            });
+            assertTrue(f.holder.isRollbackOnly());
+            verify(f.storage,times(afterGuard?1:0)).finalizeRead(f.storageTicket);
+        }
+    }
+
+    @Test void preparedPolicyReadCannotCommitWithoutGuardOrRecoverSwallowedFailure() {
+        for(boolean guardFailure:List.of(false,true))try(var f=policyFixture()) {
+            var ticket=f.acquire();f.coordinator.prepareFinalRead(ticket);
+            if(guardFailure) {
+                doThrow(new IllegalStateException("unavailable")).when(f.storage).finalizeRead(f.storageTicket);
+                assertThrows(AccessDeniedException.class,() -> f.coordinator.finalizeRead(ticket));
+                assertThrows(AccessDeniedException.class,() -> f.coordinator.finalizeRead(ticket));
+                verify(f.storage,times(1)).finalizeRead(f.storageTicket);
+            }
+            assertThrows(AccessDeniedException.class,() -> ticket.beforeCommit(false));
+            assertTrue(f.holder.isRollbackOnly());
+        }
+    }
+
+    @Test void finalPolicyReadRejectsForeignCoordinatorThreadAndReplacedHolderBeforeGuard() throws Exception {
+        for(int variant=0;variant<3;variant++)try(var f=policyFixture()) {
+            var ticket=f.acquire();f.coordinator.prepareFinalRead(ticket);clearInvocations(f.storage,f.identity,f.party);
+            if(variant==0) {
+                var other=new ProtectedEmployeeAppointmentAdmissionCoordinator(f.identity,f.party,f.storage,f.executor);
+                assertThrows(AccessDeniedException.class,() -> other.finalizeRead(ticket));
+            } else if(variant==1) {
+                var error=new java.util.concurrent.atomic.AtomicReference<Throwable>();
+                var thread=new Thread(() -> {try{f.coordinator.finalizeRead(ticket);}catch(Throwable failure){error.set(failure);}});
+                thread.start();thread.join(5000);assertFalse(thread.isAlive());assertInstanceOf(AccessDeniedException.class,error.get());
+            } else {
+                TransactionSynchronizationManager.unbindResource(f.resourceKey);
+                TransactionSynchronizationManager.bindResource(f.resourceKey,new ConnectionHolder(mock(java.sql.Connection.class)));
+                assertThrows(AccessDeniedException.class,() -> f.coordinator.finalizeRead(ticket));
+            }
+            verifyNoInteractions(f.storage,f.identity,f.party);
+            assertThrows(AccessDeniedException.class,() -> ticket.beforeCommit(false));
+        }
+    }
+
+    @Test void finalPolicyReadRejectsSuspensionRollbackAndPostGuardOwnerQueries() {
+        for(int variant=0;variant<3;variant++)try(var f=policyFixture()) {
+            var ticket=f.acquire();f.coordinator.prepareFinalRead(ticket);
+            if(variant==0)ticket.suspend();
+            else if(variant==1)f.holder.setRollbackOnly();
+            else f.coordinator.finalizeRead(ticket);
+            clearInvocations(f.identity,f.party,f.storage);
+            if(variant==2)assertThrows(AccessDeniedException.class,() -> f.coordinator.requireCurrentRead(ticket));
+            else assertThrows(AccessDeniedException.class,() -> f.coordinator.finalizeRead(ticket));
+            verifyNoInteractions(f.identity,f.party,f.storage);
+            assertTrue(f.holder.isRollbackOnly());
+        }
+    }
+
+    @Test void finalPolicyPreparationFailureAndCallbackInvalidationPoisonTheOriginalHolder() {
+        for(int variant=0;variant<3;variant++)try(var f=policyFixture()) {
+            var ticket=f.acquire();
+            if(variant==0)when(f.storage.readPolicy(f.storageTicket,(EmployeeAppointmentQuery.Policy)f.query)).thenReturn(null);
+            else if(variant==1)doThrow(new IllegalStateException("unavailable")).when(f.storage).prepareFinalRead(f.storageTicket);
+            else doAnswer(call -> {ticket.suspend();return null;}).when(f.storage).prepareFinalRead(f.storageTicket);
+            assertThrows(AccessDeniedException.class,() -> f.coordinator.prepareFinalRead(ticket));
+            assertTrue(f.holder.isRollbackOnly());assertThrows(AccessDeniedException.class,() -> ticket.beforeCommit(false));
+            verify(f.storage,never()).finalizeRead(any());
+        }
+    }
 }

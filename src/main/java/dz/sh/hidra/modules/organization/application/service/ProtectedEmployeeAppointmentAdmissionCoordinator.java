@@ -180,7 +180,7 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
             var locked = Objects.requireNonNull(storage.preview(query));
             locked.requireBounded();
             if (!expected.equals(locked) || !request.equals(requestFor(null, query, locked))) throw denied();
-            result = new ReadAdmission(this, nativeAdmission, repositoryAdmission);
+            result = new ReadAdmission(this, nativeAdmission, repositoryAdmission, query);
             TransactionSynchronizationManager.registerSynchronization(result);
             var sample = Objects.requireNonNull(storage.contribute(repositoryAdmission));
             if (!request.equals(sample.request())
@@ -199,22 +199,49 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
     /** Rechecks genuine issuing owners; the opaque handle alone is never authority. */
     void requireCurrentRead(ReadAdmission admission) {
         try {
-            if (admission == null || admission.owner != this || !admission.active
-                    || admission.thread != Thread.currentThread() || admission.sample == null
-                    || !TransactionSynchronizationManager.isActualTransactionActive()
-                    || !TransactionSynchronizationManager.isSynchronizationActive()
-                    || TransactionSynchronizationManager.isCurrentTransactionReadOnly()
-                    || !TransactionSynchronizationManager.getSynchronizations().contains(admission)) throw denied();
+            if (admission == null || admission.owner != this || admission.guardAttempted
+                    || !admission.ready()) throw denied();
             identity.requireCurrent(admission.identityAdmission);
             storage.requireCurrent(admission.repositoryAdmission);
             // An owner callback may invalidate/suspend the transaction. Never let
             // a swallowed invalidation restore the handle on the callback return.
-            if (!admission.active || !TransactionSynchronizationManager.isActualTransactionActive()
-                    || TransactionSynchronizationManager.isCurrentTransactionReadOnly()
-                    || !TransactionSynchronizationManager.isSynchronizationActive()
-                    || !TransactionSynchronizationManager.getSynchronizations().contains(admission)) throw denied();
+            if (!admission.ready()) throw denied();
         } catch (RuntimeException failure) {
             invalidate(admission);
+            executor.rejectAdmission();
+            throw denied();
+        }
+    }
+
+    /** FLUSHING callback for the currently supported POLICY read only. */
+    void prepareFinalRead(ReadAdmission admission) {
+        try {
+            requireCurrentRead(admission);
+            if (!(admission.query instanceof EmployeeAppointmentQuery.Policy policy)
+                    || admission.preparationStarted) throw denied();
+            admission.preparationStarted = true;
+            Objects.requireNonNull(storage.readPolicy(admission.repositoryAdmission, policy));
+            storage.prepareFinalRead(admission.repositoryAdmission);
+            if (!admission.ready()) throw denied();
+            admission.finalPrepared = true;
+        } catch (RuntimeException failure) {
+            if (admission != null) admission.invalidate();
+            executor.rejectAdmission();
+            throw denied();
+        }
+    }
+
+    /** GUARD callback; all checks around the sole storage statement are SQL-free. */
+    void finalizeRead(ReadAdmission admission) {
+        try {
+            if (admission == null || admission.owner != this || !admission.ready()
+                    || !admission.finalPrepared || admission.guardAttempted) throw denied();
+            admission.guardAttempted = true;
+            storage.finalizeRead(admission.repositoryAdmission);
+            if (!admission.ready()) throw denied();
+            admission.guarded = true;
+        } catch (RuntimeException failure) {
+            if (admission != null) admission.invalidate();
             executor.rejectAdmission();
             throw denied();
         }
@@ -462,6 +489,8 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
         private final ProtectedEmployeeAppointmentAdmissionCoordinator owner;
         private final OrganizationProtectedAppointmentAuthorizationContract.Admission identityAdmission;
         private final ProtectedEmployeeAppointmentRepositoryPort.Admission repositoryAdmission;
+        private final EmployeeAppointmentQuery query;
+        private boolean preparationStarted, finalPrepared, guardAttempted, guarded;
         private final Thread thread = Thread.currentThread();
         private final List<ConnectionHolder> holders;
         private volatile boolean active = true;
@@ -469,12 +498,24 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
 
         private ReadAdmission(ProtectedEmployeeAppointmentAdmissionCoordinator owner,
                 OrganizationProtectedAppointmentAuthorizationContract.Admission identityAdmission,
-                ProtectedEmployeeAppointmentRepositoryPort.Admission repositoryAdmission) {
+                ProtectedEmployeeAppointmentRepositoryPort.Admission repositoryAdmission,
+                EmployeeAppointmentQuery query) {
             this.owner = owner;
             this.identityAdmission = identityAdmission;
             this.repositoryAdmission = repositoryAdmission;
+            this.query = query;
             this.holders = TransactionSynchronizationManager.getResourceMap().values().stream()
                     .filter(ConnectionHolder.class::isInstance).map(ConnectionHolder.class::cast).distinct().toList();
+        }
+
+        private boolean ready() {
+            return active && sample != null && thread == Thread.currentThread()
+                    && TransactionSynchronizationManager.isActualTransactionActive()
+                    && TransactionSynchronizationManager.isSynchronizationActive()
+                    && !TransactionSynchronizationManager.isCurrentTransactionReadOnly()
+                    && TransactionSynchronizationManager.getSynchronizations().contains(this)
+                    && TransactionSynchronizationManager.getResourceMap().values().containsAll(holders)
+                    && holders.stream().noneMatch(ConnectionHolder::isRollbackOnly);
         }
 
         private void invalidate() {
@@ -484,8 +525,7 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
             holders.forEach(ConnectionHolder::setRollbackOnly);
         }
         @Override public void beforeCommit(boolean readOnly) {
-            if (!active || sample == null || thread != Thread.currentThread() || readOnly
-                    || holders.stream().anyMatch(ConnectionHolder::isRollbackOnly)) {
+            if (readOnly || !ready() || preparationStarted && (!finalPrepared || !guarded)) {
                 invalidate();
                 throw denied();
             }

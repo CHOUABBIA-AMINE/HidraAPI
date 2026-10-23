@@ -26560,6 +26560,106 @@ with managed-flush/real-executor/native composition, private publisher/applicati
 legacy/REST cutover and final acceptance still open. This artifact repair selects
 no further runtime stage, deployment, release, simulator or OT action.
 
+### 2026-10-23 — HAPI-778 B3 Java POLICY final-read preparation and scalar guard
+
+**Selection / message:** Owner Next refreshes main
+ d7fe9fe2ee5b68101fbdd4ec669f4b3acff1dc39,
+parent83e0996f6daa6f8541fadecd85017aea39468944,
+tree8990e1a87b7de19aec3e563b3f65699a4ab484ed.
+[Full847](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40005766258)
+and [Docs537](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40005580487)
+completed SUCCESS on that exact source. Static, Java21 unit/architecture, all seven
+PostgreSQL shards, API/dictionary job120593137207 and aggregate120595795302
+succeeded; the optional serial oracle was skipped. This clears the prior catalog
+repair gate. Current AGENTS, canonical roadmap/index, reconciliation, registered
+B3 protocol/allowlist, accepted POLICY SQL migration and current owner/storage/
+coordinator/tests were inspected. Continue only the existing B3 runtime message
+`feat(organization): persist protected appointment lifecycle and history`.
+
+**Finite scope — seven MODIFY, zero CREATE/DELETE:**
+- src/main/java/dz/sh/hidra/modules/organization/application/port/out/ProtectedEmployeeAppointmentRepositoryPort.java
+- src/main/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinator.java
+- src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JdbcProtectedEmployeeAppointmentRepositoryAdapter.java
+- src/test/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinatorTest.java
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java
+- .github/ci-test-inventory.json, only those two suites' added cases/source hashes
+- this append-only HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+**Bounded implementation:** Add prepareFinalRead/finalizeRead to the protected
+storage contract and non-wired coordinator. The FLUSHING callback supports POLICY
+only, retains the original typed query, repeats actual native/storage checks and
+materializes a detached PolicyView. The same POLICY_SQL statement now captures
+all six full binding/policy head/revision/activation-event rows, plus kind, beside
+the complete16-cell policy. Each row must agree on that image, and repeated
+observations must equal the entire retained observation. Thus a later guard image
+cannot silently describe different facts from the previously materialized view.
+The shared write-policy decoder carries its already-validated evidence through
+the added internal cell member; no write policy, SQL or domain rule is relaxed.
+
+Storage preparation revalidates that original observation under issuer/physical/
+catalog/fence/native checks and privately freezes its full image with the original
+native sample, validUntil, PID and XID. There is no caller image, proof, new native
+sample, receipt or Party selectability input. The GUARD callback performs SQL-free
+holder/thread/authentication/synchronization checks, then exactly the existing
+non-mutating READ_GUARD scalar. Exact literal UTF8/no-newline SHA256 remains
+0b8a4baaef583bb8bccc878e0d255a295b2d63c7dc31d7d8af3a2e3b50261e51.
+Only Boolean.TRUE and unchanged local context mark the ticket guarded. No owner
+callback, data/clock query, proof redemption or DML follows that scalar. The frozen
+transport is discarded on return. Retry/post-guard owner queries, suspension,
+rollback-only, foreign coordinator/thread or replaced holder fail closed; a
+started final preparation without successful guard vetoes physical commit through
+both SQL-free synchronization gates. Existing admission-only opaque handles remain
+non-authoritative internal mechanics, never permission to disclose a payload.
+
+This stage activates no bean, public writer, REST endpoint or lifecycle service.
+The SQL guard's accepted UTC expected-image representation is exercised explicitly
+by the fixture. Real protected executor phase/SQL sealing, managed flush, genuine
+native issuer composition and commit-before-disclosure still require their own
+integration. HISTORY/exact-version/replay finalization remains unsupported and is
+rejected by the POLICY-only coordinator; no POLICY result qualifies those kinds.
+All169 migration bodies, SQL routine/catalog pins, dictionary, OpenAPI/manifest,
+Identity/Party implementations, protected executor, deadlines and frozen task
+statuses retain bytes. HAPI-778 remains PARTIAL/IN_PROGRESS; HAPI-590 independently
+PARTIAL/BLOCKED.
+
+**Authored acceptance, pending hosted execution:** Preserve all56 coordinator
+cases and add six (62 total), covering owner/materialization/preparation order,
+SQL-free GUARD/commit callbacks, absent preparation, unsupported history, repeated
+preparation/guard, swallowed failure, suspension/rollback-only, foreign coordinator/
+thread, replaced holder, post-guard query refusal and callback invalidation.
+Preserve all71 PostgreSQL cases and add six (77 total). Actual restricted-login
+storage and TransactionTemplate exercise the unchanged SQL guard followed by
+physical commit, with suspended Party and unchanged event/receipt/proof-use/key
+counts; preparation-without-guard commit veto; unsafe privilege granted after
+preparation with swallowed failure/retry refusal; authentication replacement and
+post-guard query rejection; direct storage/repeated guard refusal and exact SQL
+bytes; and native revocation before preparation. Native Identity and the protected
+executor remain mocked. These are Java callback/storage/SQL acceptance cases,
+not genuine native PERMIT, real500ms executor, HTTP or industrial SITE proof.
+Coordinator test source SHA256:
+da7fa68f68d6c5e21a5111977b504d3fb71c6f291b8f051ef7343133c48a8942.
+PostgreSQL test source SHA256:
+1de28f42ccf6d44da93bca982852aa1f1177110a4ccaaab4b821da99dc969370.
+
+**Actual available validation:** Installed Java17 compiler-API syntax parsing
+passes all five changed Java files; this does not resolve types or execute JUnit.
+Canonical inventory passes353 fast/354 unit-architecture/455 oracle/four historical
+classes and unchanged seven partitions12/16/13/14/16/15/15; all32 inventory
+self-tests pass. All previous cases, all other entries, timings/partitions and
+migration bytes are preserved. Exact SQL hash, documentation, whitespace and
+append-only/exact-scope checks are run before publication. Java21/Maven/
+PostgreSQL/Docker are not provisioned solely for tests; no local runtime pass or
+new hosted result is claimed. New callbacks and cases await exact-SHA Full/Fast/
+Docs feedback.
+
+**Stop / remaining:** Publish only these seven paths with expected-d7fe9fe main
+guard; verify parent/tree/message/blobs/scope and applicable exact-SHA CI creation,
+queueing or startup, then STOP without waiting. Next registered B3 work remains
+bounded HISTORY/exact-version/replay finalization and managed-flush/real-executor/
+native composition, followed by private publisher/application/legacy/REST cutover
+and final acceptance. This increment selects no further stage, deployment,
+release, numerical simulator or OT action.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

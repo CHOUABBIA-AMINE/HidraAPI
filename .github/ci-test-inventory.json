@@ -92,6 +92,11 @@
         "exactReplayOfEveryCommandRequiresFreshNativeAuthorityWithoutActiveParty",
         "failedNativeAcquisitionCannotReachOrganizationOrParty",
         "finalGuardRequiresProofAndFinalPreparationAndCannotBeRetried",
+        "finalPolicyPreparationFailureAndCallbackInvalidationPoisonTheOriginalHolder",
+        "finalPolicyReadPreparesWithOwnersThenGuardsWithoutOwnerCallbacks",
+        "finalPolicyReadRejectsForeignCoordinatorThreadAndReplacedHolderBeforeGuard",
+        "finalPolicyReadRejectsMissingPreparationUnsupportedHistoryAndRepeat",
+        "finalPolicyReadRejectsSuspensionRollbackAndPostGuardOwnerQueries",
         "finalPreparationRechecksOwnersAndGuardAndBeforeCommitPerformNoOwnerCallbacks",
         "foreignCoordinatorCannotReuseAnIssuedReadHandle",
         "foreignCoordinatorCannotWriteOrConsumeTheOriginalPermit",
@@ -114,6 +119,7 @@
         "preparationCallsNativeOwnerOnlyOutsideTransaction",
         "preparationIsOneUseAndPreviewFailureCannotBecomeAuthority",
         "preparedGuardCannotRunOnAnotherCoordinatorOrThread",
+        "preparedPolicyReadCannotCommitWithoutGuardOrRecoverSwallowedFailure",
         "proofCallbackFailureOrSuspensionPoisonsOriginalHolderAndCannotRetry",
         "proofHandoffOccursAfterClosedProvisionalAndRechecksOwnersWithoutReturningBytes",
         "proofPreparationRequiresCompletedProvisionalAndCanNeverBeRepeated",
@@ -139,7 +145,7 @@
       "lane": "unit-architecture",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinatorTest.java",
-      "source_sha256": "4bb1d06e2222d346e0957be8a502d15892947dec7a42dd5b3117ba19348b9115",
+      "source_sha256": "da7fa68f68d6c5e21a5111977b504d3fb71c6f291b8f051ef7343133c48a8942",
       "supports": []
     },
     {
@@ -8967,6 +8973,12 @@
         "immutableRowsAndHeadsRejectZeroRowUpdatesDeletesAndTruncate",
         "inactiveMissingOrMalformedCompanyAndUnitCannotCreateFacts",
         "independentConnectionActivationContendsWithoutDeadlockAndThenRejectsStaleCas",
+        "javaFinalPolicyCallbacksCommitWithoutOwnerQueriesPartyOrProofWrites",
+        "javaFinalPolicyCallbacksRejectDirectStorageAndRepeatGuardInvocations",
+        "javaFinalPolicyGuardRejectsAuthenticationReplacementAndPostGuardQueries",
+        "javaFinalPolicyGuardRejectsUnsafePrivilegeGrantedAfterPreparationAndCannotRetry",
+        "javaFinalPolicyPreparationRejectsRevokedNativeOwnerBeforeFreezing",
+        "javaFinalPolicyPreparationWithoutGuardVetoesPhysicalCommit",
         "jdbcCorrectionHistoryFindsThePriorPositionAndRetainsBothOwnerPairs",
         "jdbcExactVersionKeepsOnlyItsPinAfterValidatingTheCompleteEvent",
         "jdbcHistoryRejectsAnInvalidEventInsteadOfDroppingItsSnapshot",
@@ -9025,7 +9037,7 @@
       "lane": "postgres-integration",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java",
-      "source_sha256": "3a6422eae3f3e17dd0a6a57e5e38605010c61f5c6670fe5ff6a674459b952daa",
+      "source_sha256": "1de28f42ccf6d44da93bca982852aa1f1177110a4ccaaab4b821da99dc969370",
       "supports": []
     },
     {
@@ -9181,5 +9193,3 @@
     ]
   }
 }
-
-

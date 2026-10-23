@@ -117,6 +117,9 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         admin("CREATE ROLE "+CONFIG+" LOGIN PASSWORD '"+PASSWORD+"'");
         admin("GRANT USAGE ON SCHEMA public TO "+CONFIG);
         admin("GRANT EXECUTE ON FUNCTION public.hidra_org_activate_appointment_binding(text,text,text,bigint),public.hidra_org_activate_appointment_policy(text,text,bigint,jsonb),public.hidra_party_require_organization_configuration_reference(text) TO "+CONFIG);
+        admin("CREATE ROLE final_proof_admin LOGIN PASSWORD '"+PASSWORD+"'");
+        admin("GRANT USAGE ON SCHEMA public TO final_proof_admin");
+        admin("GRANT EXECUTE ON FUNCTION public.hidra_identity_org_commit_admin(bigint,text,uuid,name,bytea) TO final_proof_admin");
         partyType=id();unitType=id();
         admin("INSERT INTO public.hidra_party_type(id,code,status,created_at,updated_at) VALUES (?,?,'ACTIVE',now(),now())",partyType,partyType);
         admin("INSERT INTO public.hidra_org_unit_type(id,code,kind,active,created_at,updated_at) VALUES (?,?,'STATION',true,now(),now())",unitType,unitType);
@@ -521,6 +524,215 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
                 status.setRollbackOnly();return null;
             });
         }
+    }
+
+    private final Map<String,UUID> finalEvents=new java.util.HashMap<>();
+    private static final String FINAL_GUARD="public.hidra_org_appointment_final_guard(uuid,uuid,uuid,text,text,text,text,timestamptz,timestamptz,integer,bigint,bytea,bytea,timestamptz)";
+    private static final String FINAL_SQL="WITH observed AS MATERIALIZED (SELECT pg_catalog.clock_timestamp() AS t) SELECT public.hidra_org_appointment_final_guard(?::uuid,?::uuid,?::uuid,?,?,?,?,?::timestamptz,?::timestamptz,?,?,?::bytea,?::bytea,t) FROM observed";
+    private static final UUID SQL_AUDIENCE=UUID.fromString("11111111-1111-1111-1111-111111111111");
+    private static byte[] sqlKey(){var key=new byte[32];for(int i=0;i<key.length;i++)key[i]=(byte)(i+1);return key;}
+    private static void proofText(java.io.DataOutputStream out,String value) throws java.io.IOException {
+        var bytes=value.getBytes(java.nio.charset.StandardCharsets.UTF_8);out.writeInt(bytes.length);out.write(bytes);
+    }
+    private static void proofUuid(java.io.DataOutputStream out,UUID value) throws java.io.IOException {
+        out.writeLong(value.getMostSignificantBits());out.writeLong(value.getLeastSignificantBits());
+    }
+    private static long micros(Instant value){return Math.addExact(Math.multiplyExact(value.getEpochSecond(),1000000),value.getNano()/1000);}
+    private record SqlProof(byte[] frame,byte[] mac) { }
+
+    /** Independent raw JDBC/HMAC test harness. It never removes or changes production callbacks.
+     * Manually encoded native fields are synthetic; genuine native Java/executor acceptance remains separate. */
+    private final class FinalSqlSession implements AutoCloseable {
+        final Fixture f;final Session login;final Connection c;final long revision;
+        final UUID event=UUID.randomUUID(),binding=UUID.randomUUID(),session=UUID.randomUUID();
+        final String actor="final-sql-actor",request=id(),assignment=id(),scope,commandDigest,payloadDigest;
+        final Instant sampled,until;final int pid;final long xid;
+        FinalSqlSession(Fixture f,boolean expired,boolean invalidTypedCommand) throws Exception {
+            this(f,expired,invalidTypedCommand,0,START);
+        }
+        FinalSqlSession(Fixture f,boolean expired,boolean invalidTypedCommand,int attack,Instant from) throws Exception {
+            this.f=f;finalEvents.put(f.employee(),event);login=new Session(create(f,request));
+            admin("GRANT INSERT ON public.hidra_org_employee_assignment,public.hidra_org_appointment_lock_key,public.hidra_org_appointment_event TO "+login.role);
+            admin("GRANT EXECUTE ON FUNCTION public.hidra_org_appointment_exact_id(text),"+FINAL_GUARD+" TO "+login.role);
+            if(attack==1)admin("GRANT INSERT ON public.hidra_org_appointment_receipt TO "+login.role);
+            long prior;try(var owner=owner()){prior=Long.parseLong(scalar(owner,"SELECT coalesce(max(revision),0) FROM public.hidra_identity_org_commit_key_event"));}
+            try(var keyAdmin=DriverManager.getConnection(POSTGRES.getJdbcUrl(),"final_proof_admin",PASSWORD)){
+                revision=Long.parseLong(scalar(keyAdmin,"SELECT public.hidra_identity_org_commit_admin(?,'final-test-key',?::uuid,?::name,?)",prior,SQL_AUDIENCE.toString(),login.role,sqlKey()));
+            }
+            c=login.source.getConnection();c.setAutoCommit(false);
+            execute(c,"SELECT public.fixture_"+login.role+"()");
+            // Exact existing Organization order; the native fixture already holds Identity27 then Party2.
+            for(String table:List.of("employee","unit","position","appointment_binding_revision","appointment_binding_head",
+                    "appointment_policy_revision","appointment_policy_head","appointment_configuration_event","appointment_lock_key",
+                    "employee_assignment","appointment_event","appointment_receipt")){
+                if(attack==2 && table.equals("appointment_receipt"))continue;
+                boolean read=List.of("appointment_binding_revision","appointment_policy_revision","appointment_configuration_event","appointment_event","appointment_receipt").contains(table);
+                execute(c,"LOCK TABLE public.hidra_org_"+table+" IN "+(read?"ACCESS SHARE":"SHARE ROW EXCLUSIVE")+" MODE NOWAIT");
+            }
+            try(var st=c.createStatement();var r=st.executeQuery("SELECT pg_backend_pid(),txid_current(),clock_timestamp()")){
+                assertTrue(r.next());pid=r.getInt(1);xid=r.getLong(2);sampled=r.getTimestamp(3).toInstant().minusSeconds(expired?120:0);until=sampled.plusSeconds(60);
+            }
+            String cmd=JSON.writeValueAsString(Map.ofEntries(Map.entry("kind","CREATE"),Map.entry("companyPartyId",f.company()),
+                    Map.entry("requestId",request),Map.entry("employeeId",f.employee()),Map.entry("organizationUnitId",f.units().get(0)),
+                    Map.entry("positionId",f.position()),Map.entry("assignmentType","PRIMARY"),Map.entry("validFrom",from.toString()),
+                    Map.entry("expectedBindingRevision",invalidTypedCommand?2:1),Map.entry("expectedPolicyRevision",1)));
+            cmd=scalar(c,"SELECT (?::jsonb || jsonb_build_object('validTo',NULL))::text",cmd);
+            scope=scalar(c,"SELECT encode(sha256(convert_to(jsonb_build_object('family','organization-appointment-v1','companyPartyId',?::text)::text,'UTF8')),'hex')",f.company());
+            commandDigest=scalar(c,"SELECT encode(sha256(convert_to(?::jsonb::text,'UTF8')),'hex')",cmd);
+            execute(c,"INSERT INTO public.hidra_org_appointment_lock_key VALUES ('EMPLOYEE',?,'',''),('OCCUPANCY',?,? ,''),('REQUEST',?,?,?)",f.employee(),f.units().get(0),f.position(),actor,scope,request);
+            execute(c,"INSERT INTO public.hidra_org_employee_assignment(id,employee_id,organization_unit_id,position_id,assignment_type,valid_from,status,created_at,updated_at,appointment_version,binding_id,binding_revision,policy_id,policy_revision,last_event_id) VALUES (?,?,?,?,'PRIMARY',?::timestamptz,'ACTIVE',?::timestamptz,?::timestamptz,1,?,1,?,1,?::uuid)",assignment,f.employee(),f.units().get(0),f.position(),from.toString(),sampled.toString(),sampled.toString(),f.units().get(0),f.policy(),event.toString());
+            String payload=scalar(c,"SELECT jsonb_build_object('command',?::jsonb,'before',NULL,'after',jsonb_build_object('assignment',to_jsonb(a),'binding',to_jsonb(b)),'successor',NULL)::text FROM public.hidra_org_employee_assignment a JOIN public.hidra_org_appointment_binding_revision b ON b.binding_id=a.binding_id AND b.revision=a.binding_revision WHERE a.id=?",cmd,assignment);
+            payloadDigest=scalar(c,"SELECT encode(sha256(convert_to(?::text,'UTF8')),'hex')",payload);
+            execute(c,"INSERT INTO public.hidra_org_appointment_event(event_id,operation,assignment_id,employee_id,company_party_id,policy_id,policy_revision,canonical_payload,command_sha256,actor_binding_id,actor_session_id,actor_user_id,sampled_at,valid_until,backend_pid,transaction_id) VALUES (?::uuid,'CREATE',?,?,?,?,1,?,?,?::uuid,?::uuid,?,?::timestamptz,?::timestamptz,?,?)",event.toString(),assignment,f.employee(),f.company(),f.policy(),payload.getBytes(java.nio.charset.StandardCharsets.UTF_8),commandDigest,binding.toString(),session.toString(),actor,sampled.toString(),until.toString(),pid,xid);
+        }
+        SqlProof proof(String unit,String payloadHash) throws Exception {
+            var bytes=new java.io.ByteArrayOutputStream();var out=new java.io.DataOutputStream(bytes);
+            proofText(out,"HIDRA/IDENTITY/ORG-APPOINTMENT-COMMIT/1");out.writeInt(1);proofUuid(out,SQL_AUDIENCE);
+            proofText(out,login.role);proofText(out,"final-test-key");out.writeLong(revision);
+            byte[] nonce=new byte[32];new java.security.SecureRandom().nextBytes(nonce);out.write(nonce);
+            proofUuid(out,binding);proofUuid(out,session);proofText(out,actor);proofText(out,"CREATE");out.writeInt(1);
+            proofText(out,f.company());proofText(out,unit);proofText(out,f.employee());
+            out.writeLong(micros(sampled));out.writeLong(micros(until));out.writeLong(micros(until));out.writeInt(pid);out.writeLong(xid);
+            proofUuid(out,event);out.write(java.util.HexFormat.of().parseHex(commandDigest));out.write(java.util.HexFormat.of().parseHex(payloadHash));
+            var frame=bytes.toByteArray();var mac=javax.crypto.Mac.getInstance("HmacSHA256");mac.init(new javax.crypto.spec.SecretKeySpec(sqlKey(),"HmacSHA256"));
+            return new SqlProof(frame,mac.doFinal(frame));
+        }
+        SqlProof proof() throws Exception {return proof(f.units().get(0),payloadDigest);}
+        void guard(SqlProof proof) throws SQLException {guard(proof,request);}
+        void guard(SqlProof proof,String requested) throws SQLException {
+            assertEquals("t",scalar(c,FINAL_SQL,event.toString(),binding.toString(),session.toString(),actor,scope,requested,
+                    commandDigest,sampled.toString(),until.toString(),pid,xid,proof.frame(),proof.mac()));
+        }
+        @Override public void close() throws Exception {try{c.rollback();}finally{c.close();login.close();}}
+    }
+    private String finalCount(String table,String employee) throws Exception {
+        try(var c=owner()){
+            if(table.equals("hidra_identity_org_commit_proof_use") || table.equals("hidra_org_appointment_receipt"))
+                return scalar(c,"SELECT count(*) FROM public."+table+" WHERE event_id=?::uuid",finalEvents.get(employee).toString());
+            return scalar(c,"SELECT count(*) FROM public."+table+" WHERE employee_id=?",employee);
+        }
+    }
+
+    @Test void realFinalSqlGuardAuthenticatesAndCommitsReceiptAndNonceAtomically() throws Exception {
+        var f=fixture(false);
+        try(var g=new FinalSqlSession(f,false,false)){
+            g.guard(g.proof());
+            assertEquals("0",finalCount("hidra_org_appointment_receipt",f.employee()));
+            assertEquals("0",finalCount("hidra_identity_org_commit_proof_use",f.employee()));
+            g.c.commit();
+        }
+        assertEquals("1",finalCount("hidra_org_appointment_receipt",f.employee()));
+        assertEquals("1",finalCount("hidra_identity_org_commit_proof_use",f.employee()));
+        assertEquals("1",finalCount("hidra_org_employee_assignment",f.employee()));
+    }
+
+    @Test void realFinalSqlGuardRollbackRemovesProjectionKeysEventReceiptAndNonce() throws Exception {
+        var f=fixture(false);
+        try(var g=new FinalSqlSession(f,false,false)){g.guard(g.proof());g.c.rollback();}
+        for(String table:List.of("hidra_org_employee_assignment","hidra_org_appointment_event","hidra_org_appointment_receipt","hidra_identity_org_commit_proof_use"))assertEquals("0",finalCount(table,f.employee()));
+        try(var c=owner()){assertEquals("0",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_lock_key WHERE kind='EMPLOYEE' AND key_one=?",f.employee()));}
+    }
+
+    @Test void realFinalSqlGuardRejectsForgedMacAndValidMacForForeignScopeOrPayload() throws Exception {
+        for(int variant=0;variant<3;variant++){
+            var f=fixture(false);
+            try(var g=new FinalSqlSession(f,false,false)){
+                var proof=variant==1?g.proof(f.units().get(1),g.payloadDigest):variant==2?g.proof(f.units().get(0),"00".repeat(32)):g.proof();
+                if(variant==0)proof.mac()[0]^=1;
+                assertThrows(SQLException.class,() -> g.guard(proof));g.c.rollback();
+            }
+            assertEquals("0",finalCount("hidra_org_appointment_receipt",f.employee()));
+        }
+    }
+
+    @Test void realFinalSqlGuardRejectsChangedRequestAndExpiredNativeWindow() throws Exception {
+        for(boolean expired:List.of(false,true)){
+            var f=fixture(false);
+            try(var g=new FinalSqlSession(f,expired,false)){
+                var proof=g.proof();assertThrows(SQLException.class,() -> g.guard(proof,expired?g.request:"other-request"));g.c.rollback();
+            }
+            assertEquals("0",finalCount("hidra_org_employee_assignment",f.employee()));
+        }
+    }
+
+    @Test void realFinalSqlGuardDeferredTypedFailureRollsBackProofUseAndReceipt() throws Exception {
+        var f=fixture(false);
+        try(var g=new FinalSqlSession(f,false,true)){
+            var proof=g.proof();assertThrows(SQLException.class,() -> g.guard(proof));g.c.rollback();
+        }
+        assertEquals("0",finalCount("hidra_org_appointment_receipt",f.employee()));
+        assertEquals("0",finalCount("hidra_identity_org_commit_proof_use",f.employee()));
+    }
+
+    @Test void realFinalSqlGuardCannotRedeemEventTwiceEvenInSameTransaction() throws Exception {
+        var f=fixture(false);
+        try(var g=new FinalSqlSession(f,false,false)){
+            var proof=g.proof();g.guard(proof);var save=g.c.setSavepoint();
+            assertThrows(SQLException.class,() -> g.guard(proof));g.c.rollback(save);g.c.releaseSavepoint(save);g.c.commit();
+        }
+        assertEquals("1",finalCount("hidra_org_appointment_receipt",f.employee()));
+        assertEquals("1",finalCount("hidra_identity_org_commit_proof_use",f.employee()));
+    }
+
+    @Test void realFinalSqlGuardRejectsSameTransactionProjectionAndLegacyPeerSubstitution() throws Exception {
+        for(boolean peer:List.of(false,true)){
+            var f=fixture(false);
+            try(var g=new FinalSqlSession(f,false,false)){
+                var proof=g.proof();
+                if(peer)execute(g.c,"INSERT INTO public.hidra_org_employee_assignment(id,employee_id,organization_unit_id,position_id,assignment_type,valid_from,status,created_at,updated_at) VALUES (?,?,?,?,'PRIMARY',?::timestamptz,'ACTIVE',now(),now())",id(),f.employee(),f.units().get(2),f.position(),START.toString());
+                else execute(g.c,"UPDATE public.hidra_org_employee_assignment SET appointment_version=2,last_event_id=?::uuid WHERE id=?",id(),g.assignment);
+                assertThrows(SQLException.class,() -> g.guard(proof));g.c.rollback();
+            }
+            assertEquals("0",finalCount("hidra_org_employee_assignment",f.employee()));
+        }
+    }
+
+    @Test void finalSqlFunctionsHaveClosedAclAndNoOrdinaryReceiptOrPrivateVerifierAccess() throws Exception {
+        var f=fixture(false);
+        try(var s=new Session(create(f,id()));var c=s.source.getConnection()){
+            for(String signature:List.of(FINAL_GUARD,"public.hidra_org_appointment_final_context()","public.hidra_org_appointment_final_fingerprint(regclass)","public.hidra_identity_org_commit_verify_consume(bytea,bytea,jsonb)"))
+                assertEquals("f",scalar(c,"SELECT has_function_privilege(current_user,?,'EXECUTE')",signature));
+            assertEquals("f",scalar(c,"SELECT has_table_privilege(current_user,'public.hidra_org_appointment_receipt','INSERT')"));
+        }
+        try(var c=owner()){
+            assertEquals("3",scalar(c,"SELECT count(*) FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.proname IN ('hidra_org_appointment_final_guard','hidra_org_appointment_final_context','hidra_org_appointment_final_fingerprint') AND NOT EXISTS(SELECT 1 FROM aclexplode(coalesce(p.proacl,acldefault('f',p.proowner))) a WHERE a.grantee=0 AND a.privilege_type='EXECUTE')"));
+        }
+        assertEquals("4691e7803cd1b3619472ddc29872a9f893adb5decbadbfe05e94779196e4a01b",java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(FINAL_SQL.getBytes(java.nio.charset.StandardCharsets.UTF_8))));
+    }
+
+    @Test void realFinalSqlGuardRejectsReceiptWritePrivilegeAndMissingOwnerFence() throws Exception {
+        for(int attack:List.of(1,2)){
+            var f=fixture(false);
+            try(var g=new FinalSqlSession(f,false,false,attack,START)){
+                var proof=g.proof();assertThrows(SQLException.class,() -> g.guard(proof));g.c.rollback();
+            }
+            assertEquals("0",finalCount("hidra_org_appointment_receipt",f.employee()));
+            assertEquals("0",finalCount("hidra_identity_org_commit_proof_use",f.employee()));
+        }
+    }
+
+    @Test void realFinalSqlGuardIndependentlyRejectsEmployeeOverlapAndPositionCapacityConflict() throws Exception {
+        for(boolean otherEmployee:List.of(false,true)){
+            var seeded=fixture();var target=seeded;
+            if(otherEmployee){
+                String employee=id();
+                admin("INSERT INTO public.hidra_org_employee(id,employee_number,employee_type,status,created_at,updated_at) VALUES (?,?,'PERMANENT','ACTIVE',now(),now())",employee,employee);
+                target=new Fixture(seeded.company(),employee,id(),seeded.position(),seeded.units(),seeded.policy(),id());
+            }
+            try(var g=new FinalSqlSession(target,false,false)){
+                var proof=g.proof();assertThrows(SQLException.class,() -> g.guard(proof));g.c.rollback();
+            }
+            assertEquals("0",finalCount("hidra_org_appointment_receipt",target.employee()));
+            assertEquals("0",finalCount("hidra_identity_org_commit_proof_use",target.employee()));
+        }
+    }
+
+    @Test void realFinalSqlGuardAllowsExactHalfOpenAdjacencyWithoutFalsePrimaryPeak() throws Exception {
+        var f=fixture(false);var boundary=START.plusSeconds(3600);seedCreate(f,boundary);
+        try(var g=new FinalSqlSession(f,false,false,0,boundary)){g.guard(g.proof());g.c.commit();}
+        assertEquals("1",finalCount("hidra_org_appointment_receipt",f.employee()));
+        assertEquals("1",finalCount("hidra_identity_org_commit_proof_use",f.employee()));
+        assertEquals("2",finalCount("hidra_org_employee_assignment",f.employee()));
     }
 
     private EmployeeAppointmentCommand.Create create(Fixture f,String request){

@@ -25848,6 +25848,118 @@ independently PARTIAL/BLOCKED. Publish exactly these seven paths with
 expected-9e47a1a main guard; verify parent/tree/message/blobs/scope, confirm
 exact-SHA Full/Fast/Docs creation/queue/start and STOP without awaiting completion.
 
+### 2026-10-23 — HAPI-778 B3 private authenticated final write guard source
+
+**Selection / exact message:** Owner Next/Continue continues the registered B3
+runtime envelope from main b24973e8d9285375685643bc3d7f527310e8d32c,
+parent9e47a1a2bebfb53d8f090e20689be1212411f118,
+tree6370bdc702259c6d81cad11530e9e8ba0260c162.
+[Full839](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39958971716),
+[Fast152](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39958971784)
+and [Docs529](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39958971805)
+completed SUCCESS. Current canonical governance/index/reconciliation, B3 and its
+native-proof amendment, actual schema/projection/typed-command/proof functions,
+source pins, storage/fixtures and executor were inspected. Retain exact message
+`feat(organization): persist protected appointment lifecycle and history`.
+
+**Finite source scope — one CREATE, four MODIFY, zero DELETE:**
+- CREATE src/main/resources/db/migration/V20261023_001__organization_appointment_final_write_guard.sql
+- MODIFY src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JdbcProtectedEmployeeAppointmentRepositoryAdapter.java
+- MODIFY src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java
+- MODIFY .github/ci-test-inventory.json, only that suite's added cases/source hash
+- MODIFY this append-only HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+The registered final-guard obligation was never installed by the previous
+immutable migrations. This collision-free additive successor supplies that
+existing obligation, not a new policy/owner or rewrite of applied history.
+All165 prior migration bodies were compared byte-for-byte with exact HEAD and
+remain unchanged. No table, login, grant, key activation, role default or route
+is created. No new dictionary ownership entry is needed: no relation is added.
+
+**SQL source delivered:** Three PUBLIC-revoked routines provide a fixed-path
+catalog fingerprint, final context check and the registered proof-bearing
+hidra_org_appointment_final_guard signature. Identity's actual caller/catalog
+and27 held native/key fences are required, followed by the exact14 held
+Party/Organization fences:41 total, without acquiring an earlier lock late.
+Regular permanent same-owner relations, closed schema/role privileges, immutable
+configuration/receipt writes,12 accepted physical fingerprints,15 accepted prior
+routine body hashes and the three new routines' ownership/ACL/security-definer/
+fixed-path/UTC settings are checked. The JDBC adapter adds only the three exact
+new prosrc hashes to its closed routine set; all old pins remain unchanged.
+
+The guard verifies actual PID/XID/window and scalar equality with the persisted
+event; canonical command/payload/request/scope; real immutable bindings and full
+physical after/successor snapshots; exact active policy and current destination
+binding/Party for newly selected references. Employee/unit/position eligibility
+is checked at the original sample with the narrowed expiry. All required typed
+employee/occupancy/request keys must exist under retained relation fences.
+Complete bounded conflict discovery includes foreign-company peers internally;
+unbound peers reject. The explicit symmetric type matrix, SINGLE_HOLDER capacity
+and PRIMARY concurrency sweep apply to the final active set, coalescing exact
+half-open boundaries. No private peer or native proof bytes are returned.
+
+Expected native proof context is built from the actual persisted event, complete
+snapshot-derived canonical company/unit vector, actual command and full payload
+digests, actor/binding/session, original sample/native deadline and narrowed
+event deadline. The existing private Identity HMAC verifier authenticates it and
+consumes the nonce in this same external statement. An actual database clock
+check precedes receipt insertion. SET CONSTRAINTS ALL IMMEDIATE then executes
+existing typed command, OLD/NEW projection, transfer and ledger completeness
+checks before the scalar true result. Exceptions are generic and abort the
+statement, rolling back proof use and receipt together. No scalar-only overload
+or public verification/signing API is installed.
+
+**Authored acceptance, pending hosted execution:** Preserve all38 prior real
+PostgreSQL method identities and add11 (49 total): independent raw JDBC/HMAC
+physical commit and outside-connection visibility; rollback of source/keys/event/
+receipt/nonce; forged MAC and valid MAC for foreign scope/payload; changed request
+and expired window; deferred typed-command failure after verifier; duplicate
+redemption; same-XID projection/legacy-peer substitution; closed routine/receipt/
+verifier ACLs and exact literal WRITE_GUARD hash; unsafe receipt-write privilege
+and missing owner fence; employee overlap/position capacity; exact adjacency
+without a false PRIMARY peak. Proof-use and receipt counts use the exact event
+UUID directly, so an absent event cannot hide an orphan nonce/receipt.
+
+The raw SQL harness uses real separated logins, migrated storage and an
+independent Java HMAC encoder with explicitly synthetic key/native authority
+fields. It does not remove or weaken any production callback. Existing Java
+coordinator/storage provisional commit vetoes remain unchanged. These tests
+prove only what hosted execution later establishes for the SQL layer; they do
+not establish genuine native authentication, application composition, real
+executor500ms timing or HTTP/industrial acceptance. No production writer is
+activated; final read guard and Java flush/final-guard integration remain open.
+
+**Actual validation / limits:** Both changed Java files pass installed Java17
+compiler-API syntax parsing only. Canonical inventory passes353 fast/354
+unit-architecture/455 active oracle/four historical classes and unchanged seven
+PostgreSQL partitions12/16/13/14/16/15/15; all32 inventory self-tests pass.
+All old cases/entries/weights/policies remain. New PostgreSQL source SHA256:
+03fb39c4206a98c550657514813c5f0313dfe79041cccef6b0693f4bf2e58594.
+Source inspection confirms three new routine body hashes match adapter pins,
+closed ACL/no activation, one verifier then receipt then deferred validation.
+This is not PostgreSQL parsing/execution evidence. Offline docs passes128
+records/8380 links/24 modules/921 tasks/25 phases before this insertion;
+offline OpenAPI passes257 paths/279 operations/267 schemas; whitespace passes.
+Maven/Java21/PostgreSQL/Docker are unavailable locally and are not provisioned
+solely to reproduce hosted CI. SQL installation and all11 new cases await CI.
+
+**Physical dictionary pending:** The166-migration fresh-schema catalog/history
+must be captured by this exact hosted source. The existing physical dictionary
+is preserved; no checksum, function or physical metadata is inferred or labeled
+newly captured. CI dictionary equality is not claimed. Reconcile the authentic
+new artifact under the existing separately registered artifact message after
+actual feedback; repair any installation/runtime failure first. This pending
+artifact duty follows AGENTS CI-first policy and is not a full-green claim.
+
+**Stop / remaining:** Publish exactly these five paths with expected-b24973e
+main guard; verify parent/tree/message/blobs/scope and confirm applicable exact-
+SHA Full/Fast/Docs creation/queue/start, then STOP. HAPI-778 remains PARTIAL/
+IN_PROGRESS and HAPI-590 independently PARTIAL/BLOCKED. After feedback and
+artifact repair, continue B3 read guard, managed-flush/final-proof/receipt Java
+integration, real-executor/native commit acceptance, complete history/cursors,
+application/private publisher/legacy/REST cutover and governance closure. No
+future stage, simulator, release, deployment or live OT action is executed here.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

@@ -130,7 +130,8 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         admin("UPDATE public.hidra_party_party SET status='SUSPENDED' WHERE id=?",historical.company());
     }
 
-    private Fixture fixture() throws Exception {
+    private Fixture fixture() throws Exception { return fixture(true); }
+    private Fixture fixture(boolean seeded) throws Exception {
         var f=new Fixture(id(),id(),id(),id(),List.of(id(),id(),id()),id(),id());
         admin("INSERT INTO public.hidra_party_party(id,code,party_type_id,legal_name,country_code,status,created_at,updated_at) VALUES (?,?,?,'Synthetic company','DZ','ACTIVE',now(),now())",f.company(),f.company(),partyType);
         admin("INSERT INTO public.hidra_org_employee(id,employee_number,employee_type,status,created_at,updated_at) VALUES (?,?,'PERMANENT','ACTIVE',now(),now())",f.employee(),f.employee());
@@ -141,18 +142,22 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
             for(var unit:f.units())scalar(config,"SELECT public.hidra_org_activate_appointment_binding(?,?,?,0)",unit,unit,f.company());
             scalar(config,"SELECT public.hidra_org_activate_appointment_policy(?,?,0,?::jsonb)",f.policy(),f.company(),policy());config.commit();
         }
+        if(seeded)seedCreate(f,null);
+        return f;
+    }
+
+    private void seedCreate(Fixture f,Instant end) throws Exception {
         try(var c=owner()){
             c.setAutoCommit(false);String event=id();
-            execute(c,"INSERT INTO public.hidra_org_employee_assignment(id,employee_id,organization_unit_id,position_id,assignment_type,valid_from,status,created_at,updated_at,appointment_version,binding_id,binding_revision,policy_id,policy_revision,last_event_id) VALUES (?,?,?,?,'PRIMARY',?::timestamptz,'ACTIVE',transaction_timestamp(),transaction_timestamp(),1,?,1,?,1,?::uuid)",f.assignment(),f.employee(),f.units().get(0),f.position(),START.toString(),f.units().get(0),f.policy(),event);
+            execute(c,"INSERT INTO public.hidra_org_employee_assignment(id,employee_id,organization_unit_id,position_id,assignment_type,valid_from,valid_to,status,created_at,updated_at,appointment_version,binding_id,binding_revision,policy_id,policy_revision,last_event_id) VALUES (?,?,?,?,'PRIMARY',?::timestamptz,?::timestamptz,'ACTIVE',transaction_timestamp(),transaction_timestamp(),1,?,1,?,1,?::uuid)",f.assignment(),f.employee(),f.units().get(0),f.position(),START.toString(),end==null?null:end.toString(),f.units().get(0),f.policy(),event);
             String command=JSON.writeValueAsString(Map.ofEntries(
                     Map.entry("kind","CREATE"),Map.entry("companyPartyId",f.company()),Map.entry("requestId",f.createRequest()),
                     Map.entry("employeeId",f.employee()),Map.entry("organizationUnitId",f.units().get(0)),Map.entry("positionId",f.position()),
                     Map.entry("assignmentType","PRIMARY"),Map.entry("validFrom",START.toString()),
                     Map.entry("expectedBindingRevision",1),Map.entry("expectedPolicyRevision",1)));
-            command=scalar(c,"SELECT ?::jsonb || jsonb_build_object('validTo',NULL)",command);
+            command=scalar(c,"SELECT ?::jsonb || jsonb_build_object('validTo',?::text)",command,end==null?null:end.toString());
             ledger(c,f,event,"CREATE",command,"null");c.commit();
         }
-        return f;
     }
 
     private static EmployeeAppointmentCommand.Correct correction(Fixture f,String request,long version,String unit){
@@ -191,6 +196,7 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         final JdbcProtectedEmployeeAppointmentRepositoryAdapter storage;
         final EmployeeAppointmentCommand command;
         String actor="synthetic-actor";
+        long backdateSeconds;
         ProtectedEmployeeAppointmentRepositoryPort.DescriptorPreview previewOverride;
         Session(EmployeeAppointmentCommand command) throws Exception {
             this.command=command;
@@ -218,7 +224,7 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
                 var request=new Request(Action.valueOf(command.kind().name()),preview.companyUnits(),preview.employeeId());
                 return jdbc.queryForObject("SELECT pg_backend_pid(),txid_current(),clock_timestamp()",(r,i) ->
                         new Contribution(request,request.requirements().stream().map(q -> new ResourceDecision(q,Decision.PERMIT)).toList(),
-                                "synthetic-binding","synthetic-session",actor,r.getTimestamp(3).toInstant(),r.getTimestamp(3).toInstant().plusSeconds(60),r.getInt(1),r.getLong(2)));
+                                "synthetic-binding","synthetic-session",actor,r.getTimestamp(3).toInstant().minusSeconds(backdateSeconds),r.getTimestamp(3).toInstant().plusSeconds(60),r.getInt(1),r.getLong(2)));
             });
         }
         ProtectedEmployeeAppointmentRepositoryPort.Admission acquire(){
@@ -251,7 +257,7 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         classify(correction(baseline,id(),1,baseline.units().get(1)),ReferenceUse.CURRENT);
         classify(new EmployeeAppointmentCommand.Transfer(id(),baseline.company(),baseline.assignment(),1,
                 baseline.units().get(1),baseline.position(),AssignmentType.ACTING,START.plusSeconds(3600),null,1,1,REASON),ReferenceUse.CURRENT);
-        try(var c=owner()){assertEquals("4",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_event"));}
+        try(var c=owner()){assertEquals("4",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_event WHERE assignment_id IN (?,?)",baseline.assignment(),historical.assignment()));}
     }
 
     @Test void committedCreateReceiptReplaysOnlyForItsOriginalActorAndExactCommand() throws Exception {
@@ -344,6 +350,169 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
             assertThrows(AccessDeniedException.class,() -> s.storage.referenceUse(ticket,originalCorrection,sample));
             assertTrue(s.poisoned());status.setRollbackOnly();return null;
         });}
+    }
+
+    private void prepare(EmployeeAppointmentCommand command,boolean allowed) throws Exception {
+        try(var s=new Session(command)){s.tx.execute(status -> {
+            int events=s.jdbc.queryForObject("SELECT count(*) FROM public.hidra_org_appointment_event",Integer.class);
+            int assignments=s.jdbc.queryForObject("SELECT count(*) FROM public.hidra_org_employee_assignment",Integer.class);
+            var ticket=s.acquire();s.storage.contribute(ticket);
+            if(allowed){
+                assertDoesNotThrow(() -> s.storage.prepareMutation(ticket,command));
+                assertDoesNotThrow(() -> s.storage.prepareMutation(ticket,command));
+            }else{
+                assertEquals("Protected appointment admission unavailable",assertThrows(AccessDeniedException.class,
+                        () -> s.storage.prepareMutation(ticket,command)).getMessage());assertTrue(s.poisoned());
+            }
+            assertEquals(events,s.jdbc.queryForObject("SELECT count(*) FROM public.hidra_org_appointment_event",Integer.class));
+            assertEquals(assignments,s.jdbc.queryForObject("SELECT count(*) FROM public.hidra_org_employee_assignment",Integer.class));
+            status.setRollbackOnly();return null;
+        });}
+    }
+    private void activatePolicy(Fixture f,String value) throws Exception {
+        try(var c=DriverManager.getConnection(POSTGRES.getJdbcUrl(),CONFIG,PASSWORD)){
+            scalar(c,"SELECT public.hidra_org_activate_appointment_policy(?,?,1,?::jsonb)",f.policy(),f.company(),value);
+        }
+    }
+
+    @Test void everyFreshKindBuildsStablePrivatePlansWithoutMutatingTheDatabase() throws Exception {
+        var empty=fixture(false);prepare(create(empty,id()),true);
+        var f=fixture();prepare(end(f,1),true);
+        prepare(correction(f,id(),1,f.units().get(0)),true);prepare(correction(f,id(),1,f.units().get(1)),true);
+        prepare(new EmployeeAppointmentCommand.Transfer(id(),f.company(),f.assignment(),1,f.units().get(1),f.position(),
+                AssignmentType.ACTING,START.plusSeconds(3600),null,1,1,REASON),true);
+        try(var c=owner()){assertEquals("1",scalar(c,"SELECT appointment_version FROM public.hidra_org_employee_assignment WHERE id=?",f.assignment()));}
+    }
+
+    @Test void planningRequiresExactCurrentPolicyAndDestinationBindingRevisions() throws Exception {
+        var f=fixture(false);activatePolicy(f,policy());prepare(create(f,id()),false);
+        try(var c=DriverManager.getConnection(POSTGRES.getJdbcUrl(),CONFIG,PASSWORD)){
+            scalar(c,"SELECT public.hidra_org_activate_appointment_binding(?,?,?,1)",f.units().get(0),f.units().get(0),f.company());
+        }
+        prepare(new EmployeeAppointmentCommand.Create(id(),f.company(),f.employee(),f.units().get(0),f.position(),AssignmentType.PRIMARY,START,null,1,2),false);
+        prepare(new EmployeeAppointmentCommand.Create(id(),f.company(),f.employee(),f.units().get(0),f.position(),AssignmentType.PRIMARY,START,null,2,2),true);
+    }
+
+    @Test void retainedPlanningKeepsTheOriginalCompanyPinAfterRebindAndPartySuspension() throws Exception {
+        var f=fixture();var other=fixture(false);
+        try(var c=DriverManager.getConnection(POSTGRES.getJdbcUrl(),CONFIG,PASSWORD)){
+            scalar(c,"SELECT public.hidra_org_activate_appointment_binding(?,?,?,1)",f.units().get(0),f.units().get(0),other.company());
+        }
+        admin("UPDATE public.hidra_party_party SET status='SUSPENDED' WHERE id=?",f.company());
+        prepare(end(f,1),true);prepare(correction(f,id(),1,f.units().get(0)),true);
+    }
+
+    @Test void completeEmployeeConflictsIncludeProtectedPeersFromAnotherCompany() throws Exception {
+        var selected=fixture(false);var other=fixture(false);
+        seedCreate(new Fixture(other.company(),selected.employee(),id(),other.position(),other.units(),other.policy(),id()),null);
+        prepare(create(selected,id()),false);
+    }
+
+    @Test void explicitPositionCapacityControlsOtherEmployeesWithoutInferringADefault() throws Exception {
+        var f=fixture();var other=fixture(false);
+        var occupant=new Fixture(f.company(),other.employee(),id(),f.position(),f.units(),f.policy(),id());
+        prepare(create(occupant,id()),false);
+        activatePolicy(f,policy().replace("SINGLE_HOLDER","UNRESTRICTED"));
+        prepare(new EmployeeAppointmentCommand.Create(id(),f.company(),other.employee(),f.units().get(0),f.position(),
+                AssignmentType.PRIMARY,START,null,1,2),true);
+    }
+
+    @Test void completeTypeMatrixAndPrimaryLimitAreIndependentlyEnforced() throws Exception {
+        var f=fixture();
+        prepare(new EmployeeAppointmentCommand.Create(id(),f.company(),f.employee(),f.units().get(0),f.position(),
+                AssignmentType.SECONDARY,START,null,1,1),false);
+        activatePolicy(f,policy().replace("false","true").replace("SINGLE_HOLDER","UNRESTRICTED"));
+        prepare(new EmployeeAppointmentCommand.Create(id(),f.company(),f.employee(),f.units().get(0),f.position(),
+                AssignmentType.SECONDARY,START,null,1,2),true);
+        prepare(new EmployeeAppointmentCommand.Create(id(),f.company(),f.employee(),f.units().get(0),f.position(),
+                AssignmentType.PRIMARY,START,null,1,2),false);
+    }
+
+    @Test void unboundLegacyConflictCannotDisappearThroughAnInnerJoinOrInventedPin() throws Exception {
+        var f=fixture(false);
+        admin("INSERT INTO public.hidra_org_employee_assignment(id,employee_id,organization_unit_id,position_id,assignment_type,valid_from,status,created_at,updated_at) VALUES (?,?,?,?,'SECONDARY',?::timestamptz,'ACTIVE',now(),now())",id(),f.employee(),f.units().get(0),f.position(),START.toString());
+        prepare(create(f,id()),false);
+    }
+
+    @Test void activeHalfOpenIntervalsPermitAnExactlyAdjacentAppointment() throws Exception {
+        var f=fixture(false);Instant boundary=Instant.now().plusSeconds(3600).truncatedTo(java.time.temporal.ChronoUnit.MICROS);
+        seedCreate(f,boundary);
+        prepare(new EmployeeAppointmentCommand.Create(id(),f.company(),f.employee(),f.units().get(0),f.position(),
+                AssignmentType.PRIMARY,boundary,null,1,1),true);
+    }
+
+    private void seedMany(Fixture f,int count) throws Exception {
+        String prefix=id()+"-";
+        try(var c=owner()){
+            c.setAutoCommit(false);
+            execute(c,"INSERT INTO public.hidra_org_employee_assignment(id,employee_id,organization_unit_id,position_id,assignment_type,valid_from,status,created_at,updated_at,appointment_version,binding_id,binding_revision,policy_id,policy_revision,last_event_id) SELECT ?::text||n,?,?,?,'PRIMARY',?::timestamptz,'ACTIVE',transaction_timestamp(),transaction_timestamp(),1,?,1,?,2,gen_random_uuid() FROM generate_series(1,?) n",prefix,f.employee(),f.units().get(0),f.position(),START.toString(),f.units().get(0),f.policy(),count);
+            execute(c,"""
+                    INSERT INTO public.hidra_org_appointment_event(event_id,operation,assignment_id,employee_id,
+                        company_party_id,policy_id,policy_revision,canonical_payload,command_sha256,actor_binding_id,
+                        actor_session_id,actor_user_id,sampled_at,valid_until,backend_pid,transaction_id)
+                    SELECT a.last_event_id,'CREATE',a.id,a.employee_id,?::text,a.policy_id,a.policy_revision,
+                        convert_to(p.body::text,'UTF8'),encode(sha256(convert_to((p.body->'command')::text,'UTF8')),'hex'),
+                        gen_random_uuid(),gen_random_uuid(),'synthetic-actor',transaction_timestamp(),
+                        transaction_timestamp()+interval '1 hour',pg_backend_pid(),txid_current()
+                      FROM public.hidra_org_employee_assignment a
+                     CROSS JOIN LATERAL (SELECT jsonb_build_object('command',jsonb_build_object(
+                         'kind','CREATE','requestId',a.id,'companyPartyId',?::text,'employeeId',a.employee_id,
+                         'organizationUnitId',a.organization_unit_id,'positionId',a.position_id,'assignmentType',a.assignment_type,
+                         'validFrom',a.valid_from,'validTo',a.valid_to,'expectedBindingRevision',a.binding_revision,
+                         'expectedPolicyRevision',a.policy_revision),'before',NULL,
+                         'after',public.hidra_org_appointment_snapshot(a),'successor',NULL) body) p
+                     WHERE a.employee_id=? AND a.id LIKE ?
+                    """,f.company(),f.company(),f.employee(),prefix+"%");
+            execute(c,"INSERT INTO public.hidra_org_appointment_receipt(event_id,actor_user_id,scope_key,request_id,command_sha256,canonical_result,guarded_at,backend_pid,transaction_id) SELECT event_id,actor_user_id,encode(sha256(convert_to(jsonb_build_object('family','organization-appointment-v1','companyPartyId',company_party_id)::text,'UTF8')),'hex'),convert_from(canonical_payload,'UTF8')::jsonb->'command'->>'requestId',command_sha256,canonical_payload,sampled_at,backend_pid,transaction_id FROM public.hidra_org_appointment_event WHERE employee_id=? AND assignment_id LIKE ?",f.employee(),prefix+"%");
+            execute(c,"SET CONSTRAINTS ALL IMMEDIATE");c.commit();
+        }
+    }
+
+    @Test void completeConflictBoundAccepts1024PeersAndRejectsThe1025thWithoutTruncation() throws Exception {
+        var f=fixture(false);
+        activatePolicy(f,policy().replace("false","true").replace("SINGLE_HOLDER","UNRESTRICTED")
+                .replace("\"maxConcurrentPrimary\":1","\"maxConcurrentPrimary\":10000"));
+        seedMany(f,1024);
+        var command=new EmployeeAppointmentCommand.Create(id(),f.company(),f.employee(),f.units().get(0),f.position(),AssignmentType.PRIMARY,START,null,1,2);
+        prepare(command,true);seedMany(f,1);prepare(command,false);
+    }
+
+    @Test void currentEmployeeUnitAndPositionEligibilityMustHoldAtTheNativeSample() throws Exception {
+        for(int variant=0;variant<6;variant++){
+            var f=fixture(false);
+            switch(variant){
+                case 0 -> admin("UPDATE public.hidra_org_employee SET status='SUSPENDED' WHERE id=?",f.employee());
+                case 1 -> admin("UPDATE public.hidra_org_employee SET hired_at=clock_timestamp()+interval '1 hour' WHERE id=?",f.employee());
+                case 2 -> admin("UPDATE public.hidra_org_employee SET terminated_at=clock_timestamp()-interval '1 minute' WHERE id=?",f.employee());
+                case 3 -> admin("UPDATE public.hidra_org_unit SET status='INACTIVE' WHERE id=?",f.units().get(0));
+                case 4 -> admin("UPDATE public.hidra_org_unit SET valid_from=clock_timestamp()+interval '1 hour' WHERE id=?",f.units().get(0));
+                case 5 -> admin("UPDATE public.hidra_org_position SET status='INACTIVE' WHERE id=?",f.position());
+                default -> throw new AssertionError();
+            }
+            prepare(create(f,id()),false);
+        }
+    }
+
+    @Test void scheduledEmployeeExpiryNarrowsThePhysicalWindowWithoutWaitingOrAnotherWriter() throws Exception {
+        var f=fixture(false);var command=create(f,id());
+        admin("UPDATE public.hidra_org_employee SET terminated_at=clock_timestamp()-interval '30 seconds' WHERE id=?",f.employee());
+        try(var s=new Session(command)){
+            s.backdateSeconds=60; // Mocked native sample only: deterministic physical deadline mechanics.
+            s.tx.execute(status -> {
+                var ticket=s.acquire();s.storage.contribute(ticket);
+                assertThrows(AccessDeniedException.class,() -> s.storage.prepareMutation(ticket,command));
+                assertTrue(s.poisoned());assertThrows(AccessDeniedException.class,() -> s.storage.requireCurrent(ticket));
+                status.setRollbackOnly();return null;
+            });
+        }
+    }
+
+    @Test void committedReplayDoesNotReevaluatePresentMutationPolicyOrOrganizationEligibility() throws Exception {
+        var f=fixture();var command=correction(f,id(),1,f.units().get(1));commitCorrection(f,command);
+        activatePolicy(f,policy());
+        admin("UPDATE public.hidra_org_employee SET status='SUSPENDED' WHERE id=?",f.employee());
+        admin("UPDATE public.hidra_org_position SET status='INACTIVE' WHERE id=?",f.position());
+        prepare(command,true);
     }
 
     @Test void independentSourceWriterCannotPassTheRetainedClassificationFence() throws Exception {

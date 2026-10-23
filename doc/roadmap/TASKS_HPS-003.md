@@ -25348,6 +25348,122 @@ these four paths with expected-a67e390 main guard, verify parent/tree/message/ra
 blobs/scope, observe exact-SHA Full/Fast/Docs queued/started and STOP. The next
 registered work continues this same B3 runtime envelope after actual CI feedback.
 
+### 2026-10-23 — HAPI-778 B3 locked policy, complete conflicts and private domain plans
+
+**Selection / exact message:** Owner Next continues the existing B3 runtime
+envelope from main 7e404731cf14aee0f862d7055345b6f1102300e1, tree
+7d37aa6d6d8cc7ba2941015abbda2036a45059b6.
+[Full834](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39916851431),
+[Fast147](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39916851414)
+and [Docs524](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39916851412)
+completed SUCCESS on that exact source. Current AGENTS, roadmap/index,
+reconciliation and B3 evidence, actual immutable configuration/projection SQL,
+public owner interfaces, existing Domain rules and tests were reviewed.
+No new task, ownership choice, permissive policy or owner export is introduced.
+Keep `feat(organization): persist protected appointment lifecycle and history`.
+
+**Finite scope — four MODIFY, zero CREATE/DELETE:**
+
+- src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JdbcProtectedEmployeeAppointmentRepositoryAdapter.java
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java
+- .github/ci-test-inventory.json, this existing suite's cases and source hash only
+- this append-only HAPI-778 evidence in doc/roadmap/TASKS_HPS-003.md
+
+**Delivered SELECT-only preparation:** The existing unwired adapter gains
+prepareMutation, a void method that authenticates its live private admission,
+rechecks the existing exact command/replay classification and retains an immutable
+private plan. It exposes no plan, foreign peer, result, receipt, permit or write
+capability. An admitted historical replay bypasses current mutation policy,
+source projection and Organization eligibility; fresh native authority and the
+complete original receipt scope are still required by the existing classifier.
+
+Fresh mutations resolve the current company's exact policy head/revision and
+administrator event, full after-image and canonical policy bytes/digest, then
+decode all sixteen explicit symmetric cells through the same Domain decoder used
+by READ_POLICY. No default, inferred capacity or missing-field fallback is added.
+The active company policy is resolved independently of the current unit binding:
+END and same-unit CORRECT retain their complete immutable source binding even
+after unit rebinding or Party suspension. CURRENT CREATE/TRANSFER/moved CORRECT
+must resolve the exact current destination binding/revision and activation event
+for the selected company. Every applicable expected binding/policy revision must
+match. Historical source policy/binding references remain pinned before-images.
+
+One bounded SQL query observes the source plus every ACTIVE assignment for the
+affected employee or either affected unit/position, including foreign companies.
+LEFT JOIN diagnostics refuse unbound/legacy or missing-policy peers rather than
+silently discarding them or assigning a current head. Exact IDs are checked before
+Domain models can normalize them. The1025-row probe rejects more than1024 complete
+observations; no count, foreign identity or partial conflict set escapes. SQL
+orders the full frozen set deterministically. Existing source CAS is rechecked
+through the native classifier and the exact source must appear in this set.
+
+The private plan builds CREATE or the existing pure END/TRANSFER/CORRECT Domain
+change at the single native sample. It preserves employee/assignment/createdAt,
+advances source version exactly once, creates a distinct version-one transfer
+successor, pins resulting policy revisions, retains full source binding facts and
+uses the existing ownership policy. The complete proposed set is checked through
+EmployeeAppointmentPolicy, including explicit overlap matrix, PRIMARY concurrency,
+position capacity and half-open intervals. Generated assignment IDs are private,
+stable across repeated preparation and checked for absence before new inserts.
+No source, successor, key, event or receipt is written.
+
+**Eligibility and clock:** Fresh planning checks the selected employee's ACTIVE
+status, hired/terminated bounds, each affected unit's ACTIVE half-open bounds and
+each position's ACTIVE status at the original native sample. Its private deadline
+is the minimum of native validUntil and all applicable employee termination/unit
+expiry times. Once retained, every storage requireCurrent additionally checks
+actual database time against this narrower deadline; locks alone cannot defeat
+scheduled expiry. Repeated planning revalidates the exact command, Domain results,
+revisions/events, complete peers, eligibility observations and deadline. Any
+substitution/failure poisons the original holder. This method remains data/policy
+preparation, NOT the genuine Party CURRENT eligibility read, executor admission,
+independent final crypto proof or commit observation.
+
+**Authored coverage / evidence limits:** Twelve new methods increase the existing
+PostgreSQL concurrency suite from9 to21 while preserving all previous identities.
+They cover all four fresh kinds/repeated stable planning/no DML; exact current
+policy/binding CAS; retained pins after rebind/Party suspension; foreign-company
+employee conflicts; explicit position capacity; separate type-matrix/PRIMARY
+limits; unbound legacy diagnostics; exact half-open adjacency;1024 valid peers
+accepted and1025 rejected under an explicitly permissive test policy; six current
+employee/unit/position eligibility failures; deterministic scheduled employee
+expiry with a deliberately backdated mocked sample and no sleep; and historical
+replay after present-day mutation eligibility/policy changes.
+
+Fixtures use actual full Flyway PostgreSQL16, restricted storage logins, real
+configuration administrator procedures, committed structurally checked ledger
+rows and actual owner relation locks. The original four-ledger regression count
+is now scoped to its two original assignment IDs so independent new fixtures do
+not invalidate its no-DML assertion; those four events and their cases remain.
+Identity is still mocked and the closed fixture definer still proves physical
+lock mechanics only. No genuine native PERMIT, Party selectability, HMAC-backed
+receipt,500ms end-to-end qualification or complete writer/HTTP workflow is claimed.
+Suite source SHA256:
+5c4761a779e161d48cccae4e4197a2383e583a19f3849d671218c33976c2dfee.
+
+**Completed local checks:** Compiler-API Java17 syntax parsing passes for both
+changed Java files, without Java21 type analysis/JUnit execution. Canonical
+inventory validates353 fast/354 unit-architecture/455 active oracle classes,
+four historical classes and unchanged seven partitions12/16/13/14/16/15/15;
+all32 inventory self-tests pass. Existing entries, cases, timing weights, lanes,
+archive policy and workflows are preserved. Offline docs validates128 documents,
+8380 relative links,24 modules,921 tasks and25 phases; offline OpenAPI retains257
+paths/279 operations/267 schemas; whitespace passes. Maven/Java21 and local
+PostgreSQL are unavailable and are not provisioned solely for testing. Hosted
+exact-source compilation and database execution remain pending under CI-first.
+
+**Remaining B3 / stop:** The adapter stays non-bean, incomplete and unwired.
+Connecting preparation to genuine CURRENT Party consumption, executor permit/provisional DML, post-write
+state transitions, independent proof-bearing final read/write guard and receipt,
+observed commit, complete history/cursors, application/legacy/REST cutover and
+native/concurrency/rollback acceptance remain. No migration, dictionary, public
+owner interface, executor SQL pin, API, workflow or frozen status changes.
+All165 migration bodies remain immutable. HAPI-778 stays PARTIAL/IN_PROGRESS;
+HAPI-590 independently PARTIAL/BLOCKED. Publish only these four paths on main
+with expected-7e40473 guard; verify parent/tree/message/raw blobs/scope, confirm
+applicable exact-SHA Full/Fast/Docs queued/started, then STOP. Continue only the
+registered B3 runtime envelope after actual CI feedback.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

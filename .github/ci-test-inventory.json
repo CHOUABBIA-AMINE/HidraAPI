@@ -9008,15 +9008,27 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "activeHalfOpenIntervalsPermitAnExactlyAdjacentAppointment",
         "classificationIsFrozenToTheExactCommandAndRechecksNativeRevocation",
         "committedCreateReceiptReplaysOnlyForItsOriginalActorAndExactCommand",
+        "committedReplayDoesNotReevaluatePresentMutationPolicyOrOrganizationEligibility",
+        "completeConflictBoundAccepts1024PeersAndRejectsThe1025thWithoutTruncation",
+        "completeEmployeeConflictsIncludeProtectedPeersFromAnotherCompany",
+        "completeTypeMatrixAndPrimaryLimitAreIndependentlyEnforced",
+        "currentEmployeeUnitAndPositionEligibilityMustHoldAtTheNativeSample",
+        "everyFreshKindBuildsStablePrivatePlansWithoutMutatingTheDatabase",
+        "explicitPositionCapacityControlsOtherEmployeesWithoutInferringADefault",
         "freshCommandsClassifyCurrentOrRetainedWithoutCreatingLedgerRows",
         "freshMutationRejectsStaleCasAndRetainedBindingRevisionSubstitution",
         "independentSourceWriterCannotPassTheRetainedClassificationFence",
         "originalCorrectionReplaysFromHistoricalPinsAfterLaterMoveRebindingAndPartySuspension",
+        "planningRequiresExactCurrentPolicyAndDestinationBindingRevisions",
         "receiptKeyRejectsChangedReasonVersionNullableBoundaryAndPolicyRevision",
         "replayRefusesAnIncompleteHistoricalOwnershipClosure",
-        "scalarContributionCopyCannotQualifyClassificationOrRestoreAPoisonedTicket"
+        "retainedPlanningKeepsTheOriginalCompanyPinAfterRebindAndPartySuspension",
+        "scalarContributionCopyCannotQualifyClassificationOrRestoreAPoisonedTicket",
+        "scheduledEmployeeExpiryNarrowsThePhysicalWindowWithoutWaitingOrAnotherWriter",
+        "unboundLegacyConflictCannotDisappearThroughAnInnerJoinOrInventedPin"
       ],
       "class": "dz.sh.hidra.modules.organization.infrastructure.persistence.EmployeeAppointmentConcurrencyPostgresIntegrationTest",
       "dependency_reason": "Actual PostgreSQL16 committed synthetic ledger, restricted login, exact command/actor/scope replay before source CAS and retained fence contention; native issuer is mocked and integrated writer acceptance remains pending; duration unmeasured.",
@@ -9024,7 +9036,7 @@
       "lane": "postgres-integration",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java",
-      "source_sha256": "714af942f3055e1edce34720f90da95f4bf419b9e525b4e022685718727446c3",
+      "source_sha256": "5c4761a779e161d48cccae4e4197a2383e583a19f3849d671218c33976c2dfee",
       "supports": []
     }
   ],

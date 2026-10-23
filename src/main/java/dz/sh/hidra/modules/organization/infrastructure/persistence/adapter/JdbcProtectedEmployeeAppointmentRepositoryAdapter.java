@@ -7,7 +7,7 @@
  *
  * @Name        : JdbcProtectedEmployeeAppointmentRepositoryAdapter
  * @CreatedOn   : 2026-10-22
- * @UpdatedOn   : 2026-10-22
+ * @UpdatedOn   : 2026-10-23
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -23,7 +23,13 @@ import dz.sh.hidra.modules.identity.application.contract.organization.Organizati
 import dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.CompanyUnit;
 import dz.sh.hidra.modules.organization.application.command.EmployeeAppointmentCommand;
 import dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult;
+import dz.sh.hidra.modules.organization.domain.model.CompanyBoundEmployeeAppointment;
+import dz.sh.hidra.modules.organization.domain.model.EmployeeAppointmentChange;
+import dz.sh.hidra.modules.organization.domain.model.EmployeeAssignment;
+import dz.sh.hidra.modules.organization.domain.model.OrganizationUnitCompanyBinding;
+import dz.sh.hidra.modules.organization.domain.policy.EmployeeAppointmentOwnershipPolicy;
 import dz.sh.hidra.modules.organization.domain.policy.EmployeeAppointmentPolicy;
+import dz.sh.hidra.modules.organization.domain.value.AssignmentStatus;
 import dz.sh.hidra.modules.organization.domain.value.AssignmentType;
 import dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery;
 import dz.sh.hidra.modules.organization.application.port.out.ProtectedEmployeeAppointmentRepositoryPort.DescriptorPreview;
@@ -31,6 +37,9 @@ import dz.sh.hidra.modules.organization.application.port.out.ProtectedEmployeeAp
 import dz.sh.hidra.modules.party.application.contract.organization.OrganizationProtectedPartyEligibilityContract;
 import dz.sh.hidra.platform.persistence.ProtectedRelationFence;
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.sql.DataSource;
@@ -563,6 +572,9 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
                     """, Boolean.class, ticket.pid, ticket.xid, ticket.role,
                     java.sql.Timestamp.from(ticket.sample.sampledAt()),
                     java.sql.Timestamp.from(ticket.sample.validUntil())))) throw denied();
+            if (ticket.plan != null && !Boolean.TRUE.equals(jdbc.queryForObject(
+                    "SELECT clock_timestamp()<?::timestamptz",Boolean.class,
+                    java.sql.Timestamp.from(ticket.plan.validUntil())))) throw denied();
             if (ticket(expected) != expected) throw denied();
         } catch (RuntimeException failure) {
             poison(ticket == null ? admission : ticket);
@@ -645,21 +657,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
                     query.unitId(),query.companyPartyId());
             if (cells == null || cells.size() != 16) throw denied();
             var first = cells.get(0);
-            var matrix = new java.util.HashMap<EmployeeAppointmentPolicy.TypePair,Boolean>();
-            for (var cell : cells) {
-                if (!Objects.equals(first.policyId(),cell.policyId()) || first.revision()!=cell.revision()
-                        || first.primaryLimit()!=cell.primaryLimit() || !Objects.equals(first.capacity(),cell.capacity())
-                        || !Objects.equals(first.bindingId(),cell.bindingId())
-                        || first.bindingRevision()!=cell.bindingRevision()
-                        || !Objects.equals(first.bindingEvent(),cell.bindingEvent())
-                        || !Objects.equals(first.policyEvent(),cell.policyEvent())
-                        || !("true".equals(cell.allowed()) || "false".equals(cell.allowed()))) throw denied();
-                var pair = new EmployeeAppointmentPolicy.TypePair(
-                        AssignmentType.valueOf(cell.first()),AssignmentType.valueOf(cell.second()));
-                if (matrix.put(pair,Boolean.valueOf(cell.allowed())) != null) throw denied();
-            }
-            var value = new EmployeeAppointmentPolicy(matrix,first.primaryLimit(),
-                    EmployeeAppointmentPolicy.PositionCapacity.valueOf(first.capacity()));
+            var value = decodePolicy(cells);
             var view = new EmployeeAppointmentResult.PolicyView(query.companyPartyId(),query.unitId(),
                     first.policyId(),first.revision(),value);
             var observed = new PolicyObservation(query,view,first.bindingId(),first.bindingRevision(),
@@ -672,6 +670,23 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
             poison(ticket == null ? admission : ticket);
             throw denied();
         }
+    }
+
+    private static EmployeeAppointmentPolicy decodePolicy(List<PolicyCell> cells) {
+        if (cells==null || cells.size()!=16) throw denied();
+        var first=cells.get(0);
+        var matrix=new java.util.HashMap<EmployeeAppointmentPolicy.TypePair,Boolean>();
+        for(var cell:cells){
+            if (!Objects.equals(first.policyId(),cell.policyId()) || first.revision()!=cell.revision()
+                    || first.primaryLimit()!=cell.primaryLimit() || !Objects.equals(first.capacity(),cell.capacity())
+                    || !Objects.equals(first.bindingId(),cell.bindingId()) || first.bindingRevision()!=cell.bindingRevision()
+                    || !Objects.equals(first.bindingEvent(),cell.bindingEvent()) || !Objects.equals(first.policyEvent(),cell.policyEvent())
+                    || !("true".equals(cell.allowed()) || "false".equals(cell.allowed()))) throw denied();
+            var pair=new EmployeeAppointmentPolicy.TypePair(AssignmentType.valueOf(cell.first()),AssignmentType.valueOf(cell.second()));
+            if(matrix.put(pair,Boolean.valueOf(cell.allowed()))!=null)throw denied();
+        }
+        return new EmployeeAppointmentPolicy(matrix,first.primaryLimit(),
+                EmployeeAppointmentPolicy.PositionCapacity.valueOf(first.capacity()));
     }
 
     private StorageAdmission ticket(ProtectedEmployeeAppointmentRepositoryPort.Admission admission) {
@@ -779,6 +794,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
         private OrganizationProtectedAppointmentAuthorizationContract.Contribution sample;
         private PolicyObservation policy;
         private MutationClassification mutation;
+        private MutationPlan plan;
         private List<ProtectedRelationFence> nativeFences = List.of(), proofFences = List.of();
 
         private StorageAdmission(ConnectionHolder holder, Authentication authentication,
@@ -991,6 +1007,215 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
         } catch (RuntimeException failure) {
             poison(ticket==null?admission:ticket);throw denied();
         }
+    }
+
+    private static final String APPOINTMENT_SNAPSHOT_SQL = """
+            SELECT a.id,a.employee_id,a.organization_unit_id,a.position_id,a.assignment_type,
+                   a.valid_from,a.valid_to,a.status,a.created_at,a.updated_at,a.appointment_version,
+                   b.binding_id,b.revision,b.organization_unit_id,b.company_party_id,b.recorded_at,
+                   p.policy_id,p.revision,a.last_event_id,
+                   pg_catalog.jsonb_build_object('assignment',pg_catalog.to_jsonb(a),
+                       'binding',pg_catalog.to_jsonb(b),'policy',pg_catalog.to_jsonb(p))::text
+              FROM public.hidra_org_employee_assignment a
+              LEFT JOIN public.hidra_org_appointment_binding_revision b ON b.binding_id=a.binding_id
+               AND b.revision=a.binding_revision AND b.organization_unit_id=a.organization_unit_id
+              LEFT JOIN public.hidra_org_appointment_policy_revision p ON p.policy_id=a.policy_id
+               AND p.revision=a.policy_revision AND p.company_party_id=b.company_party_id
+            """;
+    private record AppointmentObservation(EmployeeAppointmentResult.PinnedVersion value,String evidence) { }
+
+    private static Instant instant(ResultSet row,int column) throws SQLException {
+        var value=row.getTimestamp(column);return value==null?null:value.toInstant();
+    }
+    private static String exact(String value) {
+        if(value==null || value.isBlank() || value.length()>80 || !value.equals(value.strip())
+                || Character.isSpaceChar(value.codePointAt(0)) || Character.isSpaceChar(value.codePointBefore(value.length()))
+                || value.codePoints().anyMatch(c -> Character.isISOControl(c) || Character.getType(c)==Character.SURROGATE)) throw denied();
+        return value;
+    }
+    private static AppointmentObservation appointment(ResultSet r,int index) throws SQLException {
+        if(r.getObject(19)==null)throw denied();
+        var assignment=new EmployeeAssignment(exact(r.getString(1)),exact(r.getString(2)),exact(r.getString(3)),exact(r.getString(4)),
+                AssignmentType.valueOf(r.getString(5)),instant(r,6),instant(r,7),AssignmentStatus.valueOf(r.getString(8)),instant(r,9),instant(r,10));
+        var binding=new OrganizationUnitCompanyBinding(exact(r.getString(12)),r.getLong(13),exact(r.getString(14)),exact(r.getString(15)),instant(r,16));
+        var bound=new CompanyBoundEmployeeAppointment(new EmployeeAppointmentChange.VersionedAssignment(r.getLong(11),assignment),binding);
+        return new AppointmentObservation(new EmployeeAppointmentResult.PinnedVersion(bound,exact(r.getString(17)),r.getLong(18)),r.getString(20));
+    }
+
+    private static final String CURRENT_BINDING_SQL = """
+            SELECT b.binding_id,b.revision,b.organization_unit_id,b.company_party_id,b.recorded_at,
+                   pg_catalog.jsonb_build_object('head',pg_catalog.to_jsonb(h),'revision',pg_catalog.to_jsonb(b),'event',pg_catalog.to_jsonb(e))::text
+              FROM public.hidra_org_appointment_binding_head h
+              JOIN public.hidra_org_appointment_binding_revision b ON b.organization_unit_id=h.organization_unit_id
+               AND b.binding_id=h.binding_id AND b.revision=h.revision AND b.company_party_id=h.company_party_id
+              JOIN public.hidra_org_appointment_configuration_event e ON e.event_id=h.last_event_id
+             WHERE h.organization_unit_id=? AND h.company_party_id=? AND h.generation=h.revision
+               AND h.event_kind='BINDING' AND e.kind='BINDING' AND e.scope_id=b.organization_unit_id
+               AND e.identity_id=b.binding_id AND e.revision=b.revision AND e.company_party_id=b.company_party_id
+               AND e.after_payload=pg_catalog.to_jsonb(b)
+             LIMIT 2
+            """;
+    private record BindingObservation(OrganizationUnitCompanyBinding value,String evidence) { }
+
+    private static final String WRITE_POLICY_SQL = """
+            SELECT p.policy_id,p.revision,(p.policy->>'maxConcurrentPrimary')::integer,
+                   p.policy->>'positionCapacity',f.key,s.key,s.value::text,h.last_event_id::text,
+                   pg_catalog.jsonb_build_object('head',pg_catalog.to_jsonb(h),'revision',pg_catalog.to_jsonb(p),'event',pg_catalog.to_jsonb(e))::text
+              FROM public.hidra_org_appointment_policy_head h
+              JOIN public.hidra_org_appointment_policy_revision p ON p.company_party_id=h.company_party_id
+               AND p.policy_id=h.policy_id AND p.revision=h.revision
+              JOIN public.hidra_org_appointment_configuration_event e ON e.event_id=h.last_event_id
+             CROSS JOIN LATERAL pg_catalog.jsonb_each(p.policy->'overlaps') f
+             CROSS JOIN LATERAL pg_catalog.jsonb_each(f.value) s
+             WHERE h.company_party_id=? AND h.generation=h.revision AND h.event_kind='POLICY'
+               AND e.kind='POLICY' AND e.scope_id=p.company_party_id AND e.identity_id=p.policy_id
+               AND e.revision=p.revision AND e.company_party_id=p.company_party_id AND e.after_payload=pg_catalog.to_jsonb(p)
+               AND p.canonical_payload=pg_catalog.convert_to(p.policy::text,'UTF8')
+               AND p.sha256=pg_catalog.encode(pg_catalog.sha256(p.canonical_payload),'hex')
+               AND pg_catalog.jsonb_typeof(p.policy)='object'
+               AND (SELECT count(*) FROM pg_catalog.jsonb_object_keys(p.policy))=3
+               AND pg_catalog.jsonb_exists_all(p.policy,ARRAY['overlaps','maxConcurrentPrimary','positionCapacity'])
+               AND pg_catalog.jsonb_typeof(p.policy->'maxConcurrentPrimary')='number'
+               AND (p.policy->>'maxConcurrentPrimary') ~ '^[1-9][0-9]{0,9}$'
+               AND pg_catalog.jsonb_typeof(p.policy->'positionCapacity')='string'
+               AND (SELECT count(*) FROM pg_catalog.jsonb_object_keys(p.policy->'overlaps'))=4
+               AND (SELECT count(*) FROM pg_catalog.jsonb_object_keys(f.value))=4
+               AND pg_catalog.jsonb_typeof(s.value)='boolean'
+             ORDER BY f.key COLLATE "C",s.key COLLATE "C" LIMIT 17
+            """;
+    private record WritePolicyCell(PolicyCell cell,String evidence) { }
+    private record WritePolicy(String id,long revision,EmployeeAppointmentPolicy value,String evidence) { }
+    private WritePolicy writePolicy(String company) {
+        var rows=jdbc.query(WRITE_POLICY_SQL,(r,i) -> new WritePolicyCell(new PolicyCell(
+                r.getString(1),r.getLong(2),r.getInt(3),r.getString(4),r.getString(5),r.getString(6),r.getString(7),
+                null,0,null,r.getString(8)),r.getString(9)),company);
+        if(rows==null || rows.size()!=16)throw denied();
+        var first=rows.get(0);
+        if(rows.stream().anyMatch(c -> !first.evidence().equals(c.evidence())))throw denied();
+        return new WritePolicy(exact(first.cell().policyId()),first.cell().revision(),decodePolicy(rows.stream().map(WritePolicyCell::cell).toList()),first.evidence());
+    }
+
+    private record Occupancy(String unit,String position) { }
+    private record Eligibility(Occupancy occupancy,Instant until,String evidence) { }
+    private static final String ELIGIBILITY_SQL = """
+            SELECT e.status='ACTIVE' AND (e.hired_at IS NULL OR e.hired_at<=?::timestamptz)
+                   AND (e.terminated_at IS NULL OR e.terminated_at>?::timestamptz)
+                   AND u.status='ACTIVE' AND u.valid_from<=?::timestamptz
+                   AND (u.valid_to IS NULL OR u.valid_to>?::timestamptz) AND p.status='ACTIVE',
+                   e.terminated_at,u.valid_to,
+                   pg_catalog.jsonb_build_object('employee',pg_catalog.jsonb_build_object('id',e.id,'status',e.status,
+                       'hiredAt',e.hired_at,'terminatedAt',e.terminated_at),'unit',pg_catalog.to_jsonb(u),'position',pg_catalog.to_jsonb(p))::text
+              FROM public.hidra_org_employee e JOIN public.hidra_org_unit u ON u.id=?
+              JOIN public.hidra_org_position p ON p.id=? WHERE e.id=? LIMIT 2
+            """;
+    private static Instant earlier(Instant first,Instant second){return second!=null && second.isBefore(first)?second:first;}
+    private Eligibility eligibility(String employee,Occupancy occupancy,Instant sample,Instant until) {
+        var at=java.sql.Timestamp.from(sample);
+        var rows=jdbc.query(ELIGIBILITY_SQL,(r,i) -> {
+            if(!r.getBoolean(1) || r.wasNull())throw denied();
+            return new Eligibility(occupancy,earlier(earlier(until,instant(r,2)),instant(r,3)),r.getString(4));
+        },at,at,at,at,occupancy.unit(),occupancy.position(),employee);
+        if(rows==null || rows.size()!=1)throw denied();return rows.get(0);
+    }
+
+    private record MutationPlan(EmployeeAppointmentCommand command,String newAssignmentId,
+            EmployeeAppointmentResult.PinnedVersion before,EmployeeAppointmentResult.PinnedVersion after,
+            EmployeeAppointmentResult.PinnedVersion successor,WritePolicy policy,BindingObservation destination,
+            List<AppointmentObservation> peers,List<Eligibility> eligibility,Instant validUntil) { }
+
+    /**
+     * SELECT-only storage planning, never a write/result credential. Genuine
+     * Party CURRENT eligibility, the executor permit, provisional DML, independent
+     * final native proof/receipt and observed commit remain separate obligations.
+     * Complete internal foreign-peer observations never escape this private plan.
+     */
+    public void prepareMutation(ProtectedEmployeeAppointmentRepositoryPort.Admission admission,EmployeeAppointmentCommand command) {
+        StorageAdmission ticket=null;
+        try {
+            ticket=ticket(admission);requireCurrent(ticket);
+            var use=referenceUse(ticket,command,ticket.sample);
+            if(use==ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY)return;
+            Instant sampled=ticket.sample.sampledAt();
+            var policy=writePolicy(command.companyPartyId());
+            AppointmentObservation source=null;
+            if(sourceId(command)!=null){
+                var rows=jdbc.query(APPOINTMENT_SNAPSHOT_SQL+" WHERE a.id=? LIMIT 2",
+                        JdbcProtectedEmployeeAppointmentRepositoryAdapter::appointment,sourceId(command));
+                if(rows==null || rows.size()!=1)throw denied();source=rows.get(0);
+                if(!command.companyPartyId().equals(source.value().companyPartyId())
+                        || !ticket.preview.employeeId().equals(source.value().snapshot().appointment().assignment().employeeId()))throw denied();
+            }
+            String targetUnit=command instanceof EmployeeAppointmentCommand.Create c?c.organizationUnitId()
+                    :command instanceof EmployeeAppointmentCommand.Transfer c?c.destinationOrganizationUnitId()
+                    :command instanceof EmployeeAppointmentCommand.Correct c?c.correctedOrganizationUnitId()
+                    :source.value().snapshot().appointment().assignment().organizationUnitId();
+            String targetPosition=command instanceof EmployeeAppointmentCommand.Create c?c.positionId()
+                    :command instanceof EmployeeAppointmentCommand.Transfer c?c.destinationPositionId()
+                    :command instanceof EmployeeAppointmentCommand.Correct c?c.correctedPositionId()
+                    :source.value().snapshot().appointment().assignment().positionId();
+            BindingObservation destination=null;
+            OrganizationUnitCompanyBinding targetBinding;
+            if(use==ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.CURRENT){
+                var rows=jdbc.query(CURRENT_BINDING_SQL,(r,i) -> new BindingObservation(new OrganizationUnitCompanyBinding(
+                        exact(r.getString(1)),r.getLong(2),exact(r.getString(3)),exact(r.getString(4)),instant(r,5)),r.getString(6)),targetUnit,command.companyPartyId());
+                if(rows==null || rows.size()!=1)throw denied();destination=rows.get(0);targetBinding=destination.value();
+            } else targetBinding=source.value().snapshot().binding();
+            long wantedBinding=command instanceof EmployeeAppointmentCommand.Create c?c.expectedBindingRevision()
+                    :command instanceof EmployeeAppointmentCommand.Transfer c?c.expectedDestinationBindingRevision()
+                    :command instanceof EmployeeAppointmentCommand.Correct c?c.expectedDestinationBindingRevision():targetBinding.revision();
+            long wantedPolicy=command instanceof EmployeeAppointmentCommand.Create c?c.expectedPolicyRevision()
+                    :command instanceof EmployeeAppointmentCommand.Transfer c?c.expectedDestinationPolicyRevision()
+                    :command instanceof EmployeeAppointmentCommand.Correct c?c.expectedDestinationPolicyRevision():policy.revision();
+            if(wantedBinding!=targetBinding.revision() || wantedPolicy!=policy.revision())throw denied();
+
+            var occupancies=new TreeSet<Occupancy>(Comparator.comparing(Occupancy::unit).thenComparing(Occupancy::position));
+            occupancies.add(new Occupancy(targetUnit,targetPosition));
+            EmployeeAppointmentResult.PinnedVersion before=source==null?null:source.value();
+            if(before!=null){var old=before.snapshot().appointment().assignment();occupancies.add(new Occupancy(old.organizationUnitId(),old.positionId()));}
+            var first=occupancies.first();var last=occupancies.last();
+            var peers=jdbc.query(APPOINTMENT_SNAPSHOT_SQL+"""
+                     WHERE a.id=?::varchar OR (a.status='ACTIVE' AND (a.employee_id=?
+                        OR (a.organization_unit_id=? AND a.position_id=?) OR (a.organization_unit_id=? AND a.position_id=?)))
+                     ORDER BY a.id COLLATE "C" LIMIT 1025
+                    """,JdbcProtectedEmployeeAppointmentRepositoryAdapter::appointment,sourceId(command),ticket.preview.employeeId(),
+                    first.unit(),first.position(),last.unit(),last.position());
+            if(peers==null || peers.size()>1024 || before!=null && !peers.contains(source))throw denied();
+            var facts=new ArrayList<Eligibility>();Instant until=ticket.sample.validUntil();
+            for(var occupancy:occupancies){var fact=eligibility(ticket.preview.employeeId(),occupancy,sampled,ticket.sample.validUntil());facts.add(fact);until=earlier(until,fact.until());}
+            String freshId=ticket.plan==null?java.util.UUID.randomUUID().toString():ticket.plan.newAssignmentId();
+            EmployeeAppointmentResult.PinnedVersion after,successor=null;
+            var ownership=new EmployeeAppointmentOwnershipPolicy();
+            var observed=peers.stream().map(p -> p.value().snapshot().appointment()).toList();
+            if(command instanceof EmployeeAppointmentCommand.Create c){
+                var value=new EmployeeAssignment(freshId,c.employeeId(),targetUnit,targetPosition,c.assignmentType(),c.validFrom(),c.validTo(),
+                        c.validTo()!=null && !c.validTo().isAfter(sampled)?AssignmentStatus.ENDED:AssignmentStatus.ACTIVE,sampled,sampled);
+                var bound=new CompanyBoundEmployeeAppointment(new EmployeeAppointmentChange.VersionedAssignment(1,value),targetBinding);
+                ownership.validateCreate(bound);after=new EmployeeAppointmentResult.PinnedVersion(bound,policy.id(),policy.revision());
+                var proposed=new ArrayList<>(observed);proposed.add(bound.appointment());policy.value().validate(proposed);
+            } else {
+                var old=before.snapshot().appointment();EmployeeAppointmentChange change;
+                if(command instanceof EmployeeAppointmentCommand.End c)change=EmployeeAppointmentChange.end(old,c.endAt(),sampled,c.reason());
+                else if(command instanceof EmployeeAppointmentCommand.Transfer c)change=EmployeeAppointmentChange.transfer(old,freshId,targetUnit,targetPosition,
+                        c.destinationType(),c.effectiveAt(),c.successorValidTo(),sampled,c.reason());
+                else {
+                    var c=(EmployeeAppointmentCommand.Correct)command;
+                    var replacement=new EmployeeAssignment(old.assignment().id(),old.assignment().employeeId(),targetUnit,targetPosition,c.correctedType(),
+                            c.correctedValidFrom(),c.correctedValidTo(),c.correctedStatus(),old.assignment().createdAt(),sampled);
+                    change=EmployeeAppointmentChange.correct(old,replacement,sampled,c.reason());
+                }
+                var afterBinding=change.kind()==EmployeeAppointmentChange.Kind.TRANSFER?before.snapshot().binding():targetBinding;
+                var boundAfter=new CompanyBoundEmployeeAppointment(change.after(),afterBinding);
+                CompanyBoundEmployeeAppointment boundSuccessor=change.successor()==null?null:new CompanyBoundEmployeeAppointment(change.successor(),targetBinding);
+                ownership.validateChange(change,before.snapshot(),boundAfter,boundSuccessor);policy.value().apply(observed,change);
+                after=new EmployeeAppointmentResult.PinnedVersion(boundAfter,policy.id(),policy.revision());
+                if(boundSuccessor!=null)successor=new EmployeeAppointmentResult.PinnedVersion(boundSuccessor,policy.id(),policy.revision());
+            }
+            if((command instanceof EmployeeAppointmentCommand.Create || command instanceof EmployeeAppointmentCommand.Transfer)
+                    && !Boolean.TRUE.equals(jdbc.queryForObject("SELECT NOT EXISTS(SELECT 1 FROM public.hidra_org_employee_assignment WHERE id=?)",Boolean.class,freshId)))throw denied();
+            var planned=new MutationPlan(command,freshId,before,after,successor,policy,destination,List.copyOf(peers),List.copyOf(facts),until);
+            if(ticket.plan!=null && !ticket.plan.equals(planned))throw denied();
+            ticket.plan=planned;requireCurrent(ticket);
+        }catch(RuntimeException failure){poison(ticket==null?admission:ticket);throw denied();}
     }
 
     private record Observed(String employeeId, String unitId, String companyId) { }

@@ -477,7 +477,7 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
             when(storage.acquire(nativeTicket, List.of(partyTicket), descriptors)).thenReturn(storageTicket);
             when(storage.contribute(storageTicket)).thenReturn(sample);
             when(storage.referenceUse(storageTicket, command, sample)).thenReturn(use);
-            when(party.read(partyTicket)).thenReturn(
+            when(storage.contributeParty(storageTicket)).thenReturn(
                     new OrganizationProtectedPartyEligibilityContract.Contribution("company", 9, 17, 23));
         }
 
@@ -503,13 +503,42 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
             order.verify(f.storage).preview(f.command);
             order.verify(f.storage).contribute(f.storageTicket);
             order.verify(f.storage).referenceUse(f.storageTicket, f.command, f.sample);
-            order.verify(f.party).read(f.partyTicket);
+            order.verify(f.storage).contributeParty(f.storageTicket);
             order.verify(f.identity).requireCurrent(f.nativeTicket);
             order.verify(f.party).requireCurrent(f.partyTicket);
             order.verify(f.storage).requireCurrent(f.storageTicket);
+            order.verify(f.storage).prepareMutation(f.storageTicket, f.command);
             verify(f.storage, times(1)).contribute(f.storageTicket);
+            verify(f.storage, times(1)).contributeParty(f.storageTicket);
+            verify(f.party, never()).read(any());
             verify(f.storage, never()).mutate(any(), any());
             verify(f.identity, never()).contribute(any());
+        }
+    }
+
+    @Test void mutationPlanFailureVetoesCurrentRetainedAndReplayQualification() {
+        for(var use:ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.values()) {
+            var command=use==ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.RETAINED?endCommand():create();
+            try(var f=new WriteFixture(command,use)) {
+                doThrow(new IllegalStateException("plan unavailable")).when(f.storage).prepareMutation(f.storageTicket,command);
+                assertThrows(AccessDeniedException.class,f::acquire);
+                assertTrue(f.holder.isRollbackOnly());verify(f.executor,atLeastOnce()).rejectAdmission();
+                verify(f.storage,never()).mutate(any(),any());
+            }
+        }
+    }
+
+    @Test void everyWriteBoundaryRechecksTheFrozenPlanAndSwallowedFailureCannotCommit() {
+        try(var f=new WriteFixture()) {
+            var ticket=f.acquire();
+            f.coordinator.requireCurrentWrite(ticket);
+            verify(f.storage,times(2)).prepareMutation(f.storageTicket,f.command);
+            doThrow(new IllegalStateException("plan changed")).when(f.storage).prepareMutation(f.storageTicket,f.command);
+            assertThrows(AccessDeniedException.class,() -> f.coordinator.requireCurrentWrite(ticket));
+            assertTrue(f.holder.isRollbackOnly());
+            for(var callback:TransactionSynchronizationManager.getSynchronizations())
+                assertThrows(AccessDeniedException.class,() -> callback.beforeCommit(false));
+            verify(f.party,never()).read(any());verify(f.storage,never()).mutate(any(),any());
         }
     }
 
@@ -517,7 +546,7 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
         for (var command : List.of(create(), transferCommand(), correctCommand(true))) {
             try (var f = new WriteFixture(command, ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.CURRENT)) {
                 f.acquire();
-                verify(f.party).read(f.partyTicket);
+                verify(f.storage).contributeParty(f.storageTicket);
                 verify(f.party).requireCurrent(f.partyTicket);
                 verify(f.storage, never()).mutate(any(), any());
             }
@@ -527,10 +556,10 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
     @Test void retainedEndAndSameUnitCorrectionDoNotDemandCurrentPartyStatus() {
         for (var command : List.of(endCommand(), correctCommand(false))) {
             try (var f = new WriteFixture(command, ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.RETAINED)) {
-                doThrow(new IllegalStateException("retired company")).when(f.party).read(any());
+                doThrow(new IllegalStateException("retired company")).when(f.storage).contributeParty(any());
                 f.acquire();
                 verify(f.party).acquire("company");
-                verify(f.party, never()).read(any());
+                verify(f.storage, never()).contributeParty(any());
                 verify(f.party, never()).requireCurrent(any());
                 verify(f.identity).requireCurrent(f.nativeTicket);
             }
@@ -540,12 +569,12 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
     @Test void exactReplayOfEveryCommandRequiresFreshNativeAuthorityWithoutActiveParty() {
         for (var command : List.of(create(), endCommand(), transferCommand(), correctCommand(true))) {
             try (var f = new WriteFixture(command, ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY)) {
-                doThrow(new IllegalStateException("retired company")).when(f.party).read(any());
+                doThrow(new IllegalStateException("retired company")).when(f.storage).contributeParty(any());
                 f.acquire();
                 verify(f.identity).acquire(any(), eq(f.request));
                 verify(f.storage).contribute(f.storageTicket);
                 verify(f.identity).requireCurrent(f.nativeTicket);
-                verify(f.party, never()).read(any());
+                verify(f.storage, never()).contributeParty(any());
                 verify(f.party, never()).requireCurrent(any());
                 verify(f.storage, never()).mutate(any(), any());
             }
@@ -572,7 +601,7 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
                 for (var callback : TransactionSynchronizationManager.getSynchronizations())
                     assertThrows(AccessDeniedException.class, () -> callback.beforeCommit(false));
                 verify(f.storage, never()).contribute(any());
-                verify(f.party, never()).read(any());
+                verify(f.storage, never()).contributeParty(any());
             }
         }
     }
@@ -587,7 +616,7 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
                 assertThrows(AccessDeniedException.class, f::acquire);
                 verify(f.storage, never()).contribute(any());
                 verify(f.storage, never()).referenceUse(any(), any(), any());
-                verify(f.party, never()).read(any());
+                verify(f.storage, never()).contributeParty(any());
                 assertTrue(f.holder.isRollbackOnly());
             }
         }
@@ -603,7 +632,7 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
                         "binding", "session", "user", START, START.plusSeconds(1), 17, 23));
                 assertThrows(AccessDeniedException.class, f::acquire);
                 verify(f.storage, never()).referenceUse(any(), any(), any());
-                verify(f.party, never()).read(any());
+                verify(f.storage, never()).contributeParty(any());
                 assertTrue(f.holder.isRollbackOnly());
             }
         }
@@ -619,7 +648,7 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
                 if (variant == 1) when(f.storage.referenceUse(any(), any(), any()))
                         .thenThrow(new IllegalStateException("request key conflict"));
                 assertThrows(AccessDeniedException.class, f::acquire);
-                verify(f.party, never()).read(any());
+                verify(f.storage, never()).contributeParty(any());
                 assertTrue(f.holder.isRollbackOnly());
             }
         }
@@ -628,7 +657,7 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
     @Test void wrongPartyIdentityOrPhysicalCoordinatesCannotQualifyCurrentReference() {
         for (int variant = 0; variant < 3; variant++) {
             try (var f = new WriteFixture()) {
-                when(f.party.read(f.partyTicket)).thenReturn(new OrganizationProtectedPartyEligibilityContract.Contribution(
+                when(f.storage.contributeParty(f.storageTicket)).thenReturn(new OrganizationProtectedPartyEligibilityContract.Contribution(
                         variant == 0 ? "other" : "company", 9, variant == 1 ? 18 : 17, variant == 2 ? 24 : 23));
                 assertThrows(AccessDeniedException.class, f::acquire);
                 assertTrue(f.holder.isRollbackOnly());
@@ -640,8 +669,8 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
     @Test void absentOrInactivePartyContributionPoisonsCurrentReferenceTransaction() {
         for (boolean missing : List.of(true, false)) {
             try (var f = new WriteFixture()) {
-                if (missing) when(f.party.read(f.partyTicket)).thenReturn(null);
-                else when(f.party.read(f.partyTicket)).thenThrow(new IllegalStateException("inactive"));
+                if (missing) when(f.storage.contributeParty(f.storageTicket)).thenReturn(null);
+                else when(f.storage.contributeParty(f.storageTicket)).thenThrow(new IllegalStateException("inactive"));
                 assertThrows(AccessDeniedException.class, f::acquire);
                 assertTrue(f.holder.isRollbackOnly());
             }

@@ -32,6 +32,7 @@ import dz.sh.hidra.modules.organization.domain.value.AssignmentStatus;
 import dz.sh.hidra.modules.organization.domain.value.AssignmentType;
 import dz.sh.hidra.modules.organization.infrastructure.persistence.adapter.JdbcProtectedEmployeeAppointmentRepositoryAdapter;
 import dz.sh.hidra.modules.party.application.contract.organization.OrganizationProtectedPartyEligibilityContract;
+import dz.sh.hidra.modules.party.infrastructure.persistence.adapter.JdbcOrganizationProtectedPartyEligibilityAdapter;
 import dz.sh.hidra.platform.persistence.ProtectedRelationFence;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -194,6 +195,11 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         final JdbcTemplate jdbc;
         final TransactionTemplate tx;
         final JdbcProtectedEmployeeAppointmentRepositoryAdapter storage;
+        final JdbcOrganizationProtectedPartyEligibilityAdapter party;
+        OrganizationProtectedPartyEligibilityContract.Admission partyTicket;
+        OrganizationProtectedPartyEligibilityContract.Admission partyTicketOverride;
+        OrganizationProtectedPartyEligibilityContract ticketOwnerOverride;
+        String partyIdOverride;
         final EmployeeAppointmentCommand command;
         String actor="synthetic-actor";
         long backdateSeconds;
@@ -201,7 +207,12 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         Session(EmployeeAppointmentCommand command) throws Exception {
             this.command=command;
             admin("CREATE ROLE "+role+" LOGIN PASSWORD '"+PASSWORD+"'");admin("GRANT USAGE ON SCHEMA public TO "+role);
-            admin("GRANT SELECT ON ALL TABLES IN SCHEMA public TO "+role);
+            for(var table:List.of("employee","unit","position","appointment_binding_revision","appointment_binding_head",
+                    "appointment_policy_revision","appointment_policy_head","appointment_configuration_event",
+                    "appointment_lock_key","employee_assignment","appointment_event","appointment_receipt"))
+                admin("GRANT SELECT ON public.hidra_org_"+table+" TO "+role);
+            admin("GRANT SELECT ON public.hidra_party_party,public.hidra_party_eligibility_generation TO "+role);
+            admin("GRANT UPDATE ON public.hidra_party_party TO "+role);
             for(var table:List.of("employee","unit","position","appointment_binding_head","appointment_policy_head","appointment_lock_key","employee_assignment"))
                 admin("GRANT UPDATE ON public.hidra_org_"+table+" TO "+role);
             var fences=new ArrayList<>(JdbcIdentityAuthorityFence.requiredRelationFences());fences.addAll(KEYS);
@@ -215,7 +226,8 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
             admin("REVOKE ALL ON FUNCTION public.fixture_"+role+"() FROM PUBLIC");admin("GRANT EXECUTE ON FUNCTION public.fixture_"+role+"() TO "+role);
             source=new DriverManagerDataSource(POSTGRES.getJdbcUrl(),role,PASSWORD);jdbc=new JdbcTemplate(source);
             tx=new TransactionTemplate(new DataSourceTransactionManager(source));tx.setIsolationLevel(Connection.TRANSACTION_READ_COMMITTED);
-            storage=new JdbcProtectedEmployeeAppointmentRepositoryAdapter(jdbc,identity);
+            party=spy(new JdbcOrganizationProtectedPartyEligibilityAdapter(jdbc));
+            storage=new JdbcProtectedEmployeeAppointmentRepositoryAdapter(jdbc,identity,party);
             SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("synthetic",null,List.of()));
             when(identity.finalFences(nativeTicket)).thenReturn(JdbcIdentityAuthorityFence.requiredRelationFences());
             when(identity.commitProofFences(nativeTicket)).thenReturn(KEYS);
@@ -229,7 +241,10 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         }
         ProtectedEmployeeAppointmentRepositoryPort.Admission acquire(){
             jdbc.execute("SELECT public.fixture_"+role+"()");
-            return storage.acquire(nativeTicket,List.of(mock(OrganizationProtectedPartyEligibilityContract.Admission.class)),
+            partyTicket=partyTicketOverride!=null?partyTicketOverride
+                    :(ticketOwnerOverride==null?party:ticketOwnerOverride).acquire(
+                        partyIdOverride==null?command.companyPartyId():partyIdOverride);
+            return storage.acquire(nativeTicket,List.of(partyTicket),
                     previewOverride==null?storage.preview(command):previewOverride);
         }
         boolean poisoned(){return ((ConnectionHolder)TransactionSynchronizationManager.getResource(source)).isRollbackOnly();}
@@ -356,7 +371,9 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         try(var s=new Session(command)){s.tx.execute(status -> {
             int events=s.jdbc.queryForObject("SELECT count(*) FROM public.hidra_org_appointment_event",Integer.class);
             int assignments=s.jdbc.queryForObject("SELECT count(*) FROM public.hidra_org_employee_assignment",Integer.class);
-            var ticket=s.acquire();s.storage.contribute(ticket);
+            var ticket=s.acquire();var sample=s.storage.contribute(ticket);
+            var use=s.storage.referenceUse(ticket,command,sample);
+            if(use==ReferenceUse.CURRENT)s.storage.contributeParty(ticket);
             if(allowed){
                 assertDoesNotThrow(() -> s.storage.prepareMutation(ticket,command));
                 assertDoesNotThrow(() -> s.storage.prepareMutation(ticket,command));
@@ -366,6 +383,7 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
             }
             assertEquals(events,s.jdbc.queryForObject("SELECT count(*) FROM public.hidra_org_appointment_event",Integer.class));
             assertEquals(assignments,s.jdbc.queryForObject("SELECT count(*) FROM public.hidra_org_employee_assignment",Integer.class));
+            verify(s.party,times(use==ReferenceUse.CURRENT?1:0)).read(s.partyTicket);
             status.setRollbackOnly();return null;
         });}
     }
@@ -499,7 +517,9 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         try(var s=new Session(command)){
             s.backdateSeconds=60; // Mocked native sample only: deterministic physical deadline mechanics.
             s.tx.execute(status -> {
-                var ticket=s.acquire();s.storage.contribute(ticket);
+                var ticket=s.acquire();var sample=s.storage.contribute(ticket);
+                assertEquals(ReferenceUse.CURRENT,s.storage.referenceUse(ticket,command,sample));
+                s.storage.contributeParty(ticket);
                 assertThrows(AccessDeniedException.class,() -> s.storage.prepareMutation(ticket,command));
                 assertTrue(s.poisoned());assertThrows(AccessDeniedException.class,() -> s.storage.requireCurrent(ticket));
                 status.setRollbackOnly();return null;
@@ -513,6 +533,102 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         admin("UPDATE public.hidra_org_employee SET status='SUSPENDED' WHERE id=?",f.employee());
         admin("UPDATE public.hidra_org_position SET status='INACTIVE' WHERE id=?",f.position());
         prepare(command,true);
+    }
+
+    private ProtectedEmployeeAppointmentRepositoryPort.Admission qualified(Session s) {
+        var ticket=s.acquire();var sample=s.storage.contribute(ticket);
+        s.storage.referenceUse(ticket,s.command,sample);return ticket;
+    }
+
+    @Test void genuinePartyContributionIsConsumedOnceAndPrivatelyQualifiesCurrentPlanning() throws Exception {
+        var f=fixture(false);var command=create(f,id());
+        try(var s=new Session(command)){
+            try(var reader=DriverManager.getConnection(POSTGRES.getJdbcUrl(),s.role,PASSWORD)){
+                assertEquals("42501",assertThrows(SQLException.class,() -> scalar(reader,
+                        "SELECT count(*) FROM public.hidra_identity_org_commit_key_head")).getSQLState());
+            }
+            s.tx.execute(status -> {
+            var ticket=qualified(s);var eligibility=s.storage.contributeParty(ticket);
+            assertEquals(f.company(),eligibility.partyId());
+            assertEquals(s.jdbc.queryForObject("SELECT generation FROM public.hidra_party_eligibility_generation WHERE party_id=?",Long.class,f.company()),Long.valueOf(eligibility.generation()));
+            assertEquals(s.jdbc.queryForObject("SELECT pg_backend_pid()",Integer.class),Integer.valueOf(eligibility.backendPid()));
+            assertEquals(s.jdbc.queryForObject("SELECT txid_current()",Long.class),Long.valueOf(eligibility.transactionId()));
+            assertDoesNotThrow(() -> s.storage.prepareMutation(ticket,command));
+            assertDoesNotThrow(() -> s.storage.requireCurrent(ticket));
+            verify(s.party,times(1)).read(s.partyTicket);
+            assertThrows(AccessDeniedException.class,() -> s.storage.contributeParty(ticket));
+            assertTrue(s.poisoned());assertThrows(AccessDeniedException.class,() -> s.storage.prepareMutation(ticket,command));
+            status.setRollbackOnly();return null;
+        });}
+    }
+
+    @Test void partyConsumptionRequiresFrozenCurrentClassificationAndPlanningRequiresItsPrivateSample() throws Exception {
+        var f=fixture(false);var command=create(f,id());
+        for(boolean classify:List.of(false,true))try(var s=new Session(command)){s.tx.execute(status -> {
+            var ticket=s.acquire();var sample=s.storage.contribute(ticket);
+            if(classify){s.storage.referenceUse(ticket,command,sample);
+                assertThrows(AccessDeniedException.class,() -> s.storage.prepareMutation(ticket,command));
+            }else assertThrows(AccessDeniedException.class,() -> s.storage.contributeParty(ticket));
+            verify(s.party,never()).read(any());assertTrue(s.poisoned());status.setRollbackOnly();return null;
+        });}
+    }
+
+    @Test void fabricatedForeignIssuerAndWrongCompanyPartyTicketsCannotQualifyStorage() throws Exception {
+        var f=fixture(false);var command=create(f,id());
+        for(int variant=0;variant<3;variant++)try(var s=new Session(command)){
+            if(variant==0)s.partyTicketOverride=new OrganizationProtectedPartyEligibilityContract.Admission(){};
+            if(variant==1)s.ticketOwnerOverride=new JdbcOrganizationProtectedPartyEligibilityAdapter(s.jdbc);
+            if(variant==2)s.partyIdOverride=baseline.company();
+            s.tx.execute(status -> {
+                var ticket=qualified(s);
+                assertEquals("Protected appointment admission unavailable",assertThrows(AccessDeniedException.class,
+                        () -> s.storage.contributeParty(ticket)).getMessage());
+                assertTrue(s.poisoned());status.setRollbackOnly();return null;
+            });
+        }
+    }
+
+    @Test void actualSameTransactionPartyGenerationChangeInvalidatesTheRetainedCurrentSample() throws Exception {
+        var f=fixture(false);var command=create(f,id());
+        try(var s=new Session(command)){s.tx.execute(status -> {
+            var ticket=qualified(s);var sample=s.storage.contributeParty(ticket);
+            s.storage.prepareMutation(ticket,command);
+            assertEquals(1,s.jdbc.update("UPDATE public.hidra_party_party SET status='SUSPENDED' WHERE id=?",f.company()));
+            assertTrue(s.jdbc.queryForObject("SELECT generation FROM public.hidra_party_eligibility_generation WHERE party_id=?",Long.class,f.company())>sample.generation());
+            assertThrows(AccessDeniedException.class,() -> s.storage.requireCurrent(ticket));
+            assertTrue(s.poisoned());status.setRollbackOnly();return null;
+        });}
+    }
+
+    @Test void retainedAndReplayPlanningNeverConsumesCurrentPartySelectability() throws Exception {
+        for(var command:List.of(end(historical,3),originalCorrection))try(var s=new Session(command)){s.tx.execute(status -> {
+            var ticket=qualified(s);assertDoesNotThrow(() -> s.storage.prepareMutation(ticket,command));
+            verify(s.party,never()).read(any());verify(s.party,never()).requireCurrent(any());
+            assertThrows(AccessDeniedException.class,() -> s.storage.contributeParty(ticket));
+            verify(s.party,never()).read(any());assertTrue(s.poisoned());status.setRollbackOnly();return null;
+        });}
+    }
+
+    @Test void foreignThreadPartyConsumptionPoisonsTheOriginalPhysicalHolder() throws Exception {
+        var f=fixture(false);var command=create(f,id());
+        try(var s=new Session(command)){s.tx.execute(status -> {
+            var ticket=qualified(s);var worker=java.util.concurrent.Executors.newSingleThreadExecutor();
+            try {
+                var failed=worker.submit(() -> assertThrows(AccessDeniedException.class,() -> s.storage.contributeParty(ticket)));
+                assertNotNull(failed.get(5,java.util.concurrent.TimeUnit.SECONDS));
+            }catch(Exception unexpected){throw new AssertionError(unexpected);}finally{worker.shutdownNow();}
+            assertTrue(s.poisoned());verify(s.party,never()).read(any());status.setRollbackOnly();return null;
+        });}
+    }
+
+    @Test void callerConsumedPartyScalarCannotReplaceTheStorageOwnedOneUseRead() throws Exception {
+        var f=fixture(false);var command=create(f,id());
+        try(var s=new Session(command)){s.tx.execute(status -> {
+            var ticket=qualified(s);var scalar=s.party.read(s.partyTicket);
+            assertEquals(f.company(),scalar.partyId());
+            assertThrows(AccessDeniedException.class,() -> s.storage.contributeParty(ticket));
+            assertTrue(s.poisoned());status.setRollbackOnly();return null;
+        });}
     }
 
     @Test void independentSourceWriterCannotPassTheRetainedClassificationFence() throws Exception {

@@ -25464,6 +25464,116 @@ with expected-7e40473 guard; verify parent/tree/message/raw blobs/scope, confirm
 applicable exact-SHA Full/Fast/Docs queued/started, then STOP. Continue only the
 registered B3 runtime envelope after actual CI feedback.
 
+### 2026-10-23 — HAPI-778 B3 storage-owned genuine Party consumption and coordinator plan checks
+
+**Selection / exact message:** Owner Continue selects one further slice of the
+existing B3 envelope from main ffce547eaa5fdab4839be5f6f74b7919b9c550e0,
+tree cdb6253a6651ee2f0c70a8f3d070a8af53c3e4f5.
+[Full835](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39940283189),
+[Fast148](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39940283182)
+and [Docs525](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39940283315)
+completed SUCCESS on that exact source. Current governance/index/reconciliation,
+B3 registration and later evidence, actual Party public contract/implementation,
+native contract, storage/coordinator, immutable SQL and tests were inspected.
+Use `feat(organization): persist protected appointment lifecycle and history`.
+
+**Finite scope — seven MODIFY, zero CREATE/DELETE:**
+
+- src/main/java/dz/sh/hidra/modules/organization/application/port/out/ProtectedEmployeeAppointmentRepositoryPort.java
+- src/main/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinator.java
+- src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JdbcProtectedEmployeeAppointmentRepositoryAdapter.java
+- src/test/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinatorTest.java
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java
+- .github/ci-test-inventory.json, only these two real suites' cases/source hashes
+- this append-only HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+**Closed protocol gap:** The repository port exposes contributeParty and the
+already authored void prepareMutation protocol. CURRENT Party consumption now
+occurs inside the storage issuer, after its exact locked reference classification,
+instead of being consumed separately by the coordinator. The configured genuine
+Party owner reads the original retained ticket once; storage privately retains
+the returned company/generation/PID/XID observation and verifies its company and
+physical transaction against the original native sample and exact two Party
+fences. A marker, held locks, caller-consumed scalar, foreign issuer or changed
+company cannot substitute for this owner invocation. There is no public scalar
+setter, authorization Boolean, alternate native sample or new owner export.
+
+The adapter's additive three-argument constructor receives the actual public Party
+contract; its older constructors preserve read/selector use and cannot qualify
+CURRENT planning without this owner. contributeParty requires frozen CURRENT
+classification and a live private ticket, consumes once and invalidates/poisons
+on failure or reuse. CURRENT prepareMutation requires this private retained
+sample. Subsequent storage requireCurrent rechecks the actual Party issuer and
+generation/fences alongside native/physical/catalog/time state. Real same-XID
+Party changes cannot keep an old sample current. RETAINED/REPLAY neither consume
+current selectability nor invoke Party requireCurrent; their retained physical
+fences and fresh native authority remain mandatory.
+
+The coordinator still acquires Identity, Party then Organization fences and
+compares locked descriptors before consuming native authority/classifying replay.
+It obtains current Party observation through storage, independently checks company
+and PID/XID, then invokes prepareMutation at every write qualification/recheck
+boundary. The existing private plan validates policy, source CAS, all conflicts,
+Domain proposal and the narrower deadline. A preparation failure invalidates the
+write handle and poisons original holders; a swallowed failure cannot pass the
+SQL-free beforeCommit veto. Coordinator code never directly consumes Party.read
+or Identity.contribute. This supplies the port/coordinator call chain, not a
+newly wired Spring application or completed guarded writer.
+
+**Authored coverage:** All40 previous coordinator methods remain, with handoff
+assertions updated to storage ownership. Two new methods test plan failures for
+CURRENT/RETAINED/REPLAY and repeated boundary checks plus swallowed-failure veto;
+the suite now has42 cases. Existing wrong-company/PID/XID, absent/inactive owner,
+lock order, shape, authentication/context/thread and lifetime cases remain.
+
+All21 previous PostgreSQL concurrency methods remain; their preparation fixture
+now obtains genuine Party tickets and CURRENT observations through the actual
+JdbcOrganizationProtectedPartyEligibilityAdapter. Seven new methods increase
+this suite to28: one-use genuine observation and private planning; classification
+and private-sample prerequisites; fabricated/foreign-issuer/wrong-company tickets;
+actual same-transaction status/generation invalidation; retained/replay without
+ACTIVE Party consumption; foreign-thread original-holder poisoning; and rejection
+when a caller consumes the genuine one-use Party read outside storage.
+
+The disposable storage login now receives explicit SELECT on twelve Organization
+and two Party relations, plus only the reviewed UPDATE permissions needed for
+its owner locks. Its previous broad all-tables SELECT is removed; an independent
+real login query verifies Identity commit-key-head SELECT is denied with42501.
+The closed test-only definer still supplies physical native/key fences only.
+Identity remains explicitly mocked. These tests use genuine Party behavior,
+PostgreSQL generations, actual separate logins/holders and committed synthetic
+ledger fixtures, but prove no genuine native Identity PERMIT, HMAC-backed final
+receipt, complete Spring graph,500ms end-to-end qualification or HTTP workflow.
+No application/private Party infrastructure import is added to production code;
+only the composition test imports the real Party adapter.
+
+**Source-linked evidence:** Coordinator test SHA256
+46ea8dba6418b3366b5cb85e60f5b2756034700643288931b001d0844147184b;
+PostgreSQL concurrency test SHA256
+f3e6dd3d7a391b35cff5d87bcbcce7a509210ba2a21911dcabee088583bbb0e5.
+Local Java17 compiler-API parsing of all five changed Java files passes, syntax
+only and without Java21 type analysis/JUnit. Canonical inventory validates353
+fast/354 unit-architecture/455 active oracle classes, four historical classes
+and unchanged seven PostgreSQL partitions12/16/13/14/16/15/15; all32 inventory
+self-tests pass. Existing entries/cases/weights/lanes/archive policy remain.
+Offline docs validates128 documents/8380 relative links/24 modules/921 tasks/25
+phases; offline OpenAPI retains257 paths/279 operations/267 schemas; whitespace
+passes. Maven/Java21/local PostgreSQL are unavailable and are not provisioned
+solely for testing; hosted exact-source compilation/runtime evidence is pending.
+
+**Remaining B3 / stop:** The adapter remains non-bean, incomplete and unwired to
+the full repository port/application. Provisional DML and one-use executor permit,
+post-write evidence transitions, independent proof-bearing final read/write guard
+and immutable receipt, observed commit, complete history/cursors, compatible
+application/legacy/REST cutover and native/concurrency/rollback acceptance remain.
+No migration, dictionary, Identity/Party owner contract or implementation,
+executor SQL pin, API, workflow or frozen status changes; all165 migration bodies
+remain immutable. HAPI-778 stays PARTIAL/IN_PROGRESS; HAPI-590 independently
+PARTIAL/BLOCKED. Publish only these seven paths with expected-ffce547 main guard;
+verify parent/tree/message/raw blobs/scope, confirm exact-SHA Full/Fast/Docs
+queued/started, then STOP. Next continues the same registered B3 runtime envelope
+after actual CI feedback.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

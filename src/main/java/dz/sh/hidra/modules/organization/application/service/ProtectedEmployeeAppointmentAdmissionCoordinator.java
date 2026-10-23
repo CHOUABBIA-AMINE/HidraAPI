@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedEmployeeAppointmentAdmissionCoordinator
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-22
+ * @UpdatedOn   : 2026-10-23
  *
  * @Type        : Class
  * @Layer       : Application
@@ -256,7 +256,7 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
                     storage.referenceUse(result.repositoryAdmission, command, sample));
             requireReferenceShape(result);
             if (result.referenceUse == ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.CURRENT) {
-                var eligibility = Objects.requireNonNull(party.read(result.partyAdmission));
+                var eligibility = Objects.requireNonNull(storage.contributeParty(result.repositoryAdmission));
                 if (!command.companyPartyId().equals(eligibility.partyId())
                         || eligibility.backendPid() != sample.backendPid()
                         || eligibility.transactionId() != sample.transactionId()) throw denied();
@@ -282,6 +282,7 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
             if (storage.referenceUse(admission.repositoryAdmission, admission.command, admission.sample)
                     != admission.referenceUse) throw denied();
             requireReferenceShape(admission);
+            storage.prepareMutation(admission.repositoryAdmission, admission.command);
             if (!admission.ready()) throw denied();
         } catch (RuntimeException failure) {
             // A foreign coordinator/thread must still poison the original transaction.

@@ -85,6 +85,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
     private final JdbcTemplate jdbc;
     private final DataSource source;
     private final OrganizationProtectedAppointmentAuthorizationContract identity;
+    private final OrganizationProtectedPartyEligibilityContract party;
 
     public JdbcProtectedEmployeeAppointmentRepositoryAdapter(JdbcTemplate jdbc) {
         this(jdbc, null);
@@ -92,9 +93,16 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
 
     public JdbcProtectedEmployeeAppointmentRepositoryAdapter(JdbcTemplate jdbc,
             OrganizationProtectedAppointmentAuthorizationContract identity) {
+        this(jdbc,identity,null);
+    }
+
+    public JdbcProtectedEmployeeAppointmentRepositoryAdapter(JdbcTemplate jdbc,
+            OrganizationProtectedAppointmentAuthorizationContract identity,
+            OrganizationProtectedPartyEligibilityContract party) {
         this.jdbc = Objects.requireNonNull(jdbc, "JDBC access required");
         this.source = jdbc.getDataSource();
         this.identity = identity;
+        this.party = party;
     }
 
     /**
@@ -559,6 +567,13 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
             ticket = ticket(admission);
             if (ticket.sample == null || !ticket.used.get()) throw denied();
             identity.requireCurrent(ticket.nativeAdmission);
+            if(ticket.partySample!=null){
+                if(party==null || !ticket.partyUsed.get() || ticket.mutation==null
+                        || ticket.mutation.use()!=ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.CURRENT
+                        || ticket.parties.size()!=1)throw denied();
+                party.requireCurrent(ticket.parties.get(0));
+                if(!PARTY_FENCES.equals(party.finalFences(ticket.parties.get(0))))throw denied();
+            }
             requireCatalog();
             requireHeld(ORGANIZATION_FENCES);
             requireHeld(ticket.nativeFences);
@@ -790,11 +805,13 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
         private final long xid;
         private final String role;
         private final AtomicBoolean used = new AtomicBoolean();
+        private final AtomicBoolean partyUsed = new AtomicBoolean();
         private volatile boolean active = true;
         private OrganizationProtectedAppointmentAuthorizationContract.Contribution sample;
         private PolicyObservation policy;
         private MutationClassification mutation;
         private MutationPlan plan;
+        private OrganizationProtectedPartyEligibilityContract.Contribution partySample;
         private List<ProtectedRelationFence> nativeFences = List.of(), proofFences = List.of();
 
         private StorageAdmission(ConnectionHolder holder, Authentication authentication,
@@ -1009,6 +1026,23 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
         }
     }
 
+    /** Genuine Party consumption remains inside this issuer; scalar observations cannot replace it. */
+    public OrganizationProtectedPartyEligibilityContract.Contribution contributeParty(
+            ProtectedEmployeeAppointmentRepositoryPort.Admission admission) {
+        StorageAdmission ticket=null;
+        try {
+            ticket=ticket(admission);requireCurrent(ticket);
+            if(party==null || ticket.mutation==null
+                    || ticket.mutation.use()!=ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.CURRENT
+                    || ticket.parties.size()!=1 || !ticket.partyUsed.compareAndSet(false,true))throw denied();
+            var sample=Objects.requireNonNull(party.read(ticket.parties.get(0)));
+            if(!ticket.mutation.command().companyPartyId().equals(sample.partyId())
+                    || sample.backendPid()!=ticket.pid || sample.transactionId()!=ticket.xid
+                    || !PARTY_FENCES.equals(party.finalFences(ticket.parties.get(0))))throw denied();
+            ticket.partySample=sample;requireCurrent(ticket);return sample;
+        }catch(RuntimeException failure){poison(ticket==null?admission:ticket);throw denied();}
+    }
+
     private static final String APPOINTMENT_SNAPSHOT_SQL = """
             SELECT a.id,a.employee_id,a.organization_unit_id,a.position_id,a.assignment_type,
                    a.valid_from,a.valid_to,a.status,a.created_at,a.updated_at,a.appointment_version,
@@ -1135,6 +1169,8 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
             ticket=ticket(admission);requireCurrent(ticket);
             var use=referenceUse(ticket,command,ticket.sample);
             if(use==ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY)return;
+            if(use==ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.CURRENT
+                    && (party==null || ticket.partySample==null || !ticket.partyUsed.get()))throw denied();
             Instant sampled=ticket.sample.sampledAt();
             var policy=writePolicy(command.companyPartyId());
             AppointmentObservation source=null;

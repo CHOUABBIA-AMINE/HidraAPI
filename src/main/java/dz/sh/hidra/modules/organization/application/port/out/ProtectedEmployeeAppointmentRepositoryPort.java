@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedEmployeeAppointmentRepositoryPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-22
+ * @UpdatedOn   : 2026-10-23
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -125,6 +125,22 @@ public interface ProtectedEmployeeAppointmentRepositoryPort {
      */
     ReferenceUse referenceUse(Admission admission, EmployeeAppointmentCommand command,
             OrganizationProtectedAppointmentAuthorizationContract.Contribution contribution);
+
+    /**
+     * Only after this issuer has frozen CURRENT classification, consume the
+     * genuine configured Party issuer once and retain its observation privately.
+     * Match company and physical coordinates to the original native sample.
+     * No scalar supplied by the caller can qualify current-reference planning.
+     * RETAINED/REPLAY must never consume current selectability here.
+     */
+    OrganizationProtectedPartyEligibilityContract.Contribution contributeParty(Admission admission);
+
+    /**
+     * Revalidate and freeze the complete SELECT-only Domain/policy/conflict plan.
+     * CURRENT requires the storage-owned genuine Party contribution. This grants
+     * no provisional permit, DML, result, receipt or observed-commit assertion.
+     */
+    void prepareMutation(Admission admission, EmployeeAppointmentCommand command);
 
     /**
      * One guarded atomic lifecycle operation under the original request key,

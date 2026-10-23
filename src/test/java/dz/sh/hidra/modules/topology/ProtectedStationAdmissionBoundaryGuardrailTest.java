@@ -42,7 +42,7 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
                         "JdbcSurveyRouteProfileRepositoryAdapter.java","ProtectedEngineeringPublicationAdmissionCoordinator.java","JdbcEngineeringRevisionPublicationRepositoryAdapter.java")
                     :method.equals("beginAdmission")
                         ?Set.of("ProtectedStationAdmissionCoordinator.java","ProtectedEmployeeAppointmentAdmissionCoordinator.java","ProtectedEngineeringDraftAdmissionCoordinator.java","ProtectedEngineeringPublicationAdmissionCoordinator.java")
-                        :Set.of("ProtectedStationAdmissionCoordinator.java","ProtectedEngineeringDraftAdmissionCoordinator.java","ProtectedEngineeringPublicationAdmissionCoordinator.java");
+                        :Set.of("ProtectedStationAdmissionCoordinator.java","ProtectedEmployeeAppointmentAdmissionCoordinator.java","ProtectedEngineeringDraftAdmissionCoordinator.java","ProtectedEngineeringPublicationAdmissionCoordinator.java");
             assertEquals(expected,found);
         }
     }

@@ -25684,6 +25684,66 @@ IN_PROGRESS; HAPI-590 stays independently PARTIAL/BLOCKED. Publish only these
 seven paths with expected-db1cac2 main guard, verify exact parent/tree/message/
 blobs/scope and confirm exact-SHA Full/Fast/Docs creation/queue/start, then STOP.
 
+### 2026-10-23 — HAPI-778 Full837/Fast150 exact admission caller guardrail repair
+
+**Selection / evidence:** Owner Next refreshes main
+9a6a8946e0c845aeb15a25eeb04edbd0ee63ab62, parent
+db1cac25917dde80a9414c82032b17b7e310fcdc, tree
+688f18c7f913592c288ccf660610298580bf89fd. Responsible failure repair
+precedes further B3 implementation. [Full837](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39952761113)
+and [Fast150](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39952761290)
+FAILED; [Docs527](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/39952761203)
+SUCCEEDED. Full unit/architecture job120411026322 and Fast job120411027410
+identify the same assertion in
+ProtectedStationAdmissionBoundaryGuardrailTest.coordinatorUsesOnlyApprovedOwnerContractsAndTechnicalMechanics.
+Full static validation, all seven PostgreSQL shards and API contract/dictionary
+jobs succeeded; the final Full evidence gate failed. This is not complete
+exact-head acceptance or parent lifecycle completion.
+
+**Root cause / bounded correction:** The new appointment coordinator invokes
+sealAdmission in its registered provisional protocol, but the global source
+call-site guardrail still expects only the three Topology coordinators for that
+method. The executor already explicitly permits the exact compiled appointment
+coordinator in sealAdmission/beginProvisional/endProvisional, and the B3 contract
+requires extending exact reviewed tests while preserving every prior caller and
+hash. Add only ProtectedEmployeeAppointmentAdmissionCoordinator.java to the
+sealAdmission expected set. Keep exact equality, all other caller sets, owner
+contract checks, immutable reader pins and all six test methods unchanged.
+No runtime exception, prefix, wildcard, additional permit issuer or security
+relaxation is introduced.
+
+**Finite scope — three MODIFY, zero CREATE/DELETE:**
+- src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java
+- .github/ci-test-inventory.json, only that suite's source_sha256
+- this append-only HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+Use the existing exact B3 message
+`feat(organization): persist protected appointment lifecycle and history`.
+Test source SHA256 is
+2a6bfb3cc063c224dbcab9e7faad232db4f80a78a7ca3ce94fd9e7415739b8ba.
+All existing test identities, lanes, weights and seven partitions remain intact.
+No production source, migrations, proof/receipt protocol, grants, executor,
+workflow, dictionary, OpenAPI, status registry or other task changes.
+
+**Validation actually performed:** An independent Python source scan reproduces
+all four exact caller-set comparisons: rejectAdmission7, requireAdmission7,
+beginAdmission4, sealAdmission4; all pass. Canonical inventory validation passes
+353 fast/354 unit-architecture/455 oracle/four historical classes with unchanged
+PostgreSQL partitions12/16/13/14/16/15/15. All32 inventory self-tests pass.
+Offline documentation validation passes128 documents/8380 relative links/24
+modules/921 tasks/25 phases before this link-valid insertion. Whitespace is
+checked before publication. Local Java is17 and Maven is unavailable; no Java21,
+JUnit or PostgreSQL rerun is claimed. Hosted exact-SHA Full/Fast/Docs remain the
+acceptance gate for this correction.
+
+**Stop / remaining:** Publish only these three paths directly to main with
+expected-9a6a894 guard; verify parent/tree/message/blob identities and exact scope,
+confirm applicable exact-SHA workflows created/queued/started, then STOP.
+HAPI-778 remains PARTIAL/IN_PROGRESS, HAPI-590 independently PARTIAL/BLOCKED.
+After actual feedback, the next registered work continues B3 final native
+commit-proof consumption, final guards and immutable receipt; history/application/
+legacy/REST integration and full acceptance remain open. No next stage is run.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

@@ -531,6 +531,28 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
         }
     }
 
+
+    @Test void failedProvisionalAndCommitProofRetainInternalCauseButDenyAndPoison() {
+        for(boolean proofFailure:List.of(false,true))try(var f=new WriteFixture()) {
+            var ticket=f.acquire();
+            var internal=new IllegalStateException("synthetic private write-boundary failure");
+            if(proofFailure) {
+                provisionalFixture(f);
+                doThrow(internal).when(f.storage).prepareCommitProof(f.storageTicket);
+            } else {
+                when(f.storage.prepareProvisional(f.storageTicket,f.command)).thenThrow(internal);
+            }
+            var rejected=assertThrows(AccessDeniedException.class,()->f.coordinator.apply(ticket));
+            assertEquals("Protected appointment admission unavailable",rejected.getMessage());
+            assertNotNull(rejected.getCause());
+            assertSame(internal,rejected.getCause().getCause());
+            assertTrue(f.holder.isRollbackOnly());
+            verify(f.executor,atLeastOnce()).rejectAdmission();
+            verify(f.storage,never()).mutate(any(),any());
+            assertThrows(AccessDeniedException.class,()->ticket.beforeCommit(false));
+        }
+    }
+
     @Test void preparationAndMissingPermitFailuresCannotOpenProvisional() {
         for(int variant=0;variant<3;variant++)try(var f=new WriteFixture()) {
             var ticket=f.acquire();provisionalFixture(f);

@@ -308,7 +308,7 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
                     || !admission.ready())throw denied();
             admission.detachedResult=result;
             return result;
-        }catch(RuntimeException failure){if(admission!=null)admission.invalidate();executor.rejectAdmission();throw denied();}
+        }catch(RuntimeException failure){if(admission!=null)admission.invalidate();executor.rejectAdmission();throw denied(failure);}
     }
 
     /** Called after managed flush, including replay; no authority is cached from a previous request. */
@@ -431,7 +431,7 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
         } catch (RuntimeException failure) {
             if (admission != null) admission.invalidate();
             executor.rejectAdmission();
-            throw denied();
+            throw denied(failure);
         }
     }
 
@@ -448,7 +448,7 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
         } catch (RuntimeException failure) {
             if (admission != null) admission.invalidate();
             executor.rejectAdmission();
-            throw denied();
+            throw denied(failure);
         }
     }
 

@@ -1043,42 +1043,63 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
             if (!held.contains(fence.relation() + "|" + fence.mode().catalog())) throw denied();
     }
 
-    private void requireCatalog() {
-        // The protected physical context must be revalidated on every call.
-        check(PHYSICAL_CONTEXT);
-        var observed = jdbc.query(BATCHED_RELATION_CATALOG,
-                (row, index) -> new CatalogObservation(
-                        row.getString(1), row.getBoolean(2),
-                        row.getString(3), row.getBoolean(4)));
-        if (observed.size() != ORGANIZATION_FENCES.size()) throw denied();
-        for (int i = 0; i < ORGANIZATION_FENCES.size(); i++) {
-            CatalogObservation actual = observed.get(i);
-            String expectedRelation = ORGANIZATION_FENCES.get(i).relation();
-            String expectedSignature = CATALOG_PINS.get(expectedRelation);
-            if (!expectedRelation.equals(actual.relation())
-                    || !actual.relationSafe() || !actual.privilegesSafe()
-                    || expectedSignature == null || !expectedSignature.equals(actual.signature()))
-                throw denied();
-        }
-        var functions = jdbc.query("""
-                SELECT p.proname,pg_catalog.encode(pg_catalog.sha256(pg_catalog.convert_to(p.prosrc,'UTF8')),'hex'),
-                       NOT pg_catalog.pg_has_role(current_user,p.proowner,'MEMBER')
-                       AND p.proowner=(SELECT relowner FROM pg_catalog.pg_class
+    /**
+     * One physical database round trip, without caching current owner metadata:
+     * PostgreSQL materializes the exact original physical predicate once, the
+     * twelve immutable relation checks once, and the live function pin set once.
+     * Every invocation still validates all three independent predicate families.
+     */
+    private static final String COMBINED_CATALOG = """
+            WITH physical AS MATERIALIZED (
+            """ + PHYSICAL_CONTEXT + """
+            ), relations AS MATERIALIZED (
+            """ + BATCHED_RELATION_CATALOG + """
+            )
+            SELECT 0 AS kind, r.relation AS name, r.relation_safe AS safe,
+                   r.pinned_signature AS signature, r.privileges_safe AS privilege_safe,
+                   (SELECT * FROM physical) AS physical_safe
+              FROM relations r
+            UNION ALL
+            SELECT 1 AS kind, p.proname AS name,
+                   NOT pg_catalog.pg_has_role(current_user,p.proowner,'MEMBER')
+                   AND p.proowner=(SELECT relowner FROM pg_catalog.pg_class
                            WHERE oid='public.hidra_org_employee'::regclass)
-                       AND NOT EXISTS(SELECT 1 FROM pg_catalog.aclexplode(
+                   AND NOT EXISTS(SELECT 1 FROM pg_catalog.aclexplode(
                            COALESCE(p.proacl,pg_catalog.acldefault('f',p.proowner))) a
-                           WHERE a.grantee=0 AND a.privilege_type='EXECUTE') AS safe
-                  FROM pg_catalog.pg_proc p JOIN pg_catalog.pg_namespace n ON n.oid=p.pronamespace
-                 WHERE n.nspname='public' AND (p.proname LIKE 'hidra_org_appointment_%'
-                     OR p.proname IN ('hidra_org_activate_appointment_binding','hidra_org_activate_appointment_policy'))
-                """, (row, index) -> {
-                    if (!row.getBoolean(3)) throw denied();
-                    return Map.entry(row.getString(1), row.getString(2));
-                });
-        var actual = new java.util.HashMap<String, String>();
-        for (var function : functions)
-            if (actual.put(function.getKey(), function.getValue()) != null) throw denied();
-        if (!FUNCTION_PINS.equals(actual)) throw denied();
+                           WHERE a.grantee=0 AND a.privilege_type='EXECUTE') AS safe,
+                   pg_catalog.encode(pg_catalog.sha256(pg_catalog.convert_to(p.prosrc,'UTF8')),'hex') AS signature,
+                   TRUE AS privilege_safe, (SELECT * FROM physical) AS physical_safe
+              FROM pg_catalog.pg_proc p JOIN pg_catalog.pg_namespace n ON n.oid=p.pronamespace
+             WHERE n.nspname='public' AND (p.proname LIKE 'hidra_org_appointment_%'
+                 OR p.proname IN ('hidra_org_activate_appointment_binding','hidra_org_activate_appointment_policy'))
+            ORDER BY kind, name
+            """;
+
+    private record CatalogRow(int kind, String name, boolean safe, String signature,
+                              boolean privilegeSafe, boolean physicalSafe) { }
+
+    private void requireCatalog() {
+        var rows = jdbc.query(COMBINED_CATALOG, (r, index) -> new CatalogRow(
+                r.getInt(1), r.getString(2), r.getBoolean(3), r.getString(4),
+                r.getBoolean(5), r.getBoolean(6)));
+        if (rows == null) throw denied();
+        var relations = ORGANIZATION_FENCES.stream().map(ProtectedRelationFence::relation).sorted().toList();
+        int relationIndex = 0;
+        var functions = new java.util.HashMap<String, String>();
+        for (var row : rows) {
+            if (!row.physicalSafe() || !row.safe() || !row.privilegeSafe()) throw denied();
+            if (row.kind() == 0) {
+                if (relationIndex >= relations.size()
+                        || !relations.get(relationIndex++).equals(row.name())
+                        || !Objects.equals(CATALOG_PINS.get(row.name()), row.signature()))
+                    throw denied();
+            } else if (row.kind() == 1) {
+                if (relationIndex != relations.size()
+                        || functions.put(row.name(), row.signature()) != null)
+                    throw denied();
+            } else throw denied();
+        }
+        if (relationIndex != ORGANIZATION_FENCES.size() || !FUNCTION_PINS.equals(functions)) throw denied();
     }
 
     private void poison(Object admission) {

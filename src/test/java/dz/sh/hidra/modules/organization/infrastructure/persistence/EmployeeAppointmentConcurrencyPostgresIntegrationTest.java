@@ -271,14 +271,10 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
             s.actor="provisional-actor";
             admin("GRANT INSERT ON public.hidra_org_appointment_lock_key,public.hidra_org_employee_assignment,public.hidra_org_appointment_event TO "+s.role);
             admin("GRANT EXECUTE ON FUNCTION public.hidra_org_appointment_exact_id(text) TO "+s.role);
-            var port=mock(ProtectedEmployeeAppointmentRepositoryPort.class,call -> {
-                try {return s.storage.getClass().getMethod(call.getMethod().getName(),call.getMethod().getParameterTypes()).invoke(s.storage,call.getArguments());}
-                catch(java.lang.reflect.InvocationTargetException failure){throw failure.getCause();}
-            });
             when(s.identity.prepare()).thenReturn(mock(OrganizationProtectedAppointmentAuthorizationContract.Prepared.class));
             when(s.identity.acquire(any(),any())).thenAnswer(call -> {s.jdbc.execute("SELECT public.fixture_"+s.role+"()");return s.nativeTicket;});
             when(executor.sealAdmission()).thenReturn(mock(ProtectedTransactionExecutor.ProvisionalPermit.class));
-            coordinator=new ProtectedEmployeeAppointmentAdmissionCoordinator(s.identity,s.party,port,executor);
+            coordinator=new ProtectedEmployeeAppointmentAdmissionCoordinator(s.identity,s.party,s.storage,executor);
             prepared=coordinator.prepare();
         }
         Object invoke(String name,Object... args) {
@@ -437,6 +433,73 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
             if(invalidMac)mac[0]^=1;
             return new CommitProof(frame,mac);
         });
+    }
+
+    @Test void combinedWriteCallbacksReturnDetachedReceiptsOnlyAfterActualCommitForEveryLifecycleShape() throws Exception {
+        for(int kind=0;kind<5;kind++) {
+            var f=fixture(kind!=0);
+            EmployeeAppointmentCommand command=switch(kind) {
+                case 0 -> create(f,id());case 1 -> end(f,1);
+                case 2 -> correction(f,id(),1,f.units().get(0));case 3 -> correction(f,id(),1,f.units().get(1));
+                default -> new EmployeeAppointmentCommand.Transfer(id(),f.company(),f.assignment(),1,f.units().get(1),f.position(),
+                        AssignmentType.PRIMARY,START.plusSeconds(3600),null,1,1,REASON);
+            };
+            try(var p=new ProvisionalSession(command)) {
+                enableJavaFinalGuard(p,false);
+                var result=p.s.tx.execute(status->{
+                    p.write=p.invoke("acquireWrite",p.prepared,command);
+                    var detached=p.invoke("apply",p.write);
+                    p.invoke("prepareFinal",p.write);
+                    clearInvocations(p.s.identity,p.s.party);
+                    p.invoke("finalizeOperation",p.write);verifyNoInteractions(p.s.identity,p.s.party);
+                    return (dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.MutationReceipt)detached;
+                });
+                assertNotNull(result);assertEquals(command.kind(),result.kind());assertEquals(command.requestId(),result.requestId());
+                assertFalse(result.historicalReplay());assertEquals(f.employee(),result.after().snapshot().appointment().assignment().employeeId());
+                assertEquals(kind==0?1:2,result.after().appointmentVersion());
+                assertEquals(kind==4,result.successor()!=null);
+                try(var c=owner()) {
+                    assertEquals("1",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_receipt WHERE event_id=?::uuid",result.eventId()));
+                }
+            }
+        }
+    }
+
+    @Test void combinedWriteResultRemainsInternalWhenFinalAuthenticationFails() throws Exception {
+        var f=fixture(false);
+        try(var p=new ProvisionalSession(create(f,id()))) {
+            enableJavaFinalGuard(p,true);
+            assertThrows(RuntimeException.class,()->p.s.tx.execute(status->{
+                p.write=p.invoke("acquireWrite",p.prepared,p.s.command);
+                assertNotNull(p.invoke("apply",p.write));p.invoke("prepareFinal",p.write);
+                p.invoke("finalizeOperation",p.write);return null;
+            }));
+        }
+        try(var c=owner()) {
+            assertEquals("0",scalar(c,"SELECT count(*) FROM public.hidra_org_employee_assignment WHERE employee_id=?",f.employee()));
+            assertEquals("0",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_event WHERE employee_id=?",f.employee()));
+            assertEquals("0",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_lock_key WHERE kind='EMPLOYEE' AND key_one=?",f.employee()));
+        }
+    }
+
+    @Test void combinedReplayUsesActualReadGuardAndCommitWithoutCreatingAnotherEventOrReceipt() throws Exception {
+        var command=create(baseline,baseline.createRequest());
+        try(var p=new ProvisionalSession(command)) {
+            p.s.actor="synthetic-actor";
+            admin("GRANT EXECUTE ON FUNCTION public.hidra_org_appointment_read_guard(jsonb,timestamptz,timestamptz,integer,bigint,timestamptz) TO "+p.s.role);
+            var result=p.s.tx.execute(status->{
+                p.write=p.invoke("acquireWrite",p.prepared,command);var detached=p.invoke("apply",p.write);
+                p.invoke("prepareFinal",p.write);clearInvocations(p.s.identity,p.s.party);
+                p.invoke("finalizeOperation",p.write);verifyNoInteractions(p.s.identity,p.s.party);
+                return (dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.MutationReceipt)detached;
+            });
+            assertNotNull(result);assertTrue(result.historicalReplay());assertEquals(baseline.assignment(),result.after().assignmentId());
+            verify(p.executor,never()).beginProvisional(any(),any());verify(p.s.identity,never()).issueCommitProof(any(),any());
+        }
+        try(var c=owner()) {
+            assertEquals("1",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_event WHERE employee_id=?",baseline.employee()));
+            assertEquals("1",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_receipt r JOIN public.hidra_org_appointment_event e USING(event_id) WHERE e.employee_id=?",baseline.employee()));
+        }
     }
 
     @Test void javaFinalGuardCommitsExactCreateEndCorrectionAndTransferWithReceiptAndNonce() throws Exception {

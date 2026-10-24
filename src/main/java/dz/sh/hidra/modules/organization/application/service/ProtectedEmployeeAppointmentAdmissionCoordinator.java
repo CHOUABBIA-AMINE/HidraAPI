@@ -24,6 +24,7 @@ import dz.sh.hidra.modules.identity.application.contract.organization.Organizati
 import dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.CompanyUnit;
 import dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.Request;
 import dz.sh.hidra.modules.organization.application.command.EmployeeAppointmentCommand;
+import dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult;
 import dz.sh.hidra.modules.organization.application.port.out.ProtectedEmployeeAppointmentRepositoryPort;
 import dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery;
 import dz.sh.hidra.modules.party.application.contract.organization.OrganizationProtectedPartyEligibilityContract;
@@ -38,8 +39,8 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 /**
  * Non-wired admission coordinator: no Spring bean or protected DML route is
- * activated until physical PostgreSQL guards and exact executor caller support
- * are implemented and tested. Constructor ports are genuine owner contracts.
+ * activated until genuine native/executor/managed-flush composition is accepted.
+ * Constructor ports are genuine owner contracts; mock tests do not establish that acceptance.
  */
 public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
     private final OrganizationProtectedAppointmentAuthorizationContract identity;
@@ -252,6 +253,82 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
             executor.rejectAdmission();
             throw denied();
         }
+    }
+
+    /** Complete native admission before ordinary read materialization; no permit escapes this owner. */
+    void sealRead(ReadAdmission admission) {
+        try {
+            requireCurrentRead(admission);
+            executor.sealAdmission();
+        } catch(RuntimeException failure) {
+            invalidate(admission);executor.rejectAdmission();throw denied();
+        }
+    }
+
+    EmployeeAppointmentResult.HistoryPage<EmployeeAppointmentResult.PrivateHistoryEvent> privateHistory(ReadAdmission admission) {
+        requireCurrentRead(admission);
+        if(!(admission.query instanceof EmployeeAppointmentQuery.History q)
+                || q.scope()==EmployeeAppointmentQuery.Scope.POSITION)throw denied();
+        return Objects.requireNonNull(storage.privateHistory(admission.repositoryAdmission,q));
+    }
+
+    EmployeeAppointmentResult.HistoryPage<EmployeeAppointmentResult.PositionHistoryEvent> positionHistory(ReadAdmission admission) {
+        requireCurrentRead(admission);
+        if(!(admission.query instanceof EmployeeAppointmentQuery.History q)
+                || q.scope()!=EmployeeAppointmentQuery.Scope.POSITION)throw denied();
+        return Objects.requireNonNull(storage.positionHistory(admission.repositoryAdmission,q));
+    }
+
+    EmployeeAppointmentResult.PinnedVersion exactVersion(ReadAdmission admission) {
+        requireCurrentRead(admission);
+        if(!(admission.query instanceof EmployeeAppointmentQuery.ExactVersion q))throw denied();
+        return Objects.requireNonNull(storage.exactVersion(admission.repositoryAdmission,q));
+    }
+
+    EmployeeAppointmentResult.PolicyView readPolicy(ReadAdmission admission) {
+        requireCurrentRead(admission);
+        if(!(admission.query instanceof EmployeeAppointmentQuery.Policy q))throw denied();
+        return Objects.requireNonNull(storage.readPolicy(admission.repositoryAdmission,q));
+    }
+
+    /** The result remains inside executePublication until its observed physical commit. */
+    EmployeeAppointmentResult.MutationReceipt apply(WriteAdmission admission) {
+        try {
+            requireCurrentWrite(admission);
+            if(admission.detachedResult!=null)throw denied();
+            if(admission.referenceUse==ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY) {
+                executor.sealAdmission();
+            } else {
+                persistProvisional(admission);
+                prepareCommitProof(admission);
+            }
+            var result=Objects.requireNonNull(storage.mutate(admission.repositoryAdmission,admission.command));
+            if(result.kind()!=admission.command.kind() || !result.requestId().equals(admission.command.requestId())
+                    || result.historicalReplay()!=(admission.referenceUse==ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY)
+                    || !admission.ready())throw denied();
+            admission.detachedResult=result;
+            return result;
+        }catch(RuntimeException failure){if(admission!=null)admission.invalidate();executor.rejectAdmission();throw denied();}
+    }
+
+    /** Called after managed flush, including replay; no authority is cached from a previous request. */
+    void prepareFinal(WriteAdmission admission) {
+        try {
+            if(admission==null || admission.owner!=this || admission.detachedResult==null)throw denied();
+            if(admission.referenceUse==ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY) {
+                if(!admission.detachedResult.equals(prepareFinalReplay(admission)))throw denied();
+            } else {
+                requireCurrentWrite(admission);
+                if(!admission.detachedResult.equals(storage.mutate(admission.repositoryAdmission,admission.command)))throw denied();
+                prepareFinalWrite(admission);
+            }
+        }catch(RuntimeException failure){if(admission!=null)admission.invalidate();executor.rejectAdmission();throw denied();}
+    }
+
+    void finalizeOperation(WriteAdmission admission) {
+        if(admission!=null && admission.referenceUse==ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY)
+            finalizeReplay(admission);
+        else finalizeWrite(admission);
     }
 
     private static String assignmentSelector(EmployeeAppointmentQuery query) {
@@ -468,6 +545,7 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
         private ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse referenceUse;
         private boolean provisionalStarted, provisionalClosed, proofRequested;
         private boolean finalPrepared, guardAttempted, guarded, replayPreparationStarted;
+        private EmployeeAppointmentResult.MutationReceipt detachedResult;
 
         private WriteAdmission(ProtectedEmployeeAppointmentAdmissionCoordinator owner,
                 OrganizationProtectedAppointmentAuthorizationContract.Admission identityAdmission,

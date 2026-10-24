@@ -142,7 +142,10 @@
         "writeHandleIsOpaqueAndItsCommitVetoPerformsNoOwnerSql",
         "writeLocksIdentityPartyOrganizationBeforeOneSampleAndEligibilityRead",
         "writeOwnerCallbackCannotResurrectAnInvalidatedTicket",
-        "wrongPartyIdentityOrPhysicalCoordinatesCannotQualifyCurrentReference"
+        "wrongPartyIdentityOrPhysicalCoordinatesCannotQualifyCurrentReference",
+        "appliedReplaySealsAdmissionWithoutMutationAndRevalidatesItsDetachedResultBeforeGuard",
+        "changedReplayResultAfterManagedFlushPoisonsTheOriginalTransaction",
+        "repeatedApplicationAndWrongResultClassificationCannotReachFinalGuard"
       ],
       "class": "dz.sh.hidra.modules.organization.application.service.ProtectedEmployeeAppointmentAdmissionCoordinatorTest",
       "dependency_reason": "HAPI-778 read/write owner acquisition, replay-aware reference classification and transaction-lifetime rejection; synthetic JUnit/Mockito only, not native PostgreSQL or final-guard proof; duration unmeasured.",
@@ -150,7 +153,7 @@
       "lane": "unit-architecture",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinatorTest.java",
-      "source_sha256": "3f752208ec72951c34cda7f5219b5b83e8880a4c4b842adbd9f0bef803095724",
+      "source_sha256": "9dc167d1bb46f8c48e229c7e074c3bcda633bbcd88774350cd21e95a9c046b7c",
       "supports": []
     },
     {
@@ -6705,7 +6708,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java",
-      "source_sha256": "2a6bfb3cc063c224dbcab9e7faad232db4f80a78a7ca3ce94fd9e7415739b8ba",
+      "source_sha256": "1d7f09ecb052e73d578c95087df5d0d56536bc71fbf085534a130c107d6452fe",
       "supports": []
     },
     {
@@ -9123,7 +9126,10 @@
         "storageDerivesCommitIntentFromExactPersistedUtf8EventForEveryFreshCommand",
         "swallowedProvisionalFailureAndMissingFinalReceiptVetoPhysicalCommit",
         "transferSuccessorOrEventFailureRollsBackTheSourceCloseAndEveryProvisionalKey",
-        "unboundLegacyConflictCannotDisappearThroughAnInnerJoinOrInventedPin"
+        "unboundLegacyConflictCannotDisappearThroughAnInnerJoinOrInventedPin",
+        "combinedWriteCallbacksReturnDetachedReceiptsOnlyAfterActualCommitForEveryLifecycleShape",
+        "combinedWriteResultRemainsInternalWhenFinalAuthenticationFails",
+        "combinedReplayUsesActualReadGuardAndCommitWithoutCreatingAnotherEventOrReceipt"
       ],
       "class": "dz.sh.hidra.modules.organization.infrastructure.persistence.EmployeeAppointmentConcurrencyPostgresIntegrationTest",
       "dependency_reason": "Actual PostgreSQL16 committed synthetic ledger, restricted login, exact command/actor/scope replay before source CAS and retained fence contention; native issuer is mocked and integrated writer acceptance remains pending; duration unmeasured.",
@@ -9131,7 +9137,30 @@
       "lane": "postgres-integration",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java",
-      "source_sha256": "6734f73bee8d96cfc1e37b772826877d4e5eb79f727b8d0786056196380dfddb",
+      "source_sha256": "87fe6b1f04e8ab4e538a008bb0c15d7f80376eb640d69e08dbbd0f337d7df569",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "allFourTypedCommandsUseOneFreshPreparationAndOneProtectedExecution",
+        "deniedAdmissionDoesNotMaterializeFlushOrFinalize",
+        "deniedPreparationNeverOpensThePrivateCredentialRoute",
+        "exactVersionAndPolicyUseTheirOwnAuthorizedReadAndFinalGuard",
+        "finalGuardOrCompletionFailureNeverReturnsTheDetachedResultOrRetries",
+        "finalPreparationFailureCannotReachTheScalarGuard",
+        "managedFlushFailureCannotReachPreparationOrFinalGuard",
+        "mismatchedHistoryScopeIsRejectedBeforeAnyPreparationOrSql",
+        "privateAndRedactedHistoryDispatchCannotBeInterchanged",
+        "writeMaterializesThenFlushesThenFinalizesOnTheSamePrivateHandle"
+      ],
+      "class": "dz.sh.hidra.modules.organization.application.service.EmployeeAppointmentLifecycleApplicationServiceTest",
+      "dependency_reason": "HAPI-778 consolidated application orchestration; mocked owners/executor, no physical-commit or PostgreSQL claim; duration unmeasured.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "organization",
+      "path": "src/test/java/dz/sh/hidra/modules/organization/application/service/EmployeeAppointmentLifecycleApplicationServiceTest.java",
+      "source_sha256": "35a4a4cafbb25fb9ab571b3ff32684d6b353fb78c6cffaf11c5437c9294d0129",
       "supports": []
     }
   ],

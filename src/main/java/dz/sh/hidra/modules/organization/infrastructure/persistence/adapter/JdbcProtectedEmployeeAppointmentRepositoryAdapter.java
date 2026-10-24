@@ -60,16 +60,17 @@ import org.springframework.security.access.AccessDeniedException;
 import tools.jackson.databind.json.JsonMapper;
 
 /**
- * An isolated first JDBC slice of the registered protected repository. This is
- * intentionally NOT a component, and does NOT implement the protected repository
- * port until its complete lifecycle, final database guard and receipt are
- * implemented. Preview data is only an UNTRUSTED selector for the native
+ * Explicitly constructed implementation of the protected repository port.
+ * It remains outside component scanning pending genuine native/executor
+ * composition acceptance and the registered public cutover. Preview data is only
+ * an UNTRUSTED selector for the native
  * admission request; it is not authorization, current Party eligibility, or
  * permission to return a record. Its provisional writer remains unwired and
  * can commit only after its independent SQL proof/receipt guard succeeds. The
- * managed-flush/executor/application composition remains separately unwired.
+ * application coordinates detached results, managed flush and final callbacks;
+ * successful physical commit remains the executor's independent obligation.
  */
-public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
+public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements ProtectedEmployeeAppointmentRepositoryPort {
     private static final String SOURCE_DESCRIPTOR_SQL = """
             SELECT a.employee_id, a.organization_unit_id, b.company_party_id
               FROM public.hidra_org_employee_assignment a
@@ -1593,6 +1594,36 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
             t.guarded=true;
         }catch(RuntimeException failure){poison(t==null?admission:t);throw denied();}
         finally {if(t!=null)t.finalRead=null;}
+    }
+
+    /** Materialize an internal result only. The coordinator still owes its final guard and physical commit. */
+    @Override
+    public EmployeeAppointmentResult.MutationReceipt mutate(
+            ProtectedEmployeeAppointmentRepositoryPort.Admission admission, EmployeeAppointmentCommand command) {
+        StorageAdmission t=null;
+        try {
+            t=ticket(admission);
+            if(!coordinatorCaller() || t.mutation==null || !t.mutation.command().equals(command))throw denied();
+            requireCurrent(t);
+            if(t.mutation.use()==ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY) {
+                if(referenceUse(t,command,t.sample)!=ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY)throw denied();
+                return replayResult(t);
+            }
+            verifyProvisional(t);
+            if(t.plan==null || t.provisional==null || !t.provisionalWritten || !t.proofRequested.get()
+                    || t.commitProof==null || t.commitIntent==null)throw denied();
+            return new EmployeeAppointmentResult.MutationReceipt(command.kind(),command.requestId(),
+                    t.provisional.event(),t.sample.sampledAt(),false,t.plan.before(),t.plan.after(),t.plan.successor());
+        }catch(RuntimeException failure){poison(t==null?admission:t);throw denied();}
+    }
+
+    private EmployeeAppointmentResult.MutationReceipt replayResult(StorageAdmission t) {
+        var rows=jdbc.query(JOURNAL_SQL.formatted("e.event_id=?::uuid"),
+                JdbcProtectedEmployeeAppointmentRepositoryAdapter::replayEvent,t.mutation.retainedEvidence());
+        if(rows==null || rows.size()!=1)throw denied();
+        var event=rows.get(0);
+        return new EmployeeAppointmentResult.MutationReceipt(event.kind(),t.mutation.command().requestId(),
+                event.id(),event.sampled(),true,event.before(),event.after(),event.successor());
     }
 
     /** Freeze the original replay event; current projection CAS is deliberately irrelevant. */

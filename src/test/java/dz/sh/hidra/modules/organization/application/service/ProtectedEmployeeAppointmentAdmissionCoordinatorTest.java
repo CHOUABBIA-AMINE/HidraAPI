@@ -48,6 +48,42 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
         when(result.requestId()).thenReturn("req");return result;
     }
 
+    @Test void appliedReplaySealsAdmissionWithoutMutationAndRevalidatesItsDetachedResultBeforeGuard() {
+        try(var f=new WriteFixture(create(),ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY)) {
+            var result=replayResult();when(f.storage.mutate(f.storageTicket,f.command)).thenReturn(result);
+            when(f.storage.prepareFinalReplay(f.storageTicket)).thenReturn(result);
+            var ticket=f.acquire();assertSame(result,f.coordinator.apply(ticket));
+            verify(f.executor).sealAdmission();verify(f.executor,never()).beginProvisional(any(),any());
+            verify(f.storage,never()).prepareCommitProof(any());verify(f.storage,never()).contributeParty(any());
+            f.coordinator.prepareFinal(ticket);clearInvocations(f.storage,f.identity,f.party);
+            f.coordinator.finalizeOperation(ticket);ticket.beforeCommit(false);
+            verify(f.storage).finalizeReplay(f.storageTicket);verifyNoMoreInteractions(f.storage);
+            verifyNoInteractions(f.identity,f.party);
+        }
+    }
+
+    @Test void changedReplayResultAfterManagedFlushPoisonsTheOriginalTransaction() {
+        try(var f=new WriteFixture(create(),ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY)) {
+            var before=replayResult();var changed=replayResult();
+            when(f.storage.mutate(f.storageTicket,f.command)).thenReturn(before);
+            when(f.storage.prepareFinalReplay(f.storageTicket)).thenReturn(changed);
+            var ticket=f.acquire();assertSame(before,f.coordinator.apply(ticket));
+            assertThrows(AccessDeniedException.class,()->f.coordinator.prepareFinal(ticket));
+            assertTrue(f.holder.isRollbackOnly());assertThrows(AccessDeniedException.class,()->ticket.beforeCommit(false));
+            verify(f.storage,never()).finalizeReplay(any());
+        }
+    }
+
+    @Test void repeatedApplicationAndWrongResultClassificationCannotReachFinalGuard() {
+        for(boolean repeated:List.of(false,true))try(var f=new WriteFixture(create(),ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY)) {
+            var result=replayResult();if(!repeated)when(result.historicalReplay()).thenReturn(false);
+            when(f.storage.mutate(f.storageTicket,f.command)).thenReturn(result);var ticket=f.acquire();
+            if(repeated)f.coordinator.apply(ticket);
+            assertThrows(AccessDeniedException.class,()->f.coordinator.apply(ticket));
+            assertTrue(f.holder.isRollbackOnly());verify(f.storage,never()).finalizeReplay(any());
+        }
+    }
+
     @Test void replayFinalCallbacksUseOneReadGuardWithoutProvisionalProofOrPartyEligibility() {
         try(var f=new WriteFixture(create(),ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY)) {
             var ticket=f.acquire();var result=replayResult();when(f.storage.prepareFinalReplay(f.storageTicket)).thenReturn(result);
@@ -64,7 +100,7 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
         for(boolean fail:List.of(false,true))try(var f=new WriteFixture(create(),ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY)) {
             var ticket=f.acquire();
             if(fail)when(f.storage.prepareFinalReplay(f.storageTicket)).thenThrow(new IllegalStateException("storage"));
-            else when(f.storage.prepareFinalReplay(f.storageTicket)).thenReturn(replayResult());
+            else {var result=replayResult();when(f.storage.prepareFinalReplay(f.storageTicket)).thenReturn(result);}
             if(fail)assertThrows(AccessDeniedException.class,()->f.coordinator.prepareFinalReplay(ticket));
             else {f.coordinator.prepareFinalReplay(ticket);assertThrows(AccessDeniedException.class,()->f.coordinator.prepareFinalReplay(ticket));}
             assertThrows(AccessDeniedException.class,()->ticket.beforeCommit(false));assertTrue(f.holder.isRollbackOnly());

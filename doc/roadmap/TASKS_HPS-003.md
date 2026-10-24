@@ -27299,6 +27299,128 @@ Next work is actual native/executor/managed-flush and physical replay callback
 proof,then application/private-publisher/legacy/REST cutover and final acceptance.
 No bean/public replay route,deployment,release,simulator or OT action activated.
 
+
+### 2026-10-24 — HAPI-778 consolidated application orchestration and detached results
+
+Owner approves the proposed larger completion package with "Ok do it", followed
+by Continue. Refresh main 6ec87be6e33a15580b14eed463bb84a3896fbe9c,
+parent a98d898410d693cd59262e3713ea4c08bb4e5fd3,
+tree 47c5ac58793c10d7137694aa13dc0efa495b51b5.
+[Full857](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40078934113)
+and [Fast166](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40078934591)
+FAILED in the same replay test with Mockito UnfinishedStubbingException.
+Full857's static, API/dictionary and all seven PostgreSQL shards SUCCEEDED;
+Docs547 SUCCEEDED. No whole-task acceptance follows from those bounded results.
+The responsible repair constructs the nested replay mock before starting the
+outer when/thenReturn. Preserve the original negative assertions.
+
+Continue the existing B3 message:
+`feat(organization): persist protected appointment lifecycle and history`.
+The existing B3 union already names these runtime/application seams. This
+consolidation adds no task ID, migration, workflow, external-engine or deployment
+scope. Exactly two CREATE and nine MODIFY, zero DELETE:
+
+CREATE:
+- src/main/java/dz/sh/hidra/modules/organization/application/service/EmployeeAppointmentLifecycleApplicationService.java
+- src/test/java/dz/sh/hidra/modules/organization/application/service/EmployeeAppointmentLifecycleApplicationServiceTest.java
+
+MODIFY:
+- src/main/java/dz/sh/hidra/modules/organization/application/port/out/ProtectedEmployeeAppointmentRepositoryPort.java
+- src/main/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinator.java
+- src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JdbcProtectedEmployeeAppointmentRepositoryAdapter.java
+- src/main/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutor.java
+- src/test/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinatorTest.java
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java
+- src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java
+- .github/ci-test-inventory.json
+- this append-only HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+The JDBC adapter now implements the complete existing repository port instead of
+requiring a forwarding mock in structural PostgreSQL tests. Its mutate method
+materializes an INTERNAL detached receipt only: new writes must already have a
+verified provisional graph and retained original native commit intent/proof;
+replay must match the freshly authorized original command/receipt. The method
+performs no new DML and never asserts successful commit. Document this distinction
+on the port. Preserve the six provisional SQL texts, final SQL, catalog/function
+pins, old migrations, receipts and historical snapshots.
+
+The actual application service implements all nine inbound operations through
+the existing private publisher route. Only its exact compiled class name is
+added to executePublication; no prefix, generic caller or public permit factory.
+The topology architecture test admits exactly that additional literal and retains
+every prior caller assertion. The service has NO Spring component annotation
+and NO HTTP activation; construction alone grants no authority. Genuine combined
+native/publisher/executor/managed-flush acceptance remains a prerequisite for
+public cutover, as already required by the accepted B3 contract.
+
+For new writes the real coordinator qualifies the owners, performs its single
+provisional block, obtains the original storage-owned proof, and materializes a
+detached result in the executor work callback. Managed EntityManager flush
+precedes final owner/graph preparation. The same detached result is required
+again after flush; then exactly the existing one-statement guard runs. The
+service returns only when executePublication returns after observed physical
+commit. Rollback, final rejection and unknown commit outcomes never become a
+successful response or automatic retry.
+
+Replay seals the fresh admission without a provisional block, Party ACTIVE
+consumption, proof issuance, new event or receipt. Its detached historical result
+must equal the newly prepared final replay result after managed flush. A changed
+result, repeated application, wrong kind/request/classification or failed callback
+poisons the original transaction. All owner SQL precedes the final scalar guard.
+History scopes use separate private/redacted operations; exact-version and policy
+reads use their own typed methods, retained admission, managed flush and final
+read guard. Scope mismatch is rejected before preparation.
+
+Retain all existing tests and add sixteen cases:
+- Ten application tests cover all four mutation dispatches, callback order,
+  no private route after denied preparation, no materialization after denied
+  admission, managed-flush/preparation/final-guard/commit failure containment,
+  no retry, private versus redacted history, exact/policy reads and scope mismatch.
+  Their executor and owners are mocked: these are application mechanics only.
+- Three coordinator cases cover sealed replay without mutation/proof/Party ACTIVE,
+  post-flush replay-result substitution, repeated application and wrong result
+  classification. These owners/executor are mocked.
+- Three PostgreSQL cases compose the actual coordinator and real port directly,
+  materialize all five fresh lifecycle shapes, run final callbacks and observe
+  commit/receipt from another connection; reject forged final authentication with
+  no projection/event/key residue; and commit historical replay through the actual
+  non-mutating SQL guard without another event/receipt. The native issuer and
+  protected executor remain mocked in this existing structural fixture; independent
+  HMAC fixture bytes do not establish genuine native issuance or the 500ms budget.
+
+CI inventory retains every previous class/case/timing/lane and adds only the ten
+actual new application methods, three coordinator methods and three PostgreSQL
+methods plus the three changed existing source identities. No skipped or mocked
+case is recorded as native/PostgreSQL acceptance. Existing counts become seventy
+coordinator cases and sixty-one concurrency PostgreSQL cases, plus ten application
+cases. New application duration is explicitly unmeasured.
+
+Actual available validation: Java17 syntax parsing passes the nine changed/new
+Java files, without type resolution or JUnit execution. All32 inventory-tool
+self-tests and all19 documentation-validator self-tests pass; the latter first
+required retrieving its unchanged OpenAPI-validator dependency. Changed-source
+inventory/case/hash preservation and whitespace checks pass. Full canonical
+documentation/inventory validation and Java21/Maven/PostgreSQL execution are
+hosted obligations: this is a partial source checkout, Java17 is installed and
+Maven is unavailable. No complete local environment is provisioned.
+
+HAPI-778 remains PARTIAL/IN_PROGRESS; HAPI-590 remains independently
+PARTIAL/BLOCKED. This publishes a larger orchestration package, NOT the whole
+originally proposed implementation-and-public-cutover target. The recovered
+source still lacks genuine combined runtime proof, public bean/REST activation
+and the registered legacy writer/reader cutover. Do not bypass that acceptance
+gate to claim closure. Next B3 work must consolidate genuine native/private
+publisher/executor/managed-flush qualification with the remaining registered
+application/legacy/REST deliverable where accepted evidence permits it; no
+additional generic planning-only checkpoint is required. Actual generated
+API/catalog reconciliation and case-level final acceptance remain subsequent
+separately selected evidence stages. No task completion, SITE acceptance, release,
+deployment, simulator or OT action is claimed.
+
+Publish only the eleven paths using expected-6ec87be main guard; verify exact
+parent/tree/message/blobs/scope, confirm applicable exact-SHA Full/Fast/Docs
+creation/queue/start and STOP for owner CI feedback.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

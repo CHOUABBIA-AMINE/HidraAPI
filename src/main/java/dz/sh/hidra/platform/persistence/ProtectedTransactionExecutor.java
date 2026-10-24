@@ -40,6 +40,7 @@ public final class ProtectedTransactionExecutor {
     // HAPI-778: only the compiled Organization coordinator may request these six frozen SQL texts.
     // A hash is statement shape, NEVER Identity admission or a business permission.
     private static final String APPOINTMENT_COORDINATOR="dz.sh.hidra.modules.organization.application.service.ProtectedEmployeeAppointmentAdmissionCoordinator";
+    private static final String APPOINTMENT_SERVICE="dz.sh.hidra.modules.organization.application.service.EmployeeAppointmentLifecycleApplicationService";
     private static final Set<String> APPOINTMENT_PROVISIONAL_HASHES=Set.of(
         "516725eb3d2d0fa98f75e73c62186d730c22b44b15d648ed03b1f4e88cba1af4",
         "0991e6595ce13ba5b556da137e0211bc72ecc982a10a01feac5bcb2f9294c896",
@@ -93,7 +94,7 @@ public final class ProtectedTransactionExecutor {
     /** Select the private credential before any physical transaction; no business permission implied. */
     public <T> T executePublication(Supplier<T> work,Runnable flush,Runnable guard) {
         String caller=StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName();
-        if(!caller.equals(DRAFT_SERVICE) && !caller.equals(PUBLICATION_SERVICE) && !caller.equals(
+        if(!caller.equals(DRAFT_SERVICE) && !caller.equals(PUBLICATION_SERVICE) && !caller.equals(APPOINTMENT_SERVICE) && !caller.equals(
             "dz.sh.hidra.modules.topology.application.service.ProtectedStationGraphOperationService"))
             throw new IllegalStateException("Unreviewed credential route caller");
         try(var route=credentialRouter().open()) {return execute(work,flush,guard);}

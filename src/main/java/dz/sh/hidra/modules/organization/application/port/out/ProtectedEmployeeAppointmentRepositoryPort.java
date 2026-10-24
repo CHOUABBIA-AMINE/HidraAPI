@@ -183,11 +183,12 @@ public interface ProtectedEmployeeAppointmentRepositoryPort {
     void finalizeReplay(Admission admission);
 
     /**
-     * One guarded atomic lifecycle operation under the original request key,
-     * exact source CAS and pinned revisions. CREATE has no source, END and
-     * CORRECT one successor version, TRANSFER two records. Implementer must
-     * atomically append complete event/receipt evidence and reject unknown commit.
-     * A historical identical replay still requires fresh current authorization.
+     * Materialize the detached result of the coordinator's retained lifecycle
+     * operation. A new result requires completed provisional writes and a retained
+     * native proof; replay requires fresh current authorization and an identical
+     * original receipt. This method does not execute DML or establish commit.
+     * The coordinator must repeat final preparation, run the scalar guard, and
+     * let the executor observe physical commit before disclosing the result.
      */
     EmployeeAppointmentResult.MutationReceipt mutate(Admission admission,
                                                       EmployeeAppointmentCommand command);

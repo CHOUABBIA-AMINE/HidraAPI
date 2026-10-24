@@ -805,10 +805,19 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
             if (parties.size() > 1) throw denied();
             check(PHYSICAL_CONTEXT);
             if (!parties.isEmpty()) requireHeld(PARTY_FENCES);
-            for (var fence : ORGANIZATION_FENCES) {
-                String mode = fence.mode() == ProtectedRelationFence.Mode.ACCESS_SHARE
+            // Exact registered order and individual modes; batch only contiguous
+            // same-mode fences, preserving non-waiting acquisition of every relation.
+            for (int first = 0; first < ORGANIZATION_FENCES.size();) {
+                var mode = ORGANIZATION_FENCES.get(first).mode();
+                int end = first + 1;
+                while (end < ORGANIZATION_FENCES.size() && ORGANIZATION_FENCES.get(end).mode() == mode)
+                    end++;
+                String relations = ORGANIZATION_FENCES.subList(first, end).stream()
+                        .map(ProtectedRelationFence::relation).collect(java.util.stream.Collectors.joining(","));
+                String lockMode = mode == ProtectedRelationFence.Mode.ACCESS_SHARE
                         ? "ACCESS SHARE" : "SHARE ROW EXCLUSIVE";
-                jdbc.execute("LOCK TABLE " + fence.relation() + " IN " + mode + " MODE NOWAIT");
+                jdbc.execute("LOCK TABLE " + relations + " IN " + lockMode + " MODE NOWAIT");
+                first = end;
             }
             requireCatalog();
             requireHeld(ORGANIZATION_FENCES);
@@ -870,10 +879,8 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
                 if(!PARTY_FENCES.equals(party.finalFences(ticket.parties.get(0))))throw denied();
             }
             requireCatalog();
-            requireHeld(ORGANIZATION_FENCES);
-            requireHeld(ticket.nativeFences);
-            requireHeld(ticket.proofFences);
-            if (!ticket.parties.isEmpty()) requireHeld(PARTY_FENCES);
+            requireHeld(ORGANIZATION_FENCES, ticket.nativeFences, ticket.proofFences,
+                    ticket.parties.isEmpty() ? List.of() : PARTY_FENCES);
             var expected = ticket;
             if (!Boolean.TRUE.equals(jdbc.queryForObject("""
                     SELECT pg_catalog.pg_backend_pid()=? AND pg_catalog.txid_current()=?
@@ -1024,14 +1031,15 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
         if (!Boolean.TRUE.equals(jdbc.queryForObject(sql, Boolean.class, args))) throw denied();
     }
 
-    private void requireHeld(List<ProtectedRelationFence> fences) {
+    @SafeVarargs
+    private final void requireHeld(List<ProtectedRelationFence>... groups) {
         var held = new java.util.HashSet<>(jdbc.query("""
                 SELECT n.nspname||'.'||c.relname||'|'||l.mode
                   FROM pg_catalog.pg_locks l JOIN pg_catalog.pg_class c ON c.oid=l.relation
                   JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
                  WHERE l.pid=pg_catalog.pg_backend_pid() AND l.granted AND l.locktype='relation'
                 """, (row, index) -> row.getString(1)));
-        for (var fence : fences)
+        for (var fences : groups) for (var fence : fences)
             if (!held.contains(fence.relation() + "|" + fence.mode().catalog())) throw denied();
     }
 

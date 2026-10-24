@@ -148,7 +148,16 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
                     List.of(new CompanyUnit(f.company(),unit)),action==Action.READ_POLICY?null:f.employee()).requirements());
             for(var requirement:requirements) {
                 String code=OrganizationProtectedAppointmentAuthorizationContract.permissionCode(action,requirement.kind());
+                // Permission definitions are not grants and are not seeded by this fixture's migrations.
+                // Match the genuine Identity integration fixture before inserting a scoped grant.
+                admin("INSERT INTO public.hidra_identity_permission(id,code,permission_domain,resource_type,action,sensitive,status,created_at,updated_at) VALUES (?,?,'organization',?,?,false,'ACTIVE',now(),now()) ON CONFLICT (code) DO NOTHING",id(),code,requirement.kind().resourceType(),action.name().toLowerCase(java.util.Locale.ROOT).replace('_','-'));
+                try(var c=owner()) {
+                    assertEquals("1",scalar(c,"SELECT count(*) FROM public.hidra_identity_permission WHERE code=? AND permission_domain='organization' AND resource_type=? AND status='ACTIVE'",code,requirement.kind().resourceType()));
+                }
                 admin("INSERT INTO public.hidra_identity_user_permission_grant(id,user_id,permission_id,effect,scope_type,scope_reference_id,grant_reason,emergency_access,valid_from,valid_to,status,created_at) SELECT ?,?,id,'GRANT',?,?,'runtime fixture',false,now()-interval '1 hour',now()+interval '1 hour','ACTIVE',now() FROM public.hidra_identity_permission WHERE code=?",id(),actor,requirement.kind()==ResourceKind.UNIT?"ORGANIZATION_UNIT":"CUSTOM",requirement.reference(),code);
+                try(var c=owner()) {
+                    assertEquals("1",scalar(c,"SELECT count(*) FROM public.hidra_identity_user_permission_grant g JOIN public.hidra_identity_permission p ON p.id=g.permission_id WHERE g.user_id=? AND p.code=? AND g.scope_type=? AND g.scope_reference_id=? AND g.effect='GRANT' AND g.status='ACTIVE'",actor,code,requirement.kind()==ResourceKind.UNIT?"ORGANIZATION_UNIT":"CUSTOM",requirement.reference()));
+                }
             }
         }
         long prior;try(var c=owner()){prior=Long.parseLong(scalar(c,"SELECT coalesce(max(revision),0) FROM public.hidra_identity_org_commit_key_event"));}

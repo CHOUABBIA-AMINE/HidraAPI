@@ -27789,6 +27789,55 @@ release,deployment,simulator or OT action.
 Publish with expected-0df7012 main guard,verify parent/tree/message/blobs/scope,
 confirm exact-SHA Full/Fast/Docs creation/queue/start and STOP.
 
+
+### 2026-10-24 — HAPI-778 Full864 provision genuine fixture permission definitions
+
+Owner Fail refreshes main c6fc1709ac94fe269b1395c4f107b518c32fe49c,
+parent 0df7012ed8fb53e7d4073a57a17b538dd0aaff26,
+tree 1171a3d11a9c8458f965ee92fa9c1e7265519e13.
+[Full864](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40086240608)
+FAILED only PostgreSQL shard1 and the consequential aggregate. Fast173 and
+Docs554 SUCCEEDED; static,unit/architecture,API/dictionary and six other
+PostgreSQL shards SUCCEEDED. All64 Organization cases executed. The retained
+cause now identifies ProtectedOrganizationAppointmentAuthorizationParticipant
+contribute line109: the evaluated native contribution is not PERMIT.
+The positive CREATE rejects; the unchanged verify(flush) assertion detects that
+the rollback-fault case never reached its intended boundary.
+
+Source inspection finds runtimeActor inserts grants by SELECT from permission
+without creating the appointment definitions or checking inserted rows. Missing
+definitions silently produce zero grants. The actual Identity integration
+fixture explicitly provisions these definitions before granting; the ownership
+migration does not seed them. Repair the synthetic fixture using that same
+canonical code/resource-type/action vocabulary. INSERT definitions only when
+code is absent; never overwrite existing catalog authority. Assert exactly one
+ACTIVE organization definition with the expected resource type before granting,
+and exactly one scoped ACTIVE GRANT for each requested resource afterward.
+These checks make silent zero-row provisioning fail at setup. Preserve valid
+one-pair requirement unions and the real LOCAL/native admission path.
+
+Continue registered B3 message
+`feat(organization): persist protected appointment lifecycle and history`.
+Exactly three MODIFY,zero CREATE/DELETE:
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java
+- .github/ci-test-inventory.json,only this suite's actual source hash
+- this append-only HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+All64 cases,assertions,500ms deadline,production classes,172 migrations,
+SQL/catalog/function pins,workflows and generated artifacts retain content.
+No retries,deadline relaxation,native mocks or public/legacy activation.
+Java17 syntax parsing,32 inventory-tool and19 documentation-validator self-tests
+pass. Inventory-only-hash,append-only,three-path and whitespace checks pass.
+No local Java21 compilation,JUnit or PostgreSQL runtime pass is claimed;
+Maven and the complete service environment are unavailable and are not provisioned.
+This corrects the observed fixture omission; renewed genuine lifecycle/flush
+runtime acceptance remains pending exact-SHA hosted CI.
+HAPI-778 stays PARTIAL/IN_PROGRESS;HAPI-590 independently PARTIAL/BLOCKED.
+The selected remaining consolidated B3 package follows genuine runtime
+qualification; no task closure,release,deployment,simulator or OT action.
+Publish with expected-c6fc170 main guard,verify parent/tree/message/blobs/scope,
+confirm exact-SHA Full/Fast/Docs creation/queue/start and STOP.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

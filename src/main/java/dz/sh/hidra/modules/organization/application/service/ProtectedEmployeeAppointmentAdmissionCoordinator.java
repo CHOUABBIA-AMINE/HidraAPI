@@ -294,11 +294,13 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
     /** The result remains inside executePublication until its observed physical commit. */
     EmployeeAppointmentResult.MutationReceipt apply(WriteAdmission admission) {
         try {
-            requireCurrentWrite(admission);
-            if(admission.detachedResult!=null)throw denied();
+            if(admission==null || admission.owner!=this || admission.detachedResult!=null)throw denied();
             if(admission.referenceUse==ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY) {
+                requireCurrentWrite(admission);
                 executor.sealAdmission();
             } else {
+                // persistProvisional repeats full owner validation before its permit.
+                // Do not duplicate it without any intervening callback or work.
                 persistProvisional(admission);
                 prepareCommitProof(admission);
             }

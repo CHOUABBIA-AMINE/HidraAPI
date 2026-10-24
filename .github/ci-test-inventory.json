@@ -8627,9 +8627,9 @@
       "cases": [
         "additionalDatasourceConnectionPoisonsOwner",
         "admissionGrammarKeepsQuotedDataButRejectsWritableQueryForms",
-        "appointmentProvisionalTemplatesRequireExactHashesAndCompiledCaller",
         "afterCommitCallbackErrorWithholdsCommittedResult",
         "ambientTransactionRejectsWithoutCreatingProtectedWork",
+        "appointmentProvisionalTemplatesRequireExactHashesAndCompiledCaller",
         "batchStreamingAndStatementUnwrapReject",
         "beforeCommitCallbackWriteRejectsFullAttempt",
         "changedServerBackendOrTransactionIdentityRejects",
@@ -8659,6 +8659,7 @@
         "secondGuardStatementPoisonsEvenIfCaught",
         "successfulScalarExecutionCommitsBeforeReturning",
         "swallowedExpiredHandlePoisonsNewAttempt",
+        "transactionLocalJitSetupPrecedesWorkAndCannotSilentlyFail",
         "unsupportedManagerRejectsBeforeWork",
         "workSqlErrorPoisonsCaughtContinuation",
         "wrapperBackReferencesStayControlled",
@@ -8671,7 +8672,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java",
-      "source_sha256": "bb0446abcccd274eb3156d3a59e13585f5853730b1495aa399f9842f30e4fd2d",
+      "source_sha256": "252abce7be89eb800d2640bc0295251f027c2ec30916eed9ffeaf73fec0fb20a",
       "supports": []
     },
     {

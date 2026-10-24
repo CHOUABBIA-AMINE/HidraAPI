@@ -143,6 +143,9 @@ public final class ProtectedTransactionExecutor {
                     || !TransactionSynchronizationManager.isActualTransactionActive())
                 throw new IllegalStateException("not new physical transaction");
             JdbcTemplate jdbc = new JdbcTemplate(datasource);
+            // Short, repeatedly revalidated owner/catalog reads must not pay LLVM
+            // compilation costs. LOCAL restores the connection's setting at completion.
+            jdbc.execute("SET LOCAL jit='off'");
             jdbc.execute("SET LOCAL lock_timeout='250ms'");
             jdbc.execute("SET LOCAL statement_timeout='750ms'");
             jdbc.execute("SET LOCAL idle_in_transaction_session_timeout='1000ms'");

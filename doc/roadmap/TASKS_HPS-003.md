@@ -27974,6 +27974,69 @@ parent/tree/four paths/blobs/message,confirm exact-SHA Full/Fast/Docs creation,
 queueing or startup,and STOP. Use the next hosted diagnostic evidence to target
 the actual measured cost without weakening protected checks.
 
+
+### 2026-10-24 — HAPI-778 Full872 transaction-local PostgreSQL JIT suppression
+
+Owner Next refreshes main df821722e35aae2d465c91202be82315569beaf2,
+parent ad32bca63cd5562832d0601a6e08428e9bb71970,
+tree ac538e5bb6787817dbacd74cca8d02667b515ee8.
+[Full872](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40098947988)
+FAILED only PostgreSQL shard1 and its consequential aggregate. Fast181,Docs562,
+static,Java21 unit/architecture,API/dictionary and six PostgreSQL shards PASSED.
+All64 appointment concurrency cases ran. Positive LOCAL CREATE still fails before
+provisional writes at sealAdmission; the flush-fault test cannot reach flush.
+
+Actual boundary measurements: acquireWrite2102ms,follow-on currentWrite1052ms,
+prepareProvisional657ms,about3811ms before sealing against the500ms work budget.
+Within that latest currentWrite,native-current97ms,storage-current121ms,
+reference classification282ms and prepareMutation547ms. These are inclusive
+boundary timings,not exclusive SQL timings; they show repeated small protected
+reads are expensive but do not identify query-plan compilation as their cause.
+
+This bounded optimization disables PostgreSQL JIT inside EACH protected physical
+transaction,using SET LOCAL jit='off' before existing timeout setup and before
+the500ms work-clock start. It applies consistently to ordinary/private publisher
+executor routes. PostgreSQL16 documentation explains JIT compilation overhead
+often outweighs savings for short queries and jit=off disables it at planning
+and execution time:
+https://www.postgresql.org/docs/16/jit-decision.html
+Repeated native/catalog/planning reads are latency-sensitive rather than bulk
+analytical scans. JIT overhead is a source-supported performance hypothesis;
+Full872 logs contain no EXPLAIN/JIT timing,so this submission does NOT claim
+that JIT was observed or that the timeout is resolved. Hosted exact-SHA runtime
+feedback must establish the actual effect. No privilege,authorization predicate,
+freshness check,SQL pin,lock mode,statement/lock/aggregate timeout is relaxed.
+LOCAL is transaction-scoped and does not alter database/role/pool defaults.
+Failure to apply the setting rejects and rolls back before work; no fallback.
+
+Registered B3 message remains
+`feat(organization): persist protected appointment lifecycle and history`.
+Exactly four MODIFY,zero CREATE/DELETE:
+- src/main/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutor.java
+- src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java
+- .github/ci-test-inventory.json,only that suite's source hash and added case
+- this append-only HAPI-778 evidence in doc/roadmap/TASKS_HPS-003.md
+
+The production diff adds only the local JIT command and its comment. Add one
+simulated-JDBC regression proving setting failure occurs before user work,
+does not commit,rolls back once and is not silently ignored. Preserve all39
+previous executor cases; now40. No mock/unit test is a real PostgreSQL setting
+restoration or performance proof. All64 required Organization integration cases
+and coordinator timing diagnostics retain bytes,as do172 migrations,all
+catalog/function pins,seven shards,generated artifacts and public/legacy gates.
+
+Java17 syntax parsing for both changed Java files,32 inventory-validator and19
+documentation-validator self-tests PASSED. Exact production-diff scope,
+existing test identities,sole inventory class update,append-only documentation,
+changed-line whitespace and exact Git blob/tree scope are checked.
+No local Java21 type compilation,JUnit,PostgreSQL execution,EXPLAIN or performance
+pass is claimed. Missing Maven/services are not provisioned.
+HAPI-778 stays PARTIAL/IN_PROGRESS;HAPI-590 independently PARTIAL/BLOCKED.
+Remaining consolidated B3 public/legacy implementation awaits real runtime
+qualification. No release,deployment,simulation or OT action. Publish direct main
+with expected-df82172 guard,verify exact parent/tree/message/four blobs,confirm
+applicable Full/Fast/Docs creation/queue/start and STOP for owner feedback.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

@@ -224,6 +224,26 @@ class ProtectedTransactionExecutorTest {
     }
 
     @Test
+    void transactionLocalJitSetupPrecedesWorkAndCannotSilentlyFail() throws Exception {
+        var setup = new ArrayList<String>();
+        when(raw.createStatement()).thenAnswer(i -> {
+            var statement = statement(false, null);
+            when(statement.execute(anyString())).thenAnswer(call -> {
+                String sql = call.getArgument(0);
+                setup.add(sql);
+                if (sql.equals("SET LOCAL jit='off'")) throw new SQLException("synthetic setup failure");
+                return false;
+            });
+            return statement;
+        });
+        var reached = new AtomicBoolean();
+        rejected(() -> run(() -> { reached.set(true); return "forbidden"; }, () -> {}, this::guard));
+        assertThat(setup).containsExactly("SET LOCAL jit='off'");
+        assertThat(reached).isFalse();
+        assertThat(rollbacks).hasValue(1);
+    }
+
+    @Test
     void secondGuardStatementPoisonsEvenIfCaught() {
         rejected(
                 () ->

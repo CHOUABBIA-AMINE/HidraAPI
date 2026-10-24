@@ -26941,6 +26941,71 @@ authentic catalog artifact and registered dictionary reconciliation. HAPI-778
 remains PARTIAL/IN_PROGRESS and HAPI-590 independently PARTIAL/BLOCKED. Replay,
 real native/executor/managed-flush and public integration remain unfinished.
 
+### 2026-10-24 — HAPI-778 Full851 journal receipt name-resolution repair
+
+**Selection / exact source:** Owner Fail refreshes main
+71d801c626bec3d5e71044110c823b315845ed74,
+parent3514db8b58c50701943294d6fdca97f593c63f8d,
+tree55405e380a85bc7d615bb81f91e45486189df58e.
+[Full851](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40056026990)
+FAILED; [Fast162](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40056027006)
+and [Docs541](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40056027030)
+SUCCEEDED. Static, Java21 unit/architecture and six PostgreSQL shards succeeded.
+Shard5 job120759092158 reports244 tests, zero assertion failures, two errors,
+zero skips. Both errors are in the90-case appointment suite: positive journal
+finalization in journalFinalGuardCommitsEveryHistoryAndExactShapeWithRetiredPartyAndOriginalPins
+and journalFinalCallbacksVetoUnfinishedPreparationAndPostGuardOwnerQueries.
+The coordinator uniformly masks the underlying storage failure as AccessDenied;
+the logs do not expose its original SQL diagnostic. Negative refusal cases alone
+cannot establish a functioning positive journal guard.
+
+**Source diagnosis / bounded forward repair:** In the JOURNAL SELECT, receipt
+alias r collides with the function's PL/pgSQL record variable r, last assigned by
+the preceding routine-configuration loop. Thus to_jsonb(r) can bind the procedural
+record rather than the receipt row, and r.event_id can attempt a field lookup on
+that record. This source-level name collision is the repair hypothesis for the
+masked failures; actual PostgreSQL acceptance remains pending. Rename only this
+SQL alias to receipt_row and its two uses. All graph predicates, policy behavior,
+fences, privileges, image/event limits and final clock checks retain their bytes.
+The Java JOURNAL_SQL is outside PL/pgSQL and needs no corresponding alias change.
+
+Full851 successfully installed170 migrations. Preserve every installed migration,
+including V20261024_001; do not edit its checksum/history. The refreshed live chain
+has no002 for this date. Under B3's existing migration-preservation rule, admit
+the collision-free forward migration
+src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql.
+It replaces only the existing read-guard body, preserving signature, owner, fixed
+settings and grants. Update the adapter's one closed-body pin to exact prosrc
+SHA25678470fff0f15f8b7ccf1a479653b8c8aa89936007ce4b44638bd227eb475c735.
+
+**Finite scope / exact message:** Retain
+`feat(organization): persist protected appointment lifecycle and history`.
+One CREATE (that002 migration), two MODIFY (the JDBC adapter pin and this
+append-only HAPI-778 record), zero DELETE. Existing90 PostgreSQL and64 coordinator
+cases already exercise the positive commits and negative graph/finalization
+obligations; preserve all cases, assertions, source hashes and CI inventory.
+No workflow, role, grant, permission, public API or additional runtime scope.
+
+**Independent artifact failure:** API job120759091563 diagnostic artifact12545268288
+was retrieved from Full851. Its database/verification.json reports exactly
+Physical dictionary drift; review regenerated metadata/content. The authentic
+database/schema.json contains the successfully migrated170-script catalog.
+Keep the existing169-migration dictionary truthful rather than fabricating the
+new171-script catalog from SQL. Runtime repair comes first; its new hosted catalog
+must drive the separately registered artifact-reconciliation message/scope.
+Full851 is FAILED, and no aggregate or dictionary acceptance is claimed.
+
+**Available validation / stop:** Complete SQL and PL/pgSQL syntax parsing, exact
+body-pin equality, Java17 compiler-API syntax parsing, canonical inventory,
+documentation, whitespace, append-only and finite-scope checks run before
+publication. These do not execute PostgreSQL or JUnit. No full local environment
+is provisioned solely for testing. Publish only these three paths with expected
+71d801c main guard; verify parent/tree/message/blobs and applicable exact-SHA
+CI creation/queue/start, then STOP. HAPI-778 remains PARTIAL/IN_PROGRESS and
+HAPI-590 independently PARTIAL/BLOCKED. Positive journal guard acceptance,
+authentic171-migration dictionary, replay, genuine native/executor/managed-flush
+and application/REST integration remain unfinished. No release or deployment.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

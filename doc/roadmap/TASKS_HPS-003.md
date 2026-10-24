@@ -26880,6 +26880,67 @@ continue replay finalization and real native/executor/managed-flush composition,
 followed by application/private-publisher/legacy/REST cutover and case-level final
 acceptance. No release, deployment, numerical simulator or OT action is selected.
 
+### 2026-10-24 — HAPI-778 Full850 failed journal migration syntax repair
+
+**Selection / exact source:** Owner Fail refreshes main
+3514db8b58c50701943294d6fdca97f593c63f8d,
+parentd8e24574497db617a44d74f4e1b4ecf57d98e99f,
+tree750f4d5cffc908aa978a44e343b50c82c708bd76.
+[Full850](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40055438656)
+FAILED; [Fast161](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40055438688)
+and [Docs540](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40055438641)
+SUCCEEDED. Static and Java21 unit/architecture jobs succeeded. All seven database
+shards and API/dictionary failed, so no new PostgreSQL behavior or dictionary
+capture is accepted. Retrieved shard1 job120757286852 and API job120757286824
+both show Flyway rejecting V20261024_001 with SQLSTATE42601, syntax error at end
+of input, position1437. PostgreSQL reports the migration rolled back. The source
+function was not installed by those failed migrations; subsequent test context
+failures and aggregate rejection do not establish separate runtime defects.
+
+**Responsible same-stage scope / message:** Retain
+`feat(organization): persist protected appointment lifecycle and history`.
+Exactly three MODIFY, no CREATE/DELETE:
+- src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql
+- src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JdbcProtectedEmployeeAppointmentRepositoryAdapter.java
+- this append-only HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+**Cause and correction:** The first PL/pgSQL IF used an unparenthesized CASE
+expression, allowing its inner THEN to terminate the condition parser. Wrap only
+that scalar CASE in parentheses. Full source parsing additionally exposed two
+stray function-ending tails inside the version/limit regex literals. They came
+from source assembly interpreting dollar/quote replacement tokens rather than
+retaining the intended regex end anchor. Restore both exact positive-integer
+regex literals and remove those misplaced duplicated tails. The routine now has
+one complete body and one final clock check/exception/end/revoke sequence.
+No graph check, selector bound, lock, privilege check, final deadline or assertion
+is removed. Update only the adapter's read-routine closed-body pin to actual
+prosrc SHA25639bfe3a944c4150b34eb1128fa75c41f2b489b8189bc5f6e8100f0f625f11cd4.
+
+This corrects the new failed development migration within its responsible stage;
+all169 previously successful migration bodies remain unchanged. A later forward
+script cannot repair an earlier script that prevents fresh-schema installation.
+No applied deployment checksum/history, Flyway repair/baseline operation, schema
+reset, runtime grant, test, CI inventory/workflow or public API is changed.
+
+**Actual validation:** Isolated lightweight pglast8.7 parsing reproduced the
+published SQL/PLpgSQL source's stray-OR syntax failure. Corrected complete source
+passes both parse_sql and parse_plpgsql. This is parser evidence, not PostgreSQL16
+installation/catalog/runtime proof. Installed Java17 compiler-API syntax parsing
+passes the pin-only adapter change. Canonical inventory remains valid with353
+fast/354 unit-architecture/455 oracle/four historical classes and the unchanged
+seven partitions12/16/13/14/16/15/15. All tests and their source hashes remain
+byte-identical. Documentation/whitespace and exact three-file scope are checked
+before publication. No full local Java21/Maven/PostgreSQL/Docker environment is
+provisioned. Hosted migration execution and all new read-guard cases remain gates.
+
+**Stop / remaining:** Publish only these three paths using expected-3514db8 main
+guard; verify parent/tree/message/blobs/scope and exact-SHA applicable CI creation/
+queue/start, then STOP. Full850 remains FAILED; do not preclaim a repaired runtime
+pass. After successful installation the170-migration chain still requires its
+authentic catalog artifact and registered dictionary reconciliation. HAPI-778
+remains PARTIAL/IN_PROGRESS and HAPI-590 independently PARTIAL/BLOCKED. Replay,
+real native/executor/managed-flush and public integration remain unfinished.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

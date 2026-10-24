@@ -581,7 +581,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
             Map.entry("public.hidra_org_appointment_receipt", "2c6a183766db9b11b96f4441bf5f3fc68baf4b794b7effedcefdf7243c03ab65"));
     // Exact latest authored prosrc bytes, including accepted forward replacements.
     private static final Map<String, String> FUNCTION_PINS = Map.ofEntries(
-            Map.entry("hidra_org_appointment_read_guard", "01a2c05dd4cc6d15babd5203d0edf9e203c090f80872c4fd888017fb51a174a7"),
+            Map.entry("hidra_org_appointment_read_guard", "39bfe3a944c4150b34eb1128fa75c41f2b489b8189bc5f6e8100f0f625f11cd4"),
             Map.entry("hidra_org_appointment_final_fingerprint", "e7c7cf81f21066af6d35cc6a8c7a85dc0916cf7e049fc05b1142ebe522e10842"),
             Map.entry("hidra_org_appointment_final_context", "2cba4bcde5ca4fe134feb8d48fc48ef6d0735df69980aeebbaa1dcc37fd44582"),
             Map.entry("hidra_org_appointment_final_guard", "539cc2ba27be9e3439141b851ca06640cb91f525d9b6f9aaf8147dce3a2019a5"),

@@ -16,7 +16,7 @@ BEGIN
    OR pg_catalog.octet_length(p_expected::text)>131072
    OR p_expected->>'kind' NOT IN ('POLICY','JOURNAL')
    OR p_expected->>'kind' IS NULL
-   OR (SELECT count(*) FROM pg_catalog.jsonb_object_keys(p_expected))<>CASE WHEN p_expected->>'kind'='POLICY' THEN 7 ELSE 3 END
+   OR (SELECT count(*) FROM pg_catalog.jsonb_object_keys(p_expected))<>(CASE WHEN p_expected->>'kind'='POLICY' THEN 7 ELSE 3 END)
  THEN RAISE EXCEPTION 'Appointment finalization unavailable'; END IF;
  PERFORM public.hidra_identity_org_commit_caller();
  SELECT proowner INTO own FROM pg_catalog.pg_proc
@@ -200,34 +200,14 @@ BEGIN
    IF pg_catalog.jsonb_typeof(chosen->'assignment') IS DISTINCT FROM 'string'
       OR NOT public.hidra_org_appointment_exact_id(chosen->>'assignment')
       OR pg_catalog.jsonb_typeof(chosen->'version') IS DISTINCT FROM 'number'
-      OR (chosen->>'version') !~ '^[1-9][0-9]*
- THEN RAISE EXCEPTION 'Appointment finalization unavailable'; END IF;
- checked_at:=pg_catalog.clock_timestamp();
- IF checked_at<p_sample OR checked_at>=p_until
- THEN RAISE EXCEPTION 'Appointment finalization unavailable'; END IF;
- RETURN true;
-EXCEPTION WHEN OTHERS THEN RAISE EXCEPTION 'Appointment finalization unavailable';
-END;
-$read_guard$;
-REVOKE ALL ON FUNCTION public.hidra_org_appointment_read_guard(jsonb,timestamptz,timestamptz,integer,bigint,timestamptz) FROM PUBLIC;
-
+      OR (chosen->>'version') !~ '^[1-9][0-9]*$'
       OR (chosen->>'version')::numeric>9223372036854775807
       OR chosen->'employee'<>'null'::jsonb OR chosen->'unit'<>'null'::jsonb
       OR chosen->'position'<>'null'::jsonb OR chosen->'limit'<>'null'::jsonb OR chosen->'cursor'<>'null'::jsonb
    THEN RAISE EXCEPTION 'Appointment finalization unavailable'; END IF;
  ELSE
    IF pg_catalog.jsonb_typeof(chosen->'limit') IS DISTINCT FROM 'number'
-      OR (chosen->>'limit') !~ '^[1-9][0-9]*
- THEN RAISE EXCEPTION 'Appointment finalization unavailable'; END IF;
- checked_at:=pg_catalog.clock_timestamp();
- IF checked_at<p_sample OR checked_at>=p_until
- THEN RAISE EXCEPTION 'Appointment finalization unavailable'; END IF;
- RETURN true;
-EXCEPTION WHEN OTHERS THEN RAISE EXCEPTION 'Appointment finalization unavailable';
-END;
-$read_guard$;
-REVOKE ALL ON FUNCTION public.hidra_org_appointment_read_guard(jsonb,timestamptz,timestamptz,integer,bigint,timestamptz) FROM PUBLIC;
- OR (chosen->>'limit')::numeric NOT BETWEEN 1 AND 100
+      OR (chosen->>'limit') !~ '^[1-9][0-9]*$' OR (chosen->>'limit')::numeric NOT BETWEEN 1 AND 100
       OR chosen->'version'<>'null'::jsonb
       OR (chosen->'cursor'<>'null'::jsonb AND (pg_catalog.jsonb_typeof(chosen->'cursor') IS DISTINCT FROM 'string'
           OR pg_catalog.length(chosen->>'cursor') NOT BETWEEN 1 AND 2048))

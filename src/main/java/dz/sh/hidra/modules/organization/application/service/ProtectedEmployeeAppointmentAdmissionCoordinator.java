@@ -345,95 +345,126 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
      * after the storage owner has classified the exact authenticated request.
      */
     WriteAdmission acquireWrite(Prepared prepared, EmployeeAppointmentCommand command) {
+        var timings = new BoundaryTimings("acquireWrite");
         WriteAdmission result = null;
         try {
+            timings.start("descriptor");
             Request request = begin(prepared, Objects.requireNonNull(command));
+            timings.start("native-acquire");
             var nativeAdmission = Objects.requireNonNull(identity.acquire(prepared.nativeIdentity, request));
             result = new WriteAdmission(this, nativeAdmission, command, request);
             TransactionSynchronizationManager.registerSynchronization(result);
             // acquire takes Party relation fences, but does not require ACTIVE.
+            timings.start("party-acquire");
             result.partyAdmission = Objects.requireNonNull(party.acquire(command.companyPartyId()));
             var expected = new ProtectedEmployeeAppointmentRepositoryPort.DescriptorPreview(
                     request.companyUnits(), request.employeeId(), assignmentSelector(command), false);
+            timings.start("storage-acquire");
             result.repositoryAdmission = Objects.requireNonNull(
                     storage.acquire(nativeAdmission, List.of(result.partyAdmission), expected));
+            timings.start("locked-preview");
             var locked = Objects.requireNonNull(storage.preview(command));
             locked.requireBounded();
             if (!expected.equals(locked) || !request.equals(requestFor(command, null, locked))) throw denied();
+            timings.start("native-contribution");
             var sample = Objects.requireNonNull(storage.contribute(result.repositoryAdmission));
             if (!request.equals(sample.request())
                     || sample.overallDecision()
                         != OrganizationProtectedAppointmentAuthorizationContract.Decision.PERMIT) throw denied();
             result.sample = sample;
+            timings.start("reference-classification");
             result.referenceUse = Objects.requireNonNull(
                     storage.referenceUse(result.repositoryAdmission, command, sample));
             requireReferenceShape(result);
             if (result.referenceUse == ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.CURRENT) {
+                timings.start("party-contribution");
                 var eligibility = Objects.requireNonNull(storage.contributeParty(result.repositoryAdmission));
                 if (!command.companyPartyId().equals(eligibility.partyId())
                         || eligibility.backendPid() != sample.backendPid()
                         || eligibility.transactionId() != sample.transactionId()) throw denied();
                 result.eligibility = eligibility;
             }
+            timings.start("current-write");
             requireCurrentWrite(result);
+            result.admissionTimings = timings.snapshot();
             return result;
         } catch (RuntimeException failure) {
             if (result != null) result.invalidate();
             executor.rejectAdmission();
-            throw denied(failure);
+            throw denied(failure, timings);
         }
     }
 
     /** Revalidate all issuing owners; an enum, scalar sample or opaque handle is never authority. */
     void requireCurrentWrite(WriteAdmission admission) {
+        var timings = new BoundaryTimings("requireCurrentWrite");
         try {
             if (admission == null || admission.owner != this || !admission.ready()
                     || admission.guardAttempted) throw denied();
+            timings.start("native-current");
             identity.requireCurrent(admission.identityAdmission);
+            timings.start("party-current");
             if (admission.referenceUse == ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.CURRENT)
                 party.requireCurrent(admission.partyAdmission);
+            timings.start("storage-current");
             storage.requireCurrent(admission.repositoryAdmission);
             if (admission.provisionalStarted) {
                 if (!admission.provisionalClosed) throw denied();
+                timings.start("verify-provisional");
                 storage.verifyProvisional(admission.repositoryAdmission);
                 if (!admission.ready()) throw denied();
+                admission.currentWriteTimings = timings.snapshot();
                 return;
             }
+            timings.start("reference-classification");
             if (storage.referenceUse(admission.repositoryAdmission, admission.command, admission.sample)
                     != admission.referenceUse) throw denied();
             requireReferenceShape(admission);
+            timings.start("prepare-mutation");
             storage.prepareMutation(admission.repositoryAdmission, admission.command);
             if (!admission.ready()) throw denied();
+            admission.currentWriteTimings = timings.snapshot();
         } catch (RuntimeException failure) {
             // A foreign coordinator/thread must still poison the original transaction.
             if (admission != null) admission.invalidate();
             executor.rejectAdmission();
-            throw denied(failure);
+            throw denied(failure, timings);
         }
     }
 
     /** One private permit, one fixed block, no owner callback until it closes.
      * No result is returned, and commit stays vetoed until final receipt support exists. */
     void persistProvisional(WriteAdmission admission) {
+        var timings = new BoundaryTimings("persistProvisional");
         try {
+            timings.start("current-write");
             requireCurrentWrite(admission);
             if (admission.provisionalStarted
                     || admission.referenceUse == ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY) throw denied();
+            timings.start("prepare-provisional");
             var statements = Objects.requireNonNull(
                     storage.prepareProvisional(admission.repositoryAdmission, admission.command));
             if (statements.size() != 6) throw denied();
             admission.provisionalStarted = true;
+            timings.start("seal-admission");
             var permit = Objects.requireNonNull(executor.sealAdmission());
+            timings.start("provisional-block");
             executor.beginProvisional(permit, statements);
             storage.persistProvisional(admission.repositoryAdmission);
             if (!admission.ready()) throw denied();
             executor.endProvisional(permit);
             admission.provisionalClosed = true;
+            timings.start("post-write-current");
             requireCurrentWrite(admission);
         } catch (RuntimeException failure) {
             if (admission != null) admission.invalidate();
             executor.rejectAdmission();
-            throw denied(failure);
+            var rejection = denied(failure, timings);
+            if (admission != null && admission.owner == this && admission.admissionTimings != null)
+                rejection.addSuppressed(new IllegalStateException(admission.admissionTimings));
+            if (admission != null && admission.owner == this && admission.currentWriteTimings != null)
+                rejection.addSuppressed(new IllegalStateException(admission.currentWriteTimings));
+            throw rejection;
         }
     }
 
@@ -548,6 +579,8 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
         private boolean provisionalStarted, provisionalClosed, proofRequested;
         private boolean finalPrepared, guardAttempted, guarded, replayPreparationStarted;
         private EmployeeAppointmentResult.MutationReceipt detachedResult;
+        private String admissionTimings;
+        private String currentWriteTimings;
 
         private WriteAdmission(ProtectedEmployeeAppointmentAdmissionCoordinator owner,
                 OrganizationProtectedAppointmentAuthorizationContract.Admission identityAdmission,
@@ -647,6 +680,34 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
     }
 
     /** Keep internal provenance while retaining the fixed non-disclosing outward error. */
+    private static AccessDeniedException denied(RuntimeException cause, BoundaryTimings timings) {
+        var failure = denied(cause);
+        failure.addSuppressed(new IllegalStateException(timings.snapshot()));
+        return failure;
+    }
+
+    /** Diagnostic elapsed times only: never used as authority, a clock or a deadline. */
+    private static final class BoundaryTimings {
+        private final String boundary;
+        private final long began = System.nanoTime();
+        private final StringBuilder completed = new StringBuilder();
+        private String stage = "entry";
+        private long stageBegan = began;
+
+        private BoundaryTimings(String boundary) { this.boundary = boundary; }
+        private void start(String next) {
+            long now = System.nanoTime();
+            completed.append(stage).append('=').append(now - stageBegan).append(';');
+            stage = next;
+            stageBegan = now;
+        }
+        private String snapshot() {
+            long now = System.nanoTime();
+            return "Protected appointment boundary timings (ns): " + boundary + " ["
+                    + completed + stage + "=" + (now - stageBegan) + ";total=" + (now - began) + "]";
+        }
+    }
+
     private static AccessDeniedException denied(RuntimeException cause) {
         var failure=denied();failure.initCause(cause);return failure;
     }

@@ -546,6 +546,23 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
             assertEquals("Protected appointment admission unavailable",rejected.getMessage());
             assertNotNull(rejected.getCause());
             assertSame(internal,rejected.getCause().getCause());
+            if(!proofFailure) {
+                var diagnostics=rejected.getCause().getSuppressed();
+                assertEquals(3,diagnostics.length);
+                assertTrue(diagnostics[0].getMessage().startsWith("Protected appointment boundary timings (ns): persistProvisional ["));
+                assertTrue(diagnostics[0].getMessage().contains("prepare-provisional="));
+                assertTrue(diagnostics[1].getMessage().startsWith("Protected appointment boundary timings (ns): acquireWrite ["));
+                assertTrue(diagnostics[1].getMessage().contains("native-contribution="));
+                assertTrue(diagnostics[1].getMessage().contains("current-write="));
+                assertTrue(diagnostics[2].getMessage().startsWith("Protected appointment boundary timings (ns): requireCurrentWrite ["));
+                assertTrue(diagnostics[2].getMessage().contains("storage-current="));
+                assertTrue(diagnostics[2].getMessage().contains("prepare-mutation="));
+                for(var diagnostic:diagnostics) {
+                    assertEquals(0,diagnostic.getSuppressed().length);
+                    assertNull(diagnostic.getCause());
+                    assertFalse(diagnostic.getMessage().contains(internal.getMessage()));
+                }
+            }
             assertTrue(f.holder.isRollbackOnly());
             verify(f.executor,atLeastOnce()).rejectAdmission();
             verify(f.storage,never()).mutate(any(),any());
@@ -918,6 +935,13 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
             var failure=assertThrows(AccessDeniedException.class,f::acquire);
             assertEquals("Protected appointment admission unavailable",failure.getMessage());
             assertSame(original,failure.getCause());
+            assertEquals(1,failure.getSuppressed().length);
+            String diagnostic=failure.getSuppressed()[0].getMessage();
+            assertTrue(diagnostic.startsWith("Protected appointment boundary timings (ns): acquireWrite ["));
+            assertTrue(diagnostic.contains("descriptor="));
+            assertTrue(diagnostic.contains("native-acquire="));
+            assertFalse(diagnostic.contains("party-acquire="));
+            assertFalse(diagnostic.contains(original.getMessage()));
             verifyNoInteractions(f.party);verify(f.storage,never()).acquire(any(),anyList(),any());
             verify(f.executor,atLeastOnce()).rejectAdmission();
         }

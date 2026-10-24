@@ -155,7 +155,7 @@
       "lane": "unit-architecture",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinatorTest.java",
-      "source_sha256": "2ce15274cdf1ab20dee53f86855562ccdebc07449e37865735edaf5aa85833b1",
+      "source_sha256": "dcd8d9dbb121cb3aad0df3a208cdff79a367b17e11098ac027346c25c03dec2c",
       "supports": []
     },
     {

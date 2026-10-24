@@ -27903,6 +27903,77 @@ Local prepublication evidence: SHA256 known vector, original source-to-inventory
 
 **Validation and limits:** Exact source call-structure and retained pre/post provisional authorization guards examined. No full local Java21 Maven suite or PostgreSQL execution was conducted. This eliminates one redundant protected owner/certification round trip series, but DOES NOT demonstrate the positive CREATE meets 500ms or that the independent shard5 contention is resolved. All unchanged required tests must pass on new exact-SHA Full CI; no skipped/failed test can be counted. Preserve HAPI-778 PARTIAL/IN_PROGRESS, HAPI-590 PARTIAL/BLOCKED. No deployment/release or OT/SCADA control authorized. Guard direct `main` update by expected old SHA; verify exact commit parent/tree/blobs, three workflow creation/queue/start, then STOP.
 
+
+### 2026-10-24 — HAPI-778 Full871 measure the protected pre-provisional bottleneck
+
+Owner Next refreshes main ad32bca63cd5562832d0601a6e08428e9bb71970,
+parent 968b77fdb266ff771b2ce4d4572ed139acb8af74,
+tree 79bb42c93ebe08eae955627bc931f8cb57525bbe.
+[Full871](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40093534311)
+FAILED only PostgreSQL shard1 and the consequential Full gate. Fast180 and
+Docs561 SUCCEEDED; static,Java21 unit/architecture,API/dictionary and all six
+other PostgreSQL shards SUCCEEDED. All64 genuine/structural Organization
+concurrency cases ran: one positive lifecycle error and one flush-reached
+assertion failure. The positive CREATE still exceeds the aggregate500ms budget
+at executor.sealAdmission inside persistProvisional, before provisional DML.
+The shard5 NOWAIT failure did not recur; its earlier holder remains unknown.
+
+Prior catalog/lock round-trip consolidation and removal of an adjacent duplicate
+check did not establish a passing positive runtime. The current cause gives no
+boundary timings; it does not identify which retained authorization/storage
+round trips dominate the budget. Further speculative removal of revalidation
+would not be supported. This is a bounded diagnostic submission, NOT a claim
+that the timeout or runtime acceptance has been repaired.
+
+Registered B3 exact message:
+`feat(organization): persist protected appointment lifecycle and history`.
+Exactly four MODIFY,zero CREATE/DELETE:
+- src/main/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinator.java
+- src/test/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinatorTest.java
+- .github/ci-test-inventory.json,only this existing suite's actual source hash
+- this append-only HAPI-778 task record in doc/roadmap/TASKS_HPS-003.md
+
+Use local monotonic nanosecond measurements around the existing acquireWrite,
+requireCurrentWrite and persistProvisional calls. On failure attach internal
+suppressed diagnostics with fixed stage labels and elapsed times only. Retain
+the successful acquisition and latest current-write timing summaries privately
+on the same write handle, so the pre-permit failure exposes work already
+completed successfully. No caller input,actor/resource identifier,SQL parameter,
+credential,key or payload enters these summaries. They are never authority,
+deadline input,permission evidence or public DTO content. Keep the original
+fixed outward denial class/message,cause chain,rollback poisoning and callback
+order. No success logging,SQL instrumentation,clock injection or behavior branch
+based on elapsed measurements is introduced. Costs are measured at coordinator
+boundaries and include all nested owner work; they are not exclusive SQL timings
+or proof that any particular owner is the bottleneck.
+
+Extend assertions in two existing tests: an early native failure includes only
+the reached admission stages and retains its original cause; provisional
+preparation failure retains acquisition/current-write/provisional summaries,
+fixed labels,no nested cause/private injected message,and all original mutation
+and rollback veto assertions. All72 method identities and all prior assertions
+remain. No wall-clock sleeps or timing-threshold assertions are added.
+
+Local Java17 syntax parsing of both changed Java files and all32 inventory-tool/
+19 documentation-validator self-tests PASSED. Structural comparison preserves
+every existing production check/owner call in order: the only removed lines are
+three old denial wrappers,now augmented with diagnostics. Test changes are
+additive; inventory changes only the coordinator source hash. Append-only,
+four-path,exact-blob and whitespace checks are required before publication.
+No local Java21 type compilation,JUnit or PostgreSQL runtime pass is claimed;
+Maven/services are unavailable and no full environment is provisioned.
+
+Preserve the500ms aggregate and250ms lock budgets,NOWAIT,native/Party/storage
+freshness,SQL final guards,managed flush,all172 migrations,catalog/function pins,
+64 integration cases,seven CI shards,generated artifacts and public/legacy
+activation gate. HAPI-778 remains PARTIAL/IN_PROGRESS;HAPI-590 independently
+PARTIAL/BLOCKED. The selected substantial remaining B3 package remains pending
+genuine runtime qualification. No closure,release,deployment,simulation or OT
+action. Publish guarded direct main with expected-ad32bca,verify exact
+parent/tree/four paths/blobs/message,confirm exact-SHA Full/Fast/Docs creation,
+queueing or startup,and STOP. Use the next hosted diagnostic evidence to target
+the actual measured cost without weakening protected checks.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

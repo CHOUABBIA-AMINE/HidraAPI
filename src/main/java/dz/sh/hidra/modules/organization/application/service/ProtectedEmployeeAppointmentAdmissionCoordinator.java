@@ -157,7 +157,7 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
             return requestFor(command, query, preview);
         } catch (RuntimeException failure) {
             executor.rejectAdmission();
-            throw denied();
+            throw denied(failure);
         }
     }
 
@@ -378,7 +378,7 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
         } catch (RuntimeException failure) {
             if (result != null) result.invalidate();
             executor.rejectAdmission();
-            throw denied();
+            throw denied(failure);
         }
     }
 
@@ -406,7 +406,7 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
             // A foreign coordinator/thread must still poison the original transaction.
             if (admission != null) admission.invalidate();
             executor.rejectAdmission();
-            throw denied();
+            throw denied(failure);
         }
     }
 
@@ -642,6 +642,11 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
         @Override public void suspend() { invalidate(); }
         @Override public void afterCompletion(int status) { active = false; }
         @Override public String toString() { return "ReadAdmission[opaque appointment owners]"; }
+    }
+
+    /** Keep internal provenance while retaining the fixed non-disclosing outward error. */
+    private static AccessDeniedException denied(RuntimeException cause) {
+        var failure=denied();failure.initCause(cause);return failure;
     }
 
     private static AccessDeniedException denied() {

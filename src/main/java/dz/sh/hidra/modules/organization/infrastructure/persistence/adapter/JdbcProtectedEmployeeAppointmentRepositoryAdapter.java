@@ -166,7 +166,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
                     source.employeeId(), sourceId, false);
         } catch (RuntimeException inaccessible) {
             // A failed/foreign/unbound lookup is indistinguishable to the caller.
-            throw denied();
+            throw denied(inaccessible);
         }
     }
 
@@ -764,7 +764,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
             return ticket;
         } catch (RuntimeException failure) {
             poison(ticket);
-            throw denied();
+            throw denied(failure);
         }
     }
 
@@ -794,7 +794,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
             return sample;
         } catch (RuntimeException failure) {
             poison(ticket == null ? admission : ticket);
-            throw denied();
+            throw denied(failure);
         }
     }
 
@@ -831,7 +831,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
             if (ticket(expected) != expected) throw denied();
         } catch (RuntimeException failure) {
             poison(ticket == null ? admission : ticket);
-            throw denied();
+            throw denied(failure);
         }
     }
 
@@ -1277,7 +1277,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
             if (ticket.mutation!=null && !ticket.mutation.equals(observed)) throw denied();
             ticket.mutation=observed;requireCurrent(ticket);return use;
         } catch (RuntimeException failure) {
-            poison(ticket==null?admission:ticket);throw denied();
+            poison(ticket==null?admission:ticket);throw denied(failure);
         }
     }
 
@@ -1295,7 +1295,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
                     || sample.backendPid()!=ticket.pid || sample.transactionId()!=ticket.xid
                     || !PARTY_FENCES.equals(party.finalFences(ticket.parties.get(0))))throw denied();
             ticket.partySample=sample;requireCurrent(ticket);return sample;
-        }catch(RuntimeException failure){poison(ticket==null?admission:ticket);throw denied();}
+        }catch(RuntimeException failure){poison(ticket==null?admission:ticket);throw denied(failure);}
     }
 
     private static final String APPOINTMENT_SNAPSHOT_SQL = """
@@ -1506,7 +1506,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
             var planned=new MutationPlan(command,freshId,before,after,successor,policy,destination,List.copyOf(peers),List.copyOf(facts),until);
             if(ticket.plan!=null && !ticket.plan.equals(planned))throw denied();
             ticket.plan=planned;requireCurrent(ticket);
-        }catch(RuntimeException failure){poison(ticket==null?admission:ticket);throw denied();}
+        }catch(RuntimeException failure){poison(ticket==null?admission:ticket);throw denied(failure);}
     }
 
     /** Persistence mechanics stay in the adapter; final owner checks follow the actual flush. */
@@ -1892,6 +1892,11 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
     }
 
     private record Observed(String employeeId, String unitId, String companyId) { }
+
+    /** Keep internal provenance while retaining the fixed non-disclosing outward error. */
+    private static AccessDeniedException denied(RuntimeException cause) {
+        var failure=denied();failure.initCause(cause);return failure;
+    }
 
     private static AccessDeniedException denied() {
         return new AccessDeniedException("Protected appointment admission unavailable");

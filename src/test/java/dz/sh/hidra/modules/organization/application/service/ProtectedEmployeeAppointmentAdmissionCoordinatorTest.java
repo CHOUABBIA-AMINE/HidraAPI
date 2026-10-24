@@ -889,6 +889,18 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
         }
     }
 
+    @Test void nativeWriteFailureRetainsInternalCauseWithoutChangingTheOutwardDenial() {
+        try(var f=new WriteFixture()) {
+            var original=new IllegalStateException("synthetic private issuer failure");
+            when(f.identity.acquire(any(),any())).thenThrow(original);
+            var failure=assertThrows(AccessDeniedException.class,f::acquire);
+            assertEquals("Protected appointment admission unavailable",failure.getMessage());
+            assertSame(original,failure.getCause());
+            verifyNoInteractions(f.party);verify(f.storage,never()).acquire(any(),anyList(),any());
+            verify(f.executor,atLeastOnce()).rejectAdmission();
+        }
+    }
+
     @Test void invalidNativeWriteTicketStopsBeforePartyOrStorageAcquisition() {
         try (var f = new WriteFixture()) {
             when(f.identity.acquire(any(), any())).thenReturn(null);

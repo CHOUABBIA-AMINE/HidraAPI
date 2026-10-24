@@ -27731,6 +27731,64 @@ Publish only these three paths using expected-8ddaafa main guard,verify exact
 parent/tree/message/blobs/scope,confirm exact-SHA Full/Fast/Docs creation/queue/start
 and STOP for owner feedback. No release,deployment,simulator or OT action.
 
+
+### 2026-10-24 — HAPI-778 Full863 retain internal admission rejection provenance
+
+Owner Fail refreshes main0df7012ed8fb53e7d4073a57a17b538dd0aaff26,
+parent8ddaafab3ad7bff6bbb33cb2faf446e793f6c185,
+treecdbba122c8fde773a377d5303ea341336358cd12.
+[Full863](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40085451881)
+FAILED only PostgreSQL shard1 and the consequential aggregate. Fast172,Docs553,
+static,unit/architecture,API/dictionary and six other PostgreSQL shards SUCCEEDED.
+All64 Organization cases ran. Genuine native denial passed. Genuine positive
+CREATE rejected during acquireWrite; the flush-fault case failed its unchanged
+verify(flush) assertion because admission rejected before any flush interaction.
+The fixture cardinality correction passed setup; actual owner admission remains
+unqualified. No positive runtime or rollback acceptance is inferred.
+
+The production coordinator and JDBC adapter replace caught failures with a fixed
+AccessDeniedException while dropping the underlying exception. The log therefore
+cannot distinguish a native issuer,preview,Party/storage/catalog check or
+deadline rejection inside acquireWrite. Do not guess a failed invariant, relax
+it or claim the runtime root cause repaired. This bounded diagnostic repair keeps
+the internal cause chain through preliminary begin,acquireWrite,current-write
+checks and the adapter's preview/acquire/contribution/current/classification/
+eligibility/planning boundaries. The outward denial class and fixed message
+remain unchanged. Keep original rollback poisoning and all owner checks before
+rethrowing. No protected result,SQL parameter,credential or key is logged or added
+to a response. Internal cause retention follows the existing executor's diagnostic
+model; the future HTTP boundary still exposes only safe fixed errors.
+
+Continue registered B3 message
+`feat(organization): persist protected appointment lifecycle and history`.
+Exactly five MODIFY,zero CREATE/DELETE:
+- src/main/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinator.java
+- src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JdbcProtectedEmployeeAppointmentRepositoryAdapter.java
+- src/test/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinatorTest.java
+- .github/ci-test-inventory.json,only that suite's source hash and one added case
+- this append-only HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+Add one coordinator case: a genuine-boundary synthetic issuer failure remains
+the internal cause of the fixed outward denial, rejects executor admission and
+cannot reach Party/storage acquisition. Preserve all prior cases; coordinator
+suite has71 cases. The64 PostgreSQL cases and the flush-reached assertion retain
+bytes and remain required. No native mock,operation retry,deadline increase,
+catalog/policy change or public/legacy activation is introduced. All172 migrations,
+SQL/catalog/function pins,generated artifacts,workflows and registry states retain
+content.
+
+Available Java17 syntax parsing for three changed Java files,32 inventory-tool/
+19 documentation-validator self-tests, inventory preservation,append-only,
+five-path and whitespace checks pass. No local Java21/JUnit/PostgreSQL execution
+or full environment provisioning is claimed. This fixes failure provenance,not
+the still unidentified underlying positive-admission rejection. Exact-SHA hosted
+feedback must expose that retained cause and drive its actual repair before
+remaining consolidated B3 public/legacy implementation. HAPI-778 stays
+PARTIAL/IN_PROGRESS;HAPI-590 independently PARTIAL/BLOCKED. No task closure,
+release,deployment,simulator or OT action.
+Publish with expected-0df7012 main guard,verify parent/tree/message/blobs/scope,
+confirm exact-SHA Full/Fast/Docs creation/queue/start and STOP.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

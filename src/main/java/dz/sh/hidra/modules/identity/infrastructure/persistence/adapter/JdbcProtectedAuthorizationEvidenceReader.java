@@ -536,7 +536,7 @@ public class JdbcProtectedAuthorizationEvidenceReader {
         roleIds.addAll(ids(gr, "role_id"));
         roleIds.addAll(ids(rm, "role_id"));
         List<Row> roles = q.in("role", "id,status", "id", roleIds);
-        List<Row> rp =
+        List<Row> rp = roleIds.isEmpty() ? List.of() :
                 q.getIn(
                         "role_permission_grant",
                         "id,role_id,permission_id,effect,condition_expression::text AS"
@@ -1065,6 +1065,9 @@ public class JdbcProtectedAuthorizationEvidenceReader {
         }
 
         List<Row> in(String table, String columns, String key, Set<String> values) {
+            // No referenced IDs means this conjunctive query can return no rows.
+            // Do not apply this shortcut to getIn: its OR suffix may still match.
+            if (values.isEmpty()) return List.of();
             return getIn(table, columns, key, values, "");
         }
 

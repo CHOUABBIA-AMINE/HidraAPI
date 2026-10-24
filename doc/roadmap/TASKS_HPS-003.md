@@ -28160,6 +28160,68 @@ B3 public/legacy integration awaits genuine runtime qualification.
 Publish expected-2035dbf direct main,verify parent/tree/message/two blobs,
 confirm exact-SHA Full/Fast/Docs creation/queue/start and STOP.
 
+
+### 2026-10-24 — HAPI-778 Full875 eliminate empty referenced-evidence queries
+
+Owner Fail refreshes main a950b926239f2bcdfece2d114eb0ba26ad35bd4a,
+parent2035dbfe141dfd5427ce2b57f25c2a5f2e2d4b72,
+tree e6914d1e769d7feacd91aa928fea57b238b058d7.
+[Full875](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40132345307)
+FAILED only PostgreSQL shard1 and its aggregate. Fast184,Docs565,static,
+unit/architecture,API/dictionary and six PostgreSQL shards PASSED.
+All64 appointment concurrency cases executed. Positive LOCAL CREATE exceeds500ms
+before provisional DML,and the managed-flush fault test cannot reach flush.
+everyFreshKindBuildsStablePrivatePlansWithoutMutatingTheDatabase also fails on
+NOWAIT55P03 acquiring hidra_org_employee_assignment. Its holder is not known.
+
+Latest timings: acquireWrite1438ms,next currentWrite636ms,
+prepareProvisional232ms; about2306ms before sealing. Provisional preparation
+fell from450ms in Full874,but the complete workflow still fails. Measurements
+across runs are not a controlled benchmark and do not establish causation.
+Native-current85ms and storage-current107ms still recur across nested boundaries.
+
+Registered B3 message remains
+`feat(organization): persist protected appointment lifecycle and history`.
+Exactly two MODIFY,zero CREATE/DELETE:
+- src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java
+- this append-only HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+Read-only owner implementation optimization,no Identity policy/contract change:
+Rows.in issues SELECT ... WHERE false when its referenced-ID set is empty.
+Return an immutable empty list instead. The result and row-budget increment are
+identical: no row can satisfy membership in an empty set. Do not short-circuit
+the general getIn helper; its external-group OR identity_provider_id clause can
+match even when referenced mapping IDs are empty and must still load those
+mappings. Separately short-circuit role_permission_grant only when roleIds is
+empty; its query is false AND permission_id=?,also incapable of returning rows.
+Keep all nonempty queries,parameters,ordering,1025-row probes,combined1024-row
+budget,shared-per-invocation Rows lifetime and reference-integrity checks unchanged.
+No query result,grant,claim or authorization decision is cached across owner
+calls. No native credential consumption,expiry,binding/origin validation,
+retained-fence check,physical context check,evaluator or DENY behavior is removed.
+The optimization applies consistently to all existing reader callers; existing
+Identity and protected-operation regression suites remain required.
+
+This removes provably empty JDBC round trips,not revalidation of potentially
+eligible authority. It is an incremental performance repair,NOT proof the
+observed2.3s workflow meets500ms,and it does not repair the separate NOWAIT
+collision. Those remain explicit acceptance risks pending hosted feedback.
+No new tests or inventory changes; all existing Identity cases and all64
+Organization cases remain mandatory. Java17 syntax parsing and32 inventory-tool/
+19 documentation-validator self-tests PASSED. Exact source replacement,
+unchanged OR query,append-only documentation,two-path and exact-blob/tree scope
+are checked. No local Java21 type compilation,JUnit,PostgreSQL runtime or
+performance pass is claimed; no service environment is provisioned.
+
+Preserve all172 migrations,catalog/function pins,all native/Party/storage
+freshness checks,500ms aggregate/250ms lock deadlines,NOWAIT,seven shards,
+generated artifacts and public/legacy activation gates. HAPI-778 remains
+PARTIAL/IN_PROGRESS;HAPI-590 independently PARTIAL/BLOCKED. No closure,release,
+deployment,simulation or OT action. Remaining consolidated B3 implementation
+awaits genuine runtime qualification. Publish guarded direct main with
+expected-a950b92,verify parent/tree/message/two blobs,confirm applicable
+Full/Fast/Docs creation/queue/start and STOP.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

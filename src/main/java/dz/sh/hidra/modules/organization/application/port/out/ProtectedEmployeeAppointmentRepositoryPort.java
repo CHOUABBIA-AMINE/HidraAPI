@@ -176,6 +176,12 @@ public interface ProtectedEmployeeAppointmentRepositoryPort {
      * subsequent owner SQL. Disclosure still requires observed physical commit. */
     void finalizeRead(Admission admission);
 
+    /** FLUSHING: freeze the original receipt under fresh mutation-action authority. */
+    EmployeeAppointmentResult.MutationReceipt prepareFinalReplay(Admission admission);
+
+    /** One non-mutating scalar guard; no owner query may follow. */
+    void finalizeReplay(Admission admission);
+
     /**
      * One guarded atomic lifecycle operation under the original request key,
      * exact source CAS and pinned revisions. CREATE has no source, END and

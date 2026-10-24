@@ -27241,6 +27241,64 @@ Java replay result/preparation/finalization and genuine native/executor/managed-
 flush composition,then application/private-publisher/legacy/REST cutover and final
 acceptance. No new runtime stage,release,deployment,simulator or OT action selected.
 
+### 2026-10-24 — HAPI-778 B3 Java replay result and finalization callbacks
+
+Owner Next refreshes maina98d898410d693cd59262e3713ea4c08bb4e5fd3,
+parent251963641cd94ea99a734f5ef7c97320b7f0f401,
+treed25c623225128a23591b15352d22432528519109.
+[Full856](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40076594984)
+and Docs546 completed SUCCESS. Continue registered B3 message
+`feat(organization): persist protected appointment lifecycle and history`.
+
+Finite scope: six MODIFY,zero CREATE/DELETE:
+- src/main/java/dz/sh/hidra/modules/organization/application/port/out/ProtectedEmployeeAppointmentRepositoryPort.java
+- src/main/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinator.java
+- src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JdbcProtectedEmployeeAppointmentRepositoryAdapter.java
+- src/test/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinatorTest.java
+- .github/ci-test-inventory.json,only that suite's cases/source hash
+- this append-only HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+Add prepareFinalReplay/finalizeReplay to the existing owner port and coordinator.
+Require the existing fresh mutation-action admission and identical storage-owned
+REPLAY classification before materializing a detached historical MutationReceipt.
+No provisional permit,Party eligibility consumption,commit proof or new receipt
+is issued. Reject non-replay classification,repeated preparation,wrong kind/key,
+failed preparation,foreign/invalid context or finalization before preparation.
+Guard checks around storage are SQL-free; post-guard owner calls poison the
+transaction. Unfinished replay preparation vetoes commit at both coordinator and
+storage synchronizations. Detached results remain internal pending observed commit.
+
+The adapter revalidates its retained command/actor/request classification,loads
+the original event with complete receipt and immutable pin evidence,and captures
+the complete source-assignment journal required by accepted SQL003. Require the
+target event to remain present,1024-event and128KiB bounds,and recheck issuing
+owners before freezing the original native sample/expiry/PID/XID. No caller
+supplies the image or physical/time scalars. Freeze the REPLAY image privately
+and use the existing exact one-statement READ_GUARD callback; discard parameters
+afterward. Current source CAS and Party ACTIVE cannot replace historical pins.
+Extra source history is validated internally and never added to the returned
+original event result. All172 migrations,SQL/catalog/body pins,generated artifacts,
+prior tests and public routes retain bytes.
+
+Preserve64 coordinator cases and add three (67 total): one guard/no post-guard
+owner interaction or provisional permit;failed/repeated preparation and commit
+veto;non-replay classification and detached request substitution. Suite SHA256
+3f752208ec72951c34cda7f5219b5b83e8880a4c4b842adbd9f0bef803095724.
+These are synthetic coordinator mechanics. Existing95 PostgreSQL structural
+cases exercise SQL replay graphs;they do not yet prove this new JDBC issuer's
+callbacks through genuine mutation/native/executor admission and physical commit.
+That integrated runtime proof remains mandatory before public activation.
+
+Available Java17 syntax parsing passes four changed Java files;no type/JUnit
+execution is claimed. Canonical inventory,32 inventory self-tests,documentation,
+whitespace,append-only and six-path checks run before publication. No full local
+environment is provisioned. Publish using expected-a98d898 main guard,verify exact
+parent/tree/message/blobs and applicable Full/Fast/Docs creation/queue/start,then
+STOP. HAPI-778 remains PARTIAL/IN_PROGRESS;HAPI-590 independently PARTIAL/BLOCKED.
+Next work is actual native/executor/managed-flush and physical replay callback
+proof,then application/private-publisher/legacy/REST cutover and final acceptance.
+No bean/public replay route,deployment,release,simulator or OT action activated.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

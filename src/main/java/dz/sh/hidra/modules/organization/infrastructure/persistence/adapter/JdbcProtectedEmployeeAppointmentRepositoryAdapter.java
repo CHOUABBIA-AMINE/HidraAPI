@@ -1054,7 +1054,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
         private OrganizationProtectedAppointmentAuthorizationContract.CommitProof commitProof;
         private FinalWrite finalWrite;
         private FinalRead finalRead;
-        private boolean readPreparationStarted;
+        private boolean readPreparationStarted, replayPrepared;
         private boolean guardAttempted, guarded;
         private OrganizationProtectedPartyEligibilityContract.Contribution partySample;
         private List<ProtectedRelationFence> nativeFences = List.of(), proofFences = List.of();
@@ -1593,6 +1593,49 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
             t.guarded=true;
         }catch(RuntimeException failure){poison(t==null?admission:t);throw denied();}
         finally {if(t!=null)t.finalRead=null;}
+    }
+
+    /** Freeze the original replay event; current projection CAS is deliberately irrelevant. */
+    public EmployeeAppointmentResult.MutationReceipt prepareFinalReplay(ProtectedEmployeeAppointmentRepositoryPort.Admission admission) {
+        StorageAdmission t=null;
+        try {
+            t=ticket(admission);requireCurrent(t);
+            if(!coordinatorCaller() || t.mutation==null || t.readPreparationStarted || t.provisionalStarted
+                    || t.policy!=null || t.journalRead!=null || t.plan!=null || t.finalWrite!=null
+                    || referenceUse(t,t.mutation.command(),t.sample)!=ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY)throw denied();
+            t.readPreparationStarted=true;
+            var target=jdbc.query(JOURNAL_SQL.formatted("e.event_id=?::uuid"),
+                    JdbcProtectedEmployeeAppointmentRepositoryAdapter::replayEvent,t.mutation.retainedEvidence());
+            if(target==null || target.size()!=1)throw denied();var event=target.get(0);
+            var query=EmployeeAppointmentQuery.History.assignment(t.mutation.command().companyPartyId(),event.after().assignmentId(),100,null);
+            var selection=journalSelection(query);
+            var events=jdbc.query(JOURNAL_SQL.formatted(selection.predicate()),
+                    JdbcProtectedEmployeeAppointmentRepositoryAdapter::replayEvent,selection.arguments());
+            if(events==null || events.isEmpty() || events.size()>1024 || !events.contains(event))throw denied();
+            String image=COMMAND_JSON.writeValueAsString(Map.of("kind","REPLAY","actor",t.sample.userId(),
+                    "command",COMMAND_JSON.readValue(commandJson(t.mutation.command()),Map.class),"event",event.id(),
+                    "journal",COMMAND_JSON.readValue(journalImage(new JournalObservation(query,List.copyOf(events))),Map.class)));
+            if(image.getBytes(java.nio.charset.StandardCharsets.UTF_8).length>131072)throw denied();
+            referenceUse(t,t.mutation.command(),t.sample);requireCurrent(t);
+            var result=new EmployeeAppointmentResult.MutationReceipt(event.kind(),t.mutation.command().requestId(),
+                    event.id(),event.sampled(),true,event.before(),event.after(),event.successor());
+            t.finalRead=new FinalRead(image,t.sample.sampledAt(),t.sample.validUntil(),t.pid,t.xid);
+            t.replayPrepared=true;return result;
+        }catch(RuntimeException failure){poison(t==null?admission:t);throw denied();}
+    }
+
+    private static JournalEvent replayEvent(ResultSet r,int index) throws SQLException {
+        if(!r.getBoolean(7))throw denied();
+        var event=new JournalEvent(r.getString(1),EmployeeAppointmentCommand.Kind.valueOf(r.getString(2)),
+                r.getTimestamp(3).toInstant(),pinned(r.getString(4)),pinned(r.getString(5)),pinned(r.getString(6)),r.getString(8));
+        new EmployeeAppointmentResult.PrivateHistoryEvent(event.id(),event.kind(),event.sampled(),event.before(),event.after(),event.successor());
+        return event;
+    }
+
+    public void finalizeReplay(ProtectedEmployeeAppointmentRepositoryPort.Admission admission) {
+        StorageAdmission t=null;
+        try{t=ticket(admission);if(!t.replayPrepared)throw denied();finalizeRead(t);}
+        catch(RuntimeException failure){poison(t==null?admission:t);throw denied();}
     }
 
     private record FinalRead(String image,Instant sampled,Instant until,int pid,long xid) {

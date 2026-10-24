@@ -407,6 +407,30 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
         }
     }
 
+    /** FLUSHING: an identical retry needs no provisional permit or new proof. */
+    dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.MutationReceipt prepareFinalReplay(WriteAdmission admission) {
+        try {
+            requireCurrentWrite(admission);
+            if(admission.referenceUse!=ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY
+                    || admission.provisionalStarted || admission.proofRequested || admission.replayPreparationStarted)throw denied();
+            admission.replayPreparationStarted=true;
+            var result=Objects.requireNonNull(storage.prepareFinalReplay(admission.repositoryAdmission));
+            if(!result.historicalReplay() || result.kind()!=admission.command.kind()
+                    || !result.requestId().equals(admission.command.requestId()) || !admission.ready())throw denied();
+            admission.finalPrepared=true;return result;
+        }catch(RuntimeException failure){if(admission!=null)admission.invalidate();executor.rejectAdmission();throw denied();}
+    }
+
+    void finalizeReplay(WriteAdmission admission) {
+        try {
+            if(admission==null || admission.owner!=this || !admission.ready()
+                    || admission.referenceUse!=ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY
+                    || !admission.replayPreparationStarted || !admission.finalPrepared || admission.guardAttempted)throw denied();
+            admission.guardAttempted=true;storage.finalizeReplay(admission.repositoryAdmission);
+            if(!admission.ready())throw denied();admission.guarded=true;
+        }catch(RuntimeException failure){if(admission!=null)admission.invalidate();executor.rejectAdmission();throw denied();}
+    }
+
     private static void requireReferenceShape(WriteAdmission admission) {
         var use = admission.referenceUse;
         if (use == null) throw denied();
@@ -443,7 +467,7 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
         private OrganizationProtectedPartyEligibilityContract.Contribution eligibility;
         private ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse referenceUse;
         private boolean provisionalStarted, provisionalClosed, proofRequested;
-        private boolean finalPrepared, guardAttempted, guarded;
+        private boolean finalPrepared, guardAttempted, guarded, replayPreparationStarted;
 
         private WriteAdmission(ProtectedEmployeeAppointmentAdmissionCoordinator owner,
                 OrganizationProtectedAppointmentAuthorizationContract.Admission identityAdmission,
@@ -474,7 +498,7 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
             holders.forEach(ConnectionHolder::setRollbackOnly);
         }
         @Override public void beforeCommit(boolean readOnly) {
-            if (readOnly || !ready() || provisionalStarted && (!finalPrepared || !guarded)) {
+            if (readOnly || !ready() || (provisionalStarted || replayPreparationStarted) && (!finalPrepared || !guarded)) {
                 invalidate();
                 throw denied();
             }

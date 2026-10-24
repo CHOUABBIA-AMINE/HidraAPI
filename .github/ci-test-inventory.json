@@ -111,6 +111,9 @@
         "invalidationDuringOwnerRecheckCannotRestoreReadHandle",
         "journalMaterializationFailureCannotReachFinalPreparationOrGuard",
         "mapsTypedCommandsAndQueriesToFixedNativeActions",
+        "replayFinalCallbacksUseOneReadGuardWithoutProvisionalProofOrPartyEligibility",
+        "replayFailedOrRepeatedPreparationCannotCommitOrRetry",
+        "replayRejectsNewMutationClassificationAndMismatchedDetachedResult",
         "missingOrRepeatedFinalPreparationAndPostGuardOwnerReadPoisonTheTicket",
         "missingPartyOrStorageTicketVetoesTheOriginalWriteTransaction",
         "missingRepositoryTicketCannotConsumeNativeSample",
@@ -147,7 +150,7 @@
       "lane": "unit-architecture",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinatorTest.java",
-      "source_sha256": "d874fdb4eb65d5d1dceece47c0c5d25a29550388ddfbd8301d060208a5cdc03b",
+      "source_sha256": "3f752208ec72951c34cda7f5219b5b83e8880a4c4b842adbd9f0bef803095724",
       "supports": []
     },
     {

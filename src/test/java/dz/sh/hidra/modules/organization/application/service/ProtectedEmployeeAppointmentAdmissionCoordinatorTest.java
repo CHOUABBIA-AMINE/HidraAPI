@@ -42,6 +42,46 @@ import static org.mockito.Mockito.*;
 class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
     private static final Instant START = Instant.parse("2026-10-21T10:00:00Z");
 
+    private static dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.MutationReceipt replayResult() {
+        var result=mock(dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.MutationReceipt.class);
+        when(result.historicalReplay()).thenReturn(true);when(result.kind()).thenReturn(EmployeeAppointmentCommand.Kind.CREATE);
+        when(result.requestId()).thenReturn("req");return result;
+    }
+
+    @Test void replayFinalCallbacksUseOneReadGuardWithoutProvisionalProofOrPartyEligibility() {
+        try(var f=new WriteFixture(create(),ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY)) {
+            var ticket=f.acquire();var result=replayResult();when(f.storage.prepareFinalReplay(f.storageTicket)).thenReturn(result);
+            assertSame(result,f.coordinator.prepareFinalReplay(ticket));clearInvocations(f.identity,f.party,f.storage);
+            f.coordinator.finalizeReplay(ticket);ticket.beforeCommit(false);
+            verify(f.storage).finalizeReplay(f.storageTicket);verifyNoMoreInteractions(f.storage);
+            verifyNoInteractions(f.identity,f.party);verify(f.executor,never()).sealAdmission();
+            assertThrows(AccessDeniedException.class,()->f.coordinator.requireCurrentWrite(ticket));
+            assertTrue(f.holder.isRollbackOnly());
+        }
+    }
+
+    @Test void replayFailedOrRepeatedPreparationCannotCommitOrRetry() {
+        for(boolean fail:List.of(false,true))try(var f=new WriteFixture(create(),ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY)) {
+            var ticket=f.acquire();
+            if(fail)when(f.storage.prepareFinalReplay(f.storageTicket)).thenThrow(new IllegalStateException("storage"));
+            else when(f.storage.prepareFinalReplay(f.storageTicket)).thenReturn(replayResult());
+            if(fail)assertThrows(AccessDeniedException.class,()->f.coordinator.prepareFinalReplay(ticket));
+            else {f.coordinator.prepareFinalReplay(ticket);assertThrows(AccessDeniedException.class,()->f.coordinator.prepareFinalReplay(ticket));}
+            assertThrows(AccessDeniedException.class,()->ticket.beforeCommit(false));assertTrue(f.holder.isRollbackOnly());
+            verify(f.storage,never()).finalizeReplay(any());
+        }
+    }
+
+    @Test void replayRejectsNewMutationClassificationAndMismatchedDetachedResult() {
+        for(boolean current:List.of(false,true))try(var f=new WriteFixture(create(),current
+                ?ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.CURRENT:ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY)) {
+            var ticket=f.acquire();var result=replayResult();when(result.requestId()).thenReturn("wrong");
+            when(f.storage.prepareFinalReplay(f.storageTicket)).thenReturn(result);
+            assertThrows(AccessDeniedException.class,()->f.coordinator.prepareFinalReplay(ticket));
+            assertTrue(f.holder.isRollbackOnly());verify(f.storage,never()).finalizeReplay(any());
+        }
+    }
+
     private static ProtectedEmployeeAppointmentRepositoryPort.DescriptorPreview preview(
             String company, String unit, String employee, String assignment) {
         return new ProtectedEmployeeAppointmentRepositoryPort.DescriptorPreview(

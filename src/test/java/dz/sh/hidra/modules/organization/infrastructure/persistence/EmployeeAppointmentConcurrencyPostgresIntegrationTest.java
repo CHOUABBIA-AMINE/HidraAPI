@@ -95,6 +95,9 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
     /** Bootstrap only: migrate as owner, then run the application and publisher as separate real logins. */
     @org.springframework.test.context.DynamicPropertySource
     static void runtimeProperties(org.springframework.test.context.DynamicPropertyRegistry r) throws Exception {
+        // PER_CLASS Spring injection precedes the JUnit container beforeAll callback.
+        // Start this same managed container before resolving its mapped JDBC endpoint.
+        if(!POSTGRES.isRunning())POSTGRES.start();
         Flyway.configure().dataSource(POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword()).load().migrate();
         var admin=new JdbcTemplate(new DriverManagerDataSource(POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword()));
         admin.execute("REVOKE CREATE ON SCHEMA public FROM PUBLIC");

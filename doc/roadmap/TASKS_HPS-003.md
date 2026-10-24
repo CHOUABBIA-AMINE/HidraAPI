@@ -27565,6 +27565,63 @@ Publish only these three paths with expected-dde20d2 main guard; verify exact
 parent/tree/message/blobs/scope, confirm exact-SHA Full/Fast/Docs creation/queue/start
 and STOP for owner feedback.
 
+
+### 2026-10-24 — HAPI-778 Full860 PER_CLASS container bootstrap repair
+
+Owner requests correction followed by one substantial remaining implementation
+package. Refresh mainfc848720e010d2fc63362396c91d9a3938a53650,
+parentdde20d2273bf21da3bd0ba81ffac8fd18220f48a,
+treeed4e1788795f48db5063e1a26996c2fffe837f89.
+[Full860](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40082832985)
+FAILED PostgreSQL shard1 and its aggregate. Static, Java21 unit/architecture,
+API/dictionary and all six other PostgreSQL shards SUCCEEDED. Fast169 and Docs550
+SUCCEEDED. Runtime suite context startup failed with
+"Mapped port can only be obtained after the container is started". None of its
+genuine runtime cases ran; do not classify this as a domain, authorization,
+physical-commit or500ms budget failure.
+
+The PER_CLASS test instance receives Spring injection before Testcontainers'
+beforeAll callback. DynamicPropertySource eagerly calls getJdbcUrl to perform
+owner-only Flyway bootstrap and restricted-principal setup. Start the SAME managed
+container, idempotently, at the beginning of that registry callback before any
+mapped endpoint is read. Retain the JUnit-managed static container, cleanup,
+fresh schema, real restricted logins, all64 test cases, genuine issuers and the
+existing executor deadline. No service retry, sleep, test deletion, disabling of
+the Spring context or native mock is introduced.
+
+Continue the exact registered B3 message:
+`feat(organization): persist protected appointment lifecycle and history`.
+Exactly three MODIFY, zero CREATE/DELETE:
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java
+- .github/ci-test-inventory.json,only this suite's source hash
+- this append-only HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+Preserve all production source,172 migrations,SQL/catalog/body pins,generated
+contracts, existing cases/timings/lanes, architecture guards and registry statuses.
+All64 tests remain required; their new source hash is671c0738ca170f0d7cfd9e7e92d1b6cf1c3fb04c83f2d8caff6a9ec5ebf7be9e.
+Actual available Java17 syntax parsing,32 inventory-tool self-tests,19
+documentation-validator self-tests, inventory-only-hash preservation, append-only,
+three-path and whitespace checks pass. No local Maven,Java21,Spring/PostgreSQL or
+runtime pass is claimed; no complete local environment is provisioned.
+
+The requested remaining implementation remains selected as one substantial B3
+package. It is NOT performed or claimed by this repair. The already accepted B3
+contract requires genuine runtime composition proof before public/legacy
+activation, while the owner's publication protocol requires STOP on CI startup.
+Because Full860 failed before those runtime cases executed, this publication
+cannot both establish their passing evidence and activate the dependent public/
+legacy paths. Do not bypass the gate, weaken the checks or describe the remaining
+package as complete. After responsible CI feedback, continue the selected
+consolidated authentication/REST/wiring/legacy/security/concurrency/replay/rollback
+implementation within the registered B3 union, without another generic preflight.
+HAPI-778 remains PARTIAL/IN_PROGRESS;HAPI-590 independently PARTIAL/BLOCKED.
+Generated contract reconciliation and final acceptance remain later evidence
+stages. No release,deployment,simulation or OT action is selected.
+
+Publish only these three paths with expected-fc84872 main guard, verify exact
+parent/tree/message/blobs/scope, confirm exact-SHA Full/Fast/Docs creation/queue/start
+and STOP for owner feedback.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

@@ -236,7 +236,14 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
     }
 
     private static void insertReceipt(Connection c, UUID event) throws SQLException {
-        execute(c, "INSERT INTO public.hidra_org_appointment_receipt(event_id,actor_user_id,scope_key,request_id,command_sha256,canonical_result,guarded_at,backend_pid,transaction_id) SELECT event_id,actor_user_id,repeat('a',64),(convert_from(canonical_payload,'UTF8')::jsonb)->'command'->>'requestId',command_sha256,canonical_payload,sampled_at,backend_pid,transaction_id FROM public.hidra_org_appointment_event WHERE event_id=?::uuid", event);
+        insertReceipt(c,event,true);
+    }
+
+    private static void insertReceipt(Connection c, UUID event,boolean canonicalScope) throws SQLException {
+        String scope=canonicalScope
+                ? "encode(sha256(convert_to(jsonb_build_object('family','organization-appointment-v1','companyPartyId',company_party_id)::text,'UTF8')),'hex')"
+                : "repeat('a',64)";
+        execute(c, "INSERT INTO public.hidra_org_appointment_receipt(event_id,actor_user_id,scope_key,request_id,command_sha256,canonical_result,guarded_at,backend_pid,transaction_id) SELECT event_id,actor_user_id,"+scope+",(convert_from(canonical_payload,'UTF8')::jsonb)->'command'->>'requestId',command_sha256,canonical_payload,sampled_at,backend_pid,transaction_id FROM public.hidra_org_appointment_event WHERE event_id=?::uuid", event);
     }
 
     /** Owner-authored structural fixture only, never a native authorization proof. */
@@ -2136,6 +2143,25 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
             assertEquals(receipts,count("SELECT count(*) FROM public.hidra_org_appointment_receipt"));
             assertEquals(uses,count("SELECT count(*) FROM public.hidra_identity_org_commit_proof_use"));
             assertEquals(keys,count("SELECT count(*) FROM public.hidra_org_appointment_lock_key"));
+        }
+    }
+
+    @Test void replaySqlGuardRejectsAnActualStoredPlaceholderReceiptNamespace() throws Exception {
+        var p=projection();UUID event=UUID.randomUUID();
+        try(var c=projectionTransaction()) {
+            insertProjection(c,p,event);
+            insertEvent(c,p,event,"CREATE",null,payload(c,p,"CREATE","null","null"),false);
+            insertReceipt(c,event,false);c.commit();historyFixtureEvents.add(event);
+        }
+        var query=dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History.assignment(p.company(),p.id(),20,null);
+        try(var session=new FinalPolicySession(query)) {
+            session.f.tx.execute(status -> {
+                session.prepare();String image=replayGuardImage(session,"CREATE");
+                var sample=session.f.identity.contribute(session.f.nativeTicket);
+                assertThrows(org.springframework.dao.DataAccessException.class,()->policyReadGuard(session.f.jdbc,image,
+                        sample.sampledAt(),sample.validUntil(),sample.backendPid(),sample.transactionId()));
+                status.setRollbackOnly();return null;
+            });
         }
     }
 

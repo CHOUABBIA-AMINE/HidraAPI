@@ -27139,6 +27139,64 @@ HAPI-590 independently PARTIAL/BLOCKED. Java replay result/preparation/finalizat
 real native/executor/managed-flush composition, application/private-publisher/
 legacy/REST cutover and final acceptance remain required. No deployment/release.
 
+### 2026-10-24 — HAPI-778 Full854 replay receipt namespace fixture repair
+
+**Selection / live evidence:** Owner Fail refreshes main
+b1354eb78bd988876c0dc039a98eb9b6c6926392,
+parent25c4b256dd1d67e27542c06180c3e5ff3e397327,
+tree33c51d08c618558a42f574447035a1fd9647d238.
+[Full854](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40074816906)
+FAILED. [Fast164](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40074816946)
+and [Docs544](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40074816912)
+SUCCEEDED. Static, unit/architecture and six PostgreSQL shards succeeded. Shard5
+job120815801971 reports248 tests, zero assertion failures, one error, zero skips;
+the94-case appointment suite has one error in
+replaySqlGuardValidatesEveryOperationAfterPartyRetirementAndCompanyRebindWithoutWrites.
+The actual SQL routine rejects the supposed positive replay with its uniform
+P0001 availability error. The original SQL diagnostic is intentionally masked.
+
+**Source cause / bounded repair:** The shared structural insertReceipt helper
+still writes repeat('a',64) as scope_key. Replay003 independently recomputes the
+real company namespace from canonical PostgreSQL jsonb text containing family
+organization-appointment-v1 and companyPartyId, exactly as the existing Java
+COMMAND_FRAME_SQL and write guard require. Thus the positive replay fixture is
+invalid before any nested journal check. Correct that helper to derive the exact
+company namespace from the actual event row at receipt insertion. No immutable
+stored receipt is updated. Preserve an explicit false overload for intentional
+placeholder receipts and add a negative test with an actual committed placeholder
+namespace, proving that it remains rejected even with an otherwise complete
+retained graph. Keep every previous case and assertion. Other explicit malformed
+or overflow structural fixtures retain their existing purpose and bytes.
+
+**Exact message / finite scope:** Retain
+`feat(organization): persist protected appointment lifecycle and history`.
+Exactly three MODIFY, zero CREATE/DELETE:
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java
+- .github/ci-test-inventory.json, only that suite's added case and source hash
+- this append-only HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+All172 installed migration files, production code, body pins, roles, grants,
+clock/physical/native checks, command equality and receipt-scope enforcement
+remain unchanged. Suite membership grows94-to95; source SHA256
+6d13975f6fb2f88c474695139ab68fe785b125d332cc19721a0ea1871ae6720b.
+This repairs a synthetic fixture, not a production permission failure or genuine
+native replay completion. Hosted PostgreSQL must still prove the positive cases.
+
+**Independent artifact gate / validation / stop:** API job120815801808 also failed
+and uploaded diagnostic artifact12552656908 for the new172-migration chain. The
+171-migration dictionary remains intentionally preserved until authentic catalog
+reconciliation under its separate registered message after responsible runtime
+failures are repaired. Java17 syntax parsing passes the changed test; canonical
+inventory,32 inventory self-tests, documentation, whitespace, installed-migration
+preservation, append-only and three-path checks run before publication. These
+are not JUnit/PostgreSQL execution. No full local environment is provisioned.
+Publish only these three paths with expected-b1354eb main guard, verify exact
+parent/tree/message/blobs, confirm applicable exact-SHA CI creation/queue/start
+and STOP. HAPI-778 remains PARTIAL/IN_PROGRESS; HAPI-590 independently
+PARTIAL/BLOCKED. Java replay callbacks, genuine native/executor/managed-flush,
+application/private-publisher/legacy/REST integration and final acceptance remain
+unfinished. No release, deployment, simulator or OT action is selected.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

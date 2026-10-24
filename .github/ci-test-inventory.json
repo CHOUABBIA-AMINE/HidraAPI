@@ -9030,6 +9030,7 @@
         "storageAdmissionCatalogPinsRejectDisabledTriggersAndRemovedConstraints",
         "storageAdmissionRejectsAuthenticationSwapSuspensionAndIssuerRevocation",
         "replaySqlGuardValidatesEveryOperationAfterPartyRetirementAndCompanyRebindWithoutWrites",
+        "replaySqlGuardRejectsAnActualStoredPlaceholderReceiptNamespace",
         "replaySqlGuardRejectsActorRequestCommandEventAndCompanySubstitution",
         "replaySqlGuardRejectsMissingTargetReceiptAndAlteredRetainedPins",
         "replaySqlGuardCannotMoveItsOriginalPhysicalOrTimeWindow",
@@ -9056,7 +9057,7 @@
       "lane": "postgres-integration",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java",
-      "source_sha256": "dac182d24d94e2c8d49b73bd5cdad6d4f72a009b83ca6300edc029b6717df5ce",
+      "source_sha256": "6d13975f6fb2f88c474695139ab68fe785b125d332cc19721a0ea1871ae6720b",
       "supports": []
     },
     {

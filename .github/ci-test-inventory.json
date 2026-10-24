@@ -9129,15 +9129,18 @@
         "unboundLegacyConflictCannotDisappearThroughAnInnerJoinOrInventedPin",
         "combinedWriteCallbacksReturnDetachedReceiptsOnlyAfterActualCommitForEveryLifecycleShape",
         "combinedWriteResultRemainsInternalWhenFinalAuthenticationFails",
-        "combinedReplayUsesActualReadGuardAndCommitWithoutCreatingAnotherEventOrReceipt"
+        "combinedReplayUsesActualReadGuardAndCommitWithoutCreatingAnotherEventOrReceipt",
+        "genuineExecutionRollsBackProvisionalWritesWhenActualManagedFlushFails",
+        "genuineLocalLifecycleReplayAndScopedReadsUsePrivatePublisherAndObservedCommit",
+        "genuineNativeDenialDoesNotCreateProjectionEventReceiptOrKeys"
       ],
       "class": "dz.sh.hidra.modules.organization.infrastructure.persistence.EmployeeAppointmentConcurrencyPostgresIntegrationTest",
-      "dependency_reason": "Actual PostgreSQL16 committed synthetic ledger, restricted login, exact command/actor/scope replay before source CAS and retained fence contention; native issuer is mocked and integrated writer acceptance remains pending; duration unmeasured.",
+      "dependency_reason": "Actual PostgreSQL16 structural cases plus genuine LOCAL native issuance, distinct ordinary/publisher logins, real protected executor, managed JPA flush, lifecycle/replay/scoped reads, native denial and physical rollback. Existing independent HMAC fixtures remain explicitly structural; added runtime duration unmeasured.",
       "fast": false,
       "lane": "postgres-integration",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java",
-      "source_sha256": "87fe6b1f04e8ab4e538a008bb0c15d7f80376eb640d69e08dbbd0f337d7df569",
+      "source_sha256": "d26922336d18fb84dbbd1e1b5408363a0b5731fce1df3fa604a726132c97f903",
       "supports": []
     },
     {

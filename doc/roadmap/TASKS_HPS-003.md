@@ -27473,6 +27473,98 @@ release, deployment, simulator or OT action is selected.
 Publish with expected-7314baa main guard, verify exact parent/tree/message/blobs,
 confirm applicable exact-SHA Full/Fast/Docs creation/queue/start, then STOP.
 
+
+### 2026-10-24 — HAPI-778 genuine LOCAL application/publisher/executor qualification
+
+Owner Next refreshes maindde20d2273bf21da3bd0ba81ffac8fd18220f48a,
+parent7314baa5140da6fe9157591a320798992885c344,
+tree7d779bd8095465ca430fe995e200f0ad204b5383.
+[Full859](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40081724058),
+Fast168 and Docs549 completed SUCCESS. The architecture repair is accepted
+within its tested scope. Refresh AGENTS, ROADMAP, task index and reconciliation;
+the next registered B3 obligation remains genuine combined runtime qualification
+before public/legacy activation. Continue exact B3 message
+`feat(organization): persist protected appointment lifecycle and history`.
+
+Exactly three MODIFY, zero CREATE/DELETE:
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java
+- .github/ci-test-inventory.json
+- this append-only HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+Extend the existing PostgreSQL suite rather than inventing another test family.
+Retain all61 structural cases and their explicit mocked-native/HMAC limitations.
+Add a Spring test context and three genuine LOCAL runtime cases. Bootstrap the
+full fresh Flyway chain as its owner; use a distinct ordinary application login
+and private publisher login, with no membership bridge, role/session impersonation,
+temporary definer native-lock function or owner connection in the runtime path.
+The existing structural fixtures remain separate and retain their original logins.
+Flyway alone retains explicit owner credentials; the application datasource and
+private publication route receive the restricted fixture credentials.
+
+Provision explicit SELECT and native-lock rights, ordinary authentication DML,
+publisher-only appointment DML/guard invocation, and no ordinary appointment
+mutation rights. Preserve private commit-key tables without direct app/publisher
+access, Party eligibility generation integrity, immutable Organization config and
+receipt rights, no public-schema CREATE, publisher DELETE/TRUNCATE/TRIGGER or config
+activation. Assert actual session_user, ordinary-to-publisher nonmembership and
+the real login privilege boundary. These are disposable synthetic test principals,
+not deployment role provisioning or production credentials.
+
+Persist real LOCAL provider/user/password credentials and all seven exact
+company/unit/employee action grants for the synthetic fixture. Complete real
+authentication to obtain its native signed token, then prepare the actual native
+issuer from its raw token under an intentionally untrusted wrapper. Install the
+explicit synthetic private commit key through the existing distinct key-admin
+function and configure the actual Java issuer. Construct the actual repository,
+coordinator and application service with the Spring-managed JdbcTemplate,
+EntityManager and protected executor. No native issuer, Party owner, executor,
+datasource or transaction manager is mocked in the three new runtime cases.
+No runtime/public Spring bean or REST endpoint is activated by this test context.
+
+The positive case performs genuine CREATE, CORRECT, TRANSFER and END, then obtains
+a fresh native authentication and replays the original CREATE after Party
+retirement. Verify original event/snapshot identity, no duplicate event/receipt,
+exact actor provenance and four authenticated SQL proof-use records. Exercise
+employee history, exact-version, unit policy and redacted position history through
+the actual application/executor read callbacks. Verify the ordinary route is
+restored after guarded physical commits. The native-denial case removes the
+actor's current grants before fresh authentication and proves no projection/event/
+employee-lock residue from an actual protected operation. The rollback case uses
+only an EntityManager spy for fault injection: it executes the real managed flush
+then throws, requires that flush to have been reached, and verifies provisional
+projection/event/key absence from an independent owner connection. Ordinary error
+or failure before flush cannot satisfy that assertion.
+
+The existing500ms protected-executor deadline, final native proof, scalar guard,
+managed flush and observed physical commit remain mandatory. Do not retry a
+failed operation, mock final callbacks, extend time budgets or synthesize rows to
+make these cases pass. Hosted failure must expose the actual responsible runtime
+or fixture boundary for repair before public cutover.
+
+CI inventory adds exactly the three real method names and updates only this
+suite's source hash/dependency description. Preserve its PostgreSQL lane, all old
+cases, other class identities, source timings and shard policy. Retained duration
+describes the old measured workload; the added runtime/context duration is
+unmeasured. There are64 cases in this suite after this change. All other source,
+tests,172 migrations,SQL/catalog/function pins,generated API/dictionary, workflows,
+frozen registry statuses and HAPI-590 disposition retain bytes.
+
+Available validation: Java17 syntax parsing, all32 inventory-tool self-tests,
+all19 documentation-validator self-tests, exact case/hash/inventory-preservation,
+append-only, three-path and whitespace checks pass. This partial source checkout
+has no Maven/Java21/PostgreSQL execution; no full environment is provisioned.
+The three newly authored cases are NOT claimed passing until exact-SHA hosted
+evidence is retrieved. Even a passing LOCAL composition does not prove combined
+LDAP/AD/OIDC paths, public REST/legacy cutover, industrial calibration or task closure.
+HAPI-778 stays PARTIAL/IN_PROGRESS. Next B3 work follows actual runtime feedback,
+then consolidates remaining non-LOCAL qualification and registered public/legacy
+cutover; generated contracts and final case-level acceptance remain separate
+evidence stages. No release,deployment,simulator or OT action is selected.
+
+Publish only these three paths with expected-dde20d2 main guard; verify exact
+parent/tree/message/blobs/scope, confirm exact-SHA Full/Fast/Docs creation/queue/start
+and STOP for owner feedback.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

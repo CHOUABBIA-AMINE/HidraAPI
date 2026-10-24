@@ -64,15 +64,164 @@ import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Migrated PostgreSQL, separated logins and actual atomic SQL proof/receipt checks.
- * Independent fixture HMAC frames use synthetic native fields. Identity's issuer
- * and the protected executor are mocked; no genuine native authorization, real
- * protected-executor deadline or application/HTTP acceptance is established.
+ * Existing structural cases mock native Identity/executor and independently encode HMAC frames.
+ * The genuineLocal/genuineNative/genuineExecution cases instead compose real LOCAL authentication,
+ * native issuer, separate publisher login, protected executor, JDBC/JPA flush and observed commit.
+ * The sole spy injects a managed-flush fault after calling the actual EntityManager.
+ * No HTTP, non-LOCAL runtime, deployment or industrial acceptance is established.
  */
 @Testcontainers(disabledWithoutDocker = true)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@org.springframework.boot.test.context.SpringBootTest(classes=dz.sh.hidra.HidraApplication.class,
+        webEnvironment=org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK,
+        properties={"spring.flyway.enabled=true","spring.jpa.hibernate.ddl-auto=validate",
+            "hidra.platform.security.jwt.hmac-secret=synthetic-appointment-runtime-key-32-bytes-only",
+            "hidra.platform.security.jwt.token-issuer=hidra-api","hidra.platform.security.jwt.audience=hidra-api"})
+@org.springframework.test.context.ActiveProfiles("test")
+@org.springframework.test.annotation.DirtiesContext(classMode=org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_CLASS)
 class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
     @Container static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:16");
     private static final String PASSWORD="disposable-classification-fixture", CONFIG="classification_config";
+    private static final String RUNTIME_APP="appointment_runtime_app", RUNTIME_PUBLISHER="appointment_runtime_publisher";
+    @org.springframework.beans.factory.annotation.Autowired JdbcTemplate runtimeJdbc;
+    @org.springframework.beans.factory.annotation.Autowired jakarta.persistence.EntityManager runtimeEntityManager;
+    @org.springframework.beans.factory.annotation.Autowired ProtectedTransactionExecutor runtimeExecutor;
+    @org.springframework.beans.factory.annotation.Autowired OrganizationProtectedAppointmentAuthorizationContract runtimeIdentity;
+    @org.springframework.beans.factory.annotation.Autowired OrganizationProtectedPartyEligibilityContract runtimeParty;
+    @org.springframework.beans.factory.annotation.Autowired dz.sh.hidra.modules.identity.application.port.in.AuthenticateDirectUserUseCase runtimeLogin;
+    @org.springframework.beans.factory.annotation.Autowired org.springframework.security.crypto.password.PasswordEncoder runtimePasswords;
+    @org.springframework.beans.factory.annotation.Autowired dz.sh.hidra.modules.identity.infrastructure.configuration.OrganizationAppointmentCommitProofProperties runtimeKeys;
+
+    /** Bootstrap only: migrate as owner, then run the application and publisher as separate real logins. */
+    @org.springframework.test.context.DynamicPropertySource
+    static void runtimeProperties(org.springframework.test.context.DynamicPropertyRegistry r) throws Exception {
+        Flyway.configure().dataSource(POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword()).load().migrate();
+        var admin=new JdbcTemplate(new DriverManagerDataSource(POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword()));
+        admin.execute("REVOKE CREATE ON SCHEMA public FROM PUBLIC");
+        for(var role:List.of(RUNTIME_APP,RUNTIME_PUBLISHER)) {
+            admin.execute("CREATE ROLE "+role+" LOGIN PASSWORD '"+PASSWORD+"'");
+            admin.execute("GRANT USAGE ON SCHEMA public TO "+role);
+            admin.execute("GRANT SELECT ON ALL TABLES IN SCHEMA public TO "+role);
+        }
+        for(var table:admin.queryForList("SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname='public' AND tablename LIKE 'hidra_identity_%'",String.class)) {
+            if(!table.matches("hidra_identity_[a-z0-9_]+"))throw new IllegalStateException("Unexpected fixture relation");
+            admin.execute("GRANT INSERT,UPDATE,DELETE ON public."+table+" TO "+RUNTIME_APP);
+        }
+        for(var fence:JdbcIdentityAuthorityFence.requiredRelationFences())
+            if(fence.mode()!=ProtectedRelationFence.Mode.ACCESS_SHARE)
+                admin.execute("GRANT UPDATE ON "+fence.relation()+" TO "+RUNTIME_PUBLISHER);
+        for(var role:List.of(RUNTIME_APP,RUNTIME_PUBLISHER)) {
+            admin.execute("REVOKE ALL ON public.hidra_identity_org_commit_key_event,public.hidra_identity_org_commit_key_head,public.hidra_identity_org_commit_proof_use FROM "+role);
+            admin.execute("REVOKE INSERT,UPDATE,DELETE ON public.hidra_identity_external_mapping_generation FROM "+role);
+        }
+        admin.execute("GRANT UPDATE ON public.hidra_party_party TO "+RUNTIME_PUBLISHER);
+        for(var table:List.of("employee","unit","position","appointment_binding_head","appointment_policy_head","appointment_lock_key","employee_assignment"))
+            admin.execute("GRANT UPDATE ON public.hidra_org_"+table+" TO "+RUNTIME_PUBLISHER);
+        admin.execute("GRANT INSERT ON public.hidra_org_appointment_lock_key,public.hidra_org_employee_assignment,public.hidra_org_appointment_event TO "+RUNTIME_PUBLISHER);
+        admin.execute("GRANT EXECUTE ON FUNCTION public.hidra_org_appointment_exact_id(text),public.hidra_identity_org_commit_key_context(boolean),"
+                +"public.hidra_org_appointment_final_guard(uuid,uuid,uuid,text,text,text,text,timestamptz,timestamptz,integer,bigint,bytea,bytea,timestamptz),"
+                +"public.hidra_org_appointment_read_guard(jsonb,timestamptz,timestamptz,integer,bigint,timestamptz) TO "+RUNTIME_PUBLISHER);
+        r.add("spring.datasource.url",POSTGRES::getJdbcUrl);r.add("spring.datasource.username",()->RUNTIME_APP);
+        r.add("spring.datasource.password",()->PASSWORD);
+        r.add("spring.flyway.user",POSTGRES::getUsername);r.add("spring.flyway.password",POSTGRES::getPassword);
+        r.add("hidra.platform.persistence.publication.enabled",()->true);
+        r.add("hidra.platform.persistence.publication.username",()->RUNTIME_PUBLISHER);
+        r.add("hidra.platform.persistence.publication.password",()->PASSWORD);
+    }
+
+    /** Real persisted LOCAL credential, native token and exact resource grants; no native issuer mock. */
+    private String runtimeActor(Fixture f) throws Exception {
+        String actor=id(),provider=id();
+        admin("UPDATE public.hidra_identity_provider SET status='INACTIVE' WHERE status='ACTIVE'");
+        admin("INSERT INTO public.hidra_identity_user(id,username,user_type,status,failed_login_count,created_at,updated_at) VALUES (?,?,'HUMAN','ACTIVE',0,now(),now())",actor,actor);
+        admin("INSERT INTO public.hidra_identity_provider(id,code,name,provider_type,status,sync_enabled,just_in_time_provisioning_enabled,created_at,updated_at) VALUES (?,?,'Runtime fixture','LOCAL','ACTIVE',false,false,now(),now())",provider,provider);
+        admin("INSERT INTO public.hidra_identity_local_credential(id,user_id,password_hash,credential_status,created_at,updated_at) VALUES (?,?,?,'ACTIVE',now(),now())",id(),actor,runtimePasswords.encode("runtime-synthetic-password"));
+        for(var action:Action.values()) {
+            var request=new Request(action,f.units().stream().map(unit->new CompanyUnit(f.company(),unit)).toList().stream()
+                    .sorted(java.util.Comparator.comparing(CompanyUnit::organizationUnitId)).toList(),action==Action.READ_POLICY?null:f.employee());
+            for(var requirement:request.requirements()) {
+                String code=OrganizationProtectedAppointmentAuthorizationContract.permissionCode(action,requirement.kind());
+                admin("INSERT INTO public.hidra_identity_user_permission_grant(id,user_id,permission_id,effect,scope_type,scope_reference_id,grant_reason,emergency_access,valid_from,valid_to,status,created_at) SELECT ?,?,id,'GRANT',?,?,'runtime fixture',false,now()-interval '1 hour',now()+interval '1 hour','ACTIVE',now() FROM public.hidra_identity_permission WHERE code=?",id(),actor,requirement.kind()==ResourceKind.UNIT?"ORGANIZATION_UNIT":"CUSTOM",requirement.reference(),code);
+            }
+        }
+        long prior;try(var c=owner()){prior=Long.parseLong(scalar(c,"SELECT coalesce(max(revision),0) FROM public.hidra_identity_org_commit_key_event"));}
+        long revision;try(var c=DriverManager.getConnection(POSTGRES.getJdbcUrl(),"final_proof_admin",PASSWORD)) {
+            revision=Long.parseLong(scalar(c,"SELECT public.hidra_identity_org_commit_admin(?,'runtime-key',?::uuid,?::name,?)",prior,SQL_AUDIENCE.toString(),RUNTIME_PUBLISHER,sqlKey()));
+        }
+        runtimeKeys.setEnabled(true);runtimeKeys.setKeyId("runtime-key");runtimeKeys.setKeyRevision(revision);
+        runtimeKeys.setSigningKeyBase64(java.util.Base64.getEncoder().encodeToString(sqlKey()));runtimeKeys.initialize();
+        assertEquals(RUNTIME_APP,runtimeJdbc.queryForObject("SELECT session_user",String.class));
+        assertTrue(runtimeJdbc.queryForObject("SELECT NOT pg_catalog.has_table_privilege(current_user,'public.hidra_org_employee_assignment','INSERT,UPDATE,DELETE,TRUNCATE') AND NOT pg_catalog.pg_has_role(current_user,?::name,'MEMBER')",Boolean.class,RUNTIME_PUBLISHER));
+        try(var publisher=DriverManager.getConnection(POSTGRES.getJdbcUrl(),RUNTIME_PUBLISHER,PASSWORD)) {
+            assertEquals(RUNTIME_PUBLISHER,scalar(publisher,"SELECT session_user"));
+            assertEquals("safe",scalar(publisher,"SELECT CASE WHEN current_user=session_user AND NOT pg_catalog.has_schema_privilege(current_user,'public','CREATE') AND NOT pg_catalog.has_table_privilege(current_user,'public.hidra_org_employee_assignment','DELETE,TRUNCATE,TRIGGER') AND NOT pg_catalog.has_function_privilege(current_user,'public.hidra_org_activate_appointment_binding(text,text,text,bigint)','EXECUTE') THEN 'safe' ELSE 'unsafe' END"));
+        }
+        runtimeAuthenticate(actor);return actor;
+    }
+
+    private void runtimeAuthenticate(String actor) {
+        var result=runtimeLogin.authenticate(new dz.sh.hidra.modules.identity.application.model.DirectAuthenticationCommand(
+                dz.sh.hidra.modules.identity.domain.value.ProviderType.LOCAL,actor,"runtime-synthetic-password","synthetic-ip","synthetic-agent","runtime-correlation"));
+        var jwt=org.springframework.security.oauth2.jwt.Jwt.withTokenValue(result.accessToken()).header("alg","HS256")
+                .subject("untrusted-wrapper").issuedAt(Instant.now().minusSeconds(1)).expiresAt(Instant.now().plusSeconds(300)).build();
+        SecurityContextHolder.getContext().setAuthentication(new org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken(jwt,List.of()));
+    }
+
+    private dz.sh.hidra.modules.organization.application.service.EmployeeAppointmentLifecycleApplicationService runtimeService(jakarta.persistence.EntityManager em) {
+        var repository=new JdbcProtectedEmployeeAppointmentRepositoryAdapter(runtimeJdbc,runtimeIdentity,runtimeParty,em);
+        var coordinator=new ProtectedEmployeeAppointmentAdmissionCoordinator(runtimeIdentity,runtimeParty,repository,runtimeExecutor);
+        return new dz.sh.hidra.modules.organization.application.service.EmployeeAppointmentLifecycleApplicationService(coordinator,runtimeExecutor,repository);
+    }
+
+    @Test void genuineLocalLifecycleReplayAndScopedReadsUsePrivatePublisherAndObservedCommit() throws Exception {
+        var f=fixture(false);String actor=runtimeActor(f);var service=runtimeService(runtimeEntityManager);var command=create(f,id());
+        var created=service.create(command);String assignment=created.after().assignmentId();
+        assertFalse(created.historicalReplay());assertEquals(1,created.after().appointmentVersion());
+        var corrected=service.correct(new EmployeeAppointmentCommand.Correct(id(),f.company(),assignment,1,f.units().get(0),f.position(),AssignmentType.PRIMARY,AssignmentStatus.ACTIVE,START,null,1,1,REASON));
+        assertEquals(2,corrected.after().appointmentVersion());
+        var transferred=service.transfer(new EmployeeAppointmentCommand.Transfer(id(),f.company(),assignment,2,f.units().get(1),f.position(),AssignmentType.PRIMARY,START.plusSeconds(3600),null,1,1,REASON));
+        assertEquals(3,transferred.after().appointmentVersion());assertNotNull(transferred.successor());
+        service.end(new EmployeeAppointmentCommand.End(id(),f.company(),transferred.successor().assignmentId(),1,START.plusSeconds(7200),REASON));
+        admin("UPDATE public.hidra_party_party SET status='SUSPENDED' WHERE id=?",f.company());
+        runtimeAuthenticate(actor);var replay=service.create(command);
+        assertTrue(replay.historicalReplay());assertEquals(created.eventId(),replay.eventId());assertEquals(created.after(),replay.after());
+        assertEquals(4,service.employeeHistory(dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History.employee(f.company(),f.employee(),100,null)).entries().size());
+        assertEquals(1,service.exactVersion(new dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.ExactVersion(f.company(),assignment,1)).appointmentVersion());
+        assertEquals(f.company(),service.readPolicy(new dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.Policy(f.company(),f.units().get(0))).companyPartyId());
+        assertFalse(service.positionHistory(dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History.position(f.company(),f.units().get(0),f.position(),100,null)).entries().isEmpty());
+        try(var c=owner()) {
+            assertEquals("4",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_event WHERE employee_id=?",f.employee()));
+            assertEquals("4",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_event WHERE employee_id=? AND actor_user_id=?",f.employee(),actor));
+            assertEquals("4",scalar(c,"SELECT count(*) FROM public.hidra_identity_org_commit_proof_use u JOIN public.hidra_org_appointment_event e USING(event_id) WHERE e.employee_id=?",f.employee()));
+            assertEquals("4",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_receipt r JOIN public.hidra_org_appointment_event e USING(event_id) WHERE e.employee_id=?",f.employee()));
+        } finally {SecurityContextHolder.clearContext();}
+        assertEquals(RUNTIME_APP,runtimeJdbc.queryForObject("SELECT session_user",String.class));
+    }
+
+    @Test void genuineNativeDenialDoesNotCreateProjectionEventReceiptOrKeys() throws Exception {
+        var f=fixture(false);String actor=runtimeActor(f);
+        admin("DELETE FROM public.hidra_identity_user_permission_grant WHERE user_id=?",actor);runtimeAuthenticate(actor);
+        assertThrows(RuntimeException.class,()->runtimeService(runtimeEntityManager).create(create(f,id())));
+        try(var c=owner()) {
+            assertEquals("0",scalar(c,"SELECT count(*) FROM public.hidra_org_employee_assignment WHERE employee_id=?",f.employee()));
+            assertEquals("0",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_event WHERE employee_id=?",f.employee()));
+            assertEquals("0",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_lock_key WHERE kind='EMPLOYEE' AND key_one=?",f.employee()));
+        } finally {SecurityContextHolder.clearContext();}
+    }
+
+    @Test void genuineExecutionRollsBackProvisionalWritesWhenActualManagedFlushFails() throws Exception {
+        var f=fixture(false);runtimeActor(f);var em=spy(runtimeEntityManager);
+        doAnswer(call->{runtimeEntityManager.flush();throw new IllegalStateException("synthetic post-flush failure");}).when(em).flush();
+        assertThrows(RuntimeException.class,()->runtimeService(em).create(create(f,id())));
+        verify(em).flush();
+        try(var c=owner()) {
+            assertEquals("0",scalar(c,"SELECT count(*) FROM public.hidra_org_employee_assignment WHERE employee_id=?",f.employee()));
+            assertEquals("0",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_event WHERE employee_id=?",f.employee()));
+            assertEquals("0",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_lock_key WHERE kind='EMPLOYEE' AND key_one=?",f.employee()));
+        } finally {SecurityContextHolder.clearContext();}
+    }
+    @org.junit.jupiter.api.AfterEach void clearRuntimeAuthentication() {SecurityContextHolder.clearContext();}
+
     private static final Instant START=Instant.parse("2026-10-20T10:00:00Z");
     private static final String REASON="Change é\t\n retained";
     private static final JsonMapper JSON=JsonMapper.builder().build();

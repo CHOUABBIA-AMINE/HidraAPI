@@ -27678,6 +27678,59 @@ legacy activation. No task closure,release,deployment,simulator or OT action.
 Publish with expected-62b8fcc main guard,verify exact parent/tree/message/blobs/
 scope,confirm applicable exact-SHA Full/Fast/Docs creation/queue/start and STOP.
 
+
+### 2026-10-24 — HAPI-778 Full862 bounded runtime grant-fixture repair
+
+Owner Fail refreshes main8ddaafab3ad7bff6bbb33cb2faf446e793f6c185,
+parent62b8fcc9aa83716c33129f94f1c4c331b08e3b7f,
+treebec5c545f01cc9aa00ff4344d86e396d5d7396c1.
+[Full862](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40084825598)
+FAILED only PostgreSQL shard1 and its consequential aggregate. All other six
+PostgreSQL shards,static,Java21 unit/architecture,API/dictionary,Fast171 and
+Docs552 SUCCEEDED. The prior Flyway/Identity fixture corrections passed their
+bounded gates; the Identity lock's earlier holder remains unconfirmed.
+
+All64 Organization suite cases executed. Exactly the three genuine runtime cases
+errored during runtimeActor setup with IllegalArgumentException:
+"One ownership pair and employee required". Fixture grant provisioning incorrectly
+constructed one three-unit Request for every action. The actual owner contract
+requires CREATE/END one pair,TRANSFER/CORRECT at most two same-company pairs.
+No operation reached native runtime execution,so no runtime proof is accepted.
+
+Continue registered B3 message
+`feat(organization): persist protected appointment lifecycle and history`.
+Exactly three MODIFY,zero CREATE/DELETE:
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java
+- .github/ci-test-inventory.json,only this suite's source hash
+- this append-only HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+Provision grants as a LinkedHashSet union of VALID single-unit Request
+requirements for each action. This covers all three fixture units while
+deduplicating company/employee grants. Grant facts do not constitute an oversized
+native admission; actual operations still construct their exact source/destination
+request and use one native sample. Preserve every owner-contract limit,
+production class,64 test cases,assertions,deadline,SQL/catalog/function pin,
+172 migrations,generated artifact,workflow and registry status.
+
+Available Java17 syntax parsing and all32 inventory-tool/all19 documentation-
+validator self-tests pass. A standalone scratch harness also compiles and executes
+the ACTUAL unchanged Request contract and ProtectedRelationFence with Java17:
+all seven action grant unions cover every fixture unit and contain four distinct
+requirements for policy or five for employee-scoped actions; oversized three-unit
+CREATE/END/TRANSFER/CORRECT requests remain rejected. This is bounded pure-contract
+execution,not JUnit,PostgreSQL,full Java21 compilation or runtime acceptance.
+The javac executable is absent; compilation uses the already available Java
+compiler API through the source launcher. No dependencies or full environment
+are provisioned. Inventory-only-hash preservation,append-only,three-path and
+whitespace checks pass.
+
+HAPI-778 remains PARTIAL/IN_PROGRESS;HAPI-590 independently PARTIAL/BLOCKED.
+The selected consolidated remaining B3 implementation remains after genuine
+runtime qualification; no public/legacy activation or task closure is claimed.
+Publish only these three paths using expected-8ddaafa main guard,verify exact
+parent/tree/message/blobs/scope,confirm exact-SHA Full/Fast/Docs creation/queue/start
+and STOP for owner feedback. No release,deployment,simulator or OT action.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

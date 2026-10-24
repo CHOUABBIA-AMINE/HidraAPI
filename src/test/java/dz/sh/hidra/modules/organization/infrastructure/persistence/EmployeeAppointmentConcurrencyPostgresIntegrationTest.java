@@ -141,9 +141,12 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         admin("INSERT INTO public.hidra_identity_provider(id,code,name,provider_type,status,sync_enabled,just_in_time_provisioning_enabled,created_at,updated_at) VALUES (?,?,'Runtime fixture','LOCAL','ACTIVE',false,false,now(),now())",provider,provider);
         admin("INSERT INTO public.hidra_identity_local_credential(id,user_id,password_hash,credential_status,created_at,updated_at) VALUES (?,?,?,'ACTIVE',now(),now())",id(),actor,runtimePasswords.encode("runtime-synthetic-password"));
         for(var action:Action.values()) {
-            var request=new Request(action,f.units().stream().map(unit->new CompanyUnit(f.company(),unit)).toList().stream()
-                    .sorted(java.util.Comparator.comparing(CompanyUnit::organizationUnitId)).toList(),action==Action.READ_POLICY?null:f.employee());
-            for(var requirement:request.requirements()) {
+            // Grants are fixture facts, not one oversized operation/admission.
+            // Union valid one-pair requests; company/employee grants remain unique.
+            var requirements=new java.util.LinkedHashSet<Requirement>();
+            for(var unit:f.units())requirements.addAll(new Request(action,
+                    List.of(new CompanyUnit(f.company(),unit)),action==Action.READ_POLICY?null:f.employee()).requirements());
+            for(var requirement:requirements) {
                 String code=OrganizationProtectedAppointmentAuthorizationContract.permissionCode(action,requirement.kind());
                 admin("INSERT INTO public.hidra_identity_user_permission_grant(id,user_id,permission_id,effect,scope_type,scope_reference_id,grant_reason,emergency_access,valid_from,valid_to,status,created_at) SELECT ?,?,id,'GRANT',?,?,'runtime fixture',false,now()-interval '1 hour',now()+interval '1 hour','ACTIVE',now() FROM public.hidra_identity_permission WHERE code=?",id(),actor,requirement.kind()==ResourceKind.UNIT?"ORGANIZATION_UNIT":"CUSTOM",requirement.reference(),code);
             }

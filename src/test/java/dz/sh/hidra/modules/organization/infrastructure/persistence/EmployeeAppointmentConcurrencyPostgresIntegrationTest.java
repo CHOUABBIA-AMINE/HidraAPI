@@ -126,6 +126,7 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
                 +"public.hidra_org_appointment_read_guard(jsonb,timestamptz,timestamptz,integer,bigint,timestamptz) TO "+RUNTIME_PUBLISHER);
         r.add("spring.datasource.url",POSTGRES::getJdbcUrl);r.add("spring.datasource.username",()->RUNTIME_APP);
         r.add("spring.datasource.password",()->PASSWORD);
+        r.add("spring.flyway.url",POSTGRES::getJdbcUrl);
         r.add("spring.flyway.user",POSTGRES::getUsername);r.add("spring.flyway.password",POSTGRES::getPassword);
         r.add("hidra.platform.persistence.publication.enabled",()->true);
         r.add("hidra.platform.persistence.publication.username",()->RUNTIME_PUBLISHER);

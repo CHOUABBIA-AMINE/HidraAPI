@@ -27622,6 +27622,62 @@ Publish only these three paths with expected-fc84872 main guard, verify exact
 parent/tree/message/blobs/scope, confirm exact-SHA Full/Fast/Docs creation/queue/start
 and STOP for owner feedback.
 
+
+### 2026-10-24 — HAPI-778 Full861 explicit Flyway endpoint and NOWAIT fixture isolation
+
+Owner Fail refreshes main62b8fcc9aa83716c33129f94f1c4c331b08e3b7f,
+parentfc848720e010d2fc63362396c91d9a3938a53650,
+treed7034fbbc87f394e50d67a2f7ccece9a61eb7ef6.
+[Full861](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40083569130)
+FAILED PostgreSQL shards1 and3 and its consequential aggregate. Fast170,Docs551,
+static,Java21 unit/architecture,API/dictionary and five other PostgreSQL shards
+SUCCEEDED. No genuine Organization runtime acceptance is established.
+
+Shard1 progressed past container startup but Spring Boot's Flyway bean failed:
+UnsupportedDataSourcePropertyException,Unable to find suitable method for url.
+The fixture supplied distinct Flyway owner credentials without an explicit
+Flyway URL, causing endpoint derivation from the wrapped application datasource.
+Supply spring.flyway.url from the SAME managed PostgreSQL container. Retain
+separate migration-owner and ordinary runtime credentials, genuine publisher,
+full migration validation, all64 cases and the actual container-start ordering.
+
+Shard3's existing fourGenuineOriginsAndAllSevenActionsUseExactAppointmentResources
+case rejected a real NOWAIT native fence on hidra_identity_permission with
+SQLSTATE55P03. The log does NOT identify the blocking PID or prove its cause.
+Automatic vacuum/analyze is a possible background competitor, not a verified
+root cause. Disable autovacuum only in this disposable Identity test container
+to isolate owner-controlled NOWAIT scenarios from automatic maintenance.
+Keep all explicit competing-connection tests, native locks, time limits and
+production configuration unchanged. If55P03 recurs in the same positive case,
+log only matching lock PID/backend type/relation/mode/granted metadata through
+an independent owner diagnostic connection, then rethrow the ORIGINAL failure.
+No operation retry, sleep, alternate native preparation, ignored rejection,
+query/token/password logging or test deletion is introduced. This isolation is
+not claimed to repair an unidentified application writer; recurring evidence
+must identify it before further changes.
+
+Continue registered B3 message
+`feat(organization): persist protected appointment lifecycle and history`.
+Exactly four MODIFY,zero CREATE/DELETE:
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java
+- src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTest.java
+- .github/ci-test-inventory.json,only those two suite source hashes
+- this append-only HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+All old cases,counts,timings,lanes,production source,172 migrations,SQL/catalog/
+function pins,generated artifacts,workflows and registry states retain content.
+Available Java17 syntax parsing for both test files,32 inventory-tool and19
+documentation-validator self-tests, inventory-only-hash preservation,append-only,
+four-path and whitespace checks pass. No local Maven/Java21/PostgreSQL result is
+claimed or full environment provisioned. Hosted runtime confirmation remains
+required, including both failing suites. HAPI-778 remains PARTIAL/IN_PROGRESS;
+HAPI-590 independently PARTIAL/BLOCKED. The selected consolidated remaining B3
+implementation still depends on genuine runtime qualification before public/
+legacy activation. No task closure,release,deployment,simulator or OT action.
+
+Publish with expected-62b8fcc main guard,verify exact parent/tree/message/blobs/
+scope,confirm applicable exact-SHA Full/Fast/Docs creation/queue/start and STOP.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

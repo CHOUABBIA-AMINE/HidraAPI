@@ -110,7 +110,9 @@ public class ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTes
                             "-c",
                             "log_min_error_statement=panic",
                             "-c",
-                            "log_parameter_max_length_on_error=0");
+                            "log_parameter_max_length_on_error=0",
+                            "-c",
+                            "autovacuum=off");
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry r) {
@@ -766,7 +768,19 @@ public class ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTes
                 var request = new Request(action, List.of(new CompanyUnit(COMPANY, FACILITY)),
                         action == Action.READ_POLICY ? null : EMPLOYEE);
                 all(f, request);
-                var result = run(originalSource(f), request);
+                OrganizationProtectedAppointmentAuthorizationContract.Contribution result;
+                try {result = run(originalSource(f), request);}
+                catch(RuntimeException failure) {
+                    if(transientWarmupLockConflict(failure)) {
+                        // Diagnostic only: no retry, alternate preparation or suppressed rejection.
+                        try(var connection=java.sql.DriverManager.getConnection(POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword());
+                                var statement=connection.createStatement();
+                                var rows=statement.executeQuery("SELECT a.pid,a.backend_type,l.relation::regclass::text,l.mode,l.granted FROM pg_catalog.pg_locks l JOIN pg_catalog.pg_stat_activity a ON a.pid=l.pid WHERE l.relation='public.hidra_identity_permission'::regclass")) {
+                            while(rows.next())System.err.println("Appointment fixture lock: pid="+rows.getInt(1)+" backend="+rows.getString(2)+" relation="+rows.getString(3)+" mode="+rows.getString(4)+" granted="+rows.getBoolean(5));
+                        }catch(java.sql.SQLException diagnostic){failure.addSuppressed(diagnostic);}
+                    }
+                    throw failure;
+                }
                 permit(result);
                 assertThat(result.request()).isEqualTo(request);
                 assertThat(result.userId()).isEqualTo(f.user());

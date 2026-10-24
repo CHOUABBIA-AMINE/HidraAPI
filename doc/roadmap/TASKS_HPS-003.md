@@ -27860,6 +27860,18 @@ Local prepublication evidence: SHA256 known vector, original source-to-inventory
 
 **Publication:** Direct existing main, expected-`13b34c0e` guard, exact `feat(organization): persist protected appointment lifecycle and history` commit, verify parent/tree/two blobs and applicable Full/Fast/Docs workflow creation/queue/start, then STOP.
 
+### 2026-10-24 — HAPI-778 Full867/Fast176 Java21 text-block compilation repair
+
+**Owner Fail and exact-head gate:** main `eb8daadaaec593a5b8badef56320e97739f12310`; [Full867](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40089319077) and [Fast176](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40089319019) FAILED at Java21 source compilation, while [Docs557](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40089319020) SUCCEEDED. The Java, API/dictionary and all seven PostgreSQL jobs encountered the SAME compilation failure in `JdbcProtectedEmployeeAppointmentRepositoryAdapter.java` lines778-780. Missing Surefire reports/artifacts and the failed aggregate gate are downstream effects of compilation, not proof of further runtime failures.
+
+**Cause and bounded repair:** `batchRelationCatalog()` assembled a Java21 text block around a generated SQL VALUES clause with `""" + values + """` on the same line, which is an illegal opening text-block delimiter (Java requires a line terminator after opening `"""`). Replace only that source fragment with a newline after `FROM (VALUES`, an opened Java text block ending in a newline, and the unchanged `values` concatenation before `) AS r(ordinal,relation)`. This preserves the fixed twelve-relation allowlist and every owner fence, privilege predicate, catalog SHA pin, correlation, error mode, native evidence, final guard and 500ms deadline. The generated SQL remains the same ordered VALUES relation apart from insignificant whitespace. No authorization, SQL DML, retry, timeout, catalog bypass or public activation is introduced.
+
+**Exact stage and scope:** Continue the registered HAPI-778 B3 commit message `feat(organization): persist protected appointment lifecycle and history`. MODIFY exactly two existing paths: `src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JdbcProtectedEmployeeAppointmentRepositoryAdapter.java` and this append-only `doc/roadmap/TASKS_HPS-003.md` record. Zero CREATE/DELETE. Preserve all172 Flyway migrations, actual test cases, source-linked inventory and seven PostgreSQL shards, other Java sources, workflows, generated API/dictionary, roadmap and HAPI-590 state.
+
+**Available pre-publication proof:** A minimal Java21 `javac --release 21` reproducer containing the same replacement text-block concatenation compiled and produced ordered SQL; the exact source-string reverse-diff confirms no other bytes in the repository Java file change. This is NOT a full Java21 Maven compilation, database execution, performance measurement or runtime acceptance. New exact-SHA Full/Fast/Docs CI must prove source compilation, all mandatory lanes, and subsequently the still unresolved real positive LOCAL CREATE and managed flush issues from Full866. No cached result or prior Full CI failure is declared repaired beyond this syntax cause.
+
+**Publication boundary:** Direct `main` expected-head guard, verify exact parent/tree/two paths and blobs, confirm the three applicable exact-SHA workflow creations/queues/start, then STOP. HAPI-778 remains PARTIAL/IN_PROGRESS; HAPI-590 stays PARTIAL/BLOCKED. No release, deployment, simulation or OT control is authorized.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

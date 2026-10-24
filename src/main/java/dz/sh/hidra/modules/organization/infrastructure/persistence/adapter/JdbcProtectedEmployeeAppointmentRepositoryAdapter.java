@@ -775,7 +775,9 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
                             current_user,r.relation::regclass,'INSERT,REFERENCES')
                   ELSE TRUE
                 END AS privileges_safe
-                FROM (VALUES """ + values + """) AS r(ordinal,relation)
+                FROM (VALUES
+                """ + values + """
+                ) AS r(ordinal,relation)
                 ORDER BY r.ordinal
                 """;
     }

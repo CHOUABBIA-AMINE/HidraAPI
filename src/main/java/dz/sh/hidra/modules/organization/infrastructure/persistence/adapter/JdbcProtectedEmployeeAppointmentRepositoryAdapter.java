@@ -729,6 +729,61 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
             """;
 
     /**
+     * Preserve each of the existing relation predicates and pinned physical
+     * fingerprints, but evaluate them as ONE read under the same retained owner
+     * fences. Previously each requireCurrent round trip repeated three queries
+     * per relation; that could exhaust the protected 500ms aggregate deadline
+     * before genuine provisional DML. No catalog state is cached: every
+     * admission/current check executes this exact query again.
+     *
+     * Only the compile-time ORGANIZATION_FENCES list supplies relation names.
+     * Neither actor input nor mutation selectors can supply a SQL identifier.
+     */
+    private static final String BATCHED_RELATION_CATALOG = batchRelationCatalog();
+
+    private static String batchRelationCatalog() {
+        String values = java.util.stream.IntStream.range(0, ORGANIZATION_FENCES.size())
+                .mapToObj(index -> "(" + index + ",'"
+                        + ORGANIZATION_FENCES.get(index).relation() + "')")
+                .collect(java.util.stream.Collectors.joining(","));
+        String relationCheck = RELATION_CONTEXT.replace("?::regclass", "r.relation::regclass");
+        String signature = CATALOG_FINGERPRINT.replace("?::regclass", "r.relation::regclass");
+        if (relationCheck.equals(RELATION_CONTEXT) || signature.equals(CATALOG_FINGERPRINT))
+            throw new IllegalStateException("Appointment catalog query template missing target");
+        return """
+                SELECT r.relation, (
+                """ + relationCheck + """
+                ) AS relation_safe, (
+                """ + signature + """
+                ) AS pinned_signature,
+                CASE
+                  WHEN r.relation IN (
+                      'public.hidra_org_appointment_binding_revision',
+                      'public.hidra_org_appointment_policy_revision',
+                      'public.hidra_org_appointment_configuration_event',
+                      'public.hidra_org_appointment_receipt')
+                    THEN NOT pg_catalog.has_table_privilege(
+                            current_user,r.relation::regclass,'INSERT,UPDATE,REFERENCES')
+                     AND NOT pg_catalog.has_any_column_privilege(
+                            current_user,r.relation::regclass,'INSERT,UPDATE,REFERENCES')
+                  WHEN r.relation IN (
+                      'public.hidra_org_appointment_binding_head',
+                      'public.hidra_org_appointment_policy_head')
+                    THEN NOT pg_catalog.has_table_privilege(
+                            current_user,r.relation::regclass,'INSERT,REFERENCES')
+                     AND NOT pg_catalog.has_any_column_privilege(
+                            current_user,r.relation::regclass,'INSERT,REFERENCES')
+                  ELSE TRUE
+                END AS privileges_safe
+                FROM (VALUES """ + values + """) AS r(ordinal,relation)
+                ORDER BY r.ordinal
+                """;
+    }
+
+    private record CatalogObservation(String relation, boolean relationSafe,
+                                      String signature, boolean privilegesSafe) { }
+
+    /**
      * Retains Organization fences after native/Party acquisition. The returned
      * private ticket is UNQUALIFIED until contribute consumes its genuine native
      * issuer after the coordinator's locked descriptor equality check.
@@ -979,27 +1034,21 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
     }
 
     private void requireCatalog() {
+        // The protected physical context must be revalidated on every call.
         check(PHYSICAL_CONTEXT);
-        for (var fence : ORGANIZATION_FENCES) {
-            String relation = fence.relation();
-            check(RELATION_CONTEXT, relation);
-            if (!CATALOG_PINS.get(relation).equals(
-                    jdbc.queryForObject(CATALOG_FINGERPRINT, String.class, relation))) throw denied();
-            boolean immutableConfig = relation.endsWith("_binding_revision") || relation.endsWith("_policy_revision")
-                    || relation.endsWith("_configuration_event") || relation.endsWith("_appointment_receipt");
-            if (immutableConfig) {
-                check("SELECT NOT pg_catalog.has_table_privilege(current_user,?::regclass,'INSERT,UPDATE,REFERENCES')"
-                        + " AND NOT pg_catalog.has_any_column_privilege(current_user,?::regclass,'INSERT,UPDATE,REFERENCES')",
-                        relation, relation);
-            }
-            if (relation.endsWith("_binding_head") || relation.endsWith("_policy_head")) {
-                // PostgreSQL LOCK requires table-level UPDATE. Pinned transition/deferred
-                // guards still require a same-XID administrator configuration event.
-                check("""
-                        SELECT NOT pg_catalog.has_table_privilege(current_user,?::regclass,'INSERT,REFERENCES')
-                           AND NOT pg_catalog.has_any_column_privilege(current_user,?::regclass,'INSERT,REFERENCES')
-                        """, relation, relation);
-            }
+        var observed = jdbc.query(BATCHED_RELATION_CATALOG,
+                (row, index) -> new CatalogObservation(
+                        row.getString(1), row.getBoolean(2),
+                        row.getString(3), row.getBoolean(4)));
+        if (observed.size() != ORGANIZATION_FENCES.size()) throw denied();
+        for (int i = 0; i < ORGANIZATION_FENCES.size(); i++) {
+            CatalogObservation actual = observed.get(i);
+            String expectedRelation = ORGANIZATION_FENCES.get(i).relation();
+            String expectedSignature = CATALOG_PINS.get(expectedRelation);
+            if (!expectedRelation.equals(actual.relation())
+                    || !actual.relationSafe() || !actual.privilegesSafe()
+                    || expectedSignature == null || !expectedSignature.equals(actual.signature()))
+                throw denied();
         }
         var functions = jdbc.query("""
                 SELECT p.proname,pg_catalog.encode(pg_catalog.sha256(pg_catalog.convert_to(p.prosrc,'UTF8')),'hex'),

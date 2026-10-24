@@ -28037,6 +28037,70 @@ qualification. No release,deployment,simulation or OT action. Publish direct mai
 with expected-df82172 guard,verify exact parent/tree/message/four blobs,confirm
 applicable Full/Fast/Docs creation/queue/start and STOP for owner feedback.
 
+
+### 2026-10-24 — HAPI-778 Full873 flatten nested classification validation
+
+Owner Fail refreshes main a820d5d303b045caa30ca6a808c7ad3cb1ca498a,
+parent df821722e35aae2d465c91202be82315569beaf2,
+tree c93ed9df411c28adc7e941ddb51fb2de694af9ca.
+[Full873](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40130715936)
+FAILED only PostgreSQL shard1 and the consequential gate; Fast182,Docs563,
+unit/architecture,static,API/dictionary and six other PostgreSQL shards PASSED.
+All64 Organization concurrency cases ran: positive lifecycle errored on500ms
+budget,the actual managed-flush fault assertion was not reached,and
+javaFinalGuardRollbackRemovesReceiptNonceEventProjectionAndKeys errored on
+NOWAIT55P03 acquiring hidra_org_employee_assignment. Its competing lock-holder
+remains unidentified; do not suppress or retry this error.
+
+With transaction-local JIT disabled,actual timing remains acquireWrite1990ms,
+next currentWrite998ms,prepareProvisional634ms. JIT suppression did not materially
+resolve the observed positive-path latency. No confirmed JIT root cause or
+runtime acceptance is asserted. Preserve the existing setting for this bounded
+repair; do not change platform policy or infer success from its unit test.
+
+Registered B3 message:
+`feat(organization): persist protected appointment lifecycle and history`.
+Exactly two MODIFY,zero CREATE/DELETE:
+- src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JdbcProtectedEmployeeAppointmentRepositoryAdapter.java
+- this append-only HAPI-778 evidence in doc/roadmap/TASKS_HPS-003.md
+
+Source-backed duplication: prepareMutation runs full requireCurrent,then calls
+public referenceUse,which immediately runs the same full requireCurrent and
+again revalidates at exit; planning concludes with another requireCurrent.
+Each current check crosses the native owner,Party,retained catalog/locks and
+physical/time context. Full873 storage-current alone measured124ms. The nested
+pair is unnecessary inside the already guarded,read-only classification/planning
+operation. Extract the exact classification body to PRIVATE classifyReference,
+including fresh preview,canonical command frame,receipt/source reads,source CAS,
+request shape,prior classification equality and retained classification update.
+Public referenceUse still performs full pre/post validation around that body.
+Public prepareMutation performs its full pre-validation,private classification,
+unchanged planning,and full post-validation. Its REPLAY early-return now
+explicitly performs post-validation too. Classification returns no authority or
+permit. No cross-invocation result is cached; all classification SQL still runs.
+No owner callback,application callback,DML,lock release,async handoff or managed
+flush occurs inside the extracted body; its enclosing operation retains complete
+pre/post owner validation. All callback/write/final-guard boundaries retain
+their original checks and rollback poisoning.
+
+This removes two nested complete revalidation chains per preparation,without
+removing any classification predicate or statement. It is a bounded performance
+repair,not proof that the complete workflow now meets500ms. The observed3.6s
+pre-provisional path and independent NOWAIT error remain acceptance risks until
+new exact-SHA hosted CI. Further changes must follow that evidence.
+
+Java17 syntax parsing and32 inventory-tool/19 documentation-validator self-tests
+PASSED. Classification-body preservation,private-callsite guards,append-only,
+exact-two-path and blob/tree checks are verified. No tests or inventory are
+changed; all64 integration cases and39+1 executor cases remain required.
+No local Java21 type compilation,JUnit or PostgreSQL runtime pass is claimed.
+Preserve all172 migrations,SQL/catalog/function pins,native/Party freshness,
+500ms aggregate/250ms lock deadlines,NOWAIT,seven shards,generated artifacts and
+public/legacy activation gates. HAPI-778 stays PARTIAL/IN_PROGRESS;HAPI-590
+independently PARTIAL/BLOCKED. No closure,release,deployment,simulation or OT
+action. Publish expected-a820d5d direct main,verify parent/tree/message/two blobs,
+confirm applicable Full/Fast/Docs creation/queue/start and STOP.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

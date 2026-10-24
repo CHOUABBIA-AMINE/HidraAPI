@@ -1312,6 +1312,18 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
         StorageAdmission ticket = null;
         try {
             ticket=ticket(admission);requireCurrent(ticket);Objects.requireNonNull(command);
+            var use=classifyReference(ticket,command,contribution);
+            requireCurrent(ticket);return use;
+        } catch (RuntimeException failure) {
+            poison(ticket==null?admission:ticket);throw denied(failure);
+        }
+    }
+
+    /** Read-only classification within the caller's retained pre/post owner validation. */
+    private ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse classifyReference(
+            StorageAdmission ticket, EmployeeAppointmentCommand command,
+            OrganizationProtectedAppointmentAuthorizationContract.Contribution contribution) {
+        Objects.requireNonNull(command);
             if (contribution!=ticket.sample || ticket.parties.size()!=1
                     || !command.kind().name().equals(ticket.sample.request().action().name())
                     || ticket.mutation!=null && !ticket.mutation.command().equals(command)
@@ -1355,10 +1367,8 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
             }
             var observed=new MutationClassification(command,frame,use,evidence);
             if (ticket.mutation!=null && !ticket.mutation.equals(observed)) throw denied();
-            ticket.mutation=observed;requireCurrent(ticket);return use;
-        } catch (RuntimeException failure) {
-            poison(ticket==null?admission:ticket);throw denied(failure);
-        }
+            ticket.mutation=observed;
+            return use;
     }
 
     /** Genuine Party consumption remains inside this issuer; scalar observations cannot replace it. */
@@ -1502,8 +1512,10 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
         StorageAdmission ticket=null;
         try {
             ticket=ticket(admission);requireCurrent(ticket);
-            var use=referenceUse(ticket,command,ticket.sample);
-            if(use==ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY)return;
+            // This private read-only body is enclosed by prepareMutation's own
+            // full current checks; do not nest another identical pair of checks.
+            var use=classifyReference(ticket,command,ticket.sample);
+            if(use==ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY){requireCurrent(ticket);return;}
             if(use==ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.CURRENT
                     && (party==null || ticket.partySample==null || !ticket.partyUsed.get()))throw denied();
             Instant sampled=ticket.sample.sampledAt();

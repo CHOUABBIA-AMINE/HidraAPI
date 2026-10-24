@@ -27006,6 +27006,68 @@ HAPI-590 independently PARTIAL/BLOCKED. Positive journal guard acceptance,
 authentic171-migration dictionary, replay, genuine native/executor/managed-flush
 and application/REST integration remain unfinished. No release or deployment.
 
+### 2026-10-24 — HAPI-778 Full852 authenticated journal catalog reconciliation
+
+**Selection / exact head:** Owner Fail refreshes main
+8c4e8bbbad06294717b790e400c7a493b6f14582,
+parent71d801c626bec3d5e71044110c823b315845ed74,
+tree517065064601e186b4ce6b069e4b11a5998ba1c3.
+[Full852](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40057075304)
+FAILED only in API/dictionary and the dependent aggregate gate. Static,
+Java21 unit/architecture and all seven PostgreSQL shards SUCCEEDED, including
+the previously failing journal shard5. [Fast163](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40057075314)
+and [Docs542](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40057075358)
+SUCCEEDED. These are observed job conclusions, not final HAPI-778 acceptance.
+The optional serial oracle was skipped. No new runtime repair is selected.
+
+**Authentic producer / diagnosed gate:** Retrieved API job120762297624 and its
+diagnostic artifact12545996969 from run40057075304 attempt1. Archive SHA256
+be8a4f191dd75a440dd504722dfc290d7ec57cbb9a7b6a2a1b7c93add90451ed;
+database/schema.json SHA256
+fb6f082b89e003f4c044213b3a5137cabd214d70ce8d6c73ea502122978cee03.
+Its verification.json reports Physical dictionary drift; review regenerated
+metadata/content. The actual PostgreSQL16.15 capture contains171 successful
+migrations,470 JPA mappings,516 relations and zero unresolved owners. The
+unchanged generator validates capture SHA, complete Flyway history and exact
+migration/JPA source bytes. Source bundle SHA256
+468e18856a670cc5ce7962db3e36f2af643fe565fe78246933b35e28823dbe9f.
+No catalog facts are inferred from migration text or an older capture.
+
+**Registered message / finite scope:** Use
+`docs(organization): reconcile appointment API and catalog artifacts`.
+Exactly two MODIFY, zero CREATE/DELETE:
+- doc/database/DATA_DICTIONARY.md, deterministic generator output
+- this append-only HAPI-778 evidence in doc/roadmap/TASKS_HPS-003.md
+
+Dictionary drift consists only of capture/source-bundle provenance,169-to171
+migration count and source mentions of the two V20261024 migrations. Physical
+relation/column/constraint/index/trigger definitions and ownership retain their
+content. Generated dictionary SHA256
+1cb2392357b00b47047aefcd97c7d01d416a121431cf89c5442c706e731ca8a7.
+Actual runtime OpenAPI member SHA256
+02bd2d14ce66158cbe11f088fc5496d6451ee0be40efd867df6eb7b49b031a70
+passes exact-source runtime equality:257 paths,279 operations,267 schemas.
+Canonical OpenAPI/manifest,all171 migrations,production/tests,CI inventory,
+workflows,frozen statuses and other task histories retain bytes.
+
+**Actual validation / limits:** All17 dictionary generator self-tests pass.
+The existing generator --input/--source-sha/--ownership/--check verifies the
+regenerated dictionary against this authentic capture. Documentation, whitespace,
+append-only and two-path scope checks run before publication. No new local
+Java21/Maven/PostgreSQL execution is claimed or provisioned. Full852 remains
+FAILED; complete exact-SHA Full acceptance still requires a new hosted run.
+
+**Stop / continuation:** Publish only these two paths with expected-8c4e8bb
+main guard and verify parent/tree/message/blobs/scope. Confirm applicable
+documentation CI creation/queue/start, then STOP. The existing Full push filter
+excludes doc-only changes; request a manual Full workflow_dispatch on the new
+head if the connector still lacks dispatch support. Do not alter workflow paths
+or add an unrelated source change merely to trigger Full. HAPI-778 remains
+PARTIAL/IN_PROGRESS; HAPI-590 independently PARTIAL/BLOCKED. After acceptance,
+continue replay finalization and genuine native/executor/managed-flush composition,
+then application/private-publisher/legacy/REST cutover and final acceptance.
+No release, deployment, simulator or OT action is selected.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

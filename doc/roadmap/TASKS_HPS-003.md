@@ -28101,6 +28101,65 @@ independently PARTIAL/BLOCKED. No closure,release,deployment,simulation or OT
 action. Publish expected-a820d5d direct main,verify parent/tree/message/two blobs,
 confirm applicable Full/Fast/Docs creation/queue/start and STOP.
 
+
+### 2026-10-24 — HAPI-778 Full874 flatten guarded provisional plan preparation
+
+Owner Fail refreshes main2035dbfe141dfd5427ce2b57f25c2a5f2e2d4b72,
+parent a820d5d303b045caa30ca6a808c7ad3cb1ca498a,
+tree bf350533ec23d5caec2f00f69f6b6e978ae7b1e4.
+[Full874](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40131568171)
+FAILED only PostgreSQL shard1 and its aggregate. Fast183,Docs564,static,
+unit/architecture,API/dictionary and six PostgreSQL shards PASSED.
+All64 concurrency cases ran. Positive LOCAL CREATE still exceeds500ms at
+sealAdmission; managed-flush failure verification cannot reach flush.
+The earlier NOWAIT collision did not recur; no lock-holder explanation is inferred.
+
+Measured currentWrite prepare-mutation fell from514ms in Full873 to287ms in
+Full874 following classification flattening. Total admission1848ms,following
+currentWrite814ms and prepareProvisional450ms still exceed the500ms budget.
+These are measurements of separate runs,not a controlled benchmark or acceptance.
+
+Registered B3 message remains
+`feat(organization): persist protected appointment lifecycle and history`.
+Exactly two MODIFY,zero CREATE/DELETE:
+- src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JdbcProtectedEmployeeAppointmentRepositoryAdapter.java
+- this append-only HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+Source-backed nested boundary: prepareProvisional calls public prepareMutation,
+whose post-owner check is followed only by private read-only snapshot/payload/
+key-descriptor preparation and prepareProvisional's own final owner check.
+Extract the unchanged classification/planning body to PRIVATE prepareMutationPlan.
+Public prepareMutation retains full pre/post checks including REPLAY,its catch/
+poisoning and outward denial. Public prepareProvisional performs full validation
+before entering the private planner and retains its complete final validation
+after descriptor/payload preparation. The private body remains unreachable
+without an enclosing guarded public operation; no owner/application callback,
+DML,lock release,async handoff or flush occurs between these guards.
+All actual reference classification,source/version/CAS,binding/policy revisions,
+eligibility,conflict/peer bounds,proposal validation,UUID checks,snapshot and
+payload bounds,equality checks and SQL are retained. No cross-invocation cache.
+A failure in planning still reaches the enclosing original rollback-poisoning
+catch; no provisional permit or write is granted by either method.
+
+This removes one nested full current-owner pass per provisional preparation.
+It does NOT establish the whole3.1s observed pre-provisional path meets500ms;
+other repeated native/storage work remains a material acceptance risk.
+Preserve the500ms aggregate,250ms lock budget,NOWAIT,all native/Party checks,
+final SQL guards,managed flush,all172 migrations,catalog/function pins,all
+required cases,source inventory,seven shards,generated artifacts and public/
+legacy activation gates. No timeout relaxation,skipping or retry.
+
+Java17 syntax parsing and32 inventory-tool/19 documentation-validator self-tests
+PASSED. Plan-body preservation,guarded private call sites,append-only documentation,
+two-path and exact-blob/tree scope are checked before publication. No new test or
+inventory mutation; all64 integration cases remain mandatory. No local Java21
+type compilation,JUnit,PostgreSQL execution or runtime pass is claimed.
+HAPI-778 stays PARTIAL/IN_PROGRESS;HAPI-590 independently PARTIAL/BLOCKED.
+No task closure,release,deployment,simulation or OT action. Remaining substantial
+B3 public/legacy integration awaits genuine runtime qualification.
+Publish expected-2035dbf direct main,verify parent/tree/message/two blobs,
+confirm exact-SHA Full/Fast/Docs creation/queue/start and STOP.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

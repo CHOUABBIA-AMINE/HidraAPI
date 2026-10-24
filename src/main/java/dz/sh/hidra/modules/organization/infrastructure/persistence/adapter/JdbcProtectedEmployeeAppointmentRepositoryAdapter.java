@@ -1512,10 +1512,17 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
         StorageAdmission ticket=null;
         try {
             ticket=ticket(admission);requireCurrent(ticket);
-            // This private read-only body is enclosed by prepareMutation's own
-            // full current checks; do not nest another identical pair of checks.
+            prepareMutationPlan(ticket,command);
+            requireCurrent(ticket);
+        }catch(RuntimeException failure){poison(ticket==null?admission:ticket);throw denied(failure);}
+    }
+
+    /** Read-only plan construction inside a caller's full pre/post owner checks. */
+    private void prepareMutationPlan(StorageAdmission ticket,EmployeeAppointmentCommand command) {
+            // Each caller encloses this private read-only body in full current
+            // checks; do not nest another identical pair of checks.
             var use=classifyReference(ticket,command,ticket.sample);
-            if(use==ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY){requireCurrent(ticket);return;}
+            if(use==ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY)return;
             if(use==ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.CURRENT
                     && (party==null || ticket.partySample==null || !ticket.partyUsed.get()))throw denied();
             Instant sampled=ticket.sample.sampledAt();
@@ -1597,8 +1604,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
                     && !Boolean.TRUE.equals(jdbc.queryForObject("SELECT NOT EXISTS(SELECT 1 FROM public.hidra_org_employee_assignment WHERE id=?)",Boolean.class,freshId)))throw denied();
             var planned=new MutationPlan(command,freshId,before,after,successor,policy,destination,List.copyOf(peers),List.copyOf(facts),until);
             if(ticket.plan!=null && !ticket.plan.equals(planned))throw denied();
-            ticket.plan=planned;requireCurrent(ticket);
-        }catch(RuntimeException failure){poison(ticket==null?admission:ticket);throw denied(failure);}
+            ticket.plan=planned;
     }
 
     /** Persistence mechanics stay in the adapter; final owner checks follow the actual flush. */
@@ -1867,7 +1873,8 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
         try {
             t=ticket(admission);
             if(t.provisionalStarted || t.provisional!=null)throw denied();
-            prepareMutation(t,command);
+            requireCurrent(t);
+            prepareMutationPlan(t,command);
             if(t.plan==null || t.mutation.use()==ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY)throw denied();
             // Native UUIDs are required by the physical event, before attempting any key/DML.
             java.util.UUID.fromString(t.sample.bindingId());java.util.UUID.fromString(t.sample.sessionId());

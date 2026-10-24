@@ -9029,6 +9029,10 @@
         "storageAdmissionCannotWaitPastAnEarlierOrganizationWriterFence",
         "storageAdmissionCatalogPinsRejectDisabledTriggersAndRemovedConstraints",
         "storageAdmissionRejectsAuthenticationSwapSuspensionAndIssuerRevocation",
+        "replaySqlGuardValidatesEveryOperationAfterPartyRetirementAndCompanyRebindWithoutWrites",
+        "replaySqlGuardRejectsActorRequestCommandEventAndCompanySubstitution",
+        "replaySqlGuardRejectsMissingTargetReceiptAndAlteredRetainedPins",
+        "replaySqlGuardCannotMoveItsOriginalPhysicalOrTimeWindow",
         "storageAdmissionRejectsNativeScopeAndPhysicalCoordinateSubstitution",
         "storageAdmissionRejectsSchemaCreationPrivilegeAndConfigurationWriteEscalation",
         "storageAdmissionRejectsUnqualifiedForeignCompletedAndWrongThreadTickets",
@@ -9052,7 +9056,7 @@
       "lane": "postgres-integration",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java",
-      "source_sha256": "95873b0c4c1a3c6affca4d6f760cc729b367d3302cc24d65ba7ac838a573f706",
+      "source_sha256": "dac182d24d94e2c8d49b73bd5cdad6d4f72a009b83ca6300edc029b6717df5ce",
       "supports": []
     },
     {

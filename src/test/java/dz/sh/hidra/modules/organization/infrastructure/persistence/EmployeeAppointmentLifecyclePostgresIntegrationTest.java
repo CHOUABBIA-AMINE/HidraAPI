@@ -2091,6 +2091,115 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
         }catch(ReflectiveOperationException failure){throw new AssertionError(failure);}
     }
 
+    private void commitReplayFixture(Projection p,String operation) throws Exception {
+        if(operation.equals("CREATE")){commitCreate(p);return;}
+        if(!operation.equals("END")){commitMove(p,historicalDestination(p),operation);return;}
+        try(var c=projectionTransaction()) {
+            UUID first=completeCreate(c,p),event=UUID.randomUUID();String before=snapshot(c,p.id());
+            execute(c,"UPDATE public.hidra_org_employee_assignment SET appointment_version=2,last_event_id=?::uuid,valid_to=transaction_timestamp(),status='ENDED' WHERE id=?",event,p.id());
+            insertEvent(c,p,event,"END",null,payload(c,p,"END",before,"null"),false);insertReceipt(c,event);
+            c.commit();historyFixtureEvents.add(first);historyFixtureEvents.add(event);
+        }
+    }
+
+    /** Structural SQL image only; not an application-issued replay credential. */
+    private static String replayGuardImage(FinalPolicySession session,String operation) {
+        return session.f.jdbc.queryForObject("""
+                SELECT jsonb_build_object('kind','REPLAY','actor',e->'event'->>'actor_user_id',
+                    'command',convert_from(decode(substr(e->'event'->>'canonical_payload',3),'hex'),'UTF8')::jsonb->'command',
+                    'event',e->'event'->>'event_id','journal',j)::text
+                FROM (SELECT ?::jsonb j) source,jsonb_array_elements(j->'events') e
+                WHERE e->'event'->>'operation'=? LIMIT 1
+                """,String.class,frozenJournalImage(session),operation);
+    }
+
+    @Test void replaySqlGuardValidatesEveryOperationAfterPartyRetirementAndCompanyRebindWithoutWrites() throws Exception {
+        for(String operation:List.of("CREATE","END","CORRECT","TRANSFER")) {
+            var p=projection();commitReplayFixture(p,operation);
+            try(var c=login(CONFIG)){binding(c,p.binding(),p.unit(),company("ACTIVE"),1);c.commit();}
+            admin("UPDATE public.hidra_party_party SET status='SUSPENDED' WHERE id=?",p.company());
+            long events=count("SELECT count(*) FROM public.hidra_org_appointment_event"),
+                    receipts=count("SELECT count(*) FROM public.hidra_org_appointment_receipt"),
+                    uses=count("SELECT count(*) FROM public.hidra_identity_org_commit_proof_use"),
+                    keys=count("SELECT count(*) FROM public.hidra_org_appointment_lock_key");
+            var query=dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History.assignment(p.company(),p.id(),20,null);
+            try(var session=new FinalPolicySession(query)) {
+                session.f.tx.execute(status -> {
+                    session.prepare();var sample=session.f.identity.contribute(session.f.nativeTicket);
+                    assertEquals(Boolean.TRUE,policyReadGuard(session.f.jdbc,replayGuardImage(session,operation),
+                            sample.sampledAt(),sample.validUntil(),sample.backendPid(),sample.transactionId()));
+                    // This fixture has a HISTORY native mock, not genuine replay admission.
+                    status.setRollbackOnly();return null;
+                });
+            }
+            assertEquals(events,count("SELECT count(*) FROM public.hidra_org_appointment_event"));
+            assertEquals(receipts,count("SELECT count(*) FROM public.hidra_org_appointment_receipt"));
+            assertEquals(uses,count("SELECT count(*) FROM public.hidra_identity_org_commit_proof_use"));
+            assertEquals(keys,count("SELECT count(*) FROM public.hidra_org_appointment_lock_key"));
+        }
+    }
+
+    @Test void replaySqlGuardRejectsActorRequestCommandEventAndCompanySubstitution() throws Exception {
+        var p=projection();commitCreate(p);
+        for(String mutation:List.of(
+                "jsonb_set(p,'{actor}',to_jsonb('another-actor'::text))",
+                "jsonb_set(p,'{command,requestId}',to_jsonb('another-request'::text))",
+                "jsonb_set(p,'{command,expectedBindingRevision}','999'::jsonb)",
+                "jsonb_set(p,'{event}',to_jsonb('00000000-0000-0000-0000-000000000000'::text))",
+                "jsonb_set(p,'{journal,selector,company}',to_jsonb('another-company'::text))",
+                "p || jsonb_build_object('unexpected',true)")) {
+            var query=dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History.assignment(p.company(),p.id(),20,null);
+            try(var session=new FinalPolicySession(query)) {
+                session.f.tx.execute(status -> {
+                    session.prepare();String image=replayGuardImage(session,"CREATE");
+                    String changed=session.f.jdbc.queryForObject("SELECT ("+mutation+")::text FROM (SELECT ?::jsonb p) input",String.class,image);
+                    var sample=session.f.identity.contribute(session.f.nativeTicket);
+                    assertThrows(org.springframework.dao.DataAccessException.class,()->policyReadGuard(session.f.jdbc,changed,
+                            sample.sampledAt(),sample.validUntil(),sample.backendPid(),sample.transactionId()));
+                    status.setRollbackOnly();return null;
+                });
+            }
+        }
+    }
+
+    @Test void replaySqlGuardRejectsMissingTargetReceiptAndAlteredRetainedPins() throws Exception {
+        var p=projection();commitCreate(p);
+        for(String mutation:List.of("p #- '{journal,events,0,receipt}'",
+                "jsonb_set(p,'{journal,events,0,pins,0,binding,revision}','99'::jsonb)",
+                "jsonb_set(p,'{journal,selector,scope}',to_jsonb('EXACT'::text))",
+                "jsonb_set(p,'{journal,events}','[]'::jsonb)")) {
+            var query=dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History.assignment(p.company(),p.id(),20,null);
+            try(var session=new FinalPolicySession(query)) {
+                session.f.tx.execute(status -> {
+                    session.prepare();String image=replayGuardImage(session,"CREATE");
+                    String changed=session.f.jdbc.queryForObject("SELECT ("+mutation+")::text FROM (SELECT ?::jsonb p) input",String.class,image);
+                    var sample=session.f.identity.contribute(session.f.nativeTicket);
+                    assertThrows(org.springframework.dao.DataAccessException.class,()->policyReadGuard(session.f.jdbc,changed,
+                            sample.sampledAt(),sample.validUntil(),sample.backendPid(),sample.transactionId()));
+                    status.setRollbackOnly();return null;
+                });
+            }
+        }
+    }
+
+    @Test void replaySqlGuardCannotMoveItsOriginalPhysicalOrTimeWindow() throws Exception {
+        var p=projection();commitCreate(p);
+        for(int variant=0;variant<3;variant++) {
+            final int attack=variant;
+            var query=dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History.assignment(p.company(),p.id(),20,null);
+            try(var session=new FinalPolicySession(query)) {
+                session.f.tx.execute(status -> {
+                    session.prepare();String image=replayGuardImage(session,"CREATE");
+                    var sample=session.f.identity.contribute(session.f.nativeTicket);
+                    assertThrows(org.springframework.dao.DataAccessException.class,()->policyReadGuard(session.f.jdbc,image,
+                            sample.sampledAt(),attack==2?sample.sampledAt():sample.validUntil(),
+                            sample.backendPid()+(attack==0?1:0),sample.transactionId()+(attack==1?1:0)));
+                    status.setRollbackOnly();return null;
+                });
+            }
+        }
+    }
+
     @Test void journalFinalGuardCommitsEveryHistoryAndExactShapeWithRetiredPartyAndOriginalPins() throws Exception {
         var p=projection();var destination=historicalDestination(p);commitMove(p,destination,"TRANSFER");
         String other=company("ACTIVE");

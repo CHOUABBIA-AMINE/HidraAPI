@@ -27068,6 +27068,77 @@ continue replay finalization and genuine native/executor/managed-flush compositi
 then application/private-publisher/legacy/REST cutover and final acceptance.
 No release, deployment, simulator or OT action is selected.
 
+### 2026-10-24 — HAPI-778 B3 complete non-mutating replay SQL graph guard
+
+**Selection / live gate:** Owner Next refreshes main
+25c4b256dd1d67e27542c06180c3e5ff3e397327,
+parent8c4e8bbbad06294717b790e400c7a493b6f14582,
+tree672f8b2585cb7bf4dfe97ad49542ec5cff3d966d.
+[Full853](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40058809663)
+and [Docs543](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40057744654)
+completed SUCCESS. The dictionary repair now has exact-head Full acceptance.
+Continue the existing B3 runtime message
+`feat(organization): persist protected appointment lifecycle and history`.
+
+**Finite package — one CREATE, four MODIFY, zero DELETE:**
+- CREATE src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql
+- MODIFY src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JdbcProtectedEmployeeAppointmentRepositoryAdapter.java, read-routine body pin only
+- MODIFY src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java
+- MODIFY .github/ci-test-inventory.json, only that suite's cases/source hash
+- MODIFY this append-only HAPI-778 evidence in doc/roadmap/TASKS_HPS-003.md
+
+The refreshed migration chain ends at002;003 is collision-free and admitted as
+the necessary forward extension of the registered B3 replay guard. Preserve all
+171 installed migration files. CREATE OR REPLACE retains the exact existing
+signature, fixed path/UTC, owner and grants. Body SHA256/adapter pin is
+1a0074d05db1455eec2092188d55d94cfd9c81612ce85f05689832dea499d3a3.
+
+**Complete SQL replay branch:** Add exact five-member REPLAY images containing
+kind,actor,command,event,journal. Select the original event/receipt by exact event,
+actor and request, independently recompute the stable company namespace and bind
+the exact canonical retained command. Require the full receipt and event within
+an assignment-scoped JOURNAL image for the event's original company/source ID.
+Then invoke the accepted JOURNAL branch inside the same scalar statement, with
+exactly the original sample/expiry/PID/XID/observed time. That branch independently
+reselects and compares the complete bounded journal and validates every immutable
+binding/policy/activation/receipt/operation-slot fact, retaining its final database
+clock check after graph work. Enforce the128KiB outer image bound and existing
+1024-event bound. No additional physical window or current projection CAS is
+minted. No DML, request key, native proof redemption or receipt creation occurs.
+POLICY/JOURNAL behavior, fences/catalog/ACL checks and scalar template retain bytes.
+
+These are structural SQL checks, not a new independent native credential issuer.
+Actor/command/image fields must be frozen by the genuine Java storage owner in
+the subsequent replay callback integration; caller JSON never grants authority.
+No application/REST route or Java replay completion is activated by this package.
+Real replay issuance must still require the original mutation action and fresh
+authorization for every retained result descriptor. Extra complete source history
+is validated internally; only the original event may become a replay result.
+
+**Authored runtime proof / limits:** Preserve all90 PostgreSQL cases and add four
+cases (94 total). Positive structural guard tests cover CREATE/END/CORRECT/TRANSFER
+after Party retirement and source-company rebind, with unchanged event/receipt/
+proof-use/key counts. Negative loops cover actor/request/command/event/company/
+unknown-member substitutions, missing receipt/target graph, altered immutable
+pins, wrong nested scope and original physical/time-window substitution. Tests
+use actual migrated PostgreSQL and restricted login, but native Identity/executor
+remain mocked. Explicit rollback is required: a HISTORY test admission cannot
+claim a genuine mutation replay commit. Prior positive HISTORY/POLICY physical
+commit tests remain unchanged. Suite source SHA256
+dac182d24d94e2c8d49b73bd5cdad6d4f72a009b83ca6300edc029b6717df5ce.
+
+**Available validation / stop:** Java17 syntax parsing and canonical inventory
+pass; SQL/PLpgSQL parsing, body-pin, documentation, whitespace, append-only and
+finite-scope checks run before publication. Syntax parsing is not type/JUnit or
+PostgreSQL execution. No full local environment is provisioned. Preserve the
+authentic171-migration dictionary until a hosted172-migration catalog supports
+the separately registered artifact stage. Publish only these five paths using
+expected-25c4b25 main guard, verify parent/tree/message/blobs, confirm exact-SHA
+Full/Fast/Docs creation/queue/start, then STOP. HAPI-778 remains PARTIAL/IN_PROGRESS;
+HAPI-590 independently PARTIAL/BLOCKED. Java replay result/preparation/finalization,
+real native/executor/managed-flush composition, application/private-publisher/
+legacy/REST cutover and final acceptance remain required. No deployment/release.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

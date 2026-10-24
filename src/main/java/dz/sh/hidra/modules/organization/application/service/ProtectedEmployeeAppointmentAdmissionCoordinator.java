@@ -213,14 +213,21 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
         }
     }
 
-    /** FLUSHING callback for the currently supported POLICY read only. */
+    /** FLUSHING callback: materialize the exact typed read and freeze its complete owner graph. */
     void prepareFinalRead(ReadAdmission admission) {
         try {
             requireCurrentRead(admission);
-            if (!(admission.query instanceof EmployeeAppointmentQuery.Policy policy)
-                    || admission.preparationStarted) throw denied();
+            if (admission.preparationStarted) throw denied();
             admission.preparationStarted = true;
-            Objects.requireNonNull(storage.readPolicy(admission.repositoryAdmission, policy));
+            if(admission.query instanceof EmployeeAppointmentQuery.Policy policy)
+                Objects.requireNonNull(storage.readPolicy(admission.repositoryAdmission, policy));
+            else if(admission.query instanceof EmployeeAppointmentQuery.ExactVersion exact)
+                Objects.requireNonNull(storage.exactVersion(admission.repositoryAdmission,exact));
+            else if(admission.query instanceof EmployeeAppointmentQuery.History history) {
+                if(history.scope()==EmployeeAppointmentQuery.Scope.POSITION)
+                    Objects.requireNonNull(storage.positionHistory(admission.repositoryAdmission,history));
+                else Objects.requireNonNull(storage.privateHistory(admission.repositoryAdmission,history));
+            } else throw denied();
             storage.prepareFinalRead(admission.repositoryAdmission);
             if (!admission.ready()) throw denied();
             admission.finalPrepared = true;

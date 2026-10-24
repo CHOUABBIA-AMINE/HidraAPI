@@ -92,6 +92,7 @@
         "exactReplayOfEveryCommandRequiresFreshNativeAuthorityWithoutActiveParty",
         "failedNativeAcquisitionCannotReachOrganizationOrParty",
         "finalGuardRequiresProofAndFinalPreparationAndCannotBeRetried",
+        "finalJournalDispatchMaterializesEveryTypedShapeBeforeStoragePreparation",
         "finalPolicyPreparationFailureAndCallbackInvalidationPoisonTheOriginalHolder",
         "finalPolicyReadPreparesWithOwnersThenGuardsWithoutOwnerCallbacks",
         "finalPolicyReadRejectsForeignCoordinatorThreadAndReplacedHolderBeforeGuard",
@@ -108,6 +109,7 @@
         "historicalReadRequiresAllHistoricCompanyAndUnitPermissions",
         "invalidNativeWriteTicketStopsBeforePartyOrStorageAcquisition",
         "invalidationDuringOwnerRecheckCannotRestoreReadHandle",
+        "journalMaterializationFailureCannotReachFinalPreparationOrGuard",
         "mapsTypedCommandsAndQueriesToFixedNativeActions",
         "missingOrRepeatedFinalPreparationAndPostGuardOwnerReadPoisonTheTicket",
         "missingPartyOrStorageTicketVetoesTheOriginalWriteTransaction",
@@ -145,7 +147,7 @@
       "lane": "unit-architecture",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinatorTest.java",
-      "source_sha256": "da7fa68f68d6c5e21a5111977b504d3fb71c6f291b8f051ef7343133c48a8942",
+      "source_sha256": "d874fdb4eb65d5d1dceece47c0c5d25a29550388ddfbd8301d060208a5cdc03b",
       "supports": []
     },
     {
@@ -8989,6 +8991,11 @@
         "jdbcReadPreviewDerivesExactPinnedHistoryFromImmutableEventSnapshots",
         "jdbcReadPreviewRejectsForeignMissingLegacyAndWrongRevisionWithoutDisclosure",
         "jdbcTransferHistoryIncludesCounterpartUnitsFromEveryReturnedEventSlot",
+        "journalFinalCallbacksVetoUnfinishedPreparationAndPostGuardOwnerQueries",
+        "journalFinalGuardCommitsEveryHistoryAndExactShapeWithRetiredPartyAndOriginalPins",
+        "journalFinalGuardDetectsPrivilegeEscalationAfterPreparationAndCannotRetry",
+        "journalFinalGuardRejectsOmittedOffPageEventsReorderedRowsAndChangedPinsOrReceipts",
+        "journalFinalGuardRejectsSelectorTypeShapeAndForeignOrMissingVersion",
         "legacyInsertWithOrdinaryLoginNeedsNoPrivateHelperExecutePrivilege",
         "ordinaryAndPublisherCannotActivateDiscoverOrMutateConfiguration",
         "orphanEventForgedBeforeAndIncompleteTransferCannotCommit",
@@ -9045,7 +9052,7 @@
       "lane": "postgres-integration",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java",
-      "source_sha256": "91828ddecbf653770d95b1a002a006b481027517f8bf57c610f844336e27ce07",
+      "source_sha256": "95873b0c4c1a3c6affca4d6f760cc729b367d3302cc24d65ba7ac838a573f706",
       "supports": []
     },
     {

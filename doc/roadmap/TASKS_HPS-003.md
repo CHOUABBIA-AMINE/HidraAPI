@@ -26768,6 +26768,118 @@ cutover. Generated artifact reconciliation and final case-level acceptance remai
 separate registered stages. Larger scopes do not select deployment, release,
 simulation or OT access and do not waive any acceptance gate.
 
+### 2026-10-24 — HAPI-778 B3 guarded history and exact-version read integration
+
+**Selection / current evidence:** Owner Next retains the preference for larger
+coherent implementation scopes. Current main
+d8e24574497db617a44d74f4e1b4ecf57d98e99f,
+parent609d3cb9a5ea2f2b07420936f8fcaf5ba0f3ff55,
+tree011fc7079f9d6fb8b1866dd94630f23c039280c6 has
+[Full849](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40018809507),
+[Fast160](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40018809597)
+and [Docs539](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40018809596)
+completed SUCCESS. The previous journal materialization is CI-supported within
+its synthetic scope. Current AGENTS, canonical roadmap/index/reconciliation,
+registered B3 protocol, immutable journal/configuration SQL and current source/
+tests were refreshed. Continue the exact registered runtime message
+`feat(organization): persist protected appointment lifecycle and history`.
+
+**Finite scope — one CREATE, seven MODIFY, zero DELETE:**
+- CREATE src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql
+- MODIFY src/main/java/dz/sh/hidra/modules/organization/application/port/out/ProtectedEmployeeAppointmentRepositoryPort.java
+- MODIFY src/main/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinator.java
+- MODIFY src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JdbcProtectedEmployeeAppointmentRepositoryAdapter.java
+- MODIFY src/test/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinatorTest.java
+- MODIFY src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java
+- MODIFY .github/ci-test-inventory.json, only those two suites' new cases/source hashes
+- MODIFY this append-only HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+**Complete bounded read increment:** Add the final SQL graph branch and Java
+preparation/guard integration for assignment, employee and redacted position
+history and exact-version queries together. The coordinator materializes the
+exact original typed query before storage-owned final preparation. Missing or
+failed materialization cannot reach the guard. The adapter revalidates the same
+complete journal observation and privately freezes its selector, all event/receipt
+rows and every before/after/successor immutable binding/policy revision and
+activation event. The journal query retains LEFT JOIN pin failures rather than
+silently dropping them. No caller supplies this image or physical/time arguments.
+
+The additive170th migration replaces only the existing read-guard routine, keeping
+its signature and preserving POLICY behavior and prior grants. The JOURNAL branch
+validates exact selector field membership/types, supported scopes, positive exact
+version, page/cursor bounds and null-only irrelevant fields. It independently
+reselects the entire matching journal with a1025 overflow probe and1024-event
+bound, not just the requested page. Ordered complete event/receipt/pin equality
+rejects omissions, substitutions and extra/reordered rows. For every event it
+checks canonical payload/command digest, actor/request/result, original PID/XID,
+exclusive receipt window and operation slot shape. Every non-null snapshot must
+match its immutable binding/company/unit/assignment/employee/version and actual
+policy identity/revision/canonical bytes/digest/full explicit policy matrix;
+both activation events must match their exact revision, scope, company and full
+after-payload. The selected company and exact assignment/version, where applicable,
+must actually occur. Current binding heads or Party ACTIVE status cannot erase
+these historical facts. Unsupported REPLAY selector scope rejects explicitly.
+
+Retain the accepted native24 then Organization12 already-held fences, role/catalog
+checks, prior15 routine body pins, closed ACLs, fixed pg_catalog path/UTC and
+original native sample/validUntil/PID/XID. No explicit late lock, Party eligibility,
+commit-proof redemption, DML, receipt or new result query is introduced. The final
+database clock check remains after graph work. Both Java preparation and SQL
+enforce the existing131072-byte expected-image maximum; a larger complete history
+fails closed even below the event-count maximum. These are independent bounds,
+not a promise that every1024-event graph fits128KiB. The exact single READ_GUARD
+template remains unchanged with SHA256
+0b8a4baaef583bb8bccc878e0d255a295b2d63c7dc31d7d8af3a2e3b50261e51.
+Latest prosrc SHA256/adapter closed pin:
+01a2c05dd4cc6d15babd5203d0edf9e203c090f80872c4fd888017fb51a174a7.
+All169 prior migration bodies and other routine/catalog pins retain bytes.
+
+The same one-use finalization callback admits only scalar true plus unchanged
+local context; frozen parameters are discarded afterward. SQL-free beforeCommit
+checks still veto unfinished preparation, suspension, rollback-only and failed or
+repeated guard attempts. No owner SQL follows GUARD. This completes the bounded
+internal history/exact read callbacks, not the genuine protected executor/native
+or public HTTP composition. Replay still needs its original command/actor/scope/
+receipt graph and cannot borrow a history/POLICY result. No service bean, private
+publisher route, legacy writer cutover or REST endpoint is activated here.
+
+**Authored tests, pending hosted runtime:** Preserve all62 coordinator cases and
+add two (64 total), covering every typed history/exact dispatch, materialization
+ordering/failure, preparation and SQL-free finalization/commit callbacks. Preserve
+all85 PostgreSQL cases and add five (90 total), exercising actual restricted-login
+physical commits for all history scopes/source/successor exact versions after
+Party retirement and company rebind; unchanged event/receipt/proof-use/key counts;
+off-page omission/reordering and full pin/activation/receipt/physical tampering;
+selector type/shape/company/unsupported replay refusal; unfinished-preparation
+commit veto/post-guard query poisoning; and same-session privilege escalation
+after preparation with failed retry refusal. Native Identity and the protected
+executor remain mocked. Raw negative guard images derive from the actual frozen
+storage graph and are deliberately altered; they are not independent native
+credentials. Prior POLICY tests continue unchanged. Test source SHA256 values:
+- coordinator d874fdb4eb65d5d1dceece47c0c5d25a29550388ddfbd8301d060208a5cdc03b
+- PostgreSQL95873b0c4c1a3c6affca4d6f760cc729b367d3302cc24d65ba7ac838a573f706
+
+**Actual available checks / artifact obligation:** Installed Java17 compiler-API
+syntax parsing passes all five changed Java files; no type/JUnit/database pass
+is claimed. Canonical inventory and all32 inventory self-tests pass, preserving
+353 fast/354 unit-architecture/455 oracle/four historical classes and partitions
+12/16/13/14/16/15/15. All prior cases, other entries and timings retain membership.
+Exact body/template hashes, prior migration preservation, documentation, offline
+OpenAPI, whitespace, append-only and finite scope checks run before publication.
+No Java21/Maven/PostgreSQL/Docker environment is provisioned solely for tests.
+The170-migration chain needs its own authentic hosted catalog artifact; retain
+the existing169-migration dictionary until registered artifact reconciliation.
+No catalog bytes are inferred from SQL. SQL installation, new cases and exact-SHA
+Full/Fast/Docs feedback remain acceptance gates.
+
+**Stop / remaining:** Publish only these eight paths using expected-d8e2457 main
+guard; verify parent/tree/message/blobs/scope, confirm applicable exact-SHA CI
+creation/queue/start, then STOP. HAPI-778 remains PARTIAL/IN_PROGRESS; HAPI-590
+independently PARTIAL/BLOCKED. Repair actual failed CI/artifact gates first, then
+continue replay finalization and real native/executor/managed-flush composition,
+followed by application/private-publisher/legacy/REST cutover and case-level final
+acceptance. No release, deployment, numerical simulator or OT action is selected.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

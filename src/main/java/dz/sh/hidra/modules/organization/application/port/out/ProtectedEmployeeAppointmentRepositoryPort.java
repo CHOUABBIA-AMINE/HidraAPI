@@ -167,9 +167,9 @@ public interface ProtectedEmployeeAppointmentRepositoryPort {
      * the executor must still observe physical commit before returning any result. */
     void finalizeWrite(Admission admission);
 
-    /** FLUSHING callback: revalidate the already materialized POLICY observation and
+    /** FLUSHING callback: revalidate the already materialized POLICY or JOURNAL observation and
      * privately freeze its full-row image and original native physical/time coordinates.
-     * No caller supplies guard parameters. Other read kinds remain unsupported. */
+     * No caller supplies guard parameters. Mutation replay remains separately guarded. */
     void prepareFinalRead(Admission admission);
 
     /** GUARD callback: execute exactly one non-mutating scalar read guard, with no

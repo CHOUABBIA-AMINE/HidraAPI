@@ -280,7 +280,23 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
                     AND e.command_sha256=pg_catalog.encode(pg_catalog.sha256(pg_catalog.convert_to(
                         (e.body->'command')::text,'UTF8')),'hex')) IS TRUE,
                    pg_catalog.jsonb_build_object('event',pg_catalog.to_jsonb(e)-'body',
-                       'receipt',pg_catalog.to_jsonb(r))::text
+                       'receipt',pg_catalog.to_jsonb(r),'pins',(
+                       SELECT pg_catalog.jsonb_agg(pg_catalog.jsonb_build_object('slot',s.slot,
+                           'binding',pg_catalog.to_jsonb(b),'policy',pg_catalog.to_jsonb(p),
+                           'bindingEvent',pg_catalog.to_jsonb(be),'policyEvent',pg_catalog.to_jsonb(pe)) ORDER BY s.slot)
+                         FROM (VALUES ('before',e.body->'before'),('after',e.body->'after'),
+                             ('successor',e.body->'successor')) s(slot,snapshot)
+                         LEFT JOIN public.hidra_org_appointment_binding_revision b
+                           ON b.binding_id=s.snapshot->'assignment'->>'binding_id'
+                          AND b.revision=(s.snapshot->'assignment'->>'binding_revision')::bigint
+                         LEFT JOIN public.hidra_org_appointment_policy_revision p
+                           ON p.policy_id=s.snapshot->'assignment'->>'policy_id'
+                          AND p.revision=(s.snapshot->'assignment'->>'policy_revision')::bigint
+                         LEFT JOIN public.hidra_org_appointment_configuration_event be
+                           ON be.kind='BINDING' AND be.identity_id=b.binding_id AND be.revision=b.revision
+                         LEFT JOIN public.hidra_org_appointment_configuration_event pe
+                           ON pe.kind='POLICY' AND pe.identity_id=p.policy_id AND pe.revision=p.revision
+                        WHERE s.snapshot IS NOT NULL AND s.snapshot<>'null'::jsonb))::text
               FROM selected e LEFT JOIN public.hidra_org_appointment_receipt r ON r.event_id=e.event_id
              ORDER BY e.sampled_at,e.event_id
             """;
@@ -565,7 +581,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
             Map.entry("public.hidra_org_appointment_receipt", "2c6a183766db9b11b96f4441bf5f3fc68baf4b794b7effedcefdf7243c03ab65"));
     // Exact latest authored prosrc bytes, including accepted forward replacements.
     private static final Map<String, String> FUNCTION_PINS = Map.ofEntries(
-            Map.entry("hidra_org_appointment_read_guard", "6d3c99173b6def4c60866813794517fca628ed8a0ae1383cf286db2eb1b6249a"),
+            Map.entry("hidra_org_appointment_read_guard", "01a2c05dd4cc6d15babd5203d0edf9e203c090f80872c4fd888017fb51a174a7"),
             Map.entry("hidra_org_appointment_final_fingerprint", "e7c7cf81f21066af6d35cc6a8c7a85dc0916cf7e049fc05b1142ebe522e10842"),
             Map.entry("hidra_org_appointment_final_context", "2cba4bcde5ca4fe134feb8d48fc48ef6d0735df69980aeebbaa1dcc37fd44582"),
             Map.entry("hidra_org_appointment_final_guard", "539cc2ba27be9e3439141b851ca06640cb91f525d9b6f9aaf8147dce3a2019a5"),
@@ -1543,17 +1559,24 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
         finally {if(t!=null){t.commitProof=null;t.finalWrite=null;}}
     }
 
-    /** POLICY-only final preparation; freeze the same statement's detached view and full graph. */
+    /** Freeze the already materialized POLICY or JOURNAL graph, including immutable activation pins. */
     public void prepareFinalRead(ProtectedEmployeeAppointmentRepositoryPort.Admission admission) {
         StorageAdmission t=null;
         try {
             t=ticket(admission);
-            if(!coordinatorCaller() || t.policy==null || t.readPreparationStarted || t.provisionalStarted
+            if(!coordinatorCaller() || (t.policy==null)==(t.journalRead==null) || t.readPreparationStarted || t.provisionalStarted
                     || t.mutation!=null || t.finalWrite!=null || !t.parties.isEmpty())throw denied();
             t.readPreparationStarted=true;
-            readPolicy(t,t.policy.selector());
+            String image;
+            if(t.policy!=null) {
+                readPolicy(t,t.policy.selector());image=t.policy.image();
+            } else {
+                journal(t,t.journalRead.selector());
+                image=journalImage(t.journalRead);
+            }
+            if(image.getBytes(java.nio.charset.StandardCharsets.UTF_8).length>131072)throw denied();
             if(ticket(t)!=t)throw denied();
-            t.finalRead=new FinalRead(t.policy.image(),t.sample.sampledAt(),t.sample.validUntil(),t.pid,t.xid);
+            t.finalRead=new FinalRead(image,t.sample.sampledAt(),t.sample.validUntil(),t.pid,t.xid);
         }catch(RuntimeException failure){poison(t==null?admission:t);throw denied();}
     }
 
@@ -1574,6 +1597,20 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter {
 
     private record FinalRead(String image,Instant sampled,Instant until,int pid,long xid) {
         Object[] parameters(){return new Object[]{image,timestamp(sampled),timestamp(until),pid,xid};}
+    }
+    private static String journalImage(JournalObservation observed) {
+        var selector=new java.util.LinkedHashMap<String,Object>();var q=observed.selector();
+        selector.put("company",q.companyPartyId());
+        selector.put("scope",q instanceof EmployeeAppointmentQuery.ExactVersion?"EXACT":((EmployeeAppointmentQuery.History)q).scope().name());
+        selector.put("assignment",q instanceof EmployeeAppointmentQuery.ExactVersion e?e.assignmentId():((EmployeeAppointmentQuery.History)q).assignmentId());
+        selector.put("employee",q instanceof EmployeeAppointmentQuery.History h?h.employeeId():null);
+        selector.put("unit",q instanceof EmployeeAppointmentQuery.History h?h.unitId():null);
+        selector.put("position",q instanceof EmployeeAppointmentQuery.History h?h.positionId():null);
+        selector.put("version",q instanceof EmployeeAppointmentQuery.ExactVersion e?e.version():null);
+        selector.put("limit",q instanceof EmployeeAppointmentQuery.History h?h.limit():null);
+        selector.put("cursor",q instanceof EmployeeAppointmentQuery.History h?h.cursor():null);
+        return COMMAND_JSON.writeValueAsString(Map.of("kind","JOURNAL","selector",selector,
+                "events",observed.events().stream().map(e->COMMAND_JSON.readValue(e.evidence(),Map.class)).toList()));
     }
     private static final String READ_GUARD="WITH observed AS MATERIALIZED (SELECT pg_catalog.clock_timestamp() AS t) SELECT public.hidra_org_appointment_read_guard(?::jsonb,?::timestamptz,?::timestamptz,?,?,t) FROM observed";
 

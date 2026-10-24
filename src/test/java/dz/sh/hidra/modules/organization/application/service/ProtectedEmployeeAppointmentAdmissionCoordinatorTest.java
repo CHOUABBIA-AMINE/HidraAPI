@@ -1045,6 +1045,49 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
         }
     }
 
+    @Test void finalJournalDispatchMaterializesEveryTypedShapeBeforeStoragePreparation() {
+        var queries=List.of(
+                EmployeeAppointmentQuery.History.assignment("company","assignment",1,null),
+                EmployeeAppointmentQuery.History.employee("company","employee",1,null),
+                EmployeeAppointmentQuery.History.position("company","unit","position",1,null),
+                new EmployeeAppointmentQuery.ExactVersion("company","assignment",1));
+        for(var query:queries) {
+            boolean position=query instanceof EmployeeAppointmentQuery.History h && h.scope()==EmployeeAppointmentQuery.Scope.POSITION;
+            boolean employee=query instanceof EmployeeAppointmentQuery.History h && h.scope()==EmployeeAppointmentQuery.Scope.EMPLOYEE;
+            try(var f=new ReadFixture(query,preview("company","unit",position?null:"employee",position||employee?null:"assignment"))) {
+                if(query instanceof EmployeeAppointmentQuery.ExactVersion exact)
+                    when(f.storage.exactVersion(f.storageTicket,exact)).thenReturn(mock(dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.PinnedVersion.class));
+                else if(position)when(f.storage.positionHistory(f.storageTicket,(EmployeeAppointmentQuery.History)query))
+                    .thenReturn(new dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.HistoryPage<>(List.of(),null,false));
+                else when(f.storage.privateHistory(f.storageTicket,(EmployeeAppointmentQuery.History)query))
+                    .thenReturn(new dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.HistoryPage<>(List.of(),null,false));
+                var ticket=f.acquire();clearInvocations(f.storage,f.identity,f.executor);
+                f.coordinator.prepareFinalRead(ticket);
+                var order=inOrder(f.storage);
+                order.verify(f.storage).requireCurrent(f.storageTicket);
+                if(query instanceof EmployeeAppointmentQuery.ExactVersion exact)order.verify(f.storage).exactVersion(f.storageTicket,exact);
+                else if(position)order.verify(f.storage).positionHistory(f.storageTicket,(EmployeeAppointmentQuery.History)query);
+                else order.verify(f.storage).privateHistory(f.storageTicket,(EmployeeAppointmentQuery.History)query);
+                order.verify(f.storage).prepareFinalRead(f.storageTicket);
+                clearInvocations(f.storage,f.identity,f.party,f.executor);
+                f.coordinator.finalizeRead(ticket);ticket.beforeCommit(false);
+                verify(f.storage).finalizeRead(f.storageTicket);verifyNoMoreInteractions(f.storage);
+                verifyNoInteractions(f.identity,f.party,f.executor);
+            }
+        }
+    }
+
+    @Test void journalMaterializationFailureCannotReachFinalPreparationOrGuard() {
+        try(var f=new ReadFixture()) {
+            var ticket=f.acquire();
+            doThrow(new IllegalStateException("synthetic invalid graph")).when(f.storage)
+                    .privateHistory(f.storageTicket,(EmployeeAppointmentQuery.History)f.query);
+            assertThrows(AccessDeniedException.class,()->f.coordinator.prepareFinalRead(ticket));
+            verify(f.storage,never()).prepareFinalRead(any());verify(f.storage,never()).finalizeRead(any());
+            assertTrue(f.holder.isRollbackOnly());assertThrows(AccessDeniedException.class,()->ticket.beforeCommit(false));
+        }
+    }
+
     private static ReadFixture policyFixture() {
         var f=new ReadFixture(new EmployeeAppointmentQuery.Policy("company","unit"),
                 preview("company","unit",null,null));

@@ -2045,7 +2045,10 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
         final dz.sh.hidra.modules.organization.application.service.ProtectedEmployeeAppointmentAdmissionCoordinator.Prepared prepared;
         Object read;
         FinalPolicySession(Projection p) throws Exception {
-            f=new StorageFixture(policyQuery(p.company(),p.unit()));grantPolicyReadGuard(f);
+            this(policyQuery(p.company(),p.unit()));
+        }
+        FinalPolicySession(dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery query) throws Exception {
+            f=new StorageFixture(query);grantPolicyReadGuard(f);
             var port=org.mockito.Mockito.mock(dz.sh.hidra.modules.organization.application.port.out
                     .ProtectedEmployeeAppointmentRepositoryPort.class,call -> {
                 try{return f.storage.getClass().getMethod(call.getMethod().getName(),call.getMethod().getParameterTypes())
@@ -2074,9 +2077,118 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
         }
         void prepare() {
             f.jdbc.execute("SET LOCAL TIME ZONE 'UTC'");
-            read=invoke("acquireRead",prepared,f.policyQuery);invoke("prepareFinalRead",read);
+            read=invoke("acquireRead",prepared,f.readQuery);invoke("prepareFinalRead",read);
         }
         @Override public void close(){f.close();}
+    }
+
+    private static String frozenJournalImage(FinalPolicySession session) {
+        try {
+            var repository=session.read.getClass().getDeclaredField("repositoryAdmission");repository.setAccessible(true);
+            Object ticket=repository.get(session.read);
+            var frame=ticket.getClass().getDeclaredField("finalRead");frame.setAccessible(true);Object value=frame.get(ticket);
+            var image=value.getClass().getDeclaredMethod("image");image.setAccessible(true);return (String)image.invoke(value);
+        }catch(ReflectiveOperationException failure){throw new AssertionError(failure);}
+    }
+
+    @Test void journalFinalGuardCommitsEveryHistoryAndExactShapeWithRetiredPartyAndOriginalPins() throws Exception {
+        var p=projection();var destination=historicalDestination(p);commitMove(p,destination,"TRANSFER");
+        String other=company("ACTIVE");
+        try(var c=login(CONFIG)){binding(c,p.binding(),p.unit(),other,1);c.commit();}
+        admin("UPDATE public.hidra_party_party SET status='SUSPENDED' WHERE id=?",p.company());
+        var queries=List.of(employeeHistory(p,1,null),
+                dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History.assignment(p.company(),p.id(),1,null),
+                dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History.position(p.company(),p.unit(),p.position(),1,null),
+                new dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.ExactVersion(p.company(),p.id(),1),
+                new dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.ExactVersion(p.company(),destination.id(),1));
+        long events=count("SELECT count(*) FROM public.hidra_org_appointment_event");
+        long receipts=count("SELECT count(*) FROM public.hidra_org_appointment_receipt");
+        long uses=count("SELECT count(*) FROM public.hidra_identity_org_commit_proof_use");
+        long keys=count("SELECT count(*) FROM public.hidra_org_appointment_lock_key");
+        for(var query:queries)try(var session=new FinalPolicySession(query)) {
+            session.f.tx.execute(status -> {
+                session.prepare();org.mockito.Mockito.clearInvocations(session.f.identity);
+                session.invoke("finalizeRead",session.read);
+                org.mockito.Mockito.verifyNoInteractions(session.f.identity);return null;
+            });
+        }
+        assertEquals(events,count("SELECT count(*) FROM public.hidra_org_appointment_event"));
+        assertEquals(receipts,count("SELECT count(*) FROM public.hidra_org_appointment_receipt"));
+        assertEquals(uses,count("SELECT count(*) FROM public.hidra_identity_org_commit_proof_use"));
+        assertEquals(keys,count("SELECT count(*) FROM public.hidra_org_appointment_lock_key"));
+    }
+
+    @Test void journalFinalGuardRejectsOmittedOffPageEventsReorderedRowsAndChangedPinsOrReceipts() throws Exception {
+        var p=projection();commitCreate(p);commitCreate(peer(p));commitCreate(peer(p));
+        for(int variant=0;variant<6;variant++)try(var session=new FinalPolicySession(employeeHistory(p,1,null))) {
+            final int attack=variant;
+            session.f.tx.execute(status -> {
+                session.prepare();String original=frozenJournalImage(session);
+                String mutation=switch(attack) {
+                    case 0 -> "SELECT (?::jsonb #- '{events,2}')::text";
+                    case 1 -> "SELECT jsonb_set(?::jsonb,'{events,0,pins,0,binding,revision}','999999'::jsonb)::text";
+                    case 2 -> "SELECT jsonb_set(?::jsonb,'{events,0,receipt,actor_user_id}',to_jsonb('forged'::text))::text";
+                    case 3 -> "SELECT jsonb_set(?::jsonb,'{events,0,pins,0,policyEvent,after_payload}','{}'::jsonb)::text";
+                    case 4 -> "SELECT jsonb_set(?::jsonb,'{events,0,event,transaction_id}','1'::jsonb)::text";
+                    default -> "SELECT jsonb_set(p,'{events}',jsonb_build_array(p->'events'->2,p->'events'->1,p->'events'->0))::text FROM (SELECT ?::jsonb p) v";
+                };
+                String changed=session.f.jdbc.queryForObject(mutation,String.class,original);
+                var sample=session.f.identity.contribute(session.f.nativeTicket);
+                assertThrows(org.springframework.dao.DataAccessException.class,()->policyReadGuard(session.f.jdbc,changed,
+                        sample.sampledAt(),sample.validUntil(),sample.backendPid(),sample.transactionId()));
+                status.setRollbackOnly();return null;
+            });
+        }
+    }
+
+    @Test void journalFinalGuardRejectsSelectorTypeShapeAndForeignOrMissingVersion() throws Exception {
+        var p=projection();commitCreate(p);
+        for(int variant=0;variant<5;variant++)try(var session=new FinalPolicySession(employeeHistory(p,1,null))) {
+            final int attack=variant;
+            session.f.tx.execute(status -> {
+                session.prepare();String original=frozenJournalImage(session);
+                String mutation=switch(attack) {
+                    case 0 -> "SELECT jsonb_set(?::jsonb,'{selector,company}','123'::jsonb)::text";
+                    case 1 -> "SELECT jsonb_set(?::jsonb,'{selector,limit}','0'::jsonb)::text";
+                    case 2 -> "SELECT jsonb_set(?::jsonb,'{selector,company}',to_jsonb('foreign'::text))::text";
+                    case 3 -> "SELECT (?::jsonb #- '{selector,version}')::text";
+                    default -> "SELECT jsonb_set(?::jsonb,'{selector,scope}',to_jsonb('REPLAY'::text))::text";
+                };
+                String changed=session.f.jdbc.queryForObject(mutation,String.class,original);
+                var sample=session.f.identity.contribute(session.f.nativeTicket);
+                assertThrows(org.springframework.dao.DataAccessException.class,()->policyReadGuard(session.f.jdbc,changed,
+                        sample.sampledAt(),sample.validUntil(),sample.backendPid(),sample.transactionId()));
+                status.setRollbackOnly();return null;
+            });
+        }
+    }
+
+    @Test void journalFinalCallbacksVetoUnfinishedPreparationAndPostGuardOwnerQueries() throws Exception {
+        var p=projection();commitCreate(p);
+        try(var session=new FinalPolicySession(employeeHistory(p,20,null))) {
+            assertThrows(AccessDeniedException.class,()->session.f.tx.execute(status -> {session.prepare();return null;}));
+        }
+        try(var session=new FinalPolicySession(employeeHistory(p,20,null))) {
+            session.f.tx.execute(status -> {
+                session.prepare();session.invoke("finalizeRead",session.read);
+                assertThrows(AccessDeniedException.class,()->session.invoke("requireCurrentRead",session.read));
+                assertTrue(session.f.holder().isRollbackOnly());status.setRollbackOnly();return null;
+            });
+        }
+    }
+
+    @Test void journalFinalGuardDetectsPrivilegeEscalationAfterPreparationAndCannotRetry() throws Exception {
+        var p=projection();commitCreate(p);
+        try(var session=new FinalPolicySession(employeeHistory(p,20,null))) {
+            session.f.tx.execute(status -> {
+                session.prepare();
+                try{admin("GRANT INSERT ON public.hidra_org_appointment_receipt TO "+session.f.role);}
+                catch(SQLException failure){throw new AssertionError(failure);}
+                assertThrows(AccessDeniedException.class,()->session.invoke("finalizeRead",session.read));
+                assertThrows(AccessDeniedException.class,()->session.invoke("finalizeRead",session.read));
+                assertTrue(session.f.holder().isRollbackOnly());status.setRollbackOnly();return null;
+            });
+        }
     }
 
     @Test void javaFinalPolicyCallbacksCommitWithoutOwnerQueriesPartyOrProofWrites() throws Exception {

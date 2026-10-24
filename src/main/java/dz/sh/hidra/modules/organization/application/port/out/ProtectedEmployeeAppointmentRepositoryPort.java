@@ -158,6 +158,9 @@ public interface ProtectedEmployeeAppointmentRepositoryPort {
      * No caller supplies an intent/proof, and this does not qualify a final guard or commit. */
     void prepareCommitProof(Admission admission);
 
+    /** Flush managed persistence work inside the same physical transaction before final owner checks. */
+    void flushManagedWork();
+
     /** After managed flush, repeat the complete owner/graph checks and privately freeze
      * the sole final write statement's arguments. No receipt or commit is established. */
     void prepareFinalWrite(Admission admission);

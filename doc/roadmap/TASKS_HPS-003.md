@@ -27421,6 +27421,58 @@ Publish only the eleven paths using expected-6ec87be main guard; verify exact
 parent/tree/message/blobs/scope, confirm applicable exact-SHA Full/Fast/Docs
 creation/queue/start and STOP for owner CI feedback.
 
+
+### 2026-10-24 — HAPI-778 Full858/Fast167 application persistence-boundary repair
+
+Owner Fail refreshes main7314baa5140da6fe9157591a320798992885c344,
+parent6ec87be6e33a15580b14eed463bb84a3896fbe9c,
+tree5ac0369b9a8324ae44eefa68d440ceaf8bc926ef.
+[Full858](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40080792146)
+and [Fast167](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40080792156)
+FAILED only the applicationMustNotDependOnApiOrInfrastructure architecture rule:
+the new application service directly imported, stored, accepted and invoked
+jakarta.persistence.EntityManager. All seven PostgreSQL shards, static validation,
+API/dictionary and Docs548 SUCCEEDED. The Full aggregate failed consequentially.
+
+Continue the registered B3 message
+`feat(organization): persist protected appointment lifecycle and history`.
+Exactly six MODIFY, zero CREATE/DELETE:
+- src/main/java/dz/sh/hidra/modules/organization/application/port/out/ProtectedEmployeeAppointmentRepositoryPort.java
+- src/main/java/dz/sh/hidra/modules/organization/application/service/EmployeeAppointmentLifecycleApplicationService.java
+- src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JdbcProtectedEmployeeAppointmentRepositoryAdapter.java
+- src/test/java/dz/sh/hidra/modules/organization/application/service/EmployeeAppointmentLifecycleApplicationServiceTest.java
+- .github/ci-test-inventory.json,only that suite's source hash
+- this append-only HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+Move managed flush behind the existing outbound repository port's
+flushManagedWork operation. Application depends only on the port; the JDBC
+adapter owns the EntityManager and its actual flush. Add an explicit four-argument
+adapter constructor for future infrastructure composition, retaining all three
+existing constructors. A missing persistence context, absent protected transaction,
+unjoined EntityManager or flush failure rejects and poisons the current holder.
+The service still flushes before final owner/graph preparation and never issues
+owner SQL after GUARD. No generic credential callback, replacement architecture
+rule, widened application exception or new Spring/HTTP activation is introduced.
+
+Retain all ten application tests and their callback/failure-order assertions,
+now against the repository port. Update only their source SHA256 in inventory;
+all previous cases, timing, lanes and other identities retain values. Preserve all
+172 migrations, SQL/catalog/function pins, Identity/Party implementations, workflow
+semantics, generated artifacts and frozen statuses.
+
+Available validation: four changed Java files pass Java17 syntax parsing without
+type/JUnit execution; all32 inventory-tool and all19 documentation-validator
+self-tests pass. Source import, inventory-preservation, append-only, six-path and
+whitespace checks pass. Java21 architecture/JUnit and PostgreSQL regression proof
+remain hosted gates; Maven is unavailable locally and no full environment is
+provisioned. HAPI-778 stays PARTIAL/IN_PROGRESS and HAPI-590 independently
+PARTIAL/BLOCKED. Genuine combined runtime proof and public/legacy cutover remain
+the next registered B3 work after this correction's feedback. No task closure,
+release, deployment, simulator or OT action is selected.
+
+Publish with expected-7314baa main guard, verify exact parent/tree/message/blobs,
+confirm applicable exact-SHA Full/Fast/Docs creation/queue/start, then STOP.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

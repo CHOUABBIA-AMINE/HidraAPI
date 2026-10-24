@@ -24,7 +24,7 @@ import dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResul
 import dz.sh.hidra.modules.organization.application.port.in.EmployeeAppointmentLifecycleUseCase;
 import dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery;
 import dz.sh.hidra.platform.persistence.ProtectedTransactionExecutor;
-import jakarta.persistence.EntityManager;
+import dz.sh.hidra.modules.organization.application.port.out.ProtectedEmployeeAppointmentRepositoryPort;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
@@ -37,14 +37,14 @@ import java.util.function.Function;
 public final class EmployeeAppointmentLifecycleApplicationService implements EmployeeAppointmentLifecycleUseCase {
     private final ProtectedEmployeeAppointmentAdmissionCoordinator coordinator;
     private final ProtectedTransactionExecutor executor;
-    private final EntityManager entityManager;
+    private final ProtectedEmployeeAppointmentRepositoryPort repository;
 
     public EmployeeAppointmentLifecycleApplicationService(
             ProtectedEmployeeAppointmentAdmissionCoordinator coordinator,
-            ProtectedTransactionExecutor executor, EntityManager entityManager) {
+            ProtectedTransactionExecutor executor, ProtectedEmployeeAppointmentRepositoryPort repository) {
         this.coordinator=Objects.requireNonNull(coordinator);
         this.executor=Objects.requireNonNull(executor);
-        this.entityManager=Objects.requireNonNull(entityManager);
+        this.repository=Objects.requireNonNull(repository);
     }
 
     @Override public EmployeeAppointmentResult.MutationReceipt create(EmployeeAppointmentCommand.Create command) {
@@ -70,7 +70,7 @@ public final class EmployeeAppointmentLifecycleApplicationService implements Emp
             retained.set(admission);
             return coordinator.apply(admission);
         },()->{
-            entityManager.flush();
+            repository.flushManagedWork();
             coordinator.prepareFinal(retained.get());
         },()->coordinator.finalizeOperation(retained.get()));
     }
@@ -107,7 +107,7 @@ public final class EmployeeAppointmentLifecycleApplicationService implements Emp
             coordinator.sealRead(admission);
             return materialize.apply(admission);
         },()->{
-            entityManager.flush();
+            repository.flushManagedWork();
             coordinator.prepareFinalRead(retained.get());
         },()->coordinator.finalizeRead(retained.get()));
     }

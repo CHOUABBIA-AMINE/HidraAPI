@@ -86,6 +86,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
             Comparator.comparing(CompanyUnit::companyPartyId)
                     .thenComparing(CompanyUnit::organizationUnitId);
 
+    private final jakarta.persistence.EntityManager entityManager;
     private final JdbcTemplate jdbc;
     private final DataSource source;
     private final OrganizationProtectedAppointmentAuthorizationContract identity;
@@ -103,6 +104,13 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
     public JdbcProtectedEmployeeAppointmentRepositoryAdapter(JdbcTemplate jdbc,
             OrganizationProtectedAppointmentAuthorizationContract identity,
             OrganizationProtectedPartyEligibilityContract party) {
+        this(jdbc,identity,party,null);
+    }
+
+    public JdbcProtectedEmployeeAppointmentRepositoryAdapter(JdbcTemplate jdbc,
+            OrganizationProtectedAppointmentAuthorizationContract identity,
+            OrganizationProtectedPartyEligibilityContract party, jakarta.persistence.EntityManager entityManager) {
+        this.entityManager=entityManager;
         this.jdbc = Objects.requireNonNull(jdbc, "JDBC access required");
         this.source = jdbc.getDataSource();
         this.identity = identity;
@@ -1499,6 +1507,17 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
             if(ticket.plan!=null && !ticket.plan.equals(planned))throw denied();
             ticket.plan=planned;requireCurrent(ticket);
         }catch(RuntimeException failure){poison(ticket==null?admission:ticket);throw denied();}
+    }
+
+    /** Persistence mechanics stay in the adapter; final owner checks follow the actual flush. */
+    @Override public void flushManagedWork() {
+        try {
+            context();
+            if(entityManager==null || !entityManager.isJoinedToTransaction())throw denied();
+            entityManager.flush();
+        } catch(RuntimeException failure) {
+            poison(null);throw denied();
+        }
     }
 
     /** Freeze the intent from storage-owned bytes and consume only the original native issuer.

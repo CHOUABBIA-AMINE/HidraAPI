@@ -24,7 +24,7 @@ import dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResul
 import dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery;
 import dz.sh.hidra.modules.organization.domain.value.AssignmentType;
 import dz.sh.hidra.platform.persistence.ProtectedTransactionExecutor;
-import jakarta.persistence.EntityManager;
+import dz.sh.hidra.modules.organization.application.port.out.ProtectedEmployeeAppointmentRepositoryPort;
 import java.time.Instant;
 import java.util.List;
 import java.util.function.Supplier;
@@ -39,9 +39,9 @@ class EmployeeAppointmentLifecycleApplicationServiceTest {
     private static final Instant AT=Instant.parse("2026-10-24T10:00:00Z");
     private final ProtectedEmployeeAppointmentAdmissionCoordinator coordinator=mock(ProtectedEmployeeAppointmentAdmissionCoordinator.class);
     private final ProtectedTransactionExecutor executor=mock(ProtectedTransactionExecutor.class);
-    private final EntityManager entityManager=mock(EntityManager.class);
+    private final ProtectedEmployeeAppointmentRepositoryPort repository=mock(ProtectedEmployeeAppointmentRepositoryPort.class);
     private final EmployeeAppointmentLifecycleApplicationService service=
-            new EmployeeAppointmentLifecycleApplicationService(coordinator,executor,entityManager);
+            new EmployeeAppointmentLifecycleApplicationService(coordinator,executor,repository);
 
     private void callbacks(RuntimeException completionFailure) {
         when(executor.executePublication(any(),any(),any())).thenAnswer(call->{
@@ -67,11 +67,11 @@ class EmployeeAppointmentLifecycleApplicationServiceTest {
         when(coordinator.acquireWrite(prepared,command)).thenReturn(admission);
         when(coordinator.apply(admission)).thenReturn(result);
         assertSame(result,service.create(command));
-        var order=inOrder(coordinator,executor,entityManager);
+        var order=inOrder(coordinator,executor,repository);
         order.verify(coordinator).prepare();order.verify(executor).executePublication(any(),any(),any());
         order.verify(coordinator).acquireWrite(prepared,command);order.verify(coordinator).apply(admission);
-        order.verify(entityManager).flush();order.verify(coordinator).prepareFinal(admission);
-        order.verify(coordinator).finalizeOperation(admission);verifyNoMoreInteractions(coordinator,executor,entityManager);
+        order.verify(repository).flushManagedWork();order.verify(coordinator).prepareFinal(admission);
+        order.verify(coordinator).finalizeOperation(admission);verifyNoMoreInteractions(coordinator,executor,repository);
     }
 
     @Test void allFourTypedCommandsUseOneFreshPreparationAndOneProtectedExecution() {
@@ -83,7 +83,7 @@ class EmployeeAppointmentLifecycleApplicationServiceTest {
                         AssignmentType.PRIMARY,dz.sh.hidra.modules.organization.domain.value.AssignmentStatus.ACTIVE,
                         AT,null,1,1,"reason"));
         for(var command:commands) {
-            reset(coordinator,executor,entityManager);callbacks(null);
+            reset(coordinator,executor,repository);callbacks(null);
             var prepared=mock(ProtectedEmployeeAppointmentAdmissionCoordinator.Prepared.class);
             var admission=mock(ProtectedEmployeeAppointmentAdmissionCoordinator.WriteAdmission.class);
             var result=mock(EmployeeAppointmentResult.MutationReceipt.class);
@@ -101,18 +101,18 @@ class EmployeeAppointmentLifecycleApplicationServiceTest {
     @Test void deniedPreparationNeverOpensThePrivateCredentialRoute() {
         when(coordinator.prepare()).thenThrow(new AccessDeniedException("denied"));
         assertThrows(AccessDeniedException.class,()->service.create(create()));
-        verifyNoInteractions(executor,entityManager);
+        verifyNoInteractions(executor,repository);
     }
 
     @Test void deniedAdmissionDoesNotMaterializeFlushOrFinalize() {
         callbacks(null);when(coordinator.acquireWrite(any(),any())).thenThrow(new AccessDeniedException("denied"));
         assertThrows(AccessDeniedException.class,()->service.create(create()));
         verify(coordinator,never()).apply(any());verify(coordinator,never()).prepareFinal(any());
-        verify(coordinator,never()).finalizeOperation(any());verifyNoInteractions(entityManager);
+        verify(coordinator,never()).finalizeOperation(any());verifyNoInteractions(repository);
     }
 
     @Test void managedFlushFailureCannotReachPreparationOrFinalGuard() {
-        callbacks(null);doThrow(new IllegalStateException("flush failed")).when(entityManager).flush();
+        callbacks(null);doThrow(new IllegalStateException("flush failed")).when(repository).flushManagedWork();
         assertThrows(IllegalStateException.class,()->service.create(create()));
         verify(coordinator,never()).prepareFinal(any());verify(coordinator,never()).finalizeOperation(any());
         verify(executor,times(1)).executePublication(any(),any(),any());
@@ -126,7 +126,7 @@ class EmployeeAppointmentLifecycleApplicationServiceTest {
 
     @Test void finalGuardOrCompletionFailureNeverReturnsTheDetachedResultOrRetries() {
         for(boolean completion:List.of(false,true)) {
-            reset(coordinator,executor,entityManager);
+            reset(coordinator,executor,repository);
             var failure=new IllegalStateException(completion?"commit outcome unknown":"guard rejected");
             callbacks(completion?failure:null);
             if(!completion)doThrow(failure).when(coordinator).finalizeOperation(any());
@@ -140,7 +140,7 @@ class EmployeeAppointmentLifecycleApplicationServiceTest {
                 EmployeeAppointmentQuery.History.employee("company","employee",2,null),
                 EmployeeAppointmentQuery.History.position("company","unit","position",2,null));
         for(var query:queries) {
-            reset(coordinator,executor,entityManager);callbacks(null);
+            reset(coordinator,executor,repository);callbacks(null);
             var prepared=mock(ProtectedEmployeeAppointmentAdmissionCoordinator.Prepared.class);
             var admission=mock(ProtectedEmployeeAppointmentAdmissionCoordinator.ReadAdmission.class);
             when(coordinator.prepare()).thenReturn(prepared);when(coordinator.acquireRead(prepared,query)).thenReturn(admission);
@@ -155,9 +155,9 @@ class EmployeeAppointmentLifecycleApplicationServiceTest {
                         ?service.employeeHistory(query):service.assignmentHistory(query));
                 verify(coordinator,never()).positionHistory(any());
             }
-            var order=inOrder(coordinator,entityManager);
+            var order=inOrder(coordinator,repository);
             order.verify(coordinator).acquireRead(prepared,query);order.verify(coordinator).sealRead(admission);
-            order.verify(entityManager).flush();order.verify(coordinator).prepareFinalRead(admission);
+            order.verify(repository).flushManagedWork();order.verify(coordinator).prepareFinalRead(admission);
             order.verify(coordinator).finalizeRead(admission);
         }
     }
@@ -178,6 +178,6 @@ class EmployeeAppointmentLifecycleApplicationServiceTest {
         assertThrows(IllegalArgumentException.class,()->service.assignmentHistory(employee));
         assertThrows(IllegalArgumentException.class,()->service.employeeHistory(position));
         assertThrows(IllegalArgumentException.class,()->service.positionHistory(employee));
-        verifyNoInteractions(coordinator,executor,entityManager);
+        verifyNoInteractions(coordinator,executor,repository);
     }
 }

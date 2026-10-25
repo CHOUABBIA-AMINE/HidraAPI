@@ -76,6 +76,32 @@ public class JdbcIdentityAuthorityFence {
                             .map(r -> "'" + r + "'")
                             .collect(java.util.stream.Collectors.joining(","))
                     + ") ORDER BY 1";
+    /** Fresh retained-fence image for one boundary, never cached between calls. */
+    private static final String RETAINED = """
+            WITH retained_identity_locks AS MATERIALIZED (
+                SELECT relation,mode FROM pg_catalog.pg_locks
+                 WHERE pid=pg_catalog.pg_backend_pid() AND granted AND locktype='relation'
+            )
+            SELECT ARRAY(
+                SELECT n.nspname || '.' || c.relname
+                  FROM retained_identity_locks l
+                  JOIN pg_catalog.pg_class c ON c.oid=l.relation
+                  JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+                 WHERE l.mode='ShareRowExclusiveLock' AND n.nspname='public'
+                   AND n.nspname || '.' || c.relname IN (
+            """ + RELATIONS.stream().map(r -> "'" + r + "'")
+                    .collect(java.util.stream.Collectors.joining(","))
+                    // The fixed ASCII names use the same order as Java's original sort.
+                    + ") ORDER BY (n.nspname || '.' || c.relname) COLLATE \"C\") = ARRAY["
+                    + RELATIONS.stream().map(r -> "'" + r + "'")
+                            .collect(java.util.stream.Collectors.joining(","))
+                    + "]::text[]"
+                    + " AND pg_catalog.current_setting('transaction_isolation')='read committed'"
+                    + " AND pg_catalog.current_setting('transaction_read_only')='off'"
+                    + " AND EXISTS (SELECT 1 FROM retained_identity_locks"
+                    + " WHERE relation='public.hidra_identity_external_mapping_generation'::regclass AND mode='AccessShareLock')"
+                    + " AND EXISTS (SELECT 1 FROM retained_identity_locks"
+                    + " WHERE relation='public.hidra_identity_bound_source_claim_evidence'::regclass AND mode='ShareLock')";
     public static java.util.List<dz.sh.hidra.platform.persistence.ProtectedRelationFence> requiredRelationFences() {
         var result=new java.util.ArrayList<dz.sh.hidra.platform.persistence.ProtectedRelationFence>();
         for(String relation:RELATIONS)result.add(new dz.sh.hidra.platform.persistence.ProtectedRelationFence(
@@ -195,22 +221,14 @@ public class JdbcIdentityAuthorityFence {
             if (a==null || a.owner!=this || !a.active || a.thread!=Thread.currentThread()
                 || a.holder!=holder || a.connection!=holder.getConnection()) throw invalid("Foreign admission");
             if (!Boolean.TRUE.equals(jdbc.queryForObject(
-                "SELECT pg_catalog.pg_backend_pid()=? AND pg_catalog.txid_current()=? AND current_user=?",
+                RETAINED + " AND pg_catalog.pg_backend_pid()=? AND pg_catalog.txid_current()=? AND current_user=?",
                 Boolean.class,a.pid,a.xid,a.role))) throw invalid("Changed physical admission");
-            requireFences(jdbc);
         } catch (RuntimeException failure) { rollback(); throw failure; }
     }
 
     static void requireFences(JdbcTemplate jdbc) {
-        if (!RELATIONS.equals(jdbc.queryForList(HELD,String.class).stream().sorted().toList())
-            || !Boolean.TRUE.equals(jdbc.queryForObject("""
-                SELECT pg_catalog.current_setting('transaction_isolation')='read committed'
-                  AND pg_catalog.current_setting('transaction_read_only')='off'
-                  AND EXISTS (SELECT 1 FROM pg_catalog.pg_locks WHERE pid=pg_catalog.pg_backend_pid() AND granted
-                    AND locktype='relation' AND relation='public.hidra_identity_external_mapping_generation'::regclass AND mode='AccessShareLock')
-                  AND EXISTS (SELECT 1 FROM pg_catalog.pg_locks WHERE pid=pg_catalog.pg_backend_pid() AND granted
-                    AND locktype='relation' AND relation='public.hidra_identity_bound_source_claim_evidence'::regclass AND mode='ShareLock')
-                """,Boolean.class))) throw invalid("Complete retained Identity fences required");
+        if (!Boolean.TRUE.equals(jdbc.queryForObject(RETAINED,Boolean.class)))
+            throw invalid("Complete retained Identity fences required");
     }
 
     private ConnectionHolder holder() {

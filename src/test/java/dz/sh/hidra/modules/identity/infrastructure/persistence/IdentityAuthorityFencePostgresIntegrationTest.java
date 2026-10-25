@@ -1535,4 +1535,34 @@ class IdentityAuthorityFencePostgresIntegrationTest {
         assertThatThrownBy(()->t.execute(s->{fence.requireCurrent(null);return null;})).isInstanceOf(RuntimeException.class);
     }
 
+    @Test void integratedFenceRejectsLossOfEachRequiredLock() {
+        var required=JdbcIdentityAuthorityFence.requiredRelationFences();
+        // Direct owner fixture: each savepoint releases exactly one of24 locks,
+        // while all other locks, holder, backend, XID and role remain current.
+        // No savepoint is introduced into the protected executor's protocol.
+        for (var missing:required) {
+            var t=new TransactionTemplate(manager);
+            t.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
+            t.executeWithoutResult(status->{
+                for(var relation:required)if(!relation.equals(missing)) {
+                    String mode=switch(relation.mode()) {
+                        case SHARE_ROW_EXCLUSIVE -> "SHARE ROW EXCLUSIVE";
+                        case ACCESS_SHARE -> "ACCESS SHARE";
+                        case SHARE -> "SHARE";
+                    };
+                    jdbc.execute("LOCK TABLE "+relation.relation()+" IN "+mode+" MODE NOWAIT");
+                }
+                jdbc.execute("SAVEPOINT before_required_lock");
+                var admission=fence.acquireNowait(UUID.randomUUID().toString());
+                fence.requireCurrent(admission);
+                jdbc.execute("ROLLBACK TO SAVEPOINT before_required_lock");
+                assertThatThrownBy(()->fence.requireCurrent(admission))
+                        .as("Missing retained lock: %s",missing.relation())
+                        .isInstanceOf(IllegalStateException.class)
+                        .hasMessageContaining("Changed physical admission");
+                status.setRollbackOnly();
+            });
+        }
+    }
+
 }

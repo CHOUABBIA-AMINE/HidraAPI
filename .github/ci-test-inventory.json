@@ -2328,6 +2328,7 @@
         "claimTailLocksPrecedeSampleAndBlockIndependentCompanionWriters",
         "freshFlywayJpaAndCompleteDependencyInventoryMatch",
         "integratedFenceRefusesForeignOrCompletedAdmission",
+        "integratedFenceRejectsLossOfEachRequiredLock",
         "lateFenceFailureRollsBackPrefixAndProvisionalJpaWrite",
         "materializedCandidateContainsNoAuthorityOrSecrets",
         "missingReadOnlyAndWrongIsolationReject",
@@ -2341,7 +2342,7 @@
       "lane": "postgres-integration",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/IdentityAuthorityFencePostgresIntegrationTest.java",
-      "source_sha256": "aadda7b409a7cbbe2f55f05ac8478ea4d965dbe76dc613d577398258c2a2f1eb",
+      "source_sha256": "aa8c8ce97d2c9d199178eb22b87bc6390450719275bc00c67c78b457caa093d8",
       "supports": []
     },
     {

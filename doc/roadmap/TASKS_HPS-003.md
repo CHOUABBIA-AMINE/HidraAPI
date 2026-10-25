@@ -28289,6 +28289,61 @@ blobs,confirm applicable exact-SHA CI creation/queue/start and STOP. Next remain
 HAPI-778 B3 runtime qualification/repair before its registered artifact and final
 acceptance stages. No release,deployment,numerical simulation or OT action.
 
+### 2026-10-25 — HAPI-778 Full877 approved native-fence consolidation repair
+
+Owner explicitly Approved the prepared four-file native Identity repair after
+Full877 feedback. This is a bounded HAPI-778 correction,not a new task or policy.
+Exact reviewed main b10f5917b5da074c74be630aa862bc28921e4d0d,
+parent22e7c32f671c0bfe6264849ae69ff33f8fbeacf6,
+tree7278b39bdc949201dd88f1af8c8e1f5bd29db3e8.
+[Full877](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40155505306)
+FAILED only PostgreSQL shard1 and its dependent gate. Fast186,Docs567,static,
+unit/architecture,API/dictionary and six PostgreSQL shards PASSED.
+All64 appointment concurrency cases ran. Positive LOCAL CREATE exceeds500ms
+before provisional DML,and managed-flush injection still cannot reach flush.
+Actual inclusive timings: acquireWrite1061ms,persistProvisional644ms;
+the latter includes requireCurrentWrite483ms and prepareProvisional161ms.
+Native-current66ms,storage-current77ms,reference classification173ms and mutation
+preparation163ms show repeated nested current checks; exclusive SQL timing is
+not available. No claim that catalog consolidation alone meets500ms is justified.
+
+The owner's explicit approval extends B3's allowlist only to the four paths
+below and supersedes its earlier native-implementation exclusion for this exact
+query-consolidation repair. All other boundaries/exclusions remain in force.
+Registered exact message remains
+`feat(organization): persist protected appointment lifecycle and history`.
+Exactly four MODIFY,zero CREATE/DELETE:
+- src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcIdentityAuthorityFence.java
+- src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/IdentityAuthorityFencePostgresIntegrationTest.java
+- .github/ci-test-inventory.json,only that suite's added case and source hash
+- this append-only HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+Combine requireCurrent's three JDBC queries into one fresh SELECT over a
+materialized pg_locks image. Preserve exact22 relation/mode membership using
+sorted array equality,not a count/subset check; preserve mapping-generation
+AccessShareLock and bound-source companion ShareLock,read-committed/writable
+server settings,PID,XID,current role and all existing Java lifetime/holder/thread
+checks. The C collation matches the original Java sort of fixed ASCII names.
+The collector's requireFences uses the same fresh predicate without the
+admission-specific PID/XID/role suffix. No image or authority survives a call.
+No clock sample,query-result cache,permit,owner contract or policy is added.
+The diagnostic collect path's existing acquisition/checks remain unchanged.
+Add a real PostgreSQL regression preserving23 locks while releasing each of24
+required locks in turn through a direct-owner savepoint fixture. A complete
+admission passes before release; the same admission must reject afterward.
+Savepoints are not added to the protected executor. Preserve all existing cases.
+
+The source hashes and exact inventory diff are checked. Available32
+inventory-validator and19 documentation-validator self-tests pass; they do not
+execute the new Java regression. Java21/Maven/PostgreSQL runtime is unavailable
+locally and is not provisioned. The change is a performance candidate,not proof
+of completing the lifecycle within500ms. Publish with expected-b10f591 guarded
+direct-main scope,verify parent/tree/blobs and exact-SHA applicable
+CI creation/queue/start and STOP. HAPI-778 remains PARTIAL/IN_PROGRESS;
+HAPI-590 remains PARTIAL/BLOCKED. No migration,deadline,NOWAIT,shard,source pin,
+generated artifact,public/legacy activation,release,deployment,simulation or OT
+change is authorized. Next remains repair/qualification of B3's actual runtime.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

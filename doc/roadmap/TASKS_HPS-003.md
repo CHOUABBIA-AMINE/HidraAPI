@@ -30442,6 +30442,59 @@ PARTIAL/BLOCKED. No release/deployment, production personnel data, calibration,
 simulation/P3, autonomous OT action or operational readiness is selected.
 
 
+### 2026-10-25 — HAPI-778 Full895 legacy MVC validation repair
+
+Owner Fail refreshes main `b918a7898d49c12db68e91d6e17ad9cf07252514`,
+tree `08b072c3a73b9b1d1eb0b8d12861d6a6ca6787dd`. Exact-source
+[Full895](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40222706469)
+FAILED; Fast204 and Docs587 succeeded. Static/unit and six PostgreSQL shards
+succeeded. PostgreSQL shard1 executed207 cases with one failure and no
+errors/skips. The appointment concurrency suite executed82 cases with one
+failure: the new real-context MVC case expected200 but received500 at its
+first legacy POST, line104. The retained raw XML has no resolved application
+exception, so no specific hosted exception class is asserted.
+
+Source review identifies a concrete executable-validation defect:
+SpringOrganizationController has class-level @Validated and adds parameter
+@Valid on methods overriding its unconstrained OrganizationController interface.
+Proxy method validation can reject this strengthened inherited precondition
+before the protected use case. Remove only that class-level annotation and its
+import; retain every @Valid @RequestBody, mapping, authentication check,
+strict deserializer and protected owner. MVC continues request-body validation
+without the redundant method-validation proxy. This source-based repair still
+requires the actual hosted MVC case to establish that the observed500 is fixed.
+
+Preserve all82 case identities/assertions and add an alwaysDo diagnostic to
+the existing synthetic MVC builder: an unexpected server failure with a resolved
+exception raises AssertionError retaining that exception as its cause. This
+does not change public error responses, suppress failure or substitute mocked
+native authority. Update only this suite's source_sha256 in the inventory,
+retaining cases, metadata, seven shards and timing weights.
+
+The API lane successfully built the application and generated OpenAPI, then
+failed exact snapshot equality. This is the previously recorded pending artifact
+reconciliation, not permission to weaken equality. Its retained diagnostic
+artifact12610405614 contains the actual runtime contract. Preserve the snapshot,
+manifest and physical dictionary in this runtime-only repair. After runtime
+acceptance, the next bounded stage remains
+`docs(organization): reconcile appointment API and catalog artifacts`.
+The aggregate failed consequentially on missing successful lane evidence.
+
+Exact scope: zero CREATE / four MODIFY / zero DELETE: this HAPI-778 evidence,
+SpringOrganizationController.java, the existing appointment concurrency test,
+and only its inventory source hash. Retain the registered HAPI-778 implementation
+message `feat(organization): persist protected appointment lifecycle and history`.
+No SQL, privilege, budget, owner-contract, schema, workflow or status change.
+HAPI-778 remains PARTIAL/IN_PROGRESS; HAPI-590 remains independently blocked.
+
+Validation: source diff and exact-scope/case/hash preservation checks; available
+JDK syntax parsing only. Maven/Java21/PostgreSQL/Spring tests are not executed
+locally because Maven and the complete service environment are unavailable.
+No hosted success is claimed. Publish under the expected b918a789 guard, verify
+the exact parent/tree/four-file diff and applicable Full/Fast/Docs creation, then
+stop without waiting or advancing the roadmap.
+
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

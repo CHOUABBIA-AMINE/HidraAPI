@@ -95,7 +95,11 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
 
     @Test void genuinePublicAliasesLifecycleCurrentReadsAndRedactedHistoryUseTheWiredProtectedOwner() throws Exception {
         var f=fixture(false);String actor=runtimeActor(f);
-        var mvc=org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup(runtimeWeb).build();
+        var mvc=org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup(runtimeWeb)
+                .alwaysDo(result->{
+                    if(result.getResponse().getStatus()>=500 && result.getResolvedException()!=null)
+                        throw new AssertionError("Synthetic appointment MVC request failed",result.getResolvedException());
+                }).build();
         String root="/api/v1/organization";String key=id();
         String body="{\"employeeId\":\""+f.employee()+"\",\"organizationUnitId\":\""+f.units().get(0)+"\",\"positionId\":\""+f.position()+"\",\"validFrom\":\""+START+"\",\"requestId\":\""+key+"\"}";
         try {

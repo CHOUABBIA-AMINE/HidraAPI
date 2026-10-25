@@ -6382,6 +6382,44 @@ identities and previous assertions remain. Exact scope3 MODIFY: this phase,
 the native fixture and its existing inventory source hash. Snapshot repair
 remains separate. No acceptance is claimed; continue same-turn hosted proof.
 
+#### HAPI-591 generated runtime artifact reconciliation — 2026-10-25
+
+Execute registered stage3 with exact message
+`docs(topology): reconcile local engineering exchange artifacts`.
+Scope3 MODIFY only doc/api/openapi.yaml, .github/documentation-validation.json
+(openapi object only) and this phase's append-only record. No dictionary,
+migration, JPA, workflow, source, test or status changes in this commit.
+
+Actual Full901 source d46df84fb176547e634250ef420abcce102b0af4,
+run40236972330 attempt1, API job121300504517: application build step8
+and deterministic generation step9 succeeded. API job/workflow failed;
+snapshot equality failed at step10. Later compatibility and physical dictionary
+steps were skipped and are not claimed. Artifact12615237521,
+hidra-ci-diagnostics-d46df84fb176547e634250ef420abcce102b0af4-40236972330-1-api-contract,
+member openapi/hidra-api.json; verified ZIP SHA256
+29b96a6ea7768c09f3f9719c79179d70f1188e0bbc9fa9136b2c5816d56c56bd,
+raw JSON SHA256 8ca821a3111d26ef9f8f152daabdeca0147c2ec75684ca5ba4126e8c342789e7.
+Canonical sorted compact snapshot SHA256
+f6b54eb8cd9045d47810f96744e4cc62bddadfb9ede4f02220a2cc6e1c3d7b56.
+All subsequent source repairs are test-fixture-only; production is identical.
+
+Actual counts269 paths/291 operations/283 schemas, additive4/4/4.
+All265 preceding paths and279 schemas remain structurally identical;
+new request bodies reference typed Submission and all four routes require
+hidraBearerJwt. Origin stamp is the actual generated source, not repair HEAD.
+Unchanged repository compatibility comparator passes locally against actual
+successful Full899 runtime output at edd66b3a4dc27b724dbb99b6eaf6d0a456fe6ae3
+(bundle12612804441), not an invented immediate-parent runtime artifact.
+Offline canonical digest/count/provenance and runtime equality validation pass.
+Manifest non-openapi objects and complete nested prior provenance are preserved.
+
+Next require exact reconciliation-source Full/Fast/Docs as applicable, actual
+same-run API equality/compatible successful runtime base, normal physical
+catalog/dictionary equality, complete raw report inventory and case-level proof.
+Native fixture repair01e55bdc408e1c80f80daee9d4de0fcaecb03b67 remains under
+hosted validation; no gate or acceptance is waived. Final four-file stage4
+only after evidence; do not select HAPI-592/608 or deployment.
+
 <a id="hapi-608"></a>
 ## HAPI-608 — Aggregate typed engineering exchange
 

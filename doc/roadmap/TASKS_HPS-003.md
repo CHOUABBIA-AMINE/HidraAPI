@@ -29466,6 +29466,117 @@ Retain the residual SQL-efficiency limitation for final acceptance and later
 capacity work;repair actual failures first. No HAPI-778 closure or industrial/
 operating/deployment readiness is asserted by this source submission.
 
+
+### 2026-10-25 — HAPI-778 genuine external-provider lifecycle qualification
+
+Owner Next refreshes main 9ef3aca4d28cab9741d77e2b79f51551bc0a4d26,
+parent e5d1b1f887d117362f85f74c54ab85ce546f99e8,
+tree 0c4abde55638e1ce8a9156ee6e867a74e07c88cb.
+[Full888](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40186516537),
+[Fast197](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40186516541)
+and [Docs579](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40186516555)
+succeeded. All seven PostgreSQL shards and required lanes passed; the fallback
+Maven job was skipped, not independently executed. The selected development
+7500ms appointment default now has exact-SHA runtime evidence. Shared ordinary
+500ms and actual native validity remain independent and unchanged.
+
+Shard1 job121148334179 executed the new work-cap fault with physical rollback,
+no final guard/commit and no effects while actual grants remained live. Its
+complete failed call8120009516ns illustrates checkpoint-based rejection, NOT
+hard wall-clock cancellation at7500ms. The separately identified10000ms native-
+expiry fault received actual P0001, rolled back and retained a conservative
+2118899570ns of work time at guard dispatch. These injected faults are not normal
+latency samples. Ordinary complete CREATE2349785995ns, CORRECT1982589804ns,
+TRANSFER2493034833ns, END2042868735ns and REPLAY1226781335ns passed at7500ms.
+Hosted individual samples establish neither percentiles nor industrial/HTTP SLA.
+Residual SQL overhead remains open for final acceptance and capacity work.
+
+**Concrete next prerequisite in the registered consolidated B3 delivery.**
+The source service still explicitly prohibits public bean/REST activation before
+genuine native/publisher/executor composition acceptance. Existing combined
+application cases establish LOCAL, whereas B3 explicitly requires genuine LDAP,
+ACTIVE_DIRECTORY and OIDC origins too. Independent Identity tests are not
+evidence that their captured claims, native binding and appointment final proof
+compose. This commit delivers those actual combined paths; it is not a generic
+planning checkpoint or a declaration that public/legacy delivery is finished.
+Public cutover follows their actual hosted acceptance, with actual failures
+repaired first. No security prerequisite is replaced by source inspection.
+
+Retain all69 existing appointment case identities and add three:
+- genuineLdapLifecycleReplayRollbackAndLinkRevocationUsePrivatePublisher
+- genuineActiveDirectoryLifecycleReplayRollbackAndLinkRevocationUsePrivatePublisher
+- genuineOidcLifecycleReplayRollbackAndLinkRevocationUsePrivatePublisher
+
+Each runs CREATE, CORRECT, TRANSFER and END through the exact real application
+service, coordinator, B2 owner exports, actual native issuer/proof, separate
+private publisher login, actual protected transaction manager, managed flush
+and observed physical commit at the7500ms development default. Passive traces
+assert physical guard/commit ordering for each new write. Assert exact versions,
+before/after continuity, distinct transfer successor and effective end. Re-login
+through the same real source, then require original historical replay, assignment
+and employee histories, exact version, redacted position history and policy read.
+Actual event rows must join genuine persisted native bindings and source-claim
+companions for the exact actor, authentication type and external link. Four
+events/proofs/receipts and two retained assignment projections are required.
+
+Next submit a nonoverlapping CREATE, invoke actual managed flush and inject a
+test-only failure after it: one flush, actual rollback, no guard/commit and
+unchanged source/projection/event/receipt/proof/key effects. Commit actual external-
+link revocation independently, retain the old real native bearer and require
+replay, new mutation and employee-history denial without effects. Replay must
+reject before managed flush/final guard; fresh source login must also fail.
+This is actual link-revocation coverage, not a fabricated DENY callback.
+
+**Source verification boundaries are explicit.** Test context enables both
+existing verified-claim-receipt properties; LOCAL remains real and unchanged.
+Non-LOCAL fixtures create explicit external links and one real external-role
+mapping selecting groups/memberOf. The mapped role has no permission grants;
+existing exact resource-scoped user grants supply appointment authority.
+The real source-capture catalog, issuance fence, generation, producer registry,
+completion, session, native binding and companion persistence are not mocked.
+Validate persisted origin and captured-claim origin using the actual registry;
+require exact original subject, provider type/protocol, external link, selected
+group values and OIDC source cap (directory source cap stays null).
+
+LDAP/AD use the actual Spring directory verifier and provider. Only LdapTemplate
+and authenticated directory context are synthetic transport: invoke the real
+authenticated-entry callback with exact fixture attributes, verify search base,
+filter and password dispatch, and restore the original template in finally.
+No real directory/TLS/network interoperability acceptance is claimed.
+OIDC source bytes are actually HS256 signed and decoded by Nimbus. The named
+external decoder bean is a test delegate to that real decoder, not a fabricated
+decoded Jwt; the real converter independently re-decodes original signed bytes
+before completion. Native decoder/issuer/owner exports are unchanged. Existing
+native bearer wrapper retains the original signed access token and is not an
+authority substitute. No source credential, raw claim or native token is logged.
+
+**Exact registered B3 scope.** Continue message
+`feat(organization): persist protected appointment lifecycle and history`.
+Three MODIFY, zero CREATE/DELETE:
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java
+- .github/ci-test-inventory.json, only this existing suite's actual case membership/source hash
+- this append-only HAPI-778 evidence in doc/roadmap/TASKS_HPS-003.md
+
+Suite69->72; retain lane, unmeasured weight, every old case and all other inventory
+entries, seven shards and workflow behavior. No production source, caller/source/
+SQL/catalog pin, migration, authority window, work/lock/statement/idle bound,
+REST/legacy route, bean activation, generated artifact or frozen registry/status
+changes. HAPI-778 remains PARTIAL/IN_PROGRESS; HAPI-590 independently PARTIAL/BLOCKED.
+This is development synthetic combined-origin qualification pending hosted CI,
+not completion of the entire consolidated B3 public/legacy package.
+
+Available documentation-validator19 and inventory-validator32 self-tests pass.
+The changed Java file parses using the installed Java17 compiler module, syntax
+only; no local Java21 type resolution, JUnit, PostgreSQL or external-network pass
+is claimed and no full environment is provisioned. Fresh base/source hashes,
+retained69 cases, three actual added methods, one-entry inventory delta, exact
+three-path scope, append-only evidence and whitespace are checked. Publish using
+expected-9ef3aca guarded direct main; verify exact parent/tree/message/blobs/scope,
+confirm applicable Full/Fast/Docs creation/queue/start and STOP. After actual
+passing feedback continue the registered application bean/REST/legacy cutover;
+generated OpenAPI/catalog reconciliation and case-level final acceptance remain
+separate registered stages. No deployment/release/simulation/OT acceptance.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

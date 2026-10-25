@@ -68,7 +68,9 @@ import tools.jackson.databind.json.JsonMapper;
  * The genuineLocal/genuineNative/genuineExecution cases instead compose real LOCAL authentication,
  * native issuer, separate publisher login, protected executor, JDBC/JPA flush and observed commit.
  * EntityManager spies call the actual managed flush before fault injection or bounded coordination.
- * No HTTP, non-LOCAL runtime, deployment or industrial acceptance is established.
+ * Non-LOCAL cases also execute real source verification/completion; only the external
+ * directory transport and external decoder bean delegate are synthetic test boundaries.
+ * No HTTP, deployment or industrial acceptance is established.
  */
 @Testcontainers(disabledWithoutDocker = true)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -78,6 +80,13 @@ import tools.jackson.databind.json.JsonMapper;
             // Bounded synthetic qualification ceiling; not an accepted operational SLA.
             "hidra.platform.persistence.execution.appointment-work-budget-ms=10000",
             "hidra.platform.security.jwt.hmac-secret=synthetic-appointment-runtime-key-32-bytes-only",
+            "hidra.platform.security.ldap.enabled=true",
+            "hidra.platform.security.ldap.url=ldap://synthetic.invalid:389",
+            "hidra.platform.security.ldap.base-dn=dc=synthetic,dc=invalid",
+            "hidra.platform.security.ldap.user-search-base=ou=people",
+            "hidra.platform.security.ldap.user-search-filter=(uid={0})",
+            "hidra.identity.ldap-verified-claim-receipt.enabled=true",
+            "hidra.identity.oidc-verified-claim-receipt.enabled=true",
             "hidra.platform.security.jwt.token-issuer=hidra-api","hidra.platform.security.jwt.audience=hidra-api"})
 @org.springframework.test.context.ActiveProfiles("test")
 @org.springframework.test.annotation.DirtiesContext(classMode=org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_CLASS)
@@ -96,6 +105,24 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
     @org.springframework.beans.factory.annotation.Autowired dz.sh.hidra.modules.identity.application.port.in.AuthenticateDirectUserUseCase runtimeLogin;
     @org.springframework.beans.factory.annotation.Autowired org.springframework.security.crypto.password.PasswordEncoder runtimePasswords;
     @org.springframework.beans.factory.annotation.Autowired dz.sh.hidra.modules.identity.infrastructure.configuration.OrganizationAppointmentCommitProofProperties runtimeKeys;
+    @org.springframework.beans.factory.annotation.Autowired dz.sh.hidra.modules.identity.infrastructure.security.LdapCredentialVerificationAdapter runtimeDirectory;
+    @org.springframework.beans.factory.annotation.Autowired dz.sh.hidra.modules.identity.infrastructure.security.IdentityOidcJwtAuthenticationConverter runtimeOidc;
+    @org.springframework.beans.factory.annotation.Autowired dz.sh.hidra.modules.identity.application.port.in.CompleteAuthenticatedPrincipalUseCase runtimeCompletion;
+    @org.springframework.beans.factory.annotation.Autowired dz.sh.hidra.modules.identity.application.port.out.OperationAuthenticationBindingRepositoryPort runtimeBindings;
+    @org.springframework.beans.factory.annotation.Autowired dz.sh.hidra.modules.identity.application.port.out.BoundSourceClaimEvidenceRepositoryPort runtimeSourceClaims;
+    @org.springframework.beans.factory.annotation.Autowired dz.sh.hidra.modules.identity.infrastructure.security.TrustedAuthenticationVerificationRegistry runtimeVerification;
+    @org.springframework.test.context.bean.override.mockito.MockitoBean(name="externalOidcJwtDecoder")
+    org.springframework.security.oauth2.jwt.JwtDecoder runtimeExternalDecoder;
+    private static final String RUNTIME_SOURCE="https://oidc.synthetic.invalid";
+    private static final javax.crypto.SecretKey RUNTIME_SOURCE_KEY=new javax.crypto.spec.SecretKeySpec(
+            "synthetic-appointment-source-key-32-bytes-only".getBytes(java.nio.charset.StandardCharsets.UTF_8),"HmacSHA256");
+    private final org.springframework.security.oauth2.jwt.JwtEncoder runtimeSourceEncoder=
+            org.springframework.security.oauth2.jwt.NimbusJwtEncoder.withSecretKey(RUNTIME_SOURCE_KEY)
+                .algorithm(org.springframework.security.oauth2.jose.jws.MacAlgorithm.HS256).build();
+    private final org.springframework.security.oauth2.jwt.JwtDecoder runtimeSourceDecoder=
+            org.springframework.security.oauth2.jwt.NimbusJwtDecoder.withSecretKey(RUNTIME_SOURCE_KEY)
+                .macAlgorithm(org.springframework.security.oauth2.jose.jws.MacAlgorithm.HS256).build();
+    private record RuntimeOrigin(String actor,String provider,String link,String subject,String type) { }
 
     /** Bootstrap only: migrate as owner, then run the application and publisher as separate real logins. */
     @org.springframework.test.context.DynamicPropertySource
@@ -143,11 +170,28 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
 
     /** Real persisted LOCAL credential, native token and exact resource grants; no native issuer mock. */
     private String runtimeActor(Fixture f) throws Exception {
+        return runtimeActor(f,"LOCAL").actor();
+    }
+
+    private RuntimeOrigin runtimeActor(Fixture f,String type) throws Exception {
+        assertTrue(List.of("LOCAL","LDAP","ACTIVE_DIRECTORY","OIDC").contains(type));
         String actor=id(),provider=id();
         admin("UPDATE public.hidra_identity_provider SET status='INACTIVE' WHERE status='ACTIVE'");
         admin("INSERT INTO public.hidra_identity_user(id,username,user_type,status,failed_login_count,created_at,updated_at) VALUES (?,?,'HUMAN','ACTIVE',0,now(),now())",actor,actor);
-        admin("INSERT INTO public.hidra_identity_provider(id,code,name,provider_type,status,sync_enabled,just_in_time_provisioning_enabled,created_at,updated_at) VALUES (?,?,'Runtime fixture','LOCAL','ACTIVE',false,false,now(),now())",provider,provider);
-        admin("INSERT INTO public.hidra_identity_local_credential(id,user_id,password_hash,credential_status,created_at,updated_at) VALUES (?,?,?,'ACTIVE',now(),now())",id(),actor,runtimePasswords.encode("runtime-synthetic-password"));
+        admin("INSERT INTO public.hidra_identity_provider(id,code,name,provider_type,issuer_uri,directory_base_dn,user_search_base,status,sync_enabled,just_in_time_provisioning_enabled,created_at,updated_at) VALUES (?,?,'Runtime fixture',?,?,?,?,'ACTIVE',false,false,now(),now())",provider,provider,type,
+                type.equals("OIDC")?RUNTIME_SOURCE:null,type.equals("LDAP")||type.equals("ACTIVE_DIRECTORY")?"dc=synthetic,dc=invalid":null,
+                type.equals("LDAP")||type.equals("ACTIVE_DIRECTORY")?"ou=people":null);
+        String link=null,subject=null;
+        if(type.equals("LOCAL")) {
+            admin("INSERT INTO public.hidra_identity_local_credential(id,user_id,password_hash,credential_status,created_at,updated_at) VALUES (?,?,?,'ACTIVE',now(),now())",id(),actor,runtimePasswords.encode("runtime-synthetic-password"));
+        } else {
+            link=id();subject=" exact-runtime-é-"+link+" ";
+            admin("INSERT INTO public.hidra_identity_external_identity(id,user_id,identity_provider_id,external_subject,status,created_at,updated_at) VALUES (?,?,?,?,'LINKED',now(),now())",link,actor,provider,subject);
+            String role=id();
+            admin("INSERT INTO public.hidra_identity_role(id,code,role_type,status,created_at,updated_at) VALUES (?,?,'EXTERNAL_MAPPED','ACTIVE',now(),now())",role,role);
+            admin("INSERT INTO public.hidra_identity_external_role_mapping(id,identity_provider_id,role_id,external_role_code,claim_name,mapping_mode,status,created_at,updated_at) VALUES (?,?,?,?,?,'DIRECT_GRANT','ACTIVE',now(),now())",
+                    id(),provider,role,"runtime-observed-group",type.equals("OIDC")?"groups":"memberOf");
+        }
         for(var action:Action.values()) {
             // Grants are fixture facts, not one oversized operation/admission.
             // Union valid one-pair requests; company/employee grants remain unique.
@@ -180,12 +224,75 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
             assertEquals(RUNTIME_PUBLISHER,scalar(publisher,"SELECT session_user"));
             assertEquals("safe",scalar(publisher,"SELECT CASE WHEN current_user=session_user AND NOT pg_catalog.has_schema_privilege(current_user,'public','CREATE') AND NOT pg_catalog.has_table_privilege(current_user,'public.hidra_org_employee_assignment','DELETE,TRUNCATE,TRIGGER') AND NOT pg_catalog.has_function_privilege(current_user,'public.hidra_org_activate_appointment_binding(text,text,text,bigint)','EXECUTE') THEN 'safe' ELSE 'unsafe' END"));
         }
-        runtimeAuthenticate(actor);return actor;
+        var origin=new RuntimeOrigin(actor,provider,link,subject,type);
+        runtimeAuthenticate(origin);return origin;
     }
 
     private void runtimeAuthenticate(String actor) {
         var result=runtimeLogin.authenticate(new dz.sh.hidra.modules.identity.application.model.DirectAuthenticationCommand(
                 dz.sh.hidra.modules.identity.domain.value.ProviderType.LOCAL,actor,"runtime-synthetic-password","synthetic-ip","synthetic-agent","runtime-correlation"));
+        runtimeBearer(result);
+    }
+
+    /** Real capture/completion; the directory fixture supplies only the authenticated network callback. */
+    private void runtimeAuthenticate(RuntimeOrigin origin) throws Exception {
+        if(origin.type().equals("LOCAL")){runtimeAuthenticate(origin.actor());return;}
+        dz.sh.hidra.modules.identity.application.model.AuthenticationResult result;
+        if(origin.type().equals("OIDC")) {
+            doAnswer(call->runtimeSourceDecoder.decode(call.getArgument(0)))
+                    .when(runtimeExternalDecoder).decode(anyString());
+            var source=runtimeSourceEncoder.encode(org.springframework.security.oauth2.jwt.JwtEncoderParameters.from(
+                    org.springframework.security.oauth2.jwt.JwtClaimsSet.builder().issuer(RUNTIME_SOURCE)
+                        .subject(origin.subject()).audience(List.of("hidra-api"))
+                        .issuedAt(Instant.now().minusSeconds(1))
+                        .expiresAt(Instant.now().plusSeconds(300).truncatedTo(java.time.temporal.ChronoUnit.SECONDS))
+                        .claim("groups",List.of("runtime-observed-group")).build()));
+            var verified=runtimeOidc.convert(runtimeSourceDecoder.decode(source.getTokenValue()));
+            SecurityContextHolder.getContext().setAuthentication(verified);
+            var p=(dz.sh.hidra.modules.identity.domain.model.HidraPrincipal)verified.getPrincipal();
+            result=runtimeCompletion.complete(new dz.sh.hidra.modules.identity.application.model.AuthenticatedPrincipalInput(
+                    p.userId(),p.username(),p.displayName(),p.authenticationType(),p.identityProviderId(),
+                    p.roles(),p.permissions(),p.externalIdentityId(),null),"synthetic-ip","synthetic-agent","runtime-correlation");
+        } else {
+            var original=org.springframework.test.util.ReflectionTestUtils.getField(runtimeDirectory,"ldapTemplate");
+            var template=mock(org.springframework.ldap.core.LdapTemplate.class);
+            var context=mock(javax.naming.directory.DirContext.class);
+            var attrs=new javax.naming.directory.BasicAttributes(true);
+            attrs.put("entryUUID",origin.subject());attrs.put("uid",origin.actor());
+            attrs.put("memberOf","runtime-observed-group");
+            when(context.getAttributes(any(javax.naming.Name.class),any(String[].class))).thenReturn(attrs);
+            when(template.authenticate(anyString(),anyString(),anyString(),
+                    any(org.springframework.ldap.core.AuthenticatedLdapEntryContextCallback.class))).thenAnswer(call->{
+                ((org.springframework.ldap.core.AuthenticatedLdapEntryContextCallback)call.getArgument(3)).executeWithContext(
+                        context,new org.springframework.ldap.core.LdapEntryIdentification(
+                            new javax.naming.ldap.LdapName("uid=synthetic,ou=people,dc=synthetic,dc=invalid"),
+                            new javax.naming.ldap.LdapName("uid=synthetic,ou=people")));
+                return true;
+            });
+            try {
+                org.springframework.test.util.ReflectionTestUtils.setField(runtimeDirectory,"ldapTemplate",template);
+                result=runtimeLogin.authenticate(new dz.sh.hidra.modules.identity.application.model.DirectAuthenticationCommand(
+                        dz.sh.hidra.modules.identity.domain.value.ProviderType.valueOf(origin.type()),origin.actor(),
+                        "runtime-synthetic-password","synthetic-ip","synthetic-agent","runtime-correlation"));
+                verify(template).authenticate(eq("ou=people"),eq("(uid="+origin.actor()+")"),eq("runtime-synthetic-password"),
+                        any(org.springframework.ldap.core.AuthenticatedLdapEntryContextCallback.class));
+            } finally {org.springframework.test.util.ReflectionTestUtils.setField(runtimeDirectory,"ldapTemplate",original);}
+        }
+        var binding=runtimeBindings.findByNativeIssuerAndJti("hidra-api",result.jti()).orElseThrow();
+        runtimeVerification.validatePersistentOrigin(binding);
+        var claims=runtimeSourceClaims.findByBindingId(binding.bindingId()).orElseThrow();
+        runtimeVerification.validatePersistentSourceClaimOrigin(binding,claims);
+        assertEquals(origin.type(),binding.authenticationType());assertEquals(origin.actor(),binding.userId());
+        assertEquals(origin.provider(),binding.providerId());
+        assertEquals(origin.link(),binding.externalIdentityId());assertEquals(origin.subject(),binding.externalSubject());
+        assertEquals(origin.type().equals("ACTIVE_DIRECTORY")?"LDAP":origin.type(),binding.sessionProtocol());
+        assertEquals(java.util.Set.of("runtime-observed-group"),claims.coverage().values(origin.type().equals("OIDC")?"groups":"memberOf"));
+        if(origin.type().equals("OIDC")){assertEquals(RUNTIME_SOURCE,binding.sourceIssuer());assertNotNull(binding.sourceExpiresAt());}
+        else {assertNull(binding.sourceIssuer());assertNull(binding.sourceExpiresAt());}
+        runtimeBearer(result);
+    }
+
+    private void runtimeBearer(dz.sh.hidra.modules.identity.application.model.AuthenticationResult result) {
         var jwt=org.springframework.security.oauth2.jwt.Jwt.withTokenValue(result.accessToken()).header("alg","HS256")
                 .subject("untrusted-wrapper").issuedAt(Instant.now().minusSeconds(1)).expiresAt(Instant.now().plusSeconds(300)).build();
         SecurityContextHolder.getContext().setAuthentication(new org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken(jwt,List.of()));
@@ -238,6 +345,83 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
             assertEquals("4",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_receipt r JOIN public.hidra_org_appointment_event e USING(event_id) WHERE e.employee_id=?",f.employee()));
         } finally {SecurityContextHolder.clearContext();}
         assertEquals(RUNTIME_APP,runtimeJdbc.queryForObject("SELECT session_user",String.class));
+    }
+
+    @Test void genuineLdapLifecycleReplayRollbackAndLinkRevocationUsePrivatePublisher() throws Exception {
+        runtimeExternalLifecycle("LDAP");
+    }
+
+    @Test void genuineActiveDirectoryLifecycleReplayRollbackAndLinkRevocationUsePrivatePublisher() throws Exception {
+        runtimeExternalLifecycle("ACTIVE_DIRECTORY");
+    }
+
+    @Test void genuineOidcLifecycleReplayRollbackAndLinkRevocationUsePrivatePublisher() throws Exception {
+        runtimeExternalLifecycle("OIDC");
+    }
+
+    private void runtimeExternalLifecycle(String type) throws Exception {
+        var f=fixture(false);var origin=runtimeActor(f,type);var service=runtimeService(runtimeEntityManager);
+        var command=create(f,id());var created=runtimeExternalCommit(type+"_CREATE",()->service.create(command));
+        String assignment=created.after().assignmentId();
+        assertFalse(created.historicalReplay());assertEquals(1,created.after().appointmentVersion());
+        var corrected=runtimeExternalCommit(type+"_CORRECT",()->service.correct(new EmployeeAppointmentCommand.Correct(
+                id(),f.company(),assignment,1,f.units().get(0),f.position(),AssignmentType.PRIMARY,
+                AssignmentStatus.ACTIVE,START,null,1,1,REASON)));
+        assertEquals(created.after(),corrected.before());assertEquals(2,corrected.after().appointmentVersion());
+        var transferred=runtimeExternalCommit(type+"_TRANSFER",()->service.transfer(new EmployeeAppointmentCommand.Transfer(
+                id(),f.company(),assignment,2,f.units().get(1),f.position(),AssignmentType.PRIMARY,
+                START.plusSeconds(3600),null,1,1,REASON)));
+        assertEquals(corrected.after(),transferred.before());assertEquals(3,transferred.after().appointmentVersion());
+        assertNotEquals(assignment,transferred.successor().assignmentId());
+        var ended=runtimeExternalCommit(type+"_END",()->service.end(new EmployeeAppointmentCommand.End(
+                id(),f.company(),transferred.successor().assignmentId(),1,START.plusSeconds(7200),REASON)));
+        assertEquals(transferred.successor(),ended.before());assertEquals(2,ended.after().appointmentVersion());
+        assertEquals(START.plusSeconds(7200),ended.after().snapshot().appointment().assignment().validTo());
+        runtimeAuthenticate(origin);
+        var replay=service.create(command);
+        assertTrue(replay.historicalReplay());assertEquals(created.eventId(),replay.eventId());assertEquals(created.after(),replay.after());
+        assertEquals(4,service.employeeHistory(dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History.employee(
+                f.company(),f.employee(),100,null)).entries().size());
+        assertEquals(3,service.assignmentHistory(dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History.assignment(
+                f.company(),assignment,100,null)).entries().size());
+        assertEquals(created.after(),service.exactVersion(new dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.ExactVersion(
+                f.company(),assignment,1)));
+        assertFalse(service.positionHistory(dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History.position(
+                f.company(),f.units().get(0),f.position(),100,null)).entries().isEmpty());
+        assertEquals(f.company(),service.readPolicy(new dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.Policy(
+                f.company(),f.units().get(0))).companyPartyId());
+        try(var c=owner()) {
+            assertEquals("4",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_event e JOIN public.hidra_identity_operation_binding b ON b.binding_id=e.actor_binding_id JOIN public.hidra_identity_bound_source_claim_evidence s ON s.binding_id=b.binding_id WHERE e.employee_id=? AND e.actor_user_id=? AND b.authentication_type=? AND b.external_identity_id=?",
+                    f.employee(),origin.actor(),type,origin.link()));
+        }
+        String before=runtimeEffects(f,origin.actor());
+        assertTrue(before.startsWith("2,4,4,4,"),"Four native proofs/receipts must accompany the two retained projections");
+        // A new nonoverlapping appointment reaches real managed flush, then must roll back every provisional effect.
+        var next=new EmployeeAppointmentCommand.Create(id(),f.company(),f.employee(),f.units().get(0),f.position(),
+                AssignmentType.PRIMARY,START.plusSeconds(10800),null,1,1);
+        var em=spy(runtimeEntityManager);var flushTrace=new RuntimeTrace();
+        doAnswer(call->{runtimeEntityManager.flush();throw new IllegalStateException("synthetic external-origin post-flush fault");}).when(em).flush();
+        assertThrows(RuntimeException.class,()->tracedRuntime(type+"_FLUSH_ROLLBACK",flushTrace,()->runtimeService(em).create(next)));
+        verify(em).flush();flushTrace.rejected();assertEquals(0,flushTrace.guardBegan);
+        assertEquals(before,runtimeEffects(f,origin.actor()));
+        var oldAuthentication=SecurityContextHolder.getContext().getAuthentication();
+        admin("UPDATE public.hidra_identity_external_identity SET status='UNLINKED' WHERE id=?",origin.link());
+        SecurityContextHolder.getContext().setAuthentication(oldAuthentication);
+        var deniedEm=spy(runtimeEntityManager);var deniedService=runtimeService(deniedEm);
+        var deniedTrace=new RuntimeTrace();
+        assertThrows(RuntimeException.class,()->tracedRuntime(type+"_REVOKED_LINK_REPLAY",deniedTrace,()->deniedService.create(command)));
+        deniedTrace.rejected();assertEquals(0,deniedTrace.guardBegan);verify(deniedEm,never()).flush();
+        assertThrows(RuntimeException.class,()->deniedService.create(next));
+        assertThrows(RuntimeException.class,()->deniedService.employeeHistory(
+                dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History.employee(f.company(),f.employee(),100,null)));
+        assertThrows(RuntimeException.class,()->runtimeAuthenticate(origin));
+        assertEquals(before,runtimeEffects(f,origin.actor()));
+        assertEquals(RUNTIME_APP,runtimeJdbc.queryForObject("SELECT session_user",String.class));
+    }
+
+    private static dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.MutationReceipt runtimeExternalCommit(
+            String stage,java.util.function.Supplier<dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.MutationReceipt> action) {
+        var trace=new RuntimeTrace();var result=tracedRuntime(stage,trace,action);trace.committed();return result;
     }
 
     @Test void genuineNativeDenialDoesNotCreateProjectionEventReceiptOrKeys() throws Exception {

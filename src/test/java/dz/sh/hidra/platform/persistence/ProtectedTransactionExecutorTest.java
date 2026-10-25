@@ -580,6 +580,30 @@ class ProtectedTransactionExecutorTest {
     }
 
     @Test
+    void extendedAppointmentConfigurationCannotWidenOrdinaryExecution() {
+        executor=new ProtectedTransactionExecutor(manager,ds,
+                new dz.sh.hidra.platform.configuration.ProtectedExecutionBudgetProperties(10000));
+        rejected(()->run(()->{
+            var scope=ProtectedOperationDataSource.CURRENT.get();
+            assertThat(scope.workBudgetNanos).isEqualTo(500_000_000L);
+            scope.started=System.nanoTime()-500_000_001L;
+            return "withheld";
+        },()->{},this::guard));
+        assertThat(rollbacks).hasValue(1);
+    }
+
+    @Test
+    void selectedFiniteScopeBudgetExpiresWithoutAnAuthorizationGrace() {
+        var scope=new ProtectedOperationDataSource.Scope(2_000_000_000L);
+        scope.started=System.nanoTime()-600_000_000L;
+        assertThatCode(scope::deadline).doesNotThrowAnyException();
+        scope.started=System.nanoTime()-2_000_000_001L;
+        assertThatThrownBy(scope::deadline).isInstanceOf(IllegalStateException.class)
+                .hasMessage("Protected transaction poisoned: aggregate 2000ms work budget");
+        assertThat(scope.poisoned).isTrue();
+    }
+
+    @Test
     void preparedQueryProbesLiveParticipationAtExecutionOnce() {
         assertThat(run(()->{
             long before=mockingDetails(raw).getInvocations().stream()

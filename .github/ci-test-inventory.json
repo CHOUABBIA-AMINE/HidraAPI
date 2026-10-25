@@ -10,6 +10,23 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "boundedServerConfigurationUsesExactMilliseconds",
+        "malformedServerConfigurationFailsWithoutFallback",
+        "missingConfigurationPreservesSharedDefault",
+        "zeroNegativeAndAboveCeilingFailWithoutFallback"
+      ],
+      "class": "dz.sh.hidra.platform.configuration.ProtectedExecutionBudgetPropertiesTest",
+      "dependency_reason": "HAPI-778 owner-approved server-side execution policy; bounded synthetic qualification, no measured latency SLA; duration unmeasured.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "platform",
+      "path": "src/test/java/dz/sh/hidra/platform/configuration/ProtectedExecutionBudgetPropertiesTest.java",
+      "source_sha256": "176d8a7c69ba86616d9f09bc4a40fa0dcfe75e24eed81f2ad09d3d437050b8a3",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
         "disabledLoadsNoKeyAndCannotIssue",
         "enabledRequiresExplicitExactThirtyTwoByteKey",
         "independentPurposeCodecIsRedactedAndNoSecretGetterExists",
@@ -8646,6 +8663,7 @@
         "elapsedBudgetRejectsBeforeGuard",
         "emptyScalarRowPoisonsCaughtGuardFailure",
         "expiredWorkReportsScalarSqlCountWithoutFlushingCommittingOrLeakingSql",
+        "extendedAppointmentConfigurationCannotWidenOrdinaryExecution",
         "failedAttemptCleansContextForNextSuccessfulAttempt",
         "finalGuardMustBeAClosedScalarQuery",
         "finishedHandleCannotBecomeUnscoped",
@@ -8661,6 +8679,7 @@
         "publicationCredentialEntryRejectsUnreviewedCallerBeforeWork",
         "rawConnectionAndDatasourceUnwrapReject",
         "secondGuardStatementPoisonsEvenIfCaught",
+        "selectedFiniteScopeBudgetExpiresWithoutAnAuthorizationGrace",
         "successfulScalarExecutionCommitsBeforeReturning",
         "swallowedExpiredHandlePoisonsNewAttempt",
         "transactionLocalJitSetupPrecedesWorkAndCannotSilentlyFail",
@@ -8676,7 +8695,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java",
-      "source_sha256": "6032ba7cf92ad00b353c27191f6470fe1e110c0e0c8cb99fbf6b43b3025ab314",
+      "source_sha256": "4c8a646962a0d5e9470cca1d4e9f7a2aa11f2840cfdb214f006c79caec67c893",
       "supports": []
     },
     {
@@ -9147,7 +9166,7 @@
       "lane": "postgres-integration",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java",
-      "source_sha256": "5acc852947dc20bf4354c4a6515a0a59407f3a792a5c7fb7a7215dc8dde16878",
+      "source_sha256": "f56c3295b423b6c5e26a71a5b8dc7a70f72c29d61c3f8b8ec5b20d8135777943",
       "supports": []
     },
     {

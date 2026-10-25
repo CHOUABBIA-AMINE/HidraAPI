@@ -79,10 +79,18 @@ public final class ProtectedTransactionExecutor {
     private final PlatformTransactionManager manager;
     private final DataSource datasource;
     private final ProtectedCredentialRoutingDataSource publicationRouter;
+    private final dz.sh.hidra.platform.configuration.ProtectedExecutionBudgetProperties budgets;
 
     public ProtectedTransactionExecutor(PlatformTransactionManager manager, DataSource datasource) {
+        this(manager,datasource,dz.sh.hidra.platform.configuration.ProtectedExecutionBudgetProperties.defaults());
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public ProtectedTransactionExecutor(PlatformTransactionManager manager, DataSource datasource,
+            dz.sh.hidra.platform.configuration.ProtectedExecutionBudgetProperties budgets) {
         this.manager = Objects.requireNonNull(manager);
         this.datasource = Objects.requireNonNull(datasource);
+        this.budgets = Objects.requireNonNull(budgets);
         ProtectedCredentialRoutingDataSource router=null;
         try {
             if(datasource.isWrapperFor(ProtectedCredentialRoutingDataSource.class))
@@ -97,7 +105,9 @@ public final class ProtectedTransactionExecutor {
         if(!caller.equals(DRAFT_SERVICE) && !caller.equals(PUBLICATION_SERVICE) && !caller.equals(APPOINTMENT_SERVICE) && !caller.equals(
             "dz.sh.hidra.modules.topology.application.service.ProtectedStationGraphOperationService"))
             throw new IllegalStateException("Unreviewed credential route caller");
-        try(var route=credentialRouter().open()) {return execute(work,flush,guard);}
+        long budgetNanos=caller.equals(APPOINTMENT_SERVICE) ? budgets.appointmentWorkBudgetNanos()
+                : dz.sh.hidra.platform.configuration.ProtectedExecutionBudgetProperties.STANDARD_WORK_BUDGET_MILLIS*1_000_000L;
+        try(var route=credentialRouter().open()) {return executeWithBudget(work,flush,guard,budgetNanos);}
     }
 
     public ProtectedCredentialRoutingDataSource.Identity publicationDatabaseIdentity() {
@@ -110,6 +120,11 @@ public final class ProtectedTransactionExecutor {
     }
 
     public <T> T execute(Supplier<T> work, Runnable flush, Runnable guard) {
+        return executeWithBudget(work,flush,guard,
+                dz.sh.hidra.platform.configuration.ProtectedExecutionBudgetProperties.STANDARD_WORK_BUDGET_MILLIS*1_000_000L);
+    }
+
+    private <T> T executeWithBudget(Supplier<T> work, Runnable flush, Runnable guard,long budgetNanos) {
         var previous = ProtectedOperationDataSource.CURRENT.get();
         if (previous != null) {
             previous.reject("nested protected execution");
@@ -128,7 +143,7 @@ public final class ProtectedTransactionExecutor {
             throw new ExecutionFailure(
                     Outcome.REJECTED_BEFORE_COMMIT,
                     new IllegalStateException("unsupported manager"));
-        var s = new ProtectedOperationDataSource.Scope();
+        var s = new ProtectedOperationDataSource.Scope(budgetNanos);
         s.executor=this;
         TransactionStatus status = null;
         ProtectedOperationDataSource.CURRENT.set(s);

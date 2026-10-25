@@ -48,6 +48,14 @@ public final class ProtectedOperationDataSource extends DelegatingDataSource
     }
 
     static final class Scope {
+        final long workBudgetNanos;
+        Scope() { this(500_000_000L); }
+        Scope(long workBudgetNanos) {
+            if(workBudgetNanos<1_000_000L || workBudgetNanos>
+                    dz.sh.hidra.platform.configuration.ProtectedExecutionBudgetProperties.MAX_WORK_BUDGET_MILLIS*1_000_000L)
+                throw new IllegalArgumentException("Invalid protected work budget");
+            this.workBudgetNanos=workBudgetNanos;
+        }
         final Thread owner = Thread.currentThread();
         Phase phase = Phase.OPENING;
         Connection physical;
@@ -87,9 +95,9 @@ public final class ProtectedOperationDataSource extends DelegatingDataSource
 
         void deadline() {
             healthy();
-            if (System.nanoTime() - started >= 500_000_000L) {
+            if (System.nanoTime() - started >= workBudgetNanos) {
                 poisoned = true;
-                reason = "aggregate 500ms work budget";
+                reason = "aggregate " + (workBudgetNanos/1_000_000L) + "ms work budget";
                 healthy();
             }
         }

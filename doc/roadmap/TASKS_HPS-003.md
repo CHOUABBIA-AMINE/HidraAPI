@@ -28521,6 +28521,111 @@ PARTIAL/IN_PROGRESS;HAPI-590 remains PARTIAL/BLOCKED. Next remains measured B3
 runtime repair before managed-flush,remaining integration/artifact/acceptance,
 release,deployment,simulation or OT work.
 
+### 2026-10-25 — HAPI-778 owner-approved timing policy and bounded qualification
+
+Owner questioned whether500ms was vital,then explicitly approved the recommendation
+to reassess the timing contract,define bounded server-controlled per-operation
+policy,and require complete-workflow/concurrency/revocation evidence before
+accepting a wider operating budget. This supersedes B3's blanket preservation of
+the exact500ms number only for the finite policy/qualification scope below.
+Authorization freshness,actual expiry,physical transaction,atomicity,rollback,
+final-guard and observed-commit semantics are not relaxed.
+
+Reviewed main59f367991af9c7d946212a4fb7ef3c520daf6f88,
+parent f1d5dd6f05ab6347f39faba148b2fbf1f80ca859,
+tree8d5e73b2246dd46f466d27783531d457a39279d1.
+[Full881](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40160239318)
+FAILED only PostgreSQL shard1 and the aggregate. Fast190,Docs571,unit/architecture,
+static,API/dictionary and six PostgreSQL shards PASSED. All64 appointment cases
+ran;the genuine positive CREATE still rejects before provisional DML and the
+managed-flush injection cannot reach flush. Diagnostics record1998 user statements
+and1980372039ns in ADMITTING. The previous duplicate-probe correction has passed
+its regressions but has not demonstrated completion within500ms. Runner-to-runner
+timings are not a controlled performance comparison.
+
+**Timing review.**500ms is the shared accepted writer-blocking work policy,not
+the native authorization validity bound and not an industrial/HTTP SLA. Native u
+remains the earliest relevant authentication/source/grant/membership/policy/time
+boundary;the final database-time guard must still reject t>=u even if work budget
+remains. Longer work can delay other protected requests and authority writers;
+it cannot be accepted solely because a positive CI case becomes green.
+
+**Selected software policy.** Add immutable startup properties at
+`hidra.platform.persistence.execution.appointment-work-budget-ms`,integer1..10000,
+default500. Missing settings preserve500;malformed,zero,negative or over-ceiling
+values fail startup rather than falling back or disabling the limit. Snapshot
+the selected finite nanosecond bound in each private physical Scope. Only the
+already approved exact compiled APPOINTMENT_SERVICE caller of executePublication
+may use that property. Other approved publication callers and ordinary execute
+retain500 regardless of the appointment setting. No request argument,HTTP field,
+caller-supplied profile,public numeric-budget overload,dynamic mid-flight update
+or new authority/caller is admitted. Platform retains technical ownership;it
+does not import business modules or infer permissions.
+
+**Bounded measurement,not operating acceptance.** Only the existing synthetic
+EmployeeAppointmentConcurrencyPostgresIntegrationTest Spring context sets10000ms.
+This is a finite development qualification ceiling to reach the complete path
+and expose later faults;it is NOT a proposed production target or measured SLA.
+Application configuration files and default500 remain unchanged. Preserve all64
+cases,all original negative assertions,real native/Party/storage checks and
+managed-flush injection. Print complete CREATE/CORRECT/TRANSFER/END/REPLAY service
+call elapsedNs,success/failure,and operationallyAccepted=false. These call times
+include service preparation and observed commit;they are not the executor's
+work-only interval,HTTP latency,commit-tail distribution or industrial capacity.
+Do not increase the ceiling automatically if qualification fails.
+
+**Related limits.** Keep lock_timeout250ms,statement_timeout750ms and
+idle_in_transaction_session_timeout1000ms. They bound lock waits,individual
+statements and idle gaps,respectively;they do not imply that a sequence of many
+short statements must have a500ms total. NOWAIT and actual u still reject where
+applicable. No SQL after the final guard,source/catalog/function pins,provisional
+statement hashes,private credential routing or commit outcome is changed.
+
+**Exact selected B3 scope.** Existing message remains
+`feat(organization): persist protected appointment lifecycle and history`.
+Two CREATE,seven MODIFY,zero DELETE;no frozen status/structure changes:
+CREATE:
+- src/main/java/dz/sh/hidra/platform/configuration/ProtectedExecutionBudgetProperties.java
+- src/test/java/dz/sh/hidra/platform/configuration/ProtectedExecutionBudgetPropertiesTest.java
+MODIFY:
+- src/main/java/dz/sh/hidra/platform/configuration/HidraTransactionConfiguration.java
+- src/main/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutor.java
+- src/main/java/dz/sh/hidra/platform/persistence/ProtectedOperationDataSource.java
+- src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java
+- .github/ci-test-inventory.json,only the new four-case suite and two changed suite entries
+- this append-only HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+**Acceptance and next gate.** Add four property tests for defaults,exact bounded
+binding,invalid bounds and malformed configuration. Retain43 executor cases and
+add ordinary-execution isolation from extended appointment policy plus finite
+selected-budget expiry. These are configuration/simulated-provider tests,not
+PostgreSQL contention proof. Inventory retains all prior test identities and
+lane/weight/policy selections;the new unit suite has explicitly unmeasured weight.
+Local32 inventory-validator and19 documentation-validator self-tests pass;source
+hashes,prior case/pin retention,exact nine-path scope and append-only evidence are
+checked. No local Java21/JUnit/PostgreSQL or performance pass is claimed or
+provisioned. Full/Fast/Docs on the exact new SHA must qualify the implementation.
+
+After hosted feedback,the next bounded HAPI-778 stage must recover complete
+successful and failed call measurements,verify genuine CREATE/replay/scoped reads
+and managed-flush rollback,and register actual concurrent appointment/authority-
+administration/revocation measurements under the candidate profile before choosing
+an operating value. Require known outcomes,zero partial effects,no automatic
+retry,expired-authority rejection despite remaining budget,writer wait/fence hold
+and guard-to-completion/commit-tail measurements. Preserve baseline500 tests for
+other families;record wider-profile evidence separately. A later operating-value
+choice must state its measurement basis,contention/revocation limits and remaining
+software-versus-industrial acceptance. Do not close778 solely on green CI or
+claim10000ms is accepted. The1998-statement overhead remains a tracked efficiency
+obligation independent of policy qualification.
+
+Publish expected59f3679 guarded direct main,verify exact parent/tree/message/nine
+blobs,confirm applicable exact-SHA CI creation/queue/start and STOP. HAPI-778
+remains PARTIAL/IN_PROGRESS;HAPI-590 remains PARTIAL/BLOCKED. All172 migrations,
+generated artifacts,public/legacy activation and deferred simulation/OT/release/
+deployment gates remain unchanged.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

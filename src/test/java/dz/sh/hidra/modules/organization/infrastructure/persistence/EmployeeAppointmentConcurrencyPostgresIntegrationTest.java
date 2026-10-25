@@ -75,6 +75,8 @@ import tools.jackson.databind.json.JsonMapper;
 @org.springframework.boot.test.context.SpringBootTest(classes=dz.sh.hidra.HidraApplication.class,
         webEnvironment=org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK,
         properties={"spring.flyway.enabled=true","spring.jpa.hibernate.ddl-auto=validate",
+            // Bounded synthetic qualification ceiling; not an accepted operational SLA.
+            "hidra.platform.persistence.execution.appointment-work-budget-ms=10000",
             "hidra.platform.security.jwt.hmac-secret=synthetic-appointment-runtime-key-32-bytes-only",
             "hidra.platform.security.jwt.token-issuer=hidra-api","hidra.platform.security.jwt.audience=hidra-api"})
 @org.springframework.test.context.ActiveProfiles("test")
@@ -189,17 +191,26 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         return new dz.sh.hidra.modules.organization.application.service.EmployeeAppointmentLifecycleApplicationService(coordinator,runtimeExecutor,repository);
     }
 
+    /** Complete synthetic service call, including preparation and observed commit, never HTTP latency. */
+    private static <T> T measuredRuntime(String stage,java.util.function.Supplier<T> action) {
+        long began=System.nanoTime();boolean success=false;
+        try {T result=action.get();success=true;return result;}
+        finally {System.out.println("HAPI_778_TIMING_QUALIFICATION stage="+stage
+                +" success="+success+" callElapsedNs="+(System.nanoTime()-began)
+                +" workCeilingMs=10000 operationallyAccepted=false");}
+    }
+
     @Test void genuineLocalLifecycleReplayAndScopedReadsUsePrivatePublisherAndObservedCommit() throws Exception {
         var f=fixture(false);String actor=runtimeActor(f);var service=runtimeService(runtimeEntityManager);var command=create(f,id());
-        var created=service.create(command);String assignment=created.after().assignmentId();
+        var created=measuredRuntime("CREATE",()->service.create(command));String assignment=created.after().assignmentId();
         assertFalse(created.historicalReplay());assertEquals(1,created.after().appointmentVersion());
-        var corrected=service.correct(new EmployeeAppointmentCommand.Correct(id(),f.company(),assignment,1,f.units().get(0),f.position(),AssignmentType.PRIMARY,AssignmentStatus.ACTIVE,START,null,1,1,REASON));
+        var corrected=measuredRuntime("CORRECT",()->service.correct(new EmployeeAppointmentCommand.Correct(id(),f.company(),assignment,1,f.units().get(0),f.position(),AssignmentType.PRIMARY,AssignmentStatus.ACTIVE,START,null,1,1,REASON)));
         assertEquals(2,corrected.after().appointmentVersion());
-        var transferred=service.transfer(new EmployeeAppointmentCommand.Transfer(id(),f.company(),assignment,2,f.units().get(1),f.position(),AssignmentType.PRIMARY,START.plusSeconds(3600),null,1,1,REASON));
+        var transferred=measuredRuntime("TRANSFER",()->service.transfer(new EmployeeAppointmentCommand.Transfer(id(),f.company(),assignment,2,f.units().get(1),f.position(),AssignmentType.PRIMARY,START.plusSeconds(3600),null,1,1,REASON)));
         assertEquals(3,transferred.after().appointmentVersion());assertNotNull(transferred.successor());
-        service.end(new EmployeeAppointmentCommand.End(id(),f.company(),transferred.successor().assignmentId(),1,START.plusSeconds(7200),REASON));
+        measuredRuntime("END",()->service.end(new EmployeeAppointmentCommand.End(id(),f.company(),transferred.successor().assignmentId(),1,START.plusSeconds(7200),REASON)));
         admin("UPDATE public.hidra_party_party SET status='SUSPENDED' WHERE id=?",f.company());
-        runtimeAuthenticate(actor);var replay=service.create(command);
+        runtimeAuthenticate(actor);var replay=measuredRuntime("REPLAY",()->service.create(command));
         assertTrue(replay.historicalReplay());assertEquals(created.eventId(),replay.eventId());assertEquals(created.after(),replay.after());
         assertEquals(4,service.employeeHistory(dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.History.employee(f.company(),f.employee(),100,null)).entries().size());
         assertEquals(1,service.exactVersion(new dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.ExactVersion(f.company(),assignment,1)).appointmentVersion());

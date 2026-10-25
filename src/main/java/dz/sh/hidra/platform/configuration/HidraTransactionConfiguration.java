@@ -40,6 +40,11 @@ import javax.sql.DataSource;
 @EnableTransactionManagement
 public class HidraTransactionConfiguration {
     @Bean
+    ProtectedExecutionBudgetProperties protectedExecutionBudgetProperties(Environment environment) {
+        return ProtectedExecutionBudgetProperties.from(environment);
+    }
+
+    @Bean
     static BeanPostProcessor protectedOperationDatasource(Environment environment) {
         var publication=ProtectedPublicationDatabaseProperties.from(environment);
         return new BeanPostProcessor() {

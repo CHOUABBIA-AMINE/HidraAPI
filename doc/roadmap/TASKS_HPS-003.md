@@ -28698,6 +28698,146 @@ workflow evidence review and actual contention/revocation qualification before
 choosing an operating budget or advancing remaining B3 integration/artifact/
 acceptance. No public activation,release,deployment,simulation or OT action.
 
+
+### 2026-10-25 — HAPI-778 Full883 evidence and registered contention/revocation qualification
+
+Owner Next selects the timing-policy record's next evidence-review and test
+registration stage. Fresh main is ff9fe1df61a99b106fc2f6445c0184f2152ced3a,
+parent8399196c69937270613101af221ad4ff7d3162a1,
+tree5dc9146dd295031b69229ead45bcb4a626f5a2af.
+[Full883](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40175416689),
+[Fast192](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40175416674)
+and [Docs573](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40175416675)
+completed successfully on that exact SHA. Full's static,unit/architecture,
+API/dictionary and all seven PostgreSQL shards succeeded;the fallback Maven job
+was skipped and is not separately claimed as executed. Shard1 job121114902913
+reports189 tests,zero failures/errors/skips across16 required classes under the
+source-linked inventory gate,including the retained64-case appointment class.
+The genuine LOCAL lifecycle/replay/scoped-read and actual managed-flush rollback
+cases are part of that passing required class. No runtime case was added by
+this evidence-review stage.
+
+**Recovered complete-call evidence.** The same shard logs print success=true,
+workCeilingMs=10000,operationallyAccepted=false for:
+- CREATE4965662566ns.
+- CORRECT4153313496ns.
+- TRANSFER5416863161ns.
+- END4127333165ns.
+- REPLAY2579621999ns.
+
+Full882's corresponding samples remain above and are not replaced. Full883's
+complete-call range is2.58–5.42seconds,versus1.23–2.59seconds in Full882.
+These are two samples per operation across different hosted runs,not a
+controlled comparison,percentile,work-only interval or accepted service target.
+Full883 does not establish the actual prior fixture lock holder. It establishes
+that the bounded isolated fixture passed this run,without retrying the failed
+activation or weakening NOWAIT. Actual writer contention,revocation latency,
+native expiry under the wider profile and fence/commit-tail timings remain
+unqualified. Neither500ms nor10000ms is selected as a new operating value.
+
+**Source-backed test boundary.** The current explicitly constructed
+EmployeeAppointmentLifecycleApplicationService calls the real coordinator,
+executePublication,repository-managed flush and final guard,then returns after
+observed physical commit. Its exact compiled caller selects the appointment
+profile. runtimeActor/runtimeAuthenticate already create a persisted LOCAL user,
+credential,native session/token and exact scoped grants;runtimeService composes
+the real owner adapters and executor. The existing EntityManager spy invokes
+the actual managed flush before injecting failure. The existing final-SQL
+expiry and structural Session tests remain useful independent layers,but do
+not replace genuine native runtime contention/revocation evidence. No mock
+Identity issuer,private proof fabrication,raw public execute call,owner-login
+publication or direct storage write may stand in for the complete path.
+
+**Next executable B3 qualification,registered here;not implemented now.**
+Continue exact message
+`feat(organization): persist protected appointment lifecycle and history`.
+Exactly three MODIFY,zero CREATE/DELETE:
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java
+- .github/ci-test-inventory.json,only that existing suite's actual added members/count/source SHA256
+- this append-only HAPI-778 evidence in doc/roadmap/TASKS_HPS-003.md
+
+Retain all64 existing case identities/assertions and the same private PostgreSQL16
+container,separate runtime/publisher principals and finite10000ms synthetic
+profile. Add four real PostgreSQL cases with independently asserted outcomes:
+1. Two authenticated service commands contend for the same employee/appointment
+   fence. Use real independent connections/threads and a known bounded ordering.
+   One winner can commit;the competitor must return a known rejection with no
+   projection,event,receipt,proof-use or lock-key residue attributable to its
+   distinct command. No transparent retry or successful result before commit.
+2. A genuine service operation holds the native authority fence while an
+   independent administrator attempts to revoke its persisted grant. Observe
+   the actual lock conflict and bounded writer outcome. After the protected
+   transaction completes,perform one separately identified administration
+   action,verify its committed revocation,then require a fresh service call
+   with the previously issued native token to deny with zero new effects.
+   Distinguish the first bounded failed attempt from the later explicit action;
+   never report this as an automatic retry or immediate revocation mid-fence.
+3. Reverse the ordering:commit actual grant revocation before the appointment
+   can acquire its authority fence. The genuine service call must deny with no
+   effects,including no receipt/proof redemption. Verify persisted revocation
+   and actual causal ordering,not only a generic thrown exception.
+4. A genuine native admission has an actual scheduled validity boundary that
+   expires while the selected work budget still remains. Reach the database
+   expiry rejection with the original native window and demonstrate complete
+   rollback. Prove the rejection came from actual validity expiry,not the work
+   ceiling,statement/idle timeout,a fabricated proof or an already-denied login.
+   Existing direct final-SQL expired-window coverage remains separately labeled.
+   If the complete native path cannot reach this boundary with the current
+   test seams,record that concrete gap rather than widening production scope,
+   changing the clock/window or claiming a substituted test qualifies it.
+
+**Measurement and harness contract.** Record each attempted service call's
+complete elapsedNs,outcome and finite profile;label synthetic and operationally
+unaccepted. Use bounded latches/futures and finally-based rollback/connection
+closure,thread-local authentication cleanup and executor termination. No sleeps
+to guess ordering,no endless polling,unbounded Future.get or class-global
+authentication handoff. Do not hold a protected connection idle across its
+unchanged1000ms idle timeout;coordinate short barriers and actual database
+lock observations. Test harness timeouts are cleanup bounds,not service SLAs.
+Keep lock_timeout250ms,statement_timeout750ms,NOWAIT and all work checks.
+
+For actual fence hold and guard/commit tail,use test-local passive JDBC
+instrumentation below the protected boundary,delegating unchanged SQL,parameters,
+results,exceptions and commit/rollback to the real PostgreSQL driver. It may
+recognize already frozen statement shapes internally,but must not log SQL,
+parameters,credentials,grant contents or protected business payload. Timestamp
+successful fence acquisition,final guard execution/result closure,physical
+commit begin/end and rollback/connection closure with the same monotonic clock.
+Correlate in test memory by connection/attempt;emit only stage/outcome/durations.
+The interval from the first acquired required fence until completion is the
+observed lock-holding interval;report acquisition-order limitations explicitly.
+Guard-to-completion includes the guard;commit-call duration and the post-guard
+tail must be named separately. Never call complete service elapsed time the
+work interval,fence hold or commit tail. No instrumentation-issued SQL,changed
+unwrap/credential routing,extra guard,callback after sealing or authority cache.
+If this transparent test-only instrumentation cannot preserve actual wrappers,
+stop at the concrete seam gap;production instrumentation is outside this scope.
+
+Assert known commit versus REJECTED_BEFORE_COMMIT where that executor outcome
+applies;an INDETERMINATE result is recorded as a failed qualification requiring
+reconciliation,not converted to rejection. Inspect actual database effects only
+after both transactions complete. Keep the original grant/native context and
+all source/function/catalog pins and172 immutable migrations. Refresh source-
+linked inventory using only implemented test members;retain seven shards and
+all other suites,weights and required-lane policies. Four registered cases are
+not four executed cases until hosted evidence proves their membership/results.
+
+**This stage's exact publication and validation.** MODIFY only this owning
+phase file,append before the existing hapi-829 anchor,preserving all prior bytes.
+Zero CREATE/DELETE;no test,inventory,production,configuration,SQL,generated
+artifact,workflow,status or frozen registry change. The registered B3 message
+above is retained. Available19 documentation-validator self-tests pass;
+append-only insertion,existing anchors,exact one-path scope and whitespace
+are checked. No new Java/JUnit/PostgreSQL execution or contention qualification
+is claimed. Publish expected-ff9fe1d guarded direct main,verify exact parent/tree/
+message/blob/scope,confirm applicable exact-SHA CI creation/queue/start and STOP.
+The next owner-selected execution is the three-path test qualification above,
+without another generic registration stage or permission request. Choose an
+operating value only after recovering its genuine outcomes and timing evidence.
+HAPI-778 stays PARTIAL/IN_PROGRESS;HAPI-590 stays PARTIAL/BLOCKED. The1998-statement
+efficiency obligation,non-LOCAL/public/legacy/artifact acceptance and all release,
+deployment,simulation and OT gates remain open or unchanged as previously recorded.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

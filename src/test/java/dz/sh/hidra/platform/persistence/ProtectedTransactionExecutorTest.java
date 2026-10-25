@@ -580,6 +580,43 @@ class ProtectedTransactionExecutorTest {
     }
 
     @Test
+    void preparedQueryProbesLiveParticipationAtExecutionOnce() {
+        assertThat(run(()->{
+            long before=mockingDetails(raw).getInvocations().stream()
+                    .filter(call->call.getMethod().getName().equals("createStatement")).count();
+            try(var statement=DataSourceUtils.getConnection(ds).prepareStatement("SELECT 'ok'")) {
+                assertThat(mockingDetails(raw).getInvocations().stream()
+                        .filter(call->call.getMethod().getName().equals("createStatement")).count()).isEqualTo(before);
+                try(var result=statement.executeQuery()) { assertThat(result.next()).isTrue(); }
+                assertThat(mockingDetails(raw).getInvocations().stream()
+                        .filter(call->call.getMethod().getName().equals("createStatement")).count()).isEqualTo(before+1);
+            }catch(SQLException failure){throw new IllegalStateException(failure);}
+            return "ok";
+        },()->{},this::guard)).isEqualTo("ok");
+        assertThat(commits).hasValue(1);assertThat(rollbacks).hasValue(0);
+    }
+
+    @Test
+    void preparedQueryRejectsBackendChangeAfterPreparationBeforeUserSql() throws Exception {
+        var userStatement=new AtomicReference<PreparedStatement>();
+        when(raw.prepareStatement(anyString())).thenAnswer(call->{
+            var prepared=(PreparedStatement)statement(true,call.getArgument(0));
+            userStatement.set(prepared);return prepared;
+        });
+        rejected(()->run(()->{
+            try(var statement=DataSourceUtils.getConnection(ds).prepareStatement("SELECT 'ok'")) {
+                databasePid.set(9);
+                assertThatThrownBy(statement::executeQuery)
+                        .isInstanceOf(SQLException.class)
+                        .hasMessageContaining("backend/xid/server participation changed");
+            }catch(SQLException failure){throw new IllegalStateException(failure);}
+            return "withheld";
+        },()->{},this::guard));
+        verify(userStatement.get(),never()).executeQuery();
+        assertThat(rollbacks).hasValue(1);
+    }
+
+    @Test
     void expiredWorkReportsScalarSqlCountWithoutFlushingCommittingOrLeakingSql() {
         var flushed=new AtomicBoolean();
         var guarded=new AtomicBoolean();

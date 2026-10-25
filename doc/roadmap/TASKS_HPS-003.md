@@ -28460,6 +28460,67 @@ applicable exact-SHA CI creation/queue/start and STOP. Next is HAPI-778 B3
 measured runtime repair,then managed-flush qualification and registered remaining
 integration/artifact/acceptance work. No release,deployment,simulation or OT action.
 
+### 2026-10-25 — HAPI-778 Full880 approved JDBC preparation-probe repair
+
+Owner explicitly Approved the prepared four-file JDBC repair after Full880.
+This bounded scope extension does not select any later stage or policy change.
+Reviewed main f1d5dd6f05ab6347f39faba148b2fbf1f80ca859,
+parent e0de23af53bb01ca5277f22d289d6aaa2ca91912,
+tree d45721e5ba832fabac1f5b5c1ee927afb85d35c2.
+[Full880](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40159061934)
+FAILED only PostgreSQL shard1 and its aggregate. Fast189,Docs570,unit/architecture,
+static,API/dictionary and six PostgreSQL shards PASSED. Both new executor
+diagnostics and corrected Identity lock-loss coverage passed their required lanes.
+
+The genuine positive LOCAL CREATE still rejects before provisional DML,with
+phase=ADMITTING,userStatements=1998,elapsedNs=1873147052. All64 concurrency cases
+ran;the managed-flush injection cannot reach flush. The counter excludes internal
+physical probes and driver-generated SQL. Inclusive acquireWrite1139ms plus
+persistProvisional734ms identify pre-write work,not a lock-wait failure. No
+whole-workflow500ms acceptance or controlled cross-run speedup is established.
+
+Source review: ConnectionBoundary.sql probes server PID/XID/isolation/read-only
+both when creating/preparing a handle (execution=false) and immediately before
+its SQL executes (execution=true). StatementBoundary routes every execute method
+through the latter check before delegating to the driver. The approved change
+requires execution=true for the server probe. All remaining preparation checks
+and all live pre-execution probes remain,including the final scalar guard.
+A handle cannot authorize execution;changed physical state after preparation
+still rejects before the user statement executes. No probe follows sealing.
+There is no cached validation result or freshness interval. This removes a
+duplicate internal query at handle preparation;it does not reduce the1998 user
+statement count or prove the entire lifecycle can finish within500ms. Further
+measured owner-query consolidation may still be necessary.
+
+The owner's explicit approval extends B3's prior allowlist only to this exact
+four-MODIFY,zero-CREATE/DELETE JDBC repair scope. All other exclusions remain:
+- src/main/java/dz/sh/hidra/platform/persistence/ProtectedOperationDataSource.java
+- src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java
+- .github/ci-test-inventory.json,only that suite's two cases/source hash
+- this append-only HAPI-778 evidence in doc/roadmap/TASKS_HPS-003.md
+Registered existing B3 message remains
+`feat(organization): persist protected appointment lifecycle and history`.
+
+Preserve41 executor cases and add two simulated-provider regressions:preparation
+does not issue the server probe,execution issues one fresh probe and commits;
+and a backend change after preparation rejects before underlying executeQuery,
+with zero commits and one rollback. Actual PostgreSQL suites remain mandatory;
+mocked call counts are not real driver/network/performance evidence. Preserve
+the500ms aggregate/250ms lock budgets,all authorization/native/Party/storage
+checks,24 native locks,NOWAIT,final-guard restrictions,172 migrations,source and
+catalog/function pins,seven shards,generated artifacts and activation gates.
+
+Available32 inventory-validator and19 documentation-validator self-tests pass.
+The exact production condition change,all prior case identities,one inventory
+entry,append-only evidence,source hashes and four-path scope are checked.
+No local Java21/JUnit/PostgreSQL or latency pass is claimed or provisioned.
+Live main is unchanged at f1d5dd6. Publish with an expected-f1d5dd6 head guard,
+verify exact parent/tree/message/blobs,
+confirm applicable exact-SHA CI creation/queue/start and STOP. HAPI-778 remains
+PARTIAL/IN_PROGRESS;HAPI-590 remains PARTIAL/BLOCKED. Next remains measured B3
+runtime repair before managed-flush,remaining integration/artifact/acceptance,
+release,deployment,simulation or OT work.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

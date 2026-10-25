@@ -8655,6 +8655,8 @@
         "nestedExecutorPoisonsOuterAttempt",
         "ordinaryExecutorCannotSelectPrivateDraftCredentialByCallback",
         "prematureCommitRollbackSavepointAndSettingsPoisonAttempts",
+        "preparedQueryProbesLiveParticipationAtExecutionOnce",
+        "preparedQueryRejectsBackendChangeAfterPreparationBeforeUserSql",
         "providerMayResetAutocommitOnlyAfterObservedPhysicalCommit",
         "publicationCredentialEntryRejectsUnreviewedCallerBeforeWork",
         "rawConnectionAndDatasourceUnwrapReject",
@@ -8674,7 +8676,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java",
-      "source_sha256": "a8a29eeba7954c3c3ccb545bb94bb473ba3d2d60171867dc40728d54c8dbeec6",
+      "source_sha256": "6032ba7cf92ad00b353c27191f6470fe1e110c0e0c8cb99fbf6b43b3025ab314",
       "supports": []
     },
     {

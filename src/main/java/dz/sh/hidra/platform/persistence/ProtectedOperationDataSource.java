@@ -310,8 +310,10 @@ public final class ProtectedOperationDataSource extends DelegatingDataSource
                             || physical.getTransactionIsolation()
                                     != Connection.TRANSACTION_READ_COMMITTED))
                 throw s.reject("wrong transaction participation");
-            if (s.phase != Phase.OPENING && s.pid != 0) {
-                // Metadata probes occur BEFORE the admitted SQL, including the final guard.
+            if (execution && s.phase != Phase.OPENING && s.pid != 0) {
+                // Probe immediately BEFORE every SQL execution, including the final guard.
+                // Preparing a handle retains all other checks; its execution always rechecks
+                // the live backend/XID/server settings after parameter binding and callbacks.
                 // Never probe after sealing; they are not owner authority/time observations.
                 try (Statement probe = physical.createStatement();
                         ResultSet image =

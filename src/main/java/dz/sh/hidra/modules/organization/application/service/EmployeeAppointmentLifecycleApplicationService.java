@@ -50,6 +50,10 @@ public final class EmployeeAppointmentLifecycleApplicationService implements Emp
     @Override public EmployeeAppointmentResult.MutationReceipt create(EmployeeAppointmentCommand.Create command) {
         return mutate(Objects.requireNonNull(command));
     }
+    @Override public EmployeeAppointmentResult.MutationReceipt createLegacy(EmployeeAppointmentCommand.LegacyCreate selectors) {
+        Objects.requireNonNull(selectors);
+        return mutate(prepared->coordinator.acquireLegacyWrite(prepared,selectors));
+    }
     @Override public EmployeeAppointmentResult.MutationReceipt end(EmployeeAppointmentCommand.End command) {
         return mutate(Objects.requireNonNull(command));
     }
@@ -61,12 +65,18 @@ public final class EmployeeAppointmentLifecycleApplicationService implements Emp
     }
 
     private EmployeeAppointmentResult.MutationReceipt mutate(EmployeeAppointmentCommand command) {
+        return mutate(prepared->coordinator.acquireWrite(prepared,command));
+    }
+
+    private EmployeeAppointmentResult.MutationReceipt mutate(
+            Function<ProtectedEmployeeAppointmentAdmissionCoordinator.Prepared,
+                    ProtectedEmployeeAppointmentAdmissionCoordinator.WriteAdmission> acquire) {
         var prepared=coordinator.prepare();
         var retained=new AtomicReference<ProtectedEmployeeAppointmentAdmissionCoordinator.WriteAdmission>();
         // executePublication validates this exact compiled class before selecting
         // the private principal, and returns only after observing physical commit.
         return executor.executePublication(()->{
-            var admission=coordinator.acquireWrite(prepared,command);
+            var admission=acquire.apply(prepared);
             retained.set(admission);
             return coordinator.apply(admission);
         },()->{

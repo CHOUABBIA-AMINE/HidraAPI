@@ -21,6 +21,21 @@ public sealed interface EmployeeAppointmentCommand permits
     String requestId();
     String companyPartyId();
 
+    /** Legacy selectors only. Defaults that depend on authority are resolved under owner locks. */
+    record LegacyCreate(String requestId, String employeeId, String organizationUnitId,
+                        String positionId, AssignmentType assignmentType,
+                        Instant validFrom, Instant validTo) {
+        public LegacyCreate {
+            requestId=identifier(requestId==null?java.util.UUID.randomUUID().toString():requestId,"Request");
+            employeeId=identifier(employeeId==null?null:employeeId.trim(),"Employee selector");
+            organizationUnitId=identifier(organizationUnitId==null?null:organizationUnitId.trim(),"Unit selector");
+            positionId=identifier(positionId==null?null:positionId.trim(),"Position selector");
+            if(validFrom!=null)timestamp(validFrom,"Start");
+            if(validTo!=null)timestamp(validTo,"End");
+            if(validFrom!=null && validTo!=null)require(validTo.isAfter(validFrom),"Half-open interval end must follow its start");
+        }
+    }
+
     record Create(String requestId, String companyPartyId, String employeeId,
                   String organizationUnitId, String positionId, AssignmentType assignmentType,
                   Instant validFrom, Instant validTo,

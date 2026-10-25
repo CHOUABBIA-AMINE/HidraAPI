@@ -30055,6 +30055,133 @@ pending hosted results. After CURRENT acceptance, the already registered atomic
 application bean/REST/legacy cutover is next; do not execute it in this repair.
 
 
+### 2026-10-25 — HAPI-778 legacy CREATE translation under genuine native admission
+
+Owner Next refreshes main7fc190180abfce9bb56b06026d5cd05aa22226ea,
+parent82cf9ea7800c82900d9a96e78f4f45e4aa86d69f,
+tree76db7c32f049d9b1301fb33f916fadb7070a6772. Exact-head
+[Full892](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40204295050),
+[Fast201](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40204295065)
+and [Docs584](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40204295038)
+completed successfully. This accepts the preceding CURRENT package and its
+fixture/dictionary repair within the hosted development gate. This observation
+does not claim a separate independent download/revalidation of every raw report.
+AGENTS, ROADMAP, reconciliation, task index, selected B3 record, actual tree and
+relevant owner, legacy, query, mapper, repository, interceptor and test seams were
+refreshed before mutation. HAPI-778 remains PARTIAL/IN_PROGRESS.
+
+**Concrete integrated implementation slice, not a generic planning checkpoint.**
+The registered B3 legacy-create orchestration is absent: the old service still
+uses Instant.now and unguarded JPA save, while protected Create requires explicit
+company, revisions, type and start before native admission. A controller mapper
+cannot supply the genuine future native sample or safely invent policy revisions.
+Implement this required application seam through the existing admitted B3 files
+before activating both old aliases atomically with their protected readers and
+new endpoints. Continue the existing exact message
+`feat(organization): persist protected appointment lifecycle and history`.
+
+**Explicit selector and single physical execution.** Add nested LegacyCreate
+selectors and createLegacy to the existing inbound port/application service.
+Retain legacy identifier trimming separately from exact typed lifecycle commands.
+An omitted request key receives a new UUID when its selectors are constructed;
+an explicit key is never trimmed or regenerated. Preserve type/start omissions
+until genuine admission; validate identifiers, supplied microsecond instants and
+explicit intervals without wall-clock substitution. No company, actor, policy,
+revision, grant, permit, owner result or credential is accepted in this selector.
+
+The service prepares the genuine Identity context outside the transaction, then
+uses the same existing executePublication pipeline, retained private handle,
+managed flush, final proof/guard and observed commit. It does not nest a second
+executor, expose a generic public callback or add another mutation SQL family.
+The coordinator consumes its original preparation once, enters admission, uses
+bounded SELECT-only unit/company discovery, acquires actual CREATE/native then
+Party then Organization fences and requires exact locked preview equality.
+Only after consuming the original genuine native contribution does the storage
+owner resolve an explicit Create. The coordinator independently matches all
+selector fields and the complete request. Fresh CURRENT defaults require PRIMARY
+and exactly the original sampledAt when start was omitted. Party eligibility,
+physical coordinates, reference classification and all original rechecks remain.
+The original typed CREATE/END/TRANSFER/CORRECT pipelines are preserved.
+
+**Locked normalization and replay.** The adapter authenticates its own active
+storage ticket/sample and actual CREATE request before resolution. Fresh commands
+read the existing validated current binding and full typed policy to derive their
+exact revisions. An existing sampled-actor/request receipt supplies its original
+canonical start/revisions instead, so an omitted start does not become a new
+timestamp on each retry. The original classifier must still verify the complete
+typed command digest, company namespace, actor, scope, event/receipt integrity,
+immutable result descriptors and replay graph. Supplied changed values cannot
+be normalized into the old receipt. No receipt is returned by normalization.
+
+A legacy selector has no company: discover its current binding company, repeat
+under fences and fail closed on unresolved/changed ownership. A sampled actor's
+same-key/same-employee/same-unit receipt from another company is rejected rather
+than silently creating a mutation in a rebound company. Ambiguous bounded
+receipt candidates likewise deny. This bridge does not infer cross-company
+authority or fabricate a historical-company selector; explicit company-scoped
+typed operations and their accepted historical behavior remain unchanged.
+Same-company binding/policy head advances retain the original receipt pins.
+
+**Seven new actual test methods, hosted execution pending.** Boundary23 (was22)
+covers legacy normalization, unique generated keys, retained omissions and bad
+explicit keys/precision. Application12 (was11) covers legacy dispatch through
+the same flush/final guard and unknown-completion no-result boundary.
+Coordinator76 (was74) covers native/Party/Organization ordering, one original
+sample before resolution, one-use preparation, changed locked descriptors and
+forged fresh-default time rejection without provisional permission.
+
+Concurrency81 (was78) adds genuine separated-login/native/private-publisher/
+executor/managed-JPA/observed-commit qualification: PRIMARY/default start equals
+the actual native event sample; same-key replay after binding AND policy head
+advance retains the original time/pins/result; changed input has no effects;
+post-flush fault rolls back all effects; committed permission revocation denies
+replay. A further method executes each real LDAP, ACTIVE_DIRECTORY and OIDC
+origin with its existing synthetic external-transport boundary, proves stored
+native/source-claim association and repeats replay after fresh authentication.
+Passive trace assertions retain physical guard/commit order. These authored
+tests are not a claim of local or hosted passage before the new run completes.
+
+**Exact twelve-path MODIFY scope; zero CREATE/DELETE:**
+- src/main/java/dz/sh/hidra/modules/organization/application/command/EmployeeAppointmentCommand.java
+- src/main/java/dz/sh/hidra/modules/organization/application/port/in/EmployeeAppointmentLifecycleUseCase.java
+- src/main/java/dz/sh/hidra/modules/organization/application/port/out/ProtectedEmployeeAppointmentRepositoryPort.java
+- src/main/java/dz/sh/hidra/modules/organization/application/service/EmployeeAppointmentLifecycleApplicationService.java
+- src/main/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinator.java
+- src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JdbcProtectedEmployeeAppointmentRepositoryAdapter.java
+- src/test/java/dz/sh/hidra/modules/organization/EmployeeAppointmentBoundaryGuardrailTest.java
+- src/test/java/dz/sh/hidra/modules/organization/application/service/EmployeeAppointmentLifecycleApplicationServiceTest.java
+- src/test/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinatorTest.java
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java
+- .github/ci-test-inventory.json, only these four existing suites' actual cases/source hashes
+- doc/roadmap/TASKS_HPS-003.md, only this append-only HAPI-778 evidence
+
+These are existing seams in the approved B3 finite implementation envelope.
+Preserve every prior case, inventory lane/weight/other entry, seven shards,
+all173 migration bytes, SQL guards/pins/templates, actual native validity and
+500/7500/250/750/1000ms ordinary/appointment/lock/statement/idle bounds. No owner
+export, authentication producer, permission policy, role/grant, credential,
+framework/dependency, JPA metadata, generated artifact, public bean/controller,
+legacy route, runtime configuration or frozen status is changed in this slice.
+
+Available inventory-validator32 self-tests and Java17 compiler-module parsing of
+all ten changed Java files pass (syntax only, no Java21 type resolution).
+All old cases and only seven real new identities, four inventory-entry changes,
+append-only history, exact scope, unchanged migration/JPA source bundle and
+added-line whitespace are checked. No Java21/Maven/PostgreSQL environment is
+provisioned locally. Hosted Full/Fast/Docs on the new SHA must validate compilation,
+SQL, genuine legacy normalization and all existing behavior; skipped tests are
+not proof. Additional query overhead is unmeasured and the fixed development
+work ceiling is not relaxed or claimed to be an industrial SLA.
+
+Publish guarded direct main, verify exact parent/tree/message/twelve blobs and
+scope, observe applicable exact-SHA Full/Fast/Docs creation/queue/start and STOP.
+Repair actual failures first. After acceptance, the remaining registered atomic
+public bean/REST/legacy writer-reader/interceptor cutover is next, followed by
+actual generated API/catalog reconciliation and final case-level acceptance.
+HAPI-590 remains independently PARTIAL/BLOCKED. This does not close HAPI-778,
+select simulation/P3, authorize deployment/release or establish industrial/OT readiness.
+
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

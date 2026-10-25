@@ -36,6 +36,23 @@ import static org.mockito.Mockito.*;
 
 /** Mocked executor/owners test application mechanics only, never physical commit or native authority. */
 class EmployeeAppointmentLifecycleApplicationServiceTest {
+    @Test void legacyCreateUsesTheSameFlushGuardAndObservedCompletionPipeline() {
+        for(boolean failed:List.of(false,true)) {
+            reset(coordinator,executor,repository);var unknown=new IllegalStateException("commit outcome unknown");callbacks(failed?unknown:null);
+            var selectors=new EmployeeAppointmentCommand.LegacyCreate("legacy","employee","unit","position",null,null,null);
+            var prepared=mock(ProtectedEmployeeAppointmentAdmissionCoordinator.Prepared.class);
+            var admission=mock(ProtectedEmployeeAppointmentAdmissionCoordinator.WriteAdmission.class);
+            var result=mock(EmployeeAppointmentResult.MutationReceipt.class);
+            when(coordinator.prepare()).thenReturn(prepared);when(coordinator.acquireLegacyWrite(prepared,selectors)).thenReturn(admission);
+            when(coordinator.apply(admission)).thenReturn(result);
+            if(failed)assertSame(unknown,assertThrows(IllegalStateException.class,()->service.createLegacy(selectors)));
+            else assertSame(result,service.createLegacy(selectors));
+            var order=inOrder(coordinator,repository);order.verify(coordinator).prepare();
+            order.verify(coordinator).acquireLegacyWrite(prepared,selectors);order.verify(coordinator).apply(admission);
+            order.verify(repository).flushManagedWork();order.verify(coordinator).prepareFinal(admission);
+            order.verify(coordinator).finalizeOperation(admission);verify(coordinator,never()).acquireWrite(any(),any());
+        }
+    }
     private static final Instant AT=Instant.parse("2026-10-24T10:00:00Z");
     private final ProtectedEmployeeAppointmentAdmissionCoordinator coordinator=mock(ProtectedEmployeeAppointmentAdmissionCoordinator.class);
     private final ProtectedTransactionExecutor executor=mock(ProtectedTransactionExecutor.class);

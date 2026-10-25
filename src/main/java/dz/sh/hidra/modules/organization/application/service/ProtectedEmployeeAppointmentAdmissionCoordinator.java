@@ -408,6 +408,61 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
         }
     }
 
+    /** Legacy omissions are resolved only after native admission and locked descriptor equality. */
+    WriteAdmission acquireLegacyWrite(Prepared prepared, EmployeeAppointmentCommand.LegacyCreate selectors) {
+        WriteAdmission result=null;
+        try {
+            Objects.requireNonNull(selectors);
+            if(!TransactionSynchronizationManager.isActualTransactionActive()
+                    || !TransactionSynchronizationManager.isSynchronizationActive()
+                    || TransactionSynchronizationManager.isCurrentTransactionReadOnly()
+                    || prepared==null || prepared.owner!=this || prepared.thread!=Thread.currentThread()
+                    || !prepared.used.compareAndSet(false,true))throw denied();
+            executor.beginAdmission();
+            var preview=Objects.requireNonNull(storage.previewLegacy(selectors));preview.requireBounded();
+            if(preview.assignmentId()!=null || preview.companyUnits().size()!=1
+                    || !selectors.employeeId().equals(preview.employeeId())
+                    || !selectors.organizationUnitId().equals(preview.companyUnits().get(0).organizationUnitId()))throw denied();
+            var request=new Request(Action.CREATE,preview.companyUnits(),selectors.employeeId());
+            var nativeAdmission=Objects.requireNonNull(identity.acquire(prepared.nativeIdentity,request));
+            String company=preview.companyUnits().get(0).companyPartyId();
+            var partyAdmission=Objects.requireNonNull(party.acquire(company));
+            var repositoryAdmission=Objects.requireNonNull(storage.acquire(nativeAdmission,List.of(partyAdmission),preview));
+            var locked=Objects.requireNonNull(storage.previewLegacy(selectors));locked.requireBounded();
+            if(!preview.equals(locked))throw denied();
+            var sample=Objects.requireNonNull(storage.contribute(repositoryAdmission));
+            if(!request.equals(sample.request()) || sample.overallDecision()
+                    !=OrganizationProtectedAppointmentAuthorizationContract.Decision.PERMIT)throw denied();
+            var command=Objects.requireNonNull(storage.resolveLegacyCreate(repositoryAdmission,selectors));
+            if(!command.requestId().equals(selectors.requestId())
+                    || !command.employeeId().equals(selectors.employeeId())
+                    || !command.organizationUnitId().equals(selectors.organizationUnitId())
+                    || !command.positionId().equals(selectors.positionId())
+                    || command.assignmentType()!=(selectors.assignmentType()==null
+                        ?dz.sh.hidra.modules.organization.domain.value.AssignmentType.PRIMARY:selectors.assignmentType())
+                    || selectors.validFrom()!=null && !command.validFrom().equals(selectors.validFrom())
+                    || !Objects.equals(command.validTo(),selectors.validTo())
+                    || !request.equals(requestFor(command,null,locked)))throw denied();
+            result=new WriteAdmission(this,nativeAdmission,command,request);
+            result.partyAdmission=partyAdmission;result.repositoryAdmission=repositoryAdmission;result.sample=sample;
+            TransactionSynchronizationManager.registerSynchronization(result);
+            result.referenceUse=Objects.requireNonNull(storage.referenceUse(repositoryAdmission,command,sample));
+            requireReferenceShape(result);
+            if(result.referenceUse==ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.CURRENT) {
+                // Fresh default start MUST be the original genuine sample, never an application clock.
+                if(selectors.validFrom()==null && !command.validFrom().equals(sample.sampledAt()))throw denied();
+                var eligibility=Objects.requireNonNull(storage.contributeParty(repositoryAdmission));
+                if(!company.equals(eligibility.partyId()) || eligibility.backendPid()!=sample.backendPid()
+                        || eligibility.transactionId()!=sample.transactionId())throw denied();
+                result.eligibility=eligibility;
+            }
+            requireCurrentWrite(result);
+            return result;
+        } catch(RuntimeException failure) {
+            if(result!=null)result.invalidate();executor.rejectAdmission();throw denied(failure);
+        }
+    }
+
     /** Revalidate all issuing owners; an enum, scalar sample or opaque handle is never authority. */
     void requireCurrentWrite(WriteAdmission admission) {
         var timings = new BoundaryTimings("requireCurrentWrite");

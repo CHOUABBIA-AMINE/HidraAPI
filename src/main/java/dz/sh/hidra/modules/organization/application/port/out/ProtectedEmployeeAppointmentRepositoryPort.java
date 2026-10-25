@@ -40,6 +40,14 @@ import java.util.Set;
  */
 public interface ProtectedEmployeeAppointmentRepositoryPort {
 
+    /** Untrusted legacy unit-to-company discovery; no default time, policy or authority is supplied. */
+    DescriptorPreview previewLegacy(EmployeeAppointmentCommand.LegacyCreate selectors);
+
+    /** Resolve explicit CREATE only under genuine sampled native admission and retained owner fences.
+     * Existing scoped receipts retain original canonical time/revisions for replay classification. */
+    EmployeeAppointmentCommand.Create resolveLegacyCreate(Admission admission,
+            EmployeeAppointmentCommand.LegacyCreate selectors);
+
     /** Exact complete CURRENT admission is required before page or count disclosure. */
     EmployeeAppointmentResult.CurrentPage currentAssignments(Admission admission, EmployeeAppointmentQuery.Current query);
 

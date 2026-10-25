@@ -347,6 +347,62 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         assertEquals(RUNTIME_APP,runtimeJdbc.queryForObject("SELECT session_user",String.class));
     }
 
+    @Test void genuineLegacyCreateUsesNativeSampleAndOriginalReplayAfterConfigurationAdvance() throws Exception {
+        var f=fixture(false);String actor=runtimeActor(f);var service=runtimeService(runtimeEntityManager);
+        var selectors=new EmployeeAppointmentCommand.LegacyCreate(id(),f.employee(),f.units().get(0),f.position(),null,null,null);
+        try {
+            var trace=new RuntimeTrace();var created=tracedRuntime("LEGACY_NATIVE_SAMPLE",trace,()->service.createLegacy(selectors));trace.committed();
+            assertEquals(AssignmentType.PRIMARY,created.after().snapshot().appointment().assignment().assignmentType());
+            assertEquals(created.sampledAt(),created.after().snapshot().appointment().assignment().validFrom());
+            assertEquals(1,created.after().snapshot().binding().revision());assertEquals(1,created.after().policyRevision());
+            assertFalse(created.historicalReplay());assertEquals(selectors.requestId(),created.requestId());
+            activatePolicy(f,policy());
+            try(var c=DriverManager.getConnection(POSTGRES.getJdbcUrl(),CONFIG,PASSWORD)) {scalar(c,"SELECT public.hidra_org_activate_appointment_binding(?,?,?,1)",f.units().get(0),f.units().get(0),f.company());}
+            runtimeAuthenticate(actor);
+            var replayTrace=new RuntimeTrace();var replay=tracedRuntime("LEGACY_ORIGINAL_REPLAY",replayTrace,()->service.createLegacy(selectors));replayTrace.committed();
+            assertTrue(replay.historicalReplay());assertEquals(created.eventId(),replay.eventId());assertEquals(created.after(),replay.after());
+            assertEquals(created.sampledAt(),replay.sampledAt());
+            String effects=runtimeEffects(f,actor);
+            var changed=new EmployeeAppointmentCommand.LegacyCreate(selectors.requestId(),f.employee(),f.units().get(0),f.position(),AssignmentType.SECONDARY,null,null);
+            assertThrows(RuntimeException.class,()->service.createLegacy(changed));assertEquals(effects,runtimeEffects(f,actor));
+            assertEquals(RUNTIME_APP,runtimeJdbc.queryForObject("SELECT session_user",String.class));
+        } finally {SecurityContextHolder.clearContext();}
+    }
+
+    @Test void genuineLegacyCreateRollsBackOnManagedFlushAndDeniesRevokedReplay() throws Exception {
+        var f=fixture(false);String actor=runtimeActor(f);var service=runtimeService(runtimeEntityManager);
+        var selectors=new EmployeeAppointmentCommand.LegacyCreate(id(),f.employee(),f.units().get(0),f.position(),null,null,null);
+        try {
+            String before=runtimeEffects(f,actor);var em=spy(runtimeEntityManager);
+            doAnswer(call->{call.callRealMethod();throw new IllegalStateException("synthetic legacy post-flush fault");}).when(em).flush();
+            var rejected=new RuntimeTrace();
+            assertThrows(RuntimeException.class,()->tracedRuntime("LEGACY_FLUSH_ROLLBACK",rejected,()->runtimeService(em).createLegacy(selectors)));
+            rejected.rejected();assertEquals(0,rejected.guardBegan);assertEquals(before,runtimeEffects(f,actor));
+            service.createLegacy(selectors);String committed=runtimeEffects(f,actor);
+            admin("DELETE FROM public.hidra_identity_user_permission_grant WHERE user_id=?",actor);
+            var denied=new RuntimeTrace();assertThrows(RuntimeException.class,()->tracedRuntime("LEGACY_REVOKED_REPLAY",denied,()->service.createLegacy(selectors)));
+            denied.rejected();assertEquals(0,denied.guardBegan);assertEquals(committed,runtimeEffects(f,actor));
+        } finally {SecurityContextHolder.clearContext();}
+    }
+
+    @Test void genuineExternalOriginsResolveLegacyDefaultsThroughTheirBoundNativeIssuers() throws Exception {
+        for(String type:List.of("LDAP","ACTIVE_DIRECTORY","OIDC")) {
+            var f=fixture(false);var origin=runtimeActor(f,type);var service=runtimeService(runtimeEntityManager);
+            var selectors=new EmployeeAppointmentCommand.LegacyCreate(id(),f.employee(),f.units().get(0),f.position(),null,null,null);
+            try {
+                var trace=new RuntimeTrace();var result=tracedRuntime(type+"_LEGACY_DEFAULTS",trace,()->service.createLegacy(selectors));trace.committed();
+                assertEquals(result.sampledAt(),result.after().snapshot().appointment().assignment().validFrom());
+                assertEquals(AssignmentType.PRIMARY,result.after().snapshot().appointment().assignment().assignmentType());
+                try(var c=owner()) {
+                    assertEquals("1",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_event e JOIN public.hidra_identity_operation_binding b ON b.binding_id=e.actor_binding_id::text JOIN public.hidra_identity_bound_source_claim_evidence s ON s.binding_id=b.binding_id WHERE e.employee_id=? AND e.actor_user_id=? AND b.authentication_type=? AND b.external_identity_id=?",
+                            f.employee(),origin.actor(),type,origin.link()));
+                }
+                runtimeAuthenticate(origin);var replay=service.createLegacy(selectors);
+                assertTrue(replay.historicalReplay());assertEquals(result.eventId(),replay.eventId());
+            } finally {SecurityContextHolder.clearContext();}
+        }
+    }
+
     @Test void genuineLdapLifecycleReplayRollbackAndLinkRevocationUsePrivatePublisher() throws Exception {
         runtimeExternalLifecycle("LDAP");
     }

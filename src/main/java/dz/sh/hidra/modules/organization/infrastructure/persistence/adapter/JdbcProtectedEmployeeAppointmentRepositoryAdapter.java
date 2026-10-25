@@ -71,6 +71,63 @@ import tools.jackson.databind.json.JsonMapper;
  * successful physical commit remains the executor's independent obligation.
  */
 public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements ProtectedEmployeeAppointmentRepositoryPort {
+    @Override public DescriptorPreview previewLegacy(EmployeeAppointmentCommand.LegacyCreate selectors) {
+        try {
+            Objects.requireNonNull(selectors);
+            var companies=jdbc.query("SELECT company_party_id FROM public.hidra_org_appointment_binding_head WHERE organization_unit_id=? LIMIT 2",
+                    (r,i)->exact(r.getString(1)),selectors.organizationUnitId());
+            if(companies==null || companies.size()!=1)throw denied();
+            return new DescriptorPreview(List.of(new CompanyUnit(companies.get(0),selectors.organizationUnitId())),
+                    selectors.employeeId(),null,false);
+        } catch(RuntimeException failure){throw denied(failure);}
+    }
+
+    @Override public EmployeeAppointmentCommand.Create resolveLegacyCreate(
+            ProtectedEmployeeAppointmentRepositoryPort.Admission admission,EmployeeAppointmentCommand.LegacyCreate selectors) {
+        StorageAdmission t=null;
+        try {
+            t=ticket(admission);requireCurrent(t);
+            if(selectors==null || t.sample==null || t.parties.size()!=1 || t.mutation!=null
+                    || t.sample.request().action()!=OrganizationProtectedAppointmentAuthorizationContract.Action.CREATE
+                    || !t.preview.equals(previewLegacy(selectors)))throw denied();
+            String company=t.preview.companyUnits().get(0).companyPartyId();
+            // A legacy selector has no company. Never silently turn a retry of this
+            // actor's original same-unit CREATE into a new company's mutation after rebind.
+            var receipts=jdbc.query("""
+                    SELECT e.company_party_id,(pg_catalog.convert_from(e.canonical_payload,'UTF8')::jsonb->'command')::text
+                      FROM public.hidra_org_appointment_receipt r
+                      JOIN public.hidra_org_appointment_event e ON e.event_id=r.event_id
+                     WHERE r.actor_user_id=? AND r.request_id=? AND
+                       (e.company_party_id=? OR (e.operation='CREATE' AND e.employee_id=? AND
+                        pg_catalog.convert_from(e.canonical_payload,'UTF8')::jsonb->'command'->>'organizationUnitId'=?))
+                     LIMIT 2
+                    """,(r,i)->new String[]{r.getString(1),r.getString(2)},
+                    t.sample.userId(),selectors.requestId(),company,selectors.employeeId(),selectors.organizationUnitId());
+            if(receipts==null || receipts.size()>1)throw denied();
+            var type=selectors.assignmentType()==null?AssignmentType.PRIMARY:selectors.assignmentType();
+            Instant from=selectors.validFrom();long bindingRevision;long policyRevision;
+            if(!receipts.isEmpty()) {
+                if(!company.equals(receipts.get(0)[0]))throw denied();
+                var original=object(COMMAND_JSON.readValue(receipts.get(0)[1],Map.class));
+                if(!"CREATE".equals(text(original,"kind")))throw denied();
+                // The ordinary typed classifier subsequently checks the complete
+                // digest, actor, scope, event, receipt and immutable result graph.
+                if(from==null)from=time(original,"validFrom",false);
+                bindingRevision=number(original,"expectedBindingRevision");
+                policyRevision=number(original,"expectedPolicyRevision");
+            } else {
+                if(from==null)from=t.sample.sampledAt();
+                var bindings=jdbc.query(CURRENT_BINDING_SQL,(r,i)->r.getLong(2),selectors.organizationUnitId(),company);
+                if(bindings==null || bindings.size()!=1)throw denied();
+                bindingRevision=bindings.get(0);policyRevision=writePolicy(company).revision();
+            }
+            var result=new EmployeeAppointmentCommand.Create(selectors.requestId(),company,selectors.employeeId(),
+                    selectors.organizationUnitId(),selectors.positionId(),type,from,selectors.validTo(),bindingRevision,policyRevision);
+            if(!t.preview.equals(preview(result)))throw denied();
+            requireCurrent(t);return result;
+        } catch(RuntimeException failure){poison(t==null?admission:t);throw denied(failure);}
+    }
+
     private static final String SOURCE_DESCRIPTOR_SQL = """
             SELECT a.employee_id, a.organization_unit_id, b.company_party_id
               FROM public.hidra_org_employee_assignment a

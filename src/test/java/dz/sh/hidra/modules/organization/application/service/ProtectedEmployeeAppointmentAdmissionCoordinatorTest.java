@@ -40,6 +40,41 @@ import static org.mockito.Mockito.*;
 
 /** Pure synthetic descriptor mechanics, not issued native tickets or PostgreSQL proof. */
 class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
+    @Test void legacyResolutionOccursOnlyAfterTheOriginalNativeSampleAndRetainedOwnerFences() {
+        try(var f=new WriteFixture()) {
+            var selectors=new EmployeeAppointmentCommand.LegacyCreate("req","employee","unit","position",null,null,null);
+            when(f.storage.previewLegacy(selectors)).thenReturn(f.descriptors);
+            when(f.storage.resolveLegacyCreate(f.storageTicket,selectors)).thenReturn((EmployeeAppointmentCommand.Create)f.command);
+            var ticket=f.coordinator.acquireLegacyWrite(f.prepared,selectors);assertNotNull(ticket);
+            var order=inOrder(f.executor,f.identity,f.party,f.storage);
+            order.verify(f.executor).beginAdmission();order.verify(f.storage).previewLegacy(selectors);
+            order.verify(f.identity).acquire(any(),eq(f.request));order.verify(f.party).acquire("company");
+            order.verify(f.storage).acquire(f.nativeTicket,List.of(f.partyTicket),f.descriptors);
+            order.verify(f.storage).previewLegacy(selectors);order.verify(f.storage).contribute(f.storageTicket);
+            order.verify(f.storage).resolveLegacyCreate(f.storageTicket,selectors);
+            verify(f.identity,times(1)).acquire(any(),any());verify(f.storage,times(1)).contribute(any());
+            assertThrows(AccessDeniedException.class,()->f.coordinator.acquireLegacyWrite(f.prepared,selectors));
+        }
+    }
+
+    @Test void legacyChangedDescriptorsAndFakeDefaultTimeCannotBecomeWriteAuthority() {
+        for(boolean changed:List.of(false,true))try(var f=new WriteFixture()) {
+            var selectors=new EmployeeAppointmentCommand.LegacyCreate("req","employee","unit","position",null,null,null);
+            when(f.storage.previewLegacy(selectors)).thenReturn(f.descriptors);
+            if(changed)when(f.storage.previewLegacy(selectors)).thenReturn(f.descriptors,
+                    preview("other","unit","employee",null));
+            else {
+                when(f.storage.resolveLegacyCreate(f.storageTicket,selectors)).thenReturn(new EmployeeAppointmentCommand.Create(
+                        "req","company","employee","unit","position",AssignmentType.PRIMARY,START.plusSeconds(1),null,1,1));
+                when(f.storage.referenceUse(eq(f.storageTicket),any(),eq(f.sample)))
+                        .thenReturn(ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.CURRENT);
+            }
+            assertThrows(AccessDeniedException.class,()->f.coordinator.acquireLegacyWrite(f.prepared,selectors));
+            verify(f.executor).rejectAdmission();verify(f.storage,never()).prepareProvisional(any(),any());
+            verify(f.executor,never()).beginProvisional(any(),any());
+            verify(f.storage,never()).contributeParty(any());
+        }
+    }
     private static final Instant START = Instant.parse("2026-10-21T10:00:00Z");
 
     private static dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.MutationReceipt replayResult() {

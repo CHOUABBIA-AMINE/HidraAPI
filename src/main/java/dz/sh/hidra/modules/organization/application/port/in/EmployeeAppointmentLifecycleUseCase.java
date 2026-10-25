@@ -30,6 +30,7 @@ import dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQue
  * record never constitutes admission; no implementation is wired by this stage.
  */
 public interface EmployeeAppointmentLifecycleUseCase {
+    EmployeeAppointmentResult.MutationReceipt createLegacy(EmployeeAppointmentCommand.LegacyCreate selectors);
     EmployeeAppointmentResult.CurrentPage currentAssignments(EmployeeAppointmentQuery.Current query);
     EmployeeAppointmentResult.MutationReceipt create(EmployeeAppointmentCommand.Create command);
 

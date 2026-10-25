@@ -11,6 +11,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /** Strict immutable selectors only; no permission, current owner proof or storage. */
 class EmployeeAppointmentBoundaryGuardrailTest {
+    @Test void legacySelectorsNormalizeIdentifiersButRetainNativeDependentOmissionsAndExactRequestKey() {
+        var s=new EmployeeAppointmentCommand.LegacyCreate(null," employee "," unit "," position ",null,null,null);
+        assertEquals("employee",s.employeeId());assertEquals("unit",s.organizationUnitId());assertEquals("position",s.positionId());
+        assertNotNull(java.util.UUID.fromString(s.requestId()));assertNull(s.assignmentType());assertNull(s.validFrom());
+        assertNotEquals(s.requestId(),new EmployeeAppointmentCommand.LegacyCreate(null,"employee","unit","position",null,null,null).requestId());
+        assertThrows(InvalidOrganizationValueException.class,()->new EmployeeAppointmentCommand.LegacyCreate(" key ","employee","unit","position",null,null,null));
+        assertThrows(InvalidOrganizationValueException.class,()->new EmployeeAppointmentCommand.LegacyCreate("key","employee","unit","position",null,Instant.parse("2026-10-25T10:00:00.000000001Z"),null));
+    }
     private static final Instant FROM = Instant.parse("2026-10-21T10:00:00Z");
     private static final Instant TO = Instant.parse("2026-10-21T11:00:00Z");
 

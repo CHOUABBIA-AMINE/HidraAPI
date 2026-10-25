@@ -132,6 +132,8 @@
         "invalidNativeWriteTicketStopsBeforePartyOrStorageAcquisition",
         "invalidationDuringOwnerRecheckCannotRestoreReadHandle",
         "journalMaterializationFailureCannotReachFinalPreparationOrGuard",
+        "legacyChangedDescriptorsAndFakeDefaultTimeCannotBecomeWriteAuthority",
+        "legacyResolutionOccursOnlyAfterTheOriginalNativeSampleAndRetainedOwnerFences",
         "mapsTypedCommandsAndQueriesToFixedNativeActions",
         "missingOrRepeatedFinalPreparationAndPostGuardOwnerReadPoisonTheTicket",
         "missingPartyOrStorageTicketVetoesTheOriginalWriteTransaction",
@@ -174,7 +176,7 @@
       "lane": "unit-architecture",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinatorTest.java",
-      "source_sha256": "0cf5bb18c12048c712dd40ff2d1581a841978cb7f7f23b7254dd0ee41c6a2b7f",
+      "source_sha256": "3a957b370d667d2e8e9fbffd163931158d53ea15b7109b7a0e7c263526243a08",
       "supports": []
     },
     {
@@ -8972,6 +8974,7 @@
         "exactVersionAndPolicyQueriesRequireExplicitSelectors",
         "historyPageDefensivelyCopiesEntriesAndNeverDisclosesTotals",
         "inboundUseCaseReturnsDistinctPrivateAndRedactedHistoryTypes",
+        "legacySelectorsNormalizeIdentifiersButRetainNativeDependentOmissionsAndExactRequestKey",
         "mutationReceiptDistinguishesNewEventFromHistoricalReplayAndRequiresShape",
         "pagesRejectUnboundedLimitsAndMalformedCursors",
         "positionResultRedactsEmployeeAndPrivateActorFieldsStructurally",
@@ -8988,7 +8991,7 @@
       "lane": "unit-architecture",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/EmployeeAppointmentBoundaryGuardrailTest.java",
-      "source_sha256": "d0c2f38ae7df070003763180bc9052111f4a71efa91d12ff915d1452ee36b8a3",
+      "source_sha256": "a2744fb080e533be07eecb288ce498504ea1245fbd7f3981f5fe9ca21dd6e30a",
       "supports": []
     },
     {
@@ -9144,7 +9147,10 @@
         "genuineCurrentReadDeniesOutOfPageForeignOwnersBeforeReturningCounts",
         "genuineDevelopmentWorkCapRejectsAfterFlushWithoutWaitingForNativeExpiry",
         "genuineExecutionRollsBackProvisionalWritesWhenActualManagedFlushFails",
+        "genuineExternalOriginsResolveLegacyDefaultsThroughTheirBoundNativeIssuers",
         "genuineLdapLifecycleReplayRollbackAndLinkRevocationUsePrivatePublisher",
+        "genuineLegacyCreateRollsBackOnManagedFlushAndDeniesRevokedReplay",
+        "genuineLegacyCreateUsesNativeSampleAndOriginalReplayAfterConfigurationAdvance",
         "genuineLocalLifecycleReplayAndScopedReadsUsePrivatePublisherAndObservedCommit",
         "genuineNativeDenialDoesNotCreateProjectionEventReceiptOrKeys",
         "genuineNativeExpiryAtFinalDatabaseGuardRollsBackWhileWorkBudgetRemains",
@@ -9191,7 +9197,7 @@
       "lane": "postgres-integration",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java",
-      "source_sha256": "f4370efa645a47bf3c3467b138e564fd92fc214b394e4f5acb2a50342770fa1a",
+      "source_sha256": "a0fac2984f9848294bbd794725fe55e84c4dade081cb326bc63a224447b409df",
       "supports": []
     },
     {
@@ -9204,6 +9210,7 @@
         "exactVersionAndPolicyUseTheirOwnAuthorizedReadAndFinalGuard",
         "finalGuardOrCompletionFailureNeverReturnsTheDetachedResultOrRetries",
         "finalPreparationFailureCannotReachTheScalarGuard",
+        "legacyCreateUsesTheSameFlushGuardAndObservedCompletionPipeline",
         "managedFlushFailureCannotReachPreparationOrFinalGuard",
         "mismatchedHistoryScopeIsRejectedBeforeAnyPreparationOrSql",
         "privateAndRedactedHistoryDispatchCannotBeInterchanged",
@@ -9215,7 +9222,7 @@
       "lane": "unit-architecture",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/application/service/EmployeeAppointmentLifecycleApplicationServiceTest.java",
-      "source_sha256": "85bb91cf7c81c2395a21e2ab1ded6e7c45cd0fc04c60e600f945bd99e227a0b1",
+      "source_sha256": "aa7c7056d627b708cd1c5f5c530a1d593f63f73b04318ea00f0e2f1799caf0f1",
       "supports": []
     }
   ],

@@ -6334,6 +6334,29 @@ and observe applicable exact-source Full/Fast/Docs. Continue the authorized
 same-turn repair/artifact/acceptance work only on actual returned evidence.
 
 
+### 2026-10-25 — HAPI-591 Full900 test compilation repair
+
+Full900 and Fast207 on2b3373a55528cb1c08bc1d155339507cc50d0034 failed testCompile
+because the expanded native fixture imported both the existing Identity
+TopologyScopedAccessContract.Operation and the new exchange Operation enum.
+Production Java21 packaging and actual OpenAPI generation succeeded; Docs595
+and static validation passed. No new JUnit/PostgreSQL execution passed in the
+failed test lanes; missing lane-evidence failures were consequential.
+
+Repair only the enum collision: remove the new single-type import and qualify
+only the new fixture extension's EngineeringLocalExchangeUseCase.Operation
+references. Preserve the old Identity Operation use, all43 fixture method/case
+identities and assertions, production code and all other test classes. Update
+only that existing inventory entry's source hash plus this append-only evidence.
+Exact scope3 MODIFY/zero CREATE/DELETE; retain registered implementation message
+`feat(topology): implement typed local engineering exchange`.
+Syntax and duplicate single-type import checks pass; actual Java21/Maven/
+Spring/JUnit/PostgreSQL remain the next hosted gate. The expected canonical API
+drift is separate and must use its captured actual generated artifact later.
+Continue the owner-authorized same-turn repair/verification sequence without
+claiming acceptance or relaxing any test, native security or artifact gate.
+
+
 <a id="hapi-608"></a>
 ## HAPI-608 — Aggregate typed engineering exchange
 

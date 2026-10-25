@@ -27,11 +27,15 @@ internal software and draft authoring scopes. The former HAPI-589
 NOT_IMPLEMENTED pointer is superseded by its owning phase acceptance
 record; no prerequisite implementation should be repeated.
 
-[HAPI-590](TASKS_HPS-004.md#hapi-590) is PARTIAL/BLOCKED by owner direction
-while its required Full CI artifact gate is failing. Full788 on ce9cdf0 failed
-canonical OpenAPI equality; Fast109, Docs472, unit/architecture and all five
-PostgreSQL jobs passed. Dictionary validation remains pending. Package C and
-formal acceptance remain unfinished; no dependent task is unblocked by this hold.
+[HAPI-590](TASKS_HPS-004.md#hapi-590) is VERIFIED/COMPLETED for governed
+public revision publication/history in the accepted development scope.
+Full899 and Docs591 succeeded on edd66b3a4dc27b724dbb99b6eaf6d0a456fe6ae3;
+Docs592 validated the subsequent governance-only head. Its phase acceptance
+records all51 dedicated plus7 extension cases, actual API/catalog evidence and
+the owner's unqualified-publication semantics. The dated failed-artifact hold
+is resolved; do not repeat completed Packages A/B/C. No dependent task,
+HidraWEB integration, engineering qualification, release or deployment is
+selected automatically.
 
 [HAPI-778](TASKS_HPS-003.md#hapi-778), employee appointment lifecycle and
 position history, is VERIFIED/COMPLETED for its accepted development software
@@ -40,8 +44,7 @@ the phase acceptance record contains the exact retained case/API/catalog evidenc
 and performance/deployment limits. The former source-review/design pointer is
 superseded; do not repeat completed implementation. Owner Next selected final
 acceptance and status-only closure. No next task is selected automatically.
-HAPI-590 remains PARTIAL/BLOCKED; existing HAPI-567/588/589 acceptance and the
-deferred simulator direction remain.
+Existing HAPI-567/588/589 acceptance and the deferred simulator direction remain.
 
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent

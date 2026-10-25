@@ -6416,9 +6416,9 @@ Legacy IDs: HPR-P25-052D
 
 Priority: P1
 
-Implementation Status: PARTIAL
+Implementation Status: VERIFIED
 
-Planning Status: BLOCKED
+Planning Status: COMPLETED
 
 Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -7656,6 +7656,169 @@ and STOP. Failure feedback repairs the actual gate first. After required gates
 succeed, formal HAPI-590 acceptance and the active HAPI-778 scoped-authority/
 ownership review remain separately selected registered stages; no automatic
 acceptance, release, deployment, simulation or OT operation occurs.
+
+### 2026-10-25 — HAPI-590 governed publication final development acceptance
+
+**Disposition: VERIFIED / COMPLETED for the registered governed public revision
+publication/history software scope.** Owner Next after accepted HAPI-778 selects
+the already registered final HAPI-590 acceptance, exact message
+`docs(topology): record governed publication acceptance`.
+The existing acceptance contract explicitly admits only this phase record,
+ULTIMATE_ROADMAP.md, ULTIMATE_PHASES.md and the matching index pointer.
+The former failed-artifact hold is resolved by actual accepted current evidence;
+do not rerun implementation or repeat Package C solely because its dated
+historical hold text remains preserved.
+
+**Source and gate chain.** Current main
+`d36f8c08206061d931bf0ef045a4956ee97fdf2d`,
+tree `d82270976b1ad8726ea70aafed1f69dcfe64ea72`;
+[Docs592](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40232685684)
+SUCCESS. Its parent
+`edd66b3a4dc27b724dbb99b6eaf6d0a456fe6ae3`,
+tree `a1055c6e8d1b039618b51b243eb3c6340d7b6d54`, passed
+[Full899](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40231624550)
+attempt1 and Docs591. Compare the complete recursive trees: only four HAPI-778
+governance files differ; every production/test/configuration/workflow/SQL/JPA/
+inventory/API/dictionary blob is identical to that Full899 source.
+Fast206 succeeded on the same final runtime source bc71df4d; subsequent commits
+only reconciled artifacts and governance. No new Fast job was selected for the
+artifact-only Full899 source or the docs-only closure.
+
+Full899's static, unit/architecture, all seven PostgreSQL shards, actual
+API/catalog and final aggregate gates succeeded. The aggregate ZIP
+artifact12612804441, run40231624550 attempt1, SHA256
+`7d79f0649cb415ffe80a3e9fd4d7042acdd4e09763ba1de1f69f85f6de958d58`
+matches its authenticated GitHub digest. Independently recheck10 gate-to-lane
+receipt hashes and all466 sealed files, source/run/attempt and raw XML results:
+459 active classes,3205 executions,zero failures/errors/skips. The existing
+four approved greenfield historical archives are not newly skipped active tests.
+Development partition mode has serial_oracle=false, same_run_equivalence=false
+and release_eligible=false; the optional serial diagnostic was intentionally
+unselected. No unrestricted audit/release acceptance is fabricated.
+
+**All58 registered acceptance cases are actually present and passing.**
+The exact51 dedicated names in the original package contract match the raw
+reports, plus all seven required existing-suite extension names below.
+Independently hash all seven dedicated test source blobs and compare their
+current inventory source_sha256 pins: every source hash matches.
+
+| Required dedicated suite | Successful executed cases | Accepted scope |
+|---|---:|---|
+| EngineeringRevisionPublicationTest | 6 | Context/version/epoch identity, immutable head transitions, conflicting replay, explicit missing diagnostics and no inferred physical qualification |
+| EngineeringRevisionPublicationCodecTest | 6 | Exact canonical source formats, decimal scales, source/component digests, old formats, malformed/truncated/oversized payload rejection |
+| EngineeringRevisionPublicationCursorCodecTest | 4 | Context/filter/asOf binding, high-water boundary, strict descending epochs and malformed/substituted cursor rejection |
+| EngineeringRevisionPublicationApplicationServiceTest | 8 | Native authority before protected lookup, one publisher transaction/sample, fresh-authority replay, exact reads independent of listing and no indeterminate retry |
+| EngineeringRevisionPublicationControllerTest | 8 | Eight typed routes, strict body/coercion rejection, expected epoch/predecessor/request key, non-disclosure and bounded history |
+| EngineeringRevisionPublicationBoundaryGuardrailTest | 5 | Closed route/permit/SQL/hash/owner boundaries and distinct publication permissions |
+| EngineeringRevisionPublicationPostgresIntegrationTest | 14 | Actual native providers/HTTP, separated roles, CAS winner, immutable snapshots, replay, lifecycle/history, owner ABA,38-fence ordering and rollback/catalog tamper |
+
+The seven successful existing-suite extensions are:
+- ForensicRemediationClosureTest.publicationCoordinatorAddsOnlyTheExactReviewedIdentityContract
+- ProtectedStationAdmissionBoundaryGuardrailTest.publicationAdmissionKeepsTheSingleClockAndPrivateSourceBoundaries
+- ProtectedOperationIdentityParticipantTest.publicationResourceMappingNeverChangesDraftOrMintsAClaimPair
+- JdbcProtectedAuthorizationEvidenceReaderTest.publicationDiagnosticsAndForgedPairsNeverSelectThePrivateQualifiedFamily
+- ProtectedEngineeringDraftAuthorizationPostgresIntegrationTest.publicationActionsRequireTheirOwnGenuineNativePairedResourceAndDeny
+- ProtectedTransactionExecutorTest.diagnosticAndOldOwnerPathsCannotMintPublicationMutationPermits
+- HidraRouteAuthorizationInterceptorTest.publicationDelegatesOnlyEightAuthenticatedExactCompiledTuples
+
+**Requirement-to-runtime closure.** The14 real PostgreSQL methods establish:
+- fourGenuineProvidersPublishAndReadExactSnapshots: genuine signed LOCAL/OIDC/
+  LDAP/ACTIVE_DIRECTORY native producers through the actual HTTP security chain;
+  same-context epochs/predecessors advance correctly and old snapshots remain
+  readable. External directory/decoder transport stays synthetic.
+- concurrentDraftCandidatesHaveOneContextHeadCasWinner and
+  identicalReplayIsStableAndConflictingReplayIsRejected: exactly one competing
+  context-head successor; fresh native authority preserves original receipt/
+  snapshot on identical replay without another event, while conflicting replay
+  is rejected.
+- sourceGraphSurveyDigestsAndIncompleteDiagnosticsRemainExact and
+  draftEditsNeverRewritePublishedSnapshots: original formats/bytes/digests,
+  optional graph/survey selections and missing/stale diagnostics remain exact.
+  The owner's selected readiness A is preserved: engineeringQualified=false,
+  with no invented physical or operational facts.
+- withdrawReactivateAndEffectiveBoundariesPreserveHistory and
+  exactReadAndKeysetHistorySurviveMoreThanHundredEvents: immutable lifecycle
+  history, equal-time/effective boundary semantics, exact original read after
+ 103 events, stable high-water paging while event104 appends, no duplicates or
+  foreign-context cursor substitution.
+- currentDenyRevocationAndForeignScopeRevealNoPublicationData,
+  ordinaryLoginCannotReadOrMutatePublicationStorage and
+  stationOwnerAbaAndTransferMismatchHoldWithoutRebinding: current scoped authority,
+  ordinary-login42501 boundaries after positive controls, station type/status/
+  ownership changes and monotone owner-generation ABA reject without rebinding
+  or foreign metadata.
+- writerFirstAndOwnerFirstRetainAllThirtyEightFences,
+  expiredFinalGuardAndDirtyFlushRollBackAllPublicationEffects and
+  catalogRoleAndLedgerTamperingFailClosed: real ordered/final held fences,
+  physical guard-expiry injection, dirty managed flush and deliberately swallowed
+  post-guard SQL all retain rollback/poison behavior; actual catalog/trigger/
+  role/ledger changes fail closed.
+- observedCommitAndIndeterminateOutcomeNeverAutoRetry: actual committed-event
+  transaction timestamp exists after service return. INDETERMINATE handling is
+  separately tested with explicitly simulated acknowledgement classification,
+  not falsely described as an induced unknown PostgreSQL COMMIT.
+
+**Actual generated contracts/catalog accepted.** Full899 API job121284390909
+passed runtime snapshot equality, generated-base compatibility, actual migrated
+catalog/dictionary generation/equality and evidence sealing. Its retained API
+contains all eight publication operations with hidraBearerJwt requirements:
+publish,withdraw,reactivate,exact,current,effective,history,request receipt.
+Canonical overall counts265 paths/287 operations/279 schemas include later
+appointment additions; they are not publication-only counts.
+
+The same retained API compares equal to the canonical snapshot after validation
+and removal of only generator source stamps. Supported backward compatibility
+against actual Full894 base50c86303ba5ed2174ef0183704b260370026a860 passes.
+Current API SHA256
+`345cad7a82d1fc5093324910476d57c6a86d8bd809dec27be098b6a4e77d03c0`;
+base API SHA256
+`cd0de17d857181cd4a159b3d26a2ecde5d6c9c8fae1b478426622ee011d576b1`.
+Actual PostgreSQL16.15 verification reports173 migrations,470 JPA mappings,
+516 relations,zero unresolved owners and reviewed_dictionary_checked=true.
+Catalog SHA256
+`716bba7873fbdc0502cde82ec4dc591a3a89a25974a184dd9313a83410d5b27a`;
+captured dictionary SHA256
+`0df8adf52bc8c2e42284849db6533e763c4a65eedd9acb18ef8e253a6414268b`;
+source bundle SHA256
+`6893e31c69bae45e190291858580397341414750b455da7273dfb57eba33b010`.
+These exact-source captured facts close the old Package C artifact gate;
+no generated artifact or physical fact is handwritten in this acceptance.
+
+**Scope and preserved limits.** Zero CREATE / four MODIFY / zero DELETE:
+- TASKS_HPS-004.md: only HAPI-590's two live status fields to VERIFIED/COMPLETED plus this task evidence.
+- ULTIMATE_ROADMAP.md and ULTIMATE_PHASES.md: only matching HAPI-590 status cells to VERIFIED/COMPLETED.
+- ULTIMATE_TASKS.md: only stale current-pointer descriptions of HAPI-590's resolved failed-artifact hold; preserve all other accepted work and no successor selection.
+
+Preserve every historic source/failed-run/hold record as dated evidence.
+HAPI-778 remains VERIFIED/COMPLETED; all other task IDs/statuses/priorities/
+dependencies/membership and all runtime/test/artifact blobs remain unchanged.
+No HAPI-591/592, station configuration, HidraWEB HWEB-F02/F03 integration,
+release, engine, deployment or live OT operation is selected automatically.
+
+Software acceptance is not engineering readiness: the owner's A remains
+unqualified publication with explicit incompleteness, no calibrated simulator
+or operational/physical qualification. Synthetic data and external source
+transport controls do not certify real IdP/network/SITE conditions. Ordinary
+publication500ms/lock250ms/statement750ms/idle1000ms limits remain unchanged;
+passing functional cases is not a production latency/load percentile claim.
+The separate appointment7500ms development cap is not applied to publication.
+
+**Validation and publication.** Recomputed aggregate/file/case provenance and
+all seven dedicated source hashes PASS; all51 dedicated plus7 extension cases
+match actual successful reports. Existing19 documentation-validator self-tests
+PASS. Before publication verify exact four-file scope, unchanged history,
+all921 registry/index identities, matching status rows and phase metadata.
+No new local Java/Maven/PostgreSQL execution is claimed by this docs-only stage.
+
+Publish one registered acceptance to main under expected d36f8c0 lease, verify
+exact parent/tree/four-file scope, confirm applicable Documentation CI
+creation/queue/start and STOP without waiting or starting another task.
+Implementation acceptance remains anchored to successful Full899; the new
+documentation commit's own validation is pending its workflow conclusion.
+No registered HAPI-590 implementation stage remains in this accepted bounded
+development scope. This acceptance does not establish dependent integrated
+or production readiness.
+
 
 
 <a id="hapi-592"></a>

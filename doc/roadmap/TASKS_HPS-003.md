@@ -19620,9 +19620,9 @@ Legacy IDs: ORG-GAP-003
 
 Priority: P1
 
-Implementation Status: PARTIAL
+Implementation Status: VERIFIED
 
-Planning Status: IN_PROGRESS
+Planning Status: COMPLETED
 
 Owning Module: `organization` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -30717,6 +30717,140 @@ PARTIAL/IN_PROGRESS until separately selected case-level acceptance using
 `docs(organization): record protected appointment lifecycle acceptance`;
 HAPI-590 remains independently blocked. No release/deployment, production data
 or industrial acceptance is selected; deferred simulation direction is unchanged.
+
+
+### 2026-10-25 — HAPI-778 final development software acceptance
+
+**Disposition: VERIFIED / COMPLETED for the registered employee appointment
+lifecycle and position-history development scope.** Owner Next follows the
+explicit two-step finish778 sequence (verify Full899, then final acceptance and
+task closure). This selects the registered acceptance message
+`docs(organization): record protected appointment lifecycle acceptance` and
+the bounded status synchronization below. It selects no next feature.
+
+**Exact accepted implementation/evidence source.** Main
+`edd66b3a4dc27b724dbb99b6eaf6d0a456fe6ae3`,
+parent `bc71df4d1989c79f20b65f623ace27795a45c1cc`,
+tree `a1055c6e8d1b039618b51b243eb3c6340d7b6d54`.
+[Full899](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40231624550)
+attempt1 SUCCESS, including all seven PostgreSQL shards, unit/architecture,
+static validation, API/catalog and Full Verification Gate. Exact-source
+[Docs591](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40231624608)
+SUCCESS. Fast is not selected for this artifact-only SHA; the unchanged final
+runtime source has Fast206 SUCCESS on bc71df4d. Development partitioning
+intentionally skips the optional serial diagnostic. No skipped active test is
+hidden by that job selection.
+
+**Independent retained-evidence checks.** Downloaded full aggregate
+artifact12612804441, named
+hidra-full-ci-evidence-edd66b3a4dc27b724dbb99b6eaf6d0a456fe6ae3-40231624550-1.
+ZIP SHA256
+`7d79f0649cb415ffe80a3e9fd4d7042acdd4e09763ba1de1f69f85f6de958d58`
+matches GitHub's digest. Recompute every gate-to-lane evidence digest and every
+sealed file digest:10 lane receipts and466 files match. Each lane binds exact
+source/run/attempt. Parse the retained raw XML rather than trusting workflow
+names alone:459 active classes,3205 executed tests,0 failures,0 errors,0 skips;
+case/class memberships and counts match each lane receipt. Recompute the
+current GitHub inventory SHA256
+`4226e274d8ef4b7f33fbcbb2b087f9ed529ed4d5c6b341ba5a2aa595bc171742`;
+all459 active class identities and all3205 registered case multiplicities
+match raw reports exactly. The four explicitly approved greenfield historical
+archive classes remain excluded by the existing policy; no new exclusion,
+skip, assertion change or inventory change is introduced.
+
+The aggregate is development-partitioned: serial_oracle=false,
+same_run_equivalence=false, release_eligible=false and
+optimized_adoption_eligible=false. Those values are retained, not relabeled
+as an unrestricted audit, production qualification or release gate.
+
+**Case-level acceptance matrix.** All suites below are present and successful
+in that same digest-verified artifact. Parameterized expansions count as
+executed cases, not additional source test methods. Together these19 relevant
+suites contribute464 executions; the whole gate has3205.
+
+| Obligation | Actual successful suites / executed cases | Representative verified cases |
+|---|---|---|
+| Half-open interval changes, atomic proposal and explicit overlap/capacity policy | EmployeeAppointmentChangeTest12; EmployeeAppointmentPolicyTest12; EmployeeAppointmentOwnershipPolicyTest17; CompanyBoundEmployeeAppointmentTest3 | equalTimeBoundariesAndOpenEndsUseHalfOpenCounting; requiresCompleteSymmetricMatrixAndExplicitLimits; transferValidatesTheFinalSetAndLeavesObservedStateIntactOnFailure; deniesCrossCompanyTransferDespiteMatchingUnitAndPositionLabels |
+| Framework boundaries and detached/redacted contracts | EmployeeAppointmentBoundaryGuardrailTest23 | positionResultRedactsEmployeeAndPrivateActorFieldsStructurally; contractsContainNoActorPermissionOrCredentials; currentSelectorsRejectGlobalUnsafeAndUnboundedLists |
+| Genuine native authority for LOCAL/LDAP/AD/OIDC, scoped denial, ABA and expiry | ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTest33; ProtectedOrganizationAppointmentAuthorizationParticipantTest34 | fourGenuineOriginsAndAllSevenActionsUseExactAppointmentResources; committedProviderAndCredentialAbaCannotRestorePreparedOrigin; missingCatalogAndEveryMissingResourceGrantFailClosed; finalExpiryUsesActualDatabaseTimeAndRollsBack |
+| Private proof/key namespace and actual SQL verification | OrganizationAppointmentCommitProofPostgresIntegrationTest17; OrganizationAppointmentCommitProofCodecTest6; OrganizationAppointmentCommitProofPropertiesTest4 | frozenJavaSqlFrameHmacUuidUnicodeAndMicrosecondVectorAgree; separatedLoginsCannotReadKeysChangeStateOrCallPrivateVerifier; rollbackAndPostVerifierFailureLeaveNoOrphanConsumptionOrReceipt |
+| One original native sample, ordered owner acquisition, final guard and no ticket reuse | ProtectedEmployeeAppointmentAdmissionCoordinatorTest76; EmployeeAppointmentLifecycleApplicationServiceTest12 | writeLocksIdentityPartyOrganizationBeforeOneSampleAndEligibilityRead; anyProvisionalBoundaryFailurePoisonsTheOriginalHolderWithoutRetryOrOwnerCallbackInsideBlock; replayFinalCallbacksUseOneReadGuardWithoutProvisionalProofOrPartyEligibility |
+| Fresh migrated storage, immutable journal/pins, typed commands, private/redacted history, exact version/current/policy reads | EmployeeAppointmentLifecyclePostgresIntegrationTest99 | fullFreshFlywayInventoryHasEightOwnedTablesAndNoActivatedDefaults; protectedHistoryRetainsImmutableOwnershipAfterPartyRetirementAndCompanyRebinding; protectedExactVersionRetainsBeforeAndSuccessorPinsAfterCorrectionAndTransfer; jdbcPositionHistoryClosesAllPinnedCompaniesWithoutEmployeeDisclosure; currentSqlGuardRejectsForgedCountPageRowsPinsAndSelectors |
+| Actual managed flush and physical commit, competing writers, replay, revocation and rollback | EmployeeAppointmentConcurrencyPostgresIntegrationTest82 | genuineCompetingAppointmentRejectsWithoutPartialEffectsWhileWinnerCommits; genuineExecutionRollsBackProvisionalWritesWhenActualManagedFlushFails; originalCorrectionReplaysFromHistoricalPinsAfterLaterMoveRebindingAndPartySuspension; genuineNativeExpiryAtFinalDatabaseGuardRollsBackWhileWorkBudgetRemains; genuineCurrentReadDeniesOutOfPageForeignOwnersBeforeReturningCounts |
+| Wired protected public/legacy composition | same82-case genuine concurrency suite; EmployeeAppointmentLifecycleControllerTest5 | genuinePublicAliasesLifecycleCurrentReadsAndRedactedHistoryUseTheWiredProtectedOwner; bothLegacyAliasesKeepTheirStringResponseAndCarryTheOptionalExactRequestKey; unknownDuplicateCoercedOversizedAndSubmicrosecondBodiesNeverReachTheOwner |
+| Fixed scoped errors, exact route delegation and old CRUD closure | EmployeeAppointmentApiExceptionHandlerTest3; HidraRouteAuthorizationInterceptorTest10; EmployeeAssignmentSemanticRemediationTest10 | admittedConflictsAndUnknownCompletionHaveFixedDistinctStatuses; fixedErrorsNeverIncludeExceptionDetailsOrProtectedSelectors; appointmentDelegationRequiresEveryExactControllerMethodVerbAndPattern; legacyJpaWriterRejectsBeforeIssuingSqlAndRepositoryExposesNoCrudMutators |
+| Preserved Workflow membership | WorkflowOrganizationAppointmentMembershipTest6 | nativeSqlPredicateIsExactAndHalfOpenWithoutGlobalScan; activeMembershipUsesBoundedExactPredicateInsteadOfFindAll; expiredUnitAndNullSampleFailClosed |
+
+The genuine public case uses the real Spring MVC/controller/interceptor beans,
+native owners, separate publisher, protected transaction executor, migrated
+PostgreSQL and stored commit proofs. Mocked transport/error tests prove only
+their stated transport/error scope. The public case does not add servlet
+security filters or prove live-network/JWT-filter-chain interoperability;
+the separately exercised native authentication/filter boundaries are not
+misrepresented as a new end-to-end external HTTP certification.
+
+**Generated API and physical catalog acceptance.** The same-run API lane
+passed snapshot equality, actual successful-base generation/comparison,
+physical dictionary generation/equality and evidence sealing. Independently
+compare the retained current API with the canonical snapshot after validating
+and removing only their source stamps: equality PASS. The unchanged supported
+compatibility checker against the retained Full894 base
+50c86303ba5ed2174ef0183704b260370026a860 also PASSES. Actual counts remain
+265 paths,287 operations,279 schemas. Earlier required-field compatibility
+failures are resolved in actual generated output, not by a whitelist.
+
+Retained API SHA256
+`345cad7a82d1fc5093324910476d57c6a86d8bd809dec27be098b6a4e77d03c0`;
+base API SHA256
+`cd0de17d857181cd4a159b3d26a2ecde5d6c9c8fae1b478426622ee011d576b1`.
+Actual PostgreSQL16.15 verification reports173 migrations,470 JPA mappings,
+516 relations,0 unresolved owners and reviewed_dictionary_checked=true.
+Catalog SHA256
+`716bba7873fbdc0502cde82ec4dc591a3a89a25974a184dd9313a83410d5b27a`;
+captured dictionary SHA256
+`0df8adf52bc8c2e42284849db6533e763c4a65eedd9acb18ef8e253a6414268b`;
+source bundle SHA256
+`6893e31c69bae45e190291858580397341414750b455da7273dfb57eba33b010`.
+Captured dictionary generation metadata belongs to this source; do not claim
+byte identity with an earlier generator's metadata. No catalog/artifact rewrite
+is selected by this acceptance.
+
+**Explicit limits retained.** These are synthetic development software proofs,
+not personnel-data migration, deployed-role qualification, real IdP/directory
+interoperability, operational HTTP SLA, load percentile, industrial/SITE
+commissioning or autonomous OT control. The accepted appointment development
+work cap is7500ms; the separately labeled native-expiry qualification context
+uses10000ms. Ordinary publications remain500ms and technical lock/statement/
+idle limits250/750/1000ms. Retained thousands-of-JDBC-executions overhead remains
+a documented capacity/performance limitation; green functional acceptance does
+not call that overhead optimized or establish production latency.
+
+**Exact closure write scope — zero CREATE / four MODIFY / zero DELETE.**
+- TASKS_HPS-003.md: only HAPI-778's two live status fields become VERIFIED/COMPLETED, plus this appended task evidence.
+- ULTIMATE_ROADMAP.md: only HAPI-778's Implementation/Planning Status cells become VERIFIED/COMPLETED.
+- ULTIMATE_PHASES.md: only the corresponding HAPI-778 cells become VERIFIED/COMPLETED.
+- ULTIMATE_TASKS.md: replace only the stale HAPI-778 execution-pointer paragraph with its accepted closure and no next-task selection.
+
+This explicitly registers the status-only scope for the owner-selected closure;
+it does not change structural baseline, any other task status, priority,
+dependency, phase membership, title or historical evidence. HAPI-590 remains
+PARTIAL/BLOCKED. All production/test/configuration/workflow/SQL/JPA/manifest/
+inventory/API/dictionary blobs remain unchanged.
+
+Local checks: raw aggregate ZIP,10 receipt/466 file digests, exact inventory/
+class/case/count coverage, actual API equality and base compatibility PASS;
+all19 existing documentation-validator self-tests PASS. Focused921-row
+registry/index and103-task phase agreement plus exact four-file preservation
+checks are required before publication. No new Java/PostgreSQL execution is
+claimed for this documentation-only acceptance.
+
+Publish this single acceptance to main under expected edd66b3 lease, verify
+exact parent/tree/four-file scope and observe applicable Documentation CI
+creation/queue/start, then STOP without waiting or selecting another task.
+The accepted implementation remains anchored to successful Full899; the new
+documentation commit's own validation is pending until its workflow completes.
+HAPI-778 has no remaining registered implementation stage in this accepted
+development scope. Release/deployment and HAPI-590 are not unblocked.
 
 
 <a id="hapi-829"></a>

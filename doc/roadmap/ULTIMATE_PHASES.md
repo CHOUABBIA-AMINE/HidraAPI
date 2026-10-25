@@ -321,7 +321,7 @@ Cross-phase prerequisites in the approved task graph: No additional cross-phase 
 | [HAPI-775](TASKS_HPS-003.md#hapi-775) | harden organization domain invariants | harden organization domain invariants | P1 | — | VERIFIED | COMPLETED |
 | [HAPI-776](TASKS_HPS-003.md#hapi-776) | clarify organization identifier value semantics | clarify organization identifier value semantics | P1 | — | VERIFIED | COMPLETED |
 | [HAPI-777](TASKS_HPS-003.md#hapi-777) | verify model and value integrity | verify model and value integrity | P1 | — | IMPLEMENTED | COMPLETED |
-| [HAPI-778](TASKS_HPS-003.md#hapi-778) | Complete employee appointment lifecycle and position history | Provide atomic end-date/transfer/correction and position-occupant history under an explicit concurrent/acting-assignment policy, preserving existing appointment… | P1 | — | PARTIAL | IN_PROGRESS |
+| [HAPI-778](TASKS_HPS-003.md#hapi-778) | Complete employee appointment lifecycle and position history | Provide atomic end-date/transfer/correction and position-occupant history under an explicit concurrent/acting-assignment policy, preserving existing appointment… | P1 | — | VERIFIED | COMPLETED |
 | [HAPI-829](TASKS_HPS-003.md#hapi-829) | expose jpa entity constructors to persistence mapper | expose jpa entity constructors to persistence mapper | P1 | — | NOT_VERIFIABLE | COMPLETED |
 | [HAPI-833](TASKS_HPS-003.md#hapi-833) | confirm organization flyway migration | confirm organization flyway migration | P1 | — | NOT_VERIFIABLE | COMPLETED |
 | [HAPI-834](TASKS_HPS-003.md#hapi-834) | complete organization controller openapi responses | complete organization controller openapi responses | P1 | — | VERIFIED | COMPLETED |

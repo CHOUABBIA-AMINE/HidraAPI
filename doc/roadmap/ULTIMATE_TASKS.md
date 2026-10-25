@@ -33,15 +33,15 @@ canonical OpenAPI equality; Fast109, Docs472, unit/architecture and all five
 PostgreSQL jobs passed. Dictionary validation remains pending. Package C and
 formal acceptance remain unfinished; no dependent task is unblocked by this hold.
 
-The active independent task is
-[HAPI-778](TASKS_HPS-003.md#hapi-778), employee appointment lifecycle and position
-history, PARTIAL/IN_PROGRESS. The owner authorized independent continuation
-despite the recorded HAPI-590 failure. Initial source review is recorded in its
-phase file. After this governance stage passes Docs, the next single stage is
-`docs(organization): define employee appointment lifecycle execution contract`,
-a source-backed design and exact-scope registration in that HAPI-778 record only.
-No lifecycle implementation, new policy, schema change or full-CI pass is implied.
-Existing HAPI-567/588/589 acceptance and the deferred simulator direction remain.
+[HAPI-778](TASKS_HPS-003.md#hapi-778), employee appointment lifecycle and
+position history, is VERIFIED/COMPLETED for its accepted development software
+scope. Full899 and Docs591 succeeded on edd66b3a4dc27b724dbb99b6eaf6d0a456fe6ae3;
+the phase acceptance record contains the exact retained case/API/catalog evidence
+and performance/deployment limits. The former source-review/design pointer is
+superseded; do not repeat completed implementation. Owner Next selected final
+acceptance and status-only closure. No next task is selected automatically.
+HAPI-590 remains PARTIAL/BLOCKED; existing HAPI-567/588/589 acceptance and the
+deferred simulator direction remain.
 
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent

@@ -7,7 +7,7 @@
  *
  * @Name        : OrganizationGeneratedRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-25
  *
  * @Type        : Interface
  * @Layer       : API
@@ -42,6 +42,7 @@ public interface OrganizationGeneratedRestMapper {
 
     OrganizationGeneratedRestMapper INSTANCE = Mappers.getMapper(OrganizationGeneratedRestMapper.class);
 
+    @org.mapstruct.Mapping(target="requestId",source="requestId")
     AssignEmployeeCommand toCommand(AssignEmployeeRequest request);
 
     RegisterEmployeeCommand toCommand(RegisterEmployeeRequest request);

@@ -7,7 +7,7 @@
  *
  * @Name        : EmployeeAssignmentApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-06
+ * @UpdatedOn   : 2026-10-25
  *
  * @Type        : Class
  * @Layer       : Application
@@ -20,19 +20,8 @@
 package dz.sh.hidra.modules.organization.application.service;
 
 import org.springframework.stereotype.Service;
-
 import dz.sh.hidra.modules.organization.application.command.AssignEmployeeCommand;
 import dz.sh.hidra.modules.organization.application.port.in.AssignEmployeeUseCase;
-import dz.sh.hidra.modules.organization.application.port.out.EmployeeAssignmentRepositoryPort;
-import dz.sh.hidra.modules.organization.application.port.out.OrganizationUnitRepositoryPort;
-import dz.sh.hidra.modules.organization.domain.exception.InvalidOrganizationValueException;
-import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitStatus;
-import dz.sh.hidra.modules.organization.domain.model.EmployeeAssignment;
-import dz.sh.hidra.modules.organization.domain.value.AssignmentStatus;
-import dz.sh.hidra.modules.organization.domain.value.AssignmentType;
-import dz.sh.hidra.modules.organization.domain.value.OrganizationId;
-
-import java.time.Instant;
 import java.util.Objects;
 
 /**
@@ -41,53 +30,15 @@ import java.util.Objects;
 @Service
 public final class EmployeeAssignmentApplicationService implements AssignEmployeeUseCase {
 
-    private final EmployeeAssignmentRepositoryPort employeeAssignmentRepositoryPort;
 
-    private final OrganizationUnitRepositoryPort organizationUnitRepositoryPort;
-
-    public EmployeeAssignmentApplicationService(
-            EmployeeAssignmentRepositoryPort employeeAssignmentRepositoryPort,
-            OrganizationUnitRepositoryPort organizationUnitRepositoryPort
-    ) {
-        this.employeeAssignmentRepositoryPort = Objects.requireNonNull(
-                employeeAssignmentRepositoryPort,
-                "Employee assignment repository port must not be null."
-        );
-        this.organizationUnitRepositoryPort = Objects.requireNonNull(
-                organizationUnitRepositoryPort, "Organization unit repository port must not be null."
-        );
+    private final dz.sh.hidra.modules.organization.application.port.in.EmployeeAppointmentLifecycleUseCase appointments;
+    public EmployeeAssignmentApplicationService(dz.sh.hidra.modules.organization.application.port.in.EmployeeAppointmentLifecycleUseCase appointments) {
+        this.appointments=Objects.requireNonNull(appointments);
     }
-
-    @Override
-    public String assignEmployee(AssignEmployeeCommand command) {
-        Objects.requireNonNull(command, "Assign employee command must not be null.");
-        if (command.organizationUnitId() == null || command.organizationUnitId().isBlank()) {
-            throw new InvalidOrganizationValueException("Assignment organization unit ID is required.");
-        }
-        var unit = organizationUnitRepositoryPort.findById(command.organizationUnitId().trim())
-                .orElseThrow(() -> new InvalidOrganizationValueException(
-                        "Employee assignment requires an existing OrganizationUnit."
-                ));
-        if (unit.status() != OrganizationUnitStatus.ACTIVE) {
-            throw new InvalidOrganizationValueException(
-                    "Only an ACTIVE organization unit can receive a new employee assignment."
-            );
-        }
-        Instant now = Instant.now();
-
-        EmployeeAssignment assignment = new EmployeeAssignment(
-                OrganizationId.newId().value(),
-                command.employeeId(),
-                command.organizationUnitId(),
-                command.positionId(),
-                command.assignmentType() == null ? AssignmentType.PRIMARY : command.assignmentType(),
-                command.validFrom() == null ? now : command.validFrom(),
-                command.validTo(),
-                AssignmentStatus.ACTIVE,
-                now,
-                now
-        );
-
-        return employeeAssignmentRepositoryPort.save(assignment).id();
+    @Override public String assignEmployee(AssignEmployeeCommand command) {
+        Objects.requireNonNull(command);
+        var selectors=new dz.sh.hidra.modules.organization.application.command.EmployeeAppointmentCommand.LegacyCreate(
+                command.requestId(),command.employeeId(),command.organizationUnitId(),command.positionId(),command.assignmentType(),command.validFrom(),command.validTo());
+        return appointments.createLegacy(selectors).after().assignmentId();
     }
 }

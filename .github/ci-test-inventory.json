@@ -5081,6 +5081,8 @@
     {
       "baseline_seconds": 0.044,
       "cases": [
+        "legacyJpaWriterRejectsBeforeIssuingSqlAndRepositoryExposesNoCrudMutators",
+        "legacyQueryAdapterDelegatesSqlPagingWithoutEntityManagerScanning",
         "rejectsAbsentUnitBeforeLookup(String)[1]",
         "rejectsAbsentUnitBeforeLookup(String)[2]",
         "rejectsAbsentUnitBeforeLookup(String)[3]",
@@ -5096,7 +5098,7 @@
       "lane": "unit-architecture",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/semantic/EmployeeAssignmentSemanticRemediationTest.java",
-      "source_sha256": "0ace26ceb0a306f98855fec45926c41eb498d3c61f8ad9197c9837d7cc6a9ac6",
+      "source_sha256": "6d46b5070d369255be68c440db45c099d3e3776caa7a4b9d849792580970c5ce",
       "supports": []
     },
     {
@@ -8569,6 +8571,7 @@
       "baseline_seconds": 0.018,
       "cases": [
         "anonymousProtectedRouteStillRequiresPermission",
+        "appointmentDelegationRequiresEveryExactControllerMethodVerbAndPattern",
         "derivesIdentityRoadmapPermissionFormat",
         "engineeringDraftNativeOwnerOnlyHandlesExactSixCompiledOperations",
         "engineeringDraftNeverDelegatesAnonymousOrDifferentController",
@@ -8584,7 +8587,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptorTest.java",
-      "source_sha256": "bca8f1ed7c741713a969c1a7c0268d7abf3832f29faaa7d3c4fa3f6662087f62",
+      "source_sha256": "22b68dface2b5ddf4449027141c72381817a2f239271a9c176f819009b72bd4e",
       "supports": []
     },
     {
@@ -9156,6 +9159,7 @@
         "genuineNativeExpiryAtFinalDatabaseGuardRollsBackWhileWorkBudgetRemains",
         "genuineOidcLifecycleReplayRollbackAndLinkRevocationUsePrivatePublisher",
         "genuinePartyContributionIsConsumedOnceAndPrivatelyQualifiesCurrentPlanning",
+        "genuinePublicAliasesLifecycleCurrentReadsAndRedactedHistoryUseTheWiredProtectedOwner",
         "independentSourceWriterCannotPassTheRetainedClassificationFence",
         "javaFinalGuardCommitsExactCreateEndCorrectionAndTransferWithReceiptAndNonce",
         "javaFinalGuardRejectsForgedMacAndSwallowedFailureCannotCommitOrRetry",
@@ -9197,7 +9201,7 @@
       "lane": "postgres-integration",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java",
-      "source_sha256": "a0fac2984f9848294bbd794725fe55e84c4dade081cb326bc63a224447b409df",
+      "source_sha256": "b39b4e9f4a3a575f0ef024e8120b568bc7511034716aafdcbc898bbfa9c69f3a",
       "supports": []
     },
     {
@@ -9223,6 +9227,40 @@
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/application/service/EmployeeAppointmentLifecycleApplicationServiceTest.java",
       "source_sha256": "aa7c7056d627b708cd1c5f5c530a1d593f63f73b04318ea00f0e2f1799caf0f1",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "admittedConflictsAndUnknownCompletionHaveFixedDistinctStatuses",
+        "adviceIsLimitedToTheThreeRegisteredControllers",
+        "fixedErrorsNeverIncludeExceptionDetailsOrProtectedSelectors"
+      ],
+      "class": "dz.sh.hidra.modules.organization.api.rest.EmployeeAppointmentApiExceptionHandlerTest",
+      "dependency_reason": "HAPI-778 protected public appointment cutover; mocked MVC transport/route/error tests only, not native PostgreSQL or latency proof; duration unmeasured.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "organization",
+      "path": "src/test/java/dz/sh/hidra/modules/organization/api/rest/EmployeeAppointmentApiExceptionHandlerTest.java",
+      "source_sha256": "c58c91465ec89012f2a0bf639bcd4832414c01073c9369ad8a7789272bed1128",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "bothLegacyAliasesKeepTheirStringResponseAndCarryTheOptionalExactRequestKey",
+        "endTransferAndCorrectionDispatchExactTypedCommandsAndDetachedResponses",
+        "legacyReadsRequireBoundedSelectorsAndUnauthenticatedAndSiblingRoutesCannotDelegate",
+        "privateHistoryAndOccupancyHistoryRemainDistinctAndExactVersionIsIndependent",
+        "unknownDuplicateCoercedOversizedAndSubmicrosecondBodiesNeverReachTheOwner"
+      ],
+      "class": "dz.sh.hidra.modules.organization.api.rest.controller.EmployeeAppointmentLifecycleControllerTest",
+      "dependency_reason": "HAPI-778 protected public appointment cutover; mocked MVC transport/route/error tests only, not native PostgreSQL or latency proof; duration unmeasured.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "organization",
+      "path": "src/test/java/dz/sh/hidra/modules/organization/api/rest/controller/EmployeeAppointmentLifecycleControllerTest.java",
+      "source_sha256": "ada84b4aadf56bd366f4c843456452b75ee9193abe5a6a9336eadd8cd39356bf",
       "supports": []
     }
   ],

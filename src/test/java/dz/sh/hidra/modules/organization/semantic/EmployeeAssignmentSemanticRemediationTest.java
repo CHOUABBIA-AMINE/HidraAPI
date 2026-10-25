@@ -7,7 +7,7 @@
  *
  * @Name        : EmployeeAssignmentSemanticRemediationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-06
+ * @UpdatedOn   : 2026-10-25
  *
  * @Type        : Class
  * @Layer       : Organization Test
@@ -40,15 +40,16 @@ import static org.mockito.ArgumentMatchers.any;
 
 class EmployeeAssignmentSemanticRemediationTest {
     private static final Instant NOW = Instant.parse("2026-10-06T00:00:00Z");
+    private final dz.sh.hidra.modules.organization.application.port.in.EmployeeAppointmentLifecycleUseCase appointments=mock(dz.sh.hidra.modules.organization.application.port.in.EmployeeAppointmentLifecycleUseCase.class);
     private final EmployeeAssignmentRepositoryPort assignments = mock(EmployeeAssignmentRepositoryPort.class);
     private final OrganizationUnitRepositoryPort units = mock(OrganizationUnitRepositoryPort.class);
     private final EmployeeAssignmentApplicationService service =
-            new EmployeeAssignmentApplicationService(assignments, units);
+            new EmployeeAssignmentApplicationService(appointments);
 
     @ParameterizedTest
     @EnumSource(value = OrganizationUnitStatus.class, names = "ACTIVE", mode = EnumSource.Mode.EXCLUDE)
     void rejectsEveryNonActiveUnit(OrganizationUnitStatus status) {
-        when(units.findById("unit-1")).thenReturn(Optional.of(unit(status)));
+        when(appointments.createLegacy(any())).thenThrow(new InvalidOrganizationValueException("Only an ACTIVE organization unit can receive an assignment: "+status));
         assertThatThrownBy(() -> service.assignEmployee(command("unit-1")))
                 .isInstanceOf(InvalidOrganizationValueException.class)
                 .hasMessageContaining("ACTIVE");
@@ -57,7 +58,7 @@ class EmployeeAssignmentSemanticRemediationTest {
 
     @Test
     void rejectsMissingUnit() {
-        when(units.findById("unit-1")).thenReturn(Optional.empty());
+        when(appointments.createLegacy(any())).thenThrow(new InvalidOrganizationValueException("Employee assignment requires an existing OrganizationUnit."));
         assertThatThrownBy(() -> service.assignEmployee(command("unit-1")))
                 .isInstanceOf(InvalidOrganizationValueException.class)
                 .hasMessageContaining("existing OrganizationUnit");
@@ -70,16 +71,19 @@ class EmployeeAssignmentSemanticRemediationTest {
     void rejectsAbsentUnitBeforeLookup(String id) {
         assertThatThrownBy(() -> service.assignEmployee(command(id)))
                 .isInstanceOf(InvalidOrganizationValueException.class);
-        verifyNoInteractions(units, assignments);
+        verifyNoInteractions(units, assignments, appointments);
     }
 
     @Test
     void savesAssignmentForActiveUnitWithNormalizedIdentity() {
-        when(units.findById("unit-1")).thenReturn(Optional.of(unit(OrganizationUnitStatus.ACTIVE)));
-        when(assignments.save(any(EmployeeAssignment.class)))
-                .thenAnswer(invocation -> invocation.getArgument(0));
-        assertThat(service.assignEmployee(command(" unit-1 "))).isNotBlank();
-        verify(assignments).save(any(EmployeeAssignment.class));
+        var receipt=mock(dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.MutationReceipt.class);
+        var version=mock(dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.PinnedVersion.class);
+        when(receipt.after()).thenReturn(version);when(version.assignmentId()).thenReturn("assignment");
+        when(appointments.createLegacy(any())).thenReturn(receipt);
+        assertThat(service.assignEmployee(command(" unit-1 "))).isEqualTo("assignment");
+        var selector=org.mockito.ArgumentCaptor.forClass(dz.sh.hidra.modules.organization.application.command.EmployeeAppointmentCommand.LegacyCreate.class);
+        verify(appointments).createLegacy(selector.capture());assertThat(selector.getValue().organizationUnitId()).isEqualTo("unit-1");
+        verifyNoInteractions(assignments,units);
     }
 
     private static AssignEmployeeCommand command(String unit) {
@@ -89,5 +93,22 @@ class EmployeeAssignmentSemanticRemediationTest {
     private static OrganizationUnit unit(OrganizationUnitStatus status) {
         return new OrganizationUnit("unit-1", "UNIT-001", null, "Unité", null, "type-1",
                 null, status, NOW, null, NOW, NOW);
+    }
+
+    @Test void legacyJpaWriterRejectsBeforeIssuingSqlAndRepositoryExposesNoCrudMutators() {
+        var repository=mock(dz.sh.hidra.modules.organization.infrastructure.persistence.repository.EmployeeAssignmentJpaRepository.class);
+        var adapter=new dz.sh.hidra.modules.organization.infrastructure.persistence.adapter.JpaEmployeeAssignmentRepositoryAdapter(repository);
+        assertThatThrownBy(()->adapter.save(null)).isInstanceOf(UnsupportedOperationException.class);verifyNoInteractions(repository);
+        for(var method:dz.sh.hidra.modules.organization.infrastructure.persistence.repository.EmployeeAssignmentJpaRepository.class.getMethods())
+            assertThat(method.getName()).doesNotStartWith("save").doesNotStartWith("delete").isNotEqualTo("flush");
+    }
+    @Test void legacyQueryAdapterDelegatesSqlPagingWithoutEntityManagerScanning() {
+        var em=mock(jakarta.persistence.EntityManager.class);
+        var read=new dz.sh.hidra.modules.organization.infrastructure.query.JpaOrganizationAdministrationQueryAdapter(em,appointments);
+        var page=new dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.CurrentPage(java.util.List.of(),0,10,0,0,false);
+        when(appointments.currentAssignments(any())).thenReturn(page);
+        assertThat(read.assignments("employee-1",null,null,0,10).totalElements()).isZero();
+        verify(appointments).currentAssignments(new dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.Current(null,"employee-1",null,null,0,10,false));
+        verifyNoInteractions(em);
     }
 }

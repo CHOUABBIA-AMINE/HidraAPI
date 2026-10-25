@@ -7,7 +7,7 @@
  *
  * @Name        : SpringOrganizationController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-10-25
  *
  * @Type        : Class
  * @Layer       : API
@@ -87,7 +87,11 @@ public class SpringOrganizationController implements OrganizationController {
     @PostMapping({"/assign-employee", "/employees/assignments"})
     public String assignEmployee(@Valid @RequestBody AssignEmployeeRequest request) {
         Objects.requireNonNull(request, "AssignEmployeeRequest must not be null.");
-        return assignEmployeeUseCase.assignEmployee(OrganizationRestMapper.toCommand(request));
+        dz.sh.hidra.modules.organization.api.rest.EmployeeAppointmentApiExceptionHandler.authenticated();
+        try {return assignEmployeeUseCase.assignEmployee(OrganizationRestMapper.toCommand(request));}
+        catch(dz.sh.hidra.modules.organization.domain.exception.InvalidOrganizationValueException invalid) {
+            throw new dz.sh.hidra.modules.organization.api.rest.EmployeeAppointmentApiExceptionHandler.ApiFailure(400,"INVALID");
+        }
     }
 
     @Override

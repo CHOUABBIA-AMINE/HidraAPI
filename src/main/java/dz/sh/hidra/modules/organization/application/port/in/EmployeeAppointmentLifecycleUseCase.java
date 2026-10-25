@@ -7,7 +7,7 @@
  *
  * @Name        : EmployeeAppointmentLifecycleUseCase
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-21
+ * @UpdatedOn   : 2026-10-25
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -27,7 +27,7 @@ import dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQue
  * Inbound application contract ONLY. All methods must first establish complete
  * current native authorization and Organization/Party ownership inside the
  * registered protected transaction. A syntactically valid selector or returned
- * record never constitutes admission; no implementation is wired by this stage.
+ * record never constitutes admission; the wired implementation must enforce these checks.
  */
 public interface EmployeeAppointmentLifecycleUseCase {
     EmployeeAppointmentResult.MutationReceipt createLegacy(EmployeeAppointmentCommand.LegacyCreate selectors);

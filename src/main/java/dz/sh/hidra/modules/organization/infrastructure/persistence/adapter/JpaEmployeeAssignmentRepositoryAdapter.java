@@ -7,7 +7,7 @@
  *
  * @Name        : JpaEmployeeAssignmentRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-25
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -42,9 +42,7 @@ public class JpaEmployeeAssignmentRepositoryAdapter implements EmployeeAssignmen
 
     @Override
     public EmployeeAssignment save(EmployeeAssignment model) {
-        return OrganizationPersistenceMapper.toDomain(
-                repository.save(OrganizationPersistenceMapper.toEntity(model))
-        );
+        throw new UnsupportedOperationException("Employee appointments require protected lifecycle admission");
     }
 
     @Override

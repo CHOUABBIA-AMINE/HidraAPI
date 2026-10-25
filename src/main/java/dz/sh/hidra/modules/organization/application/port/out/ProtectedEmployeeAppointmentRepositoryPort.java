@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedEmployeeAppointmentRepositoryPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-23
+ * @UpdatedOn   : 2026-10-25
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -35,8 +35,8 @@ import java.util.Set;
  * database principal/transaction/time, immutable event/receipt and final guard.
  * No marker, record or preview is independently an attestation or permission.
  *
- * This interface is deliberately not wired to a writer or HTTP route until
- * the migration, owner coordinator and PostgreSQL proofs are accepted.
+ * The wired writer and HTTP routes require the accepted migration, owner
+ * coordinator and PostgreSQL proofs plus fresh per-operation qualification.
  */
 public interface ProtectedEmployeeAppointmentRepositoryPort {
 

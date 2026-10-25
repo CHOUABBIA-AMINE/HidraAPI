@@ -91,6 +91,61 @@ import tools.jackson.databind.json.JsonMapper;
 @org.springframework.test.context.ActiveProfiles("test")
 @org.springframework.test.annotation.DirtiesContext(classMode=org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_CLASS)
 class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
+    @org.springframework.beans.factory.annotation.Autowired org.springframework.web.context.WebApplicationContext runtimeWeb;
+
+    @Test void genuinePublicAliasesLifecycleCurrentReadsAndRedactedHistoryUseTheWiredProtectedOwner() throws Exception {
+        var f=fixture(false);String actor=runtimeActor(f);
+        var mvc=org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup(runtimeWeb).build();
+        String root="/api/v1/organization";String key=id();
+        String body="{\"employeeId\":\""+f.employee()+"\",\"organizationUnitId\":\""+f.units().get(0)+"\",\"positionId\":\""+f.position()+"\",\"validFrom\":\""+START+"\",\"requestId\":\""+key+"\"}";
+        try {
+            var create=mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(root+"/assign-employee")
+                    .contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(body))
+                    .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk()).andReturn();
+            String assignment=create.getResponse().getContentAsString();assertFalse(assignment.isBlank());
+            mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(root+"/employees/assignments")
+                    .contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(body))
+                    .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+                    .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.content().string(assignment));
+            String correction="{\"requestId\":\""+id()+"\",\"expectedVersion\":1,\"correctedOrganizationUnitId\":\""+f.units().get(0)+"\",\"correctedPositionId\":\""+f.position()+"\",\"correctedType\":\"PRIMARY\",\"correctedStatus\":\"ACTIVE\",\"correctedValidFrom\":\""+START+"\",\"expectedDestinationBindingRevision\":1,\"expectedDestinationPolicyRevision\":1,\"reason\":\"HTTP synthetic correction\"}";
+            mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(root+"/assignments/"+assignment+"/corrections")
+                    .param("companyPartyId",f.company()).contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(correction))
+                    .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
+            String transfer="{\"requestId\":\""+id()+"\",\"expectedVersion\":2,\"destinationOrganizationUnitId\":\""+f.units().get(1)+"\",\"destinationPositionId\":\""+f.position()+"\",\"destinationType\":\"PRIMARY\",\"effectiveAt\":\""+START.plusSeconds(3600)+"\",\"expectedDestinationBindingRevision\":1,\"expectedDestinationPolicyRevision\":1,\"reason\":\"HTTP synthetic transfer\"}";
+            var transferred=mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(root+"/assignments/"+assignment+"/transfer")
+                    .param("companyPartyId",f.company()).contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(transfer))
+                    .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk()).andReturn().getResponse().getContentAsString();
+            String successor=JSON.readTree(transferred).get("successor").get("id").stringValue();
+            mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(root+"/assignments/"+successor+"/end")
+                    .param("companyPartyId",f.company()).contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                    .content("{\"requestId\":\""+id()+"\",\"expectedVersion\":1,\"endAt\":\""+START.plusSeconds(7200)+"\",\"reason\":\"HTTP synthetic end\"}"))
+                    .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
+            for(String path:List.of("/assignments/"+assignment+"/history","/assignments/"+assignment+"/versions/1",
+                    "/employees/"+f.employee()+"/appointment-history","/units/"+f.units().get(0)+"/appointment-policy"))
+                mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(root+path).param("companyPartyId",f.company()))
+                        .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
+            String redacted=mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(root+"/units/"+f.units().get(0)+"/positions/"+f.position()+"/appointment-history")
+                    .param("companyPartyId",f.company())).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+                    .andReturn().getResponse().getContentAsString();
+            assertFalse(redacted.contains(f.employee()));assertFalse(redacted.contains("employeeId"));
+            String current=mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(root+"/assignments").param("employeeId",f.employee()))
+                    .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk()).andReturn().getResponse().getContentAsString();
+            assertEquals(2,JSON.readTree(current).get("totalElements").intValue());
+            mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(root+"/employees/"+f.employee()+"/assignments"))
+                    .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
+            try(var c=owner()) {
+                assertEquals("4",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_event e JOIN public.hidra_org_appointment_receipt r USING(event_id) JOIN public.hidra_identity_org_commit_proof_use p USING(event_id) WHERE e.employee_id=? AND e.actor_user_id=?",f.employee(),actor));
+            }
+            String effects=runtimeEffects(f,actor);
+            mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(root+"/assign-employee")
+                    .contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(body.replace("\"employeeId\":","\"actor\":\"forged\",\"employeeId\":")))
+                    .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isBadRequest());
+            admin("DELETE FROM public.hidra_identity_user_permission_grant WHERE user_id=?",actor);
+            var denied=mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(root+"/assignments").param("employeeId",f.employee()))
+                    .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isForbidden()).andReturn().getResponse().getContentAsString();
+            assertFalse(denied.contains(f.employee()));assertFalse(denied.contains("totalElements"));assertEquals(effects,runtimeEffects(f,actor));
+        } finally {SecurityContextHolder.clearContext();}
+    }
     // Isolate explicit-writer tests from ordinary background maintenance in this disposable database.
     @Container static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:16")
             .withCommand("postgres","-c","autovacuum=off");

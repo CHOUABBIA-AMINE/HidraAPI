@@ -7,7 +7,7 @@
  *
  * @Name        : AssignEmployeeCommand
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-27
+ * @UpdatedOn   : 2026-10-25
  *
  * @Type        : Record
  * @Layer       : Application
@@ -35,6 +35,10 @@ public record AssignEmployeeCommand(
         String positionId,
         AssignmentType assignmentType,
         Instant validFrom,
-        Instant validTo
+        Instant validTo,
+        String requestId
 ) {
+    public AssignEmployeeCommand(String employeeId,String organizationUnitId,String positionId,AssignmentType assignmentType,Instant validFrom,Instant validTo) {
+        this(employeeId,organizationUnitId,positionId,assignmentType,validFrom,validTo,null);
+    }
 }

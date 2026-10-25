@@ -7,7 +7,7 @@
  *
  * @Name        : HidraRouteAuthorizationInterceptor
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-20
+ * @UpdatedOn   : 2026-10-25
  *
  * @Type        : Class
  * @Layer       : Platform
@@ -95,7 +95,8 @@ public final class HidraRouteAuthorizationInterceptor implements HandlerIntercep
         // Only this exact compiled controller/method/route tuple delegates to that owner;
         // every other route retains the ordinary effective-permission check.
         if (isOwnedEngineeringDraftRoute(handlerMethod, routePattern, request.getMethod())
-                || isOwnedEngineeringPublicationRoute(handlerMethod,routePattern,request.getMethod())) {
+                || isOwnedEngineeringPublicationRoute(handlerMethod,routePattern,request.getMethod())
+                || isOwnedEmployeeAppointmentRoute(handlerMethod,routePattern,request.getMethod())) {
             if (authentication == null || !authentication.isAuthenticated()
                     || authentication instanceof AnonymousAuthenticationToken) {
                 throw new AccessDeniedException("Engineering draft authentication required.");
@@ -160,5 +161,31 @@ public final class HidraRouteAuthorizationInterceptor implements HandlerIntercep
             return true;
         }
         return AUTHENTICATED_ONLY_PATHS.contains(path);
+    }
+
+    private static boolean isOwnedEmployeeAppointmentRoute(HandlerMethod handler,String route,String verb) {
+        if(handler==null || route==null || verb==null)return false;
+        String type=handler.getBeanType().getName();
+        String tuple=verb+" "+route+" "+handler.getMethod().getName();
+        if(type.equals("dz.sh.hidra.modules.organization.api.rest.controller.EmployeeAppointmentLifecycleController")) {
+            return switch(tuple) {
+                case "POST /api/v1/organization/assignments/{id}/end end",
+                     "POST /api/v1/organization/assignments/{id}/transfer transfer",
+                     "POST /api/v1/organization/assignments/{id}/corrections correct",
+                     "GET /api/v1/organization/assignments/{id}/history assignmentHistory",
+                     "GET /api/v1/organization/assignments/{id}/versions/{version} exactVersion",
+                     "GET /api/v1/organization/employees/{employeeId}/appointment-history employeeHistory",
+                     "GET /api/v1/organization/units/{unitId}/positions/{positionId}/appointment-history positionHistory",
+                     "GET /api/v1/organization/units/{unitId}/appointment-policy readPolicy" -> true;
+                default -> false;
+            };
+        }
+        if(type.equals("dz.sh.hidra.modules.organization.api.rest.controller.SpringOrganizationController"))
+            return tuple.equals("POST /api/v1/organization/assign-employee assignEmployee")
+                    || tuple.equals("POST /api/v1/organization/employees/assignments assignEmployee");
+        if(type.equals("dz.sh.hidra.modules.organization.api.rest.controller.OrganizationAdministrationQueryController"))
+            return tuple.equals("GET /api/v1/organization/assignments assignments")
+                    || tuple.equals("GET /api/v1/organization/employees/{id}/assignments employeeAssignments");
+        return false;
     }
 }

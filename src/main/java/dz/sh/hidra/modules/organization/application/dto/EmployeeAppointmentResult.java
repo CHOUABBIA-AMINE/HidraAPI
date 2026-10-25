@@ -7,7 +7,7 @@
  *
  * @Name        : EmployeeAppointmentResult
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-21
+ * @UpdatedOn   : 2026-10-25
  *
  * @Type        : Class
  * @Layer       : Application
@@ -38,6 +38,11 @@ import java.util.Objects;
  */
 public final class EmployeeAppointmentResult {
     private EmployeeAppointmentResult() { }
+
+    /** Fixed conflict marker emitted only after genuine scoped admission. */
+    public static final class Conflict extends IllegalStateException {
+        public Conflict(){super("Appointment operation conflicts with admitted state");}
+    }
 
     /** Safe admitted-list conflict for the later transport adapter; carries no count or selector. */
     public static final class PaginationRequired extends IllegalStateException {

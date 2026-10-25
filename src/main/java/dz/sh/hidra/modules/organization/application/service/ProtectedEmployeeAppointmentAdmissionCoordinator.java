@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedEmployeeAppointmentAdmissionCoordinator
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-23
+ * @UpdatedOn   : 2026-10-25
  *
  * @Type        : Class
  * @Layer       : Application
@@ -38,10 +38,11 @@ import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /**
- * Non-wired admission coordinator: no Spring bean or protected DML route is
- * activated until genuine native/executor/managed-flush composition is accepted.
+ * Admission coordinator wired after genuine native/executor/managed-flush
+ * composition acceptance. Each operation must qualify all live owners afresh.
  * Constructor ports are genuine owner contracts; mock tests do not establish that acceptance.
  */
+@org.springframework.stereotype.Component
 public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
     private final OrganizationProtectedAppointmentAuthorizationContract identity;
     private final OrganizationProtectedPartyEligibilityContract party;

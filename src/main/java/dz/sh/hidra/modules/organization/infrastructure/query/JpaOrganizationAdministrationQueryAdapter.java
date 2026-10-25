@@ -7,7 +7,7 @@
  *
  * @Name        : JpaOrganizationAdministrationQueryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-25
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -20,7 +20,6 @@
 package dz.sh.hidra.modules.organization.infrastructure.query;
 
 import dz.sh.hidra.modules.organization.application.port.in.OrganizationAdministrationQueryUseCase;
-import dz.sh.hidra.modules.organization.infrastructure.persistence.entity.EmployeeAssignmentJpaEntity;
 import dz.sh.hidra.modules.organization.infrastructure.persistence.entity.EmployeeJpaEntity;
 import dz.sh.hidra.modules.organization.infrastructure.persistence.entity.OrganizationUnitJpaEntity;
 import jakarta.persistence.EntityManager;
@@ -37,16 +36,19 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-@Transactional(readOnly = true)
 public class JpaOrganizationAdministrationQueryAdapter implements OrganizationAdministrationQueryUseCase {
 
     private final EntityManager entityManager;
 
-    public JpaOrganizationAdministrationQueryAdapter(EntityManager entityManager) {
+    private final dz.sh.hidra.modules.organization.application.port.in.EmployeeAppointmentLifecycleUseCase appointments;
+
+    public JpaOrganizationAdministrationQueryAdapter(EntityManager entityManager,dz.sh.hidra.modules.organization.application.port.in.EmployeeAppointmentLifecycleUseCase appointments) {
+        this.appointments=Objects.requireNonNull(appointments);
         this.entityManager = Objects.requireNonNull(entityManager, "EntityManager must not be null.");
     }
 
     @Override
+    @Transactional(readOnly=true)
     public Page<OrganizationUnitView> units(String query, int page, int size) {
         List<OrganizationUnitView> all = entityManager
                 .createQuery("select e from OrganizationUnitJpaEntity e order by e.code", OrganizationUnitJpaEntity.class)
@@ -58,6 +60,7 @@ public class JpaOrganizationAdministrationQueryAdapter implements OrganizationAd
     }
 
     @Override
+    @Transactional(readOnly=true)
     public OrganizationUnitView unit(String id) {
         OrganizationUnitJpaEntity entity = entityManager.find(OrganizationUnitJpaEntity.class, id);
         if (entity == null) {
@@ -67,6 +70,7 @@ public class JpaOrganizationAdministrationQueryAdapter implements OrganizationAd
     }
 
     @Override
+    @Transactional(readOnly=true)
     public List<OrganizationUnitView> children(String parentUnitId) {
         return entityManager
                 .createQuery(
@@ -80,6 +84,7 @@ public class JpaOrganizationAdministrationQueryAdapter implements OrganizationAd
     }
 
     @Override
+    @Transactional(readOnly=true)
     public List<OrganizationNodeView> hierarchy() {
         List<OrganizationUnitView> units = entityManager
                 .createQuery("select e from OrganizationUnitJpaEntity e order by e.code", OrganizationUnitJpaEntity.class)
@@ -97,6 +102,7 @@ public class JpaOrganizationAdministrationQueryAdapter implements OrganizationAd
     }
 
     @Override
+    @Transactional(readOnly=true)
     public Page<EmployeeView> employees(String query, int page, int size) {
         List<EmployeeView> all = entityManager
                 .createQuery("select e from EmployeeJpaEntity e order by e.employeeNumber", EmployeeJpaEntity.class)
@@ -118,6 +124,7 @@ public class JpaOrganizationAdministrationQueryAdapter implements OrganizationAd
     }
 
     @Override
+    @Transactional(readOnly=true)
     public EmployeeView employee(String id) {
         EmployeeJpaEntity entity = entityManager.find(EmployeeJpaEntity.class, id);
         if (entity == null) {
@@ -126,39 +133,21 @@ public class JpaOrganizationAdministrationQueryAdapter implements OrganizationAd
         return employeeView(entity);
     }
 
-    @Override
-    public Page<EmployeeAssignmentView> assignments(
-            String employeeId,
-            String organizationUnitId,
-            String status,
-            int page,
-            int size
-    ) {
-        List<EmployeeAssignmentView> all = entityManager
-                .createQuery(
-                        "select e from EmployeeAssignmentJpaEntity e order by e.validFrom desc",
-                        EmployeeAssignmentJpaEntity.class
-                )
-                .getResultList().stream()
-                .filter(entity -> blank(employeeId) || employeeId.equals(entity.employeeId()))
-                .filter(entity -> blank(organizationUnitId) || organizationUnitId.equals(entity.organizationUnitId()))
-                .filter(entity -> blank(status) || status.equalsIgnoreCase(String.valueOf(entity.status())))
-                .map(this::assignmentView)
-                .toList();
-        return page(all, page, size);
-    }
 
-    @Override
-    public List<EmployeeAssignmentView> employeeAssignments(String employeeId) {
-        return entityManager
-                .createQuery(
-                        "select e from EmployeeAssignmentJpaEntity e where e.employeeId = :employee order by e.validFrom desc",
-                        EmployeeAssignmentJpaEntity.class
-                )
-                .setParameter("employee", employeeId)
-                .getResultList().stream()
-                .map(this::assignmentView)
-                .toList();
+    @Override public Page<EmployeeAssignmentView> assignments(String employeeId,String organizationUnitId,String status,int page,int size) {
+        var q=new dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.Current(null,employeeId,organizationUnitId,
+                status==null?null:dz.sh.hidra.modules.organization.domain.value.AssignmentStatus.valueOf(status),page,size,false);
+        var result=appointments.currentAssignments(q);
+        return new Page<>(result.entries().stream().map(JpaOrganizationAdministrationQueryAdapter::currentView).toList(),
+                result.page(),result.size(),result.totalElements(),result.totalPages(),result.hasNext());
+    }
+    @Override public List<EmployeeAssignmentView> employeeAssignments(String employeeId) {
+        var q=new dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.Current(null,employeeId,null,null,0,100,true);
+        return appointments.currentAssignments(q).entries().stream().map(JpaOrganizationAdministrationQueryAdapter::currentView).toList();
+    }
+    private static EmployeeAssignmentView currentView(dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.PinnedVersion v) {
+        var a=v.snapshot().appointment().assignment();
+        return new EmployeeAssignmentView(a.id(),a.employeeId(),a.organizationUnitId(),a.positionId(),a.assignmentType().name(),a.validFrom(),a.validTo(),a.status().name());
     }
 
     private OrganizationNodeView node(OrganizationUnitView parent, List<OrganizationUnitView> units) {
@@ -201,18 +190,6 @@ public class JpaOrganizationAdministrationQueryAdapter implements OrganizationAd
         );
     }
 
-    private EmployeeAssignmentView assignmentView(EmployeeAssignmentJpaEntity entity) {
-        return new EmployeeAssignmentView(
-                entity.id(),
-                entity.employeeId(),
-                entity.organizationUnitId(),
-                entity.positionId(),
-                String.valueOf(entity.assignmentType()),
-                entity.validFrom(),
-                entity.validTo(),
-                String.valueOf(entity.status())
-        );
-    }
 
     private static String displayName(String firstName, String lastName) {
         String first = normalizeName(firstName);

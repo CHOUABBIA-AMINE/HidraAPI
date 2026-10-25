@@ -7,7 +7,7 @@
  *
  * @Name        : OrganizationAdministrationQueryController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-11
+ * @UpdatedOn   : 2026-10-25
  *
  * @Type        : Class
  * @Layer       : API
@@ -83,6 +83,9 @@ public class OrganizationAdministrationQueryController {
 
     @GetMapping("/employees/{id}/assignments")
     public List<EmployeeAssignmentView> employeeAssignments(@PathVariable String id) {
+        dz.sh.hidra.modules.organization.api.rest.EmployeeAppointmentApiExceptionHandler.authenticated();
+        dz.sh.hidra.modules.organization.api.rest.EmployeeAppointmentApiExceptionHandler.selector(()->
+            new dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.Current(null,id,null,null,0,100,true));
         return useCase.employeeAssignments(id);
     }
 
@@ -90,10 +93,16 @@ public class OrganizationAdministrationQueryController {
     public Page<EmployeeAssignmentView> assignments(
             @RequestParam(required = false) String employeeId,
             @RequestParam(required = false) String organizationUnitId,
+            @io.swagger.v3.oas.annotations.Parameter(schema=@io.swagger.v3.oas.annotations.media.Schema(implementation=dz.sh.hidra.modules.organization.domain.value.AssignmentStatus.class))
             @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size
     ) {
+        dz.sh.hidra.modules.organization.api.rest.EmployeeAppointmentApiExceptionHandler.authenticated();
+        // Validate transport before entering protected execution; failures disclose no row state.
+        dz.sh.hidra.modules.organization.api.rest.EmployeeAppointmentApiExceptionHandler.selector(()->
+            new dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.Current(null,employeeId,organizationUnitId,
+                status==null?null:dz.sh.hidra.modules.organization.domain.value.AssignmentStatus.valueOf(status),page,size,false));
         return useCase.assignments(employeeId, organizationUnitId, status, page, size);
     }
 }

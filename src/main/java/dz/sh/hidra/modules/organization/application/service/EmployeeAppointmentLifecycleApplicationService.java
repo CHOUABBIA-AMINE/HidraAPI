@@ -7,7 +7,7 @@
  *
  * @Name        : EmployeeAppointmentLifecycleApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-24
+ * @UpdatedOn   : 2026-10-25
  *
  * @Type        : Class
  * @Layer       : Application
@@ -30,10 +30,11 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 /**
- * Explicitly constructed integration boundary. Public bean/REST activation awaits
- * genuine native, publisher, executor and PostgreSQL composition acceptance.
+ * Public application boundary backed by accepted native, publisher, executor
+ * and PostgreSQL composition. Every request still obtains fresh owner authority.
  * No callback returns an admission, mutable holder, connection or lazy entity.
  */
+@org.springframework.stereotype.Service
 public final class EmployeeAppointmentLifecycleApplicationService implements EmployeeAppointmentLifecycleUseCase {
     private final ProtectedEmployeeAppointmentAdmissionCoordinator coordinator;
     private final ProtectedTransactionExecutor executor;

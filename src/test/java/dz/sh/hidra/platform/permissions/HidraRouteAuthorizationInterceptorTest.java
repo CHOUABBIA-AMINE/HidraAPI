@@ -7,7 +7,7 @@
  *
  * @Name        : HidraRouteAuthorizationInterceptorTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-20
+ * @UpdatedOn   : 2026-10-25
  *
  * @Type        : Class
  * @Layer       : Platform Test
@@ -38,6 +38,51 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerMapping;
 
 class HidraRouteAuthorizationInterceptorTest {
+
+    @Test void appointmentDelegationRequiresEveryExactControllerMethodVerbAndPattern() throws Exception {
+        var interceptor=new HidraRouteAuthorizationInterceptor(org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class),naming,true,"jwt");
+        var operation=new dz.sh.hidra.modules.organization.api.rest.controller.EmployeeAppointmentLifecycleController(
+                org.mockito.Mockito.mock(dz.sh.hidra.modules.organization.application.port.in.EmployeeAppointmentLifecycleUseCase.class));
+        var legacy=new dz.sh.hidra.modules.organization.api.rest.controller.SpringOrganizationController(
+                org.mockito.Mockito.mock(dz.sh.hidra.modules.organization.application.port.in.AssignEmployeeUseCase.class),
+                org.mockito.Mockito.mock(dz.sh.hidra.modules.organization.application.port.in.CreateOrganizationUnitUseCase.class),
+                org.mockito.Mockito.mock(dz.sh.hidra.modules.organization.application.port.in.RegisterEmployeeUseCase.class));
+        var query=new dz.sh.hidra.modules.organization.api.rest.controller.OrganizationAdministrationQueryController(
+                org.mockito.Mockito.mock(dz.sh.hidra.modules.organization.application.port.in.OrganizationAdministrationQueryUseCase.class));
+        Object[][] rows={
+            {operation,"end","POST","/api/v1/organization/assignments/{id}/end"},
+            {operation,"transfer","POST","/api/v1/organization/assignments/{id}/transfer"},
+            {operation,"correct","POST","/api/v1/organization/assignments/{id}/corrections"},
+            {operation,"assignmentHistory","GET","/api/v1/organization/assignments/{id}/history"},
+            {operation,"exactVersion","GET","/api/v1/organization/assignments/{id}/versions/{version}"},
+            {operation,"employeeHistory","GET","/api/v1/organization/employees/{employeeId}/appointment-history"},
+            {operation,"positionHistory","GET","/api/v1/organization/units/{unitId}/positions/{positionId}/appointment-history"},
+            {operation,"readPolicy","GET","/api/v1/organization/units/{unitId}/appointment-policy"},
+            {legacy,"assignEmployee","POST","/api/v1/organization/assign-employee"},
+            {legacy,"assignEmployee","POST","/api/v1/organization/employees/assignments"},
+            {query,"assignments","GET","/api/v1/organization/assignments"},
+            {query,"employeeAssignments","GET","/api/v1/organization/employees/{id}/assignments"}};
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("synthetic",null,List.of()));
+        for(Object[] row:rows) {
+            var method=java.util.Arrays.stream(row[0].getClass().getMethods()).filter(m->m.getName().equals(row[1])).findFirst().orElseThrow();
+            var handler=new HandlerMethod(row[0],method);
+            var request=new MockHttpServletRequest((String)row[2],"/api/v1/organization/selected");
+            request.setAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE,row[3]);
+            assertTrue(interceptor.preHandle(request,new MockHttpServletResponse(),handler));
+            request.setMethod("DELETE");assertThrows(AccessDeniedException.class,()->interceptor.preHandle(request,new MockHttpServletResponse(),handler));
+            request.setMethod((String)row[2]);request.setAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE,row[3]+"/sibling");
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(request,new MockHttpServletResponse(),handler));
+            request.setAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE,row[3]);SecurityContextHolder.clearContext();
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(request,new MockHttpServletResponse(),handler));
+            SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("synthetic",null,List.of()));
+        }
+        var wrongController=new HandlerMethod(query,query.getClass().getMethod("units",String.class,int.class,int.class));
+        var wrong=new MockHttpServletRequest("POST","/api/v1/organization/assignments/selected/end");
+        wrong.setAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE,"/api/v1/organization/assignments/{id}/end");
+        assertThrows(AccessDeniedException.class,()->interceptor.preHandle(wrong,new MockHttpServletResponse(),wrongController));
+        var wrongMethod=new HandlerMethod(operation,operation.getClass().getMethod("readPolicy",String.class,String.class));
+        assertThrows(AccessDeniedException.class,()->interceptor.preHandle(wrong,new MockHttpServletResponse(),wrongMethod));
+    }
 
     private final HidraRoutePermissionNaming naming = new HidraRoutePermissionNaming();
 

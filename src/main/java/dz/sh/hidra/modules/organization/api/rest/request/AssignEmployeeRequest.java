@@ -7,7 +7,7 @@
  *
  * @Name        : AssignEmployeeRequest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-27
+ * @UpdatedOn   : 2026-10-25
  *
  * @Type        : Record
  * @Layer       : API
@@ -29,12 +29,18 @@ import java.time.Instant;
  * <p>Operational scope is intentionally absent. Scope responsibility is managed
  * through dedicated responsibility-assignment use cases.</p>
  */
+@tools.jackson.databind.annotation.JsonDeserialize(using=EmployeeAppointmentLifecycleRequest.StrictLegacy.class)
+@io.swagger.v3.oas.annotations.media.Schema(requiredProperties={"employeeId","organizationUnitId","positionId"})
 public record AssignEmployeeRequest(
         String employeeId,
         String organizationUnitId,
         String positionId,
         AssignmentType assignmentType,
         Instant validFrom,
-        Instant validTo
+        Instant validTo,
+        String requestId
 ) {
+    public AssignEmployeeRequest(String employeeId,String organizationUnitId,String positionId,AssignmentType assignmentType,Instant validFrom,Instant validTo) {
+        this(employeeId,organizationUnitId,positionId,assignmentType,validFrom,validTo,null);
+    }
 }

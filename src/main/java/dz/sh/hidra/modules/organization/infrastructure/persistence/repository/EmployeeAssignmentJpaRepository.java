@@ -7,7 +7,7 @@
  *
  * @Name        : EmployeeAssignmentJpaRepository
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-25
  *
  * @Type        : Interface
  * @Layer       : Infrastructure
@@ -20,7 +20,6 @@
 package dz.sh.hidra.modules.organization.infrastructure.persistence.repository;
 
 import dz.sh.hidra.modules.organization.infrastructure.persistence.entity.EmployeeAssignmentJpaEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import java.time.Instant;
@@ -30,7 +29,11 @@ import org.springframework.stereotype.Repository;
  * Spring Data JPA repository for EmployeeAssignment.
  */
 @Repository
-public interface EmployeeAssignmentJpaRepository extends JpaRepository<EmployeeAssignmentJpaEntity, String> {
+public interface EmployeeAssignmentJpaRepository extends org.springframework.data.repository.Repository<EmployeeAssignmentJpaEntity, String> {
+
+    java.util.Optional<EmployeeAssignmentJpaEntity> findById(String id);
+
+    java.util.List<EmployeeAssignmentJpaEntity> findAll();
 
     /**
      * A bounded membership predicate for Workflow's existing eligibility contract.

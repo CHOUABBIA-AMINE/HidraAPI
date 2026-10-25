@@ -30237,6 +30237,211 @@ HAPI-590 stays independently PARTIAL/BLOCKED. No task closure, release/deploymen
 simulation/P3, production data or operational/industrial acceptance is selected.
 
 
+### 2026-10-25 — HAPI-778 atomic public lifecycle and legacy writer/reader cutover
+
+Owner Next refreshes main50c86303ba5ed2174ef0183704b260370026a860,
+parent2d0aa5795b2d43bbb19f71f0297891f3cb668ed8,
+tree011fa6d0fd12cf6b7f24070811739e7e807774dc. Exact-head
+[Full894](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40218700192),
+[Fast203](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40218700194)
+and [Docs586](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40218700170)
+completed successfully. These are observed workflow conclusions, not a new
+independent raw-artifact revalidation or industrial acceptance. They accept the
+preceding legacy bridge/guardrail repair in the hosted software gate. Mandatory
+governance, exact tree and selected B3 source/test/mapper/query/permission seams
+were refreshed. The uploaded pack remains a dated reference, not live authority.
+
+**Selected implementation, not another preflight.** Execute the already registered
+atomic application bean/REST/legacy writer-reader/interceptor cutover with exact
+message `feat(organization): persist protected appointment lifecycle and history`.
+The previously accepted native composition, external origins, CURRENT final guard
+and native-sampled legacy bridge are prerequisites; none is replaced by a mapper
+or route permission. HAPI-778 remains PARTIAL/IN_PROGRESS pending actual new CI,
+generated contracts and final case-level acceptance.
+
+**One wired protected owner.** Register the existing application service and
+coordinator as components and the JDBC adapter as a component with its exact
+full constructor explicitly autowired. Reuse the existing routing JdbcTemplate,
+actual Identity/Party exports, managed EntityManager and protected executor;
+there is no new datasource/credential/configuration property or permission grant.
+No @Transactional wrapper is placed around preparation. The same compiled
+application/coordinator callers still select the private publisher, one original
+sample, guarded writes/reads, managed flush and observed physical commit.
+Component wiring conveys no native authority; per-operation checks remain mandatory.
+Update the relevant source comments to describe the actual binding.
+
+**Legacy writer closure and request compatibility.** The two original POST aliases
+keep their paths, original fields and string assignment-ID result. Add optional
+requestId to their request/command records and retain both original six-argument
+Java constructors. The strict MapStruct source/target mapping includes this field.
+The old AssignEmployee service now delegates only to createLegacy, preserving the
+accepted explicit legacy normalization: trimmed identifiers, PRIMARY and the
+genuine native sample for omissions, current locked pins, exact supplied request
+keys or a fresh per-invocation server UUID. It no longer performs a premature
+unit-existence disclosure, application-clock substitution or unguarded JPA save.
+JpaEmployeeAssignmentRepositoryAdapter.save always rejects before SQL. Narrow the
+Spring Data interface to explicit read signatures and the existing exact Workflow
+EXISTS; it no longer inherits save/delete/flush. Retain explicit findAll solely as
+a read signature for compatibility/negative guardrails; no live appointment or
+Workflow path scans it. EntityManager/SQL administrative boundaries, mapping and
+retained legacy rows remain subject to existing physical constraints and tests.
+
+**Legacy reader closure.** Both existing GET response shapes remain. The query
+adapter delegates assignment selection/count/page and bounded employee-list mode
+to the accepted protected CURRENT use case, then maps detached snapshots to the
+old scalar views. Remove its JPA assignment scans/filtering/pagination and unused
+assignment mapper. Keep read-only transactions on the six unrelated directory/
+hierarchy methods, rather than wrapping protected preparation in a class-level
+transaction. Selection requires employee or unit, exact status, page0..1000 and
+size1..100. Global/invalid transport rejects without data; an admitted employee
+list over100 retains the count-free pagination-required conflict with a fixed
+public paginated-assignment endpoint hint, never a returned count/selector. Complete native
+closure still precedes rows/counts, including owners outside the returned page.
+Workflow's accepted EXISTS and membership semantics are unchanged.
+
+**Eight explicit new REST operations.** Add only the registered END, TRANSFER,
+CORRECT, assignment history, exact version, employee history, unit/position
+history and unit policy GET/POST mappings. Give each a unique explicit operation
+ID. Company/path/body values are untrusted selectors passed through the existing
+typed commands/queries. New mutations require exact requestId, positive expected
+versions/revisions, explicit types/statuses/instants and nonblank reason where
+applicable. No actor, grant, role, policy edit, raw proof or autonomous control
+input exists. No hard DELETE or new create route is introduced.
+
+Typed request deserializers reject unknown fields, non-string/coerced values,
+floating/string versions, invalid enums and unsupported timestamp precision.
+Scoped RequestBodyAdvice validates the original bytes with duplicate detection,
+trailing-token rejection, maximum depth8 and a16384-byte ceiling before ordinary
+typed deserialization. It applies only to the legacy assignment body and the
+three new mutation records, not unrelated Organization request types. Selector
+construction retains exact PostgreSQL microseconds and never silently truncates.
+
+**Detached responses and error boundary.** Add explicit scalar REST Assignment,
+Mutation and private-event DTOs; use distinct Occupancy, PositionEvent and
+PositionHistory types with no employee identity/name/contact/actor fields.
+Separate private and redacted history wrapper/schema identities prevent schema
+aliasing; do not expose Domain/JPA/owner tickets directly. Policy output is its
+actual pinned contract with a deterministic complete overlap-entry list, not a
+fabricated default or complex Java map-key serialization. Legacy current views
+keep their existing field names. Mapping/JSON occurs only after the use case
+returns from observed commit and performs no owner SQL or lazy loading.
+
+The advice is scoped to the three registered Organization controllers. Fixed
+appointment failures expose no private exception message, grant, storage detail,
+selector, count or proof. Invalid transport is400; unauthenticated appointment
+access401; protected denial403; admitted pagination/version/policy/receipt and
+domain-policy conflicts409; storage unavailability/indeterminate completion503.
+Explicit Conflict markers are introduced only at existing post-native classified
+version/revision/receipt mismatch checks; every original predicate/rejection and
+rollback remains. Other missing/unknown/unsafe evidence remains fail-closed,
+and absent exact versions can remain uniformly denied. No generic Exception,
+IllegalArgumentException or DomainException handler replaces unrelated errors.
+
+**Exact route delegation.** Extend the existing interceptor only for all eight
+new compiled controller/method/verb/pattern tuples, the two old POST aliases and
+the two old GET assignment tuples after non-anonymous authentication. Each still
+calls the mandatory protected owner. Wrong controller/method/verb/pattern and
+every sibling retain ordinary permission checks. Existing topology delegation,
+security settings and all other route families remain intact; there is no
+organization-prefix bypass or caller permission scalar.
+
+**Twelve new actual test methods.** Preserve all old case identities. Two new
+mocked-MVC suites contribute5 controller and3 error/advice cases: exact typed
+dispatch/results; unknown/duplicate/coerced/oversized/submicrosecond JSON rejection
+before the owner; private/redacted history and independent exact version; both
+legacy aliases and optional key; bounded read selectors, unauthenticated and
+sibling denial; fixed400/401/403/409/503 envelopes, scope and unknown completion.
+Mocks prove transport mechanics, never native authority or database behavior.
+
+The existing interceptor suite adds one matrix case covering all12 exact tuples
+plus wrong verbs/patterns/controllers/methods and missing authentication. The
+existing semantic suite retains all four original method identities and their
+parameter expansions as protected-orchestration propagation/normalization cases;
+remove its obsolete mock-JPA success expectation. Add two cases proving the old
+adapter emits no SQL and exposes no inherited CRUD mutations, and that current
+SQL paging delegates without EntityManager scanning. Native eligibility is still
+proved by the unchanged PostgreSQL owner suites, not those mocked semantics.
+
+The existing genuine concurrency/native suite adds one actual Spring MVC context
+case using the real wired service, legacy bridge, scoped native owners, separate
+publisher, executor, JDBC/JPA, migrated PostgreSQL and stored commit proofs. It
+executes both aliases including replay; correction/transfer/end; all five new
+read families; both current read shapes; redaction; malformed-body no effects;
+and committed permission revocation denying current payload/counts. From an
+independent connection require four matching events/receipts/proof uses. The
+test reuses the existing synthetic LOCAL origin and installed qualification
+configuration (10000ms ceiling in that Spring test context); it does not claim
+an additional7500ms public-route timing measurement or an industrial HTTP SLA.
+WebApplicationContext MockMvc exercises actual MVC/controller/interceptor beans
+and native authority with the genuine established SecurityContext; it does not
+add servlet security filters or claim live-network/JWT-filter-chain acceptance.
+Existing independent authentication/native/filter and7500ms service cases remain.
+
+**Exact scope: seven CREATE / twenty-one MODIFY / zero DELETE.** CREATE only:
+- src/main/java/dz/sh/hidra/modules/organization/api/rest/controller/EmployeeAppointmentLifecycleController.java
+- src/main/java/dz/sh/hidra/modules/organization/api/rest/request/EmployeeAppointmentLifecycleRequest.java
+- src/main/java/dz/sh/hidra/modules/organization/api/rest/response/EmployeeAppointmentResponse.java
+- src/main/java/dz/sh/hidra/modules/organization/api/rest/mapper/EmployeeAppointmentRestMapper.java
+- src/main/java/dz/sh/hidra/modules/organization/api/rest/EmployeeAppointmentApiExceptionHandler.java
+- src/test/java/dz/sh/hidra/modules/organization/api/rest/controller/EmployeeAppointmentLifecycleControllerTest.java
+- src/test/java/dz/sh/hidra/modules/organization/api/rest/EmployeeAppointmentApiExceptionHandlerTest.java
+
+MODIFY only:
+- src/main/java/dz/sh/hidra/modules/organization/application/command/AssignEmployeeCommand.java
+- src/main/java/dz/sh/hidra/modules/organization/application/service/EmployeeAssignmentApplicationService.java
+- src/main/java/dz/sh/hidra/modules/organization/application/service/EmployeeAppointmentLifecycleApplicationService.java
+- src/main/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinator.java
+- src/main/java/dz/sh/hidra/modules/organization/application/port/in/EmployeeAppointmentLifecycleUseCase.java
+- src/main/java/dz/sh/hidra/modules/organization/application/port/out/ProtectedEmployeeAppointmentRepositoryPort.java
+- src/main/java/dz/sh/hidra/modules/organization/application/dto/EmployeeAppointmentResult.java
+- src/main/java/dz/sh/hidra/modules/organization/api/rest/request/AssignEmployeeRequest.java
+- src/main/java/dz/sh/hidra/modules/organization/api/rest/controller/SpringOrganizationController.java
+- src/main/java/dz/sh/hidra/modules/organization/api/rest/controller/OrganizationAdministrationQueryController.java
+- src/main/java/dz/sh/hidra/modules/organization/api/rest/mapper/OrganizationGeneratedRestMapper.java
+- src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JpaEmployeeAssignmentRepositoryAdapter.java
+- src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JdbcProtectedEmployeeAppointmentRepositoryAdapter.java
+- src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/repository/EmployeeAssignmentJpaRepository.java
+- src/main/java/dz/sh/hidra/modules/organization/infrastructure/query/JpaOrganizationAdministrationQueryAdapter.java
+- src/main/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptor.java
+- src/test/java/dz/sh/hidra/modules/organization/semantic/EmployeeAssignmentSemanticRemediationTest.java
+- src/test/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptorTest.java
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java
+- .github/ci-test-inventory.json, only three existing test entries' actual cases/hashes and two new implemented suites
+- doc/roadmap/TASKS_HPS-003.md, only this append-only HAPI-778 evidence
+
+All paths are in the approved B3 envelope. New suites use the real fast/unit lane
+and explicitly unmeasured duration0; retain all other inventory metadata, cases,
+weights, seven shards and workflows. Preserve all173 migration blobs, JPA entity/
+mapping source and physical dictionary; no schema change is selected. All SQL
+templates/guard functions/pins, native issuance, owner exports, role privileges,
+actual native validity,500/7500/250/750/1000ms runtime defaults/limits and deferred
+simulation direction remain unchanged. Preserve fixed ROADMAP/PHASES statuses.
+
+**Validation and remaining gates.** Available inventory-validator32 self-tests
+pass. All26 changed/new Java files parse with the installed Java17 compiler
+module, syntax only. Source/member/hash/scope, exact new-path absence, retained
+test identities, metadata preservation, append-only evidence and added-line
+whitespace checks are performed. Java21 type resolution, Spring/MapStruct/JUnit,
+new PostgreSQL/MVC behavior and generated OpenAPI are NOT locally executed;
+no complete local environment is installed to reproduce hosted CI.
+
+New public routes/request/response schemas require the separately registered
+actual generated-artifact reconciliation stage. Preserve doc/api/openapi.yaml
+and the validation manifest now: do not hand-invent a runtime snapshot, weaken
+equality or claim a full gate passed with drift. Hosted CI must first produce
+the real current OpenAPI and show actual runtime failures (if any); repair those
+before reconciling captured contracts with
+`docs(organization): reconcile appointment API and catalog artifacts`.
+No physical dictionary change is inferred from controller code.
+
+Publish this single bounded commit to existing main under expected50c8630 guard;
+verify exact one parent/tree/message/all28 blobs and preservation, confirm
+applicable exact-SHA Full/Fast/Docs creation/queue/start and STOP without waiting.
+Runtime/artifact/final parent acceptance remains open; HAPI-590 remains independently
+PARTIAL/BLOCKED. No release/deployment, production personnel data, calibration,
+simulation/P3, autonomous OT action or operational readiness is selected.
+
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

@@ -7,7 +7,7 @@
  *
  * @Name        : JdbcProtectedEmployeeAppointmentRepositoryAdapter
  * @CreatedOn   : 2026-10-22
- * @UpdatedOn   : 2026-10-23
+ * @UpdatedOn   : 2026-10-25
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -60,16 +60,17 @@ import org.springframework.security.access.AccessDeniedException;
 import tools.jackson.databind.json.JsonMapper;
 
 /**
- * Explicitly constructed implementation of the protected repository port.
- * It remains outside component scanning pending genuine native/executor
- * composition acceptance and the registered public cutover. Preview data is only
+ * Component implementation of the protected repository port following genuine
+ * native/executor composition acceptance and the registered public cutover.
+ * Preview data is only
  * an UNTRUSTED selector for the native
  * admission request; it is not authorization, current Party eligibility, or
- * permission to return a record. Its provisional writer remains unwired and
+ * permission to return a record. Its provisional writer
  * can commit only after its independent SQL proof/receipt guard succeeds. The
  * application coordinates detached results, managed flush and final callbacks;
  * successful physical commit remains the executor's independent obligation.
  */
+@org.springframework.stereotype.Component
 public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements ProtectedEmployeeAppointmentRepositoryPort {
     @Override public DescriptorPreview previewLegacy(EmployeeAppointmentCommand.LegacyCreate selectors) {
         try {
@@ -164,6 +165,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
         this(jdbc,identity,party,null);
     }
 
+    @org.springframework.beans.factory.annotation.Autowired
     public JdbcProtectedEmployeeAppointmentRepositoryAdapter(JdbcTemplate jdbc,
             OrganizationProtectedAppointmentAuthorizationContract identity,
             OrganizationProtectedPartyEligibilityContract party, jakarta.persistence.EntityManager entityManager) {
@@ -1566,8 +1568,8 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
             String evidence;
             if (!receipts.isEmpty()) {
                 var receipt=receipts.get(0);
-                if (!receipt.valid() || receipt.eventId()==null
-                        || !ticket.preview.equals(replayPreview(command,receipt.eventId()))) throw denied();
+                if (!receipt.valid())throw new EmployeeAppointmentResult.Conflict();
+                if (receipt.eventId()==null || !ticket.preview.equals(replayPreview(command,receipt.eventId())))throw denied();
                 use=ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY;
                 evidence=receipt.eventId();
             } else if (command instanceof EmployeeAppointmentCommand.Create) {
@@ -1581,7 +1583,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
                 long version=command instanceof EmployeeAppointmentCommand.End c ? c.expectedVersion()
                         : command instanceof EmployeeAppointmentCommand.Transfer c ? c.expectedVersion()
                         : ((EmployeeAppointmentCommand.Correct)command).expectedVersion();
-                if (row.version()!=version) throw denied();
+                if (row.version()!=version) throw new EmployeeAppointmentResult.Conflict();
                 boolean retained=command instanceof EmployeeAppointmentCommand.End
                         || command instanceof EmployeeAppointmentCommand.Correct c
                            && c.correctedOrganizationUnitId().equals(row.unit());
@@ -1782,7 +1784,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
             long wantedPolicy=command instanceof EmployeeAppointmentCommand.Create c?c.expectedPolicyRevision()
                     :command instanceof EmployeeAppointmentCommand.Transfer c?c.expectedDestinationPolicyRevision()
                     :command instanceof EmployeeAppointmentCommand.Correct c?c.expectedDestinationPolicyRevision():policy.revision();
-            if(wantedBinding!=targetBinding.revision() || wantedPolicy!=policy.revision())throw denied();
+            if(wantedBinding!=targetBinding.revision() || wantedPolicy!=policy.revision())throw new EmployeeAppointmentResult.Conflict();
 
             var occupancies=new TreeSet<Occupancy>(Comparator.comparing(Occupancy::unit).thenComparing(Occupancy::position));
             occupancies.add(new Occupancy(targetUnit,targetPosition));

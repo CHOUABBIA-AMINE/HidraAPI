@@ -580,6 +580,34 @@ class ProtectedTransactionExecutorTest {
     }
 
     @Test
+    void expiredWorkReportsScalarSqlCountWithoutFlushingCommittingOrLeakingSql() {
+        var flushed=new AtomicBoolean();
+        var guarded=new AtomicBoolean();
+        assertThatThrownBy(()->run(()->{
+            jdbc.execute("SELECT 1 /* synthetic private marker */");
+            // Deterministic expiry of the real unchanged deadline check; no sleep.
+            ProtectedOperationDataSource.CURRENT.get().started=System.nanoTime()-500_000_001L;
+            return "withheld";
+        },()->flushed.set(true),()->guarded.set(true)))
+                .isInstanceOfSatisfying(ProtectedTransactionExecutor.ExecutionFailure.class,failure->{
+                    assertThat(failure.outcome()).isEqualTo(ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT);
+                    assertThat(failure.getCause()).isInstanceOf(IllegalStateException.class)
+                            .hasMessage("Protected transaction poisoned: aggregate 500ms work budget");
+                    assertThat(failure.getCause().getSuppressed()).hasSize(1);
+                    var diagnostic=failure.getCause().getSuppressed()[0];
+                    assertThat(diagnostic).isInstanceOf(IllegalStateException.class).hasNoCause();
+                    assertThat(diagnostic.getMessage())
+                            .startsWith("Protected transaction work diagnostics: phase=WORKING; userStatements=1; elapsedNs=")
+                            .doesNotContain("SELECT","synthetic private marker","withheld");
+                    long elapsed=Long.parseLong(diagnostic.getMessage().split("elapsedNs=",2)[1]);
+                    assertThat(elapsed).isGreaterThanOrEqualTo(500_000_000L);
+                });
+        assertThat(flushed).isFalse();assertThat(guarded).isFalse();
+        assertThat(commits).hasValue(0);assertThat(rollbacks).hasValue(1);
+        assertThat(ProtectedOperationDataSource.CURRENT.get()).isNull();
+    }
+
+    @Test
     void mutableOrJdbcResultsCannotBeDelivered() {
         assertThatThrownBy(() -> executor.execute(() -> new ArrayList<>(), () -> {}, this::guard))
                 .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class);

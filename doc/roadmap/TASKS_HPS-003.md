@@ -28399,6 +28399,67 @@ HAPI-778 B3 runtime diagnosis/repair and actual managed-flush qualification
 before artifact/final acceptance or public/legacy integration. No release,
 deployment,simulation or OT action.
 
+### 2026-10-25 — HAPI-778 Full879 protected SQL-count diagnosis
+
+Owner Fail refreshes main e0de23af53bb01ca5277f22d289d6aaa2ca91912,
+parent4d88547d3d92fd92d5b3c0b4edff2bf420897b80,
+tree14dbf8a8675d3055408bcb3b54f7f32bf3fdf6d5.
+[Full879](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40158305468)
+FAILED only PostgreSQL shard1 and the dependent aggregate. Fast188,Docs569,
+unit/architecture,static,API/dictionary and all six other PostgreSQL shards
+PASSED. The corrected Identity14-case suite including all24 lock-loss iterations
+is now CI-passed in shard5;that does not establish complete lifecycle acceptance.
+
+Shard1 ran all64 appointment concurrency cases. Positive LOCAL CREATE still
+fails before provisional DML on the aggregate500ms budget;managed-flush injection
+cannot reach flush. Actual acquireWrite951ms plus persistProvisional579ms precede
+sealing. The latter includes currentWrite424ms and provisional preparation155ms.
+CurrentWrite includes native51ms,Party4ms,storage73ms,classification144ms and
+mutation preparation151ms. These inclusive timings cannot distinguish actual
+user SQL volume from protected participation probes,driver round trips or JVM
+work. Further speculative query consolidation is not a demonstrated repair.
+
+Select bounded runtime diagnosis within B3's existing platform executor paths.
+Registered message remains
+`feat(organization): persist protected appointment lifecycle and history`.
+Exactly four MODIFY,zero CREATE/DELETE:
+- src/main/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutor.java
+- src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java
+- .github/ci-test-inventory.json,only that suite's new case/source hash
+- this append-only HAPI-778 evidence in doc/roadmap/TASKS_HPS-003.md
+
+Retain every existing deadline invocation. A private wrapper calls the unchanged
+Scope.deadline and,on rejection,adds one suppressed internal diagnostic with
+phase,userStatements and elapsedNs. It performs no JDBC or owner callback,
+does not reset/start/extend any deadline,and rethrows the same rejection object.
+The existing counter counts user statement executions,not physical participation
+probes,driver SQL,unique SQL texts,rows or per-query duration. No SQL text,
+parameters,identifiers,authentication evidence or protected result is recorded.
+The exception remains internal cause provenance;fixed outward errors and all
+commit/rollback outcomes remain unchanged. No logging configuration is required.
+
+Retain all40 original executor cases and add deterministic expiry after one
+simulated user statement. Require the actual500ms rejection,REJECTED_BEFORE_COMMIT,
+one rollback,zero commits,no flush/guard callback,cleared scope,exact scalar count
+and no private SQL/result marker in diagnostics. This is a simulated JDBC/JPA
+case,not PostgreSQL or performance proof. All64 actual appointment cases remain
+mandatory. The unchanged deadline,provisional SQL and catalog/function/source
+pins,native/Party/Organization revalidation,250ms lock budget,NOWAIT,seven shards,
+172 migrations,generated artifacts and public/legacy gates remain intact.
+
+Available32 inventory-validator and19 documentation-validator self-tests PASSED.
+Exact prior case retention,one inventory-entry diff,all four original deadline
+call sites,append-only evidence,source hashes,four-path scope and changed-line
+whitespace are checked. Local Java21/Maven/PostgreSQL execution is unavailable
+and not provisioned. This diagnostic change does NOT resolve the known500ms
+failure;the next exact-SHA failure trace is required to quantify user SQL volume
+at the actual failing phase before selecting its responsible optimization.
+HAPI-778 stays PARTIAL/IN_PROGRESS;HAPI-590 stays PARTIAL/BLOCKED. Publish with
+expectede0de23a guard,verify exact parent/tree/message/four blobs,confirm
+applicable exact-SHA CI creation/queue/start and STOP. Next is HAPI-778 B3
+measured runtime repair,then managed-flush qualification and registered remaining
+integration/artifact/acceptance work. No release,deployment,simulation or OT action.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

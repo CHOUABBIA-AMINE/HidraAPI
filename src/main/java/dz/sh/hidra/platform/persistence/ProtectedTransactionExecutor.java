@@ -163,17 +163,17 @@ public final class ProtectedTransactionExecutor {
             s.started = System.nanoTime();
             s.phase = ProtectedOperationDataSource.Phase.WORKING;
             T result = work.get();
-            s.deadline();
+            requireDeadline(s);
             if(s.admission && s.phase!=ProtectedOperationDataSource.Phase.OBSERVING) {
                 s.reject("incomplete owner admission");s.healthy();
             }
             materialized(result, 0);
             s.phase = ProtectedOperationDataSource.Phase.FLUSHING;
             flush.run();
-            s.deadline();
+            requireDeadline(s);
             s.phase = ProtectedOperationDataSource.Phase.GUARD;
             guard.run();
-            s.deadline();
+            requireDeadline(s);
             if (s.phase != ProtectedOperationDataSource.Phase.SEALED
                     || s.guardExecutions != 1
                     || s.openGuardResults != 0)
@@ -301,7 +301,20 @@ public final class ProtectedTransactionExecutor {
             || TransactionSynchronizationManager.isCurrentTransactionReadOnly()) {
             s.reject("foreign admission scope");s.healthy();
         }
-        s.deadline();return s;
+        requireDeadline(s);return s;
+    }
+
+    /** Internal scalar diagnostics only; never reset the deadline or perform SQL after rejection. */
+    private static void requireDeadline(ProtectedOperationDataSource.Scope scope) {
+        try {
+            scope.deadline();
+        } catch (RuntimeException failure) {
+            failure.addSuppressed(new IllegalStateException(
+                    "Protected transaction work diagnostics: phase=" + scope.phase
+                    + "; userStatements=" + scope.userStatements
+                    + "; elapsedNs=" + (System.nanoTime() - scope.started)));
+            throw failure;
+        }
     }
 
     private static void materialized(Object value, int depth) throws ReflectiveOperationException {

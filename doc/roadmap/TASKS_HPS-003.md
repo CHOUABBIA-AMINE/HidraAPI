@@ -29577,6 +29577,78 @@ passing feedback continue the registered application bean/REST/legacy cutover;
 generated OpenAPI/catalog reconciliation and case-level final acceptance remain
 separate registered stages. No deployment/release/simulation/OT acceptance.
 
+
+### 2026-10-25 — HAPI-778 external-origin provenance assertion type repair
+
+Owner Continue refreshes main 9ad49f7df0d76495424610b0f961a62c78acdae3,
+parent 9ef3aca4d28cab9741d77e2b79f51551bc0a4d26,
+tree a389ae6232eb42bb8493ac11869b09f1d32e7102.
+[Full889](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40187918359)
+FAILED; [Fast198](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40187918416)
+and [Docs580](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40187918356)
+succeeded. Full unit/architecture, static, API/dictionary and six PostgreSQL
+shards passed. Shard1 job121152541719 ran197 cases with zero assertion failures,
+three errors and zero skips; the appointment class ran72 cases with exactly
+the three new external-origin cases errored. Whole-stage acceptance is absent.
+
+**Actual responsible failure.** Each new case reached the same independent
+postcommit provenance-count query, then PostgreSQL rejected position121 with
+"operator does not exist: character varying = uuid". The native operation-
+binding migration V20261013_001 stores binding_id as varchar(36) with a canonical
+lowercase UUID constraint; V20261017_001 stores the companion binding_id as the
+same varchar foreign key. Organization event actor_binding_id is actual uuid
+in V20261021_003. The test incorrectly joined the first text field directly to
+the UUID field. This is a verification SQL type error, not evidence of a failed
+protected write, native signature or7500ms cap.
+
+Change only that join to b.binding_id=e.actor_binding_id::text. PostgreSQL's
+UUID output is canonical lowercase text, matching the retained native constraint.
+The source-claim join remains exact varchar equality; all actor/type/link filters
+and the required count of four remain. No cast of arbitrary request data, lossy
+identifier normalization, authority bypass or count relaxation is introduced.
+No production SQL, schema or runtime contract needs alteration.
+
+**Bounded evidence before the error.** All three real external-origin tests
+passed source verification/completion, persisted binding/claim-origin validation,
+four guarded committed lifecycle calls, replay and the preceding scoped-read
+assertions before the count query. Passive complete call samples:
+OIDC CREATE5289432421ns, CORRECT4603755755ns, TRANSFER5854944072ns,
+END4437598859ns; ACTIVE_DIRECTORY CREATE5286142313ns, CORRECT4405796828ns,
+TRANSFER5676265697ns, END4399903672ns; LDAP CREATE5114213240ns,
+CORRECT4392296684ns, TRANSFER5624886497ns, END4302287318ns.
+These are individual synthetic hosted calls under7500ms, not percentiles,
+HTTP/industrial acceptance or an argument to increase the cap. The maximum
+observed ordinary sample is now about5.855seconds. Residual query overhead
+remains explicit. The later flush-rollback, link-revocation and final count
+assertions were NOT reached in those failed methods and remain unaccepted
+until the corrected exact-SHA cases actually pass.
+
+**Exact responsible B3 repair.** Retain registered message
+`feat(organization): persist protected appointment lifecycle and history`.
+Three MODIFY, zero CREATE/DELETE:
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java, exactly one SQL-expression change
+- .github/ci-test-inventory.json, only that class's source_sha256
+- this append-only HAPI-778 evidence in doc/roadmap/TASKS_HPS-003.md
+
+All72 test identities and assertions, lane/weight, every other inventory entry,
+seven shards, production owners/exports/callers/source/SQL/catalog pins, all172
+migration bodies, native validity and7500/500/250/750/1000ms bounds remain
+unchanged. No bean, public/legacy route, generated artifact, release/deployment,
+simulation or OT activation. HAPI-778 remains PARTIAL/IN_PROGRESS; HAPI-590
+independently PARTIAL/BLOCKED.
+
+Available documentation-validator19 and inventory-validator32 self-tests pass.
+The changed Java file parses using the installed Java17 compiler module, syntax
+only; no Java21 type-resolution/JUnit/PostgreSQL pass is claimed locally and no
+full environment is provisioned. The exact remote base SHA256, sole source
+replacement, retained72 cases, one-field inventory delta, three-path scope,
+append-only history and whitespace are checked. Publish expected-9ad49f7 guarded
+direct main, verify exact parent/tree/message/three blobs/scope, confirm applicable
+Full/Fast/Docs creation/queue/start and STOP. Repair actual further failures first;
+after genuine external-origin acceptance continue the registered application/
+REST/legacy cutover, followed by actual generated-artifact reconciliation and
+case-level final acceptance. This repair does not close HAPI-778.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

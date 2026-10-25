@@ -5799,7 +5799,7 @@ Priority: P2
 
 Implementation Status: NOT_IMPLEMENTED
 
-Planning Status: BLOCKED
+Planning Status: IN_PROGRESS
 
 Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -5956,6 +5956,292 @@ doc/roadmap/ULTIMATE_ROADMAP.md:1298 | HPR-P25-052E | Supported local typed impo
 doc/model-remediation/RECONCILIATION.md:23360 | HPR-P25-052E | Supported local typed import/export and per-editor capability/completeness closure. | Versioned bounded packages, dry-run without writes, lossless precision/provenance, atomic admitted import and explicit unsupported states. Aggregate multi-owner exchange remains055.
 doc/model-remediation/RECONCILIATION.md:23738 | HPR-P25-052E | BLOCKED_SPECIFICATION | Typed local engineering exchange and capabilities
 ~~~~~~~~
+### 2026-10-25 — HAPI-591 source-backed local exchange execution contract
+
+**Selected stage and authority.** Owner Go ahead accepts the proposed four-stage
+HAPI-591 sequence: source-backed scope/registration, one implementation with
+tests, actual artifact reconciliation, final acceptance. Execute only this first
+stage now with exact message
+`docs(topology): define local engineering exchange execution contract`.
+Main `89e423938e9225af4a7a7fca0a94d02cb3c9d86d`, parent
+d36f8c08206061d931bf0ef045a4956ee97fdf2d, tree
+5b9adfdad4dd7533bd3b13b7fbd321ab7fcea535, passed
+[Docs593](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40233029937).
+HAPI-590 and HAPI-778 are VERIFIED/COMPLETED. The accepted runtime/artifact
+baseline remains successful Full899 on edd66b3a4dc27b724dbb99b6eaf6d0a456fe6ae3;
+the intervening closures are governance-only. HAPI-591 moves only planning
+BLOCKED to IN_PROGRESS; implementation remains NOT_IMPLEMENTED.
+
+**Recovered source and concrete reuse.**
+EngineeringNetworkDraftUseCase has CREATE/READ/UPDATE/VALIDATE plus graph/survey
+commands. EngineeringGraphDraftUseCase and SurveyRouteProfileUseCase expose
+typed reads and expected-version updates on the same shared draft version.
+EngineeringNetworkDraftApplicationService implements all three and rejects an
+outer transaction. Each operation prepares genuine native Identity, acquires
+Party/Topology ownership, uses one original sample and its private compiled
+publisher permit, flushes, executes its existing final guard, then returns after
+observed physical commit. Do not call its outbound repositories directly.
+
+ProtectedEngineeringDraftAdmissionCoordinator maps graph/survey READ to native
+READ and UPDATE to native UPDATE; the company/network paired resource contract
+already owns those meanings. Existing metadata/graph/survey families retain
+31/34/35 ordered relation fences. Their exact mutation hashes, final SQL,
+Identity/Party exports and caller guards need no extension for a facade calling
+the existing public inbound owners.
+
+Existing canonical codecs are:
+- EngineeringNetworkDraftCodec: HIDRA_ENGINEERING_METADATA_V1, maximum32768
+  decoded bytes, canonical null-aware UTF-8 metadata.
+- EngineeringGraphDraftCodec: HIDRA_ENGINEERING_GRAPH_DRAFT_V1, maximum1048576
+  decoded bytes, bounded canonical graph IDs/incidence and no physical values.
+- SurveyRouteProfileCodec: HIDRA_ENGINEERING_SURVEY_DRAFT_V1, maximum16777216
+  decoded bytes; BigDecimal unscaled integer plus scale, declared CRS/axes/
+  units/reference conditions and optional elevation are preserved exactly.
+
+Graph/survey snapshots retain their actual component version/digest and survey
+bound-graph version/digest. Metadata READ returns current metadata only; do not
+invent historical metadata read support. The39-case genuine
+EngineeringNetworkDraftPostgresIntegrationTest already provides a reusable
+signed-native HTTP, separated-role, graph/survey/metadata, CAS/rollback fixture;
+inspect its real setup before extending it. Documents' binary transfer has its
+own transactional storage lifecycle, not engineering import authority.
+Integration exchange tracking likewise is not a protected draft writer.
+Neither subsystem is added to this local facade.
+
+**Bounded V1 product contract.** Support exactly three editor payloads:
+METADATA, GRAPH, SURVEY. A package contains exactly one payload; imports target
+an existing draft within the same company/network/draft identity, with the same
+branch for SURVEY. No implicit create, clone, cross-company/draft remapping,
+combined multi-editor update, published-ledger import, installed-unit/product/
+manufacturer/baseline operation or archive/remote URL fetch is supported.
+Reject these explicitly, rather than silently partially importing. Aggregate
+multi-owner exchange remains HAPI-608; this task supplies a precise supported
+local editor exchange and per-editor capability/completeness contract.
+
+Use an immutable pure-Java EngineeringLocalExchange envelope with format
+HIDRA_ENGINEERING_LOCAL_EXCHANGE_V1, editor, exact origin company/network/context/
+draft selectors, observed shared draft version, actual component format/version/
+SHA256 and canonical standard Base64 bytes. SURVEY also retains branch and its
+original bound-graph version/SHA256. Metadata component version is its observed
+current draft version. A graph or survey absence remains NOT_AUTHORED, with
+no fabricated empty payload or synthetic version. Collections/bytes are copied.
+Origin claims and hashes are untrusted portable data, not native authentication,
+current authority, a signed attestation or a public qualification certificate.
+
+The codec adapter reuses the original codecs unchanged and verifies digest,
+format, canonical Base64 and decode/re-encode byte equality before dispatch.
+Keep source origin metadata separate from new target observation/binding;
+never rewrite unit/CRS/decimal scales, coerce absent values, normalize supplied
+evidence or turn engineeringQualified true. The validated source payload bytes
+are portable content; they carry no actor, permission, token, ticket, role,
+credential, private proof or native sample.
+
+**Read/export/dry-run/import semantics.**
+- Each request supplies exact company/network/draft and editor selectors.
+  Use existing native READ to establish the target context and current version
+  before disclosing protected metadata/capability/export results. GRAPH/SURVEY
+  reads additionally use their own existing typed READ, including station
+  witnesses and graph linkage. Each call retains its own real protected owner
+  sample; no claim of one atomic multi-editor read is made.
+- Export returns a detached envelope only for an actually authored component.
+  GRAPH/SURVEY may request a positive as-of shared version via existing readers;
+  METADATA rejects a requested historical version as unsupported. Origin context
+  remains the immutable exact target context. No update/publication is called.
+- Dry-run accepts one package plus explicit positive target expectedVersion.
+  Decode/validate bounded content without writes, then use authorized target
+  READ(s) and require exact observed expectedVersion. Report checks actually
+  performed: format/digest/structure/scope/current observed version and applicable
+  current survey graph linkage. Dry-run is advisory, no write-authorization
+  assertion, no reserved version, no receipt, no lock/admission handle and no
+  guarantee that a later import remains admissible. Proposed graph station
+  eligibility is rechecked by the actual write owner; never falsely mark those
+  unperformed proposed-object checks passed.
+- Import repeats those validations/reads afresh and dispatches exactly one old
+  UPDATE owner for the selected editor, using the explicit target expectedVersion.
+  This operation intentionally needs native READ for preview plus native UPDATE
+  for the write; read permission alone cannot import. No scalar permission flag
+  or dry-run success replaces either. Source versions are provenance, not CAS.
+  Target context/company/network/draft must match the package origin selectors;
+  SURVEY branch must match the encoded profile and selected target branch.
+- For SURVEY, read the actual current target graph and require its digest equal
+  to the package's original bound-graph digest. Its observed shared version must
+  equal expectedVersion. The existing survey writer then rechecks the graph and
+  binds the new snapshot to the actual target graph version/digest. Identical
+  graph bytes at a newer target version may be accepted; report original and new
+  binding versions separately. A different graph is409, not silent rebinding.
+- A concurrent change between preview and write is rejected by the old shared
+  expected-version CAS. Only that final existing UPDATE mutates; its complete
+  metadata+component append remains one physical transaction. No outer
+  @Transactional, loop of writes, new JDBC/JPA, publisher credential, executor
+  permit, SQL template, migration, ledger or new authorization family is needed.
+  A failed final guard/flush rolls back all existing write effects. Successful
+  output is returned only after that owner observed commit; unavailable or
+  INDETERMINATE completion never auto-retries. Same-version resubmission conflicts
+  through CAS; no new exactly-once receipt promise or import journal is invented.
+- Capability/completeness is per requested editor under native READ. Describe
+  supported operations/formats/bounds and actual authored/not-authored state,
+  missing title/evidence, graph diagnostics, survey presence/graph provenance
+  and retained unqualified status. Do not repeat metadata's generic graph-not-
+  authored diagnostic as a claim about an independently authored graph.
+  Supported import does not mean the caller is authorized to write; explicitly
+  leave write authorization unevaluated and defer it to the actual import.
+  Missing engineering facts stay missing. No new GET mutates/validates a draft.
+
+Each preview/read and the final write is separately admitted. This is atomicity
+of the one imported editor write, not an aggregate transaction across reads,
+publication or several editors. Existing500ms operation/250ms lock/750ms
+statement/1000ms idle limits remain unchanged. Bounded codec/transport work
+does not establish an end-to-end HTTP SLA or reuse the appointment7500ms cap.
+
+**Four exact new REST tuples, one registered controller.**
+Base /api/v1/topology/engineering-networks/{draftId}/exchanges/{editor}:
+- GET /export -> export, operationId exportEngineeringLocalExchange.
+- POST /dry-runs -> dryRun, operationId dryRunEngineeringLocalExchange.
+- POST /imports -> importOne, operationId importEngineeringLocalExchange.
+- GET /capabilities -> capabilities, operationId readEngineeringLocalExchangeCapabilities.
+
+Require companyPartyId and pipelineSystemId query selectors; branchId is required
+only for SURVEY, forbidden on other editors. Optional version is export-only
+for GRAPH/SURVEY; capabilities/dry-run/import reject it. POST bodies contain
+exactly expectedVersion and package. Reject unknown/duplicate/trailing keys,
+mixed editors, coerced numbers/booleans/strings, fractional/overflowed versions
+and noncanonical payloads. The scoped body advice bounds the original JSON
+stream to25165824 bytes (24MiB), depth8, before typed conversion. The largest
+16MiB payload plus Base64/envelope overhead fits that transport ceiling; editor
+decoded-byte bounds still apply independently before large allocation.
+Do not accept ZIP/GZIP/multipart, filenames/path traversal, external references
+or unsafe polymorphic type hints.
+
+Extend HidraRouteAuthorizationInterceptor only for the four exact compiled
+new controller/method/verb/pattern tuples, after non-anonymous authentication;
+each operation still calls its required protected READ/UPDATE owner. All sibling,
+wrong-method/controller/verb/pattern requests retain normal permission checks.
+Do not add an engineering-exchanges prefix bypass or any new permission grant.
+
+New scalar REST request/response records and mapper never expose Domain/JPA/
+native owner objects. The new exception advice is scoped to this controller
+with fixed instance urn:hidra:engineering-local-exchange. Map malformed or
+unsupported package/editor/format to400, anonymous401, protected denial403,
+existing authorized NOT_FOUND404, stale/source-scope/graph/version conflict409,
+storage unavailable or indeterminate completion503. Fixed codes/messages expose
+no private exception text, foreign selectors/counts/proof or database details.
+Keep old draft/publication handlers/routes/schemas unchanged.
+
+**One registered future implementation — next after this Docs success.**
+Exact message `feat(topology): implement typed local engineering exchange`.
+CREATE exactly17 files:
+- src/main/java/dz/sh/hidra/modules/topology/domain/model/EngineeringLocalExchange.java
+- src/main/java/dz/sh/hidra/modules/topology/application/port/in/EngineeringLocalExchangeUseCase.java
+- src/main/java/dz/sh/hidra/modules/topology/application/port/out/EngineeringLocalExchangeCodecPort.java
+- src/main/java/dz/sh/hidra/modules/topology/application/model/EngineeringLocalExchangeFailure.java
+- src/main/java/dz/sh/hidra/modules/topology/application/service/EngineeringLocalExchangeApplicationService.java
+- src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/EngineeringLocalExchangeCodec.java
+- src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/EngineeringLocalExchangeController.java
+- src/main/java/dz/sh/hidra/modules/topology/api/rest/request/EngineeringLocalExchangeRequests.java
+- src/main/java/dz/sh/hidra/modules/topology/api/rest/response/EngineeringLocalExchangeResponses.java
+- src/main/java/dz/sh/hidra/modules/topology/api/rest/mapper/EngineeringLocalExchangeRestMapper.java
+- src/main/java/dz/sh/hidra/modules/topology/api/rest/EngineeringLocalExchangeApiExceptionHandler.java
+- src/test/java/dz/sh/hidra/modules/topology/domain/model/EngineeringLocalExchangeTest.java
+- src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/EngineeringLocalExchangeCodecTest.java
+- src/test/java/dz/sh/hidra/modules/topology/application/service/EngineeringLocalExchangeApplicationServiceTest.java
+- src/test/java/dz/sh/hidra/modules/topology/api/rest/EngineeringLocalExchangeControllerTest.java
+- src/test/java/dz/sh/hidra/modules/topology/api/rest/EngineeringLocalExchangeApiExceptionHandlerTest.java
+- src/test/java/dz/sh/hidra/modules/topology/EngineeringLocalExchangeBoundaryGuardrailTest.java
+
+MODIFY exactly5 existing files:
+- src/main/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptor.java
+- src/test/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptorTest.java
+- src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/EngineeringNetworkDraftPostgresIntegrationTest.java
+- .github/ci-test-inventory.json
+- doc/roadmap/TASKS_HPS-020.md
+
+Zero DELETE. All17 new paths are absent and all5 modify paths are present at the
+registered head. EngineeringLocalExchangeCodecPort is only a codec boundary;
+do not instantiate the originally proposed new exchange repository/SQL adapter.
+Reuse existing metadata/graph/survey codecs and inbound owners without edits.
+No old source-format, migration, security proof, role, time bound, physical
+dictionary or shared execution policy modification is selected. The three new
+REST/helper/codec adapters are components as appropriate; application service
+depends only on existing inbound ports plus its codec port. Exact input/response
+records/mapper are contained in the listed files, not additional DTO files.
+
+**Planned tests, not executed evidence.** Implement six new suites with exactly
+the following33 source methods (parameterize where meaningful without inventing
+additional method identities):
+- EngineeringLocalExchangeTest: `requiresOneKnownEditorAndExactOriginSelectors`, `rejectsInvalidVersionsFormatsDigestsAndBounds`, `copiesPayloadAndDiagnosticsDefensively`, `preservesAbsentValuesWithoutInferringQualification`, `rejectsMixedEditorsAndRemapping`, `keepsOriginClaimsSeparateFromTargetAuthority`.
+- EngineeringLocalExchangeCodecTest: `roundTripsAllThreeOriginalCanonicalFormats`, `preservesSurveyDecimalScaleUnitsAndMissingElevation`, `rejectsDigestBase64FormatAndTrailingByteTampering`, `rejectsMalformedUtf8NoncanonicalAndOversizedPayloads`, `retainsMetadataNullsAndGraphIdentityNamespaces`, `keepsOriginAndComponentVersionProvenanceExplicit`, `neverConvertsCoordinatesUnitsOrPhysicalValues`.
+- EngineeringLocalExchangeApplicationServiceTest: `exportRequiresExistingNativeReadBeforeReturningPayload`, `dryRunUsesReadOnlyOwnerOperationsAndReturnsNoAdmission`, `importDispatchesOneExistingProtectedUpdateWithExplicitCas`, `staleTargetVersionNeverInvokesAnUpdate`, `surveyImportRequiresTheCurrentGraphDigestAndPreservesBindingProvenance`, `revocationAndIndeterminateFailureNeverRetryOrReturnSuccess`, `capabilitiesDescribeSupportWithoutGrantingWriteAuthority`, `unsupportedEditorsBatchesAndForeignScopesNeverReachAWrite`.
+- EngineeringLocalExchangeControllerTest: `mapsFourExactRoutesAndThreeEditorsToTypedInputs`, `rejectsDuplicateUnknownCoercedAndOversizedBodiesBeforeOwnerDispatch`, `preservesScalarEnvelopesAndDetachedResults`, `requiresExactScopeVersionAndSurveyBranchSelectors`, `anonymousForeignAndSiblingRoutesCannotDelegate`.
+- EngineeringLocalExchangeApiExceptionHandlerTest: `fixedErrorsDoNotExposeSelectorsOrExceptionMessages`, `mapsNativeConflictsDenialsAndIndeterminateCompletionExactly`, `adviceAndBodyBoundsApplyOnlyToTheExchangeController`.
+- EngineeringLocalExchangeBoundaryGuardrailTest: `applicationCoordinatesOnlyExistingInboundOwnersAndCodecPort`, `exchangeHasNoSqlJpaTransactionPermitOrIdentityTicketAccess`, `restModelsDoNotExposeDomainOrAuthorityObjects`, `existingFormatsSqlGuardsAndBudgetsRemainUnchanged`.
+
+Add exactly four actual methods to the existing real native/PostgreSQL fixture:
+- genuineNativeEditorsExportDryRunAndImportUseExistingProtectedOwners
+- dryRunAndCapabilityReadsLeaveAllDraftAndPublicationStorageUnchanged
+- staleConcurrentAndRevokedImportsCannotAppendPartialSuccessors
+- malformedForeignAndUnsupportedPackagesRevealNoOwnerDataAndRetainExactBytes
+
+Use real signed LOCAL/OIDC/LDAP/AD, actual MVC/security/interceptor beans and
+separated ordinary/publisher roles; only existing external source/directory
+transports are synthetic. Prove all three editor roundtrips, decimal scale/
+null/unit/provenance retention, complete row/count invariance for dry-run,
+capabilities and export, scope/unknown/unauthenticated denial, explicit unsupported
+batch/foreign input, graph mismatch, stale and concurrent shared-version CAS,
+revocation between preview and write, flush/final-guard rollback and no
+partial metadata/component successor. Do not count mocked owner tests as native
+proof or simulated completion as an induced unknown database COMMIT.
+
+Add one actual existing interceptor test:
+exchangeDelegatesOnlyFourExactAuthenticatedControllerTuples.
+Preserve all existing methods/cases. Inventory only the six actually implemented
+new suites and changed existing test source hashes/cases; preserve all other
+classes/weights/archives, the existing seven PostgreSQL shards and workflow mode.
+New unit suites are fast/unit-architecture with explicitly unmeasured duration0.
+No test is removed to shorten CI. Additional cases may parameterize these methods;
+source/inventory must agree before publication.
+
+**Remaining registered stages.**
+3. After the implementation produces actual hosted outputs and responsible
+   runtime failures are repaired: exact message
+   `docs(topology): reconcile local engineering exchange artifacts`.
+   MODIFY only doc/api/openapi.yaml, .github/documentation-validation.json and
+   this phase record, using real generated source/run/attempt/artifact/member
+   digests. No schema/JPA/ownership change is planned, so preserve the physical
+   dictionary and verify actual normal API-lane catalog equality; widen scope
+   only for a demonstrated real gap, never invented metadata. Strict equality
+   and successful-base compatibility remain unchanged. Do not invent an
+   updated snapshot before the actual application generates it.
+4. After exact-source Full/Fast/Docs as applicable and case-level acceptance:
+   `docs(topology): record local engineering exchange acceptance`.
+   Only this phase's HAPI-591 statuses/evidence, HAPI-591 status cells in ROADMAP/
+   PHASES and the matching index pointer may change (four governance files).
+   Promote VERIFIED/COMPLETED only on actual required evidence. HAPI-592 and
+   integrated topology closure remain separately selected stages; no frontend,
+   multi-owner exchange, release, deployment, simulation or OT action follows.
+
+These are four main delivery stages, not a promise of no CI repair commits.
+A discovered genuine contract/authority gap must be recorded and repaired in
+bounded scope rather than hidden by bypassing an owner or accumulating preflights.
+
+**This stage's exact write scope and validation.** Zero CREATE / four MODIFY /
+zero DELETE: this phase adds this record and changes only HAPI-591 planning to
+IN_PROGRESS; ULTIMATE_ROADMAP.md and ULTIMATE_PHASES.md change only that task's
+planning status; ULTIMATE_TASKS.md adds only its compact current execution pointer.
+Implementation remains NOT_IMPLEMENTED. Preserve all old records and every
+production/test/artifact/migration/workflow/manifest blob.
+
+Actual available checks: complete selected task/governance and relevant live
+owner/service/controller/domain/codec/source recovery,17 absent/5 present future
+path check, old-history/status-only scope and target/anchor checks. Existing19
+documentation-validator self-tests PASS. Validate focused921-row registry/index
+and34-task phase agreement before publication. No new Java/Maven/PostgreSQL
+execution, implementation, artifact generation or runtime acceptance is claimed.
+
+Publish this one registration to main with expected89e4239 lease, verify exact
+one-parent/tree/four-file scope, observe applicable exact-SHA Documentation CI
+creation/queue/start and STOP without waiting or executing stage2 automatically.
+
+
 
 <a id="hapi-608"></a>
 ## HAPI-608 — Aggregate typed engineering exchange

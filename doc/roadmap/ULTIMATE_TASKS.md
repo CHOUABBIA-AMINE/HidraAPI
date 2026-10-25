@@ -46,6 +46,16 @@ superseded; do not repeat completed implementation. Owner Next selected final
 acceptance and status-only closure. No next task is selected automatically.
 Existing HAPI-567/588/589 acceptance and the deferred simulator direction remain.
 
+
+The selected next task is [HAPI-591](TASKS_HPS-020.md#hapi-591), typed local
+engineering exchange and capabilities, NOT_IMPLEMENTED/IN_PROGRESS. Owner
+Go ahead selects its four-stage delivery sequence. Its phase record now owns
+the source-backed exact scope and tests; after this registration's Docs success,
+the next single stage is `feat(topology): implement typed local engineering exchange`.
+Reuse the existing protected metadata/graph/survey owners. This pointer is not
+an implementation or API acceptance claim and selects no HAPI-592/608 or frontend.
+
+
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent
 [HAPI-436](TASKS_HPS-024.md#hapi-436) are VERIFIED/COMPLETED within the accepted

@@ -1389,7 +1389,7 @@ Cross-phase prerequisites in the approved task graph: HPS-004, HPS-018 Dependenc
 | [HAPI-389](TASKS_HPS-020.md#hapi-389) | review documents Document | review documents Document | P2 | — | VERIFIED | COMPLETED |
 | [HAPI-390](TASKS_HPS-020.md#hapi-390) | review documents DocumentVersion | review documents DocumentVersion | P2 | — | VERIFIED | COMPLETED |
 | [HAPI-408](TASKS_HPS-020.md#hapi-408) | review documents DocumentTargetLink | review documents DocumentTargetLink | P2 | — | VERIFIED | COMPLETED |
-| [HAPI-591](TASKS_HPS-020.md#hapi-591) | Typed local engineering exchange and capabilities | Supported local typed import/export and per-editor capability/completeness closure. | P2 | HAPI-590 | NOT_IMPLEMENTED | BLOCKED |
+| [HAPI-591](TASKS_HPS-020.md#hapi-591) | Typed local engineering exchange and capabilities | Supported local typed import/export and per-editor capability/completeness closure. | P2 | HAPI-590 | NOT_IMPLEMENTED | IN_PROGRESS |
 | [HAPI-608](TASKS_HPS-020.md#hapi-608) | Aggregate typed engineering exchange | Supported aggregate engineering import/export, dry-run and conflict-safe replay. | P2 | HAPI-607 | NOT_IMPLEMENTED | BLOCKED |
 
 ### 8. Phase Completion Criteria

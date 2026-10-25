@@ -882,16 +882,18 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
             requireHeld(ORGANIZATION_FENCES, ticket.nativeFences, ticket.proofFences,
                     ticket.parties.isEmpty() ? List.of() : PARTY_FENCES);
             var expected = ticket;
+            // Both deadlines are checked freshly at this boundary. Combining the
+            // adjacent read-only probes avoids another protected JDBC round trip.
+            var planUntil = ticket.plan == null ? null
+                    : java.sql.Timestamp.from(ticket.plan.validUntil());
             if (!Boolean.TRUE.equals(jdbc.queryForObject("""
                     SELECT pg_catalog.pg_backend_pid()=? AND pg_catalog.txid_current()=?
                        AND current_user=? AND clock_timestamp()>=?::timestamptz
                        AND clock_timestamp()<?::timestamptz
+                       AND (?::timestamptz IS NULL OR clock_timestamp()<?::timestamptz)
                     """, Boolean.class, ticket.pid, ticket.xid, ticket.role,
                     java.sql.Timestamp.from(ticket.sample.sampledAt()),
-                    java.sql.Timestamp.from(ticket.sample.validUntil())))) throw denied();
-            if (ticket.plan != null && !Boolean.TRUE.equals(jdbc.queryForObject(
-                    "SELECT clock_timestamp()<?::timestamptz",Boolean.class,
-                    java.sql.Timestamp.from(ticket.plan.validUntil())))) throw denied();
+                    java.sql.Timestamp.from(ticket.sample.validUntil()),planUntil,planUntil))) throw denied();
             if (ticket(expected) != expected) throw denied();
         } catch (RuntimeException failure) {
             poison(ticket == null ? admission : ticket);

@@ -28222,6 +28222,73 @@ awaits genuine runtime qualification. Publish guarded direct main with
 expected-a950b92,verify parent/tree/message/two blobs,confirm applicable
 Full/Fast/Docs creation/queue/start and STOP.
 
+### 2026-10-25 — HAPI-778 Full876 reader pin and storage deadline probe repair
+
+Owner Fail refreshes main22e7c32f671c0bfe6264849ae69ff33f8fbeacf6,
+parent a950b926239f2bcdfece2d114eb0ba26ad35bd4a,
+tree10868f938fcb7ebc51325c3501231985fccb8482.
+[Full876](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40133047715)
+FAILED unit/architecture,PostgreSQL shard1 and the aggregate;
+[Fast185](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40133047664)
+FAILED the same source pin. Docs566,static,API/dictionary and the other six
+PostgreSQL shards PASSED. No NOWAIT failure is observed in this exact run.
+
+The guardrail expected reader SHA256ff8f5103279f27e37e6ca199d94c5cc265834f23e375a333d4e3dabab3df65dc.
+Actual reader SHA2569432befa0a5b690729c8a4f06512db288fc455b13f56a3dbd251f01e17b0aadf
+matches the complete reviewed Full875 change: short-circuit only provably empty
+referenced-ID queries. The provider-OR query remains eligible; no claim/grant
+cache or policy change was introduced. Rebase only this exact reader pin and its
+comment. Preserve all four J contract/adapter pins and every test assertion.
+Reader production bytes remain unchanged in this repair.
+
+Shard1 executed all64 appointment concurrency cases: genuine LOCAL CREATE still
+rejects before provisional DML on the aggregate500ms budget; the managed-flush
+fault cannot reach its intended flush. Latest acquireWrite diagnostic totals
+1020ms,including native contribution254ms,reference classification135ms,
+Party contribution155ms and currentWrite446ms. These inclusive measurements do
+not establish which SQL dominates or prove any performance improvement.
+
+Registered B3 message remains
+`feat(organization): persist protected appointment lifecycle and history`.
+Exactly four MODIFY,zero CREATE/DELETE:
+- src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JdbcProtectedEmployeeAppointmentRepositoryAdapter.java
+- src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java
+- .github/ci-test-inventory.json,only that guardrail suite's source SHA256
+- this append-only HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+The storage requireCurrent boundary previously issued a physical/sample-window
+SELECT followed immediately by a separate plan-deadline SELECT when a plan
+exists. Combine these read-only checks in the first statement. Retain exact PID,
+XID,current role,sample lower/upper bounds and fresh plan clock_timestamp upper
+bound. A nullable bound is supplied only when no plan exists; an existing plan's
+null deadline still fails during Timestamp conversion. Preserve all native and
+Party callbacks,retained fences,catalog checks,post-query ticket identity and
+rollback poisoning. No check result survives a boundary and no clock sample or
+authority is cached. This avoids one JDBC statement plus its protected physical
+probes per planned storage-current call; it is not proof the full workflow meets
+500ms. Shared native-fence query consolidation was considered but is outside
+this B3 repair's registered source scope and is NOT implemented here.
+
+All six guardrail cases and all64 appointment concurrency cases retain their
+identities. No tests are removed,archived or skipped. Inventory retains every
+case,lane,weight and policy; only the changed guardrail's exact source hash moves.
+Local32 inventory-validator and19 documentation-validator self-tests PASSED.
+The reader digest,pin-only guardrail change,one-entry inventory diff,unchanged
+native/Party sources,append-only evidence and exact-four-path/blob scope are
+checked. Local Java is17 with no javac/Maven/PostgreSQL available; no Java21
+compilation,JUnit,PostgreSQL execution or performance pass is claimed. Hosted
+Full/Fast/Docs must qualify the exact new SHA. Full876 remains historical failure.
+
+Preserve all172 migrations,catalog/function pins,500ms aggregate/250ms lock
+deadlines,NOWAIT,seven shards,generated artifacts and public/legacy activation
+gates. HAPI-778 remains PARTIAL/IN_PROGRESS;HAPI-590 remains PARTIAL/BLOCKED.
+The positive lifecycle and actual managed-flush acceptance gates remain open;
+do not close778 or execute remaining public/legacy integration on this evidence.
+Publish guarded direct main with expected22e7c32,verify parent/tree/message/four
+blobs,confirm applicable exact-SHA CI creation/queue/start and STOP. Next remains
+HAPI-778 B3 runtime qualification/repair before its registered artifact and final
+acceptance stages. No release,deployment,numerical simulation or OT action.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

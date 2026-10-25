@@ -30182,6 +30182,61 @@ HAPI-590 remains independently PARTIAL/BLOCKED. This does not close HAPI-778,
 select simulation/P3, authorize deployment/release or establish industrial/OT readiness.
 
 
+### 2026-10-25 — HAPI-778 Full893/Fast202 inbound guardrail repair
+
+Owner Fail refreshes main2d0aa5795b2d43bbb19f71f0297891f3cb668ed8,
+parent7fc190180abfce9bb56b06026d5cd05aa22226ea,
+treedc5bc7857f56bac19c2d8042e7f2c7dda3f772d9. Exact-head
+[Full893](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40207565216)
+and [Fast202](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40207565245)
+failed; [Docs585](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40207565214)
+succeeded. Mandatory governance and the exact inbound contract/test/inventory
+were refreshed. Repair only the demonstrated responsible test scope; no new
+implementation or public cutover is selected by Fail.
+
+Full unit job121211675399 reports2005 tests, one failure, zero errors/skips.
+Fast job121211675971 reports1961 tests, the same one failure, zero errors/skips.
+Both identify EmployeeAppointmentBoundaryGuardrailTest's existing
+inboundUseCaseReturnsDistinctPrivateAndRedactedHistoryTypes: expected10 inbound
+methods, actual11. The preceding implementation correctly added createLegacy
+but omitted this old exact-cardinality expectation. Compilation succeeded;
+this is not a runtime authentication, SQL or guard failure. All seven PostgreSQL
+jobs and API/dictionary/static lanes passed. Full893 itself remains failed and
+does not establish parent or complete-stage acceptance. No additional independent
+raw-report download/revalidation is claimed by these job/run observations.
+
+Retain the registered B3 message
+`feat(organization): persist protected appointment lifecycle and history`.
+MODIFY exactly three existing paths; zero CREATE/DELETE:
+- src/test/java/dz/sh/hidra/modules/organization/EmployeeAppointmentBoundaryGuardrailTest.java
+- .github/ci-test-inventory.json, only that existing suite's source_sha256
+- doc/roadmap/TASKS_HPS-003.md, only this append-only HAPI-778 evidence
+
+Update the exact count to11 and additionally require the exact
+createLegacy(EmployeeAppointmentCommand.LegacyCreate) signature to return
+EmployeeAppointmentResult.MutationReceipt. Keep the existing distinct private/
+redacted history assertions and current-page signature check. No case is removed,
+renamed, skipped or broadly relaxed: all23 test identities remain. All other
+inventory entries, cases, lanes, weights and metadata remain unchanged.
+
+Available inventory-validator32 self-tests pass. The changed Java file parses
+using the installed Java17 compiler module (syntax only, no Java21 type resolution
+or local JUnit execution). Retained case identities, old/new source hashes,
+one-field inventory delta, append-only task history, exact three-path scope and
+added-line whitespace are checked. No local Java21/Maven/PostgreSQL environment
+is provisioned. New exact-SHA hosted Full/Fast/Docs acceptance remains required.
+Production code, SQL, all173 migration bodies, runtime roles/privileges, native
+validity, work/lock/statement/idle bounds, generated artifacts, seven shards,
+workflows and frozen task statuses remain unchanged.
+
+Publish guarded direct main, verify exact one parent/tree/message/three blobs and
+scope, confirm applicable exact-SHA Full/Fast/Docs creation/queue/start and STOP.
+Repair actual further failures before the registered atomic public bean/REST/
+legacy writer-reader/interceptor cutover. HAPI-778 stays PARTIAL/IN_PROGRESS;
+HAPI-590 stays independently PARTIAL/BLOCKED. No task closure, release/deployment,
+simulation/P3, production data or operational/industrial acceptance is selected.
+
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

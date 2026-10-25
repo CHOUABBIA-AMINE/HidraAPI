@@ -269,7 +269,9 @@ class EmployeeAppointmentBoundaryGuardrailTest {
         assertTrue(privateHistory.contains("PrivateHistoryEvent"));
         assertTrue(positionHistory.contains("PositionHistoryEvent"));
         assertFalse(positionHistory.contains("PrivateHistoryEvent"));
-        assertEquals(10, useCase.getDeclaredMethods().length);
+        assertEquals(11, useCase.getDeclaredMethods().length);
+        assertEquals(dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.MutationReceipt.class,
+                useCase.getMethod("createLegacy",EmployeeAppointmentCommand.LegacyCreate.class).getReturnType());
         assertEquals(dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.CurrentPage.class,
                 useCase.getMethod("currentAssignments",EmployeeAppointmentQuery.Current.class).getReturnType());
     }

@@ -7420,15 +7420,18 @@
         "concurrentSurveyAndGraphWritersHaveOneSuccessor",
         "concurrentSurveyAndMetadataWritersHaveOneSuccessor",
         "disabledActualCatalogTriggerFailsBeforeAnyDraftInsert",
+        "dryRunAndCapabilityReadsLeaveAllDraftAndPublicationStorageUnchanged",
         "expiredGraphFinalGuardRollsBackBothVersionRows",
         "expiredSurveyGuardRollsBackBothRows",
         "facilityWriterFirstPreventsBothGraphAndMetadataAppends",
+        "genuineNativeEditorsExportDryRunAndImportUseExistingProtectedOwners",
         "graphCurrentStationWrongKindAndStatusFailClosed",
         "graphFinalGuardContainsThirtyFourRelationFences",
         "graphForeignOwnerAndOwnerAbaNeverReuseAStaleStationWitness",
         "graphOwnerFirstBlocksAConcurrentFacilityGenerationWriter",
         "graphStationRoundTripRequiresReadOnlyGenerationAuthority",
         "graphSurvivesMetadataOnlySuccessorWithHistoricalSha",
+        "malformedForeignAndUnsupportedPackagesRevealNoOwnerDataAndRetainExactBytes",
         "ordinaryDirectDmlAndDdlRemainDenied",
         "ordinaryGraphSnapshotPrivilegesRemainDenied",
         "originalCreationReplayDoesNotRevertLaterMetadata",
@@ -7438,6 +7441,7 @@
         "revokedGraphWriteDoesNotCreateASecondMetadataVersion",
         "samePairReusesOneContextForIndependentCandidates",
         "signedBearerGraphVersionAppendAndHistoricalAsOfAreDraftOnly",
+        "staleConcurrentAndRevokedImportsCannotAppendPartialSuccessors",
         "staleVersionNeverAppendsOrOverwrites",
         "surveyCatalogAndPrivilegeTamperingRejects",
         "surveyDatabaseRejectsWrongTransactionDigestAndGraphBinding",
@@ -7457,7 +7461,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/EngineeringNetworkDraftPostgresIntegrationTest.java",
-      "source_sha256": "73b0d7639d025b6c06469ab10394c703f0793246af0948f6756df4452a459716",
+      "source_sha256": "45db0ae364717079355db01ed9167913d18970c6b3ab75ea111c27451a42b882",
       "supports": []
     },
     {
@@ -8575,6 +8579,7 @@
         "derivesIdentityRoadmapPermissionFormat",
         "engineeringDraftNativeOwnerOnlyHandlesExactSixCompiledOperations",
         "engineeringDraftNeverDelegatesAnonymousOrDifferentController",
+        "exchangeDelegatesOnlyFourExactAuthenticatedControllerTuples",
         "forbidsMissingEffectivePermission",
         "permitsAnonymousDirectLoginBeforeRoutePermissionResolution",
         "permitsMatchingEffectivePermission",
@@ -8587,7 +8592,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptorTest.java",
-      "source_sha256": "22b68dface2b5ddf4449027141c72381817a2f239271a9c176f819009b72bd4e",
+      "source_sha256": "b0542a1a578589a71629892e05ef262edfdd96e702fa59eb6d0f0f91ac621713",
       "supports": []
     },
     {
@@ -9261,6 +9266,117 @@
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/api/rest/controller/EmployeeAppointmentLifecycleControllerTest.java",
       "source_sha256": "ada84b4aadf56bd366f4c843456452b75ee9193abe5a6a9336eadd8cd39356bf",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "applicationCoordinatesOnlyExistingInboundOwnersAndCodecPort",
+        "exchangeHasNoSqlJpaTransactionPermitOrIdentityTicketAccess",
+        "existingFormatsSqlGuardsAndBudgetsRemainUnchanged",
+        "restModelsDoNotExposeDomainOrAuthorityObjects"
+      ],
+      "class": "dz.sh.hidra.modules.topology.EngineeringLocalExchangeBoundaryGuardrailTest",
+      "dependency_reason": "HAPI-591 bounded exchange contract/codec/orchestration/MVC/boundary tests; mocked owners do not prove native authority. New native coverage extends the existing PostgreSQL fixture; duration unmeasured.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/EngineeringLocalExchangeBoundaryGuardrailTest.java",
+      "source_sha256": "625eb7c1f2db627311fbfc0b22d027052416c41d203fef87223380acc95dddf0",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "copiesPayloadAndDiagnosticsDefensively",
+        "keepsOriginClaimsSeparateFromTargetAuthority",
+        "preservesAbsentValuesWithoutInferringQualification",
+        "rejectsInvalidVersionsFormatsDigestsAndBounds",
+        "rejectsMixedEditorsAndRemapping",
+        "requiresOneKnownEditorAndExactOriginSelectors"
+      ],
+      "class": "dz.sh.hidra.modules.topology.domain.model.EngineeringLocalExchangeTest",
+      "dependency_reason": "HAPI-591 bounded exchange contract/codec/orchestration/MVC/boundary tests; mocked owners do not prove native authority. New native coverage extends the existing PostgreSQL fixture; duration unmeasured.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/domain/model/EngineeringLocalExchangeTest.java",
+      "source_sha256": "c37711808a98e9006621cc257350be6c91d9e3ea8d8b07dcdaf449400cac3a61",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "capabilitiesDescribeSupportWithoutGrantingWriteAuthority",
+        "dryRunUsesReadOnlyOwnerOperationsAndReturnsNoAdmission",
+        "exportRequiresExistingNativeReadBeforeReturningPayload",
+        "importDispatchesOneExistingProtectedUpdateWithExplicitCas",
+        "revocationAndIndeterminateFailureNeverRetryOrReturnSuccess",
+        "staleTargetVersionNeverInvokesAnUpdate",
+        "surveyImportRequiresTheCurrentGraphDigestAndPreservesBindingProvenance",
+        "unsupportedEditorsBatchesAndForeignScopesNeverReachAWrite"
+      ],
+      "class": "dz.sh.hidra.modules.topology.application.service.EngineeringLocalExchangeApplicationServiceTest",
+      "dependency_reason": "HAPI-591 bounded exchange contract/codec/orchestration/MVC/boundary tests; mocked owners do not prove native authority. New native coverage extends the existing PostgreSQL fixture; duration unmeasured.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/application/service/EngineeringLocalExchangeApplicationServiceTest.java",
+      "source_sha256": "2cc310a11451192e7c2315b62444e16ed2697a173d50381d0d9fdaa31a656193",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "keepsOriginAndComponentVersionProvenanceExplicit",
+        "neverConvertsCoordinatesUnitsOrPhysicalValues",
+        "preservesSurveyDecimalScaleUnitsAndMissingElevation",
+        "rejectsDigestBase64FormatAndTrailingByteTampering",
+        "rejectsMalformedUtf8NoncanonicalAndOversizedPayloads",
+        "retainsMetadataNullsAndGraphIdentityNamespaces",
+        "roundTripsAllThreeOriginalCanonicalFormats"
+      ],
+      "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.EngineeringLocalExchangeCodecTest",
+      "dependency_reason": "HAPI-591 bounded exchange contract/codec/orchestration/MVC/boundary tests; mocked owners do not prove native authority. New native coverage extends the existing PostgreSQL fixture; duration unmeasured.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/EngineeringLocalExchangeCodecTest.java",
+      "source_sha256": "c04bc900565741d92242dbea749cbdc990c665453bda46d18a32ba81885e9400",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "anonymousForeignAndSiblingRoutesCannotDelegate",
+        "mapsFourExactRoutesAndThreeEditorsToTypedInputs",
+        "preservesScalarEnvelopesAndDetachedResults",
+        "rejectsDuplicateUnknownCoercedAndOversizedBodiesBeforeOwnerDispatch",
+        "requiresExactScopeVersionAndSurveyBranchSelectors"
+      ],
+      "class": "dz.sh.hidra.modules.topology.api.rest.EngineeringLocalExchangeControllerTest",
+      "dependency_reason": "HAPI-591 bounded exchange contract/codec/orchestration/MVC/boundary tests; mocked owners do not prove native authority. New native coverage extends the existing PostgreSQL fixture; duration unmeasured.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/api/rest/EngineeringLocalExchangeControllerTest.java",
+      "source_sha256": "fdef88145715cc7403437c310df855edee89625efd5390ef3288fbd0c2447158",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "adviceAndBodyBoundsApplyOnlyToTheExchangeController",
+        "fixedErrorsDoNotExposeSelectorsOrExceptionMessages",
+        "mapsNativeConflictsDenialsAndIndeterminateCompletionExactly"
+      ],
+      "class": "dz.sh.hidra.modules.topology.api.rest.EngineeringLocalExchangeApiExceptionHandlerTest",
+      "dependency_reason": "HAPI-591 bounded exchange contract/codec/orchestration/MVC/boundary tests; mocked owners do not prove native authority. New native coverage extends the existing PostgreSQL fixture; duration unmeasured.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/api/rest/EngineeringLocalExchangeApiExceptionHandlerTest.java",
+      "source_sha256": "a7647c12ada0dd2d6485a812178271203ab2489aa5fbd3f5a06c2a9f3ab8192a",
       "supports": []
     }
   ],

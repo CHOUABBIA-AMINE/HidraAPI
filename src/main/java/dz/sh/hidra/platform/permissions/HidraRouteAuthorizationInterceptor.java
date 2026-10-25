@@ -96,7 +96,8 @@ public final class HidraRouteAuthorizationInterceptor implements HandlerIntercep
         // every other route retains the ordinary effective-permission check.
         if (isOwnedEngineeringDraftRoute(handlerMethod, routePattern, request.getMethod())
                 || isOwnedEngineeringPublicationRoute(handlerMethod,routePattern,request.getMethod())
-                || isOwnedEmployeeAppointmentRoute(handlerMethod,routePattern,request.getMethod())) {
+                || isOwnedEmployeeAppointmentRoute(handlerMethod,routePattern,request.getMethod())
+                || isOwnedLocalExchangeRoute(handlerMethod,routePattern,request.getMethod())) {
             if (authentication == null || !authentication.isAuthenticated()
                     || authentication instanceof AnonymousAuthenticationToken) {
                 throw new AccessDeniedException("Engineering draft authentication required.");
@@ -187,5 +188,17 @@ public final class HidraRouteAuthorizationInterceptor implements HandlerIntercep
             return tuple.equals("GET /api/v1/organization/assignments assignments")
                     || tuple.equals("GET /api/v1/organization/employees/{id}/assignments employeeAssignments");
         return false;
+    }
+
+    private static boolean isOwnedLocalExchangeRoute(HandlerMethod handler,String route,String verb) {
+        if(handler==null || route==null || verb==null || !handler.getBeanType().getName().equals(
+                "dz.sh.hidra.modules.topology.api.rest.controller.EngineeringLocalExchangeController"))return false;
+        return switch(verb+" "+route+" "+handler.getMethod().getName()) {
+            case "GET /api/v1/topology/engineering-networks/{draftId}/exchanges/{editor}/export export",
+                 "POST /api/v1/topology/engineering-networks/{draftId}/exchanges/{editor}/dry-runs dryRun",
+                 "POST /api/v1/topology/engineering-networks/{draftId}/exchanges/{editor}/imports importOne",
+                 "GET /api/v1/topology/engineering-networks/{draftId}/exchanges/{editor}/capabilities capabilities" -> true;
+            default -> false;
+        };
     }
 }

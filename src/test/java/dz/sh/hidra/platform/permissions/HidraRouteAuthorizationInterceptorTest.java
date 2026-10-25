@@ -266,4 +266,27 @@ class HidraRouteAuthorizationInterceptorTest {
         }
     }
 
+
+    @Test void exchangeDelegatesOnlyFourExactAuthenticatedControllerTuples() {
+        var interceptor=new HidraRouteAuthorizationInterceptor(org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class),naming,true,"jwt");
+        var controller=new dz.sh.hidra.modules.topology.api.rest.controller.EngineeringLocalExchangeController(
+                org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.EngineeringLocalExchangeUseCase.class));
+        String root="/api/v1/topology/engineering-networks/{draftId}/exchanges/{editor}";
+        String[] names={"export","dryRun","importOne","capabilities"},tails={"/export","/dry-runs","/imports","/capabilities"},verbs={"GET","POST","POST","GET"};
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("fixture",null,List.of()));
+        for(int i=0;i<names.length;i++) {
+            final String name=names[i];
+            var method=java.util.Arrays.stream(controller.getClass().getMethods()).filter(m->m.getName().equals(name)).findFirst().orElseThrow();
+            var handler=new HandlerMethod(controller,method);String pattern=root+tails[i];
+            var request=new MockHttpServletRequest(verbs[i],pattern);request.setAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE,pattern);
+            assertTrue(interceptor.preHandle(request,new MockHttpServletResponse(),handler));
+            request.setMethod("DELETE");assertThrows(AccessDeniedException.class,()->interceptor.preHandle(request,new MockHttpServletResponse(),handler));
+            request.setMethod(verbs[i]);request.setAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE,pattern+"/sibling");
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(request,new MockHttpServletResponse(),handler));
+            request.setAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE,pattern);
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(request,new MockHttpServletResponse(),handlerMethod()));
+            SecurityContextHolder.clearContext();assertThrows(AccessDeniedException.class,()->interceptor.preHandle(request,new MockHttpServletResponse(),handler));
+            SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("fixture",null,List.of()));
+        }
+    }
 }

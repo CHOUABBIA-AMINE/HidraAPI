@@ -7,7 +7,7 @@
  *
  * @Name        : EngineeringNetworkDraftPostgresIntegrationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-20
+ * @UpdatedOn   : 2026-10-25
  *
  * @Type        : Class
  * @Layer       : Topology Test
@@ -18,6 +18,13 @@
  *
  */
 package dz.sh.hidra.modules.topology.infrastructure.persistence;
+
+import dz.sh.hidra.modules.topology.domain.model.EngineeringLocalExchange;
+import dz.sh.hidra.modules.topology.domain.model.EngineeringLocalExchange.Editor;
+import dz.sh.hidra.modules.topology.application.port.in.EngineeringLocalExchangeUseCase;
+import dz.sh.hidra.modules.topology.application.port.in.EngineeringLocalExchangeUseCase.Operation;
+import dz.sh.hidra.modules.topology.application.model.EngineeringLocalExchangeFailure;
+
 
 import dz.sh.hidra.modules.topology.domain.model.SurveyRouteProfile;
 import dz.sh.hidra.modules.topology.application.port.in.SurveyRouteProfileUseCase;
@@ -1517,5 +1524,116 @@ public class EngineeringNetworkDraftPostgresIntegrationTest {
                 assertThat(org.junit.jupiter.api.Assertions.assertThrows(SQLException.class,()->st.execute(sql)).getSQLState()).isEqualTo("42501");
             }catch(SQLException e){throw new AssertionError(e);}
         }
+    }
+
+    private EngineeringLocalExchangeUseCase exchanges(){return webContext.getBean(EngineeringLocalExchangeUseCase.class);}
+    private EngineeringLocalExchangeUseCase.Command exchangeCommand(Operation op,Editor editor,UUID draft,Long expected,EngineeringLocalExchange pack){
+        return new EngineeringLocalExchangeUseCase.Command(op,editor,COMPANY,network,draft,editor==Editor.SURVEY?"parallel-a":null,null,expected,pack);
+    }
+    private String exchangeUrl(UUID draft,Editor editor,String suffix){return "/api/v1/topology/engineering-networks/"+draft+"/exchanges/"+editor+suffix
+        +"?companyPartyId="+COMPANY+"&pipelineSystemId="+network+(editor==Editor.SURVEY?"&branchId=parallel-a":"");}
+    private String exchangeBody(long version,EngineeringLocalExchange pack){return JSON.writeValueAsString(Map.of("expectedVersion",version,"package",pack));}
+    private Map<String,String> exchangeStorageState(){
+        var state=new TreeMap<String,String>();
+        for(String table:List.of("hidra_topology_engineering_context","hidra_topology_engineering_draft","hidra_topology_engineering_draft_version",
+                "hidra_topology_engineering_graph_snapshot","hidra_topology_engineering_survey_snapshot","hidra_topology_engineering_publication_snapshot",
+                "hidra_topology_engineering_publication_event","hidra_topology_engineering_publication_head"))
+            state.put(table,jdbc.queryForObject("SELECT md5(coalesce(jsonb_agg(to_jsonb(t) ORDER BY to_jsonb(t)::text)::text,'[]')) FROM public."+table+" t",String.class));
+        return state;
+    }
+    @Test void genuineNativeEditorsExportDryRunAndImportUseExistingProtectedOwners() throws Exception {
+        for(String provider:List.of("LOCAL","OIDC","LDAP","ACTIVE_DIRECTORY")) {
+            draftActor(provider);UUID draft=surveyDraft();surveyOwner().executeSurvey(surveyWrite(draft,2));
+            var originals=new EnumMap<Editor,EngineeringLocalExchange>(Editor.class);
+            for(var editor:Editor.values())originals.put(editor,exchanges().execute(exchangeCommand(Operation.EXPORT,editor,draft,null,null)).bundle());
+            long version=3;
+            for(var editor:Editor.values()) {
+                String token=rawToken;SecurityContextHolder.clearContext();
+                http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(exchangeUrl(draft,editor,"/imports"))
+                    .header("Authorization","Bearer "+token).contentType("application/json").content(exchangeBody(version,originals.get(editor))))
+                    .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+                    .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.targetVersion").value((int)(version+1)))
+                    .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.engineeringQualified").value(false));
+                ambient(token);version++;
+                var exported=exchanges().execute(exchangeCommand(Operation.EXPORT,editor,draft,null,null));
+                assertThat(exported.bundle().bytes()).isEqualTo(originals.get(editor).bytes());
+                if(editor==Editor.SURVEY){assertThat(exported.bundle().boundGraphVersion()).isEqualTo(5L);assertThat(originals.get(editor).boundGraphVersion()).isEqualTo(2L);}
+            }
+            assertThat(jdbc.queryForObject("SELECT max(version) FROM public.hidra_topology_engineering_draft_version WHERE draft_id=?",Long.class,draft)).isEqualTo(6L);
+        }
+    }
+    @Test void dryRunAndCapabilityReadsLeaveAllDraftAndPublicationStorageUnchanged() {
+        draftActor("LOCAL");UUID draft=surveyDraft();surveyOwner().executeSurvey(surveyWrite(draft,2));var before=exchangeStorageState();
+        for(var editor:Editor.values()) {
+            var pack=exchanges().execute(exchangeCommand(Operation.EXPORT,editor,draft,null,null)).bundle();
+            var dry=exchanges().execute(exchangeCommand(Operation.DRY_RUN,editor,draft,3L,pack));
+            assertThat(dry.targetVersion()).isNull();assertThat(dry.diagnostics()).contains("DRY_RUN_ADVISORY","WRITE_AUTHORIZATION_NOT_EVALUATED");
+            var capabilities=exchanges().execute(exchangeCommand(Operation.CAPABILITIES,editor,draft,null,null));
+            assertThat(capabilities.targetVersion()).isNull();assertThat(capabilities.state()).isEqualTo("AUTHORED");
+        }
+        assertThat(exchangeStorageState()).isEqualTo(before);
+    }
+    @Test void staleConcurrentAndRevokedImportsCannotAppendPartialSuccessors() throws Exception {
+        var actor=draftActor("LOCAL");UUID draft=create(UUID.randomUUID(),"exchange race").draft().draftId();
+        var pack=exchanges().execute(exchangeCommand(Operation.EXPORT,Editor.METADATA,draft,null,null)).bundle();
+        drafts.execute(command(dz.sh.hidra.modules.topology.application.port.in.EngineeringNetworkDraftUseCase.Kind.UPDATE,draft,null,1L,"changed"));
+        var before=exchangeStorageState();assertThatThrownBy(()->exchanges().execute(exchangeCommand(Operation.IMPORT,Editor.METADATA,draft,1L,pack)))
+            .isInstanceOf(EngineeringLocalExchangeFailure.class);assertThat(exchangeStorageState()).isEqualTo(before);
+        var auth=SecurityContextHolder.getContext().getAuthentication();var latch=new CountDownLatch(1);var pool=Executors.newFixedThreadPool(2);var winners=new AtomicInteger();
+        try {
+            var jobs=new ArrayList<Future<?>>();for(int n=0;n<2;n++)jobs.add(pool.submit(()->{
+                SecurityContextHolder.getContext().setAuthentication(auth);
+                try{latch.await();exchanges().execute(exchangeCommand(Operation.IMPORT,Editor.METADATA,draft,2L,pack));winners.incrementAndGet();}
+                catch(EngineeringLocalExchangeFailure|dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure rejected){}
+                catch(InterruptedException interrupted){Thread.currentThread().interrupt();throw new AssertionError(interrupted);}
+                finally{SecurityContextHolder.clearContext();}
+            }));latch.countDown();for(var job:jobs)job.get(10,TimeUnit.SECONDS);
+        }finally{pool.shutdownNow();}
+        assertThat(winners.get()).isEqualTo(1);assertThat(jdbc.queryForObject("SELECT max(version) FROM public.hidra_topology_engineering_draft_version WHERE draft_id=?",Long.class,draft)).isEqualTo(3L);
+        before=exchangeStorageState();var guards=new AtomicInteger();
+        doAnswer(i->{if(guards.incrementAndGet()==2){var c=(dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringDraftAdmissionCoordinator.Contribution)i.getArgument(1);
+            i.getArguments()[1]=new dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringDraftAdmissionCoordinator.Contribution(
+                c.request(),c.partyGeneration(),c.bindingId(),c.sessionId(),c.userId(),c.sampledAt(),c.sampledAt(),c.backendPid(),c.transactionId());}
+            return i.callRealMethod();}).when(draftTarget()).finalGuard(any(),any(),anyList());
+        assertThatThrownBy(()->exchanges().execute(exchangeCommand(Operation.IMPORT,Editor.METADATA,draft,3L,pack)))
+            .isInstanceOf(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.class);
+        assertThat(guards.get()).isEqualTo(2);assertThat(exchangeStorageState()).isEqualTo(before);
+        doCallRealMethod().when(draftTarget()).finalGuard(any(),any(),anyList());
+        var flushes=new AtomicInteger();doAnswer(i->{i.callRealMethod();if(flushes.incrementAndGet()==2)throw new IllegalStateException("synthetic post-managed-flush exchange failure");return null;}).when(draftTarget()).flush();
+        assertThatThrownBy(()->exchanges().execute(exchangeCommand(Operation.IMPORT,Editor.METADATA,draft,3L,pack)))
+            .isInstanceOf(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.class);
+        assertThat(flushes.get()).isEqualTo(2);assertThat(exchangeStorageState()).isEqualTo(before);doCallRealMethod().when(draftTarget()).flush();
+        var attempts=new AtomicInteger();
+        dz.sh.hidra.modules.topology.application.port.in.EngineeringNetworkDraftUseCase revoking=command->{
+            if(command.kind()==dz.sh.hidra.modules.topology.application.port.in.EngineeringNetworkDraftUseCase.Kind.UPDATE){attempts.incrementAndGet();
+                jdbc.update("UPDATE public.hidra_identity_user_permission_grant SET status='REVOKED',revoked_at=now() WHERE user_id=? AND permission_id='draft-permission-update'",actor.user());}
+            return drafts.execute(command);
+        };
+        var facade=new dz.sh.hidra.modules.topology.application.service.EngineeringLocalExchangeApplicationService(revoking,graphOwner(),surveyOwner(),new dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.EngineeringLocalExchangeCodec());
+        assertThatThrownBy(()->facade.execute(exchangeCommand(Operation.IMPORT,Editor.METADATA,draft,3L,pack)))
+            .isInstanceOf(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.class);
+        assertThat(attempts.get()).isEqualTo(1);assertThat(exchangeStorageState()).isEqualTo(before);
+    }
+    @Test void malformedForeignAndUnsupportedPackagesRevealNoOwnerDataAndRetainExactBytes() throws Exception {
+        draftActor("LOCAL");UUID draft=surveyDraft();surveyOwner().executeSurvey(surveyWrite(draft,2));
+        var pack=exchanges().execute(exchangeCommand(Operation.EXPORT,Editor.METADATA,draft,null,null)).bundle();var before=exchangeStorageState();
+        String body=exchangeBody(3,pack),token=rawToken;SecurityContextHolder.clearContext();
+        http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(exchangeUrl(draft,Editor.METADATA,"/export"))).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isUnauthorized());
+        http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(exchangeUrl(draft,Editor.METADATA,"/export").replace("companyPartyId="+COMPANY,"companyPartyId=foreign-company"))
+            .header("Authorization","Bearer "+token)).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isForbidden())
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("foreign-company"))));
+        for(String invalid:List.of(body.replace("\"expectedVersion\":3","\"expectedVersion\":3,\"expectedVersion\":3"),body.replace("\"package\":","\"actor\":\"forged\",\"package\":")))
+            http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(exchangeUrl(draft,Editor.METADATA,"/imports"))
+                .header("Authorization","Bearer "+token).contentType("application/json").content(invalid)).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isBadRequest());
+        http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(exchangeUrl(draft,Editor.METADATA,"/imports").replace("/METADATA/","/BATCH/"))
+            .header("Authorization","Bearer "+token).contentType("application/json").content(body)).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isBadRequest());
+        UUID foreign=UUID.randomUUID();String substituted=body.replace(pack.contextId().toString(),foreign.toString());
+        http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(exchangeUrl(draft,Editor.METADATA,"/imports"))
+            .header("Authorization","Bearer "+token).contentType("application/json").content(substituted)).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isConflict())
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString(foreign.toString()))));
+        ambient(token);var survey=exchanges().execute(exchangeCommand(Operation.EXPORT,Editor.SURVEY,draft,null,null)).bundle();
+        var bad=new EngineeringLocalExchange(survey.format(),survey.editor(),survey.companyPartyId(),survey.pipelineSystemId(),survey.contextId(),survey.draftId(),survey.sourceVersion(),survey.componentVersion(),survey.componentFormat(),survey.sha256(),survey.payload(),survey.branchId(),survey.boundGraphVersion(),"0".repeat(64));
+        assertThatThrownBy(()->exchanges().execute(exchangeCommand(Operation.IMPORT,Editor.SURVEY,draft,3L,bad))).isInstanceOf(EngineeringLocalExchangeFailure.class);
+        assertThat(exchangeStorageState()).isEqualTo(before);assertThat(exchanges().execute(exchangeCommand(Operation.EXPORT,Editor.METADATA,draft,null,null)).bundle().bytes()).isEqualTo(pack.bytes());
     }
 }

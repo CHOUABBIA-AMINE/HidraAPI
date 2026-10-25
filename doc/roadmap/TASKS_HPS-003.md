@@ -28959,6 +28959,102 @@ within a source-backed scope. HAPI-778 remains PARTIAL/IN_PROGRESS;HAPI-590 stay
 PARTIAL/BLOCKED. No operating budget,release,deployment,simulation or OT acceptance
 is selected;the1998-statement efficiency and remaining B3 acceptance stay open.
 
+
+### 2026-10-25 — HAPI-778 Full884 lifecycle-history fixture repair in one commit
+
+Owner explicitly requests correction of the failure and one complete commit.
+Fresh main1590775b593b4c42c4ca57895d9ff5e8ec1ac761,
+parentde79afff920b9c60f7bf3c29f943d8e5bdd8dd24,
+tree01579c613ac7d545369d9e38db3bdbb20b1edfb9.
+[Full884](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40179121945)
+FAILED only PostgreSQL shard5 and the aggregate;Fast193,Docs575,static,
+unit/architecture,API/dictionary and the other six PostgreSQL shards succeeded.
+Do not advance dependent B3 work while this prerequisite run fails.
+
+**New qualification evidence recovered.** Shard1 job121126160552 reports192
+tests across16 required classes,zero failures/errors/skips. All67 appointment
+concurrency cases,including the three newly implemented genuine cases,passed.
+The URL-limited passive JDBC observer,known precommit rejections,real observed
+commits,unchanged projection digest and zero competing/revoked effects assertions
+passed under the wider synthetic profile. Exact scalar observations:
+- Competing CREATE rejected in21095635ns;winning CREATE completed in5232006743ns.
+- The independent revocation attempt failed55P03 after150924446ns.
+- CREATE before that revocation completed in5319654626ns;the original token's
+  subsequent otherwise valid END rejected in138367715ns after committed deletion.
+- Revocation committed before first admission rejected CREATE in136133724ns.
+- Winning CREATE's observed fence-hold lower bound5224499683ns,
+  guard-to-completion30894097ns,post-guard tail672446ns,commit call529489ns.
+- CREATE before revocation's corresponding values5311305722ns,39402259ns,
+  913376ns and721197ns.
+
+These are one hosted sample per coordinated attempt,including deliberate harness
+work and passive observation overhead. The first completed multi-relation LOCK
+gives a lower bound on earliest fence hold,not exact acquisition time. The
+failed competitor has no successful fence timestamp. They are not percentiles,
+throughput,uncoordinated latency,instantaneous revocation or an accepted operating
+budget. Original complete lifecycle/replay and managed-flush rollback also passed
+in shard1. Genuine final-guard expiry with work remaining and the1998-statement
+efficiency obligation remain explicitly open;neither green shard1 nor this repair
+closes HAPI-778 or accepts10000ms operationally.
+
+**Actual failure and bounded correction.** The separate
+EmployeeAppointmentLifecyclePostgresIntegrationTest ran95 cases with zero
+assertion failures and one error:
+protectedHistoryRejectsRevokedOwnerAndChangedAuthenticationBeforeMaterialization.
+Its first storage acquire failed55P03 on
+public.hidra_org_employee_assignment under the unchanged SHARE ROW EXCLUSIVE MODE
+NOWAIT lock,prior to its intended revocation/authentication assertions. The
+competing holder was not captured. Ordinary automatic maintenance during repeated
+fixture DML is plausible,but is not established as the actual cause.
+
+This older class owns a different PostgreSQL16 container in shard5 and still
+used ordinary autovacuum. Apply the same bounded disposable explicit-writer
+isolation already used by the concurrency class:postgres -c autovacuum=off,
+with SHOW autovacuum=off asserted before the first migration. This changes no
+production database setting and makes no claim that wraparound-safety maintenance
+is disabled. Keep the real concurrent-writer tests and production NOWAIT locks.
+
+Wrap only the failing history case's existing body with diagnostic handling.
+Its transaction template and try-with-resources fixture must first unwind;
+then,only for an original55P03 cause,take a new-connection snapshot of at most32
+relation locks on public.hidra_org_employee_assignment. A two-second JDBC query
+timeout bounds the diagnostic query. Retain only PID,backend type,lock mode and
+granted flag;no query text,credentials or business payload. Attach this as
+suppressed evidence and rethrow the same original failure. Diagnostic errors
+cannot replace it. A post-rollback snapshot can miss a completed holder;absence
+does not establish no earlier conflict. No retry,wait-for-success,exception
+reclassification,silent continuation,assertion removal or timeout widening.
+
+**Owner-authorized complete corrective scope.** Continue exact B3 message
+`feat(organization): persist protected appointment lifecycle and history`.
+Exactly three MODIFY,zero CREATE/DELETE in this one commit:
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java
+- .github/ci-test-inventory.json,only that95-case suite's source SHA256
+- this append-only HAPI-778 record in doc/roadmap/TASKS_HPS-003.md
+
+All95 identities and their original assertions/statements are retained;the
+target body is only indented inside the diagnostic try/catch. No new test or
+skip is claimed. The earlier67-case class and its source hash are unchanged.
+Inventory weights,case membership,lanes,seven shards,172 migrations,SQL/source/
+catalog/function pins,native/Party/storage checks,production default500,the
+10000ms synthetic profile and250/750/1000ms secondary bounds remain unchanged.
+No public/legacy activation,generated artifact,security role,permission,schema,
+release,simulation or OT change is included.
+
+Available32 inventory-validator and19 documentation-validator self-tests PASS.
+Original source SHA256 matches the live source-linked inventory;new source hash,
+95-case identity retention,inverse restoration of all unaffected source,
+one-entry hash-only inventory diff,append-only record,three-path scope and
+changed-line whitespace are checked. Local Java21/javac/Maven/PostgreSQL are
+unavailable and not provisioned;this corrective source is not a new hosted
+runtime pass. Publish expected-1590775 guarded direct main,verify parent/tree/
+message/three blobs and scope,confirm applicable exact-SHA CI creation/queue/
+start and STOP without waiting or automatically starting another roadmap task.
+Next recover corrected hosted feedback,repair any remaining responsible failure
+first,then resolve the recorded native-expiry seam and remaining B3 acceptance.
+HAPI-778 remains PARTIAL/IN_PROGRESS;HAPI-590 stays PARTIAL/BLOCKED. No operating
+budget or deployment/industrial acceptance is selected by this commit.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

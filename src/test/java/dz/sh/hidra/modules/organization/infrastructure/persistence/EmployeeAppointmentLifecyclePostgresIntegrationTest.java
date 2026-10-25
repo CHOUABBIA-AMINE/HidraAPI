@@ -7,7 +7,7 @@
  *
  * @Name        : EmployeeAppointmentLifecyclePostgresIntegrationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-22
+ * @UpdatedOn   : 2026-10-25
  *
  * @Type        : Class
  * @Layer       : Test
@@ -62,7 +62,9 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
     private static final String COMMAND_MIGRATION = "src/main/resources/db/migration/V20261022_002__organization_appointment_typed_command_integrity.sql";
     private static final List<String> TABLES = List.of("binding_revision", "binding_head", "policy_revision", "policy_head",
             "configuration_event", "lock_key", "event", "receipt");
-    @Container static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:16");
+    // Isolate explicit-writer proofs from ordinary maintenance in this disposable database only.
+    @Container static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:16")
+            .withCommand("postgres","-c","autovacuum=off");
     private String partyType, unitType;
     private String upgradeCompany, upgradeUnit, upgradeBinding, upgradePolicy;
     private long originalConfigurationChecksum;
@@ -74,6 +76,7 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
     private final java.util.Set<UUID> historyFixtureEvents=new java.util.HashSet<>();
 
     @BeforeAll void migrateAndSeparatePrincipals() throws Exception {
+        assertEquals("off",catalog("SHOW autovacuum"));
         Flyway.configure().dataSource(POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword())
                 .target("20261021.003").load().migrate();
         originalConfigurationChecksum = count("SELECT checksum FROM public.flyway_schema_history WHERE script=?",
@@ -2024,16 +2027,47 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
     }
 
     @Test void protectedHistoryRejectsRevokedOwnerAndChangedAuthenticationBeforeMaterialization() throws Exception {
-        var p=projection();commitCreate(p);var query=employeeHistory(p,20,null);
-        for(boolean revoke:List.of(false,true))try(var f=new StorageFixture(query)) {
-            f.tx.execute(status -> {
-                var ticket=f.acquire();f.storage.contribute(ticket);
-                if(revoke)org.mockito.Mockito.doThrow(new AccessDeniedException("synthetic revoke")).when(f.identity).requireCurrent(f.nativeTicket);
-                else org.springframework.security.core.context.SecurityContextHolder.clearContext();
-                assertThrows(AccessDeniedException.class,()->f.storage.privateHistory(ticket,query));
-                assertTrue(f.holder().isRollbackOnly());status.setRollbackOnly();return null;
-            });
+        try {
+            var p=projection();commitCreate(p);var query=employeeHistory(p,20,null);
+            for(boolean revoke:List.of(false,true))try(var f=new StorageFixture(query)) {
+                f.tx.execute(status -> {
+                    var ticket=f.acquire();f.storage.contribute(ticket);
+                    if(revoke)org.mockito.Mockito.doThrow(new AccessDeniedException("synthetic revoke")).when(f.identity).requireCurrent(f.nativeTicket);
+                    else org.springframework.security.core.context.SecurityContextHolder.clearContext();
+                    assertThrows(AccessDeniedException.class,()->f.storage.privateHistory(ticket,query));
+                    assertTrue(f.holder().isRollbackOnly());status.setRollbackOnly();return null;
+                });
+            }
+        } catch(Exception failure) {
+            if(lockUnavailable(failure))describeHistoryFixtureLocks(failure);
+            throw failure; // Preserve the original outcome: no retry or partial continuation.
         }
+    }
+
+    private static boolean lockUnavailable(Throwable failure) {
+        var seen=java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<Throwable,Boolean>());
+        for(var current=failure;current!=null&&seen.add(current);current=current.getCause())
+            if(current instanceof SQLException sql&&"55P03".equals(sql.getSQLState()))return true;
+        return false;
+    }
+
+    /** Called only after the failed history transaction and fixture have closed/rolled back. */
+    private void describeHistoryFixtureLocks(Exception original) {
+        try(var c=owner();var statement=c.prepareStatement("""
+                SELECT l.pid,COALESCE(a.backend_type,'unavailable'),l.mode,l.granted
+                  FROM pg_catalog.pg_locks l
+                  LEFT JOIN pg_catalog.pg_stat_activity a ON a.pid=l.pid
+                 WHERE l.locktype='relation'
+                   AND l.relation='public.hidra_org_employee_assignment'::regclass
+                 ORDER BY l.pid,l.mode LIMIT 32
+                """)) {
+            statement.setQueryTimeout(2);
+            var observed=new java.util.ArrayList<String>();
+            try(var rows=statement.executeQuery()) {
+                while(rows.next())observed.add(rows.getInt(1)+":"+rows.getString(2)+":"+rows.getString(3)+":"+rows.getBoolean(4));
+            }
+            original.addSuppressed(new IllegalStateException("History fixture relation locks after rollback: "+observed));
+        }catch(Exception diagnosticFailure){if(diagnosticFailure!=original)original.addSuppressed(diagnosticFailure);}
     }
 
     @Test void protectedHistoryWithoutItsOwnFinalGuardCannotPhysicallyCommit() throws Exception {

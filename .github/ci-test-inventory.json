@@ -8836,14 +8836,7 @@
       "supports": []
     },
     {
-      "class": "dz.sh.hidra.modules.party.infrastructure.persistence.OrganizationProtectedPartyEligibilityPostgresIntegrationTest",
-      "path": "src/test/java/dz/sh/hidra/modules/party/infrastructure/persistence/OrganizationProtectedPartyEligibilityPostgresIntegrationTest.java",
-      "source_sha256": "240cfda5f721257db784df431ec74271921abffb9bfc911045d094bcdae6a766",
-      "owner": "party",
-      "lane": "postgres-integration",
-      "fast": false,
-      "dependency_reason": "Actual isolated PostgreSQL16, Flyway migrations, Party runtime/admin role separation, catalog/generation/fence checks and transaction rollback.",
-      "supports": [],
+      "baseline_seconds": 8,
       "cases": [
         "actualJpaSaveAndFlushBumpsWitnessAndRollbackRestoresIt",
         "admissionRetainsRelationFencesAndExcludesWritersUntilCompletion",
@@ -8877,17 +8870,17 @@
         "truncateCascadeAndWitnessForgeryAreRejected",
         "writerFirstMakesAdmissionFailNowaitForExistingAndAbsentRows"
       ],
-      "baseline_seconds": 8
+      "class": "dz.sh.hidra.modules.party.infrastructure.persistence.OrganizationProtectedPartyEligibilityPostgresIntegrationTest",
+      "dependency_reason": "Actual isolated PostgreSQL16, Flyway migrations, Party runtime/admin role separation, catalog/generation/fence checks and transaction rollback.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "party",
+      "path": "src/test/java/dz/sh/hidra/modules/party/infrastructure/persistence/OrganizationProtectedPartyEligibilityPostgresIntegrationTest.java",
+      "source_sha256": "240cfda5f721257db784df431ec74271921abffb9bfc911045d094bcdae6a766",
+      "supports": []
     },
     {
-      "class": "dz.sh.hidra.modules.party.infrastructure.persistence.adapter.JdbcOrganizationProtectedPartyEligibilityAdapterTest",
-      "path": "src/test/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JdbcOrganizationProtectedPartyEligibilityAdapterTest.java",
-      "source_sha256": "87a1b70655b67cc600a3c7b12c1575c032bd7b5116a25ceaeb0181b977bd95bf",
-      "owner": "party",
-      "lane": "unit-architecture",
-      "fast": true,
-      "dependency_reason": "Standalone JdbcTemplate/ConnectionHolder mechanics with Mockito; no live context or database.",
-      "supports": [],
+      "baseline_seconds": 0,
       "cases": [
         "acquisitionRequiresAnActualBoundTransaction",
         "currentCheckRejectsFabricatedOrNullTicketsBeforeQueries",
@@ -8901,7 +8894,14 @@
         "scalarCoordinatesNeverImplementThePrivateAdmissionType",
         "unavailableCatalogAfterBothFencesRollsBackWithoutEvidence"
       ],
-      "baseline_seconds": 0
+      "class": "dz.sh.hidra.modules.party.infrastructure.persistence.adapter.JdbcOrganizationProtectedPartyEligibilityAdapterTest",
+      "dependency_reason": "Standalone JdbcTemplate/ConnectionHolder mechanics with Mockito; no live context or database.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "party",
+      "path": "src/test/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JdbcOrganizationProtectedPartyEligibilityAdapterTest.java",
+      "source_sha256": "87a1b70655b67cc600a3c7b12c1575c032bd7b5116a25ceaeb0181b977bd95bf",
+      "supports": []
     },
     {
       "baseline_seconds": 7.326,
@@ -9100,7 +9100,7 @@
       "lane": "postgres-integration",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java",
-      "source_sha256": "ac059a17dc8425f9d962ff27a30162a0025163a2daae2121844a5bc92f5bcc8d",
+      "source_sha256": "d741b1b521e4a2b0e2fd9110fa540ec866f711c66365f582afe71d47a35eb6f8",
       "supports": []
     },
     {
@@ -9241,6 +9241,7 @@
     }
   ],
   "mode": "shadow-fallback-required",
+  "postgres_shards": 7,
   "supporting_classes": [
     {
       "abstract": true,
@@ -9255,48 +9256,47 @@
       ]
     }
   ],
-  "postgres_shards": 7,
   "timing_baseline": {
-    "source_sha": "d15cfa28c598aedd8371a98c943b8919b3b7a52f",
+    "artifact_sha256": "1f2e109c1cbce9c78d0b59875ca54b134ddfdf8ca6c5dd883bdc2b5f038cf605",
+    "lane": "disjoint development test lanes",
+    "metric": "Surefire testsuite time seconds; scheduling weights, not job elapsed or a speedup claim",
+    "run_attempt": 1,
     "run_id": 39432208352,
     "run_number": 779,
-    "run_attempt": 1,
-    "lane": "disjoint development test lanes",
-    "artifact_sha256": "1f2e109c1cbce9c78d0b59875ca54b134ddfdf8ca6c5dd883bdc2b5f038cf605",
-    "metric": "Surefire testsuite time seconds; scheduling weights, not job elapsed or a speedup claim"
+    "source_sha": "d15cfa28c598aedd8371a98c943b8919b3b7a52f"
   },
   "timing_refresh": {
-    "source_sha": "ac9432a026780fe3f277a37e4055f58924d56d95",
-    "run_id": 39790704772,
-    "run_number": 826,
-    "run_attempt": 1,
-    "metric": "Surefire testsuite time seconds; scheduling weights, not job elapsed or a speedup claim",
     "artifacts": [
       {
-        "shard": 0,
         "id": 12429979812,
+        "shard": 0,
         "zip_sha256": "4794454909df0e075d9906388efdaa8956a7a7c2fccdd5042f4bb5e63bbfdfb5"
       },
       {
-        "shard": 1,
         "id": 12432035377,
+        "shard": 1,
         "zip_sha256": "ce3e289eac641b450115ae473e24eb6c0c315b95ce6816426a46f4d579d7cb54"
       },
       {
-        "shard": 2,
         "id": 12432115158,
+        "shard": 2,
         "zip_sha256": "6dbc74bd422792a05843607e47c537b9d5a7bb39086b69c479f33882d7d8d23e"
       },
       {
-        "shard": 3,
         "id": 12431532315,
+        "shard": 3,
         "zip_sha256": "880f396d20cc1861b40158141a43e0580310540c70a4669e5da160df805d7c53"
       },
       {
-        "shard": 4,
         "id": 12431761226,
+        "shard": 4,
         "zip_sha256": "30e55b40a452b89874a1407b489e68bca8864f615efce6a9af8365122dd2ce8a"
       }
-    ]
+    ],
+    "metric": "Surefire testsuite time seconds; scheduling weights, not job elapsed or a speedup claim",
+    "run_attempt": 1,
+    "run_id": 39790704772,
+    "run_number": 826,
+    "source_sha": "ac9432a026780fe3f277a37e4055f58924d56d95"
   }
 }

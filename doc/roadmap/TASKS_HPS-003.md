@@ -30001,6 +30001,60 @@ application bean/REST/legacy cutover without another generic preflight; actual
 generated OpenAPI/catalog reconciliation and final case-level acceptance remain
 separate. No release/deployment/simulation/industrial/OT readiness is asserted.
 
+### 2026-10-25 — HAPI-778 CURRENT CI891 fixture and captured dictionary repair
+
+Owner Continue refreshes main82cf9ea7800c82900d9a96e78f4f45e4aa86d69f,
+parent8e6e4af037ab4b5346ad3e36f73961655c0012d1,
+treefa7a8efdd83b2ccc68cc4c2f10fd4af6fdf6f266. Exact-head Docs583 and
+Fast200 succeeded; [Full891](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40200981622)
+failed. Repair the responsible CURRENT package before its registered cutover.
+Retain the registered B3 message
+`feat(organization): persist protected appointment lifecycle and history`.
+
+Shard5 executed255 cases with one error: the new changed-row negative fixture
+attempted a protected UPDATE as its restricted reader and failed on private
+hidra_org_appointment_exact_id execution before reaching the scalar read guard.
+Keep that production ACL closed. The test now creates an owner-authored,
+PUBLIC-revoked, uniquely named disposable SECURITY DEFINER SQL fault function
+with fixed pg_catalog search_path. Grant only the fixture role its execution;
+the function changes only the selected assignment version/event on the same
+physical transaction. Require one changed row, then require P0001 from the
+actual scalar guard for all four expired/coordinate/changed-row variants.
+Rollback retains the original row; finally drop the disposable fault function.
+This is structural administrator fault injection, not native writer authority.
+All99 test identities and previous negative variants remain; only this suite's
+inventory source hash changes. No production source, migration or privilege changes.
+
+The API lane passed runtime OpenAPI equality, then failed physical dictionary
+drift. Downloaded same-run diagnostics artifact12601893803 (ZIP SHA256
+3f72674247cab2278fbfa352439299fd4e1c6ac1470faecd670363c6ad5c82e6)
+contains the actual migrated schema.json and verification.json. The latter
+explicitly reports dictionary drift. Recovered all643 migration/JPA source files
+at the capture SHA, plus actual ownership evidence, and used the unchanged
+generator to validate the captured source bundle and render the dictionary.
+The new source bundle is6893e31c69bae45e190291858580397341414750b455da7273dfb57eba33b010;
+catalog digestb36296e72f92673ac9ef0410596ca06e7af48d087992199d7a59b546dab19976;
+rendered dictionary digest6047780641bc74a19154c037ef6a5472aa5e7d080878c90fd2a089d4132794d6.
+There are173 migrations,470 JPA mappings,516 relations and zero unresolved owners.
+Only capture provenance and new migration-mention links differ from the prior
+dictionary; no catalog fact is hand-invented. Rechecking the generated dictionary
+against this artifact passes. A new exact-head hosted capture is still required.
+
+Exact repair scope: MODIFY only this phase's HAPI-778 append-only evidence,
+EmployeeAppointmentLifecyclePostgresIntegrationTest.java, its existing
+.github/ci-test-inventory.json source hash and doc/database/DATA_DICTIONARY.md.
+No new repository files, case removals, relaxed test assertions, workflow changes,
+runtime budgets, schema history, production helper grants or other task changes.
+Generator17 and inventory32 validator self-tests pass; the changed Java file
+parses with the installed Java17 compiler module (syntax only). Java21/JUnit/
+PostgreSQL are not locally executed or provisioned. HAPI-778 stays
+PARTIAL/IN_PROGRESS; HAPI-590 stays independently PARTIAL/BLOCKED.
+Publish guarded direct main; verify exact parent/tree/blobs/four-path scope and
+observe applicable exact-SHA Full/Fast/Docs startup, then STOP. Acceptance remains
+pending hosted results. After CURRENT acceptance, the already registered atomic
+application bean/REST/legacy cutover is next; do not execute it in this repair.
+
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

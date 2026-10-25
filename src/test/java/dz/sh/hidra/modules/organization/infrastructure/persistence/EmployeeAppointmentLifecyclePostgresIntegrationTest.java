@@ -2502,15 +2502,28 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
         for(int variant=0;variant<4;variant++) {
             final int attack=variant;
             try(var session=new FinalPolicySession(currentQuery(p.employee(),null,0,10))) {
-                session.f.tx.execute(status->{
-                    session.prepare();String image=frozenJournalImage(session);var sample=session.f.identity.contribute(session.f.nativeTicket);
-                    if(attack==3)session.f.jdbc.update("UPDATE public.hidra_org_employee_assignment SET appointment_version=appointment_version+1,last_event_id=?::uuid WHERE id=?",UUID.randomUUID(),p.id());
-                    Instant start=attack==0?Instant.now().minusSeconds(3):sample.sampledAt();
-                    Instant until=attack==0?Instant.now().minusSeconds(1):sample.validUntil();
-                    assertThrows(org.springframework.dao.DataAccessException.class,()->policyReadGuard(session.f.jdbc,image,start,until,
-                            sample.backendPid()+(attack==1?1:0),sample.transactionId()+(attack==2?1:0)));
-                    status.setRollbackOnly();return null;
-                });
+                String faultFunction="public.fixture_current_fault_"+session.f.role;
+                if(attack==3) {
+                    // Owner-authored fault injection on this same physical transaction;
+                    // no private production helper privilege is granted to the reader.
+                    admin("CREATE FUNCTION "+faultFunction+"(p_id text,p_event uuid) RETURNS integer LANGUAGE sql SECURITY DEFINER SET search_path=pg_catalog AS $fault$ UPDATE public.hidra_org_employee_assignment SET appointment_version=appointment_version+1,last_event_id=p_event WHERE id=p_id RETURNING 1 $fault$");
+                    admin("REVOKE ALL ON FUNCTION "+faultFunction+"(text,uuid) FROM PUBLIC");
+                    admin("GRANT EXECUTE ON FUNCTION "+faultFunction+"(text,uuid) TO "+session.f.role);
+                }
+                try {
+                    session.f.tx.execute(status->{
+                        session.prepare();String image=frozenJournalImage(session);var sample=session.f.identity.contribute(session.f.nativeTicket);
+                        if(attack==3)assertEquals(1,session.f.jdbc.queryForObject("SELECT "+faultFunction+"(?,?::uuid)",Integer.class,p.id(),UUID.randomUUID()));
+                        Instant start=attack==0?Instant.now().minusSeconds(3):sample.sampledAt();
+                        Instant until=attack==0?Instant.now().minusSeconds(1):sample.validUntil();
+                        var failure=assertThrows(org.springframework.dao.DataAccessException.class,()->policyReadGuard(session.f.jdbc,image,start,until,
+                                sample.backendPid()+(attack==1?1:0),sample.transactionId()+(attack==2?1:0)));
+                        assertEquals("P0001",((SQLException)failure.getMostSpecificCause()).getSQLState());
+                        status.setRollbackOnly();return null;
+                    });
+                } finally {
+                    if(attack==3)admin("DROP FUNCTION "+faultFunction+"(text,uuid)");
+                }
             }
         }
     }

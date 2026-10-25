@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `251963641cd94ea99a734f5ef7c97320b7f0f401`
+Captured source SHA: `82cf9ea7800c82900d9a96e78f4f45e4aa86d69f`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `c82387dcb3940a9edd6c62647b083bc2f9a900830f69f1188478cdb15fdd16c8`.
-Migrations: 172; JPA mappings: 470; catalog relations: 516; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `6893e31c69bae45e190291858580397341414750b455da7273dfb57eba33b010`.
+Migrations: 173; JPA mappings: 470; catalog relations: 516; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -8197,6 +8197,7 @@ Persisted AttributeDefinitionJpaEntity state; semantic authority remains with id
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8430,6 +8431,7 @@ Persisted AuthorizationPolicyJpaEntity state; semantic authority remains with id
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8481,6 +8483,7 @@ Persisted AuthorizationPolicyRuleJpaEntity state; semantic authority remains wit
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8536,6 +8539,7 @@ Persisted AuthorizationPolicyVersionJpaEntity state; semantic authority remains 
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8591,6 +8595,7 @@ Immutable bounded original OIDC or authenticated LDAP/AD attribute observations 
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8654,6 +8659,7 @@ Persisted ExternalGroupMappingJpaEntity state; semantic authority remains with i
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8726,6 +8732,7 @@ External identity link with database-owned monotonic security generation and ord
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8803,6 +8810,7 @@ Database-owned per-provider committed external mapping generation; not an OIDC/L
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8850,6 +8858,7 @@ Persisted ExternalPermissionMappingJpaEntity state; semantic authority remains w
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8918,6 +8927,7 @@ Persisted ExternalRoleMappingJpaEntity state; semantic authority remains with id
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8986,6 +8996,7 @@ Persisted GroupJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9042,6 +9053,7 @@ Persisted GroupRoleGrantJpaEntity state; semantic authority remains with identit
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9107,6 +9119,7 @@ Identity-owned LOCAL credentials with database-enforced monotonic security gener
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9172,6 +9185,7 @@ Persisted LoginSessionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9246,6 +9260,7 @@ Immutable format-one native bearer/session provenance snapshots with private pro
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9519,6 +9534,7 @@ Persisted PermissionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9590,6 +9606,7 @@ Identity provider with database-owned monotonic security generation and ordinary
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9684,6 +9701,7 @@ Persisted RoleJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9740,6 +9758,7 @@ Persisted RolePermissionGrantJpaEntity state; semantic authority remains with id
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9798,6 +9817,7 @@ Persisted SubjectSecurityAttributeJpaEntity state; semantic authority remains wi
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9955,6 +9975,7 @@ Persisted UserJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -10023,6 +10044,7 @@ Persisted UserGroupMembershipJpaEntity state; semantic authority remains with id
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -10089,6 +10111,7 @@ Persisted UserPermissionGrantJpaEntity state; semantic authority remains with id
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -10163,6 +10186,7 @@ Persisted UserRoleGrantJpaEntity state; semantic authority remains with identity
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -16566,6 +16590,7 @@ Monotonic active unit/company binding pointer linked to its configuration event.
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -16626,6 +16651,7 @@ Immutable explicit unit/company revision and actual configuration-administrator 
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -16698,6 +16724,7 @@ Immutable atomic configuration activation before/after journal.
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -16786,6 +16813,7 @@ Immutable appointment lifecycle event storage; native writer and final guard not
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -16885,6 +16913,7 @@ Permanent typed employee, occupancy and request lock-key namespace; publisher pa
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -16932,6 +16961,7 @@ Monotonic company appointment-policy pointer linked to its configuration event.
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -16991,6 +17021,7 @@ Immutable complete explicit appointment-overlap policy revision and canonical by
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -17070,6 +17101,7 @@ Immutable scoped request/command receipt storage; native final-guard creation no
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -17247,6 +17279,7 @@ Persisted EmployeeJpaEntity state; semantic authority remains with organization.
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -17367,6 +17400,7 @@ Persisted EmployeeAssignmentJpaEntity state; semantic authority remains with org
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -17569,6 +17603,7 @@ Persisted PositionJpaEntity state; semantic authority remains with organization.
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -17899,6 +17934,7 @@ Persisted OrganizationUnitJpaEntity state; semantic authority remains with organ
 - Migration mention (not inferred introduction): [V20261024_001__organization_appointment_journal_read_guard.sql](../../src/main/resources/db/migration/V20261024_001__organization_appointment_journal_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

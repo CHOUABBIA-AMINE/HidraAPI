@@ -30,7 +30,6 @@ import java.time.Instant;
  * through dedicated responsibility-assignment use cases.</p>
  */
 @tools.jackson.databind.annotation.JsonDeserialize(using=EmployeeAppointmentLifecycleRequest.StrictLegacy.class)
-@io.swagger.v3.oas.annotations.media.Schema(requiredProperties={"employeeId","organizationUnitId","positionId"})
 public record AssignEmployeeRequest(
         String employeeId,
         String organizationUnitId,

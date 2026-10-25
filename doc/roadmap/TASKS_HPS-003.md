@@ -30574,6 +30574,77 @@ acceptance, historical compatibility disposition and actual full-gate success
 remain pending; no release, deployment or operational acceptance is selected.
 
 
+### 2026-10-25 — HAPI-778 Full897 legacy request schema compatibility repair
+
+Owner Fail refreshes main `7716861d4377edc12c18e28452e9e165680e5376`,
+parent `d9dbcb07a0315a2d1fdd6834f3ea8627faf1e0e2`,
+tree `ecbb38314c26df09fd01919203d9e27861fd1d8d`.
+[Full897](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40229526702)
+FAILED at Enforce OpenAPI backward compatibility; the full aggregate failed
+consequentially. Snapshot equality and actual migrated dictionary capture
+succeeded. All seven PostgreSQL shards, Java21 unit/architecture and static
+validation succeeded; Docs589 succeeded. Fast was not created for that
+artifact-only SHA. No complete independent raw-case re-audit is asserted.
+
+The API log and captured base-provenance.txt establish the real comparison
+base: `50c86303ba5ed2174ef0183704b260370026a860`, last successful Full894,
+run40218700192. The preceding entry's actual-parent comparison expectation was
+incorrect: failed intermediate runs do not become the successful compatibility
+baseline. Preserve that history but supersede its baseline assumption here.
+
+Both actual generated contracts are retained in diagnostic artifact12612134364
+from run40229526702 attempt1, job121278049267. Downloaded ZIP SHA256
+`839cc2615414327eb4d5557ae0d17680a332cb2634a54e8d67a6fd50666853fc`
+matches the hosted upload log. The supported checker reports exactly two
+failures, one for each old POST alias: employeeId, organizationUnitId and
+positionId became required in AssignEmployeeRequest's schema.
+
+Repair the responsible B3 source only. Remove the newly added class-level
+Swagger @Schema(requiredProperties=...) annotation from AssignEmployeeRequest.
+The prior published/generated record schema had no required array. Preserve
+all record components, constructors, optional requestId, strict deserializer
+annotation and every actual strict parser/selector/domain/authorization check.
+This restores legacy documentation requiredness without relaxing accepted
+input validation or native authority; new lifecycle DTO schema annotations
+are unchanged. No compatibility whitelist, ignored finding, changed base,
+weaker validator or fabricated generated snapshot is introduced.
+
+Exact scope: zero CREATE / two MODIFY / zero DELETE:
+- src/main/java/dz/sh/hidra/modules/organization/api/rest/request/AssignEmployeeRequest.java — remove exactly the one documentation annotation.
+- doc/roadmap/TASKS_HPS-003.md — only this HAPI-778 inserted evidence.
+
+Retain the registered B3 repair message
+`feat(organization): persist protected appointment lifecycle and history`.
+This bounded compatibility correction is selected by owner Fail, not a new
+feature or final acceptance. All source/test/inventory/workflow/SQL/JPA/security
+blobs other than the one DTO annotation remain identical. Keep frozen registry
+statuses, runtime budgets, private authority and deferred simulation unchanged.
+
+Actual validation: single-line source difference and exact-scope/preservation
+checks; available JDK syntax parsing PASS. Download and inspect the real base
+and current generated contracts; a scratch diagnostic projection removing only
+that required array PASSES the unchanged supported comparator against the actual
+base. That projection is neither runtime generation nor publication evidence
+and is not copied into the canonical snapshot. Java21/Springdoc/JUnit/Maven
+and PostgreSQL were not executed locally.
+
+The canonical snapshot and manifest are deliberately preserved at their last
+actual generated provenance. The source annotation correction changes generated
+metadata, so the next strict snapshot comparison is expected to reject the old
+required array while retaining the new real generated artifact. This is an
+explicit pending regeneration gate, not a passing full-CI claim. After capturing
+that actual source output, reconcile it under the already registered
+`docs(organization): reconcile appointment API and catalog artifacts` stage.
+Do not repeat a no-change rerun or hand-edit the schema artifact.
+
+Publish this one source repair under expected7716861 lease, verify its exact
+parent/tree/two-file diff, confirm applicable Full/Fast/Docs creation/queue/start
+and STOP without waiting, per the owner protocol. HAPI-778 remains
+PARTIAL/IN_PROGRESS; final full-gate/case-level acceptance remains pending.
+HAPI-590 remains independently blocked; no release/deployment or industrial
+acceptance is selected.
+
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

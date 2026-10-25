@@ -103,9 +103,14 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
         } else {
             company = query.companyPartyId();
             action = query instanceof EmployeeAppointmentQuery.Policy ? Action.READ_POLICY
-                    : query instanceof EmployeeAppointmentQuery.ExactVersion ? Action.READ_CURRENT
+                    : query instanceof EmployeeAppointmentQuery.ExactVersion || query instanceof EmployeeAppointmentQuery.Current ? Action.READ_CURRENT
                     : Action.READ_HISTORY;
-            if (pairs.stream().noneMatch(p -> company.equals(p.companyPartyId()))) throw denied();
+            if (!(query instanceof EmployeeAppointmentQuery.Current) && pairs.stream().noneMatch(p -> company.equals(p.companyPartyId()))) throw denied();
+            if(query instanceof EmployeeAppointmentQuery.Current current) {
+                if(assignment!=null || !Objects.equals(employee,current.employeeId())
+                        || company!=null && pairs.stream().anyMatch(p->!company.equals(p.companyPartyId()))
+                        || current.unitId()!=null && pairs.stream().anyMatch(p->!current.unitId().equals(p.organizationUnitId())))throw denied();
+            }
             if (query instanceof EmployeeAppointmentQuery.Policy policy) {
                 if (employee != null || assignment != null
                         || !pairs.equals(List.of(new CompanyUnit(company, policy.unitId())))) throw denied();
@@ -224,6 +229,8 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
                 Objects.requireNonNull(storage.readPolicy(admission.repositoryAdmission, policy));
             else if(admission.query instanceof EmployeeAppointmentQuery.ExactVersion exact)
                 Objects.requireNonNull(storage.exactVersion(admission.repositoryAdmission,exact));
+            else if(admission.query instanceof EmployeeAppointmentQuery.Current current)
+                Objects.requireNonNull(storage.currentAssignments(admission.repositoryAdmission,current));
             else if(admission.query instanceof EmployeeAppointmentQuery.History history) {
                 if(history.scope()==EmployeeAppointmentQuery.Scope.POSITION)
                     Objects.requireNonNull(storage.positionHistory(admission.repositoryAdmission,history));
@@ -289,6 +296,12 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
         requireCurrentRead(admission);
         if(!(admission.query instanceof EmployeeAppointmentQuery.Policy q))throw denied();
         return Objects.requireNonNull(storage.readPolicy(admission.repositoryAdmission,q));
+    }
+
+    EmployeeAppointmentResult.CurrentPage currentAssignments(ReadAdmission admission) {
+        requireCurrentRead(admission);
+        if(!(admission.query instanceof EmployeeAppointmentQuery.Current q))throw denied();
+        return Objects.requireNonNull(storage.currentAssignments(admission.repositoryAdmission,q));
     }
 
     /** The result remains inside executePublication until its observed physical commit. */

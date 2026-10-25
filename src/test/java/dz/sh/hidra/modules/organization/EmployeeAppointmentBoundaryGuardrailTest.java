@@ -14,6 +14,23 @@ class EmployeeAppointmentBoundaryGuardrailTest {
     private static final Instant FROM = Instant.parse("2026-10-21T10:00:00Z");
     private static final Instant TO = Instant.parse("2026-10-21T11:00:00Z");
 
+    @Test void currentSelectorsRejectGlobalUnsafeAndUnboundedLists() {
+        assertThrows(InvalidOrganizationValueException.class,()->new EmployeeAppointmentQuery.Current(null,null,null,null,0,10,false));
+        assertThrows(InvalidOrganizationValueException.class,()->new EmployeeAppointmentQuery.Current(null," employee",null,null,0,10,false));
+        for(int page:new int[]{-1,1001})assertThrows(InvalidOrganizationValueException.class,()->new EmployeeAppointmentQuery.Current(null,"employee",null,null,page,10,false));
+        for(int size:new int[]{0,101})assertThrows(InvalidOrganizationValueException.class,()->new EmployeeAppointmentQuery.Current(null,null,"unit",null,0,size,false));
+        assertThrows(InvalidOrganizationValueException.class,()->new EmployeeAppointmentQuery.Current(null,null,"unit",null,0,100,true));
+        assertThrows(InvalidOrganizationValueException.class,()->new EmployeeAppointmentQuery.Current(null,"employee",null,null,1,100,true));
+        assertNull(new EmployeeAppointmentQuery.Current(null,"employee",null,null,0,100,true).companyPartyId());
+    }
+
+    @Test void currentPageRejectsInconsistentCountsAndRetainsAnImmutableEmptyResult() {
+        var empty=new dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.CurrentPage(java.util.List.of(),0,10,0,0,false);
+        assertThrows(UnsupportedOperationException.class,()->empty.entries().clear());
+        assertThrows(InvalidOrganizationValueException.class,()->new dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.CurrentPage(java.util.List.of(),0,10,1,1,false));
+        assertThrows(InvalidOrganizationValueException.class,()->new dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.CurrentPage(java.util.List.of(),0,10,0,1,false));
+    }
+
     private static EmployeeAppointmentCommand.Create create() {
         return new EmployeeAppointmentCommand.Create("req", "company", "employee", "unit",
                 "position", AssignmentType.PRIMARY, FROM, TO, 3, 4);
@@ -244,7 +261,9 @@ class EmployeeAppointmentBoundaryGuardrailTest {
         assertTrue(privateHistory.contains("PrivateHistoryEvent"));
         assertTrue(positionHistory.contains("PositionHistoryEvent"));
         assertFalse(positionHistory.contains("PrivateHistoryEvent"));
-        assertEquals(9, useCase.getDeclaredMethods().length);
+        assertEquals(10, useCase.getDeclaredMethods().length);
+        assertEquals(dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.CurrentPage.class,
+                useCase.getMethod("currentAssignments",EmployeeAppointmentQuery.Current.class).getReturnType());
     }
 
     @Test void protectedRepositoryPreviewRejectsUnboundedAndUnorderedOwnerPairs() {
@@ -308,7 +327,7 @@ class EmployeeAppointmentBoundaryGuardrailTest {
                     || types.contains("infrastructure.persistence")
                     || types.contains("java.sql.Connection"));
             if (java.util.Set.of("mutate", "positionHistory", "privateHistory",
-                    "exactVersion", "readPolicy").contains(method.getName()))
+                    "exactVersion", "readPolicy", "currentAssignments").contains(method.getName()))
                 assertEquals(port.getDeclaredClasses()[java.util.Arrays.stream(port.getDeclaredClasses())
                         .map(Class::getSimpleName).toList().indexOf("Admission")],
                         method.getParameterTypes()[0]);

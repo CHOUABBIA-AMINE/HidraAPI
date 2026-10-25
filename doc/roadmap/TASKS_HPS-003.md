@@ -29821,6 +29821,186 @@ No claim of implemented CURRENT support, public/legacy activation, generated
 OpenAPI/catalog reconciliation, full task acceptance, deployment/release,
 simulation, industrial SLA or OT readiness follows from this registration.
 
+
+### 2026-10-25 — HAPI-778 protected CURRENT projection, count and page implementation
+
+Owner Continue selects the concrete implementation registered above from main
+8e6e4af037ab4b5346ad3e36f73961655c0012d1,
+parent 2ade555e9f2520bc9d2057cb64c30ec22ccd8dc6,
+tree b9b2ec8f929dfee4f27a8825949c9ea774ab7258.
+[Docs582](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40195782223)
+succeeded. The registration changed no runtime source; its preceding Full890,
+Fast199 and Docs581 runtime acceptance remains the exact implemented baseline.
+Mandatory governance, selected task, current owner/query/service/storage/tests,
+latest installed guard and untruncated tree were refreshed before mutation.
+Continue exact B3 message:
+`feat(organization): persist protected appointment lifecycle and history`.
+
+**Distinct protected current-read workflow.** Add Current to the existing sealed
+selector family and currentAssignments to its inbound port/service/coordinator/
+repository. Select exact employee and/or unit, optional company filter and typed
+AssignmentStatus, page0..1000, size1..100, and the explicit bounded employee-list
+mode. Deny a global list; no trimming, permission scalar, actor, role, grant,
+budget or policy payload is added. CurrentPage is an immutable detached SQL page
+with consistent entry/count/page/continuation invariants, not a historical
+snapshot relabeled current. Entries retain the existing pinned version shape
+for later conversion to the registered legacy response fields.
+
+Descriptor discovery selects at most1025 matching current rows without SQL
+COUNT or page selection. Retain missing ownership joins as rejection evidence,
+including when a company filter was supplied; an unresolved row cannot silently
+disappear through an inner join. Resolve every complete pinned company/unit,
+up to the unchanged100-pair bound, and the explicit selected employee. The unit
+anchor includes the actual unit, current binding/policy heads/revisions and
+their full activation events. An explicit employee in that anchor must exist.
+An empty explicit-unit selection can therefore be authorized; an employee-only
+selection with no resolvable row ownership is uniformly denied, not assigned an
+invented company or global empty scope.
+
+Acquire actual native READ_CURRENT first, then Organization fences in the
+existing order. Repeat the complete descriptor closure under retained locks.
+The repository rechecks genuine current owner tickets and matches the entire
+CURRENT request before executing SQL count/page selection. READ_HISTORY or
+READ_POLICY cannot substitute. Re-derive descriptor equality from the resulting
+full graph as well; a successful preview never authorizes a subsequent result.
+No Party current-selectability requirement is invented for retained assignment
+pins, and no Identity/Party producer or native permission contract changes.
+
+SQL performs bounded complete row-image discovery, total count and ordered
+LIMIT/OFFSET page selection. Ordering is valid_from DESC then exact id COLLATE C
+ASC. The final graph has kind, selector, scope, rows, total and page; selector
+contains exactly company, employee, unit, status, page, size and employeeList.
+Each row includes the full current assignment and immutable original binding/
+policy revisions plus their activation events, with explicit integrity checks.
+The complete graph, not just the returned page, is authorized and retained.
+The unchanged final-image cap is131072 UTF-8 bytes. Internal descriptor discovery
+is separately bounded to1025 rows and16MiB; it never discloses rows/counts and
+does not enlarge the final guard envelope. Oversized final graphs fail closed;
+1024 is a discovery ceiling, not an assertion every such image fits.
+
+Only AFTER complete genuine CURRENT admission, an explicit employee-list total
+over100 raises the fixed, count-free PaginationRequired application conflict.
+Its typed cause remains in the rejected execution's exception chain for the
+later scoped transport adapter. No result commits and no unauthorized count is
+returned. Other bounded pages obey CurrentPage's exact total/size/continuation
+checks; no whole JPA scan or Java-side pagination implements this path.
+
+**Actual additive scalar guard, not a simulated read proof.** Create only
+V20261025_001__organization_appointment_current_read_guard.sql after checking its
+absence and the actual V20261024_003 tail. All172 old migrations remain immutable.
+The new migration replaces the same existing read-guard signature; it creates
+no table, role, credential, grant or configuration default. PUBLIC stays closed;
+existing owner, security-definer settings, fixed path/timezone and executable
+publisher ACL are retained. The old POLICY/JOURNAL/REPLAY source is inverse-
+restorable exactly apart from the explicit CURRENT dispatch/kind/field-count
+extension. Their physical/native/catalog/fence/privilege and final database
+clock checks remain in the common path.
+
+CURRENT independently validates strict graph/selector shapes, identifiers,
+finite status vocabulary and numeric/Boolean bounds. It re-derives the same
+complete database row/pin/anchor/count/SQL-page image and rejects any difference,
+invalid/unresolved pin, overflow, malformed/extra field, unanchored empty set,
+invalid employee anchor, altered filter/page/count/row, wrong physical coordinate
+or expired original native window. It uses the existing single non-mutating
+READ_GUARD statement. After actual managed flush the original image is required
+again, then this one scalar guard runs; no later owner SQL is allowed and no
+result escapes until observed physical commit.
+
+The authored new prosrc SHA256 is
+9f838f169830db7a9e747f5b015d3cc2cfe8981880dd9cdcf87794ad691496b7.
+Update only that exact existing function pin in the adapter; all relation,
+other-function, final-write and scalar-template pins remain. The Java and SQL
+CURRENT derivation queries are byte-equivalent after replacing their single
+bound-selector placeholder. No source hash or physical catalog evidence is
+fabricated; hosted Flyway/catalog/runtime acceptance is still pending.
+
+**Meaningful verification added, not yet claimed executed.** Retain every old
+test identity and assertion. Boundary cases20->22 cover global/unsafe/unbounded
+selectors and inconsistent/immutable page values. Application cases10->11 cover
+CURRENT dispatch, flush/guard ordering and no detached result on unknown commit.
+Coordinator cases72->74 cover complete multi-company CURRENT requirements,
+employee/unit substitution rejection and final guard without owner callbacks.
+
+Lifecycle PostgreSQL cases95->99 exercise the actual scalar guard on authorized
+unit-empty/current-row images, eight forged count/page/row/pin/filter/shape
+variants, expired windows/wrong PID/wrong XID/changed actual database rows,
+and exact SQL count plus stable tied-row paging. These use the existing
+explicitly mocked-native restricted-login structural fixture; they are not
+genuine native authentication acceptance. The existing fixture now maps Current
+to READ_CURRENT; prior branches/cases are retained.
+
+Concurrency/native application cases72->78 add actual LOCAL/private-publisher/
+executor/managed-flush/observed-read-commit pages and stable ties; authorized
+empty-unit selection and unresolved empty-employee denial; an unauthorized
+foreign company outside the selected page rejecting before count disclosure;
+actual post-flush failure/rollback without result; native expiry at the real
+CURRENT scalar guard while the7500ms development work cap still has time;
+unbound-row preview rejection with/without company filter; and a genuine native
+read of101 owner-seeded SQL fixtures producing the typed safe pagination
+conflict only after complete admission. The101 fixture rows are not101 genuine
+native write calls. Extend the existing1025th-peer case with current-preview
+overflow rejection, without adding another large fixture.
+
+Each existing genuine LDAP/ACTIVE_DIRECTORY/OIDC lifecycle case additionally
+executes CURRENT and requires its two retained current rows. Their real source-
+claim/native issuer/proof and synthetic directory-transport boundaries remain
+as previously documented. No non-LOCAL runtime pass is asserted before hosted
+execution of the changed methods.
+
+The passive driver now also recognizes the unchanged read-guard SQL, so CURRENT
+and replay traces can observe guard-to-commit order rather than minus1. The
+active expiry fault binds read guard indices3/4/5 only when explicitly armed
+for a read; old write indices9/10/11 and every original fault assertion remain.
+The new read fault shortens actual stored grants to one five-second native
+deadline before admission, retains the original genuine bearer and waits via
+bounded raw clock observations at the actual driver dispatch. Require actual
+P0001, one guard attempt, physical rollback, no post-guard statement, unchanged
+effects and positive conservative work time remaining. This injected fault
+changes neither production clocks/windows nor development work budgets and
+is not a latency/SLA sample.
+
+**Exact completed source package.** One CREATE:
+- src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql
+
+Fourteen MODIFY:
+- src/main/java/dz/sh/hidra/modules/organization/application/query/EmployeeAppointmentQuery.java
+- src/main/java/dz/sh/hidra/modules/organization/application/dto/EmployeeAppointmentResult.java
+- src/main/java/dz/sh/hidra/modules/organization/application/port/in/EmployeeAppointmentLifecycleUseCase.java
+- src/main/java/dz/sh/hidra/modules/organization/application/port/out/ProtectedEmployeeAppointmentRepositoryPort.java
+- src/main/java/dz/sh/hidra/modules/organization/application/service/EmployeeAppointmentLifecycleApplicationService.java
+- src/main/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinator.java
+- src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JdbcProtectedEmployeeAppointmentRepositoryAdapter.java
+- src/test/java/dz/sh/hidra/modules/organization/EmployeeAppointmentBoundaryGuardrailTest.java
+- src/test/java/dz/sh/hidra/modules/organization/application/service/EmployeeAppointmentLifecycleApplicationServiceTest.java
+- src/test/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinatorTest.java
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentLifecyclePostgresIntegrationTest.java
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java
+- .github/ci-test-inventory.json, only these five suites' actual members/source hashes
+- doc/roadmap/TASKS_HPS-003.md, only append-only HAPI-778 evidence
+
+Fifteen new actual test methods; no old case removed. Preserve all inventory
+weights/lanes/other entries, seven shards, workflows, compiled caller allowlists,
+Identity/Party/native sources and guardrail pins, all172 previous migrations,
+500ms ordinary/7500ms appointment/250ms lock/750ms statement/1000ms idle bounds.
+No public bean/controller/interceptor or legacy JPA route is activated here.
+No generated API/catalog artifact is hand-edited; no new relation needs an
+ownership-map entry. HAPI-778 remains PARTIAL/IN_PROGRESS; HAPI-590 independently
+PARTIAL/BLOCKED.
+
+Local19 documentation-validator and32 inventory-validator self-tests pass.
+All12 changed Java files parse using the installed Java17 compiler module,
+syntax only; no Java21 type resolution, JUnit, PostgreSQL, migrated catalog or
+SQL runtime pass is claimed/provisioned locally. Fresh base blobs, exact source
+hashes, five-suite deltas, retained cases, original guard inverse restoration,
+matching CURRENT SQL copies/new prosrc pin, append-only evidence, exact15-path
+scope and whitespace are checked. Publish expected-8e6e4af guarded direct main,
+verify exact one parent/tree/message/all15 blobs/scope and applicable exact-SHA
+Full/Fast/Docs creation/queue/start, then STOP. Repair actual failures first.
+After accepted CURRENT runtime feedback, continue the already registered atomic
+application bean/REST/legacy cutover without another generic preflight; actual
+generated OpenAPI/catalog reconciliation and final case-level acceptance remain
+separate. No release/deployment/simulation/industrial/OT readiness is asserted.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

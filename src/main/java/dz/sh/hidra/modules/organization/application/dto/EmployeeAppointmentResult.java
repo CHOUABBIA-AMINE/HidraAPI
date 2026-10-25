@@ -39,6 +39,26 @@ import java.util.Objects;
 public final class EmployeeAppointmentResult {
     private EmployeeAppointmentResult() { }
 
+    /** Safe admitted-list conflict for the later transport adapter; carries no count or selector. */
+    public static final class PaginationRequired extends IllegalStateException {
+        public PaginationRequired(){super("Appointment list requires pagination");}
+    }
+
+    /** Detached SQL-selected current page; no historical snapshot is substituted for a current row. */
+    public record CurrentPage(List<PinnedVersion> entries, int page, int size, long totalElements,
+                              int totalPages, boolean hasNext) {
+        public CurrentPage {
+            require(page>=0 && page<=1000 && size>=1 && size<=100,"Invalid current page");
+            require(entries!=null && entries.size()<=size && entries.stream().noneMatch(Objects::isNull),
+                    "Invalid current entries");
+            require(totalElements>=0 && totalElements<=1024 && totalPages==(totalElements+size-1)/size
+                    && hasNext==((long)(page+1)*size<totalElements)
+                    && entries.size()==Math.min(size,Math.max(0,totalElements-(long)page*size)),
+                    "Inconsistent current count/page");
+            entries=List.copyOf(entries);
+        }
+    }
+
     /** Full internal snapshot, preserving the ORIGINAL binding rather than a mutable head. */
     public record PinnedVersion(CompanyBoundEmployeeAppointment snapshot,
                                 String policyId, long policyRevision) {

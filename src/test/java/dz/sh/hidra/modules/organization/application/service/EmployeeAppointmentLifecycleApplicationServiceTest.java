@@ -58,6 +58,26 @@ class EmployeeAppointmentLifecycleApplicationServiceTest {
                 AssignmentType.PRIMARY,AT,null,1,1);
     }
 
+    @Test void currentPageUsesItsOwnReadThenFlushGuardAndObservedCompletionBoundary() {
+        for(boolean failCompletion:List.of(false,true)) {
+            reset(coordinator,executor,repository);
+            var failure=new IllegalStateException("commit outcome unknown");callbacks(failCompletion?failure:null);
+            var q=new EmployeeAppointmentQuery.Current(null,"employee",null,null,0,10,false);
+            var admission=mock(ProtectedEmployeeAppointmentAdmissionCoordinator.ReadAdmission.class);
+            var result=new EmployeeAppointmentResult.CurrentPage(List.of(),0,10,0,0,false);
+            when(coordinator.acquireRead(any(),eq(q))).thenReturn(admission);
+            when(coordinator.currentAssignments(admission)).thenReturn(result);
+            if(failCompletion)assertSame(failure,assertThrows(IllegalStateException.class,()->service.currentAssignments(q)));
+            else assertSame(result,service.currentAssignments(q));
+            var order=inOrder(coordinator,repository);
+            order.verify(coordinator).sealRead(admission);order.verify(coordinator).currentAssignments(admission);
+            order.verify(repository).flushManagedWork();order.verify(coordinator).prepareFinalRead(admission);
+            order.verify(coordinator).finalizeRead(admission);
+            verify(coordinator,never()).privateHistory(any());verify(coordinator,never()).exactVersion(any());
+            verify(executor,times(1)).executePublication(any(),any(),any());
+        }
+    }
+
     @Test void writeMaterializesThenFlushesThenFinalizesOnTheSamePrivateHandle() {
         callbacks(null);var command=create();
         var prepared=mock(ProtectedEmployeeAppointmentAdmissionCoordinator.Prepared.class);

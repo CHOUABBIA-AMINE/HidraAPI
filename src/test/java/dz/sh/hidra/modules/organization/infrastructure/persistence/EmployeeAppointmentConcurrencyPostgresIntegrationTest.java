@@ -390,6 +390,7 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
                 f.company(),f.units().get(0),f.position(),100,null)).entries().isEmpty());
         assertEquals(f.company(),service.readPolicy(new dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.Policy(
                 f.company(),f.units().get(0))).companyPartyId());
+        assertEquals(2,service.currentAssignments(runtimeCurrent(f.employee(),null,0,10)).totalElements());
         try(var c=owner()) {
             assertEquals("4",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_event e JOIN public.hidra_identity_operation_binding b ON b.binding_id=e.actor_binding_id::text JOIN public.hidra_identity_bound_source_claim_evidence s ON s.binding_id=b.binding_id WHERE e.employee_id=? AND e.actor_user_id=? AND b.authentication_type=? AND b.external_identity_id=?",
                     f.employee(),origin.actor(),type,origin.link()));
@@ -494,14 +495,16 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
     /** Active fault injection, never part of the passive contention measurements. */
     private static final class NativeExpiryFault {
         final Instant expectedUntil;
+        final boolean read;
         Instant nativeUntil,observedExpiry;int pid,guardAttempts,clockReads,postGuardStatements;
         long xid,began,dispatchedAt;String guardSqlState;
-        NativeExpiryFault(Instant expectedUntil){this.expectedUntil=expectedUntil;}
+        NativeExpiryFault(Instant expectedUntil){this(expectedUntil,false);}
+        NativeExpiryFault(Instant expectedUntil,boolean read){this.expectedUntil=expectedUntil;this.read=read;}
         void binding(Object[] args) {
             if(args==null||args.length<2||!(args[0] instanceof Integer index))return;
-            if(index==9&&args[1] instanceof java.sql.Timestamp value)nativeUntil=value.toInstant();
-            if(index==10&&args[1] instanceof Number value)pid=value.intValue();
-            if(index==11&&args[1] instanceof Number value)xid=value.longValue();
+            if(index==(read?3:9)&&args[1] instanceof java.sql.Timestamp value)nativeUntil=value.toInstant();
+            if(index==(read?4:10)&&args[1] instanceof Number value)pid=value.intValue();
+            if(index==(read?5:11)&&args[1] instanceof Number value)xid=value.longValue();
         }
         void beforeGuard(Connection physical) throws SQLException {
             assertEquals(0,guardAttempts++);assertEquals(expectedUntil,nativeUntil);
@@ -609,16 +612,17 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         return jdbcObserver(type,type.cast(statement),(target,method,args)->{
             var trace=RUNTIME_TRACE.get();String name=method.getName();
             String sql=preparedSql!=null?preparedSql:args!=null&&args.length>0&&args[0] instanceof String text?text:null;
-            boolean executing=name.startsWith("execute"),guard=sql!=null&&sql.equals(FINAL_SQL);
+            boolean executing=name.startsWith("execute"),writeGuard=sql!=null&&sql.equals(FINAL_SQL),
+                    readGuard=sql!=null&&sql.equals(CURRENT_FINAL_SQL),guard=writeGuard||readGuard;
             if(trace!=null&&executing) {
                 trace.interceptedPublisherExecutions++;
                 if(sql!=null&&sql.startsWith("WITH identity_claim_locks AS MATERIALIZED"))trace.qualifiedFenceChecks++;
             }
             var expiry=NATIVE_EXPIRY_FAULT.get();
             if(expiry!=null) {
-                if(guard&&name.startsWith("set"))expiry.binding(args); // Observe only; delegate identical parameters.
+                if((expiry.read?readGuard:writeGuard)&&name.startsWith("set"))expiry.binding(args); // Observe only; delegate identical parameters.
                 if(executing&&expiry.dispatchedAt!=0)expiry.postGuardStatements++;
-                if(executing&&guard)expiry.beforeGuard(physical);
+                if(executing&&(expiry.read?readGuard:writeGuard))expiry.beforeGuard(physical);
             }
             if(trace!=null&&executing&&guard)trace.guardBegan=System.nanoTime();
             Object value;
@@ -1513,6 +1517,7 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
     private final Map<String,UUID> finalEvents=new java.util.HashMap<>();
     private static final String FINAL_GUARD="public.hidra_org_appointment_final_guard(uuid,uuid,uuid,text,text,text,text,timestamptz,timestamptz,integer,bigint,bytea,bytea,timestamptz)";
     private static final String FINAL_SQL="WITH observed AS MATERIALIZED (SELECT pg_catalog.clock_timestamp() AS t) SELECT public.hidra_org_appointment_final_guard(?::uuid,?::uuid,?::uuid,?,?,?,?,?::timestamptz,?::timestamptz,?,?,?::bytea,?::bytea,t) FROM observed";
+    private static final String CURRENT_FINAL_SQL="WITH observed AS MATERIALIZED (SELECT pg_catalog.clock_timestamp() AS t) SELECT public.hidra_org_appointment_read_guard(?::jsonb,?::timestamptz,?::timestamptz,?,?,t) FROM observed";
     private static final UUID SQL_AUDIENCE=UUID.fromString("11111111-1111-1111-1111-111111111111");
     private static byte[] sqlKey(){var key=new byte[32];for(int i=0;i<key.length;i++)key[i]=(byte)(i+1);return key;}
     private static void proofText(java.io.DataOutputStream out,String value) throws java.io.IOException {
@@ -2046,6 +2051,11 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         seedMany(f,1024);
         var command=new EmployeeAppointmentCommand.Create(id(),f.company(),f.employee(),f.units().get(0),f.position(),AssignmentType.PRIMARY,START,null,1,2);
         prepare(command,true);seedMany(f,1);prepare(command,false);
+        try(var c=owner()) {
+            var storage=new JdbcProtectedEmployeeAppointmentRepositoryAdapter(new JdbcTemplate(
+                    new org.springframework.jdbc.datasource.SingleConnectionDataSource(c,true)));
+            assertThrows(AccessDeniedException.class,()->storage.preview(runtimeCurrent(f.employee(),null,0,1)));
+        }
     }
 
     @Test void currentEmployeeUnitAndPositionEligibilityMustHoldAtTheNativeSample() throws Exception {
@@ -2199,4 +2209,103 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
             status.setRollbackOnly();return null;
         });}
     }
+    private static dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.Current runtimeCurrent(
+            String employee,String unit,int page,int size) {
+        return new dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.Current(null,employee,unit,null,page,size,false);
+    }
+
+    @Test void genuineCurrentPagesUseCompleteNativeScopeSqlTiesCountsAndObservedReadCommit() throws Exception {
+        var f=fixture(false);String actor=runtimeActor(f);var service=runtimeService(runtimeEntityManager);
+        activatePolicy(f,policy().replace("false","true").replace("SINGLE_HOLDER","UNRESTRICTED").replace("\"maxConcurrentPrimary\":1","\"maxConcurrentPrimary\":16"));
+        var ids=new java.util.ArrayList<String>();
+        for(int n=0;n<3;n++)ids.add(service.create(new EmployeeAppointmentCommand.Create(id(),f.company(),f.employee(),
+                f.units().get(0),f.position(),AssignmentType.PRIMARY,START,null,1,2)).after().assignmentId());
+        ids.sort(String::compareTo);String effects=runtimeEffects(f,actor);
+        for(int page=0;page<3;page++) {
+            var q=runtimeCurrent(f.employee(),null,page,1);var trace=new RuntimeTrace();
+            var result=tracedRuntime("CURRENT_PAGE_"+page,trace,()->service.currentAssignments(q));trace.committed();
+            assertEquals(3,result.totalElements());assertEquals(3,result.totalPages());assertEquals(page<2,result.hasNext());
+            assertEquals(List.of(ids.get(page)),result.entries().stream().map(v->v.assignmentId()).toList());
+        }
+        var unit=service.currentAssignments(runtimeCurrent(null,f.units().get(0),0,100));assertEquals(3,unit.totalElements());
+        assertEquals(ids,unit.entries().stream().map(v->v.assignmentId()).toList());
+        var empty=new dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.Current(null,f.employee(),f.units().get(0),AssignmentStatus.ENDED,0,10,false);
+        assertEquals(0,service.currentAssignments(empty).totalElements());
+        var unscopedEmpty=new dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.Current(null,f.employee(),null,AssignmentStatus.ENDED,0,10,false);
+        assertThrows(RuntimeException.class,()->service.currentAssignments(unscopedEmpty));
+        assertEquals(effects,runtimeEffects(f,actor));assertEquals(RUNTIME_APP,runtimeJdbc.queryForObject("SELECT session_user",String.class));
+    }
+
+    @Test void genuineCurrentReadDeniesOutOfPageForeignOwnersBeforeReturningCounts() throws Exception {
+        var f=fixture(false);String actor=runtimeActor(f);var service=runtimeService(runtimeEntityManager);
+        service.create(create(f,id()));var other=fixture(false);
+        seedCreate(new Fixture(other.company(),f.employee(),id(),other.position(),other.units(),other.policy(),id()),null);
+        String effects=runtimeEffects(f,actor);var trace=new RuntimeTrace();var em=spy(runtimeEntityManager);
+        assertThrows(RuntimeException.class,()->tracedRuntime("CURRENT_FOREIGN_OUTSIDE_PAGE",trace,
+                ()->runtimeService(em).currentAssignments(runtimeCurrent(f.employee(),null,0,1))));
+        trace.rejected();verify(em,never()).flush();assertEquals(0,trace.guardBegan);assertEquals(effects,runtimeEffects(f,actor));
+    }
+
+    @Test void genuineCurrentPostFlushFailureRollsBackWithoutAnyReadResultOrEffects() throws Exception {
+        var f=fixture(false);String actor=runtimeActor(f);runtimeService(runtimeEntityManager).create(create(f,id()));
+        String effects=runtimeEffects(f,actor);var em=spy(runtimeEntityManager);var trace=new RuntimeTrace();
+        doAnswer(call->{runtimeEntityManager.flush();throw new IllegalStateException("synthetic current-read post-flush fault");}).when(em).flush();
+        assertThrows(RuntimeException.class,()->tracedRuntime("CURRENT_FLUSH_ROLLBACK",trace,
+                ()->runtimeService(em).currentAssignments(runtimeCurrent(f.employee(),null,0,10))));
+        trace.rejected();verify(em).flush();assertEquals(0,trace.guardBegan);assertEquals(effects,runtimeEffects(f,actor));
+    }
+
+    @Test void genuineCurrentNativeExpiryAtReadGuardRejectsWhileDevelopmentWorkTimeRemains() throws Exception {
+        var f=fixture(false);String actor=runtimeActor(f);var service=runtimeService(runtimeEntityManager);service.create(create(f,id()));
+        Instant until=null;int grants=0;
+        try(var c=owner();var statement=c.prepareStatement("WITH t AS MATERIALIZED (SELECT clock_timestamp()+interval '5 seconds' u) UPDATE public.hidra_identity_user_permission_grant SET valid_to=t.u FROM t WHERE user_id=? RETURNING valid_to")) {
+            statement.setString(1,actor);
+            try(var rows=statement.executeQuery()) {
+                while(rows.next()){Instant value=rows.getTimestamp(1).toInstant();if(until==null)until=value;else assertEquals(until,value);grants++;}
+            }
+        }
+        assertNotNull(until);assertTrue(grants>0);
+        // Retain the original real bearer; admission reads the actual shortened native grants.
+        var fault=new NativeExpiryFault(until,true);var trace=new RuntimeTrace();String effects=runtimeEffects(f,actor);
+        assertNull(NATIVE_EXPIRY_FAULT.get());NATIVE_EXPIRY_FAULT.set(fault);
+        try {
+            assertThrows(RuntimeException.class,()->tracedRuntime("CURRENT_NATIVE_EXPIRY",trace,
+                    ()->service.currentAssignments(runtimeCurrent(f.employee(),null,0,10))));
+        } finally {NATIVE_EXPIRY_FAULT.remove();}
+        trace.rejected();assertEquals(1,fault.guardAttempts);assertEquals("P0001",fault.guardSqlState);
+        assertNotNull(fault.observedExpiry);assertEquals(0,fault.postGuardStatements);
+        assertTrue(fault.dispatchedAt-trace.began<7_500_000_000L);assertEquals(effects,runtimeEffects(f,actor));
+    }
+
+    @Test void currentPreviewRejectsUnboundRowsInsteadOfInventingOrHidingTheirCompany() throws Exception {
+        var f=fixture(false);
+        admin("INSERT INTO public.hidra_org_employee_assignment(id,employee_id,organization_unit_id,position_id,assignment_type,valid_from,status,created_at,updated_at) VALUES (?,?,?,?,'PRIMARY',?::timestamptz,'ACTIVE',now(),now())",id(),f.employee(),f.units().get(0),f.position(),START.toString());
+        try(var c=owner()) {
+            var jdbc=new JdbcTemplate(new org.springframework.jdbc.datasource.SingleConnectionDataSource(c,true));
+            var storage=new JdbcProtectedEmployeeAppointmentRepositoryAdapter(jdbc);
+            for(String company:new String[]{null,f.company()}) {
+                var q=new dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.Current(company,f.employee(),null,null,0,1,false);
+                assertThrows(AccessDeniedException.class,()->storage.preview(q));
+            }
+        }
+    }
+
+    @Test void genuineCurrentEmployeeListOver100RequiresPaginationOnlyAfterCompleteAdmission() throws Exception {
+        var f=fixture(false);String actor=runtimeActor(f);
+        activatePolicy(f,policy().replace("false","true").replace("SINGLE_HOLDER","UNRESTRICTED")
+                .replace("\"maxConcurrentPrimary\":1","\"maxConcurrentPrimary\":10000"));
+        seedMany(f,101); // Owner-seeded SQL fixtures, not101 genuine native write calls.
+        String effects=runtimeEffects(f,actor);var em=spy(runtimeEntityManager);var trace=new RuntimeTrace();
+        var q=new dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.Current(null,f.employee(),null,null,0,100,true);
+        var failure=assertThrows(ProtectedTransactionExecutor.ExecutionFailure.class,()->tracedRuntime("CURRENT_PAGINATION_REQUIRED",trace,
+                ()->runtimeService(em).currentAssignments(q)));
+        boolean typed=false;
+        for(Throwable cause=failure;cause!=null;cause=cause.getCause())
+            if(cause instanceof dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.PaginationRequired)typed=true;
+        assertTrue(typed,"An admitted101-row list must report the safe pagination conflict");
+        assertEquals(ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT,failure.outcome());
+        trace.rejected();verify(em,never()).flush();assertEquals(0,trace.guardBegan);assertEquals(effects,runtimeEffects(f,actor));
+    }
+
+
 }

@@ -322,7 +322,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
             var expected=new OrganizationProtectedAppointmentAuthorizationContract.Request(
                     action,descriptors.companyUnits(),descriptors.employeeId());
             if(!descriptors.equals(t.preview) || !expected.equals(t.sample.request()) || !t.parties.isEmpty()
-                    || t.mutation!=null || t.policy!=null
+                    || t.mutation!=null || t.policy!=null || t.currentRead!=null
                     || t.journalRead!=null && !query.equals(t.journalRead.selector()))throw denied();
             var selection=journalSelection(query);
             var events=jdbc.query(JOURNAL_SQL.formatted(selection.predicate()),(r,i) -> {
@@ -483,6 +483,10 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
      */
     public DescriptorPreview preview(EmployeeAppointmentQuery query) {
         Objects.requireNonNull(query, "Read selector required");
+        if(query instanceof EmployeeAppointmentQuery.Current current) {
+            try{return currentDescriptors(current,currentImage(current,true));}
+            catch(RuntimeException unavailable){throw denied();}
+        }
         if (query instanceof EmployeeAppointmentQuery.Policy policy) {
             return new DescriptorPreview(List.of(
                     new CompanyUnit(policy.companyPartyId(), policy.unitId())), null, null, false);
@@ -590,7 +594,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
             Map.entry("public.hidra_org_appointment_receipt", "2c6a183766db9b11b96f4441bf5f3fc68baf4b794b7effedcefdf7243c03ab65"));
     // Exact latest authored prosrc bytes, including accepted forward replacements.
     private static final Map<String, String> FUNCTION_PINS = Map.ofEntries(
-            Map.entry("hidra_org_appointment_read_guard", "1a0074d05db1455eec2092188d55d94cfd9c81612ce85f05689832dea499d3a3"),
+            Map.entry("hidra_org_appointment_read_guard", "9f838f169830db7a9e747f5b015d3cc2cfe8981880dd9cdcf87794ad691496b7"),
             Map.entry("hidra_org_appointment_final_fingerprint", "e7c7cf81f21066af6d35cc6a8c7a85dc0916cf7e049fc05b1142ebe522e10842"),
             Map.entry("hidra_org_appointment_final_context", "2cba4bcde5ca4fe134feb8d48fc48ef6d0735df69980aeebbaa1dcc37fd44582"),
             Map.entry("hidra_org_appointment_final_guard", "539cc2ba27be9e3439141b851ca06640cb91f525d9b6f9aaf8147dce3a2019a5"),
@@ -901,6 +905,168 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
         }
     }
 
+    private static final String CURRENT_IMAGE_SQL="""
+        WITH args AS (SELECT ?::jsonb AS q), selected AS MATERIALIZED (
+         SELECT a.* FROM public.hidra_org_employee_assignment a CROSS JOIN args
+         LEFT JOIN public.hidra_org_appointment_binding_revision owner_pin
+           ON owner_pin.binding_id=a.binding_id AND owner_pin.revision=a.binding_revision
+          AND owner_pin.organization_unit_id=a.organization_unit_id
+         WHERE (q->>'employee' IS NULL OR a.employee_id=q->>'employee')
+           AND (q->>'unit' IS NULL OR a.organization_unit_id=q->>'unit')
+           AND (q->>'status' IS NULL OR a.status=q->>'status')
+           AND (q->>'company' IS NULL OR owner_pin.company_party_id=q->>'company' OR owner_pin.binding_id IS NULL)
+         ORDER BY a.valid_from DESC,a.id COLLATE "C" ASC LIMIT 1025
+        ), images AS MATERIALIZED (
+         SELECT a.id,a.valid_from,pg_catalog.jsonb_build_object(
+           'assignment',pg_catalog.to_jsonb(a),'binding',pg_catalog.to_jsonb(b),'policy',pg_catalog.to_jsonb(p),
+           'bindingEvent',pg_catalog.to_jsonb(be),'policyEvent',pg_catalog.to_jsonb(pe),
+           'valid',(a.appointment_version>0 AND a.last_event_id IS NOT NULL
+              AND b.binding_id IS NOT NULL AND p.policy_id IS NOT NULL
+              AND be.scope_id=b.organization_unit_id AND be.company_party_id=b.company_party_id
+              AND be.after_payload=pg_catalog.to_jsonb(b)
+              AND pe.scope_id=p.company_party_id AND pe.company_party_id=p.company_party_id
+              AND pe.after_payload=pg_catalog.to_jsonb(p)
+              AND p.canonical_payload=pg_catalog.convert_to(p.policy::text,'UTF8')
+              AND p.sha256=pg_catalog.encode(pg_catalog.sha256(p.canonical_payload),'hex')) IS TRUE) AS image
+         FROM selected a
+         LEFT JOIN public.hidra_org_appointment_binding_revision b
+           ON b.binding_id=a.binding_id AND b.revision=a.binding_revision AND b.organization_unit_id=a.organization_unit_id
+         LEFT JOIN public.hidra_org_appointment_policy_revision p
+           ON p.policy_id=a.policy_id AND p.revision=a.policy_revision AND p.company_party_id=b.company_party_id
+         LEFT JOIN public.hidra_org_appointment_configuration_event be
+           ON be.kind='BINDING' AND be.identity_id=b.binding_id AND be.revision=b.revision
+         LEFT JOIN public.hidra_org_appointment_configuration_event pe
+           ON pe.kind='POLICY' AND pe.identity_id=p.policy_id AND pe.revision=p.revision
+        ), anchor AS (
+         SELECT pg_catalog.jsonb_build_object('unit',pg_catalog.to_jsonb(u),
+           'bindingHead',pg_catalog.to_jsonb(bh),'binding',pg_catalog.to_jsonb(b),
+           'policyHead',pg_catalog.to_jsonb(ph),'policy',pg_catalog.to_jsonb(p),
+           'bindingEvent',pg_catalog.to_jsonb(be),'policyEvent',pg_catalog.to_jsonb(pe),
+           'employee',(SELECT pg_catalog.to_jsonb(e) FROM public.hidra_org_employee e WHERE e.id=q->>'employee'),
+           'valid',((q->>'employee' IS NULL OR EXISTS(SELECT 1 FROM public.hidra_org_employee e WHERE e.id=q->>'employee'))
+              AND bh.generation=bh.revision AND ph.generation=ph.revision
+              AND bh.event_kind='BINDING' AND ph.event_kind='POLICY'
+              AND be.kind='BINDING' AND be.scope_id=b.organization_unit_id
+              AND be.identity_id=b.binding_id AND be.revision=b.revision AND be.company_party_id=b.company_party_id
+              AND be.after_payload=pg_catalog.to_jsonb(b)
+              AND pe.kind='POLICY' AND pe.scope_id=p.company_party_id
+              AND pe.identity_id=p.policy_id AND pe.revision=p.revision AND pe.company_party_id=p.company_party_id
+              AND pe.after_payload=pg_catalog.to_jsonb(p)
+              AND p.canonical_payload=pg_catalog.convert_to(p.policy::text,'UTF8')
+              AND p.sha256=pg_catalog.encode(pg_catalog.sha256(p.canonical_payload),'hex')) IS TRUE) AS image
+         FROM args JOIN public.hidra_org_unit u ON u.id=q->>'unit'
+         JOIN public.hidra_org_appointment_binding_head bh ON bh.organization_unit_id=u.id
+         JOIN public.hidra_org_appointment_binding_revision b
+           ON b.organization_unit_id=bh.organization_unit_id AND b.binding_id=bh.binding_id
+          AND b.revision=bh.revision AND b.company_party_id=bh.company_party_id
+         JOIN public.hidra_org_appointment_policy_head ph ON ph.company_party_id=b.company_party_id
+         JOIN public.hidra_org_appointment_policy_revision p
+           ON p.company_party_id=ph.company_party_id AND p.policy_id=ph.policy_id AND p.revision=ph.revision
+         JOIN public.hidra_org_appointment_configuration_event be ON be.event_id=bh.last_event_id
+         JOIN public.hidra_org_appointment_configuration_event pe ON pe.event_id=ph.last_event_id
+        ), page_rows AS (
+         SELECT image,id,valid_from FROM images ORDER BY valid_from DESC,id COLLATE "C" ASC
+         LIMIT (SELECT (q->>'size')::integer FROM args)
+         OFFSET (SELECT (q->>'page')::integer*(q->>'size')::integer FROM args)
+        )
+        SELECT pg_catalog.jsonb_build_object('kind','CURRENT','selector',q,
+         'scope',(SELECT image FROM anchor),
+         'rows',COALESCE((SELECT pg_catalog.jsonb_agg(image ORDER BY valid_from DESC,id COLLATE "C" ASC) FROM images),'[]'::jsonb),
+         'total',(SELECT count(*) FROM selected),
+         'page',COALESCE((SELECT pg_catalog.jsonb_agg(image ORDER BY valid_from DESC,id COLLATE "C" ASC) FROM page_rows),'[]'::jsonb)) AS image
+         FROM args
+        """;
+
+    // Descriptor discovery intentionally contains neither SQL count nor page selection.
+    private static final String CURRENT_PREVIEW_SQL=CURRENT_IMAGE_SQL.substring(0,CURRENT_IMAGE_SQL.indexOf(", page_rows AS ("))+"\n"+"""
+        SELECT pg_catalog.jsonb_build_object('scope',(SELECT image FROM anchor),
+          'rows',COALESCE((SELECT pg_catalog.jsonb_agg(image ORDER BY valid_from DESC,id COLLATE "C" ASC) FROM images),'[]'::jsonb))
+        FROM args
+        """;
+
+    private record CurrentObservation(EmployeeAppointmentQuery.Current selector, String image,
+                                      EmployeeAppointmentResult.CurrentPage result) { }
+
+    private static String currentSelector(EmployeeAppointmentQuery.Current q) {
+        var value=new java.util.LinkedHashMap<String,Object>();
+        value.put("company",q.companyPartyId());value.put("employee",q.employeeId());value.put("unit",q.unitId());
+        value.put("status",q.status()==null?null:q.status().name());value.put("page",q.page());value.put("size",q.size());
+        value.put("employeeList",q.employeeList());
+        return COMMAND_JSON.writeValueAsString(value);
+    }
+
+    /** Bounded selector discovery only until the genuine native admission has qualified its full closure. */
+    private String currentImage(EmployeeAppointmentQuery.Current q,boolean preview) {
+        String image=jdbc.queryForObject(preview?CURRENT_PREVIEW_SQL:CURRENT_IMAGE_SQL,String.class,currentSelector(q));
+        // Bounded internal discovery may exceed the final image cap. No count or page is selected here.
+        if(image==null || image.getBytes(java.nio.charset.StandardCharsets.UTF_8).length>16*1024*1024)throw denied();
+        return image;
+    }
+
+    private static List<?> currentRows(Map<String,Object> graph,String field) {
+        if(!(graph.get(field) instanceof List<?> rows) || rows.size()>1024)throw denied();
+        return rows;
+    }
+
+    private static EmployeeAppointmentResult.PinnedVersion currentVersion(Object raw) {
+        var row=object(raw);
+        if(!Boolean.TRUE.equals(row.get("valid")))throw denied();
+        return Objects.requireNonNull(pinned(COMMAND_JSON.writeValueAsString(row)));
+    }
+
+    private static DescriptorPreview currentDescriptors(EmployeeAppointmentQuery.Current q,String image) {
+        var graph=object(COMMAND_JSON.readValue(image,Map.class));
+        var rows=currentRows(graph,"rows");
+        if(graph.containsKey("total") && (!(graph.get("total") instanceof Number total) || total.longValue()!=rows.size()))throw denied();
+        var pairs=new TreeSet<>(OWNER_ORDER);
+        for(Object row:rows) {
+            var value=currentVersion(row);var a=value.snapshot().appointment().assignment();
+            if(q.employeeId()!=null && !q.employeeId().equals(a.employeeId())
+                    || q.unitId()!=null && !q.unitId().equals(a.organizationUnitId())
+                    || q.status()!=null && q.status()!=a.status()
+                    || q.companyPartyId()!=null && !q.companyPartyId().equals(value.companyPartyId()))throw denied();
+            pairs.add(new CompanyUnit(value.companyPartyId(),a.organizationUnitId()));
+        }
+        if(q.unitId()!=null) {
+            var anchor=object(graph.get("scope"));
+            if(!Boolean.TRUE.equals(anchor.get("valid")))throw denied();
+            var binding=object(anchor.get("binding"));
+            String company=text(binding,"company_party_id"),unit=text(binding,"organization_unit_id");
+            if(!q.unitId().equals(unit) || q.companyPartyId()!=null && !q.companyPartyId().equals(company))throw denied();
+            pairs.add(new CompanyUnit(company,unit));
+        } else if(graph.get("scope")!=null)throw denied();
+        if(pairs.isEmpty() || pairs.size()>OrganizationProtectedAppointmentAuthorizationContract.MAX_READ_PAIRS)throw denied();
+        return new DescriptorPreview(new ArrayList<>(pairs),q.employeeId(),null,false);
+    }
+
+    public EmployeeAppointmentResult.CurrentPage currentAssignments(
+            ProtectedEmployeeAppointmentRepositoryPort.Admission admission,EmployeeAppointmentQuery.Current q) {
+        StorageAdmission t=null;
+        try {
+            t=ticket(admission);requireCurrent(t);
+            if(!t.parties.isEmpty() || t.policy!=null || t.journalRead!=null || t.mutation!=null
+                    || t.currentRead!=null && !q.equals(t.currentRead.selector()))throw denied();
+            var descriptors=currentDescriptors(q,currentImage(q,true));
+            var request=new OrganizationProtectedAppointmentAuthorizationContract.Request(
+                    OrganizationProtectedAppointmentAuthorizationContract.Action.READ_CURRENT,
+                    descriptors.companyUnits(),descriptors.employeeId());
+            if(!descriptors.equals(t.preview) || !request.equals(t.sample.request()))throw denied();
+            // Count and page selection only after matching the complete genuine CURRENT contribution.
+            String image=currentImage(q,false);
+            if(!descriptors.equals(currentDescriptors(q,image)))throw denied();
+            var graph=object(COMMAND_JSON.readValue(image,Map.class));
+            long total=((Number)graph.get("total")).longValue();
+            if(q.employeeList() && total>100)throw new EmployeeAppointmentResult.PaginationRequired();
+            if(image.getBytes(java.nio.charset.StandardCharsets.UTF_8).length>131072)throw denied();
+            var entries=currentRows(graph,"page").stream().map(JdbcProtectedEmployeeAppointmentRepositoryAdapter::currentVersion).toList();
+            var result=new EmployeeAppointmentResult.CurrentPage(entries,q.page(),q.size(),total,
+                    (int)((total+q.size()-1)/q.size()),(long)(q.page()+1)*q.size()<total);
+            var observed=new CurrentObservation(q,image,result);
+            if(t.currentRead!=null && !t.currentRead.equals(observed))throw denied();
+            t.currentRead=observed;requireCurrent(t);return result;
+        } catch(RuntimeException failure){poison(t==null?admission:t);throw denied(failure);}
+    }
+
     private static final String POLICY_SQL = """
             SELECT p.policy_id,p.revision,(p.policy->>'maxConcurrentPrimary')::integer,
                    p.policy->>'positionCapacity',f.key,s.key,s.value::text,
@@ -972,7 +1138,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
                     OrganizationProtectedAppointmentAuthorizationContract.Action.READ_POLICY,
                     List.of(new CompanyUnit(query.companyPartyId(), query.unitId())), null);
             if (!expected.equals(ticket.sample.request()) || !ticket.parties.isEmpty()
-                    || !preview(query).equals(ticket.preview)
+                    || ticket.currentRead!=null || !preview(query).equals(ticket.preview)
                     || (ticket.policy != null && !query.equals(ticket.policy.selector()))) throw denied();
             var cells = jdbc.query(POLICY_SQL, (r, i) -> new PolicyCell(
                     r.getString(1),r.getLong(2),r.getInt(3),r.getString(4),r.getString(5),r.getString(6),
@@ -1136,6 +1302,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
         private OrganizationProtectedAppointmentAuthorizationContract.Contribution sample;
         private PolicyObservation policy;
         private JournalObservation journalRead;
+        private CurrentObservation currentRead;
         private MutationClassification mutation;
         private MutationPlan plan;
         private ProvisionalWrite provisional;
@@ -1684,11 +1851,13 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
         StorageAdmission t=null;
         try {
             t=ticket(admission);
-            if(!coordinatorCaller() || (t.policy==null)==(t.journalRead==null) || t.readPreparationStarted || t.provisionalStarted
+            if(!coordinatorCaller() || (t.policy==null?0:1)+(t.journalRead==null?0:1)+(t.currentRead==null?0:1)!=1 || t.readPreparationStarted || t.provisionalStarted
                     || t.mutation!=null || t.finalWrite!=null || !t.parties.isEmpty())throw denied();
             t.readPreparationStarted=true;
             String image;
-            if(t.policy!=null) {
+            if(t.currentRead!=null) {
+                currentAssignments(t,t.currentRead.selector());image=t.currentRead.image();
+            } else if(t.policy!=null) {
                 readPolicy(t,t.policy.selector());image=t.policy.image();
             } else {
                 journal(t,t.journalRead.selector());
@@ -1751,7 +1920,7 @@ public final class JdbcProtectedEmployeeAppointmentRepositoryAdapter implements 
         try {
             t=ticket(admission);requireCurrent(t);
             if(!coordinatorCaller() || t.mutation==null || t.readPreparationStarted || t.provisionalStarted
-                    || t.policy!=null || t.journalRead!=null || t.plan!=null || t.finalWrite!=null
+                    || t.policy!=null || t.journalRead!=null || t.currentRead!=null || t.plan!=null || t.finalWrite!=null
                     || referenceUse(t,t.mutation.command(),t.sample)!=ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY)throw denied();
             t.readPreparationStarted=true;
             var target=jdbc.query(JOURNAL_SQL.formatted("e.event_id=?::uuid"),

@@ -129,6 +129,27 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
                 "position", AssignmentType.PRIMARY, START, null, 1, 1);
     }
 
+    @Test void currentReadUsesCompleteCurrentAuthorityBeforeCountAndRetainsItsFinalGuard() {
+        var q=new EmployeeAppointmentQuery.Current(null,"employee",null,null,0,10,false);
+        var descriptors=new ProtectedEmployeeAppointmentRepositoryPort.DescriptorPreview(
+                List.of(new CompanyUnit("company","unit"),new CompanyUnit("other","other-unit")),"employee",null,false);
+        try(var f=new ReadFixture(q,descriptors)) {
+            assertEquals(Action.READ_CURRENT,f.request.action());assertEquals(5,f.request.requirements().size());
+            var value=new dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.CurrentPage(List.of(),0,10,0,0,false);
+            when(f.storage.currentAssignments(f.storageTicket,q)).thenReturn(value);
+            var ticket=f.acquire();assertSame(value,f.coordinator.currentAssignments(ticket));
+            f.coordinator.prepareFinalRead(ticket);clearInvocations(f.storage,f.identity,f.party);
+            f.coordinator.finalizeRead(ticket);verify(f.storage).finalizeRead(f.storageTicket);
+            verifyNoMoreInteractions(f.storage);verifyNoInteractions(f.identity,f.party);ticket.beforeCommit(false);
+        }
+    }
+
+    @Test void currentReadRejectsEmployeeOrUnitSubstitutionBeforeNativeAcquisition() {
+        var q=new EmployeeAppointmentQuery.Current(null,"employee","unit",null,0,10,false);
+        for(var d:List.of(preview("company","unit","other",null),preview("company","other","employee",null)))
+            assertThrows(AccessDeniedException.class,()->ProtectedEmployeeAppointmentAdmissionCoordinator.requestFor(null,q,d));
+    }
+
     @Test void mapsTypedCommandsAndQueriesToFixedNativeActions() {
         var end = new EmployeeAppointmentCommand.End("req", "company", "assignment", 1,
                 START.plusSeconds(60), "reason");

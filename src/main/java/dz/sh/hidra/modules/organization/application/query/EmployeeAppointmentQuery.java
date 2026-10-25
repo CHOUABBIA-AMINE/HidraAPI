@@ -9,11 +9,26 @@ import dz.sh.hidra.modules.organization.domain.exception.InvalidOrganizationValu
  */
 public sealed interface EmployeeAppointmentQuery permits
         EmployeeAppointmentQuery.History, EmployeeAppointmentQuery.ExactVersion,
-        EmployeeAppointmentQuery.Policy {
+        EmployeeAppointmentQuery.Policy, EmployeeAppointmentQuery.Current {
 
     String companyPartyId();
 
     enum Scope { ASSIGNMENT, EMPLOYEE, POSITION }
+
+    /** Current projection selector; optional company is a filter, never inferred authority. */
+    record Current(String companyPartyId, String employeeId, String unitId,
+                   dz.sh.hidra.modules.organization.domain.value.AssignmentStatus status,
+                   int page, int size, boolean employeeList) implements EmployeeAppointmentQuery {
+        public Current {
+            if(companyPartyId!=null)companyPartyId=exact(companyPartyId,"Company");
+            if(employeeId!=null)employeeId=exact(employeeId,"Employee");
+            if(unitId!=null)unitId=exact(unitId,"Unit");
+            require(employeeId!=null || unitId!=null,"Current reads require employee or unit selection");
+            require(page>=0 && page<=1000 && size>=1 && size<=100,"Invalid current page bounds");
+            require(!employeeList || employeeId!=null && page==0 && size==100,
+                    "Employee list requires one explicit bounded first page");
+        }
+    }
 
     record History(Scope scope, String companyPartyId, String assignmentId,
                    String employeeId, String unitId, String positionId,

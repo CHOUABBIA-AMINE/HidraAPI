@@ -93,6 +93,9 @@ public final class EmployeeAppointmentLifecycleApplicationService implements Emp
     @Override public EmployeeAppointmentResult.PinnedVersion exactVersion(EmployeeAppointmentQuery.ExactVersion query) {
         return read(Objects.requireNonNull(query),coordinator::exactVersion);
     }
+    @Override public EmployeeAppointmentResult.CurrentPage currentAssignments(EmployeeAppointmentQuery.Current query) {
+        return read(Objects.requireNonNull(query),coordinator::currentAssignments);
+    }
     @Override public EmployeeAppointmentResult.PolicyView readPolicy(EmployeeAppointmentQuery.Policy query) {
         return read(Objects.requireNonNull(query),coordinator::readPolicy);
     }

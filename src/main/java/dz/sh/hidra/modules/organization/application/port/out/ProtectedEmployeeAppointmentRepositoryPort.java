@@ -40,6 +40,9 @@ import java.util.Set;
  */
 public interface ProtectedEmployeeAppointmentRepositoryPort {
 
+    /** Exact complete CURRENT admission is required before page or count disclosure. */
+    EmployeeAppointmentResult.CurrentPage currentAssignments(Admission admission, EmployeeAppointmentQuery.Current query);
+
     /** Issued only by the actual protected storage adapter; caller implementations are rejected. */
     interface Admission { }
 

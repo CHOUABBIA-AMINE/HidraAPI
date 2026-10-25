@@ -1301,6 +1301,7 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
                         policyQuery != null ? dz.sh.hidra.modules.identity.application.contract.organization
                                 .OrganizationProtectedAppointmentAuthorizationContract.Action.READ_POLICY
                                 : readQuery instanceof dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.ExactVersion
+                                    || readQuery instanceof dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.Current
                                 ? dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.Action.READ_CURRENT
                                 : dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.Action.READ_HISTORY,
                         descriptors==null ? List.of(new CompanyUnit(f.company(),f.unit())) : descriptors.companyUnits(),
@@ -2451,4 +2452,86 @@ class EmployeeAppointmentLifecyclePostgresIntegrationTest {
             });
         }
     }
+    private static dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.Current currentQuery(
+            String employee,String unit,int page,int size) {
+        return new dz.sh.hidra.modules.organization.application.query.EmployeeAppointmentQuery.Current(null,employee,unit,null,page,size,false);
+    }
+
+    @Test void currentSqlGuardAcceptsAnAuthorizedUnitEmptyImageAndCurrentRowsWithoutWrites() throws Exception {
+        var p=projection();
+        for(boolean empty:List.of(true,false)) {
+            if(!empty)commitCreate(p);
+            var q=currentQuery(null,p.unit(),0,10);
+            try(var session=new FinalPolicySession(q)) {
+                session.f.tx.execute(status->{
+                    session.prepare();String image=frozenJournalImage(session);
+                    assertEquals(empty?0:1,session.f.jdbc.queryForObject("SELECT (?::jsonb->>'total')::integer",Integer.class,image));
+                    var sample=session.f.identity.contribute(session.f.nativeTicket);
+                    assertEquals(Boolean.TRUE,policyReadGuard(session.f.jdbc,image,sample.sampledAt(),sample.validUntil(),sample.backendPid(),sample.transactionId()));
+                    status.setRollbackOnly();return null;
+                });
+            }
+        }
+    }
+
+    @Test void currentSqlGuardRejectsForgedCountPageRowsPinsAndSelectors() throws Exception {
+        var p=projection();commitCreate(p);
+        for(String mutation:List.of(
+                "jsonb_set(?::jsonb,'{total}','0'::jsonb)",
+                "jsonb_set(?::jsonb,'{page}','[]'::jsonb)",
+                "jsonb_set(?::jsonb,'{rows}','[]'::jsonb)",
+                "jsonb_set(?::jsonb,'{rows,0,binding,company_party_id}',to_jsonb('foreign'::text))",
+                "jsonb_set(?::jsonb,'{scope,bindingHead,generation}','999'::jsonb)",
+                "jsonb_set(?::jsonb,'{selector,unit}',to_jsonb('foreign'::text))",
+                "?::jsonb||jsonb_build_object('unexpected',true)",
+                "jsonb_set(?::jsonb,'{selector,page}','1.0'::jsonb)")) {
+            try(var session=new FinalPolicySession(currentQuery(null,p.unit(),0,10))) {
+                session.f.tx.execute(status->{
+                    session.prepare();String forged=session.f.jdbc.queryForObject("SELECT ("+mutation+")::text",String.class,frozenJournalImage(session));
+                    var sample=session.f.identity.contribute(session.f.nativeTicket);
+                    assertThrows(org.springframework.dao.DataAccessException.class,()->policyReadGuard(session.f.jdbc,forged,
+                            sample.sampledAt(),sample.validUntil(),sample.backendPid(),sample.transactionId()));
+                    status.setRollbackOnly();return null;
+                });
+            }
+        }
+    }
+
+    @Test void currentSqlGuardRejectsExpiredWindowsWrongCoordinatesAndChangedDatabaseRows() throws Exception {
+        var p=projection();commitCreate(p);
+        for(int variant=0;variant<4;variant++) {
+            final int attack=variant;
+            try(var session=new FinalPolicySession(currentQuery(p.employee(),null,0,10))) {
+                session.f.tx.execute(status->{
+                    session.prepare();String image=frozenJournalImage(session);var sample=session.f.identity.contribute(session.f.nativeTicket);
+                    if(attack==3)session.f.jdbc.update("UPDATE public.hidra_org_employee_assignment SET appointment_version=appointment_version+1,last_event_id=?::uuid WHERE id=?",UUID.randomUUID(),p.id());
+                    Instant start=attack==0?Instant.now().minusSeconds(3):sample.sampledAt();
+                    Instant until=attack==0?Instant.now().minusSeconds(1):sample.validUntil();
+                    assertThrows(org.springframework.dao.DataAccessException.class,()->policyReadGuard(session.f.jdbc,image,start,until,
+                            sample.backendPid()+(attack==1?1:0),sample.transactionId()+(attack==2?1:0)));
+                    status.setRollbackOnly();return null;
+                });
+            }
+        }
+    }
+
+    @Test void currentSqlPageUsesStableTiesAndCountsRowsOutsideTheSelectedPage() throws Exception {
+        var p=projection();var other=peer(p);
+        try(var c=projectionTransaction()) {
+            var first=completeCreate(c,p);var second=completeCreate(c,other);c.commit();
+            historyFixtureEvents.add(first);historyFixtureEvents.add(second);
+        }
+        var q=currentQuery(p.employee(),null,0,1);
+        try(var session=new FinalPolicySession(q)) {
+            session.f.tx.execute(status->{
+                session.prepare();var page=(dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.CurrentPage)
+                        session.invoke("currentAssignments",session.read);
+                assertEquals(2,page.totalElements());assertEquals(1,page.entries().size());assertTrue(page.hasNext());
+                assertEquals(java.util.stream.Stream.of(p.id(),other.id()).sorted().findFirst().orElseThrow(),page.entries().get(0).assignmentId());
+                status.setRollbackOnly();return null;
+            });
+        }
+    }
+
+
 }

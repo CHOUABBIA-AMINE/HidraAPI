@@ -28626,6 +28626,78 @@ remains PARTIAL/IN_PROGRESS;HAPI-590 remains PARTIAL/BLOCKED. All172 migrations,
 generated artifacts,public/legacy activation and deferred simulation/OT/release/
 deployment gates remain unchanged.
 
+### 2026-10-25 — HAPI-778 Full882 fixture maintenance isolation before next qualification
+
+Owner Next refreshes main8399196c69937270613101af221ad4ff7d3162a1,
+parent59f367991af9c7d946212a4fb7ef3c520daf6f88,
+tree6b73452cdf968cdad7b8c0b871b78a1bbcb5f210.
+[Full882](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40163214267)
+FAILED only PostgreSQL shard1 and the aggregate. Fast191,Docs572,unit/architecture,
+static,API/dictionary and six other PostgreSQL shards PASSED. The new bounded
+startup policy and ordinary500ms isolation unit coverage passed in their lanes.
+Do not advance to contention qualification while this prerequisite run fails.
+
+**Recovered complete-call measurements.** The genuine native/private-publisher
+lifecycle case completed successfully under the explicit synthetic10000ms work
+ceiling: CREATE2589095930ns,CORRECT2026632360ns,TRANSFER2577360465ns,
+END1944644568ns,REPLAY1232712882ns. Its scoped reads,observed-commit and immutable
+receipt/event/proof assertions passed. The separate actual managed-flush fault
+case also passed its flush-invocation and rollback assertions. These are one
+hosted synthetic sample per measured operation,including preparation and observed
+commit;they are not work-only duration,p95,throughput,lock hold or a qualified
+operating budget. Defaults remain500 and no industrial/operational acceptance
+is established by this wider-profile success.
+
+The64-case suite has zero assertion failures and one fixture error:
+callerConsumedPartyScalarCannotReplaceTheStorageOwnedOneUseRead fails before its
+test body,in fixture(false)'s configuration binding activation. PostgreSQL55P03
+identifies public.hidra_org_appointment_configuration_event under the existing
+configuration function's SHARE ROW EXCLUSIVE MODE NOWAIT lock. The losing setup
+did not reach the Party one-use assertion. Its competing holder was not captured.
+Do not claim the test passed or attribute the holder conclusively to autovacuum.
+
+**Bounded fixture correction.** This class owns its PostgreSQL16 Testcontainer
+and churns configuration-event records across repeated fixtures. Ordinary
+automatic maintenance is a plausible competing writer/maintenance source,as in
+the existing protected-operation disposable-fixture isolation precedent. Start
+only this private container with autovacuum=off and assert SHOW autovacuum=off
+during bootstrap. This isolates explicit-writer tests from ordinary automatic
+maintenance;it is not production configuration or proof of the precise holder,
+and it does not claim PostgreSQL wraparound-safety maintenance is disabled.
+
+Preserve the configuration functions,NOWAIT,all explicit concurrent-writer tests,
+native/Party/storage checks and all64 case identities. If fixture activation
+still raises55P03,after its connection closes/rolls back,take a fresh read-only
+snapshot of at most32 locks on that exact relation,with a two-second JDBC query
+timeout. Retain only PID,backend type,mode and granted status,no query text,
+credentials or protected business payload. Attach it as suppressed diagnostic
+evidence and rethrow the same original exception. A post-rollback snapshot may
+miss an already completed holder;absence is not proof of no earlier contention.
+There is no retry,SQLSTATE-specific recovery,partial continuation,sleep,extra
+grant,timeout widening or silent fixture repair. Diagnostic failure cannot
+replace the original test error.
+
+Existing B3 message remains
+`feat(organization): persist protected appointment lifecycle and history`.
+Exactly three MODIFY,zero CREATE/DELETE:
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java
+- .github/ci-test-inventory.json,only that suite's source SHA256
+- this append-only HAPI-778 evidence in doc/roadmap/TASKS_HPS-003.md
+
+Available32 inventory-validator and19 documentation-validator self-tests PASS.
+Prior64 cases/assertions and exact10000ms qualification property,production
+defaults500/secondary timeouts,caller selection,all172 migrations,source/SQL/
+catalog/function pins,generated artifacts and seven shards are unchanged.
+Source hash,one-entry inventory diff,append-only record,three-path scope and
+whitespace are checked. No local Java21/JUnit/PostgreSQL or new runtime pass is
+claimed or provisioned. Publish expected8399196 guarded direct main,verify exact
+parent/tree/message/three blobs,confirm applicable exact-SHA CI creation/queue/
+start and STOP. HAPI-778 remains PARTIAL/IN_PROGRESS;HAPI-590 remains PARTIAL/
+BLOCKED. After corrected hosted feedback,next remains the registered complete-
+workflow evidence review and actual contention/revocation qualification before
+choosing an operating budget or advancing remaining B3 integration/artifact/
+acceptance. No public activation,release,deployment,simulation or OT action.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

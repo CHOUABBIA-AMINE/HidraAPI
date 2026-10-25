@@ -82,7 +82,9 @@ import tools.jackson.databind.json.JsonMapper;
 @org.springframework.test.context.ActiveProfiles("test")
 @org.springframework.test.annotation.DirtiesContext(classMode=org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_CLASS)
 class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
-    @Container static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:16");
+    // Isolate explicit-writer tests from ordinary background maintenance in this disposable database.
+    @Container static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:16")
+            .withCommand("postgres","-c","autovacuum=off");
     private static final String PASSWORD="disposable-classification-fixture", CONFIG="classification_config";
     private static final String RUNTIME_APP="appointment_runtime_app", RUNTIME_PUBLISHER="appointment_runtime_publisher";
     @org.springframework.beans.factory.annotation.Autowired JdbcTemplate runtimeJdbc;
@@ -102,6 +104,7 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         if(!POSTGRES.isRunning())POSTGRES.start();
         Flyway.configure().dataSource(POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword()).load().migrate();
         var admin=new JdbcTemplate(new DriverManagerDataSource(POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword()));
+        assertEquals("off",admin.queryForObject("SHOW autovacuum",String.class));
         admin.execute("REVOKE CREATE ON SCHEMA public FROM PUBLIC");
         for(var role:List.of(RUNTIME_APP,RUNTIME_PUBLISHER)) {
             admin.execute("CREATE ROLE "+role+" LOGIN PASSWORD '"+PASSWORD+"'");
@@ -324,9 +327,31 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
             config.setAutoCommit(false);
             for(var unit:f.units())scalar(config,"SELECT public.hidra_org_activate_appointment_binding(?,?,?,0)",unit,unit,f.company());
             scalar(config,"SELECT public.hidra_org_activate_appointment_policy(?,?,0,?::jsonb)",f.policy(),f.company(),policy());config.commit();
+        } catch(SQLException failure) {
+            if("55P03".equals(failure.getSQLState()))describeFixtureConfigurationLocks(failure);
+            throw failure; // Diagnostic only: never retry, continue or relabel failed fixture setup.
         }
         if(seeded)seedCreate(f,null);
         return f;
+    }
+
+    /** Bounded post-failure observation after the fixture connection closed/rolled back. */
+    private void describeFixtureConfigurationLocks(SQLException original) {
+        try(var connection=owner();var statement=connection.prepareStatement("""
+                SELECT l.pid,COALESCE(a.backend_type,'unavailable'),l.mode,l.granted
+                  FROM pg_catalog.pg_locks l
+                  LEFT JOIN pg_catalog.pg_stat_activity a ON a.pid=l.pid
+                 WHERE l.locktype='relation'
+                   AND l.relation='public.hidra_org_appointment_configuration_event'::regclass
+                 ORDER BY l.pid,l.mode LIMIT 32
+                """)) {
+            statement.setQueryTimeout(2);
+            var observed=new java.util.ArrayList<String>();
+            try(var rows=statement.executeQuery()) {
+                while(rows.next())observed.add(rows.getInt(1)+":"+rows.getString(2)+":"+rows.getString(3)+":"+rows.getBoolean(4));
+            }
+            original.addSuppressed(new IllegalStateException("Fixture configuration locks after rollback: "+observed));
+        }catch(Exception diagnosticFailure){if(diagnosticFailure!=original)original.addSuppressed(diagnosticFailure);}
     }
 
     private void seedCreate(Fixture f,Instant end) throws Exception {

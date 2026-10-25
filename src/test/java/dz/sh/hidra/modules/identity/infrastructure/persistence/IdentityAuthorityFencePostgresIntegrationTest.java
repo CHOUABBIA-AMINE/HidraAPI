@@ -1558,8 +1558,9 @@ class IdentityAuthorityFencePostgresIntegrationTest {
                 jdbc.execute("ROLLBACK TO SAVEPOINT before_required_lock");
                 assertThatThrownBy(()->fence.requireCurrent(admission))
                         .as("Missing retained lock: %s",missing.relation())
-                        .isInstanceOf(IllegalStateException.class)
-                        .hasMessageContaining("Changed physical admission");
+                        .isInstanceOf(org.springframework.dao.InvalidDataAccessApiUsageException.class)
+                        .hasRootCauseInstanceOf(IllegalStateException.class)
+                        .hasRootCauseMessage("Changed physical admission");
                 status.setRollbackOnly();
             });
         }

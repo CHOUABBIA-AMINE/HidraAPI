@@ -28344,6 +28344,61 @@ HAPI-590 remains PARTIAL/BLOCKED. No migration,deadline,NOWAIT,shard,source pin,
 generated artifact,public/legacy activation,release,deployment,simulation or OT
 change is authorized. Next remains repair/qualification of B3's actual runtime.
 
+### 2026-10-25 — HAPI-778 Full878 translated lock-loss regression repair
+
+Owner Fail refreshes main4d88547d3d92fd92d5b3c0b4edff2bf420897b80,
+parent b10f5917b5da074c74be630aa862bc28921e4d0d,
+tree bdca1138680b0f137beb8f021f1408a3c8019c0a.
+[Full878](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40157753653)
+FAILED PostgreSQL shards1/5 and their aggregate. Fast187,Docs568,unit/architecture,
+static,API/dictionary and the other five PostgreSQL shards PASSED.
+
+Shard5 executed250 cases with one failure in the newly added
+integratedFenceRejectsLossOfEachRequiredLock. The first missing relation,
+public.hidra_identity_attribute_definition,was correctly rejected with
+InvalidDataAccessApiUsageException: Changed physical admission. The assertion
+incorrectly demanded a raw IllegalStateException across the proxied Repository
+boundary. Spring's persistence exception translation wraps that owner exception.
+Correct the assertion to require the observed InvalidDataAccessApiUsageException,
+an IllegalStateException root cause and the exact original rejection message.
+Preserve all24 lock-removal iterations,complete-admission positive checks,
+savepoint release,all original13 cases and the added case's identity. Only the
+first iteration's rejection was demonstrated before this assertion failed;
+the remaining23 are pending hosted execution. Production rejection is unchanged.
+
+Shard1 ran all64 concurrency cases and still fails the genuine LOCAL lifecycle
+before provisional DML on the aggregate500ms budget;managed-flush injection cannot
+reach its intended flush. Latest inclusive acquireWrite1459ms and following
+persistProvisional905ms include requireCurrentWrite676ms and provisional
+preparation229ms. Native-current88ms,storage-current121ms,classification232ms
+and mutation preparation228ms are inclusive boundary timings. The native query
+consolidation did not establish timing acceptance;cross-run measurements cannot
+isolate its effect. This test-assertion repair does not resolve that independent
+runtime gate. Hikari connection-refused diagnostics also appear in shard5 logs;
+its recorded test failure is the exception-type assertion,not a passing claim
+about every background connection lifecycle.
+
+Continue the approved HAPI-778 message
+`feat(organization): persist protected appointment lifecycle and history`.
+Exactly three MODIFY,zero CREATE/DELETE,within the approved native repair scope:
+- src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/IdentityAuthorityFencePostgresIntegrationTest.java
+- .github/ci-test-inventory.json,only that suite's source SHA256
+- this append-only HAPI-778 evidence in doc/roadmap/TASKS_HPS-003.md
+
+Local32 inventory-validator and19 documentation-validator self-tests PASSED.
+Exact one-entry inventory diff,all14 case identities,three-path scope,unchanged
+production code,append-only evidence,source hashes and changed-line whitespace
+are checked. No local Java21/JUnit/PostgreSQL execution or performance pass is
+claimed;the hosted workflows remain required. Preserve all172 migrations,
+24 native fences,source/function/catalog pins,500ms aggregate/250ms lock budgets,
+NOWAIT,seven shards,generated artifacts and public/legacy activation gates.
+HAPI-778 remains PARTIAL/IN_PROGRESS;HAPI-590 remains PARTIAL/BLOCKED. Publish
+expected4d88547 guarded direct main,verify exact parent/tree/message/three blobs,
+confirm applicable exact-SHA CI creation/queue/start and STOP. Next remains
+HAPI-778 B3 runtime diagnosis/repair and actual managed-flush qualification
+before artifact/final acceptance or public/legacy integration. No release,
+deployment,simulation or OT action.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

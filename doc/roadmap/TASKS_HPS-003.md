@@ -30645,6 +30645,80 @@ HAPI-590 remains independently blocked; no release/deployment or industrial
 acceptance is selected.
 
 
+### 2026-10-25 — HAPI-778 Full898 corrected generated contract reconciliation
+
+Owner Fail refreshes main `bc71df4d1989c79f20b65f623ace27795a45c1cc`,
+parent `7716861d4377edc12c18e28452e9e165680e5376`,
+tree `006ce56d1f48ee334921438c98db8629ca46aa03`.
+[Full898](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40230542373)
+FAILED at the expected canonical snapshot equality, with the aggregate failing
+consequentially. All seven PostgreSQL shards, Java21 unit/architecture and
+static validation succeeded; Fast206 and Docs590 succeeded. These are observed
+hosted workflow/job conclusions, not a complete independent raw-case re-audit
+or final HAPI-778 acceptance.
+
+Execute the already registered reconciliation message
+`docs(organization): reconcile appointment API and catalog artifacts`.
+API job121281101798 successfully built the actual source and generated its
+contract at step9 before the expected old-snapshot mismatch. Its retained
+diagnostic artifact12613405342, run40230542373 attempt1, contains the actual
+`openapi/hidra-api.json`. Downloaded ZIP SHA256
+`1d95c3012f1c4e09ff758b574a6d5e0061e3aba6f06c11948312284ad785393e`
+matches both GitHub's artifact digest and upload log. Member SHA256
+`8b04e5ad69ba22ae5889d5aa3c17095f1382565d567f2b3630d5fe29d25ac1f8`;
+source stamp is the exact bc71df4d runtime.
+
+The actual generated delta from the previous canonical object contains exactly
+two locations: its generator stamp and removal of the legacy
+AssignEmployeeRequest required array. This is now captured Springdoc output,
+not the earlier scratch projection. Every path, operation, other schema,
+property, security declaration and array order is retained. Reconstruct the
+snapshot solely by sorted compact JSON serialization plus one newline.
+Canonical SHA256
+`a79f46ba93b2794da347c6ce9dad8b1159adbd1291f5e022cd2634df0eae6229`;
+counts remain265 paths,287 operations,279 schemas.
+
+Use the actual compatibility base, not an assumed immediate parent.
+The previously captured `openapi/hidra-api-base.json` and
+base-provenance.txt from Full897 artifact12612134364 identify
+`50c86303ba5ed2174ef0183704b260370026a860`, successful Full894
+run40218700192. The downloaded base-containing ZIP was verified as
+`839cc2615414327eb4d5557ae0d17680a332cb2634a54e8d67a6fd50666853fc`.
+Run the unchanged repository comparator against that real base and the actual
+Full898 output: PASS, no supported breaking changes detected. This is a local
+comparison of two captured runtime contracts, not a claim that Full898 reached
+its hosted compatibility step, and not complete semantic/industrial API proof.
+It supersedes the earlier projection-only disposition with actual generation.
+
+Exact scope: zero CREATE / three MODIFY / zero DELETE:
+- doc/api/openapi.yaml — exact captured generated object, canonicalized only.
+- .github/documentation-validation.json — only openapi counts/digest/source/provenance; retain prior provenance and truthful failed aggregate conclusions.
+- doc/roadmap/TASKS_HPS-003.md — only this inserted HAPI-778 evidence.
+
+Actual validation: downloaded ZIP digest verification; exact generator stamp,
+full-object delta and serialization/hash/count checks; all local references
+and representative security declarations; strict runtime snapshot equality PASS;
+all10 existing snapshot-validator self-tests PASS; unchanged supported comparator
+against actual Full894 base PASS. Preserve every validator/workflow/source/test/
+inventory/SQL/JPA/dictionary blob and fixed registry status. No local Maven,
+Java21/Spring runtime or PostgreSQL suite was run for this artifact-only stage.
+
+Full897 previously reached successful dictionary capture before its compatibility
+failure. Full898 stopped before that capture. No physical source changed in the
+annotation repair or this reconciliation, so preserve the existing captured
+dictionary and require normal same-run actual catalog/dictionary verification
+again on the new head; do not invent physical metadata.
+
+Publish one bounded reconciliation under expected bc71df4d lease, verify exact
+one-parent/tree/three-file scope, confirm applicable exact-SHA Full/Docs and
+Fast when selected creation/queue/start, then STOP without waiting.
+Full-gate success remains pending the new run. HAPI-778 stays
+PARTIAL/IN_PROGRESS until separately selected case-level acceptance using
+`docs(organization): record protected appointment lifecycle acceptance`;
+HAPI-590 remains independently blocked. No release/deployment, production data
+or industrial acceptance is selected; deferred simulation direction is unchanged.
+
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

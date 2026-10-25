@@ -21,9 +21,11 @@ package dz.sh.hidra.platform.configuration;
 
 import org.springframework.core.env.Environment;
 
-/** Defaults preserve the accepted shared limit; wider appointment values require qualification. */
+/** Finite development appointment cap; all other protected operations retain their shared limit. */
 public record ProtectedExecutionBudgetProperties(long appointmentWorkBudgetMillis) {
     public static final long STANDARD_WORK_BUDGET_MILLIS=500;
+    // Development software work cap, not an HTTP latency target or industrial operating SLA.
+    public static final long DEFAULT_APPOINTMENT_WORK_BUDGET_MILLIS=7_500;
     // Finite development qualification ceiling, not an accepted operational latency target.
     public static final long MAX_WORK_BUDGET_MILLIS=10_000;
     public static final String APPOINTMENT_PROPERTY=
@@ -34,11 +36,11 @@ public record ProtectedExecutionBudgetProperties(long appointmentWorkBudgetMilli
             throw new IllegalArgumentException("Protected appointment work budget must be between 1 and 10000 milliseconds");
     }
     public static ProtectedExecutionBudgetProperties defaults() {
-        return new ProtectedExecutionBudgetProperties(STANDARD_WORK_BUDGET_MILLIS);
+        return new ProtectedExecutionBudgetProperties(DEFAULT_APPOINTMENT_WORK_BUDGET_MILLIS);
     }
     public static ProtectedExecutionBudgetProperties from(Environment environment) {
         return new ProtectedExecutionBudgetProperties(environment.getProperty(
-                APPOINTMENT_PROPERTY,Long.class,STANDARD_WORK_BUDGET_MILLIS));
+                APPOINTMENT_PROPERTY,Long.class,DEFAULT_APPOINTMENT_WORK_BUDGET_MILLIS));
     }
     public long appointmentWorkBudgetNanos() { return appointmentWorkBudgetMillis*1_000_000L; }
 }

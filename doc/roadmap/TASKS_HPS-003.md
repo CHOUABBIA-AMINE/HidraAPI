@@ -29319,6 +29319,153 @@ latencies and regressions before the bounded development timing-policy decision;
 repair failures first. HAPI-778 remains PARTIAL/IN_PROGRESS;HAPI-590 independently
 PARTIAL/BLOCKED. No industrial or deployment acceptance is claimed.
 
+
+### 2026-10-25 — HAPI-778 measured development appointment work-cap selection
+
+Owner Next refreshes main e5d1b1f887d117362f85f74c54ab85ce546f99e8,
+parentbe2074e85a3eaf515481f028ead85b49d79119f5,
+tree16829e8076e571028634e13b46190ced5d96e9a0.
+[Full887](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40184243431),
+[Fast196](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40184243446)
+and [Docs578](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40184243429)
+all succeeded. All required lanes and seven PostgreSQL shards passed;fallback
+Maven was skipped,not independently executed. The consolidated reader's16 unit
+cases,15 native-fence PostgreSQL cases including24 reader lock-loss iterations,
+six source-guardrail cases and all68 appointment concurrency cases passed.
+No qualified-family/source-pin regression is observed in this exact run.
+
+**Recovered counts and complete calls.** Shard1 job121141542306 passed193 cases,
+16 classes,zero failures/errors/skips. The passive UNCOORDINATED trace reports:
+- CREATE4376904817ns,8855 intercepted publisher executions,336 qualified fence checks.
+- CORRECT3684714671ns,7695 executions,324 checks.
+- TRANSFER4728097572ns,9957 executions,448 checks.
+- END3662164038ns,7695 executions,324 checks.
+- REPLAY2249553979ns,4705 executions,198 checks.
+
+Each check replaced three adjacent user queries with one,so CREATE avoids672
+user queries and TRANSFER896 by the source-level count,plus their corresponding
+participation probes. This is not an old/new measured wire-query comparison.
+Intercepted counts include physical participation probes,exclude ordinary-login
+work and raw fault reads,and are not the historical1998 pre-write user counter.
+Remaining thousands of executions are an explicit efficiency limitation,not
+silently declared eliminated. Hosted runner/data/order variation prevents a
+controlled percentage-speedup or percentile claim from these samples.
+
+The same run's actual expiry fault still reached P0001,rolled back and left a
+conservative2167108795ns of its10000ms qualification budget at guard dispatch.
+Coordinated winner calls completed around4.47–4.50seconds;the competing request
+rejected in17649546ns,the attempted authority writer failed55P03 after150880930ns,
+and both committed-revocation orderings denied without effects. Coarse native
+relation fences still serialize protected writers;this is not row-level
+throughput or proof of immediate revocation while another operation is fenced.
+
+**Selected development software policy.** Keep ordinary protected execution
+and every non-appointment approved publication family at500ms. Select7500ms as
+the default work cap only for the existing exact compiled appointment service.
+This is a bounded development software policy,pending this commit's exact-SHA
+runtime acceptance,not a production/SITE acceptance,HTTP response deadline,
+hard wall-clock cancellation guarantee or industrial SLA. It is not a new
+authorization lifetime. The actual native earliest boundary and final database
+clock guard always win,even when work time remains.
+
+Basis:the latest complete ordinary samples span2.25–4.73seconds;the largest
+recorded earlier ordinary sample is5.623307139seconds in Full884. A7.5second
+cap provides about1.88seconds above that observed maximum,while staying below
+the10second development qualification ceiling. This margin is an explicit
+engineering choice for the tested synthetic workload,not a statistical tail
+bound or a claim that larger workloads cannot reject. Selection uses genuine
+complete calls,contention/revocation outcomes,physical rollback,actual expiry
+and the query reduction,not merely a green positive test. Further deployment
+load/capacity and operating policy validation remain separate.
+
+The previous500ms appointment default is superseded only by this narrow
+owner-approved timing-policy continuation. No silent fallback to10000ms or
+automatic ceiling increase is allowed. Preserve the server property's integer
+1..10000 range,startup rejection of malformed/invalid values and immutable
+snapshot per physical scope. Explicit server configuration,including500ms,
+still binds exactly. Request data cannot choose a budget,profile,route,grant
+or caller. No dynamic mid-flight adjustment or public numeric execute overload
+is introduced. All executor work checkpoints,250ms lock,750ms statement and
+1000ms idle bounds,NOWAIT and commit-outcome rules stay unchanged.
+
+**Concrete runtime qualification of the selected cap.** Add
+DEFAULT_APPOINTMENT_WORK_BUDGET_MILLIS=7500 to the existing immutable properties.
+defaults() and missing-environment binding select it. The existing four property
+test identities remain:the default case now checks shared500 independently from
+appointment7500,exact nanoseconds and equality of both default factories;the
+explicit-value case additionally covers7500. Invalid and malformed cases remain.
+
+The existing PostgreSQL class's Spring context retains10000ms ONLY as the wider
+native-expiry qualification executor. Its ordinary runtimeService factory now
+constructs a real executor from the actual Spring ProtectedJpaTransactionManager,
+the same protected datasource/router and immutable production defaults. The
+actual compiled service/coordinator/repository receive that same executor.
+Thus genuine lifecycle,replay,scoped reads,managed-flush rollback,denial and
+contention/revocation run with7500ms,without duplicating the full Spring context.
+No native issuer,owner adapter,physical transaction,datasource or security
+callback is mocked. Properties tests prove defaults equal missing startup binding.
+
+Only the original native-expiry fault explicitly passes the injected10000ms
+executor;it retains the original eight-second native grant deadline,one actual
+P0001 guard,remaining-budget and zero-effects assertions. Its trace explicitly
+reports10000. Ordinary traces report7500,with revocation denial upper-bound
+assertions tightened to their actual trace cap. All68 original case identities
+and their security assertions remain;this is not a new per-request profile API.
+
+Add one genuine PostgreSQL case,
+genuineDevelopmentWorkCapRejectsAfterFlushWithoutWaitingForNativeExpiry.
+It uses7500ms and the actual native/Party/storage admission and real managed
+flush. A bounded test-only flush callback paces short Boolean pg_sleep reads
+until50ms beyond first successfully observed fence completion plus7500ms.
+The actual work interval starts earlier,so its budget must be spent. Every
+individual statement remains under the unchanged statement/idle bounds;there
+is no SQL after a final guard. The actual executor checkpoint must reject with
+its aggregate7500ms cause,REJECTED_BEFORE_COMMIT,one reached flush,physical
+rollback,no final guard,no commit and zero projection/event/receipt/proof/key
+effects. A read of the actual provisional event on the same physical connection
+requires its native/operation window still live immediately before flush returns;
+an independent post-rollback read also requires the actor's actual grants still live. A failure before flush,expiry P0001,another budget,missing cause,
+partial effect or successful operation cannot satisfy the case. The400-read
+loop is bounded and never retries the protected operation.
+
+The two complementary active faults now prove different boundaries:work-cap
+exhaustion with still-live grants at7500ms;actual native expiry with work time
+remaining under the separately identified10000ms qualification profile.
+Their injected durations remain excluded from ordinary latency evidence.
+No operating SLA is implied by operationallyAccepted=false telemetry;the chosen
+development software cap and industrial performance acceptance remain distinct.
+
+**One complete B3 timing-policy commit.** Retain registered message
+`feat(organization): persist protected appointment lifecycle and history`.
+Exactly five MODIFY,zero CREATE/DELETE:
+- src/main/java/dz/sh/hidra/platform/configuration/ProtectedExecutionBudgetProperties.java
+- src/test/java/dz/sh/hidra/platform/configuration/ProtectedExecutionBudgetPropertiesTest.java
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java
+- .github/ci-test-inventory.json,only those two suite entries' actual member/source hashes
+- this append-only HAPI-778 evidence in doc/roadmap/TASKS_HPS-003.md
+
+Four property cases remain;appointment cases68->69. Production executor,
+caller selection,reader and its guardrail pin,Identity/Party/Organization owner
+implementations,all172 migrations,SQL/catalog/function/source pins,other suite
+membership/weights,seven shards,generated artifacts,public/legacy activation,
+release/deployment/simulation and OT gates are unchanged. HAPI-778 remains
+PARTIAL/IN_PROGRESS;HAPI-590 independently PARTIAL/BLOCKED.
+
+Available32 inventory-validator and19 documentation-validator self-tests pass.
+Three changed Java files parse with the installed Java17 compiler module,
+syntax only;no local Java21 type/JUnit/PostgreSQL pass or full environment is
+claimed/provisioned. Fresh baseline blobs,new source hashes,all old identities,
+two-entry inventory diff,unchanged ordinary500/compiled caller selection,
+explicit7500/10000 test routing,append-only record,five-path scope and whitespace
+are checked. Publish expected-e5d1b1f guarded direct main,verify exact parent/tree/
+message/five blobs/scope,confirm applicable exact-SHA Full/Fast/Docs creation/
+queue/start and STOP. If exact-SHA runtime acceptance succeeds,the next selected
+work is the already registered consolidated B3 non-LOCAL/application/REST/legacy
+delivery,without another generic preflight or optional optimization checkpoint.
+Retain the residual SQL-efficiency limitation for final acceptance and later
+capacity work;repair actual failures first. No HAPI-778 closure or industrial/
+operating/deployment readiness is asserted by this source submission.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

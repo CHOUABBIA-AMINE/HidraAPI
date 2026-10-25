@@ -21,7 +21,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/configuration/ProtectedExecutionBudgetPropertiesTest.java",
-      "source_sha256": "176d8a7c69ba86616d9f09bc4a40fa0dcfe75e24eed81f2ad09d3d437050b8a3",
+      "source_sha256": "649ccbc08f5d72fea10d67b278d800b92b9714c7150140461fdfb2e2a090797b",
       "supports": []
     },
     {
@@ -9165,7 +9165,8 @@
         "genuineAuthorityFenceBoundsRevocationAttemptThenCommittedRevocationDeniesOldToken",
         "genuineCommittedRevocationBeforeAdmissionRejectsWithoutAnyEffects",
         "genuineCompetingAppointmentRejectsWithoutPartialEffectsWhileWinnerCommits",
-        "genuineNativeExpiryAtFinalDatabaseGuardRollsBackWhileWorkBudgetRemains"
+        "genuineNativeExpiryAtFinalDatabaseGuardRollsBackWhileWorkBudgetRemains",
+        "genuineDevelopmentWorkCapRejectsAfterFlushWithoutWaitingForNativeExpiry"
       ],
       "class": "dz.sh.hidra.modules.organization.infrastructure.persistence.EmployeeAppointmentConcurrencyPostgresIntegrationTest",
       "dependency_reason": "Actual PostgreSQL16 structural cases plus genuine LOCAL native issuance, distinct ordinary/publisher logins, real protected executor, managed JPA flush, lifecycle/replay/scoped reads, native denial and physical rollback. Existing independent HMAC fixtures remain explicitly structural; added runtime duration unmeasured.",
@@ -9173,7 +9174,7 @@
       "lane": "postgres-integration",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java",
-      "source_sha256": "9ada4ff010529b76e2c3283a4a04ea37723c56c5ed32e7433cc8d979a00fcf05",
+      "source_sha256": "1931e2a522eec1bc27f0319ce2a52849215928c29d8d0d58a464838bddd0a371",
       "supports": []
     },
     {

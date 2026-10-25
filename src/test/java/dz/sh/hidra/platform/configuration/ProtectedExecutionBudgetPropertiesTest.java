@@ -26,11 +26,13 @@ import org.springframework.mock.env.MockEnvironment;
 class ProtectedExecutionBudgetPropertiesTest {
     @Test void missingConfigurationPreservesSharedDefault() {
         var value=ProtectedExecutionBudgetProperties.from(new MockEnvironment());
-        assertEquals(500,value.appointmentWorkBudgetMillis());
-        assertEquals(500_000_000L,value.appointmentWorkBudgetNanos());
+        assertEquals(500,ProtectedExecutionBudgetProperties.STANDARD_WORK_BUDGET_MILLIS);
+        assertEquals(7500,value.appointmentWorkBudgetMillis());
+        assertEquals(7_500_000_000L,value.appointmentWorkBudgetNanos());
+        assertEquals(ProtectedExecutionBudgetProperties.defaults(),value);
     }
     @Test void boundedServerConfigurationUsesExactMilliseconds() {
-        for(long millis:new long[]{1,500,3000,10000}) {
+        for(long millis:new long[]{1,500,3000,7500,10000}) {
             var value=ProtectedExecutionBudgetProperties.from(new MockEnvironment().withProperty(
                     ProtectedExecutionBudgetProperties.APPOINTMENT_PROPERTY,Long.toString(millis)));
             assertEquals(millis,value.appointmentWorkBudgetMillis());

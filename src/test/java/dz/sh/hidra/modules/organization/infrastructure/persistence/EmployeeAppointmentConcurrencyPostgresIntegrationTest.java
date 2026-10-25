@@ -90,6 +90,7 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
     @org.springframework.beans.factory.annotation.Autowired JdbcTemplate runtimeJdbc;
     @org.springframework.beans.factory.annotation.Autowired jakarta.persistence.EntityManager runtimeEntityManager;
     @org.springframework.beans.factory.annotation.Autowired ProtectedTransactionExecutor runtimeExecutor;
+    @org.springframework.beans.factory.annotation.Autowired dz.sh.hidra.platform.persistence.ProtectedJpaTransactionManager runtimeTransactionManager;
     @org.springframework.beans.factory.annotation.Autowired OrganizationProtectedAppointmentAuthorizationContract runtimeIdentity;
     @org.springframework.beans.factory.annotation.Autowired OrganizationProtectedPartyEligibilityContract runtimeParty;
     @org.springframework.beans.factory.annotation.Autowired dz.sh.hidra.modules.identity.application.port.in.AuthenticateDirectUserUseCase runtimeLogin;
@@ -191,9 +192,17 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
     }
 
     private dz.sh.hidra.modules.organization.application.service.EmployeeAppointmentLifecycleApplicationService runtimeService(jakarta.persistence.EntityManager em) {
+        // Genuine ordinary calls use the development default; the injected 10s executor is reserved for native-expiry qualification.
+        var developmentExecutor=new ProtectedTransactionExecutor(runtimeTransactionManager,runtimeJdbc.getDataSource(),
+                dz.sh.hidra.platform.configuration.ProtectedExecutionBudgetProperties.defaults());
+        return runtimeService(em,developmentExecutor);
+    }
+
+    private dz.sh.hidra.modules.organization.application.service.EmployeeAppointmentLifecycleApplicationService runtimeService(
+            jakarta.persistence.EntityManager em,ProtectedTransactionExecutor executor) {
         var repository=new JdbcProtectedEmployeeAppointmentRepositoryAdapter(runtimeJdbc,runtimeIdentity,runtimeParty,em);
-        var coordinator=new ProtectedEmployeeAppointmentAdmissionCoordinator(runtimeIdentity,runtimeParty,repository,runtimeExecutor);
-        return new dz.sh.hidra.modules.organization.application.service.EmployeeAppointmentLifecycleApplicationService(coordinator,runtimeExecutor,repository);
+        var coordinator=new ProtectedEmployeeAppointmentAdmissionCoordinator(runtimeIdentity,runtimeParty,repository,executor);
+        return new dz.sh.hidra.modules.organization.application.service.EmployeeAppointmentLifecycleApplicationService(coordinator,executor,repository);
     }
 
     /** Complete synthetic service call, including preparation and observed commit, never HTTP latency. */
@@ -202,7 +211,8 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         try {T result=tracedRuntime("UNCOORDINATED_"+stage,new RuntimeTrace(),action);success=true;return result;}
         finally {System.out.println("HAPI_778_TIMING_QUALIFICATION stage="+stage
                 +" success="+success+" callElapsedNs="+(System.nanoTime()-began)
-                +" workCeilingMs=10000 operationallyAccepted=false");}
+                +" workCeilingMs="+dz.sh.hidra.platform.configuration.ProtectedExecutionBudgetProperties.DEFAULT_APPOINTMENT_WORK_BUDGET_MILLIS
+                +" operationallyAccepted=false");}
     }
 
     @Test void genuineLocalLifecycleReplayAndScopedReadsUsePrivatePublisherAndObservedCommit() throws Exception {
@@ -337,6 +347,9 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         }
     }
     private static final class RuntimeTrace {
+        final long workCeilingMillis;
+        RuntimeTrace(){this(dz.sh.hidra.platform.configuration.ProtectedExecutionBudgetProperties.DEFAULT_APPOINTMENT_WORK_BUDGET_MILLIS);}
+        RuntimeTrace(long workCeilingMillis){this.workCeilingMillis=workCeilingMillis;}
         long began,ended,firstFence,guardBegan,guardClosed,commitBegan,commitEnded,rollbackEnded;
         long interceptedPublisherExecutions,qualifiedFenceChecks;
         Object connection;boolean foreignConnection,success;
@@ -359,7 +372,7 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
                     +" postGuardTailNs="+interval(guardClosed,completion)
                     +" commitCallNs="+interval(commitBegan,commitEnded)
                     +" interceptedPublisherExecutions="+interceptedPublisherExecutions+" qualifiedFenceChecks="+qualifiedFenceChecks
-                    +" workCeilingMs=10000 includesHarnessWork=true operationallyAccepted=false");
+                    +" workCeilingMs="+workCeilingMillis+" includesHarnessWork=true operationallyAccepted=false");
         }
         private static long interval(long start,long end){return start==0||end==0?-1:end-start;}
     }
@@ -537,7 +550,7 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
                     ()->runtimeService(deniedEm).end(endCommand)));
             assertEquals(ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT,failure.outcome());deniedTrace.rejected();
             verify(deniedEm,never()).flush();assertEquals(0,deniedTrace.guardBegan);assertFalse(sqlState(failure,"55P03"));
-            assertTrue(deniedTrace.ended-deniedTrace.began<10_000_000_000L,"Denial must precede the work ceiling");
+            assertTrue(deniedTrace.ended-deniedTrace.began<deniedTrace.workCeilingMillis*1_000_000L,"Denial must precede the work ceiling");
             assertEquals(before,runtimeEffects(f,actor));
             try(var c=owner()){assertEquals(projection,scalar(c,"SELECT encode(sha256(convert_to(to_jsonb(a)::text,'UTF8')),'hex') FROM public.hidra_org_employee_assignment a WHERE id=?",receipt.after().assignmentId()));}
         } finally {go.countDown();stopWorker(worker);}
@@ -553,12 +566,12 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         assertSame(original,SecurityContextHolder.getContext().getAuthentication());
         assertEquals(ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT,failure.outcome());trace.rejected();
         verify(em,never()).flush();assertEquals(0,trace.guardBegan);assertFalse(sqlState(failure,"55P03"));
-        assertTrue(trace.ended-trace.began<10_000_000_000L,"Denial must precede the work ceiling");
+        assertTrue(trace.ended-trace.began<trace.workCeilingMillis*1_000_000L,"Denial must precede the work ceiling");
         assertEquals("0,0,0,0,0",runtimeEffects(f,actor));
     }
 
     @Test void genuineNativeExpiryAtFinalDatabaseGuardRollsBackWhileWorkBudgetRemains() throws Exception {
-        var f=fixture(false);String actor=runtimeActor(f);var command=create(f,id());var trace=new RuntimeTrace();
+        var f=fixture(false);String actor=runtimeActor(f);var command=create(f,id());var trace=new RuntimeTrace(10000);
         Instant until=null;int grants=0;
         // One original persisted deadline for every actual scoped grant, before service preparation.
         try(var c=owner();var statement=c.prepareStatement("""
@@ -575,7 +588,7 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         assertNull(NATIVE_EXPIRY_FAULT.get());NATIVE_EXPIRY_FAULT.set(fault);
         try {
             var failure=assertThrows(ProtectedTransactionExecutor.ExecutionFailure.class,()->tracedRuntime("NATIVE_EXPIRY_FAULT",trace,
-                    ()->runtimeService(em).create(command)));
+                    ()->runtimeService(em,runtimeExecutor).create(command)));
             assertEquals(ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT,failure.outcome());trace.rejected();verify(em).flush();
             assertEquals(1,fault.guardAttempts);assertNotNull(fault.observedExpiry);assertEquals(until,fault.nativeUntil);
             assertFalse(fault.observedExpiry.isBefore(until));assertEquals("P0001",fault.guardSqlState);
@@ -588,6 +601,30 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
                     +" activeFault=true operationallyAccepted=false");
         } finally {NATIVE_EXPIRY_FAULT.remove();}
         assertEquals("0,0,0,0,0",runtimeEffects(f,actor));
+    }
+
+    @Test void genuineDevelopmentWorkCapRejectsAfterFlushWithoutWaitingForNativeExpiry() throws Exception {
+        var f=fixture(false);String actor=runtimeActor(f);var trace=new RuntimeTrace();var em=spy(runtimeEntityManager);
+        doAnswer(call->{
+            runtimeEntityManager.flush();assertTrue(trace.firstFence>0);
+            long target=trace.firstFence+trace.workCeilingMillis*1_000_000L+50_000_000L;
+            for(int attempt=0;attempt<400&&System.nanoTime()<target;attempt++)
+                runtimeJdbc.queryForObject("SELECT true FROM pg_catalog.pg_sleep(0.025)",Boolean.class);
+            assertTrue(System.nanoTime()>=target,"Bounded work-cap fault did not reach its target");
+            assertTrue(Boolean.TRUE.equals(runtimeJdbc.queryForObject(
+                    "SELECT valid_until>clock_timestamp() FROM public.hidra_org_appointment_event WHERE employee_id=?",Boolean.class,f.employee())),
+                    "The actual provisional operation window must still be live at work-cap rejection");
+            return null;
+        }).when(em).flush();
+        var failure=assertThrows(ProtectedTransactionExecutor.ExecutionFailure.class,()->tracedRuntime("DEVELOPMENT_WORK_CAP_FAULT",trace,
+                ()->runtimeService(em).create(create(f,id()))));
+        assertEquals(ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT,failure.outcome());trace.rejected();verify(em).flush();
+        assertInstanceOf(IllegalStateException.class,failure.getCause());
+        assertTrue(failure.getCause().getMessage().contains("aggregate 7500ms work budget"));
+        assertEquals(0,trace.guardBegan);assertEquals("0,0,0,0,0",runtimeEffects(f,actor));
+        try(var c=owner()) {
+            assertEquals("live",scalar(c,"SELECT CASE WHEN bool_and(valid_to>clock_timestamp()) THEN 'live' ELSE 'expired' END FROM public.hidra_identity_user_permission_grant WHERE user_id=?",actor));
+        }
     }
 
     private static final Instant START=Instant.parse("2026-10-20T10:00:00Z");

@@ -1616,11 +1616,17 @@ public class EngineeringNetworkDraftPostgresIntegrationTest {
     @Test void malformedForeignAndUnsupportedPackagesRevealNoOwnerDataAndRetainExactBytes() throws Exception {
         draftActor("LOCAL");UUID draft=surveyDraft();surveyOwner().executeSurvey(surveyWrite(draft,2));
         var pack=exchanges().execute(exchangeCommand(EngineeringLocalExchangeUseCase.Operation.EXPORT,Editor.METADATA,draft,null,null)).bundle();var before=exchangeStorageState();
-        String body=exchangeBody(3,pack),token=rawToken;SecurityContextHolder.clearContext();
+        String body=exchangeBody(3,pack),token=rawToken;
+        String foreignCompany="exchange-foreign-"+id();
+        jdbc.update("INSERT INTO public.hidra_party_party(id,code,party_type_id,legal_name,country_code,status,created_at,updated_at) VALUES(?,?,'k-party-type','Synthetic','DZ','ACTIVE',now(),now())",foreignCompany,foreignCompany);
+        SecurityContextHolder.clearContext();
         http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(exchangeUrl(draft,Editor.METADATA,"/export"))).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isUnauthorized());
-        http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(exchangeUrl(draft,Editor.METADATA,"/export").replace("companyPartyId="+COMPANY,"companyPartyId=foreign-company"))
+        http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(exchangeUrl(draft,Editor.METADATA,"/export").replace("companyPartyId="+COMPANY,"companyPartyId="+foreignCompany))
             .header("Authorization","Bearer "+token)).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isForbidden())
-            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("foreign-company"))));
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString(foreignCompany))));
+        http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(exchangeUrl(draft,Editor.METADATA,"/export").replace("companyPartyId="+COMPANY,"companyPartyId=unavailable-company"))
+            .header("Authorization","Bearer "+token)).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isServiceUnavailable())
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("unavailable-company"))));
         for(String invalid:List.of(body.replace("\"expectedVersion\":3","\"expectedVersion\":3,\"expectedVersion\":3"),body.replace("\"package\":","\"actor\":\"forged\",\"package\":")))
             http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(exchangeUrl(draft,Editor.METADATA,"/imports"))
                 .header("Authorization","Bearer "+token).contentType("application/json").content(invalid)).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isBadRequest());

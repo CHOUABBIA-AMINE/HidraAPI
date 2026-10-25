@@ -6369,6 +6369,19 @@ inventory source hash. Docs596 passed; API generation passed with expected
 canonical drift. Native PostgreSQL lanes remain under review; no acceptance
 is claimed. Continue registered runtime artifact reconciliation separately.
 
+#### HAPI-591 native negative-fixture repair — 2026-10-25
+
+Full902 source a04e7a30b8bf1df4f64037fe7292877cdfe11c64 passes unit/
+architecture, six PostgreSQL shards and static checks; Fast209 and Docs597
+pass. Shard1 executes43 draft cases with one assertion failure: a nonexistent
+company returns UNAVAILABLE503 before authorization is collected. Insert an
+actual active foreign company without an identity grant, retain the403
+assertion, and separately assert nonexistent-company503 and non-disclosure.
+No production/security mapping or acceptable-status-set change. All43 method
+identities and previous assertions remain. Exact scope3 MODIFY: this phase,
+the native fixture and its existing inventory source hash. Snapshot repair
+remains separate. No acceptance is claimed; continue same-turn hosted proof.
+
 <a id="hapi-608"></a>
 ## HAPI-608 — Aggregate typed engineering exchange
 

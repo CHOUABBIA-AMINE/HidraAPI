@@ -6357,6 +6357,18 @@ Continue the owner-authorized same-turn repair/verification sequence without
 claiming acceptance or relaxing any test, native security or artifact gate.
 
 
+#### HAPI-591 executed-test fixture repair — 2026-10-25
+
+Source d46df84fb176547e634250ef420abcce102b0af4: Full901 unit lane
+and Fast208 execute but each report one error in the survey binding test.
+Mockito when(...any()) restubbing invokes the existing answer with a null
+matcher argument before replacement. Use doReturn for the graph/survey
+replacement answers. Preserve all eight method identities and assertions;
+no runtime change. Exact scope3 MODIFY: this phase, that test and its
+inventory source hash. Docs596 passed; API generation passed with expected
+canonical drift. Native PostgreSQL lanes remain under review; no acceptance
+is claimed. Continue registered runtime artifact reconciliation separately.
+
 <a id="hapi-608"></a>
 ## HAPI-608 — Aggregate typed engineering exchange
 

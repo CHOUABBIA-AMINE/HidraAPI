@@ -74,8 +74,8 @@ class EngineeringLocalExchangeApplicationServiceTest {
         var c=command(Operation.IMPORT,Editor.SURVEY,3L);var p=c.bundle();var bad=new EngineeringLocalExchange(p.format(),p.editor(),p.companyPartyId(),p.pipelineSystemId(),p.contextId(),p.draftId(),p.sourceVersion(),p.componentVersion(),p.componentFormat(),p.sha256(),p.payload(),p.branchId(),p.boundGraphVersion(),"0".repeat(64));
         assertThrows(EngineeringLocalExchangeFailure.class,()->service.execute(new Command(c.operation(),c.editor(),c.companyPartyId(),c.pipelineSystemId(),c.draftId(),c.branchId(),null,3L,bad)));
         verifyNoInteractions(surveys);
-        when(graphs.executeGraph(any())).thenReturn(new EngineeringGraphDraftUseCase.Result(draft,3,3L,EngineeringLocalExchangeCodecTest.graphHash(),EngineeringLocalExchangeCodecTest.graph(),List.of()));
-        when(surveys.executeSurvey(any())).thenReturn(new SurveyRouteProfileUseCase.Result(draft,"pipe",4,4L,p.sha256(),3L,p.boundGraphSha256(),EngineeringLocalExchangeCodecTest.survey(),List.of()));
+        doReturn(new EngineeringGraphDraftUseCase.Result(draft,3,3L,EngineeringLocalExchangeCodecTest.graphHash(),EngineeringLocalExchangeCodecTest.graph(),List.of())).when(graphs).executeGraph(any());
+        doReturn(new SurveyRouteProfileUseCase.Result(draft,"pipe",4,4L,p.sha256(),3L,p.boundGraphSha256(),EngineeringLocalExchangeCodecTest.survey(),List.of())).when(surveys).executeSurvey(any());
         var r=service.execute(c);assertEquals(2L,r.bundle().boundGraphVersion().longValue());assertEquals(3L,r.boundGraphVersion().longValue());
     }
     @Test void revocationAndIndeterminateFailureNeverRetryOrReturnSuccess(){

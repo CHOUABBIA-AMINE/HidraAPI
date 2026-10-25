@@ -1555,7 +1555,15 @@ class IdentityAuthorityFencePostgresIntegrationTest {
                 jdbc.execute("SAVEPOINT before_required_lock");
                 var admission=fence.acquireNowait(UUID.randomUUID().toString());
                 fence.requireCurrent(admission);
+                var reader=new dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcProtectedAuthorizationEvidenceReader(jdbc);
+                int actualPid=jdbc.queryForObject("SELECT pg_backend_pid()",Integer.class);
+                long actualXid=jdbc.queryForObject("SELECT txid_current()",Long.class);
+                org.springframework.test.util.ReflectionTestUtils.invokeMethod(reader,"qualifiedPhysicalFences",actualPid,actualXid);
                 jdbc.execute("ROLLBACK TO SAVEPOINT before_required_lock");
+                assertThatThrownBy(()->org.springframework.test.util.ReflectionTestUtils.invokeMethod(reader,"qualifiedPhysicalFences",actualPid,actualXid))
+                        .as("Reader missing retained lock: %s",missing.relation())
+                        .isInstanceOf(IllegalStateException.class)
+                        .hasMessage("Protected authorization evidence is unavailable or corrupt.");
                 assertThatThrownBy(()->fence.requireCurrent(admission))
                         .as("Missing retained lock: %s",missing.relation())
                         .isInstanceOf(org.springframework.dao.InvalidDataAccessApiUsageException.class)
@@ -1564,6 +1572,23 @@ class IdentityAuthorityFencePostgresIntegrationTest {
                 status.setRollbackOnly();
             });
         }
+    }
+
+    @Test void qualifiedReaderPhysicalProbeChecksActualCoordinatesOnEveryInvocation() {
+        var t=new TransactionTemplate(manager);t.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
+        t.executeWithoutResult(status->{
+            fence.acquireNowait(UUID.randomUUID().toString());
+            var reader=new dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcProtectedAuthorizationEvidenceReader(jdbc);
+            int actualPid=jdbc.queryForObject("SELECT pg_backend_pid()",Integer.class);
+            long actualXid=jdbc.queryForObject("SELECT txid_current()",Long.class);
+            org.springframework.test.util.ReflectionTestUtils.invokeMethod(reader,"qualifiedPhysicalFences",actualPid,actualXid);
+            assertThatThrownBy(()->org.springframework.test.util.ReflectionTestUtils.invokeMethod(reader,"qualifiedPhysicalFences",actualPid+1,actualXid))
+                    .isInstanceOf(IllegalStateException.class);
+            assertThatThrownBy(()->org.springframework.test.util.ReflectionTestUtils.invokeMethod(reader,"qualifiedPhysicalFences",actualPid,actualXid+1))
+                    .isInstanceOf(IllegalStateException.class);
+            org.springframework.test.util.ReflectionTestUtils.invokeMethod(reader,"qualifiedPhysicalFences",actualPid,actualXid);
+            status.setRollbackOnly();
+        });
     }
 
 }

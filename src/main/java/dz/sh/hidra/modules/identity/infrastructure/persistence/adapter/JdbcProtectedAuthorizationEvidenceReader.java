@@ -7,7 +7,7 @@
  *
  * @Name        : JdbcProtectedAuthorizationEvidenceReader
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-21
+ * @UpdatedOn   : 2026-10-25
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -84,6 +84,20 @@ public class JdbcProtectedAuthorizationEvidenceReader {
                     + String.join(
                             ",", RELATIONS.stream().map(v -> "'hidra_identity_" + v + "'").toList())
                     + ") ORDER BY 1";
+    /** One fresh lock image per invocation; no context or authority result is cached. */
+    private static final String QUALIFIED_PHYSICAL_FENCES =
+            "WITH identity_claim_locks AS MATERIALIZED ("
+                + " SELECT pid,locktype,granted,relation,mode FROM pg_catalog.pg_locks"
+                + " WHERE pid=pg_catalog.pg_backend_pid() AND granted AND locktype='relation')"
+                + " SELECT pg_catalog.pg_backend_pid()=? AND pg_catalog.txid_current()=?"
+                + " AND current_setting('transaction_isolation')='read committed'"
+                + " AND current_setting('transaction_read_only')='off'"
+                + " AND ARRAY(" + HELD.replace("pg_locks l", "identity_claim_locks l") + ")=ARRAY["
+                + String.join(",", RELATIONS.stream().map(v -> "'" + PREFIX + v + "'").toList()) + "]::text[]"
+                + " AND EXISTS(SELECT 1 FROM identity_claim_locks"
+                + " WHERE relation='public.hidra_identity_external_mapping_generation'::regclass AND mode='AccessShareLock')"
+                + " AND EXISTS(SELECT 1 FROM identity_claim_locks"
+                + " WHERE relation='public.hidra_identity_bound_source_claim_evidence'::regclass AND mode='ShareLock')";
     private static final Set<String> CODES =
             Set.of(
                     "author",
@@ -159,8 +173,7 @@ public class JdbcProtectedAuthorizationEvidenceReader {
             long xid = contribution.transactionId();
             validate(evidence, request, pid, xid, participant.engineeringDraftCredential(credential),
                     participant.organizationCredential(credential));
-            coordinates(pid, xid);
-            heldClaims();
+            qualifiedPhysicalFences(pid, xid);
             OperationAuthenticationBinding original =
                     bindings.findByNativeIssuerAndJti(evidence.issuer(), evidence.jti())
                             .orElseThrow(JdbcProtectedAuthorizationEvidenceReader::invalid);
@@ -202,8 +215,7 @@ public class JdbcProtectedAuthorizationEvidenceReader {
             participant.requireCurrentClaims(credential, request);
             if (selected != null && !selected.equals(catalog.selectVersioned(original.providerId())))
                 throw invalid();
-            coordinates(pid, xid);
-            heldClaims();
+            qualifiedPhysicalFences(pid, xid);
             // The final catalog query and lock checks also cross adapter boundaries.
             // Reconfirm the genuine caller after them, without replaying a consumed handle.
             participant.requireCurrentClaims(credential, request);
@@ -309,19 +321,9 @@ public class JdbcProtectedAuthorizationEvidenceReader {
         }
     }
 
-    private void heldClaims() {
-        if (!RELATIONS.stream().map(PREFIX::concat).toList()
-                    .equals(jdbc.queryForList(HELD, String.class))) throw invalid();
-        if (!Boolean.TRUE.equals(
-                jdbc.queryForObject(
-                        """
-                        SELECT EXISTS (SELECT 1 FROM pg_locks WHERE pid=pg_backend_pid()
-                            AND relation='public.hidra_identity_external_mapping_generation'::regclass
-                            AND granted AND locktype='relation' AND mode='AccessShareLock')
-                         AND EXISTS (SELECT 1 FROM pg_locks WHERE pid=pg_backend_pid()
-                            AND relation='public.hidra_identity_bound_source_claim_evidence'::regclass
-                            AND granted AND locktype='relation' AND mode='ShareLock')
-                        """, Boolean.class))) throw invalid();
+    private void qualifiedPhysicalFences(int pid, long xid) {
+        if (!Boolean.TRUE.equals(jdbc.queryForObject(QUALIFIED_PHYSICAL_FENCES, Boolean.class, pid, xid)))
+            throw invalid();
     }
 
     @Transactional(propagation = Propagation.MANDATORY)

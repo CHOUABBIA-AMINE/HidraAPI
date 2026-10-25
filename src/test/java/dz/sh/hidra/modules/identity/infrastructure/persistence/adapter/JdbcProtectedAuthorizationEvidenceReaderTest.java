@@ -7,7 +7,7 @@
  *
  * @Name        : JdbcProtectedAuthorizationEvidenceReaderTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-21
+ * @UpdatedOn   : 2026-10-25
  *
  * @Type        : Class
  * @Layer       : Identity Test
@@ -246,6 +246,26 @@ class JdbcProtectedAuthorizationEvidenceReaderTest {
 
     private AuthorizationEvidence load() {
         return reader.load(identity, request, 7, 11);
+    }
+
+    @Test void qualifiedPhysicalFenceProbeNeverReusesAPreviousSuccess() {
+        clearInvocations(jdbc);
+        org.springframework.test.util.ReflectionTestUtils.invokeMethod(reader,"qualifiedPhysicalFences",7,11L);
+        coordinates=false;
+        assertThatThrownBy(()->org.springframework.test.util.ReflectionTestUtils.invokeMethod(reader,"qualifiedPhysicalFences",7,11L))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Protected authorization evidence is unavailable or corrupt.").hasNoCause();
+        verify(jdbc,times(2)).queryForObject(anyString(),eq(Boolean.class),eq(7),eq(11L));
+        verifyNoMoreInteractions(jdbc);
+    }
+
+    @Test void qualifiedPhysicalFenceProbeRejectsUnknownOrUnavailableEvidence() {
+        when(jdbc.queryForObject(anyString(),eq(Boolean.class),any(Object[].class))).thenReturn((Boolean)null);
+        assertThatThrownBy(()->org.springframework.test.util.ReflectionTestUtils.invokeMethod(reader,"qualifiedPhysicalFences",7,11L))
+                .isInstanceOf(IllegalStateException.class).hasMessage("Protected authorization evidence is unavailable or corrupt.");
+        when(jdbc.queryForObject(anyString(),eq(Boolean.class),any(Object[].class))).thenThrow(new IllegalArgumentException("synthetic driver failure"));
+        assertThatThrownBy(()->org.springframework.test.util.ReflectionTestUtils.invokeMethod(reader,"qualifiedPhysicalFences",7,11L))
+                .isInstanceOf(IllegalArgumentException.class).hasMessage("synthetic driver failure");
     }
 
     private AuthorizationDecisionValue decision(AuthorizationEvidence e) {

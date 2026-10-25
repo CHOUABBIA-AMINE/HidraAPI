@@ -29176,6 +29176,149 @@ remaining B3 integration/artifact acceptance. HAPI-778 remains PARTIAL/IN_PROGRE
 HAPI-590 stays PARTIAL/BLOCKED. The1998-statement efficiency obligation remains
 separate and open;no industrial/operational acceptance follows from green CI.
 
+
+### 2026-10-25 — HAPI-778 qualified-reader physical/fence query consolidation
+
+Owner Next selects the timing/efficiency continuation from exact main
+be2074e85a3eaf515481f028ead85b49d79119f5,
+parenta09833076506a7055f3b5154c7c7569aea5f699a,
+tree5eb19f55f26e49ff501351030ef4276b0b87e560.
+[Full886](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40181886207),
+[Fast195](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40181886173)
+and [Docs577](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40181886175)
+succeeded. All seven PostgreSQL shards and required lanes passed;the fallback
+Maven job was skipped,not separately executed.
+
+**Native-expiry evidence now executed.** Shard1 job121134482841 passed193 cases
+across16 required classes with zero failures/errors/skips,including all68
+appointment concurrency cases. The new genuine expiry fault reached the unchanged
+real final guard,received P0001 and completed rollback with all required zero-
+effect/one-flush/one-guard/no-commit assertions. Complete failed call7843656323ns;
+89 explicit fault clock reads;injected wait2248849148ns;conservative work budget
+remaining at guard dispatch2174875104ns. This is a passing active-fault security
+case,not an ordinary latency sample or an accepted10000ms operating policy.
+
+The same run's ordinary complete CREATE4956236681ns,CORRECT4249909049ns,
+TRANSFER5534953835ns,END4249949251ns and REPLAY2674480532ns remain synthetic
+individual hosted samples. Coordinated contention/revocation also passed again.
+None is a percentile,capacity distribution or industrial SLA. The measurements
+and native expiry demonstrate why actual authorization validity and the work cap
+must remain separate;they do not make the1998 pre-write user-statement overhead
+acceptable or establish an appropriate operating budget.
+
+**Concrete efficiency finding and unchanged security contract.**
+JdbcProtectedAuthorizationEvidenceReader.loadClaims issues coordinates(pid,xid),
+then heldClaims before owner graph loading,and repeats them after graph loading.
+Each adjacent pair currently performs three user SQL statements:physical
+PID/XID/isolation/read-only equality;the exact ordered22-relation SRE fence list;
+and both companion lock predicates. There is no business callback or owner state
+mutation between these adjacent probes. The public reader invocation,original
+native credential,current-origin/generation checks,per-resource evidence loading
+and final native rechecks remain necessary and are not removed.
+
+Replace only each adjacent trio with one private qualifiedPhysicalFences query.
+A statement-local MATERIALIZED identity_claim_locks image selects this backend's
+granted relation locks once. The exact original HELD subquery,with only its source
+changed to that image,still builds the ordered relation array and compares it to
+the same compiled22-element list. No DISTINCT,count threshold,subset test or
+wildcard changes exact membership/multiplicity. Require the original companion
+AccessShareLock on external_mapping_generation and ShareLock on
+bound_source_claim_evidence. The same scalar statement independently requires
+the original PID,XID,read-committed and writable flags. False,null,missing-lock,
+wrong-mode,wrong-coordinate or unavailable evidence cannot become success.
+
+Both pre-graph and post-graph boundaries execute this fresh query independently;
+one successful invocation never qualifies another. No result,authority,lock image,
+origin,claim generation or clock sample is cached between calls. There are now
+two rather than six boundary statements per qualified resource graph,four fewer
+user statements plus their corresponding protected pre-execution probes. This is
+a source-demonstrated round-trip reduction,not yet a measured end-to-end speedup.
+All other reader bytes apart from its date are inverse-restorable exactly.
+Legacy structural diagnostic load and its old HELD/coordinates checks stay intact.
+The change applies to the shared claim-capable reader used by appointment,
+station,draft and publication families;their full regression suites remain
+mandatory. No new qualified family,caller,credential or public method is added.
+
+**Meaningful negative verification and source pin.** Retain all14 reader unit
+cases and add two actual methods:qualifiedPhysicalFenceProbeNeverReusesAPreviousSuccess
+requires a second fresh query to reject changed physical evidence after an initial
+success;qualifiedPhysicalFenceProbeRejectsUnknownOrUnavailableEvidence rejects
+null and driver failure. These use the private probe only and do not fabricate
+PERMIT or claim PostgreSQL proof.
+
+Retain all14 native-fence PostgreSQL cases. Extend the existing24-iteration
+savepoint lock-loss case to run the reader probe successfully with all locks,
+then require its rejection when each exact required lock has been released,
+before the unchanged native-fence rejection/rollback assertions. Add
+qualifiedReaderPhysicalProbeChecksActualCoordinatesOnEveryInvocation for a real
+complete fence set:valid coordinates succeed,wrong PID and wrong XID reject,
+then original coordinates succeed on a fresh invocation. These direct-owner
+probe cases prove physical predicates only;the genuine68-case application suite
+continues to prove private-publisher/native/Party/storage composition and rollback.
+
+The six-case station guardrail retains its reviewed callers and all four J
+contract/adapter SHA pins. Update only the whole-reader SHA256 and explanatory
+comment for this reviewed consolidation. The new production reader SHA256 is
+0156c2131b4fd4b4caf7af5056109723b071735b09afcb93e1a0988758dec0f2.
+Do not leave a stale source pin or disable the guardrail.
+
+**Measurement feedback in this same implementation commit.** The existing
+appointment driver observer now counts interceptedPublisherExecutions and
+qualifiedFenceChecks per traced call. The former includes intercepted publisher
+Statement execute calls and internal participation probes,not unique SQL,wire
+traffic,ordinary-login work,rows or commits. Explicit active-fault clock queries
+use the raw driver and remain counted separately by the existing fault counter.
+Neither count is directly comparable to the historical1998 userStatements
+diagnostic,which was sampled before the first provisional write and excluded
+internal participation probes.
+
+Existing ordinary measuredRuntime calls now also open a passive trace labeled
+UNCOORDINATED_<operation>,so complete CREATE/CORRECT/TRANSFER/END/REPLAY can report
+the new counts alongside existing timings. These calls add no coordination wait
+or diagnostic SQL. Their observation/printing overhead and runner variation must
+be recorded;unobserved guard intervals remain minus1. Replay uses its existing
+different read guard and is not mislabeled as a measured final write guard.
+All68 actual test bodies,expiry-fault behavior and contention/revocation assertions
+are unchanged. No operating-budget value is increased or accepted by this stage:
+shared default500 and the finite10000ms test qualification profile remain.
+Recover the exact next hosted counts and timings before finalizing that decision.
+
+**Exact B3 scope selected and implemented in one commit.** Continue registered
+message `feat(organization): persist protected appointment lifecycle and history`.
+This source-backed timing/efficiency continuation extends B3 only to the shared
+reader consolidation,its exact negative tests/source pin and passive counters
+below. Seven MODIFY,zero CREATE/DELETE:
+- src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java
+- src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java
+- src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/IdentityAuthorityFencePostgresIntegrationTest.java
+- src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java
+- .github/ci-test-inventory.json,only those four existing suite entries' actual new members/source hashes
+- this append-only HAPI-778 evidence in doc/roadmap/TASKS_HPS-003.md
+
+Native participant/fence,Party and Organization production sources,all172
+migrations,SQL DML/final guard/source/catalog/function pins,caller allowlists,
+native temporal windows,work/250/750/1000ms bounds,NOWAIT,public contracts,
+generated artifacts,inventory weights/lanes,seven shards,frozen registry/status,
+legacy activation,release/deployment/simulation and OT gates remain unchanged.
+Do not infer non-LOCAL application/public/legacy closure from a shared-reader
+optimization;that remains the registered consolidated B3 deliverable.
+
+Available32 inventory-validator and19 documentation-validator self-tests pass.
+All five changed Java files parse with the already installed Java17 compiler
+module,syntax only:there is no Java21 type-resolution/JUnit/PostgreSQL pass
+locally and no full environment is provisioned. Fresh base blobs,new source
+hashes,exact production inverse restoration,four-entry inventory/case changes,
+guardrail's other four pins,retained cases/graph-row budgets,append-only evidence,
+seven-path scope and whitespace are checked. Unit cases14->16,native PG14->15,
+guardrail6 unchanged,appointment68 unchanged. Hosted CI must execute all these
+and the shared-reader families. Publish expected-be2074e guarded direct main,
+verify exact parent/tree/message/seven blobs/scope,confirm applicable exact-SHA
+Full/Fast/Docs creation/queue/start and STOP. Next recover the real counts,
+latencies and regressions before the bounded development timing-policy decision;
+repair failures first. HAPI-778 remains PARTIAL/IN_PROGRESS;HAPI-590 independently
+PARTIAL/BLOCKED. No industrial or deployment acceptance is claimed.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

@@ -199,7 +199,7 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
     /** Complete synthetic service call, including preparation and observed commit, never HTTP latency. */
     private static <T> T measuredRuntime(String stage,java.util.function.Supplier<T> action) {
         long began=System.nanoTime();boolean success=false;
-        try {T result=action.get();success=true;return result;}
+        try {T result=tracedRuntime("UNCOORDINATED_"+stage,new RuntimeTrace(),action);success=true;return result;}
         finally {System.out.println("HAPI_778_TIMING_QUALIFICATION stage="+stage
                 +" success="+success+" callElapsedNs="+(System.nanoTime()-began)
                 +" workCeilingMs=10000 operationallyAccepted=false");}
@@ -338,6 +338,7 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
     }
     private static final class RuntimeTrace {
         long began,ended,firstFence,guardBegan,guardClosed,commitBegan,commitEnded,rollbackEnded;
+        long interceptedPublisherExecutions,qualifiedFenceChecks;
         Object connection;boolean foreignConnection,success;
         void fence(Object physical){
             if(firstFence==0){firstFence=System.nanoTime();connection=physical;}
@@ -357,6 +358,7 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
                     +" guardToCompletionNs="+interval(guardBegan,completion)
                     +" postGuardTailNs="+interval(guardClosed,completion)
                     +" commitCallNs="+interval(commitBegan,commitEnded)
+                    +" interceptedPublisherExecutions="+interceptedPublisherExecutions+" qualifiedFenceChecks="+qualifiedFenceChecks
                     +" workCeilingMs=10000 includesHarnessWork=true operationallyAccepted=false");
         }
         private static long interval(long start,long end){return start==0||end==0?-1:end-start;}
@@ -411,6 +413,10 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
             var trace=RUNTIME_TRACE.get();String name=method.getName();
             String sql=preparedSql!=null?preparedSql:args!=null&&args.length>0&&args[0] instanceof String text?text:null;
             boolean executing=name.startsWith("execute"),guard=sql!=null&&sql.equals(FINAL_SQL);
+            if(trace!=null&&executing) {
+                trace.interceptedPublisherExecutions++;
+                if(sql!=null&&sql.startsWith("WITH identity_claim_locks AS MATERIALIZED"))trace.qualifiedFenceChecks++;
+            }
             var expiry=NATIVE_EXPIRY_FAULT.get();
             if(expiry!=null) {
                 if(guard&&name.startsWith("set"))expiry.binding(args); // Observe only; delegate identical parameters.

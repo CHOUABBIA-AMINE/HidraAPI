@@ -2351,7 +2351,8 @@
         "missingReadOnlyAndWrongIsolationReject",
         "nativeBindingAndSessionWritersAbortSafely",
         "nonOwnerDmlPrivilegesCannotBypassFences",
-        "temporalSyntaxAndOverflowFailuresRemainFailClosed"
+        "temporalSyntaxAndOverflowFailuresRemainFailClosed",
+        "qualifiedReaderPhysicalProbeChecksActualCoordinatesOnEveryInvocation"
       ],
       "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.IdentityAuthorityFencePostgresIntegrationTest",
       "dependency_reason": "051E real PostgreSQL16/Flyway/JPA 22-relation fence and normal-writer proof; local Docker absent, ten cases skipped, not accepted. Zero is an explicitly unmeasured scheduling hint; hosted zero-skip partition/oracle acceptance pending.",
@@ -2359,7 +2360,7 @@
       "lane": "postgres-integration",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/IdentityAuthorityFencePostgresIntegrationTest.java",
-      "source_sha256": "e9cc27f7d10e3fa393cf715be3f61414172e516a450834bed3f86fa085d8a607",
+      "source_sha256": "54ec6be84b461aeac7d602e293b69c58847caae80d419a228b2f4f2d33945f7e",
       "supports": []
     },
     {
@@ -2761,7 +2762,9 @@
         "requiresMatchingPhysicalCoordinatesAndCompleteIdentityFences",
         "requiresWritableReadCommittedParticipation",
         "structuralAppointmentRequestsCannotSelectQualifiedOrganizationFamily",
-        "structuralDiagnosticEvidenceCannotSelectEngineeringDraftFamily"
+        "structuralDiagnosticEvidenceCannotSelectEngineeringDraftFamily",
+        "qualifiedPhysicalFenceProbeNeverReusesAPreviousSuccess",
+        "qualifiedPhysicalFenceProbeRejectsUnknownOrUnavailableEvidence"
       ],
       "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcProtectedAuthorizationEvidenceReaderTest",
       "dependency_reason": "G diagnostic JDBC normalization/transaction checks; mocks and unchanged domain evaluator only",
@@ -2769,7 +2772,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java",
-      "source_sha256": "e22d228859d518448d4a9470f29770669df77e360e127c54d81c88fc2f5d82b6",
+      "source_sha256": "9d7a31d34981081366289bb2ac55cf0e7644a2919143a239ada87934e9802c03",
       "supports": []
     },
     {
@@ -6728,7 +6731,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java",
-      "source_sha256": "48698be9e795f92fdc96ff3670fbaff1ce169550b8f97eab800a223b760862c4",
+      "source_sha256": "9578cfb69578ca739f1e61e7930b211f606f73e096eb68384396f479bfd46872",
       "supports": []
     },
     {
@@ -9170,7 +9173,7 @@
       "lane": "postgres-integration",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java",
-      "source_sha256": "b3415f688624ed693c8f9d58690c34d357a9c869b89ef93ff01dca3b0f6b0cc4",
+      "source_sha256": "9ada4ff010529b76e2c3283a4a04ea37723c56c5ed32e7433cc8d979a00fcf05",
       "supports": []
     },
     {

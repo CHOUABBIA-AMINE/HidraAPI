@@ -9161,7 +9161,8 @@
         "genuineNativeDenialDoesNotCreateProjectionEventReceiptOrKeys",
         "genuineAuthorityFenceBoundsRevocationAttemptThenCommittedRevocationDeniesOldToken",
         "genuineCommittedRevocationBeforeAdmissionRejectsWithoutAnyEffects",
-        "genuineCompetingAppointmentRejectsWithoutPartialEffectsWhileWinnerCommits"
+        "genuineCompetingAppointmentRejectsWithoutPartialEffectsWhileWinnerCommits",
+        "genuineNativeExpiryAtFinalDatabaseGuardRollsBackWhileWorkBudgetRemains"
       ],
       "class": "dz.sh.hidra.modules.organization.infrastructure.persistence.EmployeeAppointmentConcurrencyPostgresIntegrationTest",
       "dependency_reason": "Actual PostgreSQL16 structural cases plus genuine LOCAL native issuance, distinct ordinary/publisher logins, real protected executor, managed JPA flush, lifecycle/replay/scoped reads, native denial and physical rollback. Existing independent HMAC fixtures remain explicitly structural; added runtime duration unmeasured.",
@@ -9169,7 +9170,7 @@
       "lane": "postgres-integration",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java",
-      "source_sha256": "3a5292a3000b8c8a98b53aa5b9d46d55de0886a8a26aae025f78b3c10ad701c1",
+      "source_sha256": "b3415f688624ed693c8f9d58690c34d357a9c869b89ef93ff01dca3b0f6b0cc4",
       "supports": []
     },
     {

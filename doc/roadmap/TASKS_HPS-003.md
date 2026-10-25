@@ -29055,6 +29055,127 @@ first,then resolve the recorded native-expiry seam and remaining B3 acceptance.
 HAPI-778 remains PARTIAL/IN_PROGRESS;HAPI-590 stays PARTIAL/BLOCKED. No operating
 budget or deployment/industrial acceptance is selected by this commit.
 
+
+### 2026-10-25 — HAPI-778 genuine native-expiry fault at the final database guard
+
+Owner Next refreshes main a09833076506a7055f3b5154c7c7569aea5f699a,
+parent1590775b593b4c42c4ca57895d9ff5e8ec1ac761,
+tree29d61b6025bf2363706314d84c0ce74b1f5141b5.
+[Full885](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40180072595),
+[Fast194](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40180072591)
+and [Docs576](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40180072563)
+all succeeded. All seven PostgreSQL shards and other required lanes passed;
+the fallback Maven job was skipped,not separately executed. The corrected
+lifecycle-history fixture's shard5 passed. This does not identify the original
+competing holder conclusively or prove future maintenance collisions impossible.
+
+Shard1 job121129057742 again passed192 required cases across16 classes,including
+all67 concurrency cases. Its second coordinated samples include competing CREATE
+rejection18141287ns,winning CREATE5035626023ns,revocation writer55P03 after
+151140560ns,CREATE before revocation5279540628ns,original-token denial after
+revocation137916045ns and revocation-before-admission denial140225814ns.
+These retain the prior harness/observation/lower-bound limitations;no percentile,
+industrial SLA,throughput or accepted operating value is inferred.
+
+**Source-backed resolution of the recorded expiry seam.** The actual adapter's
+FinalWrite.parameters binds the real native sample at parameter8 and its unchanged
+validUntil at parameter9,then executes the frozen WRITE_GUARD once. The database
+guard samples clock_timestamp through its MATERIALIZED observed CTE and rejects
+observed>=native_until or expired operation validity with fixed P0001. All native
+currentness and proof preparation precede actual driver dispatch. The existing
+URL-limited driver is therefore a test-only fault seam after real native/Party/
+storage/proof preparation but before the actual final SQL samples database time.
+
+The preceding stage's passive-only observer rule remains in force for all67
+existing cases and their measurements. This selected bounded expiry continuation
+explicitly introduces a separate,thread-local ACTIVE fault for one new case.
+This is not described as passive observation or ordinary driver behavior.
+The test-only fault is confined to the same three-file scope;it issues additional
+short read-only driver statements BEFORE the sole final guard. It changes no
+production hook,owner call,clock,grant after admission,native window,proof,
+parameter,final guard SQL,timeout,route or result. There is no additional driver
+query after guard dispatch. The fixed eight-second grant boundary is synthetic
+fixture data,not an operating work budget or a recommended authority lifetime.
+
+**Implemented new case,pending hosted execution.**
+genuineNativeExpiryAtFinalDatabaseGuardRollsBackWhileWorkBudgetRemains:
+1. Build the genuine persisted LOCAL actor,credential,native token/scoped grants
+   and fresh fixture through the existing real helpers. Before service prepare,
+   one MATERIALIZED database-clock boundary sets every grant's valid_to to the
+   same original clock_timestamp()+8seconds. Assert actual returned grant rows
+   exist and agree. This setup commits before the service starts.
+2. Arm the separate expiry fault only on this test thread and call the actual
+   compiled lifecycle service with the real coordinator,private publisher,
+   owner adapters,EntityManager flush,proof issuer and protected executor.
+   Observe parameter9 without modifying any setter argument. At final driver
+   entry require its exact equality to the original persisted grant deadline.
+3. On that same physical connection,verify native PID/XID and unchanged actual
+   250ms lock_timeout,750ms statement_timeout and1s idle timeout. The original
+   window must still be live here;an earlier admission denial cannot pass.
+4. Observe the real database clock using at most400 short clock/25ms pg_sleep
+   reads and an8.5second monotonic fault-observation cap. The short active
+   statements prevent idle expiry without changing its bound. pg_sleep paces
+   explicit clock observations;it does not guess another transaction's ordering.
+   Require an observed time at or beyond the original deadline. Then close
+   those diagnostic result/statement handles and delegate the original final
+   prepared statement exactly once,with its unchanged real native proof.
+5. Require the actual driver's final-guard SQLSTATE P0001,known
+   REJECTED_BEFORE_COMMIT,one real managed flush,one guard attempt,physical
+   rollback,no commit,no successful guard result and zero subsequent observed
+   driver statements. After completion require zero projection,event,receipt,
+   proof-use and fixture key effects. The original real grant update remains
+   outside this rolled-back appointment transaction.
+6. Require the complete failed service call,including preparation,fault and
+   rollback,to finish before10000ms. Since the private work interval starts
+   later,this is a conservative upper bound on work consumed and proves the
+   selected work ceiling still has time remaining. A statement cancellation
+   or idle-transaction expiry cannot substitute for the actual guard's P0001.
+
+An inability to reach the final driver entry while that original native window
+is live,an unexpected native bound,a failed pacing read,a cap overrun,different
+guard error,partial effect or indeterminate outcome fails the test. No automatic
+retry,deadline extension,clock shift,private ticket fabrication,signing bypass,
+early-denial fallback or success conversion is present. Fault state clears in
+finally. The observer captures original driver exceptions and forwards them
+unchanged;the production adapter's fixed outward denial remains intact.
+
+The new output is explicitly HAPI_778_EXPIRY_QUALIFICATION with activeFault=true,
+operationallyAccepted=false,clock-read count,faultElapsedNs and a conservative
+remainingWorkBudgetLowerBoundNs at guard dispatch. It emits no SQL,parameters,
+raw timestamps,identifiers,credentials,proof bytes or business payload.
+The prior RuntimeTrace measures the actual guard execute after the injected
+wait;the complete call/fence interval includes that wait and is not an ordinary
+latency measurement. This adversarial expiry test cannot select an operating
+value or silently become a fourth passive performance sample.
+
+**One complete B3 commit and exact selected scope.** Retain registered message
+`feat(organization): persist protected appointment lifecycle and history`.
+Exactly three MODIFY,zero CREATE/DELETE:
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java
+- .github/ci-test-inventory.json,only that suite's one new method and source SHA256
+- this append-only HAPI-778 evidence in doc/roadmap/TASKS_HPS-003.md
+
+All67 existing method bodies remain byte-identical;the suite has68 actual
+methods,not a placeholder/skip. The lifecycle-history repair,all95 cases there,
+production defaults500,10000ms qualification profile,secondary bounds,NOWAIT,
+all172 migrations,source/catalog/function pins,other suite membership/weights,
+seven shards,generated artifacts,public/legacy and release/deployment/simulation/
+OT gates remain unchanged. No task status or frozen registry structure changes.
+
+Available32 inventory-validator and19 documentation-validator self-tests pass.
+Current source base blob,new Git blob/source SHA256,67 exact retained bodies,
+68 method membership,one-entry inventory diff,append-only record,three-path scope
+and changed-line whitespace are checked. No local Java21/javac/Maven/PostgreSQL
+execution is available or provisioned. This is implemented synthetic test source,
+not passing expiry qualification until exact-SHA CI executes it. Publish with
+expected-a098330 main guard,verify exact parent/tree/message/three blobs/scope,
+confirm applicable exact-SHA Full/Fast/Docs creation/queue/start and STOP.
+Next recover actual expiry-case feedback and remaining complete-workflow timing
+evidence;repair failures first,before selecting any operating budget or advancing
+remaining B3 integration/artifact acceptance. HAPI-778 remains PARTIAL/IN_PROGRESS;
+HAPI-590 stays PARTIAL/BLOCKED. The1998-statement efficiency obligation remains
+separate and open;no industrial/operational acceptance follows from green CI.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

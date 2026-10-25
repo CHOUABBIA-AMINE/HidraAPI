@@ -254,7 +254,7 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
     }
     @org.junit.jupiter.api.AfterEach void clearRuntimeAuthentication() {SecurityContextHolder.clearContext();}
 
-    /** No production hook: observe real driver calls below both unchanged protected wrappers. */
+    /** Test-only driver: passive observation, plus one separately armed expiry fault below the wrappers. */
     public static final class QualificationDriver implements java.sql.Driver {
         private static final QualificationDriver INSTANCE=new QualificationDriver();
         private final org.postgresql.Driver delegate=new org.postgresql.Driver();
@@ -295,6 +295,47 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
     @org.junit.jupiter.api.AfterAll void removeQualificationDriver() throws SQLException {QualificationDriver.uninstall();}
 
     private static final ThreadLocal<RuntimeTrace> RUNTIME_TRACE=new ThreadLocal<>();
+    private static final ThreadLocal<NativeExpiryFault> NATIVE_EXPIRY_FAULT=new ThreadLocal<>();
+
+    /** Active fault injection, never part of the passive contention measurements. */
+    private static final class NativeExpiryFault {
+        final Instant expectedUntil;
+        Instant nativeUntil,observedExpiry;int pid,guardAttempts,clockReads,postGuardStatements;
+        long xid,began,dispatchedAt;String guardSqlState;
+        NativeExpiryFault(Instant expectedUntil){this.expectedUntil=expectedUntil;}
+        void binding(Object[] args) {
+            if(args==null||args.length<2||!(args[0] instanceof Integer index))return;
+            if(index==9&&args[1] instanceof java.sql.Timestamp value)nativeUntil=value.toInstant();
+            if(index==10&&args[1] instanceof Number value)pid=value.intValue();
+            if(index==11&&args[1] instanceof Number value)xid=value.longValue();
+        }
+        void beforeGuard(Connection physical) throws SQLException {
+            assertEquals(0,guardAttempts++);assertEquals(expectedUntil,nativeUntil);
+            began=System.nanoTime();
+            // Same physical connection/XID, unchanged local bounds, and a still-live real window.
+            try(var statement=physical.createStatement();var rows=statement.executeQuery("""
+                    SELECT pg_catalog.clock_timestamp(),pg_catalog.pg_backend_pid(),pg_catalog.txid_current(),
+                      current_setting('lock_timeout'),current_setting('statement_timeout'),
+                      current_setting('idle_in_transaction_session_timeout')
+                    """)) {
+                clockReads++;assertTrue(rows.next());assertTrue(rows.getTimestamp(1).toInstant().isBefore(expectedUntil));
+                assertEquals(pid,rows.getInt(2));assertEquals(xid,rows.getLong(3));
+                assertEquals("250ms",rows.getString(4));assertEquals("750ms",rows.getString(5));assertEquals("1s",rows.getString(6));
+                assertFalse(rows.next());
+            }
+            // Observe expiry using bounded real DB reads. Short active statements avoid an idle timeout.
+            // The sleep paces a clock observation; it never guesses another transaction's ordering.
+            for(int attempt=0;attempt<400;attempt++) {
+                assertTrue(System.nanoTime()-began<8_500_000_000L,"Bounded expiry fault exceeded its observation limit");
+                try(var statement=physical.createStatement();var rows=statement.executeQuery(
+                        "SELECT pg_catalog.clock_timestamp(),pg_catalog.pg_sleep(0.025)")) {
+                    clockReads++;assertTrue(rows.next());Instant observed=rows.getTimestamp(1).toInstant();assertFalse(rows.next());
+                    if(!observed.isBefore(expectedUntil)){observedExpiry=observed;dispatchedAt=System.nanoTime();return;}
+                }
+            }
+            fail("Bounded expiry fault did not observe the original deadline");
+        }
+    }
     private static final class RuntimeTrace {
         long began,ended,firstFence,guardBegan,guardClosed,commitBegan,commitEnded,rollbackEnded;
         Object connection;boolean foreignConnection,success;
@@ -370,8 +411,16 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
             var trace=RUNTIME_TRACE.get();String name=method.getName();
             String sql=preparedSql!=null?preparedSql:args!=null&&args.length>0&&args[0] instanceof String text?text:null;
             boolean executing=name.startsWith("execute"),guard=sql!=null&&sql.equals(FINAL_SQL);
+            var expiry=NATIVE_EXPIRY_FAULT.get();
+            if(expiry!=null) {
+                if(guard&&name.startsWith("set"))expiry.binding(args); // Observe only; delegate identical parameters.
+                if(executing&&expiry.dispatchedAt!=0)expiry.postGuardStatements++;
+                if(executing&&guard)expiry.beforeGuard(physical);
+            }
             if(trace!=null&&executing&&guard)trace.guardBegan=System.nanoTime();
-            Object value=delegated(target,method,args);
+            Object value;
+            try {value=delegated(target,method,args);}
+            catch(SQLException failure){if(expiry!=null&&executing&&guard)expiry.guardSqlState=failure.getSQLState();throw failure;}
             if(trace!=null&&executing&&sql!=null&&sql.stripLeading().startsWith("LOCK TABLE "))trace.fence(physical);
             if(trace!=null&&guard&&value instanceof java.sql.ResultSet rows) {
                 return jdbcObserver(java.sql.ResultSet.class,rows,(rowTarget,rowMethod,rowArgs)->{
@@ -499,6 +548,39 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         assertEquals(ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT,failure.outcome());trace.rejected();
         verify(em,never()).flush();assertEquals(0,trace.guardBegan);assertFalse(sqlState(failure,"55P03"));
         assertTrue(trace.ended-trace.began<10_000_000_000L,"Denial must precede the work ceiling");
+        assertEquals("0,0,0,0,0",runtimeEffects(f,actor));
+    }
+
+    @Test void genuineNativeExpiryAtFinalDatabaseGuardRollsBackWhileWorkBudgetRemains() throws Exception {
+        var f=fixture(false);String actor=runtimeActor(f);var command=create(f,id());var trace=new RuntimeTrace();
+        Instant until=null;int grants=0;
+        // One original persisted deadline for every actual scoped grant, before service preparation.
+        try(var c=owner();var statement=c.prepareStatement("""
+                WITH boundary AS MATERIALIZED (SELECT pg_catalog.clock_timestamp()+interval '8 seconds' AS u)
+                UPDATE public.hidra_identity_user_permission_grant g SET valid_to=boundary.u
+                  FROM boundary WHERE g.user_id=? RETURNING g.valid_to
+                """)) {
+            statement.setString(1,actor);
+            try(var rows=statement.executeQuery()) {
+                while(rows.next()){Instant value=rows.getTimestamp(1).toInstant();if(until==null)until=value;else assertEquals(until,value);grants++;}
+            }
+        }
+        assertTrue(grants>0);assertNotNull(until);var fault=new NativeExpiryFault(until);var em=spy(runtimeEntityManager);
+        assertNull(NATIVE_EXPIRY_FAULT.get());NATIVE_EXPIRY_FAULT.set(fault);
+        try {
+            var failure=assertThrows(ProtectedTransactionExecutor.ExecutionFailure.class,()->tracedRuntime("NATIVE_EXPIRY_FAULT",trace,
+                    ()->runtimeService(em).create(command)));
+            assertEquals(ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT,failure.outcome());trace.rejected();verify(em).flush();
+            assertEquals(1,fault.guardAttempts);assertNotNull(fault.observedExpiry);assertEquals(until,fault.nativeUntil);
+            assertFalse(fault.observedExpiry.isBefore(until));assertEquals("P0001",fault.guardSqlState);
+            assertTrue(trace.guardBegan>=fault.dispatchedAt);assertEquals(0,trace.guardClosed);assertEquals(0,fault.postGuardStatements);
+            assertTrue(trace.ended-trace.began<10_000_000_000L,"Complete failed call must leave work budget remaining");
+            assertFalse(sqlState(failure,"57014"));assertFalse(sqlState(failure,"25P03"));
+            System.out.println("HAPI_778_EXPIRY_QUALIFICATION nativeExpired=true guardSqlState=P0001 driverClockReads="+fault.clockReads
+                    +" faultElapsedNs="+(fault.dispatchedAt-fault.began)
+                    +" remainingWorkBudgetLowerBoundNs="+(10_000_000_000L-(fault.dispatchedAt-trace.began))
+                    +" activeFault=true operationallyAccepted=false");
+        } finally {NATIVE_EXPIRY_FAULT.remove();}
         assertEquals("0,0,0,0,0",runtimeEffects(f,actor));
     }
 

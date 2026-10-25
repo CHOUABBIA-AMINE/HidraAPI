@@ -30495,6 +30495,85 @@ the exact parent/tree/four-file diff and applicable Full/Fast/Docs creation, the
 stop without waiting or advancing the roadmap.
 
 
+### 2026-10-25 — HAPI-778 Full896 generated appointment contract reconciliation
+
+Owner Fail refreshes main `d9dbcb07a0315a2d1fdd6834f3ea8627faf1e0e2`,
+parent `b918a7898d49c12db68e91d6e17ad9cf07252514`,
+tree `8f06340c80712cbb41b5576528dc53803292acbe`.
+[Full896](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40228410530)
+FAILED only at API snapshot equality and its consequential aggregate gate.
+All seven PostgreSQL shards, Java21 unit/architecture and static validation
+succeeded; Fast205 and Docs588 succeeded. These observed hosted conclusions
+accept the preceding runtime repair within the software gate. They are not
+an independent complete raw-artifact re-audit or industrial acceptance.
+
+Execute the already registered generated-contract stage with exact message
+`docs(organization): reconcile appointment API and catalog artifacts`.
+The API job121274719962 successfully built the source application and completed
+step9, Publish deterministic OpenAPI contract, before snapshot equality failed.
+Capture the real retained diagnostic artifact12612496655 from run40228410530,
+attempt1; member `openapi/hidra-api.json`. Downloaded ZIP SHA256
+`157e80559e175312dbdb2d21c02b565e7d6727e765a8bf02e3a3fd2d05c5061c`
+matches GitHub's artifact digest and upload log. Member SHA256
+`baa94aa0389ee24ba089054cb8a3ddbe58a2df7548fc7d63ec2b555745a94b53`;
+generator source stamp is the exact d9dbcb07 head.
+
+Reconstruct doc/api/openapi.yaml using only sorted compact JSON serialization
+plus one newline. Every parsed object value, array order, endpoint, schema and
+security declaration is identical to the captured member; no handwritten
+contract edit or runtime mutation. Canonical SHA256
+`c2519e4b9db2b848a8fff37a4ea6e99e6e66bd785b418c3ba88114c7790ea419`.
+Actual counts:265 paths,287 operations,279 schemas. Update only the manifest's
+openapi object: new counts/digest/source/provenance, explicit generation-step
+success versus failed API/workflow conclusions, retained preceding provenance
+and the remaining gates.
+
+Review against the preceding canonical snapshot at generator11084d86 finds
+eight new appointment paths and twelve new schemas, zero removed paths/schemas,
+unchanged other top-level contract/non-schema components/security schemes.
+Existing GET assignments now declares the exact status enum.
+AssignEmployeeRequest adds optional requestId and declares employeeId,
+organizationUnitId and positionId required. The repository's supported
+compatibility checker against that stale snapshot FAILS on those three newly
+required properties at both legacy POST aliases. Preserve this actual result:
+neither full historical API compatibility nor HAPI-778 final acceptance is
+asserted. Do not falsify generated required metadata or weaken the comparator.
+The accepted protected cutover remains the source authority; broader historical
+consumer compatibility remains explicit in the case-level acceptance review.
+
+Comparison of this reconstructed snapshot to its actual source-runtime member
+PASSES the supported comparator and exact semantic equality. This only proves
+that reconciliation itself changes no runtime contract. Hosted CI must still
+execute its normal actual-parent runtime generation/comparison. The older
+snapshot comparison's two findings are not erased by that narrower result.
+
+The failed API lane did not reach physical dictionary capture. No new physical
+dictionary is invented: this stage changes no migration/JPA/ownership source.
+Preserve the previously captured dictionary and let the unchanged normal
+API lane execute actual migrated catalog/dictionary equality on the new head.
+
+Exact frozen scope: zero CREATE / three MODIFY / zero DELETE:
+- doc/api/openapi.yaml — only actual generated object canonicalization.
+- .github/documentation-validation.json — only its openapi object.
+- doc/roadmap/TASKS_HPS-003.md — only this inserted HAPI-778 evidence.
+
+Actual local validation: artifact ZIP digest verification; generated-source
+stamp and structural/delta review; canonical digest/counts/local refs/security
+and exact runtime-equality validation PASS; all10 existing snapshot-validator
+self-tests PASS; supported comparison against actual captured runtime PASS;
+supported comparison against historical canonical FAILS as recorded above.
+No local Java21/Maven/PostgreSQL suite or fabricated catalog is claimed.
+Preserve all source/test/inventory/workflow/migration/JPA blobs, fixed registry
+statuses, security/transaction/time limits and deferred simulation direction.
+
+Publish this single bounded stage to existing main under expected d9dbcb07 guard.
+Verify exact one-parent/tree/three-file scope, confirm applicable exact-SHA
+Full/Fast/Docs creation/queue/start and STOP without waiting. HAPI-778 remains
+PARTIAL/IN_PROGRESS; HAPI-590 remains independently blocked. Final case-level
+acceptance, historical compatibility disposition and actual full-gate success
+remain pending; no release, deployment or operational acceptance is selected.
+
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

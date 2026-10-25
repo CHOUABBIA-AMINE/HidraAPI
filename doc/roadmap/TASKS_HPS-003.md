@@ -28838,6 +28838,127 @@ HAPI-778 stays PARTIAL/IN_PROGRESS;HAPI-590 stays PARTIAL/BLOCKED. The1998-state
 efficiency obligation,non-LOCAL/public/legacy/artifact acceptance and all release,
 deployment,simulation and OT gates remain open or unchanged as previously recorded.
 
+
+### 2026-10-25 — HAPI-778 genuine contention and revocation test implementation
+
+Owner Next selects the three-path qualification registered above. Fresh main
+de79afff920b9c60f7bf3c29f943d8e5bdd8dd24,
+tree d44e66e1e520851a7f4e0a44ba9da4f4335df7cf,
+has successful [Docs574](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40177132549).
+Its sole change was the preceding task record;the unchanged runtime baseline
+remains exact-SHA Full883/Fast192/Docs573 success as recorded above.
+
+**Implemented test scope,not yet hosted acceptance.** Retain all64 original
+case bodies/assertions and add three genuine PostgreSQL cases,bringing this
+class's source-linked inventory to67 actual methods:
+- genuineCompetingAppointmentRejectsWithoutPartialEffectsWhileWinnerCommits:
+  two independently authenticated service executions request distinct commands
+  for the same employee. After real managed flush,the winner signals a ready
+  competitor and waits at most650ms for its known precommit rejection. The
+  retained coarse native relation fence is expected to reject the competitor
+  with PostgreSQL55P03 before any competing provisional effect;this does not
+  isolate row-level employee-lock throughput. The winner must subsequently
+  return its own receipt after observed physical commit. Assert one projection,
+  event,receipt and proof-use,exactly three fixture lock keys,and no competitor
+  request key or receipt. The competitor may not commit or return success.
+- genuineAuthorityFenceBoundsRevocationAttemptThenCommittedRevocationDeniesOldToken:
+  at the same real flush boundary,an independent administrator connection makes
+  one actual grant-deletion attempt with150ms lock_timeout and500ms statement
+  timeout. It must fail55P03 and roll back while the service retains its native
+  fence. Record the attempted writer's elapsedNs. The service must then commit.
+  A separately identified administration action after that known completion
+  deletes the grants and verifies zero persisted grants. Using the original
+  issued token,an otherwise valid END must then reject before flush/guard/commit,
+  with identical projection digest and all effect counts unchanged. A second
+  CREATE is deliberately avoided here:overlap could otherwise mask stale authority.
+- genuineCommittedRevocationBeforeAdmissionRejectsWithoutAnyEffects:
+  commit actual grant deletion before the original token's first service CREATE;
+  verify zero grants,known precommit rejection,no flush/final guard and zero
+  projection,event,receipt,proof-use or fixture lock-key effects. Both revocation
+  denials must precede the10000ms ceiling and must not be lock-conflict rejections.
+
+The two concurrent tests establish worker readiness before the protected flush
+barrier;the revocation worker also opens its independent connection beforehand. Worker latches/futures and termination are bounded,authentication
+contexts are per-thread,connections close/roll back in finally,and there is no
+sleep,polling,retry,swallowed writer success or INDETERMINATE-to-rejection rewrite.
+The650ms synchronization bound is below the unchanged1000ms protected idle
+timeout;slow setup/scheduling that misses it must fail qualification rather than
+silently widen a service timeout. No native issuer or authorization is mocked.
+EntityManager spies invoke the actual flush before the bounded coordination.
+
+**Passive timing implementation.** A nested test-only JDBC Driver delegates to
+the actual PostgreSQL driver,accepting only this container's exact original URL
+and wrapping only private-publisher connections. It is selected explicitly for
+the ordinary Hikari configuration and registered before existing PostgreSQL
+drivers for the publisher pool's metadata-derived URL. Existing driver objects
+are immediately re-registered;the observer is removed after this class. Other
+URLs fall through to their original driver. No alternate endpoint,credential,
+privilege,metadata URL,protected wrapper,unwrap behavior,SQL,parameter,result or
+driver exception is substituted. InvocationTargetException is unwrapped to the
+original driver cause. Bootstrap and all64 retained cases also traverse this
+observer,so exact-SHA CI must validate its transparency.
+
+Per-attempt thread-local scalar observations timestamp successful LOCK completion,
+the exact frozen final write guard's execute/result closure,and actual driver
+commit start/end or successful rollback. They issue no SQL or callbacks and
+print no SQL,parameters,credentials,grant contents,identifiers or business payload.
+Successful cases assert ordered fence/guard/commit timestamps and no rollback;
+rejections assert no commit attempt and actual rollback. Unobserved intervals
+print minus1 rather than a fabricated duration. A failed first native LOCK can
+have no successful fence timestamp while still recording physical rollback.
+
+The first native LOCK acquires a batch of relations. Its completion timestamp
+comes after the earliest individual acquisition;therefore
+observedFenceHoldLowerBoundNs is explicitly a lower bound,not exact first-lock
+hold. guardToCompletionNs,postGuardTailNs and commitCallNs remain separate.
+callElapsedNs includes the deliberate harness coordination and observation
+overhead;output states includesHarnessWork=true,workCeilingMs=10000 and
+operationallyAccepted=false. These contention samples cannot replace the earlier
+uncoordinated lifecycle samples or justify a production operating value.
+
+**Fourth registered case remains a concrete coverage gap.** No fourth method,
+placeholder,skip or simulated success is added. The service's actual flush seam
+precedes prepareFinal;native currentness and proof issuance recheck the genuine
+scheduled validity window repeatedly before the sole final SQL guard. The
+available passive driver seam can observe that guard but cannot deterministically
+move the genuine original deadline across its execution. A short grant expiry
+can instead reject in earlier admission/revalidation,which is not the registered
+final-database-expiry case. Delaying/altering driver dispatch would violate this
+stage's passive instrumentation contract;changing the clock,issued window,
+proof or owner implementation is also outside the three-path test-only scope.
+Thus genuine final-guard expiry with remaining work budget is NOT qualified
+here. Existing direct final-SQL expired-window tests and finite-budget unit tests
+are retained as their separate layers,not relabeled as this missing runtime case.
+Resolve that seam with an explicitly source-backed bounded continuation before
+selecting an operating budget or closing the timing qualification.
+
+**Exact publication scope.** Existing registered message remains
+`feat(organization): persist protected appointment lifecycle and history`.
+Three MODIFY,zero CREATE/DELETE:
+- src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java
+- .github/ci-test-inventory.json,only the above three method identities and this suite's source SHA256
+- this append-only HAPI-778 evidence in doc/roadmap/TASKS_HPS-003.md
+
+All original64 method bodies/assertions are byte-preserved;only header/comment,
+private test bootstrap,driver/timing helpers and the three new cases are added.
+Inventory weights,other classes,seven shards,all172 migrations,production
+defaults500,appointment property bounds,250/750/1000ms executor timeouts,NOWAIT,
+native/Party/storage checks,source/catalog/function pins,generated artifacts,
+public/legacy activation and task states are unchanged.
+
+Available32 inventory-validator and19 documentation-validator self-tests pass;
+their local sources match current GitHub blobs. Source-linked67-method inventory,
+original-source restoration,one-entry inventory diff,append-only evidence,
+three-path scope and whitespace are checked. Local Java21/javac/Maven/PostgreSQL
+are unavailable and not provisioned;no new runtime,latency or contention pass
+is claimed. Publish expected-de79aff guarded direct main,verify exact parent/
+tree/message/three blobs,confirm applicable exact-SHA Full/Fast/Docs creation/
+queue/start and STOP. Next recover these actual hosted outcomes and timing
+observations,repair failures first,and resolve the explicit native-expiry seam
+within a source-backed scope. HAPI-778 remains PARTIAL/IN_PROGRESS;HAPI-590 stays
+PARTIAL/BLOCKED. No operating budget,release,deployment,simulation or OT acceptance
+is selected;the1998-statement efficiency and remaining B3 acceptance stay open.
+
 <a id="hapi-829"></a>
 ## HAPI-829 — expose jpa entity constructors to persistence mapper
 

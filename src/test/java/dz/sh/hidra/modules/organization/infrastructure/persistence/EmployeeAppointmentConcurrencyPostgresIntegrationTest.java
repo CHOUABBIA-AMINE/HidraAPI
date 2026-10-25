@@ -7,7 +7,7 @@
  *
  * @Name        : EmployeeAppointmentConcurrencyPostgresIntegrationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-23
+ * @UpdatedOn   : 2026-10-25
  *
  * @Type        : Class
  * @Layer       : Test
@@ -67,7 +67,7 @@ import tools.jackson.databind.json.JsonMapper;
  * Existing structural cases mock native Identity/executor and independently encode HMAC frames.
  * The genuineLocal/genuineNative/genuineExecution cases instead compose real LOCAL authentication,
  * native issuer, separate publisher login, protected executor, JDBC/JPA flush and observed commit.
- * The sole spy injects a managed-flush fault after calling the actual EntityManager.
+ * EntityManager spies call the actual managed flush before fault injection or bounded coordination.
  * No HTTP, non-LOCAL runtime, deployment or industrial acceptance is established.
  */
 @Testcontainers(disabledWithoutDocker = true)
@@ -103,6 +103,7 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         // Start this same managed container before resolving its mapped JDBC endpoint.
         if(!POSTGRES.isRunning())POSTGRES.start();
         Flyway.configure().dataSource(POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword()).load().migrate();
+        QualificationDriver.install();
         var admin=new JdbcTemplate(new DriverManagerDataSource(POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword()));
         assertEquals("off",admin.queryForObject("SHOW autovacuum",String.class));
         admin.execute("REVOKE CREATE ON SCHEMA public FROM PUBLIC");
@@ -131,6 +132,7 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
                 +"public.hidra_org_appointment_read_guard(jsonb,timestamptz,timestamptz,integer,bigint,timestamptz) TO "+RUNTIME_PUBLISHER);
         r.add("spring.datasource.url",POSTGRES::getJdbcUrl);r.add("spring.datasource.username",()->RUNTIME_APP);
         r.add("spring.datasource.password",()->PASSWORD);
+        r.add("spring.datasource.driver-class-name",()->QualificationDriver.class.getName());
         r.add("spring.flyway.url",POSTGRES::getJdbcUrl);
         r.add("spring.flyway.user",POSTGRES::getUsername);r.add("spring.flyway.password",POSTGRES::getPassword);
         r.add("hidra.platform.persistence.publication.enabled",()->true);
@@ -251,6 +253,254 @@ class EmployeeAppointmentConcurrencyPostgresIntegrationTest {
         } finally {SecurityContextHolder.clearContext();}
     }
     @org.junit.jupiter.api.AfterEach void clearRuntimeAuthentication() {SecurityContextHolder.clearContext();}
+
+    /** No production hook: observe real driver calls below both unchanged protected wrappers. */
+    public static final class QualificationDriver implements java.sql.Driver {
+        private static final QualificationDriver INSTANCE=new QualificationDriver();
+        private final org.postgresql.Driver delegate=new org.postgresql.Driver();
+        private static boolean installed;
+        private static volatile String observedUrl;
+        public QualificationDriver() { }
+        static synchronized void install() throws SQLException {
+            if(installed)return;
+            observedUrl=POSTGRES.getJdbcUrl();
+            // Publisher Hikari discovers its driver from the original metadata URL.
+            // Prefer this URL-limited observer, then restore every existing PG driver.
+            var drivers=java.util.Collections.list(DriverManager.getDrivers()).stream()
+                    .filter(d->d instanceof org.postgresql.Driver).toList();
+            try {
+                for(var driver:drivers)DriverManager.deregisterDriver(driver);
+                DriverManager.registerDriver(INSTANCE);installed=true;
+            } finally {
+                for(var driver:drivers)DriverManager.registerDriver(driver);
+            }
+            assertSame(INSTANCE,DriverManager.getDriver(POSTGRES.getJdbcUrl()));
+        }
+        static synchronized void uninstall() throws SQLException {
+            if(installed){DriverManager.deregisterDriver(INSTANCE);installed=false;}
+        }
+        @Override public boolean acceptsURL(String url){return observedUrl!=null&&observedUrl.equals(url);}
+        @Override public Connection connect(String url,java.util.Properties properties) throws SQLException {
+            if(!acceptsURL(url))return null;
+            var connection=delegate.connect(url,properties);
+            return RUNTIME_PUBLISHER.equals(properties.getProperty("user"))?observedConnection(connection):connection;
+        }
+        @Override public java.sql.DriverPropertyInfo[] getPropertyInfo(String url,java.util.Properties p) throws SQLException {return delegate.getPropertyInfo(url,p);}
+        @Override public int getMajorVersion(){return delegate.getMajorVersion();}
+        @Override public int getMinorVersion(){return delegate.getMinorVersion();}
+        @Override public boolean jdbcCompliant(){return delegate.jdbcCompliant();}
+        @Override public java.util.logging.Logger getParentLogger() throws java.sql.SQLFeatureNotSupportedException {return delegate.getParentLogger();}
+    }
+
+    @org.junit.jupiter.api.AfterAll void removeQualificationDriver() throws SQLException {QualificationDriver.uninstall();}
+
+    private static final ThreadLocal<RuntimeTrace> RUNTIME_TRACE=new ThreadLocal<>();
+    private static final class RuntimeTrace {
+        long began,ended,firstFence,guardBegan,guardClosed,commitBegan,commitEnded,rollbackEnded;
+        Object connection;boolean foreignConnection,success;
+        void fence(Object physical){
+            if(firstFence==0){firstFence=System.nanoTime();connection=physical;}
+            else if(connection!=physical)foreignConnection=true;
+        }
+        void committed() {
+            assertTrue(success);assertFalse(foreignConnection);
+            assertTrue(firstFence>began);assertTrue(guardBegan>=firstFence);
+            assertTrue(guardClosed>=guardBegan);assertTrue(commitBegan>=guardClosed);
+            assertTrue(commitEnded>=commitBegan);assertTrue(ended>=commitEnded);assertEquals(0,rollbackEnded);
+        }
+        void rejected() {assertFalse(success);assertFalse(foreignConnection);assertEquals(0,commitBegan);assertEquals(0,commitEnded);assertTrue(rollbackEnded>began);}
+        void print(String stage) {
+            long completion=commitEnded!=0?commitEnded:rollbackEnded;
+            System.out.println("HAPI_778_CONTENTION_QUALIFICATION stage="+stage+" success="+success
+                    +" callElapsedNs="+(ended-began)+" observedFenceHoldLowerBoundNs="+interval(firstFence,completion)
+                    +" guardToCompletionNs="+interval(guardBegan,completion)
+                    +" postGuardTailNs="+interval(guardClosed,completion)
+                    +" commitCallNs="+interval(commitBegan,commitEnded)
+                    +" workCeilingMs=10000 includesHarnessWork=true operationallyAccepted=false");
+        }
+        private static long interval(long start,long end){return start==0||end==0?-1:end-start;}
+    }
+
+    private static <T> T tracedRuntime(String stage,RuntimeTrace trace,java.util.function.Supplier<T> action) {
+        assertNull(RUNTIME_TRACE.get());trace.began=System.nanoTime();RUNTIME_TRACE.set(trace);
+        try {T result=action.get();trace.success=true;return result;}
+        finally {trace.ended=System.nanoTime();RUNTIME_TRACE.remove();trace.print(stage);}
+    }
+
+    private static Object delegated(Object target,java.lang.reflect.Method method,Object[] args) throws Throwable {
+        try{return method.invoke(target,args);}
+        catch(java.lang.reflect.InvocationTargetException failure){throw failure.getCause();}
+    }
+    @SuppressWarnings("unchecked")
+    private static <T> T jdbcObserver(Class<T> type,T target,java.lang.reflect.InvocationHandler handler) {
+        return (T)java.lang.reflect.Proxy.newProxyInstance(type.getClassLoader(),new Class<?>[]{type},(proxy,method,args)->{
+            if(method.getDeclaringClass()==Object.class)return switch(method.getName()) {
+                case "equals"->proxy==args[0];case "hashCode"->System.identityHashCode(proxy);
+                case "toString"->"QualificationJdbcHandle";default->throw new AssertionError();
+            };
+            return handler.invoke(target,method,args);
+        });
+    }
+    private static Connection observedConnection(Connection physical) {
+        return jdbcObserver(Connection.class,physical,(target,method,args)->{
+            var trace=RUNTIME_TRACE.get();String name=method.getName();
+            if(trace!=null&&name.equals("setAutoCommit")&&Boolean.FALSE.equals(args[0])) {
+                if(trace.connection==null)trace.connection=physical;
+                else if(trace.connection!=physical)trace.foreignConnection=true;
+            }
+            boolean tracked=trace!=null&&trace.connection==physical;
+            if(tracked&&name.equals("commit"))trace.commitBegan=System.nanoTime();
+            Object value=delegated(target,method,args);
+            if(tracked&&name.equals("commit"))trace.commitEnded=System.nanoTime();
+            if(tracked&&name.equals("rollback"))trace.rollbackEnded=System.nanoTime();
+            if(value instanceof java.sql.Statement statement&&(name.equals("prepareStatement")||name.equals("prepareCall")||name.equals("createStatement"))) {
+                String sql=args!=null&&args.length>0&&args[0] instanceof String text?text:null;
+                return observedStatement(physical,statement,sql);
+            }
+            return value; // Metadata, unwrap, settings and all other calls retain actual driver semantics.
+        });
+    }
+    private static java.sql.Statement observedStatement(Connection physical,java.sql.Statement statement,String preparedSql) {
+        Class<? extends java.sql.Statement> type=statement instanceof java.sql.CallableStatement?java.sql.CallableStatement.class:
+                statement instanceof java.sql.PreparedStatement?java.sql.PreparedStatement.class:java.sql.Statement.class;
+        return observedStatementOfType(type,physical,statement,preparedSql);
+    }
+    private static <T extends java.sql.Statement> T observedStatementOfType(Class<T> type,Connection physical,java.sql.Statement statement,String preparedSql) {
+        return jdbcObserver(type,type.cast(statement),(target,method,args)->{
+            var trace=RUNTIME_TRACE.get();String name=method.getName();
+            String sql=preparedSql!=null?preparedSql:args!=null&&args.length>0&&args[0] instanceof String text?text:null;
+            boolean executing=name.startsWith("execute"),guard=sql!=null&&sql.equals(FINAL_SQL);
+            if(trace!=null&&executing&&guard)trace.guardBegan=System.nanoTime();
+            Object value=delegated(target,method,args);
+            if(trace!=null&&executing&&sql!=null&&sql.stripLeading().startsWith("LOCK TABLE "))trace.fence(physical);
+            if(trace!=null&&guard&&value instanceof java.sql.ResultSet rows) {
+                return jdbcObserver(java.sql.ResultSet.class,rows,(rowTarget,rowMethod,rowArgs)->{
+                    Object result=delegated(rowTarget,rowMethod,rowArgs);
+                    if(rowMethod.getName().equals("close"))trace.guardClosed=System.nanoTime();
+                    return result;
+                });
+            }
+            return value;
+        });
+    }
+
+    private static <T> T authenticated(org.springframework.security.core.Authentication authentication,java.util.concurrent.Callable<T> action) throws Exception {
+        var context=SecurityContextHolder.createEmptyContext();context.setAuthentication(authentication);
+        SecurityContextHolder.setContext(context);
+        try{return action.call();}finally{SecurityContextHolder.clearContext();}
+    }
+    private static void stopWorker(java.util.concurrent.ExecutorService worker) throws InterruptedException {
+        worker.shutdownNow();assertTrue(worker.awaitTermination(10,java.util.concurrent.TimeUnit.SECONDS),"Qualification worker did not terminate");
+    }
+    private static boolean sqlState(Throwable failure,String expected) {
+        var pending=new java.util.ArrayDeque<Throwable>();pending.add(failure);
+        var seen=java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<Throwable,Boolean>());
+        while(!pending.isEmpty()) {
+            var current=pending.remove();if(!seen.add(current))continue;
+            if(current instanceof SQLException sql&&expected.equals(sql.getSQLState()))return true;
+            if(current.getCause()!=null)pending.add(current.getCause());
+            java.util.Collections.addAll(pending,current.getSuppressed());
+        }
+        return false;
+    }
+    private String runtimeEffects(Fixture f,String actor) throws SQLException {
+        try(var c=owner()) {
+            return scalar(c,"""
+                SELECT concat_ws(',',
+                  (SELECT count(*) FROM public.hidra_org_employee_assignment WHERE employee_id=?),
+                  (SELECT count(*) FROM public.hidra_org_appointment_event WHERE employee_id=?),
+                  (SELECT count(*) FROM public.hidra_org_appointment_receipt r JOIN public.hidra_org_appointment_event e USING(event_id) WHERE e.employee_id=?),
+                  (SELECT count(*) FROM public.hidra_identity_org_commit_proof_use u JOIN public.hidra_org_appointment_event e USING(event_id) WHERE e.employee_id=?),
+                  (SELECT count(*) FROM public.hidra_org_appointment_lock_key WHERE
+                    (kind='EMPLOYEE' AND key_one=?) OR (kind='REQUEST' AND key_one=?) OR (kind='OCCUPANCY' AND key_one=?)))
+                """,f.employee(),f.employee(),f.employee(),f.employee(),f.employee(),actor,f.units().get(0));
+        }
+    }
+
+    @Test void genuineCompetingAppointmentRejectsWithoutPartialEffectsWhileWinnerCommits() throws Exception {
+        var f=fixture(false);String actor=runtimeActor(f);var authentication=SecurityContextHolder.getContext().getAuthentication();
+        var winner=create(f,id());var loser=create(f,id());var winnerTrace=new RuntimeTrace();var loserTrace=new RuntimeTrace();
+        var go=new java.util.concurrent.CountDownLatch(1);var ready=new java.util.concurrent.CountDownLatch(1);
+        var worker=java.util.concurrent.Executors.newSingleThreadExecutor();
+        try {
+            var competitor=worker.submit(()->authenticated(authentication,()->{
+                ready.countDown();assertTrue(go.await(30,java.util.concurrent.TimeUnit.SECONDS));
+                var failure=assertThrows(ProtectedTransactionExecutor.ExecutionFailure.class,()->
+                        tracedRuntime("COMPETING_CREATE",loserTrace,()->runtimeService(runtimeEntityManager).create(loser)));
+                assertEquals(ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT,failure.outcome());
+                assertTrue(sqlState(failure,"55P03"));return failure.outcome();
+            }));
+            assertTrue(ready.await(5,java.util.concurrent.TimeUnit.SECONDS));
+            var em=spy(runtimeEntityManager);
+            doAnswer(call->{runtimeEntityManager.flush();go.countDown();
+                assertEquals(ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT,
+                        competitor.get(650,java.util.concurrent.TimeUnit.MILLISECONDS));return null;}).when(em).flush();
+            var receipt=tracedRuntime("WINNING_CREATE",winnerTrace,()->runtimeService(em).create(winner));
+            assertEquals(winner.requestId(),receipt.requestId());winnerTrace.committed();loserTrace.rejected();verify(em).flush();
+            assertEquals("1,1,1,1,3",runtimeEffects(f,actor));
+            try(var c=owner()) {
+                assertEquals("0",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_lock_key WHERE kind='REQUEST' AND key_one=? AND key_three=?",actor,loser.requestId()));
+                assertEquals("0",scalar(c,"SELECT count(*) FROM public.hidra_org_appointment_receipt WHERE actor_user_id=? AND request_id=?",actor,loser.requestId()));
+            }
+        } finally {go.countDown();stopWorker(worker);}
+    }
+
+    private record WriterObservation(String state,long elapsedNs) { }
+    @Test void genuineAuthorityFenceBoundsRevocationAttemptThenCommittedRevocationDeniesOldToken() throws Exception {
+        var f=fixture(false);String actor=runtimeActor(f);var trace=new RuntimeTrace();
+        var go=new java.util.concurrent.CountDownLatch(1);var ready=new java.util.concurrent.CountDownLatch(1);
+        var worker=java.util.concurrent.Executors.newSingleThreadExecutor();
+        try {
+            var writer=worker.submit(()->{
+                try(var c=owner()) {
+                    ready.countDown();assertTrue(go.await(30,java.util.concurrent.TimeUnit.SECONDS));c.setAutoCommit(false);
+                    execute(c,"SET LOCAL lock_timeout='150ms'");execute(c,"SET LOCAL statement_timeout='500ms'");
+                    long began=System.nanoTime();String state;
+                    try {execute(c,"DELETE FROM public.hidra_identity_user_permission_grant WHERE user_id=?",actor);state="UNEXPECTED_SUCCESS";}
+                    catch(SQLException failure){state=failure.getSQLState();if(!"55P03".equals(state))throw failure;}
+                    finally {c.rollback();}
+                    return new WriterObservation(state,System.nanoTime()-began);
+                }
+            });
+            assertTrue(ready.await(5,java.util.concurrent.TimeUnit.SECONDS));
+            var em=spy(runtimeEntityManager);
+            doAnswer(call->{runtimeEntityManager.flush();go.countDown();var result=writer.get(650,java.util.concurrent.TimeUnit.MILLISECONDS);
+                assertEquals("55P03",result.state());
+                System.out.println("HAPI_778_CONTENTION_QUALIFICATION stage=REVOCATION_ATTEMPT sqlState=55P03 writerElapsedNs="+result.elapsedNs()+" operationallyAccepted=false");
+                return null;}).when(em).flush();
+            var receipt=tracedRuntime("CREATE_BEFORE_REVOCATION",trace,()->runtimeService(em).create(create(f,id())));
+            trace.committed();verify(em).flush();assertEquals("1,1,1,1,3",runtimeEffects(f,actor));
+            // Separate explicit action after known completion, never retry inside either operation.
+            admin("DELETE FROM public.hidra_identity_user_permission_grant WHERE user_id=?",actor);
+            try(var c=owner()){assertEquals("0",scalar(c,"SELECT count(*) FROM public.hidra_identity_user_permission_grant WHERE user_id=?",actor));}
+            var deniedTrace=new RuntimeTrace();String before=runtimeEffects(f,actor);var deniedEm=spy(runtimeEntityManager);
+            // END is otherwise valid: a second CREATE could be rejected by overlap even with stale authority.
+            var endCommand=new EmployeeAppointmentCommand.End(id(),f.company(),receipt.after().assignmentId(),1,START.plusSeconds(3600),REASON);
+            String projection;
+            try(var c=owner()){projection=scalar(c,"SELECT encode(sha256(convert_to(to_jsonb(a)::text,'UTF8')),'hex') FROM public.hidra_org_employee_assignment a WHERE id=?",receipt.after().assignmentId());}
+            var failure=assertThrows(ProtectedTransactionExecutor.ExecutionFailure.class,()->tracedRuntime("OLD_TOKEN_AFTER_REVOCATION",deniedTrace,
+                    ()->runtimeService(deniedEm).end(endCommand)));
+            assertEquals(ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT,failure.outcome());deniedTrace.rejected();
+            verify(deniedEm,never()).flush();assertEquals(0,deniedTrace.guardBegan);assertFalse(sqlState(failure,"55P03"));
+            assertTrue(deniedTrace.ended-deniedTrace.began<10_000_000_000L,"Denial must precede the work ceiling");
+            assertEquals(before,runtimeEffects(f,actor));
+            try(var c=owner()){assertEquals(projection,scalar(c,"SELECT encode(sha256(convert_to(to_jsonb(a)::text,'UTF8')),'hex') FROM public.hidra_org_employee_assignment a WHERE id=?",receipt.after().assignmentId()));}
+        } finally {go.countDown();stopWorker(worker);}
+    }
+
+    @Test void genuineCommittedRevocationBeforeAdmissionRejectsWithoutAnyEffects() throws Exception {
+        var f=fixture(false);String actor=runtimeActor(f);var original=SecurityContextHolder.getContext().getAuthentication();
+        admin("DELETE FROM public.hidra_identity_user_permission_grant WHERE user_id=?",actor);
+        try(var c=owner()){assertEquals("0",scalar(c,"SELECT count(*) FROM public.hidra_identity_user_permission_grant WHERE user_id=?",actor));}
+        var trace=new RuntimeTrace();var em=spy(runtimeEntityManager);assertEquals("0,0,0,0,0",runtimeEffects(f,actor));
+        var failure=assertThrows(ProtectedTransactionExecutor.ExecutionFailure.class,()->tracedRuntime("REVOCATION_BEFORE_ADMISSION",trace,
+                ()->runtimeService(em).create(create(f,id()))));
+        assertSame(original,SecurityContextHolder.getContext().getAuthentication());
+        assertEquals(ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT,failure.outcome());trace.rejected();
+        verify(em,never()).flush();assertEquals(0,trace.guardBegan);assertFalse(sqlState(failure,"55P03"));
+        assertTrue(trace.ended-trace.began<10_000_000_000L,"Denial must precede the work ceiling");
+        assertEquals("0,0,0,0,0",runtimeEffects(f,actor));
+    }
 
     private static final Instant START=Instant.parse("2026-10-20T10:00:00Z");
     private static final String REASON="Change é\t\n retained";

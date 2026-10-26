@@ -1061,6 +1061,65 @@ sample quota. HidraAPI remains development-only. No production deployment, relea
 tag or unrelated task is selected. Observe Documentation CI queued/started, then
 stop per AGENTS.md §11.1.
 
+#### HAPI-045 owner-requested measured scheduling maintenance — 2026-10-26
+
+The owner explicitly raises two concerns: workflow failure and overloaded shard1.
+This timing maintenance accompanies the independently scoped HAPI-592 repairs;
+it does not reopen or promote the accepted HAPI-045/046/436 statuses. Registered
+message: `ci: automate fast feedback and preserve full verification gates`.
+Exact2 MODIFY/zero CREATE/DELETE: .github/ci-test-inventory.json and only this
+append-only HAPI-045 phase record. No workflow/helper/mode or Java source change.
+
+Old timing_refresh comes from Full826; the new eight-case qualification class
+still has explicitly unmeasured weight0. The greedy seven-shard scheduler cannot
+balance today's workload from stale/zero weights. Recover actual Full907
+run40370015468 attempt1 source1d6025e22fb585e8b1ec6b5ad39a0d65aa3514f3:
+all102 active PostgreSQL class XMLs across all seven shards, exact existing case
+membership, declared/actual report context and authenticated ZIP/member digests.
+Six successful lane receipts retain source/run/attempt and member hashes; failed
+shard1 uses its raw diagnostic artifact. Preserve all eight artifact metadata
+origins separately; timing weights cannot turn the failed run into acceptance.
+Inventory timing_refresh records all seven ZIP IDs/digests,102 raw XML digests,
+same-source context and complete nested prior timing-refresh history.
+
+Actual suite-time sums by previous shard0..6 (seconds):
+195.558 /651.508 /159.004 /266.985 /160.887 /217.054 /216.805.
+The large employee-appointment concurrency class alone measures352.623s;
+network-draft127.809s, station-admission133.209s and new qualification73.780s
+also contribute. That qualification time includes seven passes and one failed
+consumer case, so it is explicitly a partial scheduling observation/lower bound,
+not a fully accepted duration or a new passing benchmark. Retain the actual
+observed value rather than invent a repaired runtime. Other classes have zero
+failure/error/skip counts. The next real hosted run must expose current timing.
+
+Update baseline_seconds for only those102 active PostgreSQL classes to the actual
+reported suite times. Do not alter their source/case identities, dependency
+reasons, Fast membership, archived classes, unit weights or seven-shard count.
+The unchanged descending-weight least-loaded scheduler yields estimated sums:
+352.623 /252.510 /252.480 /252.518 /252.694 /252.483 /252.493 seconds.
+The largest class is alone on shard0; all six others are about252.5s. No scheduling
+of indivisible classes can beat the352.623s largest-class lower bound for this
+sample; adding more shards would not remove it. No class split or same-database
+parallel execution is admitted. Predicted largest suite sum decreases from
+651.508 to352.623s (about45.9%), but compilation/startup/runner contention/queue
+time are not in this metric. This is not a measured final workflow speedup or SLO.
+
+Preserve every current executable class and case, historical archive selection,
+source hashes, exact-class validation and seven isolated full database sets.
+The union of all seven new selections is identical and disjoint; unit/Fast/oracle/
+historical selections stay identical. Optional serial diagnostic and all API/
+catalog/provenance/failure/release gates remain unchanged. No obsolete-test
+deletion, excluded failing case, hidden retry or relaxed failure handling.
+
+Available51 validator self-tests, current partition/identity/hash/receipt/member/
+timing-arithmetic and exact scope/history checks PASS. The failed Full907 supplies
+scheduling evidence only, never green acceptance. Preserve older dated CI timing
+and cost decisions; this sample is not a cold/warm benchmark repeat. Publish as
+the third commit in the owner's reviewed repair/artifact/balance sequence under
+the original expected1d6025e lease; verify each parent/tree/scope and observe one
+final applicable Full/Fast/Docs startup, then STOP without waiting. HAPI-592 stays
+pending exact-source acceptance; no release/deployment, simulator or OT action.
+
 <a id="hapi-046"></a>
 ## HAPI-046 — Timing, runner cost and adoption decision
 

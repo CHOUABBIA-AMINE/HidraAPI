@@ -24,6 +24,7 @@ import dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFai
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+@org.springframework.core.annotation.Order(org.springframework.core.Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice(assignableTypes=EngineeringNetworkDraftController.class)
 public class EngineeringNetworkDraftApiExceptionHandler {
     @ExceptionHandler(EngineeringNetworkDraftFailure.class)

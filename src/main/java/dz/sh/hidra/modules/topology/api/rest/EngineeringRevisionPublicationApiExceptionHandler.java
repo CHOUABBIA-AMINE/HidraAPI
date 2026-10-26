@@ -7,7 +7,7 @@
  *
  * @Name        : EngineeringRevisionPublicationApiExceptionHandler
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-20
+ * @UpdatedOn   : 2026-10-26
  *
  * @Type        : Class
  * @Layer       : API
@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+@org.springframework.core.annotation.Order(org.springframework.core.Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice(assignableTypes=EngineeringRevisionPublicationController.class)
 public class EngineeringRevisionPublicationApiExceptionHandler {
     @ExceptionHandler(EngineeringRevisionPublicationFailure.class)

@@ -8401,6 +8401,42 @@ d0c21a2 lease; verify parent/tree/message/exact4 blobs, observe applicable exact
 Full/Fast/Docs creation/queue/start and STOP. No automatic artifact stage,
 acceptance, HAPI-608, frontend implementation, release or deployment follows.
 
+#### HAPI-592 final malformed-body advice repair — 2026-10-26
+
+The owner explicitly selects both current CI repair and shard-load balancing.
+Execute one reviewed three-commit sequence (repair, actual API reconciliation,
+measured scheduling refresh), preserving separate exact messages/scopes. Advance
+main once from1d6025e after verifying all three commits; observe final applicable
+CI startup and STOP. This owner request admits timing maintenance despite the
+earlier source-delivery no-weight-change constraint; no unrelated feature work.
+
+Full907 run40370015468 attempt1, source1d6025e22fb585e8b1ec6b5ad39a0d65aa3514f3,
+shard1 job121737939636:219 cases,one failure,zero errors/skips. Seven of the eight
+qualification methods now pass, including actual two-company isolation, explicit
+NOWAIT503 and ordered HTTP200/409 CAS. The last consumer case reaches malformed
+publication JSON; general Spring ProblemDetail handling responds400 with
+request-derived instance before the scoped advice can supply its fixed URI.
+Retained diagnostic12672262892 ZIP SHA256
+ec51087b5fe3b141daaee05c643db284fecf757e3f68655ed33b932cd2ec5bb0;
+raw qualification XML SHA256 f13c320cd3204fd614a243641bc77e2a93a3553fcab0c5a2c4f4c6df5a59ba1d. All diagnostic ZIP digests are checked.
+
+Bound this production correction to the existing publication and draft scoped
+ApiExceptionHandler classes: HIGHEST_PRECEDENCE, matching the exchange advice,
+plus publication UpdatedOn. Their exact assignable controller scopes and all
+exception/status/detail/code/instance mappings remain unchanged. No broad/global
+handler, authorization bypass, altered test/status set or serializer change.
+Keep the full-body selector rejection intact; no test source or inventory case/
+source-hash change. This fixes dispatch precedence for malformed bodies, not
+ordinary security policy. Canonical OpenAPI reconciliation follows separately.
+
+Exact3 MODIFY/zero CREATE/DELETE: those two scoped advice files and only this
+append-only HAPI-592 record. Registered message remains
+`test(topology): qualify operator API and revision history`.
+Available Java syntax and51 existing validator self-tests plus scope/history
+checks pass before publication; no new local Java21/Maven/Spring/PostgreSQL
+execution is claimed. HAPI-592 stays NOT_IMPLEMENTED/IN_PROGRESS pending hosted
+complete evidence and later four-file acceptance. No release or deployment.
+
 <a id="hapi-658"></a>
 ## HAPI-658 — expose operational scope resolution contract
 

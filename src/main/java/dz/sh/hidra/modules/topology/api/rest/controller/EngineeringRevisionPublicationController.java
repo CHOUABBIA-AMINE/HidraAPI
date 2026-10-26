@@ -7,7 +7,7 @@
  *
  * @Name        : EngineeringRevisionPublicationController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-20
+ * @UpdatedOn   : 2026-10-26
  *
  * @Type        : Class
  * @Layer       : API
@@ -35,6 +35,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 
+@io.swagger.v3.oas.annotations.responses.ApiResponses({
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode="400", description="Malformed or invalid request", content=@io.swagger.v3.oas.annotations.media.Content(mediaType="application/problem+json", schema=@io.swagger.v3.oas.annotations.media.Schema(implementation=org.springframework.http.ProblemDetail.class))),
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode="401", description="Authentication required; filter or owner response", content=@io.swagger.v3.oas.annotations.media.Content),
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode="403", description="Current native authority denies access", content=@io.swagger.v3.oas.annotations.media.Content(mediaType="application/problem+json", schema=@io.swagger.v3.oas.annotations.media.Schema(implementation=org.springframework.http.ProblemDetail.class))),
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode="404", description="Authorized target unavailable", content=@io.swagger.v3.oas.annotations.media.Content(mediaType="application/problem+json", schema=@io.swagger.v3.oas.annotations.media.Schema(implementation=org.springframework.http.ProblemDetail.class))),
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode="409", description="Version, request, graph or publication conflict", content=@io.swagger.v3.oas.annotations.media.Content(mediaType="application/problem+json", schema=@io.swagger.v3.oas.annotations.media.Schema(implementation=org.springframework.http.ProblemDetail.class))),
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode="503", description="Unavailable authority or indeterminate completion; do not automatically retry", content=@io.swagger.v3.oas.annotations.media.Content(mediaType="application/problem+json", schema=@io.swagger.v3.oas.annotations.media.Schema(implementation=org.springframework.http.ProblemDetail.class)))
+})
 @RestController
 @RequestMapping("/api/v1/topology/engineering-networks/{draftId}/publications")
 public class EngineeringRevisionPublicationController {
@@ -56,39 +64,46 @@ public class EngineeringRevisionPublicationController {
         // Native issuer/session/subject provenance is enforced by the mandatory protected use case.
         return EngineeringRevisionPublicationResponses.from(useCase.executePublication(command));
     }
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode="200", description="Successful operation", useReturnTypeSchema=true)
     @Operation(operationId="publishEngineeringRevision",summary="Publish an immutable engineering-unqualified authored snapshot")
     @PostMapping public Publication publish(@PathVariable("draftId") String draftId,
             @RequestParam("companyPartyId") String company,@RequestParam("pipelineSystemId") String network,@RequestBody Publish body) {
         return execute(new Command(Kind.PUBLISH,company,network,uuid(draftId),uuid(body.requestId()),body.draftVersion(),
                 body.expectedEpoch(),optional(body.expectedRevisionId()),null,null,null,null));
     }
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode="200", description="Successful operation", useReturnTypeSchema=true)
     @Operation(operationId="withdrawEngineeringRevision",summary="Withdraw the exact current context head")
     @PostMapping("/withdraw") public Publication withdraw(@PathVariable("draftId") String draftId,
             @RequestParam("companyPartyId") String company,@RequestParam("pipelineSystemId") String network,@RequestBody Transition body) {
         return execute(new Command(Kind.WITHDRAW,company,network,uuid(draftId),uuid(body.requestId()),null,
                 body.expectedEpoch(),uuid(body.expectedRevisionId()),null,null,null,null));
     }
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode="200", description="Successful operation", useReturnTypeSchema=true)
     @Operation(operationId="reactivateEngineeringRevision",summary="Reactivate the exact retained withdrawn context head")
     @PostMapping("/reactivate") public Publication reactivate(@PathVariable("draftId") String draftId,
             @RequestParam("companyPartyId") String company,@RequestParam("pipelineSystemId") String network,@RequestBody Transition body) {
         return execute(new Command(Kind.REACTIVATE,company,network,uuid(draftId),uuid(body.requestId()),null,
                 body.expectedEpoch(),uuid(body.expectedRevisionId()),null,null,null,null));
     }
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode="200", description="Successful operation", useReturnTypeSchema=true)
     @Operation(operationId="readExactEngineeringRevision",summary="Read an exact retained revision independently of history pagination")
     @GetMapping("/revisions/{revisionId}") public Publication readExact(@PathVariable("draftId") String draftId,
             @PathVariable("revisionId") String revisionId,@RequestParam("companyPartyId") String company,@RequestParam("pipelineSystemId") String network) {
         return execute(new Command(Kind.READ_EXACT,company,network,uuid(draftId),null,null,null,null,uuid(revisionId),null,null,null));
     }
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode="200", description="Successful operation", useReturnTypeSchema=true)
     @Operation(operationId="readCurrentEngineeringRevision",summary="Read context head state and its active snapshot")
     @GetMapping("/current") public Publication readCurrent(@PathVariable("draftId") String draftId,
             @RequestParam("companyPartyId") String company,@RequestParam("pipelineSystemId") String network) {
         return execute(new Command(Kind.READ_CURRENT,company,network,uuid(draftId),null,null,null,null,null,null,null,null));
     }
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode="200", description="Successful operation", useReturnTypeSchema=true)
     @Operation(operationId="readEffectiveEngineeringRevision",summary="Resolve committed ledger-as-of history with half-open event boundaries")
     @GetMapping("/effective") public Publication readEffective(@PathVariable("draftId") String draftId,
             @RequestParam("companyPartyId") String company,@RequestParam("pipelineSystemId") String network,@RequestParam("asOf") String at) {
         return execute(new Command(Kind.READ_EFFECTIVE,company,network,uuid(draftId),null,null,null,null,null,asOf(at),null,null));
     }
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode="200", description="Successful operation", useReturnTypeSchema=true)
     @Operation(operationId="listEngineeringRevisionHistory",summary="Read a bounded descending context history window")
     @GetMapping("/history") public Publication listHistory(@PathVariable("draftId") String draftId,
             @RequestParam("companyPartyId") String company,@RequestParam("pipelineSystemId") String network,
@@ -96,6 +111,7 @@ public class EngineeringRevisionPublicationController {
             @RequestParam(value="asOf",required=false) String at) {
         return execute(new Command(Kind.LIST_HISTORY,company,network,uuid(draftId),null,null,null,null,null,asOf(at),limit,cursor));
     }
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode="200", description="Successful operation", useReturnTypeSchema=true)
     @Operation(operationId="readEngineeringPublicationRequest",summary="Resolve only the currently authorized actor's request receipt")
     @GetMapping("/requests/{requestId}") public Publication readRequest(@PathVariable("draftId") String draftId,
             @PathVariable("requestId") String requestId,@RequestParam("companyPartyId") String company,@RequestParam("pipelineSystemId") String network) {

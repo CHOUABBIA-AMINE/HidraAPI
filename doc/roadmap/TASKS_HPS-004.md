@@ -8192,6 +8192,90 @@ Publish this registration with expected38ba912 lease, verify exact one-parent/
 tree/four-file scope, observe applicable exact-SHA Documentation CI creation/
 queue/start and STOP. Implementation is the next separately selected stage.
 
+
+#### HAPI-592 operator qualification source delivery — 2026-10-26
+
+Owner Continue selects registered stage2 after Docs601 run40281049029 succeeded
+onf5459a4f3455b7516d60d63bcdce928947e2705a. Exact message:
+`test(topology): qualify operator API and revision history`.
+Implement the registered one-CREATE/five-MODIFY scope; no task status changes.
+
+The new standalone TopologyEngineeringOperatorQualificationTest contains exactly
+the eight registered @Test methods, without inheritance or new support files.
+It copies/adapts only native producer/full Flyway/real PostgreSQL role and
+transaction setup plus pure graph builders from the existing publication fixture;
+the old suites stay byte-identical. Required Docker absence fails instead of
+skipping. Actual asserted operator traffic uses MockMvc with Spring Security,
+real native tokens, owner admission and separate ordinary/publisher DB principals.
+External directory/source transport remains synthetic. Successful owners are
+not replaced by mock replies; targeted spies inject explicit rollback faults.
+The interceptor sibling/wrong-tuple negative controls additionally call its
+actual bean, with a genuinely decoded native token rather than forged claims.
+
+The source covers four genuine providers; HTTP metadata/graph/survey authoring,
+validation and all three editor exchange operations; exact canonical bytes,
+decimal scale/unit/null retention, original-vs-target survey graph binding;
+unqualified publication and exact history. Two independently authenticated LOCAL
+users remain active under the same native provider with distinct company/network
+grants and actual A/B station owners. The historical provider-rotation helper
+would revoke the first token, so the new independent-user helper does not rotate
+providers. Both actors' independent company and network substitutions exercise
+all20 tuples, including retained request replay, fixed denials and storage images.
+Existing unauthorized owners403 and absent company503 remain distinct assertions.
+
+Further methods assert fresh DENY/revocation after preview, ordinary login and
+anonymous negatives, immutable retained snapshots after all editor revisions,
+withdraw/reactivate and committed effective boundaries,103-event bounded keyset
+history immune to a later append, exact reads, competing HTTP draft and head CAS
+with one200/one409 winner and exact row counts. Targeted final-guard invalidation,
+managed-dirty flush and exchange UPDATE flush failures assert complete rollback
+storage images. This is injected failure proof, not elapsed-time performance or
+a physically induced unknown COMMIT. Station owner transfer/ABA, graph incidence,
+trigger/function integrity and DB role corruption fail-closed assertions restore
+privileged setup mutations in finally. Those tests do not claim an impossible
+rewrite of immutable publication ledger data as a physical corruption exercise.
+
+The consumer method requests actual in-process /v3/api-docs and checks the20
+typed tuples, bearer security, DTO refs, current error responses and body/query
+bounds. The three controllers gain annotations only; method signatures/bodies,
+routes, operation IDs and all authorization/error behavior are unchanged.
+All existing400/403/404/409/503 responses reference ProblemDetail;401 content is
+left unspecified because filter and owner response envelopes differ. Success200
+uses its actual return type. Source review additionally found create already
+returns201 for a new draft and200 on replay, so an annotation documents that
+existing201 with the existing Draft DTO. This corrects documentation without a
+new runtime success response. No generated snapshot is inferred from annotations.
+
+Inventory adds only this actual eight-case postgres-integration/fast=false suite
+with duration0 explicitly unmeasured. All old entries/weights, four historical
+archives, seven DB shards, mode and workflows remain unchanged. Active source
+becomes466 classes; actual hosted reports own execution counts and timing.
+New source SHA256: 034b65dd4f802bd3a341d1c7cf7f9d6e9f0326cba653f87f688f5b019faf1061. Current deterministic placement: postgres-1.
+
+Available local checks: JDK17 compiler syntax parsing of all four Java files PASS;
+documentation-validator19 and inventory-validator32 self-tests PASS. Exact eight
+method/case/hash/discovery, unchanged old inventory/shards, canonical header,
+controller executable-source equality after removing added annotations and
+UpdatedOn, append-only selected-record/status-preservation and six-file scope
+checks PASS. No Java21 type resolution, Maven, Spring/Jackson/native/HTTP/JUnit or
+PostgreSQL execution is claimed locally; the available environment lacks the
+complete runtime toolchain and is not provisioned under AGENTS CI-first policy.
+
+Canonical OpenAPI, manifest, dictionary and schema/owner/executor/security sources
+retain their actual prior bytes. The expected first strict snapshot mismatch from
+documented responses is a separate artifact gate: use actual hosted generated
+outputs, repair responsible runtime failures first, then separately select the
+registered three-file artifact reconciliation. Do not weaken equality,
+compatibility, inventory or native authority to make the suite pass.
+HAPI-592 remains NOT_IMPLEMENTED/IN_PROGRESS pending exact-source hosted evidence
+and final registered four-file acceptance. No HAPI-608, frontend implementation,
+engineering qualification, release/deployment, simulator/P3 or OT action follows.
+
+Publish with expectedf5459a4 lease; verify exact one-parent/tree/message and
+all six blobs (one CREATE/five MODIFY/zero DELETE). Observe applicable exact-SHA
+Full/Fast/Documentation CI creation/queue/start and STOP without waiting or
+automatically executing artifact reconciliation or acceptance.
+
 <a id="hapi-658"></a>
 ## HAPI-658 — expose operational scope resolution contract
 

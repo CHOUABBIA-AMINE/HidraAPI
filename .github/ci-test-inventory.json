@@ -9378,6 +9378,27 @@
       "path": "src/test/java/dz/sh/hidra/modules/topology/api/rest/EngineeringLocalExchangeApiExceptionHandlerTest.java",
       "source_sha256": "a7647c12ada0dd2d6485a812178271203ab2489aa5fbd3f5a06c2a9f3ab8192a",
       "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "concurrentHttpWritersAndPublishersHaveOneCasWinner",
+        "currentDenyAndRevocationOverridePriorPreviewsAndUnrelatedRoutes",
+        "finalGuardAndManagedFlushFaultsRollBackEveryOperatorEffect",
+        "nativeOperatorsAuthorExchangeAndPublishExactSnapshotsAcrossFourProviders",
+        "publishedHistoryRemainsExactAfterSourceEditsAndLifecycleTransitions",
+        "runtimeConsumerContractMatchesTypedRoutesErrorsAndBounds",
+        "stationOwnershipAndCatalogCorruptionFailClosedWithoutHistoryMutation",
+        "twoCompaniesAndNetworksCannotReadWriteOrReplayEachOthersSelectors"
+      ],
+      "class": "dz.sh.hidra.modules.topology.qualification.TopologyEngineeringOperatorQualificationTest",
+      "dependency_reason": "HAPI-592 full native Spring/Flyway/PostgreSQL operator qualification with real HTTP filters and separate company/network scopes; duration unmeasured.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/qualification/TopologyEngineeringOperatorQualificationTest.java",
+      "source_sha256": "034b65dd4f802bd3a341d1c7cf7f9d6e9f0326cba653f87f688f5b019faf1061",
+      "supports": []
     }
   ],
   "format": 1,

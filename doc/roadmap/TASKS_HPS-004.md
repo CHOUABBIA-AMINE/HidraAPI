@@ -8437,6 +8437,36 @@ checks pass before publication; no new local Java21/Maven/Spring/PostgreSQL
 execution is claimed. HAPI-592 stays NOT_IMPLEMENTED/IN_PROGRESS pending hosted
 complete evidence and later four-file acceptance. No release or deployment.
 
+#### HAPI-592 actual API contract reconciliation — 2026-10-26
+
+Owner's combined CI-failure repair request selects the registered artifact stage,
+`docs(topology): reconcile operator qualification API contract`.
+Actual Full907 source1d6025e22fb585e8b1ec6b5ad39a0d65aa3514f3,
+run40370015468 attempt1, job121737939475: build8 and generation9 succeed;
+snapshot equality10 fails; normal dictionary capture11 and later compatibility
+steps skip. No Full907 catalog or hosted compatibility pass is claimed.
+Artifact12671967466, member openapi/hidra-api.json, ZIP SHA256
+7bc1383673dde32a29d783100a8c566324fc40f0261eb3bed8cc5819e8ad9635,
+raw JSON SHA256 f7bf39bf1b1d415e964e37d1f4ce4d425e21fdb93bce9947450064167457d546, canonical SHA256 2d48275fc6699c2b028616f0b43f960b13b5ad01fa02f7a9857d31ce52fea651.
+
+Actual269 paths/291 operations/284 schemas. All prior283 schemas, security schemes
+and non-engineering paths remain structurally unchanged; ProblemDetail is added.
+Twenty engineering operations now document actual400/401/403/404/409/503 responses
+and existing create201; success200 uses its retained typed return schema.401
+does not promise an owner error envelope. The unchanged comparator passes locally
+against actual successful Full904 runtime source4a69624ecc635203fecb404c61933c696708d7f4
+from verified aggregate12616595113, not an inferred immediate-parent snapshot.
+Strict canonical/source/count/digest/runtime equality checks pass locally.
+
+Exact3 MODIFY/zero CREATE/DELETE: actual captured doc/api/openapi.yaml,
+.github/documentation-validation.json openapi object only and this record.
+Preserve complete nested prior provenance, actual generated origin stamp and
+unchanged physical dictionary/schema bytes. The preceding scoped advice priority
+fix changes neither API annotations nor routes/DTO schemas; final hosted equality
+still supplies exact-source proof. Do not relabel the captured source to the new
+head. Required hosted native/raw-case and normal catalog/API gates remain pending;
+no HAPI-592 status, release/deployment or engineering acceptance is inferred.
+
 <a id="hapi-658"></a>
 ## HAPI-658 — expose operational scope resolution contract
 

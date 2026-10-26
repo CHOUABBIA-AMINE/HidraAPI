@@ -984,6 +984,82 @@ creation/queue/start, then STOP. Do not startB or claimA accepted before actual
 CI feedback. After successful exact-SHA required gates, next registered package:
 `feat(custody): add protected catalog-linked product drafts`.
 
+
+### HAPI-594 Package A CI repair — 2026-10-26
+
+Owner Fail selects responsible Package A repair on main
+b1fee00e9232eee49c97b25b5c336ad75664a8fc; tree
+9317114416655f050fe16a757980f1c2b13b068c. Docs610 passed; Full909 and Fast215
+failed. No Package B/C execution or HAPI-594 acceptance is selected.
+Exact repair message: `fix(identity): repair product draft authorization CI`.
+
+Full909 evidence: unit/architecture has3 source-guard failures; postgres-2 has7
+ProductDraft native-suite errors; API/dictionary reports physical dictionary drift.
+Other six PostgreSQL shards succeeded. The new Party suite is not the reported
+failing source. These observations do not make the overall Package A CI-passed.
+
+Admitted repair MODIFY allowlist (zero CREATE/DELETE):
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedProductDraftAuthorizationPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java`
+- `.github/ci-test-inventory.json`
+- `doc/database/DATA_DICTIONARY.md`
+- `doc/roadmap/TASKS_HPS-008.md`
+
+The reader's pre-existing ban on clock queries remains unchanged. Native Identity
+now issues ProductReads with its own checked database sample alongside the private
+pair's credentials; both product authorization graphs consume that same sample.
+The reader cannot accept an arbitrary caller-supplied time and no longer queries
+clock_timestamp. Native expiry/current-state and issuer/transaction checks remain.
+Existing Topology/Organization families and SQL guard budgets are preserved.
+
+The native test helper had called requireCurrent from the executor's final SQL
+guard callback. The datasource correctly rejected subsequent SQL. That recheck
+now runs at the end of the work body before the executor seals its guard; the
+original final guarded sentinel statement/expiry proof remains. No production
+SQL-after-guard allowance is added. The indeterminate-policy fixture now uses
+supported static syntax with an incompatible typed fact, rather than an
+unsupported expression rejected by the temporal compiler. All16 native test
+methods and all6 source-boundary guard methods remain, including the inactive
+permission, expiry, rollback, replay and adversarial assertions.
+
+The source-boundary guard admits the exact new reviewed compiled product
+participant as an Identity admit caller, and repins the reviewed reader source.
+It retains exact caller-set equality, the sole collector/acquire callers and all
+four unchanged Party/Facility contract/adapter pins. JdbcProtectedAuthorizationEvidenceReaderTest
+and its clock/JPA/cache/write/authority-export prohibition are unchanged.
+Inventory updates only the two changed test source hashes; all cases, timings,
+lanes, shard assignments, counts and other entries remain unchanged.
+
+The API diagnostic artifact12683970846 from Full909/run40391446494 attempt1
+contains actual catalog schema.json for sourceb1fee00e. Download ZIP SHA256:
+03dcaf5b4dddd3f94349704bb7d9a67393067a0f08fb5441f52d7ae2c0a67dd4.
+All644 migration/JPA source fingerprints were recovered from that exact GitHub
+SHA and matched the artifact; ownership evidence was recovered from the same
+source. The unmodified generator validates/renders/checks174 migrations,
+470 JPA mappings,516 physical relations and zero unresolved owners. Source bundle:
+1cb982d80d9ff74d0b1589e58ac838c6c86b4def4be7f8e9fc69e62a531de228.
+Dictionary SHA256:
+15f24aee5f84715c94aebd8e564f2fc74996e9c1851941f9d349b3aa17b1bb1a.
+Reviewed dictionary diff is capture SHA/bundle/migration count173-to174 and one
+actual permission-table migration mention only; no physical metadata was inferred
+or handwritten. Its captured SHA truthfully remains the actual catalog source,
+not the as-yet-unpublished repair commit. No migration source/JPA mapping changed.
+
+Validation: existing19 documentation-validator self-tests, original reader ban,
+reviewed source pin, supported fixture syntax inspection, exact test source hashes/
+unchanged case sets and partition preservation, artifact/source verification and
+unmodified dictionary render/check. Java21 application compilation succeeded in
+the failed parent workflow, but corrected Java/native regression execution remains
+a new exact-SHA hosted gate; local javac/Maven/Docker remain unavailable. The seven
+native errors, including inactive-permission handling, must be rechecked rather
+than called passing on inspection alone. Preserve NOT_IMPLEMENTED/IN_PROGRESS.
+
+Publish this one bounded repair using expectedb1fee00 lease; verify exact seven
+paths/parent/tree/blobs/message, observe applicable exact-SHA Full/Fast/Docs creation
+or startup and STOP. Package B remains next only after required acceptance.
+
 <a id="hapi-595"></a>
 ## HAPI-595 — Supplied composition, properties and methods
 

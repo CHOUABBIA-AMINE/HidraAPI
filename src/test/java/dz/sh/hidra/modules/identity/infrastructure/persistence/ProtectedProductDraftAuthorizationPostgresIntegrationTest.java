@@ -271,11 +271,10 @@ public class ProtectedProductDraftAuthorizationPostgresIntegrationTest {
             Runnable inside,
             Runnable guardAction) {
         var saved = new AtomicReference<CustodyProtectedProductDraftAuthorizationContract.Contribution>();
-        var admission = new AtomicReference<CustodyProtectedProductDraftAuthorizationContract.Admission>();
         return executor.execute(
                 () -> {
                     c3SelectRestrictedRole();
-                    var ticket=paired.acquire(p, request);admission.set(ticket);
+                    var ticket=paired.acquire(p, request);
                     var result = paired.contribute(ticket);
                     saved.set(result);
                     assertThat(jdbc.queryForObject("SELECT pg_backend_pid()", Integer.class))
@@ -283,12 +282,12 @@ public class ProtectedProductDraftAuthorizationPostgresIntegrationTest {
                     assertThat(jdbc.queryForObject("SELECT txid_current()", Long.class))
                             .isEqualTo(result.transactionId());
                     inside.run();
+                    paired.requireCurrent(ticket);
                     return result;
                 },
                 em::flush,
                 () -> {
                     guardAction.run();
-                    paired.requireCurrent(admission.get());
                     var c = saved.get();
                     Integer count =
                             jdbc.queryForObject(
@@ -833,7 +832,7 @@ public class ProtectedProductDraftAuthorizationPostgresIntegrationTest {
 
     @Test void unresolvedPolicyEvidenceRemainsIndeterminateDespiteBothGrants() {
         var f=fixture("LOCAL");both(f,"create");
-        policy("PERMIT","{\"eq\":[{\"var\":\"subject.attributes.missing\"},\"approved\"]}");
+        policy("PERMIT","{\"op\":\"eq\",\"attribute\":\"subject.type\",\"type\":\"NUMBER\",\"value\":1}");
         var c=run(prepare(f),request());
         assertThat(c.companyDecision()).isEqualTo(Decision.INDETERMINATE);
         assertThat(c.productDecision()).isEqualTo(Decision.INDETERMINATE);

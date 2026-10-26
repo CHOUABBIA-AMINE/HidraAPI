@@ -294,8 +294,9 @@ public class JdbcProtectedAuthorizationEvidenceReader {
             boolean recheck) {
         try {
             if(participant==null)throw invalid();
-            var reads=recheck?participant.currentProductReads(pair,request):participant.consumeProductPair(pair,request);
-            Instant at=jdbc.queryForObject("SELECT pg_catalog.clock_timestamp()",java.sql.Timestamp.class).toInstant();
+            var nativeRead=recheck?participant.currentProductReads(pair,request):participant.consumeProductPair(pair,request);
+            var reads=nativeRead.reads();
+            Instant at=nativeRead.sampledAt();
             var company=loadClaims(reads.company(),reads.companyRequest(),false,new Rows(),recheck,at);
             var product=loadClaims(reads.facility(),reads.facilityRequest(),false,new Rows(),recheck,at);
             participant.requireCurrentProductPair(pair,request);

@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `82cf9ea7800c82900d9a96e78f4f45e4aa86d69f`
+Captured source SHA: `b1fee00e9232eee49c97b25b5c336ad75664a8fc`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `6893e31c69bae45e190291858580397341414750b455da7273dfb57eba33b010`.
-Migrations: 173; JPA mappings: 470; catalog relations: 516; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `1cb982d80d9ff74d0b1589e58ac838c6c86b4def4be7f8e9fc69e62a531de228`.
+Migrations: 174; JPA mappings: 470; catalog relations: 516; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -9535,6 +9535,7 @@ Persisted PermissionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261026_001__custody_product_draft_authority.sql](../../src/main/resources/db/migration/V20261026_001__custody_product_draft_authority.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

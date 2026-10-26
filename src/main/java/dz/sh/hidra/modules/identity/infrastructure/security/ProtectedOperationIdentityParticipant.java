@@ -606,17 +606,18 @@ public class ProtectedOperationIdentityParticipant {
         @Override public String toString(){return "ProductClaimPair[opaque]";}
     }
     @Transactional(propagation=Propagation.MANDATORY)
-    public PairReads consumeProductPair(ProductClaimPair pair,
+    public ProductReads consumeProductPair(ProductClaimPair pair,
             dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedProductDraftAuthorizationContract.Request request) {
         if(pair==null || pair.owner!=this || !pair.request.equals(request) || !pair.used.compareAndSet(false,true)) throw denied();
-        productContext(pair);
-        return new PairReads(pair.company,pair.company.request,pair.product,pair.product.request,pair.company.contribution);
+        Instant sampledAt=productContext(pair);
+        return new ProductReads(new PairReads(pair.company,pair.company.request,pair.product,pair.product.request,pair.company.contribution),sampledAt);
     }
     @Transactional(propagation=Propagation.MANDATORY)
-    public PairReads currentProductReads(ProductClaimPair pair,
+    public ProductReads currentProductReads(ProductClaimPair pair,
             dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedProductDraftAuthorizationContract.Request request) {
         requireCurrentProductPair(pair,request);
-        return new PairReads(pair.company,pair.company.request,pair.product,pair.product.request,pair.company.contribution);
+        Instant sampledAt=productContext(pair);
+        return new ProductReads(new PairReads(pair.company,pair.company.request,pair.product,pair.product.request,pair.company.contribution),sampledAt);
     }
     @Transactional(propagation=Propagation.MANDATORY)
     public void requireCurrentProductPair(ProductClaimPair pair,
@@ -633,7 +634,10 @@ public class ProtectedOperationIdentityParticipant {
         return child!=null && child.owner==this && child.used.get() && child.productDraft
             && !child.engineeringDraft && child.organization==null;
     }
-    private void productContext(ProductClaimPair pair) {
+    /** Native-issued sample, private credentials and both graph requests remain bound to one pair. */
+    public record ProductReads(PairReads reads, Instant sampledAt) {}
+
+    private Instant productContext(ProductClaimPair pair) {
         var a=pair.company;var b=pair.product;
         if(pair.owner!=this || !pair.active || !a.productDraft || !b.productDraft || a.engineeringDraft || b.engineeringDraft
             || a.organization!=null || b.organization!=null || a.owner!=this || b.owner!=this
@@ -648,6 +652,7 @@ public class ProtectedOperationIdentityParticipant {
         var now=jdbc.queryForObject("SELECT pg_catalog.clock_timestamp()",java.sql.Timestamp.class);
         if(!stored.equals(a.locator) || now==null || now.toInstant().isBefore(a.contribution.evidence().observedAt())
             || !now.toInstant().isBefore(a.contribution.validUntil()) || !states.current(stored,now.toInstant())) throw denied();
+        return now.toInstant();
     }
 
     private Object connectionResource() {

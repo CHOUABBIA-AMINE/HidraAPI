@@ -8276,6 +8276,56 @@ all six blobs (one CREATE/five MODIFY/zero DELETE). Observe applicable exact-SHA
 Full/Fast/Documentation CI creation/queue/start and STOP without waiting or
 automatically executing artifact reconciliation or acceptance.
 
+
+#### HAPI-592 NON_NULL qualification-fixture repair — 2026-10-26
+
+Owner Next selects responsible Full905 runtime-fixture repair before the
+registered API artifact stage. Source765f050b65688a048a4197b584a9c138f8413d75,
+run40282660920 attempt1, PostgreSQL shard1 job121439176272 executes219 cases:
+eight failures,zero errors/skips. All eight new qualification methods fail at
+the same createHttp:841 description-null assertion immediately after actual
+HTTP201 creation. Their downstream workflows have not passed and are not
+accepted by this checkpoint. Fast211, Docs602, unit/static and the six other
+PostgreSQL shards succeeded. The Full gate remains failed.
+
+Authenticated diagnostics artifact12633148218, ZIP SHA256
+bc9aa555a97cd7a69c12c2757d2f82a4b7f62648ac0d8e78500025fe8617977d,
+verified on download. Raw TEST-TopologyEngineeringOperatorQualificationTest XML
+SHA256 d0132dbc990c80a7c133d7232f8927851c560a015d0e12eb65e8e37ce88b6ca7 contains all eight exact inventory identities with the
+same setup failure. Real application.properties configures
+spring.jackson.default-property-inclusion=non_null. Nullable response record
+values therefore disappear from JSON rather than becoming literal null nodes;
+JsonNode.path returns a missing node, so isNull was an invalid fixture assertion.
+
+Correct only that wire-representation assumption and its matching later checks:
+description/elevation, advisory targetVersion and withdrawn snapshot must be
+absent under current NON_NULL serialization. Add positive title/observedVersion/
+WITHDRAWN-head/event assertions so an empty response cannot satisfy absence.
+The decoded canonical survey's actual Java null assertion remains unchanged.
+An absent final-page nextCursor ends pagination; a present cursor must still be
+a nonblank JSON string. Preserve all eight methods, exact HTTP statuses, scope/
+authority/rollback/digest/history assertions and required Docker execution.
+No conditional skip, expanded acceptable-status set, mock success or changed
+production serializer/DTO/controller/error/security contract is introduced.
+
+Exact scope3 MODIFY/zero CREATE/DELETE: this test, only its existing inventory
+source hash, and this append-only HAPI-592 evidence. New test source SHA256
+bf81d137d272141d27a1d5a8874c990f41cf87384a77fd3997ab496f3ce66e15. Keep registered message
+`test(topology): qualify operator API and revision history`.
+Java syntax parse with available JDK17, inventory-validator32 and
+documentation-validator19 self-tests PASS; source/case/hash/no-skip and exact
+three-file history-preserving scope checks PASS. No new local Java21/Maven/
+Spring/Jackson/PostgreSQL execution or passing qualification is claimed.
+
+API job121439176328 generated the actual runtime contract and failed strict
+canonical equality as expected after annotations. Compatibility/dictionary
+acceptance is not inferred from that failed job; the separately registered
+generated-artifact stage remains pending after responsible runtime feedback.
+Preserve OpenAPI/manifest/dictionary bytes, production source, CI modes/weights,
+all other inventory entries and task statuses. Publish under expected765f050
+lease, verify exact parent/tree/three blobs, observe applicable exact-SHA
+Full/Fast/Docs creation or startup and STOP without waiting or advancing.
+
 <a id="hapi-658"></a>
 ## HAPI-658 — expose operational scope resolution contract
 

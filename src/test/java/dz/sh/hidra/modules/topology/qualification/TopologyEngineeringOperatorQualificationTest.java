@@ -838,7 +838,8 @@ public class TopologyEngineeringOperatorQualificationTest {
     private UUID createHttp(String title) throws Exception {
         var draft=send("POST",ROOT,createBody(title),201);
         assertThat(draft.path("engineeringComplete").asBoolean()).isFalse();
-        assertThat(draft.path("metadata").path("description").isNull()).isTrue();
+        assertThat(draft.path("metadata").path("title").asText()).isEqualTo(title);
+        assertThat(draft.path("metadata").has("description")).isFalse(); // configured NON_NULL wire representation
         return UUID.fromString(draft.path("draftId").asText());
     }
     private Map<String,Object> graphBody(long version) {
@@ -859,7 +860,7 @@ public class TopologyEngineeringOperatorQualificationTest {
         send("PUT",scoped(draft,"/graph"),graphBody(1),200);
         var survey=send("PUT",scoped(draft,"/survey/parallel-a"),surveyBody(2),200);
         assertThat(survey.path("profile").path("points").get(0).path("firstCoordinate").asText()).isEqualTo("1.00");
-        assertThat(survey.path("profile").path("points").get(0).path("elevation").isNull()).isTrue();
+        assertThat(survey.path("profile").path("points").get(0).has("elevation")).isFalse();
         return draft;
     }
     private Map<String,Object> publishBody(long version,tools.jackson.databind.JsonNode head,UUID request) {
@@ -908,7 +909,8 @@ public class TopologyEngineeringOperatorQualificationTest {
                 var exported=send("GET",exchange(draft,editor,"/export"),null,200);
                 assertThat(exported.path("engineeringQualified").asBoolean()).isFalse();packages.put(editor,exported.path("package"));
                 var preview=send("POST",exchange(draft,editor,"/dry-runs"),Map.of("expectedVersion",3,"package",packages.get(editor)),200);
-                assertThat(preview.path("targetVersion").isNull()).isTrue();
+                assertThat(preview.path("observedVersion").asLong()).isEqualTo(3L);
+                assertThat(preview.has("targetVersion")).isFalse();
                 assertThat(preview.path("writeAuthorization").asText()).isEqualTo("NOT_EVALUATED");
                 var capabilities=send("GET",exchange(draft,editor,"/capabilities"),null,200);
                 assertThat(capabilities.path("maximumDecodedBytes").asInt()).isEqualTo(dz.sh.hidra.modules.topology.domain.model.EngineeringLocalExchange.Editor.valueOf(editor).maximumBytes());
@@ -1032,8 +1034,12 @@ public class TopologyEngineeringOperatorQualificationTest {
         send("POST",scoped(draft,"/publications"),publishBody(6,head,request),409);
         assertThat(send("GET",scoped(draft,"/publications/requests/"+request),null,200).path("receipt")).isEqualTo(first.path("receipt"));
         var withdrawn=send("POST",scoped(draft,"/publications/withdraw"),transitionBody(head),200);
-        assertThat(send("GET",scoped(draft,"/publications/current"),null,200).path("snapshot").isNull()).isTrue();
-        assertThat(send("GET",scoped(draft,"/publications/effective")+"&asOf="+withdrawn.path("head").path("effectiveAt").asText(),null,200).path("snapshot").isNull()).isTrue();
+        var currentWithdrawn=send("GET",scoped(draft,"/publications/current"),null,200);
+        assertThat(currentWithdrawn.path("head").path("state").asText()).isEqualTo("WITHDRAWN");
+        assertThat(currentWithdrawn.has("snapshot")).isFalse();
+        var effectiveWithdrawn=send("GET",scoped(draft,"/publications/effective")+"&asOf="+withdrawn.path("head").path("effectiveAt").asText(),null,200);
+        assertThat(effectiveWithdrawn.path("events").get(0).path("state").asText()).isEqualTo("WITHDRAWN");
+        assertThat(effectiveWithdrawn.has("snapshot")).isFalse();
         assertThat(send("GET",scoped(draft,"/publications/effective")+"&asOf="+head.path("effectiveAt").asText(),null,200).path("snapshot")).isEqualTo(snapshot);
         head=send("POST",scoped(draft,"/publications/reactivate"),transitionBody(withdrawn.path("head")),200).path("head");
         assertThat(send("GET",scoped(draft,"/publications/current"),null,200).path("snapshot")).isEqualTo(snapshot);
@@ -1044,8 +1050,11 @@ public class TopologyEngineeringOperatorQualificationTest {
         publishHttp(draft,6,head);
         do {
             for(var event:page.path("events"))epochs.add(event.path("epoch").asLong());
-            cursor=page.path("nextCursor").isNull()?null:page.path("nextCursor").asText();
-            if(cursor!=null)page=send("GET",scoped(draft,"/publications/history")+"&limit=10&cursor="+java.net.URLEncoder.encode(cursor,StandardCharsets.UTF_8),null,200);
+            cursor=page.has("nextCursor")?page.path("nextCursor").asText():null;
+            if(cursor!=null){
+                assertThat(page.path("nextCursor").isString()).isTrue();assertThat(cursor).isNotBlank();
+                page=send("GET",scoped(draft,"/publications/history")+"&limit=10&cursor="+java.net.URLEncoder.encode(cursor,StandardCharsets.UTF_8),null,200);
+            }
         } while(cursor!=null);
         assertThat(epochs).hasSize(103).doesNotHaveDuplicates().doesNotContain(104L);
         for(int n=0;n<epochs.size();n++)assertThat(epochs.get(n)).isEqualTo(103L-n);

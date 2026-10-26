@@ -161,18 +161,31 @@ public class JdbcProtectedAuthorizationEvidenceReader {
     private AuthorizationEvidence loadClaims(
             ProtectedOperationIdentityParticipant.QualifiedClaimRead credential,
             AuthorizationEvaluationRequest request, boolean organizationRecheck, Rows rows) {
+        return loadClaims(credential,request,organizationRecheck,rows,false);
+    }
+
+    private AuthorizationEvidence loadClaims(
+            ProtectedOperationIdentityParticipant.QualifiedClaimRead credential,
+            AuthorizationEvaluationRequest request, boolean organizationRecheck, Rows rows, boolean productRecheck) {
+        return loadClaims(credential,request,organizationRecheck,rows,productRecheck,null);
+    }
+
+    private AuthorizationEvidence loadClaims(
+            ProtectedOperationIdentityParticipant.QualifiedClaimRead credential,
+            AuthorizationEvaluationRequest request, boolean organizationRecheck, Rows rows,
+            boolean productRecheck, Instant productSample) {
         try {
             rows.beginGraph();
             if (participant == null || bindings == null || companions == null
                     || registry == null || catalog == null) throw invalid();
-            var contribution = organizationRecheck
-                    ? participant.currentOrganizationClaims(credential, request)
+            var contribution = productRecheck ? participant.currentProductClaims(credential, request)
+                    : organizationRecheck ? participant.currentOrganizationClaims(credential, request)
                     : participant.consumeClaims(credential, request);
             Evidence evidence = contribution.evidence();
             int pid = contribution.backendPid();
             long xid = contribution.transactionId();
             validate(evidence, request, pid, xid, participant.engineeringDraftCredential(credential),
-                    participant.organizationCredential(credential));
+                    participant.organizationCredential(credential), participant.productDraftCredential(credential));
             qualifiedPhysicalFences(pid, xid);
             OperationAuthenticationBinding original =
                     bindings.findByNativeIssuerAndJti(evidence.issuer(), evidence.jti())
@@ -210,7 +223,10 @@ public class JdbcProtectedAuthorizationEvidenceReader {
                     qualified = new QualifiedClaims(proof.coverage(), original.authenticationType());
                 }
             }
-            AuthorizationEvidence result = read(evidence, request, rows, qualified);
+            Instant productAt = participant.productDraftCredential(credential)
+                    ? Objects.requireNonNull(productSample) : evidence.observedAt();
+            if(productAt.isBefore(evidence.observedAt()) || !productAt.isBefore(contribution.validUntil())) throw invalid();
+            AuthorizationEvidence result = read(evidence, request, rows, qualified, productAt);
             // Recheck actual origin and claim generation after the complete graph load.
             participant.requireCurrentClaims(credential, request);
             if (selected != null && !selected.equals(catalog.selectVersioned(original.providerId())))
@@ -257,6 +273,33 @@ public class JdbcProtectedAuthorizationEvidenceReader {
             var network=loadQualified(reads.facility(),reads.facilityRequest());
             participant.requireCurrentDraftPair(pair,request);
             return new PairedAuthorizationEvidence(reads.companyRequest(),company,reads.facilityRequest(),network,reads.contribution());
+        }catch(RuntimeException failure){throw invalid();}
+    }
+
+    @Transactional(propagation=Propagation.MANDATORY)
+    public PairedAuthorizationEvidence loadQualifiedProductPair(
+            ProtectedOperationIdentityParticipant.ProductClaimPair pair,
+            dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedProductDraftAuthorizationContract.Request request) {
+        return productGraphs(pair,request,false);
+    }
+    @Transactional(propagation=Propagation.MANDATORY)
+    public PairedAuthorizationEvidence recheckProductPair(
+            ProtectedOperationIdentityParticipant.ProductClaimPair pair,
+            dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedProductDraftAuthorizationContract.Request request) {
+        return productGraphs(pair,request,true);
+    }
+    private PairedAuthorizationEvidence productGraphs(
+            ProtectedOperationIdentityParticipant.ProductClaimPair pair,
+            dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedProductDraftAuthorizationContract.Request request,
+            boolean recheck) {
+        try {
+            if(participant==null)throw invalid();
+            var reads=recheck?participant.currentProductReads(pair,request):participant.consumeProductPair(pair,request);
+            Instant at=jdbc.queryForObject("SELECT pg_catalog.clock_timestamp()",java.sql.Timestamp.class).toInstant();
+            var company=loadClaims(reads.company(),reads.companyRequest(),false,new Rows(),recheck,at);
+            var product=loadClaims(reads.facility(),reads.facilityRequest(),false,new Rows(),recheck,at);
+            participant.requireCurrentProductPair(pair,request);
+            return new PairedAuthorizationEvidence(reads.companyRequest(),company,reads.facilityRequest(),product,reads.contribution());
         }catch(RuntimeException failure){throw invalid();}
     }
 
@@ -363,9 +406,9 @@ public class JdbcProtectedAuthorizationEvidenceReader {
         validate(i,r,pid,xid,false);
     }
     private void validate(Evidence i, AuthorizationEvaluationRequest r, int pid, long xid,boolean draft) {
-        validate(i, r, pid, xid, draft, false);
+        validate(i, r, pid, xid, draft, false, false);
     }
-    private void validate(Evidence i, AuthorizationEvaluationRequest r, int pid, long xid,boolean draft, boolean organization) {
+    private void validate(Evidence i, AuthorizationEvaluationRequest r, int pid, long xid,boolean draft, boolean organization, boolean product) {
         if (!TransactionSynchronizationManager.isActualTransactionActive()
                 || TransactionSynchronizationManager.isCurrentTransactionReadOnly()
                 || i == null
@@ -403,7 +446,15 @@ public class JdbcProtectedAuthorizationEvidenceReader {
                         || i.externalGeneration() <= 0
                         || ("OIDC".equals(i.authenticationType())
                                 != (i.sourceExpiresAt() != null)))) throw invalid();
-        if (organization) {
+        if (product) {
+            if(draft || organization || !i.userId().equals(r.userId()) || !"PRODUCT_ENGINEERING_DRAFT".equals(r.resourceType())
+                || !text(r.resourceReferenceId(),80) || r.scope()==null || r.scope().scopeType()!=ScopeType.CUSTOM
+                || r.scope().scopeCodeSnapshot()!=null
+                || !Set.of("custody:engineering-product:create","custody:engineering-product:read","custody:engineering-product:update").contains(r.permissionCode()))throw invalid();
+            String ref=r.scope().scopeReferenceId();
+            if(ref==null || !(ref.equals("custody-product:"+r.resourceReferenceId())
+                || (ref.startsWith("custody-company:") && text(ref.substring(15),80))))throw invalid();
+        } else if (organization) {
             if (draft || !i.userId().equals(r.userId()) || r.scope() == null
                     || !text(r.resourceReferenceId(), 80)
                     || !r.resourceReferenceId().equals(r.scope().scopeReferenceId())
@@ -458,7 +509,11 @@ public class JdbcProtectedAuthorizationEvidenceReader {
 
     private AuthorizationEvidence read(
             Evidence i, AuthorizationEvaluationRequest r, Rows q, QualifiedClaims verified) {
-        Instant at = i.observedAt();
+        return read(i,r,q,verified,i.observedAt());
+    }
+
+    private AuthorizationEvidence read(Evidence i, AuthorizationEvaluationRequest r, Rows q,
+            QualifiedClaims verified, Instant at) {
         Row user = one(q.get("user", "id,user_type,status,locked_until", "id=?", i.userId()));
         Row provider = one(q.get("provider", "id,status", "id=?", i.providerId()));
         if (!active(user, UserStatus.class)

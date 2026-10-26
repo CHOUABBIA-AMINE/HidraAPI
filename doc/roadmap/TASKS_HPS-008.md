@@ -895,6 +895,95 @@ API/dictionary generation or runtime acceptance is claimed in this registration.
 Publish one guarded main commit, verify exact four paths/parent/tree/message/blobs,
 observe exact-SHA Documentation CI creation/queue/start and STOP.
 
+
+### HAPI-594 Package A implementation — 2026-10-26
+
+Owner Next after exact-head Docs609/run40387827780 success selects registeredA.
+Source parent5ccf113aff28ba27d08f9b03bb80cf8d990c5de6; tree
+5bdd674f80b35776288ec7513f65f0be32a88cf9. Policy A stays approved.
+Exact message: `feat(identity): add protected product draft authorization`.
+
+**Delivered source, pending hosted acceptance.** The seven CREATE/five MODIFY
+allowlist forA is used exactly; no DELETE. New Identity and Party contracts,
+their real native/JDBC participants, additive permission-definition migration,
+two native PostgreSQL suites, guarded Identity reader/issuer-family extensions,
+one architecture case, inventory entries and this append are the entire scope.
+No product aggregate, local draft storage, public API, catalog-admission seed,
+role grant, OpenAPI or dictionary change is part ofA. HAPI-594 as a whole remains
+NOT_IMPLEMENTED/IN_PROGRESS: its create/read/update workflow requiresB/C.
+
+The Identity contract uses PRODUCT_ENGINEERING_DRAFT, the three registered
+custody:engineering-product actions, custody-company and custody-product scopes.
+An issuer-private ProductClaimPair is distinct from Topology/Organization/station/
+diagnostic families. Native actor, source provenance, session/provider/binding
+state and exact scope/action/resource are checked in the actual transaction.
+Both graphs use one fresh database sample, including grant/policy/attribute
+temporal windows; rechecks obtain another common sample and re-evaluate current
+policies. Graph comparison excludes only the advancing context.evaluatedAt fact;
+that fact remains in the actual policy evaluation. Changed normalized authority,
+expired grants, session/source/native deadlines, changed actual Authentication,
+foreign/mixed/replayed admission and suspended/completed transactions fail closed.
+Cross-thread rejection poisons the original holder; SQL-free beforeCommit votes
+also reject swallowed failures. No new caller route or mutation permit exists
+yet; those exact platform extensions remain inB.
+
+CustodyProtectedPartyEligibilityContract exports ACTIVE Party evidence/generation
+through a separate owner-issued admission in the real physical transaction.
+Its adapter retains the reviewed Party table/function/trigger/privilege and fence
+checks, returns exact PID/XID, rejects foreign/consumed/lost-fence admissions,
+and rejects surrounding whitespace instead of silently changing supplied identity.
+Architecture allows only this exact Party root/nested types to Custody, keeping
+private Party/Identity implementations unavailable across module boundaries.
+Existing Topology/Organization contracts and owner storage/migrations remain intact.
+
+V20261026_001__custody_product_draft_authority.sql adds only three permission
+definitions. Code conflicts retain existing rows and verify exact supported
+domain/resource/action/status/sensitivity; incompatible existing meanings raise
+an error. There are no operational products, role assignments or policy seeds.
+The migration's actual PostgreSQL idempotency/mismatch/no-grant test is included;
+it has not been executed locally.
+
+**Exact new test inventory.** ProtectedProductDraftAuthorizationPostgresIntegrationTest
+contains16 cases: four actual native authentication producers/three actions;
+both-scope DENY/missing authority; company/product/action substitution; Topology
+scope rejection; prepared replay/actual-authentication replacement; fabricated
+markers/pair; consumed/completed admission; actual user/provider/session
+revocation; own-transaction grant revocation/rollback; fresh-time grant expiry;
+actual source/native deadline passage without editing immutable bindings;
+cross-thread original-transaction poisoning; transaction suspension; inactive
+permission; unresolved policy; and permission-migration compatibility.
+CustodyProtectedPartyEligibilityPostgresIntegrationTest contains11 actual
+PostgreSQL cases covering ACTIVE semantics, missing/corrupt owner witnesses,
+replay/foreign/transaction rejection, rollback, writer/admission ordering,
+retained/lost fences, trigger/function/RLS/elevated-owner/unknown-state rejection,
+exact supplied IDs and separate Topology admission types.
+ArchitectureGuardrailTest adds one contract/private-type boundary case (18 total).
+These are authored executable cases, not claims of passing Java/native runs.
+
+Inventory records exact actual source hashes/cases and service lanes. New suite
+baseline_seconds=0 explicitly means unmeasured; every old class's measured timing,
+lane, case membership and Full/Fast/shard assignment is preserved, except the
+one added architecture invocation and its necessary source hash. The active
+seven-shard policy and all workflows, routing, old hashes and budgets are intact.
+
+**Available validation.** 19 existing documentation-validator self-tests PASS.
+Targeted inventory source-hash/exact-case classification and partition checks
+PASS; comparison against the pinned prior inventory confirms all existing
+partition memberships/timings/settings are retained. Registered file scope,
+new-path absence, immutable migration preservation and append-only task history
+are checked before guarded publication. Full documentation-estate validation,
+Java21 compilation, native PostgreSQL suites, architecture execution and
+regression outcomes remain hosted exact-SHA CI gates. Local JRE is17;
+javac, Maven and Docker are unavailable (attempted javac exits127). No local
+application compilation or PostgreSQL pass is claimed and no environment was
+provisioned. Dictionary generation remains with acceptedB/C actual artifacts.
+
+Publish only this registeredA commit on main with expected5ccf113 lease;
+verify exact paths/message/parent/tree/blobs and observe applicable Full/Fast/Docs
+creation/queue/start, then STOP. Do not startB or claimA accepted before actual
+CI feedback. After successful exact-SHA required gates, next registered package:
+`feat(custody): add protected catalog-linked product drafts`.
+
 <a id="hapi-595"></a>
 ## HAPI-595 — Supplied composition, properties and methods
 

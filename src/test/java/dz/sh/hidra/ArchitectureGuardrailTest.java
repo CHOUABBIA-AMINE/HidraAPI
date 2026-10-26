@@ -166,6 +166,27 @@ class ArchitectureGuardrailTest {
                 && ORGANIZATION_OWNER_EXPORTS.stream().anyMatch(root -> target.equals(root) || target.startsWith(root + "$"));
     }
 
+    private static boolean isCustodyProductOwnerExport(String source, String target) {
+        String root="dz.sh.hidra.modules.party.application.contract.custody.CustodyProtectedPartyEligibilityContract";
+        return source.startsWith("dz.sh.hidra.modules.custody.")
+                && (target.equals(root) || target.startsWith(root+"$"));
+    }
+
+    @Test void custodyProductExportKeepsPartyAndIdentityInternalsClosed() {
+        String source="dz.sh.hidra.modules.custody.application.service.ProtectedProductDraftAdmissionCoordinator";
+        String root="dz.sh.hidra.modules.party.application.contract.custody.CustodyProtectedPartyEligibilityContract";
+        assertFalse(isForbiddenCrossModuleDependency(source,root));
+        assertFalse(isForbiddenCrossModuleDependency(source,root+"$Admission"));
+        assertTrue(isForbiddenCrossModuleDependency(source,root+"Sibling"));
+        assertTrue(isForbiddenCrossModuleDependency("dz.sh.hidra.modules.topology.application.service.Other",root));
+        assertFalse(isForbiddenCrossModuleDependency(source,
+                "dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedProductDraftAuthorizationContract"));
+        assertTrue(isForbiddenCrossModuleDependency(source,
+                "dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipant$ProductClaimPair"));
+        assertTrue(isForbiddenCrossModuleDependency(source,
+                "dz.sh.hidra.modules.party.infrastructure.persistence.adapter.JdbcCustodyProtectedPartyEligibilityAdapter"));
+    }
+
     @Test void appointmentOwnerExportsAdmitOnlyTheirExactRootsAndNestedData() {
         String source = "dz.sh.hidra.modules.organization.application.service.AppointmentCoordinator";
         for (String root : ORGANIZATION_OWNER_EXPORTS) {
@@ -631,6 +652,7 @@ class ArchitectureGuardrailTest {
             return false;
         }
         if (isOrganizationOwnerExport(sourceClassName, targetClassName)) return false;
+        if (isCustodyProductOwnerExport(sourceClassName, targetClassName)) return false;
         return !isTransitionallyAllowed(sourceClassName, targetClassName);
     }
 

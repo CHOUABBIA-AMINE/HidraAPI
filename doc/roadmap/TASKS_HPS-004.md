@@ -7832,7 +7832,7 @@ Priority: P1
 
 Implementation Status: NOT_IMPLEMENTED
 
-Planning Status: BLOCKED
+Planning Status: IN_PROGRESS
 
 Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -8011,6 +8011,186 @@ doc/roadmap/ULTIMATE_ROADMAP.md:1299 | HPR-P25-052F | Cross-slice operator/API/s
 doc/model-remediation/RECONCILIATION.md:23361 | HPR-P25-052F | Cross-slice operator/API/security/history qualification and consumer-ready contract. | Real configured API/filter path across two companies/networks and station graphs, rollback/concurrency/corruption tests; exact runtime OpenAPI/permissions/DTOs and relevant consumer handoff, no new frontend implementation in this repo.
 doc/model-remediation/RECONCILIATION.md:23739 | HPR-P25-052F | BLOCKED_SPECIFICATION | Topology operator/API/history qualification
 ~~~~~~~~
+
+
+### 2026-10-26 — HAPI-592 source-backed operator qualification registration
+
+Owner Continue after HAPI-591 acceptance selects this dependency-ready task's
+bounded discovery/registration stage. Exact message:
+`docs(topology): register operator API history qualification`.
+Source main38ba912f3960861a783b2a87986c2b73f2d1d432 has successful exact-head
+Docs600 run40280149115. Its runtime source is unchanged from accepted Full904
+on4a69624ecc635203fecb404c61933c696708d7f4 (3243 actual cases,465 classes).
+HAPI-588/589/590/591 remain accepted within their recorded scopes. This stage
+changes only HAPI-592 planning BLOCKED to IN_PROGRESS; implementation remains
+NOT_IMPLEMENTED. No prior cumulative passing run accepts HAPI-592 itself.
+
+**Recovered current owners and fixture placement.** EngineeringNetworkDraftController
+owns eight metadata/graph/survey tuples; EngineeringRevisionPublicationController
+owns eight publication/head/effective/history/request tuples;
+EngineeringLocalExchangeController owns four editor tuples. All are under
+/api/v1/topology/engineering-networks. The exact compiled tuple checks in
+HidraRouteAuthorizationInterceptor delegate final admission to the existing
+native owners; they do not grant prefix-wide access. Existing inbound owners:
+EngineeringNetworkDraftUseCase, EngineeringGraphDraftUseCase,
+SurveyRouteProfileUseCase, EngineeringRevisionPublicationUseCase and
+EngineeringLocalExchangeUseCase in topology/application/port/in. All DTOs,
+controllers, scoped advice and publication JDBC storage were recovered at this
+source, together with the current actual runtime OpenAPI and inventory.
+
+Existing real native fixtures in topology/infrastructure/persistence:
+- EngineeringNetworkDraftPostgresIntegrationTest:43 cases, source SHA256
+  28c9a822ec51b7e21171c20787a5081efc237af1b26d2dca9b39906963f0b1b7.
+- EngineeringRevisionPublicationPostgresIntegrationTest:14 cases, source SHA256
+  8cc32d91c0ba069435c13c1df9407f25e7ec81a34f8e7b95769a3e0a72c848ca.
+- EngineeringGraphDraftPostgresIntegrationTest:5 isolated DDL cases, source SHA256
+  2abad7c852a8dd8578e1bb4e9e47101c119daf42d229f86352f7cd14fc64ecd5.
+Existing interceptor suite11 cases source SHA256
+b0542a1a578589a71629892e05ef262edfdd96e702fa59eb6d0f0f91ac621713.
+These retain independent obligations; copying fixture code never imports their
+executed evidence into the new task. The isolated graph DDL fixture is not the
+operator acceptance path. Publication storage source SHA256
+dff7e940cf689eae0a64632aa592c3da37edee1e5b0a199f3497ac03fcf5b04d.
+
+Use the publication fixture's actual full Flyway setup, real native producers,
+MockMvc web context plus springSecurity filters, protected transaction manager,
+synthetic directory/source transports, actual ordinary c3_source_claim_app and
+publisher c3_publication_app principals and privileged setup-only connection.
+Its private helpers are not inheritable. The proposed new qualification class
+will contain only the necessary copied/adapted setup/helpers, not extend the old
+test class or replay its fourteen methods. No new shared fixture/support file is
+admitted. Keep old fixtures byte-identical. Configure Docker absence to fail the
+new required class, not skip it. Setup SQL constructs synthetic owners/grants;
+all operator actions and assertions of authority use the actual HTTP/owner path.
+Spies may inject an explicit final-guard/flush fault but cannot replace successful
+Identity, Party, Facility, repository or transaction operations with mock answers.
+
+**Discovered consumer contract gap.** Current generated269-path/291-operation/
+283-schema OpenAPI lists only200 for these20 operations, although existing
+scoped advice maps malformed400, denied403, missing404, conflict409 and
+unavailable/indeterminate503; authentication also yields401 through the filter
+or applicable owner/controller. The source response mappings are preserved.
+Register additive Swagger response annotations on the three existing controllers
+to expose their actual supported statuses. Do not claim every filter error has
+the scoped advice's ProblemDetail envelope.401 content is explicitly unspecified
+unless the actual filter response is established; owner errors use their current
+ProblemDetail DTO, fixed details and code where present. No new error handler,
+runtime mapping, route, DTO, authority bypass or accepted-status-set relaxation.
+Any actual runtime inconsistency found by the new tests must be recorded and
+separately bounded before a production behavior repair, rather than hidden by
+annotations or inferred from status alone.
+
+**Registered implementation stage, not executed:** exact message
+`test(topology): qualify operator API and revision history`.
+One CREATE / five MODIFY / zero DELETE:
+- CREATE src/test/java/dz/sh/hidra/modules/topology/qualification/TopologyEngineeringOperatorQualificationTest.java.
+- MODIFY src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/EngineeringNetworkDraftController.java.
+- MODIFY src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/EngineeringRevisionPublicationController.java.
+- MODIFY src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/EngineeringLocalExchangeController.java.
+  Controller edits are documentation annotations/imports and UpdatedOn only;
+  preserve method signatures/bodies, DTOs, success responses and operation IDs.
+- MODIFY .github/ci-test-inventory.json: admit only the actual new class, exact
+  source hash and case identities; postgres-integration, fast=false,
+  baseline_seconds=0 explicitly unmeasured, dependency reason full native
+  Spring/Flyway/PostgreSQL operator qualification. Preserve all current weights,
+  classes, historical archives, seven shards and workflow mode. Do not tune
+  weights or exclude old tests to shorten CI.
+- MODIFY this phase file: append only HAPI-592 implementation evidence.
+No governance status promotion occurs during source delivery.
+
+Exactly eight planned @Test methods, one invocation each, loops inside methods
+where appropriate; not executed cases or invented future report counts:
+1. nativeOperatorsAuthorExchangeAndPublishExactSnapshotsAcrossFourProviders —
+   real signed LOCAL/OIDC/LDAP/ACTIVE_DIRECTORY; actual HTTP create, graph and
+   survey authoring, validation, all three editor export/dry-run/import routes,
+   publish and exact read. Include station-bearing and serial/parallel network
+   facts, decimal scale/null/unit/unknown retention, exact canonical digests,
+   shared expected versions and immutable published snapshots. Keep same-graph
+   survey rebind provenance separate; engineering qualification remains false.
+2. twoCompaniesAndNetworksCannotReadWriteOrReplayEachOthersSelectors —
+   create actual active A/B companies, A/B networks and owned stations, distinct
+   identities with only their company+network grants. Try both company and
+   network substitutions independently across draft, graph, survey, exchange,
+   publication/current/exact/effective/history/request and transitions; assert
+   fixed non-disclosing denial and complete storage invariance. Distinguish
+   existing unauthorized company403 from absent owner503, not a broad status set.
+3. currentDenyAndRevocationOverridePriorPreviewsAndUnrelatedRoutes —
+   ordinary login cannot publish; READ preview never grants UPDATE/PUBLISH;
+   actual DENY/revocation between preview and fresh write denies through HTTP;
+   anonymous401 and sibling/wrong compiled tuples cannot delegate. Reuse actual
+   grants, no forged actor evidence or owner mock. Assert no partial successors.
+4. publishedHistoryRemainsExactAfterSourceEditsAndLifecycleTransitions —
+   original exact snapshot survives metadata/graph/survey changes; explicit
+   request replay and conflicting replay; withdraw/reactivate and half-open
+   committed as-of boundaries, more than100 events with bounded cursor pages,
+   no duplicates/omissions; exact revision lookup independent of pagination.
+5. concurrentHttpWritersAndPublishersHaveOneCasWinner — concurrent HTTP writes
+   sharing one explicit draft version and concurrent publication candidates
+   sharing one head epoch; each scenario has exactly one committed winner,
+   native409 loser and exact metadata/component/event/head row counts.
+6. finalGuardAndManagedFlushFaultsRollBackEveryOperatorEffect — actual protected
+   write with targeted final guard invalidation and managed flush failure;
+   before/after complete draft/component/publication storage images equal.
+   Report injected faults truthfully; no physical unknown COMMIT or elapsed
+   deadline/performance claim is inferred, no automatic retry on indeterminate.
+7. stationOwnershipAndCatalogCorruptionFailClosedWithoutHistoryMutation —
+   station owner transfer/ABA and graph incidence mismatch denied without
+   rebind; privileged fixture alters reviewed trigger/function/role invariants,
+   actual owner refuses; restore in finally and verify ledger/head unchanged.
+   No impossible update of immutable ledger is claimed as real data corruption;
+   trigger/function integrity is the concrete catalog corruption exercised.
+8. runtimeConsumerContractMatchesTypedRoutesErrorsAndBounds — compare actual
+   in-process generated /v3/api-docs and typed operation inventory for20 tuples,
+   bearer security, existing DTO references and additive error response status
+   documentation. Exercise representative actual malformed/scope/stale/error
+   bodies, canonical UTC/microsecond asOf, history limit/cursor, exact editor and
+   branch/version requirements,24MiB raw exchange bound and existing payload
+   bounds. Check fixed error fields and protected selector absence; distinguish
+   filter401 from owner ProblemDetail. This is backend consumer handoff proof,
+   not a completed HidraWEB integration. No remote URLs, archives or batch import.
+
+The consumer handoff is the accepted generated OpenAPI plus this source-linked
+matrix: eight draft/graph/survey tuples use topology:engineering-draft:
+create/read/update/validate as applicable; publication PUBLISH/WITHDRAW/REACTIVATE
+use topology:engineering-publication:publish/withdraw/reactivate, all five reads
+use topology:engineering-publication:read; exchange export/dry-run/capabilities
+use existing READ and imports dispatch one existing UPDATE. Company and network
+scope are both required. Packages/provenance/digests do not convey write authority.
+Preserve protected500ms/lock250ms/statement750ms/idle1000ms bounds unchanged;
+they do not establish an end-to-end HTTP SLA. All published snapshots remain
+engineering-unqualified unless a separate real qualified contract is admitted.
+
+**Following separately selected stages.** After actual hosted outputs and any
+responsible runtime repair, exact message
+`docs(topology): reconcile operator qualification API contract`:
+MODIFY only doc/api/openapi.yaml, .github/documentation-validation.json openapi
+object and this HAPI-592 record. Use actual source/run/attempt/artifact/member
+digests. No schema/JPA/source-owner change is planned; preserve physical dictionary
+bytes and require normal migrated catalog equality. Preserve prior nested
+provenance; strict snapshot equality and successful-runtime-base compatibility
+remain unchanged. Never invent the generated error schemas or updated counts.
+
+After applicable exact-source Full/Fast/Docs, case-level/native/cross-scope proof
+and complete artifact gates, exact message
+`docs(topology): record operator qualification acceptance`:
+only this phase's HAPI-592 statuses/evidence, matching ROADMAP/PHASES status cells
+and compact index pointer (four governance MODIFY). HAPI-608 integrated closure
+remains separately selected. No new frontend, remote/multi-owner exchange,
+engineering/SITE commissioning, release, deployment, simulation/P3 or OT action.
+
+**This registration's exact scope and checks.** Zero CREATE / four MODIFY /
+zero DELETE: append this record, change only HAPI-592 planning to IN_PROGRESS
+in its header and ROADMAP/PHASES row; add one compact current index pointer.
+Preserve all prior evidence and production/test/artifact/workflow/schema blobs.
+Validate focused921-task/index and61-task selected-phase status agreement,
+exact old-history/status-only scope, three present controller paths and absent
+proposed class, actual20-operation runtime inventory, source hash/case recovery
+and19 existing documentation-validator self-tests. No new Java/Maven/PostgreSQL
+execution or new qualification/API artifact acceptance is claimed in this stage.
+Follow AGENTS CI-first; do not provision a full local environment merely to test.
+Publish this registration with expected38ba912 lease, verify exact one-parent/
+tree/four-file scope, observe applicable exact-SHA Documentation CI creation/
+queue/start and STOP. Implementation is the next separately selected stage.
 
 <a id="hapi-658"></a>
 ## HAPI-658 — expose operational scope resolution contract

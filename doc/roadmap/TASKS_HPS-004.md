@@ -8326,6 +8326,81 @@ all other inventory entries and task statuses. Publish under expected765f050
 lease, verify exact parent/tree/three blobs, observe applicable exact-SHA
 Full/Fast/Docs creation or startup and STOP without waiting or advancing.
 
+
+#### HAPI-592 observed HTTP qualification repairs — 2026-10-26
+
+Owner Fail selects the responsible Full906 failures at exact source
+d0c21a22f5a0848300ecf8a1130da9f188684e87, run40367220120 attempt1,
+PostgreSQL shard1 job121728063196. It executes219 cases with3 failures,
+zero errors/skips. The new eight-method suite now has five actual passes:
+four native-provider editor/exchange/publication roundtrips; DENY/revocation/
+ordinary/anonymous/tuple denial; immutable source-edited103-event history;
+final-guard/managed-flush rollback; station ownership/ABA/catalog corruption.
+The three remaining cases fail at the concrete boundaries below; their later
+assertions are not passing evidence. Unit/static and six other DB shards pass;
+Full906 and its gate remain failed. Optional serial Maven verification skips.
+
+Authenticated diagnostic artifact12671866957, ZIP SHA256
+730506bad2b0a9152611cf7de3042d5f61933dbdf08575d46b1c0e28746f2e8c,
+is verified on download. Raw qualification XML SHA256 e1156b4f00cd533eab76ca7dd5aa555bdc642a78f67d29fd0417db233a945c20
+retains all eight identities and actual8/3/0/0 counts.
+
+1. The ordinary test profile explicitly disables springdoc.api-docs.enabled;
+   /v3/api-docs therefore returns404, not a generated consumer contract. Enable
+   that property only in this qualification class's SpringBootTest properties.
+   Keep the common test/production configuration and security chain unchanged.
+2. The uncoordinated HTTP CAS fixture returned one200 and one503: existing
+   repository OPEN takes SHARE ROW EXCLUSIVE NOWAIT relation fences, so a busy
+   admission may fail UNAVAILABLE before expected-version comparison. Preserve
+   that behavior; do not convert availability into conflict, broaden the
+   expected result set or increase transaction/lock/time budgets. Add an explicit
+   independent PostgreSQL ROW EXCLUSIVE blocker scenario requiring exact503/
+   UNAVAILABLE and unchanged storage. Separately require the existing exact
+   one200/one409 CAS results and row counts for draft and publication candidates.
+   Both HTTP requests must be in flight (assert peak2), but a fixture-only
+   servlet filter orders their admission: the second waits before authentication
+   or any owner transaction until the first request commits/returns. Each still
+   traverses real Spring Security, HTTP/owner/DB admission. No fence or protected
+   budget is held during the wait. This proves stale expected-version/head CAS
+   after overlapping HTTP arrival, not simultaneous physical DB-writer execution.
+   Preserve the earlier native/owner database concurrency and fence obligations
+   as independent evidence; do not inflate this controlled schedule's claim.
+3. The full-body non-disclosure assertion found a real scoped draft error gap:
+   Spring fills a missing ProblemDetail.instance with the request path, including
+   the draft UUID. Keep the strict full-body selector prohibition unchanged.
+   Bound the necessary production correction to
+   src/main/java/dz/sh/hidra/modules/topology/api/rest/EngineeringNetworkDraftApiExceptionHandler.java:
+   set fixed urn:hidra:engineering-draft for native failures and invalid-body
+   errors, plus UpdatedOn. All status/reason/detail mappings, handler scope,
+   authorization, DTOs and success behavior remain unchanged. No new permissions,
+   owner access, broad exception mapping or generic security-response change.
+   This explicit demonstrated privacy gap admits only that extra source file
+   for this responsible repair; all other production changes remain excluded.
+
+Exact bounded repair4 MODIFY/zero CREATE/DELETE: the qualification test, its
+existing inventory source hash only, the scoped draft advice above and this
+append-only HAPI-592 record. Reuse registered exact message
+`test(topology): qualify operator API and revision history`.
+New qualification source SHA256 53ce1cb026178a332dd85770baddeaca19930ab0491260146c7dd3d630e59a28; all eight method/case identities,
+all other inventory metadata/classes/weights, seven shards, CI modes and task
+statuses remain unchanged. Keep the prior NON_NULL repair and all old evidence.
+
+Available checks: both changed Java sources parse with existing JDK17;
+inventory-validator32 and documentation-validator19 self-tests PASS. Exact
+case/source-hash/status/no-skip and four-file scope/history checks PASS. Hosted
+Java21/Maven/Spring/Jackson/PostgreSQL execution remains authoritative; no new
+local runtime pass or HAPI-592 acceptance is claimed. No full local environment
+is provisioned under the owner's CI-first policy.
+
+API job121728062231 again generates runtime output and fails strict snapshot
+equality after the earlier annotations. Preserve canonical OpenAPI/manifest/
+dictionary bytes; use actual hosted artifacts for the separately registered
+reconciliation after responsible runtime feedback. No compatibility/catalog
+pass is inferred from the failed API lane. Publish this one repair using expected
+d0c21a2 lease; verify parent/tree/message/exact4 blobs, observe applicable exact-SHA
+Full/Fast/Docs creation/queue/start and STOP. No automatic artifact stage,
+acceptance, HAPI-608, frontend implementation, release or deployment follows.
+
 <a id="hapi-658"></a>
 ## HAPI-658 — expose operational scope resolution contract
 

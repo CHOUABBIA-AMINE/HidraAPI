@@ -94,6 +94,7 @@ import javax.crypto.spec.SecretKeySpec;
         classes = HidraApplication.class,
         webEnvironment = SpringBootTest.WebEnvironment.MOCK,
         properties = {
+            "springdoc.api-docs.enabled=true",
             "hidra.platform.security.ldap.enabled=true",
             "hidra.platform.security.ldap.url=ldap://synthetic.invalid:389",
             "hidra.platform.security.ldap.base-dn=dc=synthetic,dc=invalid",
@@ -1063,19 +1064,45 @@ public class TopologyEngineeringOperatorQualificationTest {
 
     private List<Integer> race(String method,List<String> urls,List<Object> bodies) throws Exception {
         String token=rawToken;var start=new CountDownLatch(1);
+        var arrived=new CountDownLatch(2);var firstCompleted=new CountDownLatch(1);
+        var inFlight=new AtomicInteger();var peakInFlight=new AtomicInteger();
+        // Both HTTP requests are in flight, but the second waits BEFORE authentication/owner
+        // admission. No protected transaction or fence is held while the fixture waits.
+        // This isolates expected-version CAS from NOWAIT admission availability (tested below).
+        jakarta.servlet.Filter admissionOrder=(request,response,chain)->{
+            boolean first="0".equals(((jakarta.servlet.http.HttpServletRequest)request).getHeader("X-Hidra-Qualification-Order"));
+            peakInFlight.accumulateAndGet(inFlight.incrementAndGet(),Math::max);arrived.countDown();
+            try {
+                if(!arrived.await(10,TimeUnit.SECONDS) || !first && !firstCompleted.await(10,TimeUnit.SECONDS))
+                    throw new jakarta.servlet.ServletException("Synthetic HTTP admission ordering timed out");
+                chain.doFilter(request,response);
+            } catch(InterruptedException interrupted){Thread.currentThread().interrupt();throw new jakarta.servlet.ServletException(interrupted);}
+            finally {if(first)firstCompleted.countDown();inFlight.decrementAndGet();}
+        };
+        var orderedHttp=org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup(webContext)
+            .addFilters(admissionOrder).apply(org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity()).build();
         try(var pool=Executors.newFixedThreadPool(2)) {
             var jobs=new ArrayList<Future<Integer>>();
             for(int n=0;n<2;n++){final int index=n;jobs.add(pool.submit(()->{
                 start.await();SecurityContextHolder.clearContext();
-                try {return http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request(org.springframework.http.HttpMethod.valueOf(method),urls.get(index))
-                    .header("Authorization","Bearer "+token).contentType("application/json").content(JSON.writeValueAsString(bodies.get(index)))).andReturn().getResponse().getStatus();}
+                try {return orderedHttp.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request(org.springframework.http.HttpMethod.valueOf(method),urls.get(index))
+                    .header("X-Hidra-Qualification-Order",Integer.toString(index)).header("Authorization","Bearer "+token).contentType("application/json").content(JSON.writeValueAsString(bodies.get(index)))).andReturn().getResponse().getStatus();}
                 finally{SecurityContextHolder.clearContext();}
             }));}
-            start.countDown();var result=new ArrayList<Integer>();for(var job:jobs)result.add(job.get(20,TimeUnit.SECONDS));return result;
+            start.countDown();var result=new ArrayList<Integer>();for(var job:jobs)result.add(job.get(20,TimeUnit.SECONDS));
+            assertThat(peakInFlight.get()).isEqualTo(2);return result;
         }
     }
     @Test void concurrentHttpWritersAndPublishersHaveOneCasWinner() throws Exception {
         publicationActor("LOCAL");UUID draft=createHttp("CAS");
+        var before=storageImage();
+        try(var blocker=administrator.getConnection()) {
+            blocker.setAutoCommit(false);
+            blocker.createStatement().execute("LOCK TABLE public.hidra_topology_engineering_draft_version IN ROW EXCLUSIVE MODE");
+            var busy=send("PUT",scoped(draft,""),Map.of("expectedVersion",1,"title","blocked"),503);
+            assertThat(busy.path("code").asText()).isEqualTo("UNAVAILABLE");blocker.rollback();
+        }
+        assertThat(storageImage()).isEqualTo(before);
         assertThat(race("PUT",List.of(scoped(draft,""),scoped(draft,"")),List.of(Map.of("expectedVersion",1,"title","one"),Map.of("expectedVersion",1,"title","two"))))
             .containsExactlyInAnyOrder(200,409);
         assertThat(jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_engineering_draft_version WHERE draft_id=?",Long.class,draft)).isEqualTo(2L);

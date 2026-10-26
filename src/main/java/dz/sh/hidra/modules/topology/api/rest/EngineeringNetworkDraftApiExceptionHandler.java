@@ -7,7 +7,7 @@
  *
  * @Name        : EngineeringNetworkDraftApiExceptionHandler
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-19
+ * @UpdatedOn   : 2026-10-26
  *
  * @Type        : Class
  * @Layer       : API
@@ -33,8 +33,12 @@ public class EngineeringNetworkDraftApiExceptionHandler {
             case DENIED->"Engineering draft access denied";case NOT_FOUND->"Engineering draft target unavailable";
             case CONFLICT->"Engineering draft version or creation request conflict";case UNAVAILABLE->"Engineering draft service unavailable";
             case INDETERMINATE->"Engineering draft completion is indeterminate";});
+        p.setInstance(java.net.URI.create("urn:hidra:engineering-draft"));
         p.setProperty("code",e.reason().name());return ResponseEntity.status(status).body(p);
     }
     @ExceptionHandler({IllegalArgumentException.class,HttpMessageNotReadableException.class})
-    public ResponseEntity<ProblemDetail> invalid(Exception e){return ResponseEntity.badRequest().body(ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,"Invalid engineering draft request"));}
+    public ResponseEntity<ProblemDetail> invalid(Exception e){
+        var p=ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,"Invalid engineering draft request");
+        p.setInstance(java.net.URI.create("urn:hidra:engineering-draft"));return ResponseEntity.badRequest().body(p);
+    }
 }

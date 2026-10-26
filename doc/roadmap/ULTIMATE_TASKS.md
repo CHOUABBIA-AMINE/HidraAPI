@@ -71,12 +71,13 @@ parent; HAPI-608 is separate aggregate exchange. No next task, frontend
 implementation, release, deployment or numerical engine is selected automatically.
 
 [HAPI-594](TASKS_HPS-008.md#hapi-594), product identity and metadata drafts,
-is selected for source-backed policy proposal only and remains
-NOT_IMPLEMENTED/BLOCKED. Docs607 passed the topology parent closure. Its owning
-record now describes actual Custody catalog/consumer/authority seams and a
-concrete proposed GAS/LIQUID metadata plus shared-catalog-reference policy.
-An explicit owner decision remains required; no runtime allowlist or business
-approval is inferred from this preflight. HAPI-595..597 remain unselected.
+is NOT_IMPLEMENTED/IN_PROGRESS. The owner explicitly approved Policy A:
+company-local metadata drafts reference admitted shared Custody catalog products;
+GAS/LIQUID are metadata labels and absent classification stays incomplete.
+Docs608 passed the policy proposal. The owning phase record now registers
+protected authorization, owner persistence and HTTP packages A/B/C; Package A
+is next after this registration's Documentation CI acceptance.
+No runtime capability is claimed; HAPI-595..597 remain unselected.
 
 
 [HAPI-045](TASKS_HPS-024.md#hapi-045),

@@ -346,7 +346,7 @@ Priority: P1
 
 Implementation Status: NOT_IMPLEMENTED
 
-Planning Status: BLOCKED
+Planning Status: IN_PROGRESS
 
 Owning Module: `custody` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -656,6 +656,244 @@ Publish this one two-file proposal on main with expected3bf68ab lease, verify
 exact parent/tree/message/blobs, observe applicable exact-SHA Documentation CI
 creation/queue/start and STOP. No594 production code,595..597 implementation,
 other owner package, release/deployment, numerical engine or OT action follows.
+
+
+### HAPI-594 Policy A approved and protected execution registered — 2026-10-26
+
+**Owner decision.** The owner explicitly selected "A" in response to the
+published A/B choice on main1380f9a78bc72a3ea52239c4c8f5c322356fc16b.
+This adopts all six numbered Policy A rules above. Custody remains the sole
+product owner; company-local draft identity/code and versioned metadata reference
+an explicitly admitted existing active shared Custody catalog product. GAS and
+LIQUID are representational labels only; null classification is UNSPECIFIED and
+diagnostically incomplete. There is no inference from names, property invention,
+catalog fork, consumer-ID substitution or liquid numerical qualification.
+This resolves the HPR-P25-053A policy gate, not later053B classifications.
+The dated unresolved-policy statements above remain historical evidence.
+
+Source parent1380f9a; tree0be778180fe2b6e79cd3cd573ff56de331a6910f.
+Docs608/run40385819951 succeeded on this exact parent; unchanged runtime baseline
+Full908/Fast214 remains ef075097142df9e665bc89eb3b2bd4e6b2c9bc17.
+HAPI-594 changes to NOT_IMPLEMENTED/IN_PROGRESS only. HAPI-595..597 stay blocked
+and unselected. This is one documentation registration stage, exact message:
+`docs(custody): register protected product draft execution`.
+Current write scope is exactly this phase file, the compact ULTIMATE_TASKS index
+and status-only ULTIMATE_ROADMAP/ULTIMATE_PHASES rows for594. No reconciliation
+history rewrite, runtime, schema, CI weights, test inventory or artifact change.
+
+#### Recovered seams and constraints
+
+- Identity's TopologyProtectedEngineeringDraftAuthorizationContract has
+  pipelineSystemId, topology-company/topology-network scopes and Topology-specific
+  permission/resource types. ProtectedOperationIdentityParticipant.qualifyDraftPair
+  and JdbcProtectedAuthorizationEvidenceReader.validate enforce that exact family.
+  New product IDs must never be smuggled through those methods/scopes. Add a
+  distinct issuer-tagged product family, with unchanged existing-family checks.
+- ProtectedTransactionExecutor.executePublication, sealAdmission,
+  beginProvisional and endProvisional restrict exact compiled callers. Extend only
+  for the concrete product service/coordinator, retaining credential routing,
+  original budgets, final common database time, private permits and all existing
+  hashes. Product DML must use its own reviewed exact statement hashes, never
+  generic INSERT/UPDATE-prefix admission or an arbitrary callback.
+- Party's protected Topology adapter proves ACTIVE Party status and generation
+  in the actual physical transaction, with two relation fences and opaque,
+  issuer/thread/connection-bound one-use admissions. Add a Custody-exported
+  contract/adapter with the same owner semantics; do not depend on Party's
+  private adapter or expose a Boolean controller precheck.
+- CustodyCatalogEntryJpaEntity has no company/local revision fields; keep it and
+  existing Planning/Simulation contracts unchanged. Planning's product policy
+  is nomination-specific. Add independent Custody engineering-reference policy,
+  empty on migration, keyed to existing catalog IDs. Require both active policy
+  and active catalog, under fences/locks through the final boundary.
+- Last live migration is V20261025_001__organization_appointment_current_read_guard.sql.
+  All new filenames below are currently absent; recheck ordering before each
+  code package. No historical migration edits, operational seeds or grants.
+
+#### Shared contract for the three bounded packages
+
+Product domain is pure Java; company, exact local code and catalog reference are
+mandatory immutable identity. Server-generated draft UUID, company-local exact
+case-sensitive code (1..80 Unicode code points, no trimming), shared catalog ID
+(1..80) and creation-request UUID form explicit identities. Unique(company,code)
+and unique(company,creationRequestId); no ownership transfer, rename or relink.
+Metadata has optional name (max240), description (max4000), evidence reference
+(max1000) and classification null/GAS/LIQUID; supplied non-null text cannot be
+blank or silently normalized. Enforce UTF-8/Unicode validity and actual storage
+bounds in the domain, DTO and database. Missing name, evidence or classification
+produces explicit completeness diagnostics; creation need not invent them.
+
+CREATE starts version1. UPDATE requires positive expectedVersion and appends
+exactly one immutable canonical metadata version. CREATE replay requires exact
+original canonical identity/metadata match and returns the existing identity;
+different content conflicts. A replay is authorized afresh and never discloses
+another company's record. READ returns current metadata/version only. Retain
+immutable versions internally; public publication/history/export belongs to596.
+Every response includes local draft identity and shared catalog identity as
+distinct fields, company, local code, current version and diagnostics. No list,
+count, search, delete, merge, property API or public revision publication here.
+
+Native Identity authority uses resource type PRODUCT_ENGINEERING_DRAFT and
+permissions custody:engineering-product:create/read/update. Require independent
+CUSTOM scopes custody-company:<companyId> and custody-product:<catalogProductId>
+against the same action/resource and one fresh native identity contribution.
+The second scope means approval to author metadata referencing that shared
+product, not thermodynamic or Planning qualification. Resource reference is the
+catalog ID; requested local draft/company binding is checked by Custody only
+after authority. Retain DENY precedence, current effective responsibility,
+provider/session/binding/claim generations, expiry, actor audit and no cached
+caller permission. New family must reject station/draft/organization/diagnostic
+credentials and fabricated/mixed/reused admissions. No grants are seeded.
+
+The actual owner transaction must collect Identity, Party and Custody catalog/
+policy/draft evidence from one backend PID/transaction, acquire the full reviewed
+relation fences, use common final database time and revalidate before disclosure
+or commit. Missing/deactivated/revoked catalog/policy/Party/Identity evidence
+fails closed. Timeouts, lock contention, unknown commit and stale versions retain
+existing classified errors and rollback guarantees; never retry a write silently.
+Preserve original identity snapshot and authored evidence for internal revisions.
+Historical metadata does not become current policy or engineering qualification.
+
+#### Package A — distinct native product authorization
+
+Next executable package after successful registration Documentation CI:
+`feat(identity): add protected product draft authorization`.
+
+CREATE exactly:
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/custody/CustodyProtectedProductDraftAuthorizationContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedProductDraftAuthorizationParticipant.java`
+- `src/main/java/dz/sh/hidra/modules/party/application/contract/custody/CustodyProtectedPartyEligibilityContract.java`
+- `src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JdbcCustodyProtectedPartyEligibilityAdapter.java`
+- `src/main/resources/db/migration/V20261026_001__custody_product_draft_authority.sql`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedProductDraftAuthorizationPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/party/infrastructure/persistence/CustodyProtectedPartyEligibilityPostgresIntegrationTest.java`
+
+MODIFY exactly:
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `.github/ci-test-inventory.json`
+- `doc/roadmap/TASKS_HPS-008.md`
+
+Migration adds only the three explicit permission definitions, asserting exact
+existing-row compatibility, with no assignment, role grant, product seed or
+modification of existing permission meaning. Party uses existing owner storage
+and generation triggers; no new Party lifecycle policy. Participant/component
+wiring follows existing Spring constructor injection. No product public endpoint
+or storage is accepted inA. Focused actual native PostgreSQL tests must prove
+both scope permits, one-side DENY, indeterminate/missing graph, disabled user/
+provider/session/binding, exact expiry, changed actual authentication, wrong
+company/product/action, family forgery/reuse, cross-thread/transaction attempts,
+Party deactivation and rollback. Regression: existing protected Topology and
+Organization authorization suites and ArchitectureGuardrailTest. Register only
+real new test cases/hashes, retaining existing inventory lanes and weights.
+
+#### Package B — owner aggregate, admission and persistence
+
+Depends on exact-SHA acceptedA. Exact message:
+`feat(custody): add protected catalog-linked product drafts`.
+
+CREATE exactly:
+- `src/main/java/dz/sh/hidra/modules/custody/domain/model/ProductEngineeringDraft.java`
+- `src/main/java/dz/sh/hidra/modules/custody/application/port/in/ProductEngineeringDraftUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/custody/application/port/out/ProductEngineeringDraftRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/custody/application/service/ProductEngineeringDraftApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/custody/application/service/ProtectedProductDraftAdmissionCoordinator.java`
+- `src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcProductEngineeringDraftRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/ProductEngineeringDraftMetadataCodec.java`
+- `src/main/resources/db/migration/V20261026_002__custody_product_engineering_drafts.sql`
+- `src/test/java/dz/sh/hidra/modules/custody/domain/model/ProductEngineeringDraftTest.java`
+- `src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/ProductEngineeringDraftPostgresIntegrationTest.java`
+
+MODIFY exactly:
+- `src/main/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutor.java`
+- `src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java`
+- `.github/ci-test-inventory.json`
+- `doc/roadmap/TASKS_HPS-008.md`
+
+Use Custody-owned engineering_product_policy, product_engineering_draft and
+product_engineering_draft_version tables with hidra_custody_ prefix.
+Policy has existing catalog FK and explicit active admission, no default seeds.
+Draft stores immutable UUID/company/local-code/catalog/create-request and initial
+canonical request digest; versions have draft FK, positive sequential version,
+canonical payload/format/digest, actual audit actor and database timestamp.
+Use unique constraints and owner row locking/CAS for concurrent creates/appends;
+reject UPDATE/DELETE/TRUNCATE of immutable authored history through triggers.
+Catalog/policy fencing must cover activation changes and deletion through final
+commit/disclosure; row existence alone is insufficient. Parameterize all SQL;
+exact codec round-trip rejects malformed/unknown classifications and preserves
+nulls. SQL trigger definitions, privilege checks, relation shape and reviewed
+exact product DML hashes must be pinned from the actual implementation, never
+filled with guessed hashes. Recheck the live migration chain before publication.
+No JPA entity exposure or cross-module private imports. Service/coordinator/
+repository constructors provide real wiring. Reuse platform routing unchanged
+apart from exact new caller/statement admission; no widening of existing callers.
+
+Acceptance: native two-company create/read/update, immutable identity and payload,
+case/Unicode/bounds/null diagnostics, exact replay vs conflicting replay, duplicate
+local code, sequential revision/CAS races, active/inactive/missing admission/catalog,
+revocation between collection and commit, forged/reused permit, wrong transaction,
+commit-boundary expiry, final-fence tamper and complete rollback with zero hidden
+rows. Existing consumers keep original catalog IDs and qualification behavior.
+Use actual migrated PostgreSQL; skips are non-proof. Regenerated catalog artifact
+is required for final acceptance, not an inferred dictionary. Artifact refresh
+is admitted inC after retrieving exact successful hosted evidence.
+
+#### Package C — HTTP integration, artifacts and bounded acceptance
+
+Depends on acceptedA/B. Exact message:
+`feat(custody): expose protected product draft operations`.
+
+CREATE exactly:
+- `src/main/java/dz/sh/hidra/modules/custody/api/rest/controller/ProductEngineeringDraftController.java`
+- `src/main/java/dz/sh/hidra/modules/custody/api/rest/request/ProductEngineeringDraftRequests.java`
+- `src/main/java/dz/sh/hidra/modules/custody/api/rest/response/ProductEngineeringDraftResponses.java`
+- `src/test/java/dz/sh/hidra/modules/custody/api/rest/controller/ProductEngineeringDraftControllerTest.java`
+- `src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/ProductEngineeringDraftNativeHttpPostgresIntegrationTest.java`
+
+MODIFY exactly:
+- `.github/ci-test-inventory.json`
+- `doc/api/openapi.yaml`
+- `doc/database/DATA_DICTIONARY.md`
+- `doc/roadmap/TASKS_HPS-008.md`
+
+Expose POST /api/v1/custody/engineering-products, GET /{draftId} with exact
+companyPartyId scope, PUT /{draftId} with exact companyPartyId and expectedVersion.
+POST body: companyPartyId, localCode, catalogProductId, creationRequestId and
+optional metadata fields; PUT accepts metadata/expectedVersion only. Actor,
+grants, audit coordinates and computed completeness are server-owned.
+Explicit REST DTO mapping, documented 201 new/200 replay/read/update and existing
+400/401/403/404/409/503 semantics. Authorize before protected existence, conflicts
+or metadata disclosure; uniform cross-company failure. Real configured native
+HTTP/database tests, not mocks alone, prove two-company isolation, authentication,
+malformed input, denied/inactive scopes, exact replay, CAS and revocation.
+Generate runtime OpenAPI from actual application and dictionary from actual
+migrated database; preserve existing operations/physical history. If their actual
+repository paths differ, reconcile this registration before mutation, do not
+create a second artifact. No handwritten physical metadata.
+
+After implementation, exact-SHA Full/Fast/Docs and actual test-case/API/catalog
+evidence must establish bounded acceptance. Status remains NOT_IMPLEMENTED until
+source exists, and source existence alone is not VERIFIED. Final governance
+closure is separately `docs(custody): accept protected product draft authoring`,
+limited to the four governance files named for this registration. No automatic
+execution ofA, B, C or closure in this documentation turn. DELETE none for all
+packages. Additional required source/migration paths or changed semantics must
+be admitted in this owning record before use, without repeating this approved
+business choice or requesting real deployment data.
+
+#### Registration validation and stop
+
+Recovered exact-head native identity/read-family guards, Party adapter,
+platform credential/exact-caller/provisional admission and Custody/catalog/DTO
+conventions; checked all proposed CREATE paths against the live recursive tree.
+19 existing documentation-validator self-tests PASS after fetching their actual
+OpenAPI-validator import dependency. Changed-task metadata/status synchronization,
+unchanged other registry rows and append-only phase history are checked locally.
+Full documentation-estate/link validation remains the hosted Documentation CI
+gate; no full source checkout or Java/Maven/native/HTTP/PostgreSQL execution,
+API/dictionary generation or runtime acceptance is claimed in this registration.
+Publish one guarded main commit, verify exact four paths/parent/tree/message/blobs,
+observe exact-SHA Documentation CI creation/queue/start and STOP.
 
 <a id="hapi-595"></a>
 ## HAPI-595 — Supplied composition, properties and methods

@@ -5797,9 +5797,9 @@ Legacy IDs: HPR-P25-052E
 
 Priority: P2
 
-Implementation Status: NOT_IMPLEMENTED
+Implementation Status: VERIFIED
 
-Planning Status: IN_PROGRESS
+Planning Status: COMPLETED
 
 Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -6419,6 +6419,89 @@ catalog/dictionary equality, complete raw report inventory and case-level proof.
 Native fixture repair01e55bdc408e1c80f80daee9d4de0fcaecb03b67 remains under
 hosted validation; no gate or acceptance is waived. Final four-file stage4
 only after evidence; do not select HAPI-592/608 or deployment.
+
+
+#### HAPI-591 final development acceptance — 2026-10-26
+
+Owner Continue selects registered stage4, exact message
+`docs(topology): record local engineering exchange acceptance`.
+HAPI-591 is VERIFIED/COMPLETED for its bounded development software scope.
+Exact accepted source4a69624ecc635203fecb404c61933c696708d7f4:
+Full904 run40238463929 attempt1 and Docs599 run40238463918 succeeded.
+Full URL: https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40238463929.
+This reconciliation head changes only generated API/governance artifacts;
+Fast is not applicable to that documentation-only change. Earlier Fast209
+passed before the final native test-fixture repair; it is not exact-head proof.
+The exact-head Full unit lane and all seven PostgreSQL shards establish the
+complete repaired source execution. Optional serial Maven verification was
+skipped: serial_oracle=false, same_run_equivalence=false,
+release_eligible=false and optimized_adoption_eligible=false remain explicit.
+
+Retained combined evidence artifact12616595113,
+hidra-full-ci-evidence-4a69624ecc635203fecb404c61933c696708d7f4-40238463929-1,
+ZIP SHA256 eb5ae1d9f0e40f75faab70a2b4a6f8a1064e5c7286ccc64295b4b64207cfa09d.
+Authenticated download digest and all retained member digests were rechecked.
+The unchanged inventory verifier matches all465 active classes and3243 actual
+case identities across the eight runtime lanes, zero failures/errors/skips.
+Inventory SHA25641d2b7dc46279a12909cb4f5b76f5e9a28f3eb72c06e6093885578937dd9c08b;
+classifier SHA2568e8d2edb29a7bfa941e089bfb9e6afe5d3abd5af9e08c31da141aec1d95f9fab.
+All eight selected source hashes and raw XML identities agree with inventory:
+six new suites33 cases, existing native fixture43 and interceptor11, total87.
+Only38 source methods are new (33+4+1); existing regressions are retained.
+
+Raw report SHA256 by selected suite (all failures/errors/skips zero):
+- dz.sh.hidra.modules.topology.infrastructure.persistence.EngineeringNetworkDraftPostgresIntegrationTest: 43 cases; 5184d58ffe344d0976f8ad712434c5903f8236cbb420935e9c51d6c2bc039f46.
+- dz.sh.hidra.platform.permissions.HidraRouteAuthorizationInterceptorTest: 11 cases; 63e28b7744196d0e957c6920b0dc8de20e16c98bc33664823b354dbd543fa772.
+- dz.sh.hidra.modules.topology.EngineeringLocalExchangeBoundaryGuardrailTest: 4 cases; 59e058c57e2dc70747c9c51a81b76de7d4ca8a140a91b2c8b52d48765a7234e9.
+- dz.sh.hidra.modules.topology.domain.model.EngineeringLocalExchangeTest: 6 cases; ee98ede35bc43a9b4dff1227d297204c69149f2d35ba2439e3e1ec3197137d0d.
+- dz.sh.hidra.modules.topology.application.service.EngineeringLocalExchangeApplicationServiceTest: 8 cases; 65dffe81e2d6174f498b26b5d7109161f6558af554466fb63463c752c7ddfb5e.
+- dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.EngineeringLocalExchangeCodecTest: 7 cases; 2c0de580bff1359a2ed0305a2be204a310a86b811580bf7a2849dcfad51f1fd2.
+- dz.sh.hidra.modules.topology.api.rest.EngineeringLocalExchangeControllerTest: 5 cases; 34f2a2075b6ed99ee5bcb307df903f960ac127bb67feebebebb946f5d4d6c851.
+- dz.sh.hidra.modules.topology.api.rest.EngineeringLocalExchangeApiExceptionHandlerTest: 3 cases; 0224881e444cb64a2897a35eaf9e09946e6d4c1cff4e6d2c7d916b5dc0be80e0.
+
+Case-level review confirms all three original codec roundtrips, metadata nulls,
+survey decimal scale/units/absence and exact graph bytes, separate origin/target
+provenance, one existing protected UPDATE with explicit shared CAS, read-only
+advisory storage invariance, native signed LOCAL/OIDC/LDAP/AD and actual HTTP
+filters/interceptor. Only external transports are synthetic. Native fixture
+proves stale/concurrent writes, revocation between preview and write, managed
+flush fault and final-guard rollback without partial successors, graph mismatch,
+anonymous401, existing unauthorized foreign company403 and missing company503,
+malformed/unsupported input and fixed non-disclosing errors. The injected final
+guard is not an elapsed-time measurement. Simulated indeterminate completion
+in facade tests is not a physically induced unknown database COMMIT.
+
+API job121304963725 passed actual runtime equality, normal migrated physical
+catalog/dictionary equality and compatibility against actual successful runtime
+baseedd66b3a4dc27b724dbb99b6eaf6d0a456fe6ae3. Retained generated files independently
+revalidate with unchanged comparator and snapshot validator:269 paths,
+291 operations,283 schemas; all four exchange operations remain protected.
+Runtime JSON SHA256dad5a9a125a57a7f8f510ee57a69f43c0b24a7c623043db7dcc76a83bb1170c3;
+base JSON SHA2567658dd8ccf4cfd8c49d3832325da81f5a5ca9cd2d33ade32d077d34716064aa8.
+Physical catalog SHA2565266cc5a94ec9e03e14aae5a9fc30aa2d8a6c60811c974cb660b21a4574342bb;
+source bundle SHA2566893e31c69bae45e190291858580397341414750b455da7273dfb57eba33b010.
+Actual dictionary differs from the reviewed dictionary only in capture SHA:
+173 migrations,470 JPA mappings,516 relations,zero unresolved owners.
+Keep the stage3 snapshot generation provenance and dictionary bytes unchanged.
+
+Available local checks:19 documentation-validator self-tests PASS; exact report
+inventory/member hashes, selected source/case identity, runtime API equality,
+compatibility and dictionary comparison PASS. Focused921-task table/index and
+34-task selected-phase agreement plus append-only/status-only scope are checked
+before publication. No local Java21/Maven/PostgreSQL execution is claimed.
+
+Scope is exactly four governance MODIFY, zero CREATE/DELETE. Preserve all old
+record text except HAPI-591's two current header statuses; append this evidence
+within its record. Change only matching ROADMAP/PHASES status cells and compact
+index pointer. No new task is selected; HAPI-592/HAPI-608 retain their statuses.
+This accepts local single-editor exchange only, with advisory preview and native
+authority at final write. It does not establish engineering qualification,
+frontend/integrated topology closure, multi-owner exchange, release/deployment,
+simulation, production data or OT acceptance. Existing protected operation
+budgets remain unchanged and are not an end-to-end SLA.
+
+Publish with expected4a69624 lease, verify exact parent/tree/four-file blobs,
+observe applicable exact-SHA Documentation CI creation/queue/start and STOP.
 
 <a id="hapi-608"></a>
 ## HAPI-608 — Aggregate typed engineering exchange

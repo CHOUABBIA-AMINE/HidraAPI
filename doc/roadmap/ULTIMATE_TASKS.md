@@ -47,13 +47,12 @@ acceptance and status-only closure. No next task is selected automatically.
 Existing HAPI-567/588/589 acceptance and the deferred simulator direction remain.
 
 
-The selected next task is [HAPI-591](TASKS_HPS-020.md#hapi-591), typed local
-engineering exchange and capabilities, NOT_IMPLEMENTED/IN_PROGRESS. Owner
-Go ahead selects its four-stage delivery sequence. Its phase record now owns
-the source-backed exact scope and tests; after this registration's Docs success,
-the next single stage is `feat(topology): implement typed local engineering exchange`.
-Reuse the existing protected metadata/graph/survey owners. This pointer is not
-an implementation or API acceptance claim and selects no HAPI-592/608 or frontend.
+[HAPI-591](TASKS_HPS-020.md#hapi-591), typed local engineering exchange and
+capabilities, is VERIFIED/COMPLETED within its accepted development software
+scope. Full904 and Docs599 succeeded on4a69624ecc635203fecb404c61933c696708d7f4;
+the phase acceptance record retains exact case/API/catalog evidence and limits.
+Owner Continue selects its final four-file acceptance closure. No next task is
+selected automatically; HAPI-592/HAPI-608 and frontend remain separately selected.
 
 
 [HAPI-045](TASKS_HPS-024.md#hapi-045),

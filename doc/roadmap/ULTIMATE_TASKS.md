@@ -54,13 +54,13 @@ the phase acceptance record retains exact case/API/catalog evidence and limits.
 Owner Continue selects its final four-file acceptance closure. No next task is
 selected automatically; HAPI-592/HAPI-608 and frontend remain separately selected.
 
-The selected next task is [HAPI-592](TASKS_HPS-004.md#hapi-592), topology
-operator/API/history qualification, NOT_IMPLEMENTED/IN_PROGRESS. Owner Continue
-selects its source-backed registration after Docs600 passed. Its phase record
-owns the exact fixture, eight-case plan, additive API error documentation and
-separate artifact/acceptance gates. After this registration's Docs success,
-the next single stage is `test(topology): qualify operator API and revision history`.
-This selects no HAPI-608, frontend implementation, release or deployment.
+[HAPI-592](TASKS_HPS-004.md#hapi-592), topology operator/API/history qualification,
+is VERIFIED/COMPLETED within its registered development software scope. Full908,
+Fast214 and Docs605 passed on ef075097142df9e665bc89eb3b2bd4e6b2c9bc17. The phase
+acceptance retains exact eight-case/native/API/catalog evidence, controlled CAS
+and engineering limits, plus actual rebalanced shard timing. Owner Next selects
+its final four-file acceptance closure. No next task is automatically selected;
+HAPI-608, frontend implementation, release and deployment remain separate.
 
 
 [HAPI-045](TASKS_HPS-024.md#hapi-045),

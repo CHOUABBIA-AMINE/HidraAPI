@@ -7830,9 +7830,9 @@ Legacy IDs: HPR-P25-052F
 
 Priority: P1
 
-Implementation Status: NOT_IMPLEMENTED
+Implementation Status: VERIFIED
 
-Planning Status: IN_PROGRESS
+Planning Status: COMPLETED
 
 Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -8466,6 +8466,129 @@ fix changes neither API annotations nor routes/DTO schemas; final hosted equalit
 still supplies exact-source proof. Do not relabel the captured source to the new
 head. Required hosted native/raw-case and normal catalog/API gates remain pending;
 no HAPI-592 status, release/deployment or engineering acceptance is inferred.
+
+#### HAPI-592 final bounded operator/API/history acceptance — 2026-10-26
+
+Owner Next selects registered final stage
+`docs(topology): record operator qualification acceptance`.
+HAPI-592 is VERIFIED/COMPLETED for the registered development software scope.
+Accepted source ef075097142df9e665bc89eb3b2bd4e6b2c9bc17:
+Full908 run40373911665, Fast214 run40373910938 and Docs605 run40373911042
+all completed SUCCESS on that exact SHA. Full gate121754802554, API job121751661978,
+unit, static and all seven PostgreSQL jobs succeed. Optional serial Maven
+verification is intentionally skipped. Actual gate mode development-partitioned,
+serial_oracle=false, same_run_equivalence=false, release_eligible=false and
+optimized_adoption_eligible=false remain explicit; no serial or release proof.
+Full URL: https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40373911665.
+
+Authenticated retained aggregate12673153969,
+hidra-full-ci-evidence-ef075097142df9e665bc89eb3b2bd4e6b2c9bc17-40373911665-1,
+ZIP SHA25609834d3ab8c4d63428365eb2dc2864c3002ab2f99ffcb24a09d5a374df3b4af2,
+is downloaded and rechecked. All gate-linked lane receipt digests and every
+retained member digest agree; same source/run/attempt and raw inventory SHA256
+e599b4fd557ad1d27fdea6b712178861c34dddba6f06708a2809f9c11a64bc4c agree.
+The unchanged report verifier proves exact466 active classes and3251 invocation
+identities, zero failures/errors/skips;2050 unit/architecture and1201 PostgreSQL
+cases, all required selections disjoint and complete. Dependency restoration
+reports cached/cache_hit=true in all nine Java lanes; this is not a cold audit.
+
+The actual qualification source SHA256
+53ce1cb026178a332dd85770baddeaca19930ab0491260146c7dd3d630e59a28
+matches its unchanged eight-case inventory. PostgreSQL shard3 reports8/0/0/0;
+raw XML SHA25613baf08de32f2646c80c35c17a0e9fa2d61625a03af6789ae2603272b290815c.
+All eight independently matched actual case identities are:
+- twoCompaniesAndNetworksCannotReadWriteOrReplayEachOthersSelectors
+- stationOwnershipAndCatalogCorruptionFailClosedWithoutHistoryMutation
+- concurrentHttpWritersAndPublishersHaveOneCasWinner
+- publishedHistoryRemainsExactAfterSourceEditsAndLifecycleTransitions
+- runtimeConsumerContractMatchesTypedRoutesErrorsAndBounds
+- currentDenyAndRevocationOverridePriorPreviewsAndUnrelatedRoutes
+- nativeOperatorsAuthorExchangeAndPublishExactSnapshotsAcrossFourProviders
+- finalGuardAndManagedFlushFaultsRollBackEveryOperatorEffect
+
+Case-level source/report review accepts genuine native LOCAL/OIDC/LDAP/AD
+producer tokens and actual HTTP filters/owner/protected database execution;
+only external source/directory transports remain synthetic. Real A/B companies,
+networks, owned station-bearing graphs and independent simultaneously valid
+LOCAL users prove both scope substitutions across the20 generic route tuples,
+including reads, exports/previews, imports, publication transitions and receipts.
+Full-body fixed errors retain strict selector non-disclosure. Existing absent
+company503 vs existing unauthorized company403 and anonymous401 remain distinct.
+Malformed-body advice is scoped and now precedes the general error mapper;
+no static-route/prefix permission bypass or new native authorization meaning.
+
+All three original canonical editor formats retain exact bytes/digests, nulls,
+decimal scale/units, authored-vs-unknown diagnostics and separate original/target
+survey graph binding. Advisory export/dry-run/capabilities leave full business
+storage images unchanged and grant no write authority; import invokes only the
+existing expected-version UPDATE. Four-provider authoring/exchange/publication
+and exact retained snapshots, fresh DENY/revocation after preview, ordinary-login
+denial, actual blocked-writer503 and metadata/component rollback are executed.
+
+The two in-flight HTTP contenders are deliberately ordered before authentication/
+owner admission, outside protected transactions, to assert exact one200/one409
+draft/head CAS and exact row counts. This fixture does not prove simultaneous
+physical DB-writer execution. Separate explicit SQL-blocker/NOWAIT503 controls
+and the retained native owner concurrency/fence regressions preserve that boundary.
+Managed dirty/flush faults and final-guard invalidation are real rollback-path
+injections, not measured elapsed deadlines or a physically induced unknown COMMIT.
+Station ownership transfer/ABA/incidence mismatch and actual trigger/function/
+role tampering fail closed; setup mutations restore in finally, without inventing
+an impossible rewrite of immutable history as a data-corruption exercise.
+
+Original published metadata/graph/survey snapshots survive later draft revisions;
+receipt replay/conflicting replay, withdraw/reactivate and exact committed
+half-open as-of boundaries execute.103-event bounded keyset history retains
+all identities with no duplicates/omissions despite a later104th append; exact
+revision reads remain independent of pagination. Existing31/34/38-fence owner
+paths,500ms work/250ms lock/750ms statement/1000ms idle bounds remain unchanged;
+these are not an end-to-end HTTP performance SLA or industrial qualification.
+
+Consumer proof uses actual enabled in-process /v3/api-docs, all20 protected typed
+operations, current return/request DTO refs, status/error/body/query/cursor/editor
+and branch/version bounds. Accepted full runtime contract269 paths/291 operations/
+284 schemas strictly equals the reviewed generated snapshot after only validated
+source-stamp normalization. Unchanged compatibility comparison passes against
+actual successful runtime base4a69624ecc635203fecb404c61933c696708d7f4.
+Current API member SHA25634c0983b980824201ad72b1f3d76c8daa3f36262760bdf39babc355c9ba2f18a;
+actual resolved base member SHA256372b9e39e8d54f8395afd3e5cef2941f77178b639a25849f72dcd9bbeb4d73b0.
+Capture generation origin/provenance in the canonical manifest stays truthful.
+
+Normal migrated PostgreSQL16.15 catalog/dictionary capture and equality succeed:
+173 migrations,470 JPA mappings,516 relations,zero unresolved owners. Actual
+catalog SHA2566ffc160437c2ac85ec9a2323fdd6b79e9151e96119662c9fcbf26c316941380f;
+source bundle SHA2566893e31c69bae45e190291858580397341414750b455da7273dfb57eba33b010.
+Captured dictionary SHA2563459b07f672f5133a51a59ba3210ca2a45820f7f90b49c5d50d815db79e0a9c6.
+An independent comparison to the reviewed physical dictionary differs only in
+the capture-SHA line; preserve its physical bytes and all schema/owner source.
+
+The owner's separate scheduling concern now has actual follow-up evidence:
+suite-time sums for shards0..6 are276.465/217.428/213.117/284.476/284.619/249.126/
+255.344 seconds. Old Full907 shard1 was651.508s and the predicted refreshed
+largest suite sum was352.623s. Full908 observes a largest sum284.619s and range
+213.117..284.619s with all102 DB classes retained and all tests passing. The
+large indivisible employee concurrency class is alone on shard0. This is suite
+time, not runner/workflow elapsed; source repair and runner variation differ
+between the two observations, so no controlled speedup or cost/SLO is claimed.
+No timing weights or CI gates change in this acceptance stage.
+
+Exact4 governance MODIFY/zero CREATE/DELETE: this selected record's two current
+statuses plus append-only evidence, HAPI-592 status cells only in ROADMAP/PHASES,
+and its compact matching index pointer. All other tasks, prior histories,
+descriptions/dependencies/order, runtime/tests/inventory/workflows/API/dictionary
+blobs remain unchanged. Focused921-task/index and61-task phase agreement,
+exact scope/history/status checks, retained ZIP/member/source/case/API/dictionary
+checks and19 documentation-validator self-tests PASS locally. No newly executed
+local Java21/Maven/PostgreSQL run is claimed; runtime proof is hosted Full908.
+
+Accept bounded backend development operator/API/history qualification only.
+Engineering-qualified physical facts, HidraWEB implementation/integration,
+multi-owner or remote exchange, HAPI-608 integrated topology closure, installed
+equipment/manufacturer/product/baseline completion, SITE commissioning, simulation,
+OT actuation and release/deployment are not inferred. HAPI-608 and all other
+task statuses remain untouched; no next task is automatically selected.
+Publish using expectedef07509 lease, verify exact parent/tree/message/four blobs,
+observe applicable exact-SHA Documentation CI creation/queue/start and STOP.
 
 <a id="hapi-658"></a>
 ## HAPI-658 — expose operational scope resolution contract

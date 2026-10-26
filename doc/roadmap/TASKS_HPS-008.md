@@ -512,6 +512,151 @@ doc/model-remediation/RECONCILIATION.md:23703 | HPR-P25-053A | Select supported 
 doc/model-remediation/RECONCILIATION.md:23740 | HPR-P25-053A | REQUIRES_OWNER_DECISION | Product identity and metadata drafts
 ~~~~~~~~
 
+### HAPI-594 source-backed product identity policy proposal — 2026-10-26
+
+Owner Next after successful topology closure Docs607 run40384546960 selects
+HAPI-594/HPR-P25-053A source recovery and a concrete policy proposal only.
+Current main3bf68ab45e6e5cdd26146bf31dc331d52a44dc02; runtime remains the successful
+Full908/Fast214 sourceef075097142df9e665bc89eb3b2bd4e6b2c9bc17. HAPI-586 and its
+six children are accepted within their own scopes. HAPI-567, this task's actual
+registered prerequisite, is VERIFIED/COMPLETED. No dependency completion resolves
+the independently recorded product policy choice by itself.
+
+Exact preflight message:
+`docs(custody): propose product draft ownership policy`.
+Zero CREATE/two MODIFY/zero DELETE: only append this HAPI-594 proposal/evidence
+and a compact current index pointer. Preserve NOT_IMPLEMENTED/BLOCKED in this
+header and both frozen registries. There is no executable registration, runtime
+acceptance or inferred approval in this commit. Six proposed ProductEngineeringDraft
+source paths remain absent in the exact live tree; do not manufacture an
+implementation or reuse a stale source-review statement as a passing workflow.
+
+**Existing unresolved owner gate.** The original record explicitly says:
+"Select supported metadata classifications and whether company-local products
+reference or extend existing shared catalog identity."
+The same HPR-P25-053A REQUIRES_OWNER_DECISION remains in live RECONCILIATION and
+the owner-decision register. Retrieved prior context confirms Custody product
+ownership, Telemetry unit ownership and Party counterparty ownership, but no
+explicit approval of this company-local classification/identity choice was found.
+General gas-first direction and generic Next are not silently substituted for
+that business decision. No deployment measurements, real catalog seeds or
+calibration values are required to approve the supported semantics below.
+
+**Current source facts recovered, not proposed capabilities.**
+- CustodyCatalogEntryJpaEntity maps existing shared hidra_custody_catalog_entry:
+  opaque80-character identity, catalog_name, code, active/system_defined,
+  ordering and creation/update timestamps. It contains no company owner or
+  company-local product draft/version lifecycle. Catalog strings alone do not
+  prove approved product classifications or shared-catalog extension policy.
+- CustodyCatalogEntryJpaRepository exposes locked findByIdForShare. The current
+  PlanningProductReferenceQueryAdapter requires an actual active row in
+  hidra_custody_planning_product_policy as well as catalog activity; migration
+  V20261008_025 creates empty owner-approved policy metadata, not product seeds.
+  Preserve that nomination-specific approval meaning; a draft must not grant it.
+- SimulationProductCandidateQueryAdapter returns the exact existing catalog
+  id/name/code/activity/timestamps without adopting Planning approval or making
+  thermodynamic qualification. Neither existing consumer accepts a new local
+  draft UUID as a substitute for the existing shared catalog identity.
+- CustodyGasFluidRevision currently admits ProductKind.GAS and GAS_MOLE_FRACTION
+  only, explicit exact supplied fractions/method ranges/governance evidence and
+  immutable product snapshots. CustodyGasFluidQualificationService reattests the
+  actual current product snapshot and exact final Workflow approval. A metadata
+  label cannot normalize fractions, invent properties, qualify a liquid model
+  or replace that evidence. Preserve these internal gas contracts unchanged.
+- CustodyTransferTicketActorReferenceContract exposes only eligible(actorId,at).
+  That actor reference is not atomic current company/product draft authorization.
+  Existing protected Topology contracts are typed for Topology resource scopes;
+  do not pass product IDs as network/facility IDs or borrow their native family.
+  A later admitted execution contract must specify Identity-owned product scope,
+  fresh native authority and fail-closed Party eligibility inside the real owner
+  transaction. An isolated controller permission precheck is not sufficient.
+
+Recovered exact-source file fingerprints:
+
+| Existing source path | SHA256 |
+|---|---|
+|src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/entity/CustodyCatalogEntryJpaEntity.java|4e1572254a2ab55e5b3c8193fefaeebd1db66af78178e3de8f5a479cb35d957f|
+|src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/repository/CustodyCatalogEntryJpaRepository.java|0baf4eee1e45474b95e58bb628c2cf13c211b60668326339bfd23eaa2405370d|
+|src/main/java/dz/sh/hidra/modules/custody/infrastructure/integration/PlanningProductReferenceQueryAdapter.java|687dc07443b959864bfb4bd094a3043e7847c5b43f51d5ff2d8621cf953ad475|
+|src/main/java/dz/sh/hidra/modules/custody/infrastructure/integration/SimulationProductCandidateQueryAdapter.java|0dc1a429bef501a3035f6e9fa843c1cc8a8c051aa3119e99210297838ee3c6be|
+|src/main/java/dz/sh/hidra/modules/custody/domain/model/CustodyGasFluidRevision.java|d103b5c72f44595e0faf618b13f871c95a66ac92eaea68c363e0c940b1aa53af|
+|src/main/java/dz/sh/hidra/modules/custody/application/service/CustodyGasFluidQualificationService.java|d7871364531ee5ce415e33f7a3157220e0cf91261969d46dadcbcf81dc6bc04d|
+|src/main/resources/db/migration/V20261008_025__hmr_080_nomination_owner_reference_policies.sql|11f6cc0915cfc70784827fd8cce62e14abb9878c59b1fa1bc5d46ba0e83b2fb3|
+|src/main/java/dz/sh/hidra/modules/identity/application/contract/custody/CustodyTransferTicketActorReferenceContract.java|204f091bafea0d46572e71f71aaa450036caa08919e2a36e4aa400424207a42e|
+
+**Concrete recommended policy A — proposed, awaiting owner selection.**
+1. Custody remains the sole product-identity/type owner. Company-owned engineering
+   drafts have their own stable local identity/code and versioned authored
+   metadata, but reference an explicitly approved existing active Custody catalog
+   product. They do not create/fork/rename global catalog entries, mutate shared
+   product types or pretend to be a separate enterprise product master.
+2. Support explicitly declared GAS and LIQUID as representational metadata labels
+   only. An absent classification remains absent/UNSPECIFIED with incomplete
+   diagnostics; it is never inferred from a product name/code or defaulted to
+   GAS. These labels are not phase-equilibrium results, approved compositions,
+   standards classifications or thermodynamic/hydraulic eligibility. Existing
+   gas-first numerical/qualification contracts remain GAS-only and unchanged.
+3. Keep authored company-local code/name/description and source/evidence
+   references separate from the shared catalog snapshot. Candidate mandatory
+   identity facts are company, local code and an approved shared catalog
+   reference; incomplete descriptive/classification fields can remain explicit
+   missing values. Exact immutable identity/code uniqueness and supported bounds
+   must be registered technically after the policy choice, not invented here.
+4. Multiple companies may reference the same shared catalog product while their
+   draft metadata/revisions are isolated by native authority. Creation/replay,
+   revision CAS, exact history and company non-disclosure must be proved with
+   real two-company/native/HTTP/PostgreSQL tests. No ownership transfer, automatic
+   catalog merge, clone/remapping or cross-company lookup is silently supported.
+5. Product-reference admission must be explicit Custody-owned policy. Do not infer
+   supported families from arbitrary catalog_name/code values, seed operational
+   product entries or treat Planning-specific policy as general product approval.
+   A later technical registration must name the actual admission source and its
+   locked/revocation semantics. Synthetic fixtures may supply approved examples.
+6. Preserve all existing Planning/Simulation catalog-ID contracts and gas-fluid
+   source/method/Workflow qualification. HAPI-595 owns later supplied property/
+   composition/method representation,596 publication/history/owner exports and
+   597 consumer qualification. No public material-property API, engine execution,
+   fluid conversion, baseline or aggregate exchange follows from594 metadata.
+
+**Alternative B — requires an explicit different owner choice.** If company-local
+product identities must be creatable without a pre-existing shared catalog
+reference, retain Custody ownership but register a distinct local identity and
+optional later governed association/extension policy. That needs explicit
+identity resolution, duplicate/merge/link provenance and consumer mapping rules.
+It cannot silently replace an existing catalog ID or migrate old references.
+Do not implement A or B by assuming which outcome the owner intended.
+The owner may also narrow/broaden metadata labels explicitly; no plant data is
+needed for this supported-behavior selection.
+
+**Next technical gate after explicit policy approval/change.** Recover current
+native actor/product/company authority seams and complete exact DTO, codec,
+repository/transaction/SQL/fence/permit wiring, owner-reference admission and
+schema constraints. Admit an actual bounded executable allowlist and test cases
+in this owning record before code; six earlier proposed source filenames do not
+cover new security/DTO/test/migration obligations by themselves. Current last
+migration is V20261025_001__organization_appointment_current_read_guard.sql;
+reserve no migration filename/version for an unselected product implementation.
+Preserve migration history, product catalog ownership and existing consumers.
+Technical registration may then move only594 planning to IN_PROGRESS in the
+four governance files; implementation remains NOT_IMPLEMENTED until accepted
+source/evidence. Proposed later exact registration message:
+`docs(custody): register protected product draft execution`.
+This is not a promise that unresolved authority/schema gaps already pass.
+
+**This preflight's validation and stop.** Live owner/model/adaptor/catalog-policy/
+actor contract and migration recovery, six absent proposed-file check, source
+fingerprints, unchanged task metadata/history/registry/index compatibility and
+19 existing documentation-validator self-tests PASS. No new Java/Maven/native/
+HTTP/PostgreSQL execution, API/dictionary generation or product acceptance is
+claimed. Preserve all runtime/tests/inventory/CI/shard weights/artifacts, other
+tasks and the actual gas-first/units/Party ownership boundaries. Generic Next
+does not retroactively approve an unresolved business policy; explicit approval
+or amendment of this concrete proposal is needed before runtime work.
+Publish this one two-file proposal on main with expected3bf68ab lease, verify
+exact parent/tree/message/blobs, observe applicable exact-SHA Documentation CI
+creation/queue/start and STOP. No594 production code,595..597 implementation,
+other owner package, release/deployment, numerical engine or OT action follows.
+
 <a id="hapi-595"></a>
 ## HAPI-595 — Supplied composition, properties and methods
 

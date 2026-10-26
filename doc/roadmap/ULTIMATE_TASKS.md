@@ -70,6 +70,14 @@ Docs606 validates the unchanged-runtime child closure. HAPI-586 is the topology
 parent; HAPI-608 is separate aggregate exchange. No next task, frontend
 implementation, release, deployment or numerical engine is selected automatically.
 
+[HAPI-594](TASKS_HPS-008.md#hapi-594), product identity and metadata drafts,
+is selected for source-backed policy proposal only and remains
+NOT_IMPLEMENTED/BLOCKED. Docs607 passed the topology parent closure. Its owning
+record now describes actual Custody catalog/consumer/authority seams and a
+concrete proposed GAS/LIQUID metadata plus shared-catalog-reference policy.
+An explicit owner decision remains required; no runtime allowlist or business
+approval is inferred from this preflight. HAPI-595..597 remain unselected.
+
 
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent

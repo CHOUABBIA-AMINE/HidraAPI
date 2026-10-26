@@ -62,6 +62,14 @@ and engineering limits, plus actual rebalanced shard timing. Owner Next selects
 its final four-file acceptance closure. No next task is automatically selected;
 HAPI-608, frontend implementation, release and deployment remain separate.
 
+[HAPI-586](TASKS_HPS-004.md#hapi-586), integrated closure of the six topology/
+operator packages, is VERIFIED/COMPLETED for its bounded backend development
+scope. Its independent matrix reconciles HAPI-587..592 against current source,
+32 supporting suites/284 exact cases and successful Full908/Fast214/Docs605;
+Docs606 validates the unchanged-runtime child closure. HAPI-586 is the topology
+parent; HAPI-608 is separate aggregate exchange. No next task, frontend
+implementation, release, deployment or numerical engine is selected automatically.
+
 
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent

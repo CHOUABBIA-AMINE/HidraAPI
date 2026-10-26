@@ -5559,9 +5559,9 @@ Legacy IDs: HPR-P25-052
 
 Priority: P1
 
-Implementation Status: PARTIAL
+Implementation Status: VERIFIED
 
-Planning Status: BLOCKED
+Planning Status: COMPLETED
 
 Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -5727,6 +5727,190 @@ Initial canonical adoption, 2026-10-16: Historical task retained independently; 
 No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
 
 Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+### HAPI-586 independent integrated topology acceptance — 2026-10-26
+
+Owner Next selects existing HAPI-586/HPR-P25-052, the six-package integrated
+topology/operator parent. Its original section6 expressly requires recovery and
+permits evidence/status closure without rewriting working code when fulfilled.
+All six child obligations are now independently reconciled below; no additional
+runtime source change is needed. Exact current closure message:
+`docs(topology): record integrated topology acceptance`.
+HAPI-586 is VERIFIED/COMPLETED for the accepted bounded development software
+contract. This is parent accounting/acceptance, not a seventh runtime feature
+or a claim that the complete HPS-004 phase or all Phase2.5 is finished.
+
+**Canonical navigation correction.** Some dated HAPI-592 prose called HAPI-608
+the integrated topology closure. That label was incorrect; the unchanged
+ROADMAP/PHASES and this original parent definition identify HAPI-586/HPR-P25-052.
+HAPI-608 is aggregate typed engineering exchange/HPR-P25-055D under HAPI-607,
+not this parent. Preserve those dated records as history; this explicit current
+correction controls navigation and changes neither task ID nor dependency.
+HAPI-608 remains NOT_IMPLEMENTED/BLOCKED and unselected. Do not reinterpret the
+mislabel as an admitted baseline change or multi-owner implementation.
+
+**Fresh baseline and proof boundary.** Current main
+e3865909c42f7534448b437718f269a545951061 passed Docs606 run40376047758.
+The GitHub comparison from ef075097142df9e665bc89eb3b2bd4e6b2c9bc17 shows exactly
+one commit/four governance Markdown files; executable/test/configuration/schema/
+API/inventory/workflow blobs are unchanged. Full908 run40373911665, Fast214
+run40373910938 and Docs605 run40373911042 all succeeded on that runtime source.
+No absent Full/Fast workflow on the documentation-only head is claimed.
+Prerequisite HAPI-567 is independently VERIFIED/COMPLETED for051; its accepted
+internal native revocation/time/physical-transaction fence is reused by the
+child owners, not reimplemented or enlarged by this parent.
+
+**Independent complete child matrix.** Current child statuses are verified
+against the owning phase definitions and both registry tables, not inferred
+from this parent's dependency edge or cumulative green CI alone.
+
+| Package | Accepted child | Closed bounded obligation and current independent evidence |
+|---|---|---|
+|052A|[HAPI-587](TASKS_HPS-004.md#hapi-587)|Company/network context and candidate draft create/read/update/validate, immutable shared versions, incomplete diagnostics and action-specific native authority. Four current dedicated suites15 cases; shared43-case native fixture supplies real providers/HTTP/isolation/CAS/revocation/rollback. Original acceptance Full764 source dcaef72fc7acd3c2079c48e4dbfb111dd377f24a is retained; current source cases revalidated in Full908.|
+|052B|[HAPI-588](TASKS_HPS-004.md#hapi-588)|Authored JUNCTION/STATION nodes, port direction and PIPE/CONNECTOR serial/parallel incidence; bounded exact identities, dangling/duplicate/wrong-owner/kind rejection and immutable graph provenance under shared metadata CAS. Six current dedicated suites51 cases plus shared native tests. Retained formal graph acceptance Full773 source ff06520757207cbd6bbf2b3ff29e979977998cef is recovered from its explicitly named historical phase heading, without assuming the nearest legacy task heading owns that history.|
+|052C|[HAPI-589](TASKS_HPS-005.md#hapi-589)|Explicit supplied CRS/ordered axes/units/precision/vertical datum, chainage direction/origin, intermediate points/elevation absence and authored section boundaries across immutable revisions. Five dedicated suites31 cases plus shared native survey tests. Original Full777 source067929306170ad69b453823a90bb7beeb6b8130d and later same-runtime artifact record retain their own bounds; current Full908 executes the preserved cases.|
+|052D|[HAPI-590](TASKS_HPS-004.md#hapi-590)|Governed unqualified public publish/current/exact/effective/history/request receipts, predecessor/head epoch, identical/conflicting replay, withdraw/reactivate, committed time and immutable snapshot/history paging; station owner transfer/ABA holds without automatic rebinding. Seven dedicated suites51 cases plus separate retained native authorization/platform extensions. Original Full899 runtime/artifact acceptance is retained; current Full908 validates all source and generated contracts.|
+|052E|[HAPI-591](TASKS_HPS-020.md#hapi-591)|One bounded METADATA/GRAPH/SURVEY original canonical payload, version/format/digest/byte/precision provenance; advisory no-write dry-run, fresh native authority and one existing protected UPDATE under explicit target CAS. Six dedicated suites33 cases plus four shared native exchange methods. Capabilities/missing/unsupported states remain explicit; original Full904 acceptance and current Full908 reports establish the supported local scope.|
+|052F|[HAPI-592](TASKS_HPS-004.md#hapi-592)|Real configured HTTP/security/native owner paths with active two-company/network isolation, station-bearing graph and survey/editor lifecycle, rollback/catalog/ownership corruption, explicit busy503, controlled in-flight HTTP CAS200/409,103-event history and actual consumer API contract. All eight dedicated cases pass Full908; final child Docs606 succeeds. No HidraWEB implementation or paired browser/backend E2E is inferred.|
+
+All six are VERIFIED/COMPLETED within their original accepted boundaries.
+Do not double-count the43-case EngineeringNetworkDraftPostgresIntegrationTest
+for A/B/C/E or the shared security fixtures as new dedicated cases per row.
+The32 distinct supporting suites below total284 exact executed cases:189
+dedicated A/B/C/D/E/F cases plus43 shared native draft/graph/survey/exchange,
+6 genuine paired draft/publication authorization and46 protected station
+admission cases. Additional platform/architecture/permission/executor regressions
+remain in the complete Full9083251-case gate;284 is this explicit subset, not
+the whole parent workflow counted again or a replacement for the Full gate.
+
+**Current-source and raw-report replay.** Independently fetched32 current test
+sources and16 production owner seams (five domain models, five inbound ports,
+three coordinating services and three REST controllers). Every selected test
+source hash matches current inventory and its exact raw case identities match
+Full908 XML with zero failures/errors/skips. Owner interfaces retain authoritative
+scope/version/format bounds; domain stays pure Java, services coordinate original
+owners/transactions, typed REST adapters do not replace persistence ownership.
+Owner review fingerprint SHA2568f29cb67caba285cc9a5d29f8c32de9eacfab43be9e3c5f576ee319f2335acab
+is SHA256 of sorted compact JSON mapping those16 current production paths to
+their UTF-8 SHA256. Test proof fingerprint SHA256
+8602e8dbb1cd532d9a31ccbc1c992f8bf0a1a6d8b70460318dcfe91535dc6031
+is SHA256 of sorted-key compact JSON of the32 source/report proof rows below
+in current inventory order (class,cases,source_sha256,xml_sha256).
+
+| Exact source class | Cases | Current source SHA256 | Full908 raw XML SHA256 |
+|---|---|---|---|
+|dz.sh.hidra.modules.identity.infrastructure.persistence.ProtectedEngineeringDraftAuthorizationPostgresIntegrationTest|6|a7cd42e41c33228e8644efdbbe2d0ddc830d063d54accd23fe03eaa6dc9b0735|698fe5b81776de629959e64cd995d25da17740019f9533cf587d14c72f20260d|
+|dz.sh.hidra.modules.topology.EngineeringGraphDraftBoundaryGuardrailTest|5|605c0781475f46421dd2cda3d730f8c920593a4df479d887a9b70cefa7ef6e04|a97e7ec2c912a67c3af234130782676f3e243b44da5b2497808d82897f57490d|
+|dz.sh.hidra.modules.topology.EngineeringNetworkDraftBoundaryGuardrailTest|4|e53d56337bbfb4079f8fbbb9f23e11fcf909c71e6105c9bb6dca46512d74f198|b853e4fe924c224a2789b8de143649e345ffc2d66596e1023aa66ee540f1510f|
+|dz.sh.hidra.modules.topology.EngineeringRevisionPublicationBoundaryGuardrailTest|5|6c998ad43d8953b528ca61b5f802c0f643029e9fe85c9021762ad6f283703a0f|1bfb009b83762ba2feaebb63d2899ef04ef23e36ec73091a8eeb1c29445deca2|
+|dz.sh.hidra.modules.topology.SurveyRouteProfileBoundaryGuardrailTest|3|91f5ca87d78c66eed6c0c1cacdb64cc56a4069f9112fc49833d0abbd9daeecfd|1459c79e48613d58725f19feb50279ac55027852c3eceaa333b90dc082ffdc68|
+|dz.sh.hidra.modules.topology.api.rest.EngineeringGraphDraftControllerTest|7|a48e5d801f38d8afa2e432dbfebb452258b7daf0598e6807120cdd2d6eaabc98|5f521f5cd10936a21d4601d7ee348d7696b23c5a5c8deac9e0f040b1940dfca6|
+|dz.sh.hidra.modules.topology.api.rest.EngineeringNetworkDraftControllerTest|4|1ee6f9247f7496008d3c5a3cc8820dc621794a05a0a77b7181a828abb4edff6e|28ecf20d2776f749bb631757c570d729e58e947bcc9d75af80538d28174c58ea|
+|dz.sh.hidra.modules.topology.api.rest.EngineeringRevisionPublicationControllerTest|8|15a63fc0c8cf74dd99f2f4543ad9459b2051ea00d66faa826569c096b1a4b9cb|653e7689b586a16f8ff3e1e4fb2f1301b14fb7a8b9e89115be15ebd7d7f2ab75|
+|dz.sh.hidra.modules.topology.api.rest.SurveyRouteProfileControllerTest|5|f3028459a497909f73721f01c63e11db2444ef91f6f2b3116682bbeb7f5aef79|67603406b962bba3aa0402a86a36ca1dfb1f2a94f2fdc0927ca53d2b413942b2|
+|dz.sh.hidra.modules.topology.application.service.EngineeringGraphDraftApplicationServiceTest|8|58c3f15abba5ac281d2af4437e68346a68207bcb430d49c4b28c6586801a28d8|574774b6a72fdf53c65d7d6b93e5593c3fa839a88d9469dcee5f9ed0679efbfc|
+|dz.sh.hidra.modules.topology.application.service.EngineeringNetworkDraftApplicationServiceTest|4|866d6e46cdaf6c4cbdb8bdfb597ca458462112640f012242604af2640ff6c37a|8389cc0a500006c52b783d63aa42dd7867cba5de1a6b9e602eb595cb7074786f|
+|dz.sh.hidra.modules.topology.application.service.EngineeringRevisionPublicationApplicationServiceTest|8|570ffd62baddf3cdac3734e57b9d062d82e09f0bad426e8e519513e397101fac|5b0fa577f5223bc4190bbef7f75d58690124ab073e7977a088c05bbf91e9a2fb|
+|dz.sh.hidra.modules.topology.application.service.SurveyRouteProfileApplicationServiceTest|4|c57d3d52b0cbdc693955ae6140be9011c6c1627bd663ef0122751efa90cce334|f3c24e94f791484097ed616c3041cd4fc8e57cf4f854540ac4135932abbf2683|
+|dz.sh.hidra.modules.topology.domain.model.EngineeringGraphDraftTest|14|51ba5347c16509cdccc89a1dc0e483c3af9e54cb1c3977e29444e9e5370a7cfb|6007bb1a7fe9b420b3516b9f614d2a829ecba6e2101a8512d731244766cbe204|
+|dz.sh.hidra.modules.topology.domain.model.EngineeringNetworkDraftTest|3|cdc0a8c22acc463baa84cb7b2d700a096b9e04c53d647212993a4a640cfe1f1b|5e856d61f75ef0aeff73e53c9dae8f3c37dba3a3a64346e5584b38ba14d22806|
+|dz.sh.hidra.modules.topology.domain.model.EngineeringRevisionPublicationTest|6|a144a0edb94f1ec3cb1b816fb30ddeda565e93e83f2b5d79440cd66dce77c7d0|95e440c3dec054ed26878e800a767280d13a7fa0812f74b77931bc0cb71a599b|
+|dz.sh.hidra.modules.topology.domain.model.SurveyRouteProfileTest|14|841d8f6e81725103b8a9f15e0b6df816a2006a16ea80df6ddcc61d0e41a84aa6|f1a1d5149d04f4da10821576ebf4763827a42d4df73aad63f339a429e5e40131|
+|dz.sh.hidra.modules.topology.infrastructure.persistence.EngineeringGraphDraftPostgresIntegrationTest|5|2abad7c852a8dd8578e1bb4e9e47101c119daf42d229f86352f7cd14fc64ecd5|25908e3678d2a9fafae6011653c809af22e92a555b8a973897deea2ae9c0aaa2|
+|dz.sh.hidra.modules.topology.infrastructure.persistence.EngineeringNetworkDraftPostgresIntegrationTest|43|28c9a822ec51b7e21171c20787a5081efc237af1b26d2dca9b39906963f0b1b7|0437943c26be04a673609644650294df9775f9fcc49ad126983b41a0a6d8bf74|
+|dz.sh.hidra.modules.topology.infrastructure.persistence.EngineeringRevisionPublicationPostgresIntegrationTest|14|8cc32d91c0ba069435c13c1df9407f25e7ec81a34f8e7b95769a3e0a72c848ca|45937669618828785647ebd4e0821c62bccdf7912be3282904d9a311909e9a89|
+|dz.sh.hidra.modules.topology.infrastructure.persistence.ProtectedStationAdmissionPostgresIntegrationTest|46|8be0b03f001b9b0a1a7e67f448da409a9c1345bf00d8332ba55f7cde79222a40|4d5ae4fc2f006db76454613721305b40d17faf2b38463d5988207306d919449c|
+|dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.EngineeringGraphDraftCodecTest|12|c7d9c21a6f2d91b33c7237abfae7b192201f2743f515d59d6dc54d0cf563c27d|36ac4558efdd657c7b4c7d61e3d9052e101ae8a9f9c7078b8ece868610cfefde|
+|dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.EngineeringRevisionPublicationCodecTest|6|761823940b956bdfd42d9b050475b96f2d2a227fa601a0056e49bc333ee34000|9ff6da017c8a3585fec88a2784a693a22efbcbeccf3fca752a8222fb91644770|
+|dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.EngineeringRevisionPublicationCursorCodecTest|4|1e47b60a7a7ac4cf423debd5dd8ba0b528bcc50978dc7556ececd4d92a8287a6|0df9404897c7ac7e8a6cb895a1803a7bfc5092da694dd1464335470966e063ae|
+|dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.SurveyRouteProfileCodecTest|5|667b054105d0e56d7213baf6c3759e6e95883e05dae6c4647981b560cd05d3db|20195bdcdfc6a41041a2c0ecb7673ce0fdf4fad3fa9f6a1b5f79fc9cb7a40f5e|
+|dz.sh.hidra.modules.topology.EngineeringLocalExchangeBoundaryGuardrailTest|4|625eb7c1f2db627311fbfc0b22d027052416c41d203fef87223380acc95dddf0|8094bd0df546a3afedca8495a5f01f6e0b96aaf62df855b8d02f67e486dd73cf|
+|dz.sh.hidra.modules.topology.domain.model.EngineeringLocalExchangeTest|6|c37711808a98e9006621cc257350be6c91d9e3ea8d8b07dcdaf449400cac3a61|25d4de4b89863e6a08a7b423b6b86dced587ff77f93e5cc84568b641fb34d1db|
+|dz.sh.hidra.modules.topology.application.service.EngineeringLocalExchangeApplicationServiceTest|8|4f47a933a1b1ccf5b9acc036fd2f04ecd01971922c099c2d42c7a4f643677a03|4084f30ef19ddf3294fc9349e01526a0699ea591800ffcd41b1fad66ba31626b|
+|dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.EngineeringLocalExchangeCodecTest|7|c04bc900565741d92242dbea749cbdc990c665453bda46d18a32ba81885e9400|b0e36b5d3928ac24bf14bf2c68ad1607ce61cfe3a43378eb373491f3c117fe87|
+|dz.sh.hidra.modules.topology.api.rest.EngineeringLocalExchangeControllerTest|5|fdef88145715cc7403437c310df855edee89625efd5390ef3288fbd0c2447158|7f725a853d1ba48d6bb7663fc05508cf6e3176346536ea578b51ea57154fab54|
+|dz.sh.hidra.modules.topology.api.rest.EngineeringLocalExchangeApiExceptionHandlerTest|3|a7647c12ada0dd2d6485a812178271203ab2489aa5fbd3f5a06c2a9f3ab8192a|95531f656bd4b18cbd02550eb69890feb4e8fda6f39fca5bbde07ffe460f098b|
+|dz.sh.hidra.modules.topology.qualification.TopologyEngineeringOperatorQualificationTest|8|53ce1cb026178a332dd85770baddeaca19930ab0491260146c7dd3d630e59a28|13baf08de32f2646c80c35c17a0e9fa2d61625a03af6789ae2603272b290815c|
+
+**Cross-slice semantic closure, not status inheritance.** Multiple company-isolated
+contexts per network and multiple candidate drafts retain immutable selectors;
+caller packages/actors/digests cannot authorize writes. Current native LOCAL/OIDC/
+LDAP/AD tokens, explicit company+network grants, current responsibility, DENY/
+revocation and actual Party/Facility generation facts govern each original owner
+transaction. External directory/IdP transports remain synthetic. The current
+native path retains SQL roles, original31/34/35/38 relation-fence paths, one
+physical observation, final guarded rollback and no automatic indeterminate
+retry. Injected expiry/flush faults are not elapsed-time measurements or a
+physically induced unknown COMMIT. Controlled HTTP CAS orders admission before
+protected work; it does not claim simultaneous physical DB-writer overlap.
+
+Publications retain original authored metadata/graph/survey bytes and explicit
+incompleteness. The owner's readiness-A choice remains engineeringQualified=false;
+new draft edits never rewrite published snapshots. Local SURVEY exchange requires
+the original graph digest to match target bytes and separates original from
+explicitly rebound target provenance; preview is advisory and never grants write
+admission. E's atomicity is the one existing editor update, not an unimplemented
+cross-owner batch. Unsupported clone/remapping/remote/archive/combined import is
+explicit rather than silently accepted. Scalar existing-owner paths stay protected.
+
+The actual current runtime contract covers all20 generic engineering tuples,
+typed existing DTOs, native permission delegation, request/response/error bounds,
+exact retained reads, supported history/cursor/as-of semantics and bearer security.
+Full908 API generation/equality, successful-base compatibility, normal migrated
+physical catalog/dictionary equality and whole source/report inventory all pass.
+Recovered aggregate12673153969, run40373911665 attempt1,
+hidra-full-ci-evidence-ef075097142df9e665bc89eb3b2bd4e6b2c9bc17-40373911665-1,
+ZIP SHA25609834d3ab8c4d63428365eb2dc2864c3002ab2f99ffcb24a09d5a374df3b4af2,
+retains gate466 active classes/3251 cases, zero failures/errors/skips and all
+gate-linked member/provenance digests independently checked at child acceptance
+and rechecked for this parent subset. Raw inventory SHA256
+e599b4fd557ad1d27fdea6b712178861c34dddba6f06708a2809f9c11a64bc4c.
+The exact class/case/source comparison here is new parent reconciliation; it
+does not label source presence alone as execution or invent an original parent
+implementation commit. Earlier child failed-run/hold records stay immutable.
+
+Accepted API269 paths/291 operations/284 schemas, runtime SHA256
+34c0983b980824201ad72b1f3d76c8daa3f36262760bdf39babc355c9ba2f18a;
+actual successful base4a69624ecc635203fecb404c61933c696708d7f4.
+PostgreSQL16.15 catalog SHA256
+6ffc160437c2ac85ec9a2323fdd6b79e9151e96119662c9fcbf26c316941380f;
+source bundle SHA2566893e31c69bae45e190291858580397341414750b455da7273dfb57eba33b010;
+173 migrations/470 JPA mappings/516 relations/zero unresolved owners. Canonical
+manifest generation origin and reviewed physical dictionary bytes are preserved;
+normal captured dictionary differs only in its capture-SHA line. Serial oracle
+is optional/skipped; same_run_equivalence=false, serial_oracle=false,
+release_eligible=false and optimized_adoption_eligible=false remain explicit.
+Current cached complete parallel development proof does not become release proof.
+
+**Limits and separate owners.** This closes the supported052 backend software
+matrix. Node/branch geometry and station interface placeholders do not prove
+installed-unit port correspondence, hydraulic dimensions/roughness/materials,
+projection/EPSG resolution, geodetic accuracy, measured elevation or physical
+network engineering approval. Chainage/units/datum/precision/evidence are supplied
+facts, not inferred conversions or calibrated truth. Installed units/station
+configuration/manufacturer links remain HAPI-598..603; products HAPI-593..597;
+authoritative multi-owner baseline/exchange HAPI-604..609. Parent closure supplies
+one prerequisite only; none of their task statuses is changed or automatically
+selected. Actual HidraWEB HWEB-F02/F03 consumer integration, SITE commissioning,
+production data/capacity/latency, release/deployment, numerical engines/telemetry/
+operational intelligence and autonomous OT control remain independent work.
+Synthetic backend acceptance requires no new owner calibration data here.
+
+**Exact closure scope and validation.** Zero CREATE/four MODIFY/zero DELETE:
+only this HAPI-586 record's two current status fields and appended parent matrix;
+HAPI-586's two status cells in ULTIMATE_ROADMAP.md and ULTIMATE_PHASES.md;
+one compact HAPI-586 completion/navigation paragraph in ULTIMATE_TASKS.md.
+Preserve all six child records/statuses, prior histories, every other task/
+priority/dependency/description/order and all executable/test/API/schema/inventory/
+workflow/version blobs. No accepted child is reopened for optional improvement.
+Current-source/raw-case subset and retained gate/ZIP checks, complete six-child
+matrix, focused921-task/index and61-task selected-phase agreement, append-only/
+status-only four-file scope and19 documentation-validator self-tests PASS.
+No new local Java21/Maven/PostgreSQL execution is claimed by this docs-only stage.
+Publish under expectede386590 lease; verify exact parent/tree/message/four blobs,
+observe applicable exact-SHA Documentation CI creation/queue/start and STOP.
+No next task is automatically selected; later owner Next must refresh its own
+current prerequisite/source contract rather than jumping to HAPI-608.
 
 <a id="hapi-587"></a>
 ## HAPI-587 — Company/network-owned engineering drafts

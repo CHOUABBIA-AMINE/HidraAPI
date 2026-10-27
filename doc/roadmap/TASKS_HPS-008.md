@@ -2357,7 +2357,7 @@ method seeds or role/user grants.
   facts; different original request content is an authorized409. A metadata
   change alone does not mutate original replay bytes or create a new revision.
 - Canonical supplied decimals are JSON strings, with grammar
-  (0|[1-9][0-9]{0,33})(\.[0-9]{1,18})? and no sign/exponent/whitespace.
+  `(0|[1-9][0-9]{0,33})(\.[0-9]{1,18})? and no sign/exponent/whitespace.`
   Preserve the original accepted decimal lexeme and scale in a new versioned
   strict UTF-8 codec; do not pass through binary floating point, trim, round,
   strip trailing zeros or normalize a fraction total. Numeric equality validates
@@ -2655,6 +2655,35 @@ scope/parent/tree/blobs/message, observe applicable exact-SHA Documentation CI
 creation/queue/start and STOP. Package A is next only after this registration's
 Documentation gate succeeds and a subsequent owner Next; no runtime package
 executes automatically in this turn.
+
+
+### HAPI-595 registration documentation CI repair — 2026-10-27
+
+Owner Next encountered failed exact-head Docs621/run40493727477 at
+4ec2ddca7cf84b5e95730638b3a7605c0c7a2524 before Package A's prerequisite gate.
+Job122153776848 fails with "Unresolved reference link: 0-9": the registered
+decimal grammar was plain Markdown, so adjacent character classes were read
+as a reference link. The intended literal grammar itself is unchanged.
+
+Exact repair message: `docs(custody): escape supplied decimal grammar`.
+Write allowlist is only this owning phase file: one MODIFY, zero CREATE/DELETE.
+Wrap the existing grammar line in inline code, preserving its characters and
+meaning. Retain all prior history and append this failure/correction record.
+Do not weaken the Markdown validator or change any runtime, status, package,
+payload bound, owner decision, migration, source inventory or artifact.
+
+Completed local checks: the unchanged link parser accepts the complete phase
+(34 links), with all six task definitions retained;19 documentation-validator
+self-tests PASS. No Java/native execution is required or claimed for this
+formatting-only repair. Hosted comprehensive validation remains pending.
+
+Policy A remains explicitly approved. HAPI-595 stays NOT_IMPLEMENTED/IN_PROGRESS.
+Package A remains selected next only after the registration repair's
+Documentation gate succeeds; no implementation follows this repair automatically.
+Validate the actual complete phase with the unchanged link parser, run available
+documentation self-tests and verify the one-file delta before guarded publication.
+Observe applicable exact-SHA Documentation CI creation/queue/start and STOP;
+do not wait for completion or treat failed Docs621 as a passing prerequisite.
 
 <a id="hapi-596"></a>
 ## HAPI-596 — Product publication, history and owner exports

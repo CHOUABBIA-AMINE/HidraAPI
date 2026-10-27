@@ -1922,9 +1922,9 @@ Legacy IDs: HPR-P25-053B
 
 Priority: P1
 
-Implementation Status: NOT_IMPLEMENTED
+Implementation Status: VERIFIED
 
-Planning Status: IN_PROGRESS
+Planning Status: COMPLETED
 
 Owning Module: `custody` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -3491,6 +3491,119 @@ HAPI-595 remains NOT_IMPLEMENTED/IN_PROGRESS. Publish only the four paths with
 expectedbfdeda29, verify exact parent/tree/blobs/message, confirm applicable
 Full/Fast/Docs creation/queue/start on the new SHA and STOP. Full acceptance,
 Package C acceptance and separate final595 closure remain pending.
+
+### HAPI-595 final authoring acceptance — VERIFIED / COMPLETED — 2026-10-27
+
+**Selection, exact source and green gates.** Owner Next selects the separately
+registered final acceptance after Package C's responsible boundary repair.
+Accepted source/main3de14d1dbdd7aad6f328bbe627b729a783c65042,
+parentbfdeda295f939a34801ac3288fb2835a8b88c248,
+tree59630c0f25d3e5a5ee19fb9fad3e50072702af7c.
+Full927/run40558759235, Fast231/run40558759385 and
+Docs635/run40558759466 completed/success on that exact source. Retained Full927
+attempt1 gate proves3430 executed tests across478 test classes, zero failures/errors/
+skips. This is development software acceptance, not a deployment, release,
+industrial calibration, engineering qualification or SITE acceptance.
+
+**Current exact final message:**
+`docs(custody): accept supplied fluid property authoring`.
+MODIFY exactly this phase, ULTIMATE_TASKS and only595's status cells in
+ULTIMATE_ROADMAP/ULTIMATE_PHASES. Zero CREATE/DELETE or runtime/artifact change.
+Set595 to VERIFIED/COMPLETED in its header and both registries; replace only its
+compact execution pointer. All other task statuses, original definitions,
+historical evidence, legacy mappings, source, tests, migrations and snapshots
+remain unchanged. This closure does not implicitly select596/597 or the593 parent.
+
+**Independent evidence recovery.** Download Full927 attempt1 artifacts and verify
+ZIP SHA256 before reading raw evidence:
+
+| Artifact | ID | ZIP SHA256 |
+|---|---|---|
+| Full gate and retained evidence |12759176629|8b1cbf465ba20a0a150153260cd1911b08040aae482bbaa1347acc226a07afbb|
+| PostgreSQL shard2 |12760685583|8fd4202697b80d442c1ce39ac730fab663a6eed537018ab8d934f605a64e1e5d|
+| Unit/architecture |12758276854|2b56e66ca43d5acccd048532315db6194f57a0a01d8bd500a728f31a9af31540|
+| API/catalog lane |12758311831|7d6a75e52f457d48140fc0da5e2636b67e1fc0790ad16cfdfd31ca17c3e8dbbe|
+
+Independently match source SHA, run/attempt, exact inventory digest, every retained
+lane file digest, raw suite/case identities, selected lane membership and current
+source-file hashes. A stale local Telemetry test review copy was refreshed from
+the exact accepted remote source before its hash/case comparison; no repository
+source change is made. Aggregate gate success is corroborated by raw evidence,
+not substituted for it. Original failed runs remain failed historical records.
+
+**Task-specific acceptance matrix:99 executed cases.** The six dedicated suites
+below contribute92 exact cases; every case appears in the raw report, unchanged
+source-linked inventory and same-run lane evidence, without failure/error/skip.
+
+| Actual source suite | Cases | Accepted software boundary |
+|---|---:|---|
+| ProtectedFluidPropertyAuthorizationPostgresIntegrationTest |18|Distinct native property family, four producers, both scopes/actions, currentness, denial and opaque-origin misuse.|
+| CustodyProtectedFluidUnitPostgresIntegrationTest |11|Actual owner roles/dimensions/activity, opaque admissions, locks, races, privilege/catalog safety and rollback; no unit conversion.|
+| SuppliedFluidPropertyRevisionTest |12|Exact decimals/fractions, both bases/labels, bounded methods/conditions/evidence, incomplete-vs-invalid, strict canonical codec and request bytes.|
+| SuppliedFluidPropertyPostgresIntegrationTest |26|Immutable independent history, metadata pin/staleness, exact current replay/CAS, concurrency/company isolation, current denials, unit fences, forged origin, real final-guard rollback, typed invalid input versus stored corruption.|
+| SuppliedFluidPropertyRevisionControllerTest |11|Strict actual JSON/controller parsing, exact scopes/identities/status/problems, nested rejection, lexeme/null/empty/diagnostic preservation and non-disclosure.|
+| SuppliedFluidPropertyNativeHttpPostgresIntegrationTest |14|Configured native filters/HTTP/database for four producers, both actions, supported facts/methods/units, replay/CAS/stale bindings, denied/revoked/foreign targets,400-vs503 and real rollback.|
+
+Additionally verify these seven introduced guard cases in the passing same-run
+unit lane, matching their current source hashes and complete raw case sets:
+
+- OperationAuthenticationBoundaryGuardrailTest.suppliedFluidSeamsHaveOnlyTheirExactPrivateOwnerCallers
+- ProtectedOperationIdentityParticipantTest.suppliedFluidPrivateFamilyRejectsNullOrForeignStructuralCredentials
+- JdbcProtectedAuthorizationEvidenceReaderTest.suppliedFluidFamilyCannotBeSelectedByDiagnosticEvidenceOrForgedPair
+- ArchitectureGuardrailTest.suppliedFluidExportsStayExactToTheirCoordinator
+- ForensicRemediationClosureTest.suppliedFluidExportsStayExactToTheirCoordinator
+- ProtectedTransactionExecutorTest.fluidProvisionalStatementsAreExactReviewedTemplates
+- HidraRouteAuthorizationInterceptorTest.suppliedFluidDelegationRequiresExactAuthenticatedOwnerTuples
+
+The complete unchanged Forensic wire/domain and architecture rules pass after
+moving conversions to the REST controller. No test was removed, disabled,
+reclassified or weakened to accept this task. Existing families/source pins,
+permission/current-scope checks,34 reviewed fences, exact DML templates,
+credential routing and500/750/250ms work/statement/lock budgets remain.
+
+**Actual same-run contract/catalog evidence.** API lane source is exactly
+3de14d1d, run40558759235/attempt1. Actual runtime JSON SHA256
+4825ab74f6b04f452951e340a7a8da90bd9f5b079fced24a2a557d43b99c52ef;
+272 paths,296 operations,307 schemas. Runtime/canonical semantic equality,
+actual successful-base compatibility and complete migrated dictionary checks
+passed in that same job. Canonical generated source provenance remains the
+truthful original capture, not restamped to an acceptance/repair commit.
+
+Actual catalog SHA256
+b75493db3e4d63664cfc4391326515b0c4d1181e3308c6b107da6a3944bdbef4;
+source bundle93924c520ff84e21e5d50ad46a92961162eab9957416d22bdf076157d462056e.
+Independently match all648 captured migration/JPA source hashes to accepted
+source, validate catalog shape, render using the unchanged generator/ownership
+rules and compare the physical dictionary:522 relations, zero unresolved owners.
+No invented physical metadata, skipped catalog proof or handwritten OpenAPI.
+Prior artifact-only refresh obligations are satisfied by the recorded actual
+captures and this exact-source same-run equality evidence.
+
+**Accepted behavior and claim limits.** Policy A GAS/LIQUID authoring supports
+explicit MOLE/MASS fractions and supplied density/dynamic-viscosity, plus supplied
+GAS compressibility only, with explicit owner-admitted units/absolute reference
+conditions/method/source evidence. Fresh independent native authority and current
+owner facts protect reads and writes. Supplied versions are immutable and
+independent of product metadata versions; exact replay returns current facts,
+and stale authored metadata remains explicit without reinterpretation. Exact
+lexemes, synthetic origin and absent/incomplete evidence remain distinguishable.
+Public GET/PUT operations return typed explicit DTOs and the registered status
+contract. This is supplied-data authoring: no property calculation, EOS, unit/
+fraction conversion, solver invocation, publication, downstream qualification,
+engineering approval, live SCADA access or autonomous operational action exists
+by acceptance of595. Existing qualified GAS contracts are preserved.
+
+**Closure validation and stopping rule.** Available19 unchanged documentation
+self-tests, exact six-record phase metadata/status agreement, status-only frozen
+row diffs, compact-pointer bounds, append-only history and four-document scope
+checks must pass before publication. No redundant Java/database run is required
+for this documentation-only child of the exact accepted runtime source. Publish
+with expected3de14d1d, verify exact parent/tree/blobs/message and confirm the
+closure's applicable Documentation CI creation/queue/start, then STOP.
+HAPI-596 publication/history/owner-export policy and scope preflight is the next
+separate candidate; its blocked status is unchanged and no runtime stage or
+owner policy is silently selected. HAPI-597 and593 integrated acceptance,
+frontend work, numerical engines, releases and deployment remain separate.
 
 <a id="hapi-596"></a>
 ## HAPI-596 — Product publication, history and owner exports

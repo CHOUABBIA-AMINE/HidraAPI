@@ -82,14 +82,16 @@ remain separately selected. No next task is selected automatically.
 
 
 [HAPI-595](TASKS_HPS-008.md#hapi-595), supplied composition, properties and
-methods, is NOT_IMPLEMENTED/IN_PROGRESS. The owner explicitly approved Policy A:
-GAS/LIQUID declarations with MOLE/MASS fractions, supplied density/viscosity and
-GAS compressibility, explicit units/reference conditions/method provenance.
-The owning phase registers three bounded packages: distinct native/Telemetry
-owner contracts, Custody revision storage, then configured HTTP and actual
-artifacts. Package A is next after registration Documentation CI succeeds.
-No runtime capability or numerical qualification is claimed by registration;
-HAPI-596/597, frontend, release and deployment remain unselected.
+methods, is VERIFIED/COMPLETED within its registered development authoring scope.
+Owner-approved Policy A is implemented through protected native/unit contracts,
+immutable supplied revision storage and configured HTTP operations. Full927,
+Fast231 and Docs635 passed on3de14d1dbdd7aad6f328bbe627b729a783c65042.
+The owning phase retains99 task-specific exact cases and actual same-run API/
+catalog/compatibility evidence. Packages A/B/C and their responsible repairs are
+complete; do not repeat implementation. Owner Next selects this final four-file
+acceptance closure. HAPI-596/597 and integrated parent HAPI-593 acceptance remain
+separate; no numerical computation, publication, engineering qualification,
+frontend implementation, release or deployment is selected automatically.
 
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent

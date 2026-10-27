@@ -32,7 +32,7 @@ public interface SuppliedFluidPropertyRevisionUseCase {
         public Result {Objects.requireNonNull(draft);}
         public List<String> diagnostics(){var d=new ArrayList<>(draft.facts().diagnostics());if(!metadataBindingCurrent)d.add("METADATA_BINDING_STALE");return List.copyOf(d);}
     }
-    enum Reason { CONFLICT, DENIED, UNAVAILABLE, INDETERMINATE }
+    enum Reason { INVALID_REQUEST, CONFLICT, DENIED, UNAVAILABLE, INDETERMINATE }
     final class Failure extends RuntimeException {
         private final Reason reason;
         public Failure(Reason r){super("Supplied fluid draft "+Objects.requireNonNull(r));reason=r;}

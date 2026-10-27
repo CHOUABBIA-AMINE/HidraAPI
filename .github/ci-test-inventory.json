@@ -973,6 +973,30 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "boundsNullChildrenAndWrongCollectionTypesRejectBeforeOwners",
+        "duplicateExtraOrMissingCompanyAndNoncanonicalPathsReject",
+        "exactFractionsAndBothBasesPreserveOriginalDecimalStrings",
+        "firstWriteSuccessorAndReplayHaveDistinctStatusAndIdentity",
+        "invalidCompositionShapesAndLexemesAreRejected",
+        "ownerFailuresReturnOnlyStablePublicProblems",
+        "readBindsOnlyCurrentCompanyAndProductWithoutCallerVersions",
+        "responsesPreserveNullEmptyIncompleteAndStaleBindingWithoutQualification",
+        "serverOwnedAndNestedUnknownFieldsCannotReachApplication",
+        "suppliedMethodContradictionCannotBecomeIncompleteSuccess",
+        "versionsRequestIdsAndDecimalNumbersNeverCoerce"
+      ],
+      "class": "dz.sh.hidra.modules.custody.api.rest.controller.SuppliedFluidPropertyRevisionControllerTest",
+      "dependency_reason": "New HAPI-595C cases; unmeasured. Standalone strict HTTP DTO/controller cases; no external service.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "custody",
+      "path": "src/test/java/dz/sh/hidra/modules/custody/api/rest/controller/SuppliedFluidPropertyRevisionControllerTest.java",
+      "source_sha256": "d21f844e88564ae9e5ec2836fef4079832cdb70f75be90c6f7dba9cf6dca15f3",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0.11,
       "cases": [
         "derivesEvidenceAndQualifiedTimeOnServerAndReplaysOriginalQualification",
@@ -1197,9 +1221,37 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "bothFractionBasesAndClassificationLabelsRoundTripExactStrings",
+        "currentCompanyAndCatalogRejectionsNeverAppend",
+        "currentSessionRevocationReturnsExactDenialAndUnchangedHistory",
+        "currentUnitEligibilityIsMandatoryForHttpReadAndWrites",
+        "denyOnEitherScopeBlocksBothActionsAndReplayWithoutMutation",
+        "exactHttpReplayReturnsCurrentAndConflictingPayloadCannotAppend",
+        "finalDatabaseGuardReturns503AndRollsBackRootAndVersion",
+        "fourNativeBearerProducersWriteReadAndAppendWithIndependentVersions",
+        "liquidZReturns400BeforeAnyApplyAndOwnerUnavailabilityRemains503",
+        "malformedNestedAndServerOwnedFactsCannotReachRepository",
+        "missingBearerMalformedBearerAndMetadataOnlyAuthorityCannotWrite",
+        "missingForeignAndCompanyLocalTargetsDoNotLeakAcrossCompanies",
+        "staleCasMetadataAndAuthoredClassificationRemainExplicit",
+        "supportedPropertiesAndExplicitMethodsPreserveUnitsConditionsAndEvidence"
+      ],
+      "class": "dz.sh.hidra.modules.custody.infrastructure.persistence.SuppliedFluidPropertyNativeHttpPostgresIntegrationTest",
+      "dependency_reason": "New HAPI-595C cases; unmeasured. Configured HTTP/security and native PostgreSQL transactions; Docker required.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "custody",
+      "path": "src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/SuppliedFluidPropertyNativeHttpPostgresIntegrationTest.java",
+      "source_sha256": "ce1cdffd426c54b510ed1d8826aefb906762ac69d10fe0308dff535e2f95c7fd",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
         "absentAndForeignProductShareNonDisclosingDenial",
         "completedAndForgedAdmissionsCannotDisclose",
         "concurrentExpectedVersionWritersCommitOneSuccessor",
+        "corruptStoredCodecRemainsUnavailableRatherThanInvalidUserInput",
         "disabledAppendTriggerOrExcessPrivilegesReject",
         "exactCompositionBytesAndBothBasesPersistForBothClassifications",
         "exactReplayReturnsCurrentWithoutRevertingAndConflictsRollback",
@@ -1207,6 +1259,7 @@
         "finalFenceSubstitutionRollsBackProvisionalRevision",
         "fourNativeProducersCreateReadAndAppendExactSuppliedFacts",
         "inactiveCompanyOrCatalogDeniesReadsWithoutChangingHistory",
+        "liquidCompressibilityRejectsAsTypedInvalidInputBeforeProvisionalWrites",
         "metadataPermissionsAloneCannotWriteProperties",
         "metadataRevisionRetainsAuthoredClassificationAndReplayBytes",
         "nativeDenyOverridesPropertyGrant",
@@ -1228,7 +1281,7 @@
       "lane": "postgres-integration",
       "owner": "custody",
       "path": "src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/SuppliedFluidPropertyPostgresIntegrationTest.java",
-      "source_sha256": "c27d15f94bd10879903cd64eb5203d5ab2801d0d658ca3a6b12ddbdf41f22354",
+      "source_sha256": "a40ce4cfdf9009ca624b5c1af1bcfa5b21e78ca2008bc0a775e3eae80db34cd8",
       "supports": []
     },
     {
@@ -9417,6 +9470,7 @@
         "permitsMatchingEffectivePermission",
         "productDraftDelegationRequiresExactAuthenticatedOwnerTuples",
         "publicationDelegatesOnlyEightAuthenticatedExactCompiledTuples",
+        "suppliedFluidDelegationRequiresExactAuthenticatedOwnerTuples",
         "surveyDelegationRequiresExactNativeControllerMethodAndAuthentication"
       ],
       "class": "dz.sh.hidra.platform.permissions.HidraRouteAuthorizationInterceptorTest",
@@ -9425,7 +9479,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptorTest.java",
-      "source_sha256": "9f500dbba302387a287d23c6cd7c999538a7ec5832bdd4b88508c693512f1d89",
+      "source_sha256": "f98d70863789a3c1e69847ccf1fea0047715754221b2bb672efca7e4540b54d2",
       "supports": []
     },
     {

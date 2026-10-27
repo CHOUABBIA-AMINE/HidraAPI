@@ -3255,6 +3255,90 @@ Publish this one-document correction directly with expected0539ec99, verify
 exact parent/tree/blob/message and documentation CI creation/queue/start,
 then STOP. Next remains the extended Package C implementation after feedback.
 
+### HAPI-595 Package C — protected HTTP source implemented; runtime capture pending — 2026-10-27
+
+**Selection and exact baseline.** Owner explicitly selects Package C after the
+invalid-declaration mapping registration. Docs631/run40536951929 completed/success
+on556bad407259544d6e82bc8bd18f23b5b8bd15dc. Main subsequently advanced to
+ad360bafdd84b197f34e1284c72ebc13d45ed2ce,
+tree6276f2fbd5667bd71857acba07fc1deca394ec8d; Docs632/run40544106110
+completed/success. Review confirms that intervening commit changes only
+TASKS_HPS-001's owner-selected Identity policy registration; preserve it intact.
+Accepted runtime source remains0539ec99ecb6bc511530dae60f67b57eb65a76b0,
+Full924/Fast228/Docs630 passed. Retained Full924 gate reports3402 tests and zero
+failures/errors/skips; its raw supplied suites prove24 native storage and12
+domain/codec cases. Source/run/attempt and actual API/catalog lane evidence were
+independently recovered in this continuation; no C test is covered by those runs.
+
+**Bounded source publication.** Exact registered message:
+`feat(custody): expose supplied fluid property draft operations`.
+CREATE the five C controller/request/response/standalone/native-HTTP files.
+MODIFY the route interceptor, its test, inventory and this phase record, plus the
+three existing paths admitted by the preceding invalid-declaration correction.
+Exactly12 changed paths: five CREATE, seven MODIFY, zero DELETE. Preserve all
+other files, task statuses, existing migrations and concurrent Identity policy.
+
+Expose only GET and PUT
+`/api/v1/custody/engineering-products/{draftId}/properties`, with exactly one
+companyPartyId query. Strict explicit nested DTO parsing rejects unknown fields,
+JSON coercion, unsupported enums/decimal lexemes, null/duplicate/oversized children,
+contradictory methods and server-owned identity/actor/qualification facts.
+Independent supplied version, product draft/catalog IDs, authored metadata
+version/classification, exact fact strings and null-versus-empty, incomplete and
+stale-binding diagnostics are mapped through explicit response DTOs. No
+persistence entity or calculated property is returned. First write201; successor/
+fresh current replay200; current read200. There is no history/list/publication/
+export/solver endpoint. Completeness is separate from engineering qualification.
+
+The interceptor delegates only the exact compiled supplied controller/read/GET
+and write/PUT route tuples after authentication. Preserve all existing metadata
+and other owner tuples, static permissions and native company/product authority.
+Add only INVALID_REQUEST to the typed failure family and translate only freshly
+submitted facts.validate rejection against already-resolved current metadata.
+Keep metadata enum resolution and stored payload decoding outside that catch.
+Controller maps the typed rejection to400; DENIED403, CONFLICT409 and owner/
+storage/unknown-completion503 remain. No untyped internal-exception classifier,
+extra owner export, domain, schema or budget change.
+
+**Real tests authored; execution pending.** Add11 standalone HTTP/DTO cases,
+14 configured native HTTP/PostgreSQL cases, one exact-route delegation case and
+two native storage regression cases;28 added cases total. Preserve every old
+case/timing/lane/shard/support association and register only changed hashes and
+two new unmeasured suites. Tests cover four native bearer producers, both actions,
+exact replay/CAS/stale metadata, GAS/LIQUID and both fraction bases, supplied
+property/method/source/condition/unit bytes, null/incomplete data, missing/forged
+bearer, metadata-only authority, native scope DENY, current session/company/
+catalog/unit denials, two-company isolation, strict requests/scopes, and actual
+final-database-guard rollback. The new B regression requires LIQUID Z to return
+INVALID_REQUEST before apply with zero root/history rows. The second corrupts
+synthetic stored codec bytes under an administrator fixture, restores them in
+finally, and requires UNAVAILABLE rather than invalid user input. These native
+cases have not executed locally; source review is not runtime proof.
+
+**Actual local checks.** PASS: syntax parsing of all10 changed Java files; six
+actual domain/port/DTO sources type-check on the available Java17 compiler using
+temporary dependency signatures;34 focused DTO/mapping assertions using those
+signatures;16 extracted exact-route classifier assertions;19 unchanged
+documentation-validator self-tests; full-phase metadata/anchor parsing;
+append-only evidence/scope and case/timing/lane preservation checks. Dependency
+signatures are not installed framework libraries: none of these checks proves
+real Jackson, Spring, HTTP filters, Java21 or PostgreSQL acceptance. Maven,
+javac launcher and Docker are unavailable; apply AGENTS11.1 CI-first validation.
+
+**Truthful runtime artifacts and stop.** Keep the existing OpenAPI snapshot and
+its inseparable manifest unchanged: no actual application capture can be produced
+locally. The new two-route/nested-DTO runtime capture is PENDING hosted feedback;
+its equality gate may fail until the registered actual-capture follow-up. Do not
+handwrite the contract, forge source provenance or weaken equality/compatibility.
+No migration/JPA/ownership change occurs, so preserve the actual reviewed522-
+relation physical dictionary and require the next hosted catalog equality check.
+The separately selected follow-up remains
+`docs(api): refresh supplied fluid runtime contract` with its registered artifact
+allowlist. HAPI-595 remains NOT_IMPLEMENTED/IN_PROGRESS; final acceptance and
+HAPI-596/597 are not selected. Publish with expectedad360baf, verify exact
+parent/tree/blobs/message and12-path scope, observe exact-SHA Full/Fast/Docs
+creation/queue/start, then STOP for source feedback and actual capture recovery.
+
 <a id="hapi-596"></a>
 ## HAPI-596 — Product publication, history and owner exports
 

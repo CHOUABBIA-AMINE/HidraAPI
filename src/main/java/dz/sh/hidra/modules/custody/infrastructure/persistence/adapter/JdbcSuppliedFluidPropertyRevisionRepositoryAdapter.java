@@ -251,7 +251,12 @@ public class JdbcSuppliedFluidPropertyRevisionRepositoryAdapter implements Suppl
             t.replayed=!prior.isEmpty();
             if(t.replayed){if(!t.requestDigest.equals(prior.getFirst().get("request_sha256")) || !Arrays.equals(codec.encode(c.facts()),(byte[])prior.getFirst().get("canonical_payload")))throw fail(Reason.CONFLICT);if(last==null)throw fail(Reason.UNAVAILABLE);}
             else {if(c.expectedVersion()!=t.latest || c.expectedProductMetadataVersion()!=t.metadataVersion)throw fail(Reason.CONFLICT);
-                if(t.metadataClassification==null)throw fail(Reason.CONFLICT);c.facts().validate(Classification.valueOf(t.metadataClassification));}
+                if(t.metadataClassification==null)throw fail(Reason.CONFLICT);
+                var classification=Classification.valueOf(t.metadataClassification);
+                // Only new supplied declarations, after current native and target admission.
+                // Stored decode/integrity or owner failures retain their unavailable outcome.
+                try {c.facts().validate(classification);}
+                catch(IllegalArgumentException invalidDeclaration){throw fail(Reason.INVALID_REQUEST);}}
         }
         boolean mutation=c.kind()==Kind.WRITE && !t.replayed;long version=mutation?t.latest+1:t.latest;
         var facts=mutation?c.facts():codec.decode(t.latestBytes);long metadata=mutation?t.metadataVersion:last.metadataVersion();String classification=mutation?t.metadataClassification:last.classification();

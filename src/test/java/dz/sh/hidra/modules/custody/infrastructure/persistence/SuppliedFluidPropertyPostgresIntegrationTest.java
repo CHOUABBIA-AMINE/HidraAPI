@@ -918,4 +918,35 @@ public class SuppliedFluidPropertyPostgresIntegrationTest {
         }
         assertThat(versions(p)).isEqualTo(1);
     }
+
+    @Test void liquidCompressibilityRejectsAsTypedInvalidInputBeforeProvisionalWrites() {
+        fluidActor("LOCAL");UUID p=product();
+        drafts.execute(new dz.sh.hidra.modules.custody.application.port.in.ProductEngineeringDraftUseCase.Command(
+            dz.sh.hidra.modules.custody.application.port.in.ProductEngineeringDraftUseCase.Kind.UPDATE,COMPANY,p,null,null,null,1L,
+            new dz.sh.hidra.modules.custody.domain.model.ProductEngineeringDraft.Metadata("liquid",null,null,dz.sh.hidra.modules.custody.domain.model.ProductEngineeringDraft.Classification.LIQUID)));
+        var z=new Facts(null,List.of(new Observation("Z",null,Property.COMPRESSIBILITY_FACTOR,new Decimal("1.20"),"fluid-Z",new Condition(new Decimal("100"),"fluid-pressure"),new Condition(new Decimal("300"),"fluid-temperature"),null,null)),null,null,null);
+        clearInvocations(fluidTarget());
+        assertThatThrownBy(()->put(p,UUID.randomUUID(),0,2,z)).isInstanceOf(dz.sh.hidra.modules.custody.application.port.in.SuppliedFluidPropertyRevisionUseCase.Failure.class)
+            .extracting(e->((dz.sh.hidra.modules.custody.application.port.in.SuppliedFluidPropertyRevisionUseCase.Failure)e).reason())
+            .isEqualTo(dz.sh.hidra.modules.custody.application.port.in.SuppliedFluidPropertyRevisionUseCase.Reason.INVALID_REQUEST);
+        verify(fluidTarget(),never()).apply(any(),any());assertThat(versions(p)).isZero();assertThat(jdbc.queryForObject("SELECT count(*) FROM "+FR+" WHERE product_draft_id=?",Long.class,p)).isZero();
+    }
+
+    @Test void corruptStoredCodecRemainsUnavailableRatherThanInvalidUserInput() {
+        fluidActor("LOCAL");UUID p=product();put(p,UUID.randomUUID(),0,1,absent());
+        byte[] original=jdbc.queryForObject("SELECT canonical_payload FROM "+FV+" WHERE product_draft_id=? AND version=1",byte[].class,p);
+        jdbc.execute("ALTER TABLE "+FV+" DISABLE TRIGGER custody_supplied_fluid_version_immutable");
+        try {jdbc.update("UPDATE "+FV+" SET canonical_payload=int4send(1)||decode(repeat('00',14),'hex'),sha256=encode(sha256(int4send(1)||decode(repeat('00',14),'hex')),'hex') WHERE product_draft_id=? AND version=1",p);}
+        finally {jdbc.execute("ALTER TABLE "+FV+" ENABLE TRIGGER custody_supplied_fluid_version_immutable");}
+        try {
+            assertThatThrownBy(()->get(COMPANY,p)).isInstanceOf(dz.sh.hidra.modules.custody.application.port.in.SuppliedFluidPropertyRevisionUseCase.Failure.class)
+                .extracting(e->((dz.sh.hidra.modules.custody.application.port.in.SuppliedFluidPropertyRevisionUseCase.Failure)e).reason())
+                .isEqualTo(dz.sh.hidra.modules.custody.application.port.in.SuppliedFluidPropertyRevisionUseCase.Reason.UNAVAILABLE);
+        } finally {
+            jdbc.execute("ALTER TABLE "+FV+" DISABLE TRIGGER custody_supplied_fluid_version_immutable");
+            try {jdbc.update("UPDATE "+FV+" SET canonical_payload=?,sha256=encode(sha256(?),'hex') WHERE product_draft_id=? AND version=1",original,original,p);}
+            finally {jdbc.execute("ALTER TABLE "+FV+" ENABLE TRIGGER custody_supplied_fluid_version_immutable");}
+        }
+        assertThat(versions(p)).isEqualTo(1);
+    }
 }

@@ -98,7 +98,8 @@ public final class HidraRouteAuthorizationInterceptor implements HandlerIntercep
                 || isOwnedEngineeringPublicationRoute(handlerMethod,routePattern,request.getMethod())
                 || isOwnedEmployeeAppointmentRoute(handlerMethod,routePattern,request.getMethod())
                 || isOwnedLocalExchangeRoute(handlerMethod,routePattern,request.getMethod())
-                || isOwnedProductDraftRoute(handlerMethod,routePattern,request.getMethod())) {
+                || isOwnedProductDraftRoute(handlerMethod,routePattern,request.getMethod())
+                || isOwnedSuppliedFluidRoute(handlerMethod,routePattern,request.getMethod())) {
             if (authentication == null || !authentication.isAuthenticated()
                     || authentication instanceof AnonymousAuthenticationToken) {
                 throw new AccessDeniedException("Engineering draft authentication required.");
@@ -112,6 +113,16 @@ public final class HidraRouteAuthorizationInterceptor implements HandlerIntercep
         }
 
         throw new AccessDeniedException("Missing required permission: " + requiredPermission);
+    }
+
+    private static boolean isOwnedSuppliedFluidRoute(HandlerMethod handler,String route,String verb) {
+        if(handler==null || route==null || verb==null || !handler.getBeanType().getName().equals(
+                "dz.sh.hidra.modules.custody.api.rest.controller.SuppliedFluidPropertyRevisionController"))return false;
+        return switch(verb+" "+route+" "+handler.getMethod().getName()) {
+            case "GET /api/v1/custody/engineering-products/{draftId}/properties read",
+                 "PUT /api/v1/custody/engineering-products/{draftId}/properties write" -> true;
+            default -> false;
+        };
     }
 
     private static boolean isOwnedProductDraftRoute(HandlerMethod handler,String route,String verb) {

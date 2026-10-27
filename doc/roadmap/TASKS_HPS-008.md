@@ -3046,7 +3046,6 @@ parent/tree/paths/blobs and applicable workflow creation, then STOP.
 HAPI-595 remains NOT_IMPLEMENTED / IN_PROGRESS overall. Package A
 acceptance is pending; B/C and HAPI-596 are not selected.
 
-<a id="hapi-596"></a>
 ### HAPI-595 Package B — supplied revision storage implemented; hosted acceptance pending — 2026-10-27
 
 **Selection and accepted prerequisite.** Owner Next selected Package B, followed by
@@ -3120,6 +3119,70 @@ creation/queue/start, then STOP. After B source feedback, its actual catalog
 refresh is the next bounded follow-up before Package C acceptance.
 
 
+### HAPI-595 Package B — Full923 fixture, phase-boundary and physical dictionary repair — 2026-10-27
+
+**Owner Fail and exact evidence.** Current main/source
+e91de456670a8db835218d90a2fdee92904b4785, parent7b696df,
+tree9cf3b16780ae9661f3afbf085a247102e78c0286. Fast227/run40528752035
+completed/success. Full923/run40528751993 and Docs629/run40528752259
+completed/failure; no complete B acceptance is asserted. The unit/architecture
+lane passed. Raw retained SuppliedFluidPropertyPostgresIntegrationTest XML has
+24 cases, zero assertion failures/skips and three errors: the unit-revocation,
+writer-first and owner-first cases all fail in units() before the intended
+checks because created_at/updated_at were omitted from the owner policy insert.
+The other21 cases passed; a failed suite/lane is not accepted as a passing gate.
+
+This Fail repair registers exact message:
+`fix(custody): repair supplied fluid acceptance evidence`.
+MODIFY exactly four existing paths: this phase record;
+`src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/SuppliedFluidPropertyPostgresIntegrationTest.java`;
+`.github/ci-test-inventory.json`; and `doc/database/DATA_DICTIONARY.md`.
+Zero CREATE/DELETE, no production Java, migration, workflow, validator, timing,
+shard or test-case removal. This bounded failure repair includes the already
+registered B physical-catalog obligation using actual source feedback; it does
+not select C or use the artifact-only message for a mixed commit.
+
+**Corrections.** Supply both required policy timestamps explicitly in the
+synthetic fixture; retain all24 case names and update only its inventory source
+hash. Move the accidentally separated hapi-596 anchor back immediately before
+its own task heading. Preserve the complete prior B evidence and all task
+metadata/status values. The unchanged full-phase record parser reproduces
+HAPI-595's duplicate Phase metadata before correction and accepts all six
+HPS-008 records after it; no parser exemption is introduced.
+
+**Actual physical evidence.** Recover Full923 attempt1 API diagnostics artifact
+12745581092; ZIP SHA256
+434b686209698e1e2daeb64763eb037c16783794912c260116a1e208a50544ba.
+Its database/schema.json source is exactly e91de456. Independently match all648
+migration/JPA source-file SHA256 values before rendering with the unchanged
+generator and reviewed ownership file. Captured catalog SHA256
+32fa679547036ee0d8f8b368d0689a63d1267ce303944f7a487324688d266521;
+source bundle93924c520ff84e21e5d50ad46a92961162eab9957416d22bdf076157d462056e.
+Actual PostgreSQL16.15 disposable catalog:178 migrations,470 JPA mappings and
+522 relations, zero unresolved owners. The original API/dictionary job failed
+physical dictionary equality; its partial diagnostics are not a passing lane.
+
+Regenerate the complete dictionary from that captured catalog. Relative to the
+verified current dictionary blobb469fe2aaaf72bff7781480d1d0079d3d2f192de,
+add exactly the two supplied-fluid relation sections. Existing sections differ
+only by the new migration mention in the product root/history sections; no old
+physical facts change or relation disappears. Refresh real capture provenance.
+Dictionary SHA2560738eac0bc489f43dddffeef3d60ff42091281fcf0ace0318ce6ed2c406d44ad.
+The unchanged generator's render/write/read equality check passes with no
+unresolved owners. This satisfies local artifact regeneration, not the future
+exact-SHA hosted dictionary gate.
+
+**Actual validation and stop.** PASS: Java syntax parsing; unchanged18 dictionary
+and19 documentation-validator self-tests; real full-phase parser reproduction
+and correction; source/catalog hash validation and dictionary freshness;
+unchanged case membership/timing/lane inventory checks and four-path scope.
+Native PostgreSQL/Spring rerun remains unavailable locally under CI-first policy.
+No runtime authorization or500/750/250ms budget change. Publish directly with
+expectede91de456, verify exact parent/tree/blobs/message and applicable
+Full/Fast/Docs creation/queue/start, then STOP. HAPI-595 remains
+NOT_IMPLEMENTED/IN_PROGRESS; B acceptance and Package C remain pending.
+
+<a id="hapi-596"></a>
 ## HAPI-596 — Product publication, history and owner exports
 
 Phase: HPS-008 — Products and Fluid Properties

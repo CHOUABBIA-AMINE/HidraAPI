@@ -819,7 +819,7 @@ public class SuppliedFluidPropertyPostgresIntegrationTest {
     private void units(){for(String role:List.of("DENSITY","ABSOLUTE_PRESSURE","ABSOLUTE_TEMPERATURE")){
         String id=role.equals("DENSITY")?"fluid-density":role.equals("ABSOLUTE_PRESSURE")?"fluid-pressure":"fluid-temperature";
         jdbc.update("INSERT INTO public.hidra_telemetry_unit(id,code,symbol,dimension,active,system_defined,created_at,updated_at) VALUES(?,?,?,'declared-dimension',true,false,now(),now()) ON CONFLICT(id) DO UPDATE SET active=true",id,id,id);
-        jdbc.update("INSERT INTO public.hidra_telemetry_fluid_unit_policy(unit_id,usage_role,expected_dimension,active) VALUES(?,?,'declared-dimension',true) ON CONFLICT(unit_id,usage_role) DO UPDATE SET active=true",id,role);
+        jdbc.update("INSERT INTO public.hidra_telemetry_fluid_unit_policy(unit_id,usage_role,expected_dimension,active,created_at,updated_at) VALUES(?,?,'declared-dimension',true,now(),now()) ON CONFLICT(unit_id,usage_role) DO UPDATE SET active=true,updated_at=clock_timestamp()",id,role);
     }}
     @Test void fourNativeProducersCreateReadAndAppendExactSuppliedFacts(){
         for(String type:List.of("LOCAL","OIDC","LDAP","ACTIVE_DIRECTORY")){fluidActor(type);UUID p=product();var one=put(p,UUID.randomUUID(),0,1,absent());assertThat(one.draft().version()).isEqualTo(1);assertThat(get(COMPANY,p).draft()).isEqualTo(one.draft());assertThat(put(p,UUID.randomUUID(),1,1,absent()).draft().version()).isEqualTo(2);assertThat(versions(p)).isEqualTo(2);}

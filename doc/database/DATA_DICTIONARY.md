@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `c4fb680fa9991351970c913fa1747b4f92cf2bed`
+Captured source SHA: `e91de456670a8db835218d90a2fdee92904b4785`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `0ed456292230e222e4cff9ae6c61e8e5a996a573d039c60345f10f5590c35fa7`.
-Migrations: 177; JPA mappings: 470; catalog relations: 520; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `93924c520ff84e21e5d50ad46a92961162eab9957416d22bdf076157d462056e`.
+Migrations: 178; JPA mappings: 470; catalog relations: 522; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -6114,6 +6114,7 @@ Custody-owned immutable company-local product metadata identity, exact code and 
 - Evidence: [JdbcProductEngineeringDraftRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcProductEngineeringDraftRepositoryAdapter.java)
 - Evidence: [ProductEngineeringDraft.java](../../src/main/java/dz/sh/hidra/modules/custody/domain/model/ProductEngineeringDraft.java)
 - Migration mention (not inferred introduction): [V20261026_002__custody_product_engineering_drafts.sql](../../src/main/resources/db/migration/V20261026_002__custody_product_engineering_drafts.sql)
+- Migration mention (not inferred introduction): [V20261027_003__custody_supplied_fluid_properties.sql](../../src/main/resources/db/migration/V20261027_003__custody_supplied_fluid_properties.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -6172,6 +6173,7 @@ Custody-owned append-only canonical metadata revisions with expected-version seq
 - Evidence: [JdbcProductEngineeringDraftRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcProductEngineeringDraftRepositoryAdapter.java)
 - Evidence: [ProductEngineeringDraft.java](../../src/main/java/dz/sh/hidra/modules/custody/domain/model/ProductEngineeringDraft.java)
 - Migration mention (not inferred introduction): [V20261026_002__custody_product_engineering_drafts.sql](../../src/main/resources/db/migration/V20261026_002__custody_product_engineering_drafts.sql)
+- Migration mention (not inferred introduction): [V20261027_003__custody_supplied_fluid_properties.sql](../../src/main/resources/db/migration/V20261027_003__custody_supplied_fluid_properties.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -6479,6 +6481,135 @@ Persisted CustodyReconciliationJpaEntity state; semantic authority remains with 
 #### Triggers
 
 None captured in this catalog category.
+
+### public.hidra_custody_supplied_fluid_property_draft
+
+Owner: **custody**; relation kind: `r`.
+
+Custody-owned immutable supplied-fluid root bound to an existing company-owned product draft.
+
+- Evidence: [V20261027_003__custody_supplied_fluid_properties.sql](../../src/main/resources/db/migration/V20261027_003__custody_supplied_fluid_properties.sql)
+- Evidence: [JdbcSuppliedFluidPropertyRevisionRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcSuppliedFluidPropertyRevisionRepositoryAdapter.java)
+- Evidence: [SuppliedFluidPropertyRevision.java](../../src/main/java/dz/sh/hidra/modules/custody/domain/model/SuppliedFluidPropertyRevision.java)
+- Migration mention (not inferred introduction): [V20261027_003__custody_supplied_fluid_properties.sql](../../src/main/resources/db/migration/V20261027_003__custody_supplied_fluid_properties.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| product_draft_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| created_at | timestamp with time zone | False | clock_timestamp(); identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_custody_supplied_fluid_property_dra_product_draft_id_fkey`: FOREIGN KEY (product_draft_id) REFERENCES hidra_custody_product_engineering_draft(id)
+  - Catalog attributes: {"columns": ["product_draft_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_custody_product_engineering_draft"}, "type": "f", "validated": true}
+- `hidra_custody_supplied_fluid_property_draft_pkey`: PRIMARY KEY (product_draft_id)
+  - Catalog attributes: {"columns": ["product_draft_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `hidra_custody_supplied_fluid_property_draft_pkey`: CREATE UNIQUE INDEX hidra_custody_supplied_fluid_property_draft_pkey ON public.hidra_custody_supplied_fluid_property_draft USING btree (product_draft_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `custody_supplied_fluid_immutable`: CREATE TRIGGER custody_supplied_fluid_immutable BEFORE DELETE OR UPDATE ON hidra_custody_supplied_fluid_property_draft FOR EACH STATEMENT EXECUTE FUNCTION hidra_custody_supplied_fluid_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_custody_supplied_fluid_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_custody_supplied_fluid_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'Immutable supplied fluid storage' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `custody_supplied_fluid_no_truncate`: CREATE TRIGGER custody_supplied_fluid_no_truncate BEFORE TRUNCATE ON hidra_custody_supplied_fluid_property_draft FOR EACH STATEMENT EXECUTE FUNCTION hidra_custody_supplied_fluid_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_custody_supplied_fluid_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_custody_supplied_fluid_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'Immutable supplied fluid storage' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
+### public.hidra_custody_supplied_fluid_property_version
+
+Owner: **custody**; relation kind: `r`.
+
+Custody-owned immutable supplied facts and authored metadata binding with exact payload, replay and transaction provenance; no numerical or engineering qualification.
+
+- Evidence: [V20261027_003__custody_supplied_fluid_properties.sql](../../src/main/resources/db/migration/V20261027_003__custody_supplied_fluid_properties.sql)
+- Evidence: [JdbcSuppliedFluidPropertyRevisionRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcSuppliedFluidPropertyRevisionRepositoryAdapter.java)
+- Evidence: [SuppliedFluidPropertyRevision.java](../../src/main/java/dz/sh/hidra/modules/custody/domain/model/SuppliedFluidPropertyRevision.java)
+- Migration mention (not inferred introduction): [V20261027_003__custody_supplied_fluid_properties.sql](../../src/main/resources/db/migration/V20261027_003__custody_supplied_fluid_properties.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| product_draft_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| version | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| request_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| request_sha256 | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| expected_version | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| product_metadata_version | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| classification | character varying(6) | False | None; identity=; generated= | No current mapped Java column | — |
+| payload_format | character varying(40) | False | None; identity=; generated= | No current mapped Java column | — |
+| canonical_payload | bytea | False | None; identity=; generated= | No current mapped Java column | — |
+| sha256 | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| predecessor_sha256 | character varying(64) | True | None; identity=; generated= | No current mapped Java column | — |
+| actor_binding_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_session_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_user_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| party_generation | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| sampled_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| valid_until | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| backend_pid | integer | False | None; identity=; generated= | No current mapped Java column | — |
+| transaction_id | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| created_at | timestamp with time zone | False | clock_timestamp(); identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_custody_supplied_fluid__product_draft_id_product_met_fkey`: FOREIGN KEY (product_draft_id, product_metadata_version) REFERENCES hidra_custody_product_engineering_draft_version(draft_id, version)
+  - Catalog attributes: {"columns": ["product_draft_id", "product_metadata_version"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["draft_id", "version"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_custody_product_engineering_draft_version"}, "type": "f", "validated": true}
+- `hidra_custody_supplied_fluid_pr_product_draft_id_request_id_key`: UNIQUE (product_draft_id, request_id)
+  - Catalog attributes: {"columns": ["product_draft_id", "request_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_custody_supplied_fluid_pro_product_metadata_version_check`: CHECK (product_metadata_version &gt; 0)
+  - Catalog attributes: {"columns": ["product_metadata_version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_supplied_fluid_property_v_canonical_payload_check`: CHECK (octet_length(canonical_payload) &gt;= 18 AND octet_length(canonical_payload) &lt;= 1048576 AND SUBSTRING(canonical_payload FROM 1 FOR 4) = int4send(1))
+  - Catalog attributes: {"columns": ["canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_supplied_fluid_property_ve_party_generation_check`: CHECK (party_generation &gt; 0)
+  - Catalog attributes: {"columns": ["party_generation"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_supplied_fluid_property_ver_product_draft_id_fkey`: FOREIGN KEY (product_draft_id) REFERENCES hidra_custody_supplied_fluid_property_draft(product_draft_id)
+  - Catalog attributes: {"columns": ["product_draft_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["product_draft_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_custody_supplied_fluid_property_draft"}, "type": "f", "validated": true}
+- `hidra_custody_supplied_fluid_property_vers_classification_check`: CHECK (classification::text = ANY (ARRAY['GAS'::character varying, 'LIQUID'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["classification"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_supplied_fluid_property_vers_payload_format_check`: CHECK (payload_format::text = 'HIDRA_SUPPLIED_FLUID_V1'::text)
+  - Catalog attributes: {"columns": ["payload_format"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_supplied_fluid_property_vers_request_sha256_check`: CHECK (request_sha256::text ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["request_sha256"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_supplied_fluid_property_vers_transaction_id_check`: CHECK (transaction_id &gt; 0)
+  - Catalog attributes: {"columns": ["transaction_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_supplied_fluid_property_versi_actor_user_id_check`: CHECK (length(actor_user_id::text) &gt; 0 AND actor_user_id::text = btrim(actor_user_id::text))
+  - Catalog attributes: {"columns": ["actor_user_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_supplied_fluid_property_version_backend_pid_check`: CHECK (backend_pid &gt; 0)
+  - Catalog attributes: {"columns": ["backend_pid"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_supplied_fluid_property_version_check`: CHECK (expected_version &gt;= 0 AND expected_version = (version - 1))
+  - Catalog attributes: {"columns": ["expected_version", "version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_supplied_fluid_property_version_check1`: CHECK (sha256::text = encode(sha256(canonical_payload), 'hex'::text))
+  - Catalog attributes: {"columns": ["sha256", "canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_supplied_fluid_property_version_check2`: CHECK (valid_until &gt; sampled_at)
+  - Catalog attributes: {"columns": ["valid_until", "sampled_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_supplied_fluid_property_version_check3`: CHECK (version = 1 AND predecessor_sha256 IS NULL OR version &gt; 1 AND predecessor_sha256 IS NOT NULL AND predecessor_sha256::text ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["version", "predecessor_sha256"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_supplied_fluid_property_version_pkey`: PRIMARY KEY (product_draft_id, version)
+  - Catalog attributes: {"columns": ["product_draft_id", "version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_custody_supplied_fluid_property_version_version_check`: CHECK (version &gt; 0)
+  - Catalog attributes: {"columns": ["version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_custody_supplied_fluid_pr_product_draft_id_request_id_key`: CREATE UNIQUE INDEX hidra_custody_supplied_fluid_pr_product_draft_id_request_id_key ON public.hidra_custody_supplied_fluid_property_version USING btree (product_draft_id, request_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_custody_supplied_fluid_property_version_pkey`: CREATE UNIQUE INDEX hidra_custody_supplied_fluid_property_version_pkey ON public.hidra_custody_supplied_fluid_property_version USING btree (product_draft_id, version)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `custody_supplied_fluid_next_version`: CREATE TRIGGER custody_supplied_fluid_next_version BEFORE INSERT ON hidra_custody_supplied_fluid_property_version FOR EACH ROW EXECUTE FUNCTION hidra_custody_supplied_fluid_next_version()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_custody_supplied_fluid_next_version()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_custody_supplied_fluid_next_version()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>DECLARE last_version bigint; last_digest text; metadata_version bigint; metadata_classification text; observed timestamptz;<br>BEGIN<br> PERFORM product_draft_id FROM public.hidra_custody_supplied_fluid_property_draft WHERE product_draft_id=NEW.product_draft_id FOR UPDATE;<br> IF NOT FOUND THEN RAISE EXCEPTION 'Missing supplied fluid root' USING ERRCODE='23503'; END IF;<br> SELECT version,sha256 INTO last_version,last_digest FROM public.hidra_custody_supplied_fluid_property_version<br> WHERE product_draft_id=NEW.product_draft_id ORDER BY version DESC LIMIT 1;<br> IF (last_version IS NULL AND (NEW.version&lt;&gt;1 OR NEW.expected_version&lt;&gt;0 OR NEW.predecessor_sha256 IS NOT NULL))<br>    OR (last_version IS NOT NULL AND (last_version=9223372036854775807::bigint OR NEW.expected_version&lt;&gt;last_version<br>        OR NEW.version&lt;&gt;last_version+1 OR NEW.predecessor_sha256 IS DISTINCT FROM last_digest)) THEN<br>  RAISE EXCEPTION 'Stale supplied fluid version' USING ERRCODE='23514';<br> END IF;<br> SELECT version,classification INTO metadata_version,metadata_classification FROM public.hidra_custody_product_engineering_draft_version<br> WHERE draft_id=NEW.product_draft_id ORDER BY version DESC LIMIT 1;<br> IF metadata_version IS DISTINCT FROM NEW.product_metadata_version OR metadata_classification IS DISTINCT FROM NEW.classification THEN<br>  RAISE EXCEPTION 'Stale product metadata binding' USING ERRCODE='23514';<br> END IF;<br> observed:=clock_timestamp();<br> IF NEW.backend_pid&lt;&gt;pg_backend_pid() OR NEW.transaction_id&lt;&gt;txid_current() OR observed&lt;NEW.sampled_at OR observed&gt;=NEW.valid_until THEN<br>  RAISE EXCEPTION 'Invalid supplied fluid origin' USING ERRCODE='23514';<br> END IF;<br> NEW.created_at:=observed;<br> RETURN NEW;<br>END;<br>$function$<br>
+- `custody_supplied_fluid_version_immutable`: CREATE TRIGGER custody_supplied_fluid_version_immutable BEFORE DELETE OR UPDATE ON hidra_custody_supplied_fluid_property_version FOR EACH STATEMENT EXECUTE FUNCTION hidra_custody_supplied_fluid_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_custody_supplied_fluid_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_custody_supplied_fluid_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'Immutable supplied fluid storage' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `custody_supplied_fluid_version_no_truncate`: CREATE TRIGGER custody_supplied_fluid_version_no_truncate BEFORE TRUNCATE ON hidra_custody_supplied_fluid_property_version FOR EACH STATEMENT EXECUTE FUNCTION hidra_custody_supplied_fluid_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_custody_supplied_fluid_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_custody_supplied_fluid_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'Immutable supplied fluid storage' USING ERRCODE='23514';<br>END;<br>$function$<br>
 
 ### public.hidra_custody_ticket_line
 

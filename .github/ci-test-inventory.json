@@ -1228,7 +1228,7 @@
       "lane": "postgres-integration",
       "owner": "custody",
       "path": "src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/SuppliedFluidPropertyPostgresIntegrationTest.java",
-      "source_sha256": "bbaf19a93a7e2945ec6a66fe216bdaaa4b49256c12524437459ffe33a9895bcd",
+      "source_sha256": "c27d15f94bd10879903cd64eb5203d5ab2801d0d658ca3a6b12ddbdf41f22354",
       "supports": []
     },
     {

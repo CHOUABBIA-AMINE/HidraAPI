@@ -3412,6 +3412,86 @@ paths with expectedbf5a4536, verify exact parent/tree/blobs/message, observe
 Full/Fast/Docs creation/queue/start on the repair SHA, then STOP. Package C
 execution, exact-SHA API/dictionary acceptance and final595 closure remain gates.
 
+### HAPI-595 Package C — Full926 DTO/domain boundary repair — 2026-10-27
+
+**Owner Fail and verified source evidence.** Current main
+bfdeda295f939a34801ac3288fb2835a8b88c248,
+parentbf5a45368af015a416505c55095160105aa32b21,
+tree44baf7099e923fb390916781cc45e6b9c6ea5a8f. Docs634/run40555699333
+completed/success. Fast230/run40555699335 and Full926/run40555699448 failed.
+All seven PostgreSQL shards, static validation and API/catalog lane passed.
+Unit/architecture lane has2102 executed tests, one failure and zero errors/skips:
+ForensicRemediationClosureTest.directWireDomainRepresentationLeakageRemainsAbsent.
+The unchanged HRA-102 rule flags the two supplied-fluid request/response classes'
+non-enum domain imports used by their conversion helper methods. This is an
+actual boundary violation; do not change the rule, expected blockers or imports
+to conceal an unchanged dependency.
+
+Independently recover attempt1 native shard2 artifact12757532451,
+ZIP SHA256cc4e00d6556bbcd28c689349a1d54e0844c8e5c4d3f4c58e4d290e589bf12073,
+and unit diagnostics12756947426,
+ZIP SHA256d3a0c5df843b8495bf5a17784b1f9c0863e69abb56390ee8ef49abb3b21e9293.
+Raw reports prove all14 supplied native HTTP,26 storage,11 standalone controller
+and12 domain/codec cases passed, zero failures/errors/skips in those four suites.
+Match every raw case name to the current inventory and its source-file SHA256;
+these successful subsets do not make the failed Full926 gate acceptable.
+
+**Exact bounded repair message:**
+`fix(custody): separate supplied fluid DTOs from domain conversions`.
+MODIFY exactly the existing supplied-fluid controller, request DTO class,
+response DTO class and this phase record: four existing paths, zero CREATE/DELETE.
+All are registered C paths. No test/inventory/architecture-rule, domain/port,
+owner/security, SQL/migration, workflow, artifact or budget change is selected.
+
+Move the actual inbound domain construction/validation and outbound explicit
+response mapping out of the request/response classes into private typed methods
+on SuppliedFluidPropertyRevisionController. The DTO classes now contain wire
+records, structural JSON parsing and wire-only bounds, without domain imports,
+references or conversion methods. Domain invariants remain in their actual model;
+the controller invokes them on mapped declarations before calling the use case.
+Unsupported/contradictory values still receive400 before an application write;
+the separate current-classification INVALID_REQUEST path and503 owner/integrity
+semantics remain unchanged. Preserve exact decimal strings, null/empty values,
+methods/evidence, independent versions and all response diagnostics.
+
+No fully-qualified-name escape inside DTOs, replacement domain aggregate,
+reflection dispatch, new mapper type, relaxed guardrail or broad cross-module
+exception. Controller mapping uses typed domain/wire parameters, following the
+existing accepted product REST-adapter convention. All wire record components
+and every schema annotation are byte-identical before/after; route methods,
+request field parsing, response wire shapes and security tuples are preserved.
+The conversion executes once before use-case submission instead of DTO-side
+construction followed by controller-side reconstruction. No validation invariant
+is removed or moved into an untrusted caller.
+
+**Actual artifact position.** Full926 API/catalog artifact12757561602,
+ZIP SHA25674600c147c0cdcdd97e726d1ed3cce98d29b627a6081d75dc9df9b1e0460c42e,
+retains sourcebfdeda295, run40555699448/attempt1 and actual runtime JSON SHA256
+80725179fa72b06fbc4514cba3f6c59157a3dd74ab9f0ae7d46b90cb07edace3.
+Its actual capture semantically equals the reviewed canonical API. The same job
+successfully executed compatibility and physical dictionary capture/equality;
+source bundle93924c520ff84e21e5d50ad46a92961162eab9957416d22bdf076157d462056e,
+catalog SHA2566ef460d7c22af1895319f0383439cc48f85346c1ad390d13a44b4d2ffdb6b93a.
+Preserve the truthful current canonical snapshots and provenance; do not change
+their generated source stamp merely because Java conversion code moved. Require
+repair-SHA runtime equality/compatibility and actual catalog proof anew in CI.
+
+**Actual local checks and stop.** PASS: syntax parsing of the changed source
+within the10-file C parser; six actual domain/port/DTO sources type-check using
+temporary dependency signatures; extracted actual private controller conversion
+code type-checks and34 focused parser/mapping assertions pass with the same
+signatures. These are not actual Jackson/Spring/native execution. Source checks
+confirm neither DTO references domain types and all record components/schema
+annotations are identical. All19 unchanged documentation self-tests and exact
+full-phase metadata/anchor, append-only evidence and four-path scope checks pass.
+No new local Maven/Java21/PostgreSQL execution is claimed; all repository tests
+and inventory/source hashes are unchanged by this repair.
+
+HAPI-595 remains NOT_IMPLEMENTED/IN_PROGRESS. Publish only the four paths with
+expectedbfdeda29, verify exact parent/tree/blobs/message, confirm applicable
+Full/Fast/Docs creation/queue/start on the new SHA and STOP. Full acceptance,
+Package C acceptance and separate final595 closure remain pending.
+
 <a id="hapi-596"></a>
 ## HAPI-596 — Product publication, history and owner exports
 

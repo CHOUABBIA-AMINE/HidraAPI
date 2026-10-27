@@ -22,7 +22,6 @@ package dz.sh.hidra.modules.custody.api.rest.request;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.v3.oas.annotations.media.Schema;
 import tools.jackson.databind.JsonNode;
-import dz.sh.hidra.modules.custody.domain.model.SuppliedFluidPropertyRevision;
 import java.util.*;
 import java.util.function.Function;
 
@@ -69,10 +68,7 @@ public final class SuppliedFluidPropertyRevisionRequests {
             ProductEngineeringDraftRequests.uuid(requestId);
             if(expectedVersion==null || expectedVersion<0 || expectedVersion==Long.MAX_VALUE || expectedProductMetadataVersion==null || expectedProductMetadataVersion<=0)throw invalid();
             properties=bounded(properties,32);methods=bounded(methods,16);
-            // Domain validation is authoritative for declaration invariants; eligibility stays in owners.
-            SuppliedFluidPropertyRevisionRequests.facts(composition,properties,methods,source,description);
         }
-        public SuppliedFluidPropertyRevision.Facts facts(){return SuppliedFluidPropertyRevisionRequests.facts(composition,properties,methods,source,description);}
         @JsonCreator(mode=JsonCreator.Mode.DELEGATING)
         public static Write from(JsonNode n) {
             object(n,Set.of("requestId","expectedVersion","expectedProductMetadataVersion","composition","properties","methods","source","description"));
@@ -80,19 +76,6 @@ public final class SuppliedFluidPropertyRevisionRequests {
                 array(n,"properties",32,SuppliedFluidPropertyRevisionRequests::observation),array(n,"methods",16,SuppliedFluidPropertyRevisionRequests::method),optional(n,"source",SuppliedFluidPropertyRevisionRequests::source),text(n,"description"));
         }
     }
-    private static SuppliedFluidPropertyRevision.Facts facts(Composition c,List<Observation> p,List<Method> m,Source s,String description) {
-        try {
-            return new SuppliedFluidPropertyRevision.Facts(c==null?null:new SuppliedFluidPropertyRevision.Composition(SuppliedFluidPropertyRevision.Basis.valueOf(c.basis()),
-                map(c.components(),x->new SuppliedFluidPropertyRevision.Component(x.reference(),new SuppliedFluidPropertyRevision.Decimal(x.fraction()))),key(c.method()),source(c.source())),
-                map(p,x->new SuppliedFluidPropertyRevision.Observation(x.observationId(),x.name(),SuppliedFluidPropertyRevision.Property.valueOf(x.property()),new SuppliedFluidPropertyRevision.Decimal(x.value()),x.unitId(),condition(x.absolutePressure()),condition(x.absoluteTemperature()),key(x.method()),source(x.source()))),
-                map(m,x->new SuppliedFluidPropertyRevision.Method(key(x.key()),SuppliedFluidPropertyRevision.Origin.valueOf(x.origin()),SuppliedFluidPropertyRevision.Basis.valueOf(x.basis()),x.components(),map(x.properties(),SuppliedFluidPropertyRevision.Property::valueOf),range(x.absolutePressure()),range(x.absoluteTemperature()),x.evidenceReference())),source(s),description);
-        }catch(NullPointerException error){throw invalid();}
-    }
-    private static SuppliedFluidPropertyRevision.Source source(Source s){return s==null?null:new SuppliedFluidPropertyRevision.Source(SuppliedFluidPropertyRevision.Origin.valueOf(s.origin()),s.reference(),s.evidenceReference());}
-    private static SuppliedFluidPropertyRevision.MethodKey key(MethodKey k){return k==null?null:new SuppliedFluidPropertyRevision.MethodKey(k.reference(),k.revision());}
-    private static SuppliedFluidPropertyRevision.Condition condition(Condition c){return new SuppliedFluidPropertyRevision.Condition(new SuppliedFluidPropertyRevision.Decimal(c.value()),c.unitId());}
-    private static SuppliedFluidPropertyRevision.Range range(Range c){return new SuppliedFluidPropertyRevision.Range(new SuppliedFluidPropertyRevision.Decimal(c.minimum()),new SuppliedFluidPropertyRevision.Decimal(c.maximum()),c.unitId());}
-    private static <T,R> List<R> map(List<T> xs,Function<T,R> fn){return xs==null?null:xs.stream().map(fn).toList();}
     private static <T> List<T> bounded(List<T> xs,int max){if(xs==null)return null;if(xs.size()>max || xs.stream().anyMatch(Objects::isNull))throw invalid();return List.copyOf(xs);}
     private static void object(JsonNode n,Set<String> names){if(n==null || !n.isObject())throw invalid();for(String name:n.propertyNames())if(!names.contains(name))throw invalid();}
     private static String text(JsonNode n,String key){var x=n.get(key);if(x==null || x.isNull())return null;if(!x.isTextual())throw invalid();return x.asText();}

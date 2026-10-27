@@ -21,7 +21,9 @@ package dz.sh.hidra.modules.custody.api.rest.controller;
 
 import dz.sh.hidra.modules.custody.application.port.in.SuppliedFluidPropertyRevisionUseCase;
 import dz.sh.hidra.modules.custody.application.port.in.SuppliedFluidPropertyRevisionUseCase.*;
-import dz.sh.hidra.modules.custody.api.rest.request.SuppliedFluidPropertyRevisionRequests.Write;
+import dz.sh.hidra.modules.custody.api.rest.request.SuppliedFluidPropertyRevisionRequests.*;
+import dz.sh.hidra.modules.custody.domain.model.SuppliedFluidPropertyRevision;
+import java.util.function.Function;
 import dz.sh.hidra.modules.custody.api.rest.request.ProductEngineeringDraftRequests;
 import dz.sh.hidra.modules.custody.api.rest.response.SuppliedFluidPropertyRevisionResponses;
 import dz.sh.hidra.modules.custody.api.rest.response.SuppliedFluidPropertyRevisionResponses.Draft;
@@ -57,7 +59,7 @@ public class SuppliedFluidPropertyRevisionController {
     public Draft read(@Parameter(schema=@Schema(type="string",format="uuid")) @PathVariable("draftId") String draftId,
             @RequestParam("companyPartyId") String companyPartyId,HttpServletRequest request) {
         scope(request,companyPartyId);
-        return SuppliedFluidPropertyRevisionResponses.from(useCase.execute(new Command(Kind.READ,companyPartyId,ProductEngineeringDraftRequests.uuid(draftId),null,null,null,null)));
+        return response(useCase.execute(new Command(Kind.READ,companyPartyId,ProductEngineeringDraftRequests.uuid(draftId),null,null,null,null)));
     }
     @Operation(operationId="writeSuppliedFluidPropertyDraft",summary="Append exact supplied declarations or replay an authorized original request")
     @ApiResponse(responseCode="201",description="First supplied revision created",content=@Content(mediaType="application/json",schema=@Schema(implementation=Draft.class)))
@@ -67,8 +69,8 @@ public class SuppliedFluidPropertyRevisionController {
             @RequestParam("companyPartyId") String companyPartyId,@RequestBody Write body,HttpServletRequest request) {
         scope(request,companyPartyId);if(body==null)throw invalid();
         var result=useCase.execute(new Command(Kind.WRITE,companyPartyId,ProductEngineeringDraftRequests.uuid(draftId),ProductEngineeringDraftRequests.uuid(body.requestId()),
-            body.expectedVersion(),body.expectedProductMetadataVersion(),body.facts()));
-        return ResponseEntity.status(result.draft().version()==1 && !result.replayed()?201:200).body(SuppliedFluidPropertyRevisionResponses.from(result));
+            body.expectedVersion(),body.expectedProductMetadataVersion(),inputFacts(body.composition(),body.properties(),body.methods(),body.source(),body.description())));
+        return ResponseEntity.status(result.draft().version()==1 && !result.replayed()?201:200).body(response(result));
     }
     private static void scope(HttpServletRequest request,String company) {
         if(!request.getParameterMap().keySet().equals(Set.of("companyPartyId")) || request.getParameterValues("companyPartyId").length!=1)throw invalid();
@@ -87,4 +89,29 @@ public class SuppliedFluidPropertyRevisionController {
         var p=ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,"Invalid supplied fluid request");p.setInstance(URI.create("urn:hidra:supplied-fluid-property-draft"));p.setProperty("code","INVALID_REQUEST");
         return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(p);
     }
+    private static SuppliedFluidPropertyRevision.Facts inputFacts(Composition c,List<Observation> p,List<Method> m,Source s,String description) {
+        try {
+            return new SuppliedFluidPropertyRevision.Facts(c==null?null:new SuppliedFluidPropertyRevision.Composition(SuppliedFluidPropertyRevision.Basis.valueOf(c.basis()),
+                map(c.components(),x->new SuppliedFluidPropertyRevision.Component(x.reference(),new SuppliedFluidPropertyRevision.Decimal(x.fraction()))),inputKey(c.method()),inputSource(c.source())),
+                map(p,x->new SuppliedFluidPropertyRevision.Observation(x.observationId(),x.name(),SuppliedFluidPropertyRevision.Property.valueOf(x.property()),new SuppliedFluidPropertyRevision.Decimal(x.value()),x.unitId(),inputCondition(x.absolutePressure()),inputCondition(x.absoluteTemperature()),inputKey(x.method()),inputSource(x.source()))),
+                map(m,x->new SuppliedFluidPropertyRevision.Method(inputKey(x.key()),SuppliedFluidPropertyRevision.Origin.valueOf(x.origin()),SuppliedFluidPropertyRevision.Basis.valueOf(x.basis()),x.components(),map(x.properties(),SuppliedFluidPropertyRevision.Property::valueOf),inputRange(x.absolutePressure()),inputRange(x.absoluteTemperature()),x.evidenceReference())),inputSource(s),description);
+        }catch(NullPointerException error){throw invalid();}
+    }
+    private static SuppliedFluidPropertyRevision.Source inputSource(Source s){return s==null?null:new SuppliedFluidPropertyRevision.Source(SuppliedFluidPropertyRevision.Origin.valueOf(s.origin()),s.reference(),s.evidenceReference());}
+    private static SuppliedFluidPropertyRevision.MethodKey inputKey(MethodKey k){return k==null?null:new SuppliedFluidPropertyRevision.MethodKey(k.reference(),k.revision());}
+    private static SuppliedFluidPropertyRevision.Condition inputCondition(Condition c){return new SuppliedFluidPropertyRevision.Condition(new SuppliedFluidPropertyRevision.Decimal(c.value()),c.unitId());}
+    private static SuppliedFluidPropertyRevision.Range inputRange(Range c){return new SuppliedFluidPropertyRevision.Range(new SuppliedFluidPropertyRevision.Decimal(c.minimum()),new SuppliedFluidPropertyRevision.Decimal(c.maximum()),c.unitId());}
+    private static <T,R> List<R> map(List<T> xs,Function<T,R> fn){return xs==null?null:xs.stream().map(fn).toList();}
+    private static Draft response(Result result) {
+        var d=result.draft();var f=d.facts();var c=f.composition();
+        var facts=new SuppliedFluidPropertyRevisionResponses.Facts(c==null?null:new SuppliedFluidPropertyRevisionResponses.Composition(c.basis().name(),map(c.components(),x->new SuppliedFluidPropertyRevisionResponses.Component(x.reference(),x.fraction().lexeme())),outputKey(c.method()),outputSource(c.source())),
+            map(f.properties(),p->new SuppliedFluidPropertyRevisionResponses.Observation(p.observationId(),p.name(),p.property().name(),p.value().lexeme(),p.unitId(),outputCondition(p.absolutePressure()),outputCondition(p.absoluteTemperature()),outputKey(p.method()),outputSource(p.source()))),
+            map(f.methods(),m->new SuppliedFluidPropertyRevisionResponses.Method(outputKey(m.key()),m.origin().name(),m.basis().name(),m.components(),map(m.properties(),Enum::name),outputRange(m.absolutePressure()),outputRange(m.absoluteTemperature()),m.evidenceReference())),outputSource(f.source()),f.description());
+        return new Draft(d.productDraftId(),d.companyPartyId(),d.localCode(),d.catalogProductId(),d.version(),d.productMetadataVersion(),d.classification().name(),facts,
+            "DRAFT",f.diagnostics().isEmpty(),result.replayed(),result.metadataBindingCurrent(),result.diagnostics());
+    }
+    private static SuppliedFluidPropertyRevisionResponses.MethodKey outputKey(SuppliedFluidPropertyRevision.MethodKey k){return k==null?null:new SuppliedFluidPropertyRevisionResponses.MethodKey(k.reference(),k.revision());}
+    private static SuppliedFluidPropertyRevisionResponses.Source outputSource(SuppliedFluidPropertyRevision.Source s){return s==null?null:new SuppliedFluidPropertyRevisionResponses.Source(s.origin().name(),s.reference(),s.evidenceReference());}
+    private static SuppliedFluidPropertyRevisionResponses.Condition outputCondition(SuppliedFluidPropertyRevision.Condition c){return new SuppliedFluidPropertyRevisionResponses.Condition(c.value().lexeme(),c.unitId());}
+    private static SuppliedFluidPropertyRevisionResponses.Range outputRange(SuppliedFluidPropertyRevision.Range c){return new SuppliedFluidPropertyRevisionResponses.Range(c.minimum().lexeme(),c.maximum().lexeme(),c.unitId());}
 }

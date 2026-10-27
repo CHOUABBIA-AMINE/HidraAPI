@@ -3339,6 +3339,79 @@ HAPI-596/597 are not selected. Publish with expectedad360baf, verify exact
 parent/tree/blobs/message and12-path scope, observe exact-SHA Full/Fast/Docs
 creation/queue/start, then STOP for source feedback and actual capture recovery.
 
+### HAPI-595 Package C — Full925 HTTP test compile and actual API capture repair — 2026-10-27
+
+**Owner Fail and actual source.** Live mainbf5a45368af015a416505c55095160105aa32b21,
+parentad360bafdd84b197f34e1284c72ebc13d45ed2ce,
+treec7319a5ede25602c676c606edc390e7c48793cd5. Docs633/run40546257278
+completed/success; Fast229/run40546257283 and Full925/run40546257297 failed.
+Every Java test lane fails testCompile on the same four builder expressions in
+SuppliedFluidPropertyNativeHttpPostgresIntegrationTest: fixture-local get/put
+methods hide the statically imported MockMvcRequestBuilders names. No new native,
+HTTP or standalone case executed in Full925. Preserve this failed acceptance
+state; syntax/temporary DTO checks were not whole-test Java type checking.
+
+**Exact current repair message:**
+`fix(custody): repair supplied fluid HTTP verification`.
+MODIFY exactly five existing paths: the native HTTP test named above,
+`.github/ci-test-inventory.json`, `doc/api/openapi.yaml`,
+`.github/documentation-validation.json`, and this owning phase record.
+Zero CREATE/DELETE; no production Java, migration, authorization, timing,
+workflow, validator or test-oracle changes. The owner Fail selects this bounded
+source repair and already registered actual-runtime capture obligation together;
+it does not use the artifact-only message for a mixed commit or select596/597.
+
+Fully qualify exactly one PUT and three GET request-builder calls. Preserve all14
+native HTTP case bodies/expectations apart from those four name resolutions and
+all fixture-local use-case helpers. Update only this class's inventory source
+hash; every case, measured timing, lane/shard and other inventory field remains.
+
+**Actual generation, failed lane and preserved provenance.** Full925 attempt1
+API job122337578666 successfully completed application-build step8 and
+"Publish deterministic OpenAPI contract" step9. Equality step10 failed;
+compatibility, dictionary and lane-sealing steps were skipped. API job and Full
+workflow therefore FAILED. Diagnostics artifact12753311772 contains the actual
+openapi/hidra-api.json and application log, not complete passing-lane evidence.
+ZIP SHA256e0987a17ed8f085b635e00b443aea9be2ea8a5cc15f5d672311baf06894ec233;
+raw JSON SHA25683df8e59152b56405febf6ac77c17d379c90d37a8874f4bc362c25dfcf3546e0.
+Verify actual generated source stampbf5a4536 and adopt only that unchanged
+runtime capture, normalized by the unchanged snapshot validator's canonical
+JSON serializer. Never rewrite its source stamp to the later repair SHA.
+
+Canonical snapshot SHA256
+b4abd391eae241fc3ca7609ea742ae7c72dcfe0a74d25c5951cf68b281606f65;
+272 paths,296 operations,307 schemas. All271 prior path items/294 operations,
+288 schemas and security definitions are structurally unchanged; add exactly the
+supplied properties path, GET/PUT operations and19 explicit DTO schemas. Keep
+old provenance nested intact and scope the new provenance's success solely to
+the actually successful build/generation steps, retaining failed job/workflow
+conclusions and all outstanding verification gates. Only the OpenAPI section of
+the manifest changes; the digest/count/source/provenance companion is inseparable.
+
+The unchanged local compatibility comparator passes against actual successful
+Full924 API artifact12747260669, ZIP SHA256
+6af1a50ac6e3b73528b6867588c2d4c3126f3b5b8e947fb5ff52d629f8702582,
+source0539ec99, runtime JSON SHA256
+91f6f3c3d4c91e619c5580e04554fbe23193a2dc6125298a718799a9c11927a7.
+Its retained source/run/attempt and JSON digest match its API evidence. This is
+local comparison of real captures, not a hosted Full925 compatibility pass.
+No new physical dictionary is adopted:925 never executed that gate; require the
+repair's actual same-run dictionary capture/equality. Previous dictionary and
+migration/JPA source remain intact.
+
+**Actual local checks and remaining acceptance.** PASS: Java syntax parsing;
+all19 unchanged documentation and10 unchanged API-validator self-tests;
+actual capture validity and canonical snapshot/runtime semantic equality;
+supported compatibility against the actual924 capture; exactly four qualified
+calls/all14 case names unchanged; one inventory hash update, preserved manifest
+provenance/other fields; full-phase metadata and append-only scope checks.
+Maven/Java21 test compilation and native execution remain hosted feedback.
+No test lane is counted as passing from a skipped/missing Surefire report.
+HAPI-595 remains NOT_IMPLEMENTED/IN_PROGRESS overall. Publish only these five
+paths with expectedbf5a4536, verify exact parent/tree/blobs/message, observe
+Full/Fast/Docs creation/queue/start on the repair SHA, then STOP. Package C
+execution, exact-SHA API/dictionary acceptance and final595 closure remain gates.
+
 <a id="hapi-596"></a>
 ## HAPI-596 — Product publication, history and owner exports
 

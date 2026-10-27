@@ -834,10 +834,10 @@ public class SuppliedFluidPropertyNativeHttpPostgresIntegrationTest {
     private String body(UUID request,long version,long metadata){return "{\"requestId\":\""+request+"\",\"expectedVersion\":"+version+",\"expectedProductMetadataVersion\":"+metadata+"}";}
     private String with(String body,String fields){return body.substring(0,body.length()-1)+","+fields+"}";}
     private org.springframework.test.web.servlet.ResultActions putProperties(String token,String company,UUID id,String body)throws Exception{
-        SecurityContextHolder.clearContext();var b=put(URL+id+"/properties").param("companyPartyId",company).contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(body);if(token!=null)b.header("Authorization","Bearer "+token);return http.perform(b);
+        SecurityContextHolder.clearContext();var b=org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put(URL+id+"/properties").param("companyPartyId",company).contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(body);if(token!=null)b.header("Authorization","Bearer "+token);return http.perform(b);
     }
     private org.springframework.test.web.servlet.ResultActions getProperties(String token,String company,UUID id)throws Exception{
-        SecurityContextHolder.clearContext();var b=get(URL+id+"/properties").param("companyPartyId",company);if(token!=null)b.header("Authorization","Bearer "+token);return http.perform(b);
+        SecurityContextHolder.clearContext();var b=org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(URL+id+"/properties").param("companyPartyId",company);if(token!=null)b.header("Authorization","Bearer "+token);return http.perform(b);
     }
     private tools.jackson.databind.JsonNode json(org.springframework.test.web.servlet.ResultActions result)throws Exception{return JSON.readTree(result.andReturn().getResponse().getContentAsString());}
     private void metadata(HttpActor a,UUID p,long version,dz.sh.hidra.modules.custody.domain.model.ProductEngineeringDraft.Classification phase){ambient(a.token());try{drafts.execute(new dz.sh.hidra.modules.custody.application.port.in.ProductEngineeringDraftUseCase.Command(dz.sh.hidra.modules.custody.application.port.in.ProductEngineeringDraftUseCase.Kind.UPDATE,COMPANY,p,null,null,null,version,new dz.sh.hidra.modules.custody.domain.model.ProductEngineeringDraft.Metadata("synthetic",null,null,phase)));}finally{SecurityContextHolder.clearContext();}}
@@ -901,8 +901,8 @@ public class SuppliedFluidPropertyNativeHttpPostgresIntegrationTest {
         var a=httpActor("LOCAL");UUID p=product(a);clearInvocations(fluidTarget());String base=body(UUID.randomUUID(),0,1);
         for(String key:List.of("actor","classification","catalogProductId","qualified","backendPid","sha256"))putProperties(a.token(),COMPANY,p,with(base,"\""+key+"\":\"forged\"")).andExpect(status().isBadRequest());
         for(String extra:List.of("\"composition\":{\"basis\":\"MOLE_FRACTION\",\"components\":[{\"reference\":\"A\",\"fraction\":1}]}","\"properties\":[null]","\"methods\":false"))putProperties(a.token(),COMPANY,p,with(base,extra)).andExpect(status().isBadRequest());
-        http.perform(get(URL+p+"/properties").param("companyPartyId",COMPANY,"other-company").header("Authorization","Bearer "+a.token())).andExpect(status().isBadRequest());
-        http.perform(get(URL+p+"/properties").param("companyPartyId",COMPANY).param("expectedVersion","1").header("Authorization","Bearer "+a.token())).andExpect(status().isBadRequest());
+        http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(URL+p+"/properties").param("companyPartyId",COMPANY,"other-company").header("Authorization","Bearer "+a.token())).andExpect(status().isBadRequest());
+        http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(URL+p+"/properties").param("companyPartyId",COMPANY).param("expectedVersion","1").header("Authorization","Bearer "+a.token())).andExpect(status().isBadRequest());
         verify(fluidTarget(),never()).apply(any(),any());assertThat(versions(p)).isZero();
     }
     @Test void currentSessionRevocationReturnsExactDenialAndUnchangedHistory()throws Exception{

@@ -3182,6 +3182,79 @@ expectede91de456, verify exact parent/tree/blobs/message and applicable
 Full/Fast/Docs creation/queue/start, then STOP. HAPI-595 remains
 NOT_IMPLEMENTED/IN_PROGRESS; B acceptance and Package C remain pending.
 
+### HAPI-595 Package C — invalid-declaration mapping scope correction — 2026-10-27
+
+**Selection and prerequisite evidence.** Owner Next selects the registered C
+continuation. Live main0539ec99ecb6bc511530dae60f67b57eb65a76b0,
+parente91de456670a8db835218d90a2fdee92904b4785,
+treebf478cdeb2766c6bf47f1a5921d17ffa26a919ba. Full924/run40530784333,
+Fast228/run40530784473 and Docs630/run40530784268 completed/success.
+Retained Full924 gate reports3402 tests, zero failures/errors/skips. Independent
+raw suite review confirms all24 supplied storage and12 pure domain/codec cases
+passed. The same-run API/catalog lane passed. No C runtime acceptance follows.
+
+**Concrete missing scope.** C promises400 for unsupported/contradictory supplied
+facts and503 for unavailable owner evidence. The existing Facts.validate method
+rejects LIQUID COMPRESSIBILITY_FACTOR with IllegalArgumentException, invoked by
+the repository only after resolving the actual current product classification.
+The application translates unclassified runtime failures to UNAVAILABLE; the
+current exported Reason enum has no invalid-input outcome. Thus source review
+identifies a legitimate user declaration rejection that would be presented as
+503. The top-level request alone cannot know the authoritative product label.
+This is source analysis, not a claimed HTTP execution result. Current green B
+cases do not prove the missing public400 outcome.
+
+A broad catch of every internal IllegalArgumentException in the controller is
+not admitted: stored-codec corruption or unavailable current owner facts must
+remain unavailable. Client-supplied classification is not a substitute for the
+actual current metadata binding. Do not change GAS-only Z policy or infer phase.
+
+**Supporting registration only, exact current message:**
+`docs(custody): register supplied fluid invalid declaration mapping`.
+MODIFY only this phase record, appending this correction before the intact
+hapi-596 anchor/heading. Zero CREATE/DELETE; no runtime, test, artifact, workflow,
+validator or task-status change in this publication. Preserve all prior evidence.
+The existing C source drafts remain unpublished; C runtime executes only on a
+subsequent Next after this registration's documentation feedback.
+
+**Extended exact future C allowlist.** Retain all C CREATE/MODIFY paths,
+registered message `feat(custody): expose supplied fluid property draft operations`,
+API/dictionary capture rules and every previous acceptance/preservation gate.
+Additionally MODIFY exactly these three existing paths in that future C commit:
+
+- `src/main/java/dz/sh/hidra/modules/custody/application/port/in/SuppliedFluidPropertyRevisionUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcSuppliedFluidPropertyRevisionRepositoryAdapter.java`
+- `src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/SuppliedFluidPropertyPostgresIntegrationTest.java`
+
+Add a distinct typed INVALID_REQUEST failure outcome. Only the new-write
+validation of supplied facts against the freshly resolved GAS/LIQUID metadata
+may translate its declaration IllegalArgumentException into that outcome.
+Keep stored payload decoding/integrity errors, unit/owner availability failures,
+unknown completion and other internal exceptions fail-closed under their current
+semantics. The application already preserves typed Failure instances; no service,
+Identity/Party/Telemetry contract, domain or migration change is authorized here.
+Map only the typed INVALID_REQUEST to400 with the existing stable public invalid
+request problem. Preserve DENIED403, CONFLICT409 and UNAVAILABLE/INDETERMINATE503.
+
+Add real native storage and configured HTTP cases for LIQUID Z: valid scoped
+authority and current product/metadata binding,400 INVALID_REQUEST, no repository
+apply/provisional row/history append. Also prove supported GAS Z and supplied
+GAS/LIQUID density/viscosity retain their admitted units, conditions, methods and
+exact decimal lexemes, and genuine owner-unit failures still return503. Retain
+all24 existing storage cases. Register the new native case/hash through C's
+existing inventory path without changing existing timings, lane or shard policy.
+The supporting path addition changes no status, product policy, solver scope or
+transaction budget and does not select596/597.
+
+**Actual checks and stop.** Exact current three paths exist; all five C CREATE
+paths are absent in the current remote tree. Available19 documentation-validator
+self-tests and the full HPS-008 metadata/anchor parser pass. New evidence is
+append-only and all six phase task statuses are unchanged. This stage has no
+runtime implementation, executed HTTP test or new physical/API capture.
+Publish this one-document correction directly with expected0539ec99, verify
+exact parent/tree/blob/message and documentation CI creation/queue/start,
+then STOP. Next remains the extended Package C implementation after feedback.
+
 <a id="hapi-596"></a>
 ## HAPI-596 — Product publication, history and owner exports
 

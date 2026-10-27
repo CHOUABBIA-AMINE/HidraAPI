@@ -916,4 +916,28 @@ class ProtectedTransactionExecutorTest {
         assertThat(reached).isFalse();
     }
 
+
+    @Test void diagnosticAdmissionCannotMintProductMutationPermit() {
+        assertThatThrownBy(()->run(()->{
+            executor.beginAdmission();var permit=executor.sealAdmission();assertThat(permit).isNull();
+            executor.beginProvisional(permit,Set.of("INSERT INTO public.hidra_custody_product_engineering_draft (id) VALUES (?)"));
+            return "forbidden";
+        },()->{},this::guard)).isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class);
+        assertThat(commits).hasValue(0);assertThat(rollbacks).hasValue(1);
+    }
+    @Test void productProvisionalStatementsAreExactReviewedTemplates() throws Exception {
+        var field=ProtectedTransactionExecutor.class.getDeclaredField("PRODUCT_PROVISIONAL_HASHES");field.setAccessible(true);
+        var adapter=Class.forName("dz.sh.hidra.modules.custody.infrastructure.persistence.adapter.JdbcProductEngineeringDraftRepositoryAdapter");
+        var expected=new HashSet<String>();
+        for(String name:List.of("DRAFT_INSERT","VERSION_INSERT")) {
+            var sql=adapter.getDeclaredField(name);sql.setAccessible(true);
+            String template=(String)sql.get(null);
+            expected.add(HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(template.getBytes(java.nio.charset.StandardCharsets.UTF_8))));
+        }
+        assertThat(field.get(null)).isEqualTo(expected);assertThat(expected).hasSize(2);
+        String body=java.nio.file.Files.readString(java.nio.file.Path.of("src/main/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutor.java"));
+        assertThat(body).contains("PRODUCT_PROVISIONAL_HASHES.contains(statementDigest(sql))");
+        assertThat(body).doesNotContain("sql.startsWith(\"INSERT INTO public.hidra_custody_", "sql.startsWith(\"UPDATE public.hidra_custody_");
+    }
 }
+

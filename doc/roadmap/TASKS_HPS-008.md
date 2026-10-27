@@ -1197,6 +1197,135 @@ Next registered runtime package remains
 `feat(custody): add protected catalog-linked product drafts`.
 Do not reexecute A, start C, claim product acceptance or alter unrelated guards.
 
+### HAPI-594 Package B owner drafts implemented; hosted acceptance pending — 2026-10-27
+
+Owner Next selects the registered B runtime package after exact-head Docs613/
+run40469396072 succeeded on ab745e8bf1030345d3682bc0caa0536f0ca824cf
+(parent cd14834249037b4d0773a69d740310beda37e4e6; tree
+52f37c4dad097e2b739e85ddf2b82c1d394d7108). Package A's repaired source
+cd148342 has successful Full911, Fast217 and Docs612 as independently observed
+in the preceding supporting record. No A implementation is repeated.
+
+Exact message: `feat(custody): add protected catalog-linked product drafts`.
+Exact scope: the ten B CREATE paths and five MODIFY paths, including the
+separately admitted ProtectedStationAdmissionBoundaryGuardrailTest. No DELETE.
+The current migration chain ends at V20261026_001; additive
+V20261026_002__custody_product_engineering_drafts.sql remains the registered
+new filename. All historical migrations, existing consumers, permission policy,
+workflows, shard weights and other task states are preserved.
+
+**Implemented contracts and owner behavior.** ProductEngineeringDraft is pure
+Java. Immutable local UUID/company/exact code/shared catalog/create-request
+identity stays distinct from versioned metadata. Its revision transition enforces
+expected version and overflow rejection. Missing name/evidence/classification
+remain diagnostics; GAS/LIQUID are only authored labels. Exact Unicode scalar
+bounds reject malformed surrogate sequences, NUL, blanks and surrounding
+whitespace; no input is silently normalized. The typed inbound command excludes
+identity mutation on READ/UPDATE. Result data contains no persistence entity.
+
+ProductEngineeringDraftRepositoryPort carries opaque admissions; application
+service and ProtectedProductDraftAdmissionCoordinator use the A Identity/Party
+exports and technical executor, never another module's private implementation.
+For READ/UPDATE the server resolves only the company-bound scalar catalog
+reference under storage fences before native two-scope authorization; missing
+and foreign bindings both produce the same DENIED failure, never a row/count/
+metadata response. Descriptive data, replay/conflict and current version selection
+follow native authorization. No caller-selected catalog can relink a draft.
+
+The coordinator combines24 Identity,2 Party and4 Custody relation fences, checks
+one backend/XID, native company/product decisions and Party generation, and
+rechecks Identity before completion. Original issuer/thread/transaction admissions
+and one-use permits are retained. Cross-thread misuse marks the original
+coordinator admission rejected; its SQL-free beforeCommit vote rejects swallowed
+failures. requireCurrent performs its own transaction checks so a missing-worker-
+transaction rejection cannot be intercepted before poisoning the original ticket.
+Storage tickets also reject suspension, completed/foreign/forged reuse and poison
+their original holder. Public scalar contributions are never transferable permits.
+
+The JDBC adapter uses the actual protected credential route, owner locks,
+company/code and company/request uniqueness, row locks and a sequential version
+CAS. Exact CREATE replay compares original canonical request plus initial metadata,
+returns the existing identity/current revision and never reverts later metadata.
+The fixed-order strict UTF-8 codec preserves nulls and rejects unknown labels,
+malformed encodings and trailing bytes. The two product DML SHA256 templates are
+computed from actual statements and independently pinned in coordinator/executor;
+no SQL-prefix or arbitrary callback permission is added for products. All prior
+owner routing, statement rules, deadlines and budgets remain unchanged.
+
+**Additive schema and final boundary.** Custody engineering_product_policy,
+product_engineering_draft and product_engineering_draft_version are separate
+tables under the existing hidra_custody prefix. The policy is empty, catalog-linked
+and active only when explicitly maintained; no operational catalog products,
+role assignments or authority grants are seeded. Draft company/code comparisons
+use C collation; identity and authored history reject UPDATE/DELETE/TRUNCATE.
+The version trigger locks the owner, enforces sequence/predecessor and actual
+backend/XID/time provenance and supplies the database creation timestamp.
+Database checks bind typed metadata/Unicode bounds, canonical bytes/format and
+digest, nullable supported classification and positive audit/version coordinates.
+
+Runtime checks cover the actual non-owner principals, read-only ordinary draft/
+policy privileges, read-only Party generations, relation kinds/column shape,
+keys/constraints and the exact trigger bodies/activation/placement. Publisher
+UPDATE permits required relation locks but immutable statement triggers reject
+history mutation. Catalog and policy are fenced through commit. One final SQL
+statement takes a materialized database time sample, checks the validity window,
+PID/XID/current principal, Party generation/status, active catalog/policy, exact
+draft identity/request digest, latest canonical bytes/digest, mutation audit origin,
+all30 actual relation locks and retained storage guards. Failed admission,
+conflict, timeout, expiry, guard rejection and unknown commit retain classified
+failure/rollback semantics; writes are never silently retried.
+
+**Authored tests and actual local evidence.** ProductEngineeringDraftTest has9
+JUnit cases for invariants, exact Unicode/bounds, null diagnostics, revision/CAS/
+overflow, strict codec corruption and immutable command/request digest semantics.
+ProductEngineeringDraftPostgresIntegrationTest has19 native/database cases:
+four genuine authentication producers; metadata/null/Unicode round trips;
+original replay after revision; conflicting replay/duplicate code; stale CAS;
+same-error foreign/missing read; separate companies sharing one catalog/code;
+absent/inactive policy/catalog; scope denial and inactive Party; final SQL expiry;
+final fence substitution; disabled trigger/excess privilege; ordinary DML and
+publisher history mutation; writer-first and owner-first policy races; concurrent
+same-version writers; completed/forged admissions; swallowed cross-thread reuse;
+and direct forged version/bytes/origin rejection. Native producer fixture helpers
+are retained locally in the new suite; only directory/source transport is mocked,
+not Identity/Party authority, protected commit, migrations or PostgreSQL.
+
+ProtectedTransactionExecutorTest adds2 cases for diagnostic product-permit
+rejection and exact reviewed template hashes. The admitted topology guard updates
+only the two reviewed methods, preserving full exact caller equality, old counts,
+all native Identity caller restrictions and all original reader/owner pins.
+Inventory adds the two real classes/28 case names plus those2 platform cases;
+only changed test hashes are refreshed. All existing case identities, timing
+values, lanes, shard assignments and settings remain. New baseline_seconds=0
+means unmeasured, never a measured performance result.
+
+Actually completed locally:19 documentation-validator self-tests PASS; Java
+compiler parsing of all12 bounded Java files PASS; the pure domain/command/codec
+subset compiled with the installed Java17 compiler module;27 standalone smoke
+assertions on that subset PASS. Exact current migration ordering/new-path absence,
+source-derived SQL/function hashes, parameter count, scope, append-only history,
+inventory membership/hash/partition preservation and whitespace checks are run
+before guarded publication. An initial parser invocation from the wrong working
+directory failed to locate sources; rerun from the source root passed. These
+checks are not Java21 application compilation, JUnit execution, native provider
+qualification or PostgreSQL/Flyway/JPA acceptance. Maven and Docker are absent;
+no full environment was provisioned. Hosted exact-SHA checks remain authoritative.
+
+No public endpoint, runtime OpenAPI regeneration or physical dictionary refresh
+is claimed. The existing dictionary remains the previous actual catalog artifact;
+B's newly migrated catalog capture/freshness is explicitly pending, to be recovered
+from hosted evidence for the registered C artifact work. Do not infer physical
+metadata or call B accepted from source presence. Overall HAPI-594 status fields
+remain conservative pending its full registered workflow and final governance
+acceptance; B implementation/CI-pending is recorded here separately.
+
+Publish this one bounded B commit directly to main with expected
+ab745e8bf1030345d3682bc0caa0536f0ca824cf. Verify exact15 paths, parent/tree/blobs/
+message and observe applicable exact-SHA Full/Fast/Docs creation/queue/start, then
+STOP. Repair any responsible failed gate before advancing. Next registered package,
+only after B acceptance, is `feat(custody): expose protected product draft operations`.
+No C, HAPI-595..597, simulator, release or deployment is executed in this stage.
+
 <a id="hapi-595"></a>
 ## HAPI-595 — Supplied composition, properties and methods
 

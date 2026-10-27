@@ -996,6 +996,28 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "absentMetadataRemainsExplicitlyIncomplete",
+        "commandsRejectIdentityMutationAndAmbiguousShapes",
+        "exactUnicodeScalarBoundsDoNotCountSurrogatePairsTwice",
+        "invalidUnicodeNulWhitespaceAndOversizeTextRejectWithoutNormalization",
+        "labelsDoNotCreatePropertiesOrChangeCatalogIdentity",
+        "malformedUtf8LengthsUnknownLabelsAndTrailingBytesFailClosed",
+        "metadataCodecRoundTripsAllLabelsAndNullsExactly",
+        "originalRequestDigestBindsEveryImmutableFactAndExactMetadata",
+        "revisionRequiresPositiveExactVersionWithoutOverflow"
+      ],
+      "class": "dz.sh.hidra.modules.custody.domain.model.ProductEngineeringDraftTest",
+      "dependency_reason": "New HAPI-594B cases; unmeasured. Pure Java invariants/codec; no external service.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "custody",
+      "path": "src/test/java/dz/sh/hidra/modules/custody/domain/model/ProductEngineeringDraftTest.java",
+      "source_sha256": "3c2ccbc03d72c8df363eaffa052da967e277dc2c872cbb9da2d5783854942593",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0.351,
       "cases": [
         "approvalAndOwnerActiveFlagsBothGovernFreshEligibility",
@@ -1064,6 +1086,38 @@
       "owner": "custody",
       "path": "src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/CustodyTransferTicketSemanticPostgresIntegrationTest.java",
       "source_sha256": "f7fbc1e5b29c4f515dc5390ba0974fc60aae07cbce858e509e2b72d628380a22",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "absentInactiveAndRevokedAdmissionOrCatalogReject",
+        "concurrentSameVersionWritersCommitExactlyOneSuccessor",
+        "conflictingReplayAndDuplicateCodeLeaveNoHiddenRows",
+        "crossCompanyAndMissingIdentityHaveTheSameNonDisclosingDenial",
+        "disabledTriggerOrExcessPublisherPrivilegeRejectBeforeDisclosure",
+        "finalDatabaseExpiryRollsBackBothProvisionalRows",
+        "finalFenceSubstitutionRollsBackDraftAndVersion",
+        "fourNativeProducersCreateReadAndAppendOwnedMetadata",
+        "nullMetadataAndUnicodeRoundTripWithoutQualification",
+        "ordinaryDmlAndPublisherHistoryMutationRemainForbidden",
+        "originalReplayReturnsCurrentVersionWithoutRevertingMetadata",
+        "ownerAdmissionsCannotReplayOutsideTheirCompletedTransaction",
+        "ownerFirstFenceBlocksConcurrentPolicyRevocationUntilCommit",
+        "publisherCannotAppendForgedSequencePayloadOrOrigin",
+        "revokedCompanyScopeAndInactivePartyRejectCreation",
+        "separateCompaniesCanOwnTheSameLocalCodeAndCatalog",
+        "staleVersionCannotAppendOrOverwrite",
+        "swallowedCrossThreadAdmissionReusePoisonsTheOriginalTransaction",
+        "writerFirstCatalogRevocationPreventsAnyProvisionalRows"
+      ],
+      "class": "dz.sh.hidra.modules.custody.infrastructure.persistence.ProductEngineeringDraftPostgresIntegrationTest",
+      "dependency_reason": "New HAPI-594B cases; unmeasured. Native authentication, real migrated PostgreSQL and protected owner transactions; Docker required.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "custody",
+      "path": "src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/ProductEngineeringDraftPostgresIntegrationTest.java",
+      "source_sha256": "8d78667a18012c6921a191577e046527b343f293dc830874bc0172b565525e9e",
       "supports": []
     },
     {
@@ -7214,7 +7268,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java",
-      "source_sha256": "42fbda495637c143e1da706b585e42035a4b861d15393c7c88404833a689eca2",
+      "source_sha256": "2788770168130ac42b15277d447b6c8ff592d1e2eae95e3b211dfac7ee8cff9a",
       "supports": []
     },
     {
@@ -9280,6 +9334,7 @@
         "datasourceCloseDuringWorkPoisonsAttempt",
         "datasourceDelegateAndBuilderEscapesPoisonCaughtErrors",
         "diagnosticAdmissionCannotMintDraftMutationPermit",
+        "diagnosticAdmissionCannotMintProductMutationPermit",
         "diagnosticAdmissionCannotMintSurveyMutationPermit",
         "diagnosticAndOldOwnerPathsCannotMintPublicationMutationPermits",
         "dormantCallableStatementRetainsJdbcInterfaceAndBackReference",
@@ -9299,6 +9354,7 @@
         "prematureCommitRollbackSavepointAndSettingsPoisonAttempts",
         "preparedQueryProbesLiveParticipationAtExecutionOnce",
         "preparedQueryRejectsBackendChangeAfterPreparationBeforeUserSql",
+        "productProvisionalStatementsAreExactReviewedTemplates",
         "providerMayResetAutocommitOnlyAfterObservedPhysicalCommit",
         "publicationCredentialEntryRejectsUnreviewedCallerBeforeWork",
         "rawConnectionAndDatasourceUnwrapReject",
@@ -9319,7 +9375,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java",
-      "source_sha256": "4c8a646962a0d5e9470cca1d4e9f7a2aa11f2840cfdb214f006c79caec67c893",
+      "source_sha256": "5d42b2786ce23725b8ed6e60ed200123c3af3f1ea42088f0ab6b8b5c60b88b2a",
       "supports": []
     },
     {

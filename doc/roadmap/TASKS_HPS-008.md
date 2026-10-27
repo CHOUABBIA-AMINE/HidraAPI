@@ -2843,6 +2843,41 @@ paths/parent/tree/blobs/message, observe applicable exact-SHA Full/Fast/Docs
 creation/queue/start and STOP. Do not wait for completion, implement B/C,
 restamp old artifacts, select596/597 or make deployment data obligatory.
 
+
+### HAPI-595 Package A — Java test-compile repair, 2026-10-27
+
+Owner Fail repairs only the introduced source-compilation blocker at exact parent
+`0d6ec2c025456f72149169ec995eb20ce638b68a` (tree
+`5c7b4588926637aeacbace790d4fb636b67f85f4`). Fast Feedback #223
+(run 40499417710) and full CI #917 (run 40499417983) both failed.
+The Java compiler reports ambiguous `Role` at lines 69/74 of
+`CustodyProtectedFluidUnitPostgresIntegrationTest.java`, where the Telemetry
+owner's `CustodyProtectedFluidUnitContract.Role` collided with
+`org.springframework.context.annotation.Role` admitted by a wildcard import.
+The same test-compilation error blocks the reviewed Java fast suite and every
+selected full CI test shard; secondary missing Surefire/evidence artifacts are
+consequences, not independently verified test failures.
+
+Repair changes only the test's Spring context wildcard import into explicit
+`AnnotationConfigApplicationContext` and `Configuration` imports, leaving the
+Telemetry `Role` contract, all eleven test cases, actual PostgreSQL checks,
+transaction/authorization invariants and production behavior unchanged.
+Update only its `.github/ci-test-inventory.json` `source_sha256` from
+`f317cd66c2fd99f402e5bcb67a03f23f90b0293557a2ce61a5c5e297e6f1cfd0` to
+`3dc72ef2f9bcd0a8420a029ac4af6e27d6fd73417febba17860f91d9d91be8ca`. Existing partition/case/lane selections and source
+hashes are otherwise preserved. This append-only record is the third changed
+path. No failed gate, test, relation, grant, migration or coverage is disabled.
+
+The API-contract lane also failed while checking the migrated physical data
+dictionary for Package A's new Telemetry-owned policy relation. It is a
+separate outstanding hosted-schema/dictionary acceptance obligation. The
+previously registered follow-up
+`docs(telemetry): refresh fluid unit policy dictionary` must use an actual
+PostgreSQL catalog capture; this repair does not invent a dictionary, claim
+a passing API-contract lane or select Package B/C. No Java/Maven/PostgreSQL
+local execution is claimed. This source-only correction remains subject to
+new exact-SHA Fast/Full/Docs CI feedback before HAPI-595 Package A acceptance.
+
 <a id="hapi-596"></a>
 ## HAPI-596 — Product publication, history and owner exports
 

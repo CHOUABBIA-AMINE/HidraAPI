@@ -1924,7 +1924,7 @@ Priority: P1
 
 Implementation Status: NOT_IMPLEMENTED
 
-Planning Status: BLOCKED
+Planning Status: IN_PROGRESS
 
 Owning Module: `custody` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -2264,6 +2264,397 @@ Publish this one two-document preflight directly to main with expectedeb2cfb1,
 verify exact parent/tree/blobs/message/scope, observe applicable exact-SHA
 Documentation CI creation/queue/start and STOP. Policy selection is the next
 gate; do not implement595, start596/597 or make deployment data obligatory.
+
+
+### HAPI-595 Policy A approved and supplied-fluid execution registered — 2026-10-27
+
+**Owner decision.** The owner explicitly selected "A" in response to the published
+A/B representation choice at3e8f32c9ea313c0021dae32731e6fe7f90c86095.
+All six numbered Policy A rules in the preceding preflight are adopted.
+Support declared MOLE_FRACTION and MASS_FRACTION for explicit GAS/LIQUID
+product metadata; supplied DENSITY/DYNAMIC_VISCOSITY for either label and
+COMPRESSIBILITY_FACTOR for GAS only. Preserve explicit units, absolute reference
+conditions, source/method applicability and evidence. No numerical execution,
+fraction/unit conversion, physical inference or automatic qualification follows.
+The prior awaiting-selection statements retain their historical applicability;
+the choice is now resolved and must not be requested again.
+
+Source/main parent3e8f32c9ea313c0021dae32731e6fe7f90c86095; tree
+f41db009f1c737fdc269c9cd52f7c9523df27ed7. Exact-head Docs620/run40491859779
+completed/success. Accepted runtime remains Full916/Fast222 source
+f16b71a4aa19188a5d58b3ad0bfa1470af8c391a, with HAPI-594 VERIFIED/COMPLETED.
+Current exact message:
+`docs(custody): register supplied fluid property execution`.
+
+This registration modifies exactly this owning phase record, the compact
+ULTIMATE_TASKS pointer, and595's planning status cells in ULTIMATE_ROADMAP and
+ULTIMATE_PHASES. HAPI-595 becomes NOT_IMPLEMENTED/IN_PROGRESS, not implemented
+or verified. Zero CREATE/DELETE. No runtime/test/schema/workflow/artifact change
+in this documentation stage. Three sequential runtime packages below are
+registered individually, not as an automatic batch; each needs its own owner
+Next and exact-head prerequisite feedback. Final acceptance is separate.
+
+#### Recovered exact seams and preservation constraints
+
+The inspected current Identity product contract has only CREATE/READ/UPDATE,
+PRODUCT_ENGINEERING_DRAFT and custody:engineering-product:* permissions.
+ProtectedOperationIdentityParticipant has an issuer-bound ProductClaimPair;
+JdbcProtectedAuthorizationEvidenceReader checks that exact product family,
+permission/resource/scope triple and fresh database-time graph. It cannot safely
+authorize property facts merely by adding strings to the old metadata whitelist.
+Register a separate typed native family and exported contract below, while old
+product, Topology, organization and diagnostic credential predicates remain
+exclusive. No old metadata grant becomes a property-write grant.
+
+The actual ProtectedTransactionExecutor restricts exact compiled service/
+coordinator callers and exact product DML hashes. Extend it only for the new
+concrete supplied-fluid service/coordinator after their code exists. Its ordinary
+credential router, original family callers, statement grammar and500ms standard
+work budget remain unchanged. No general arbitrary INSERT/UPDATE callback.
+ProtectedStationAdmissionBoundaryGuardrailTest currently pins the native reader
+to cf9f662ffc47df6117f20ca179e1471d167732f3dfc88844aba21cca166b4659;
+only a source-reviewed newly computed reader hash may replace that pin when A
+actually changes the reader. Preserve all other owner pins, negative assertions
+and exact caller membership. Pin updates are not test relaxation.
+
+The inspected Telemetry unit entity owns unit ID/code/symbol/dimension/activity.
+Its Planning export admits only nomination QUANTITY/RATE roles/pairs. Add a
+Custody-specific protected owner export and empty unit-usage policy; never
+repurpose Planning roles, import private Telemetry JPA types or trust a request's
+dimension/symbol as owner evidence. The existing Custody Party contract remains
+the exact ACTIVE-company/generation owner seam. The supplied-fluid coordinator
+is the sole new cross-module consumer of those exported roots/nested scalars.
+
+All23 CREATE paths below were verified absent and all12 distinct existing
+production/test MODIFY paths verified present in the pinned recursive tree.
+Last migration is V20261026_002__custody_product_engineering_drafts.sql.
+The three additive filenames below are reserved for the ordered packages;
+recheck the live chain before each package and reconcile any collision before
+mutation. Never rewrite a published migration or create operational unit/product/
+method seeds or role/user grants.
+
+#### Shared supplied-fact and revision contract
+
+- Link each property draft to one existing company-local product draft UUID,
+  immutable company/code/catalog reference and an exact authored metadata
+  version/classification snapshot. Properties have their own monotonic version
+  sequence, not594's metadata sequence. A new write requires the caller's
+  expectedProductMetadataVersion to match the actual current metadata revision
+  and explicit GAS/LIQUID classification. Current catalog/product policy,
+  company eligibility and native authority remain mandatory.
+- READ returns the current supplied revision only. If product metadata later
+  changes, retain the authored snapshot and expose metadataBindingCurrent=false
+  with an explicit stale-binding diagnostic; do not reinterpret old GAS facts
+  as LIQUID or requalify them. New writes must bind the new current metadata
+  version afresh. Current native/unit/policy eligibility is still checked before
+  disclosure; historical storage never grants current access.
+- WRITE accepts requestId canonical lowercase UUID and expectedVersion>=0:
+  zero only creates the first supplied version1; a successor requires the exact
+  current positive property version and appends exactly one immutable version.
+  Never edit or delete an earlier version. Unique(productDraftId,requestId)
+  binds original expected versions and exact supplied payload. Freshly authorized
+  exact replay returns the current supplied revision without reverting later
+  facts; different original request content is an authorized409. A metadata
+  change alone does not mutate original replay bytes or create a new revision.
+- Canonical supplied decimals are JSON strings, with grammar
+  (0|[1-9][0-9]{0,33})(\.[0-9]{1,18})? and no sign/exponent/whitespace.
+  Preserve the original accepted decimal lexeme and scale in a new versioned
+  strict UTF-8 codec; do not pass through binary floating point, trim, round,
+  strip trailing zeros or normalize a fraction total. Numeric equality validates
+  ranges/sums; exact request replay binds exact stored lexemes. Positive values
+  only for supplied fractions/properties/absolute pressure/temperature; fractions
+  <=one and composition sums exactly to one using BigDecimal arithmetic.
+- Composition is optional/null; a supplied block must have one explicit
+  MOLE_FRACTION/MASS_FRACTION basis and1..64 distinct non-null components.
+  Component references are exact1..80 Unicode scalars, source declarations
+  rather than invented certified chemical identities. Null composition is
+  incomplete, not a zero-filled or normalized blend. GAS/LIQUID labels are
+  representation metadata, not measured phase equilibrium.
+- At most32 property observations, each with a distinct exact1..80 scalar
+  observationId, one of the three approved property codes, explicit value and
+  owner-admitted unit, absolute pressure and temperature values/units, and its
+  source/method references when supplied. GAS Z requires the explicit
+  dimensionless owner role and has no invented universal upper bound. Reject
+  LIQUID Z, unknown property codes/bases, numeric JSON coercion, duplicate
+  children, contradictory units/family/ranges and unsupported absolute bases.
+  No conversion factor or atmospheric/standard-state default is executed.
+- At most16 inline method declarations, distinct by exact reference/revision;
+  each supplied method declares origin, representation/basis, component/property
+  coverage and positive ordered pressure/temperature applicability bounds with
+  admitted absolute units. Evidence/source completeness stays distinct from
+  this structural validity. A missing method/source/evidence gives explicit
+  incomplete diagnostics; a supplied contradictory method cannot be concealed
+  by an incomplete flag. Method references are authored declarations, not
+  approval of a named standard or executable equation.
+- Reuse594 exact Unicode validity/no-NUL/no-surrounding-whitespace rules.
+  Identity/reference fields max80 scalars, observation names max240,
+  descriptive text max4000, evidence references max1000. Optional null and
+  explicitly empty allowed collections remain distinguishable in the codec;
+  composition itself cannot be an empty supplied component block. Bound any
+  method component list to64 and unit requests to128 distinct role/unit pairs;
+  reject overflow before owner reads. Properties/methods may be absent/empty
+  with explicit diagnostics. Never silently synthesize evidence or properties.
+- Source/method origin is DECLARED_PARAMETER or SYNTHETIC; synthetic evidence
+  cannot be relabeled as nonsynthetic qualification. No caller actor, grant,
+  computed completeness, qualification, audit time/PID/xid or generated digest
+  is accepted. Persist server actor and actual transaction evidence separately.
+  This complete/incomplete authoring status is not thermodynamic or hydraulic
+  qualification.
+
+#### Package A — distinct native authorization and protected Telemetry units
+
+Exact message:
+`feat(custody): add protected supplied fluid owner contracts`.
+
+CREATE exactly:
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/custody/CustodyProtectedFluidPropertyAuthorizationContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedFluidPropertyAuthorizationParticipant.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedFluidPropertyAuthorizationPostgresIntegrationTest.java`
+- `src/main/java/dz/sh/hidra/modules/telemetry/application/contract/custody/CustodyProtectedFluidUnitContract.java`
+- `src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/adapter/JdbcCustodyProtectedFluidUnitAdapter.java`
+- `src/test/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/CustodyProtectedFluidUnitPostgresIntegrationTest.java`
+- `src/main/resources/db/migration/V20261027_001__custody_fluid_property_authority.sql`
+- `src/main/resources/db/migration/V20261027_002__telemetry_fluid_unit_policy.sql`
+
+MODIFY exactly:
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java`
+- `src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipantTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java`
+- `.github/ci-test-inventory.json`
+- `.github/database-dictionary-ownership.json`
+- `doc/roadmap/TASKS_HPS-008.md`
+
+Identity export actions are READ and WRITE, resource type
+PRODUCT_ENGINEERING_PROPERTIES, permission codes
+custody:engineering-product-properties:read and
+custody:engineering-product-properties:write. Require independent native CUSTOM
+custody-company:<companyId> and custody-product:<catalogProductId> scopes for
+the same action/resource and one fresh binding/session/source contribution.
+These scopes do not confer property knowledge or Planning/simulation approval.
+The authority migration inserts only these two permission definitions, checks
+an existing conflicting definition fail-closed and assigns no grants.
+
+Add a separate issuer-tagged SuppliedFluidClaimPair/currentness path in the
+actual native participant/reader and the exported opaque preparation/admission
+owner. Authentication tokens remain genuine existing native LOCAL/OIDC/LDAP/
+ACTIVE_DIRECTORY producers. Only the exact new Identity participant may consume
+its native family. Preserve fresh common database sampling, graph/effective
+responsibility/DENY precedence, strict resource/scope matching, failure poisoning,
+thread/connection/holder identity and one-use/current transaction semantics.
+Old metadata/Topology/organization/station/diagnostic tokens must reject rather
+than aliasing this family. Test four producers and both scopes/actions, missing/
+DENY/indeterminate, expired or revoked user/provider/session/grant/source,
+substitution, replay, mixed/forged credentials, cross-thread and suspension.
+Existing-family regression cases and their owner/private source pins remain.
+
+Telemetry's new empty hidra_telemetry_fluid_unit_policy is keyed by unit ID and
+one fixed usage role: DENSITY, DYNAMIC_VISCOSITY, COMPRESSIBILITY_FACTOR,
+ABSOLUTE_PRESSURE or ABSOLUTE_TEMPERATURE. It holds explicit expected dimension
+and active state, with an owner-local unit reference and strict role/uniqueness/
+nonblank constraints. A request cannot invent or override the dimension policy.
+No seed or inference from symbol, baseUnitId or conversion factor. COMPRESSIBILITY
+requires the explicitly admitted dimensionless semantic role; reference pressure/
+temperature require explicitly admitted absolute-unit roles.
+
+The owner adapter takes a bounded set of typed role/unit IDs, establishes
+deterministically ordered NOWAIT relation fences on hidra_telemetry_unit and
+hidra_telemetry_fluid_unit_policy, verifies actual role/catalog/table safety and
+collects only active units with matching admitted roles/dimensions. Export scalar
+snapshots, opaque issuer/thread/holder/connection-bound one-use admission and
+the exact two final fences. Unit ID/code/symbol/dimension/role/activity are
+snapshotted; conversion metadata is never executed. Preserve fences through
+commit/disclosure and recheck current eligibility under the common final guard.
+Ordinary application credentials must not mutate the unit policy; any private
+publisher privilege needed for relation admission is bounded by the protected
+credential route/statement grammar. No unrelated DML permission is admitted.
+Tests prove valid owner semantics, missing/inactive/wrong role/dimension,
+writer-first/owner-first races, rollback, fabricated/replayed/cross-thread tickets,
+lost locks and privileged/unsafe physical metadata rejection.
+
+Register only actual authored test names/hashes and existing lanes. Add one
+explicit ownership row for the new Telemetry policy table. The physical dictionary
+must be refreshed from the actual migrated catalog, never inferred. If unavailable
+locally, retain a truthful pending capture obligation under AGENTS11.1. After
+source feedback, admitted artifact-only message:
+`docs(telemetry): refresh fluid unit policy dictionary`;
+MODIFY only doc/database/DATA_DICTIONARY.md and this phase record. No generation
+claim from a skipped database test and no equality/ownership validator weakening.
+A alone has no public property API or Custody property storage.
+
+#### Package B — Custody supplied revision, canonical storage and atomic admission
+
+Depends on acceptedA and its actual dictionary gate. Exact message:
+`feat(custody): add versioned supplied fluid property drafts`.
+
+CREATE exactly:
+- `src/main/java/dz/sh/hidra/modules/custody/domain/model/SuppliedFluidPropertyRevision.java`
+- `src/main/java/dz/sh/hidra/modules/custody/application/port/in/SuppliedFluidPropertyRevisionUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/custody/application/port/out/SuppliedFluidPropertyRevisionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/custody/application/service/SuppliedFluidPropertyRevisionApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/custody/application/service/ProtectedSuppliedFluidPropertyAdmissionCoordinator.java`
+- `src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcSuppliedFluidPropertyRevisionRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/SuppliedFluidPropertyRevisionCodec.java`
+- `src/test/java/dz/sh/hidra/modules/custody/domain/model/SuppliedFluidPropertyRevisionTest.java`
+- `src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/SuppliedFluidPropertyPostgresIntegrationTest.java`
+- `src/main/resources/db/migration/V20261027_003__custody_supplied_fluid_properties.sql`
+
+MODIFY exactly:
+- `src/main/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutor.java`
+- `src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+- `.github/ci-test-inventory.json`
+- `.github/database-dictionary-ownership.json`
+- `doc/roadmap/TASKS_HPS-008.md`
+
+Implement the shared contract through pure Java domain, typed ports and explicit
+JDBC codec/storage. Reuse accepted594 identity/catalog/metadata history without
+editing its aggregate, SQL, codec, migration or tests. New owner tables are
+hidra_custody_supplied_fluid_property_draft and
+hidra_custody_supplied_fluid_property_version. Enforce one immutable root per
+product draft, unique write request identity, positive contiguous append-only
+sequence, expected-version CAS, strict payload format/digest, immutable version
+bytes and origin/transaction/audit integrity. Bind product metadata version to
+the actual existing Custody version history using only owner-local references;
+no cross-owner Party/Telemetry aggregate foreign key.
+
+The concrete coordinator is the sole cross-owner consumer of the exact new
+Identity export, Telemetry export and existing Custody Party export roots/nested
+data. Resolve actual company-bound product/catalog binding without revealing
+existence before native authority; missing/foreign targets share the accepted
+non-disclosing DENIED403 outcome. Collect Identity24, Party2, Custody6 (existing
+four product/catalog/policy relations plus the two new roots/history relations)
+and Telemetry2 relation fences:34 distinct reviewed fences in one physical
+transaction. No caller-supplied scalar permission substitutes for an admission.
+
+Extend ProtectedTransactionExecutor only for the two exact concrete new callers
+and their actual reviewed DML statement SHA256 templates. Keep all original
+family constants/hashes/caller sets, credential routing, SQL admission grammar,
+standard500ms work budget,750ms statement timeout and250ms lock timeout. Recheck
+native/unit/catalog/Party eligibility, metadata pin, actual held relation fences,
+physical trigger/function/schema/role safety and common final database deadline.
+Exactly one closed scalar SQL final guard seals disclosure/commit; it performs
+no provisional DML or post-guard application query. All rejection/failed guard/
+stale CAS paths roll back provisional rows, and unknown commit stays explicitly
+indeterminate without an automatic retry. Avoid repeated identical expensive
+native graph rereads at the same boundary; preserve before/after-write checks.
+
+Add only the exact new coordinator/export pair to actual architecture/import
+scans and their classifier tests, with sibling/private/foreign-consumer negatives.
+Do not change accepted594 grants, Party adapter, raw catalog APIs or other owner
+exports. Register two exact Custody dictionary ownership entries. Test all
+supported/unsupported shapes/units/bases and decimals, strict canonical payload
+round-trip/corruption, incomplete-vs-invalid behavior, exact replay, stale metadata/
+property version, concurrent writes, two-company isolation, current revocations,
+opaque admission misuse, forbidden ordinary DML, history immutability and real
+final-guard rollback. No mocked Boolean alone proves protected storage.
+
+After actual source feedback, admitted artifact-only message:
+`docs(custody): refresh supplied fluid storage dictionary`;
+MODIFY only doc/database/DATA_DICTIONARY.md and this phase record. Capture truth
+from the complete actual migrated PostgreSQL catalog, retain migration history
+and zero-unresolved-owner/equality gates; no handwritten physical metadata.
+B is internal software only until C proves configured HTTP integration.
+
+#### Package C — configured HTTP integration, actual runtime artifacts
+
+Depends on acceptedA/B. Exact message:
+`feat(custody): expose supplied fluid property draft operations`.
+
+CREATE exactly:
+- `src/main/java/dz/sh/hidra/modules/custody/api/rest/controller/SuppliedFluidPropertyRevisionController.java`
+- `src/main/java/dz/sh/hidra/modules/custody/api/rest/request/SuppliedFluidPropertyRevisionRequests.java`
+- `src/main/java/dz/sh/hidra/modules/custody/api/rest/response/SuppliedFluidPropertyRevisionResponses.java`
+- `src/test/java/dz/sh/hidra/modules/custody/api/rest/controller/SuppliedFluidPropertyRevisionControllerTest.java`
+- `src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/SuppliedFluidPropertyNativeHttpPostgresIntegrationTest.java`
+
+MODIFY exactly:
+- `src/main/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptor.java`
+- `src/test/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptorTest.java`
+- `.github/ci-test-inventory.json`
+- `.github/documentation-validation.json`
+- `doc/api/openapi.yaml`
+- `doc/database/DATA_DICTIONARY.md`
+- `doc/roadmap/TASKS_HPS-008.md`
+
+Expose exactly GET and PUT
+/api/v1/custody/engineering-products/{draftId}/properties, both with a single exact
+companyPartyId query. PUT supplies requestId, expectedVersion,
+expectedProductMetadataVersion and bounded optional composition/property/method/
+source blocks above. GET has no client-selected expected-version or actor.
+Explicit strict DTOs reject unknown/coerced fields, duplicate/extra scopes and
+server-owned facts. Return distinct product/shared-catalog/property revision
+identities, authored metadata binding, current supplied version, exact supplied
+facts, explicit null/incomplete diagnostics and metadataBindingCurrent.
+
+PUT returns201 for the first property revision,200 for successor/exact current
+replay; GET200. Preserve400 malformed/unsupported supplied facts,401 missing/
+malformed authentication,403 explicit native/target denial,409 authorized CAS/
+identity/replay conflict and503 unavailable/indeterminate evidence. Current unit
+eligibility/owner proof failure is fail-closed unavailable, not fabricated valid
+unit evidence. No native cause, SQL, stack trace or retry instruction escapes.
+No list/search/delete/publication/history/export/solver endpoint.
+
+The actual MVC interceptor must delegate only these two exact compiled
+SuppliedFluidPropertyRevisionController handler/verb/route tuples to the native
+owner after authentication. Existing metadata tuples and all unrelated static
+route permission checks remain unchanged. Add positive and wrong-verb/pattern/
+handler/controller/anonymous negatives; do not grant generic route permission
+to bypass the new property owner. Standalone DTO tests do not prove native auth.
+Real configured filter/HTTP/PostgreSQL tests prove both scoped actions and four
+producers, all shared revision/basis/unit/metadata-pin/diagnostic behavior, two
+companies, deny/revocation/availability and no provisional effect after failure.
+
+Generate OpenAPI only from the actual running application and dictionary only
+from actual migrated PostgreSQL. Verify actual source/run/attempt, all old
+routes/schemas/security and supported compatibility before adopting snapshots.
+The existing manifest is an inseparable reviewed digest/count/provenance
+companion; preserve previous provenance and report failed generation/job/
+workflow gates accurately. If locally unavailable, use CI-first pending artifact
+disposition and separately selected follow-up message
+`docs(api): refresh supplied fluid runtime contract`;
+MODIFY only doc/api/openapi.yaml, .github/documentation-validation.json and this
+phase record, plus doc/database/DATA_DICTIONARY.md only for demonstrated actual
+physical drift. No predicted or handwritten capture, source-stamp forgery,
+skipped gate treated as success or validation script change.
+
+#### Final acceptance and execution stop
+
+After registered source exists, accept595 only from exact-SHA Full/Fast/Docs
+as applicable, independent case/source/inventory/raw report membership and
+actual same-run API/catalog/compatibility evidence. Retain software acceptance,
+engineering qualification and production/SITE readiness as separate states.
+Exact final message:
+`docs(custody): accept supplied fluid property authoring`;
+MODIFY only this phase file, ULTIMATE_TASKS and status-only595 cells in
+ULTIMATE_ROADMAP/ULTIMATE_PHASES. Preserve all other task statuses and original
+history. No596/597, frontend, numerical engine, calibration, release or deployment
+is selected by this registration or its eventual acceptance.
+
+**Completed registration checks.**19 existing documentation-validator self-tests
+PASS. Exact checks confirm all six phase task records,595 metadata/status-table
+agreement, all921 compatibility anchors, bounded document sizes and correct
+literal decimal grammar. Both frozen registries differ only in595's planning
+status cell; the owning phase preserves prior history apart from that same
+header field. All other task definitions/statuses and accepted594 are unchanged.
+Full documentation-estate/link validation remains the new hosted exact-SHA
+Documentation gate; no local Java/native runtime result is asserted.
+
+Current registration validation recovers the actual native family, source guard,
+executor, MVC and unit-owner seams; verifies23 CREATE paths absent and12 distinct
+existing production/test MODIFY paths present. Available documentation self-tests,
+unchanged other task/status metadata, source-scope/history and frozen-table
+status-only checks must complete before publication. No Java/native/PostgreSQL
+execution, runtime API or new catalog capture is claimed in this documentation
+stage. Publish directly to main with expected3e8f32c, verify exact four-document
+scope/parent/tree/blobs/message, observe applicable exact-SHA Documentation CI
+creation/queue/start and STOP. Package A is next only after this registration's
+Documentation gate succeeds and a subsequent owner Next; no runtime package
+executes automatically in this turn.
 
 <a id="hapi-596"></a>
 ## HAPI-596 — Product publication, history and owner exports

@@ -82,13 +82,14 @@ remain separately selected. No next task is selected automatically.
 
 
 [HAPI-595](TASKS_HPS-008.md#hapi-595), supplied composition, properties and
-methods, is NOT_IMPLEMENTED/BLOCKED pending the owner's representation choice.
-Owner Next selects its source-backed policy preflight. The owning phase
-proposes A: explicit MOLE/MASS fractions and a bounded supplied-property set
-for GAS/LIQUID, with units/reference conditions/method evidence; B narrows the
-first delivery to GAS/MOLE. No runtime or numerical qualification is claimed.
-After explicit selection, register exact owner/unit/authorization/schema/API
-execution scope before implementation. HAPI-596/597 remain unselected.
+methods, is NOT_IMPLEMENTED/IN_PROGRESS. The owner explicitly approved Policy A:
+GAS/LIQUID declarations with MOLE/MASS fractions, supplied density/viscosity and
+GAS compressibility, explicit units/reference conditions/method provenance.
+The owning phase registers three bounded packages: distinct native/Telemetry
+owner contracts, Custody revision storage, then configured HTTP and actual
+artifacts. Package A is next after registration Documentation CI succeeds.
+No runtime capability or numerical qualification is claimed by registration;
+HAPI-596/597, frontend, release and deployment remain unselected.
 
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent

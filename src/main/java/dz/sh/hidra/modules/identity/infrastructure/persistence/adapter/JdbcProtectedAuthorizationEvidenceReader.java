@@ -179,18 +179,23 @@ public class JdbcProtectedAuthorizationEvidenceReader {
     private AuthorizationEvidence loadClaims(ProtectedOperationIdentityParticipant.QualifiedClaimRead credential,
             AuthorizationEvaluationRequest request,boolean organizationRecheck,Rows rows,
             boolean productRecheck,Instant productSample,boolean fluidFamily) {
+        return loadClaims(credential,request,organizationRecheck,rows,productRecheck,productSample,fluidFamily,false);
+    }
+    private AuthorizationEvidence loadClaims(ProtectedOperationIdentityParticipant.QualifiedClaimRead credential,
+            AuthorizationEvaluationRequest request,boolean organizationRecheck,Rows rows,
+            boolean productRecheck,Instant productSample,boolean fluidFamily,boolean publicationFamily) {
         try {
             rows.beginGraph();
             if (participant == null || bindings == null || companions == null
                     || registry == null || catalog == null) throw invalid();
-            var contribution = productRecheck ? (fluidFamily ? participant.currentSuppliedFluidClaims(credential,request) : participant.currentProductClaims(credential, request))
+            var contribution = productRecheck ? (publicationFamily ? participant.currentProductPublicationClaims(credential,request) : fluidFamily ? participant.currentSuppliedFluidClaims(credential,request) : participant.currentProductClaims(credential, request))
                     : organizationRecheck ? participant.currentOrganizationClaims(credential, request)
                     : participant.consumeClaims(credential, request);
             Evidence evidence = contribution.evidence();
             int pid = contribution.backendPid();
             long xid = contribution.transactionId();
             validate(evidence, request, pid, xid, participant.engineeringDraftCredential(credential),
-                    participant.organizationCredential(credential), participant.productDraftCredential(credential),participant.suppliedFluidCredential(credential));
+                    participant.organizationCredential(credential), participant.productDraftCredential(credential),participant.suppliedFluidCredential(credential),participant.productPublicationCredential(credential));
             qualifiedPhysicalFences(pid, xid);
             OperationAuthenticationBinding original =
                     bindings.findByNativeIssuerAndJti(evidence.issuer(), evidence.jti())
@@ -228,7 +233,7 @@ public class JdbcProtectedAuthorizationEvidenceReader {
                     qualified = new QualifiedClaims(proof.coverage(), original.authenticationType());
                 }
             }
-            Instant productAt = (participant.productDraftCredential(credential) || participant.suppliedFluidCredential(credential))
+            Instant productAt = (participant.productDraftCredential(credential) || participant.suppliedFluidCredential(credential) || participant.productPublicationCredential(credential))
                     ? Objects.requireNonNull(productSample) : evidence.observedAt();
             if(productAt.isBefore(evidence.observedAt()) || !productAt.isBefore(contribution.validUntil())) throw invalid();
             AuthorizationEvidence result = read(evidence, request, rows, qualified, productAt);
@@ -333,6 +338,34 @@ public class JdbcProtectedAuthorizationEvidenceReader {
             var company=loadClaims(reads.company(),reads.companyRequest(),false,new Rows(),recheck,at,true);
             var product=loadClaims(reads.facility(),reads.facilityRequest(),false,new Rows(),recheck,at,true);
             participant.requireCurrentSuppliedFluidPair(pair,request);
+            return new PairedAuthorizationEvidence(reads.companyRequest(),company,reads.facilityRequest(),product,reads.contribution());
+        }catch(RuntimeException failure){throw invalid();}
+    }
+
+    @Transactional(propagation=Propagation.MANDATORY)
+    public PairedAuthorizationEvidence loadQualifiedProductPublicationPair(
+            ProtectedOperationIdentityParticipant.ProductPublicationClaimPair pair,
+            dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedProductPublicationAuthorizationContract.Request request) {
+        return productPublicationGraphs(pair,request,false);
+    }
+    @Transactional(propagation=Propagation.MANDATORY)
+    public PairedAuthorizationEvidence recheckProductPublicationPair(
+            ProtectedOperationIdentityParticipant.ProductPublicationClaimPair pair,
+            dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedProductPublicationAuthorizationContract.Request request) {
+        return productPublicationGraphs(pair,request,true);
+    }
+    private PairedAuthorizationEvidence productPublicationGraphs(
+            ProtectedOperationIdentityParticipant.ProductPublicationClaimPair pair,
+            dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedProductPublicationAuthorizationContract.Request request,
+            boolean recheck) {
+        try {
+            if(participant==null)throw invalid();
+            var nativeRead=recheck?participant.currentProductPublicationReads(pair,request):participant.consumeProductPublicationPair(pair,request);
+            var reads=nativeRead.reads();
+            Instant at=nativeRead.sampledAt();
+            var company=loadClaims(reads.company(),reads.companyRequest(),false,new Rows(),recheck,at,false,true);
+            var product=loadClaims(reads.facility(),reads.facilityRequest(),false,new Rows(),recheck,at,false,true);
+            participant.requireCurrentProductPublicationPair(pair,request);
             return new PairedAuthorizationEvidence(reads.companyRequest(),company,reads.facilityRequest(),product,reads.contribution());
         }catch(RuntimeException failure){throw invalid();}
     }
@@ -446,6 +479,9 @@ public class JdbcProtectedAuthorizationEvidenceReader {
         validate(i,r,pid,xid,draft,organization,product,false);
     }
     private void validate(Evidence i, AuthorizationEvaluationRequest r, int pid, long xid,boolean draft,boolean organization,boolean product,boolean fluid) {
+        validate(i,r,pid,xid,draft,organization,product,fluid,false);
+    }
+    private void validate(Evidence i, AuthorizationEvaluationRequest r, int pid, long xid,boolean draft,boolean organization,boolean product,boolean fluid,boolean publicationFamily) {
         if (!TransactionSynchronizationManager.isActualTransactionActive()
                 || TransactionSynchronizationManager.isCurrentTransactionReadOnly()
                 || i == null
@@ -483,7 +519,15 @@ public class JdbcProtectedAuthorizationEvidenceReader {
                         || i.externalGeneration() <= 0
                         || ("OIDC".equals(i.authenticationType())
                                 != (i.sourceExpiresAt() != null)))) throw invalid();
-        if (fluid) {
+        if (publicationFamily) {
+            if(draft || organization || product || fluid || !i.userId().equals(r.userId()) || !"PRODUCT_ENGINEERING_PUBLICATION".equals(r.resourceType())
+                || !text(r.resourceReferenceId(),80) || r.scope()==null || r.scope().scopeType()!=ScopeType.CUSTOM
+                || r.scope().scopeCodeSnapshot()!=null
+                || !Set.of("custody:engineering-product-publication:read","custody:engineering-product-publication:prepare","custody:engineering-product-publication:publish","custody:engineering-product-publication:withdraw","custody:engineering-product-publication:reactivate").contains(r.permissionCode()))throw invalid();
+            String ref=r.scope().scopeReferenceId();
+            if(ref==null || !(ref.equals("custody-product:"+r.resourceReferenceId())
+                || (ref.startsWith("custody-company:") && text(ref.substring("custody-company:".length()),80))))throw invalid();
+        } else if (fluid) {
             if(draft || organization || product || !i.userId().equals(r.userId()) || !"PRODUCT_ENGINEERING_PROPERTIES".equals(r.resourceType())
                 || !text(r.resourceReferenceId(),80) || r.scope()==null || r.scope().scopeType()!=ScopeType.CUSTOM
                 || r.scope().scopeCodeSnapshot()!=null

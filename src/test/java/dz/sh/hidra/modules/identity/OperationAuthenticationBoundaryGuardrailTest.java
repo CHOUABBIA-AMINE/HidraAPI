@@ -682,4 +682,21 @@ class OperationAuthenticationBoundaryGuardrailTest {
         for(var c:type.getDeclaredConstructors())assertThat(java.lang.reflect.Modifier.isPrivate(c.getModifiers())).isTrue();
     }
 
+    @Test void productPublicationSeamsHaveOnlyTheirExactPrivateOwnerCallers() throws Exception {
+        var expected=java.util.Map.of(
+            "qualifyProductPublicationPair",Set.of("infrastructure/security/ProtectedProductPublicationAuthorizationParticipant.java"),
+            "consumeProductPublicationPair",Set.of("infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java"),
+            "currentProductPublicationReads",Set.of("infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java"),
+            "loadQualifiedProductPublicationPair",Set.of("infrastructure/security/ProtectedProductPublicationAuthorizationParticipant.java"),
+            "recheckProductPublicationPair",Set.of("infrastructure/security/ProtectedProductPublicationAuthorizationParticipant.java"));
+        for(var entry:expected.entrySet()) {
+            var actual=new java.util.HashSet<String>();
+            try(var paths=Files.walk(IDENTITY)){for(var file:paths.filter(p->p.toString().endsWith(".java")).toList())
+                if(Files.readString(file).contains("."+entry.getKey()+"("))actual.add(IDENTITY.relativize(file).toString().replace('\\','/'));}
+            assertThat(actual).isEqualTo(entry.getValue());
+        }
+        var type=dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipant.ProductPublicationClaimPair.class;
+        assertThat(type.getConstructors()).isEmpty();
+        for(var c:type.getDeclaredConstructors())assertThat(java.lang.reflect.Modifier.isPrivate(c.getModifiers())).isTrue();
+    }
 }

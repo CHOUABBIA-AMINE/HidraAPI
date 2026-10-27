@@ -367,6 +367,10 @@ class ArchitectureGuardrailTest {
                 if (!isPrivateCrossModulePackage(target.getPackageName())) {
                     continue;
                 }
+                if (isPublicationSpecific(target.getName())) {
+                    if(!isPublicationExportAllowed(source.getName(),target.getName()))violations.add(source.getName()+" -> "+target.getName());
+                    continue;
+                }
                 if (isExplicitlyExported(target.getPackageName())) {
                     continue;
                 }
@@ -650,6 +654,7 @@ class ArchitectureGuardrailTest {
         if (sourceModule == null || targetModule == null || sourceModule.equals(targetModule)) {
             return false;
         }
+        if(isPublicationSpecific(targetClassName))return !isPublicationExportAllowed(sourceClassName,targetClassName);
         if (!isPrivateCrossModulePackage(targetPackage)) {
             return false;
         }
@@ -754,5 +759,24 @@ class ArchitectureGuardrailTest {
         }
         assertFalse(isSuppliedFluidOwnerExport(consumer,"dz.sh.hidra.modules.telemetry.infrastructure.persistence.adapter.JdbcCustodyProtectedFluidUnitAdapter"));
         assertFalse(isSuppliedFluidOwnerExport(consumer,"dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipant"));
+    }
+    private static final String PUBLICATION_HUMAN="dz.sh.hidra.modules.identity.application.contract.workflow.WorkflowHumanActorContract";
+    private static final Set<String> PUBLICATION_ROOTS=Set.of(PUBLICATION_HUMAN,
+        "dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedProductPublicationAuthorizationContract",
+        "dz.sh.hidra.modules.workflow.application.contract.custody.CustodyProtectedProductPublicationApprovalContract");
+    private static boolean isPublicationSpecific(String target){return PUBLICATION_ROOTS.stream().anyMatch(target::startsWith);}
+    private static boolean isPublicationExportAllowed(String source,String target){
+        String owner="dz.sh.hidra.modules.workflow.application.service.WorkflowTransitionApplicationService";
+        return (source.equals(owner) || source.startsWith(owner+"$")) && (target.equals(PUBLICATION_HUMAN) || target.startsWith(PUBLICATION_HUMAN+"$"));
+    }
+    @Test void publicationExportsAdmitOnlyRegisteredHumanTransitionConsumer() {
+        String owner="dz.sh.hidra.modules.workflow.application.service.WorkflowTransitionApplicationService";
+        assertFalse(isForbiddenCrossModuleDependency(owner,PUBLICATION_HUMAN));assertFalse(isForbiddenCrossModuleDependency(owner,PUBLICATION_HUMAN+"$Human"));
+        assertTrue(isForbiddenCrossModuleDependency(owner+"Sibling",PUBLICATION_HUMAN));assertTrue(isForbiddenCrossModuleDependency(owner,PUBLICATION_HUMAN+"Sibling"));
+        for(String root:PUBLICATION_ROOTS){
+            assertTrue(isForbiddenCrossModuleDependency("dz.sh.hidra.modules.topology.application.service.Other",root));
+            assertTrue(isForbiddenCrossModuleDependency("dz.sh.hidra.modules.custody.application.service.Other",root+"$Admission"));
+        }
+        assertTrue(isForbiddenCrossModuleDependency(owner,"dz.sh.hidra.modules.identity.infrastructure.security.ProtectedProductPublicationAuthorizationParticipant"));
     }
 }

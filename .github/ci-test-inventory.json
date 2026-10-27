@@ -24,6 +24,7 @@
         "kernelMustRemainFrameworkAndModuleIndependent",
         "platformJpaAccessMustRemainRestrictedToReviewedWorkbenchBoundary",
         "protectedTransactionJpaExceptionsRemainExactAndTechnical",
+        "publicationExportsAdmitOnlyRegisteredHumanTransitionConsumer",
         "simulationOwnerEvidenceExportsKeepPrivateTypesClosed",
         "simulationTelemetryEvidenceExportKeepsOwnerInternalsPrivate",
         "suppliedFluidExportsStayExactToTheirCoordinator",
@@ -36,7 +37,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java",
-      "source_sha256": "c480013fc92fb59f0fff93dd9abd1d01b5b4f688e4ab0eff4c3f94fd1b513e53",
+      "source_sha256": "03b4cd12cc03b9b72c38ee574671def2d2e6fc2f60ade6fbf7c694be03115fea",
       "supports": []
     },
     {
@@ -1673,6 +1674,7 @@
         "pairedContractExportsOnlyTheApprovedImmutableScalars",
         "pairedOwnerEntryAndReaderSeamsHaveOnlyReviewedProductionCallers",
         "pairedParticipantNeverStartsAnIndependentTransaction",
+        "productPublicationSeamsHaveOnlyTheirExactPrivateOwnerCallers",
         "qualifiedConsumptionAndPostReadValidationHaveOnlyTheReviewedReaderCaller",
         "readerKeepsPrivateNativeVerificationInsideIdentityAndUsesReadOnlyFreshOwnerQuery",
         "restDtosAndOriginalAssertionNeverTransportBindingSecretsOrHandles",
@@ -1689,7 +1691,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java",
-      "source_sha256": "6cb9ef32fc0855a0aebe53b8c0da6ed25d68450ed53ce5d85be5dad4f8f35399",
+      "source_sha256": "29e85de2f9ca7bd3dafdef7652a5486e324b44f5051f593abbbaf5eb396a6506",
       "supports": []
     },
     {
@@ -1939,6 +1941,22 @@
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessQueryServiceTest.java",
       "source_sha256": "730acabf13ffc27c56e9faf763b0ca80a0f2dde4493731a24a039e40f65a5c37",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "allNonhumanTypesRejectEvenWhenActive",
+        "lockedInactiveMissingAndBlankDisplayReject",
+        "onlyExactActiveUnlockedHumanWithDisplayMayReview"
+      ],
+      "class": "dz.sh.hidra.modules.identity.application.service.WorkflowHumanActorQueryServiceTest",
+      "dependency_reason": "JVM/mock checks; no external service; timing unmeasured",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/application/service/WorkflowHumanActorQueryServiceTest.java",
+      "source_sha256": "04950d1b2a84fd747d9873c4e87d3f5e28fda589445467fa7108492c8ea5212f",
       "supports": []
     },
     {
@@ -2689,6 +2707,39 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "companyProductAndActionCannotBeSubstituted",
+        "consumedOrCompletedAdmissionCannotBeUsedAgain",
+        "crossThreadRejectionPoisonsOriginalTransactionEvenWhenSwallowed",
+        "eitherScopeDenyAndMissingAuthorityCannotProducePartialPermit",
+        "expiredNativeDeadlineCannotSurviveFinalRecheck",
+        "fabricatedPreparationAdmissionAndNativePairFailClosed",
+        "fourNativeProducersRequireBothExactScopesForAllFiveActions",
+        "grantExpiryUsesFreshDatabaseTimeForBothScopes",
+        "maximumCompanyAndProductScopeIdsRetainExactNativeAuthority",
+        "metadataProductPermissionsDoNotAuthorizePublication",
+        "missingPermissionDefinitionCannotBeGrantedByCallerClaims",
+        "permissionMigrationIsIdempotentRejectsMismatchAndAssignsNoGrants",
+        "preparedEntryCannotReplayOrMoveToDifferentAuthentication",
+        "propertyPermissionsCannotAuthorizeAnyPublicationAction",
+        "reviewerRequiresPermittedAdmissionAndFreshHumanIdentity",
+        "sameTransactionGrantRevocationIsDetectedAndRolledBack",
+        "suspendedTransactionCannotResumeOldAdmission",
+        "topologyScopedGrantsNeverAuthorizeProductPublication",
+        "unresolvedPolicyEvidenceRemainsIndeterminateDespiteBothGrants",
+        "userProviderAndSessionRevocationsRejectPreparedNativeEvidence"
+      ],
+      "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.ProtectedProductPublicationAuthorizationPostgresIntegrationTest",
+      "dependency_reason": "Actual PostgreSQL/Flyway/native or configured Workflow owner evidence; Docker required; timing unmeasured",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedProductPublicationAuthorizationPostgresIntegrationTest.java",
+      "source_sha256": "f9da20657cf6122a98dbea08f90e40631ca7ddab749ff52077ba4cc294698668",
+      "supports": []
+    },
+    {
       "baseline_seconds": 20.235,
       "cases": [
         "capturedMappingGenerationDriftRejectsTheWholePair",
@@ -2805,6 +2856,7 @@
         "organizationReaderRejectsMissingNativeOwnerBeforeAnySql",
         "preservesGrantOrderScopeWindowsAndDenyPrecedence",
         "preservesTypedAttributesAndConflicts",
+        "productPublicationFamilyCannotBeSelectedByDiagnosticEvidenceOrForgedPair",
         "publicationDiagnosticsAndForgedPairsNeverSelectThePrivateQualifiedFamily",
         "qualifiedPhysicalFenceProbeNeverReusesAPreviousSuccess",
         "qualifiedPhysicalFenceProbeRejectsUnknownOrUnavailableEvidence",
@@ -2822,7 +2874,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java",
-      "source_sha256": "8b156aa9c043e87962b3818f5e30f7359d7aa59395066b2923b4de936e31b90d",
+      "source_sha256": "51faf34282600c704356ee7b2044112da48deb8d81c6c707a2230f36887926c0",
       "supports": []
     },
     {
@@ -3105,6 +3157,7 @@
         "postReadValidationRefusesUnconsumedHandleAndReplacedActualContext",
         "preparationRefusesAmbientTransaction",
         "preparedHandleHasNoPublicConstructorOrSensitiveText",
+        "productPublicationPrivateFamilyRejectsNullOrForeignStructuralCredentials",
         "publicAndLegacyContextsCannotCreatePreparedHandle",
         "publicationResourceMappingNeverChangesDraftOrMintsAClaimPair",
         "suppliedFluidPrivateFamilyRejectsNullOrForeignStructuralCredentials",
@@ -3117,7 +3170,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipantTest.java",
-      "source_sha256": "9ad3c87e3cac422fffdfd80a2021714c2dc30ef4beba842bacddb8cb1edbdd0d",
+      "source_sha256": "48c24607df7c07cf138192b28ab1e676643a2c7872d50896038d5e058a7253a1",
       "supports": []
     },
     {
@@ -7482,7 +7535,8 @@
         "existingReaderAndJContractsRemainUnchanged",
         "identityAdmissionAndCollectorHaveOnlyReviewedCallers",
         "platformHasNoBusinessModuleDependencies",
-        "publicationAdmissionKeepsTheSingleClockAndPrivateSourceBoundaries"
+        "publicationAdmissionKeepsTheSingleClockAndPrivateSourceBoundaries",
+        "publicationOwnerTicketsRemainOpaqueAndPolicyUsesRetainedOwnerFences"
       ],
       "class": "dz.sh.hidra.modules.topology.ProtectedStationAdmissionBoundaryGuardrailTest",
       "dependency_reason": "Registered HAPI-583 JVM/source or simulated provider checks; timing unmeasured",
@@ -7490,7 +7544,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java",
-      "source_sha256": "4632e664721cc38e5567e4a4789508e10d2ae7b7355d5f3d01d641c222855ea4",
+      "source_sha256": "f862c4e1a73bae794dcbb76e4ceac95ebfad1a816f3371831bf20cdb3e0500ec",
       "supports": []
     },
     {
@@ -8978,6 +9032,8 @@
       "cases": [
         "completesInstanceWhenTargetStepIsTerminal",
         "executesPermittedTransitionAndCreatesNextTask",
+        "publicationApprovalAcceptsOnlyActualMatchingHumanActor",
+        "publicationApprovalRejectsNonhumanBeforeMutation",
         "rejectsActorWhoDoesNotOwnTask",
         "rejectsMissingTransitionPermission",
         "rejectsStaleTaskVersionBeforeMutation"
@@ -8988,7 +9044,33 @@
       "lane": "unit-architecture",
       "owner": "workflow",
       "path": "src/test/java/dz/sh/hidra/modules/workflow/application/service/WorkflowTransitionApplicationServiceTest.java",
-      "source_sha256": "61a463551dffe296a38ce13c6849cc91b427742404ae2ccafe51190dff42d11e",
+      "source_sha256": "55ce06b06da1fbf1ba8ef02c42ffddc50b667b54e97af95dd5c5154fd0bd5a69",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "actualHumanTerminalTransitionBindsExactDigestAndServerActor",
+        "completedCorrectActionCannotMasqueradeAsApprove",
+        "forgedCrossThreadAndSwallowedMisusePoisonOriginalTransaction",
+        "nonhumanApprovalRejectsBeforeAnyActionHistoryOrTaskEffect",
+        "ordinaryRoleCannotMutatePolicyAndExistingActionHistoryStaysImmutable",
+        "policyPreparationHasNoApprovalAndRetainsAllElevenFences",
+        "policyWriterFirstRejectsNowaitAdmission",
+        "replayAndCompletedTicketsCannotBeReused",
+        "retainedOwnerFencesBlockConcurrentPolicyWriter",
+        "revokedPolicyDefinitionAndBindingFailClosed",
+        "suspendedTicketCannotResume",
+        "unapprovedAndSubstitutedApprovalOrCompanyReject",
+        "unsafePrivilegedAndDisabledImmutableTriggerReject"
+      ],
+      "class": "dz.sh.hidra.modules.workflow.infrastructure.persistence.CustodyProtectedProductPublicationApprovalPostgresIntegrationTest",
+      "dependency_reason": "Actual PostgreSQL/Flyway/native or configured Workflow owner evidence; Docker required; timing unmeasured",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "workflow",
+      "path": "src/test/java/dz/sh/hidra/modules/workflow/infrastructure/persistence/CustodyProtectedProductPublicationApprovalPostgresIntegrationTest.java",
+      "source_sha256": "d340d2122430dad30171636acc8a66b808e2fdc51bb55b21cb3e942ba65ea7c1",
       "supports": []
     },
     {

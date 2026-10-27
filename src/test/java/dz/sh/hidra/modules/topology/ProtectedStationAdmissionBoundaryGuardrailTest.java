@@ -47,7 +47,7 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
         }
     }
     @Test void identityAdmissionAndCollectorHaveOnlyReviewedCallers() throws Exception {
-        var expected=Map.of("collectFenced",Set.of("JdbcIdentityAuthorityFence.java"),"acquireNowait",Set.of("ProtectedOperationIdentityParticipant.java"),"admit",Set.of("ProtectedFluidPropertyAuthorizationParticipant.java","ProtectedProductDraftAuthorizationParticipant.java","ProtectedTopologyAuthorizationParticipant.java","ProtectedEngineeringDraftAuthorizationParticipant.java","ProtectedOrganizationAppointmentAuthorizationParticipant.java"));
+        var expected=Map.of("collectFenced",Set.of("JdbcIdentityAuthorityFence.java"),"acquireNowait",Set.of("ProtectedOperationIdentityParticipant.java"),"admit",Set.of("ProtectedProductPublicationAuthorizationParticipant.java","ProtectedFluidPropertyAuthorizationParticipant.java","ProtectedProductDraftAuthorizationParticipant.java","ProtectedTopologyAuthorizationParticipant.java","ProtectedEngineeringDraftAuthorizationParticipant.java","ProtectedOrganizationAppointmentAuthorizationParticipant.java"));
         for(var item:expected.entrySet()) {
             var found=new HashSet<String>();try(var files=Files.walk(Path.of("src/main/java"))) {for(var f:files.filter(x->x.toString().endsWith(".java")).toList())if(Files.readString(f).contains("."+item.getKey()+"("))found.add(f.getFileName().toString());}assertEquals(item.getValue(),found);
         }
@@ -88,7 +88,7 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
     }
     // HAPI-594A adds a distinct native product family; source-reviewed reader pin only, J stays fixed.
     @Test void existingReaderAndJContractsRemainUnchanged() throws Exception {
-        assertEquals("16b9aae3799086a800f6690ad64f26ac970604d788a9e6d289bd108b93746d72",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(Path.of("src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java")))));
+        assertEquals("ba302f9fd86750146dba84c90e5c956c7cd1f19036eb00266d6aae1fc3a7936a",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(Path.of("src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java")))));
         assertEquals("ae4b5c36fbe2531ab5fc82988a05206ad850dfb5377792f7201d2394eb5c41cc",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(Path.of("src/main/java/dz/sh/hidra/modules/party/application/contract/topology/TopologyProtectedPartyEligibilityContract.java")))));
         assertEquals("11a7e8b269fd96e4132437831b6efd4184c1cd17765438d52bb022decaf3e886",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(Path.of("src/main/java/dz/sh/hidra/modules/topology/application/contract/station/StationProtectedFacilityOwnershipContract.java")))));
         assertEquals("b4ed2114a0af4d715d3da994ed096b2d0b184f5106ddf68cd16dd8cedbdc666c",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(Path.of("src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JdbcTopologyProtectedPartyEligibilityAdapter.java")))));
@@ -102,5 +102,13 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
         assertTrue(coordinator.contains("repository.observe(a.repository,a.result)"));
         assertTrue(coordinator.contains("identity.requireCurrent(a.identity)"));
     }
+    @Test void publicationOwnerTicketsRemainOpaqueAndPolicyUsesRetainedOwnerFences() throws Exception {
+        for(var t:List.of(dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipant.ProductPublicationClaimPair.class)) {
+            assertEquals(0,t.getConstructors().length);for(var c:t.getDeclaredConstructors())assertTrue(Modifier.isPrivate(c.getModifiers()));
+        }
+        String s=source("modules/workflow/infrastructure/persistence/adapter/JdbcCustodyProtectedProductPublicationApprovalAdapter.java");
+        assertTrue(s.contains("IN SHARE MODE NOWAIT"));assertTrue(s.contains("TRIGGERS.equals(actual)"));
+        assertFalse(s.contains(".modules.identity.infrastructure"));assertFalse(s.contains(".modules.custody.domain"));
+        assertFalse(s.contains("Instant.now("));assertFalse(s.contains("INSERT INTO"));
+    }
 }
-

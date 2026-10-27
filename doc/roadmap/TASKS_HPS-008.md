@@ -4384,6 +4384,121 @@ Package A is next only after this registration's Docs success and a subsequent
 owner Next; A's policy choice does not execute a runtime package automatically.
 
 
+### HAPI-596 Package A owner authority and Workflow approval source submission — 2026-10-27
+
+Owner Next selects registered Package A after exact-main01ef567bdf62ca54f1c7599db888117fb15a8ae4,
+tree9d4f91e40f64a72217a66dfa5d710b0cf079dbae,
+parent62c0563e7bef07ada8149cba73c7925f8fc0e667 and Docs638/
+run40576017130 completed/success. Live source and AGENTS/roadmap/reconciliation
+were recovered; the registration remains controlling. Policy A, accepted594/595,
+old gas qualification and all previous evidence remain unchanged.
+
+Exact message:
+`feat(custody): add protected product publication owner contracts`.
+Scope is exactly the registered11 CREATE and12 MODIFY paths:18 Java sources/
+tests, two additive migrations, CI inventory, one dictionary-ownership entry and
+this append-only phase record. No DELETE, public publication API, candidate/
+publication/head/event/receipt storage, consumer wiring or B/C implementation.
+HAPI-596 remains NOT_IMPLEMENTED/IN_PROGRESS overall; source submission is not
+hosted acceptance or engineering qualification.
+
+**Implemented owner boundaries.** New native PRODUCT_ENGINEERING_PUBLICATION
+READ/PREPARE/PUBLISH/WITHDRAW/REACTIVATE definitions and private exclusive claim
+family retain independent company/product CUSTOM decisions, genuine four-provider
+origin, current native sampling/revocation/claims,24 Identity relation fences,
+opaque issuer/thread/holder/connection-bound one-use state and rejection poisoning.
+Existing family markers explicitly exclude publication credentials. The new
+owner participant additionally verifies the actual selected reviewer as current
+active unlocked HUMAN under the retained Identity user fence; its reviewer fact
+is tied to the permitted publication admission and rechecked on currentness.
+Migration004 adds five definitions only, rejects conflicts and grants nothing.
+
+WorkflowHumanActorContract/QueryService perform the ordinary Identity-owned
+HUMAN/activity/lock/display check. The actual publication-target APPROVE path in
+WorkflowTransitionApplicationService requires the actual authenticated human
+before action/task/history mutation. The new target has no production lookup in
+A: B supplies the immutable Custody candidate owner. The separately protected
+publication consumer must also compare actual Workflow action actor to the
+protected native reviewer; the ordinary human lookup is not that admission.
+
+The Workflow export issues opaque tickets for configured policy-only preparation
+or exact approval, never approval decisions. Empty per-company owner policy pins
+definition/version/type/purpose. Its owner-local FKs and strict schema contain no
+cross-owner company reference, assignments or seed decisions. Read policy requires
+the exact active PRODUCT_SOURCE_PUBLICATION and PRODUCT_SOURCE_PUBLICATION_APPROVAL
+catalogs/binding. Approval requires actual terminal instance/task/last APPROVE,
+exact envelope digest, current configured policy, actual server actor/display/
+time and consistent immutable final state history. CORRECT and nonterminal or
+substituted evidence cannot qualify. Current human reviewer proof is retained
+as the separate Identity contribution for the future sole Custody coordinator.
+
+The actual adapter retains11 deterministic SHARE NOWAIT owner relation fences:
+the new policy plus the ten registered existing Workflow relations. SHARE blocks
+row writers while permitting concurrent readers. PostgreSQL16 SHARE admission
+requires a writer privilege: the existing protected private-publisher credential
+route supplies that technical lock privilege; it is not an ordinary application
+credential or permission to issue policy DML. The synthetic fixture explicitly
+separates its restricted publisher and SELECT-only ordinary role, as in the
+accepted Telemetry owner fixture. No policy DML statement is admitted to the
+executor. It rejects elevated/owner/unsafe-schema roles, unsafe relation/partition/RLS/rule/constraint/PK metadata, lost locks,
+altered/extra/disabled triggers and changed function bodies. Thirteen actual
+trigger/type/function-body images are derived from the reviewed immutable055/
+061/066/081/099 migrations, not a guessed catalog capture. Policy column/type/
+constraint checks, same PID/xid/role/holder, database-time window and final
+currentness checks remain fail closed. Tickets reject replay, foreign issuers,
+cross-thread use, suspension and completion; swallowed misuse poisons rollback.
+No executor caller/DML grammar, time budget or existing protected family semantics change.
+
+**Authored test evidence, pending execution.** Three new suites contain36 cases:
+ProtectedProductPublicationAuthorizationPostgresIntegrationTest20;
+WorkflowHumanActorQueryServiceTest3;
+CustodyProtectedProductPublicationApprovalPostgresIntegrationTest13.
+Seven additional cases extend the six registered existing transition/native/
+architecture suites, preserving every old case. Total43 newly authored cases,
+not43 passing runtime results. The native fixture exercises four genuine native
+producers across all five actions/both scopes, family isolation, denial/current
+revocation/deadlines and opaque misuse. Workflow positives execute an actual
+configured authenticated human transition with a nested, explicitly test-only
+target lookup. Cases cover nonhuman denial before effects, exact/substituted/
+unapproved/CORRECT proof, revoked policy/definition/binding,11 fences, ordinary
+policy DML rejection, actual action/history immutability, writer/owner-first
+races, replay, privileged/disabled-trigger metadata, thread and suspension.
+The inherited native physical fixture retains real final-guard rollback cases.
+
+Exact test names/source SHA256 and existing fast/unit/PostgreSQL lanes are
+registered. New timings are0/unmeasured, not performance measurements. Existing
+source pins are refreshed only for reviewed reader changes; private caller scans
+and new export classifier include sibling/private/foreign-consumer negatives.
+Only the actual human transition consumer may import the new human export;
+protected publication exports have no foreign production consumer until B's
+separate exact admission. One Workflow dictionary ownership entry is added.
+
+**Available validation and limits.** All18 changed/new Java sources parse with
+the available compiler module. The three new scalar contracts plus existing
+ProtectedRelationFence compile using available Java17. These checks are syntax/
+standalone-contract evidence, not Java21 project/type/native/PostgreSQL execution.
+All19 unchanged exact-current documentation-validator self-tests PASS. Selected
+inventory case/hash/membership, private caller/source-pin, migration-only create,
+owner entry, preserved-history/status and exact allowlist checks PASS. All12
+pre-mutation existing blobs match the live authoritative tree;11 new paths were
+absent there. Full local estate validation is unavailable in the partial review
+tree. Java21/Maven/Docker/PostgreSQL are unavailable; no environment is installed
+under AGENTS11.1. Hosted Full/Fast/Docs and raw task-specific reports remain the
+runtime acceptance gate; no skipped database test is called passing evidence.
+
+Physical dictionary capture is explicitly pending the real migrated PostgreSQL
+catalog. Preserve DATA_DICTIONARY.md and all existing API/manifest provenance in
+this source commit. Use the registered catalog-only follow-up
+`docs(workflow): refresh product publication policy dictionary` after actual
+same-source catalog recovery; do not infer physical metadata from the new SQL.
+Publish directly with expected01ef567bdf62ca54f1c7599db888117fb15a8ae4,
+verify exact parent/tree/blobs/message and23-file scope, observe applicable
+exact-SHA Full/Fast/Docs creation/queue/start, then STOP. Repair responsible
+feedback and satisfy A's dictionary/acceptance gate before selecting B. HAPI-597/
+593, numerical computation, engineering/SITE acceptance and deployment remain
+separate and unselected.
+
+
 <a id="hapi-597"></a>
 ## HAPI-597 — Multi-product ownership/API compatibility qualification
 

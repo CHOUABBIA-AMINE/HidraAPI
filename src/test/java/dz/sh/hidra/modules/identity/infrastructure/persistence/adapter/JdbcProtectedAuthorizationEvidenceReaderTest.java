@@ -652,7 +652,7 @@ class JdbcProtectedAuthorizationEvidenceReaderTest {
                 .containsExactlyInAnyOrder("load", "loadQualified", "loadQualifiedPair", "loadQualifiedDraftPair",
                         "loadQualifiedOrganizationGroup", "recheckOrganizationGroup",
                         "loadQualifiedProductPair", "recheckProductPair",
-                        "loadQualifiedSuppliedFluidPair", "recheckSuppliedFluidPair");
+                        "loadQualifiedSuppliedFluidPair", "recheckSuppliedFluidPair", "loadQualifiedProductPublicationPair", "recheckProductPublicationPair");
         for (String name : List.of("loadQualifiedProductPair", "recheckProductPair")) {
             assertThat(Arrays.stream(JdbcProtectedAuthorizationEvidenceReader.class.getDeclaredMethods())
                     .filter(m -> m.getName().equals(name))).singleElement().satisfies(method -> {
@@ -724,4 +724,15 @@ class JdbcProtectedAuthorizationEvidenceReaderTest {
         assertThatThrownBy(()->reader.recheckSuppliedFluidPair(null,request)).isInstanceOf(RuntimeException.class);
     }
 
+    @Test void productPublicationFamilyCannotBeSelectedByDiagnosticEvidenceOrForgedPair() {
+        for(String action:List.of("read","prepare","publish","withdraw","reactivate")) {
+            var structural=new AuthorizationEvaluationRequest(USER,"custody:engineering-product-publication:"+action,"PRODUCT_ENGINEERING_PUBLICATION","product",
+                new AuthorizationScope(ScopeType.CUSTOM,"custody-product:product",null));
+            assertThatThrownBy(()->reader.load(identity,structural,7,11)).isInstanceOf(RuntimeException.class);
+        }
+        var request=new dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedProductPublicationAuthorizationContract.Request(
+            dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedProductPublicationAuthorizationContract.Action.READ,"company","product");
+        assertThatThrownBy(()->reader.loadQualifiedProductPublicationPair(null,request)).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(()->reader.recheckProductPublicationPair(null,request)).isInstanceOf(RuntimeException.class);
+    }
 }

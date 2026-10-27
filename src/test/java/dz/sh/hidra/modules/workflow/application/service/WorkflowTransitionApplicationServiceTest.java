@@ -232,4 +232,32 @@ class WorkflowTransitionApplicationServiceTest {
                 false, false, null, "workflow:approve:execute", null, TASK_UPDATED_AT, TASK_UPDATED_AT
         );
     }
+    private WorkflowInstance publicationInstance() {
+        return new WorkflowInstance(
+                "instance-1", "def-1", 1, "VALIDATION", "custody", "PUBLICATION_TYPE", "reading-1",
+                "R-1", "Reading 1", WorkflowInstanceStatus.IN_PROGRESS, "step-1",
+                "starter-1", "starter", "Starter", "OPERATOR", TASK_UPDATED_AT.minusSeconds(120),
+                null, null, "corr-1", TASK_UPDATED_AT.minusSeconds(120), TASK_UPDATED_AT
+        );
+    }
+
+
+    @Test void publicationApprovalRejectsNonhumanBeforeMutation() {
+        var humans=org.mockito.Mockito.mock(dz.sh.hidra.modules.identity.application.contract.workflow.WorkflowHumanActorContract.class);
+        service.publicationHumanActors(humans);
+        when(taskRepository.findByIdForUpdate("task-1")).thenReturn(Optional.of(task()));
+        when(instanceRepository.findByIdForUpdate("instance-1")).thenReturn(Optional.of(publicationInstance()));
+        when(transitionRepository.findById("transition-1")).thenReturn(Optional.of(transition()));
+        when(configuration.requireActiveCatalog("PUBLICATION_TYPE","WORKFLOW_TARGET_TYPE")).thenReturn(new dz.sh.hidra.modules.workflow.application.port.out.WorkflowConfigurationPort.Catalog("PUBLICATION_TYPE","WORKFLOW_TARGET_TYPE","PRODUCT_SOURCE_PUBLICATION",true));
+        when(humans.eligibleHuman(org.mockito.ArgumentMatchers.eq("actor-1"),any())).thenReturn(Optional.empty());
+        assertThrows(WorkflowTransitionDeniedException.class,()->service.execute(command("actor-1","alice",Set.of())));
+        verify(actionRepository,never()).save(any());verify(taskRepository,never()).save(any());verify(stateHistoryRepository,never()).save(any());
+    }
+    @Test void publicationApprovalAcceptsOnlyActualMatchingHumanActor() {
+        stubCommon(false);when(instanceRepository.findByIdForUpdate("instance-1")).thenReturn(Optional.of(publicationInstance()));
+        var humans=org.mockito.Mockito.mock(dz.sh.hidra.modules.identity.application.contract.workflow.WorkflowHumanActorContract.class);service.publicationHumanActors(humans);
+        when(configuration.requireActiveCatalog("PUBLICATION_TYPE","WORKFLOW_TARGET_TYPE")).thenReturn(new dz.sh.hidra.modules.workflow.application.port.out.WorkflowConfigurationPort.Catalog("PUBLICATION_TYPE","WORKFLOW_TARGET_TYPE","PRODUCT_SOURCE_PUBLICATION",true));
+        when(humans.eligibleHuman(org.mockito.ArgumentMatchers.eq("actor-1"),any())).thenReturn(Optional.of(new dz.sh.hidra.modules.identity.application.contract.workflow.WorkflowHumanActorContract.Human("actor-1","Alice")));
+        assertEquals("COMPLETED",service.execute(command("actor-1","alice",Set.of())).instanceStatus());
+    }
 }

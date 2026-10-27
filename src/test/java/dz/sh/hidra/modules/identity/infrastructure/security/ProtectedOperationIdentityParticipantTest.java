@@ -620,4 +620,13 @@ class ProtectedOperationIdentityParticipantTest {
         assertThatThrownBy(()->participant.requireCurrentSuppliedFluidPair(null,request)).isInstanceOf(AccessDeniedException.class);
     }
 
+    @Test void productPublicationPrivateFamilyRejectsNullOrForeignStructuralCredentials() {
+        var request=new dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedProductPublicationAuthorizationContract.Request(
+            dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedProductPublicationAuthorizationContract.Action.PUBLISH,"company","product");
+        assertThat(participant.productPublicationCredential(null)).isFalse();
+        assertThatThrownBy(()->participant.consumeProductPublicationPair(null,request)).isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(()->participant.currentProductPublicationReads(null,request)).isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(()->participant.currentProductPublicationClaims(null,null)).isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(()->participant.requireCurrentProductPublicationPair(null,request)).isInstanceOf(AccessDeniedException.class);
+    }
 }

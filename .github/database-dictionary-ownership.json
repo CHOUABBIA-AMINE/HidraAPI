@@ -516,5 +516,13 @@
     ],
     "owner": "topology",
     "purpose": "Topology-owned immutable station graph declarations with canonical byte integrity and exact history; storage does not establish company authorization or authenticated publication."
+  },
+  "public.hidra_workflow_custody_publication_policy": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261027_005__workflow_custody_publication_policy.sql",
+      "src/main/java/dz/sh/hidra/modules/workflow/infrastructure/persistence/adapter/JdbcCustodyProtectedProductPublicationApprovalAdapter.java"
+    ],
+    "owner": "workflow",
+    "purpose": "Workflow-owned empty explicit per-company publication definition/version/target/purpose policy; scalar company reference, no cross-owner FK, assignments, decisions, grants or qualification."
   }
 }

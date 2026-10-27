@@ -67,6 +67,12 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
     private final WorkflowStepRepositoryPort stepRepository;
     private final WorkflowStepAssignmentRuleRepositoryPort assignmentRuleRepository;
     private final WorkflowDecisionGuard decisionGuard = new WorkflowDecisionGuard();
+    private dz.sh.hidra.modules.identity.application.contract.workflow.WorkflowHumanActorContract publicationHumans;
+    @org.springframework.beans.factory.annotation.Autowired
+    public void publicationHumanActors(dz.sh.hidra.modules.identity.application.contract.workflow.WorkflowHumanActorContract owner) {
+        this.publicationHumans=Objects.requireNonNull(owner);
+    }
+
 
     public WorkflowTransitionApplicationService(
             WorkflowTaskRepositoryPort taskRepository,
@@ -123,6 +129,14 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
         validateTransition(instance, task, transition, command);
 
         Instant now = Instant.now();
+        if("custody".equals(instance.targetModule()) && transition.decision()==WorkflowDecision.APPROVE) {
+            var type=configuration.requireActiveCatalog(instance.targetTypeId(),"WORKFLOW_TARGET_TYPE");
+            if("PRODUCT_SOURCE_PUBLICATION".equals(type.code())) {
+                if(publicationHumans==null || publicationHumans.eligibleHuman(actor.id(),now)
+                        .filter(h->actor.id().equals(h.id()) && actor.displayName().equals(h.displayName())).isEmpty())
+                    throw new WorkflowTransitionDeniedException("Human publication reviewer required.");
+            }
+        }
         long sequence = actionRepository.nextSequence(instance.id());
         String actionId = WorkflowId.newId().value();
         WorkflowAction action = actionRepository.save(new WorkflowAction(

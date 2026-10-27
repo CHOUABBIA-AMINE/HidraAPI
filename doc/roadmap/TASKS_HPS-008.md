@@ -2965,6 +2965,44 @@ startup and STOP; Full/Fast are path-filtered for docs-only changes and
 the exact-SHA manual Full run remains an acceptance gate. HAPI-595
 Package B/C and HAPI-596 are not selected automatically.
 
+### HAPI-595 Package A — Full #920 fixture contention repair, 2026-10-27
+
+Owner Fail follows exact main `c6eb3786771412c05ed6ba3b73e34b634303d7a7`
+(tree `b4cba5c12ff9cc11f5d7525bdc5c22e3abf520c0`). Full #920/run
+40512412096 attempt 2 completed failure. API contract/dictionary, static,
+unit/architecture and six PostgreSQL shards passed; PostgreSQL shard 2
+and the dependent aggregate gate failed. The failing case
+`ProductEngineeringDraftPostgresIntegrationTest.ownerFirstFenceBlocksConcurrentPolicyRevocationUntilCommit`
+never reached its body: `initialize:241` failed acquiring the unchanged
+Identity SHARE ROW EXCLUSIVE NOWAIT fence, SQLSTATE 55P03, on
+`public.hidra_identity_provider`. The lane reported 258 tests, zero
+assertion failures and one setup error.
+
+The setup is serial and precedes the case's explicit competing writer.
+Background autovacuum's SHARE UPDATE EXCLUSIVE relation lock is a plausible
+incidental contender after repeated fixture deletes; the retained stack
+does not identify the lock holder, so this is an inference, not a measured
+blocker identity. Reuse the existing EngineeringNetworkDraft PostgreSQL
+fixture isolation precedent: disable autovacuum only in this disposable
+test container and assert SHOW autovacuum is off before setup admission.
+Preserve all 19 cases, explicit writer-first/owner-first contention checks,
+NOWAIT production fences and production database configuration.
+
+This responsible CI repair registers exactly three MODIFY paths:
+`src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/ProductEngineeringDraftPostgresIntegrationTest.java`,
+`.github/ci-test-inventory.json` (only that class's actual source hash),
+and this append-only owning phase. CREATE/DELETE: none. Exact message:
+`test(custody): isolate product fixture from background vacuum`.
+No production source, SQL migration, dictionary, permission, budget,
+retry, lane, case membership or accepted outcome changes.
+
+Local Java parsing, source/hash/inventory preservation and documentation
+self-tests are useful checks only; native PostgreSQL execution remains
+hosted CI feedback. Publish with expected c6eb3786 and verify applicable
+exact-SHA workflows created/queued/started, then STOP. HAPI-595 remains
+NOT_IMPLEMENTED / IN_PROGRESS overall; Package A acceptance and B/C remain
+pending, and HAPI-596 is not selected.
+
 <a id="hapi-596"></a>
 ## HAPI-596 — Product publication, history and owner exports
 

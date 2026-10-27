@@ -107,6 +107,9 @@ public class ProductEngineeringDraftPostgresIntegrationTest {
                             "log_error_verbosity=terse",
                             "-c",
                             "track_commit_timestamp=on",
+                            // Explicit writer tests must not race background vacuum relation locks.
+                            "-c",
+                            "autovacuum=off",
                             "-c",
                             "log_min_error_statement=panic",
                             "-c",
@@ -217,6 +220,7 @@ public class ProductEngineeringDraftPostgresIntegrationTest {
         jdbc=new JdbcTemplate(administrator) {
             @Override public javax.sql.DataSource getDataSource(){return TransactionSynchronizationManager.isActualTransactionActive()?runtimeJdbc.getDataSource():administrator;}
         };
+        assertThat(jdbc.queryForObject("SHOW autovacuum",String.class)).isEqualTo("off");
         SecurityContextHolder.clearContext();cleanEvidence();flyway.validate();assertThat(flyway.info().pending()).isEmpty();
         for(String role:List.of("c3_source_claim_app","c3_publication_app")) {
             jdbc.execute("REVOKE ALL ON public.hidra_identity_external_mapping_generation,public.hidra_party_eligibility_generation FROM "+role);

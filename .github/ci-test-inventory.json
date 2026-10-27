@@ -26,6 +26,7 @@
         "protectedTransactionJpaExceptionsRemainExactAndTechnical",
         "simulationOwnerEvidenceExportsKeepPrivateTypesClosed",
         "simulationTelemetryEvidenceExportKeepsOwnerInternalsPrivate",
+        "suppliedFluidExportsStayExactToTheirCoordinator",
         "transactionalOrganizationResponsibilityServicesMustRemainProxyable",
         "transitionalCrossModuleAllowlistMustRemainExactAndInUse"
       ],
@@ -35,7 +36,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java",
-      "source_sha256": "fb9e1472086ebe4c9b00f2b6759ff4d69e900a36999d1f1c31d7d57695d22ac5",
+      "source_sha256": "c480013fc92fb59f0fff93dd9abd1d01b5b4f688e4ab0eff4c3f94fd1b513e53",
       "supports": []
     },
     {
@@ -75,7 +76,8 @@
         "fictionalModuleEventScaffoldingRemainsAbsent",
         "finalClosureEvidenceRecordsCompletedRerun",
         "publicationCoordinatorAddsOnlyTheExactReviewedIdentityContract",
-        "residualProjectionVocabularyRemainsRemovedAndDocumented"
+        "residualProjectionVocabularyRemainsRemovedAndDocumented",
+        "suppliedFluidExportsStayExactToTheirCoordinator"
       ],
       "class": "dz.sh.hidra.ForensicRemediationClosureTest",
       "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
@@ -83,7 +85,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java",
-      "source_sha256": "53b18123c350ca6d1d0f1e577426e6798d683596e140fbf5ea5e642a0ff0f883",
+      "source_sha256": "7ecfe489b3404d4c8589a9173e1cf5c13c25c6e3a785d3d5599a0281868d66f1",
       "supports": []
     },
     {
@@ -1040,6 +1042,31 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "bothFractionBasesAreDeclaredForBothLabels",
+        "codecRejectsTruncationUnknownVersionTrailingAndMalformedUtf8",
+        "collectionsAreBoundedUniqueAndDefensivelyCopied",
+        "exactDecimalsRetainLexemeAndScale",
+        "fractionsRequireExactPositiveUnitSum",
+        "liquidCompressibilityRejectsWithoutInventingGasUpperLimit",
+        "missingEvidenceRemainsIncompleteAndMissingMethodDoesNotInventApproval",
+        "nullEmptyUnicodeAndDecimalBytesRoundTripExactly",
+        "rangesRequirePositiveOrderedAbsoluteConditions",
+        "requestReplayBindsExpectedVersionsAndExactDecimalBytes",
+        "suppliedMethodCoverageAndApplicabilityCannotContradict",
+        "syntheticCannotBeRelabeledDeclared"
+      ],
+      "class": "dz.sh.hidra.modules.custody.domain.model.SuppliedFluidPropertyRevisionTest",
+      "dependency_reason": "New HAPI-595B cases; unmeasured. Pure Java declaration and strict canonical codec cases; no external service.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "custody",
+      "path": "src/test/java/dz/sh/hidra/modules/custody/domain/model/SuppliedFluidPropertyRevisionTest.java",
+      "source_sha256": "d0b40c2f9b9a51865a127700203c9a677196aa0ae271ce333f20ba048c1fc7f0",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0.351,
       "cases": [
         "approvalAndOwnerActiveFlagsBothGovernFreshEligibility",
@@ -1165,6 +1192,43 @@
       "owner": "custody",
       "path": "src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/ProductEngineeringDraftPostgresIntegrationTest.java",
       "source_sha256": "c115714ec4cc0fe0fe37c1370900a254725474142b4afac7be4d667679e8901b",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "absentAndForeignProductShareNonDisclosingDenial",
+        "completedAndForgedAdmissionsCannotDisclose",
+        "concurrentExpectedVersionWritersCommitOneSuccessor",
+        "disabledAppendTriggerOrExcessPrivilegesReject",
+        "exactCompositionBytesAndBothBasesPersistForBothClassifications",
+        "exactReplayReturnsCurrentWithoutRevertingAndConflictsRollback",
+        "finalExpiredGuardRollsBackRootAndRevision",
+        "finalFenceSubstitutionRollsBackProvisionalRevision",
+        "fourNativeProducersCreateReadAndAppendExactSuppliedFacts",
+        "inactiveCompanyOrCatalogDeniesReadsWithoutChangingHistory",
+        "metadataPermissionsAloneCannotWriteProperties",
+        "metadataRevisionRetainsAuthoredClassificationAndReplayBytes",
+        "nativeDenyOverridesPropertyGrant",
+        "ordinaryAndPublisherCannotMutateHistory",
+        "ownerFirstUnitFencesBlockRevocationUntilCommit",
+        "publisherCannotForgeSequenceMetadataOrTransactionOrigin",
+        "revokedSessionsDenyFreshReadAndExactReplayWithoutAppend",
+        "separatelyAuthorizedCompaniesKeepIndependentSuppliedSequences",
+        "stalePropertyAndMetadataVersionsNeverAppend",
+        "swallowedWorkerReusePoisonsOriginalTransaction",
+        "unavailableUnitCannotCreatePartialRoot",
+        "unitAdmissionAndRevocationAreRequiredForReadAndWrite",
+        "unspecifiedMetadataRejectsInitialPropertyRevision",
+        "writerFirstUnitPolicyContentionLeavesNoProvisionalRoot"
+      ],
+      "class": "dz.sh.hidra.modules.custody.infrastructure.persistence.SuppliedFluidPropertyPostgresIntegrationTest",
+      "dependency_reason": "New HAPI-595B cases; unmeasured. Real native authentication, migrated PostgreSQL and protected transactions; Docker required.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "custody",
+      "path": "src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/SuppliedFluidPropertyPostgresIntegrationTest.java",
+      "source_sha256": "bbaf19a93a7e2945ec6a66fe216bdaaa4b49256c12524437459ffe33a9895bcd",
       "supports": []
     },
     {
@@ -7373,7 +7437,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java",
-      "source_sha256": "d661664e20bb15661c19aca1b720c8acc84b90510b5c37b5f4846d3b203e0b17",
+      "source_sha256": "4632e664721cc38e5567e4a4789508e10d2ae7b7355d5f3d01d641c222855ea4",
       "supports": []
     },
     {
@@ -9452,6 +9516,7 @@
         "failedAttemptCleansContextForNextSuccessfulAttempt",
         "finalGuardMustBeAClosedScalarQuery",
         "finishedHandleCannotBecomeUnscoped",
+        "fluidProvisionalStatementsAreExactReviewedTemplates",
         "graphSqlProvisionalFamilyDoesNotGrantUnreviewedOwnerExecution",
         "mutableOrJdbcResultsCannotBeDelivered",
         "nativeControlAndMultipleSqlReject",
@@ -9481,7 +9546,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java",
-      "source_sha256": "5d42b2786ce23725b8ed6e60ed200123c3af3f1ea42088f0ab6b8b5c60b88b2a",
+      "source_sha256": "bde98547f894aa4b12a406e04162e05b4502080a1d91da3a175b2168ea40381f",
       "supports": []
     },
     {

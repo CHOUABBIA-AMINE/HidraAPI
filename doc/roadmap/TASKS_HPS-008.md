@@ -3047,6 +3047,79 @@ HAPI-595 remains NOT_IMPLEMENTED / IN_PROGRESS overall. Package A
 acceptance is pending; B/C and HAPI-596 are not selected.
 
 <a id="hapi-596"></a>
+### HAPI-595 Package B — supplied revision storage implemented; hosted acceptance pending — 2026-10-27
+
+**Selection and accepted prerequisite.** Owner Next selected Package B, followed by
+Continue of its in-progress work. Live source parent7b696df2f4c0cfdec3df341bff845c069d08acc2,
+tree79562b2425be8fbc5c2d1d0aebc02f8d7bfa2c87; Full922/run40518372201,
+Fast226/run40518372155 and Docs628/run40518372230 completed/success.
+Retained Full922 gate records3363 executed tests, zero failures/errors/skips.
+The two Package A native suites report18 authorization and11 unit cases with
+zero failures/errors/skips. Its same-source API/catalog lane passed, including
+the actual migrated dictionary equality/ownership gate. This accepts the A
+prerequisite for B; it does not close the HAPI-595 parent.
+
+**Bounded implementation.** Exact registered message:
+`feat(custody): add versioned supplied fluid property drafts`.
+Exactly ten CREATE and eight MODIFY paths from Package B above; zero DELETE.
+The pure supplied-fact model validates explicit GAS/LIQUID, MOLE/MASS fraction
+bases, positive exact decimal strings, exact composition sum, method coverage,
+absolute conditions and incomplete diagnostics. The versioned strict UTF-8
+codec preserves scale, child ordering and null-versus-empty declarations.
+No property computation, conversion, fraction normalization or qualification.
+
+The application/coordinator joins native property authority, current Party,
+Custody metadata/catalog and Telemetry unit admissions in one transaction with
+34 distinct relation fences. The separate immutable root/history binds authored
+metadata version/classification, request identity, exact bytes/digest and actual
+server transaction origin. Fresh exact replay returns current facts; stale
+metadata is diagnosed without reinterpreting the original declaration. New writes
+require current metadata and property CAS. Only the two exact compiled callers
+and two reviewed DML SHA256 templates are added to the executor. Existing
+credential routes, family hashes, private source pins and500/750/250ms work/
+statement/lock budgets remain. One scalar final database guard seals the result;
+there is no post-guard application query or automatic retry after unknown commit.
+
+New migration V20261027_003 is additive; all existing migrations are preserved.
+Its18 version constraints, immutable triggers and trigger-source pins were
+reviewed together. Two explicit Custody ownership entries are added. Actual
+physical dictionary regeneration is PENDING: this workspace has no PostgreSQL
+catalog runtime. Preserve the existing published dictionary and obtain the new
+complete catalog from hosted CI before the registered artifact-only refresh.
+An initial dictionary equality failure is an outstanding capture obligation,
+not permission to weaken the validator or invent physical metadata.
+
+**Tests and actual local checks.** Twelve domain/codec and24 native storage
+cases are authored; three additional guard/classifier cases are registered.
+Native cases cover four producers, exact supplied bytes/bases/classifications,
+replay, CAS, stale metadata, two-company isolation, current session/company/
+catalog/unit denials, opaque admissions, swallowed worker reuse, writer-first/
+owner-first unit contention, forbidden history mutation, forged version/origin,
+and real final-guard rollback. These native cases have NOT executed locally.
+Existing inventory cases, timings, lane/shard assignments and supporting
+associations are preserved; only changed source hashes/case additions and two
+new unmeasured suites are registered. Architecture exceptions add only the exact
+new coordinator and three public owner roots/nested data, with sibling/private/
+foreign-consumer negatives; existing exceptions remain unchanged.
+
+Available checks PASS: syntax parsing of14 changed Java sources; Java17 pure
+model/codec compilation;58 standalone supplied model/codec assertions;19 existing
+documentation-validator self-tests. The initial compile invocation used the
+wrong working directory and failed to locate sources; rerunning from the source
+root passed. No Maven, javac launcher or Docker is installed; the installed
+Java17 compiler module enabled these bounded checks. Full Java21/Spring/native
+execution, PostgreSQL schema/origin/races and physical dictionary equality remain
+hosted exact-SHA acceptance gates. No source review or skipped test is counted
+as runtime evidence.
+
+HAPI-595 stays NOT_IMPLEMENTED/IN_PROGRESS overall. B is internal software;
+Package C HTTP operations and final acceptance remain separately selected.
+Publish only the registered18 paths directly to main with expected7b696df,
+verify parent/tree/blobs/message and scope, confirm exact-SHA Full/Fast/Docs
+creation/queue/start, then STOP. After B source feedback, its actual catalog
+refresh is the next bounded follow-up before Package C acceptance.
+
+
 ## HAPI-596 — Product publication, history and owner exports
 
 Phase: HPS-008 — Products and Fluid Properties

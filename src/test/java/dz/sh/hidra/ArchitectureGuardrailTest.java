@@ -167,6 +167,7 @@ class ArchitectureGuardrailTest {
     }
 
     private static boolean isCustodyProductOwnerExport(String source, String target) {
+        if (isSuppliedFluidOwnerExport(source, target)) return true;
         String root="dz.sh.hidra.modules.party.application.contract.custody.CustodyProtectedPartyEligibilityContract";
         String consumer="dz.sh.hidra.modules.custody.application.service.ProtectedProductDraftAdmissionCoordinator";
         return (source.equals(consumer) || source.startsWith(consumer+"$"))
@@ -735,5 +736,23 @@ class ArchitectureGuardrailTest {
                         "dz.sh.hidra.platform.persistence.ProtectedTransactionExecutor",
                         true,
                         false));
+    }
+    private static boolean isSuppliedFluidOwnerExport(String source,String target) {
+        String consumer="dz.sh.hidra.modules.custody.application.service.ProtectedSuppliedFluidPropertyAdmissionCoordinator";
+        return (source.equals(consumer) || source.startsWith(consumer+"$"))
+            && Set.of("dz.sh.hidra.modules.party.application.contract.custody.CustodyProtectedPartyEligibilityContract","dz.sh.hidra.modules.telemetry.application.contract.custody.CustodyProtectedFluidUnitContract","dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedFluidPropertyAuthorizationContract").stream()
+                .anyMatch(root -> target.equals(root) || target.startsWith(root+"$"));
+    }
+    @Test void suppliedFluidExportsStayExactToTheirCoordinator() {
+        String consumer="dz.sh.hidra.modules.custody.application.service.ProtectedSuppliedFluidPropertyAdmissionCoordinator";
+        for(String root:Set.of("dz.sh.hidra.modules.party.application.contract.custody.CustodyProtectedPartyEligibilityContract","dz.sh.hidra.modules.telemetry.application.contract.custody.CustodyProtectedFluidUnitContract","dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedFluidPropertyAuthorizationContract")) {
+            assertTrue(isSuppliedFluidOwnerExport(consumer,root));
+            assertTrue(isSuppliedFluidOwnerExport(consumer,root+"$Admission"));
+            assertFalse(isSuppliedFluidOwnerExport(consumer,root+"Sibling"));
+            assertFalse(isSuppliedFluidOwnerExport(consumer+"Sibling",root));
+            assertFalse(isSuppliedFluidOwnerExport("dz.sh.hidra.modules.topology.application.service.Other",root));
+        }
+        assertFalse(isSuppliedFluidOwnerExport(consumer,"dz.sh.hidra.modules.telemetry.infrastructure.persistence.adapter.JdbcCustodyProtectedFluidUnitAdapter"));
+        assertFalse(isSuppliedFluidOwnerExport(consumer,"dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipant"));
     }
 }

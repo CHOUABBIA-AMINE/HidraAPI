@@ -82,6 +82,24 @@
     "owner": "custody",
     "purpose": "Custody-owned append-only canonical metadata revisions with expected-version sequencing, digest and native actor/physical transaction provenance; GAS/LIQUID labels do not qualify numerical properties or publish an engineering revision."
   },
+  "public.hidra_custody_supplied_fluid_property_draft": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261027_003__custody_supplied_fluid_properties.sql",
+      "src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcSuppliedFluidPropertyRevisionRepositoryAdapter.java",
+      "src/main/java/dz/sh/hidra/modules/custody/domain/model/SuppliedFluidPropertyRevision.java"
+    ],
+    "owner": "custody",
+    "purpose": "Custody-owned immutable supplied-fluid root bound to an existing company-owned product draft."
+  },
+  "public.hidra_custody_supplied_fluid_property_version": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261027_003__custody_supplied_fluid_properties.sql",
+      "src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcSuppliedFluidPropertyRevisionRepositoryAdapter.java",
+      "src/main/java/dz/sh/hidra/modules/custody/domain/model/SuppliedFluidPropertyRevision.java"
+    ],
+    "owner": "custody",
+    "purpose": "Custody-owned immutable supplied facts and authored metadata binding with exact payload, replay and transaction provenance; no numerical or engineering qualification."
+  },
   "public.hidra_hse_catalog_field_policy": {
     "evidence": [
       "src/main/resources/db/migration/V20261008_014__hmr_082_hse_case_lifecycle.sql"

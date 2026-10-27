@@ -81,6 +81,15 @@ closure. HAPI-595..597, frontend, numerical qualification, release and deploymen
 remain separately selected. No next task is selected automatically.
 
 
+[HAPI-595](TASKS_HPS-008.md#hapi-595), supplied composition, properties and
+methods, is NOT_IMPLEMENTED/BLOCKED pending the owner's representation choice.
+Owner Next selects its source-backed policy preflight. The owning phase
+proposes A: explicit MOLE/MASS fractions and a bounded supplied-property set
+for GAS/LIQUID, with units/reference conditions/method evidence; B narrows the
+first delivery to GAS/MOLE. No runtime or numerical qualification is claimed.
+After explicit selection, register exact owner/unit/authorization/schema/API
+execution scope before implementation. HAPI-596/597 remain unselected.
+
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent
 [HAPI-436](TASKS_HPS-024.md#hapi-436) are VERIFIED/COMPLETED within the accepted

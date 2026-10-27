@@ -2082,6 +2082,189 @@ doc/model-remediation/RECONCILIATION.md:23704 | HPR-P25-053B | Choose representa
 doc/model-remediation/RECONCILIATION.md:23741 | HPR-P25-053B | REQUIRES_OWNER_DECISION | Supplied composition, properties and methods
 ~~~~~~~~
 
+
+### HAPI-595 supplied-fluid source recovery and policy proposal — 2026-10-27
+
+Owner Next selects this bounded preflight after HAPI-594 acceptance. Main/source
+eb2cfb19aa58d97efb7b155795717b810c127f00, tree
+1bbf51c72a0ddad6ec0715b396fc826ff9eef3a6; exact-source Docs619/run40490120575
+completed/success. Runtime remains the accepted Full916/Fast222/Docs618 source
+f16b71a4aa19188a5d58b3ad0bfa1470af8c391a. HAPI-594 is VERIFIED/COMPLETED;
+do not reimplement its metadata/API/authorization packages.
+
+Exact preflight message:
+`docs(custody): propose supplied fluid representation policy`.
+Current write allowlist is exactly this HPS-008 phase file and the compact
+ULTIMATE_TASKS execution pointer. Zero CREATE/two MODIFY/zero DELETE.
+HAPI-595 remains NOT_IMPLEMENTED/BLOCKED in its header and both frozen
+registries. This stage proposes policy and records actual source; it does not
+register executable production paths or infer approval from generic Next.
+
+**Existing owner decision gate.** The task's preserved source explicitly requires:
+"Choose representational property/composition families to support as metadata,
+keeping numerical qualification explicitly unsupported."
+HAPI-594's approved GAS/LIQUID identity labels do not choose fraction bases,
+property families or method semantics for595. The owner must select or amend
+the concrete proposal below before its implementation registration. No real
+product data, operating measurements, method license or deployment calibration
+is needed for this software representation decision.
+
+**Recovered current source, distinct from proposed behavior.**
+- CustodyGasFluidRevision supports ProductKind.GAS and GAS_MOLE_FRACTION only.
+  Components are positive exact BigDecimal fractions <=one, unique by reference,
+  sum exactly to one, and belong to an explicitly supplied method component list.
+  Source/method origin, evidence, recording/effectivity, pressure/temperature
+  applicability ranges, declared STEADY_STATE/TRANSIENT uses and governance
+  binding are explicit. It has no general scalar-property list, MASS_FRACTION,
+  liquid representation or new product-draft public authoring flow.
+- SimulationGasFluidRevisionContract exports that existing immutable stored/
+  qualified GAS family; SimulationGasFluidInput likewise requires exact supplied
+  mole fractions and source/method revision evidence. They do not accept a
+  ProductEngineeringDraft UUID or a LIQUID metadata label as qualified input.
+- CustodyGasFluidQualificationService rechecks the actual current shared product
+  snapshot and exact source-bound Workflow approval at coherent source/method
+  times. A new supplied declaration must not bypass or implicitly satisfy it.
+- CustodyGasFluidRevisionCodec has existing versioned gas/source/method/
+  qualification formats. Preserve their exact bytes, IDs and replay behavior;
+  do not extend an old discriminator to reinterpret stored history.
+- ProductEngineeringDraft is now the separate stable company-owned local
+  identity/metadata contract, referencing an admitted shared Custody product.
+  Its null/GAS/LIQUID classification and metadata diagnostics are not composition,
+  supplied-property completeness or engineering qualification.
+- TelemetryUnitJpaEntity owns unit ID/code/symbol/dimension/activity and optional
+  conversion metadata. A matching text symbol or an existing conversion factor
+  does not establish approved usage for fluid properties. The inspected
+  PlanningUnitReferenceContract/QueryAdapter is specifically QUANTITY/RATE
+  nomination-role/pair admission, not a reusable fluid-property authority.
+  No Custody-protected fluid unit export, quantity-dimension usage policy or
+  atomic unit revocation proof was established. Admit that exact owner seam
+  during technical registration; never import Telemetry's private JPA adapter
+  into Custody or reuse Planning grants as a substitute.
+
+Exact-source fingerprints:
+
+| Existing source path | SHA256 |
+|---|---|
+| `src/main/java/dz/sh/hidra/modules/custody/domain/model/CustodyGasFluidRevision.java` | `d103b5c72f44595e0faf618b13f871c95a66ac92eaea68c363e0c940b1aa53af` |
+| `src/main/java/dz/sh/hidra/modules/custody/domain/model/ProductEngineeringDraft.java` | `0ec36fe66cb8e7dcbd6cf427ae09d08f6001bb4e29d54ecb1216a4ccc38ba64b` |
+| `src/main/java/dz/sh/hidra/modules/custody/application/service/CustodyGasFluidQualificationService.java` | `d7871364531ee5ce415e33f7a3157220e0cf91261969d46dadcbcf81dc6bc04d` |
+| `src/main/java/dz/sh/hidra/modules/custody/application/contract/simulation/SimulationGasFluidRevisionContract.java` | `368ac22f3d92d557f2daff738f7a47aa38176a4a1a728f5aff127a8905e6edc4` |
+| `src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationGasFluidInput.java` | `d63141b149dd80f8ebb8696edece940f73e61a808ddf1ce1f6118d4c83383b19` |
+| `src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/entity/TelemetryUnitJpaEntity.java` | `53743e123fecd5da2e3afc5878702cb51780f603cd378fc390ec1d8ab764c4e9` |
+| `src/main/java/dz/sh/hidra/modules/telemetry/application/contract/planning/PlanningUnitReferenceContract.java` | `6ad11c42eb837967e88b73d55d3aaa15517267d2c1d5158f746e3183b8749cae` |
+| `src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/integration/PlanningUnitReferenceQueryAdapter.java` | `8110ed3ed7b34b3e6c553d22a06b7574baff2a7dd265c742602c987d61e5890a` |
+| `src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/CustodyGasFluidRevisionCodec.java` | `a45749172152feaa60f4d934ace27cd86308176050343260265008729b7ed791` |
+
+All six SuppliedFluidPropertyRevision production filenames originally proposed
+in section6 are absent from the pinned recursive tree. Their earlier PROPOSED
+labels remain accurate; no unregistered type is created by this preflight.
+The last current Flyway entry is
+V20261026_002__custody_product_engineering_drafts.sql. Reserve no new migration
+version for this unselected runtime package. Existing source tests found include
+CustodyGasFluidRevisionTest, CustodyGasFluidRevisionCodecTest,
+CustodyGasFluidRevisionPostgresIntegrationTest,
+CustodyGasFluidQualificationServiceTest and
+CustodyGasFluidRevisionQueryServiceTest; source presence is not new execution.
+
+**Recommended Policy A — bounded supplied declarations, awaiting owner choice.**
+
+| Family | Proposed supported representation | Explicit exclusions/meaning |
+|---|---|---|
+| Composition | MOLE_FRACTION or MASS_FRACTION, explicitly selected, for an explicitly labeled GAS or LIQUID product draft | A declaration of basis; no conversion, phase-equilibrium result, inferred component, normalized total or numerical eligibility |
+| Supplied scalar properties | DENSITY and DYNAMIC_VISCOSITY for GAS/LIQUID; COMPRESSIBILITY_FACTOR for GAS only | Positive exact supplied decimals; no calculation, fitted correlation, inferred liquid Z, heating-value or additional property code |
+| Units and reference conditions | Owner-admitted unit ID/dimension, explicit absolute pressure and temperature values with their own admitted units for each supplied property observation | No gauge-to-absolute conversion, unit conversion, standard-condition default, atmospheric assumption or symbol-only admission |
+| Method applicability | Explicit method reference/revision, origin/evidence, representation/basis, covered components/property families and declared pressure/temperature validity ranges | A supplied applicability statement; no standard certification, equation implementation, method catalog seed or solver selection |
+| Provenance and completeness | Explicit source reference/revision/evidence and origin DECLARED_PARAMETER or SYNTHETIC; missing optional blocks retain named incomplete diagnostics | Synthetic evidence is never silently promoted; metadata completeness does not certify physical truth or method applicability |
+| Revision binding | Separate company-owned supplied-fluid revision linked to exact local product UUID, shared catalog ID and metadata version/classification snapshot | No relink/ownership transfer, silent reclassification, replacement of594 metadata history or automatic export/publication |
+
+1. Composition, property and method blocks may be absent while drafting, with
+   separate diagnostics. A supplied composition block must declare one basis,
+   a nonempty unique component-reference list, positive fractions <=one and an
+   exact sum of one. Reject supplied malformed totals/bases/duplicate children;
+   absence is not a fabricated zero fraction or an automatic balance component.
+   Neither mass nor mole fractions are percentages. Do not normalize or
+   convert between bases. Component references and method coverage are explicit
+   Custody-owned declarations; this does not invent an enterprise chemical
+   component master or mark arbitrary references as certified substances.
+2. Property observations preserve exact supplied decimal text/value, unit
+   identity and source/reference conditions. Density and dynamic viscosity
+   must be positive; GAS compressibility factor is explicitly dimensionless
+   and positive without an invented universal upper bound. Its dimensionless
+   unit still requires explicit reviewed owner semantics. Reject unsupported
+   property codes, incompatible family/unit dimensions, invalid value kinds,
+   duplicate observation identity, unsupported pressure/temperature bases and
+   incoherent supplied ranges. Numeric format/size and child-count limits
+   remain a concrete technical-registration obligation, not an unbounded JSON
+   or arbitrary property-name map.
+3. GAS/LIQUID are the explicit594 authored classification snapshot, not an
+   inference from name/catalog code or measured phase. Before accepting
+   composition/property facts, require the linked draft to have a supported
+   explicit classification at that exact metadata version; absent/unsupported
+   classification cannot be silently treated as GAS. Later metadata revision
+   never rewrites the stored snapshot or automatically revalidates old facts.
+4. Evidence may remain absent for an incomplete draft; a present malformed or
+   contradictory block rejects instead of being hidden by an incomplete flag.
+   Missing method/source/evidence yields explicit diagnostics. A supplied
+   method must declare coherent basis/family/component coverage and ranges;
+   no applicability claim is manufactured when required facts are absent.
+   Sources, methods and reference conditions retain their original units and
+   provenance; no conversion factor is executed by this metadata authoring.
+5. Custody remains product/composition/property semantic owner; Telemetry
+   remains unit/dimension owner, Identity owns native authorization and Party
+   owns company eligibility. Technical registration must define an explicit
+   protected Telemetry export and authoritative unit usage admission, exact
+   owner permissions, relation fences, current revocation, canonical codec,
+   immutable version/CAS/idempotency, rollback and non-disclosing HTTP errors.
+   Existing594 grants do not automatically authorize new supplied-property
+   writes, and a plain controller/Boolean unit precheck is not sufficient.
+6. Preserve every existing GAS source/method/qualification payload, enum meaning,
+   native credential family and Planning/Simulation catalog-ID contract.
+   No new declaration becomes executable SimulationGasFluidInput or qualified
+   revision by structural similarity. Publication/history/owner exports belong
+   to596 and compatibility qualification to597. Numerical EOS, fraction/unit
+   conversion, property estimation, solver execution, H2-specific qualification,
+   production calibration and releases remain outside this policy.
+
+**Alternative B — narrower first delivery.** If the owner prefers a smaller
+initial support set, admit GAS plus MOLE_FRACTION only, the same explicit
+density/viscosity/GAS-compressibility observations and method/evidence rules;
+defer MASS_FRACTION and all LIQUID fluid-fact representations. This reuses the
+existing gas-first representation without changing its historical bytes.
+Choosing B changes the proposed595 scope explicitly; it does not claim that
+the existing internal gas revision already completes protected595 authoring.
+The owner may instead amend exact property families/bases before registration.
+A generic Next does not silently approve A, B or an expanded property registry.
+
+**Next technical gate after explicit policy selection.** Recover the real native
+Identity scopes and Telemetry owner admission/currentness seams; close exact
+domain/DTO/codec/schema/SQL/storage/permission/export paths and numerical/text/
+child-count bounds. Register bounded packages, tests, exact migration filenames
+after checking the live writer chain, actual API/dictionary capture obligations
+and exact commit messages. Register before implementation and before changing
+595 planning from BLOCKED; source presence alone never yields VERIFIED.
+Proposed registration message after policy selection:
+`docs(custody): register supplied fluid property execution`.
+No additional owner-contract filename, permission code or immutable migration
+filename is invented as executable scope by this proposal.
+
+**This preflight's checks and stop.** Actual pinned source/model/codec/export/
+unit ownership recovery, nine source fingerprints, absent-six-proposed-file
+check and live prerequisite/CI evidence have been recorded. Available existing
+documentation self-tests and append-only/scope/status checks must complete
+before publication. No Java/native/PostgreSQL execution, new API/catalog capture,
+property calculation or supplied-fluid runtime acceptance is claimed.
+Preserve all status fields, other task history, production/test/migration/
+inventory/artifact bytes, workflow weights and the accepted594 baseline.
+Completed checks:19 existing documentation-validator self-tests PASS. Exact
+checks confirm append-only595 history, isolated compact index insertion,
+unchanged status metadata, six phase tasks,921 compatibility anchors and size
+bounds. Full documentation-estate/link validation remains the hosted exact-SHA
+Documentation gate; no complete Java/service environment was provisioned.
+Publish this one two-document preflight directly to main with expectedeb2cfb1,
+verify exact parent/tree/blobs/message/scope, observe applicable exact-SHA
+Documentation CI creation/queue/start and STOP. Policy selection is the next
+gate; do not implement595, start596/597 or make deployment data obligatory.
+
 <a id="hapi-596"></a>
 ## HAPI-596 — Product publication, history and owner exports
 

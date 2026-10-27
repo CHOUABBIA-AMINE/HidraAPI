@@ -932,12 +932,20 @@ public class ProductEngineeringDraftNativeHttpPostgresIntegrationTest {
     }
     @Test void expiredNativeSessionCannotReadOrAppend() throws Exception {
         var actor=httpActor("LOCAL");var draft=createHttp(actor,id(),UUID.randomUUID(),"one");
+        var history=jdbc.queryForList("SELECT version,sha256 FROM "+V+" WHERE draft_id=? ORDER BY version",draft);
+        long rows=draftsCount();clearInvocations(storage);
         jdbc.update("UPDATE "+S+" SET status='REVOKED',ended_at=clock_timestamp() WHERE user_id=? AND status='ACTIVE'",actor.fixture().user());
         for(var response:List.of(getDraft(actor.token(),COMPANY,draft),putDraft(actor.token(),COMPANY,draft,"{\"expectedVersion\":1}"))) {
-            int status=response.andReturn().getResponse().getStatus();assertThat(status).isIn(401,503);
-            assertThat(response.andReturn().getResponse().getContentAsString()).doesNotContain("private SQL","stackTrace","backend_pid");
+            // The signed bearer remains valid; its revoked persistent session is an explicit owner DENIED.
+            response.andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isForbidden());
+            var problem=json(response);assertThat(problem.get("code").asText()).isEqualTo("DENIED");
+            assertThat(problem.get("detail").asText()).isEqualTo("Product draft access denied");
+            assertThat(response.andReturn().getResponse().getContentAsString())
+                .doesNotContain("private SQL","stackTrace","backend_pid","draftId","metadata","companyPartyId");
         }
-        assertThat(count(draft)).isEqualTo(1);
+        verify(storage,never()).apply(any(),any());
+        assertThat(count(draft)).isEqualTo(1);assertThat(draftsCount()).isEqualTo(rows);
+        assertThat(jdbc.queryForList("SELECT version,sha256 FROM "+V+" WHERE draft_id=? ORDER BY version",draft)).isEqualTo(history);
     }
     @Test void finalDatabaseExpiryReturns503AndRollsBackProvisionalHttpWrite() throws Exception {
         var actor=httpActor("LOCAL");long rows=draftsCount();var reached=new AtomicBoolean();

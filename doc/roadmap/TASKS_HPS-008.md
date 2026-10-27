@@ -1658,6 +1658,117 @@ MODIFY paths/parent/tree/blobs/message, observe applicable exact-SHA Full/Fast/
 Docs creation/queue/start, then STOP. Do not wait for completion or execute the
 artifact follow-up or final acceptance automatically.
 
+
+### HAPI-594 Package C denial oracle and actual runtime artifact repair — 2026-10-27
+
+Owner Fail selects the remaining failures at main
+21ee2864991c920aedf085db76e09f0a370644af, tree
+c770145dfb4c1dfd13b03e5637dbc8fdf28e35ba. Exact-head Full915/run40486323285
+attempt1 failed; Fast221/run40486323308 and Docs617/run40486323360 succeeded.
+One bounded responsible repair now completes the pending C runtime capture
+refresh together with its remaining test-oracle correction. Exact message:
+`fix(custody): align product HTTP denial and runtime contract`.
+This supersedes the separate unexecuted artifact-only message for this capture;
+final four-file acceptance remains separate and unselected.
+
+Admitted MODIFY allowlist, zero CREATE/DELETE:
+- `src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/ProductEngineeringDraftNativeHttpPostgresIntegrationTest.java`
+- `.github/ci-test-inventory.json`
+- `doc/api/openapi.yaml`
+- `.github/documentation-validation.json`
+- `doc/roadmap/TASKS_HPS-008.md`
+
+The manifest is a necessary existing companion of the previously registered
+OpenAPI artifact: the unchanged validator requires its exact snapshot digest,
+counts and generation provenance. Its omission from the prior proposed refresh
+allowlist is closed explicitly here before mutation. Do not change validators,
+workflows, runtime configuration, native authorization, migration history or
+budget policy.
+
+**Recovered native result and status meaning.** Full915 postgres-2 diagnostic
+artifact12725018899 ZIP SHA256
+6086bc95ed6279a3e47607003ea6fbd3b00a67bdd28692e9d60a2835acc2686d
+contains the B report:19 cases, zero failures/errors/skips, report SHA256
+d80851f32ee95cf66b5299629499c01d0480dbcd074e8b476b59a504245643ef.
+The C HTTP report has12 cases, one failure and zero errors/skips; SHA256
+9ae358eb8c953ad07f877e66f3bae11511ff62561ba91133aff1ee03a7300828.
+The only failing case is expiredNativeSessionCannotReadOrAppend: the fixture
+actually revokes a persistent native session after successful create; its still
+cryptographically valid bearer reaches native Identity, which explicitly denies
+non-current state. ProtectedOperationIdentityParticipant.finish rejects
+!states.current(binding,sample) using AccessDeniedException. The unchanged
+application translates explicit AccessDeniedException to DENIED; the unchanged
+controller maps DENIED to403. This is the already documented owner-denial
+contract, distinct from missing/malformed bearer401 or unavailable503.
+
+Replace the erroneous 401-or503 oracle with exact403 and DENIED/detail
+assertions for both read and update. Require no metadata/identity/SQL disclosure,
+no repository apply call, unchanged history versions/digests and unchanged draft
+row count. Preserve the case name and all other11 HTTP cases. Inventory changes
+only this suite's actual source hash: no changed case membership, lane, timing,
+partition or workflow. This tightens the rejection proof; it does not add
+alternate accepted statuses or relax native authorization.
+
+**Actual API capture admission.** Full915 API job122128888326 successfully built
+the application (step8) and generated its deterministic OpenAPI (step9), then
+failed existing snapshot equality atstep10; compatibility and dictionary steps
+were skipped. Diagnostic artifact12725042645 ZIP SHA256
+8f9ed8fd5651b64d761b508d263f69f67a6696b731d4f2db66b72fbbd38f558d
+contains actual openapi/hidra-api.json stamped with the exact21ee286 source.
+Generation success is scoped only to those steps; the API job and Full workflow
+remain failed. The test-only correction here does not change production routes,
+DTOs, annotations, native policy or runtime contract.
+
+Use this actual capture for the canonical snapshot and exact manifest, retain
+the old provenance under prior_reviewed_provenance, and record failed job/full
+conclusions plus pending same-run equality/compatibility/dictionary gates.
+Validate the three actual product operations, bearer schemes, required IDs/
+expectedVersion, nullable GAS/LIQUID metadata and fixed error responses.
+Compare using the unchanged supported comparator against actual successful
+Full913/run40476182252 runtime output atbcaca876ae2ffe1627540d82eec7f3e8f002bc43,
+artifact12721426411 ZIP SHA256
+7d53c2a676caf074736101002328538d88efd57779b1c9a73fa0f297962f145e.
+No physical dictionary change is admitted: production schema/JPA remain unchanged.
+
+**Completed local artifact review and remaining gates.** The actual captured
+contract contains271 paths,294 operations and288 schemas. All269 prior paths/
+291 operations and284 schemas, non-schema components, security schemes and
+other top-level contract fields are structurally unchanged; only two product
+paths/three operations and four explicit product DTO schemas are added.
+Required create IDs, positive integral expectedVersion, nullable GAS/LIQUID
+labels, hidraBearerJwt and400/401/403/409/503 responses were inspected in the
+actual capture. No inferred or handwritten runtime schema is substituted.
+
+Actual raw current JSON SHA256:
+6bef1e3cb25f37d49e30005c67d5429129f83b449beb2d01240bcf9da7f3047b.
+Canonical snapshot SHA256:
+599536d8226024b64093b9075f793fe5f445b4e93772d329c4583620cb8237f3.
+Actual successful Full913 base JSON SHA256:
+0f5d9d016194defa8208c2c08cefac7add0f1eb1c28d7e2d928e2c9d010237dc.
+The unchanged repository snapshot validator PASSes canonical digest/count/
+provenance checks and semantic equality against the source-bound runtime
+capture. The unchanged supported OpenAPI comparator PASSes against the actual
+successful Full913 generated document. These are local comparisons of captured
+runtime outputs, not passing hosted API/dictionary gates on Full915.
+
+Ten OpenAPI-validator self-tests and19 documentation-validator self-tests PASS.
+The changed native test and four preserved HTTP sources parse using the
+installed Java17 compiler module. The12 native test identities remain unchanged;
+only its source hash changes in the inventory. No Java21/Spring/native test
+rerun is claimed locally; Maven/Docker are not provisioned solely for that.
+The complete corrected12-case native run and same-run API snapshot equality,
+actual-base compatibility, physical dictionary capture/equality and overall
+required workflows remain exact repair-SHA gates.
+
+Only the five admitted MODIFY paths are published. This completes the pending
+C snapshot refresh in the responsible repair but does not accept HAPI-594 or
+advance HAPI-595..597. Preserve conservative parent status fields. Publish
+directly to main with expected21ee286, verify exact scope/parent/tree/blobs/
+message and observe applicable exact-SHA Full/Fast/Docs creation/queue/start,
+then STOP. No wait for completion or automatic final acceptance. After green
+required feedback and independent case-level evidence review, the next
+registered closure remains `docs(custody): accept protected product draft authoring`.
+
 <a id="hapi-595"></a>
 ## HAPI-595 — Supplied composition, properties and methods
 

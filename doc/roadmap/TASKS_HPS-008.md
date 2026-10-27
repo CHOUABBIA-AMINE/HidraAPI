@@ -3003,6 +3003,49 @@ exact-SHA workflows created/queued/started, then STOP. HAPI-595 remains
 NOT_IMPLEMENTED / IN_PROGRESS overall; Package A acceptance and B/C remain
 pending, and HAPI-596 is not selected.
 
+### HAPI-595 Package A — Full #921 fluid fixture contention repair, 2026-10-27
+
+Owner Fail follows exact main `2977021c4810d1414a5205fbd1b44c070234de42`
+(tree `d9d12cc04eac691b561091ad96584ecec7c78e47`). Full #921/run
+40516432516 attempt 1 completed failure. Exact-SHA Fast #225 and Docs #627
+completed success. Full's API contract/dictionary, static and Java
+unit/architecture lanes passed. PostgreSQL shard 2 reported 258 tests,
+zero assertion failures and one error; the aggregate correctly rejected
+the failed mandatory PostgreSQL dependency.
+
+The sole reported test error is now
+`ProtectedFluidPropertyAuthorizationPostgresIntegrationTest.fourNativeProducersRequireBothExactScopesForTwoActions`
+at line 716, through run lines 265/274. The unchanged native Identity
+SHARE ROW EXCLUSIVE NOWAIT fence failed on
+`public.hidra_identity_provider`, SQLSTATE 55P03, before contribution.
+The product fixture repaired in the parent has no reported test failure.
+The new fluid fixture still starts its own separate PostgreSQL container
+with autovacuum enabled and repeatedly deletes/recreates Identity rows.
+
+Apply the same existing disposable-fixture isolation precedent to this
+responsible Package A test: start this container with autovacuum=off and
+assert SHOW autovacuum is off before initialization. Background vacuum
+contention remains an inference: the retained exception does not name
+the lock holder. Do not claim it is conclusively established or that this
+repair has passed hosted native tests before feedback. Preserve all 18
+case names, actual four-producer paths, expected permissions/decisions,
+explicit competing-writer tests and fail-closed production NOWAIT guards.
+
+This repair registers exactly three MODIFY paths:
+`src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedFluidPropertyAuthorizationPostgresIntegrationTest.java`,
+`.github/ci-test-inventory.json` (only that test's source hash), and this
+append-only owning phase. CREATE/DELETE: none. Exact commit message:
+`test(identity): isolate fluid fixture from background vacuum`.
+No production code/configuration, SQL migration, permission, dictionary,
+timeout/budget, retry, lane or case membership changes are admitted.
+
+Run available Java syntax, inventory preservation and documentation
+checks; native Java21/PostgreSQL verification remains hosted CI feedback.
+Publish directly with expected 2977021c, verify exact candidate
+parent/tree/paths/blobs and applicable workflow creation, then STOP.
+HAPI-595 remains NOT_IMPLEMENTED / IN_PROGRESS overall. Package A
+acceptance is pending; B/C and HAPI-596 are not selected.
+
 <a id="hapi-596"></a>
 ## HAPI-596 — Product publication, history and owner exports
 

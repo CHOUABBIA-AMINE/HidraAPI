@@ -107,6 +107,9 @@ public class ProtectedFluidPropertyAuthorizationPostgresIntegrationTest {
                             "log_error_verbosity=terse",
                             "-c",
                             "track_commit_timestamp=on",
+                            // Explicit writer tests must not race background vacuum relation locks.
+                            "-c",
+                            "autovacuum=off",
                             "-c",
                             "log_min_error_statement=panic",
                             "-c",
@@ -189,6 +192,7 @@ public class ProtectedFluidPropertyAuthorizationPostgresIntegrationTest {
 
     @BeforeEach
     void initialize() {
+        assertThat(jdbc.queryForObject("SHOW autovacuum",String.class)).isEqualTo("off");
         SecurityContextHolder.clearContext();
         cleanEvidence();
         flyway.validate();

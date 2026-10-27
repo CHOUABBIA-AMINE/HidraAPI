@@ -3616,7 +3616,7 @@ Priority: P1
 
 Implementation Status: NOT_IMPLEMENTED
 
-Planning Status: BLOCKED
+Planning Status: IN_PROGRESS
 
 Owning Module: `custody` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -3969,6 +3969,420 @@ publication API, new schema, protected Workflow admission or scalar consumer
 export is claimed. Publish only the two documents directly with expectedd212e650,
 verify parent/tree/blobs/message, confirm applicable Documentation CI creation/
 queue/start and STOP at the policy choice. Do not implement an unselected policy.
+
+### HAPI-596 Policy A adopted and bounded execution registered — 2026-10-27
+
+**Owner decision and prerequisite.** Owner A adopts explicit incomplete-source
+publication: structurally valid complete OR incomplete authored snapshots may be
+published, retaining their actual immutable completeness diagnostics. All seven
+common policy rules in the preceding preflight are adopted. Contradictory,
+invalid, stale-bound or unapproved source rejects; publication always remains
+engineeringQualified=false. Policy B is not selected. This record supersedes the
+preflight's pending-decision and unregistered-scope statements prospectively;
+their original historical text remains intact.
+
+Exact main62c0563e7bef07ada8149cba73c7925f8fc0e667,
+tree4f359d6753adb91307db8dcebb533720c421635c,
+parentd212e650d50b568e94cb91a2eca2e21f65a7f580 has Docs637/
+run40574581256 completed/success. Accepted594/595 remain closed. HAPI-596
+becomes NOT_IMPLEMENTED/IN_PROGRESS for registered work, not runtime acceptance.
+This turn registers scope only; it executes none of Packages A/B/C below.
+
+**This registration's exact message:**
+`docs(custody): register governed product publication execution`.
+MODIFY exactly this owning phase,596's compact ULTIMATE_TASKS pointer and only
+596's planning-status cells in ULTIMATE_ROADMAP/ULTIMATE_PHASES. Zero CREATE/
+DELETE, runtime, test, migration, workflow configuration or artifact change.
+The six old PROPOSED source names gain authority only where explicitly admitted
+below. Every package is a separate selected commit, never an automatic batch.
+
+#### Source-backed design and settled policy
+
+The reviewed Workflow RevisionApprovalEvidenceQueryService recognizes only
+GAS_FLUID_REVISION/GAS_FLUID_INPUT_QUALIFICATION for custody. Its ordinary read
+has no protected transaction proof. WorkflowExecutionOwnership selects exactly
+one WorkflowOwnedTargetLookup by module/type. WorkflowTransitionApplicationService
+creates real authenticated APPROVE actions, terminal tasks/instances and state
+history. WorkflowActorQueryService currently checks activity/lock/display name,
+not HUMAN user type. Therefore a new target, protected evidence export and
+explicit human-review check are required; neither an old gas digest nor ordinary
+actor eligibility proves this new approval. Preserve all existing semantics.
+
+1. Introduce PREPARE as a governed, immutable source-envelope operation. It
+   requires a supplied revision, both explicit current metadata/property versions,
+   matching metadata binding, fresh native/company/catalog/unit evidence and an
+   active configured publication Workflow policy. Store exact existing canonical
+   formats/bytes/digests, original authored values, classification/origin and
+   server diagnostics. Include sorted exact admitted unit facts and configured
+   definition ID/version/target type/purpose in a versioned canonical envelope.
+   SHA256 covers company/product/catalog identity, both version/digest pairs,
+   their bytes and all envelope facts. Exclude generated publication ID, request
+   ID, audit time/PID/xid and approval result from that digest to avoid circular
+   approval. Those are separate immutable server evidence. No client digest,
+   actor, completeness, unit snapshot, approval Boolean or qualification input.
+2. PREPARE commits an immutable candidate, not a publication or head transition.
+   Its digest is the exact Workflow target ID. The new custody owner lookup
+   resolves only persisted, verified candidates for PRODUCT_SOURCE_PUBLICATION;
+   purpose is PRODUCT_SOURCE_PUBLICATION_APPROVAL. The lookup uses the same
+   publication READ authority before confirming target existence, with generic
+   digest-only labels. It may suspend an ordinary Workflow transaction to enter
+   a separate protected read; never suspend/reuse an existing protected admission.
+   No owner/private table access by Workflow, no permissive fallback resolver.
+3. Empty Workflow-owned hidra_workflow_custody_publication_policy selects one
+   active exact definition/version/type/purpose per company scalar ID, with
+   owner-local references and no cross-owner company FK. No caller-selected
+   definition can replace this policy. No grants, live definitions, assignments
+   or production policies are seeded. Synthetic tests configure actual supported
+   definitions and execute real human transitions, not fabricated action rows
+   as positive approval evidence. Existing configured assignment/permission/
+   reason/terminal-transition rules remain mandatory. No invented separation
+   rule, service actor approval, generic automatic approval or gas alias.
+4. PUBLISH requires a prepared envelope, current exact source versions/binding,
+   unchanged admitted envelope facts/policy and exact current final human
+   APPROVE evidence for that digest. Persist publication ID, original envelope
+   and exact actual approval identity/actor/display/time plus transaction audit.
+   No reconstructed or lossy payload. Policy A permits missing optional facts
+   with immutable diagnostics; never conceal contradictions as incompleteness.
+5. PUBLISH/WITHDRAW/REACTIVATE append one monotone event and CAS one product
+   head using expectedEpoch and expectedPublicationId. Initial head is epoch0
+   with no selected ID. WITHDRAW must name the selected publication and removes
+   effective selection without fallback. REACTIVATE selects an existing exact
+   snapshot with fresh company/catalog/unit/native and currently applicable
+   exact approval/policy proof; it cannot silently approve a changed envelope.
+   Subsequent authoring edits do not mutate/repoint a publication. They alone
+   do not erase its historical identity or constitute a head transition.
+6. Native READ and current company/product ownership protect every exact,
+   candidate, current, effective, receipt, history and scalar-export disclosure.
+   Historical reads preserve original bytes even when units/catalog/Workflow
+   configuration later become ineligible. They report historical evidence, not
+   current eligibility. Current/effective consumer exports additionally require
+   fresh catalog/unit and applicable approval/policy eligibility. WITHDRAW
+   requires fresh native WITHDRAW/company ownership and valid storage/head,
+   but not active units/catalog qualification or an available approval; otherwise
+   revoked inputs could prevent withdrawing their own publication. No denial
+   bypass or payload/count/existence disclosure on failed native authority.
+7. Transitions are server-dated, database microsecond instants only. Effective
+   asOf is explicit, no future, and selects the latest committed event at or
+   before that instant; withdrawal yields none. Serialize same-product event
+   time/epoch assignment and reject ambiguous/backward clock boundaries rather
+   than inventing a future effective time. History is bounded1..100 with cursor
+   high-water epoch, before-epoch, company/product and asOf binding; new commits
+   cannot alter an existing page window. Reject malformed/substituted cursors.
+8. Every mutating request has exact actor/company/product/kind/request binding
+   and canonical request digest. Replays return original immutable receipt plus
+   separately observed current head after fresh authorization, without new DML,
+   revalidation as a new publish or reversing subsequent transitions. Changed
+   body/actor/target conflicts. Unknown commit is indeterminate, no auto retry.
+
+#### Package A — isolated native authority and protected Workflow approval
+
+Exact message:
+`feat(custody): add protected product publication owner contracts`.
+
+CREATE exactly:
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/custody/CustodyProtectedProductPublicationAuthorizationContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedProductPublicationAuthorizationParticipant.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedProductPublicationAuthorizationPostgresIntegrationTest.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/workflow/WorkflowHumanActorContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/WorkflowHumanActorQueryService.java`
+- `src/test/java/dz/sh/hidra/modules/identity/application/service/WorkflowHumanActorQueryServiceTest.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/contract/custody/CustodyProtectedProductPublicationApprovalContract.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/infrastructure/persistence/adapter/JdbcCustodyProtectedProductPublicationApprovalAdapter.java`
+- `src/test/java/dz/sh/hidra/modules/workflow/infrastructure/persistence/CustodyProtectedProductPublicationApprovalPostgresIntegrationTest.java`
+- `src/main/resources/db/migration/V20261027_004__custody_product_publication_authority.sql`
+- `src/main/resources/db/migration/V20261027_005__workflow_custody_publication_policy.sql`
+
+MODIFY exactly:
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/service/WorkflowTransitionApplicationService.java`
+- `src/test/java/dz/sh/hidra/modules/workflow/application/service/WorkflowTransitionApplicationServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipantTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `.github/ci-test-inventory.json`
+- `.github/database-dictionary-ownership.json`
+- `doc/roadmap/TASKS_HPS-008.md`
+
+The native family is PRODUCT_ENGINEERING_PUBLICATION, with distinct READ,
+PREPARE, PUBLISH, WITHDRAW and REACTIVATE actions and permission codes
+custody:engineering-product-publication:read, :prepare, :publish, :withdraw and
+:reactivate respectively (the same full prefix for every suffix). Every action
+requires independent CUSTOM custody-company:<companyId> and
+custody-product:<catalogProductId> scope decisions, with current native LOCAL/
+OIDC/LDAP/ACTIVE_DIRECTORY binding/session/source evidence. Migration004 adds
+only those five definitions, rejects conflicting existing definitions and grants
+nothing. Keep metadata/properties/Topology/organization families exclusive.
+Extend the native private reader/participant only with the exact issuer-tagged
+publication family. Preserve its24 existing Identity relation fences, current
+DENY/graph/responsibility precedence, common sampling/deadline, one-use tickets,
+holder/thread/connection/transaction identity and rejection poisoning. Include
+a protected reviewer fact read for the actual Workflow actor, requiring current
+active unlocked HUMAN identity under the retained Identity user fence; a caller
+cannot replace the actual Workflow action actor with another human ID.
+
+The separate ordinary WorkflowHumanActorContract resolves only scalar eligible
+HUMAN identity, through Identity-owned repositories. For the new publication
+target's APPROVE transition only, WorkflowTransitionApplicationService requires
+that fact for its actual authenticated actor before writing action/task/history.
+Keep existing gas/equipment/other transitions unchanged. Protected publication
+consumption additionally rechecks the actual reviewer through the native owner;
+ordinary Optional actor lookup is not an atomic admission. No Workflow query of
+Identity private tables and no blanket HUMAN restriction on unrelated workflows.
+
+Workflow's new export provides typed policy and approval requests/evidence,
+opaque issuer/thread/holder/connection-bound admissions, one-use reads,
+currentness and exact final fences. Policy-only preparation does not manufacture
+approval. Exact approval requires active configured definition/version/binding/
+catalog codes; COMPLETED instance, APPROVED task, last action exactly APPROVE,
+matching instance/task/action/target digest/definition/type/purpose, actor and
+terminal timestamps, and action time no later than common evaluation time.
+Reject CORRECT, nonterminal approve, substituted digest/version/purpose, missing,
+revoked, fabricated, stale or future evidence. Preserve actual immutable action
+and history trigger/function safety, physical schema/role/lock images and final
+eligibility through commit. Existing ordinary gas/equipment evidence stays intact.
+
+The Workflow participant fences its new policy and actual participating owner
+relations: hidra_workflow_definition, hidra_workflow_definition_target_binding,
+hidra_workflow_type_catalog, hidra_workflow_instance, hidra_workflow_task,
+hidra_workflow_action, hidra_workflow_step, hidra_workflow_transition,
+hidra_workflow_step_assignment_rule and hidra_workflow_state_history. Acquire
+deterministic NOWAIT relation fences before reads; derive and test the exact
+union from actual SQL/trigger dependencies, never silently omit a participant.
+One explicit dictionary ownership entry covers the new Workflow policy table.
+Ordinary application credentials cannot mutate this policy. No new executor
+business caller or provisional Custody DML is admitted in A.
+
+Tests cover four real native producers, both scopes/all five actions, family
+substitution, denial/revocation/expiry/indeterminate evidence, replay/forgery,
+cross-thread/suspension/lost locks, configured real human terminal approval,
+nonhuman denial before any transition effect, revoked policy and concurrent
+Workflow writer-first/owner-first behavior. Actual Workflow target tests may use
+a nested test-only digest lookup for isolated A fixtures; it is not a production
+target or end-to-end Custody acceptance. Register exact new tests/hashes in
+existing lanes and precise architecture/private source pins with negative cases.
+No source-pin bypass, weakened validator, or claimed count before execution.
+
+CI-first dictionary follow-up, only after actual migrated catalog capture:
+`docs(workflow): refresh product publication policy dictionary`;
+MODIFY only doc/database/DATA_DICTIONARY.md and this phase. Preserve existing
+catalog equality/ownership gates and migration history. Missing local PostgreSQL
+is pending evidence under AGENTS11.1, never permission to handwrite metadata.
+
+#### Package B — immutable candidate/publication storage and atomic head
+
+Depends on accepted A and its actual catalog disposition. Exact message:
+`feat(custody): add governed product publication storage`.
+
+CREATE exactly:
+- `src/main/java/dz/sh/hidra/modules/custody/domain/model/ProductRevisionPublication.java`
+- `src/main/java/dz/sh/hidra/modules/custody/application/port/in/ProductRevisionPublicationUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/custody/application/port/out/ProductRevisionPublicationRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/custody/application/service/ProductRevisionPublicationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/custody/application/service/ProtectedProductPublicationAdmissionCoordinator.java`
+- `src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcProductRevisionPublicationRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/ProductRevisionPublicationCodec.java`
+- `src/main/java/dz/sh/hidra/modules/custody/infrastructure/integration/CustodyProductPublicationWorkflowTargetLookup.java`
+- `src/test/java/dz/sh/hidra/modules/custody/domain/model/ProductRevisionPublicationTest.java`
+- `src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/ProductRevisionPublicationPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/custody/infrastructure/integration/CustodyProductPublicationWorkflowTargetLookupTest.java`
+- `src/main/resources/db/migration/V20261027_006__custody_product_revision_publications.sql`
+
+MODIFY exactly:
+- `src/main/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutor.java`
+- `src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+- `.github/ci-test-inventory.json`
+- `.github/database-dictionary-ownership.json`
+- `doc/roadmap/TASKS_HPS-008.md`
+
+Pure Java domain, typed ports, strict versioned codec, original byte verification
+and the settled contract above are mandatory. New Custody-owned relations are
+hidra_custody_product_publication_candidate, hidra_custody_product_publication,
+hidra_custody_product_publication_head, hidra_custody_product_publication_event
+and hidra_custody_product_publication_request. Register exactly those five
+ownership entries. Candidate/publication/event/receipt bytes and audit are
+append-only, with ordinary DML and update/delete/truncate prohibited. Only the
+head has bounded protected CAS updates. Owner-local source-version references,
+company/product consistency, unique digest/request binding, positive contiguous
+epochs, state transitions and format/hash checks must reject contradictory SQL
+inserts too. No cross-owner FK or changes to accepted594/595 tables/migrations.
+
+The sole cross-owner coordinator consumes A's Identity/Workflow exports plus
+existing Party/Telemetry exports. Storage includes the existing six metadata/
+catalog/policy/supplied relations and five new relations, protected before
+reading company/catalog bindings. Authorization precedes disclosure. Freeze
+and test the actual distinct final fence union, including action-specific
+participants: historical reads and WITHDRAW omit live unit/approval eligibility
+as specified, not native/company/storage proof. PREPARE uses Workflow policy;
+PUBLISH/REACTIVATE use actual approval and reviewer facts. No fixed fake fence
+count or Boolean contribution. Match one PID/xid/holder/common database-time
+window and preserve relation/trigger/role safety through the final scalar guard.
+
+Extend ProtectedTransactionExecutor solely for the exact new application service
+and coordinator and their actual reviewed SQL SHA256 templates; preserve every
+old caller/hash/family, private credential route and SQL admission grammar.
+Keep500ms work/750ms statement/250ms lock budgets. Materialize immutable response
+before exactly one closed scalar SQL final guard; disclose only after known
+commit. No post-guard query, provisional effect on rejection or automatic retry
+on uncertain commit. Source-pin updates must reflect actual reviewed source.
+
+The Workflow target lookup delegates to a restricted READ_CANDIDATE_FOR_WORKFLOW
+use-case path: internally resolve digest to owned scalar bindings, obtain fresh
+native READ and company proof before any existence result, then verify envelope
+bytes. It exposes only digest and fixed generic label. Normal HTTP candidate
+reads additionally bind explicit company/product. Ordinary Workflow transaction
+suspension must be tested; an already active protected context rejects nesting.
+This adapter exports no domain types, bypass grants or permission Boolean.
+
+Test exact codec Unicode/decimal/null/empty preservation, incomplete-vs-invalid
+A behavior, absent supplied revision, approval substitution and stale pins,
+independent version sequences, exact replay after later head changes, scoped
+non-disclosure, real prepare/approve/publish, CAS concurrent publishers, withdraw/
+reactivate, eligibility revocation without history loss, withdrawal despite bad
+units/approval, effective boundaries/high-water cursor binding, clock conflicts,
+immutable history, ordinary DML rejection and actual final-guard rollback. Real
+Workflow transition evidence and native owner proofs are required for positives.
+Preserve old raw catalog/qualified GAS consumers and negative import scans.
+
+Actual catalog-only follow-up message:
+`docs(custody): refresh product publication storage dictionary`;
+MODIFY only doc/database/DATA_DICTIONARY.md and this phase. Obtain complete
+migrated-catalog equality and zero unresolved owners; no predicted capture.
+B is internal software until C proves configured HTTP and scalar integration.
+
+#### Package C — configured HTTP and typed scalar source export
+
+Depends on accepted A/B. Exact message:
+`feat(custody): expose governed product publications`.
+
+CREATE exactly:
+- `src/main/java/dz/sh/hidra/modules/custody/api/rest/controller/ProductRevisionPublicationController.java`
+- `src/main/java/dz/sh/hidra/modules/custody/api/rest/request/ProductRevisionPublicationRequests.java`
+- `src/main/java/dz/sh/hidra/modules/custody/api/rest/response/ProductRevisionPublicationResponses.java`
+- `src/main/java/dz/sh/hidra/modules/custody/application/contract/publication/ProductPublicationSourceContract.java`
+- `src/main/java/dz/sh/hidra/modules/custody/infrastructure/integration/ProductPublicationSourceQueryAdapter.java`
+- `src/test/java/dz/sh/hidra/modules/custody/api/rest/controller/ProductRevisionPublicationControllerTest.java`
+- `src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/ProductRevisionPublicationNativeHttpPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/custody/infrastructure/integration/ProductPublicationSourceQueryAdapterTest.java`
+
+MODIFY exactly:
+- `src/main/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptor.java`
+- `src/test/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptorTest.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java`
+- `.github/ci-test-inventory.json`
+- `.github/documentation-validation.json`
+- `doc/api/openapi.yaml`
+- `doc/database/DATA_DICTIONARY.md`
+- `doc/roadmap/TASKS_HPS-008.md`
+
+All routes are under /api/v1/custody/engineering-products/{draftId}/publications
+and require exactly one companyPartyId query; no alternate caller company scope.
+Exact suffix/verb set:
+
+| Verb | Suffix | Governed operation |
+|---|---|---|
+| POST | /candidates | PREPARE current explicit metadata/property version pair |
+| GET | /candidates/{digest} | exact authorized prepared envelope |
+| POST | empty | PUBLISH approved candidate with expected head |
+| POST | /{publicationId}/withdraw | WITHDRAW selected head with expected head |
+| POST | /{publicationId}/reactivate | REACTIVATE snapshot with expected head |
+| GET | /{publicationId} | exact historical snapshot |
+| GET | /current | current head/state and historical snapshot semantics |
+| GET | /effective | explicit asOf committed selection, no future instant |
+| GET | /history | bounded limit/cursor/asOf event page |
+| GET | /requests/{requestId} | original actor-bound receipt and observed head |
+
+Explicit strict request/response DTOs preserve original string decimals and
+distinguish product/catalog/candidate/publication/source-version/head/event/
+request identities. Mutations carry requestId; PREPARE carries both expected
+source versions; PUBLISH carries candidate digest, expected head and actual
+Workflow instance/task/action selectors; REACTIVATE carries expected head and
+applicable approval selectors for the same digest; WITHDRAW carries expected
+head only. Server derives policy/actor/approval/completeness/time/digests.
+Reject unknown/coerced fields, extra scopes, unbounded strings and client-owned
+server facts. Initial bounds reuse594/595 facts; digests64 lowercase hex,
+UUID identities, referenced owner IDs max80 Unicode scalars, cursor max4096,
+page1..100 and microsecond instants. No silent numeric or Unicode normalization.
+
+Return201 for first PREPARE/PUBLISH creation and200 for exact replay/transitions/
+reads, explicit empty selected state without fallback. Preserve400 malformed
+input,401 missing/malformed authentication,403 non-disclosing native/foreign
+target denial,409 authorized CAS/replay/stale-source conflict and503 unavailable/
+indeterminate evidence. No SQL, native cause, stack trace or automatic retry
+instruction. Current HTTP state is not a current-eligibility certificate.
+
+Delegate only the exact compiled controller/handler/verb/pattern tuples to
+native publication admission after authentication; generic route grants cannot
+authorize publication. Preserve existing metadata/property and unrelated routes,
+with wrong-controller/handler/verb/pattern/anonymous negatives. Full configured
+filter/HTTP/PostgreSQL tests must prove all four native producers, both scopes/
+all actions, actual Workflow human review, Policy A diagnostics, exact bytes,
+history/effective/replay, revocation, two companies, no disclosure or provisional
+effect after failure. Standalone MVC or fake permission alone is insufficient.
+
+ProductPublicationSourceContract exports scalar immutable DTOs only: exact
+historical and separately currently eligible current/effective modes, explicit
+company/product/publication and source IDs/versions/digests, original source bytes/
+formats, authored facts/units/origin/diagnostics, actual approval and selected
+event/head facts, always engineeringQualified=false. It delegates the same
+protected use case; no importer Boolean or actor may substitute native authority.
+No existing PlanningProductReferenceContract, SimulationProductCandidateContract
+or SimulationGasFluidRevisionContract change, new consumer wiring, numerical
+execution, qualification or frontend implementation. Add exact exported-type
+classifier/import tests and foreign/private/sibling negatives without admitting
+new unregistered consumers. Consumer-specific suitability remains597/later.
+
+Generate OpenAPI only from the actual configured running app and dictionary
+only from complete migrated PostgreSQL. Match source/run/attempt, old supported
+routes/schemas/security, semantic snapshot equality and compatibility. Preserve
+manifest provenance, source pin/count/digest truth and failed gate history.
+If unavailable locally, record pending actual capture under AGENTS11.1; the
+separate admitted artifact message is
+`docs(api): refresh product publication runtime contract`;
+MODIFY only doc/api/openapi.yaml, .github/documentation-validation.json and this
+phase, plus doc/database/DATA_DICTIONARY.md only for demonstrated physical drift.
+No generated snapshot guessed by hand or validator/workflow weakening.
+
+#### Separate final acceptance and current stop
+
+Final exact message:
+`docs(custody): accept governed product publication`;
+MODIFY only this phase, ULTIMATE_TASKS and status-only596 cells in
+ULTIMATE_ROADMAP/ULTIMATE_PHASES. Require exact-SHA Full/Fast/Docs as applicable,
+independent task-case/source/inventory/raw report membership and actual same-run
+API/compatibility/catalog evidence. Accept software only after every selected
+package and responsible repair is independently supported; no predicted test
+counts or acceptance from source alone. HAPI-597, integrated593, engineering/
+SITE readiness, frontend, solver, release/deployment remain separate.
+
+**Completed registration checks.** The exact current remote documentation
+validator and self-test sources were recovered before rerunning all19 tests:
+PASS. Live recursive tree checks confirm31 CREATE paths absent and all existing
+MODIFY paths present. All six phase task identities/metadata and both status
+tables agree; only596's planning status changes. All921 compatibility anchors,
+prior phase evidence and other task definitions/statuses are preserved. The
+compact index changes only596's current pointer; index/phase sizes remain within
+unchanged bounds. The local review tree lacks the remaining phase/archive files,
+so full documentation-estate/link validation remains the hosted exact-SHA gate.
+No runtime result is inferred from these documentation/source checks.
+
+Before this registration publishes, run available unchanged documentation
+self-tests, phase/task/status/anchor/size checks, exact CREATE-absent/MODIFY-
+present checks against live source, preserved-history/frozen-status-only diff
+and selected four-file blob/tree verification. No Java/PostgreSQL runtime or
+new API/catalog capture is claimed in this documentation stage. Missing local
+Java21/Maven/Docker is not provisioned under AGENTS11.1. Publish with expected
+62c0563e7bef07ada8149cba73c7925f8fc0e667, verify exact parent/tree/message/scope,
+observe applicable exact-SHA Documentation CI creation/queue/start and STOP.
+Package A is next only after this registration's Docs success and a subsequent
+owner Next; A's policy choice does not execute a runtime package automatically.
+
 
 <a id="hapi-597"></a>
 ## HAPI-597 — Multi-product ownership/API compatibility qualification

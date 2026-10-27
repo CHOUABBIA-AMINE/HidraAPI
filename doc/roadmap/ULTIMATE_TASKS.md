@@ -94,12 +94,15 @@ separate; no numerical computation, publication, engineering qualification,
 frontend implementation, release or deployment is selected automatically.
 
 [HAPI-596](TASKS_HPS-008.md#hapi-596), publication/history and owner exports,
-remains NOT_IMPLEMENTED/BLOCKED. Its source-backed preflight proposes immutable
-version-bound snapshots, native/Workflow authority, append-only head/history and
-separate consumer eligibility. Owner choice remains open: A permits explicitly
-incomplete unqualified source snapshots; B permits complete authoring only.
-Both preserve exact evidence and scientific qualification as a separate boundary.
-No runtime package is registered or selected by this proposal;595 stays closed.
+remains NOT_IMPLEMENTED and is IN_PROGRESS under owner-approved Policy A:
+structurally valid complete/incomplete source snapshots retain immutable
+completeness diagnostics and engineeringQualified=false. The owning phase now
+registers separate protected native/Workflow, atomic storage, and HTTP/scalar
+export Packages A/B/C, actual artifact follow-ups and final acceptance. Docs637
+passed the preflight on62c0563e7bef07ada8149cba73c7925f8fc0e667.
+This selection records policy and scope only. Package A is next after successful
+registration Documentation feedback and a subsequent owner Next. Accepted595
+stays closed;597/593, scientific qualification and deployment remain separate.
 
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent

@@ -650,7 +650,17 @@ class JdbcProtectedAuthorizationEvidenceReaderTest {
                                 .filter(m -> java.lang.reflect.Modifier.isPublic(m.getModifiers())))
                 .extracting(java.lang.reflect.Method::getName)
                 .containsExactlyInAnyOrder("load", "loadQualified", "loadQualifiedPair", "loadQualifiedDraftPair",
-                        "loadQualifiedOrganizationGroup", "recheckOrganizationGroup");
+                        "loadQualifiedOrganizationGroup", "recheckOrganizationGroup",
+                        "loadQualifiedProductPair", "recheckProductPair");
+        for (String name : List.of("loadQualifiedProductPair", "recheckProductPair")) {
+            assertThat(Arrays.stream(JdbcProtectedAuthorizationEvidenceReader.class.getDeclaredMethods())
+                    .filter(m -> m.getName().equals(name))).singleElement().satisfies(method -> {
+                assertThat(method.getParameterTypes()).containsExactly(
+                        dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipant.ProductClaimPair.class,
+                        dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedProductDraftAuthorizationContract.Request.class);
+                assertThat(method.getReturnType()).isEqualTo(JdbcProtectedAuthorizationEvidenceReader.PairedAuthorizationEvidence.class);
+            });
+        }
         for (String name : List.of("loadQualifiedOrganizationGroup", "recheckOrganizationGroup")) {
             assertThat(Arrays.stream(JdbcProtectedAuthorizationEvidenceReader.class.getDeclaredMethods())
                     .filter(m -> m.getName().equals(name))).singleElement().satisfies(method -> {

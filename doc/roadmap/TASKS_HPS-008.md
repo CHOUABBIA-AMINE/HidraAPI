@@ -1060,6 +1060,61 @@ Publish this one bounded repair using expectedb1fee00 lease; verify exact seven
 paths/parent/tree/blobs/message, observe applicable exact-SHA Full/Fast/Docs creation
 or startup and STOP. Package B remains next only after required acceptance.
 
+
+### HAPI-594 Package A remaining fixture/guard repair — 2026-10-27
+
+Owner Fail selects the remaining failures at
+a9d8b4fb5913ba76229a652f0e77f0fff549fc19, tree
+3bd3d352b6294fb81da92909c53b4c64b3bb84a5. Docs611 passed.
+Full910/run40405354877: API/dictionary, static validation and six PostgreSQL
+shards passed; postgres-2 retained one error out of198 cases, in the16-case
+product native suite. Fast216/run40405354846 and Full unit/architecture retained
+one reader-surface assertion failure. The previous clock, final-guard, policy
+syntax and dictionary defects are no longer the reported failures.
+
+Exact message:
+`test(identity): align product authorization fixtures and guardrails`.
+Admitted MODIFY allowlist (zero CREATE/DELETE):
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedProductDraftAuthorizationPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java`
+- `.github/ci-test-inventory.json`
+- `doc/roadmap/TASKS_HPS-008.md`
+
+**Source-backed diagnosis.** PermissionStatus supports ACTIVE, DISABLED and
+DEPRECATED. The fixture used INACTIVE, which is not a valid Permission lifecycle
+state; the reader's enum validation correctly classified that persisted value
+as corrupt evidence and rejected the protected operation. This was not a
+failure to deny a supported disabled permission. The native case now exercises
+both supported non-active states and requires explicit DENY on both scopes.
+It separately retains INACTIVE as a corruption fixture and requires the protected
+execution to reject it. Production validation is unchanged; unknown state is
+not normalized or relabeled as a supported business state.
+
+The reader's public-method guard expected the six pre-product methods while the
+registered product family deliberately added loadQualifiedProductPair and
+recheckProductPair. The guard now names all eight methods exactly and verifies
+each new method's exact ProductClaimPair/typed product Request input and
+PairedAuthorizationEvidence return. Existing Organization/Topology signatures
+and the no-clock/JPA/cache/writes/authority-export bans remain intact. No wildcard,
+ignored method, relaxed type check, skip or expected-error conversion is added.
+
+Both test classes retain all16 methods each. Inventory changes exactly their
+source hashes; case lists, timing values, lane/Full/Fast/shard memberships and all
+other entries/settings remain unchanged. No production Java, migration, API,
+dictionary, workflow, shard weight, caller pin or business policy is modified.
+
+Available validation:19 existing documentation-validator self-tests PASS;
+exact source-case/hash/unchanged-partition comparison, supported PermissionStatus
+fixture comparison and retained reader source-ban/type-surface review PASS.
+Corrected Java21/native execution remains the new exact-SHA hosted gate; no
+local Java/Maven/Docker outcome is claimed. No already-passed runtime gate is
+represented as acceptance of this unpublished repair. Preserve overall
+NOT_IMPLEMENTED/IN_PROGRESS and the approved Policy A; B/C remain unexecuted.
+
+Publish one guarded main repair with expecteda9d8b4f lease, verify the exact four
+paths/parent/tree/message/blobs, observe applicable Full/Fast/Docs creation or
+startup and STOP. Next remains registeredB only after Package A acceptance.
+
 <a id="hapi-595"></a>
 ## HAPI-595 — Supplied composition, properties and methods
 

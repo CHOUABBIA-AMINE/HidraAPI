@@ -824,10 +824,17 @@ public class ProtectedProductDraftAuthorizationPostgresIntegrationTest {
         }));
     }
     @Test void missingPermissionDefinitionCannotBeGrantedByCallerClaims() {
-        var f=fixture("LOCAL");both(f,"create");var p=prepare(f);
+        for(PermissionStatus status:List.of(PermissionStatus.DISABLED,PermissionStatus.DEPRECATED)) {
+            cleanEvidence();var f=fixture("LOCAL");both(f,"create");var p=prepare(f);
+            jdbc.update("UPDATE "+T+"permission SET status=? WHERE code='custody:engineering-product:create'",status.name());
+            var c=run(p,request());
+            assertThat(c.companyDecision()).isEqualTo(Decision.DENY);
+            assertThat(c.productDecision()).isEqualTo(Decision.DENY);
+        }
+        // Unknown persisted states remain corrupt evidence, never a supported lifecycle value.
+        cleanEvidence();var f=fixture("LOCAL");both(f,"create");var p=prepare(f);
         jdbc.update("UPDATE "+T+"permission SET status='INACTIVE' WHERE code='custody:engineering-product:create'");
-        var c=run(p,request());assertThat(c.companyDecision()).isNotEqualTo(Decision.PERMIT);
-        assertThat(c.productDecision()).isNotEqualTo(Decision.PERMIT);
+        rejected(()->run(p,request()));
     }
 
     @Test void unresolvedPolicyEvidenceRemainsIndeterminateDespiteBothGrants() {

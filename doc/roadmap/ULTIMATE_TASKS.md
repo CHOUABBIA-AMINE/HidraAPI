@@ -94,15 +94,15 @@ separate; no numerical computation, publication, engineering qualification,
 frontend implementation, release or deployment is selected automatically.
 
 [HAPI-596](TASKS_HPS-008.md#hapi-596), publication/history and owner exports,
-remains NOT_IMPLEMENTED and is IN_PROGRESS under owner-approved Policy A:
-structurally valid complete/incomplete source snapshots retain immutable
-completeness diagnostics and engineeringQualified=false. The owning phase now
-registers separate protected native/Workflow, atomic storage, and HTTP/scalar
-export Packages A/B/C, actual artifact follow-ups and final acceptance. Docs637
-passed the preflight on62c0563e7bef07ada8149cba73c7925f8fc0e667.
-This selection records policy and scope only. Package A is next after successful
-registration Documentation feedback and a subsequent owner Next. Accepted595
-stays closed;597/593, scientific qualification and deployment remain separate.
+remains NOT_IMPLEMENTED/IN_PROGRESS under approved Policy A. Package A's native/
+Workflow owner contracts are accepted on9fe646f0b7780c91b3f5a96abc0cea9d21efa8f6:
+Full929/Fast233/Docs640 and43 exact task cases pass; actual catalog capture is
+verified. A source-backed B scope supplement admits one existing approval test
+for precise isolation from the new production lookup, preserving exactly one
+Workflow resolver and all existing cases. After this supplement's Documentation
+success, owner Next selects amended B implementation (12 CREATE/nine MODIFY),
+then separately C and final acceptance. Accepted594/595 remain closed. No B/C
+runtime, consumer qualification, numerical engine or deployment is claimed.
 
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent

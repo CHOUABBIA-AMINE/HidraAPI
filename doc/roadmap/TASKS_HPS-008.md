@@ -4562,6 +4562,131 @@ Package A and HAPI-596 acceptance remain pending. B/C,597/593, solver and
 engineering/SITE/deployment work are not selected.
 
 
+### HAPI-596 Package A accepted; Package B Workflow fixture scope completed — 2026-10-27
+
+**Exact green prerequisite.** Owner Next follows corrective main
+9fe646f0b7780c91b3f5a96abc0cea9d21efa8f6,
+tree9cf1ba328e37bb202e8208f8807c24ce537e1c1b,
+parent97f3295d1b7dbfde3b27f08c08a9cfad45c415f9. Full929/
+run40585259236, Fast233/run40585259325 and Docs640/run40585259241
+completed/success on that exact source. HAPI-596 Package A's native/Workflow
+owner contracts and actual dictionary obligation are now development-software
+accepted. The parent task remains NOT_IMPLEMENTED/IN_PROGRESS: candidate/
+publication storage and configured HTTP/scalar integration are still absent.
+Policy A and closed594/595 remain unchanged; this is not source publication,
+scientific qualification, SITE acceptance or deployment authorization.
+
+**Independent retained evidence.** Full929 attempt1 aggregate artifact12772371045
+has ZIP SHA256f2d232d0d439a4b531b755afac8d8da342271e3f1a1f44fb57f4dcf8c191e3a0.
+Recover and verify lane SHA/run/attempt/inventory/classifier, every retained file
+hash, raw XML class/case/count/timing identities and complete disjoint inventory.
+All481 active classes execute3473 cases with zero failures/errors/skips. The
+development-partitioned gate correctly retains same_run_equivalence=false and
+release_eligible=false; the deliberately skipped independent audit is not called
+a passing oracle or production proof.
+
+Package A's exact43 cases are independently matched to current source SHA256,
+manifest identities and raw reports. The three direct suites contribute36:
+ProtectedProductPublicationAuthorizationPostgresIntegrationTest20,
+WorkflowHumanActorQueryServiceTest3,
+CustodyProtectedProductPublicationApprovalPostgresIntegrationTest13. The seven
+specific registered transition/private-reader/import-guard cases also execute
+without failure/error/skip. Full928's positive reviewer fixture failure remains
+failed history; Full929 proves its corrected real human display and retained
+nonhuman denial. No test result is inferred merely from aggregate green status.
+
+Same-run API facts and all payload hashes match the gate. Actual runtime OpenAPI
+has272 paths,296 operations and307 schemas; canonical semantic snapshot equality
+and backward compatibility against the captured3de14d1d base PASS independently.
+Current API SHA2568b9d9d043ef49dc23a7eeff99787d90b5a7f3c0483485f5a9bdfae76ba0f5da0;
+base API9f5dd7301cd1b75ba6fda1c6bf745b1ccb312c79212143c81e7205eff5b4233a.
+The actual PostgreSQL16.15 capture retains180 migrations,470 JPA mappings,
+650 source hashes and523 relations with zero unresolved owners and reviewed
+dictionary equality. Catalog JSON SHA256
+638a19ed26ffc28419365b655fa32d06a2c8f79b8bbb8e9ad3af38f1abf35817;
+source bundle125aaeb09ba13168ef870987d3556a6824ac9714dc175eba1efb00568d08c956.
+Its captured source stays9fe646f0, not this documentation commit's future SHA.
+
+#### Concrete B integration dependency discovered before source mutation
+
+The current A approval integration test imports its nested TargetFixture, whose
+publicationTargetFixture bean advertises custody/PRODUCT_SOURCE_PUBLICATION and
+resolves only its synthetic digest set. That fixture is explicitly permitted for
+isolated A approval evidence and does not persist Custody candidates. The real
+WorkflowExecutionOwnership.requireTarget filters all WorkflowOwnedTargetLookup
+beans by module/type and requires matches.size()==1. B's registered production
+CustodyProductPublicationWorkflowTargetLookup advertises that same module/type.
+Adding it unchanged would create two matches in A's test context and reject the
+actual positive approval transitions. Removing the synthetic fixture without
+replacement would instead send its unpersisted A-only digest to real Custody
+storage. Neither result is correct isolated-owner or complete B evidence.
+
+The original B MODIFY list omitted this actual affected test file. Complete that
+precise existing-path admission before implementing the production lookup. This
+is a source-backed test-composition prerequisite, not missing business approval,
+industrial data or a reason to weaken the exactly-one owner rule.
+
+#### Prospective amendment to the registered Package B scope
+
+Retain B's exact implementation message:
+`feat(custody): add governed product publication storage`.
+Retain all12 registered CREATE and eight original MODIFY paths. ADD exactly this
+one existing MODIFY path:
+- `src/test/java/dz/sh/hidra/modules/workflow/infrastructure/persistence/CustodyProtectedProductPublicationApprovalPostgresIntegrationTest.java`
+
+B therefore has12 CREATE and nine MODIFY paths. Its existing inventory/phase
+paths already cover this test's real new case/source hash. No other path or
+runtime policy is admitted by this amendment.
+
+The production lookup must use the exact Spring bean name
+custodyProductPublicationWorkflowTargetLookup and the registered protected
+READ_CANDIDATE_FOR_WORKFLOW path. In A's isolated test context only, replace that
+existing named bean through the already used Spring test mock mechanism and
+the public WorkflowOwnedTargetLookup interface; require a real named production
+bean to be replaced. Preserve the nested synthetic fixture, all13 actual
+transition/approval/lock/denial cases and their assertions. Add the focused case
+productionLookupDoesNotDuplicateTheIsolatedApprovalFixture to prove that only
+one resolver advertises this target in the isolated context and that the
+replaced production lookup cannot resolve or receive its synthetic digest.
+Do not broadly mock all lookup beans, remove the test, relax matches.size()==1,
+change production behavior by test/profile flags or introduce a permissive
+fallback. The test mock is not a publication authority or B acceptance proof.
+
+The already registered CustodyProductPublicationWorkflowTargetLookupTest must
+check exact module/type/digest/response binding, authorized use-case delegation,
+ordinary-transaction suspension and rejection of protected-context nesting.
+The already registered ProductRevisionPublicationPostgresIntegrationTest must
+retain an unmocked production lookup and prove real native PREPARE, persisted
+envelope digest, actual configured human Workflow transition and atomic PUBLISH.
+Only the explicitly isolated A context replaces the production bean. B must
+rerun A's original13 cases plus this exact isolation regression and independently
+prove its real owner round trip. Every other registered B invariant, strict
+import/private guard, current/history/withdrawal policy, immutable bytes/CAS/
+replay, final guard,500/750/250 budgets, dictionary follow-up and C/final gate
+remains unchanged.
+
+**Current bounded documentation stage.** Exact message:
+`docs(custody): accept publication owners and admit storage integration`.
+MODIFY only this append-only phase record and596's compact ULTIMATE_TASKS
+execution pointer. Zero CREATE/DELETE or source/test/migration/workflow/API/
+dictionary change. Frozen status tables and every original registration/history
+byte remain unchanged; this prospective scope supplement is explicit. All12
+future CREATE paths remain absent and all nine future MODIFY paths are matched
+to live source. No B placeholder or partial implementation is submitted.
+
+Completed independent checks cover all43 task cases,481 classes/3473 raw cases,
+source pins and all lane/file hashes; actual API semantic/compatibility and
+physical catalog/source/dictionary evidence. Available19 unchanged documentation
+self-tests and exact two-file scope, metadata/status/compatibility-anchor,
+history-preservation and path-admission checks PASS before publication.
+No new Java/native run is asserted for this documentation stage. Publish with
+expected9fe646f0b7780c91b3f5a96abc0cea9d21efa8f6, verify exact parent/tree/
+blobs/message/scope, observe applicable exact-SHA Documentation CI creation/
+queue/start and STOP. The next owner Next after Docs success selects amended B
+implementation, not another policy choice or repetition of A. C,597/593,
+numerical engine, frontend, release/deployment remain unselected.
+
+
 <a id="hapi-597"></a>
 ## HAPI-597 — Multi-product ownership/API compatibility qualification
 

@@ -2924,6 +2924,47 @@ Publish with expected 4bd0da89 and observe fresh exact-SHA applicable CI
 creation/start, then STOP. HAPI-595 Package A remains implementation-complete
 in this bounded scope but not Full-accepted; B/C and HAPI-596 remain unselected.
 
+
+### HAPI-595 Package A — CI #919 physical dictionary sort repair, 2026-10-27
+
+Owner Fail follows exact main `c4fb680fa9991351970c913fa1747b4f92cf2bed`
+(tree `f74bc2a89d3d452107d95db7395c8da8121fb31e`). Full CI
+#919/run 40508077295 completed failure, with the API contract/dictionary lane
+failing the unchanged `Physical dictionary drift; review regenerated
+metadata/content` equality check; static, Java unit/architecture, and all
+seven PostgreSQL shards passed. The dependent Full Verification Gate failed.
+
+The #919 API diagnostic artifact 12736421054 contains the real freshly
+migrated PostgreSQL16 schema.json (177 migrations, 470 JPA mappings and
+520 physical relations). This was checked against the completed/success
+Full CI #916 reviewed dictionary artifact 12725837593 and the same
+generator rendering/ownership/column/constraint/ordering rules. There were
+no changed pre-existing relation facts or JPA mappings: the only added
+catalog relation is `public.hidra_telemetry_fluid_unit_policy`.
+
+The preceding dictionary refresh accurately reproduced the new physical
+relation but inserted its complete rendered section after
+`public.hidra_telemetry_ingestion_batch`. The generator sorts by
+(schema,name), so the policy section must immediately precede that
+ingestion section. Moving the whole section to the canonical position,
+preserving all 520 relations and existing catalog fields, was compared
+line-for-line to a complete local reconstruction from the #919 captured
+schema and #916 passing dictionary. The reconstructed text matched
+exactly; refresh the single captured-source line to #919's source SHA.
+This is a source-artifact reproduction, not a claim that a new hosted
+Full CI or PostgreSQL check has already passed.
+
+Only `doc/database/DATA_DICTIONARY.md` and this append-only owning
+phase record are modified under the previously registered dictionary
+artifact follow-up. No SQL migration, ownership grant, Java source,
+test, generator, CI lane, failed check or numerical calibration changes.
+Preserve the registered exact message
+`docs(telemetry): refresh fluid unit policy dictionary`.
+After guarded direct main publication observe applicable documentation CI
+startup and STOP; Full/Fast are path-filtered for docs-only changes and
+the exact-SHA manual Full run remains an acceptance gate. HAPI-595
+Package B/C and HAPI-596 are not selected automatically.
+
 <a id="hapi-596"></a>
 ## HAPI-596 — Product publication, history and owner exports
 

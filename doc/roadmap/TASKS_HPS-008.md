@@ -1589,6 +1589,75 @@ Final four-governance-file acceptance remains separately
 `docs(custody): accept protected product draft authoring`, after C's real
 HTTP/API/catalog and required exact-SHA CI gates are satisfied.
 
+
+### HAPI-594 Package C responsible route/admission CI repair — 2026-10-27
+
+Owner Fail selects responsible repair of main ba601a219fad4f6e7d8cd560c395365c59e137ac,
+tree 69c5b9296b951c48702175b01b4b95020719852b. Full914/run40479972879 attempt1
+failed; exact-head Fast220/run40479972882 and Docs616/run40479972885 succeeded.
+Exact repair message: `fix(custody): repair protected product HTTP admission`.
+
+Admitted MODIFY allowlist, zero CREATE/DELETE:
+- `src/main/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptor.java`
+- `src/test/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptorTest.java`
+- `src/main/java/dz/sh/hidra/modules/custody/application/service/ProductEngineeringDraftApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/custody/application/service/ProtectedProductDraftAdmissionCoordinator.java`
+- `.github/ci-test-inventory.json`
+- `doc/roadmap/TASKS_HPS-008.md`
+
+The actual registered MVC interceptor lacks delegation for all three new product
+routes; it derives an unrelated custody:engineering-products:execute/read/update
+permission before body parsing or the native owner. Eleven of12 native HTTP cases
+fail403, including malformed-body400 cases. Admit only the exact compiled
+ProductEngineeringDraftController create/read/update method, HTTP verb and
+registered route tuple to the existing authenticated owner-delegation path.
+Authentication remains required and the use case still obtains both independent
+native scoped grants; no permission seed, static grant, prefix or global bypass.
+
+One existing B native create failed closed at521420088ns with493 statements,
+exceeding the unchanged500ms work budget. Source inspection identifies duplicate
+full native graph rereads: collect calls identity.requireCurrent immediately
+before its own requireCurrent (which calls the same method), and a mutation
+returns from endProvisional's requireCurrent straight into the service's identical
+check. Remove only these adjacent duplicates. Retain fresh collection, the
+post-eligibility/seal check, the pre-write check, post-write check, read/replay
+post-apply check, exact one scalar final guard, rollback and all budget limits.
+No accepted native case, native reader pin, SQL grammar or migration changes.
+
+Retained postgres-2 diagnostic artifact12723430238 ZIP SHA256
+827d0dfd625cbc5fb799d9ebc1d20c5da899f9a267dc502e20992b814134a82f
+contains the actual19-case B report (one error) and12-case C HTTP report
+(11 failures). Unit/architecture and all other PostgreSQL shards passed.
+Runtime OpenAPI equality also failed as explicitly anticipated by C's pending
+capture obligation. API diagnostic artifact12723010945 ZIP SHA256
+7fa7897dae2e6408f0bc9df10d06ad0c5e6aec02a5b533e697efeec561ee4bd6
+retains the actual source-bound capture. Preserve the snapshot in this source
+repair; its separately registered runtime artifact refresh follows responsible
+source feedback. Do not call Full914 or this unpublished repair accepted.
+
+**Repair checks and limits.** Four changed Java files parse with the installed
+Java17 compiler module;24 assertions on the extracted actual exact-tuple helper
+PASS. The19 existing documentation-validator self-tests PASS. The route JUnit
+suite gains one comprehensive case (11 to12), covering all three valid tuples
+without static permission lookup, wrong verb/pattern/controller/method and
+missing/unauthenticated/anonymous authentication rejection without invoking the
+business use case. Only that class's case list and source hash change in the CI
+inventory; other cases, source hashes, lane/timing/shard settings remain intact.
+These checks are not Spring/JUnit/native HTTP/PostgreSQL execution. All existing
+B19 and C12 native case identities and source bytes are preserved for hosted
+verification, including scoped DENY, commit-guard expiry and rollback cases.
+
+No runtime OpenAPI, schema, dictionary, migration, authority definitions or
+release state changes in this six-path repair. The actual API capture identifies
+ba601a219fad4f6e7d8cd560c395365c59e137ac and contains the three product operations;
+it is retained for the separate registered refresh, not labeled accepted.
+The equality gate remains a known pending artifact obligation; source/native
+corrections still require exact-SHA feedback. Overall HAPI-594 statuses stay
+conservative. Publish directly to main with expectedba601a2, verify the six
+MODIFY paths/parent/tree/blobs/message, observe applicable exact-SHA Full/Fast/
+Docs creation/queue/start, then STOP. Do not wait for completion or execute the
+artifact follow-up or final acceptance automatically.
+
 <a id="hapi-595"></a>
 ## HAPI-595 — Supplied composition, properties and methods
 

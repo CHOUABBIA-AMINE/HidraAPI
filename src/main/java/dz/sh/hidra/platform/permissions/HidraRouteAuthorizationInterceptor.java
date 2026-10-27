@@ -89,7 +89,7 @@ public final class HidraRouteAuthorizationInterceptor implements HandlerIntercep
         }
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        // The four draft operations have their own company/network-scoped native Identity
+        // Owned operations have their own paired resource-scoped native Identity
         // authority, sampled in the protected transaction. A static module:resource route
         // permission is unrelated to those paired grants and must not replace them.
         // Only this exact compiled controller/method/route tuple delegates to that owner;
@@ -97,7 +97,8 @@ public final class HidraRouteAuthorizationInterceptor implements HandlerIntercep
         if (isOwnedEngineeringDraftRoute(handlerMethod, routePattern, request.getMethod())
                 || isOwnedEngineeringPublicationRoute(handlerMethod,routePattern,request.getMethod())
                 || isOwnedEmployeeAppointmentRoute(handlerMethod,routePattern,request.getMethod())
-                || isOwnedLocalExchangeRoute(handlerMethod,routePattern,request.getMethod())) {
+                || isOwnedLocalExchangeRoute(handlerMethod,routePattern,request.getMethod())
+                || isOwnedProductDraftRoute(handlerMethod,routePattern,request.getMethod())) {
             if (authentication == null || !authentication.isAuthenticated()
                     || authentication instanceof AnonymousAuthenticationToken) {
                 throw new AccessDeniedException("Engineering draft authentication required.");
@@ -111,6 +112,17 @@ public final class HidraRouteAuthorizationInterceptor implements HandlerIntercep
         }
 
         throw new AccessDeniedException("Missing required permission: " + requiredPermission);
+    }
+
+    private static boolean isOwnedProductDraftRoute(HandlerMethod handler,String route,String verb) {
+        if(handler==null || route==null || verb==null || !handler.getBeanType().getName().equals(
+                "dz.sh.hidra.modules.custody.api.rest.controller.ProductEngineeringDraftController"))return false;
+        return switch(verb+" "+route+" "+handler.getMethod().getName()) {
+            case "POST /api/v1/custody/engineering-products create",
+                 "GET /api/v1/custody/engineering-products/{draftId} read",
+                 "PUT /api/v1/custody/engineering-products/{draftId} update" -> true;
+            default -> false;
+        };
     }
 
     private static boolean isOwnedEngineeringDraftRoute(

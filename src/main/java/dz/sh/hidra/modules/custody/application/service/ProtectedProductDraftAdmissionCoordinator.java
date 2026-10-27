@@ -78,9 +78,10 @@ public class ProtectedProductDraftAdmissionCoordinator {
             var p=party.read(a.party);
             if(!i.request().equals(a.request) || !p.partyId().equals(a.request.companyPartyId())
                     || p.backendPid()!=i.backendPid() || p.transactionId()!=i.transactionId())throw invalid();
-            repository.eligible(a.repository);identity.requireCurrent(a.identity);
+            repository.eligible(a.repository);
             a.result=new Contribution(a.request,p.generation(),i.bindingId(),i.sessionId(),i.userId(),
                     i.sampledAt(),i.validUntil(),i.backendPid(),i.transactionId());
+            // This check covers eligibility and sealing; do not reread the same graph twice.
             a.permit=executor.sealAdmission();requireCurrent(a);return a.result;
         }catch(RuntimeException error){executor.rejectAdmission();throw error;}
     }

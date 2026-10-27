@@ -49,8 +49,10 @@ public class ProductEngineeringDraftApplicationService implements ProductEnginee
                 var storage=coordinator.repository(a);boolean mutation=repository.mutation(storage);
                 if(mutation)coordinator.beginProvisional(a,repository.mutationSql());
                 var result=repository.apply(storage,contribution.get());
+                // endProvisional revalidates after writes; reads/replays need that same check here.
                 if(mutation)coordinator.endProvisional(a);
-                coordinator.requireCurrent(a);return result;
+                else coordinator.requireCurrent(a);
+                return result;
             },repository::flush,()->{
                 if(!repository.finalGuard(coordinator.repository(admission.get()),contribution.get(),coordinator.finalFences(admission.get())))
                     throw new Failure(Reason.UNAVAILABLE);

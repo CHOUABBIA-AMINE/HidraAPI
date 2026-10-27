@@ -3778,6 +3778,198 @@ doc/model-remediation/RECONCILIATION.md:23379 | HPR-P25-053C | Governed publish/
 doc/model-remediation/RECONCILIATION.md:23742 | HPR-P25-053C | BLOCKED_SPECIFICATION | Product publication, history and owner exports
 ~~~~~~~~
 
+### HAPI-596 publication/history source review and policy preflight — 2026-10-27
+
+**Selected action and accepted prerequisite.** Owner Next selects the bounded
+publication/history preflight after HAPI-595 closure. Current main
+d212e650d50b568e94cb91a2eca2e21f65a7f580,
+parent3de14d1dbdd7aad6f328bbe627b729a783c65042,
+tree54d19bf9d29971ce16e966834d8ff98a4c027022. Docs636/run40573488344
+completed/success on that closure. Accepted runtime remains3de14d1d with
+Full927/Fast231/Docs635 success and the99-case HAPI-595 acceptance above.
+594/595 are VERIFIED/COMPLETED; their authoring contracts are prerequisites,
+not a595 publication capability or automatic596 selection of runtime code.
+
+**This exact message and scope:**
+`docs(custody): define product publication policy preflight`.
+MODIFY only this owning phase and596's compact current pointer in ULTIMATE_TASKS.
+Append this record before the intact597 anchor; preserve every prior task/header/
+status/evidence byte. Zero CREATE/DELETE or source/test/migration/API/dictionary/
+workflow change. HAPI-596 stays NOT_IMPLEMENTED/BLOCKED until policy selection
+and exact source-backed implementation registration. Do not alter the frozen
+ROADMAP/PHASES status cells or claim a publication endpoint already exists.
+
+#### Recovered source and concrete owner boundaries
+
+- Accepted594 owns company-local product UUID/code/catalog binding and immutable
+  metadata versions. Accepted595 owns a separate supplied version sequence,
+  exact canonical decimal/Unicode bytes, units/conditions/method/source evidence
+  and metadata-binding diagnostics. Both permit incomplete authoring. New
+  publication must pin their exact existing bytes and version/digest pairs,
+  rather than reconstructing the source through a lossy DTO or creating a
+  second mutable product owner.
+- PlanningProductReferenceContract exports only shared catalog id/code/activity;
+  its current adapter uses the Planning product-policy row. It does not export
+  a company-owned supplied publication, nor authorize publication/history.
+  SimulationProductCandidateContract exports raw shared-catalog facts explicitly
+  without Simulation classification/approval. Preserve both old contracts and
+  adapters; publication cannot silently replace their reference meanings.
+- SimulationGasFluidRevisionContract is the existing GAS/GAS_MOLE_FRACTION,
+  explicitly qualified stored-revision contract. CustodyGasFluidQualificationService
+  uses CustodyGasFluidApprovalEvidencePort and WorkflowGasFluidApprovalEvidenceAdapter
+  for actual exact final Workflow approval. A new supplied source publication
+  cannot masquerade as that qualification or broaden its representation to MASS
+  fractions/LIQUID without separate qualified-consumer scope.
+- The actual Workflow RevisionApprovalEvidenceContract carries target module/
+  digest, exact definition version/target type/purpose, instance/task/action,
+  evaluation time and server actor/time. Its ordinary Optional resolve method
+  does not export issuer/thread/connection-bound admission, retained owner
+  relation fences or a common final guard. Reusing its record shape alone is
+  not atomic protected multi-owner approval proof. A future implementation must
+  register and test an actual protected Workflow owner seam or an independently
+  justified equivalent before relying on approval in publication transactions.
+  The unrelated transfer-ticket Boolean reference contract is insufficient.
+- Identity's accepted metadata CREATE/READ/UPDATE and properties READ/WRITE
+  families are exact, exclusive grants. Neither is permission to publish,
+  withdraw, reactivate, disclose publication history or issue consumer exports.
+  Publication needs a separately reviewed native family and owner contracts;
+  no string aliasing or existing-grant escalation. The existing Party and
+  Telemetry protected exports provide concrete current owner facts to preserve.
+- Topology EngineeringRevisionPublication supplies a reviewed precedent for an
+  immutable original-byte snapshot, monotone CAS head, append-only PUBLISH/
+  WITHDRAW/REACTIVATE events, actor-bound request receipts, bounded history and
+  explicit unqualified diagnostics. Its actual domain carries engineeringQualified=false.
+  This is a design precedent, not a Custody capability or permission to import
+  Topology domain types. Custody must retain its own publication aggregate and
+  independent metadata/supplied versions.
+
+#### Proposed common publication policy — not yet adopted
+
+1. **Owned immutable envelope.** Pin one company-local product draft, its
+   immutable shared-catalog reference, one explicit metadata version and one
+   supplied-property version with exact original formats/bytes/digests. A new
+   publish requires both selected versions current and their metadata binding
+   consistent, plus fresh company/catalog/unit/native eligibility. At least one
+   supplied revision must exist, even when its facts are explicitly incomplete.
+   Preserve declared GAS/LIQUID, fraction basis, units, absolute conditions,
+   source/method evidence and synthetic origin. Server-derived completeness/
+   diagnostics are immutable snapshot facts, never caller overrides.
+2. **Approval is scoped source governance.** Require an actual server-verified
+   human Workflow decision bound to the entire publication-envelope digest,
+   including company/product identity and both exact version/digest pairs, plus
+   the configured definition version/target type/purpose. A client approval ID,
+   actor, permission Boolean or old gas qualification is not sufficient. Retain
+   approval provenance in the immutable publication. The approval means reviewed
+   source publication, not engineering/numerical suitability; enforce any
+   separation-of-duties rules from the actual configured Workflow definition,
+   without inventing an automatic self-approval. Incomplete-source approval, if
+   permitted below, must explicitly retain that incomplete authoring status.
+3. **One governed head per owned product.** Publish a new immutable publication
+   ID and append a committed PUBLISH event with expected head epoch and prior
+   publication ID. WITHDRAW/REACTIVATE append events and advance the same monotone
+   epoch; do not update/delete old snapshots, events or approvals. Withdraw has
+   no silent fallback to an older publication. Reactivation rechecks fresh native/
+   owner eligibility and applicable approval for the same selected snapshot.
+   Original exact request replay remains actor/company/product/command bound;
+   it returns its original receipt plus an explicitly separate observed current
+   head, never silently re-executes or reverses a later transition.
+4. **Current versus effective versus historical.** Current means the selected
+   committed head/state, not implicit scientific qualification. Effective(asOf)
+   selects the committed transition history at the explicit bounded database-time
+   instant; a withdrawn head yields no effective publication, with no fallback.
+   Initial scope proposes server-dated transitions only; future-dated scheduling
+   is not inferred from asOf or included without separate owner selection.
+   Later draft edits never mutate an existing publication or silently repoint
+   the head. Exact/history reads preserve the authored snapshot rather than
+   reinterpret old GAS facts under a new LIQUID draft classification.
+5. **History access and current eligibility are independent.** Every exact,
+   current, effective, receipt and paged-history read requires fresh applicable
+   native publication authority and company/product scope before existence,
+   payload, count or history disclosure. Historical bytes and recorded approval
+   alone never grant access. Current consumer eligibility must be assessed
+   separately from exact historical reproducibility; current unit/catalog
+   revocation must not erase history or fabricate validity. Withdrawal must
+   remain possible under authorized product/company governance when a unit or
+   supplied-source eligibility fails; it must not require requalifying bad facts.
+   This is not a bypass of native authorization or fresh company ownership.
+6. **Consumer exports are typed, explicit and unqualified.** Propose a new
+   Custody-owned scalar immutable publication export with exact IDs/versions/
+   digests, authored values/origin/diagnostics, selected event/epoch and approval
+   provenance. Distinguish exact historical source from currently eligible
+   selection; fail closed on missing fresh owner evidence. A Boolean supplied
+   by an importer is not an admission. Do not overwrite old Planning/catalog or
+   qualified GAS exports. Consumer-specific representation and engineering/
+   simulation qualification remains597/later scope; neither policy below
+   authorizes solver execution or operational use of incomplete data.
+7. **Atomicity and bounded verification.** Preserve native-family isolation,
+   company scope, inward dependencies and pure Java domain ownership. Register
+   exact participating relation/trigger/role/fence images, actor-bound receipts,
+   expected-head CAS, additive schema constraints and exact permitted SQL from
+   the actual source. Use one observed physical transaction and scalar final
+   database guard with no provisional effect after a failed guard; keep existing
+  500/750/250ms budgets unless separately justified/approved. No premature fence
+   count, copied source pin, new migration filename or unmeasured performance
+   claim is invented in this preflight. Calibration values are not required.
+
+#### One remaining owner decision — choose A or B
+
+**A — recommended: explicit incomplete-source publication.** Allow a structurally
+valid supplied snapshot to be published with its actual complete/incomplete
+status and immutable diagnostics, subject to all common native/owner/approval
+requirements. Invalid/contradictory or stale-bound declarations still reject.
+Publication and export stay explicitly unqualified; downstream consumers cannot
+infer scientific suitability from publication or discard the diagnostics. This
+matches accepted incomplete authoring and the reviewed Topology snapshot
+precedent while keeping consumer qualification separate.
+
+**B — complete-authoring publication only.** Apply the same common guarantees,
+but require both existing product metadata and supplied-fact completeness
+diagnostics empty before publication/reactivation. Incomplete drafts remain
+editable and cannot become published source snapshots. Completeness still does
+not establish thermodynamic/hydraulic qualification or authorize a solver.
+Do not invent a universal required property set beyond the existing declared
+completeness rules; any new family-specific required fields need explicit policy.
+
+The choice is unresolved. A Next alone selected this source preflight, not one
+of these publication policies. No new workflow grants, deployment measurements
+or real production data are requested to make the policy/software concrete.
+
+#### Future registration and acceptance sequence — design only
+
+After explicit policy selection and successful preflight Documentation feedback,
+register exact paths/messages for bounded sequential packages: protected native/
+Workflow owner admissions; pure publication model/codec and atomic Custody
+storage; configured HTTP/exact/current/effective/history operations and new
+scalar owner exports. Register actual DTO/mappers/tests, architecture/source
+pins, private executor caller/DML additions, additive migrations, physical
+ownership and runtime artifacts before use; none of the six old PROPOSED source
+filenames above becomes executable merely through this preflight. Source-backed
+registration must settle current/history authorization and withdrawal eligibility
+without weakening existing owner contracts. Do not add frontend or consumer
+qualification work to these packages.
+
+Acceptance must prove real LOCAL/OIDC/LDAP/AD native actions and both scopes;
+selected A/B completeness behavior; exact payload/approval substitution and
+stale-binding rejection; independent draft/publication/head versions; scoped
+actor-bound replay/conflict; current eligibility versus immutable historical
+reads; authorized withdrawal without unit requalification; exact effective-time
+boundaries, high-water bounded history and cursor substitution; forged/expired/
+revoked approvals; current-denial/non-disclosure; concurrent publishers and
+withdraw/reactivate CAS; immutable history/ordinary-DML restrictions and actual
+final-guard rollback. Preserve old catalog and qualified GAS consumers/tests.
+Require exact-SHA Full/Fast/Docs and actual same-run API/compatibility/physical
+catalog evidence before a separate final596 acceptance. Engineering/SITE
+acceptance and597/593 closure remain independent.
+
+**Actual preflight checks and stop.** Available19 unchanged documentation
+self-tests; actual six-task phase metadata/anchor parsing; preserved595 closure
+and all task statuses; append-only phase history and bounded compact-pointer/
+two-document scope checks must pass before publication. No Java/native run,
+publication API, new schema, protected Workflow admission or scalar consumer
+export is claimed. Publish only the two documents directly with expectedd212e650,
+verify parent/tree/blobs/message, confirm applicable Documentation CI creation/
+queue/start and STOP at the policy choice. Do not implement an unselected policy.
+
 <a id="hapi-597"></a>
 ## HAPI-597 — Multi-product ownership/API compatibility qualification
 

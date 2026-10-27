@@ -93,6 +93,14 @@ acceptance closure. HAPI-596/597 and integrated parent HAPI-593 acceptance remai
 separate; no numerical computation, publication, engineering qualification,
 frontend implementation, release or deployment is selected automatically.
 
+[HAPI-596](TASKS_HPS-008.md#hapi-596), publication/history and owner exports,
+remains NOT_IMPLEMENTED/BLOCKED. Its source-backed preflight proposes immutable
+version-bound snapshots, native/Workflow authority, append-only head/history and
+separate consumer eligibility. Owner choice remains open: A permits explicitly
+incomplete unqualified source snapshots; B permits complete authoring only.
+Both preserve exact evidence and scientific qualification as a separate boundary.
+No runtime package is registered or selected by this proposal;595 stays closed.
+
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent
 [HAPI-436](TASKS_HPS-024.md#hapi-436) are VERIFIED/COMPLETED within the accepted

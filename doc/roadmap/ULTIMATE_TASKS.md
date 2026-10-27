@@ -71,13 +71,14 @@ parent; HAPI-608 is separate aggregate exchange. No next task, frontend
 implementation, release, deployment or numerical engine is selected automatically.
 
 [HAPI-594](TASKS_HPS-008.md#hapi-594), product identity and metadata drafts,
-is NOT_IMPLEMENTED/IN_PROGRESS. The owner explicitly approved Policy A:
-company-local metadata drafts reference admitted shared Custody catalog products;
-GAS/LIQUID are metadata labels and absent classification stays incomplete.
-Docs608 passed the policy proposal. The owning phase record now registers
-protected authorization, owner persistence and HTTP packages A/B/C; Package A
-is next after this registration's Documentation CI acceptance.
-No runtime capability is claimed; HAPI-595..597 remain unselected.
+is VERIFIED/COMPLETED within its accepted development software scope.
+Full916, Fast222 and Docs618 passed on
+f16b71a4aa19188a5d58b3ad0bfa1470af8c391a. The owning phase acceptance records
+Policy A,76 dedicated and100 supporting exact cases, actual API/catalog
+evidence and limits. Packages A/B/C and their responsible repairs are complete;
+do not repeat implementation. Owner Next selects this final four-file governance
+closure. HAPI-595..597, frontend, numerical qualification, release and deployment
+remain separately selected. No next task is selected automatically.
 
 
 [HAPI-045](TASKS_HPS-024.md#hapi-045),

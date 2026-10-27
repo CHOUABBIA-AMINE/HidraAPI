@@ -344,9 +344,9 @@ Legacy IDs: HPR-P25-053A
 
 Priority: P1
 
-Implementation Status: NOT_IMPLEMENTED
+Implementation Status: VERIFIED
 
-Planning Status: IN_PROGRESS
+Planning Status: COMPLETED
 
 Owning Module: `custody` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -1768,6 +1768,150 @@ message and observe applicable exact-SHA Full/Fast/Docs creation/queue/start,
 then STOP. No wait for completion or automatic final acceptance. After green
 required feedback and independent case-level evidence review, the next
 registered closure remains `docs(custody): accept protected product draft authoring`.
+
+
+### HAPI-594 final bounded software acceptance — 2026-10-27
+
+Owner Next selects the separately registered closure
+`docs(custody): accept protected product draft authoring`.
+Accepted implementation source/main parent:
+f16b71a4aa19188a5d58b3ad0bfa1470af8c391a; tree
+fea2a5c349ef377c00ffc8dd10e193b76e6f17ce.
+Exact-source Full916/run40488460576 attempt1, Fast222/run40488460596 and
+Docs618/run40488460521 are completed/success. All required partition jobs and
+the Full Verification Gate succeeded. The optional serial diagnostic job was
+skipped by design; it is not reported as executed. Verification mode is
+development-partitioned, serial_oracle=false, same_run_equivalence=false and
+release_eligible=false. This acceptance does not change those restrictions.
+
+This closure modifies only this owning phase record, the compact
+ULTIMATE_TASKS execution pointer and HAPI-594's two status cells in each of
+ULTIMATE_ROADMAP and ULTIMATE_PHASES. Zero CREATE/DELETE; no production, test,
+migration, inventory, artifact, workflow or version change. HAPI-594 changes
+from NOT_IMPLEMENTED/IN_PROGRESS to VERIFIED/COMPLETED for its registered
+company-local product identity and metadata draft objective. Other task and
+phase statuses, frozen descriptions, ordering and dependencies are preserved.
+
+**Independent raw evidence verification.** Retained authenticated aggregate
+artifact12727850130,
+hidra-full-ci-evidence-f16b71a4aa19188a5d58b3ad0bfa1470af8c391a-40488460576-1,
+has ZIP SHA256
+26f84c8ebd8043677e608a9c3c03dd73e93ac84b422a6d2ac91ebe11b4d9821f.
+The extracted gate, every lane evidence manifest and every retained file digest
+were checked against actual bytes. Source SHA/run/attempt match the accepted
+context. Inventory SHA256
+f66477b4c1778f98acd628e487314c3cbea435a8de593c03385d121e0e256678
+matches the exact-source repository inventory. Independently parsed472 raw XML
+suites total3331 tests with zero failures/errors/skips, matching the gate counts.
+These aggregate results are supporting regression evidence, not a substitute
+for the task-specific matrix below.
+
+All11 selected suites' source bytes were recovered from that exact GitHub SHA
+and matched the inventory source fingerprints. Their176 exact case names match
+both actual XML testcase membership and lane evidence membership. Six dedicated
+product/owner suites contribute76 cases; five supporting route/architecture/
+reader/executor suites contribute100 cases. No case was inferred from suite
+names, skipped or accepted solely from an Actions summary.
+
+| Suite (exact inventory class suffix) | Cases | Actual XML report SHA256 |
+|---|---:|---|
+| `ArchitectureGuardrailTest` | 18 | `d05489e5f8725e0501aa48c6cbbab81a495dddc7c141de97ca64f047069767af` |
+| `ForensicRemediationClosureTest` | 7 | `ddac268d6c117da47c58954bb0b5a3c8128c004591f8037b71360d0e672e9ca0` |
+| `ProductEngineeringDraftControllerTest` | 9 | `b56de344fc959c8d4024b0d8e6a4401ee65af4b3e36c528979dc7bcfb712a111` |
+| `ProductEngineeringDraftTest` | 9 | `9d5bb66a6500b08b5f0acc720de69673e8fbcc12cf7894f3efeba786c020b25d` |
+| `ProductEngineeringDraftNativeHttpPostgresIntegrationTest` | 12 | `cfc6152e85dd9eefddaedcf1ff7244c4e3a1ba962e596e2b8f98db8cb11d203b` |
+| `ProductEngineeringDraftPostgresIntegrationTest` | 19 | `2e0178bc56592af68732d8636f2d5b6d44ae101e42fecfdfd0bc9d4b28ae2eee` |
+| `ProtectedProductDraftAuthorizationPostgresIntegrationTest` | 16 | `e7c2959cc4b8e021dd55771f33fadfa55f83c23f1a84b8c58e10a34a7738d37c` |
+| `JdbcProtectedAuthorizationEvidenceReaderTest` | 16 | `4a6e52505bd56f66276e86e9e9f60a933f770b94033ec304e44fffd33b731c10` |
+| `CustodyProtectedPartyEligibilityPostgresIntegrationTest` | 11 | `a9a3128831e16554d3a7885e8becded9ba6a206da8a134da8291916e8c765828` |
+| `HidraRouteAuthorizationInterceptorTest` | 12 | `2bd3c651cd51c0627ab07af73cea017f8ecb6a9aae83b9b18af74f241d350d36` |
+| `ProtectedTransactionExecutorTest` | 47 | `6dd335b2fd32c9f97be0fda7c7c18d45f11cb13bec147a0e7d1f354fd5b9d977` |
+
+The full class paths and source fingerprints remain in the accepted exact-source
+inventory; the retained report hashes above bind the independently checked raw
+case results. Original failed runs and repair records remain historical, with
+no retroactive passing claim.
+
+**Requirement-to-executed-evidence disposition.**
+
+| Registered requirement | Accepted actual cases and boundary |
+|---|---|
+| Stable local UUID/company/code/catalog identity, metadata/null/Unicode scalar bounds and strict canonical codec | ProductEngineeringDraftTest9 plus controller9; malformed UTF-8, unknown labels, trailing bytes, coercion, immutable fields and overflow reject. No normalization or inferred property. |
+| Both independent native company and product scopes; four real producer families; no borrowed credentials or fabricated evidence | ProtectedProductDraftAuthorizationPostgresIntegrationTest16; all actions/families, scoped DENY/missing/indeterminate, substitution, replay, cross-thread/suspend and current user/provider/session/grant rejection. CustodyProtectedPartyEligibilityPostgresIntegrationTest11 proves real owner status/generation and physical admission. |
+| Actual transactional create/current read/metadata revision, exact original replay returning current metadata, uniqueness/CAS and isolation | ProductEngineeringDraftPostgresIntegrationTest19 and native HTTP12; two companies share catalog/code without disclosure, foreign/missing targets deny uniformly, stale updates/duplicate codes/conflicting replay leave exact rows unchanged, concurrent same-version writers yield one successor. |
+| Authority/storage revocation, fences, time and immutable history | Native19/HTTP12 exercise writer-first/owner-first catalog-policy behavior, revoked Party/session/scopes, forged rows/sequence/origin, trigger/privilege checks, admission misuse, final expiry/fence substitution and rollback of provisional rows. Existing500ms budget remains enforced; no performance or all-load latency guarantee is inferred. |
+| Real configured HTTP path and safe DTO/errors | HTTP12 proves all four native bearer round trips, missing/malformed401, current scoped/revoked-session403, authorized409 and final-guard503, safe bodies/no retry invitation; controller9 covers strict shapes, scalar bounds, explicit nulls and fixed classified errors. Revoked-session case requires DENIED, no apply call and unchanged version/digest/row count. |
+| Architecture and technical protected executor preserved | Architecture18, forensic7, reader16, route12 and executor47 supporting cases pass. Exact product/Party exports, caller sets, native reader pin, exact DML hashes, provisional admission, one scalar final guard and safe denial remain enforced. |
+| Actual runtime API and physical catalog freshness | Same-run API lane successfully passes snapshot equality, actual successful-base compatibility and migrated dictionary capture/equality; reviewed captures and fingerprints below. |
+
+**Accepted runtime contract and physical dictionary.** Same-run API lane
+job122136074565 and its retained evidence identify the accepted source/run/attempt.
+Actual runtime OpenAPI SHA256:
+7b37e6c3f85d5677ca2205db494ad2bc581ef3bcc7d31cb4aec5d97c371986f7.
+It contains271 paths/294 operations/288 schemas and equals the reviewed snapshot
+semantically except the truthful capture source stamp. The reviewed snapshot
+retains its actual generation source21ee2864991c920aedf085db76e09f0a370644af and
+SHA256599536d8226024b64093b9075f793fe5f445b4e93772d329c4583620cb8237f3;
+this acceptance does not restamp old captures. Actual compatibility base is
+successful Full913 atbcaca876ae2ffe1627540d82eec7f3e8f002bc43; its same-run
+generated JSON SHA256:
+1dcf2742ff39b91d792131fae368186a6f6bc7df9de5c416a0b3d07cc7952f35.
+The unchanged supported comparator was also rerun locally on those actual
+current/base documents and passed. All prior paths/schemas/security are retained;
+the three product operations and four DTO schemas are additive. POST201 new/
+200 replay, GET200 and PUT200 retain native bearer, explicit company scope,
+required identities/expectedVersion and400/401/403/409/503 semantics.
+
+Actual same-run catalog SHA256:
+e94788a87d30b60547f079ce8f69dd2d8291fb3c1ad9bda9c705137df0db1031.
+Actual same-run rendered dictionary SHA256:
+0eca7ba0850172d998fb38a2031db594d2a92f4a53329c64c65cd4f2fd03f855.
+Source bundle SHA256:
+18a637865d4575ee176cf0ec58e510e7b9e403b6f38c27557d1853d20437372a.
+PostgreSQL16.15 catalog has175 migrations,470 JPA mappings and519 relations,
+zero unresolved owners. verification.json reports reviewed_dictionary_checked=true.
+The unchanged dictionary generator was rerun locally against the retained actual
+catalog, exact source inventory and reviewed ownership; render/check passed.
+Only its validated capture source line differs from the previously reviewed
+dictionary. No inferred physical metadata, database reset, schema rewrite,
+operational product seed or access grant is introduced.
+
+**Accepted scope and preserved limits.** Policy A is implemented: Custody owns
+company-local immutable draft identity/code with a distinct admitted active
+shared catalog product reference. Optional metadata and explicit null GAS/LIQUID
+classification remain authored labels; completeness is diagnostic only. Fresh
+native create/read/update authority, ACTIVE Party, policy/catalog eligibility,
+current replay, expected-version immutable append and safe HTTP mapping are
+accepted for development with synthetic data. A/B/C and their responsible
+repairs are not reexecuted by this governance closure. The initial proposed-path
+and NOT_IMPLEMENTED statements earlier in this record retain dated applicability;
+this final accepted source/evidence disposition supersedes their execution hold.
+
+This does not accept supplied composition/properties/methods (HAPI-595),
+public publication/history/owner exports (596), consumer qualification (597),
+frontend integration, numerical/thermodynamic/hydraulic qualification, liquid
+engine support, production/SITE calibration, benchmarking, deployment or release.
+Existing gas-first contracts and catalog-ID consumers remain unchanged.
+HAPI-595..597 remain separately blocked/unselected; completing a dependency
+does not resolve their remaining semantic/file registration gates. No next task
+is selected automatically.
+
+
+**Closure validation.**19 existing documentation-validator self-tests PASS.
+Exact local checks confirm all six phase task records, HAPI-594 status agreement
+with both frozen registries, all921 index compatibility anchors and document
+size bounds. Each frozen registry differs only in594's two status cells; every
+other row is byte-identical. Phase history is append-only apart from594's two
+header status fields, and all other task definitions are unchanged. Comprehensive
+documentation-estate/link validation remains the new exact closure-SHA hosted
+Documentation gate. No new Java/native runtime execution is claimed for this
+documentation-only commit; accepted runtime evidence is the actual source above.
+
+The new closure commit itself is documentation-only and its CI is pending until
+published. Run available documentation self-tests and exact status/scope checks;
+publish with expectedf16b71a, verify parent/tree/blobs/message and exactly four
+MODIFY paths, observe applicable exact-SHA Documentation CI creation/queue/start
+and STOP. Do not wait for completion or automatically implement a successor.
 
 <a id="hapi-595"></a>
 ## HAPI-595 — Supplied composition, properties and methods

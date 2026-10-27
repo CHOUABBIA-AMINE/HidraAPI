@@ -1115,6 +1115,88 @@ Publish one guarded main repair with expecteda9d8b4f lease, verify the exact fou
 paths/parent/tree/message/blobs, observe applicable Full/Fast/Docs creation or
 startup and STOP. Next remains registeredB only after Package A acceptance.
 
+### HAPI-594 Package B guardrail-scope reconciliation — 2026-10-27
+
+Owner Next refreshes main cd14834249037b4d0773a69d740310beda37e4e6
+(parent a9d8b4fb5913ba76229a652f0e77f0fff549fc19; tree
+38b5fb4ddd199b58c34f2a8cd0e2bbccf6769a22). Exact-head Full911/
+run40453455685, Fast217/run40453455714 and Docs612/run40453455675
+are completed/success. This resolves the reported Package A workflow failures;
+it does not establish the absent B/C workflow or complete HAPI-594. The current
+recursive tree still has none of B's ten CREATE paths. Latest migration remains
+V20261026_001__custody_product_draft_authority.sql; the registered
+V20261026_002__custody_product_engineering_drafts.sql is still absent.
+No historical migration, runtime, inventory or status is changed here.
+
+**Concrete recovered scope gap.** Package B registers exact new compiled product
+callers in ProtectedTransactionExecutor, but its MODIFY list omits the existing
+ProtectedStationAdmissionBoundaryGuardrailTest. That source test's
+coordinatorUsesOnlyApprovedOwnerContractsAndTechnicalMechanics scans every
+production Java file and asserts exact caller sets for beginAdmission,
+sealAdmission, requireAdmission and rejectAdmission. The registered product
+coordinator necessarily adds a caller; its owner repository may use the existing
+rejectAdmission poisoning hook. Separately, platformHasNoBusinessModuleDependencies
+removes only the already reviewed exact compiled owner class-name literals before
+rejecting all remaining business-module strings. B's two product literals are
+therefore rejected by the unchanged test. These are source-confirmed prospective
+assertion conflicts, not newly executed Java failures. Editing the test without
+registration would exceed B's exact file scope; bypassing its checks would weaken
+the required owner boundary.
+
+**Bounded supporting registration, selected instead of starting incomplete B.**
+Exact current message:
+`docs(custody): complete product draft guardrail registration`.
+Current commit: zero CREATE, one MODIFY, zero DELETE; this owning phase record
+only. Preserve every preceding history byte, all task states and the frozen
+ROADMAP/PHASES/index. This corrects the technical allowlist under the original
+registration's requirement to admit additional required paths before use;
+it introduces no new product policy or standalone task.
+
+For the next separately selected Package B, add exactly this one MODIFY path to
+its existing allowlist:
+- `src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java`
+
+The ten CREATE and four prior MODIFY paths, exact B commit message, dependencies,
+contracts and acceptance matrix remain unchanged. The additional test update is
+limited to the two actual affected methods above:
+1. Add the actual compiled ProtectedProductDraftAdmissionCoordinator to each
+   applicable exact admission-hook caller set. Admit
+   JdbcProductEngineeringDraftRepositoryAdapter only in rejectAdmission if its
+   actual implementation uses that hook; no speculative caller entries.
+   Keep equality with the complete source-discovered set; no containsAll,
+   wildcard, skip, removed assertion or broad package authorization.
+2. Recognize exactly the full product service and coordinator class-name literals
+   that B actually registers in ProtectedTransactionExecutor, then retain the
+   existing rejection of all other business-module references. Preserve every
+   prior caller/string count and every other boundary test, including native
+   Identity caller sets, the reviewed reader hash and the four original owner pins.
+
+B must update this test's actual source hash in the already admitted inventory;
+its six existing case identities, execution lane, timing and shard membership
+remain unchanged. Retain and run the actual guard suite with the new B sources.
+Independently retain ProtectedTransactionExecutorTest coverage for unreviewed
+callers, forged/reused/wrong-owner permits and exact product statement hashes;
+the extra guard path is no substitute for native authorization, owner admission,
+PostgreSQL replay/CAS/rollback/expiry/tamper or later native HTTP evidence.
+
+**Available validation and remaining gates.** Exact-head workflow conclusions,
+full source review of the affected guard methods, executor caller/provisional
+checks and credential routing, original B allowlist comparison, absent CREATE
+paths and current migration inventory are recovered from the pinned GitHub
+source. Existing documentation-validator self-tests:19 PASS. Exact append-only history,
+ten absent B CREATE paths, single-path scope and new-text whitespace checks PASS
+for this supporting commit. No Java,
+PostgreSQL, product source compilation, raw A case-artifact revalidation or B
+runtime outcome is claimed by this registration. Overall HAPI-594 remains
+NOT_IMPLEMENTED/IN_PROGRESS; Policy A and HAPI-595..597 boundaries remain.
+
+Publish this one documentation correction directly to main with expected
+cd14834249037b4d0773a69d740310beda37e4e6; verify parent/tree/blob/message and
+observe exact-SHA Documentation CI creation/queue/start, then STOP.
+Next registered runtime package remains
+`feat(custody): add protected catalog-linked product drafts`.
+Do not reexecute A, start C, claim product acceptance or alter unrelated guards.
+
 <a id="hapi-595"></a>
 ## HAPI-595 — Supplied composition, properties and methods
 

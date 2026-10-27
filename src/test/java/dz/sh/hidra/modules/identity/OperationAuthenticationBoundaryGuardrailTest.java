@@ -664,4 +664,22 @@ class OperationAuthenticationBoundaryGuardrailTest {
             assertThat(m.getAnnotation(org.springframework.transaction.annotation.Transactional.class).propagation()).isEqualTo(org.springframework.transaction.annotation.Propagation.MANDATORY);
     }
 
+    @Test void suppliedFluidSeamsHaveOnlyTheirExactPrivateOwnerCallers() throws Exception {
+        var expected=java.util.Map.of(
+            "qualifySuppliedFluidPair",Set.of("infrastructure/security/ProtectedFluidPropertyAuthorizationParticipant.java"),
+            "consumeSuppliedFluidPair",Set.of("infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java"),
+            "currentSuppliedFluidReads",Set.of("infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java"),
+            "loadQualifiedSuppliedFluidPair",Set.of("infrastructure/security/ProtectedFluidPropertyAuthorizationParticipant.java"),
+            "recheckSuppliedFluidPair",Set.of("infrastructure/security/ProtectedFluidPropertyAuthorizationParticipant.java"));
+        for(var entry:expected.entrySet()) {
+            var actual=new java.util.HashSet<String>();
+            try(var paths=Files.walk(IDENTITY)){for(var file:paths.filter(p->p.toString().endsWith(".java")).toList())
+                if(Files.readString(file).contains("."+entry.getKey()+"("))actual.add(IDENTITY.relativize(file).toString().replace('\\','/'));}
+            assertThat(actual).isEqualTo(entry.getValue());
+        }
+        var type=dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipant.SuppliedFluidClaimPair.class;
+        assertThat(type.getConstructors()).isEmpty();
+        for(var c:type.getDeclaredConstructors())assertThat(java.lang.reflect.Modifier.isPrivate(c.getModifiers())).isTrue();
+    }
+
 }

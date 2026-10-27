@@ -2685,6 +2685,164 @@ documentation self-tests and verify the one-file delta before guarded publicatio
 Observe applicable exact-SHA Documentation CI creation/queue/start and STOP;
 do not wait for completion or treat failed Docs621 as a passing prerequisite.
 
+
+### HAPI-595 Package A owner contracts implemented; hosted acceptance pending — 2026-10-27
+
+Owner Next selects registered Package A after repaired exact-head Docs622/
+run40494004250 completed/success on91de7246d6f3b28b7ae562b84dadc7c328eca31a,
+tree576da637abaf0d8edb5d815eed2746be05008bfc. Policy A remains explicitly
+approved. HAPI-594's accepted runtime baseline and all existing GAS/metadata
+semantics are preserved. Current exact message:
+`feat(custody): add protected supplied fluid owner contracts`.
+This is the registered eight CREATE/six prior Java MODIFY paths plus the
+inventory, one ownership entry and this phase record: exactly17 changed paths,
+zero DELETE. No Package B/C implementation or final595 acceptance is selected.
+
+**Distinct native Identity family.** The new
+CustodyProtectedFluidPropertyAuthorizationContract exports READ/WRITE requests
+and opaque issuer-bound Prepared/Admission, with explicit scalar contributions
+and24 existing Identity relation fences. Its resource is
+PRODUCT_ENGINEERING_PROPERTIES, permissions
+custody:engineering-product-properties:read/write, with both exact independent
+CUSTOM custody-company and custody-product scopes bound to one native action,
+catalog ID and identity contribution. Scope identifiers validate exact Unicode,
+NUL/whitespace and80-scalar bounds. No native metadata/product/Topology/
+organization/diagnostic credential or old metadata grant authorizes this family.
+
+ProtectedOperationIdentityParticipant issues only a new private-tagged
+SuppliedFluidClaimPair. All old private constructors remain with the new tag
+false; their old family predicates/contexts explicitly exclude it. The new
+pair retains actual authentication, immutable binding, physical holder/
+connection, one-use child reads, common contribution, active transaction/thread
+and current native deadline. Its native database sample rechecks binding,
+session/provider/source state and expiry, then the reader rechecks full scoped
+graphs at that sample. The fresh sample cannot be supplied by a caller.
+
+JdbcProtectedAuthorizationEvidenceReader adds only the typed native initial/
+recheck entry points and a private branch for the exact new resource, two
+permission codes and exact company/product scope shape. Public diagnostic
+evidence still cannot select this family; old family validation bodies remain.
+The new company-prefix bound uses the actual prefix length, including a native
+80-character boundary test. The old family request/permission semantics are
+not rewritten. ProtectedFluidPropertyAuthorizationParticipant evaluates both
+actual graphs and compares complete fresh evidence/current decisions; rejected
+reuse poisons the actual issuing transaction rather than accepting a caller
+Boolean. All preparation/acquisition/read/currentness remain explicit physical
+transaction checks; private entry/ticket/pair constructors are not exported.
+
+V20261027_001__custody_fluid_property_authority.sql inserts exactly the two
+permission definitions, rejects conflicting resource/action/status definitions
+and assigns no grants, roles, operational products or units. Existing published
+migration bytes remain unchanged.
+
+**Telemetry unit owner.** CustodyProtectedFluidUnitContract exports typed fixed
+roles DENSITY, DYNAMIC_VISCOSITY, COMPRESSIBILITY_FACTOR, ABSOLUTE_PRESSURE and
+ABSOLUTE_TEMPERATURE; exact bounded unit IDs; immutable scalar snapshots; actual
+backend PID/transaction; and opaque admission. Requests are unique, sorted and
+bounded to128 role/unit pairs; empty requests support explicitly absent fluid
+blocks without inventing a unit. Exact UTF-16/Unicode/NUL/whitespace validation
+and copied collections prevent implicit aliasing. Snapshots do not execute
+conversion factors, establish physical truth or serve as an authorization permit.
+
+V20261027_002__telemetry_fluid_unit_policy.sql creates only the empty
+Telemetry-owned role/dimension/activity policy, with local unit FK, unique
+unit/role, five-role/check constraints and explicit coherent audit timestamps.
+No unit seed, nomination-role reuse, arbitrary role, method default, production
+data or user/role grant is introduced. A single explicit dictionary ownership
+entry names this policy and actual migration/contract/adapter evidence.
+
+JdbcCustodyProtectedFluidUnitAdapter acquires deterministic NOWAIT SHARE ROW
+EXCLUSIVE relation fences on actual unit and fluid policy tables. It validates
+READ COMMITTED, read/write/origin, non-elevated/non-owner/no-schema-CREATE/no-
+TRIGGER credentials, ordinary permanent non-RLS/non-inherited/nonpartitioned
+relations, absence of unexpected user triggers, policy column/key/FK/check shape
+and valid unit primary key. Read/recheck verifies the retained locks, actual
+PID/xid/role and the same issuing holder/connection/thread.
+
+Each requested role/unit must have exactly one active admitted policy and active
+unit with an exact matching declared dimension. Returned unit IDs, policy IDs,
+role and dimensions are also compared using exact Java strings, independently
+of database collation equality. Supplied dimension/symbol or conversion metadata
+cannot manufacture admission. Currentness compares fresh owner snapshots;
+private tickets reject reuse, foreign issuer, completed/read-only/wrong-thread/
+lost-fence contexts. Rejection poisons the original ticket/holder, including
+swallowed cross-thread misuse. The SQL-free commit vote rejects a poisoned
+ticket. Package B must still collect these facts with native/Party/Custody
+admissions and the one common final scalar guard before disclosure/commit.
+
+**Authored executable cases, not yet hosted passing evidence.**
+- ProtectedFluidPropertyAuthorizationPostgresIntegrationTest:18 cases, using
+  genuine four-producer native fixtures/crypto/storage with directory/source
+  transport fixtures only. Covers both exact scopes/actions, DENY/missing/
+  indeterminate, company/product/action and family substitution, forged/replayed/
+  moved/suspended admissions, user/provider/session/grant/source deadlines and
+  revocation, rollback, migration idempotence/conflict/no-grants, exact maximum
+  scope IDs and actual old-metadata grants denied for property writes.
+- CustodyProtectedFluidUnitPostgresIntegrationTest:11 cases with actual full
+  Flyway/PostgreSQL and proxied owner bean. Covers every fixed role/exact owner
+  snapshot without conversion; missing/inactive/wrong-role/dimension; malformed/
+  duplicate/oversize requests; transaction/read-only/isolation/issuer/replay;
+  own-transaction unit/policy revocation and rollback; swallowed worker misuse
+  requiring a commit-vote rejection; existing/absent writer-first NOWAIT;
+  owner-first retained locks against both writers; lost savepoint locks; RLS/
+  inheritance/unexpected triggers/elevated owner; and ordinary credentials denied policy mutation. Worker
+  assertion failures cannot falsely satisfy the expected commit rejection.
+- Three existing fast suites gain one case each: exact new native caller/
+  private-pair boundaries; rejection of null/structural native credentials;
+  rejection of diagnostic/forged reader selection. Existing case identities
+  remain intact. Reader public-entry whitelist gains only the two actual typed
+  methods; the exact F admission caller set gains only the new Identity owner.
+
+The reviewed reader SHA256 pin is now
+16b9aae3799086a800f6690ad64f26ac970604d788a9e6d289bd108b93746d72.
+All other original owner pins, source-boundary assertions, executor callers/DML
+hashes, credential routing, SQL admission grammar and time budgets are preserved.
+No protected executor source, old metadata service, Party adapter or qualified
+GAS domain/codec/export is modified in A.
+
+Inventory adds exactly two PostgreSQL classes/29 real case names and the three
+new fast cases; updates only the four changed existing test source hashes and
+actual case lists. Baseline seconds=0 for the new classes means unmeasured.
+Prior cases, lane flags, timing values, shard settings, fallback and original
+partition membership are unchanged. No test is archived, disabled or removed
+for a passing gate. Native tests require actual Docker and cannot be accepted
+from skipped reports.
+
+**Actual local validation and remaining gates.** All12 new/changed Java sources
+parse using the installed Java17 compiler module. The two new pure contracts
+plus unchanged relation-fence primitive compile as a Java17 subset, with16
+standalone contract smoke assertions PASS.19 existing documentation-validator
+self-tests PASS. Exact inventory/case/hash/lane/unchanged-partition, header,
+scope and source-pin checks must complete before publication. These are not
+Java21/Spring/JUnit/native PostgreSQL passing results. Maven and Docker are not
+available locally; no full environment is provisioned merely to reproduce CI.
+
+The accepted dictionary remains the previous actual catalog, not a fabricated
+new physical schema. These two new migration sources and the real new policy
+relation require a hosted migrated catalog and truthful regeneration. Existing
+dictionary equality may therefore fail until the registered artifact follow-up.
+Ownership is registered now; freshness is an explicit retained obligation, not
+a waived test or a passing dictionary claim. After actual source feedback,
+repair any responsible native/source errors first, then select the registered
+`docs(telemetry): refresh fluid unit policy dictionary` using the actual capture.
+Only after A and its real API/catalog/full gates are accepted may B proceed.
+
+**Completed publication checks.** Exact inventory/source/case hashes, all prior
+partition membership/settings, one added ownership row, immutable Java author/
+creation fields, allowed file set and append-only task history PASS. The unchanged
+link parser accepts the complete phase (34 links). Five exact new native caller
+sets and the reviewed reader pin are checked against actual source. Twelve-file
+syntax parsing was repeated after the final unit/collation and test corrections.
+These checks retain the hosted execution/catalog gates described above.
+
+HAPI-595 parent statuses remain NOT_IMPLEMENTED/IN_PROGRESS pending its complete
+registered authoring flow and final acceptance; this record distinguishes
+Package A source implementation from CI/software/engineering acceptance.
+Publish one guarded main source commit with expected91de724, verify exact17
+paths/parent/tree/blobs/message, observe applicable exact-SHA Full/Fast/Docs
+creation/queue/start and STOP. Do not wait for completion, implement B/C,
+restamp old artifacts, select596/597 or make deployment data obligatory.
+
 <a id="hapi-596"></a>
 ## HAPI-596 — Product publication, history and owner exports
 

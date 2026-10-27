@@ -610,4 +610,14 @@ class ProtectedOperationIdentityParticipantTest {
         assertThat(ProtectedOperationIdentityParticipant.DraftClaimPair.class.getConstructors()).isEmpty();
     }
 
+    @Test void suppliedFluidPrivateFamilyRejectsNullOrForeignStructuralCredentials() {
+        var request=new dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedFluidPropertyAuthorizationContract.Request(
+            dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedFluidPropertyAuthorizationContract.Action.WRITE,"company","product");
+        assertThat(participant.suppliedFluidCredential(null)).isFalse();
+        assertThatThrownBy(()->participant.consumeSuppliedFluidPair(null,request)).isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(()->participant.currentSuppliedFluidReads(null,request)).isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(()->participant.currentSuppliedFluidClaims(null,null)).isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(()->participant.requireCurrentSuppliedFluidPair(null,request)).isInstanceOf(AccessDeniedException.class);
+    }
+
 }

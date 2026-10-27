@@ -468,7 +468,7 @@ public class ProtectedOperationIdentityParticipant {
 
     private void pairContext(QualifiedClaimPair pair) {
         QualifiedClaimRead a = pair.company, b = pair.facility;
-        if (a.owner != this
+        if (a.fluidProperty || b.fluidProperty || a.owner != this
                 || b.owner != this
                 || a.origin != Thread.currentThread()
                 || b.origin != Thread.currentThread()
@@ -557,7 +557,7 @@ public class ProtectedOperationIdentityParticipant {
     }
     private void draftContext(DraftClaimPair p){
         var a=p.company;var b=p.network;
-        if(!a.engineeringDraft || !b.engineeringDraft || a.productDraft || b.productDraft || a.owner!=this || b.owner!=this || a.origin!=Thread.currentThread()
+        if(!a.engineeringDraft || !b.engineeringDraft || a.productDraft || b.productDraft || a.fluidProperty || b.fluidProperty || a.owner!=this || b.owner!=this || a.origin!=Thread.currentThread()
             || b.origin!=Thread.currentThread() || a.actual!=b.actual || a.actual!=SecurityContextHolder.getContext().getAuthentication()
             || !a.actual.isAuthenticated() || a.contribution!=b.contribution || a.transactionResource==null
             || a.transactionResource!=b.transactionResource || connectionResource()!=a.transactionResource
@@ -565,7 +565,7 @@ public class ProtectedOperationIdentityParticipant {
     }
     /** This is only a family discriminator after genuine consume; it creates no credential. */
     public boolean engineeringDraftCredential(QualifiedClaimRead read){
-        return read!=null && read.owner==this && read.used.get() && read.engineeringDraft && !read.productDraft;
+        return read!=null && read.owner==this && read.used.get() && read.engineeringDraft && !read.productDraft && !read.fluidProperty;
     }
 
     /** Native product family: never accepts a station, topology draft or diagnostic credential. */
@@ -632,15 +632,102 @@ public class ProtectedOperationIdentityParticipant {
     }
     public boolean productDraftCredential(QualifiedClaimRead child) {
         return child!=null && child.owner==this && child.used.get() && child.productDraft
-            && !child.engineeringDraft && child.organization==null;
+            && !child.fluidProperty && !child.engineeringDraft && child.organization==null;
     }
     /** Native-issued sample, private credentials and both graph requests remain bound to one pair. */
     public record ProductReads(PairReads reads, Instant sampledAt) {}
 
     private Instant productContext(ProductClaimPair pair) {
         var a=pair.company;var b=pair.product;
-        if(pair.owner!=this || !pair.active || !a.productDraft || !b.productDraft || a.engineeringDraft || b.engineeringDraft
+        if(pair.owner!=this || !pair.active || !a.productDraft || !b.productDraft || a.fluidProperty || b.fluidProperty || a.engineeringDraft || b.engineeringDraft
             || a.organization!=null || b.organization!=null || a.owner!=this || b.owner!=this
+            || a.origin!=Thread.currentThread() || b.origin!=Thread.currentThread()
+            || a.actual!=b.actual || a.actual!=SecurityContextHolder.getContext().getAuthentication() || !a.actual.isAuthenticated()
+            || a.contribution!=b.contribution || a.transactionResource==null || a.transactionResource!=b.transactionResource
+            || connectionResource()!=a.transactionResource || !(a.transactionResource instanceof org.springframework.jdbc.datasource.ConnectionHolder holder)
+            || holder.isRollbackOnly() || TransactionSynchronizationManager.isCurrentTransactionReadOnly()) throw denied();
+        requireAdmitted(pair.admitted);
+        var stored=bindings.findByNativeIssuerAndJti(a.locator.nativeIssuer(),a.locator.jti()).orElseThrow(ProtectedOperationIdentityParticipant::denied);
+        registry.validatePersistentOrigin(stored);
+        var now=jdbc.queryForObject("SELECT pg_catalog.clock_timestamp()",java.sql.Timestamp.class);
+        if(!stored.equals(a.locator) || now==null || now.toInstant().isBefore(a.contribution.evidence().observedAt())
+            || !now.toInstant().isBefore(a.contribution.validUntil()) || !states.current(stored,now.toInstant())) throw denied();
+        return now.toInstant();
+    }
+
+    /** Native supplied-fluid family: never accepts a station, topology draft or diagnostic credential. */
+    @Transactional(propagation=Propagation.MANDATORY)
+    public SuppliedFluidClaimPair qualifySuppliedFluidPair(Admitted admitted,
+            dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedFluidPropertyAuthorizationContract.Request request) {
+        Objects.requireNonNull(request);
+        Contribution c=contribute(admitted); Prepared p=admitted.prepared;
+        Object resource=connectionResource();
+        if(resource==null || !TransactionSynchronizationManager.isSynchronizationActive()) throw denied();
+        context(p);
+        String code=dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedFluidPropertyAuthorizationContract.permissionCode(request.action());
+        String type=dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedFluidPropertyAuthorizationContract.resourceType();
+        var company=new AuthorizationEvaluationRequest(c.evidence().userId(),code,type,request.catalogProductId(),
+            new AuthorizationScope(ScopeType.CUSTOM,"custody-company:"+request.companyPartyId(),null));
+        var product=new AuthorizationEvaluationRequest(c.evidence().userId(),code,type,request.catalogProductId(),
+            new AuthorizationScope(ScopeType.CUSTOM,"custody-product:"+request.catalogProductId(),null));
+        var a=new QualifiedClaimRead(this,p.actual,p.locator,company,c,resource,false,null,false,true);
+        var b=new QualifiedClaimRead(this,p.actual,p.locator,product,c,resource,false,null,false,true);
+        var pair=new SuppliedFluidClaimPair(this,admitted,request,a,b);
+        TransactionSynchronizationManager.registerSynchronization(pair);
+        suppliedFluidContext(pair); return pair;
+    }
+    public static final class SuppliedFluidClaimPair implements org.springframework.transaction.support.TransactionSynchronization {
+        private final ProtectedOperationIdentityParticipant owner;
+        private final Admitted admitted;
+        private final dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedFluidPropertyAuthorizationContract.Request request;
+        private final QualifiedClaimRead company,product;
+        private final AtomicBoolean used=new AtomicBoolean();
+        private volatile boolean active=true;
+        private SuppliedFluidClaimPair(ProtectedOperationIdentityParticipant owner,Admitted admitted,
+                dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedFluidPropertyAuthorizationContract.Request request,
+                QualifiedClaimRead company,QualifiedClaimRead product) {
+            this.owner=owner;this.admitted=admitted;this.request=request;this.company=company;this.product=product;
+        }
+        @Override public void suspend(){active=false;}
+        @Override public void afterCompletion(int status){active=false;}
+        @Override public String toString(){return "SuppliedFluidClaimPair[opaque]";}
+    }
+    @Transactional(propagation=Propagation.MANDATORY)
+    public SuppliedFluidReads consumeSuppliedFluidPair(SuppliedFluidClaimPair pair,
+            dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedFluidPropertyAuthorizationContract.Request request) {
+        if(pair==null || pair.owner!=this || !pair.request.equals(request) || !pair.used.compareAndSet(false,true)) throw denied();
+        Instant sampledAt=suppliedFluidContext(pair);
+        return new SuppliedFluidReads(new PairReads(pair.company,pair.company.request,pair.product,pair.product.request,pair.company.contribution),sampledAt);
+    }
+    @Transactional(propagation=Propagation.MANDATORY)
+    public SuppliedFluidReads currentSuppliedFluidReads(SuppliedFluidClaimPair pair,
+            dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedFluidPropertyAuthorizationContract.Request request) {
+        requireCurrentSuppliedFluidPair(pair,request);
+        Instant sampledAt=suppliedFluidContext(pair);
+        return new SuppliedFluidReads(new PairReads(pair.company,pair.company.request,pair.product,pair.product.request,pair.company.contribution),sampledAt);
+    }
+    @Transactional(propagation=Propagation.MANDATORY)
+    public void requireCurrentSuppliedFluidPair(SuppliedFluidClaimPair pair,
+            dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedFluidPropertyAuthorizationContract.Request request) {
+        if(pair==null || pair.owner!=this || !pair.request.equals(request) || !pair.used.get()) throw denied();
+        suppliedFluidContext(pair);
+        requireCurrentClaims(pair.company,pair.company.request);requireCurrentClaims(pair.product,pair.product.request);
+    }
+    public Contribution currentSuppliedFluidClaims(QualifiedClaimRead child,AuthorizationEvaluationRequest request) {
+        if(!suppliedFluidCredential(child))throw denied();
+        requireCurrentClaims(child,request);return child.contribution;
+    }
+    public boolean suppliedFluidCredential(QualifiedClaimRead child) {
+        return child!=null && child.owner==this && child.used.get() && child.fluidProperty
+            && !child.engineeringDraft && !child.productDraft && child.organization==null;
+    }
+    /** Native-issued sample, private credentials and both graph requests remain bound to one pair. */
+    public record SuppliedFluidReads(PairReads reads, Instant sampledAt) {}
+
+    private Instant suppliedFluidContext(SuppliedFluidClaimPair pair) {
+        var a=pair.company;var b=pair.product;
+        if(pair.owner!=this || !pair.active || !a.fluidProperty || !b.fluidProperty || a.engineeringDraft || b.engineeringDraft
+            || a.productDraft || b.productDraft || a.organization!=null || b.organization!=null || a.owner!=this || b.owner!=this
             || a.origin!=Thread.currentThread() || b.origin!=Thread.currentThread()
             || a.actual!=b.actual || a.actual!=SecurityContextHolder.getContext().getAuthentication() || !a.actual.isAuthenticated()
             || a.contribution!=b.contribution || a.transactionResource==null || a.transactionResource!=b.transactionResource
@@ -757,7 +844,7 @@ public class ProtectedOperationIdentityParticipant {
     }
 
     public boolean organizationCredential(QualifiedClaimRead child) {
-        return child != null && child.owner == this && child.used.get() && !child.engineeringDraft && !child.productDraft
+        return child != null && child.owner == this && child.used.get() && !child.engineeringDraft && !child.productDraft && !child.fluidProperty
                 && child.organization != null && child.organization.owner == this
                 && child.organization.used.get() && child.organization.children.contains(child);
     }
@@ -792,7 +879,7 @@ public class ProtectedOperationIdentityParticipant {
                         "SELECT pg_catalog.pg_backend_pid()=? AND pg_catalog.txid_current()=?",
                         Boolean.class, c.backendPid(), c.transactionId()))) throw denied();
         for (var child : group.children) {
-            if (child.organization != group || child.owner != this || child.engineeringDraft || child.productDraft
+            if (child.organization != group || child.owner != this || child.engineeringDraft || child.productDraft || child.fluidProperty
                     || child.contribution != c || child.transactionResource != holder
                     || child.actual != p.actual || child.origin != group.thread) throw denied();
         }
@@ -861,6 +948,7 @@ public class ProtectedOperationIdentityParticipant {
         private final AtomicBoolean used = new AtomicBoolean();
         private final boolean engineeringDraft;
         private final boolean productDraft;
+        private final boolean fluidProperty;
         private final OrganizationClaimGroup organization;
 
         private QualifiedClaimRead(
@@ -889,6 +977,13 @@ public class ProtectedOperationIdentityParticipant {
                 OperationAuthenticationBinding locator, AuthorizationEvaluationRequest request,
                 Contribution contribution, Object transactionResource, boolean engineeringDraft,
                 OrganizationClaimGroup organization, boolean productDraft) {
+            this(owner,actual,locator,request,contribution,transactionResource,engineeringDraft,organization,productDraft,false);
+        }
+        private QualifiedClaimRead(ProtectedOperationIdentityParticipant owner, Authentication actual,
+                OperationAuthenticationBinding locator, AuthorizationEvaluationRequest request,
+                Contribution contribution, Object transactionResource, boolean engineeringDraft,
+                OrganizationClaimGroup organization, boolean productDraft,boolean fluidProperty) {
+            this.fluidProperty=fluidProperty;
             this.engineeringDraft=engineeringDraft;
             this.productDraft=productDraft;
             this.organization=organization;

@@ -651,7 +651,8 @@ class JdbcProtectedAuthorizationEvidenceReaderTest {
                 .extracting(java.lang.reflect.Method::getName)
                 .containsExactlyInAnyOrder("load", "loadQualified", "loadQualifiedPair", "loadQualifiedDraftPair",
                         "loadQualifiedOrganizationGroup", "recheckOrganizationGroup",
-                        "loadQualifiedProductPair", "recheckProductPair");
+                        "loadQualifiedProductPair", "recheckProductPair",
+                        "loadQualifiedSuppliedFluidPair", "recheckSuppliedFluidPair");
         for (String name : List.of("loadQualifiedProductPair", "recheckProductPair")) {
             assertThat(Arrays.stream(JdbcProtectedAuthorizationEvidenceReader.class.getDeclaredMethods())
                     .filter(m -> m.getName().equals(name))).singleElement().satisfies(method -> {
@@ -709,6 +710,18 @@ class JdbcProtectedAuthorizationEvidenceReaderTest {
                 dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedEngineeringDraftAuthorizationContract.Action.valueOf("PUBLICATION_"+action.toUpperCase(Locale.ROOT)),"company","network");
             assertThatThrownBy(()->reader.loadQualifiedDraftPair(null,request)).isInstanceOf(RuntimeException.class);
         }
+    }
+
+    @Test void suppliedFluidFamilyCannotBeSelectedByDiagnosticEvidenceOrForgedPair() {
+        for(String action:List.of("read","write")) {
+            var structural=new AuthorizationEvaluationRequest(USER,"custody:engineering-product-properties:"+action,"PRODUCT_ENGINEERING_PROPERTIES","product",
+                new AuthorizationScope(ScopeType.CUSTOM,"custody-product:product",null));
+            assertThatThrownBy(()->reader.load(identity,structural,7,11)).isInstanceOf(RuntimeException.class);
+        }
+        var request=new dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedFluidPropertyAuthorizationContract.Request(
+            dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedFluidPropertyAuthorizationContract.Action.READ,"company","product");
+        assertThatThrownBy(()->reader.loadQualifiedSuppliedFluidPair(null,request)).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(()->reader.recheckSuppliedFluidPair(null,request)).isInstanceOf(RuntimeException.class);
     }
 
 }

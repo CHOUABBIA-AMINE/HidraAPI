@@ -1562,6 +1562,7 @@
         "sourceExpiryCapsNativeLifetimeWithoutRoundingUpNanoseconds",
         "sourceTupleAndTagShapeCannotBeMadeValidByCallerConstruction",
         "splitIdentityAdmissionRemainsOpaqueAndMandatory",
+        "suppliedFluidSeamsHaveOnlyTheirExactPrivateOwnerCallers",
         "topologyExportHasNoArgumentsAndOpaqueDenialHasNoIdentity",
         "verificationSnapshotsRejectMalformedSourceAndUnrepresentableDeadlines"
       ],
@@ -1571,7 +1572,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java",
-      "source_sha256": "aaed934e05a45b2569e8bd7b91c3a033847f33c6be510691dbb39e118c2fb616",
+      "source_sha256": "6cb9ef32fc0855a0aebe53b8c0da6ed25d68450ed53ce5d85be5dad4f8f35399",
       "supports": []
     },
     {
@@ -2439,6 +2440,37 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "companyProductAndActionCannotBeSubstituted",
+        "consumedOrCompletedAdmissionCannotBeUsedAgain",
+        "crossThreadRejectionPoisonsOriginalTransactionEvenWhenSwallowed",
+        "eitherScopeDenyAndMissingAuthorityCannotProducePartialPermit",
+        "expiredNativeDeadlineCannotSurviveFinalRecheck",
+        "fabricatedPreparationAdmissionAndNativePairFailClosed",
+        "fourNativeProducersRequireBothExactScopesForTwoActions",
+        "grantExpiryUsesFreshDatabaseTimeForBothScopes",
+        "maximumCompanyAndProductScopeIdsRetainExactNativeAuthority",
+        "metadataProductPermissionsDoNotAuthorizeSuppliedProperties",
+        "missingPermissionDefinitionCannotBeGrantedByCallerClaims",
+        "permissionMigrationIsIdempotentRejectsMismatchAndAssignsNoGrants",
+        "preparedEntryCannotReplayOrMoveToDifferentAuthentication",
+        "sameTransactionGrantRevocationIsDetectedAndRolledBack",
+        "suspendedTransactionCannotResumeOldAdmission",
+        "topologyScopedGrantsNeverAuthorizeFluidProperties",
+        "unresolvedPolicyEvidenceRemainsIndeterminateDespiteBothGrants",
+        "userProviderAndSessionRevocationsRejectPreparedNativeEvidence"
+      ],
+      "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.ProtectedFluidPropertyAuthorizationPostgresIntegrationTest",
+      "dependency_reason": "Actual PostgreSQL/Flyway and native owner admission; Docker required",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedFluidPropertyAuthorizationPostgresIntegrationTest.java",
+      "source_sha256": "7a80a1a9a31b1c90525067d957c1accb64360efbc6fa60fbeb515c8170bcf44a",
+      "supports": []
+    },
+    {
       "baseline_seconds": 23.654,
       "cases": [
         "admittedNativeCredentialHasNoPublicConstructor",
@@ -2657,14 +2689,15 @@
         "preservesGrantOrderScopeWindowsAndDenyPrecedence",
         "preservesTypedAttributesAndConflicts",
         "publicationDiagnosticsAndForgedPairsNeverSelectThePrivateQualifiedFamily",
+        "qualifiedPhysicalFenceProbeNeverReusesAPreviousSuccess",
+        "qualifiedPhysicalFenceProbeRejectsUnknownOrUnavailableEvidence",
         "rejectsCallerActorResourceAndScopeMismatches",
         "rejectsUnknownClaimCoverageInsteadOfAssumingAbsence",
         "requiresMatchingPhysicalCoordinatesAndCompleteIdentityFences",
         "requiresWritableReadCommittedParticipation",
         "structuralAppointmentRequestsCannotSelectQualifiedOrganizationFamily",
         "structuralDiagnosticEvidenceCannotSelectEngineeringDraftFamily",
-        "qualifiedPhysicalFenceProbeNeverReusesAPreviousSuccess",
-        "qualifiedPhysicalFenceProbeRejectsUnknownOrUnavailableEvidence"
+        "suppliedFluidFamilyCannotBeSelectedByDiagnosticEvidenceOrForgedPair"
       ],
       "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcProtectedAuthorizationEvidenceReaderTest",
       "dependency_reason": "G diagnostic JDBC normalization/transaction checks; mocks and unchanged domain evaluator only",
@@ -2672,7 +2705,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java",
-      "source_sha256": "496da6164b3ba9acb2c2dd3b5809063dc149744f789fa95c541b8b857709b791",
+      "source_sha256": "8b156aa9c043e87962b3818f5e30f7359d7aa59395066b2923b4de936e31b90d",
       "supports": []
     },
     {
@@ -2957,6 +2990,7 @@
         "preparedHandleHasNoPublicConstructorOrSensitiveText",
         "publicAndLegacyContextsCannotCreatePreparedHandle",
         "publicationResourceMappingNeverChangesDraftOrMintsAClaimPair",
+        "suppliedFluidPrivateFamilyRejectsNullOrForeignStructuralCredentials",
         "unavailableStorageDecoderAndCorruptOriginRemainErrors",
         "wireAndDecodedOwnerClaimsMustAgree"
       ],
@@ -2966,7 +3000,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipantTest.java",
-      "source_sha256": "7496e059ec24b603bcfbd8d72429685a4e9e955d467cedc78c97e36fed22c761",
+      "source_sha256": "9ad3c87e3cac422fffdfd80a2021714c2dc30ef4beba842bacddb8cb1edbdd0d",
       "supports": []
     },
     {
@@ -7101,6 +7135,30 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "allRolesReturnExactOwnerSnapshotsWithoutConversion",
+        "crossThreadSwallowedReusePoisonsOriginalTransaction",
+        "currentnessDetectsOwnUnitAndPolicyRevocationAndRollsBack",
+        "lostLocksAfterSavepointRollbackInvalidateAdmission",
+        "malformedDuplicateAndOversizeRequestsRejectBeforeAdmission",
+        "missingInactiveWrongRoleAndDimensionFailClosed",
+        "ordinaryCredentialsCannotChangeOwnerPolicy",
+        "ownerFirstRetainsBothFencesAndBlocksOrdinaryWriters",
+        "transactionContextForeignIssuerReplayAndCompletedTicketsReject",
+        "unsafeCatalogAndElevatedOwnerCannotProduceEvidence",
+        "writerFirstUnitOrPolicyChangeMakesAdmissionNowait"
+      ],
+      "class": "dz.sh.hidra.modules.telemetry.infrastructure.persistence.CustodyProtectedFluidUnitPostgresIntegrationTest",
+      "dependency_reason": "Actual PostgreSQL/Flyway and native owner admission; Docker required",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "telemetry",
+      "path": "src/test/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/CustodyProtectedFluidUnitPostgresIntegrationTest.java",
+      "source_sha256": "f317cd66c2fd99f402e5bcb67a03f23f90b0293557a2ce61a5c5e297e6f1cfd0",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0.052,
       "cases": [
         "ownerResolvesRealPointAndGovernedTrustWithoutInventedHighTrustThreshold"
@@ -7315,7 +7373,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java",
-      "source_sha256": "2788770168130ac42b15277d447b6c8ff592d1e2eae95e3b211dfac7ee8cff9a",
+      "source_sha256": "d661664e20bb15661c19aca1b720c8acc84b90510b5c37b5f4846d3b203e0b17",
       "supports": []
     },
     {

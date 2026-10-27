@@ -174,18 +174,23 @@ public class JdbcProtectedAuthorizationEvidenceReader {
             ProtectedOperationIdentityParticipant.QualifiedClaimRead credential,
             AuthorizationEvaluationRequest request, boolean organizationRecheck, Rows rows,
             boolean productRecheck, Instant productSample) {
+        return loadClaims(credential,request,organizationRecheck,rows,productRecheck,productSample,false);
+    }
+    private AuthorizationEvidence loadClaims(ProtectedOperationIdentityParticipant.QualifiedClaimRead credential,
+            AuthorizationEvaluationRequest request,boolean organizationRecheck,Rows rows,
+            boolean productRecheck,Instant productSample,boolean fluidFamily) {
         try {
             rows.beginGraph();
             if (participant == null || bindings == null || companions == null
                     || registry == null || catalog == null) throw invalid();
-            var contribution = productRecheck ? participant.currentProductClaims(credential, request)
+            var contribution = productRecheck ? (fluidFamily ? participant.currentSuppliedFluidClaims(credential,request) : participant.currentProductClaims(credential, request))
                     : organizationRecheck ? participant.currentOrganizationClaims(credential, request)
                     : participant.consumeClaims(credential, request);
             Evidence evidence = contribution.evidence();
             int pid = contribution.backendPid();
             long xid = contribution.transactionId();
             validate(evidence, request, pid, xid, participant.engineeringDraftCredential(credential),
-                    participant.organizationCredential(credential), participant.productDraftCredential(credential));
+                    participant.organizationCredential(credential), participant.productDraftCredential(credential),participant.suppliedFluidCredential(credential));
             qualifiedPhysicalFences(pid, xid);
             OperationAuthenticationBinding original =
                     bindings.findByNativeIssuerAndJti(evidence.issuer(), evidence.jti())
@@ -223,7 +228,7 @@ public class JdbcProtectedAuthorizationEvidenceReader {
                     qualified = new QualifiedClaims(proof.coverage(), original.authenticationType());
                 }
             }
-            Instant productAt = participant.productDraftCredential(credential)
+            Instant productAt = (participant.productDraftCredential(credential) || participant.suppliedFluidCredential(credential))
                     ? Objects.requireNonNull(productSample) : evidence.observedAt();
             if(productAt.isBefore(evidence.observedAt()) || !productAt.isBefore(contribution.validUntil())) throw invalid();
             AuthorizationEvidence result = read(evidence, request, rows, qualified, productAt);
@@ -300,6 +305,34 @@ public class JdbcProtectedAuthorizationEvidenceReader {
             var company=loadClaims(reads.company(),reads.companyRequest(),false,new Rows(),recheck,at);
             var product=loadClaims(reads.facility(),reads.facilityRequest(),false,new Rows(),recheck,at);
             participant.requireCurrentProductPair(pair,request);
+            return new PairedAuthorizationEvidence(reads.companyRequest(),company,reads.facilityRequest(),product,reads.contribution());
+        }catch(RuntimeException failure){throw invalid();}
+    }
+
+    @Transactional(propagation=Propagation.MANDATORY)
+    public PairedAuthorizationEvidence loadQualifiedSuppliedFluidPair(
+            ProtectedOperationIdentityParticipant.SuppliedFluidClaimPair pair,
+            dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedFluidPropertyAuthorizationContract.Request request) {
+        return suppliedFluidGraphs(pair,request,false);
+    }
+    @Transactional(propagation=Propagation.MANDATORY)
+    public PairedAuthorizationEvidence recheckSuppliedFluidPair(
+            ProtectedOperationIdentityParticipant.SuppliedFluidClaimPair pair,
+            dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedFluidPropertyAuthorizationContract.Request request) {
+        return suppliedFluidGraphs(pair,request,true);
+    }
+    private PairedAuthorizationEvidence suppliedFluidGraphs(
+            ProtectedOperationIdentityParticipant.SuppliedFluidClaimPair pair,
+            dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedFluidPropertyAuthorizationContract.Request request,
+            boolean recheck) {
+        try {
+            if(participant==null)throw invalid();
+            var nativeRead=recheck?participant.currentSuppliedFluidReads(pair,request):participant.consumeSuppliedFluidPair(pair,request);
+            var reads=nativeRead.reads();
+            Instant at=nativeRead.sampledAt();
+            var company=loadClaims(reads.company(),reads.companyRequest(),false,new Rows(),recheck,at,true);
+            var product=loadClaims(reads.facility(),reads.facilityRequest(),false,new Rows(),recheck,at,true);
+            participant.requireCurrentSuppliedFluidPair(pair,request);
             return new PairedAuthorizationEvidence(reads.companyRequest(),company,reads.facilityRequest(),product,reads.contribution());
         }catch(RuntimeException failure){throw invalid();}
     }
@@ -410,6 +443,9 @@ public class JdbcProtectedAuthorizationEvidenceReader {
         validate(i, r, pid, xid, draft, false, false);
     }
     private void validate(Evidence i, AuthorizationEvaluationRequest r, int pid, long xid,boolean draft, boolean organization, boolean product) {
+        validate(i,r,pid,xid,draft,organization,product,false);
+    }
+    private void validate(Evidence i, AuthorizationEvaluationRequest r, int pid, long xid,boolean draft,boolean organization,boolean product,boolean fluid) {
         if (!TransactionSynchronizationManager.isActualTransactionActive()
                 || TransactionSynchronizationManager.isCurrentTransactionReadOnly()
                 || i == null
@@ -447,7 +483,15 @@ public class JdbcProtectedAuthorizationEvidenceReader {
                         || i.externalGeneration() <= 0
                         || ("OIDC".equals(i.authenticationType())
                                 != (i.sourceExpiresAt() != null)))) throw invalid();
-        if (product) {
+        if (fluid) {
+            if(draft || organization || product || !i.userId().equals(r.userId()) || !"PRODUCT_ENGINEERING_PROPERTIES".equals(r.resourceType())
+                || !text(r.resourceReferenceId(),80) || r.scope()==null || r.scope().scopeType()!=ScopeType.CUSTOM
+                || r.scope().scopeCodeSnapshot()!=null
+                || !Set.of("custody:engineering-product-properties:read","custody:engineering-product-properties:write").contains(r.permissionCode()))throw invalid();
+            String ref=r.scope().scopeReferenceId();
+            if(ref==null || !(ref.equals("custody-product:"+r.resourceReferenceId())
+                || (ref.startsWith("custody-company:") && text(ref.substring("custody-company:".length()),80))))throw invalid();
+        } else if (product) {
             if(draft || organization || !i.userId().equals(r.userId()) || !"PRODUCT_ENGINEERING_DRAFT".equals(r.resourceType())
                 || !text(r.resourceReferenceId(),80) || r.scope()==null || r.scope().scopeType()!=ScopeType.CUSTOM
                 || r.scope().scopeCodeSnapshot()!=null

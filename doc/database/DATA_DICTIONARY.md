@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `d85f9d4c7b7da0312b1217fffe085e0bf496a9fd`
+Captured source SHA: `4bd0da89e77b27597b4399fcc1198382e5f84b10`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `18a637865d4575ee176cf0ec58e510e7b9e403b6f38c27557d1853d20437372a`.
-Migrations: 175; JPA mappings: 470; catalog relations: 519; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `0ed456292230e222e4cff9ae6c61e8e5a996a573d039c60345f10f5590c35fa7`.
+Migrations: 177; JPA mappings: 470; catalog relations: 520; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -9714,6 +9714,7 @@ Persisted PermissionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261026_001__custody_product_draft_authority.sql](../../src/main/resources/db/migration/V20261026_001__custody_product_draft_authority.sql)
+- Migration mention (not inferred introduction): [V20261027_001__custody_fluid_property_authority.sql](../../src/main/resources/db/migration/V20261027_001__custody_fluid_property_authority.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -25115,6 +25116,48 @@ Persisted TelemetryIngestionBatchJpaEntity state; semantic authority remains wit
 
 None captured in this catalog category.
 
+### public.hidra_telemetry_fluid_unit_policy
+
+Owner: **telemetry**; relation kind: `r`.
+
+Telemetry-owned explicit role/dimension admission for supplied fluid unit facts; empty at migration, no conversion, seed, authorization grant or numerical qualification.
+
+- Evidence: [V20261027_002__telemetry_fluid_unit_policy.sql](../../src/main/resources/db/migration/V20261027_002__telemetry_fluid_unit_policy.sql)
+- Evidence: [CustodyProtectedFluidUnitContract.java](../../src/main/java/dz/sh/hidra/modules/telemetry/application/contract/custody/CustodyProtectedFluidUnitContract.java)
+- Evidence: [JdbcCustodyProtectedFluidUnitAdapter.java](../../src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/adapter/JdbcCustodyProtectedFluidUnitAdapter.java)
+- Migration mention (not inferred introduction): [V20261027_002__telemetry_fluid_unit_policy.sql](../../src/main/resources/db/migration/V20261027_002__telemetry_fluid_unit_policy.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| unit_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| usage_role | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| expected_dimension | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| active | boolean | False | None; identity=; generated= | No current mapped Java column | — |
+| created_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| updated_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_fluid_unit_dimension_ck`: CHECK (length(btrim(expected_dimension::text)) &gt; 0 AND expected_dimension::text = btrim(expected_dimension::text))
+  - Catalog attributes: {"columns": ["expected_dimension"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_fluid_unit_owner_fk`: FOREIGN KEY (unit_id) REFERENCES hidra_telemetry_unit(id)
+  - Catalog attributes: {"columns": ["unit_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_telemetry_unit"}, "type": "f", "validated": true}
+- `hidra_fluid_unit_role_ck`: CHECK (usage_role::text = ANY (ARRAY['DENSITY'::character varying, 'DYNAMIC_VISCOSITY'::character varying, 'COMPRESSIBILITY_FACTOR'::character varying, 'ABSOLUTE_PRESSURE'::character varying, 'ABSOLUTE_TEMPERATURE'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["usage_role"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_fluid_unit_times_ck`: CHECK (updated_at &gt;= created_at)
+  - Catalog attributes: {"columns": ["updated_at", "created_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_telemetry_fluid_unit_policy_pkey`: PRIMARY KEY (unit_id, usage_role)
+  - Catalog attributes: {"columns": ["unit_id", "usage_role"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `hidra_telemetry_fluid_unit_policy_pkey`: CREATE UNIQUE INDEX hidra_telemetry_fluid_unit_policy_pkey ON public.hidra_telemetry_fluid_unit_policy USING btree (unit_id, usage_role)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+None captured in this catalog category.
+
 ### public.hidra_telemetry_planning_unit_pair
 
 Owner: **telemetry**; relation kind: `r`.
@@ -25895,6 +25938,7 @@ Persisted TelemetryUnitJpaEntity state; semantic authority remains with telemetr
 - Migration mention (not inferred introduction): [V20261006_008__hmr_053_trusted_telemetry_gate.sql](../../src/main/resources/db/migration/V20261006_008__hmr_053_trusted_telemetry_gate.sql)
 - Migration mention (not inferred introduction): [V20261008_025__hmr_080_nomination_owner_reference_policies.sql](../../src/main/resources/db/migration/V20261008_025__hmr_080_nomination_owner_reference_policies.sql)
 - Migration mention (not inferred introduction): [V20261008_026__hmr_080_planning_nomination_integrity.sql](../../src/main/resources/db/migration/V20261008_026__hmr_080_planning_nomination_integrity.sql)
+- Migration mention (not inferred introduction): [V20261027_002__telemetry_fluid_unit_policy.sql](../../src/main/resources/db/migration/V20261027_002__telemetry_fluid_unit_policy.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

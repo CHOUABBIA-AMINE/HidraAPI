@@ -2878,6 +2878,52 @@ a passing API-contract lane or select Package B/C. No Java/Maven/PostgreSQL
 local execution is claimed. This source-only correction remains subject to
 new exact-SHA Fast/Full/Docs CI feedback before HAPI-595 Package A acceptance.
 
+
+### HAPI-595 Package A — Hosted physical dictionary correction, 2026-10-27
+
+Owner Fail reviews exact implementation head
+`4bd0da89e77b27597b4399fcc1198382e5f84b10` (tree
+`8a17e32c966107911a7c9cd5036ca63dd8c41dd0`).
+Fast Feedback #224/run 40501151777 and Documentation #624/run
+40501151763 are completed/success. Full #918/run 40501151799 fails
+only its mandatory API contract/database dictionary lane; all seven PostgreSQL
+shards, Java unit/architecture and static validation succeeded. The generator
+exited with `Physical dictionary drift; review regenerated metadata/content`;
+Full Verification Gate failure is consequent to the missing successful lane.
+
+Recovered actual hosted PostgreSQL16 migrated catalog evidence from the
+exact-head Full #918 API-contract diagnostic artifact `12732956715`
+(`hidra-ci-diagnostics-4bd0da89e77b27597b4399fcc1198382e5f84b10-40501151799-1-api-contract`).
+Its `database/schema.json` is 6,379,228 bytes, SHA256
+`e7825c993ba1ba774ac17785ad98073cc4a65ec33014514800089ccbfc5997e7`,
+with exact captured `source_sha` of 4bd0da89, 177 applied source migration
+identities, 470 JPA mappings, 520 physical relations and actual PostgreSQL
+server 16.15 (Debian 16.15-1.pgdg13+2). Reviewed source-bundle SHA256 is
+`0ed456292230e222e4cff9ae6c61e8e5a996a573d039c60345f10f5590c35fa7`.
+The observed prior reviewed dictionary had 175 migrations/519 relations.
+
+Within the previously admitted artifact-only two-file allowlist, update
+`doc/database/DATA_DICTIONARY.md` from the actual catalog: add the one
+Telemetry-owned `hidra_telemetry_fluid_unit_policy` relation with six physical
+columns, five constraints, its primary index and source-linked owner evidence;
+record exact new migration mentions for that table, `hidra_telemetry_unit`
+and `hidra_identity_permission`; and refresh source-bundle/generation counts.
+Retain the generator's format, unchanged prior physical data, ownership, SQL
+facts, migration history and no-unresolved-owner claims. The physical catalog
+was captured by CI, not fabricated from source-only schema inference. Its
+existing `verification.json` reports the genuine previous drift failure.
+
+The refreshed dictionary text is reconstructed deterministically from the
+actual captured catalog and repository's existing generator rendering rules;
+the complete current CI generator/equality/ownership check has not yet passed
+on this corrected head and remains the explicit acceptance gate. No migration,
+JPA, Java test, workflow, grant or validator is changed; no attempt is made to
+skip dictionary equality or other Full checks. Exact registered message:
+`docs(telemetry): refresh fluid unit policy dictionary`.
+Publish with expected 4bd0da89 and observe fresh exact-SHA applicable CI
+creation/start, then STOP. HAPI-595 Package A remains implementation-complete
+in this bounded scope but not Full-accepted; B/C and HAPI-596 remain unselected.
+
 <a id="hapi-596"></a>
 ## HAPI-596 — Product publication, history and owner exports
 

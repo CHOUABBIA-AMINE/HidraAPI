@@ -949,6 +949,28 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "blankNulMalformedSurrogatesAndOversizeMetadataReject",
+        "classifiedErrorsHideRetainedCauseAndNeverInviteAutomaticRetry",
+        "createReturns201AndFreshReplayReturns200WithDistinctIdentities",
+        "exactUnicodeCodePointBoundsAndExplicitNullsRoundTrip",
+        "malformedShapeUuidMissingAndDuplicateScopeRejectWithoutDisclosure",
+        "numericTextCoercionFractionalOverflowAndUnknownLabelsReject",
+        "readAndUpdateBindCompanyAndExpectedVersionToTypedCommands",
+        "responseUsesExplicitMetadataNullsAndNoAuthorityOrPersistenceFields",
+        "unknownServerOwnedAndImmutableUpdateFieldsNeverReachUseCase"
+      ],
+      "class": "dz.sh.hidra.modules.custody.api.rest.controller.ProductEngineeringDraftControllerTest",
+      "dependency_reason": "New HAPI-594C cases; unmeasured. Standalone MockMvc boundary and explicit DTO/error mapping; no native authentication claim.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "custody",
+      "path": "src/test/java/dz/sh/hidra/modules/custody/api/rest/controller/ProductEngineeringDraftControllerTest.java",
+      "source_sha256": "e89a74b02879b6b89a0f2c747a8896488fb7e225371a0aaca793287a6001f5e6",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0.11,
       "cases": [
         "derivesEvidenceAndQualifiedTimeOnServerAndReplaysOriginalQualification",
@@ -1086,6 +1108,31 @@
       "owner": "custody",
       "path": "src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/CustodyTransferTicketSemanticPostgresIntegrationTest.java",
       "source_sha256": "f7fbc1e5b29c4f515dc5390ba0974fc60aae07cbce858e509e2b72d628380a22",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "currentDenyOnEitherScopeBlocksReadUpdateAndReplay",
+        "disabledPolicyCatalogAndPartyFailClosedAtHttpBoundary",
+        "exactReplayReturnsCurrentVersionAndConflictingReplayRollsBack",
+        "expiredNativeSessionCannotReadOrAppend",
+        "finalDatabaseExpiryReturns503AndRollsBackProvisionalHttpWrite",
+        "fourNativeBearerProducersCreateReadAndUpdateThroughConfiguredFilters",
+        "malformedAndForgedBodyFieldsCannotReachPersistence",
+        "missingAndMalformedBearerNeverCreateOrDiscloseDrafts",
+        "nullClassificationAndLiquidLabelRoundTripWithoutQualification",
+        "staleHttpCasAndDuplicateCodeLeaveExactRowsUnchanged",
+        "twoCompaniesShareCatalogAndCodeButNeverEachOthersMetadata",
+        "updateRejectsIdentityFieldsVersionCoercionAndAmbiguousCompany"
+      ],
+      "class": "dz.sh.hidra.modules.custody.infrastructure.persistence.ProductEngineeringDraftNativeHttpPostgresIntegrationTest",
+      "dependency_reason": "New HAPI-594C cases; unmeasured. Configured native bearer filters, real owner transactions and migrated PostgreSQL; Docker required.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "custody",
+      "path": "src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/ProductEngineeringDraftNativeHttpPostgresIntegrationTest.java",
+      "source_sha256": "164196cc65c8cb75143f30fd9db69d93ec65f6a8a4fd3f9c32521404a73573a6",
       "supports": []
     },
     {

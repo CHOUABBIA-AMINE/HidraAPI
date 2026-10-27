@@ -1446,6 +1446,149 @@ d85f9d4c7b7da0312b1217fffe085e0bf496a9fd; verify scope/parent/tree/blobs/message
 observe applicable Full/Fast/Docs creation/queue/start and STOP.
 Next remains C only after B's required gates are accepted.
 
+### HAPI-594 Package C HTTP implementation; runtime contract capture pending — 2026-10-27
+
+Owner Next selects the registered C package on main
+bcaca876ae2ffe1627540d82eec7f3e8f002bc43 (parent
+d85f9d4c7b7da0312b1217fffe085e0bf496a9fd; tree
+aca5e5a41db775c9409e28bc39048bb926166dab).
+Exact-head Full913/run40476182252, Fast219/run40476182246 and
+Docs615/run40476182234 are completed/success.
+
+**B prerequisite evidence accepted in its bounded internal software scope.**
+Retained postgres-2 evidence artifact12720389189 identifies this exact source,
+run and attempt1. Its inventory fingerprint matches the pinned repository
+inventory; the actual source hash and all19 ProductEngineeringDraft native case
+identities match that inventory. The XML report SHA256
+19896ed0ff1b7d92e5342a7b3cddaee76ff016f2885f61c65f797e73426ebe9f
+matches the evidence manifest and reports19 tests, zero failures/errors/skips.
+This accepts B's registered internal owner/admission/persistence scope alongside
+the successful native/regression/architecture/API/dictionary gates; it does not
+substitute for the new HTTP workflow, engineering qualification or deployment.
+Do not repeat A/B implementations or change their tests.
+
+Exact current message:
+`feat(custody): expose protected product draft operations`.
+Current commit has exactly the five registered C CREATE paths and two MODIFY
+paths: the Java test inventory and this owning phase record. Zero DELETE.
+The two originally admitted artifact paths are preserved until actual runtime
+capture permits a truthful refresh. No unregistered source or configuration
+path is added.
+
+**HTTP/DTO implementation.** ProductEngineeringDraftController injects only the
+typed inbound use case and exposes exactly:
+- POST /api/v1/custody/engineering-products:201 new,200 exact freshly authorized replay.
+- GET /api/v1/custody/engineering-products/{draftId}: current metadata in the exact companyPartyId scope.
+- PUT on that same identity: metadata-only revision with positive expectedVersion and exact companyPartyId scope.
+
+Request/response records live in the registered explicit API files. They import
+no persistence entity or private foreign owner type. DTO creators inspect actual
+JSON value kinds rather than silently converting numeric/Boolean identities,
+textual/fractional/overflow versions or unknown enum labels. Missing mandatory
+identity/request fields fail400; optional metadata retains null. Supported exact
+GAS/LIQUID labels map explicitly to the domain; no engineering property, source
+or qualification is inferred. Text uses the registered Unicode scalar limits,
+rejects malformed surrogate sequences/NUL/blanks/surrounding whitespace and
+never trims input. UUID strings use canonical lowercase syntax. Unknown JSON
+fields are rejected, including caller actor/grant/completeness/version fields
+and identity fields in PUT. Duplicated or extra query scope parameters reject
+before use-case invocation.
+
+Responses explicitly map distinct local/catalog identities, immutable company/
+code, current version and metadata, DRAFT state, replay flag and server-computed
+metadata completeness/diagnostics. Null classification is serialized explicitly
+despite the application's default non-null inclusion. Metadata completeness is
+not engineering qualification. No caller-controlled audit fields, native
+credentials, internal persistence object, numerical property, history/export,
+list/search or publication operation is exposed.
+
+The existing configured security chain supplies native bearer authentication;
+all owner authority/transaction/concurrency checks remain in the accepted use
+case. Local controller error mappings preserve400/401 authentication-chain
+behavior,403 non-disclosing target/authority denial,409 authorized conflict and
+503 unavailable/indeterminate completion. Missing and foreign company-bound
+draft identities both retain the accepted B403 denial; no nonexistent-target
+404 behavior is invented. Unknown route404 remains framework behavior outside
+these three operations. Error bodies expose fixed ProblemDetail descriptions
+and reason codes, never retained causes, SQL, stack traces or actor evidence.
+503 does not instruct an automatic write retry.
+
+**Authored acceptance cases.** ProductEngineeringDraftControllerTest has9 actual
+standalone MockMvc cases:201/200 replay and typed create binding; read/update
+company/version binding; unknown server-owned/immutable-field rejection;
+coercion/overflow/unsupported-label rejection; Unicode scalar boundary; blank/
+NUL/surrogate/oversize text rejection; malformed body/UUID/missing/duplicated/
+extra scope rejection; explicit-null wire response without native/persistence
+fields; and safe classified errors including retained-cause non-disclosure.
+These isolated boundary tests do not claim native authentication proof.
+
+ProductEngineeringDraftNativeHttpPostgresIntegrationTest has12 actual cases
+through the configured filter chain and actual PostgreSQL: all four native
+producer bearer round trips; missing/malformed bearer; exact original replay
+after revision and conflicting replay; stale CAS/duplicate-code rollback;
+two-company isolation with one shared catalog/code and uniform foreign/missing
+denial; current DENY on either scope for read/update/replay; inactive policy/
+catalog/Party; malformed/coerced/forged body rejection with unchanged storage;
+metadata-only update and duplicate scope; explicit null and LIQUID label without
+qualification; revoked native session; and actual final database guard expiry
+returning503 with both provisional rows rolled back. The latter requires the
+real apply and intended guard to be reached. Native crypto, owner admission,
+storage, migrations and commit are real; only the accepted directory/source
+transport fixtures remain mocked. Helpers are local to this new suite, with no
+inheritance, alteration or reexecution claim for B's accepted suite.
+
+Inventory admits exactly those two classes/21 real case names. Prior entries,
+source hashes, cases, lanes, timings, shard settings and existing partition
+assignments remain unchanged. New baseline_seconds=0 means unmeasured.
+The standalone suite joins Fast/unit and the native suite the existing service
+partition; no weighting, workflow or budget is changed.
+
+**Actual local validation and remaining runtime artifact gate.**19 existing
+documentation-validator self-tests PASS; all five new Java files parse using
+the installed Java17 compiler module. Header/wire-import/new-path checks and
+exact inventory source-hash/case/unchanged-partition checks PASS. B's raw native
+report/source/inventory membership was actually checked as described above.
+These results are not Java21 application compilation, C JUnit/native HTTP/
+database execution or a newly generated OpenAPI contract. The reviewed Jackson
+3 JsonNode primary source confirms the exact tree APIs used for strict DTO
+parsing. Full framework execution remains hosted exact-SHA CI; no complete
+local environment was provisioned.
+
+The existing physical dictionary was generated from an actual175-migration/
+470-JPA/519-relation catalog and passed Full913's dictionary gate. C adds no
+schema/JPA change; its physical source bundle and three Custody ownership
+records stay valid. Preserve that artifact rather than rewriting capture facts.
+The canonical OpenAPI snapshot remains the accepted pre-C runtime artifact.
+It does not yet claim these three new operations. Under AGENTS.md11.1 CI-first
+policy, publish the reviewed code with this explicit pending freshness gate;
+do not synthesize or hand-edit a predicted runtime schema. The current source
+may therefore fail the existing API equality gate until its real hosted capture
+is adopted. This is a retained acceptance obligation, not a waived check.
+
+After this source commit's actual hosted feedback, the separately selected C
+artifact follow-up is registered with exact message
+`docs(api): refresh protected product draft runtime contract`.
+Its MODIFY allowlist is only doc/api/openapi.yaml and this owning phase record,
+plus doc/database/DATA_DICTIONARY.md only if the actual hosted catalog review
+demonstrates a genuine physical drift. Zero CREATE/DELETE. Retrieve the source-
+bound generated OpenAPI artifact, verify exact source/run/attempt and all three
+real operations/DTOs/errors/security plus preservation of old routes; run the
+canonical validator and compatibility checks against the actual captures.
+Replace the snapshot with that actual generated document, retaining truthful
+capture provenance. Correct any source/test failure first in its responsible
+scope; never call a schema-equality failure passing or advance to acceptance.
+This is the remainder of the original C artifact scope, not a new capability
+or permission to implement HAPI-595..597.
+
+Publish only this C source commit directly to main with expected
+bcaca876ae2ffe1627540d82eec7f3e8f002bc43. Verify exact seven paths, parent/tree/
+blobs/message and append-only history; observe exact-SHA applicable Full/Fast/
+Docs creation/queue/start and STOP. Do not wait for completion, refresh from an
+uncaptured source, start the artifact follow-up or claim HAPI-594 completed.
+Final four-governance-file acceptance remains separately
+`docs(custody): accept protected product draft authoring`, after C's real
+HTTP/API/catalog and required exact-SHA CI gates are satisfied.
+
 <a id="hapi-595"></a>
 ## HAPI-595 — Supplied composition, properties and methods
 

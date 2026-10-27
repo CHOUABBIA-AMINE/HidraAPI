@@ -7,7 +7,7 @@
  *
  * @Name        : ForensicRemediationClosureTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-21
+ * @UpdatedOn   : 2026-10-27
  *
  * @Type        : Test
  * @Layer       : Architecture Test
@@ -143,6 +143,13 @@ class ForensicRemediationClosureTest {
 
     @Test
     void crossModulePrivateImportsRemainClosed() throws IOException {
+        String productConsumer="dz.sh.hidra.modules.custody.application.service.ProtectedProductDraftAdmissionCoordinator";
+        String productRoot="dz.sh.hidra.modules.party.application.contract.custody.CustodyProtectedPartyEligibilityContract";
+        assertTrue(custodyProductOwnerExport(productConsumer,productRoot));
+        assertTrue(custodyProductOwnerExport(productConsumer,productRoot+".Admission"));
+        assertFalse(custodyProductOwnerExport(productConsumer,productRoot+"Sibling"));
+        assertFalse(custodyProductOwnerExport("dz.sh.hidra.modules.custody.application.service.Other",productRoot));
+        assertFalse(custodyProductOwnerExport(productConsumer,"dz.sh.hidra.modules.party.infrastructure.persistence.adapter.JdbcCustodyProtectedPartyEligibilityAdapter"));
         List<String> violations = new ArrayList<>();
         for (SourceType source : sources().values()) {
             String sourceModule = module(source.packageName());
@@ -188,10 +195,17 @@ class ForensicRemediationClosureTest {
                     continue;
                 }
                 if (organizationOwnerExport(source.fqcn(), imported)) continue;
+                if (custodyProductOwnerExport(source.fqcn(), imported)) continue;
                 violations.add(source.fqcn() + " -> " + imported);
             }
         }
         assertTrue(violations.isEmpty(), () -> "Unapproved cross-module imports: " + violations);
+    }
+
+    private static boolean custodyProductOwnerExport(String source,String imported) {
+        String consumer="dz.sh.hidra.modules.custody.application.service.ProtectedProductDraftAdmissionCoordinator";
+        String root="dz.sh.hidra.modules.party.application.contract.custody.CustodyProtectedPartyEligibilityContract";
+        return source.equals(consumer) && (imported.equals(root) || imported.startsWith(root+"."));
     }
 
     private static boolean organizationOwnerExport(String source, String imported) {

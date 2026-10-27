@@ -849,22 +849,24 @@ public class ProductEngineeringDraftPostgresIntegrationTest {
         rejected(()->create(UUID.randomUUID(),id(),"denied"));assertThat(draftsCount()).isEqualTo(rows);
     }
     @Test void finalDatabaseExpiryRollsBackBothProvisionalRows() {
-        actor("LOCAL");long rows=draftsCount();
+        actor("LOCAL");long rows=draftsCount();var reached=new AtomicBoolean();
         doAnswer(invocation->{
+            reached.set(true);
             var c=(dz.sh.hidra.modules.custody.application.service.ProtectedProductDraftAdmissionCoordinator.Contribution)invocation.getArgument(1);
             var expired=new dz.sh.hidra.modules.custody.application.service.ProtectedProductDraftAdmissionCoordinator.Contribution(c.request(),c.partyGeneration(),c.bindingId(),c.sessionId(),c.userId(),c.sampledAt().minusSeconds(3600),Instant.EPOCH,c.backendPid(),c.transactionId());
             invocation.getArguments()[1]=expired;return invocation.callRealMethod();
         }).when(storageTarget()).finalGuard(any(),any(),anyList());
-        rejected(()->create(UUID.randomUUID(),id(),"expired"));assertThat(draftsCount()).isEqualTo(rows);
+        rejected(()->create(UUID.randomUUID(),id(),"expired"));assertThat(draftsCount()).isEqualTo(rows);assertThat(reached).isTrue();verify(storageTarget()).apply(any(),any());
     }
     @Test void finalFenceSubstitutionRollsBackDraftAndVersion() {
-        actor("LOCAL");long rows=draftsCount();
+        actor("LOCAL");long rows=draftsCount();var reached=new AtomicBoolean();
         doAnswer(invocation->{
+            reached.set(true);
             var fences=new ArrayList<dz.sh.hidra.platform.persistence.ProtectedRelationFence>((List<dz.sh.hidra.platform.persistence.ProtectedRelationFence>)invocation.getArgument(2));
             fences.set(0,new dz.sh.hidra.platform.persistence.ProtectedRelationFence("public.hidra_party_type",dz.sh.hidra.platform.persistence.ProtectedRelationFence.Mode.SHARE_ROW_EXCLUSIVE));
             invocation.getArguments()[2]=fences;return invocation.callRealMethod();
         }).when(storageTarget()).finalGuard(any(),any(),anyList());
-        rejected(()->create(UUID.randomUUID(),id(),"unfenced"));assertThat(draftsCount()).isEqualTo(rows);
+        rejected(()->create(UUID.randomUUID(),id(),"unfenced"));assertThat(draftsCount()).isEqualTo(rows);assertThat(reached).isTrue();verify(storageTarget()).apply(any(),any());
     }
     @Test void disabledTriggerOrExcessPublisherPrivilegeRejectBeforeDisclosure() {
         actor("LOCAL");var made=create(UUID.randomUUID(),id(),"one");

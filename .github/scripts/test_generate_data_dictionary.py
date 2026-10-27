@@ -156,6 +156,16 @@ class DictionaryTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'evidence path'):
             d.render(self.doc, self.root, override, final=True)
 
+    def test_carriage_return_catalog_text_survives_file_round_trip(self):
+        self.catalog['relations'][0]['columns'][0]['comment'] = 'before\rinside\nafter'
+        markdown = d.render(self.doc, self.root)
+        self.assertIn(r'before\rinside<br>after', markdown)
+        self.assertNotIn('\r', markdown)
+        output = self.root / 'dictionary.md'
+        output.write_text(markdown, encoding='utf-8')
+        self.assertEqual(markdown, output.read_text(encoding='utf-8'))
+        self.assertEqual(d.render(self.doc, self.root), output.read_text(encoding='utf-8'))
+
     def test_render_deterministic_and_only_sha_line_ignored(self):
         one = d.render(self.doc, self.root)
         self.catalog['relations'].reverse()
@@ -209,3 +219,4 @@ class DictionaryTest(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+

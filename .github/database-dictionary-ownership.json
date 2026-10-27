@@ -21,6 +21,14 @@
     "owner": "assets",
     "purpose": "Assets-owned maintainable-asset state; physical prefix is hidra_asset rather than hidra_assets."
   },
+  "public.hidra_custody_engineering_product_policy": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261026_002__custody_product_engineering_drafts.sql",
+      "src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcProductEngineeringDraftRepositoryAdapter.java"
+    ],
+    "owner": "custody",
+    "purpose": "Custody-owned explicit active admission of existing shared catalog products for company-local metadata authoring; not Planning admission, a thermodynamic qualification or a seeded business grant."
+  },
   "public.hidra_custody_gas_fluid_qualification": {
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/custody/domain/model/CustodyGasFluidRevision.java",
@@ -55,6 +63,24 @@
     ],
     "owner": "custody",
     "purpose": "Custody-owned product eligibility and approval-reference metadata consumed by Planning; actual approved values remain external and are not established by this dictionary."
+  },
+  "public.hidra_custody_product_engineering_draft": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261026_002__custody_product_engineering_drafts.sql",
+      "src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcProductEngineeringDraftRepositoryAdapter.java",
+      "src/main/java/dz/sh/hidra/modules/custody/domain/model/ProductEngineeringDraft.java"
+    ],
+    "owner": "custody",
+    "purpose": "Custody-owned immutable company-local product metadata identity, exact code and creation-request replay key, referencing a distinct admitted shared catalog product; not an enterprise product-master fork."
+  },
+  "public.hidra_custody_product_engineering_draft_version": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261026_002__custody_product_engineering_drafts.sql",
+      "src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcProductEngineeringDraftRepositoryAdapter.java",
+      "src/main/java/dz/sh/hidra/modules/custody/domain/model/ProductEngineeringDraft.java"
+    ],
+    "owner": "custody",
+    "purpose": "Custody-owned append-only canonical metadata revisions with expected-version sequencing, digest and native actor/physical transaction provenance; GAS/LIQUID labels do not qualify numerical properties or publish an engineering revision."
   },
   "public.hidra_hse_catalog_field_policy": {
     "evidence": [
@@ -465,4 +491,3 @@
     "purpose": "Topology-owned immutable station graph declarations with canonical byte integrity and exact history; storage does not establish company authorization or authenticated publication."
   }
 }
-

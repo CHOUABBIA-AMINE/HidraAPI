@@ -234,7 +234,7 @@ public class JdbcProductEngineeringDraftRepositoryAdapter implements ProductEngi
             if(!Boolean.TRUE.equals(jdbc.queryForObject("SELECT EXISTS(SELECT 1 FROM public.hidra_custody_catalog_entry c JOIN public.hidra_custody_engineering_product_policy p ON p.catalog_product_id=c.id WHERE c.id=? AND c.active AND p.active)",Boolean.class,t.product)))throw fail(Reason.DENIED);
             if(command.kind()==Kind.CREATE) {
                 t.requestDigest=codec.requestDigest(command.companyPartyId(),command.localCode(),t.product,command.creationRequestId(),command.metadata());
-                var rows=jdbc.queryForList("SELECT id,local_code,catalog_product_id,creation_request_id,request_sha256 FROM public.hidra_custody_product_engineering_draft WHERE company_party_id=? AND creation_request_id=? FOR UPDATE",command.companyPartyId(),command.creationRequestId());
+                var rows=jdbc.queryForList("SELECT id,local_code,catalog_product_id,creation_request_id,request_sha256 FROM public.hidra_custody_product_engineering_draft WHERE company_party_id=? AND creation_request_id=?",command.companyPartyId(),command.creationRequestId());
                 t.replayed=!rows.isEmpty();t.draftId=t.replayed?(UUID)rows.getFirst().get("id"):UUID.randomUUID();
                 t.code=command.localCode();t.requestId=command.creationRequestId();
                 if(t.replayed) {
@@ -245,7 +245,7 @@ public class JdbcProductEngineeringDraftRepositoryAdapter implements ProductEngi
                     if(initial==null || initial.version()!=1 || !Arrays.equals(initial.bytes(),codec.encode(command.metadata())))throw fail(Reason.UNAVAILABLE);
                 } else if(!jdbc.queryForList("SELECT id FROM public.hidra_custody_product_engineering_draft WHERE company_party_id=? AND local_code=?",UUID.class,command.companyPartyId(),t.code).isEmpty())throw fail(Reason.CONFLICT);
             } else {
-                var rows=jdbc.queryForList("SELECT local_code,creation_request_id,request_sha256 FROM public.hidra_custody_product_engineering_draft WHERE id=? AND company_party_id=? AND catalog_product_id=? FOR UPDATE",command.draftId(),command.companyPartyId(),t.product);
+                var rows=jdbc.queryForList("SELECT local_code,creation_request_id,request_sha256 FROM public.hidra_custody_product_engineering_draft WHERE id=? AND company_party_id=? AND catalog_product_id=?",command.draftId(),command.companyPartyId(),t.product);
                 if(rows.size()!=1)throw fail(Reason.DENIED);
                 t.draftId=command.draftId();t.code=(String)rows.getFirst().get("local_code");t.requestId=(UUID)rows.getFirst().get("creation_request_id");t.requestDigest=(String)rows.getFirst().get("request_sha256");
             }

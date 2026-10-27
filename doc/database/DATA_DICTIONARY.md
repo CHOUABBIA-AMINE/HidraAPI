@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `b1fee00e9232eee49c97b25b5c336ad75664a8fc`
+Captured source SHA: `d85f9d4c7b7da0312b1217fffe085e0bf496a9fd`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `1cb982d80d9ff74d0b1589e58ac838c6c86b4def4be7f8e9fc69e62a531de228`.
-Migrations: 174; JPA mappings: 470; catalog relations: 516; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `18a637865d4575ee176cf0ec58e510e7b9e403b6f38c27557d1853d20437372a`.
+Migrations: 175; JPA mappings: 470; catalog relations: 519; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -5417,6 +5417,7 @@ Persisted CustodyCatalogEntryJpaEntity state; semantic authority remains with cu
 - Migration mention (not inferred introduction): [V20261004_027__hmr_027_custody_custody_discrepancy.sql](../../src/main/resources/db/migration/V20261004_027__hmr_027_custody_custody_discrepancy.sql)
 - Migration mention (not inferred introduction): [V20261008_025__hmr_080_nomination_owner_reference_policies.sql](../../src/main/resources/db/migration/V20261008_025__hmr_080_nomination_owner_reference_policies.sql)
 - Migration mention (not inferred introduction): [V20261008_026__hmr_080_planning_nomination_integrity.sql](../../src/main/resources/db/migration/V20261008_026__hmr_080_planning_nomination_integrity.sql)
+- Migration mention (not inferred introduction): [V20261026_002__custody_product_engineering_drafts.sql](../../src/main/resources/db/migration/V20261026_002__custody_product_engineering_drafts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -5641,6 +5642,38 @@ Persisted CustodyDocumentReferenceJpaEntity state; semantic authority remains wi
   - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
 - `ix_hidra_custody_document_reference_target_id`: CREATE INDEX ix_hidra_custody_document_reference_target_id ON public.hidra_custody_document_reference USING btree (target_id)
   - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+None captured in this catalog category.
+
+### public.hidra_custody_engineering_product_policy
+
+Owner: **custody**; relation kind: `r`.
+
+Custody-owned explicit active admission of existing shared catalog products for company-local metadata authoring; not Planning admission, a thermodynamic qualification or a seeded business grant.
+
+- Evidence: [V20261026_002__custody_product_engineering_drafts.sql](../../src/main/resources/db/migration/V20261026_002__custody_product_engineering_drafts.sql)
+- Evidence: [JdbcProductEngineeringDraftRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcProductEngineeringDraftRepositoryAdapter.java)
+- Migration mention (not inferred introduction): [V20261026_002__custody_product_engineering_drafts.sql](../../src/main/resources/db/migration/V20261026_002__custody_product_engineering_drafts.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| catalog_product_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| active | boolean | False | None; identity=; generated= | No current mapped Java column | — |
+| updated_at | timestamp with time zone | False | clock_timestamp(); identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_custody_engineering_product_polic_catalog_product_id_fkey`: FOREIGN KEY (catalog_product_id) REFERENCES hidra_custody_catalog_entry(id)
+  - Catalog attributes: {"columns": ["catalog_product_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_custody_catalog_entry"}, "type": "f", "validated": true}
+- `hidra_custody_engineering_product_policy_pkey`: PRIMARY KEY (catalog_product_id)
+  - Catalog attributes: {"columns": ["catalog_product_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `hidra_custody_engineering_product_policy_pkey`: CREATE UNIQUE INDEX hidra_custody_engineering_product_policy_pkey ON public.hidra_custody_engineering_product_policy USING btree (catalog_product_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
 
 #### Triggers
 
@@ -6070,6 +6103,151 @@ Custody-owned product eligibility and approval-reference metadata consumed by Pl
 - `hmr080_product_truncate`: CREATE TRIGGER hmr080_product_truncate BEFORE TRUNCATE ON hidra_custody_planning_product_policy FOR EACH STATEMENT EXECUTE FUNCTION hmr080_approval_history_guard()
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hmr080_approval_history_guard()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.hmr080_approval_history_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    IF TG_OP IN ('DELETE','TRUNCATE') THEN RAISE EXCEPTION 'HMR-080: approved owner history is immutable'; END IF;<br>    IF (to_jsonb(NEW)-'active') IS DISTINCT FROM (to_jsonb(OLD)-'active')<br>    THEN RAISE EXCEPTION 'HMR-080: approved identities and provenance cannot be remapped'; END IF;<br>    RETURN NEW;<br>END $function$<br>
+
+### public.hidra_custody_product_engineering_draft
+
+Owner: **custody**; relation kind: `r`.
+
+Custody-owned immutable company-local product metadata identity, exact code and creation-request replay key, referencing a distinct admitted shared catalog product; not an enterprise product-master fork.
+
+- Evidence: [V20261026_002__custody_product_engineering_drafts.sql](../../src/main/resources/db/migration/V20261026_002__custody_product_engineering_drafts.sql)
+- Evidence: [JdbcProductEngineeringDraftRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcProductEngineeringDraftRepositoryAdapter.java)
+- Evidence: [ProductEngineeringDraft.java](../../src/main/java/dz/sh/hidra/modules/custody/domain/model/ProductEngineeringDraft.java)
+- Migration mention (not inferred introduction): [V20261026_002__custody_product_engineering_drafts.sql](../../src/main/resources/db/migration/V20261026_002__custody_product_engineering_drafts.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| local_code | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| catalog_product_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| creation_request_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| request_sha256 | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| created_at | timestamp with time zone | False | clock_timestamp(); identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_custody_product_enginee_company_party_id_creation_req_key`: UNIQUE (company_party_id, creation_request_id)
+  - Catalog attributes: {"columns": ["company_party_id", "creation_request_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_custody_product_engineeri_company_party_id_local_code_key`: UNIQUE (company_party_id, local_code)
+  - Catalog attributes: {"columns": ["company_party_id", "local_code"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_custody_product_engineering_draf_catalog_product_id_check`: CHECK (catalog_product_id IS NULL OR char_length(catalog_product_id::text) &gt;= 1 AND char_length(catalog_product_id::text) &lt;= 80 AND catalog_product_id::text = btrim(catalog_product_id::text, ' 	<br>\r'::text &#124;&#124; '              　'::text))
+  - Catalog attributes: {"columns": ["catalog_product_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_product_engineering_draft_catalog_product_id_fkey`: FOREIGN KEY (catalog_product_id) REFERENCES hidra_custody_catalog_entry(id)
+  - Catalog attributes: {"columns": ["catalog_product_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_custody_catalog_entry"}, "type": "f", "validated": true}
+- `hidra_custody_product_engineering_draft_company_party_id_check`: CHECK (company_party_id IS NULL OR char_length(company_party_id::text) &gt;= 1 AND char_length(company_party_id::text) &lt;= 80 AND company_party_id::text = btrim(company_party_id::text, ' 	<br>\r'::text &#124;&#124; '              　'::text))
+  - Catalog attributes: {"columns": ["company_party_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_product_engineering_draft_local_code_check`: CHECK (local_code IS NULL OR char_length(local_code::text) &gt;= 1 AND char_length(local_code::text) &lt;= 80 AND local_code::text = btrim(local_code::text, ' 	<br>\r'::text &#124;&#124; '              　'::text))
+  - Catalog attributes: {"columns": ["local_code"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_product_engineering_draft_pkey`: PRIMARY KEY (id)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_custody_product_engineering_draft_request_sha256_check`: CHECK (request_sha256::text ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["request_sha256"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_custody_product_enginee_company_party_id_creation_req_key`: CREATE UNIQUE INDEX hidra_custody_product_enginee_company_party_id_creation_req_key ON public.hidra_custody_product_engineering_draft USING btree (company_party_id, creation_request_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_custody_product_engineeri_company_party_id_local_code_key`: CREATE UNIQUE INDEX hidra_custody_product_engineeri_company_party_id_local_code_key ON public.hidra_custody_product_engineering_draft USING btree (company_party_id, local_code)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_custody_product_engineering_draft_pkey`: CREATE UNIQUE INDEX hidra_custody_product_engineering_draft_pkey ON public.hidra_custody_product_engineering_draft USING btree (id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `custody_product_draft_immutable`: CREATE TRIGGER custody_product_draft_immutable BEFORE DELETE OR UPDATE ON hidra_custody_product_engineering_draft FOR EACH STATEMENT EXECUTE FUNCTION hidra_custody_product_draft_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_custody_product_draft_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_custody_product_draft_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'Immutable product draft storage' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `custody_product_draft_no_truncate`: CREATE TRIGGER custody_product_draft_no_truncate BEFORE TRUNCATE ON hidra_custody_product_engineering_draft FOR EACH STATEMENT EXECUTE FUNCTION hidra_custody_product_draft_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_custody_product_draft_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_custody_product_draft_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'Immutable product draft storage' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
+### public.hidra_custody_product_engineering_draft_version
+
+Owner: **custody**; relation kind: `r`.
+
+Custody-owned append-only canonical metadata revisions with expected-version sequencing, digest and native actor/physical transaction provenance; GAS/LIQUID labels do not qualify numerical properties or publish an engineering revision.
+
+- Evidence: [V20261026_002__custody_product_engineering_drafts.sql](../../src/main/resources/db/migration/V20261026_002__custody_product_engineering_drafts.sql)
+- Evidence: [JdbcProductEngineeringDraftRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcProductEngineeringDraftRepositoryAdapter.java)
+- Evidence: [ProductEngineeringDraft.java](../../src/main/java/dz/sh/hidra/modules/custody/domain/model/ProductEngineeringDraft.java)
+- Migration mention (not inferred introduction): [V20261026_002__custody_product_engineering_drafts.sql](../../src/main/resources/db/migration/V20261026_002__custody_product_engineering_drafts.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| draft_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| version | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| payload_format | character varying(40) | False | None; identity=; generated= | No current mapped Java column | — |
+| canonical_payload | bytea | False | None; identity=; generated= | No current mapped Java column | — |
+| sha256 | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| predecessor_sha256 | character varying(64) | True | None; identity=; generated= | No current mapped Java column | — |
+| name | character varying(240) | True | None; identity=; generated= | No current mapped Java column | — |
+| description | character varying(4000) | True | None; identity=; generated= | No current mapped Java column | — |
+| evidence_reference | character varying(1000) | True | None; identity=; generated= | No current mapped Java column | — |
+| classification | character varying(6) | True | None; identity=; generated= | No current mapped Java column | — |
+| actor_binding_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_session_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_user_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| party_generation | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| sampled_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| valid_until | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| backend_pid | integer | False | None; identity=; generated= | No current mapped Java column | — |
+| transaction_id | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| created_at | timestamp with time zone | False | clock_timestamp(); identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_custody_product_engineering_draf_evidence_reference_check`: CHECK (evidence_reference IS NULL OR char_length(evidence_reference::text) &gt;= 1 AND char_length(evidence_reference::text) &lt;= 1000 AND evidence_reference::text = btrim(evidence_reference::text, ' 	<br>\r'::text &#124;&#124; '              　'::text))
+  - Catalog attributes: {"columns": ["evidence_reference"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_product_engineering_draft__party_generation_check`: CHECK (party_generation &gt; 0)
+  - Catalog attributes: {"columns": ["party_generation"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_product_engineering_draft_canonical_payload_check`: CHECK (octet_length(canonical_payload) &gt;= 20 AND octet_length(canonical_payload) &lt;= 32768)
+  - Catalog attributes: {"columns": ["canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_product_engineering_draft_ve_classification_check`: CHECK (classification::text = ANY (ARRAY['GAS'::character varying, 'LIQUID'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["classification"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_product_engineering_draft_ve_payload_format_check`: CHECK (payload_format::text = 'HIDRA_PRODUCT_METADATA_V1'::text)
+  - Catalog attributes: {"columns": ["payload_format"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_product_engineering_draft_ve_transaction_id_check`: CHECK (transaction_id &gt; 0)
+  - Catalog attributes: {"columns": ["transaction_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_product_engineering_draft_ver_actor_user_id_check`: CHECK (actor_user_id IS NULL OR char_length(actor_user_id::text) &gt;= 1 AND char_length(actor_user_id::text) &lt;= 80 AND actor_user_id::text = btrim(actor_user_id::text, ' 	<br>\r'::text &#124;&#124; '              　'::text))
+  - Catalog attributes: {"columns": ["actor_user_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_product_engineering_draft_versi_backend_pid_check`: CHECK (backend_pid &gt; 0)
+  - Catalog attributes: {"columns": ["backend_pid"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_product_engineering_draft_versi_description_check`: CHECK (description IS NULL OR char_length(description::text) &gt;= 1 AND char_length(description::text) &lt;= 4000 AND description::text = btrim(description::text, ' 	<br>\r'::text &#124;&#124; '              　'::text))
+  - Catalog attributes: {"columns": ["description"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_product_engineering_draft_version_check`: CHECK (sha256::text = encode(sha256(canonical_payload), 'hex'::text))
+  - Catalog attributes: {"columns": ["sha256", "canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_product_engineering_draft_version_check1`: CHECK (valid_until &gt; sampled_at)
+  - Catalog attributes: {"columns": ["valid_until", "sampled_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_product_engineering_draft_version_check2`: CHECK (version = 1 AND predecessor_sha256 IS NULL OR version &gt; 1 AND predecessor_sha256 IS NOT NULL AND predecessor_sha256::text ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["version", "predecessor_sha256"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_product_engineering_draft_version_check3`: CHECK (canonical_payload = ((((int4send(1) &#124;&#124;<br>CASE<br>    WHEN name IS NULL THEN int4send('-1'::integer)<br>    ELSE int4send(octet_length(convert_to(name::text, 'UTF8'::name))) &#124;&#124; convert_to(name::text, 'UTF8'::name)<br>END) &#124;&#124;<br>CASE<br>    WHEN description IS NULL THEN int4send('-1'::integer)<br>    ELSE int4send(octet_length(convert_to(description::text, 'UTF8'::name))) &#124;&#124; convert_to(description::text, 'UTF8'::name)<br>END) &#124;&#124;<br>CASE<br>    WHEN evidence_reference IS NULL THEN int4send('-1'::integer)<br>    ELSE int4send(octet_length(convert_to(evidence_reference::text, 'UTF8'::name))) &#124;&#124; convert_to(evidence_reference::text, 'UTF8'::name)<br>END) &#124;&#124;<br>CASE<br>    WHEN classification IS NULL THEN int4send('-1'::integer)<br>    ELSE int4send(octet_length(convert_to(classification::text, 'UTF8'::name))) &#124;&#124; convert_to(classification::text, 'UTF8'::name)<br>END))
+  - Catalog attributes: {"columns": ["canonical_payload", "name", "description", "evidence_reference", "classification"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_product_engineering_draft_version_draft_id_fkey`: FOREIGN KEY (draft_id) REFERENCES hidra_custody_product_engineering_draft(id)
+  - Catalog attributes: {"columns": ["draft_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_custody_product_engineering_draft"}, "type": "f", "validated": true}
+- `hidra_custody_product_engineering_draft_version_name_check`: CHECK (name IS NULL OR char_length(name::text) &gt;= 1 AND char_length(name::text) &lt;= 240 AND name::text = btrim(name::text, ' 	<br>\r'::text &#124;&#124; '              　'::text))
+  - Catalog attributes: {"columns": ["name"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_product_engineering_draft_version_pkey`: PRIMARY KEY (draft_id, version)
+  - Catalog attributes: {"columns": ["draft_id", "version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_custody_product_engineering_draft_version_version_check`: CHECK (version &gt; 0)
+  - Catalog attributes: {"columns": ["version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_custody_product_engineering_draft_version_pkey`: CREATE UNIQUE INDEX hidra_custody_product_engineering_draft_version_pkey ON public.hidra_custody_product_engineering_draft_version USING btree (draft_id, version)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `custody_product_draft_version_immutable`: CREATE TRIGGER custody_product_draft_version_immutable BEFORE DELETE OR UPDATE ON hidra_custody_product_engineering_draft_version FOR EACH STATEMENT EXECUTE FUNCTION hidra_custody_product_draft_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_custody_product_draft_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_custody_product_draft_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'Immutable product draft storage' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `custody_product_draft_version_no_truncate`: CREATE TRIGGER custody_product_draft_version_no_truncate BEFORE TRUNCATE ON hidra_custody_product_engineering_draft_version FOR EACH STATEMENT EXECUTE FUNCTION hidra_custody_product_draft_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_custody_product_draft_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_custody_product_draft_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'Immutable product draft storage' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `custody_product_next_version`: CREATE TRIGGER custody_product_next_version BEFORE INSERT ON hidra_custody_product_engineering_draft_version FOR EACH ROW EXECUTE FUNCTION hidra_custody_product_draft_next_version()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_custody_product_draft_next_version()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_custody_product_draft_next_version()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>DECLARE last_version bigint; last_digest text; observed timestamptz;<br>BEGIN<br> PERFORM id FROM public.hidra_custody_product_engineering_draft WHERE id=NEW.draft_id FOR UPDATE;<br> IF NOT FOUND THEN RAISE EXCEPTION 'Missing product draft' USING ERRCODE='23503'; END IF;<br> SELECT version,sha256 INTO last_version,last_digest<br> FROM public.hidra_custody_product_engineering_draft_version WHERE draft_id=NEW.draft_id ORDER BY version DESC LIMIT 1;<br> IF (last_version IS NULL AND (NEW.version&lt;&gt;1 OR NEW.predecessor_sha256 IS NOT NULL))<br>    OR (last_version IS NOT NULL AND (last_version=9223372036854775807::bigint<br>        OR NEW.version&lt;&gt;last_version+1 OR NEW.predecessor_sha256 IS DISTINCT FROM last_digest)) THEN<br>  RAISE EXCEPTION 'Stale product draft version' USING ERRCODE='23514';<br> END IF;<br> observed:=clock_timestamp();<br> IF NEW.backend_pid&lt;&gt;pg_backend_pid() OR NEW.transaction_id&lt;&gt;txid_current()<br>    OR observed&lt;NEW.sampled_at OR observed&gt;=NEW.valid_until THEN<br>  RAISE EXCEPTION 'Invalid product draft origin' USING ERRCODE='23514';<br> END IF;<br> NEW.created_at:=observed;<br> RETURN NEW;<br>END;<br>$function$<br>
 
 ### public.hidra_custody_quality_certificate
 

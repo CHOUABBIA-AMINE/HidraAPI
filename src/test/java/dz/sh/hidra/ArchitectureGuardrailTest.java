@@ -7,7 +7,7 @@
  *
  * @Name        : ArchitectureGuardrailTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-14
+ * @UpdatedOn   : 2026-10-27
  *
  * @Type        : Class
  * @Layer       : Test
@@ -168,7 +168,8 @@ class ArchitectureGuardrailTest {
 
     private static boolean isCustodyProductOwnerExport(String source, String target) {
         String root="dz.sh.hidra.modules.party.application.contract.custody.CustodyProtectedPartyEligibilityContract";
-        return source.startsWith("dz.sh.hidra.modules.custody.")
+        String consumer="dz.sh.hidra.modules.custody.application.service.ProtectedProductDraftAdmissionCoordinator";
+        return (source.equals(consumer) || source.startsWith(consumer+"$"))
                 && (target.equals(root) || target.startsWith(root+"$"));
     }
 
@@ -177,6 +178,8 @@ class ArchitectureGuardrailTest {
         String root="dz.sh.hidra.modules.party.application.contract.custody.CustodyProtectedPartyEligibilityContract";
         assertFalse(isForbiddenCrossModuleDependency(source,root));
         assertFalse(isForbiddenCrossModuleDependency(source,root+"$Admission"));
+        assertFalse(isForbiddenCrossModuleDependency(source+"$Admission",root+"$Contribution"));
+        assertTrue(isForbiddenCrossModuleDependency("dz.sh.hidra.modules.custody.application.service.Other",root));
         assertTrue(isForbiddenCrossModuleDependency(source,root+"Sibling"));
         assertTrue(isForbiddenCrossModuleDependency("dz.sh.hidra.modules.topology.application.service.Other",root));
         assertFalse(isForbiddenCrossModuleDependency(source,
@@ -370,6 +373,7 @@ class ArchitectureGuardrailTest {
                     continue;
                 }
                 if (isOrganizationOwnerExport(source.getName(), target.getName())) continue;
+                if (isCustodyProductOwnerExport(source.getName(), target.getName())) continue;
 
                 violations.add(source.getName() + " -> " + target.getName());
             }

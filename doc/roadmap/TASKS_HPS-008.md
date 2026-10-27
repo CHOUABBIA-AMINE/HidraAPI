@@ -1326,6 +1326,126 @@ STOP. Repair any responsible failed gate before advancing. Next registered packa
 only after B acceptance, is `feat(custody): expose protected product draft operations`.
 No C, HAPI-595..597, simulator, release or deployment is executed in this stage.
 
+### HAPI-594 Package B responsible CI repair — 2026-10-27
+
+Owner Fail selects repair of main d85f9d4c7b7da0312b1217fffe085e0bf496a9fd,
+tree a0da0afd4f584bb1cc53da32271dccf4aaca70e7. Exact-head Docs614 passed;
+Full912/run40472480382 and Fast218/run40472480404 failed. No C or later task
+is selected. Exact repair message:
+`fix(custody): repair product draft admission and CI evidence`.
+
+**Recovered failures and bounded admission.** Full unit/architecture reports two
+failures: the compiled ArchitectureGuardrailTest scan never calls its already
+approved Custody/Party export helper, although its classifier self-test does;
+ForensicRemediationClosureTest separately lacks that same exact root admission.
+Native postgres-2 reports14 errors across19 new product cases, all on the initial
+positive create path with sanitized UNAVAILABLE errors; the five rejection-only
+cases do not prove their intended late-boundary behavior. The product repository
+has two client SELECT FOR UPDATE statements. The actual unchanged datasource
+admission grammar rejects the UPDATE token before execution. Its standalone
+reproduction confirms both rejected locking-read shapes and accepted SELECT
+shapes. This is a concrete repair target; hosted rerun must still establish
+whether any additional native defect remains.
+
+API/dictionary and three other PostgreSQL shards report unresolved ownership
+for exactly the three new Custody tables. Full175-migration catalog capture
+exists; this is a missing source ownership/dictionary integration, not grounds
+to weaken those existing native suites or their zero-unresolved-owner gate.
+
+Admitted repair MODIFY allowlist, zero CREATE/DELETE:
+- `src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcProductEngineeringDraftRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/custody/application/port/in/ProductEngineeringDraftUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/custody/application/service/ProductEngineeringDraftApplicationService.java`
+- `src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/ProductEngineeringDraftPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+- `.github/ci-test-inventory.json`
+- `.github/database-dictionary-ownership.json`
+- `.github/scripts/generate_data_dictionary.py`
+- `.github/scripts/test_generate_data_dictionary.py`
+- `doc/database/DATA_DICTIONARY.md`
+- `doc/roadmap/TASKS_HPS-008.md`
+
+This source-backed repair extends B's supporting acceptance scope before using
+the additional exact paths. Bringing the existing actual-catalog freshness gate
+forward from C repairs B's failed CI; it does not select HTTP/API implementation.
+Preserve all migration bytes, native authority semantics, SQL grammar, statement
+hashes, relation fences, version CAS, time budgets and existing test identities.
+
+**Correction and preserved guarantees.** Remove only the two client FOR UPDATE
+clauses. The four Custody SHARE ROW EXCLUSIVE relation fences already serialize
+owner changes and prevent catalog/policy revocation; the actual append trigger
+still locks the draft row FOR UPDATE and enforces sequence/predecessor/physical
+origin, and the admitted version INSERT still uses exact expected-version CAS.
+No general locking-read, UPDATE, callback or SQL-prefix permission is added.
+
+Use the same narrow Custody export rule in the actual compiled architecture scan
+and its classifier, limited to the concrete coordinator and its nested classes
+consuming the exact Party root/nested contracts. Add the same exact root/source
+pair to the source import scan, with negative sibling/private/foreign-consumer
+assertions. Keep all other cross-module rules. Retain original exception causes
+inside classified application failures for native diagnostic evidence, while the
+public reason/message stay unchanged; no raw detail is added to a REST response.
+Strengthen the two existing final-guard rejection tests to require that apply and
+the intended guard were reached, preventing unrelated early failures from
+satisfying those negative cases. Preserve all19 native cases and existing lanes.
+
+**Actual catalog evidence and artifact boundary.** API diagnostic artifact
+12719715919 from Full912 attempt1 has ZIP SHA256
+76b7655def7a14f5c6a0770552fd32f42db6349c14e997be311c62ddd2716e13.
+Its actual schema.json source is d85f9d4c7b7da0312b1217fffe085e0bf496a9fd.
+All645 migration/JPA source fingerprints were recovered from that pinned GitHub
+source and matched the artifact. Ownership evidence paths were recovered from
+the same source. The generator validates this actual catalog with three explicit Custody ownership
+entries. Initial rendering exposed literal carriage returns in actual CHECK
+text: text-file reads normalize those bytes, making render/write/read checks
+drift. Escape carriage returns in the Markdown cell display and add a focused
+round-trip regression; preserve the capture SQL, source/catalog validation and
+all other generator behavior. No physical column, constraint, trigger or index
+metadata is handwritten or inferred.
+The captured SHA truthfully remains the actual catalog source. No schema/JPA
+source changes in this repair, so the capture's physical source inventory remains
+applicable. Source/raw artifact recovery is not a passing native workflow.
+
+**Completed repair validation.**18 dictionary-generator self-tests and19
+documentation-validator self-tests PASS. Six changed Java sources parse using
+the installed Java17 compiler module; the unchanged pure domain/codec plus
+updated command/failure type compile as a Java17 subset, with27 standalone smoke
+assertions PASS. Eight classifier assertions extracted from the actual repaired
+helpers PASS, and actual compiled/source scans now call those helpers. The
+unchanged admission grammar reproduction rejects the old locking reads and
+accepts the replacement SELECT shape. Exact two product DML/function pins,
+retained migration bytes, scope and source hashes are checked before publication.
+
+The generator's actual catalog render and subsequent --check both PASS after
+the carriage-return display repair:175 migrations,470 JPA mappings,519 physical
+relations, zero unresolved owners. Source bundle SHA256:
+18a637865d4575ee176cf0ec58e510e7b9e403b6f38c27557d1853d20437372a.
+Dictionary SHA256:
+f94e25839e9f89b634b7127f0fc220c6abafa00d913b066904976435baafd954.
+The initial unchanged-generator check failed because of the real captured
+carriage returns; that failure is corrected rather than ignored. The capture
+JSON/SQL, migration/JPA inventory, ownership validation and comparable-Markdown
+rules are unchanged. No schema history was rewritten. Only three explicit
+ownership entries and their actual source evidence are added.
+
+Inventory changes only the three modified Java test source hashes: the19
+product cases,18 architecture cases and7 forensic cases keep their names,
+lane, timing and shard assignments. The dictionary Python suite gains one
+carriage-return write/read regression (17 to18 cases); it is not a Java test
+partition change. No new runtime, native or full Java21 passing result is
+claimed. Corrected exact-SHA CI is the remaining acceptance gate. The one
+repair commit is twelve MODIFY paths, zero CREATE/DELETE. No Package C work
+or final HAPI-594 acceptance follows automatically.
+
+
+Validation and exact publication checks above precede guarded publication. Corrected Java21/Spring/native/PostgreSQL execution remains
+a new exact-SHA hosted gate. Do not call Package B accepted on inspection or
+repeat C's implementation. Publish this one responsible repair with expected
+d85f9d4c7b7da0312b1217fffe085e0bf496a9fd; verify scope/parent/tree/blobs/message,
+observe applicable Full/Fast/Docs creation/queue/start and STOP.
+Next remains C only after B's required gates are accepted.
+
 <a id="hapi-595"></a>
 ## HAPI-595 — Supplied composition, properties and methods
 

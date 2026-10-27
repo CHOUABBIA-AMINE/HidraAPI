@@ -358,7 +358,7 @@ def ownership(document, overrides, root):
 
 
 def cell(value):
-    return str(value if value is not None else '—').replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('|', '&#124;').replace('\n', '<br>')
+    return str(value if value is not None else '—').replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('|', '&#124;').replace('\r', r'\r').replace('\n', '<br>')
 
 
 def render(document, root, overrides=None, final=False):

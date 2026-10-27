@@ -57,14 +57,14 @@ public class ProductEngineeringDraftApplicationService implements ProductEnginee
             });
         }catch(RuntimeException error) {
             if(error instanceof ProtectedTransactionExecutor.ExecutionFailure e
-                    && e.outcome()==ProtectedTransactionExecutor.Outcome.INDETERMINATE)throw new Failure(Reason.INDETERMINATE);
+                    && e.outcome()==ProtectedTransactionExecutor.Outcome.INDETERMINATE)throw new Failure(Reason.INDETERMINATE,error);
             for(Throwable cause=error;cause!=null;cause=cause.getCause()) {
                 if(cause instanceof Failure failure)throw failure;
-                if(cause instanceof org.springframework.security.access.AccessDeniedException)throw new Failure(Reason.DENIED);
+                if(cause instanceof org.springframework.security.access.AccessDeniedException)throw new Failure(Reason.DENIED,error);
                 if(cause instanceof java.sql.SQLException sql && sql.getSQLState()!=null && Set.of("23505","40001","40P01").contains(sql.getSQLState()))
-                    throw new Failure(Reason.CONFLICT);
+                    throw new Failure(Reason.CONFLICT,error);
             }
-            throw new Failure(Reason.UNAVAILABLE);
+            throw new Failure(Reason.UNAVAILABLE,error);
         }
     }
 }

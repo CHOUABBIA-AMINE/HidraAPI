@@ -52,6 +52,7 @@ public interface ProductEngineeringDraftUseCase {
     final class Failure extends RuntimeException {
         private final Reason reason;
         public Failure(Reason reason){super("Product draft "+Objects.requireNonNull(reason));this.reason=reason;}
+        public Failure(Reason reason,Throwable cause){super("Product draft "+Objects.requireNonNull(reason),cause);this.reason=reason;}
         public Reason reason(){return reason;}
     }
     Result execute(Command command);

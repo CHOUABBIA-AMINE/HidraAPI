@@ -10,6 +10,7 @@ import os
 from pathlib import Path
 import re
 import shutil
+import statistics
 import subprocess
 import xml.etree.ElementTree as ET
 
@@ -144,11 +145,17 @@ def partitions(manifest):
     fast = sorted(e['class'] for e in active if e.get('fast'))
     lanes = postgres_lanes(manifest)
     shards, totals = [[] for _ in lanes], [0.0 for _ in lanes]
-    for entry in sorted((e for e in active if e['lane'] == 'postgres-integration'),
-                        key=lambda e: (-e['baseline_seconds'], e['class'])):
+    database = [e for e in active if e['lane'] == 'postgres-integration']
+    measured = [e['baseline_seconds'] for e in database if e['baseline_seconds'] > 0]
+    # Zero means unmeasured, not free. Keep recorded measurements unchanged;
+    # a scheduling-only median estimate prevents all new suites piling into one lane.
+    unmeasured_weight = statistics.median(measured) if measured else 1.0
+    def weight(entry):
+        return entry['baseline_seconds'] if entry['baseline_seconds'] > 0 else unmeasured_weight
+    for entry in sorted(database, key=lambda e: (-weight(e), e['class'])):
         index = min(range(len(lanes)), key=lambda i: (totals[i], i))
         shards[index].append(entry['class'])
-        totals[index] += entry['baseline_seconds']
+        totals[index] += weight(entry)
     result = {'fast': fast, 'unit-architecture': unit,
               'oracle': sorted(e['class'] for e in active), 'historical': historical}
     result.update({lane: sorted(shard) for lane, shard in zip(lanes, shards)})

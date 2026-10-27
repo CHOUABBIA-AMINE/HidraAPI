@@ -4499,6 +4499,69 @@ feedback and satisfy A's dictionary/acceptance gate before selecting B. HAPI-597
 separate and unselected.
 
 
+### HAPI-596 Package A — Full928 reviewer fixture and actual dictionary repair — 2026-10-27
+
+Owner Fail additionally directs measured shard rebalancing and adding runners
+only if needed. Main97f3295d1b7dbfde3b27f08c08a9cfad45c415f9,
+tree32d829c82fe4848f4d03afce422108ead6df6c0e has Full928/
+run40581505626 failure, Fast232 and Docs639 success. Full928's481 raw suites
+contain3473 cases, zero failures/skips and one error. PostgreSQL2 reports the
+single error in reviewerRequiresPermittedAdmissionAndFreshHumanIdentity; the
+API lane independently fails physical dictionary equality. Preserve this failed
+run as failure; none of its scheduling data is new Package A acceptance.
+
+**Responsible source repair.** Raw diagnostic artifact12769978740, ZIP SHA256
+19351dc7c02b5e594b53cd0499f9d16d464f9bf0335f538af29025537b12c153,
+pins the error to reviewer line150, the required eligible-human result count.
+The shared authentication fixture intentionally has no display_name. That is
+valid for other native authorization tests but cannot satisfy the new reviewer
+contract's actual nonblank human display requirement. Set an explicit synthetic
+display on this positive reviewer fixture before authenticating; assert both
+actual reviewer ID and display. Preserve its nonhuman rejection, original20
+case identities and every production eligibility/authorization/currentness rule.
+Only the test source hash changes; no production bypass, retry or budget change.
+
+**Actual catalog repair, no inferred metadata.** Recover Full928 API diagnostic
+artifact12770745003, ZIP SHA256
+98856428a054a1810137954e794e39d110f710fefc8a296ab5b8ebe20f4d6575.
+Its real migrated PostgreSQL16.15 schema.json has180 migrations,470 JPA mappings,
+523 physical relations and650 source files. All source file SHA256 values match
+the current local source inventory. Run the unchanged exact-current generator
+against that artifact and actual ownership map; zero owners are unresolved.
+Captured source remains97f3295d, never relabeled as this repair's future SHA.
+Catalog JSON SHA256f6af18768f8758f488714020dff6c6318ae08b0305516ff4295bcc807ff5f66a;
+source bundle125aaeb09ba13168ef870987d3556a6824ac9714dc175eba1efb00568d08c956;
+rendered dictionary271082e15ee3ae2a59af891cdc3e796779781043c35e393ac4a944305ce62555.
+This closes the pending physical capture obligation, not Full acceptance. No
+OpenAPI/manifest, migration, owner mapping or actual database is edited.
+
+**One owner-selected CI repair envelope.** The simultaneous Fail/rebalance
+instruction selects this bounded combined corrective submission under the
+retained registered HAPI-045 message:
+`ci: automate fast feedback and preserve full verification gates`.
+MODIFY exactly the reviewer test, .github/ci-test-inventory.json,
+.github/scripts/verify_ci_test_inventory.py,
+.github/scripts/test_verify_ci_test_inventory.py,
+doc/database/DATA_DICTIONARY.md, this phase and TASKS_HPS-024.md.
+Seven existing paths, zero CREATE/DELETE. The catalog-only follow-up is satisfied
+inside this explicitly selected repair rather than silently starting another
+package. HAPI-045's append-only record holds full raw timing/provenance analysis.
+Keep seven shards, strict complete membership and all runtime/security gates;
+new unmeasured suites receive a scheduling-only median estimate so zeros cannot
+pile into one shard. No measured baseline value is fabricated by that fallback.
+
+Available checks:34 scheduler/classification tests and51 Full-gate self-tests
+PASS; the two new zero-weight regressions fail against the previous scheduler.
+Actual catalog/source/ownership verification and deterministic rendering PASS.
+The19 unchanged documentation self-tests, one-file Java syntax parsing and exact
+seven-file scope/history/inventory checks also PASS. Java21/Maven/PostgreSQL native
+tests remain hosted feedback under AGENTS11.1; no runtime pass is inferred from
+the fixture edit. Publish with expected97f3295d, verify exact message/parent/tree/
+blobs/scope and observe applicable exact-SHA CI creation/queue/start, then STOP.
+Package A and HAPI-596 acceptance remain pending. B/C,597/593, solver and
+engineering/SITE/deployment work are not selected.
+
+
 <a id="hapi-597"></a>
 ## HAPI-597 — Multi-product ownership/API compatibility qualification
 

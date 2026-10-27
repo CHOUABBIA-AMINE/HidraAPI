@@ -168,6 +168,32 @@ class InventoryTest(unittest.TestCase):
         self.assertTrue(all(lanes[lane] for lane in ci.postgres_lanes(manifest)))
         self.assertEqual(lanes, ci.partitions(copy.deepcopy(manifest)))
 
+    def test_unmeasured_suites_do_not_pile_onto_one_lane(self):
+        manifest = fixture(self.root, postgres_shards=7)
+        database = [e for e in manifest['classes'] if e['lane'] == 'postgres-integration']
+        for entry in database:
+            entry['baseline_seconds'] = 0
+        database[0]['baseline_seconds'] = 100
+        before = copy.deepcopy(manifest)
+        lanes = ci.partitions(manifest)
+        self.assertEqual([len(lanes[lane]) for lane in ci.postgres_lanes(manifest)], [1] * 7)
+        self.assertEqual(manifest, before)
+        self.assertEqual(lanes, ci.partitions(copy.deepcopy(manifest)))
+        self.assertEqual(set(name for lane in ci.postgres_lanes(manifest) for name in lanes[lane]),
+                         {e['class'] for e in database})
+
+    def test_all_unmeasured_suites_have_deterministic_complete_nonempty_shards(self):
+        manifest = fixture(self.root, postgres_shards=7)
+        for entry in manifest['classes']:
+            if entry['lane'] == 'postgres-integration':
+                entry['baseline_seconds'] = 0
+        before = copy.deepcopy(manifest)
+        lanes = ci.partitions(manifest)
+        self.assertTrue(all(len(lanes[lane]) == 1 for lane in ci.postgres_lanes(manifest)))
+        self.assertEqual(manifest, before)
+        self.assertEqual(lanes['oracle'], sorted(lanes['unit-architecture'] +
+                         [name for lane in ci.postgres_lanes(manifest) for name in lanes[lane]]))
+
     def test_unreviewed_or_empty_shard_count_denies(self):
         for count in (0, 1, 6, True, '3', 3, 4, 5):
             with self.subTest(count=count):

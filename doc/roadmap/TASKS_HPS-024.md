@@ -1120,6 +1120,106 @@ the original expected1d6025e lease; verify each parent/tree/scope and observe on
 final applicable Full/Fast/Docs startup, then STOP without waiting. HAPI-592 stays
 pending exact-source acceptance; no release/deployment, simulator or OT action.
 
+### 2026-10-27 — Full928 repair and measured seven-shard rebalance
+
+Owner explicitly requests failing CI repair, load redistribution and one/two
+additional shards only if needed. This is one bounded corrective stage under
+the retained exact message
+`ci: automate fast feedback and preserve full verification gates`.
+Expected main97f3295d1b7dbfde3b27f08c08a9cfad45c415f9,
+tree32d829c82fe4848f4d03afce422108ead6df6c0e. Full928/
+run40581505626 fails; Fast232/Docs639 succeed. Failure disposition is retained.
+No programme, deployment or performance acceptance is inferred from this repair.
+
+Exact MODIFY scope: .github/ci-test-inventory.json,
+.github/scripts/verify_ci_test_inventory.py,
+.github/scripts/test_verify_ci_test_inventory.py,
+src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedProductPublicationAuthorizationPostgresIntegrationTest.java,
+doc/database/DATA_DICTIONARY.md, TASKS_HPS-008.md and this owning phase.
+No CREATE/DELETE, workflow/matrix change, test exclusion, POM, migration, oracle,
+Fast membership, archive policy, test timeout, native time budget or release-gate
+change. The simultaneous Fail/rebalance instruction admits the responsible
+reviewer fixture and actual catalog correction in this same CI repair envelope;
+their detailed evidence belongs to596. No dependent runtime package is selected.
+
+**Raw evidence and source integrity.** Download the seven actual PostgreSQL
+artifacts and the unit lane from Full928 attempt1. Verify ZIP hashes, receipt
+SHA/run/attempt/classifier/inventory and every retained report hash; independently
+match all481 raw class identities/cases against the original exact inventory.
+The failed PostgreSQL2 diagnostic lacks a successful lane receipt: verify its
+ZIP and all26 raw class/case identities without inventing a receipt. There are
+3473 executed cases and one reviewer fixture error, zero failures/skips. All112
+active PostgreSQL suite times are recovered, including ten formerly zero-weight
+suites. Keep that failed suite's31.200s as explicitly partial scheduling evidence,
+not a passing runtime result; its fixture source hash changes independently.
+The inventory retains original timing provenance under prior_refresh.
+
+| Original lane | Artifact ID | ZIP SHA256 |
+|---|---:|---|
+| PostgreSQL0 |12769303603|794bfd43236a5a96df5b03537a76c2504cff11b36ee7da92945fb6a5a5dde30b|
+| PostgreSQL1 |12769103801|f06e88bb4c1ab7f26dd92af57be1094f081335abf90ce814b72a6eec5fd8f834|
+| PostgreSQL2 diagnostic |12769978740|19351dc7c02b5e594b53cd0499f9d16d464f9bf0335f538af29025537b12c153|
+| PostgreSQL3 |12770382190|7d9fe716826a27e6235d06c26dbb54d41b275edbc8aa67f236fc90205126aa1d|
+| PostgreSQL4 |12769523110|3087879e10e3b4a2880037e37712fab47ceb37e5daa29296867809ed0d19d57e|
+| PostgreSQL5 |12769718480|33adcf6c5b96f2d13bcfe7cd7688efadeab65f18c68c1294dfa9e46e7fc8aa00|
+| PostgreSQL6 |12770257285|d0099be059792ada2aa665a92b9372858b0b0cc11c84b5c398de25992aec56d8|
+| Unit/architecture |12770570880|687120488579d61bdcbbb03eb72b961a9f9f2f3da765478b1da6acbcb6fc87f5|
+
+**Observed imbalance and selected correction.** New suites used0/unmeasured
+weights. The previous greedy scheduler added zero to its minimum lane, so every
+subsequent unknown suite could select that same lane. PostgreSQL2 consequently
+carried26 classes and524.204 measured suite seconds despite a252.480s old
+weight total. Refresh only actual112 PostgreSQL weights and the one repaired
+fixture source pin; preserve all class/case/owner/lane/Fast/support identities.
+
+The scheduler now uses the median positive active PostgreSQL measurement as a
+scheduling-only weight for unmeasured suites, or1 if none are measured. It leaves
+recorded zero values untouched and sorts/assigns deterministically. This is an
+explicit estimate, never a fabricated measured time. Two new regressions prove
+mixed measured/unmeasured and entirely unmeasured suites stay complete, disjoint,
+nonempty and deterministic without mutating the manifest. Both fail against the
+old implementation; all34 current classifier tests pass.
+
+| Shard | Prior measured suite sum, seconds | Rebalanced estimate, seconds | New classes |
+|---|---:|---:|---:|
+|0|388.002|388.002|1|
+|1|256.215|308.024|18|
+|2|524.204|308.261|18|
+|3|277.402|308.189|17|
+|4|280.125|308.221|19|
+|5|254.991|308.033|20|
+|6|255.903|308.112|19|
+
+The largest estimated suite load falls from524.204s to388.002s, about26 percent.
+This is scheduling analysis of an existing run, not measured new job/wall speed.
+Original job wall seconds were452,322,594,341,350,330,330 respectively, including
+setup/compilation/container/cleanup overhead; their sum is2719 runner seconds.
+Queueing, environment/cache variation and future overhead are not predicted.
+
+**Why keep seven rather than add one/two.** The82-case
+EmployeeAppointmentConcurrencyPostgresIntegrationTest alone costs388.002s under
+the existing whole-class contract. Seven refreshed sets put all other sets near
+308s; eight would put them near264s and nine near231s, but each option retains
+that same388.002s critical suite. Additional runners do not lower this measured
+whole-class bound. Keep seven, with no new matrix cost or unreviewed count.
+Any future decomposition of that suite requires a separately reviewed scope
+preserving all82 cases and oracle/evidence identities; do not split or omit it
+implicitly in this balancing repair.
+
+**Preservation and validation.** Strict exact-SHA/run/attempt/raw case verification,
+development/audit distinction, independent audit oracle and release rejection
+remain unchanged. All51 Full-gate self-tests PASS alongside34 classifier tests.
+No validators or tests are weakened. Full local repository execution remains
+unavailable; use existing tools only under AGENTS11.1. Actual API-lane catalog
+recovery independently repairs the dictionary; native positive fixture now
+declares the human display it asserted. The19 documentation self-tests, one-file Java syntax parsing,
+actual catalog equality and final seven-file scope/status/history/source checks
+also PASS before the guarded direct-main commit. Observe new applicable Full/Fast/Docs CI creation/
+queue/start and STOP; no unchanged benchmark run, B package, release or deployment
+is selected automatically. Current source statuses remain unchanged; hosted
+acceptance and actual new timings are pending the corrective run.
+
+
 <a id="hapi-046"></a>
 ## HAPI-046 — Timing, runner cost and adoption decision
 

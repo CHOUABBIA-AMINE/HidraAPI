@@ -880,9 +880,13 @@ public class ProtectedProductPublicationAuthorizationPostgresIntegrationTest {
     }
 
     @Test void reviewerRequiresPermittedAdmissionAndFreshHumanIdentity() {
-        var f=fixture("LOCAL");both(f,"publish");var p=prepare(f);
+        var f=fixture("LOCAL");
+        jdbc.update("UPDATE "+U+" SET display_name='Synthetic Publication Reviewer' WHERE id=?",f.user());
+        both(f,"publish");var p=prepare(f);
         tx().executeWithoutResult(status->{c3SelectRestrictedRole();var a=paired.acquire(p,request());permit(paired.contribute(a));
-            assertThat(paired.reviewer(a,f.user()).actorId()).isEqualTo(f.user());paired.requireCurrent(a);});
+            var reviewer=paired.reviewer(a,f.user());
+            assertThat(reviewer.actorId()).isEqualTo(f.user());
+            assertThat(reviewer.displayName()).isEqualTo("Synthetic Publication Reviewer");paired.requireCurrent(a);});
         String service=id();jdbc.update("INSERT INTO "+U+"(id,username,display_name,user_type,status,failed_login_count,created_at,updated_at) VALUES (?,?,'Service reviewer','SERVICE','ACTIVE',0,now(),now())",service,service);var q=prepare(f);
         rejected(()->tx().executeWithoutResult(status->{c3SelectRestrictedRole();var a=paired.acquire(q,request());permit(paired.contribute(a));paired.reviewer(a,service);}));
     }

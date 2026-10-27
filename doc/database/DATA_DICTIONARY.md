@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `e91de456670a8db835218d90a2fdee92904b4785`
+Captured source SHA: `97f3295d1b7dbfde3b27f08c08a9cfad45c415f9`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `93924c520ff84e21e5d50ad46a92961162eab9957416d22bdf076157d462056e`.
-Migrations: 178; JPA mappings: 470; catalog relations: 522; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `125aaeb09ba13168ef870987d3556a6824ac9714dc175eba1efb00568d08c956`.
+Migrations: 180; JPA mappings: 470; catalog relations: 523; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -9846,6 +9846,7 @@ Persisted PermissionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261026_001__custody_product_draft_authority.sql](../../src/main/resources/db/migration/V20261026_001__custody_product_draft_authority.sql)
 - Migration mention (not inferred introduction): [V20261027_001__custody_fluid_property_authority.sql](../../src/main/resources/db/migration/V20261027_001__custody_fluid_property_authority.sql)
+- Migration mention (not inferred introduction): [V20261027_004__custody_product_publication_authority.sql](../../src/main/resources/db/migration/V20261027_004__custody_product_publication_authority.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -28260,6 +28261,53 @@ Persisted WorkflowCommentJpaEntity state; semantic authority remains with workfl
 
 None captured in this catalog category.
 
+### public.hidra_workflow_custody_publication_policy
+
+Owner: **workflow**; relation kind: `r`.
+
+Workflow-owned empty explicit per-company publication definition/version/target/purpose policy; scalar company reference, no cross-owner FK, assignments, decisions, grants or qualification.
+
+- Evidence: [V20261027_005__workflow_custody_publication_policy.sql](../../src/main/resources/db/migration/V20261027_005__workflow_custody_publication_policy.sql)
+- Evidence: [JdbcCustodyProtectedProductPublicationApprovalAdapter.java](../../src/main/java/dz/sh/hidra/modules/workflow/infrastructure/persistence/adapter/JdbcCustodyProtectedProductPublicationApprovalAdapter.java)
+- Migration mention (not inferred introduction): [V20261027_005__workflow_custody_publication_policy.sql](../../src/main/resources/db/migration/V20261027_005__workflow_custody_publication_policy.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| definition_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| definition_version | integer | False | None; identity=; generated= | No current mapped Java column | — |
+| target_type_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| purpose_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| active | boolean | False | None; identity=; generated= | No current mapped Java column | — |
+| created_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| updated_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_publication_policy_company_ck`: CHECK (company_party_id::text = btrim(company_party_id::text) AND length(company_party_id::text) &gt; 0)
+  - Catalog attributes: {"columns": ["company_party_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_publication_policy_definition_fk`: FOREIGN KEY (definition_id, definition_version) REFERENCES hidra_workflow_definition(id, version)
+  - Catalog attributes: {"columns": ["definition_id", "definition_version"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id", "version"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_workflow_definition"}, "type": "f", "validated": true}
+- `hidra_publication_policy_purpose_fk`: FOREIGN KEY (purpose_id) REFERENCES hidra_workflow_type_catalog(id)
+  - Catalog attributes: {"columns": ["purpose_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_workflow_type_catalog"}, "type": "f", "validated": true}
+- `hidra_publication_policy_time_ck`: CHECK (updated_at &gt;= created_at)
+  - Catalog attributes: {"columns": ["updated_at", "created_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_publication_policy_type_fk`: FOREIGN KEY (target_type_id) REFERENCES hidra_workflow_type_catalog(id)
+  - Catalog attributes: {"columns": ["target_type_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_workflow_type_catalog"}, "type": "f", "validated": true}
+- `hidra_publication_policy_version_ck`: CHECK (definition_version &gt; 0)
+  - Catalog attributes: {"columns": ["definition_version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_workflow_custody_publication_policy_pkey`: PRIMARY KEY (company_party_id)
+  - Catalog attributes: {"columns": ["company_party_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `hidra_workflow_custody_publication_policy_pkey`: CREATE UNIQUE INDEX hidra_workflow_custody_publication_policy_pkey ON public.hidra_workflow_custody_publication_policy USING btree (company_party_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+None captured in this catalog category.
+
 ### public.hidra_workflow_definition
 
 Owner: **workflow**; relation kind: `r`.
@@ -28272,6 +28320,7 @@ Persisted WorkflowDefinitionJpaEntity state; semantic authority remains with wor
 - Migration mention (not inferred introduction): [V20261004_003__hmr_003_workflow_workflow_definition.sql](../../src/main/resources/db/migration/V20261004_003__hmr_003_workflow_workflow_definition.sql)
 - Migration mention (not inferred introduction): [V20261006_014__hmr_055_workflow_instance.sql](../../src/main/resources/db/migration/V20261006_014__hmr_055_workflow_instance.sql)
 - Migration mention (not inferred introduction): [V20261006_015__hmr_061_workflow_transition.sql](../../src/main/resources/db/migration/V20261006_015__hmr_061_workflow_transition.sql)
+- Migration mention (not inferred introduction): [V20261027_005__workflow_custody_publication_policy.sql](../../src/main/resources/db/migration/V20261027_005__workflow_custody_publication_policy.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -29041,6 +29090,7 @@ Persisted WorkflowCatalogEntryJpaEntity state; semantic authority remains with w
 - Migration mention (not inferred introduction): [V20261006_016__hmr_066_workflow_task.sql](../../src/main/resources/db/migration/V20261006_016__hmr_066_workflow_task.sql)
 - Migration mention (not inferred introduction): [V20261006_017__hmr_081_workflow_action.sql](../../src/main/resources/db/migration/V20261006_017__hmr_081_workflow_action.sql)
 - Migration mention (not inferred introduction): [V20261006_018__hmr_099_workflow_state_history.sql](../../src/main/resources/db/migration/V20261006_018__hmr_099_workflow_state_history.sql)
+- Migration mention (not inferred introduction): [V20261027_005__workflow_custody_publication_policy.sql](../../src/main/resources/db/migration/V20261027_005__workflow_custody_publication_policy.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

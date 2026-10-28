@@ -3724,6 +3724,126 @@ kind-compatibility policy, public Package C, dependent station/characteristic wo
 frontend, simulator/P3, engineering/SITE qualification, release and deployment
 are not admitted by this bounded implementation registration.
 
+### HAPI-599 Package B — writer admission blocked by company lock privilege prerequisite — 2026-10-28
+
+**Owner Next; actual preimplementation finding.** Main remains
+`9239d39d56a8bcb33267986c862a0faa47ed84b6`; Docs689/run `40736634374`
+completed SUCCESS, and its unchanged runtime retains Full960/Fast260 success.
+No new CI failure is asserted. Reviewing the registered writer's composed runtime
+role reveals a source-backed contradiction before any writer implementation:
+
+- `JdbcTopologyProtectedPartyEligibilityAdapter.acquire` executes
+  `LOCK TABLE public.hidra_party_party IN SHARE ROW EXCLUSIVE MODE NOWAIT`
+  directly as the reader. SELECT-only PostgreSQL16 credentials cannot take this
+  mode. The PostgreSQL16 LOCK documentation explicitly permits SELECT only for
+  ACCESS SHARE; UPDATE/DELETE/TRUNCATE permits stronger modes:
+  https://www.postgresql.org/docs/16/sql-lock.html .
+- The writer registration requires SELECT-only Party sources and forbids changes
+  to the existing company provider/source pins. Supplying Party UPDATE to make
+  that provider work would violate this registered boundary. Weakening the lock
+  would lose writer exclusion; opening another connection would lose the single
+  physical transaction. Neither is an authorized repair.
+- The manufacturer adapter's fixed isolated-owner lock helper does not fix the
+  existing company adapter's direct LOCK statement. Its current GUARD prohibits
+  DML on role/assignment/profile but does not prohibit Party-root UPDATE. Its
+  accepted PostgreSQL fixture explicitly grants `SELECT,UPDATE` on the Party root
+  to its reader. Prior acceptance is valid for those actual tested grants, not
+  proof of a SELECT-only Party-root runtime. Correct the earlier stronger prose
+  claim; do not rewrite its test evidence or treat it as a new passing experiment.
+
+**Bounded disposition.** Stop before writer/runtime mutation. The preceding
+writer allowlist explicitly excludes owner-provider changes; AGENTS section13
+requires creating only files listed in the selected task. Register the missing
+owner contribution separately within the same fixed Package B, preserving every
+accepted provider/source pin and immutable migration. No new package/task, timeout
+waiver, permission, status promotion or CI skip. This source finding adds a
+prerequisite hold; it does not revoke position/domain acceptance or reopen their
+completed implementation. HAPI-599 remains NOT_IMPLEMENTED/BLOCKED.
+
+**This one corrective registration.** Exact message:
+`docs(topology): register installed-unit company evidence privilege prerequisite`.
+CREATE/DELETE none; MODIFY only this owning phase, append-only. No writer files,
+owner implementation, tests, migration, dictionary, inventory or workflow are
+changed by this stage. Publication uses expected-head guard and verified blobs,
+tree and parent; observe exact-SHA Docs creation/queue/start then STOP.
+
+**Next executable prerequisite, NOT EXECUTED.** Exact message:
+`feat(party): export SELECT-only installed-unit company evidence`.
+
+CREATE only:
+- `src/main/java/dz/sh/hidra/modules/party/application/contract/topology/TopologyInstalledUnitCompanyEvidenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JdbcTopologyInstalledUnitCompanyEvidenceAdapter.java`
+- `src/test/java/dz/sh/hidra/modules/party/infrastructure/persistence/TopologyInstalledUnitCompanyEvidencePostgresIntegrationTest.java`
+
+MODIFY only `.github/ci-test-inventory.json` (actual new suite/cases/hash,
+unmeasured timing) and this phase (implementation/verification evidence).
+DELETE none. No existing company/manufacturer adapter or interface, native Identity,
+source pin, role/grant seed, migration, writer, platform executor, API or frozen
+registry change. These three proposed paths are unoccupied at the current head.
+
+**Provider protocol.** Export opaque acquire(exact company Party ID), single-use
+read, requireCurrent and finalFences; scalar Contribution contains actual Party
+ID/status/generation and PID/XID/database role. ACTIVE company eligibility is
+independent of manufacturer role/profile: a company need not be a manufacturer.
+No company==manufacturer inference or installation permission is issued.
+
+Reuse only the existing Party-private fixed parameterless technical lock function
+`public.hidra_party_lock_installed_unit_manufacturer_evidence()` from003, validated
+against its exact body/security/search-path/isolated-owner/ACL contract before
+and after invocation. It locks four fixed Party tables without reading eligibility
+or modifying rows, so the company adapter may use this provider-private capability
+without manufacturing a manufacturer classification. Accept the conservative
+four-table contention explicitly; do not introduce dynamic table parameters or
+change the helper's body/grants. Retain an ACCESS SHARE lock on the real generation
+registry. No new DDL or migration version is needed. Reserved writer005 remains
+uncreated and must be rechecked before eventual implementation.
+
+Enforce actual SELECT-only runtime on all five Party source relations, including
+table/column and inherited DML privileges; prohibit ownership, elevated/member
+roles, schema CREATE, RLS/view/partition/inheritance and trigger privileges. Guard
+the real Party generation schema, functions/triggers, qualified relation identities
+and held lock modes. Read actual current ACTIVE company and positive present
+generation, record private row image and physical transaction context, and re-read
+them in requireCurrent without issuing a new LOCK or consuming another ticket.
+Use issuer/thread/holder/connection/role/PID/XID binding, completion/suspension and
+savepoint-lock invalidation; swallowed/context failures poison the original holder
+and veto commit without SQL. Ticket-consuming context checks must execute in the
+body so foreign-thread misuse cannot escape invalidation via a proxy interceptor.
+
+**Focused acceptance.** Fresh full-Flyway PostgreSQL16 and actual configured
+Spring adapter with separate restricted reader and isolated helper owner. Prove
+company read/current and actual raw PID/XID/locks with SELECT-only grants, and
+assert denied direct Party/registry/role/assignment/profile INSERT/UPDATE/DELETE.
+Exercise granted table/column/inherited Party DML rejection, missing/tombstoned/
+inactive company, generation/row/role/catalog/helper/ACL tampering, revoked EXECUTE,
+both writer lock directions/NOWAIT, same company as manufacturer, non-manufacturer
+company, forged/foreign/replayed tickets, thread/suspension/savepoint/end reuse
+and swallowed-error rollback. Compose the actual manufacturer adapter in the same
+SELECT-only physical transaction and verify both contributions/fence union without
+granting Party UPDATE; no scalar/mock issuer substitutes for this composition test.
+Keep the old manufacturer suite and its historical grants unchanged and explicit.
+Run current inventory/docs and exact-head Full/Fast/Docs; missing local Maven or
+PostgreSQL is reported under AGENTS11.1, never relabeled as passing runtime proof.
+
+**Writer resumption rule.** After this prerequisite has genuine exact-head CI and
+independent acceptance, resume the previously registered writer with its existing
+file allowlist/message, substituting only the newly accepted installed-unit company
+contract for the unsuitable station-oriented company provider. Acquire every owner
+lock before sealing admission. Manufacturer fresh rechecks can use spare opaque
+tickets acquired during initial admission and single-use read just before final
+preparation; reacquiring their LOCK statements after sealing is prohibited by the
+existing protected datasource. The new company requireCurrent needs no late lock.
+Keep all source/expiry/final-guard and receipt obligations. No protected writer,
+HTTP Package C, different-unit replacement or integrated acceptance is delivered
+by this prerequisite registration.
+
+**Available validation.** Source checks confirm the exact direct LOCK, accepted
+manufacturer fixture's Party UPDATE grant and absence of a Party-root DML denial
+in its guard; official PostgreSQL16 privilege semantics corroborate the conflict.
+Three create paths are absent; old migration/provider bytes remain unchanged.
+Documentation/link, append-only scope and whitespace checks precede publication.
+No local PostgreSQL/JUnit execution or newly passing synthetic cases are claimed.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

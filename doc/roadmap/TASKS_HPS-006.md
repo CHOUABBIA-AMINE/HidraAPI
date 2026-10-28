@@ -3460,6 +3460,70 @@ use any retained actual cause/stage to repair the responsible invariant without 
 waiver. HAPI-599 remains NOT_IMPLEMENTED/BLOCKED, and current position acceptance,
 atomic writer, Package C, release and deployment remain unselected/pending.
 
+### HAPI-599 Package B — position ownership evidence acceptance — 2026-10-28
+
+**Owner Next; exact-head independent acceptance.** Main
+`7a6d93bb8709b0bfc2df3d9cb4b9ea68e68802b6` has Full960/run `40711999664`,
+Fast260/run `40711999658` and Docs687/run `40711999535` completed SUCCESS.
+All ten required PostgreSQL shards, unit/architecture, static, API/dictionary and
+the final gate passed. Development mode, attempt1, cached dependencies and
+serial_oracle=false are explicit; the separate serial job is skipped by design,
+and release_eligible=false. No release or operational acceptance follows.
+
+Downloaded full evidence artifact `12826443913` has ZIP SHA-256
+`4ddc5e2f80e082759120b336869c8a39f6f92a2d92b285abdbb481dea3e87bd1`,
+matching GitHub metadata. Independently checked all503 listed file hashes and
+reproduced gate.json byte-for-byte with the unchanged full-evidence aggregator
+against current source/inventory. Raw XML and exact case identities reconcile
+all496 active classes and3,669 cases, zero failures/errors/skips. The position
+unit suite passes6 cases and its PostgreSQL suite23 cases (12.318s observed).
+The Organization coordinator suite passes79 cases, including all three diagnostic
+regressions; its unchanged appointment concurrency suite passes82 cases (325.924s).
+No timing inventory, case classification, historical exclusion or shard is changed.
+This is retained hosted evidence review, not a local JUnit/PostgreSQL execution.
+
+Same-run dictionary receipt is checked=true on this SHA: PostgreSQL16.15,
+185 migrations,470 mappings,531 relations, zero unresolved owners. Source bundle
+SHA-256 `cc3a447e4bf313777b59a85124f57e2d244973ee7ff53a9da24155dc4a94b74c`;
+catalog SHA-256 `acb83aef263b18e87f44d5c9a6f15f674afe6980ac4aefcc1bfc9dbec5d28602`;
+checked render SHA-256 `da2768e688f17e4a4606920675f6a802c6e5223cd81eed09ae674100f10cd598`.
+API/base compatibility passed against `b1ddf70793def5035f295062c21082f926bdd481`;
+current API SHA-256 `2f33b69dff12127bddcfa77b6f8b76419ed335a311eecfdb1dab8b1d6f968829`.
+The physical dictionary refresh is accepted; no regenerated artifact is needed.
+
+**Disposition and publication hold.** Accept only the registered position/facility
+owner contribution for its tested development software scope. Package A, Party
+manufacturer evidence and installed-unit Identity acceptance remain intact.
+Full959 remains a failed historical run. Its OIDC rejection did not recur in960;
+the diagnostic repair retains future rejection evidence but does not establish
+or repair the unidentified underlying cause. Do not call it a proven timeout,
+relax any deadline, suppress its case or claim permanent stability from one pass.
+The exact-head CI/dictionary verification hold on this contribution is resolved.
+Integrated Package B/C and HAPI-599 remain NOT_IMPLEMENTED/BLOCKED; protected atomic
+writer implementation, public API, engineering qualification, SITE, release and
+deployment remain pending. Frozen ROADMAP/PHASES statuses are unchanged.
+
+**This single selected stage.** Exact message:
+`docs(topology): accept installed-unit position ownership evidence`.
+CREATE/DELETE none; MODIFY only this phase, append-only. Required available checks:
+independent full-evidence reproduction, documentation/link validation and whitespace.
+Publish with expected-head guard and verified parent/tree/blob; observe exact-SHA
+Documentation Validation creation/queue/start and STOP. No runtime/workflow change
+or unnecessary Full dispatch is selected by this documentation-only acceptance.
+
+**Next registered stage, not executed here.** Exact message:
+`docs(topology): register protected installed-unit atomic writer implementation`.
+CREATE/DELETE none; MODIFY only this phase. Review current installed-unit domain,
+storage schema, accepted Party/Identity/position contracts, protected executor,
+permission and DML caller guards before registering an exact bounded Package B
+implementation allowlist, contracts, synthetic acceptance and migration need.
+Resolve lock order, native/current-owner checks, physical transaction binding,
+idempotency/replay, lifecycle/history and SQL-free final-guard commit veto from
+actual source. Do not guess filenames, widen existing source pins, invent an
+equipment-kind compatibility mapping or implement writer/API code in that stage.
+Any unresolved cross-owner policy remains explicit; registration is not integrated
+acceptance. Public Package C and dependent tasks require separate selection.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

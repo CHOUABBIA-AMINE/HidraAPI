@@ -63,7 +63,8 @@ class OrganizationOperationalScopeSchemaMigrationTest {
             new PostgreSQLContainer<>(DockerImageName.parse("postgres:18-alpine"))
                     .withDatabaseName("hidra_org_scope_schema_test")
                     .withUsername("hidra")
-                    .withPassword("hidra");
+                    .withPassword("hidra")
+                    .withCommand("postgres", "-c", "max_locks_per_transaction=256");
 
     @Test
     void existingRegistryMigrationIsAdditiveAndPreservesLegacyColumns() throws SQLException {

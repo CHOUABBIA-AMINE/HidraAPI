@@ -1916,6 +1916,54 @@ all its owner-scope, tests and API acceptance gates actually pass.
 This is NOT deployed, SITE accepted or numerical/P3 scope.
 
 
+
+
+### HAPI-599 Package A — CI #947 focused source and test-environment repair — 2026-10-28
+
+**Failed acceptance and scope.** Exact source `96d63850deb185817195c5915160fd8ea7ca7709`
+has Full CI #947/run `40673485774` **FAILED**, while same-SHA Fast #250 and
+Docs #667 succeeded. Full CI logs in all ten PostgreSQL shards and
+the API contract lane identify Spring `BeanCreationException`/
+`Cannot subclass final class ...JdbcInstalledUnitRepositoryAdapter`.
+The new Topology `@Repository` has `@Transactional` methods and is
+proxied by Spring; declaring it `final` prevents CGLIB proxy creation,
+breaking previously valid application-context tests across other modules.
+Separate PostgreSQL 18 fresh-schema Flyway `clean()` tests report SQLSTATE
+`53200` / `out of shared memory` and explicit
+`max_locks_per_transaction` advice in OrganizationGreenfieldScopePersistenceTest
+(shard 1), OrganizationEmployeeBirthDataMigrationTest (shard 5), and
+OrganizationOperationalScopeSchemaMigrationTest (shard 7), after adding a
+new exclusion-index/extension-bearing schema. These are direct runtime
+failures, not grounds to reclassify or skip test cases.
+
+**Exact registered repair message and allowlist.**
+`fix(topology): restore transactional adapter proxy and PostgreSQL test lock capacity`.
+MODIFY ONLY:
+`src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcInstalledUnitRepositoryAdapter.java`
+(remove `final` from the proxy target, retaining all `@Transactional` methods);
+`src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/OrganizationGreenfieldScopePersistenceTest.java`,
+`src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/OrganizationEmployeeBirthDataMigrationTest.java`,
+`src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/OrganizationOperationalScopeSchemaMigrationTest.java`
+(start their isolated PostgreSQL Testcontainers with `max_locks_per_transaction=256`);
+`.github/ci-test-inventory.json` (update only actual changed test source hashes);
+and this owning `doc/roadmap/TASKS_HPS-006.md` evidence record.
+CREATE none. DELETE none. The isolated Testcontainers setting is **test-only
+capacity**, not a deployment database setting and not an increase of test
+concurrency. Preserve all seven installed-unit cases, existing Organization
+assertions, ten PostgreSQL shards, exact source inventory and frozen
+ROADMAP/PHASES statuses.
+
+**Validation and remaining gate.** Source/sha256 equivalence checks, preserved
+test-class case lists, guarded publication and CI startup are the local
+prepublication gates. No test fixture, production migrations, authorization
+fences, denial/overlap constraints, historical revision semantics or public
+API are weakened. The failure cannot be marked repaired until new exact-SHA
+Full/Fast/Docs CI reports are available. Keep HAPI-599 integrated workflow
+NOT_IMPLEMENTED/BLOCKED, **Package A only**, and do not select Package B
+or introduce a new A1/A2/D package. CI can reveal further defects; never
+preclaim a green gate.
+
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

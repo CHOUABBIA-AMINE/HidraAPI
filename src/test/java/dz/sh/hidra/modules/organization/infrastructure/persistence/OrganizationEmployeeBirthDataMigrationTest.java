@@ -57,7 +57,8 @@ class OrganizationEmployeeBirthDataMigrationTest {
             new PostgreSQLContainer<>(DockerImageName.parse("postgres:18-alpine"))
                     .withDatabaseName("hidra_org_employee_birth_test")
                     .withUsername("hidra")
-                    .withPassword("hidra");
+                    .withPassword("hidra")
+                    .withCommand("postgres", "-c", "max_locks_per_transaction=256");
 
     @BeforeEach
     void migrateToPreHra013Checkpoint() {

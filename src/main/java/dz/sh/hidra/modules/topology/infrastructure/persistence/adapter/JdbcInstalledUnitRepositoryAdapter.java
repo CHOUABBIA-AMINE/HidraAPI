@@ -41,7 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
  * contract. Callers must coordinate protected permission and atomic transactions.
  */
 @Repository
-public final class JdbcInstalledUnitRepositoryAdapter implements InstalledUnitRepositoryPort {
+public class JdbcInstalledUnitRepositoryAdapter implements InstalledUnitRepositoryPort {
     private final JdbcTemplate jdbc;
 
     public JdbcInstalledUnitRepositoryAdapter(JdbcTemplate jdbc) {

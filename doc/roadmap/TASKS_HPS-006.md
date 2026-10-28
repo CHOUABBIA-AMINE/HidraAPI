@@ -3251,6 +3251,116 @@ Full dispatch limitations must be reported honestly. Green code/catalog and inde
 evidence review precede separate atomic-writer registration. No writer or Package C
 implementation is admitted by either evidence/dictionary scope above.
 
+### HAPI-599 Package B — guarded current position/facility ownership implementation — 2026-10-28
+
+**Owner Next; registered implementation only.** Exact parent
+`b2edd785b32644e6c025c18e1a00c3a847660454` has Docs684 SUCCESS;
+accepted runtime remains Full957/Fast258 on `b1ddf70793def5035f295062c21082f926bdd481`.
+Execute only `feat(topology): export guarded installed-unit position ownership evidence`
+in the preceding five-CREATE/two-MODIFY allowlist. No existing station/Party/Identity
+source, executor, writer/storage method, JPA entity, public API, old migration or
+frozen status changes. This is an owner observation contribution within fixed B.
+
+**Implemented source.** `InstalledUnitPositionOwnershipPort` exports opaque admission,
+single-use read, requireCurrent and three exact technical fences. Scalar observations
+contain current position/type/facility/company references, recognized equipment/
+facility status and facility kind, actual live positive facility-owner generation,
+PID/XID and database role. There is no invented equipment generation, eligibility
+Boolean, Identity grant or equipment-kind compatibility claim. The reader requires
+one explicit unambiguous direct facility; null/missing placement, an additional
+node/segment attachment, absent owner or missing/tombstoned generation is unavailable.
+Non-ACTIVE recognized statuses are faithfully reported, not silently promoted or
+rejected under an unregistered eligibility policy. A future authorized writer must
+compare actual company/facility and apply its separately registered business policy.
+
+`JdbcInstalledUnitPositionOwnershipAdapter` uses the exact three fixed Topology
+relations, reusing unchanged facility-generation schema/constraint/trigger/function
+pins from the accepted facility owner implementation. It requires writable synchronized
+read-committed context, safe search path, nonowner/nonadministrative runtime and
+SELECT-only table/column privileges. It rejects RLS, temporary/view/partition/
+inheritance replacements and schema-create authority. Runtime to_regclass/to_regprocedure
+lookups and row tableoid checks prevent cached source names from admitting renamed
+or replaced relations. Fresh private SHA-256 row images cover equipment and facility
+source rows; final recheck compares both images and the entire bound scalar tuple,
+catching own-transaction changes even when the ownership generation did not change.
+
+The new additive `V20261028_004__topology_installed_unit_position_owner_lock.sql`
+creates only fixed parameterless
+`public.hidra_topology_lock_installed_unit_position_ownership() RETURNS void`.
+Its body locks equipment then facility SHARE ROW EXCLUSIVE NOWAIT; no row DML,
+dynamic SQL, grant seed or transaction control. VOLATILE/PARALLEL UNSAFE/SECURITY
+DEFINER with fixed search_path=pg_catalog,pg_temp and same-transaction PUBLIC revoke.
+Exact prosrc SHA-256 computed from the authored SQL body:
+`60466e68d8b31baff428ba3d3bfeb318b4f2217e74fcd926007c47da444fe603`.
+The reader separately locks the existing generation registry ACCESS SHARE NOWAIT.
+Both strong locks must actually remain on the caller's PID through recheck.
+
+The helper is not deployable merely by its default migration ownership. Explicit
+provisioning must transfer it to the registered isolated NOLOGIN NOINHERIT owner,
+with schema USAGE but no CREATE at runtime, no memberships/admin flags/source table
+ownership, and only non-grantable UPDATE on the two fixed source tables. Reject
+extra SELECT/INSERT/DELETE/TRUNCATE/REFERENCES/TRIGGER privileges and table/column
+UPDATE grant options. Only the approved SELECT-only reader gets explicit non-grantable
+EXECUTE; reject PUBLIC/extra grantees, unsafe language/signature/body/security/path
+or owner changes before call and before disclosure/final checks. The migration
+creates no role or runtime permission; isolated tests alone provision synthetic roles.
+
+Private tickets bind issuer/request, thread, actual holder/connection, role and
+PID/XID; reject forgery/replay/foreign issuer, suspension, completion and lost
+savepoint locks. Ticket-consuming methods perform context checks inside their
+bodies so foreign-thread invocation can poison the issuing holder instead of being
+intercepted before invalidation. SQL-free synchronization vetoes swallowed-error
+commit; all reads/fences/current checks fail closed. No underlying source DML is
+made available to the evidence reader.
+
+**Authored synthetic cases; no local runtime pass claim.** Six standalone unit tests
+cover exact identity rejection, transaction/read-only rejection before SQL, forged
+lifecycle tickets, non-authoritative scalar construction and private ticket shape.
+Twenty-three fresh full-Flyway PostgreSQL16 tests cover actual configured restricted
+reader/owner wiring, direct evidence/coordinates/fences, null/missing/tombstoned
+placement and generation, status/ownership changes, SELECT-only write denial,
+PUBLIC/reader/extra ACLs, helper body/security/path/owner/privilege tampering,
+column/table grants, RLS/view replacement, both NOWAIT writer directions and commit
+release, forged/replayed/foreign/expired tickets, read-only/isolation rejection,
+thread/suspension/savepoint invalidation, swallowed failure rollback, generation
+trigger tampering, same-transaction row images/owner transfer/role changes, malformed
+status and ambiguous node attachment. A separate synthetic schema-owner connection
+is used only for deliberate own-transaction mutation; observations use the SELECT-only
+role and actual production adapter. Existing owner contracts and their pins are unchanged.
+
+Inventory adds only those two actual classes/cases/hashes, unmeasured baseline0;
+all prior entries, observed timing/provenance, historical exclusions and ten shard
+controls remain unchanged. Active inventory:496 classes (377 unit/architecture,
+119 PostgreSQL),3,666 expected exact cases, plus four unchanged historical classes.
+No test is skipped or reclassified; the existing deterministic scheduler assigns
+the new suites without inventing measured wall times.
+
+**Actual available validation.** All four new Java sources parse. The real port and
+existing relation-fence record compile with the available Java17 compiler; scalar,
+positive-coordinate and rejection probes pass. This is not full Java21/Spring/JUnit
+validation. All project-qualified types in the four new Java sources resolve to
+actual main/test source paths. 149 Python validator self-tests pass (35 inventory,
+53 full evidence,19 docs,10 OpenAPI,18 dictionary,14 API-base resolution); inventory,
+offline API snapshot and whitespace checks pass. Focused Maven test command exits127:
+`mvn: command not found`. No local PostgreSQL catalog, JUnit or service execution is
+claimed and no full tool/service environment was installed merely for CI.
+
+All184 earlier migration blobs and current dictionary bytes remain unchanged.
+A genuine hosted migrated catalog and strict dictionary refresh remain pending
+under the preceding registered follow-up. The new185-file migration chain is authored,
+not claimed migrated locally. Preserve strict comparison: initial CI may fail only
+on the expected stale dictionary after successful capture, or reveal an actual
+code/migration/test issue that must be repaired first. Never fabricate metadata.
+
+Publish only the seven registered paths with exact parent/tree/blobs and expected-head
+guard; observe exact-SHA Full/Fast/Docs creation/start and stop. The position owner
+contribution is implemented, not yet accepted. Registered dictionary follow-up remains
+`docs(topology): refresh installed-unit position ownership physical dictionary`,
+limited to dictionary plus this phase and based solely on genuine hosted evidence.
+Green code/catalog and independent exact-case review must precede protected atomic
+writer registration. HAPI-599 stays NOT_IMPLEMENTED/BLOCKED pending integrated B/C;
+public API, HAPI-600/601, simulation/P3, frontend, SITE, release/deployment remain unselected.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

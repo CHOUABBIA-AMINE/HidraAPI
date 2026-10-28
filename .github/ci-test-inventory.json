@@ -8679,6 +8679,42 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "bothOwnerLocksStayInReaderTransactionAndReleaseAtCommit",
+        "crossThreadFailurePoisonsOriginalPhysicalTransaction",
+        "directPositionOwnerEvidenceHasActualCoordinatesAndThreeFences",
+        "forgedReplayForeignAndCompletedTicketsAreRejected",
+        "generationTriggerCatalogTamperingIsNeverTrusted",
+        "helperBodyInvokerAndUnsafeSearchPathAreRejected",
+        "helperOwnerRequiresOnlyNonGrantableFixedTableLockPrivileges",
+        "helperSuperuserOwnerIsRejectedUntilExplicitProvisioningRestored",
+        "missingLiveGenerationAndNonDirectNodePlacementAreNotInferred",
+        "missingOwnerMalformedStatusAndRemovedPositionAreUnavailable",
+        "noPublicExecutionAndRevokedReaderExecuteFailBeforeObservation",
+        "nullMissingAndTombstonedPlacementNeverUsesAnInventedGeneration",
+        "publicAndExtraExecuteAclOrOwnerMembershipCannotAdmit",
+        "readOnlyAndRepeatableReadTransactionsCannotAcquire",
+        "readerCannotWriteAnySourceTableOrMintGeneration",
+        "roleSwapAndOwnTransactionCompanyTransferInvalidateBoundEvidence",
+        "sameTransactionPositionAndFacilityImageChangesCannotSurviveRecheck",
+        "statusClassificationsAreFaithfulWithoutEligibilityPolicy",
+        "suspendedOrSavepointRolledBackAdmissionCannotResume",
+        "swallowedMissingOwnerFailureStillVetoesCommit",
+        "tableAndColumnReaderWritesAndRlsFailClosed",
+        "viewReplacementAndHelperSchemaCreatePrivilegeAreRejected",
+        "writerFirstOnEitherSourceRejectsWithoutWaiting"
+      ],
+      "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.InstalledUnitPositionOwnershipPostgresIntegrationTest",
+      "dependency_reason": "HAPI-599 Package B position ownership: fresh Flyway PostgreSQL16, SELECT-only reader, fixed lock capability, image/fence/rollback checks; timing unmeasured.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/InstalledUnitPositionOwnershipPostgresIntegrationTest.java",
+      "source_sha256": "110ce1f083f4949992d80d3c361a90e7ad81f6b9d04befa9d87eacbd498dbb9e",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
         "appendsAndClosesHistoryWithoutChangingEarlierRevision",
         "concurrentCompetingInstallationsHaveOneWinner",
         "failedReplacementRollsBackClosureAndEvent",
@@ -8963,6 +8999,25 @@
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/EngineeringRevisionPublicationCursorCodecTest.java",
       "source_sha256": "1e47b60a7a7ac4cf423debd5dd8ba0b528bcc50978dc7556ececd4d92a8287a6",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "fabricatedTicketsCannotReachAnyOwnerLifecycleQuery",
+        "malformedIdentitiesNeverQueryOwnerRows",
+        "missingPhysicalTransactionRejectsBeforeCatalogOrLocks",
+        "privateTicketHasNoPublicFactoryOrConstructor",
+        "readOnlyBoundTransactionRejectsBeforeSql",
+        "scalarObservationCannotBecomeAnAdmissionOrEligibilityBoolean"
+      ],
+      "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.JdbcInstalledUnitPositionOwnershipAdapterTest",
+      "dependency_reason": "HAPI-599 Package B position ownership: Mocked structural/transaction rejection and non-authoritative scalars, no live database; timing unmeasured.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcInstalledUnitPositionOwnershipAdapterTest.java",
+      "source_sha256": "eac2495c2b77f80140e755288aad1ad0e473db85fd7369b6d441c5cfc3ca109d",
       "supports": []
     },
     {

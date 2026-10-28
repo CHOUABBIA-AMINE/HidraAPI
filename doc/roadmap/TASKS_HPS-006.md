@@ -3524,6 +3524,206 @@ equipment-kind compatibility mapping or implement writer/API code in that stage.
 Any unresolved cross-owner policy remains explicit; registration is not integrated
 acceptance. Public Package C and dependent tasks require separate selection.
 
+### HAPI-599 Package B — protected atomic writer implementation registration — 2026-10-28
+
+**Selected stage and evidence.** Owner Next refreshes main
+`078b17c91843d3142b466c4059120bd6e396dad6`, Docs688/run `40735509969`
+SUCCESS. Its unchanged runtime parent retains independently reviewed Full960,
+Fast260 and Docs687 success above. This is one documentation-only registration
+within existing Package B, exact message
+`docs(topology): register protected installed-unit atomic writer implementation`.
+CREATE/DELETE none; MODIFY only this phase, append-only. No runtime implementation,
+migration execution, permissions or frozen status changes are performed here.
+
+**Source-backed seams and limits.** `InstalledUnitRepositoryPort` and
+`JdbcInstalledUnitRepositoryAdapter` are the accepted private storage seam;
+their ordinary transactional register/record/close/read/history methods neither
+admit Identity nor attest current company/position. Do not expose or wrap them
+as a public authorization boundary. V20261028_002 provides immutable unit identity,
+company binding, unit/position half-open exclusion, expected-revision one-time
+closure and trigger-appended immutable history. It has no protected command receipt,
+actor/native-origin provenance or guarded operation orchestration. Preserve it.
+
+The accepted installed-unit Identity contract defines exactly seven operations.
+Installation permissions name installation resources with company and applicable
+source/destination facility scopes; station-revision permissions do not apply.
+Its Request binds one unitId: this implementation registers same-unit relocation,
+not replacement by a different unit. Different-unit replacement remains an explicit
+unregistered follow-up requiring descriptor/permission review; do not silently
+add an eighth operation, reuse a permission for a different meaning or claim all
+owner lifecycle obligations complete. Existing future Package C remains separate.
+
+Company eligibility uses `TopologyProtectedPartyEligibilityContract`; known
+manufacturer values use the accepted manufacturer contract independently of
+company identity. The latter has single-use read and guarded finalFences, but
+no requireCurrent method: reacquire/read fresh issuer tickets before final guard
+and compare retained relevant facts under the same locks. Do not modify its
+accepted interface or mistake a previously read scalar for current authority.
+UNKNOWN manufacturer stays UNKNOWN; no invented Party lookup or fabricated model,
+serial or qualification. Known manufacturer/model provenance remains authored
+classification, never an attestation of manufacturer-to-equipment-kind fitness.
+
+Position evidence directly binds equipmentTypeId, facility, company, statuses,
+real facility generation and private current row images. Unit equipmentKindId
+must resolve as a Topology equipment-type reference and equal the selected
+position equipmentTypeId for a new installation; this is exact classification
+identity, not manufacturer compatibility or engineering qualification. The new
+storage seam must guard the actual `hidra_topology_equipment_type` relation for
+this reference check. Existing equipment/facility status enums include planned,
+inactive and retired states. No owner-approved ACTIVE-only installation policy
+has been established: preserve recognized status evidence, temporal recording
+and company/type identity without inventing operational readiness. Record/history
+is evidence, not authority to operate equipment. Unknown status remains unavailable.
+
+**Next executable bounded implementation, NOT EXECUTED.** Exact message:
+`feat(topology): add protected installed-unit lifecycle operations`.
+
+CREATE only:
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/InstalledUnitLifecycleUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/ProtectedInstalledUnitRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/InstalledUnitLifecycleApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/ProtectedInstalledUnitAdmissionCoordinator.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcProtectedInstalledUnitRepositoryAdapter.java`
+- `src/main/resources/db/migration/V20261028_005__topology_installed_unit_protected_operations.sql`
+- `src/test/java/dz/sh/hidra/modules/topology/application/service/ProtectedInstalledUnitAdmissionCoordinatorTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/application/service/InstalledUnitLifecycleApplicationServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedInstalledUnitLifecyclePostgresIntegrationTest.java`
+
+MODIFY only:
+- `src/main/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutor.java`
+- `src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `.github/database-dictionary-ownership.json`
+- `.github/ci-test-inventory.json`
+- `doc/roadmap/TASKS_HPS-006.md`
+
+DELETE none. All proposed create paths and migration version005 are unoccupied at
+this main;185 earlier migration files remain immutable. No existing repository,
+domain, owner provider, Identity reader/permission mapping, datasource, executor
+budget property, REST/API, station graph, workflow or frozen registry change.
+Use the new opaque port because the existing scalar repository cannot carry
+issuer/context/current-image/final-guard authority; do not duplicate domain rules
+or export the protected repository as a foreign module contract.
+
+**Required transaction and authority protocol.** The use case has typed commands
+and fully materialized results for the seven existing operations, no user callbacks
+or injectable authority objects. Native preparation precedes the sole protected
+transaction. Caller descriptors are assertions only: exact stored unit/company,
+installation/position and actual facility must match locked owner observations
+before mutation or disclosure. Acquire Identity, company Party, optional known
+manufacturer Party, position sources in sorted unique position-ID order, then
+storage/type/receipt fences in fixed relation order; collect the native sample
+only after every required fence is held. Missing rows must retain absence fences.
+Compare actual holder/connection, PID/XID, database role, native binding, request
+and source/destination ownership; require every Identity decision PERMIT. Reject
+DENY/INDETERMINATE, ambiguity, unavailable owner, mismatched type/company and stale
+revision without disclosing foreign existence. No caller-supplied permission list.
+Private pre-sample storage lookups may discover candidate manufacturer/position
+descriptors but confer no authority and disclose nothing. Re-read and compare them
+after fixed-order fence acquisition; any changed descriptor aborts, rather than
+acquiring extra sources out of order. Identity finalFences requires completed
+contribution in the actual contract: acquire its native admission first, collect
+after owner/storage locks, then obtain/validate its final fence list. Do not call
+finalFences on an incomplete Identity ticket or invent a provider bypass.
+
+Use opaque issuer/request/thread/holder-bound one-use tickets, current snapshots,
+savepoint-lock detection and suspension/completion invalidation. Context failure
+must poison the issuing holder even if swallowed, including foreign-thread calls;
+do not let a method interceptor bypass that invalidation. Union exact owner/storage
+fences, deduplicate overlapping Party relations by strongest required lock and
+verify exact action-specific membership; never add counts of overlapping lists.
+Company and manufacturer may be the same Party without treating their distinct
+business evidence as interchangeable. The protected reader keeps SELECT-only
+access to Party, equipment/facility/generation and equipment-type sources; no
+owner helper, role or grant changes are authorized in those sources.
+
+The service alone selects the private credential route. Add only its exact
+compiled name and the coordinator's exact name to the executor caller sets.
+Coordinator and executor independently pin complete SHA-256 identities of the
+actual fixed parameterized DML templates; no prefix, wildcard, arbitrary SQL or
+borrowed station permit. Ordinary work remains the existing500ms policy; no new
+budget or timeout waiver. Preserve custody/appointment policies and all existing
+SQL hashes/source pins. Add exact architecture assertions for only this coordinator
+and required exported owner contract roots/nested data, denying sibling consumers
+and private provider types; do not widen exported package prefixes.
+
+Register/record/close and same-unit relocate execute authorized provisional DML
+only. Relocation closes the expected source revision and appends a new installation
+for the same immutable unit, with matching company and exact source/destination
+facility permissions, in one transaction. Require the replacement effective start
+to equal the source effective close instant; preserve half-open occupancy and
+rollback both on conflict. Database exclusion/uniqueness remains authoritative
+under concurrent writers. Reads/history and exact mutation replay require fresh
+current authorization before disclosure; replay never repeats DML or restores an
+older projection. A missing/foreign request must not leak existing receipt content.
+
+Before flush completion, freshly recheck Identity, company/manufacturer evidence,
+positions, catalog/ACL/trigger bodies and provisional stored images. Retain minimum
+native and manufacturer temporal bounds; authoritative time comes from PostgreSQL,
+never System.nanoTime/Instant.now for permission validity. The final scalar SQL is
+the sole final statement: verify current clock/strict expiry, exact coordinates,
+role, held fence identities, source images, result/receipt/history and commit
+intent. Prepare necessary catalog/owner work before that statement. Synchronizations
+perform SQL-free commit veto and ticket invalidation; no SQL after sealing or
+after-commit compensation. Return success only after observed physical commit;
+preserve indeterminate outcome when commit cannot be established.
+
+**Additive schema and audit scope.** Reserve005 for an immutable
+`hidra_topology_installed_unit_operation_request` receipt relation, source-bound
+request ID/operation/canonical command digest, company/unit/installation descriptors,
+expected revision, result evidence, actor/binding/session and database PID/XID/time
+origin. Exact request replay and conflicting-ID rejection must be concurrency-safe;
+canonical bytes must distinguish nulls, fields, instants and operation, excluding
+server-generated record times from caller command identity. DB-clock recordedAt
+and existing immutable installation events retain truthful original provenance.
+Pin guards preventing receipt update/delete/truncate and malformed origin/expiry;
+do not treat scalar audit fields as native authorization. Preserve existing event
+trigger semantics, including its invoker privileges and nesting guard; test real
+restricted publisher grants rather than assuming trigger ownership. No runtime
+role is auto-created or broadly granted; isolated synthetic deployment roles and
+explicit least-privilege provisioning remain separate. No outbox/Audit-module
+integration or inferred business-approval workflow is added.
+
+Register the new receipt's Topology ownership with this migration and its actual
+adapter as source evidence. Preserve the current dictionary until a genuine hosted
+catalog exists; the initial Full may fail strict drift after capture. The already
+authorized CI-first follow-up is then limited to the actual generated dictionary
+and this phase, message
+`docs(topology): refresh protected installed-unit operations physical dictionary`.
+Never invent catalog facts, disable strict equality or rewrite prior migrations.
+
+**Required authored synthetic acceptance.** Fresh full-Flyway PostgreSQL16 tests
+must wire the actual configured Spring/JPA protected executor, separate restricted
+ordinary/publisher/source-helper roles and genuine native LOCAL/LDAP/AD/OIDC issuers.
+Cover every operation and current/revoked/expired/scoped grant, both relocation
+facilities, known versus UNKNOWN evidence, company/type mismatch, unchanged
+classification statuses, forged/sibling tickets, direct unadmitted DML, exact SQL
+substitution, ambient transaction, thread/suspension/savepoint invalidation and
+swallowed-error commit veto. Verify real close-plus-record atomicity, stale revisions,
+unit/position races, both writer lock orders/NOWAIT, exact request replay/conflict,
+revoked replay denial, immutable original/history/audit, final expiry/source/catalog/
+role tampering, no post-guard SQL and indeterminate-commit behavior where applicable.
+Tests must assert no leaked foreign payload and no partial head/event/receipt rows.
+Keep all previous cases mandatory and register only actual new/modified test cases
+and hashes; new timings remain unmeasured, ten shards and balancing stay unchanged.
+Run focused unit/PostgreSQL suites and existing architecture/executor guardrails
+where available; otherwise report exact missing dependencies under AGENTS11.1.
+Require exact-head Full/Fast/Docs and independent case/catalog review before any
+acceptance. No authored test or runtime result is claimed by this registration.
+
+**Stage validation and hold.** Documentation/link and whitespace checks, exact
+one-file append scope and create-path/migration collision checks precede guarded
+publication. Available checks pass:128 documents/8,690 relative links, all921 tasks
+and25 phases, whitespace, append-only phase comparison and all nine unoccupied
+create paths including migration005. No local Java/JUnit/PostgreSQL execution is
+claimed for this documentation-only stage. Observe exact-SHA Docs creation/queue/start
+and STOP. Integrated
+HAPI-599 remains NOT_IMPLEMENTED/BLOCKED. Different-unit replacement, manufacturer
+kind-compatibility policy, public Package C, dependent station/characteristic work,
+frontend, simulator/P3, engineering/SITE qualification, release and deployment
+are not admitted by this bounded implementation registration.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

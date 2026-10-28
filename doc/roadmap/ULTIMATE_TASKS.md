@@ -105,14 +105,15 @@ requires a later separate selection; integrated593, engineering/SITE, numerical
 qualification, frontend, release and deployment remain independent.
 
 [HAPI-597](TASKS_HPS-008.md#hapi-597), multi-product ownership/API compatibility
-qualification, has a source-backed14-case test execution registered in its phase
-following accepted596 and Docs657 onbf6a3ada2aaef49cd3a2777c4f775eae16400b01.
-This owner Next executes only the two-document preflight. After its Docs success,
-a later Next selects the single real owner/filter/PostgreSQL qualification class
-and exact inventory/status scope. No proposed test has executed yet;597 remains
-NOT_IMPLEMENTED/BLOCKED until that separately selected implementation starts.
-Legacy qualified GAS and unqualified publication exports remain distinct; no
-consumer wiring, numerical qualification, integrated593 closure or deployment.
+qualification, is NOT_IMPLEMENTED/IN_PROGRESS. The registered standalone14-case
+native HTTP/owner/PostgreSQL/legacy GAS suite is authored and admitted to the
+unchanged classifier; hosted compilation and actual execution remain pending.
+This owner Next submits only that bounded test stage after Docs658 passed on
+a9ae2c31b77ffc585bb8983f42f3440f978ffc08. No test result is inferred from source.
+Next is separate final acceptance after exact-SHA Full/Fast/Docs and independent
+raw case/API/compatibility/catalog verification; Fail repairs responsible feedback.
+Accepted594/595/596 remain closed. Integrated593, numerical/engineering/SITE,
+frontend, releases and deployment remain independent and unexecuted.
 
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent

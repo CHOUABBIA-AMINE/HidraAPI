@@ -587,7 +587,7 @@ Cross-phase prerequisites in the approved task graph: HPS-002 Dependency edges a
 | [HAPI-594](TASKS_HPS-008.md#hapi-594) | Product identity and metadata drafts | Company-owned product identity/classification and versioned metadata drafts. | P1 | HAPI-567 | VERIFIED | COMPLETED |
 | [HAPI-595](TASKS_HPS-008.md#hapi-595) | Supplied composition, properties and methods | Supplied composition/property/reference-basis/units/method applicability and evidence. | P1 | HAPI-594 | VERIFIED | COMPLETED |
 | [HAPI-596](TASKS_HPS-008.md#hapi-596) | Product publication, history and owner exports | Governed publish/withdrawal/current/history/effective selection and scalar owner exports. | P1 | HAPI-595 | VERIFIED | COMPLETED |
-| [HAPI-597](TASKS_HPS-008.md#hapi-597) | Multi-product ownership/API compatibility qualification | Multi-product owner/API/compatibility qualification and consumer-ready contract. | P1 | HAPI-596 | NOT_IMPLEMENTED | BLOCKED |
+| [HAPI-597](TASKS_HPS-008.md#hapi-597) | Multi-product ownership/API compatibility qualification | Multi-product owner/API/compatibility qualification and consumer-ready contract. | P1 | HAPI-596 | NOT_IMPLEMENTED | IN_PROGRESS |
 
 ### 8. Phase Completion Criteria
 

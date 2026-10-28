@@ -9977,6 +9977,33 @@
       "path": "src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/ProductRevisionPublicationNativeHttpPostgresIntegrationTest.java",
       "source_sha256": "fef00594d64716811f92c52a4533033d58480b549e62c57a29036ff4ddcd4bbb",
       "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "companyAndProductDenialsBlockReadPublishAndExport",
+        "corruptedStoredBytesNeverBecomeFallbackSelection",
+        "exactHistoricalExportSurvivesSourceAndHeadChanges",
+        "failedFinalGuardRollsBackPublicationAndReceipt",
+        "gasMoleSourceRoundTripsThroughOwnersAndExport",
+        "legacyQualifiedGasReplayKeepsExactIdentity",
+        "liquidMassSourceRoundTripsWithoutNumericalQualification",
+        "malformedCompositionAndSelectorsNeverReachOwners",
+        "policyAndUnitRevocationPreventEligibleSelection",
+        "publicationCannotSubstituteLegacyGasQualification",
+        "revokedNativeSessionBlocksReplayAndExport",
+        "staleAndMixedSourceVersionsCannotPublish",
+        "twoCompaniesShareCatalogWithoutSharingOwnedHistory",
+        "unsupportedLiquidCompressibilityNeverReachesStorage"
+      ],
+      "class": "dz.sh.hidra.modules.custody.qualification.ProductEngineeringOperatorQualificationTest",
+      "dependency_reason": "Registered HAPI-597 configured native HTTP, real owner/Workflow/PostgreSQL and legacy GAS qualification matrix; unmeasured new class",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "custody",
+      "path": "src/test/java/dz/sh/hidra/modules/custody/qualification/ProductEngineeringOperatorQualificationTest.java",
+      "source_sha256": "0f7ec4ef04962371c96d9229847e88fce994d8741d6056480eba7da8a219e541",
+      "supports": []
     }
   ],
   "format": 1,

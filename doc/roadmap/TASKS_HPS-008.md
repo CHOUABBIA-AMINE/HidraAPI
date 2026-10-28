@@ -5478,7 +5478,7 @@ Priority: P1
 
 Implementation Status: NOT_IMPLEMENTED
 
-Planning Status: BLOCKED
+Planning Status: IN_PROGRESS
 
 Owning Module: `custody` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -5735,5 +5735,72 @@ No new Java/native run is claimed. Publish this registration with expectedbf6a3a
 verify exact parent/tree/message/two-path blobs, observe exact-SHA Documentation
 CI queue/start and STOP. Next separately selects the registered14-case test stage
 only after this preflight's Docs succeeds; no implementation occurs here.
+
+### HAPI-597 — registered operator qualification suite submitted — 2026-10-28
+
+Owner Next follows exact maina9ae2c31b77ffc585bb8983f42f3440f978ffc08,
+tree166f991c40b6658291fcc7f82b47507cf21aafdf, Docs658/run40658297246
+completed/success. Accepted594/595/596 and their exact runtime evidence are preserved.
+This executes only the registered14-case test implementation, not final acceptance.
+Exact message: `test(custody): qualify multi-product publication ownership`.
+
+CREATE the single registered ProductEngineeringOperatorQualificationTest in
+custody/qualification. It contains its own fixture helpers adapted from the
+accepted native HTTP/owner suites, no inherited tests/support files. All14 exact
+preflight method names are authored once. Real configured MockMvc+springSecurity,
+LOCAL/native session, nonowner connections, Flyway/JPA, protected owner services,
+scalar export and human Workflow transitions execute in the proposed suite.
+Existing four-producer tests remain unchanged and required in full evidence.
+The new GAS/LIQUID paths perform configured metadata create/update, supplied
+composition/property/method write, candidate prepare, real approve, publish and
+export, retaining exact decimals/bytes/independent versions/units/evidence and
+engineeringQualified=false. Legacy GAS constructs explicit synthetic source/method
+and catalog snapshots in this class, uses actual native human Workflow transitions,
+real append/qualification/resolve, canonical payload/digest replay and current
+approval withdrawal. Publication cannot substitute for legacy qualification.
+
+Negative cases cover two-company binding, both independent DENY scopes/all five
+publication actions with unchanged candidate/publication/head/event/request counts,
+revoked-session replay/read/export, mixed/stale versions, invalid composition,
+unknown/coerced/server fields and LIQUID compressibility rejection before apply.
+Catalog-publication policy, unit policy and Workflow policy loss rejects eligible
+selection while fresh-native exact historical reads preserve their snapshot during
+the loss. No fallback or newly qualified consumer is introduced.
+
+Corruption uses isolated administrator fixture DDL/DML only: temporarily disable
+user triggers to append a byte to canonical publication storage with its matching
+physical digest, then re-enable triggers BEFORE the runtime operation. Actual
+nonowner owner/read/export must reject malformed canonical evidence with no
+fallback. Finally restore original bytes/digest and enabled triggers, verify exact
+snapshot recovery. This is an adversarial fixture, not a production permission.
+The rollback case substitutes only an expired contribution argument at the spy
+boundary, calls the REAL finalGuard SQL, asserts that apply and final guard were
+reached,503/no retry/SQL disclosure and unchanged publication/head/event/receipt
+counts. It changes no500/750/250ms budget and uses no timing sleep/retry.
+
+MODIFY only inventory, owning phase, compact index and597 planning cells in
+ROADMAP/PHASES. New actual class/case/source hash admitted as PostgreSQL, fast=false,
+no inherited support, unmeasured baseline0 under existing median scheduler fallback.
+All old class/case/lane/timing/source entries remain byte-semantically unchanged.
+597 stays NOT_IMPLEMENTED, planning becomes IN_PROGRESS; no VERIFIED/COMPLETED
+claim follows from authored tests. Zero production, dependency, migration, JPA,
+workflow/validator, API/dictionary artifact or existing test change.
+
+Available Java17 compiler parses the new source successfully (syntax only).
+Focused `mvn -q -Dtest=ProductEngineeringOperatorQualificationTest test` exits127:
+`mvn: command not found`. No local Java21 typecheck, Spring/native/HTTP/Workflow/
+PostgreSQL passing result is claimed. Run unchanged source inventory/classification,
+documentation consistency/links, offline OpenAPI, available documentation/inventory
+self-tests, exact scope/header/history/status and whitespace checks before publish.
+Require hosted compilation and all14 raw cases, same-run API/base compatibility/
+complete catalog/dictionary and full disjoint evidence before independent597
+acceptance. If feedback exposes a defect, repair its responsible bounded cause
+without weakening guards or accepting unexpected503.
+
+Publish only one CREATE/five MODIFY with expecteda9ae2c3; verify parent/tree/
+message/blobs, observe exact-SHA Full/Fast/Docs queue/start and STOP under AGENTS11.1.
+Next is separately registered final597 acceptance after green CI and independent
+matrix review, or responsible Fail repair if needed. Integrated593, frontend,
+numerical/engineering/SITE qualification, release/deployment remain unselected.
 
 <!-- task-register:payload:end -->

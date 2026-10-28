@@ -509,7 +509,9 @@ public class ProtectedTopologyInstalledUnitAuthorizationPostgresIntegrationTest 
     @Test void stationPermissionCannotSubstituteForInstalledUnitPermission() {
         var f=fixture("LOCAL");var r=request(Operation.READ_UNIT);
         jdbc.update("INSERT INTO "+T+"permission(id,code,permission_domain,resource_type,action,sensitive,status,created_at,updated_at) VALUES ('station-only','topology:station-revision:read-current','topology','STATION_GRAPH_REVISION','read-current',false,'ACTIVE',clock_timestamp(),clock_timestamp())");
-        jdbc.update("INSERT INTO "+T+"user_permission_grant(id,user_id,permission_id,effect,scope_type,scope_reference_id,grant_reason,emergency_access,valid_from,status,created_at) VALUES (?,?,'station-only','GRANT','CUSTOM',?,'synthetic',false,clock_timestamp()-interval '1 hour','ACTIVE',clock_timestamp())",id(),f.user(),"topology-company:"+COMPANY);
+        jdbc.update("INSERT INTO "+T+"user_permission_grant(id,user_id,permission_id,effect,scope_type,scope_reference_id,grant_reason,emergency_access,valid_from,valid_to,status,created_at) VALUES (?,?,'station-only','GRANT','CUSTOM',?,'synthetic',false,clock_timestamp()-interval '1 hour',clock_timestamp()+interval '1 hour','ACTIVE',clock_timestamp())",id(),f.user(),"topology-company:"+COMPANY);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM "+T+"user_permission_grant g JOIN "+T+"permission p ON p.id=g.permission_id WHERE g.user_id=? AND p.code='topology:station-revision:read-current' AND g.valid_from<clock_timestamp() AND g.valid_to>clock_timestamp()",Integer.class,f.user())).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM "+T+"user_permission_grant g JOIN "+T+"permission p ON p.id=g.permission_id WHERE g.user_id=? AND p.code LIKE 'topology:installed-unit:%'",Integer.class,f.user())).isZero();
         var p=prepared(f);assertThatThrownBy(()->tx().executeWithoutResult(s->{c3SelectRestrictedRole();contribute(p,r);})).isInstanceOf(RuntimeException.class);
     }
     @Test void ownTransactionGrantRevocationFailsFinalRecheckAndRollsBackSentinel() {
@@ -567,7 +569,8 @@ public class ProtectedTopologyInstalledUnitAuthorizationPostgresIntegrationTest 
     }
     @Test void revokedNativeSessionCannotAdmit() {
         var f=fixture("LOCAL");var r=request(Operation.READ_UNIT);grants(f,r);var p=prepared(f);
-        jdbc.update("UPDATE "+S+" SET status='REVOKED' WHERE user_id=?",f.user());
+        assertThat(jdbc.update("UPDATE "+S+" SET status='REVOKED', ended_at=clock_timestamp() WHERE user_id=? AND status='ACTIVE'",f.user())).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM "+S+" WHERE user_id=? AND status='REVOKED' AND ended_at>=started_at",Integer.class,f.user())).isEqualTo(1);
         assertThatThrownBy(()->tx().executeWithoutResult(s->{c3SelectRestrictedRole();contribute(p,r);})).isInstanceOf(RuntimeException.class);
     }
     @Test void retainedIdentityLocksRejectConflictingWriterNowait() {

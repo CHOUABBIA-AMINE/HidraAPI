@@ -3048,6 +3048,60 @@ are required before guarded publication. Exact-head hosted verification remains
 pending; observe applicable Full/Fast/Docs startup and stop. HAPI-599 remains
 NOT_IMPLEMENTED/BLOCKED; no dependent position/writer or Package C is selected.
 
+### HAPI-599 Package B — Full956 fixture and exact-admission guardrail repair — 2026-10-28
+
+Owner Fail selects the responsible repair from exact main
+`2ecbd73774ad0b84750fa9b1468eb30eef78fe5c`. Full956/run `40700284629`
+compiled production and tests; static, API/dictionary and nine PostgreSQL shards
+passed. Unit/architecture and Fast257 failed two exact boundary assertions; shard5
+ran the new installed-unit suite with19 tests, zero assertion failures, two fixture
+errors and no skips. No full acceptance is claimed from partial success.
+
+**Actual causes and bounded correction.** The new registered Identity participant
+legitimately calls native `admit`, but the exact caller-set guard still listed only
+the six earlier participants. Add only
+`ProtectedTopologyInstalledUnitAuthorizationParticipant.java` to that native Identity
+caller set; collector/acquisition sets and every executor/DML caller assertion remain
+unchanged. This is not a foreign Topology consumer or generic family exception.
+The reader's exact SHA-256 pin still described the pre-installed-unit source;
+reviewed source adds the separate opaque installed-unit reader/recheck and exact
+family validation. Pin the actual corrected reader to
+`3b734e9fa7d78372a5555d551ed4e45428515f280fb4e973a76d9a734ea2fa56`,
+retaining all four Party/facility source pins and all guardrail assertions.
+
+The session-revocation fixture attempted status-only termination. Immutable
+V20261013_001 requires a finite ended_at at/after started_at for a bound terminal
+session. The fixture now sets status and database-clock ended_at together, asserts
+one ACTIVE row transitioned and verifies the terminal tuple before asserting native
+admission denial. The station-only grant fixture omitted mandatory valid_to; supply
+a finite one-hour interval, assert a current station grant exists and no installed-unit
+grant exists, then retain the intended cross-family denial assertion. These repairs
+make the negative tests reach their authorization assertions; no migration, runtime
+authorization, deadline, privilege or assertion is relaxed.
+
+Exact message: `test(identity): align installed-unit fixtures and admission guardrails`.
+CREATE/DELETE none. MODIFY only:
+- `src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedTopologyInstalledUnitAuthorizationPostgresIntegrationTest.java`
+- `.github/ci-test-inventory.json` (only the two changed source SHA-256 values)
+- `doc/roadmap/TASKS_HPS-006.md`
+
+All existing cases remain; suite sizes9 and19 are unchanged, as are494 active
+classes/3,637 expected cases, ten mandatory shards and every stored timing/source
+observation outside those two hashes. No production, Flyway, dictionary, workflow,
+permission grant seed or frozen status mutation is selected.
+
+Available validation: both Java test sources parse; direct source checks reproduce
+the three exact native caller sets (1 collector,1 acquisition,7 admission callers)
+and all five SHA-256 pins successfully. These checks are source verification, not
+JUnit execution. Inventory validation passes and its diff contains only two hashes;
+88 CI inventory/evidence validator self-tests pass. Docs/link and whitespace checks
+precede publication. Maven remains unavailable, so no new local JUnit/PostgreSQL
+result is claimed. Preserve the failed956 evidence and let hosted CI exercise the
+corrected fixtures and guardrails. Publish guarded main using the message above,
+observe exact-SHA Full/Fast/Docs startup and stop. HAPI-599 remains
+NOT_IMPLEMENTED/BLOCKED pending exact-head acceptance and remaining B/C work.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

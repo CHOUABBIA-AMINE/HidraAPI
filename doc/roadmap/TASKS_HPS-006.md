@@ -1688,6 +1688,109 @@ doc/model-remediation/RECONCILIATION.md:23744 | HPR-P25-054A | REQUIRES_OWNER_DE
 
 **Planning and implementation disposition.** At prepublication main `dbb1f81374f73ca7a26ad0782af6078ca70f597c`, HAPI-599 remains **NOT_IMPLEMENTED / BLOCKED**. The three owner-policy selection questions are resolved and documented; implementation, source-backed admission, tests, CI and qualification gates remain open. ROADMAP/PHASES frozen table statuses and all other task definitions are unchanged. HAPI-611 has separately approved owner decisions that require a separate bounded task publication, not this commit.
 
+
+
+### HAPI-599 — exact-source installed-unit implementation preflight — 2026-10-28
+
+**Selected bounded result.** The owner `Next` after HAPI-593 parent closure
+selects this source/contract discovery step under the *existing* HAPI-599 /
+HPR-P25-054A obligation; it is not a new standalone task or an approval of a
+runtime implementation. Exact preflight commit message:
+`docs(topology): register installed-unit identity source preflight`.
+CREATE none; MODIFY only `doc/roadmap/TASKS_HPS-006.md`; DELETE none.
+No task status, product/Party/Assets/Topology source, schema, inventory,
+API/OpenAPI, workflow, authorization rule or other task record is changed.
+
+**Recovered main and prerequisite.** Main at
+`484226bf1e23960eb23b8d26e573736b6cb817cc` is the latest source
+baseline. Its HAPI-593 governance-only Documentation CI #664/run
+`40668031121` completed success. Prior unchanged runtime source at
+`d32164613ea7a4acf43826dd72d0f4a6824235ca` has Full #945 and
+Fast #248 success, with no independent HAPI-599 installed-unit code execution.
+HAPI-567 is VERIFIED/COMPLETED in the frozen roadmap; that identity/security
+prerequisite alone does not confer a generic operation grant.
+OD-HAPI-599-01/02/03 Option A were approved and recorded on 2026-10-27.
+This preflight preserves those decisions without repeating or weakening them.
+
+**Exact verified current owner surfaces and what they do not establish.**
+
+| Owning boundary and current file | Source-proven reality | Missing HAPI-599 obligation |
+|---|---|---|
+| Topology domain `src/main/java/dz/sh/hidra/modules/topology/domain/model/Equipment.java`; JPA `infrastructure/persistence/entity/EquipmentJpaEntity.java` | Equipment has its own id/code/facility/node/segment/type, optional manufacturer Party snapshot, status and installed/retired instants. Equipment adapter `JpaEquipmentRepositoryAdapter` uses `TopologyPartyReferenceContract.exists` for optional manufacturer reference. | The existing Equipment record is **not** a separate replaceable physical-unit registry or immutable effective installation history. Do not silently repurpose its identity or manufacturer snapshot. |
+| Topology `domain/model/StationInternalGraph.java`, `domain/model/StationInternalGraphRevision.java`, `infrastructure/persistence/adapter/JdbcStationInternalGraphRevisionRepositoryAdapter.java` | Station graph declares headers, unit slots by `equipmentId`, ports and edges; revision has source/qualification/time evidence and append-only stored bytes/digest. | Station graph `Unit.equipmentId` does not prove a unique physical installed unit, model/serial or valid position-occupancy period. Never overwrite historical graph identity or infer an approved unit/port correlation. |
+| Party `application/contract/topology/TopologyPartyReferenceContract.java`, `TopologyPartyEligibilityContract.java`, `TopologyProtectedPartyEligibilityContract.java` | Respectively existence, general active-reference eligibility, and native protected owner coordinates/fences. Protected contribution is *not* a transferable permission. | No reviewed exported contract currently proves manufacturer role/kind, model provenance or company-specific eligibility for this new operation. `exists` and general `eligibleForNewReference` are insufficient. |
+| Party `infrastructure/persistence/entity/ManufacturerProfileJpaEntity.java`, `PartyRoleAssignmentJpaEntity.java` | Persist manufacturer capability and qualification metadata, role effective dates/status, but these are Party-private tables. | Topology may not import Party JPA or infer a manufacturer grant from an enum or a role label. Need a new explicit provider-owned public eligibility contract with reviewed status, time, role/kind and company behavior. |
+| Identity `application/contract/topology/TopologyScopedAccessContract.java`; Topology `application/service/ProtectedStationAdmissionCoordinator.java` | Existing station operations have explicit company/facility actions and protected Identity/Party/Facility admission with final fences in the physical transaction. | `installed-unit` action/scope/position membership is not defined here. A new public endpoint cannot inherit station permission or reuse its authority as a universal installed-unit permit. |
+| Assets `domain/model/MaintainableAsset.java`; `application/service/AssetsApplicationService.java` | Assets owns independent maintenance identity, service history and references to Topology/Party via approved exported contracts. | Optional maintenance linkage must be a neutral ID/contract; never merge or write Assets state from Topology. |
+
+**Actual current schema/transport discovery.** The GitHub
+`src/main/resources/db/migration/` directory lists 182 versioned files
+through `V20261028_001__custody_publication_trigger_row_dispatch.sql`.
+Existing relevant migrations include
+`V20261011_002__p25_topology_station_graph_revisions.sql`,
+`V20261018_003__p25_topology_protected_station_graph_operations.sql`,
+`V20261019_001__p25_topology_engineering_drafts.sql` and
+`V20261021_001__party_organization_configuration_reference.sql`.
+This is an inventory observation, **not** a reserved migration version or
+actual fresh PostgreSQL verification. Current Topology controller directory has
+no `InstalledUnitController.java`; repository code search found no
+`InstalledUnit` source model. The section 6 `POST /api/v1/topology/installed-units`
+and its DTOs remain proposals, not published OpenAPI operations. No external
+HidraWEB edit is admitted by this step.
+
+**Bounded implementation decomposition (registration proposal, NOT EXECUTED).**
+
+- **A — independent domain and durable identity/history:** first reconcile
+  existing Equipment/Station graph position IDs with the approved Option A.
+  Candidate `domain/model/InstalledUnit.java`,
+  `domain/model/InstalledUnitInstallation.java`, an inward
+  `application/port/out/InstalledUnitRepositoryPort.java`, a single Topology
+  JDBC persistence adapter and additive Flyway DDL, with focused pure-Java and
+  disposable PostgreSQL tests. Require independently immutable physical IDs,
+  evidence classification/unknown serials, half-open installation
+  `[effectiveFrom,effectiveUntil)` intervals, effective-end greater than
+  start, per-unit and single-position non-overlap, same-transaction
+  replace/relocate/removal, optimistic versioning, immutable historical reads,
+  rollback and concurrent-writer constraints. This is an *internal candidate*
+  until exact filenames, topology reference representation, temporal DDL,
+  approved lock order and version reservation are reviewed. No unprotected
+  public mutation or implicit manufacturer attestation.
+- **B — owner evidence and protected transaction orchestration:** extend only
+  the approved Party `application.contract.topology` public surface with
+  explicitly scoped manufacturer role/kind/company/current eligibility, plus
+  current protected Identity/Topology position admission. Use actual Party-owned
+  resolution and one guarded transaction; fail closed on unavailable, wrong
+  company/kind, revoked permission, stale evidence, conflict/duplicate or
+  ambiguous serial. Register the exact provider/consumer implementation files,
+  fences, tests and operation deadlines separately after inspecting Party
+  ownership/role and current Topology protected admission implementations.
+  No domain-to-foreign-private dependency is allowed.
+- **C — typed browser contract and qualification:** introduce explicit
+  REST DTO/mapper/controller only after A and B. Verify create/read/history/
+  revision and required replacement/relocation semantics, principal scope
+  before existence/history, 400/401/403/404/409 behavior and the accepted
+  OpenAPI/permission/current-base comparison. Register actual synthetic
+  lifecycle, duplicate suspicion, temporal overlap, stale CAS, rollback,
+  per-company denial and historical-replay tests and CI source/case hashes.
+  Do not present this as HAPI-600 station incidence or HAPI-601 manufacturer
+  characteristic editor completion.
+
+**Acceptance and block disposition.** This source preflight closes only the
+evidence gap between owner-approved policy and actual current application
+boundaries; HAPI-599 remains `NOT_IMPLEMENTED / BLOCKED` in both frozen status
+tables until a separately selected, exact-file executable package is admitted
+and implemented/tested. In particular, current Party public contracts lack the
+role/kind/company proof necessary to authorize new installed-unit writes;
+migration number, exact DTOs, physical position mapping and concurrency design
+are deliberately not invented. The next candidate is bounded **HAPI-599 A
+technical-registration/implementation** after review of those exact seams,
+not HAPI-600/601 and not a numerical solver. All later stages require their own
+message, CREATE/MODIFY/DELETE allowlist and fresh synthetic acceptance.
+This preflight's actual validation is document structure, unchanged status rows
+and exact scope; it does not execute Java, Flyway, PostgreSQL or runtime OpenAPI.
+Documentation CI on the exact new docs-only SHA is the remaining gate; observe
+startup after guarded publication and stop.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

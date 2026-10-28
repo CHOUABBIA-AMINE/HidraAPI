@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `07382e4127b1fff0bee6391005c068d14aa632b3`
+Captured source SHA: `c9e4385904e2ec57695720d99e1bfe3e812c49a9`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `79da2df06361e83e1ee35b8fd4fe724af532a9f0d5f749a876e303e543e481ad`.
-Migrations: 182; JPA mappings: 470; catalog relations: 528; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `306ac17f45e4d12c1491b6837f52adc22bb45e65890ed18584a5bf9cd472defe`.
+Migrations: 183; JPA mappings: 470; catalog relations: 531; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -27207,6 +27207,7 @@ Topology-owned equipment state; legacy_equipment_kind is retained historical dat
 - Migration mention (not inferred introduction): [V20260611_004__create_topology_tables.sql](../../src/main/resources/db/migration/V20260611_004__create_topology_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261006_009__hmr_054_equipment_catalog_and_attachments.sql](../../src/main/resources/db/migration/V20261006_009__hmr_054_equipment_catalog_and_attachments.sql)
+- Migration mention (not inferred introduction): [V20261028_002__topology_installed_unit_identity_and_history.sql](../../src/main/resources/db/migration/V20261028_002__topology_installed_unit_identity_and_history.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -27789,6 +27790,172 @@ Persisted FacilityTypeVersionJpaEntity state; semantic authority remains with to
 #### Triggers
 
 None captured in this catalog category.
+
+### public.hidra_topology_installed_unit
+
+Owner: **topology**; relation kind: `r`.
+
+Immutable Topology physical-unit identity and manufacturer/model/serial evidence, without Party eligibility attestation.
+
+- Evidence: [JdbcInstalledUnitRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcInstalledUnitRepositoryAdapter.java)
+- Evidence: [V20261028_002__topology_installed_unit_identity_and_history.sql](../../src/main/resources/db/migration/V20261028_002__topology_installed_unit_identity_and_history.sql)
+- Migration mention (not inferred introduction): [V20261028_002__topology_installed_unit_identity_and_history.sql](../../src/main/resources/db/migration/V20261028_002__topology_installed_unit_identity_and_history.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| equipment_kind_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| manufacturer_party_value | text | True | None; identity=; generated= | No current mapped Java column | — |
+| manufacturer_party_verification | character varying(10) | False | None; identity=; generated= | No current mapped Java column | — |
+| manufacturer_party_source | text | True | None; identity=; generated= | No current mapped Java column | — |
+| manufacturer_model_value | text | True | None; identity=; generated= | No current mapped Java column | — |
+| manufacturer_model_verification | character varying(10) | False | None; identity=; generated= | No current mapped Java column | — |
+| manufacturer_model_source | text | True | None; identity=; generated= | No current mapped Java column | — |
+| serial_value | text | True | None; identity=; generated= | No current mapped Java column | — |
+| serial_verification | character varying(10) | False | None; identity=; generated= | No current mapped Java column | — |
+| serial_source | text | True | None; identity=; generated= | No current mapped Java column | — |
+| maintainable_asset_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| created_at | timestamp with time zone | False | clock_timestamp(); identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `ck_installed_unit_identity`: CHECK (length(btrim(id::text)) &gt; 0 AND length(btrim(company_party_id::text)) &gt; 0 AND length(btrim(equipment_kind_id::text)) &gt; 0 AND id::text = btrim(id::text) AND company_party_id::text = btrim(company_party_id::text) AND equipment_kind_id::text = btrim(equipment_kind_id::text))
+  - Catalog attributes: {"columns": ["id", "company_party_id", "equipment_kind_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_installed_unit_manufacturer`: CHECK (manufacturer_party_verification::text = 'UNKNOWN'::text AND manufacturer_party_value IS NULL AND manufacturer_party_source IS NULL OR (manufacturer_party_verification::text = ANY (ARRAY['UNVERIFIED'::character varying, 'VERIFIED'::character varying]::text[])) AND NULLIF(btrim(manufacturer_party_value), ''::text) IS NOT NULL AND NULLIF(btrim(manufacturer_party_source), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["manufacturer_party_verification", "manufacturer_party_value", "manufacturer_party_source"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_installed_unit_model`: CHECK (manufacturer_model_verification::text = 'UNKNOWN'::text AND manufacturer_model_value IS NULL AND manufacturer_model_source IS NULL OR (manufacturer_model_verification::text = ANY (ARRAY['UNVERIFIED'::character varying, 'VERIFIED'::character varying]::text[])) AND NULLIF(btrim(manufacturer_model_value), ''::text) IS NOT NULL AND NULLIF(btrim(manufacturer_model_source), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["manufacturer_model_verification", "manufacturer_model_value", "manufacturer_model_source"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_installed_unit_model_owner`: CHECK (manufacturer_model_verification::text = 'UNKNOWN'::text OR (manufacturer_party_verification::text = ANY (ARRAY['UNVERIFIED'::character varying, 'VERIFIED'::character varying]::text[])) AND (manufacturer_model_verification::text &lt;&gt; 'VERIFIED'::text OR manufacturer_party_verification::text = 'VERIFIED'::text))
+  - Catalog attributes: {"columns": ["manufacturer_model_verification", "manufacturer_party_verification"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_installed_unit_serial`: CHECK (serial_verification::text = 'UNKNOWN'::text AND serial_value IS NULL AND serial_source IS NULL OR (serial_verification::text = ANY (ARRAY['UNVERIFIED'::character varying, 'VERIFIED'::character varying]::text[])) AND NULLIF(btrim(serial_value), ''::text) IS NOT NULL AND NULLIF(btrim(serial_source), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["serial_verification", "serial_value", "serial_source"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_installed_unit_pkey`: PRIMARY KEY (id)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `uq_installed_unit_company`: UNIQUE (id, company_party_id)
+  - Catalog attributes: {"columns": ["id", "company_party_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+
+#### Indexes
+
+- `hidra_topology_installed_unit_pkey`: CREATE UNIQUE INDEX hidra_topology_installed_unit_pkey ON public.hidra_topology_installed_unit USING btree (id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `uq_installed_unit_company`: CREATE UNIQUE INDEX uq_installed_unit_company ON public.hidra_topology_installed_unit USING btree (id, company_party_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `topology_installed_unit_immutable`: CREATE TRIGGER topology_installed_unit_immutable BEFORE DELETE OR UPDATE ON hidra_topology_installed_unit FOR EACH ROW EXECUTE FUNCTION hidra_topology_installed_unit_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_installed_unit_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_installed_unit_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Installed unit identity and installation evidence are immutable' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `topology_installed_unit_no_truncate`: CREATE TRIGGER topology_installed_unit_no_truncate BEFORE TRUNCATE ON hidra_topology_installed_unit FOR EACH STATEMENT EXECUTE FUNCTION hidra_topology_installed_unit_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_installed_unit_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_installed_unit_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Installed unit identity and installation evidence are immutable' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
+### public.hidra_topology_installed_unit_installation
+
+Owner: **topology**; relation kind: `r`.
+
+Topology effective installation projection with native temporal exclusions and optimistic closure; protected admission pending.
+
+- Evidence: [JdbcInstalledUnitRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcInstalledUnitRepositoryAdapter.java)
+- Evidence: [V20261028_002__topology_installed_unit_identity_and_history.sql](../../src/main/resources/db/migration/V20261028_002__topology_installed_unit_identity_and_history.sql)
+- Migration mention (not inferred introduction): [V20261028_002__topology_installed_unit_identity_and_history.sql](../../src/main/resources/db/migration/V20261028_002__topology_installed_unit_identity_and_history.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| installation_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| unit_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| position_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| effective_from | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| effective_until | timestamp with time zone | True | None; identity=; generated= | No current mapped Java column | — |
+| recorded_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| evidence_reference | text | False | None; identity=; generated= | No current mapped Java column | — |
+| revision | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `ck_installed_unit_installation_fields`: CHECK (length(btrim(installation_id::text)) &gt; 0 AND installation_id::text = btrim(installation_id::text) AND length(btrim(position_id::text)) &gt; 0 AND position_id::text = btrim(position_id::text) AND NULLIF(btrim(evidence_reference), ''::text) IS NOT NULL AND revision &gt; 0 AND (effective_until IS NULL OR effective_until &gt; effective_from))
+  - Catalog attributes: {"columns": ["installation_id", "position_id", "evidence_reference", "revision", "effective_until", "effective_from"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ex_installed_unit_effective_position`: EXCLUDE USING gist (position_id WITH =, tstzrange(effective_from, effective_until, '[)'::text) WITH &amp;&amp;)
+  - Catalog attributes: {"columns": ["position_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "x", "validated": true}
+- `ex_installed_unit_effective_unit`: EXCLUDE USING gist (unit_id WITH =, tstzrange(effective_from, effective_until, '[)'::text) WITH &amp;&amp;)
+  - Catalog attributes: {"columns": ["unit_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "x", "validated": true}
+- `fk_installed_unit_installation_owner`: FOREIGN KEY (unit_id, company_party_id) REFERENCES hidra_topology_installed_unit(id, company_party_id)
+  - Catalog attributes: {"columns": ["unit_id", "company_party_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id", "company_party_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_installed_unit"}, "type": "f", "validated": true}
+- `hidra_topology_installed_unit_installation_pkey`: PRIMARY KEY (installation_id)
+  - Catalog attributes: {"columns": ["installation_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_topology_installed_unit_installation_position_id_fkey`: FOREIGN KEY (position_id) REFERENCES hidra_topology_equipment(id)
+  - Catalog attributes: {"columns": ["position_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_equipment"}, "type": "f", "validated": true}
+
+#### Indexes
+
+- `ex_installed_unit_effective_position`: CREATE INDEX ex_installed_unit_effective_position ON public.hidra_topology_installed_unit_installation USING gist (position_id, tstzrange(effective_from, effective_until, '[)'::text))
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+- `ex_installed_unit_effective_unit`: CREATE INDEX ex_installed_unit_effective_unit ON public.hidra_topology_installed_unit_installation USING gist (unit_id, tstzrange(effective_from, effective_until, '[)'::text))
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+- `hidra_topology_installed_unit_installation_pkey`: CREATE UNIQUE INDEX hidra_topology_installed_unit_installation_pkey ON public.hidra_topology_installed_unit_installation USING btree (installation_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `ix_installed_unit_installation_owner`: CREATE INDEX ix_installed_unit_installation_owner ON public.hidra_topology_installed_unit_installation USING btree (company_party_id, unit_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+- `topology_installed_installation_event_append`: CREATE TRIGGER topology_installed_installation_event_append AFTER INSERT OR UPDATE ON hidra_topology_installed_unit_installation FOR EACH ROW EXECUTE FUNCTION hidra_topology_installed_installation_event_append()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_installed_installation_event_append()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_installed_installation_event_append()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    INSERT INTO hidra_topology_installed_unit_installation_event (<br>        installation_id,revision,unit_id,position_id,company_party_id,<br>        effective_from,effective_until,recorded_at,evidence_reference<br>    ) VALUES (<br>        NEW.installation_id,NEW.revision,NEW.unit_id,NEW.position_id,NEW.company_party_id,<br>        NEW.effective_from,NEW.effective_until,NEW.recorded_at,NEW.evidence_reference<br>    );<br>    RETURN NULL;<br>END;<br>$function$<br>
+- `topology_installed_installation_guard`: CREATE TRIGGER topology_installed_installation_guard BEFORE INSERT OR DELETE OR UPDATE ON hidra_topology_installed_unit_installation FOR EACH ROW EXECUTE FUNCTION hidra_topology_installed_installation_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_installed_installation_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_installed_installation_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    IF TG_OP='DELETE' THEN<br>        RAISE EXCEPTION 'Installation history cannot be deleted' USING ERRCODE='23514';<br>    END IF;<br>    IF TG_OP='UPDATE' THEN<br>        IF NEW.installation_id IS DISTINCT FROM OLD.installation_id<br>           OR NEW.unit_id IS DISTINCT FROM OLD.unit_id<br>           OR NEW.position_id IS DISTINCT FROM OLD.position_id<br>           OR NEW.company_party_id IS DISTINCT FROM OLD.company_party_id<br>           OR NEW.effective_from IS DISTINCT FROM OLD.effective_from<br>           OR NEW.recorded_at IS DISTINCT FROM OLD.recorded_at<br>           OR NEW.evidence_reference IS DISTINCT FROM OLD.evidence_reference<br>           OR OLD.effective_until IS NOT NULL<br>           OR NEW.effective_until IS NULL<br>           OR NEW.effective_until&lt;=OLD.effective_from<br>           OR NEW.revision&lt;&gt;OLD.revision+1 THEN<br>            RAISE EXCEPTION 'Only one versioned installation closure is permitted' USING ERRCODE='23514';<br>        END IF;<br>    ELSIF NEW.revision&lt;&gt;1 THEN<br>        RAISE EXCEPTION 'First installation version must be one' USING ERRCODE='23514';<br>    END IF;<br>    RETURN NEW;<br>END;<br>$function$<br>
+- `topology_installed_installation_no_truncate`: CREATE TRIGGER topology_installed_installation_no_truncate BEFORE TRUNCATE ON hidra_topology_installed_unit_installation FOR EACH STATEMENT EXECUTE FUNCTION hidra_topology_installed_unit_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_installed_unit_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_installed_unit_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Installed unit identity and installation evidence are immutable' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
+### public.hidra_topology_installed_unit_installation_event
+
+Owner: **topology**; relation kind: `r`.
+
+Immutable Topology installation history revision ledger populated by database trigger, distinct from effective projection.
+
+- Evidence: [JdbcInstalledUnitRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcInstalledUnitRepositoryAdapter.java)
+- Evidence: [V20261028_002__topology_installed_unit_identity_and_history.sql](../../src/main/resources/db/migration/V20261028_002__topology_installed_unit_identity_and_history.sql)
+- Migration mention (not inferred introduction): [V20261028_002__topology_installed_unit_identity_and_history.sql](../../src/main/resources/db/migration/V20261028_002__topology_installed_unit_identity_and_history.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| installation_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| revision | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| unit_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| position_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| effective_from | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| effective_until | timestamp with time zone | True | None; identity=; generated= | No current mapped Java column | — |
+| recorded_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| evidence_reference | text | False | None; identity=; generated= | No current mapped Java column | — |
+| event_at | timestamp with time zone | False | clock_timestamp(); identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `ck_installed_unit_event_period`: CHECK (revision &gt; 0 AND (effective_until IS NULL OR effective_until &gt; effective_from))
+  - Catalog attributes: {"columns": ["revision", "effective_until", "effective_from"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `fk_installed_unit_installation_event_head`: FOREIGN KEY (installation_id) REFERENCES hidra_topology_installed_unit_installation(installation_id)
+  - Catalog attributes: {"columns": ["installation_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["installation_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_installed_unit_installation"}, "type": "f", "validated": true}
+- `pk_installed_unit_installation_event`: PRIMARY KEY (installation_id, revision)
+  - Catalog attributes: {"columns": ["installation_id", "revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `pk_installed_unit_installation_event`: CREATE UNIQUE INDEX pk_installed_unit_installation_event ON public.hidra_topology_installed_unit_installation_event USING btree (installation_id, revision)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `topology_installed_installation_event_guard`: CREATE TRIGGER topology_installed_installation_event_guard BEFORE INSERT OR DELETE OR UPDATE ON hidra_topology_installed_unit_installation_event FOR EACH ROW EXECUTE FUNCTION hidra_topology_installed_installation_event_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_installed_installation_event_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_installed_installation_event_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    IF TG_OP &lt;&gt; 'INSERT' OR pg_trigger_depth() &lt;&gt; 2 THEN<br>        RAISE EXCEPTION 'Installation events can only be appended by the head trigger' USING ERRCODE='23514';<br>    END IF;<br>    RETURN NEW;<br>END;<br>$function$<br>
+- `topology_installed_installation_event_no_truncate`: CREATE TRIGGER topology_installed_installation_event_no_truncate BEFORE TRUNCATE ON hidra_topology_installed_unit_installation_event FOR EACH STATEMENT EXECUTE FUNCTION hidra_topology_installed_unit_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_installed_unit_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_installed_unit_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Installed unit identity and installation evidence are immutable' USING ERRCODE='23514';<br>END;<br>$function$<br>
 
 ### public.hidra_topology_measurement_location
 

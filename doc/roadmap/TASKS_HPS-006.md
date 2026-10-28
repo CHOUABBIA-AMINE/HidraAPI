@@ -1997,6 +1997,43 @@ the existing Package A; only then can the Full gate be expected to
 pass. No new packages, tests skipped, production migration rewrites,
 security/OT changes or status promotion. HAPI-599 remains blocked.
 
+
+
+### HAPI-599 Package A — full physical dictionary regenerated from CI #949 — 2026-10-28
+
+**Verified failure.** Exact-SHA Full #949 (main
+`c9e4385904e2ec57695720d99e1bfe3e812c49a9`) failed the strict
+checked-in physical dictionary comparison after the three new installed-unit
+relations were given reviewed Topology ownership. Authentic API-lane
+artifact #12811400207 captured source-matched PostgreSQL 16.15 metadata:
+183 Flyway migrations, 470 JPA mappings, 531 relations, zero unknown
+physical owners. Its generated `DATA_DICTIONARY.md` SHA-256 is
+`6d457aefbbd4cff34b3e8f35a5ddf91ab19381dea19c8852afafd4ab23984443`.
+Comparison with the successful #946 migrated catalog identifies exactly
+three new Topology installed-unit sections, a new migration-reference mention
+on existing Topology Equipment, and generation counters/source bundle
+metadata. All other relation sections remain unchanged.
+
+**Bounded repair scope and message.** Exact commit:
+`docs(topology): reconcile installed-unit physical dictionary with migrated catalog`.
+MODIFY only `doc/database/DATA_DICTIONARY.md` and this
+`doc/roadmap/TASKS_HPS-006.md`; no added/deleted files, unchanged Flyway SQL,
+JPA, authorization, CIs and test inventory. The regenerated checked-in
+dictionary matches the authentic CI artifact byte-for-byte, including all
+PostgreSQL constraints, triggers, indexes and source evidence. The ordinary
+generator comparison is preserved; only the subsequent exact source-SHA
+provenance line is exempted by its existing comparator rule.
+
+**Other failing acceptance retained.** PostgreSQL shard 1
+`ProductRevisionPublicationPostgresIntegrationTest.reactivateNeedsFreshApplicableApprovalAndExactUnitPolicy`
+and shard 6
+`ProductRevisionPublicationNativeHttpPostgresIntegrationTest.staleSourcesAndSubstitutedApprovalConflictWithoutPublication`
+were rejected by the existing 500ms protected-work budget at #949. Neither
+deadline nor the protected security decisions were altered or ignored. Full
+CI acceptance remains required on the new exact commit; failing deadline
+cases need a separate safe diagnosis/repair, never blanket test relaxation.
+HAPI-599 remains NOT_IMPLEMENTED/BLOCKED, and A/B/C packages remain fixed.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

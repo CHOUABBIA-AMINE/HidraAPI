@@ -2478,6 +2478,83 @@ HAPI-599 remains NOT_IMPLEMENTED/BLOCKED; Package B owner evidence
 is NOT CI-accepted and Packages B authorization/C are not selected.
 Do not claim code fix, PostgreSQL pass, SITE or deployment.
 
+### HAPI-599 Package B — dictionary-dependent lock helper admission — 2026-10-28
+
+**Owner Next; bounded source-backed acceptance prerequisite.** Documentation
+Validation #675 / run `40687958071` completed SUCCESS on
+`296fff877f6741071783872f0066b6513595d311`. Full CI #952 remains
+FAILED on the prior implementation source
+`5e67781e926f5b96658ce4a67f0c5764ebaf2f65`, solely on the
+registered manufacturer-evidence PostgreSQL shard 7 and therefore final
+verification. The exact error is `42501` / permission denied on the
+`SHARE ROW EXCLUSIVE` lock attempted by a SELECT-only Party reader.
+Changing the expected SQLSTATE, widening ordinary DML, skipping the new
+class or weakening the write-conflicting lock is not an accepted repair.
+
+**Additional discovered, authoritative dependency:** Current
+`.github/workflows/ci.yml` (API contract/dictionary stage) calls
+`.github/scripts/generate_data_dictionary.py` against a genuine
+fresh-migrated PostgreSQL catalog, with mandatory
+`--check doc/database/DATA_DICTIONARY.md`. The generator's source bundle
+includes the exact Flyway migration inventory and its output includes the
+migration count and relation-specific migration mentions. Its only
+comparison exception is the independently verified capture source-SHA
+line. Therefore adding even a helper-only migration
+`V20261028_003__party_installed_unit_manufacturer_evidence_owner_lock.sql`
+changes checked dictionary content; leaving the current checked
+`doc/database/DATA_DICTIONARY.md` unmodified is a **predictable API
+contract CI failure**. This is not a reason to disable the gate or
+fabricate a catalog. The checked document presently exists and is
+approximately 3.5 MB; the current local runtime has neither a full
+migrated PostgreSQL catalog nor Maven/Docker. A catalog-derived output
+must be captured using the same reviewed generator, owner metadata,
+real source and fresh schema, not synthesized from prose.
+
+**This single Next stage — precise registry clarification only.**
+Commit message:
+`docs(topology): admit physical dictionary gate for Party owner lock repair`.
+CREATE none; MODIFY only `doc/roadmap/TASKS_HPS-006.md`; DELETE none.
+Preserve all frozen task/status records, migrated SQL, tested code and
+the previous append-only evidence. The owner-approved HAPI-599 A/B/C
+split remains unchanged.
+
+**Exact additional allowed file for the future corrective implementation:**
+MODIFY `doc/database/DATA_DICTIONARY.md`, but **only with actual
+catalog-derived regenerated content** from the same versioned
+`.github/scripts/generate_data_dictionary.py`, checked against fresh
+Flyway PostgreSQL. The future bounded repair retains its previously
+registered single CREATE SQL migration and three MODIFY Java/test/
+inventory files, plus this task evidence; its amended exact
+implementation message remains
+`fix(party): retain read-only manufacturer evidence through guarded owner locks`.
+Do not modify the dictionary generator, its strict comparison, ownership
+metadata, CI workflows, earlier migrations, or unrelated dictionary
+content to force a green check. Do not claim a reviewed/current
+dictionary until the real generator completes. If exact-source
+catalog collection cannot be performed without a forbidden temporary
+branch, unregistered workflow or false source SHA, report the blocker
+and stop, rather than publishing deliberately failing source.
+
+**Security/acceptance constraints retained:** The proposed helper is
+SECURITY DEFINER, fixed SQL, schema-qualified, NOWAIT and lock-only
+under one physical transaction, with an explicitly reviewed,
+non-superuser owner and no PUBLIC EXECUTE or invented production
+roles/grants. Its restricted application consumer retains SELECT-only
+role/assignment/profile permissions, tested catalog/owner/body
+integrity, existing tickets, rollback and five final fences. A helper
+owner requiring actual relation-lock privilege is a migration/runbook
+provisioning consideration; application DML grants cannot substitute.
+The existing 11 test cases, ten PostgreSQL shards, strict physical
+dictionary and immutable audit/Flyway history stay mandatory.
+
+**State:** Registration only; **no SQL, Java or dictionary file has yet
+been changed** by this stage. The old Full #952 failure remains
+unrepaired. Package B is not CI-accepted and Package C remains
+unstarted. No numerical solver, production, OT or SITE acceptance
+is inferred. After guarded documentation publication, observe
+Documentation Validation creation/queue/start on its exact SHA, then
+STOP before any later implementation.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

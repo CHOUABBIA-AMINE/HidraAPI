@@ -2393,6 +2393,91 @@ registered from source and accepted; Package C is not selected.
 Integrated HAPI-599 remains NOT_IMPLEMENTED/BLOCKED in frozen tables.
 No SITE, simulator, release or deployment scope.
 
+### HAPI-599 Package B — Full CI #952 PostgreSQL lock-privilege repair registration — 2026-10-28
+
+**Current gate and source-specific failure.** Owner `Fail` selects a single
+documentation-only technical repair registration, not further HAPI-599 or
+HAPI-600 implementation. Exact main
+`5e67781e926f5b96658ce4a67f0c5764ebaf2f65`: Documentation Validation
+#674 and Fast Feedback #254 SUCCESS; Full CI #952/run `40686331829`
+FAILURE. Static, unit/architecture, API/dictionary and nine PostgreSQL shards
+succeeded; PostgreSQL shard 7/job `122809507701` FAILED. Its new Party
+manufacturer evidence class reports 11 tests, 1 assertion failure and 7
+errors. PostgreSQL reports SQLSTATE `42501` / permission denied for
+`hidra_party_role` on the four-table
+`LOCK TABLE ... SHARE ROW EXCLUSIVE MODE NOWAIT` in
+`JdbcTopologyInstalledUnitManufacturerEvidenceAdapter.acquire`.
+One test expected NOWAIT SQLSTATE `55P03` but received permission denial
+`42501`. Full Verification Gate failed because the required PostgreSQL
+dependency failed. This is confirmed hosted runtime evidence, not a flaky
+rerun or an inventory/classification defect.
+
+**Actual PostgreSQL 16 privilege conflict.** That lock mode requires
+UPDATE/DELETE/TRUNCATE authority (or table ownership/superuser), which
+contradicts the intentionally SELECT-only Party role/assignment/manufacturer
+profile reader. PostgreSQL 16 `LOCK` documentation:
+https://www.postgresql.org/docs/16/sql-lock.html . Neither weakening the
+conflicting lock to ACCESS SHARE, granting application DML authority,
+disabling/reclassifying tests, nor changing the assertion to expect `42501`
+preserves both current evidence and the denial invariants. The previously
+registered `feat(party)` stage forbade migrations; this new required
+database-security dependency is **not** silently admitted by that allowlist.
+
+**This one selected registration commit.** Exact message:
+`docs(topology): register Party manufacturer evidence lock privilege repair`.
+CREATE none; MODIFY only `doc/roadmap/TASKS_HPS-006.md`; DELETE none.
+No Java/SQL/permissions/tests/CI/workflow/roadmap status changes are
+authorized by this documentation step.
+
+**Proposed bounded corrective implementation, PENDING separate admission.**
+Candidate exact message:
+`fix(party): retain read-only manufacturer evidence through guarded owner locks`.
+Candidate CREATE only:
+`src/main/resources/db/migration/V20261028_003__party_installed_unit_manufacturer_evidence_owner_lock.sql`.
+Candidate MODIFY only:
+`src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JdbcTopologyInstalledUnitManufacturerEvidenceAdapter.java`,
+`src/test/java/dz/sh/hidra/modules/party/infrastructure/persistence/TopologyInstalledUnitManufacturerEvidencePostgresIntegrationTest.java`,
+`.github/ci-test-inventory.json` (actual modified source SHA256/cases),
+and `doc/roadmap/TASKS_HPS-006.md` (actual evidence). DELETE none.
+The version is only a candidate based on the source-confirmed migration tail
+`V20261028_002`; reverify uniqueness on the future exact main.
+
+**Required safe technical design before implementation.** A narrowly
+allowlisted Party-owned, fixed-SQL, parameterless SECURITY DEFINER
+lock-only function is one candidate to acquire genuine NOWAIT
+SHARE ROW EXCLUSIVE relation locks on the exact four current Party
+source tables under the **same caller physical transaction**, preserving
+the separate eligibility-generation ACCESS SHARE lock. It must use a
+fixed trusted search_path, explicitly schema-qualified relations,
+protected non-superuser owner, immutable reviewed body/ownership,
+no dynamic SQL, and explicit `REVOKE EXECUTE FROM PUBLIC` with grant only
+to an approved, non-owner evidence reader principal. Do not invent a
+production database role or grant in the migration. The adapter must
+validate function catalog, owner, EXECUTE scope and actual retained
+per-relation locks/fences and fail closed on alteration, grant forgery,
+unsupported database roles, cross-transaction reuse or missing helper.
+SECURITY DEFINER is not authorization or manufacturer-kind qualification;
+privilege escalation, metadata disclosure and availability/DoS risks
+require focused negative tests and review. Reject any implementation that
+needs DML grants on role, assignment or profile.
+
+**Acceptance for future corrective stage.** Fresh Flyway PostgreSQL16
+schema/owner-runtime role separation, no direct DML/column permissions
+for the evidence reader, positive manufacturer classification, revoked/
+stale/ambiguous/absent denial, concurrent writer-first `55P03`, reader-first
+blocked writers until commit, correct five fences, catalog/tampering,
+rollback, no PUBLIC EXECUTE or unreviewed owner privilege, all 11
+registered tests retained and actual inventory/hash fidelity. Preserve
+prior migration bytes, ten CI shards, current Identity/Assets/Topology
+contracts and all unrelated operations. A new Flyway version may
+affect dictionary evidence: if a strict physical dictionary gate requires
+a catalog-derived update, register its exact scope separately rather
+than fabricating it or disabling the check. Exact-SHA Full/Fast/Docs
+execution must establish acceptance. At this documentation stage
+HAPI-599 remains NOT_IMPLEMENTED/BLOCKED; Package B owner evidence
+is NOT CI-accepted and Packages B authorization/C are not selected.
+Do not claim code fix, PostgreSQL pass, SITE or deployment.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

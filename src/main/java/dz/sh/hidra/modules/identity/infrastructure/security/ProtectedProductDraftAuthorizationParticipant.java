@@ -113,7 +113,8 @@ public class ProtectedProductDraftAuthorizationParticipant
             ticket.graphs=reader.loadQualifiedProductPair(ticket.pair,ticket.request);
             Contribution result=evaluate(ticket.entry,ticket.request,ticket.graphs);
             ticket.complete=true;
-            requireCurrent(ticket);
+            // The initial reader already validates both scopes and native/fence state after loading.
+            // Coordinator sealing and pre/post-write rechecks remain fresh; avoid an immediate replay.
             return result;
         } catch(RuntimeException failure) { poison(admission);throw failure; }
     }

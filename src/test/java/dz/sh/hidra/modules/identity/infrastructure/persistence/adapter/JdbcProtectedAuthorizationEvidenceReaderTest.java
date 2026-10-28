@@ -735,4 +735,38 @@ class JdbcProtectedAuthorizationEvidenceReaderTest {
         assertThatThrownBy(()->reader.loadQualifiedProductPublicationPair(null,request)).isInstanceOf(RuntimeException.class);
         assertThatThrownBy(()->reader.recheckProductPublicationPair(null,request)).isInstanceOf(RuntimeException.class);
     }
+    private Object custodyRows() throws Exception {
+        var type=Class.forName(JdbcProtectedAuthorizationEvidenceReader.class.getName()+"$Rows");
+        var constructor=type.getDeclaredConstructor(JdbcProtectedAuthorizationEvidenceReader.class,boolean.class);
+        constructor.setAccessible(true);return constructor.newInstance(reader,true);
+    }
+    private Object custodyRowsGet(Object rows,String user) throws Exception {
+        var get=rows.getClass().getDeclaredMethod("get",String.class,String.class,String.class,Object[].class);
+        get.setAccessible(true);return get.invoke(rows,"user_permission_grant","id,effect","user_id=?",new Object[]{user});
+    }
+    private void custodyRowsBegin(Object rows) throws Exception {
+        var begin=rows.getClass().getDeclaredMethod("beginGraph");begin.setAccessible(true);begin.invoke(rows);
+    }
+    @Test void custodyPairRowsReuseExactQueriesButSeparateParametersAndInvocations() throws Exception {
+        var rows=custodyRows();sqls.clear();custodyRowsBegin(rows);
+        var initial=custodyRowsGet(rows,USER);
+        custodyRowsBegin(rows);assertThat(custodyRowsGet(rows,USER)).isEqualTo(initial);
+        assertThat(sqls).hasSize(1);
+        custodyRowsGet(rows,"other-user");assertThat(sqls).hasSize(2);
+        table("user_permission_grant",row("id","changed","effect","DENY"));
+        var fresh=custodyRows();custodyRowsBegin(fresh);
+        assertThat(custodyRowsGet(fresh,USER)).isNotEqualTo(initial);
+        assertThat(sqls).hasSize(3);
+    }
+    @Test void custodyPairRowCacheHitsRetainPerGraphLimitAndResetOnlyGraphCount() throws Exception {
+        table("user_permission_grant",row("id","grant","effect","GRANT"));
+        var rows=custodyRows();sqls.clear();custodyRowsBegin(rows);
+        for(int i=0;i<1024;i++)custodyRowsGet(rows,USER);
+        assertThat(sqls).hasSize(1);
+        assertThatThrownBy(()->custodyRowsGet(rows,USER))
+                .isInstanceOf(java.lang.reflect.InvocationTargetException.class)
+                .hasCauseInstanceOf(IllegalStateException.class);
+        custodyRowsBegin(rows);custodyRowsGet(rows,USER);
+        assertThat(sqls).hasSize(1);
+    }
 }

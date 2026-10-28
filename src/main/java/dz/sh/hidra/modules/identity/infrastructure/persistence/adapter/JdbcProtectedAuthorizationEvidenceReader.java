@@ -307,8 +307,11 @@ public class JdbcProtectedAuthorizationEvidenceReader {
             var nativeRead=recheck?participant.currentProductReads(pair,request):participant.consumeProductPair(pair,request);
             var reads=nativeRead.reads();
             Instant at=nativeRead.sampledAt();
-            var company=loadClaims(reads.company(),reads.companyRequest(),false,new Rows(),recheck,at);
-            var product=loadClaims(reads.facility(),reads.facilityRequest(),false,new Rows(),recheck,at);
+            // Invocation-local reuse only: fenced owner rows cannot change between these scopes.
+            // Rechecks allocate a fresh map; every graph still charges all rows, including hits.
+            var rows=new Rows(true);
+            var company=loadClaims(reads.company(),reads.companyRequest(),false,rows,recheck,at);
+            var product=loadClaims(reads.facility(),reads.facilityRequest(),false,rows,recheck,at);
             participant.requireCurrentProductPair(pair,request);
             return new PairedAuthorizationEvidence(reads.companyRequest(),company,reads.facilityRequest(),product,reads.contribution());
         }catch(RuntimeException failure){throw invalid();}
@@ -335,8 +338,11 @@ public class JdbcProtectedAuthorizationEvidenceReader {
             var nativeRead=recheck?participant.currentSuppliedFluidReads(pair,request):participant.consumeSuppliedFluidPair(pair,request);
             var reads=nativeRead.reads();
             Instant at=nativeRead.sampledAt();
-            var company=loadClaims(reads.company(),reads.companyRequest(),false,new Rows(),recheck,at,true);
-            var product=loadClaims(reads.facility(),reads.facilityRequest(),false,new Rows(),recheck,at,true);
+            // Invocation-local reuse only: fenced owner rows cannot change between these scopes.
+            // Rechecks allocate a fresh map; every graph still charges all rows, including hits.
+            var rows=new Rows(true);
+            var company=loadClaims(reads.company(),reads.companyRequest(),false,rows,recheck,at,true);
+            var product=loadClaims(reads.facility(),reads.facilityRequest(),false,rows,recheck,at,true);
             participant.requireCurrentSuppliedFluidPair(pair,request);
             return new PairedAuthorizationEvidence(reads.companyRequest(),company,reads.facilityRequest(),product,reads.contribution());
         }catch(RuntimeException failure){throw invalid();}
@@ -363,8 +369,11 @@ public class JdbcProtectedAuthorizationEvidenceReader {
             var nativeRead=recheck?participant.currentProductPublicationReads(pair,request):participant.consumeProductPublicationPair(pair,request);
             var reads=nativeRead.reads();
             Instant at=nativeRead.sampledAt();
-            var company=loadClaims(reads.company(),reads.companyRequest(),false,new Rows(),recheck,at,false,true);
-            var product=loadClaims(reads.facility(),reads.facilityRequest(),false,new Rows(),recheck,at,false,true);
+            // Invocation-local reuse only: fenced owner rows cannot change between these scopes.
+            // Rechecks allocate a fresh map; every graph still charges all rows, including hits.
+            var rows=new Rows(true);
+            var company=loadClaims(reads.company(),reads.companyRequest(),false,rows,recheck,at,false,true);
+            var product=loadClaims(reads.facility(),reads.facilityRequest(),false,rows,recheck,at,false,true);
             participant.requireCurrentProductPublicationPair(pair,request);
             return new PairedAuthorizationEvidence(reads.companyRequest(),company,reads.facilityRequest(),product,reads.contribution());
         }catch(RuntimeException failure){throw invalid();}

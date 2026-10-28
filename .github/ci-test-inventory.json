@@ -2945,6 +2945,8 @@
       "cases": [
         "boundsRowsJsonAndUnsupportedEvidence",
         "c3QualifiedOverloadCannotBeReachedFromPublicStructuralEvidence",
+        "custodyPairRowCacheHitsRetainPerGraphLimitAndResetOnlyGraphCount",
+        "custodyPairRowsReuseExactQueriesButSeparateParametersAndInvocations",
         "fakeDraftPairCannotBypassGenuineIssuerTransport",
         "hasNoJpaCacheWallClockDecisionPersistenceOrAuthorityExport",
         "organizationReaderRejectsMissingNativeOwnerBeforeAnySql",
@@ -2968,7 +2970,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java",
-      "source_sha256": "51faf34282600c704356ee7b2044112da48deb8d81c6c707a2230f36887926c0",
+      "source_sha256": "89934f40df1f70f4d0544f4fc8fff6cd6291166f26047cdb36f9e8d37e394f15",
       "supports": []
     },
     {
@@ -7640,7 +7642,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java",
-      "source_sha256": "2c7cc1e200e0caa0e5759664aa752e8a59415c6968f8728419f16f5d379495c6",
+      "source_sha256": "ac4da4c60c4971554144f1a79b3442a43383ea158b5510491848ab1e3337956c",
       "supports": []
     },
     {

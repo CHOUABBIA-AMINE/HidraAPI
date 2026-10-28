@@ -122,6 +122,13 @@ The owning phase and manifest retain actual115-suite timing provenance and
 whole-suite load balance; no budget, assertion, membership or acceptance gate is
 waived. Exact new-SHA CI and independent qualification acceptance remain pending.
 
+Full943 feedback selects bounded Identity graph-read optimization for Custody:
+reuse fenced rows only within each synchronous two-scope load, refresh every
+later recheck, and remove immediate duplicate initial graph reads. The phase
+registers exact production/test scope and retained security boundaries. Ten shards,
+all original cases and500ms work budgets remain unchanged. New-SHA runtime results
+and HAPI-597 acceptance remain pending; no successor is executed.
+
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent
 [HAPI-436](TASKS_HPS-024.md#hapi-436) are VERIFIED/COMPLETED within the accepted

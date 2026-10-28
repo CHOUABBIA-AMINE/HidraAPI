@@ -5899,4 +5899,66 @@ Publish with expectedd97071d, verify exact parent/tree/message/nine-path blobs,
 observe Full/Fast/Docs creation/queue/start on the new SHA and STOP. No automatic
 rerun loop,597 acceptance,593 integration, engineering/SITE, release/deployment.
 
+### HAPI-597 / Full943 bounded Custody graph-read optimization — 2026-10-28
+
+Owner Fail selects exact main59e4e60e5ba51760e4ba8fd1230c2756df50aeed,
+treee22a6d560ad177e57d0bc2df5418726aa3c2200c, failed Full943/run40661917570.
+Ten-shard selection and aggregation are active; six DB shards, API/dictionary,
+unit/architecture and static lanes pass. The legacy principal repair no longer
+fails. Shards1/4/6/9 show protected500ms expiry: metadata/property operations
+reach333 user statements, publication426..524, measured overruns500.8..554.3ms.
+Separate per-class JVMs did not remove these failures; no successful performance
+claim is made for the previous mitigation. Preserve ten shards, all cases,
+assertions and500/750/250ms deadlines. No benchmark/release acceptance follows.
+
+**Registered responsible production repair**, exact message:
+`perf(identity): eliminate duplicate fenced custody graph reads`.
+MODIFY only Identity JdbcProtectedAuthorizationEvidenceReader,
+ProtectedProductDraftAuthorizationParticipant,
+ProtectedFluidPropertyAuthorizationParticipant,
+ProtectedProductPublicationAuthorizationParticipant; existing
+JdbcProtectedAuthorizationEvidenceReaderTest and
+ProtectedStationAdmissionBoundaryGuardrailTest; .github/ci-test-inventory.json,
+this phase and compact ULTIMATE_TASKS pointer. Zero CREATE/DELETE; no application
+coordinator/repository/protected executor/budget/Workflow/schema/API changes.
+This repairs actual budget failures in shared Custody admission, not optional
+reopening of accepted594/595/596 business behavior.
+
+Source-backed changes: productGraphs/suppliedFluidGraphs/productPublicationGraphs
+create one new Rows(true) per synchronous invocation and share it only across
+the two qualified scopes. RowQuery already includes exact SQL plus immutable
+bound parameters; this reviewed mechanism is used by Organization groups.
+Complete retained owner relation fences exclude other writers and protected
+observation forbids intervening self-DML. Scope evaluations/native credentials,
+DB sample, graph validation and post-load native/fence checks remain independent.
+Rows.beginGraph still resets each graph count; cache hits still charge the full
+original1024-row bound. Every recheck creates a NEW map, including after own writes;
+no cross-call/transaction/global result cache, decision or permission memoization.
+
+The three Custody authorization participants currently re-read the entire pair
+immediately after the initial reader returned and evaluated it, before their
+coordinator rechecks at sealing and before provisional writes. Remove only that
+immediate contribute-time requireCurrent(ticket). Reader initial load still
+validates native/fence/origin before and after both graphs; pure evaluate still
+checks principal identity. Participant requireCurrent remains unchanged; coordinator
+collect/seal, beginProvisional, endProvisional/read/replay and the final scalar
+SQL guard retain their existing calls. Locks, activity/session/claim/role/policy
+revocation, both scopes/DENY precedence, bound clock and rollback semantics are
+not weakened. Never reuse initial rows in a later requireCurrent.
+
+Add focused unit regressions for within-invocation identical-query reuse, exact
+parameter separation, fresh invocation reads and per-graph1024 limit on cache
+hits. Preserve every existing native post-write/revocation/denial and final-guard
+case; require their full hosted execution. Refresh only the reviewed reader SHA
+pin in the boundary test and two modified test source hashes; append only actual
+new unit method names to their inventory entry. Timings, old membership, ten-shard
+matrix, process isolation and artifact provenance remain unchanged.
+
+Run useful syntax/source checks, docs/OpenAPI/inventory,87 CI evidence tests and
+29 validator tests before publish; Maven remains absent, so new Java21/JUnit and
+real PostgreSQL results are pending CI. No lower SQL count or runtime500ms success
+is invented from source review. Publish nine MODIFY paths with expected59e4e60,
+verify exact parent/tree/message/blobs, observe exact-SHA Full/Fast/Docs queue/start
+and STOP. HAPI-597 acceptance remains open; no593 integration or operational release.
+
 <!-- task-register:payload:end -->

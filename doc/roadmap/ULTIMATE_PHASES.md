@@ -583,7 +583,7 @@ Cross-phase prerequisites in the approved task graph: HPS-002 Dependency edges a
 | Task ID | Task Name | Deliverable | Priority | Dependencies | Implementation Status | Planning Status |
 |---|---|---|---|---|---|---|
 | [HAPI-532](TASKS_HPS-008.md#hapi-532) | define station and installed unit provisioning | define station and installed unit provisioning | P1 | — | VERIFIED | COMPLETED |
-| [HAPI-593](TASKS_HPS-008.md#hapi-593) | Integrated closure: four product/composition/method packages | Independently reconcile and accept the complete child-deliverable matrix for HPR-P25-053; child tasks own implementation. four product/composition/method packages | P1 | HAPI-597 | PARTIAL | BLOCKED |
+| [HAPI-593](TASKS_HPS-008.md#hapi-593) | Integrated closure: four product/composition/method packages | Independently reconcile and accept the complete child-deliverable matrix for HPR-P25-053; child tasks own implementation. four product/composition/method packages | P1 | HAPI-597 | VERIFIED | COMPLETED |
 | [HAPI-594](TASKS_HPS-008.md#hapi-594) | Product identity and metadata drafts | Company-owned product identity/classification and versioned metadata drafts. | P1 | HAPI-567 | VERIFIED | COMPLETED |
 | [HAPI-595](TASKS_HPS-008.md#hapi-595) | Supplied composition, properties and methods | Supplied composition/property/reference-basis/units/method applicability and evidence. | P1 | HAPI-594 | VERIFIED | COMPLETED |
 | [HAPI-596](TASKS_HPS-008.md#hapi-596) | Product publication, history and owner exports | Governed publish/withdrawal/current/history/effective selection and scalar owner exports. | P1 | HAPI-595 | VERIFIED | COMPLETED |

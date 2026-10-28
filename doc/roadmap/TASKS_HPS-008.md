@@ -177,9 +177,9 @@ Legacy IDs: HPR-P25-053
 
 Priority: P1
 
-Implementation Status: PARTIAL
+Implementation Status: VERIFIED
 
-Planning Status: BLOCKED
+Planning Status: COMPLETED
 
 Owning Module: `custody` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -334,6 +334,85 @@ Initial canonical adoption, 2026-10-16: Historical task retained independently; 
 No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
 
 Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+
+### HAPI-593 — independent four-child product-engineering software integration acceptance — VERIFIED / COMPLETED — 2026-10-28
+
+Owner Next selects only the registered HAPI-593/HPR-P25-053 integrated parent,
+after HAPI-594, HAPI-595, HAPI-596 and HAPI-597 have been independently accepted.
+The exact message for this bounded closure is:
+`docs(custody): record integrated product engineering acceptance`.
+CREATE 0 / MODIFY exactly this phase task record, the compact
+`doc/roadmap/ULTIMATE_TASKS.md` execution pointer, and HAPI-593 **status-only**
+cells in `doc/roadmap/ULTIMATE_ROADMAP.md` and
+`doc/roadmap/ULTIMATE_PHASES.md` / DELETE 0.
+Preserve the other five HPS-008 task rows, all previous appended histories,
+original source/DTOs, inventory, migration and Workflow/security behavior.
+No new runtime implementation, policy, permission, frontend consumer, solver,
+physical calibration, endpoint or release is selected.
+
+**Independent child-deliverable and owner-boundary reconciliation:**
+
+| Registered child | Accepted source-backed deliverable | Independent acceptance and current cross-check |
+|---|---|---|
+| HAPI-594 / HPR-P25-053A | Custody-owned company-local product draft identity/metadata, explicit shared catalog reference, native scope and immutable expected-version authoring; GAS/LIQUID classifications are supported metadata, not physics | VERIFIED/COMPLETED; accepted Full #916; `ProductEngineeringDraftNativeHttpPostgresIntegrationTest` 12/12 on Full #945 |
+| HAPI-595 / HPR-P25-053B | Independent supplied composition/property/method versions, MOLE/MASS basis, supported GAS/LIQUID property forms, explicit source, units and absolute reference conditions, incomplete versus absent evidence | VERIFIED/COMPLETED; `SuppliedFluidPropertyNativeHttpPostgresIntegrationTest` 14/14 on Full #945 |
+| HAPI-596 / HPR-P25-053C | Governed immutable publication digest/revision, real human Workflow, withdraw/reactivate, exact/current/effective/history and scalar owner export; no historical-current fallback | VERIFIED/COMPLETED; accepted Full #941; `ProductRevisionPublicationNativeHttpPostgresIntegrationTest` 10/10 on Full #945 |
+| HAPI-597 / HPR-P25-053D | Two-company owner isolation, scope/DENY and revoked-session rejection, GAS legacy qualification distinction, invalid supplied shapes/selector and corruption rejection, history/replay and final-guard rollback | VERIFIED/COMPLETED; `ProductEngineeringOperatorQualificationTest` 14/14 on Full #945; final child Docs #663 successful |
+
+The four same-run native HTTP/PostgreSQL suites above total 50/50 executed
+tests (12+14+10+14), with zero failures, errors or skips, within the registered
+development qualification; they do not substitute for the other registered
+suite coverage. The actual Custody REST boundary includes
+`src/main/java/dz/sh/hidra/modules/custody/api/rest/controller/ProductEngineeringDraftController.java`
+and `ProductRevisionPublicationController.java`; the distinct engine-neutral
+export boundary is
+`src/main/java/dz/sh/hidra/modules/custody/application/contract/publication/ProductPublicationSourceContract.java`.
+The legacy qualified GAS resolver is separate; published engineering
+`engineeringQualified=false` facts never acquire EOS/solver suitability.
+
+**Authoritative accepted exact-SHA evidence.** The unmodified source/implementation
+baseline is `d32164613ea7a4acf43826dd72d0f4a6824235ca`
+(tree `a7ad54a7048b453760d0f62e54a2b4d80e555b77`).
+Full CI #945/run 40665620211 attempt 1, Fast #248/run 40665620108
+and Documentation #662/run 40665620130 all completed successfully there.
+Independent child qualification recorded the retained Full artifact
+`hidra-full-ci-evidence-d32164613ea7a4acf43826dd72d0f4a6824235ca-40665620211-1`
+(ID 12805558846); its raw report/gate reconciliation established 488
+distinct class reports, 3572 tests, 0 failed/errored/skipped, successful
+Java 21 unit/architecture, all ten native PostgreSQL shards, API/current-base
+compatibility, dictionary/catalog equality and full gate. Current GitHub job
+inspection confirms all those named lanes and full gate concluded success;
+the optional serial Java 21 Maven verification job was **skipped**.
+Disposable PostgreSQL 16.15 catalog recorded 182 Flyway migrations,
+470 JPA mappings and 528 physical relations with zero unresolved owners;
+the reviewed dictionary was checked. The subsequent unchanged-runtime
+HAPI-597 governance head `83ab9d95dc7e265ac10316a753eab4ca5ee3385c`
+has Documentation #663/run 40667427369 completed successfully.
+These prior CI results are not falsely attributed to this docs-only parent
+closure SHA. Earlier failed Full #942/#943/#944 and exact repairs remain
+historical evidence; no failure is silently reclassified as passing.
+
+**Independent parent decision and limitations.** The four completed children
+now satisfy the registered HPR-P25-053 software delivery matrix: scoped
+company-local metadata, exact supplied facts, immutable human-approved
+publication/export, native owner/negative/replay/rollback and compatibility
+qualification. Original GAS qualification remains distinct from new unqualified
+GAS/LIQUID metadata publication; absence of unsupported products, physical
+correlations, numerical conversions and calibration is not filled by guesses.
+Therefore HAPI-593 is VERIFIED/COMPLETED **only as this backend development
+software integration**, not as deployed product editing, cross-owner baseline,
+production/SITE qualification, industrial 500ms guarantee, H2/liquid solver,
+hydraulic/thermodynamic calculation, autonomous OT control or release.
+
+The existing HAPI-594..597 status rows and source are unchanged. HAPI-605
+multi-owner engineering baseline remains dependent on separate HAPI-598/586
+and other approved gates; HAPI-599 onward installed-unit/manufacturer
+implementation and HidraWEB F06 are independent future selections.
+No successor is selected automatically. This commit is documentation-only:
+verify its own exact-SHA Documentation CI creation/queue/start after a guarded
+main publication and STOP. There is no new Maven/PostgreSQL test execution
+by this four-document status/reconciliation step.
 
 <a id="hapi-594"></a>
 ## HAPI-594 — Product identity and metadata drafts

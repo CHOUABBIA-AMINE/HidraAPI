@@ -115,10 +115,22 @@ runtime API/base compatibility, catalog/dictionary and final Full gate pass.
 The owning phase retains raw report, provenance, exact case/source identities,
 prior failure/repair history and dev-only/non-numerical limitations.
 Owner Next selects only the registered four-document final acceptance.
-HAPI-593 integrated four-child parent remains PARTIAL/BLOCKED and separately
-selectable. Frontend, numerical engine/P3, SITE, release and deployment are
+HAPI-593 integrated parent remained PARTIAL/BLOCKED at child acceptance;
+its subsequent independent disposition is recorded below. Frontend, numerical engine/P3, SITE, release and deployment are
 not selected. Historic HAPI-597 implementation/CI notes are retained in
 the phase file, not competing current status.
+
+[HAPI-593](TASKS_HPS-008.md#hapi-593), integrated four-child product and
+fluid-engineering parent, is VERIFIED/COMPLETED for the independently
+reconciled HAPI-594..597 backend development software matrix. The latest
+accepted implementation SHA d32164613ea7a4acf43826dd72d0f4a6824235ca
+has Full945/Fast248/Docs662 success; the accepted child governance SHA
+83ab9d95dc7e265ac10316a753eab4ca5ee3385c has Docs663 success.
+The owning phase holds the exact 50-case four-suite parent cross-check,
+3,572-case full evidence, API/catalog qualification and non-numerical limits.
+This selection is documentation/status reconciliation only; HAPI-598..603,
+HAPI-605 baseline, HidraWEB F06, industrial/SITE acceptance, simulator,
+release and deployment remain independently gated. No successor is selected.
 
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent

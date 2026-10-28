@@ -2202,6 +2202,118 @@ and Documentation Validation creation/queue/start on the new SHA. No Java,
 PostgreSQL, migration, production deployment or SITE validation is claimed for
 this documentation-only registration. After publish observe CI startup and STOP.
 
+### HAPI-599 Package B — register Party manufacturer evidence implementation scope — 2026-10-28
+
+**Stage selection and accepted prerequisite.** Owner `Next` follows the HAPI-599
+Package B protected admission preflight, source
+`5e55894be30d97f5b1e216b67aac267a6fd1cb19`, Documentation Validation
+#672/run `40684086531` SUCCESS. Previous runtime parent
+`78a34c610b2986e3a73900cac28af3fca31d05fa` retains Full #951,
+Fast #253 and Docs #671 SUCCESS. This stage registers **one first
+implementation commit within the fixed Package B**, not Package D, a new
+HAPI task or a second implementation in this `Next`. Its exact registration
+commit message is
+`docs(topology): register installed-unit manufacturer evidence implementation`;
+CREATE none; MODIFY only `doc/roadmap/TASKS_HPS-006.md`; DELETE none.
+No permission, source, migration, identity, API or frozen task status changes.
+
+**Party source facts confirmed at this SHA.**
+- `ManufacturerProfileJpaEntity` maps `hidra_party_manufacturer_profile`
+  with `party_id`, `capability_type` (`EQUIPMENT`, `INSTRUMENTATION`,
+  `SPARES`, `MATERIALS`, `SOFTWARE`, `OTHER`) and
+  `qualification_status` (`QUALIFIED`, `CONDITIONALLY_QUALIFIED`,
+  `SUSPENDED`, `EXPIRED`, `REJECTED`, `DRAFT`). The catalog
+  is not a manufacturer-to-specific-equipment-kind mapping.
+- `PartyRoleJpaEntity` supplies role `code`, `status` and
+  `qualification_required_by_default`; `PartyRoleAssignmentJpaEntity`
+  supplies `party_id`, `role_id`, `status`, effective validity bounds
+  and `qualification_required`. No hard-coded globally trusted
+  manufacturer-role ID or current role grant is established by these Java
+  mappings alone.
+- `JdbcTopologyProtectedPartyEligibilityAdapter` currently exports
+  protected current ACTIVE Party/generation evidence, not manufacturer
+  capability/role/qualification. Its issuer-bound, per-transaction,
+  NOWAIT relation-guard approach is relevant, but its tickets, fences
+  and business meaning cannot be widened by casting.
+- `PartyRelationshipType` contains PARENT/SUBSIDIARY/AFFILIATE/
+  JOINT_VENTURE/PARTNER/SUCCESSOR/OTHER; this does **not** prove a
+  manufacturer is owned by or must equal the installation company.
+  Manufacturer Party identity and installed-unit `companyPartyId` are
+  distinct; company permission/position ownership are independent
+  later Package B gates.
+- `TopologyScopedAccessContract` and
+  `TopologyProtectedAuthorizationContract` issue station-revision
+  permission family only; `ProtectedTopologyAuthorizationParticipant`
+  binds an authenticated principal and real Identity claims under
+  MANDATORY transaction. No installed-unit operation authorization
+  exists. `EquipmentJpaEntity` has nullable `facility_id`;
+  an equipment FK alone neither establishes facility nor company scope.
+
+**Exact next executable bounded Package B owner-evidence step — registered,
+NOT EXECUTED.** Message:
+`feat(party): export guarded installed-unit manufacturer evidence`.
+
+CREATE only:
+- `src/main/java/dz/sh/hidra/modules/party/application/contract/topology/TopologyInstalledUnitManufacturerEvidenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JdbcTopologyInstalledUnitManufacturerEvidenceAdapter.java`
+- `src/test/java/dz/sh/hidra/modules/party/infrastructure/persistence/TopologyInstalledUnitManufacturerEvidencePostgresIntegrationTest.java`
+
+MODIFY only:
+- `.github/ci-test-inventory.json` (new actual class/cases/hash, baseline time
+  unmeasured if not observed)
+- `doc/roadmap/TASKS_HPS-006.md` (append actual validation and acceptance)
+
+DELETE none. No migration/JPA entity, Identity evaluator, Topology writer,
+existing owner admission, station-revision permission codes, public REST,
+OpenAPI, Assets, or frozen ROADMAP/PHASES edits.
+
+**Required limited contract.** Provide an exported Party-owned, query-only
+opaque issuer/transaction-bound read with a typed evidence result recording
+actual manufacturer Party status, role/code and assignment effective
+applicability, manufacturer capability and qualification classification,
+and authoritative same-transaction coordinates. The contract is for a future
+trusted Topology coordinator only, **not** a public permission, anonymous
+existence lookup, bearer attestation, or universal positive eligibility
+Boolean. Never accept caller-supplied `QUALIFIED` or `VERIFIED` labels
+as proof. Require a genuine active physical transaction, immutable
+current-source reads and reviewed Party relation locks/fences (including
+status, role assignment, manufacturer profile), deny on absent,
+revoked/suspended/expired, ambiguous or malformed evidence; fail closed on
+SQL/owner-fence changes or unauthorized direct use. No request-specific
+numeric bypass, unlocked stale cache, or soft-fail on missing rows.
+
+For known profiles, expose the exact manufacturer capability; do not
+claim compatibility with `InstalledUnit.equipmentKindId` without a
+provider-owned reviewed mapping (currently absent). Keep UNKNOWN and
+UNVERIFIED engineering provenance distinct from Party eligibility. Do
+not impose manufacturer==installation-company; Party relationship
+alone is not company authorization. The follow-on **same Package B**
+protected Identity permission family, equipment-position/company binding,
+atomic admission/DML allowlist and read/history denial must be
+separately registered from exact code after this owner evidence gate passes.
+No Package C operation, numerical engine, industrial calibration or OT control.
+
+**Synthetic acceptance for the registered implementation:** current
+active/qualified and inactive/suspended/revoked role/profile classification,
+missing Party/profile, non-manufacturer role, dates at interval boundaries,
+capability category mismatch unresolved (never auto-qualified), duplicate
+or inconsistent role/profile evidence, admission re-use, cross-thread or
+cross-transaction ticket rejection, NOWAIT conflicts, rollback, tampering
+and final fence provenance. Confirm existing station owner contracts, Party
+aggregate interfaces and direct access denial stay unchanged. Run focused
+PostgreSQL Testcontainers from fresh Flyway schema, current architecture
+and registered CI inventory, exact-source Full/Fast/Docs; if local Maven is
+unavailable record that limitation. Do not claim these tests exist or pass
+before the implementation commit and its hosted CI.
+
+**Remaining HAPI-599 status.** Package A is accepted in development CI;
+Package B is NOT yet executable and Package C is unstarted. Integrated
+HAPI-599 remains NOT_IMPLEMENTED/BLOCKED under the frozen registry. This
+registration only establishes a checkable next file scope and acceptance,
+not authorization, engineering qualification, SITE or deployment.
+After guarded publication observe exact-SHA Documentation Validation
+creation/queue/start then STOP.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

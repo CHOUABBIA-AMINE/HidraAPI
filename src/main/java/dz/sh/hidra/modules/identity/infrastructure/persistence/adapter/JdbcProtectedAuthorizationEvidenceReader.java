@@ -448,7 +448,7 @@ public class JdbcProtectedAuthorizationEvidenceReader {
     /** Only a private native group may load this family. All children precede disclosure. */
     public InstalledUnitAuthorizationEvidence loadQualifiedInstalledUnitGroup(
             ProtectedOperationIdentityParticipant.InstalledUnitClaimGroup group,
-            dz.sh.hidra.modules.identity.application.contract.organization.InstalledUnitProtectedAppointmentAuthorizationContract.Request request) {
+            dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.Request request) {
         try {
             if (participant == null) throw invalid();
             var reads = participant.consumeInstalledUnitGroup(group, request);
@@ -470,7 +470,7 @@ public class JdbcProtectedAuthorizationEvidenceReader {
     /** Re-read under retained fences without issuing or consuming another credential/sample. */
     public InstalledUnitAuthorizationEvidence recheckInstalledUnitGroup(
             ProtectedOperationIdentityParticipant.InstalledUnitClaimGroup group,
-            dz.sh.hidra.modules.identity.application.contract.organization.InstalledUnitProtectedAppointmentAuthorizationContract.Request request) {
+            dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.Request request) {
         try {
             if (participant == null) throw invalid();
             var reads = participant.currentInstalledUnitReads(group, request);

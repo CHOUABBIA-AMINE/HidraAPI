@@ -3016,6 +3016,38 @@ in this step. HAPI-599 remains NOT_IMPLEMENTED/BLOCKED pending integrated B/C;
 manufacturer-kind qualification, Package C, HAPI-600/601, simulator/P3, frontend,
 SITE, release and deployment remain unselected.
 
+### HAPI-599 Package B — Full955 installed-unit reader compilation repair — 2026-10-28
+
+Owner Fail selects the responsible bounded repair on exact main
+`c8f524c8f150197048159963bf324d9aed53c84b`. Full955/run `40699757101`
+and Fast256/run `40699757080` failed during production compilation. Static
+validation succeeded; no new Java/JUnit/PostgreSQL execution is established.
+The compiler reports reader lines451/473 referencing nonexistent
+`contract.organization.InstalledUnitProtectedAppointmentAuthorizationContract.Request`.
+The build failure precedes every selected test lane and API capture; subsequent
+missing-report/artifact and final-gate errors are consequences, not separate waivers.
+
+Exact repair message:
+`fix(identity): correct installed-unit authorization reader contract references`.
+CREATE/DELETE none; MODIFY only
+`src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java`
+and this owning phase. Both new reader methods now take the registered actual
+`contract.topology.TopologyInstalledUnitAuthorizationContract.Request`, matching
+the participant, opaque native group and existing exact-signature regression.
+No operation/permission/security behavior, test, inventory, shard, migration,
+dictionary or workflow is changed. All27 newly authored cases remain mandatory.
+
+Available validation: Java syntax parse passes; all28 project-qualified top-level
+types referenced by the four changed/new production sources resolve to real source
+paths after correction. This source-resolution check is not full type compilation.
+Inventory validation passes with unchanged494 active classes/3,637 cases and ten
+shards. The prior actual contract compilation/probes remain limited contract proof;
+Maven remains unavailable (`mvn: command not found`), so no Java21, JUnit or
+PostgreSQL success is claimed locally. Documentation/link and whitespace checks
+are required before guarded publication. Exact-head hosted verification remains
+pending; observe applicable Full/Fast/Docs startup and stop. HAPI-599 remains
+NOT_IMPLEMENTED/BLOCKED; no dependent position/writer or Package C is selected.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

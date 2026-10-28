@@ -110,8 +110,13 @@ public class ProtectedProductPublicationAdmissionCoordinator {
                 var combined=new ArrayList<>(a.fences);combined.addAll(workflow.finalFences(a.workflow));combined.addAll(units.finalFences(a.units));
                 a.fences=distinct(combined);if(a.fences.size()!=50)throw invalid();
             }
+            // Native sampledAt is authentication provenance, not this storage admission's start.
+            var sampledAt=repository.sampledAt(a.repository);
+            var boundedDeadline=sampledAt.plusMillis(500);
+            var validUntil=i.validUntil().isBefore(boundedDeadline)?i.validUntil():boundedDeadline;
+            if(sampledAt.isBefore(i.sampledAt()) || !sampledAt.isBefore(validUntil))throw invalid();
             a.result=new Contribution(repository.scope(a.repository),p.generation(),i.bindingId(),i.sessionId(),i.userId(),
-                    i.sampledAt(),i.validUntil(),i.backendPid(),i.transactionId(),snapshots,policy,approval);
+                    sampledAt,validUntil,i.backendPid(),i.transactionId(),snapshots,policy,approval);
             // This check covers eligibility and sealing; do not reread the same graph twice.
             a.permit=executor.sealAdmission();requireCurrent(a);return a.result;
         }catch(RuntimeException error){executor.rejectAdmission();throw error;}

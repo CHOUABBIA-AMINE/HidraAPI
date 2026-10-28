@@ -30,6 +30,7 @@ public interface ProductRevisionPublicationRepositoryPort {
     Scope scope(Admission admission);
     /** Native authorization must precede loading any envelope or historical result. */
     void authorized(Admission admission,String actorId);
+    java.time.Instant sampledAt(Admission admission);
     boolean replayed(Admission admission);
     boolean needsEligibility(Admission admission);
     Facts facts(Admission admission);

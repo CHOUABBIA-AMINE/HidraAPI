@@ -4934,6 +4934,47 @@ creation/queue/start, then STOP. HAPI-596 remains NOT_IMPLEMENTED/IN_PROGRESS;
 B acceptance/C and final engineering/SITE acceptance remain pending.594/595 stay
 closed; no subsequent package or qualification is selected.
 
+### HAPI-596 Package B — Full933 bounded storage audit-window repair — 2026-10-28
+
+Owner Fail selects exact156479f8d335c3bec3cd4899b6942b54d88b4269.
+Full933/run40632149427 passed unit/architecture, static, API/dictionary and six
+PostgreSQL lanes. Shard4/job122630764280 ran311 cases,1 failure and23 errors,
+zero skips. Publication candidate inserts violate candidate_check2: the actual
+retained dictionary defines valid_until>sampled_at and valid_until<=sampled_at
++500ms. Source recovery shows Identity's exported sampledAt is authentication
+provenance (bound.evidence().observedAt()), while its deadline belongs to the
+later protected evaluation. Those timestamps cannot form the stored500ms
+admission window. Do not weaken the database constraint or alter native authority.
+The prior provisional-phase SELECT failure is no longer reported.
+
+Exact message: `fix(custody): bound publication audit to storage admission sample`.
+MODIFY exactly the publication repository port, JDBC adapter, coordinator,
+ProductRevisionPublicationPostgresIntegrationTest, its CI inventory hash and this
+phase (six existing files; zero CREATE/DELETE). Expose the existing database
+clock sample taken by authorized storage admission after native authorization.
+The coordinator rejects a sample before native provenance or after its deadline,
+and uses min(native validUntil, storage sample+500ms) as the common storage
+window. This shortens or preserves the native deadline; it never extends it.
+Retain native currentness, reviewer/Workflow/unit/Party evidence, PID/xid/holder,
+37/50 fences,500/750/250 budgets, SQL templates, immutable schema and final scalar
+guard. Planning's later event-time sample remains a server database instant;
+it does not reset the bounded contribution window. No migration or dictionary
+is changed. The existing real native prepare/approve/publish case additionally
+asserts the stored sample is at least a fresh pre-call database clock floor and
+the persisted window is positive and at most500ms. All28 cases and negative
+assertions remain; only that test's source hash refreshes.
+
+The previously observed metadata HTTP revocation test is absent from Full933's
+failure summary: that run's only failures/errors are in the publication suite.
+Preserve its403 assertion and accepted594 runtime. This does not establish full
+B acceptance: exact-SHA fresh native/Workflow/SQL runtime checks remain hosted.
+Available documentation self-tests and Java source inspection are local evidence
+only; do not install Java21/Maven/Docker/PostgreSQL under AGENTS11.1. Verify
+six-file scope and unchanged test identities, publish with expected156479f,
+verify parent/tree/message/blobs and applicable CI creation/queue/start, then
+STOP. HAPI-596 remains NOT_IMPLEMENTED/IN_PROGRESS; B acceptance and C remain
+pending,594/595 closed. No engineering qualification or production/SITE claim.
+
 <a id="hapi-597"></a>
 ## HAPI-597 — Multi-product ownership/API compatibility qualification
 

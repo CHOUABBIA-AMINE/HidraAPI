@@ -317,6 +317,7 @@ public class JdbcProductRevisionPublicationRepositoryAdapter implements ProductR
         if(t.command.kind()==Kind.PUBLISH && (!t.envelope.metadata().equals(t.metadata) || !t.envelope.supplied().equals(t.supplied)))throw fail(Reason.CONFLICT);
         t.facts=new SuppliedFluidPropertyRevisionCodec().decode(t.supplied.bytes());
     }
+    @Override public Instant sampledAt(Admission a){var t=ticket(a);if(!t.authorized || t.now==null)throw fail(Reason.UNAVAILABLE);return t.now;}
     @Override public boolean replayed(Admission a){return ticket(a).replayed;}
     @Override public boolean needsEligibility(Admission a){var t=ticket(a);if(!t.authorized)throw fail(Reason.UNAVAILABLE);return !t.replayed && Set.of(Kind.PREPARE,Kind.PUBLISH,Kind.REACTIVATE,Kind.ELIGIBLE_CURRENT,Kind.ELIGIBLE_EFFECTIVE).contains(t.command.kind()) && (t.command.mutating() || t.selected!=null && t.selected.state()==State.ACTIVE);}
     @Override public void eligible(Admission a){var t=ticket(a);if(!needsEligibility(t) || t.eligibility)throw fail(Reason.UNAVAILABLE);

@@ -883,7 +883,8 @@ public class ProductRevisionPublicationPostgresIntegrationTest {
     private long events(UUID p){return jdbc.queryForObject("SELECT count(*) FROM "+PP+"_event WHERE product_draft_id=?",Long.class,p);}
     private long candidates(UUID p){return jdbc.queryForObject("SELECT count(*) FROM "+PP+"_candidate WHERE product_draft_id=?",Long.class,p);}
     private dz.sh.hidra.modules.custody.infrastructure.persistence.adapter.JdbcProductRevisionPublicationRepositoryAdapter publicationTarget(){return org.springframework.test.util.AopTestUtils.getUltimateTargetObject(publicationStorage);}
-    @Test void nativePrepareRealHumanWorkflowAndPublishRetainExactIncompleteBytes(){publicationActor("LOCAL");UUID p=preparedProduct(absent());var prepared=preparePublication(p,UUID.randomUUID(),1,1);
+    @Test void nativePrepareRealHumanWorkflowAndPublishRetainExactIncompleteBytes(){publicationActor("LOCAL");UUID p=preparedProduct(absent());var publicationSampleFloor=jdbc.queryForObject("SELECT clock_timestamp()",Timestamp.class);var prepared=preparePublication(p,UUID.randomUUID(),1,1);
+        assertThat(jdbc.queryForObject("SELECT valid_until>sampled_at AND valid_until<=sampled_at+interval '500 milliseconds' AND sampled_at>=? FROM "+PP+"_candidate WHERE product_draft_id=?",Boolean.class,publicationSampleFloor,p)).isTrue();
         assertThat(prepared.observedHead()).isNull();assertThat(events(p)).isZero();assertThat(prepared.candidate().engineeringQualified()).isFalse();
         assertThat(prepared.candidateDigest()).isEqualTo(jdbc.queryForObject("SELECT candidate_digest FROM "+PP+"_candidate WHERE product_draft_id=?",String.class,p));
         assertThat(productionLookup.eligibleTarget("PRODUCT_SOURCE_PUBLICATION",prepared.candidateDigest()).orElseThrow().id()).isEqualTo(prepared.candidateDigest());

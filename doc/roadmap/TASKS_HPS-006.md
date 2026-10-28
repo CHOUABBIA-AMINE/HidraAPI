@@ -3102,6 +3102,155 @@ corrected fixtures and guardrails. Publish guarded main using the message above,
 observe exact-SHA Full/Fast/Docs startup and stop. HAPI-599 remains
 NOT_IMPLEMENTED/BLOCKED pending exact-head acceptance and remaining B/C work.
 
+### HAPI-599 Package B — Identity acceptance and guarded position ownership registration — 2026-10-28
+
+**Owner Next; independently reviewed exact-head acceptance.** Main
+`b1ddf70793def5035f295062c21082f926bdd481` has Full957/run `40702212948`,
+Fast258/run `40702212962` and Docs683/run `40702212968` completed SUCCESS.
+Full is development mode, attempt1, cached dependencies, serial_oracle=false;
+its separate serial job is skipped by design and release_eligible=false.
+All ten PostgreSQL shards, unit/architecture, static, API/dictionary and final
+gate passed. Retain Full955 compilation and Full956 guardrail/fixture failures
+as history; neither supplies acceptance for the new code before these repairs.
+
+Downloaded full bundle artifact `12821947899` has verified ZIP SHA-256
+`a0b47e13f11f71d40172d0a9fc8e62815ffa7f82f3487fb4d01b56a5665f2ba2`.
+Independently checked all501 evidence-listed file hashes and exact source/run/attempt;
+reconstructed raw XML matches all494 active inventory classes and3,637 exact cases,
+zero failures/errors/skips. The new Identity unit suite passes6 cases, PostgreSQL
+suite19 cases (observed46.685s), and boundary guardrail9 cases. The timing inventory
+is not rewritten from this observation. All four historical greenfield exclusions
+remain unchanged. This review did not rerun JUnit/PostgreSQL locally.
+
+Same-run dictionary receipt is checked=true on the accepted SHA: PostgreSQL16.15,
+184 migrations,470 mappings,531 relations, zero unresolved owners. Source bundle
+SHA-256 remains `b224960330372f46f4a2c6012a1473d779188092314b5f393125682eb330097d`;
+catalog SHA-256 `53d807228061b547a7bee489b4d865ff5bfd6291e2a0a0e85da656a25a1cdf38`;
+checked render SHA-256 `3fdd3091dcfe4fae54c70a44844191c182f33eaf6049ec4cec8e2d671de5e6f4`.
+Runtime API/base compatibility passed against `7c49a82d2de482b4305d29a3c1087bd818bc92fb`;
+current API SHA-256 `84a90e75b6de6b5b064bf786ee8066cb607e1fb6804125b89167d47778ee138b`.
+
+**Bounded disposition.** The registered installed-unit Identity contribution and
+its responsible repairs are accepted for the tested backend-development scope.
+Package A and the earlier Party contribution remain accepted. This does not accept
+integrated Package B or C, business position eligibility, industrial qualification,
+role provisioning, SITE, release or deployment. No existing implementation should
+be repeated. HAPI-599 remains NOT_IMPLEMENTED/BLOCKED in frozen ROADMAP/PHASES.
+
+**This one selected acceptance/registration commit.** Exact message:
+`docs(topology): accept installed-unit Identity and register position ownership evidence`.
+CREATE/DELETE none; MODIFY only this phase file. Validate docs/links and whitespace,
+publish with expected-head guard, observe exact-SHA Docs startup and stop.
+Local documentation/link validation and whitespace checks pass; all five proposed
+create paths and the new SQL function name are unoccupied. No Java/PostgreSQL
+execution is claimed for this documentation-only registration.
+
+**Position/facility source facts and chosen bounded seam.** V20260611_004 and
+`EquipmentJpaEntity` identify the Topology-owned equipment row and nullable
+facility/node/segment placement. There is no equipment ownership-generation
+registry in the current source. V20261018_002 supplies the real facility
+owner-generation/tombstone registry and fixed trigger/function semantics.
+`JdbcStationProtectedFacilityOwnershipAdapter` demonstrates its catalog, lifetime,
+role and lock checks, but its exact contract/source pins stay unchanged. The new
+adapter must query its own three fixed relations rather than cast station tickets
+or infer a facility from a guessed node/pipeline-segment traversal.
+
+**Next executable implementation within the same Package B.** Exact message:
+`feat(topology): export guarded installed-unit position ownership evidence`.
+
+CREATE only:
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/InstalledUnitPositionOwnershipPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcInstalledUnitPositionOwnershipAdapter.java`
+- `src/main/resources/db/migration/V20261028_004__topology_installed_unit_position_owner_lock.sql`
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcInstalledUnitPositionOwnershipAdapterTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/InstalledUnitPositionOwnershipPostgresIntegrationTest.java`
+
+MODIFY only:
+- `.github/ci-test-inventory.json` (the actual two new suites/cases/hashes, timing unmeasured until observed)
+- `doc/roadmap/TASKS_HPS-006.md` (append implementation/validation/remaining gates)
+
+DELETE none. No old migration, JPA entity, existing station/Party/Identity contract,
+executor, authenticated permission, writer/storage method, public REST/OpenAPI,
+foreign-consumer architecture rule or frozen registry changes. This is another
+owner contribution within fixed B, not a new package or task.
+
+**Required port and evidence.** Provide opaque acquire(exact position ID), single-use
+read, requireCurrent and typed finalFences in a genuine writable read-committed
+physical transaction. Only the issuing adapter accepts private tickets. Contribution
+contains exact position/equipment-type/facility/company references, actual position
+and facility status/type classification, actual positive live facility-owner
+generation, PID/XID and bound database role. These are current owner observations,
+not a permission, model compatibility approval or public existence endpoint.
+No invented equipment generation, synthetic timestamp-version or caller-supplied
+company/facility assertion may become proof. Require exactly one position with an
+explicit direct facility, exactly one facility with exact owner and a present positive
+generation. Missing, malformed, RLS/inheritance/view/temporary replacement, absent
+owner/tombstone or unresolved placement fails closed. Do not invent support for
+node/segment-only placement. Export recognized status classifications faithfully;
+this evidence-only step does not invent an ACTIVE-only business eligibility policy.
+The later protected writer must separately define and check permitted statuses.
+
+**Exact lock privilege design, avoiding the earlier SELECT-only conflict.** The
+additive migration creates only parameterless
+`public.hidra_topology_lock_installed_unit_position_ownership() RETURNS void`, fixed
+SECURITY DEFINER plpgsql body locking equipment then facility in SHARE ROW EXCLUSIVE
+MODE NOWAIT, no DML, dynamic SQL, role selection or transaction control. Set fixed
+search_path=pg_catalog,pg_temp; revoke PUBLIC EXECUTE in the same migration transaction.
+No automatic production role/grant is created. Deployment must explicitly provision
+a separate NOLOGIN NOINHERIT nonsuperuser owner with no memberships or administrative
+flags, no CREATE on trusted schemas at use time, no ownership of source tables and
+only non-grantable UPDATE needed on the two locked tables. Grant explicit non-grantable
+EXECUTE only to the approved nonowner evidence reader. Reader retains SELECT-only
+rights on equipment/facility/generation, including column-level no-DML checks.
+
+Before execution and before disclosure/final checks, validate exact helper signature,
+fixed body digest computed from the actual new migration, security/search-path,
+owner privileges/isolation and exact reviewed ACL (no PUBLIC/extra grantees/grant option).
+Like the accepted Party helper, default migration ownership alone is not valid runtime
+provisioning; fail closed until the approved dedicated owner exists. The caller
+transaction must actually retain both strong relation locks; lock the existing
+facility-owner-generation registry ACCESS SHARE NOWAIT as a separate fixed statement.
+Return exactly these three technical fences; preserve the generation registry's
+existing catalog/trigger/function pins and no-write lifetime invariants.
+
+Hold fences through final validation. Tickets bind issuer, exact request, actual
+holder/connection, thread, role, PID/XID and synchronization lifetime, invalidate
+on suspension/completion and reject replay/forgery/foreign use. requireCurrent must
+freshly compare the bound owner scalar image and catalog/lock state, including
+own-transaction tampering and lost savepoint locks; no cached positive result.
+Any failure poisons the issuing transaction and prevents swallowed-error commit.
+A future coordinator must compare this actual company/facility against the accepted
+Identity request and relevant Party evidence before mutation or disclosure.
+
+**Required synthetic verification.** New unit tests reject fabricated tickets,
+missing/read-only transactions and malformed identities before row access. Fresh
+Flyway/PostgreSQL16 tests must prove direct facility/owner/generation evidence,
+unchanged existing owner exports, missing/null/wrong/tombstoned placement, faithful
+status classifications without an invented eligibility Boolean, actual helper
+provisioning with SELECT-only reader, no PUBLIC execution, exact least-privilege
+owner/ACL and body/search-path tamper rejection, both table writer conflicts/NOWAIT,
+transaction-end release, own-transaction/image changes, role/thread/request/holder
+mismatch, suspension/completion/savepoint invalidation and swallowed-error rollback.
+Check raw locks/coordinates on the caller connection and a separate writer; authored
+cases alone are not acceptance. Keep all ten required shards and strict CI gates.
+
+**Truthful CI-first dictionary follow-up.** Under AGENTS11.1, unavailable local
+PostgreSQL/catalog is not a reason to fabricate metadata or install a full service
+environment. Initial implementation preserves the current dictionary and explicitly
+records pending regeneration; a strict dictionary drift failure is expected if the
+new migration changes the render. Capture genuine same-head hosted schema/catalog
+before any refresh. Registered follow-up message:
+`docs(topology): refresh installed-unit position ownership physical dictionary`;
+MODIFY only `doc/database/DATA_DICTIONARY.md` and this phase; CREATE/DELETE none.
+Verify artifact ZIP digest, exact SHA/run/attempt/source bundle and full migration/
+mapping/relation/owner metadata, run the unchanged generator, review exact equality
+and preserve strict comparison. If capture fails because code/migration/tests fail,
+repair that actual cause first. Do not invent catalog facts or weaken the gate.
+Each publication observes applicable exact-SHA CI startup and stops; documentation-only
+Full dispatch limitations must be reported honestly. Green code/catalog and independent
+evidence review precede separate atomic-writer registration. No writer or Package C
+implementation is admitted by either evidence/dictionary scope above.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

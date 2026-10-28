@@ -4861,6 +4861,37 @@ and C stay pending; HAPI-596 remains NOT_IMPLEMENTED/IN_PROGRESS and594/595 stay
 closed. No solver, engineering qualification, release, production/SITE or
 unselected implementation is claimed.
 
+### HAPI-596 Package B — Full931 regression-test import repair — 2026-10-28
+
+**Owner-selected responsible repair.** Owner Fail selects exact main
+cb952838eeb389ccc326b5c661110324295d3388/tree
+81b3a9fead72da8c9c0fdc4055ee0dabf1730f15. Docs646 succeeded. Full931/
+run40629278240 and Fast235/run40629278458 failed. Their common testCompile
+failure is ArchitectureGuardrailTest.java:798: unqualified assertEquals cannot
+resolve because the file statically imports only assertTrue/assertFalse. All
+seven PostgreSQL job logs and the unit log report that same compile error; no
+PostgreSQL runtime test result is inferred from those lanes. The new scope
+regression introduced in the previous repair caused this source defect.
+
+Exact repair message:
+`fix(custody): compile publication scope boundary regression`.
+MODIFY exactly ArchitectureGuardrailTest, its source hash in the CI test
+inventory, and this owning phase (three existing files; no CREATE/DELETE).
+Add the single explicit JUnit Assertions.assertEquals static import. Preserve
+all assertions, all21 architecture test cases, every other test invocation and
+inventory field, and all production/SQL/migration/fence/budget behavior. No
+boundary exception, assertion removal, workflow edit or test skip is admitted.
+
+Full931's actual API contract/dictionary lane and static lane succeeded, which
+confirms the prior physical-dictionary repair on that SHA; no regenerated
+artifact is changed here. B's actual publication PostgreSQL runtime verification
+remains pending. Available Java syntax parsing and unchanged documentation
+self-tests are local checks only; full Java21/Maven test compilation and
+execution remain hosted under AGENTS11.1. Publish with expected cb95283, verify
+exact parent/tree/message/three blobs and applicable CI creation/queue/start,
+then STOP. HAPI-596 remains NOT_IMPLEMENTED/IN_PROGRESS; B acceptance and C are
+not selected. HAPI-594/595 remain closed.
+
 <a id="hapi-597"></a>
 ## HAPI-597 — Multi-product ownership/API compatibility qualification
 

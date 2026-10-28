@@ -5203,6 +5203,129 @@ dependency_cache=cached. Confirm the run's head is this repair SHA. Retain faile
 Full936 history and await exact-head hosted contract/dictionary/full acceptance
 before selecting C or final B/596 acceptance. No successor executes here.
 
+### HAPI-596 Package B accepted; Package C configured transport/source export submitted — 2026-10-28
+
+Owner Next follows exact main54f0167e21ed569f117bdfc85c3b297d3b8c2559.
+Full937/run40647048167 (manual development dispatch) and Docs652/run40646728857
+completed/success on this exact SHA. Prior Fast240 passed on07382e41; the later
+dictionary-only commit has byte-identical runtime, tests and build sources and
+does not trigger Fast. Do not mislabel an older Fast run as running on54f0167.
+The live canonical register still selects596 under Policy A;594/595 remain closed.
+
+**Independent B acceptance evidence.** Full937 attempt1 aggregate artifact
+12798640161 has ZIP SHA256
+34a0e86348add5bd55e45a16114c43988e241e56ae3b8d74a4946ba75619893a.
+ZIP digest/integrity, every lane receipt/file digest, source/run/attempt,
+classifier/inventory, raw disjoint class/case membership, required lifecycle and
+same-run API/catalog proofs were revalidated with the unchanged full-evidence
+generator against exact54f0167 source. The reconstructed gate equals retained
+gate.json:484 active classes,3531 cases, zero failures/errors/skips. Development
+partitioning correctly retains same_run_equivalence=false and release_eligible=
+false; skipped optional serial audit is not a passing oracle or release proof.
+B's three dedicated suites independently match source hashes, inventory and raw
+invocations: ProductRevisionPublicationTest17,
+ProductRevisionPublicationPostgresIntegrationTest29,
+CustodyProductPublicationWorkflowTargetLookupTest6:52 actual cases. Prior A's
+accepted native/Workflow owner contracts remain prerequisites. B is now accepted
+for its bounded internal software scope, not the full596 objective.
+
+Actual same-run current API SHA256
+a9cd989f96ed5fef7a2389e2494376b040c52074c586a72c76b9ebfa74472581;
+base API9f5dd7301cd1b75ba6fda1c6bf745b1ccb312c79212143c81e7205eff5b4233a
+at9fe646f0; runtime/canonical equality and successful-base compatibility pass.
+Actual catalog SHA256
+906f018740fc3bd78b8510779de39fee2825c7fb353ed4f5077e01f50109ec0e;
+source bundle79da2df06361e83e1ee35b8fd4fe724af532a9f0d5f749a876e303e543e481ad.
+Complete182 migrations/470 mappings/528 relations and dictionary equality with
+zero unresolved owners are retained. The reviewed dictionary's earlier captured
+source remains truthful; no provenance line is restamped to a future C SHA.
+
+**Selected C message:** `feat(custody): expose governed product publications`.
+Implement exactly the eight registered CREATE paths and six source/test/inventory/
+phase MODIFY paths needed now: ProductRevisionPublicationController, Requests,
+Responses, ProductPublicationSourceContract, ProductPublicationSourceQueryAdapter,
+its test, standalone controller test and configured native HTTP/PostgreSQL test;
+HidraRouteAuthorizationInterceptor and its test, ArchitectureGuardrailTest,
+ProtectedStationAdmissionBoundaryGuardrailTest, .github/ci-test-inventory.json
+and this phase. Zero DELETE. The three admitted generated artifacts remain
+unchanged pending actual hosted capture; the dictionary remains valid because
+this stage changes no migration or JPA mapping. No unrelated consumer, grant,
+policy, schema, platform executor, native participant or B storage change.
+
+**HTTP behavior.** Ten exact registered verbs/suffixes under
+/api/v1/custody/engineering-products/{draftId}/publications delegate only their
+compiled controller/handler/verb/pattern tuples after authentication. All other
+handlers retain ordinary route permission checks. Mutations contain only their
+request, source/head/digest and actual Workflow selectors; strict JsonNode
+creators reject unknown/nested/server fields and numeric/identity coercion.
+Exactly one explicit company query is required; effective/history admit only
+their registered asOf/limit/cursor fields with duplicate/unknown query rejection,
+page1..100,4096-character cursor, strict UUID/digest/owner identities and
+microsecond timestamps. PREPARE/PUBLISH first execution returns201; exact replay,
+transitions and reads return200. Original formats/bytes (explicit canonical
+base64), independent versions/digests, diagnostics, unit/policy/actual approval,
+head/event/receipt identities and withdrawn selection remain explicit wire DTOs.
+No persistence/domain object is a request/response record component. HTTP current
+state never claims current consumer eligibility. Typed400/403/409/503 problems
+omit SQL/native causes/stack details;401 remains with the configured filter.
+Indeterminate completion remains503 with no automatic retry instruction.
+
+**Scalar source export.** ProductPublicationSourceContract defines only immutable
+scalar query/result records, UUIDs/instants, independent source components,
+original diagnostics/units/approval and observed/selected heads. EXACT_HISTORICAL
+uses protected READ_EXACT and never asserts currentlyEligible; ELIGIBLE_CURRENT/
+ELIGIBLE_EFFECTIVE use the corresponding fresh protected owner commands and
+return no selection for withdrawn/missing/ineligible state. There is no actor,
+permission Boolean or caller-provided eligibility. The integration adapter decodes
+actual original owned metadata/supplied codecs after the protected result,
+preserving metadata Unicode and all authored scalar facts as explicit path/value
+entries. Decimal lexemes remain strings; null values and empty-list size markers
+remain distinct. No conversion, inferred qualification or fallback occurs.
+engineeringQualified is always false. The exact new contract root/nested types
+are classified; every unregistered foreign consumer/private/sibling import stays
+forbidden. No existing Planning/catalog/GAS export or consumer wiring changes.
+
+**Authored tests and current local evidence.** Add22 task-specific cases in the
+three new suites (controller7, scalar adapter5, native HTTP10), plus three exact
+route/export/boundary regression cases in existing suites. Preserve every old
+invocation, lane, timing and source entry; only three affected old source hashes
+refresh and three new classes have unmeasured zero baselines under the existing
+scheduler fallback. Real configured tests retain actual LOCAL/OIDC/LDAP/AD
+producers, scoped grants, real human Workflow transition, prepare/publish and
+read; lifecycle/replay/withdraw/reactivate/effective/history/receipts; native
+revocation/missing/malformed bearer, both independent scopes and all five actions,
+foreign company/unknown identity, strict input, stale source/substituted approval,
+actual final-guard rollback and native-protected scalar export. These25 newly
+authored cases have not executed locally and are not called passing runtime proof.
+
+Available checks:19 unchanged documentation self-tests and34 unchanged inventory/
+scheduler self-tests PASS; full source inventory/classification PASS. All12
+selected Java sources parse with the available Java17 compiler. The exact new
+scalar contract/adapter and actual owned domain/codec/use-case sources type-check
+using only a temporary Component annotation signature. A standalone runner using
+that actual compiled mapping passes original bytes/Unicode/decimal lexemes/null-
+vs-empty, historical-vs-eligible and no-fallback probes; this is not JUnit or
+native evidence. Supplemental request/response/controller type checking against
+temporary framework signatures passes but does not prove real Spring/Jackson
+behavior. Maven compile cannot run: exit127, mvn command not found. No full
+Java21/Maven/Docker/PostgreSQL environment is provisioned under AGENTS11.1.
+Require hosted compilation, configured security/HTTP/native/Workflow/PG, module
+architecture and all actual cases before accepting C. Run final docs/offline API,
+exact scope/history/hash/header/whitespace checks before publication.
+
+**Pending generated contract and stop.** Preserve the current actual OpenAPI and
+manifest until the configured C app runs; no guessed paths/schema/counts/hashes
+are inserted. Its new routes will require the already registered
+`docs(api): refresh product publication runtime contract` follow-up using actual
+same-run hosted OpenAPI, full compatibility and truthful manifest provenance.
+A failed snapshot-equality gate is retained as failed feedback, never weakened;
+dictionary update is permitted only for demonstrated physical drift. Publish
+with expected54f0167, verify exact parent/tree/message/14-path scope/blobs and
+applicable exact-SHA Full/Fast/Docs creation/queue/start, then STOP. HAPI-596
+remains NOT_IMPLEMENTED/IN_PROGRESS pending C and independent final acceptance.
+HAPI-597/593, engineering/SITE, frontend, numerical solver, release/deployment
+remain unselected. A later Fail repairs C's actual feedback before advancing.
+
 <a id="hapi-597"></a>
 ## HAPI-597 — Multi-product ownership/API compatibility qualification
 

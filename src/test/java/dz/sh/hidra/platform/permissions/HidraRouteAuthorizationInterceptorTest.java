@@ -163,6 +163,42 @@ class HidraRouteAuthorizationInterceptorTest {
         SecurityContextHolder.clearContext();
     }
 
+    @Test void productPublicationDelegationRequiresExactAuthenticatedOwnerTuples() throws Exception {
+        var resolver=org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class);
+        var interceptor=new HidraRouteAuthorizationInterceptor(resolver,naming,true,"jwt");
+        var useCase=org.mockito.Mockito.mock(dz.sh.hidra.modules.custody.application.port.in.ProductRevisionPublicationUseCase.class);
+        var owner=new dz.sh.hidra.modules.custody.api.rest.controller.ProductRevisionPublicationController(useCase);
+        String[] names={"prepare","candidate","publish","withdraw","reactivate","exact","current","effective","history","receipt"},verbs={"POST","GET","POST","POST","POST","GET","GET","GET","GET","GET"},routes={"/api/v1/custody/engineering-products/{draftId}/publications/candidates","/api/v1/custody/engineering-products/{draftId}/publications/candidates/{digest}","/api/v1/custody/engineering-products/{draftId}/publications","/api/v1/custody/engineering-products/{draftId}/publications/{publicationId}/withdraw","/api/v1/custody/engineering-products/{draftId}/publications/{publicationId}/reactivate","/api/v1/custody/engineering-products/{draftId}/publications/{publicationId}","/api/v1/custody/engineering-products/{draftId}/publications/current","/api/v1/custody/engineering-products/{draftId}/publications/effective","/api/v1/custody/engineering-products/{draftId}/publications/history","/api/v1/custody/engineering-products/{draftId}/publications/requests/{requestId}"};
+        for(int i=0;i<names.length;i++) {
+            final String name=names[i];
+            var method=java.util.Arrays.stream(owner.getClass().getDeclaredMethods()).filter(m->m.getName().equals(name)).findFirst().orElseThrow();
+            var handler=new HandlerMethod(owner,method);
+            var request=new MockHttpServletRequest(verbs[i],routes[i].replace("{draftId}","selected"));
+            request.setAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE,routes[i]);
+            SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("operator",null,List.of()));
+            org.mockito.Mockito.clearInvocations(resolver);
+            assertTrue(interceptor.preHandle(request,new MockHttpServletResponse(),handler));
+            org.mockito.Mockito.verifyNoInteractions(resolver,useCase);
+            request.setMethod("DELETE");assertThrows(AccessDeniedException.class,()->interceptor.preHandle(request,new MockHttpServletResponse(),handler));
+            request.setMethod(verbs[i]);request.setAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE,routes[i]+"/sibling");
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(request,new MockHttpServletResponse(),handler));
+            request.setAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE,routes[i]);
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(request,new MockHttpServletResponse(),handlerMethod()));
+            final String wrongName=names[(i+1)%names.length];
+            var wrong=java.util.Arrays.stream(owner.getClass().getDeclaredMethods()).filter(m->m.getName().equals(wrongName)).findFirst().orElseThrow();
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(request,new MockHttpServletResponse(),new HandlerMethod(owner,wrong)));
+            SecurityContextHolder.clearContext();
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(request,new MockHttpServletResponse(),handler));
+            SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("operator",null));
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(request,new MockHttpServletResponse(),handler));
+            SecurityContextHolder.getContext().setAuthentication(new org.springframework.security.authentication.AnonymousAuthenticationToken(
+                    "synthetic-key","anonymous",List.of(new SimpleGrantedAuthority("ROLE_ANONYMOUS"))));
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(request,new MockHttpServletResponse(),handler));
+        }
+        org.mockito.Mockito.verifyNoInteractions(useCase);
+    }
+
+
     @Test
     void derivesIdentityRoadmapPermissionFormat() throws Exception {
         assertEquals(

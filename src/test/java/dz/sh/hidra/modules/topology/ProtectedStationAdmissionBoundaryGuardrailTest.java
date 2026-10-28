@@ -122,4 +122,11 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
         String repository=source("modules/custody/infrastructure/persistence/adapter/JdbcProductRevisionPublicationRepositoryAdapter.java");
         assertTrue(repository.contains("imageSql(fences)"));assertTrue(repository.contains("NEW_FUNCTIONS"));assertTrue(repository.contains("sampled_clock AS MATERIALIZED"));
     }
+
+    @Test void productPublicationTransportUsesOnlyItsProtectedUseCaseAndScalarExport()throws Exception{
+        String controller=source("modules/custody/api/rest/controller/ProductRevisionPublicationController.java");
+        assertTrue(controller.contains("ProductRevisionPublicationUseCase"));assertFalse(controller.contains(".infrastructure."));assertFalse(controller.contains("JdbcTemplate"));
+        String adapter=source("modules/custody/infrastructure/integration/ProductPublicationSourceQueryAdapter.java");
+        assertTrue(adapter.contains("Kind.READ_EXACT"));assertTrue(adapter.contains("Kind.ELIGIBLE_CURRENT"));assertTrue(adapter.contains("Kind.ELIGIBLE_EFFECTIVE"));assertFalse(adapter.contains("JdbcTemplate"));assertFalse(adapter.contains("actorId,"));
+    }
 }

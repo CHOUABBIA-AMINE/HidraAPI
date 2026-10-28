@@ -655,6 +655,7 @@ class ArchitectureGuardrailTest {
         if (sourceModule == null || targetModule == null || sourceModule.equals(targetModule)) {
             return false;
         }
+        if(isProductPublicationSourceType(targetClassName))return true;
         if(isPublicationSpecific(targetClassName))return !isPublicationExportAllowed(sourceClassName,targetClassName);
         if (!isPrivateCrossModulePackage(targetPackage)) {
             return false;
@@ -798,5 +799,16 @@ class ArchitectureGuardrailTest {
         var scope=java.util.Arrays.stream(dz.sh.hidra.modules.custody.application.service.ProtectedProductPublicationAdmissionCoordinator.Contribution.class.getRecordComponents()).filter(c->c.getName().equals("scope")).findFirst().orElseThrow();
         assertEquals(dz.sh.hidra.modules.custody.domain.model.ProductRevisionPublication.Scope.class,scope.getType());
 
+    }
+
+    private static boolean isProductPublicationSourceType(String type){return isTargetRoot(type,"dz.sh.hidra.modules.custody.application.contract.publication.ProductPublicationSourceContract");}
+    @Test void publicationScalarExportRemainsExactAndHasNoUnregisteredConsumer(){
+        String root="dz.sh.hidra.modules.custody.application.contract.publication.ProductPublicationSourceContract";
+        assertTrue(isProductPublicationSourceType(root));assertTrue(isProductPublicationSourceType(root+"$Source"));assertFalse(isProductPublicationSourceType(root+"Sibling"));assertFalse(isProductPublicationSourceType("dz.sh.hidra.modules.custody.domain.model.ProductRevisionPublication"));
+        assertFalse(isForbiddenCrossModuleDependency("dz.sh.hidra.modules.custody.infrastructure.integration.ProductPublicationSourceQueryAdapter",root));
+        for(String consumer:java.util.List.of("dz.sh.hidra.modules.planning.application.service.Unregistered","dz.sh.hidra.modules.simulation.infrastructure.integration.Unregistered")){
+            assertTrue(isForbiddenCrossModuleDependency(consumer,root));assertTrue(isForbiddenCrossModuleDependency(consumer,root+"$Source"));assertTrue(isForbiddenCrossModuleDependency(consumer,root+"Sibling"));assertTrue(isForbiddenCrossModuleDependency(consumer,"dz.sh.hidra.modules.custody.infrastructure.integration.ProductPublicationSourceQueryAdapter"));
+        }
+        for(var type:dz.sh.hidra.modules.custody.application.contract.publication.ProductPublicationSourceContract.class.getDeclaredClasses())if(type.isRecord())for(var component:type.getRecordComponents())assertFalse(component.getGenericType().getTypeName().contains(".domain."));
     }
 }

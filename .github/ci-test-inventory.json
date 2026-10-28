@@ -26,6 +26,7 @@
         "productPublicationOwnerExportsRemainExactAndPrivate",
         "protectedTransactionJpaExceptionsRemainExactAndTechnical",
         "publicationExportsAdmitOnlyRegisteredHumanTransitionConsumer",
+        "publicationScalarExportRemainsExactAndHasNoUnregisteredConsumer",
         "simulationOwnerEvidenceExportsKeepPrivateTypesClosed",
         "simulationTelemetryEvidenceExportKeepsOwnerInternalsPrivate",
         "suppliedFluidExportsStayExactToTheirCoordinator",
@@ -38,7 +39,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java",
-      "source_sha256": "beb2588a1db56ea4dcf249f57f145eef8b5b016554a6f5b3a068dd5457aa5240",
+      "source_sha256": "4c51a11d48d08a27004558143ed71faa268c27b90b27a73017d4a1005ed1fc6d",
       "supports": []
     },
     {
@@ -7628,6 +7629,7 @@
         "existingReaderAndJContractsRemainUnchanged",
         "identityAdmissionAndCollectorHaveOnlyReviewedCallers",
         "platformHasNoBusinessModuleDependencies",
+        "productPublicationTransportUsesOnlyItsProtectedUseCaseAndScalarExport",
         "productPublicationUsesActionSpecificExactFenceUnion",
         "publicationAdmissionKeepsTheSingleClockAndPrivateSourceBoundaries",
         "publicationOwnerTicketsRemainOpaqueAndPolicyUsesRetainedOwnerFences"
@@ -7638,7 +7640,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java",
-      "source_sha256": "1efc23bbd65a9e294ed9864f5f51f2824492a6ee6611b5d83feb759ab2c4e9f7",
+      "source_sha256": "2c7cc1e200e0caa0e5759664aa752e8a59415c6968f8728419f16f5d379495c6",
       "supports": []
     },
     {
@@ -9646,6 +9648,7 @@
         "permitsAnonymousDirectLoginBeforeRoutePermissionResolution",
         "permitsMatchingEffectivePermission",
         "productDraftDelegationRequiresExactAuthenticatedOwnerTuples",
+        "productPublicationDelegationRequiresExactAuthenticatedOwnerTuples",
         "publicationDelegatesOnlyEightAuthenticatedExactCompiledTuples",
         "suppliedFluidDelegationRequiresExactAuthenticatedOwnerTuples",
         "surveyDelegationRequiresExactNativeControllerMethodAndAuthentication"
@@ -9656,7 +9659,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptorTest.java",
-      "source_sha256": "f98d70863789a3c1e69847ccf1fea0047715754221b2bb672efca7e4540b54d2",
+      "source_sha256": "73c796fa3c64f181aeef436e807e1ee9416d5468b669f270d3ef2ed02922ebb3",
       "supports": []
     },
     {
@@ -9913,6 +9916,67 @@
       "path": "src/test/java/dz/sh/hidra/platform/workbench/HidraOperationalWorkbenchServiceTest.java",
       "source_sha256": "42e8fc8e06f115844a0d461745e4c9cd06c389fdb9c6a9a9dd1de5617ec5b424",
       "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "allReadSelectorsBindExplicitCompanyProductAndTemporalBounds",
+        "duplicateAndExtraQueryScopesAreRejected",
+        "historyLimitsMicrosecondsCursorAndDigestsRejectBeforeOwner",
+        "prepareCreationAndExactReplayPreserveOriginalEnvelopeBytes",
+        "publishAndTransitionsCarryOnlySelectorsAndExpectedHead",
+        "typedFailuresNeverDiscloseSqlOrRetryAdvice",
+        "unknownServerFieldsAndCoercedVersionsCannotReachOwner"
+      ],
+      "class": "dz.sh.hidra.modules.custody.api.rest.controller.ProductRevisionPublicationControllerTest",
+      "dependency_reason": "Strict publication wire or scalar mapping contract without service startup",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "custody",
+      "path": "src/test/java/dz/sh/hidra/modules/custody/api/rest/controller/ProductRevisionPublicationControllerTest.java",
+      "source_sha256": "997424677a5eba6b804189f71d291e98ad4582f6e65125e4520a614dcdca116d",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "eligibleModesDelegateFreshProtectedQueriesWithExactAsOf",
+        "exactHistoricalExportPreservesBytesVersionsOriginalLexemesAndNullEmpty",
+        "malformedMixedSelectorsNeverReachOwner",
+        "ownerDenialAndUnavailabilityCannotBecomeHistoricalFallback",
+        "withdrawnOrMissingSelectionNeverFallsBack"
+      ],
+      "class": "dz.sh.hidra.modules.custody.infrastructure.integration.ProductPublicationSourceQueryAdapterTest",
+      "dependency_reason": "Strict publication wire or scalar mapping contract without service startup",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "custody",
+      "path": "src/test/java/dz/sh/hidra/modules/custody/infrastructure/integration/ProductPublicationSourceQueryAdapterTest.java",
+      "source_sha256": "0480b3cb4713e149f38f9fd3644a77732d5217900fc2b61236b31cf036b2e9a3",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "actualFinalScalarGuardFailureReturns503AndRollsBackHttpCandidate",
+        "allFourNativeProducersPrepareApprovePublishAndReadConfiguredHttp",
+        "configuredReplayWithdrawEffectiveHistoryAndReactivationRetainSnapshot",
+        "denyOnEitherScopeBlocksEveryNativePublicationAction",
+        "independentCompanyDenyBlocksPreparationWithoutCandidate",
+        "missingMalformedAndRevokedBearerCannotDiscloseOrMutate",
+        "otherCompanyAndUnknownTargetHaveSameNonDisclosingDenial",
+        "scalarExportRequiresFreshNativeProofAndRetainsExactUnqualifiedFacts",
+        "staleSourcesAndSubstitutedApprovalConflictWithoutPublication",
+        "strictUnknownFieldsDuplicateScopesAndTemporalBoundsCannotApply"
+      ],
+      "class": "dz.sh.hidra.modules.custody.infrastructure.persistence.ProductRevisionPublicationNativeHttpPostgresIntegrationTest",
+      "dependency_reason": "Configured native HTTP/PostgreSQL/Workflow publication contract",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "custody",
+      "path": "src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/ProductRevisionPublicationNativeHttpPostgresIntegrationTest.java",
+      "source_sha256": "00e96a18102cee1d6f3fe4a29768f6adfdc53255ac591097d90d47ca5c80baf2",
+      "supports": []
     }
   ],
   "format": 1,
@@ -9962,59 +10026,54 @@
     "source_sha": "d15cfa28c598aedd8371a98c943b8919b3b7a52f"
   },
   "timing_refresh": {
-    "source_sha": "97f3295d1b7dbfde3b27f08c08a9cfad45c415f9",
-    "run_id": 40581505626,
-    "run_number": 928,
-    "run_attempt": 1,
-    "required_run_conclusion": "failure",
+    "artifacts": [
+      {
+        "diagnostic": false,
+        "id": 12769303603,
+        "shard": 0,
+        "zip_sha256": "794bfd43236a5a96df5b03537a76c2504cff11b36ee7da92945fb6a5a5dde30b"
+      },
+      {
+        "diagnostic": false,
+        "id": 12769103801,
+        "shard": 1,
+        "zip_sha256": "f06e88bb4c1ab7f26dd92af57be1094f081335abf90ce814b72a6eec5fd8f834"
+      },
+      {
+        "diagnostic": true,
+        "id": 12769978740,
+        "shard": 2,
+        "zip_sha256": "19351dc7c02b5e594b53cd0499f9d16d464f9bf0335f538af29025537b12c153"
+      },
+      {
+        "diagnostic": false,
+        "id": 12770382190,
+        "shard": 3,
+        "zip_sha256": "7d9fe716826a27e6235d06c26dbb54d41b275edbc8aa67f236fc90205126aa1d"
+      },
+      {
+        "diagnostic": false,
+        "id": 12769523110,
+        "shard": 4,
+        "zip_sha256": "3087879e10e3b4a2880037e37712fab47ceb37e5daa29296867809ed0d19d57e"
+      },
+      {
+        "diagnostic": false,
+        "id": 12769718480,
+        "shard": 5,
+        "zip_sha256": "33adcf6c5b96f2d13bcfe7cd7688efadeab65f18c68c1294dfa9e46e7fc8aa00"
+      },
+      {
+        "diagnostic": false,
+        "id": 12770257285,
+        "shard": 6,
+        "zip_sha256": "d0099be059792ada2aa665a92b9372858b0b0cc11c84b5c398de25992aec56d8"
+      }
+    ],
     "metric": "Actual Surefire suite seconds; scheduling observations, not accepted runtime evidence or job elapsed",
     "observation_scope": "All112 active PostgreSQL suites; complete exact class/case membership verified. One reviewer fixture case errors; its observed suite time remains partial scheduling evidence. The fixture repair source hash changes independently.",
     "partial_report_classes": [
       "dz.sh.hidra.modules.identity.infrastructure.persistence.ProtectedProductPublicationAuthorizationPostgresIntegrationTest"
-    ],
-    "artifacts": [
-      {
-        "id": 12769303603,
-        "shard": 0,
-        "zip_sha256": "794bfd43236a5a96df5b03537a76c2504cff11b36ee7da92945fb6a5a5dde30b",
-        "diagnostic": false
-      },
-      {
-        "id": 12769103801,
-        "shard": 1,
-        "zip_sha256": "f06e88bb4c1ab7f26dd92af57be1094f081335abf90ce814b72a6eec5fd8f834",
-        "diagnostic": false
-      },
-      {
-        "id": 12769978740,
-        "shard": 2,
-        "zip_sha256": "19351dc7c02b5e594b53cd0499f9d16d464f9bf0335f538af29025537b12c153",
-        "diagnostic": true
-      },
-      {
-        "id": 12770382190,
-        "shard": 3,
-        "zip_sha256": "7d9fe716826a27e6235d06c26dbb54d41b275edbc8aa67f236fc90205126aa1d",
-        "diagnostic": false
-      },
-      {
-        "id": 12769523110,
-        "shard": 4,
-        "zip_sha256": "3087879e10e3b4a2880037e37712fab47ceb37e5daa29296867809ed0d19d57e",
-        "diagnostic": false
-      },
-      {
-        "id": 12769718480,
-        "shard": 5,
-        "zip_sha256": "33adcf6c5b96f2d13bcfe7cd7688efadeab65f18c68c1294dfa9e46e7fc8aa00",
-        "diagnostic": false
-      },
-      {
-        "id": 12770257285,
-        "shard": 6,
-        "zip_sha256": "d0099be059792ada2aa665a92b9372858b0b0cc11c84b5c398de25992aec56d8",
-        "diagnostic": false
-      }
     ],
     "prior_refresh": {
       "artifacts": [
@@ -10215,6 +10274,11 @@
       "run_id": 40370015468,
       "run_number": 907,
       "source_sha": "1d6025e22fb585e8b1ec6b5ad39a0d65aa3514f3"
-    }
+    },
+    "required_run_conclusion": "failure",
+    "run_attempt": 1,
+    "run_id": 40581505626,
+    "run_number": 928,
+    "source_sha": "97f3295d1b7dbfde3b27f08c08a9cfad45c415f9"
   }
 }

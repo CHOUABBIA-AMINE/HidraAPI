@@ -99,7 +99,8 @@ public final class HidraRouteAuthorizationInterceptor implements HandlerIntercep
                 || isOwnedEmployeeAppointmentRoute(handlerMethod,routePattern,request.getMethod())
                 || isOwnedLocalExchangeRoute(handlerMethod,routePattern,request.getMethod())
                 || isOwnedProductDraftRoute(handlerMethod,routePattern,request.getMethod())
-                || isOwnedSuppliedFluidRoute(handlerMethod,routePattern,request.getMethod())) {
+                || isOwnedSuppliedFluidRoute(handlerMethod,routePattern,request.getMethod())
+                || isOwnedProductPublicationRoute(handlerMethod,routePattern,request.getMethod())) {
             if (authentication == null || !authentication.isAuthenticated()
                     || authentication instanceof AnonymousAuthenticationToken) {
                 throw new AccessDeniedException("Engineering draft authentication required.");
@@ -113,6 +114,23 @@ public final class HidraRouteAuthorizationInterceptor implements HandlerIntercep
         }
 
         throw new AccessDeniedException("Missing required permission: " + requiredPermission);
+    }
+
+    private static boolean isOwnedProductPublicationRoute(HandlerMethod handler,String route,String verb) {
+        if(handler==null || route==null || verb==null || !handler.getBeanType().getName().equals("dz.sh.hidra.modules.custody.api.rest.controller.ProductRevisionPublicationController"))return false;
+        return switch(verb+" "+route+" "+handler.getMethod().getName()) {
+            case "POST /api/v1/custody/engineering-products/{draftId}/publications/candidates prepare",
+                 "GET /api/v1/custody/engineering-products/{draftId}/publications/candidates/{digest} candidate",
+                 "POST /api/v1/custody/engineering-products/{draftId}/publications publish",
+                 "POST /api/v1/custody/engineering-products/{draftId}/publications/{publicationId}/withdraw withdraw",
+                 "POST /api/v1/custody/engineering-products/{draftId}/publications/{publicationId}/reactivate reactivate",
+                 "GET /api/v1/custody/engineering-products/{draftId}/publications/{publicationId} exact",
+                 "GET /api/v1/custody/engineering-products/{draftId}/publications/current current",
+                 "GET /api/v1/custody/engineering-products/{draftId}/publications/effective effective",
+                 "GET /api/v1/custody/engineering-products/{draftId}/publications/history history",
+                 "GET /api/v1/custody/engineering-products/{draftId}/publications/requests/{requestId} receipt" -> true;
+            default -> false;
+        };
     }
 
     private static boolean isOwnedSuppliedFluidRoute(HandlerMethod handler,String route,String verb) {

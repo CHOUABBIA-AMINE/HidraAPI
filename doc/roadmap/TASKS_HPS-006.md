@@ -4017,6 +4017,78 @@ exact-SHA Full/Fast/Docs startup and STOP. If the conflict recurs, use retained 
 backend evidence before another repair. HAPI-599 remains NOT_IMPLEMENTED/BLOCKED;
 company acceptance, atomic writer, Package C, SITE, release and deployment stay held.
 
+### HAPI-599 Package B — SELECT-only company evidence acceptance — 2026-10-28
+
+**Owner Next; exact-head independent acceptance.** Main
+`98d77d88fc0551826427d32bb96ffc835bf27545` has Full962/run `40743859110`,
+Fast262/run `40743859161` and Docs692/run `40743859260` completed SUCCESS.
+All ten required PostgreSQL shards, unit/architecture, static, API/dictionary and
+Full gate passed. Development mode, cached dependencies, attempt1 and
+serial_oracle=false are explicit; the separate serial job is skipped by design,
+release_eligible=false. No release, deployment or operational acceptance follows.
+
+Downloaded full bundle artifact `12841342346` has ZIP SHA-256
+`3fa890ab2795a1a302cd5464e648136ea81ba1ac29dc7a7393de18af857fe4ee`,
+matching GitHub metadata. The unchanged full-evidence aggregator independently
+reproduces gate.json byte-for-byte against current source/inventory, verifying
+all504 listed file hashes and exact source/run/attempt. Raw XML case identities
+reconcile all497 active classes and3,698 exact cases, zero failures/errors/skips.
+Four historical exclusions and ten required shards remain unchanged; no timing
+inventory is rewritten from this observation.
+
+The actual SELECT-only company suite passes28 cases (18.548s observed), including
+non-manufacturer company and same/different manufacturer composition, actual
+PID/XID and locks, denied source DML, privilege/catalog/helper changes and lifecycle
+poisoning. This supplies the previously missing combined SELECT-only runtime
+evidence. The repaired native engineering-authorization suite passes7 cases
+(45.914s), including all six original cases and the explicit separate-backend
+maintenance-mode NOWAIT rejection/no-receipt/release regression. The unchanged
+Organization appointment concurrency suite passes82 cases (355.012s).
+
+Full961 remains a failed historical run. Its competing permission-table backend
+was not identified; this success does not prove that autovacuum caused the earlier
+conflict or establish permanent stability. Test-only maintenance isolation and
+post-rollback diagnostics remain explicit. Production NOWAIT locks, native expiry,
+processing budgets and final guards were never weakened. The earlier OIDC
+appointment rejection likewise remains unidentified historical evidence, not a
+new root-cause claim or a reason to skip its mandatory cases.
+
+Same-run dictionary receipt is checked=true on the accepted SHA: PostgreSQL16.15,
+185 migrations,470 mappings,531 relations, zero unresolved owners. Source bundle
+SHA-256 `cc3a447e4bf313777b59a85124f57e2d244973ee7ff53a9da24155dc4a94b74c`;
+catalog SHA-256 `3ba7b302a857d94f43ba729311f164f51c23c47ab4064bd8a60a5b1439be297f`;
+checked render SHA-256 `686fae72408ae4eb802a6b24a413098b6f9e5e08ed55bb269dcc2edb4f449779`.
+API/base compatibility passed against `7a6d93bb8709b0bfc2df3d9cb4b9ea68e68802b6`;
+current API SHA-256 `2e984876631c37c04498a72a3426c199df902f7c4b9a19375a70b3bc08cb4757`.
+No new DDL/catalog refresh is required by this provider.
+
+**Bounded acceptance and hold update.** Accept the new Party-owned company
+contribution and its demonstrated SELECT-only composition within tested backend
+development scope. Clear its prerequisite CI/evidence hold and the Full961 gate
+hold for progression. Package A, manufacturer/Identity/position contributions
+remain accepted; do not repeat them. This accepts no protected atomic writer,
+HTTP operation, engineering readiness or integrated Package B/C. HAPI-599 remains
+NOT_IMPLEMENTED/BLOCKED in frozen ROADMAP/PHASES pending those actual deliverables.
+
+**This one selected acceptance commit.** Exact message:
+`docs(party): accept installed-unit SELECT-only company evidence`.
+CREATE/DELETE none; MODIFY only this phase, append-only. Independent evidence
+reproduction, documentation/link, scope and whitespace checks precede guarded
+publication. No local JUnit/PostgreSQL rerun is claimed. Verify parent/tree/blob,
+observe exact-SHA Docs creation/queue/start and STOP.
+
+**Next executable stage.** Resume the registered writer implementation, message
+`feat(topology): add protected installed-unit lifecycle operations`, with the exact
+nine CREATE/seven MODIFY allowlist above and the explicit company-contract
+substitution in the prerequisite resumption rule. Use the newly accepted
+`TopologyInstalledUnitCompanyEvidenceContract`; no old company provider/source-pin
+change is needed. Recheck live migration inventory before creating005. Preserve
+same-unit relocation scope, exact permissions, provisional SQL pins, issuer/context
+binding, replay/audit, current-owner checks and sole final commit guard. Do not
+start it within this acceptance stage. Different-unit replacement, public Package C,
+manufacturer-kind qualification, dependent tasks, frontend, simulation/P3, SITE,
+release and deployment remain separately pending.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

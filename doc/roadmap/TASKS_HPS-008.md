@@ -5129,6 +5129,80 @@ NOT_IMPLEMENTED/IN_PROGRESS; B acceptance and separately registered C/final
 acceptance remain pending.594/595 stay closed; no solver, engineering/SITE,
 release, deployment or dependent task is selected.
 
+### HAPI-596 Package B — Full936 actual publication dictionary repair — 2026-10-28
+
+Owner Fail selects exact main07382e4127b1fff0bee6391005c068d14aa632b3,
+parent1da1ff550864b41d25fa71feb23c13ec0f343bf6,
+tree63e6116daaff5dc8b75b984755af025c8efd9906.
+Full936/run40645026191 failed only in API/catalog and its downstream aggregate
+gate. Fast240/run40645026197 and Docs651/run40645026236 succeeded. All seven
+PostgreSQL shards, unit/architecture and static validation succeeded. The actual
+API job122671726893 reports runtime/canonical OpenAPI equality (272 paths,
+296 operations,307 schemas), then physical dictionary drift after the additive
+trigger migration. Later compatibility steps did not execute successfully in
+this failed lane; Full936 is not labeled green or accepted.
+
+Exact already registered follow-up message:
+`docs(custody): refresh product publication storage dictionary`.
+MODIFY only doc/database/DATA_DICTIONARY.md and this owning phase; zero CREATE/
+DELETE or source/test/inventory/workflow/migration/ownership/API change. This
+satisfies the actual-catalog follow-up admitted in the preceding responsible
+repair. Preserve all task statuses and594/595 acceptance; do not select C or
+final B/596 acceptance from this Fail instruction.
+
+Actual Full936 attempt1 API diagnostics artifact12797028684, ZIP SHA256
+ e7398982c2cb4965a05b55956869bba087e0678235ae0b4fa3c00c564fc0971f,
+retains schema.json and verification.json reporting Physical dictionary drift.
+Verify ZIP hash/integrity before extraction. The complete source was retrieved
+at exactly07382e41/tree63e6116d; all652 captured migration/JPA source SHA256
+identities match current bytes. The unchanged generator validates complete
+catalog shape/history/source identity and existing ownership metadata, then
+renders deterministically and passes exact reviewed-dictionary equality:
+PostgreSQL16.15,182 migrations,470 JPA mappings,528 relations and zero unresolved
+owners. Catalog document SHA256
+444b11af4d424f39c89829a61cb0c84421de5168e6d6cdd83cfa1308811e5fe4;
+source bundle79da2df06361e83e1ee35b8fd4fe724af532a9f0d5f749a876e303e543e481ad;
+reviewed dictionary SHA256
+6cf2c0acb3fb6f2b8d2fd34f2dd6d40c6a3130ee4dc03291f66596d760e01dc3.
+Captured source remains07382e41, not this future documentation commit's SHA.
+Review all23 changed dictionary lines: capture/bundle/migration count, seven
+source migration mentions and five actual admission-function definitions with
+relation-first request-kind dispatch; no unrelated physical metadata is edited.
+
+Independent real PostgreSQL regression evidence: shard4/job122671727282,
+attempt1 artifact12797159603, ZIP SHA256
+ff38519d0647eee266bb9f2c1a6f51c235c867cc7ab4b5ea1a8e60223d882571.
+ZIP integrity and all19 retained file hashes match. Lane source/run/attempt,
+classifier SHA256b66f5cd1ddc0824614c8669e8d9abf801fdaaa85727187c31a1277a642b5032d
+and inventory SHA256bd667ac0b8dbb8f01863806ee24d5ac1fea9faf2c18ef6ed86347dc14366b598
+match the exact checkout. Its312 cases execute with zero failures/errors/skips.
+The publication suite's exact29 source-linked invocation names match the raw
+report and inventory, including fresh/native/real Workflow, actual suspension,
+upgrade/checksum/guard identity, revocation, CAS, immutable SQL and final-guard
+rollback cases. Suite elapsed117.078s is aggregate test time, not a per-operation
+500ms performance measurement. The previous Full935 failures remain history;
+this raw evidence supports their passing regression scope on07382e41, not full
+B, API integration, engineering qualification, SITE or deployment acceptance.
+
+Available validation: unchanged18 dictionary and19 documentation self-tests PASS;
+actual source/catalog/ownership validation, deterministic byte-identical second
+render and reviewed dictionary equality PASS. Run full canonical documentation,
+offline OpenAPI and exact two-file/append-only/whitespace checks before publishing.
+No new local Java/PostgreSQL run is needed for unchanged runtime; this update
+uses actual hosted evidence rather than an inferred schema.
+
+Publish directly with expected07382e41 and verify exact parent/tree/message/two
+blobs. Documentation CI is automatically applicable; Full and Fast ignore this
+two-Markdown-file change. The GitHub connector exposes no workflow_dispatch tool
+and local gh is unavailable. Do not change workflow filters or unrelated runtime
+files to force a run, and do not rerun Full936 against its old dictionary SHA.
+After applicable exact-SHA Docs creation/queue/start, STOP and report that a new
+Full check is still required. Browser path for the owner: Actions > HidraAPI CI >
+Run workflow > branch main; verification_mode=development, serial_oracle=false,
+dependency_cache=cached. Confirm the run's head is this repair SHA. Retain failed
+Full936 history and await exact-head hosted contract/dictionary/full acceptance
+before selecting C or final B/596 acceptance. No successor executes here.
+
 <a id="hapi-597"></a>
 ## HAPI-597 — Multi-product ownership/API compatibility qualification
 

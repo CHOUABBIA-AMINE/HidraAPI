@@ -2126,6 +2126,82 @@ remains NOT_IMPLEMENTED/BLOCKED pending separate Package A acceptance and remain
 B/C. Products' prior accepted behavior and statuses remain intact; operational
 workload/latency qualification, releases, deployment, numerical/P3 remain separate.
 
+### HAPI-599 Package A exact-SHA acceptance and Package B protected admission preflight — 2026-10-28
+
+**Owner Next selection and bounded stage.** Existing HAPI-599 / HPR-P25-054A,
+Package A, has cleared its actual software CI acceptance gate on exact source
+`78a34c610b2986e3a73900cac28af3fca31d05fa`: Full #951/run
+`40682543463`, Fast #253/run `40682543500`, and Docs #671/run
+`40682543460` all completed SUCCESS. All ten PostgreSQL integration shards,
+Java unit/architecture, static checks, API contract/physical dictionary and the
+Full Verification Gate succeeded. The separate Maven verification matrix job
+was SKIPPED by workflow design; no assertion of its execution is made. The
+previous Full #950 failure and bounded Custody/dictionary repairs remain in
+append-only history. Package A's owner-private domain/storage/temporal behavior
+is software CI-accepted; protected use cases and external API are **not**.
+
+The next stage is an **owner-boundary source preflight and Package B technical
+registration**, not executable authorization or an HTTP endpoint. Under this
+existing registered HAPI-599 A/B/C decomposition, its exact one-commit message
+is `docs(topology): register protected installed-unit admission preflight`.
+CREATE none; MODIFY only `doc/roadmap/TASKS_HPS-006.md`; DELETE none.
+ROADMAP/PHASES states remain NOT_IMPLEMENTED/BLOCKED for the integrated HAPI-599,
+and no new package, standalone task, migration or owner policy is adopted.
+
+**Refreshed exact-source seams (above accepted SHA):**
+- `topology/application/port/out/InstalledUnitRepositoryPort.java` exposes
+  owner-private `register`, `record`, `close`, exact reads and history;
+  `JdbcInstalledUnitRepositoryAdapter` implements those operations but is
+  NOT an authorization boundary. The additive `V20261028_002` SQL enforces
+  physical-unit/company identity, equipment-position FK, effective-range
+  exclusion, controlled closure and event evidence. Position FK by itself does
+  NOT prove the position belongs to the same company.
+- `identity/application/contract/topology/TopologyProtectedAuthorizationContract`
+  compiles `topology:station-revision:*` permission codes; its existing
+  `TopologyScopedAccessContract.Operation` values are station-oriented.
+  Reusing those codes for an installed-unit writer would expand authority
+  without approval. New installed-unit-specific Identity/position operation
+  admission must be reviewed before any publication.
+- `party/application/contract/topology/TopologyProtectedPartyEligibilityContract`
+  and `JdbcTopologyProtectedPartyEligibilityAdapter` attest ACTIVE Party
+  existence/generation and guarded transaction coordinates, NOT manufacturer
+  role, company ownership or equipment-kind fitness. Party-private
+  `ManufacturerProfileJpaEntity` contains capability and qualification
+  fields; `PartyRoleAssignmentJpaEntity` contains status and effective dates.
+  Neither JPA entity may be imported by Topology application/domain.
+- `ProtectedStationAdmissionCoordinator` binds existing Identity/Party/
+  facility owners, uses a reviewed station-DML whitelist and seals a
+  single physical transaction for station graph operations. Its opaque
+  admission and final fences cannot be silently recycled as an installed-unit
+  permission. `StationProtectedFacilityOwnershipContract` provides facility
+  ownership evidence, not arbitrary equipment-position occupancy authority.
+- `InstalledUnit` evidence UNKNOWN/UNVERIFIED/VERIFIED classification is
+  provenance, not current manufacturer eligibility, model qualification,
+  globally unique serial identity or a transferable owner approval.
+  Optional MaintainableAsset references remain Assets-owned and neutral.
+
+**Package B implementation admission to register separately before code:**
+Review existing Party manufacturer profile/role/status/qualification semantics
+and effective-date company relationship, current Identity permission and
+authenticated-principal policy, equipment-position-to-facility/company binding,
+and protected transaction relation-fence and SQL allowlist mechanics. Register
+an exact CREATE/MODIFY/DELETE allowlist and distinct implementation commit
+message after that contract review. The future bounded B deliverable must use
+owner-provided, current company/manufacturer-kind/position evidence in one
+authorized physical transaction before registration, close/replace, relocate
+or history disclosure; preserve fail-closed DENY/INDETERMINATE, time validity,
+final recheck, concurrency, rollback and immutable audit, without broadening
+the station graph permission. Do not add public controller/DTO/OpenAPI (C),
+manufacturer simulation qualification (HAPI-601), station incidence (HAPI-600)
+or numerical/P3 scope.
+
+**Acceptance for this preflight:** truthful exact-SHA CI evidence, actual
+source-backed contract gaps, frozen statuses and owner decisions unchanged,
+a one-file append-only documentation diff, guarded publication to existing main
+and Documentation Validation creation/queue/start on the new SHA. No Java,
+PostgreSQL, migration, production deployment or SITE validation is claimed for
+this documentation-only registration. After publish observe CI startup and STOP.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

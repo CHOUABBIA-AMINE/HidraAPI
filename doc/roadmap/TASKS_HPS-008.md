@@ -5476,9 +5476,9 @@ Legacy IDs: HPR-P25-053D
 
 Priority: P1
 
-Implementation Status: NOT_IMPLEMENTED
+Implementation Status: VERIFIED
 
-Planning Status: IN_PROGRESS
+Planning Status: COMPLETED
 
 Owning Module: `custody` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -6013,5 +6013,94 @@ optimization meets 500ms on a loaded runner. Publish guarded main and
 observe applicable Full/Fast/Docs CI created/queued/started, then STOP.
 HAPI-597 final acceptance and separately registered HAPI-593 integration,
 frontend, industrial numerical/SITE qualification and release remain open.
+
+
+### HAPI-597 — independent final software qualification acceptance — VERIFIED / COMPLETED — 2026-10-28
+
+Owner Next selects only the final registered HAPI-597 software qualification acceptance.
+Authoritative source: main `d32164613ea7a4acf43826dd72d0f4a6824235ca`,
+tree `a7ad54a7048b453760d0f62e54a2b4d80e555b77`.
+Exact commit message: `docs(custody): accept multi-product ownership qualification`.
+Scope MODIFY only this phase, the compact ULTIMATE_TASKS pointer and
+**HAPI-597 status-only** cells in ULTIMATE_ROADMAP and ULTIMATE_PHASES.
+Zero CREATE/DELETE/runtime/test/Flyway/CI/API/dictionary/policy/permission
+changes. The accepted HAPI-594/595/596 and HAPI-593 parent statuses stay untouched.
+
+**Actual exact-SHA verification.** Full CI #945/run `40665620211`,
+attempt 1, `https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/40665620211`
+completed success on the source SHA. Fast Feedback #248/run `40665620108`
+and Documentation #662/run `40665620130` also completed success on that SHA.
+The immutable retained Full artifact
+`hidra-full-ci-evidence-d32164613ea7a4acf43826dd72d0f4a6824235ca-40665620211-1`
+is ID `12805558846`. The independently inspected gate.json confirms 488
+distinct class reports, **3572 actual tests, 0 failures, 0 errors, 0 skipped**.
+Parsing all 488 raw JUnit XML reports independently reproduces exactly these
+counts. API contract/dictionary, static validation, Java 21 unit/architecture,
+PostgreSQL shards 0..9 and the strict Full Verification Gate all passed.
+Development-partitioned mode ran; serial Maven verification is separately
+skipped, not claimed passed. The attested gate has `release_eligible=false`.
+
+**Registered HAPI-597 source/test matrix.** The actual source
+`src/test/java/dz/sh/hidra/modules/custody/qualification/ProductEngineeringOperatorQualificationTest.java`
+has Git blob `1f37cdacfa92212358772b19e8e8e0f857dd8758`, inventory SHA-256
+`b765409fdd2197ad885042445ef03a05c5428f9ca1141d7679a12580bb79cc1e`,
+exactly fourteen registered `@Test` method names and no additional/inherited
+test cases. The Full #945 PostgreSQL shard9 JUnit XML reports all **14/14**
+passed, 0 failed/errored/skipped:
+
+- `gasMoleSourceRoundTripsThroughOwnersAndExport`
+- `liquidMassSourceRoundTripsWithoutNumericalQualification`
+- `twoCompaniesShareCatalogWithoutSharingOwnedHistory`
+- `exactHistoricalExportSurvivesSourceAndHeadChanges`
+- `companyAndProductDenialsBlockReadPublishAndExport`
+- `revokedNativeSessionBlocksReplayAndExport`
+- `staleAndMixedSourceVersionsCannotPublish`
+- `unsupportedLiquidCompressibilityNeverReachesStorage`
+- `malformedCompositionAndSelectorsNeverReachOwners`
+- `policyAndUnitRevocationPreventEligibleSelection`
+- `corruptedStoredBytesNeverBecomeFallbackSelection`
+- `failedFinalGuardRollsBackPublicationAndReceipt`
+- `legacyQualifiedGasReplayKeepsExactIdentity`
+- `publicationCannotSubstituteLegacyGasQualification`
+
+The matrix exercises actual synthetic, company-scoped native authorization and
+human Workflow approval, mutable current eligibility vs exact historical
+provenance, GAS/LIQUID composition/property/method unit contracts, canonical
+bytes/digests and rollback. Old qualified GAS replay remains distinct from an
+unqualified published revision, with no numerical simulation claim. Protected
+500ms operation budgets and native authority/revocation/fencing remain enforced;
+the previously failed #942/#943/#944 runs and their fixes remain dated evidence,
+not passing verification.
+
+**Independent supporting suites in the same Full run.** The raw JUnit XML shows
+`ProductEngineeringDraftNativeHttpPostgresIntegrationTest` 12/12,
+`SuppliedFluidPropertyNativeHttpPostgresIntegrationTest` 14/14, and
+`ProductRevisionPublicationNativeHttpPostgresIntegrationTest` 10/10 passed.
+The API lane captures actual current and compatible base runtime OpenAPI.
+The disposable PostgreSQL schema/dictionary verification reports
+PostgreSQL 16.15, 182 Flyway migrations, 470 JPA mappings, 528 physical
+relations, zero unresolved owners and `reviewed_dictionary_checked=true`.
+Its catalog SHA256 is
+`e8eb458697f0e5d4887e783bb01ad14f5f4d09ef795c19df159aa1044aa93ece`.
+The same-run Full gate also retains exact API/base/catalog hashes and evidence
+provenance. No endpoint, migration, consumer integration or task implementation
+was introduced by this documentation-only acceptance.
+
+**Acceptance boundary and succession.** HAPI-597 is VERIFIED/COMPLETED for
+its registered backend *software* test/qualification matrix, tested using
+synthetic fixtures and fresh PostgreSQL, without calibration or production OT.
+The source export remains scalar/engine-neutral with
+`engineeringQualified=false`, not an industrial numerical/thermodynamic
+qualification, physical line acceptance, commissioning, live operation,
+autonomous control, deployment or release. This green development CI is not
+SITE qualification or proof of guaranteed 500ms latency in an industrial
+environment. The distinct HAPI-593 integrated four-child parent remains
+PARTIAL/BLOCKED until independently selected and reconciled; frontend,
+numerical/P3, industrial acceptance and release/deployment remain unselected.
+On this docs-only acceptance SHA, only Documentation CI is normally
+triggered by workflow path filters: do not misattribute #945 to the
+governance-only commit. Publish direct to main with expected HEAD,
+verify exact message/four-file scope/parent/tree and Docs CI created/queued
+or started, and STOP without executing HAPI-593.
 
 <!-- task-register:payload:end -->

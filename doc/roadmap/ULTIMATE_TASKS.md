@@ -104,30 +104,21 @@ This owner Next executes only the final four-file acceptance closure. HAPI-597
 requires a later separate selection; integrated593, engineering/SITE, numerical
 qualification, frontend, release and deployment remain independent.
 
-[HAPI-597](TASKS_HPS-008.md#hapi-597), multi-product ownership/API compatibility
-qualification, is NOT_IMPLEMENTED/IN_PROGRESS. The registered standalone14-case
-native HTTP/owner/PostgreSQL/legacy GAS suite is authored and admitted to the
-unchanged classifier; hosted compilation and actual execution remain pending.
-This owner Next submits only that bounded test stage after Docs658 passed on
-a9ae2c31b77ffc585bb8983f42f3440f978ffc08. No test result is inferred from source.
-Next is separate final acceptance after exact-SHA Full/Fast/Docs and independent
-raw case/API/compatibility/catalog verification; Fail repairs responsible feedback.
-Accepted594/595/596 remain closed. Integrated593, numerical/engineering/SITE,
-frontend, releases and deployment remain independent and unexecuted.
-
-Owner-directed HAPI-597/CI repair follows failed Full942 on
-d97071d03bf086055680486ded9f76cfc0dd8efd: correct the legacy fixture's verified
-principal, isolate PostgreSQL class JVMs and expand to ten mandatory shards.
-The owning phase and manifest retain actual115-suite timing provenance and
-whole-suite load balance; no budget, assertion, membership or acceptance gate is
-waived. Exact new-SHA CI and independent qualification acceptance remain pending.
-
-Full943 feedback selects bounded Identity graph-read optimization for Custody:
-reuse fenced rows only within each synchronous two-scope load, refresh every
-later recheck, and remove immediate duplicate initial graph reads. The phase
-registers exact production/test scope and retained security boundaries. Ten shards,
-all original cases and500ms work budgets remain unchanged. New-SHA runtime results
-and HAPI-597 acceptance remain pending; no successor is executed.
+[HAPI-597](TASKS_HPS-008.md#hapi-597), multi-product ownership/API
+compatibility qualification, is VERIFIED/COMPLETED for its registered
+backend-development software qualification. Source SHA
+d32164613ea7a4acf43826dd72d0f4a6824235ca has Full945/run40665620211,
+Fast248 and Docs662 completed success. Independent Full evidence: 488 class
+reports, 3,572 tests, zero failures/errors/skips, all14 operator-matrix
+cases and36 supporting configured HTTP cases pass, all10 PostgreSQL shards,
+runtime API/base compatibility, catalog/dictionary and final Full gate pass.
+The owning phase retains raw report, provenance, exact case/source identities,
+prior failure/repair history and dev-only/non-numerical limitations.
+Owner Next selects only the registered four-document final acceptance.
+HAPI-593 integrated four-child parent remains PARTIAL/BLOCKED and separately
+selectable. Frontend, numerical engine/P3, SITE, release and deployment are
+not selected. Historic HAPI-597 implementation/CI notes are retained in
+the phase file, not competing current status.
 
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent

@@ -1176,7 +1176,11 @@ public class ProductEngineeringOperatorQualificationTest {
         for(var step:List.of(new Object[]{from,1},new Object[]{to,2}))jdbc.update("INSERT INTO hidra_workflow_step(id,definition_id,code,name_fr,step_order,mandatory,allow_claim,allow_delegation,allow_escalation,created_at,updated_at) VALUES (?,?,?,'Synthetic review',?,true,false,false,false,now(),now())",step[0],definition,step[0],step[1]);
         jdbc.update("INSERT INTO hidra_workflow_definition_target_binding(id,definition_id,target_module,target_type_id,workflow_purpose_id,active,created_at,updated_at) VALUES (?,?,'custody',?,?,true,now(),now())",definition+"-binding",definition,type,purpose);
         jdbc.update("INSERT INTO hidra_workflow_transition(id,definition_id,from_step_id,to_step_id,decision,reason_required,comment_required,created_at,updated_at) VALUES (?,?,?,?,'APPROVE',false,false,now(),now())",definition+"-approve",definition,from,to);
-        ambient(a.token());try{
+        var verified=nativeDecoder.decode(a.token());
+        assertThat(verified.getSubject()).isEqualTo(a.fixture().user());
+        SecurityContextHolder.getContext().setAuthentication(
+                new org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken(verified,List.of()));
+        try{
             var i=workflows.startWorkflowInstance(new StartWorkflowInstanceCommand(definition,1,purpose,"custody",type,digest,null,null,from,a.fixture().user(),null,"ignored caller display",null,"synthetic"));
             var task=workflows.createWorkflowTask(new CreateWorkflowTaskCommand(i.id(),from,a.fixture().user(),null,null,null,null,null,null,null,null,"Synthetic review"));
             var actual=workflowTasks.findById(task.id()).orElseThrow();return workflowTransitions.execute(new ExecuteWorkflowTransitionCommand(task.id(),definition+"-approve",actual.updatedAt(),null,null,null,"synthetic",a.fixture().user(),null,"ignored caller display",Set.of()));

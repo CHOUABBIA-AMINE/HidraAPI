@@ -32,6 +32,9 @@ def fixture(root, postgres_shards=2):
         source(root, 'SixthDatabaseTest', 'import org.testcontainers.containers.PostgreSQLContainer;\nclass SixthDatabaseTest {}\n')
     if postgres_shards >= 7:
         source(root, 'SeventhDatabaseTest', 'import org.testcontainers.containers.PostgreSQLContainer;\nclass SeventhDatabaseTest {}\n')
+    for index in range(7, postgres_shards):
+        name = f'Additional{index}DatabaseTest'
+        source(root, name, f'import org.testcontainers.containers.PostgreSQLContainer;\nclass {name} {{}}\n')
     classes = []
     for name, item in ci.discover(root).items():
         unit = name.endswith('UnitTest')
@@ -194,8 +197,33 @@ class InventoryTest(unittest.TestCase):
         self.assertEqual(lanes['oracle'], sorted(lanes['unit-architecture'] +
                          [name for lane in ci.postgres_lanes(manifest) for name in lanes[lane]]))
 
+    def test_ten_shards_are_complete_disjoint_balanced_and_deterministic(self):
+        manifest = fixture(self.root, postgres_shards=10)
+        database = [e for e in manifest['classes'] if e['lane'] == 'postgres-integration']
+        for index, entry in enumerate(database): entry['baseline_seconds'] = index + 1
+        for index in range(30):
+            name = f'Load{index}DatabaseTest'
+            path = source(self.root, name, f'import org.testcontainers.containers.PostgreSQLContainer;\nclass {name} {{}}\n')
+            manifest['classes'].append(dict(database[0], **{'class': 'example.' + name,
+                'path': path.relative_to(self.root).as_posix(), 'source_sha256': ci.digest(path.read_bytes()),
+                'baseline_seconds': (index % 10) + 1}))
+        ci.validate(self.root, manifest)
+        before = copy.deepcopy(manifest)
+        lanes = ci.partitions(manifest)
+        self.assertEqual(lanes, ci.partitions(manifest))
+        names = [name for lane in ci.postgres_lanes(manifest) for name in lanes[lane]]
+        expected = [e['class'] for e in manifest['classes'] if e['lane'] == 'postgres-integration']
+        self.assertCountEqual(names, expected)
+        self.assertEqual(len(names), len(set(names)))
+        self.assertEqual(len(ci.postgres_lanes(manifest)), 10)
+        weights = {e['class']: e['baseline_seconds'] for e in manifest['classes']}
+        loads = [sum(weights[name] for name in lanes[lane]) for lane in ci.postgres_lanes(manifest)]
+        self.assertLessEqual(max(loads) - min(loads), max(weights.values()))
+        self.assertTrue(all(lanes[lane] for lane in ci.postgres_lanes(manifest)))
+        self.assertEqual(manifest, before)
+
     def test_unreviewed_or_empty_shard_count_denies(self):
-        for count in (0, 1, 6, True, '3', 3, 4, 5):
+        for count in (0, 1, 6, 8, 9, 11, True, '3', 3, 4, 5):
             with self.subTest(count=count):
                 self.manifest['postgres_shards'] = count
                 with self.assertRaises(ValueError): ci.partitions(self.manifest)

@@ -115,6 +115,13 @@ raw case/API/compatibility/catalog verification; Fail repairs responsible feedba
 Accepted594/595/596 remain closed. Integrated593, numerical/engineering/SITE,
 frontend, releases and deployment remain independent and unexecuted.
 
+Owner-directed HAPI-597/CI repair follows failed Full942 on
+d97071d03bf086055680486ded9f76cfc0dd8efd: correct the legacy fixture's verified
+principal, isolate PostgreSQL class JVMs and expand to ten mandatory shards.
+The owning phase and manifest retain actual115-suite timing provenance and
+whole-suite load balance; no budget, assertion, membership or acceptance gate is
+waived. Exact new-SHA CI and independent qualification acceptance remain pending.
+
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent
 [HAPI-436](TASKS_HPS-024.md#hapi-436) are VERIFIED/COMPLETED within the accepted

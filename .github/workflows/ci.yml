@@ -199,7 +199,7 @@ jobs:
     - name: Selected clean verify lifecycle
       env:
         CI_TEST_CLASSES: ${{ steps.selection.outputs.classes }}
-      run: bash ./mvnw -B -q clean verify -DforkCount=1 -DreuseForks=true "-Dtest=${CI_TEST_CLASSES}"
+      run: bash ./mvnw -B -q clean verify -DforkCount=1 -DreuseForks=false "-Dtest=${CI_TEST_CLASSES}"
     - name: Require every selected raw test report
       if: always()
       run: python3 .github/scripts/verify_ci_test_inventory.py --select postgres-${{ matrix.shard }} --reports target/surefire-reports --evidence target/ci/postgres-${{ matrix.shard }}/evidence.json
@@ -234,6 +234,9 @@ jobs:
         - 4
         - 5
         - 6
+        - 7
+        - 8
+        - 9
   api-contract:
     name: API contract and dictionary
     runs-on: ubuntu-latest

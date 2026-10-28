@@ -14,7 +14,7 @@ import statistics
 import subprocess
 import xml.etree.ElementTree as ET
 
-LANES = ('fast', 'unit-architecture', 'postgres-0', 'postgres-1', 'postgres-2', 'postgres-3', 'postgres-4', 'postgres-5', 'postgres-6', 'oracle', 'historical')
+LANES = ('fast', 'unit-architecture', 'postgres-0', 'postgres-1', 'postgres-2', 'postgres-3', 'postgres-4', 'postgres-5', 'postgres-6', 'postgres-7', 'postgres-8', 'postgres-9', 'oracle', 'historical')
 APPROVED_GREENFIELD_ARCHIVE = frozenset({
     'dz.sh.hidra.modules.organization.infrastructure.persistence.OrganizationEmployeeContactBackfillMigrationTest',
     'dz.sh.hidra.modules.organization.infrastructure.persistence.OrganizationMultilingualCompatibilityRetirementMigrationTest',
@@ -133,7 +133,7 @@ def validate(root, manifest):
 
 def postgres_lanes(manifest):
     count = manifest.get('postgres_shards', 2)
-    if type(count) is not int or count not in (2, 3, 4, 5, 7):
+    if type(count) is not int or count not in (2, 3, 4, 5, 7, 10):
         raise ValueError('Unreviewed PostgreSQL shard count')
     return tuple(f'postgres-{index}' for index in range(count))
 

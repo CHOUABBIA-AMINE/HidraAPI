@@ -5803,4 +5803,100 @@ Next is separately registered final597 acceptance after green CI and independent
 matrix review, or responsible Fail repair if needed. Integrated593, frontend,
 numerical/engineering/SITE qualification, release/deployment remain unselected.
 
+### HAPI-597 / owner-directed ten-shard CI repair — 2026-10-28
+
+Owner explicitly requests fixing failed CI and adding three PostgreSQL matrix
+shards with balanced load across10. This authorizes the bounded CI infrastructure
+scope below in addition to responsible597 fixture repair, not a new product task
+or acceptance. Exact maind97071d03bf086055680486ded9f76cfc0dd8efd,
+tree58e98afdcf64c13431b9ebf0f7005f6df37561d2, Full942/run40659696342 failed
+shards3/4/5. API/dictionary, unit/architecture, static and other four shards pass.
+Retain this failure; no full success or597 acceptance is claimed.
+
+**Evidence and changes.** Qualification shard3 actually executes all14 cases,
+with two errors: legacy Workflow start rejects actor/principal mismatch. The
+fixture ambient helper deliberately wraps raw tokens with subject forged-wrapper
+for protected-native verification probes. Workflow directly reads that wrapper's
+principal. Replace only legacyApprove's ambient wrapper with nativeDecoder.decode,
+assert real subject equals the fixture user and install the verified Jwt principal,
+as in the already accepted humanApproval fixture. Preserve actual human transitions,
+current native validation, every case and all denial assertions; no production change.
+
+Shards4/5 publication failures show aggregate500ms work-budget expiry. Their logs
+also contain background Hikari connection attempts to stopped prior-class containers.
+The previous shared Surefire JVM retains context/pool state beyond container class
+lifetimes. PostgreSQL lane now uses forkCount1/reuseForks=false: each test class gets
+its own JVM, with methods still serial and original fixtures intact. This removes
+cross-class background pool retention; whether it resolves all measured budget
+failures remains a hosted CI obligation, not a proven local performance result.
+Do not increase500/750/250ms budgets, retry failed operations, relax expected201/403,
+skip cases, or weaken the protected final guard. API/unit/oracle fork settings unchanged.
+
+Matrix explicitly runs0..9, fail-fast=false. Manifest postgres_shards becomes10;
+selector choices/admitted counts, aggregate owner identity mapping, earlier-attempt
+exact-job attestation and release job inventory all include7/8/9. Every selected
+lane remains mandatory and omission/duplication/wrong-SHA/failed evidence rejects.
+Audit/serial oracle, release eligibility, cache and provenance semantics are preserved.
+Historical supported2/3/4/5/7 manifest partitioning stays available; no old acceptance
+is restamped to the new workflow. Ten-shard self-tests exercise complete disjoint
+coverage, deterministic weighted scheduling, all ten missing receipts, cache modes
+and exact successful earlier-job attestation for the three new shards.
+
+**Measured scheduling, not passing-test evidence.** Downloaded all seven actual
+Full942 diagnostics ZIPs; SHA256 digests match GitHub metadata. Their IDs are
+12803029570/12803024003/12803855302/12802844427/12803477896/12803049320/12803760412
+for shards0..6. Match all115 active DB class/raw invocation identities against the
+exact942 inventory. Refresh only scheduling baseline_seconds from actual suite
+time, including explicitly failed-suite observations; these measurements do not
+mean cases passed. Preserve original timing_baseline and record each prior weight,
+new seconds, report digest, artifact ID/counts and archive digests in manifest
+scheduling_timing_refresh. All old class/case/lane/fast/support identities remain
+unchanged; only the repaired qualification source hash changes. No imaginary new
+JVM measurements or completed benchmark is asserted.
+
+Existing descending-weight least-loaded assignment schedules whole suites as follows:
+
+| Shard | Classes | Observed weight seconds |
+|---|---:|---:|
+| 0 | 1 | 392.338 |
+| 1 | 13 | 214.994 |
+| 2 | 11 | 215.374 |
+| 3 | 12 | 215.206 |
+| 4 | 13 | 215.111 |
+| 5 | 13 | 215.115 |
+| 6 | 13 | 215.045 |
+| 7 | 13 | 215.010 |
+| 8 | 13 | 215.110 |
+| 9 | 13 | 215.124 |
+
+EmployeeAppointmentConcurrencyPostgresIntegrationTest alone measured392.338s;
+no whole-suite schedule can have a smaller maximum than its longest suite.
+This assignment reaches that lower bound while the other nine weights differ by
+0.380s. Splitting cases would change the independent disjoint-class evidence
+contract and is not required for optimal whole-suite scheduling. These numbers
+exclude unmeasured fork startup changes and GitHub queueing; actual elapsed
+performance must be observed after publication, not inferred from weight balance.
+
+Exact message:
+`fix(ci): repair qualification fixtures and balance ten PostgreSQL shards`.
+MODIFY exactly .github/workflows/ci.yml, .github/ci-test-inventory.json,
+.github/scripts/verify_ci_test_inventory.py,
+.github/scripts/verify_full_ci_evidence.py,
+.github/scripts/test_verify_ci_test_inventory.py,
+.github/scripts/test_verify_full_ci_evidence.py,
+ProductEngineeringOperatorQualificationTest, this phase and compact index pointer.
+Zero CREATE/DELETE/production/migration/API/dictionary or other test source changes.
+597 and all other task statuses remain unchanged;594/595/596 acceptance preserved.
+
+Available checks:87 inventory/full-evidence self-tests pass; workflow YAML matrix
+0..9 and serial separate-class forks match selector/manifest; all115 memberships
+remain disjoint/complete; unchanged old case/lane/source identities and original
+timing provenance verified. Java17 syntax parsing passes for the fixture (not
+Java21 type/runtime proof). Run docs/offline API/29 validator self-tests and exact
+scope/history/whitespace checks before publication. Maven remains absent; actual
+Java21/Spring/native/Workflow/PostgreSQL and per-class fork wall time await CI.
+Publish with expectedd97071d, verify exact parent/tree/message/nine-path blobs,
+observe Full/Fast/Docs creation/queue/start on the new SHA and STOP. No automatic
+rerun loop,597 acceptance,593 integration, engineering/SITE, release/deployment.
+
 <!-- task-register:payload:end -->

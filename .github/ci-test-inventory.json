@@ -93,7 +93,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 19.528,
+      "baseline_seconds": 14.909,
       "cases": [
         "contextLoads"
       ],
@@ -107,7 +107,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 16.59,
+      "baseline_seconds": 16.755,
       "cases": [
         "failsClosedAndRollsBackWhenExistingSameModuleOrphanIsDetected",
         "installsAndValidatesEveryClassifiedSameModuleForeignKey"
@@ -246,7 +246,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 3.531,
+      "baseline_seconds": 3.012,
       "cases": [
         "closeCommittedFirstSerializesAndDeniesWaitingAcknowledgement",
         "liveAndDirectAcknowledgementsAreAtomicAndMultipleHistoryRowsRemainLegal",
@@ -262,7 +262,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 4.213,
+      "baseline_seconds": 3.538,
       "cases": [
         "acknowledgementCommittedFirstDoesNotPreventSubsequentExplicitCancellation",
         "flushedClosureAndAlarmUpdatesRollbackWhenEventAppendFails",
@@ -280,7 +280,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 4.297,
+      "baseline_seconds": 4.995,
       "cases": [
         "concurrentUsedCatalogFamilyChangeWaitsAndFailsAfterAlarmCommit",
         "creationLiveAndDirectPathsProduceExactlyOneEventAndRetainSnapshots",
@@ -299,7 +299,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 9.337,
+      "baseline_seconds": 7.287,
       "cases": [
         "delayedExpiryKeepsDueTimeAndDoesNotReopenCancelledAlarmOrMoveSnapshotBackwards",
         "directWritesCheckReasonAndUsedMetadataCannotBeReassignedOrDeleted",
@@ -325,7 +325,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 15.216,
+      "baseline_seconds": 13.41,
       "cases": [
         "migratedSchemaEnforcesSingleExactActiveScopeAndProvidesExpiryAuditTaxonomy"
       ],
@@ -639,7 +639,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 7.401,
+      "baseline_seconds": 3.687,
       "cases": [
         "committedParentDeletionWinsAgainstConcurrentReferenceWrite",
         "legacyBlankTitleRequiresReconciliation",
@@ -788,7 +788,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 8.959,
+      "baseline_seconds": 7.109,
       "cases": [
         "accessOptionalReferencesAndImmutableStorageAreProtected",
         "actualJpaAccessDoesNotMergeExistingIds",
@@ -818,7 +818,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.304,
+      "baseline_seconds": 1.079,
       "cases": [
         "absentOptionalReferencesRemainLegal",
         "populatedReferencesResolveAndInsertFailuresCannotMerge",
@@ -834,7 +834,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.279,
+      "baseline_seconds": 0.081,
       "cases": [
         "fieldPathIsRequired",
         "hashOnlyMaskedEvidenceAndUnchangedRowsRemainLegal",
@@ -853,7 +853,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.311,
+      "baseline_seconds": 0.205,
       "cases": [
         "catalogFamiliesAreValidatedIndependentlyBeforePersist",
         "genericRepositoryCannotBypassPayloadOrFreeTextSanitation",
@@ -871,7 +871,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.312,
+      "baseline_seconds": 0.467,
       "cases": [
         "lifecycleIsNotApprovedByExistence",
         "malformedDuplicateTrailingScalarAndTooDeepJsonAreRejected",
@@ -1144,7 +1144,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.386,
+      "baseline_seconds": 0.366,
       "cases": [
         "approvalAndOwnerActiveFlagsBothGovernFreshEligibility",
         "unknownAndUnapprovedRowsFailClosed"
@@ -1179,7 +1179,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 26.345,
+      "baseline_seconds": 20.915,
       "cases": [
         "actualWorkflowQualifiesOnlyItsExactRevisionAndWithdrawalIsReattested",
         "conflictingMethodReuseRollsBackNewAggregateAndOuterRollbackLeavesNoRevision",
@@ -1198,7 +1198,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 2.98,
+      "baseline_seconds": 2.932,
       "cases": [
         "committedParentDeletionWinsAgainstConcurrentReferenceWrite",
         "legacyOrphanFailsMigrationWithoutPartialConstraints",
@@ -1215,7 +1215,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 31.928,
+      "baseline_seconds": 37.703,
       "cases": [
         "currentDenyOnEitherScopeBlocksReadUpdateAndReplay",
         "disabledPolicyCatalogAndPartyFailClosedAtHttpBoundary",
@@ -1240,7 +1240,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 43.23,
+      "baseline_seconds": 52.591,
       "cases": [
         "absentInactiveAndRevokedAdmissionOrCatalogReject",
         "concurrentSameVersionWritersCommitExactlyOneSuccessor",
@@ -1272,7 +1272,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0,
+      "baseline_seconds": 112.988,
       "cases": [
         "allFiveTablesRejectOrdinaryDmlAndEvidenceRemainsImmutable",
         "changedBodyOrActorCannotReplayReceipt",
@@ -1314,7 +1314,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 44.953,
+      "baseline_seconds": 40.358,
       "cases": [
         "bothFractionBasesAndClassificationLabelsRoundTripExactStrings",
         "currentCompanyAndCatalogRejectionsNeverAppend",
@@ -1341,7 +1341,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 62.877,
+      "baseline_seconds": 75.792,
       "cases": [
         "absentAndForeignProductShareNonDisclosingDenial",
         "completedAndForgedAdmissionsCannotDisclose",
@@ -1528,7 +1528,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 6.315,
+      "baseline_seconds": 4.159,
       "cases": [
         "competingDocumentCodesHaveOneWinner",
         "competingVersionNumbersHaveOneWinner",
@@ -1650,7 +1650,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 6.856,
+      "baseline_seconds": 4.978,
       "cases": [
         "actualJpaClosureParentAndHistoryRollbackAndCommitTogether",
         "committedParentDeletionWinsAgainstConcurrentCapaInsert",
@@ -1692,7 +1692,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 1.222,
+      "baseline_seconds": 0.576,
       "cases": [
         "actorSpoofingAndWorkflowMismatchCannotWriteEvidence",
         "replayedEvidenceIdCannotBeMerged",
@@ -1709,7 +1709,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.947,
+      "baseline_seconds": 0.629,
       "cases": [
         "currentPolicyDoesNotInventClosedParentExclusion",
         "freshWrongFamilyInactiveAndMissingMappingRejectWrites",
@@ -1967,7 +1967,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 4.736,
+      "baseline_seconds": 4.326,
       "cases": [
         "bothCompanyAndFacilityGrantsAreRequired",
         "companiesFacilitiesAndUsersRemainIndependent",
@@ -2184,7 +2184,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 1.092,
+      "baseline_seconds": 1.406,
       "cases": [
         "postgresHalfOpenEqualityMatchesCompiler",
         "postgresMicrosecondRoundTripsPreserveCandidate",
@@ -2201,7 +2201,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 16.957,
+      "baseline_seconds": 35.022,
       "cases": [
         "activeDirectoryCompletionRetainsActualTypeAndLdapSessionProtocol",
         "actualPostgresqlDeferredCommitFailureReturnsNoResultAndRollsBackEverything",
@@ -2243,7 +2243,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 6.247,
+      "baseline_seconds": 5.791,
       "cases": [
         "additiveGuardSupportsBothDirectoryTypesWithExistingFenceAndReplayRules",
         "changedCatalogAndSavepointBindingCannotBePromoted",
@@ -2264,7 +2264,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 15.242,
+      "baseline_seconds": 25.428,
       "cases": [
         "activeClaimDependentMappingWithoutClaimNameFailsClosed",
         "activeGroupRoleAndPermissionProvideOnlyNames",
@@ -2292,7 +2292,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 13.167,
+      "baseline_seconds": 17.903,
       "cases": [
         "beforeCommitWriteAndCallbackEvaluationCannotFollowGuard",
         "declaredStatementTimeoutOutageAbortsEveryProvisionalEffect",
@@ -2327,7 +2327,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 13.036,
+      "baseline_seconds": 15.6,
       "cases": [
         "activeClaimDependentMappingWithoutClaimNameFailsClosed",
         "activeGroupRoleAndPermissionProvideOnlyNames",
@@ -2361,7 +2361,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 16.225,
+      "baseline_seconds": 18.736,
       "cases": [
         "addedStaticRelationsBlockNativeDmlUntilRelease",
         "allIdentityFencesPrecedeTemporalSampleOnOneBackend",
@@ -2389,7 +2389,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 12.142,
+      "baseline_seconds": 20.837,
       "cases": [
         "downstreamFailureAfterFlushedChangesRollsBackBothOwners",
         "freshFullMigrationChainValidatesExistingJsonbSchemaWithoutNewSql",
@@ -2411,7 +2411,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 17.697,
+      "baseline_seconds": 14.758,
       "cases": [
         "admittedCollectorCannotManufactureAuthorityWithoutTheFullPrefix",
         "completeTimedEstateIncludesInactiveFutureDeny",
@@ -2435,7 +2435,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 15.057,
+      "baseline_seconds": 13.717,
       "cases": [
         "actualJpaAdapterOmitsVersionAndRollsBackHashAndGenerationTogether",
         "callerVersionIdentityChangesAndDeleteResetAreRejected",
@@ -2456,7 +2456,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 13.718,
+      "baseline_seconds": 11.79,
       "cases": [
         "freshFlywayAndNativeTriggerLockOrderAreReal",
         "generationRevocationWaitsOrFailsClosed",
@@ -2475,7 +2475,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 26.288,
+      "baseline_seconds": 24.96,
       "cases": [
         "allFourProvenanceBranchesRoundTripExactSyntheticStructuralTuples",
         "appendWaitingOnNativeTerminationReadsItsCommittedTerminalImage",
@@ -2525,7 +2525,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 26.145,
+      "baseline_seconds": 15.814,
       "cases": [
         "actualLocalProducerReceiptOnlyBecomesEligibleAfterCompletionCommit",
         "actualNativeDecoderSkewCannotExtendTheInjectedRealDeadline",
@@ -2564,7 +2564,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 40.032,
+      "baseline_seconds": 33.029,
       "cases": [
         "catalogTamperAndRoleSwitchBridgeFailClosed",
         "copiedProofCannotCrossPhysicalTransactionEvenAfterRollback",
@@ -2594,7 +2594,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 52.535,
+      "baseline_seconds": 46.583,
       "cases": [
         "allFourRealBoundActorsLoadDatabaseAuthorityAtFencedSample",
         "bothCompanyAndFacilityRequireIndependentPermits",
@@ -2650,7 +2650,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 20.307,
+      "baseline_seconds": 18.534,
       "cases": [
         "companyGrantCannotAuthorizeAnotherNetwork",
         "eitherScopeDenyCannotProducePartialAuthority",
@@ -2669,7 +2669,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 25.076,
+      "baseline_seconds": 38.263,
       "cases": [
         "companyProductAndActionCannotBeSubstituted",
         "consumedOrCompletedAdmissionCannotBeUsedAgain",
@@ -2700,7 +2700,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 31.176,
+      "baseline_seconds": 20.965,
       "cases": [
         "admittedNativeCredentialHasNoPublicConstructor",
         "allFourRealProducerBearersParticipateAtDatabaseSample",
@@ -2726,7 +2726,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 54.836,
+      "baseline_seconds": 45.054,
       "cases": [
         "anotherIssuerRejectsTicketAndPoisonsItsOriginalHolder",
         "changedDatabaseRoleFailsFinalNativeFenceCheck",
@@ -2772,7 +2772,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 25.259,
+      "baseline_seconds": 31.413,
       "cases": [
         "companyProductAndActionCannotBeSubstituted",
         "consumedOrCompletedAdmissionCannotBeUsedAgain",
@@ -2801,7 +2801,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 31.2,
+      "baseline_seconds": 29.158,
       "cases": [
         "companyProductAndActionCannotBeSubstituted",
         "consumedOrCompletedAdmissionCannotBeUsedAgain",
@@ -2834,7 +2834,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 19.37,
+      "baseline_seconds": 25.023,
       "cases": [
         "capturedMappingGenerationDriftRejectsTheWholePair",
         "concurrentGrantWriterBlocksThroughCommitAndRollbackReleasesFences",
@@ -2858,7 +2858,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 15.377,
+      "baseline_seconds": 11.133,
       "cases": [
         "admissionMethodsCannotRunOutsideProtectedExecutorScope",
         "aggregateElapsedBudgetAbortsWholeWorkWithoutRetry",
@@ -2897,7 +2897,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 20.523,
+      "baseline_seconds": 17.392,
       "cases": [
         "callerVersionsIdentityMutationDeletionAndTruncationCannotResetEitherOwner",
         "copyMergeAndUpsertCannotBypassEitherGenerationGuard",
@@ -2972,7 +2972,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.114,
+      "baseline_seconds": 0.214,
       "cases": [
         "assertionMustBeAuthenticatedAndBelongToEvaluatedUser",
         "capturesOnlyConfiguredClaimPathsAndNoBearerCredentials",
@@ -3132,7 +3132,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 21.195,
+      "baseline_seconds": 19.896,
       "cases": [
         "authenticatesCredentialPersistedThroughIdentityRepositories"
       ],
@@ -3482,7 +3482,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 2.158,
+      "baseline_seconds": 2.16,
       "cases": [
         "doesNotInventReasonForLegacyDelegation",
         "rejectsUnboundedBlankAndUnknownOptionalReferences"
@@ -3512,7 +3512,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 4.139,
+      "baseline_seconds": 9.793,
       "cases": [
         "decisionEvidenceIsStoredAsJsonArraysRatherThanQuotedJsonStrings",
         "directDenialOverridesInheritedGrant",
@@ -3628,7 +3628,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 2.131,
+      "baseline_seconds": 1.95,
       "cases": [
         "rejectsGuessingLegacyProtocol",
         "requiresKnownProtocolAndPreservesNullableLocalReferences"
@@ -3708,7 +3708,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 2.099,
+      "baseline_seconds": 1.856,
       "cases": [
         "enforcesDatabaseUniquenessAndAllowsMultipleAbsentEmails",
         "rejectsLegacyDuplicatesWithoutRewritingThem"
@@ -3723,7 +3723,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 2.084,
+      "baseline_seconds": 1.872,
       "cases": [
         "enforcesDirectGrantContractOnDatabaseWrites",
         "rejectsLegacyUnboundedGrant"
@@ -3798,7 +3798,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 7.925,
+      "baseline_seconds": 14.565,
       "cases": [
         "actionCatalogAndDescriptionAreEnforced",
         "actualJpaClosureAndParentRollbackAndCommitTogether",
@@ -3896,7 +3896,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 6.572,
+      "baseline_seconds": 6.757,
       "cases": [
         "catalogsRequireActiveExactFamilies",
         "concurrentEndpointReparentAndMessageCannotBothCommit",
@@ -3992,7 +3992,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 3.059,
+      "baseline_seconds": 2.313,
       "cases": [
         "committedParentDeletionWinsAgainstConcurrentReferenceWrite",
         "legacyOrphanFailsMigrationWithoutPartialConstraints",
@@ -4009,7 +4009,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 6.607,
+      "baseline_seconds": 5.765,
       "cases": [
         "actualJpaMissingDefectAndWrongTypeRollbackBeforeAnyCaseIsCommitted",
         "actualJpaReferenceWriteRollsBackAfterFlushAndCommitsCanonicalEvidenceOnSuccess",
@@ -4056,7 +4056,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 1.042,
+      "baseline_seconds": 1.277,
       "cases": [
         "applicationRejectsMissingDefectBeforeCaseSave",
         "applicationRetainsOptionalityAndDoesNotImposeDefectStateOrTargetRule",
@@ -4187,7 +4187,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 1.757,
+      "baseline_seconds": 1.755,
       "cases": [
         "protectsWritesUpdatesAndDeletesWhilePreservingNull",
         "refusesLegacyOrphansWithoutRewritingEvidence"
@@ -4218,7 +4218,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 8.92,
+      "baseline_seconds": 3.347,
       "cases": [
         "deletionCommittedFirstDeniesConcurrentEvaluationReference",
         "deviationCommittedFirstDeniesConcurrentEvaluationReassignment",
@@ -4239,7 +4239,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 1.043,
+      "baseline_seconds": 0.187,
       "cases": [
         "scopesDeviationsByPlanTargetAndPreservesAuthoritativeComparisonValues"
       ],
@@ -4287,7 +4287,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 1.507,
+      "baseline_seconds": 1.725,
       "cases": [
         "abortsLegacyChannelMismatchWithoutRepairingIt",
         "concurrentDuplicateIdCannotOverwriteFirstWriter",
@@ -4304,7 +4304,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.225,
+      "baseline_seconds": 0.166,
       "cases": [
         "persistsAndFlushesNewAttemptWithoutGenericSave",
         "rejectsAutomaticRetryForPermanentFailureAndCancellation",
@@ -4321,7 +4321,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 2.224,
+      "baseline_seconds": 2.242,
       "cases": [
         "abortsLegacyInconsistencyWithoutRewritingRows",
         "forwardRepairResolvesParameterCollisionAndRetainsMessageOwnership",
@@ -5317,7 +5317,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 388.002,
+      "baseline_seconds": 392.338,
       "cases": [
         "activeHalfOpenIntervalsPermitAnExactlyAdjacentAppointment",
         "actualProvisionalCreateEndCorrectionAndTransferMatchFrozenCanonicalEventsAndRollBack",
@@ -5412,7 +5412,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 49.527,
+      "baseline_seconds": 52.296,
       "cases": [
         "appliedRevisionOneConfigurationSurvivesForwardSuccessorRepair",
         "authoredRoutineBodiesAndCatalogPrivilegesMatchInstalledStorageContract",
@@ -5541,7 +5541,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 20.678,
+      "baseline_seconds": 20.205,
       "cases": [
         "addsBirthColumnsIndexAndLocalityForeignKey",
         "persistsCanonicalBirthDataAndRejectsUnknownLocality"
@@ -5573,7 +5573,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 26.188,
+      "baseline_seconds": 15.287,
       "cases": [
         "canonicalResponsibilityRejectsMissingRegistryIdentity",
         "emptyDatabaseMigratesAndCanonicalResponsibilityUsesOnlyRegistryIdentity"
@@ -5588,7 +5588,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 15.292,
+      "baseline_seconds": 20.759,
       "cases": [
         "addsInternalForeignKeysAndClosedDiscriminatorChecks",
         "rejectsDirectOrphanBeforeAnyConstraintIsInstalled",
@@ -5660,7 +5660,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 51.705,
+      "baseline_seconds": 55.385,
       "cases": [
         "existingRegistryMigrationIsAdditiveAndPreservesLegacyColumns",
         "finalCleanupFailsClosedAndRecoversWhenNullScopeRowsExist",
@@ -5678,7 +5678,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 9.541,
+      "baseline_seconds": 7.97,
       "cases": [
         "emptyDatabaseProvisioningContainsRequiredActivePermissionsAndAuditTaxonomy"
       ],
@@ -5879,7 +5879,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 1.75,
+      "baseline_seconds": 1.833,
       "cases": [
         "legacyNullFailsMigrationWithoutInventingReplacementIdentity",
         "mappingMatchesMandatoryReference",
@@ -5897,7 +5897,7 @@
       ]
     },
     {
-      "baseline_seconds": 1.893,
+      "baseline_seconds": 6.402,
       "cases": [
         "legacyNullFailsMigrationWithoutInventingReplacementIdentity",
         "mappingMatchesMandatoryReference",
@@ -5966,7 +5966,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 1.906,
+      "baseline_seconds": 1.798,
       "cases": [
         "legacyNullFailsMigrationWithoutInventingReplacementIdentity",
         "mappingMatchesMandatoryReference",
@@ -6067,7 +6067,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 5.591,
+      "baseline_seconds": 6.96,
       "cases": [
         "admissionRetainsRelationFencesAndExcludesWritersUntilCompletion",
         "custodyAdmissionRejectsWhitespaceAndTopologyTickets",
@@ -6091,7 +6091,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 6.243,
+      "baseline_seconds": 7.31,
       "cases": [
         "activeReferenceReturnsExactOneRowShapeAndPhysicalCoordinates",
         "changedTableOwnerAndReplicaModeAreRejected",
@@ -6125,7 +6125,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 7.774,
+      "baseline_seconds": 18.134,
       "cases": [
         "actualJpaSaveAndFlushBumpsWitnessAndRollbackRestoresIt",
         "admissionRetainsRelationFencesAndExcludesWritersUntilCompletion",
@@ -6169,7 +6169,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 7.589,
+      "baseline_seconds": 17.432,
       "cases": [
         "actualJpaSaveAndFlushBumpsWitnessAndRollbackRestoresIt",
         "admissionRetainsRelationFencesAndExcludesWritersUntilCompletion",
@@ -6374,7 +6374,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 26.455,
+      "baseline_seconds": 26.87,
       "cases": [
         "actualOwnerProvidersSaveCanonicalPartyAndRollbackTheFlushedRecord",
         "approvalHistoryCannotBeDeletedTruncatedOrRemappedAndRegisteredOwnersCannotBeDeleted",
@@ -6400,7 +6400,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 9.019,
+      "baseline_seconds": 4.512,
       "cases": [
         "approvedRevisionImmutabilityIsRetainedWhenTargetIntegrityIsInstalled",
         "committedNominationReparentWinsAgainstConcurrentTargetWrite",
@@ -6423,7 +6423,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 5.179,
+      "baseline_seconds": 3.56,
       "cases": [
         "approvedEvidenceCannotBeChangedDeletedOrTruncated",
         "competingPlanCodesHaveExactlyOneWinner",
@@ -6562,7 +6562,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 14.099,
+      "baseline_seconds": 5.761,
       "cases": [
         "artifactRequiresNonblankDocumentOrStorageShapeWithoutForeignModuleFk",
         "artifactRunForeignKeyAcceptsQueuedRunAndRejectsOrphans",
@@ -6679,7 +6679,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 18.031,
+      "baseline_seconds": 14.384,
       "cases": [
         "approvalLockExcludesConcurrentEvidenceMutation",
         "approvalProtectsSelectedCellAgainstWaitingMutation",
@@ -6702,7 +6702,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 2.024,
+      "baseline_seconds": 1.839,
       "cases": [
         "approvalStoresActualOwnerDecisionAndAuditReceiptAndAuditFailurePreventsParentSave",
         "approvedDomainRequiresRealApprovalMetadata",
@@ -7146,7 +7146,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 15.3,
+      "baseline_seconds": 21.836,
       "cases": [
         "qualifiedRegulatorUsesRealOwnerExportsAndWithdrawnAuthorityFails",
         "realOwnerAdaptersWorkflowAndStoresReturnExactAdvisoryBundle"
@@ -7202,7 +7202,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 43.338,
+      "baseline_seconds": 31.028,
       "cases": [
         "appendOnlySqlAndForgedQualificationCorruptionCannotQualify",
         "concurrentConflictingCharacteristicWritersRollbackLosingAggregate",
@@ -7226,7 +7226,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 7.287,
+      "baseline_seconds": 4.987,
       "cases": [
         "changeRequiredFieldsFamilyAndRetiredHistoryAreEnforced",
         "concurrentCandidateDeleteAndRecommendationInsertCannotBothCommit",
@@ -7300,7 +7300,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.965,
+      "baseline_seconds": 0.792,
       "cases": [
         "applicationPublicationSelectsAuditedPortAndLegacyPortFailsClosed",
         "genericSaveDuplicateIdMissingReceiptAndCompatibilityCannotBypassPublication",
@@ -7383,7 +7383,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.416,
+      "baseline_seconds": 0.41,
       "cases": [
         "optionalRateAndInactiveRolesAreExplicit",
         "rolesAreRequiredEvenForExistingEngineeringUnits",
@@ -7399,7 +7399,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 5.384,
+      "baseline_seconds": 14.701,
       "cases": [
         "allRolesReturnExactOwnerSnapshotsWithoutConversion",
         "crossThreadSwallowedReusePoisonsOriginalTransaction",
@@ -7500,7 +7500,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 1.854,
+      "baseline_seconds": 2.076,
       "cases": [
         "copiesApplicableSnapshotAndPreservesItAfterRebindingOrRetirement",
         "preservesLegitimateHistoricalSnapshotWhenPointIsNoLongerActive",
@@ -8368,7 +8368,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 8.638,
+      "baseline_seconds": 10.778,
       "cases": [
         "actualCatalogConfirmsAllThreeReviewedTriggersAndImmutableSecurityDefiner",
         "differentTransactionCannotClaimParentMetadataVersion",
@@ -8386,7 +8386,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 118.784,
+      "baseline_seconds": 79.584,
       "cases": [
         "actualFinalGuardRejectsExpiredProvisionalVersionAndRetainsNoRows",
         "actualFinalGuardVerifiesCompleteOwnerFenceSubset",
@@ -8442,7 +8442,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 79.085,
+      "baseline_seconds": 59.765,
       "cases": [
         "catalogRoleAndLedgerTamperingFailClosed",
         "concurrentDraftCandidatesHaveOneContextHeadCasWinner",
@@ -8469,7 +8469,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 19.165,
+      "baseline_seconds": 7.717,
       "cases": [
         "actualJpaSaveAndFlushBumpsWitnessAndRollbackRestoresIt",
         "admissionRetainsRelationFencesAndExcludesWritersUntilCompletion",
@@ -8506,7 +8506,7 @@
       "timing_status": "unmeasured-new-suite"
     },
     {
-      "baseline_seconds": 133.166,
+      "baseline_seconds": 108.594,
       "cases": [
         "actualDeadlineCrossingRollsBackRealProvisionalRevisionAndEvent",
         "admissionFirstExcludesAuthorityWritersThroughCommitAndRollback",
@@ -8583,7 +8583,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 6.248,
+      "baseline_seconds": 5.324,
       "cases": [
         "allProvisionalEffectsRollbackOnFinalGuardOrCommitFailure",
         "fullFreshFlywaySchemaAndRevisionReplayRemainCompatible",
@@ -8607,7 +8607,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 19.901,
+      "baseline_seconds": 10.952,
       "cases": [
         "blankAndNullIdentitiesFailRatherThanReturnAbsence",
         "canonicalPermutationReplaysWithoutMutatingExactHistoryOrAnotherStation",
@@ -8634,7 +8634,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 28.487,
+      "baseline_seconds": 29.958,
       "cases": [
         "concurrentConflictingReplayHasExactlyOneWinner",
         "concurrentIdenticalReplayCommitsOneRowThroughRealTransactionProxies",
@@ -8858,7 +8858,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 97.762,
+      "baseline_seconds": 72.673,
       "cases": [
         "concurrentHttpWritersAndPublishersHaveOneCasWinner",
         "currentDenyAndRevocationOverridePriorPreviewsAndUnrelatedRoutes",
@@ -8879,7 +8879,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 6.434,
+      "baseline_seconds": 6.68,
       "cases": [
         "conflictingLegacyTaxonomyAbortsWithoutInventingClassification",
         "legacyOrphanAttachmentAbortsWithoutRewritingIt",
@@ -9144,7 +9144,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 15.848,
+      "baseline_seconds": 14.149,
       "cases": [
         "actualHumanTerminalTransitionBindsExactDigestAndServerActor",
         "completedCorrectActionCannotMasqueradeAsApprove",
@@ -9171,7 +9171,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 24.836,
+      "baseline_seconds": 10.234,
       "cases": [
         "actualTransitionQualifiesOnlyExactDigestAndWithdrawalMakesItUnavailable"
       ],
@@ -9339,7 +9339,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 7.229,
+      "baseline_seconds": 5.707,
       "cases": [
         "concurrentActionWritersAllocateContiguousServerSequences",
         "concurrentStartsAllowExactlyOneNonterminalTuple",
@@ -9383,7 +9383,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.016,
+      "baseline_seconds": 0.013,
       "cases": [
         "mandatoryDestinationAndActorEvidenceFailFast",
         "missingOrForeignOptionalReferencesFailClosed",
@@ -9450,7 +9450,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.014,
+      "baseline_seconds": 0.01,
       "cases": [
         "crossDefinitionSourceAndDestinationDenied",
         "sameStepFailsAfterNormalization",
@@ -9533,7 +9533,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.01,
+      "baseline_seconds": 0.218,
       "cases": [
         "acceptsCompleteProductionRuntimeContract",
         "allowsNonProductionRuntimeWithoutProductionInputs",
@@ -9880,7 +9880,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.825,
+      "baseline_seconds": 2.684,
       "cases": [
         "credentialResourceHttpRoutesAreDeniedBeforePersistenceAndCannotSerializeHashMarker",
         "detailHttpResponseContainsOnlyApprovedFields",
@@ -9898,7 +9898,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.806,
+      "baseline_seconds": 0.508,
       "cases": [
         "configuredResourceMustExplicitlyExposeIdentifierField",
         "detailResponseContainsOnlyApprovedAttributesAndNeverPasswordHash",
@@ -9956,7 +9956,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0,
+      "baseline_seconds": 45.048,
       "cases": [
         "actualFinalScalarGuardFailureReturns503AndRollsBackHttpCandidate",
         "allFourNativeProducersPrepareApprovePublishAndReadConfiguredHttp",
@@ -9979,7 +9979,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0,
+      "baseline_seconds": 49.97,
       "cases": [
         "companyAndProductDenialsBlockReadPublishAndExport",
         "corruptedStoredBytesNeverBecomeFallbackSelection",
@@ -10002,7 +10002,7 @@
       "lane": "postgres-integration",
       "owner": "custody",
       "path": "src/test/java/dz/sh/hidra/modules/custody/qualification/ProductEngineeringOperatorQualificationTest.java",
-      "source_sha256": "0f7ec4ef04962371c96d9229847e88fce994d8741d6056480eba7da8a219e541",
+      "source_sha256": "b765409fdd2197ad885042445ef03a05c5428f9ca1141d7679a12580bb79cc1e",
       "supports": []
     }
   ],
@@ -10028,7 +10028,7 @@
     }
   ],
   "mode": "shadow-fallback-required",
-  "postgres_shards": 7,
+  "postgres_shards": 10,
   "supporting_classes": [
     {
       "abstract": true,
@@ -10307,5 +10307,1423 @@
     "run_id": 40581505626,
     "run_number": 928,
     "source_sha": "97f3295d1b7dbfde3b27f08c08a9cfad45c415f9"
+  },
+  "scheduling_timing_refresh": {
+    "source_sha": "d97071d03bf086055680486ded9f76cfc0dd8efd",
+    "run_id": 40659696342,
+    "run_attempt": 1,
+    "purpose": "Observed suite durations for ten-shard LPT scheduling only. Failed-run measurements are not test acceptance; new per-class JVM wall time remains unmeasured.",
+    "artifacts": [
+      {
+        "id": 12803855302,
+        "zip_sha256": "05800755814e78cc47436420309fa5c676816d33eeea425e62e80ea27f66865e"
+      },
+      {
+        "id": 12803760412,
+        "zip_sha256": "025ce3c439d3d8a90dac587a9e12bdc12215ef28f558baaef89c90b97747fe99"
+      },
+      {
+        "id": 12803477896,
+        "zip_sha256": "e9231647965bfee3b9f7044d8e09efe7e257f81ae87db045f2bd0161eeb195b9"
+      },
+      {
+        "id": 12803049320,
+        "zip_sha256": "45f4275295d19f8b94cff3355c0161088ae1481b8303d87586fac94cc9166226"
+      },
+      {
+        "id": 12803029570,
+        "zip_sha256": "2cac2961c86642a1c5710a8ed33e135867d37cfe9d45f82d8c51286add8dd76b"
+      },
+      {
+        "id": 12803024003,
+        "zip_sha256": "fe826b77936f692f01d7dabf7d09745687ea7c7bd0ae88f5f1a2e2765ee8b9c7"
+      },
+      {
+        "id": 12802844427,
+        "zip_sha256": "735d643ae74e13abab0edf6c3dd9ac95780b92808ed32c652431e55b56345ae5"
+      }
+    ],
+    "observations": {
+      "dz.sh.hidra.modules.identity.infrastructure.persistence.OrganizationAppointmentCommitProofPostgresIntegrationTest": {
+        "seconds": 33.029,
+        "prior_baseline_seconds": 40.032,
+        "report_sha256": "6b19ed46482a474dd812fb9be87dfb47c6027d27cde43145e63d69a199c20109",
+        "artifact_id": 12803855302,
+        "counts": {
+          "tests": 17,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.identity.infrastructure.persistence.IdentityAuthorityFencePostgresIntegrationTest": {
+        "seconds": 18.736,
+        "prior_baseline_seconds": 16.225,
+        "report_sha256": "cf81874abacf6bb245e30a5455d7fdb7fe755dafb2983c0c4ce607152d43aa28",
+        "artifact_id": 12803855302,
+        "counts": {
+          "tests": 15,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.identity.infrastructure.persistence.ProtectedTopologyAuthorizationPostgresIntegrationTest": {
+        "seconds": 25.023,
+        "prior_baseline_seconds": 19.37,
+        "report_sha256": "5f8e486170e9df5bbb55086a24b2c04d1277b73933a9a755d30f1f13afc42ef5",
+        "artifact_id": 12803855302,
+        "counts": {
+          "tests": 11,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.workflow.infrastructure.persistence.RevisionApprovalEvidencePostgresIntegrationTest": {
+        "seconds": 10.234,
+        "prior_baseline_seconds": 24.836,
+        "report_sha256": "ba3f0b82e967904d2717423ea69ab16777fde60bc12f091ece77648d216d64b9",
+        "artifact_id": 12803855302,
+        "counts": {
+          "tests": 1,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.alarm.infrastructure.persistence.AlarmSuppressionPersistenceMigrationTest": {
+        "seconds": 13.41,
+        "prior_baseline_seconds": 15.216,
+        "report_sha256": "8f7c2dec3a663cea6bf94378172db301e8c12f38744db926b43c4a2e0c8ef491",
+        "artifact_id": 12803855302,
+        "counts": {
+          "tests": 1,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.notification.semantic.NotificationMessageIntegrityMigrationTest": {
+        "seconds": 2.242,
+        "prior_baseline_seconds": 2.224,
+        "report_sha256": "64786de4b9cf86a0ace805f8a0b55e2c759b5d03c06b22ab86f978d786c5e81e",
+        "artifact_id": 12803855302,
+        "counts": {
+          "tests": 5,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.audit.semantic.AuditExportRequestSemanticRemediationTest": {
+        "seconds": 0.467,
+        "prior_baseline_seconds": 0.312,
+        "report_sha256": "4068be554874db8900949b6e52151a745646090a165190a61fc02192a831bda9",
+        "artifact_id": 12803855302,
+        "counts": {
+          "tests": 8,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.party.infrastructure.persistence.OrganizationConfigurationReferencePostgresIntegrationTest": {
+        "seconds": 7.31,
+        "prior_baseline_seconds": 6.243,
+        "report_sha256": "acf9744eb368949c28ee619df8b370877f0cf04744eab8b550783fd43c4362a2",
+        "artifact_id": 12803855302,
+        "counts": {
+          "tests": 21,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.hse.semantic.HseClosureSemanticRemediationTest": {
+        "seconds": 0.576,
+        "prior_baseline_seconds": 1.222,
+        "report_sha256": "ad568c112fea1c9de2ae080101d5c082c67d2e3b81194f2173693b348d5d309c",
+        "artifact_id": 12803855302,
+        "counts": {
+          "tests": 4,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.integrity.infrastructure.persistence.IntegrityCaseSemanticPostgresIntegrationTest": {
+        "seconds": 5.765,
+        "prior_baseline_seconds": 6.607,
+        "report_sha256": "1bd28d8aad3f1fb5497f413d753fd68a73f012e18b44a98f5317900e0e450f38",
+        "artifact_id": 12803855302,
+        "counts": {
+          "tests": 12,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.platform.workbench.HidraOperationalWorkbenchHttpExposureTest": {
+        "seconds": 2.684,
+        "prior_baseline_seconds": 0.825,
+        "report_sha256": "e947b1ac5c95d00519bc467506cfae04e9fb26548ad04c20014975bc37cb7fb6",
+        "artifact_id": 12803855302,
+        "counts": {
+          "tests": 5,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.topology.infrastructure.persistence.EngineeringNetworkDraftPostgresIntegrationTest": {
+        "seconds": 79.584,
+        "prior_baseline_seconds": 118.784,
+        "report_sha256": "78be9d951ca1237b4331cccf6feb5127d422a413d1840ac655d27a4de29f8ff7",
+        "artifact_id": 12803855302,
+        "counts": {
+          "tests": 43,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.identity.infrastructure.persistence.IdentityProviderLinkJsonbPostgresIntegrationTest": {
+        "seconds": 20.837,
+        "prior_baseline_seconds": 12.142,
+        "report_sha256": "6df889e2d9c489dcb983e8f685479b969b197ebc681023943cc4ff63f5acd247",
+        "artifact_id": 12803855302,
+        "counts": {
+          "tests": 9,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.workflow.semantic.WorkflowStateHistorySemanticRemediationTest": {
+        "seconds": 0.013,
+        "prior_baseline_seconds": 0.016,
+        "report_sha256": "e3d86f6d16dae20d40c0f344fac48d3f6651ba70824f639e6c28e89b78df0758",
+        "artifact_id": 12803855302,
+        "counts": {
+          "tests": 4,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.organization.semantic.OrganizationHierarchySnapshotSemanticRemediationTest": {
+        "seconds": 6.402,
+        "prior_baseline_seconds": 1.893,
+        "report_sha256": "4bef2923f2c0a7ff1e6cca73c99b7312d19bd2d5e084a49d442cb779cd71398b",
+        "artifact_id": 12803855302,
+        "counts": {
+          "tests": 3,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.alarm.infrastructure.persistence.AlarmAcknowledgementSemanticPostgresIntegrationTest": {
+        "seconds": 3.012,
+        "prior_baseline_seconds": 3.531,
+        "report_sha256": "acae6a7cf136e29c32fb2fa6f6305ccd727861d902b7a1738bd36321d718ecc2",
+        "artifact_id": 12803855302,
+        "counts": {
+          "tests": 3,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.party.infrastructure.persistence.OrganizationProtectedPartyEligibilityPostgresIntegrationTest": {
+        "seconds": 18.134,
+        "prior_baseline_seconds": 7.774,
+        "report_sha256": "ba59af3af6c895203c8d25c6f28b39a9933fb6e1b2c299d7e6aff24261527689",
+        "artifact_id": 12803855302,
+        "counts": {
+          "tests": 31,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.custody.infrastructure.persistence.CustodyGasFluidRevisionPostgresIntegrationTest": {
+        "seconds": 20.915,
+        "prior_baseline_seconds": 26.345,
+        "report_sha256": "214f456814a51f3234dffff7c2f6a76f1a98a40b779f6c6bd289df1b390507ed",
+        "artifact_id": 12803855302,
+        "counts": {
+          "tests": 6,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.monitoring.infrastructure.persistence.PlanActualDeviationSemanticPostgresIntegrationTest": {
+        "seconds": 3.347,
+        "prior_baseline_seconds": 8.92,
+        "report_sha256": "2fca1386fe3b2518199d82138550db8605107211d362d4ab585d791ddb143db8",
+        "artifact_id": 12803855302,
+        "counts": {
+          "tests": 8,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.identity.infrastructure.persistence.ProtectedEngineeringDraftAuthorizationPostgresIntegrationTest": {
+        "seconds": 18.534,
+        "prior_baseline_seconds": 20.307,
+        "report_sha256": "d229f370739538d1cd2b1b9ff13009d48dd11dcd32b8847f6d880b44b1824308",
+        "artifact_id": 12803760412,
+        "counts": {
+          "tests": 6,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.topology.infrastructure.persistence.TopologyPhysicalNetworkRevisionPostgresIntegrationTest": {
+        "seconds": 29.958,
+        "prior_baseline_seconds": 28.487,
+        "report_sha256": "5ee274856b2c6a42d35e2c49ac2e9048f8a1a0c53743591498ed87aa5e0e5a36",
+        "artifact_id": 12803760412,
+        "counts": {
+          "tests": 10,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.identity.semantic.LoginSessionIntegrityMigrationTest": {
+        "seconds": 1.95,
+        "prior_baseline_seconds": 2.131,
+        "report_sha256": "f9630ad3b14a3b06c749cbae3cfcfce7a295099f042fa9c485f29a41757e5ceb",
+        "artifact_id": 12803760412,
+        "counts": {
+          "tests": 2,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.identity.infrastructure.persistence.ProtectedAuthorizationEvidencePostgresIntegrationTest": {
+        "seconds": 46.583,
+        "prior_baseline_seconds": 52.535,
+        "report_sha256": "6265e65beb8e12a5741e938df606676674a66f5eff4524b6b03d521b3ea618b6",
+        "artifact_id": 12803760412,
+        "counts": {
+          "tests": 43,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.simulation.semantic.SimulationRecommendationSemanticRemediationTest": {
+        "seconds": 0.792,
+        "prior_baseline_seconds": 0.965,
+        "report_sha256": "ee6b7da993446f9d42728e89a8f7bcc56ec0d90333916e3b45fd7cb6ed862139",
+        "artifact_id": 12803760412,
+        "counts": {
+          "tests": 5,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.simulation.infrastructure.integration.QualifiedFluidEquipmentDeliveryIntegrationTest": {
+        "seconds": 21.836,
+        "prior_baseline_seconds": 15.3,
+        "report_sha256": "33243b8b1eaf415d331c495f480ba0acf75b661404fb958ba8ee2b3858b70d0e",
+        "artifact_id": 12803760412,
+        "counts": {
+          "tests": 2,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.identity.infrastructure.persistence.BoundSourceClaimEvidencePostgresIntegrationTest": {
+        "seconds": 5.791,
+        "prior_baseline_seconds": 6.247,
+        "report_sha256": "e28b971a905ece5a41733c0a54eb40cff8012cc0f1f6103cdea42a2cfd95e880",
+        "artifact_id": 12803760412,
+        "counts": {
+          "tests": 8,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.identity.infrastructure.persistence.ProtectedProductDraftAuthorizationPostgresIntegrationTest": {
+        "seconds": 31.413,
+        "prior_baseline_seconds": 25.259,
+        "report_sha256": "0fcb67b6a26b0008d3ba2d5c7b4374280fd2dc75b5f31bfa1201fe358817b09a",
+        "artifact_id": 12803760412,
+        "counts": {
+          "tests": 16,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.identity.infrastructure.persistence.NativeOwnerFenceCompatibilityPostgresIntegrationTest": {
+        "seconds": 11.79,
+        "prior_baseline_seconds": 13.718,
+        "report_sha256": "6c4da3b7d0e1dba3801472707e686790d3ac474e5876ce376c5e437053b33add",
+        "artifact_id": 12803760412,
+        "counts": {
+          "tests": 6,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.risk.semantic.RiskAssessmentSemanticRemediationTest": {
+        "seconds": 1.839,
+        "prior_baseline_seconds": 2.024,
+        "report_sha256": "e25d8422a1617bc29d05a499f246a27d9cda5ef1aff1581a31f05cfbfdd0ed62",
+        "artifact_id": 12803760412,
+        "counts": {
+          "tests": 7,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.simulation.infrastructure.persistence.SimulationEquipmentParameterRevisionPostgresIntegrationTest": {
+        "seconds": 31.028,
+        "prior_baseline_seconds": 43.338,
+        "report_sha256": "1f7eba7a21a68914bb533940095895fc6cbd6fdffb5e5fb76ed45867b6c642e1",
+        "artifact_id": 12803760412,
+        "counts": {
+          "tests": 11,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.identity.infrastructure.persistence.ProtectedOrganizationAppointmentAuthorizationPostgresIntegrationTest": {
+        "seconds": 45.054,
+        "prior_baseline_seconds": 54.836,
+        "report_sha256": "fd344b4de643aa36ecc727a98aa97c4e524b288f0cd102313341a00adf275588",
+        "artifact_id": 12803760412,
+        "counts": {
+          "tests": 33,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.audit.semantic.AuditBeforeAfterValueSemanticRemediationTest": {
+        "seconds": 0.081,
+        "prior_baseline_seconds": 0.279,
+        "report_sha256": "e3da42d77bf168c59073d5b3166fd6d74346d06f3df8cb2b6b15e24c988f60d1",
+        "artifact_id": 12803760412,
+        "counts": {
+          "tests": 6,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.workflow.semantic.WorkflowExecutionPostgresTest": {
+        "seconds": 5.707,
+        "prior_baseline_seconds": 7.229,
+        "report_sha256": "60472fc93eb74621b51abae996b8372ceb3cf2e4a109e4c75a31616f260bbb1a",
+        "artifact_id": 12803760412,
+        "counts": {
+          "tests": 10,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.identity.infrastructure.persistence.AuthorizationTemporalBoundaryPostgresIntegrationTest": {
+        "seconds": 1.406,
+        "prior_baseline_seconds": 1.092,
+        "report_sha256": "e7f7e1d4dc3aed7982119efc3ef7ca3f7c292a518911aa9bd3a83d0cff9e8b10",
+        "artifact_id": 12803760412,
+        "counts": {
+          "tests": 4,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.audit.infrastructure.persistence.AuditSemanticPostgresIntegrationTest": {
+        "seconds": 7.109,
+        "prior_baseline_seconds": 8.959,
+        "report_sha256": "02b93fc45024a9301243a6054e9e35e9fa73c24d9b08848b32d5ed88f83bd946",
+        "artifact_id": 12803760412,
+        "counts": {
+          "tests": 17,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.incident.infrastructure.persistence.IncidentSemanticPostgresIntegrationTest": {
+        "seconds": 14.565,
+        "prior_baseline_seconds": 7.925,
+        "report_sha256": "d0767ea1c732cae9854190ab327bfd41f6429961fc5437bc52b74236a2a25422",
+        "artifact_id": 12803760412,
+        "counts": {
+          "tests": 17,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.identity.infrastructure.persistence.IdentityTemporalEventCollectorPostgresIntegrationTest": {
+        "seconds": 14.758,
+        "prior_baseline_seconds": 17.697,
+        "report_sha256": "a1839ba32e5eed2aeaeb4bea00605e2b872802d416abdd86070611e2b889f988",
+        "artifact_id": 12803760412,
+        "counts": {
+          "tests": 11,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.alarm.infrastructure.persistence.AlarmClosureSemanticPostgresIntegrationTest": {
+        "seconds": 3.538,
+        "prior_baseline_seconds": 4.213,
+        "report_sha256": "c7eb6d19e3a2884afe25b219881388c29a512521f1680339f5cc3bb326b61fb1",
+        "artifact_id": 12803760412,
+        "counts": {
+          "tests": 5,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.identity.semantic.AuthorizationEvidencePostgresTest": {
+        "seconds": 9.793,
+        "prior_baseline_seconds": 4.139,
+        "report_sha256": "3076d27af474b6c718cae3e0603aba946bb922d0dd66e52c4c6a8f8fa1a0907f",
+        "artifact_id": 12803477896,
+        "counts": {
+          "tests": 9,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.custody.infrastructure.persistence.ProductRevisionPublicationNativeHttpPostgresIntegrationTest": {
+        "seconds": 45.048,
+        "prior_baseline_seconds": 0,
+        "report_sha256": "9b2aa5941f6f17921b28489851c7d8bc3094f2788089535e7dae7c110319fcbe",
+        "artifact_id": 12803477896,
+        "counts": {
+          "tests": 10,
+          "errors": 0,
+          "failures": 2,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.identity.infrastructure.security.LocalAuthenticationIntegrationTest": {
+        "seconds": 19.896,
+        "prior_baseline_seconds": 21.195,
+        "report_sha256": "1a45f73f213e318830fa74cac016816126c1c45be583515b070de3ab86ab2d06",
+        "artifact_id": 12803477896,
+        "counts": {
+          "tests": 1,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.organization.infrastructure.persistence.EmployeeAppointmentLifecyclePostgresIntegrationTest": {
+        "seconds": 52.296,
+        "prior_baseline_seconds": 49.527,
+        "report_sha256": "436fcb10e560fe0e46b372556d4a7ea5c0b2187b428e01449611c8793b800346",
+        "artifact_id": 12803477896,
+        "counts": {
+          "tests": 99,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.identity.infrastructure.persistence.OperationAuthenticationBindingPostgresIntegrationTest": {
+        "seconds": 24.96,
+        "prior_baseline_seconds": 26.288,
+        "report_sha256": "863c0e313d7639c0d01cb602e7f3be4bd67f4c30cb1cec6af3ba46758b6e5fe8",
+        "artifact_id": 12803477896,
+        "counts": {
+          "tests": 37,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.party.infrastructure.persistence.CustodyProtectedPartyEligibilityPostgresIntegrationTest": {
+        "seconds": 6.96,
+        "prior_baseline_seconds": 5.591,
+        "report_sha256": "563847b91d862bf2fe618d660cceb0164cdad6b3f774a2c3824c11c4a811827e",
+        "artifact_id": 12803477896,
+        "counts": {
+          "tests": 11,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.platform.configuration.HidraProductionStartupGuardTest": {
+        "seconds": 0.218,
+        "prior_baseline_seconds": 0.01,
+        "report_sha256": "98aeb1b2f1cfcc816e8ed81ff1c3438dfceae4b7dc82e57045e5c718c4a2c3db",
+        "artifact_id": 12803477896,
+        "counts": {
+          "tests": 10,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.leakdetection.semantic.LeakEscalationReferenceIntegrityMigrationTest": {
+        "seconds": 1.755,
+        "prior_baseline_seconds": 1.757,
+        "report_sha256": "96396135545263b6d27977114c8406e2341ce4bd4ad2d12105b537c003a78af3",
+        "artifact_id": 12803477896,
+        "counts": {
+          "tests": 2,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.custody.infrastructure.persistence.CustodyTransferTicketSemanticPostgresIntegrationTest": {
+        "seconds": 2.932,
+        "prior_baseline_seconds": 2.98,
+        "report_sha256": "6ae1237dbc8d8f014a40515427a22a087bc4f0758c9c3eb93d82181b6c8e3df7",
+        "artifact_id": 12803477896,
+        "counts": {
+          "tests": 4,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.telemetry.infrastructure.integration.PlanningUnitReferenceQueryAdapterTest": {
+        "seconds": 0.41,
+        "prior_baseline_seconds": 0.416,
+        "report_sha256": "7b90afaae9305ad028fd3675002cee2363cf0943d428bdf6493697d6896cad5a",
+        "artifact_id": 12803477896,
+        "counts": {
+          "tests": 3,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.custody.infrastructure.persistence.ProductEngineeringDraftNativeHttpPostgresIntegrationTest": {
+        "seconds": 37.703,
+        "prior_baseline_seconds": 31.928,
+        "report_sha256": "34323091f83bcef6c38d68c0c3f40aa3ff8946205b2cbecf5b62dc3aa4cef381",
+        "artifact_id": 12803477896,
+        "counts": {
+          "tests": 12,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.integration.infrastructure.persistence.IntegrationSemanticPostgresIntegrationTest": {
+        "seconds": 6.757,
+        "prior_baseline_seconds": 6.572,
+        "report_sha256": "dbf4eec067c350792aaa2e7c18ef3050e6a0035017e51467ee1df6e23afb5220",
+        "artifact_id": 12803477896,
+        "counts": {
+          "tests": 10,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.topology.infrastructure.persistence.StationInternalGraphRevisionPostgresIntegrationTest": {
+        "seconds": 10.952,
+        "prior_baseline_seconds": 19.901,
+        "report_sha256": "3b43969b7906db8d04f373038ca419a8abc6c66119f877ee021047aef859facb",
+        "artifact_id": 12803477896,
+        "counts": {
+          "tests": 14,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.integrity.semantic.IntegrityCaseSemanticRemediationTest": {
+        "seconds": 1.277,
+        "prior_baseline_seconds": 1.042,
+        "report_sha256": "41e2b5c5c1e2406a313680897abcf5ba0ff8daf816669aa739deff46fa150bbe",
+        "artifact_id": 12803477896,
+        "counts": {
+          "tests": 12,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.organization.infrastructure.persistence.OrganizationInternalReferenceIntegrityMigrationTest": {
+        "seconds": 20.759,
+        "prior_baseline_seconds": 15.292,
+        "report_sha256": "8866e19b8cdc94afd4d417679ad14266a65502d40752d8c462d80f7c6fdcd55c",
+        "artifact_id": 12803477896,
+        "counts": {
+          "tests": 3,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.party.infrastructure.persistence.ProtectedPartyEligibilityPostgresIntegrationTest": {
+        "seconds": 17.432,
+        "prior_baseline_seconds": 7.589,
+        "report_sha256": "16de4c50579f5b74f65d8f8eef042dbb52afab902e8507192c695d42645659d6",
+        "artifact_id": 12803477896,
+        "counts": {
+          "tests": 22,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.identity.infrastructure.persistence.CrossOwnerOperationTemporalFencePostgresIntegrationTest": {
+        "seconds": 17.903,
+        "prior_baseline_seconds": 13.167,
+        "report_sha256": "a9886671a90560c07ba47069c84432d084058492b5c9bc1c435720e3d6058aad",
+        "artifact_id": 12803477896,
+        "counts": {
+          "tests": 22,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.audit.semantic.AuditEventSemanticRemediationTest": {
+        "seconds": 0.205,
+        "prior_baseline_seconds": 0.311,
+        "report_sha256": "2b4f67acb60a5d057b8b71ce74d6cb06505d0830bfd0fae88b4c9c0a1748c3dd",
+        "artifact_id": 12803477896,
+        "counts": {
+          "tests": 5,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.topology.infrastructure.persistence.EngineeringRevisionPublicationPostgresIntegrationTest": {
+        "seconds": 59.765,
+        "prior_baseline_seconds": 79.085,
+        "report_sha256": "ead8a6ce80f44a389d3c63ab6b5b5d272f8f228ce8a1042fc58b0a3d58e61bbb",
+        "artifact_id": 12803477896,
+        "counts": {
+          "tests": 14,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.identity.infrastructure.persistence.BoundAuthenticationCompletionPostgresIntegrationTest": {
+        "seconds": 35.022,
+        "prior_baseline_seconds": 16.957,
+        "report_sha256": "bd5b5aeaa940209c382b507a55491b76deb7d5ebdd6f48e28469d903ce4203ef",
+        "artifact_id": 12803477896,
+        "counts": {
+          "tests": 29,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.audit.semantic.AuditAccessRecordSemanticRemediationTest": {
+        "seconds": 1.079,
+        "prior_baseline_seconds": 0.304,
+        "report_sha256": "3a173c062c654961fd079eae4ac757d3ae3c8e8f15a4372cc5f47356915c926c",
+        "artifact_id": 12803049320,
+        "counts": {
+          "tests": 3,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.organization.semantic.ShiftAssignmentSemanticRemediationTest": {
+        "seconds": 1.798,
+        "prior_baseline_seconds": 1.906,
+        "report_sha256": "2f87fc1f831f77000878a1ad9906801ee53f56293d18272b486fbb155b0d3b38",
+        "artifact_id": 12803049320,
+        "counts": {
+          "tests": 3,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.alarm.infrastructure.persistence.AlarmSemanticPostgresIntegrationTest": {
+        "seconds": 4.995,
+        "prior_baseline_seconds": 4.297,
+        "report_sha256": "0b6f509613237a7f0b0e3f94cc0362d20e17b3cba8cab2e2926c874188e2a615",
+        "artifact_id": 12803049320,
+        "counts": {
+          "tests": 6,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.assets.infrastructure.persistence.MaintenanceWorkOrderSemanticPostgresIntegrationTest": {
+        "seconds": 3.687,
+        "prior_baseline_seconds": 7.401,
+        "report_sha256": "79ee3abe4c21b94c8a2ac9d4dfa2644a4b9836f87cb1d253f55aef4f40eade5d",
+        "artifact_id": 12803049320,
+        "counts": {
+          "tests": 6,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.HidraApplicationTests": {
+        "seconds": 14.909,
+        "prior_baseline_seconds": 19.528,
+        "report_sha256": "365e8746f76416949bb524c4e193fa69fef1a2dc753b418bc1fcf896630b2c83",
+        "artifact_id": 12803049320,
+        "counts": {
+          "tests": 1,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.identity.infrastructure.persistence.ExternalMappingGenerationPostgresIntegrationTest": {
+        "seconds": 15.6,
+        "prior_baseline_seconds": 13.036,
+        "report_sha256": "262262dda610e9581bb361e99cca3fc2bd31632cf57ce99adb4d2604215b7bda",
+        "artifact_id": 12803049320,
+        "counts": {
+          "tests": 21,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.custody.infrastructure.integration.PlanningProductReferenceQueryAdapterTest": {
+        "seconds": 0.366,
+        "prior_baseline_seconds": 0.386,
+        "report_sha256": "bfcebcae009efe975675fb6bfdd31995546462e30de6374ff8e94634c7174e89",
+        "artifact_id": 12803049320,
+        "counts": {
+          "tests": 2,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.organization.infrastructure.persistence.OrganizationOperationalScopeSchemaMigrationTest": {
+        "seconds": 55.385,
+        "prior_baseline_seconds": 51.705,
+        "report_sha256": "08e5aca197389771984779fc1ddfc8f08b57de269c089b72a530a2a479097e23",
+        "artifact_id": 12803049320,
+        "counts": {
+          "tests": 5,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.InternalReferenceIntegrityMigrationTest": {
+        "seconds": 16.755,
+        "prior_baseline_seconds": 16.59,
+        "report_sha256": "ee83dfae846f44acbfe09d770b1779fdecb5f8ca9e55a51c8af9c18b749a4569",
+        "artifact_id": 12803049320,
+        "counts": {
+          "tests": 2,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.custody.infrastructure.persistence.SuppliedFluidPropertyPostgresIntegrationTest": {
+        "seconds": 75.792,
+        "prior_baseline_seconds": 62.877,
+        "report_sha256": "52f5dadfcaba9ebee991479c743488fad1142028b0c72ce6e3af8099da8c0e42",
+        "artifact_id": 12803049320,
+        "counts": {
+          "tests": 26,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.topology.semantic.EquipmentIntegrityMigrationTest": {
+        "seconds": 6.68,
+        "prior_baseline_seconds": 6.434,
+        "report_sha256": "e813a8610e1f3479db9c31223d12cf7b2490aba96ec11e29990355166a78e2e5",
+        "artifact_id": 12803049320,
+        "counts": {
+          "tests": 4,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.identity.semantic.AuthorizationDelegationGrantIntegrityMigrationTest": {
+        "seconds": 2.16,
+        "prior_baseline_seconds": 2.158,
+        "report_sha256": "40cb00dc904c6c52a441149d984b50163dd0a30b8c32cc6375aea9bb919d5edb",
+        "artifact_id": 12803049320,
+        "counts": {
+          "tests": 2,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.organization.semantic.OrganizationDelegationSemanticRemediationTest": {
+        "seconds": 1.833,
+        "prior_baseline_seconds": 1.75,
+        "report_sha256": "3565a2f45419a294fc2f824a752ccc286044766dfca51ea4d662f4e44895b112",
+        "artifact_id": 12803049320,
+        "counts": {
+          "tests": 3,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.identity.infrastructure.persistence.ProtectedFluidPropertyAuthorizationPostgresIntegrationTest": {
+        "seconds": 38.263,
+        "prior_baseline_seconds": 25.076,
+        "report_sha256": "928fa2208387a48d78fed001db4d838df8e41cfd507097d0f4d8ad73c5ce53eb",
+        "artifact_id": 12803049320,
+        "counts": {
+          "tests": 18,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.planning.infrastructure.persistence.NominationSemanticPostgresIntegrationTest": {
+        "seconds": 26.87,
+        "prior_baseline_seconds": 26.455,
+        "report_sha256": "2bcabf45b15ca12a662d3284707f0c601fbfc20fd601810e062a0489863dc9a9",
+        "artifact_id": 12803049320,
+        "counts": {
+          "tests": 13,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.custody.infrastructure.persistence.ProductEngineeringDraftPostgresIntegrationTest": {
+        "seconds": 52.591,
+        "prior_baseline_seconds": 43.23,
+        "report_sha256": "6522b54041284c11983bdb7cc382c0e114beb00492566bff2ce5ef347a6aac3b",
+        "artifact_id": 12803049320,
+        "counts": {
+          "tests": 19,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.identity.infrastructure.persistence.ClaimNameCatalogPostgresIntegrationTest": {
+        "seconds": 25.428,
+        "prior_baseline_seconds": 15.242,
+        "report_sha256": "b07f4fbf48d855d1187440ae651a41b77447378f9cd49b92b03dd90f842f2f8b",
+        "artifact_id": 12803049320,
+        "counts": {
+          "tests": 15,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.custody.infrastructure.persistence.ProductRevisionPublicationPostgresIntegrationTest": {
+        "seconds": 112.988,
+        "prior_baseline_seconds": 0,
+        "report_sha256": "5b4bc112a3c20ee254917050879387c4f73312d772a5e90ecbc7c9c58eeb0f9b",
+        "artifact_id": 12803049320,
+        "counts": {
+          "tests": 29,
+          "errors": 3,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.telemetry.infrastructure.persistence.CustodyProtectedFluidUnitPostgresIntegrationTest": {
+        "seconds": 14.701,
+        "prior_baseline_seconds": 5.384,
+        "report_sha256": "424bcd0a87abb54f3e7100c696671cb18087a1da2ea5b43d45a558138b1d497a",
+        "artifact_id": 12803049320,
+        "counts": {
+          "tests": 11,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.organization.infrastructure.persistence.EmployeeAppointmentConcurrencyPostgresIntegrationTest": {
+        "seconds": 392.338,
+        "prior_baseline_seconds": 388.002,
+        "report_sha256": "1736997512f02e25e6d5b8e8a98b58ff3dbac645abbb4c5bf283d4cb8b640a4d",
+        "artifact_id": 12803029570,
+        "counts": {
+          "tests": 82,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.identity.semantic.UserIntegrityMigrationTest": {
+        "seconds": 1.856,
+        "prior_baseline_seconds": 2.099,
+        "report_sha256": "512825bedb404f605bec3460e87c47d9285cb2a1f0ea36410073b6b01c12bda3",
+        "artifact_id": 12803024003,
+        "counts": {
+          "tests": 2,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.topology.infrastructure.persistence.ProtectedStationGraphOperationPostgresIntegrationTest": {
+        "seconds": 5.324,
+        "prior_baseline_seconds": 6.248,
+        "report_sha256": "e0330ba1b6b56a723ec0b496627c5e895d91f1535466e2d197d5df9911f9d504",
+        "artifact_id": 12803024003,
+        "counts": {
+          "tests": 11,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.hse.semantic.HseCorrectivePreventiveActionSemanticRemediationTest": {
+        "seconds": 0.629,
+        "prior_baseline_seconds": 0.947,
+        "report_sha256": "78ce5b4818f17f72b2e820c6963a902f227c95b58314cadb2417fde70b6d10a9",
+        "artifact_id": 12803024003,
+        "counts": {
+          "tests": 8,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.workflow.semantic.WorkflowTransitionSemanticRemediationTest": {
+        "seconds": 0.01,
+        "prior_baseline_seconds": 0.014,
+        "report_sha256": "3fe73839700973321e87e04d601ef3fc4013c8919c1b5d6b65d5ec2d2ccb9f04",
+        "artifact_id": 12803024003,
+        "counts": {
+          "tests": 3,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.notification.semantic.NotificationDeliveryAttemptSemanticRemediationTest": {
+        "seconds": 0.166,
+        "prior_baseline_seconds": 0.225,
+        "report_sha256": "4859c9d733604ac928349a4aa0280cca89bfc583bc4dafaec511082031eac2fd",
+        "artifact_id": 12803024003,
+        "counts": {
+          "tests": 4,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.monitoring.infrastructure.query.JpaMonitoringQueryAdapterTest": {
+        "seconds": 0.187,
+        "prior_baseline_seconds": 1.043,
+        "report_sha256": "8177340b686ea5b60acc04016d23ff90713a155bc27b3f5d2685355d17e2549d",
+        "artifact_id": 12803024003,
+        "counts": {
+          "tests": 1,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.organization.infrastructure.persistence.OrganizationResponsibilityApiProvisioningMigrationTest": {
+        "seconds": 7.97,
+        "prior_baseline_seconds": 9.541,
+        "report_sha256": "284d3c1ee39229e80f50bd20667c3829904fa7033cd2f0668b87b42bd4d48e87",
+        "artifact_id": 12803024003,
+        "counts": {
+          "tests": 1,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.hse.infrastructure.persistence.HseLifecycleSemanticPostgresIntegrationTest": {
+        "seconds": 4.978,
+        "prior_baseline_seconds": 6.856,
+        "report_sha256": "30e6f8ae83c97665c2d225de2be78c4af5b40d697f1d1d7878ccdd2f11554340",
+        "artifact_id": 12803024003,
+        "counts": {
+          "tests": 13,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.workflow.infrastructure.persistence.CustodyProtectedProductPublicationApprovalPostgresIntegrationTest": {
+        "seconds": 14.149,
+        "prior_baseline_seconds": 15.848,
+        "report_sha256": "2da368676639bcb2a5fb6091ad4022d3e14b901f9e0b1326397f69b369b0bea7",
+        "artifact_id": 12803024003,
+        "counts": {
+          "tests": 14,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.organization.infrastructure.persistence.OrganizationGreenfieldScopePersistenceTest": {
+        "seconds": 15.287,
+        "prior_baseline_seconds": 26.188,
+        "report_sha256": "de8cd0a3a1408f2c9fa793512edf1fc73098d7e1dc23252b2581d7b8c08f0a27",
+        "artifact_id": 12803024003,
+        "counts": {
+          "tests": 2,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.identity.infrastructure.persistence.LocalCredentialSecurityGenerationPostgresIntegrationTest": {
+        "seconds": 13.717,
+        "prior_baseline_seconds": 15.057,
+        "report_sha256": "68454be9d549ca4e15a9e63f393cf8a104f04f79c926f2ce51b1b5598dd6cd97",
+        "artifact_id": 12803024003,
+        "counts": {
+          "tests": 8,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.topology.infrastructure.persistence.ProtectedFacilityOwnershipPostgresIntegrationTest": {
+        "seconds": 7.717,
+        "prior_baseline_seconds": 19.165,
+        "report_sha256": "65bf96162318848f27677fc8ed4f67acfdcd48d716f5b6bc0506644e506fe96a",
+        "artifact_id": 12803024003,
+        "counts": {
+          "tests": 23,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.telemetry.semantic.TrustedTelemetryReadingIntegrityMigrationTest": {
+        "seconds": 2.076,
+        "prior_baseline_seconds": 1.854,
+        "report_sha256": "9801d1a328aba01d8e50c09c275ff770c6c2ea3e4b50bfe0f5d4b7f904196fb2",
+        "artifact_id": 12803024003,
+        "counts": {
+          "tests": 5,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.topology.infrastructure.persistence.EngineeringGraphDraftPostgresIntegrationTest": {
+        "seconds": 10.778,
+        "prior_baseline_seconds": 8.638,
+        "report_sha256": "377a3a52ac080dfc1a441142841fcfd9f3656ec5fc8605b953c36d290e6600c4",
+        "artifact_id": 12803024003,
+        "counts": {
+          "tests": 5,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.identity.infrastructure.persistence.ProtectedProductPublicationAuthorizationPostgresIntegrationTest": {
+        "seconds": 29.158,
+        "prior_baseline_seconds": 31.2,
+        "report_sha256": "e1f7dc17f4ce41e63cf635fb415c56ab2a07dc3dfda7039f99e5b946f9a77329",
+        "artifact_id": 12803024003,
+        "counts": {
+          "tests": 20,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.organization.infrastructure.persistence.OrganizationEmployeeBirthDataMigrationTest": {
+        "seconds": 20.205,
+        "prior_baseline_seconds": 20.678,
+        "report_sha256": "46931f967929d12fa12d3895f95f9ad965705ed18d2784aac296bf114ac857fc",
+        "artifact_id": 12803024003,
+        "counts": {
+          "tests": 2,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.identity.application.service.TopologyScopedAccessPostgresIntegrationTest": {
+        "seconds": 4.326,
+        "prior_baseline_seconds": 4.736,
+        "report_sha256": "3cf8dce734779fcdd98bbea9bc12972cd7f88ce9e664ca7403ef1409db2dc367",
+        "artifact_id": 12803024003,
+        "counts": {
+          "tests": 11,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.topology.infrastructure.persistence.ProtectedStationAdmissionPostgresIntegrationTest": {
+        "seconds": 108.594,
+        "prior_baseline_seconds": 133.166,
+        "report_sha256": "52d19f9ab70997a3a5fa057c9838f8b04cc9dea822a068f985dfbfa78883b64b",
+        "artifact_id": 12803024003,
+        "counts": {
+          "tests": 46,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.planning.infrastructure.persistence.PlanTargetSemanticPostgresIntegrationTest": {
+        "seconds": 4.512,
+        "prior_baseline_seconds": 9.019,
+        "report_sha256": "899185cfef8ce53ba63e73415fdf8eb9d9f1d94cfb2f7a492ceb26e01bc70049",
+        "artifact_id": 12803024003,
+        "counts": {
+          "tests": 10,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.identity.infrastructure.persistence.OperationAuthenticationQueryPostgresIntegrationTest": {
+        "seconds": 15.814,
+        "prior_baseline_seconds": 26.145,
+        "report_sha256": "2ef44db0b59384c9cb10f90419ea9631cf0b3a173d28604aae7b8cc5a4ddac58",
+        "artifact_id": 12802844427,
+        "counts": {
+          "tests": 26,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.risk.infrastructure.persistence.RiskGovernancePostgresIntegrationTest": {
+        "seconds": 14.384,
+        "prior_baseline_seconds": 18.031,
+        "report_sha256": "2557ae03ed8e13a5f542517ee014e8533c45b01d05922141bd51f29d554b9634",
+        "artifact_id": 12802844427,
+        "counts": {
+          "tests": 10,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.integrity.infrastructure.persistence.IntegrityAssessmentSemanticPostgresIntegrationTest": {
+        "seconds": 2.313,
+        "prior_baseline_seconds": 3.059,
+        "report_sha256": "e91ca0c1c100edb312786607114d58c3552393b3856ef7cce763e8ec48fb18a5",
+        "artifact_id": 12802844427,
+        "counts": {
+          "tests": 4,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.planning.infrastructure.persistence.PlanningSemanticPostgresTest": {
+        "seconds": 3.56,
+        "prior_baseline_seconds": 5.179,
+        "report_sha256": "8ee02b7ee0820307cf380e81a84f2ce5ef38dd28a46aae1a48b4cbddbddcb1cf",
+        "artifact_id": 12802844427,
+        "counts": {
+          "tests": 9,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.identity.infrastructure.security.AuthorizationAssertionTrustTest": {
+        "seconds": 0.214,
+        "prior_baseline_seconds": 0.114,
+        "report_sha256": "b26cd15c7999a88f02dc137487561edd8b02adc52a55c1f4625698183fb36ef8",
+        "artifact_id": 12802844427,
+        "counts": {
+          "tests": 3,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.alarm.infrastructure.persistence.AlarmShelvingSemanticPostgresIntegrationTest": {
+        "seconds": 7.287,
+        "prior_baseline_seconds": 9.337,
+        "report_sha256": "7139a7004b10be38e43c9b04acfbc6ddf4b1de6626256d9c1dca1407c3dc25bf",
+        "artifact_id": 12802844427,
+        "counts": {
+          "tests": 13,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.identity.semantic.UserPermissionGrantIntegrityMigrationTest": {
+        "seconds": 1.872,
+        "prior_baseline_seconds": 2.084,
+        "report_sha256": "6f0b90153dfb2745d2b4d97401fab917fa5f524742efc8f7fe0663b516758185",
+        "artifact_id": 12802844427,
+        "counts": {
+          "tests": 2,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.identity.infrastructure.persistence.ProviderLinkSecurityGenerationPostgresIntegrationTest": {
+        "seconds": 17.392,
+        "prior_baseline_seconds": 20.523,
+        "report_sha256": "5d2b1a6cecf3040128d5c4ebfe959b4812412541d755163512ba7e0bbb9e719a",
+        "artifact_id": 12802844427,
+        "counts": {
+          "tests": 13,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.topology.qualification.TopologyEngineeringOperatorQualificationTest": {
+        "seconds": 72.673,
+        "prior_baseline_seconds": 97.762,
+        "report_sha256": "0a79aa031f866aeced82c5339546474b36afb21fd39126a855ef7837587bd5f0",
+        "artifact_id": 12802844427,
+        "counts": {
+          "tests": 8,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.platform.workbench.HidraOperationalWorkbenchServiceTest": {
+        "seconds": 0.508,
+        "prior_baseline_seconds": 0.806,
+        "report_sha256": "4d4c0b6fdb5e039d752c1064efc061257d1b2a6529bb50d4504fad32d24d5bcb",
+        "artifact_id": 12802844427,
+        "counts": {
+          "tests": 7,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.simulation.infrastructure.persistence.SimulationSemanticPostgresIntegrationTest": {
+        "seconds": 4.987,
+        "prior_baseline_seconds": 7.287,
+        "report_sha256": "1c66c386b50688057b9542ff70d4b89c4c1059f03e0313642799f0a2dd6ad56b",
+        "artifact_id": 12802844427,
+        "counts": {
+          "tests": 8,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.documents.infrastructure.persistence.DocumentsSemanticPostgresTest": {
+        "seconds": 4.159,
+        "prior_baseline_seconds": 6.315,
+        "report_sha256": "51fe3aedbf26295e67d4c143c1724c268ca1527ee7515e0b19007e6600d984b7",
+        "artifact_id": 12802844427,
+        "counts": {
+          "tests": 12,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.custody.qualification.ProductEngineeringOperatorQualificationTest": {
+        "seconds": 49.97,
+        "prior_baseline_seconds": 0,
+        "report_sha256": "48003a4677e0c17dc5405c97395c68ad26a646c8a7f537f50ce5bde959dd0cd6",
+        "artifact_id": 12802844427,
+        "counts": {
+          "tests": 14,
+          "errors": 2,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.identity.infrastructure.persistence.ProtectedOperationIdentityParticipantPostgresIntegrationTest": {
+        "seconds": 20.965,
+        "prior_baseline_seconds": 31.176,
+        "report_sha256": "46bd52feb7724d90b0180fe4ac2a6c7d76299dd7e6fb4b85f575c96e260d7899",
+        "artifact_id": 12802844427,
+        "counts": {
+          "tests": 13,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.notification.semantic.NotificationDeliveryAttemptIntegrityMigrationTest": {
+        "seconds": 1.725,
+        "prior_baseline_seconds": 1.507,
+        "report_sha256": "2d183515081cbfc7c8d5f327fb6f337cc9fafaab0a54c8b03e4cae3e578ff5d5",
+        "artifact_id": 12802844427,
+        "counts": {
+          "tests": 4,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.identity.infrastructure.persistence.ProtectedTransactionLifecyclePostgresIntegrationTest": {
+        "seconds": 11.133,
+        "prior_baseline_seconds": 15.377,
+        "report_sha256": "22a9c752cefb9e24a0cdca85856defdbff4ff9ad5da4303fc47fa11054ea4e84",
+        "artifact_id": 12802844427,
+        "counts": {
+          "tests": 26,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.custody.infrastructure.persistence.SuppliedFluidPropertyNativeHttpPostgresIntegrationTest": {
+        "seconds": 40.358,
+        "prior_baseline_seconds": 44.953,
+        "report_sha256": "fbc9e6dd5d015e7d7ed8d8683f65948b32719cffe3a5847ac099c4050a37315f",
+        "artifact_id": 12802844427,
+        "counts": {
+          "tests": 14,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      },
+      "dz.sh.hidra.modules.reporting.infrastructure.persistence.ReportingSemanticPostgresIntegrationTest": {
+        "seconds": 5.761,
+        "prior_baseline_seconds": 14.099,
+        "report_sha256": "ab0ee33b12f4dd8e58dd52beac12cbf0efddb3f7fca9877d59c28875909b4326",
+        "artifact_id": 12802844427,
+        "counts": {
+          "tests": 14,
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0
+        }
+      }
+    }
   }
 }

@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedEmployeeAppointmentAdmissionCoordinatorTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-23
+ * @UpdatedOn   : 2026-10-28
  *
  * @Type        : Class
  * @Layer       : Test
@@ -981,6 +981,55 @@ class ProtectedEmployeeAppointmentAdmissionCoordinatorTest {
                 verify(f.party, never()).requireCurrent(any());
                 verify(f.storage, never()).mutate(any(), any());
             }
+        }
+    }
+
+    @Test void managedFlushFinalPreparationRetainsNativeFailureWithoutChangingPublicDenial() {
+        try(var f=new WriteFixture()) {
+            var ticket=f.acquire();provisionalFixture(f);
+            var result=mock(dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.MutationReceipt.class);
+            when(result.kind()).thenReturn(EmployeeAppointmentCommand.Kind.CREATE);when(result.requestId()).thenReturn("req");
+            when(f.storage.mutate(f.storageTicket,f.command)).thenReturn(result);
+            f.coordinator.apply(ticket);
+            var original=new IllegalStateException("synthetic final native expiry");
+            doThrow(original).when(f.identity).requireCurrent(f.nativeTicket);
+            var failure=assertThrows(AccessDeniedException.class,()->f.coordinator.prepareFinal(ticket));
+            assertEquals("Protected appointment admission unavailable",failure.getMessage());assertNull(failure.getCause());
+            assertSame(original,failure.getSuppressed()[0].getCause());
+            String diagnostic=failure.getSuppressed()[1].getMessage();
+            assertTrue(diagnostic.startsWith("Protected appointment boundary timings (ns): prepareFinal ["));
+            assertTrue(diagnostic.contains("current-write="));assertFalse(diagnostic.contains(original.getMessage()));
+            assertTrue(f.holder.isRollbackOnly());assertThrows(AccessDeniedException.class,()->ticket.beforeCommit(false));
+            verify(f.storage,never()).prepareFinalWrite(any());verify(f.storage,never()).finalizeWrite(any());
+            verify(f.executor,atLeastOnce()).rejectAdmission();
+        }
+    }
+    @Test void finalStoragePreparationRetainsOriginalAndStageWithoutAllowingGuard() {
+        try(var f=new WriteFixture()) {
+            var ticket=f.acquire();provisionalFixture(f);f.coordinator.persistProvisional(ticket);f.coordinator.prepareCommitProof(ticket);
+            var original=new IllegalStateException("synthetic private storage rejection");
+            doThrow(original).when(f.storage).prepareFinalWrite(f.storageTicket);
+            var failure=assertThrows(AccessDeniedException.class,()->f.coordinator.prepareFinalWrite(ticket));
+            assertEquals("Protected appointment admission unavailable",failure.getMessage());assertNull(failure.getCause());
+            assertSame(original,failure.getSuppressed()[0]);
+            assertTrue(failure.getSuppressed()[1].getMessage().contains("storage-final-write="));
+            assertTrue(f.holder.isRollbackOnly());assertThrows(AccessDeniedException.class,()->ticket.beforeCommit(false));
+            verify(f.storage,never()).finalizeWrite(any());verify(f.executor,atLeastOnce()).rejectAdmission();
+        }
+    }
+    @Test void finalReplayRetainsNestedFailureWithoutExposingItAsPublicCause() {
+        try(var f=new WriteFixture(create(),ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY)) {
+            var result=replayResult();when(f.storage.mutate(f.storageTicket,f.command)).thenReturn(result);
+            var ticket=f.acquire();f.coordinator.apply(ticket);
+            var original=new IllegalStateException("synthetic private replay rejection");
+            when(f.storage.prepareFinalReplay(f.storageTicket)).thenThrow(original);
+            var failure=assertThrows(AccessDeniedException.class,()->f.coordinator.prepareFinal(ticket));
+            assertEquals("Protected appointment admission unavailable",failure.getMessage());assertNull(failure.getCause());
+            var nested=failure.getSuppressed()[0];assertSame(original,nested.getSuppressed()[0]);assertNull(nested.getCause());
+            assertTrue(failure.getSuppressed()[1].getMessage().contains("prepare-final-replay="));
+            assertTrue(nested.getSuppressed()[1].getMessage().contains("storage-final-replay="));
+            assertTrue(f.holder.isRollbackOnly());assertThrows(AccessDeniedException.class,()->ticket.beforeCommit(false));
+            verify(f.storage,never()).finalizeReplay(any());
         }
     }
 

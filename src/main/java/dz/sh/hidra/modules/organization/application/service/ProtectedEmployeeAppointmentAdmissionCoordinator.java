@@ -329,16 +329,21 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
 
     /** Called after managed flush, including replay; no authority is cached from a previous request. */
     void prepareFinal(WriteAdmission admission) {
+        var timings=new BoundaryTimings("prepareFinal");
         try {
             if(admission==null || admission.owner!=this || admission.detachedResult==null)throw denied();
             if(admission.referenceUse==ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY) {
+                timings.start("prepare-final-replay");
                 if(!admission.detachedResult.equals(prepareFinalReplay(admission)))throw denied();
             } else {
+                timings.start("current-write");
                 requireCurrentWrite(admission);
+                timings.start("storage-mutate");
                 if(!admission.detachedResult.equals(storage.mutate(admission.repositoryAdmission,admission.command)))throw denied();
+                timings.start("prepare-final-write");
                 prepareFinalWrite(admission);
             }
-        }catch(RuntimeException failure){if(admission!=null)admission.invalidate();executor.rejectAdmission();throw denied();}
+        }catch(RuntimeException failure){if(admission!=null)admission.invalidate();executor.rejectAdmission();throw finalPreparationDenied(failure,timings);}
     }
 
     void finalizeOperation(WriteAdmission admission) {
@@ -556,17 +561,20 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
 
     /** FLUSHING callback after managed work: no new intent, sample or proof issuance. */
     void prepareFinalWrite(WriteAdmission admission) {
+        var timings=new BoundaryTimings("prepareFinalWrite");
         try {
+            timings.start("current-write");
             requireCurrentWrite(admission);
             if (!admission.proofRequested || !admission.provisionalClosed || admission.finalPrepared
                     || admission.referenceUse == ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY) throw denied();
+            timings.start("storage-final-write");
             storage.prepareFinalWrite(admission.repositoryAdmission);
             if (!admission.ready()) throw denied();
             admission.finalPrepared = true;
         } catch (RuntimeException failure) {
             if (admission != null) admission.invalidate();
             executor.rejectAdmission();
-            throw denied();
+            throw finalPreparationDenied(failure,timings);
         }
     }
 
@@ -588,16 +596,19 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
 
     /** FLUSHING: an identical retry needs no provisional permit or new proof. */
     dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.MutationReceipt prepareFinalReplay(WriteAdmission admission) {
+        var timings=new BoundaryTimings("prepareFinalReplay");
         try {
+            timings.start("current-write");
             requireCurrentWrite(admission);
             if(admission.referenceUse!=ProtectedEmployeeAppointmentRepositoryPort.ReferenceUse.REPLAY
                     || admission.provisionalStarted || admission.proofRequested || admission.replayPreparationStarted)throw denied();
             admission.replayPreparationStarted=true;
+            timings.start("storage-final-replay");
             var result=Objects.requireNonNull(storage.prepareFinalReplay(admission.repositoryAdmission));
             if(!result.historicalReplay() || result.kind()!=admission.command.kind()
                     || !result.requestId().equals(admission.command.requestId()) || !admission.ready())throw denied();
             admission.finalPrepared=true;return result;
-        }catch(RuntimeException failure){if(admission!=null)admission.invalidate();executor.rejectAdmission();throw denied();}
+        }catch(RuntimeException failure){if(admission!=null)admission.invalidate();executor.rejectAdmission();throw finalPreparationDenied(failure,timings);}
     }
 
     void finalizeReplay(WriteAdmission admission) {
@@ -746,6 +757,14 @@ public final class ProtectedEmployeeAppointmentAdmissionCoordinator {
         @Override public void suspend() { invalidate(); }
         @Override public void afterCompletion(int status) { active = false; }
         @Override public String toString() { return "ReadAdmission[opaque appointment owners]"; }
+    }
+
+    /** Internal final-preparation diagnostics stay suppressed, preserving the existing public cause/status boundary. */
+    private static AccessDeniedException finalPreparationDenied(RuntimeException original, BoundaryTimings timings) {
+        var failure=denied();
+        failure.addSuppressed(original);
+        failure.addSuppressed(new IllegalStateException(timings.snapshot()));
+        return failure;
     }
 
     /** Keep internal provenance while retaining the fixed non-disclosing outward error. */

@@ -4962,6 +4962,8 @@
         "finalPolicyReadRejectsMissingPreparationUnsupportedHistoryAndRepeat",
         "finalPolicyReadRejectsSuspensionRollbackAndPostGuardOwnerQueries",
         "finalPreparationRechecksOwnersAndGuardAndBeforeCommitPerformNoOwnerCallbacks",
+        "finalReplayRetainsNestedFailureWithoutExposingItAsPublicCause",
+        "finalStoragePreparationRetainsOriginalAndStageWithoutAllowingGuard",
         "foreignCoordinatorCannotReuseAnIssuedReadHandle",
         "foreignCoordinatorCannotWriteOrConsumeTheOriginalPermit",
         "foreignCoordinatorOrThreadCannotPrepareProofForTheOriginalWrite",
@@ -4975,6 +4977,7 @@
         "journalMaterializationFailureCannotReachFinalPreparationOrGuard",
         "legacyChangedDescriptorsAndFakeDefaultTimeCannotBecomeWriteAuthority",
         "legacyResolutionOccursOnlyAfterTheOriginalNativeSampleAndRetainedOwnerFences",
+        "managedFlushFinalPreparationRetainsNativeFailureWithoutChangingPublicDenial",
         "mapsTypedCommandsAndQueriesToFixedNativeActions",
         "missingOrRepeatedFinalPreparationAndPostGuardOwnerReadPoisonTheTicket",
         "missingPartyOrStorageTicketVetoesTheOriginalWriteTransaction",
@@ -5017,7 +5020,7 @@
       "lane": "unit-architecture",
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinatorTest.java",
-      "source_sha256": "3a957b370d667d2e8e9fbffd163931158d53ea15b7109b7a0e7c263526243a08",
+      "source_sha256": "6ac56981c312f136e12881b42b005a188eb296e9a43267c775dfd5a5bc31696d",
       "supports": []
     },
     {

@@ -3403,6 +3403,63 @@ exact-head Full success and independent case/evidence review. HAPI-599 remains
 NOT_IMPLEMENTED/BLOCKED; no protected atomic writer, Package C, SITE, release or
 deployment is selected by this repair.
 
+### HAPI-599 verification hold — Full959 Organization final-rejection diagnostic repair — 2026-10-28
+
+Owner Fail refreshes exact main `af15b8a53298685cda3b400d61456328d9b12200`.
+Manually dispatched Full959/run `40709188619` failed only PostgreSQL shard0
+and the dependent Full gate; unit/architecture, static, API/dictionary and nine
+other PostgreSQL shards succeeded. Docs686 passed. The physical dictionary drift
+is resolved. Shard0 ran the unchanged HAPI-778 appointment concurrency suite:
+82 cases, zero assertion failures, one error, no skips. The failing case is
+`genuineExternalOriginsResolveLegacyDefaultsThroughTheirBoundNativeIssuers`,
+OIDC legacy create at final preparation after managed flush. LDAP and AD iterations
+committed. OIDC diagnostic call elapsed4.483545040s and observed fence hold lower
+bound4.478509499s, with guard not entered; configured work cap7.5s. This is not
+proof that either the work cap or an authority expiry caused the rejection.
+
+**Evidence limit and actual defect.** `prepareFinal` catches the original failure,
+invalidates admission/rejects the transaction, then throws a fresh generic denial.
+It discards the existing nested owner cause and stage timings. Its final-write and
+replay wrappers likewise discard underlying errors. The retained Full959 trace
+therefore cannot identify which current owner, storage image, native interval or
+policy check rejected. Do not label this flaky, enlarge a deadline, skip the case
+or claim the underlying rejection resolved without evidence. A bounded diagnostic
+repair is the necessary next CI-first step; it does not accept the remaining B/C.
+
+Exact message: `fix(organization): retain final appointment rejection diagnostics`.
+CREATE/DELETE none. MODIFY only:
+- `src/main/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinator.java`
+- `src/test/java/dz/sh/hidra/modules/organization/application/service/ProtectedEmployeeAppointmentAdmissionCoordinatorTest.java`
+- `.github/ci-test-inventory.json` (only this modified unit suite's cases/source hash)
+- `doc/roadmap/TASKS_HPS-006.md`
+
+The three final-preparation wrappers now retain the original failure as a suppressed
+exception and append existing diagnostic-only BoundaryTimings with explicit final
+stages. Public message and null-cause boundary remain unchanged: the HTTP handler
+walks causes for status selection, not suppressed exceptions, and emits no diagnostic
+payload. Rejection/invalidation, holder poisoning and commit veto are preserved.
+No owner query, SQL order, permission, clock authority, native/source/grant/policy
+expiry, proof/storage validity,7.5s processing cap or final guard is changed.
+No production storage, migration, dictionary, shard or workflow modification.
+
+Three new unit regressions cover final native/current-owner, final storage-write
+and nested replay failures; assert original suppressed provenance/stage, unchanged
+message/null public cause, rollback and no final guard. Previous76 cases remain,
+for79 in that suite;496 active classes and3,669 expected cases overall. The82-case
+PostgreSQL suite is byte-for-byte unchanged, and its failure remains mandatory.
+All timings/provenance/lane/classification outside this unit case/hash update stay
+unchanged; ten required shards remain.
+
+Available local checks: both changed Java sources parse; inventory validation and
+88 CI inventory/evidence validator self-tests pass. Focused Maven command exits127
+(`mvn: command not found`), so no new JUnit or PostgreSQL success is claimed.
+Documentation/link and whitespace checks precede guarded publication. This repairs
+lost diagnostics only; the underlying OIDC final rejection remains unresolved
+pending hosted evidence. Observe exact-head Full/Fast/Docs startup and stop, then
+use any retained actual cause/stage to repair the responsible invariant without a
+waiver. HAPI-599 remains NOT_IMPLEMENTED/BLOCKED, and current position acceptance,
+atomic writer, Package C, release and deployment remain unselected/pending.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

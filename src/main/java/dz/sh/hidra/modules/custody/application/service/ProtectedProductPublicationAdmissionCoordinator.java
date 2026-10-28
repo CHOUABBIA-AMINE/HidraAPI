@@ -117,8 +117,9 @@ public class ProtectedProductPublicationAdmissionCoordinator {
             if(sampledAt.isBefore(i.sampledAt()) || !sampledAt.isBefore(validUntil))throw invalid();
             a.result=new Contribution(repository.scope(a.repository),p.generation(),i.bindingId(),i.sessionId(),i.userId(),
                     sampledAt,validUntil,i.backendPid(),i.transactionId(),snapshots,policy,approval);
-            // This check covers eligibility and sealing; do not reread the same graph twice.
-            a.permit=executor.sealAdmission();requireCurrent(a);return a.result;
+            // Initial owner contributions already validate admission. The service rechecks every
+            // owner immediately before provisional DML and after it (or after materializing reads).
+            a.permit=executor.sealAdmission();return a.result;
         }catch(RuntimeException error){executor.rejectAdmission();throw error;}
     }
     private static List<Need> needs(Facts f) {

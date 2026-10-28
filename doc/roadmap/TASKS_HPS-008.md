@@ -5035,6 +5035,100 @@ creation/queue/start, then STOP. HAPI-596 remains NOT_IMPLEMENTED/IN_PROGRESS;
 Package B acceptance, separately registered C and final acceptance remain pending.
 HAPI-594/595 stay closed; no dependent task, qualification, release or deployment.
 
+### HAPI-596 Package B — Full935 typed trigger dispatch and bounded recheck repair — 2026-10-28
+
+Owner Fail selects exact main1da1ff550864b41d25fa71feb23c13ec0f343bf6,
+parent6bfdd45e2517aadc6168c2877ba9c40e080016df,
+tree721fc525aede81f575c0369bdea9af51f9fcabc1.
+Full935/run40641790221 failed; Fast239/run40641790242 and
+Docs650/run40641790246 succeeded. Unit/architecture, static, API/dictionary and
+six PostgreSQL shards succeeded. Shard4/job122661377735 executed311 cases with
+3 failures,14 errors and zero skips. Its publication suite accounts for all17:
+publication INSERTs reach the shared trigger and fail because its combined
+relation/request-kind condition plans NEW.kind against the snapshot row, which
+has no kind column; some calls independently exceed the unchanged500ms aggregate
+budget (observed515/516/546 user statements); two negative Workflow lookup tests
+expect exceptions although candidateForWorkflow deliberately maps DENIED to an
+empty Optional. The concurrency test reports zero successful publishers while
+the publication INSERT path is defective; retain its exactly-one assertion.
+The previous actor-mismatch and empty-synchronization errors are absent; the
+real suspension/restoration and poisoned-nesting case is no longer a failed case.
+No full B or performance acceptance follows from this partial evidence.
+
+Exact repair message:
+`fix(custody): dispatch publication trigger by row type and bound rechecks`.
+CREATE exactly:
+
+- src/main/resources/db/migration/V20261028_001__custody_publication_trigger_row_dispatch.sql
+
+MODIFY exactly:
+
+- src/main/java/dz/sh/hidra/modules/custody/application/service/ProtectedProductPublicationAdmissionCoordinator.java
+- src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcProductRevisionPublicationRepositoryAdapter.java
+- src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/ProductRevisionPublicationPostgresIntegrationTest.java
+- .github/ci-test-inventory.json
+- doc/roadmap/TASKS_HPS-008.md
+
+This is the responsible B repair, not a new feature or policy. The additive
+migration is ordered after the retained181-migration chain and asserts the exact
+old admission-function body hash before CREATE OR REPLACE. It moves NEW.kind
+inside a separate request-table branch so PostgreSQL plans that expression only
+for its actual row type. All ownership/origin/source/epoch/state/time/receipt
+predicates and immutable triggers remain. Preserve V20261027_006 and all earlier
+migration bytes, existing row evidence, function identity/owner/ACL, SECURITY
+DEFINER and fixed search_path. Only the exact private repository function-body
+fingerprint changes to the corrected body; never accept both hashes or relax
+its physical-catalog safety checks. No grant, role, relation shape or SQL mutation
+template is changed.
+
+Initial Identity/Party/Workflow/unit contributions already validate admission.
+Remove only collect's additional full aggregate recheck immediately after sealing.
+Keep initial native/currentness checks, the complete aggregate requireCurrent
+immediately before provisional DML, the complete post-DML check (or post-read
+materialization check), retained37/50 fences, one final scalar SQL guard and the
+same500/750/250ms limits. All reads still disclose only after known protected
+commit. No cached authorization, cross-call ticket, deadline reset, budget
+increase, platform executor change or native-owner export is introduced. Reduced
+work is source-backed; its actual hosted elapsed time remains unmeasured here.
+
+The two denial tests now assert exact Product publication DENIED at direct
+execute(Command.workflow(...)) and empty Optional through candidateForWorkflow.
+Also assert an unknown digest returns empty with both authenticated and absent
+principals. Existing revoked/foreign/replay/count checks remain. All28 previous
+case identities are retained. Add only
+publicationTriggerUpgradePreservesHistoryAndGuardIdentity: in a separate synthetic
+database migrate through20261027.006, retain complete history and guard OID/owner/
+ACL/security configuration, migrate only through20261028.001, require exactly one
+applied correction, unchanged prior checksums/metadata and the corrected body
+hash, then drop that synthetic database. Main native round-trip and SQL-negative
+cases exercise fresh-schema behavior. Register this29th case and refresh only
+this suite's source hash; existing lanes, timings, identities and gates remain.
+
+Local evidence:19 unchanged documentation self-tests PASS; all three changed
+Java sources parse with available Java17 compiler (syntax only). Exact original
+migration bytes, predecessor/corrected function-body hashes and single nested
+branch transformation, retained assertions/cases, inventory delta, append-only
+phase evidence and six-path scope must be verified before publication. Maven
+cannot run (mvn absent); no Java21/Maven/Docker/PostgreSQL environment is installed
+under AGENTS11.1. Fresh/upgrade SQL execution, Workflow/native/security, actual
+500ms elapsed performance and all29 cases remain hosted acceptance obligations.
+
+The new migration necessarily invalidates the prior physical dictionary capture.
+Preserve DATA_DICTIONARY.md rather than inventing catalog metadata or relabeling
+old evidence. The API/catalog lane must retain the actual migrated schema and
+verification artifacts; its dictionary equality gate remains strict and may fail
+until the already registered actual-catalog follow-up is performed. After hosted
+capture, the next responsible repair includes
+`docs(custody): refresh product publication storage dictionary` from real evidence,
+with full source/catalog validation and deterministic rendering. This pending
+artifact obligation is admitted under AGENTS11.1(6), not hidden as a pass or used
+to block this initial CI-first source correction. Do not dispatch/await another
+stage automatically. Publish expected1da1ff55, verify tree/parent/message/blobs,
+observe applicable exact-SHA CI creation/queue/start, then STOP. HAPI-596 remains
+NOT_IMPLEMENTED/IN_PROGRESS; B acceptance and separately registered C/final
+acceptance remain pending.594/595 stay closed; no solver, engineering/SITE,
+release, deployment or dependent task is selected.
+
 <a id="hapi-597"></a>
 ## HAPI-597 — Multi-product ownership/API compatibility qualification
 

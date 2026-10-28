@@ -1292,6 +1292,7 @@
         "nativeRevocationDeniesHistoricalReadAndReplay",
         "ordinaryPublisherSqlCannotForgeNoncontiguousEpochOrBackwardClock",
         "prepareAndPublishReplayReturnOriginalReceiptAndObservedLaterHead",
+        "publicationTriggerUpgradePreservesHistoryAndGuardIdentity",
         "reactivateNeedsFreshApplicableApprovalAndExactUnitPolicy",
         "realExpiredFinalScalarGuardRollsBackCandidateAndReceipt",
         "receiptReadRequiresOriginalActorAndReportsObservedHead",
@@ -1308,7 +1309,7 @@
       "lane": "postgres-integration",
       "owner": "custody",
       "path": "src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/ProductRevisionPublicationPostgresIntegrationTest.java",
-      "source_sha256": "d75e4a53b331d200d19c408eef991b680a7cadc485faf50b376da2b53c0c9d7d",
+      "source_sha256": "2d8a1806b0adc9791da4bfc6253b37cf8842beccefd29eaf0283492d69b68ffb",
       "supports": []
     },
     {

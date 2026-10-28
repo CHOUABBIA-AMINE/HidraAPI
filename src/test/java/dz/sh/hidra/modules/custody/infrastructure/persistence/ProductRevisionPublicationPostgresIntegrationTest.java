@@ -908,7 +908,7 @@ public class ProductRevisionPublicationPostgresIntegrationTest {
         put(p,UUID.randomUUID(),1,1,absent());assertThat(preparePublication(p,prepareRequest,1,1).receipt()).isEqualTo(r.receipt());assertThat(candidates(p)).isEqualTo(1);
     }
     @Test void changedBodyOrActorCannotReplayReceipt(){publicationActor("LOCAL");UUID p=preparedProduct(absent()),request=UUID.randomUUID();var r=preparePublication(p,request,1,1);rejected(()->preparePublication(p,request,1,2));publicationActor("LOCAL");rejected(()->preparePublication(p,request,1,1));assertThat(candidates(p)).isEqualTo(1);}
-    @Test void twoCompanyRequestsAndUnknownDigestsDoNotRevealProtectedExistence(){publicationActor("LOCAL");UUID p=preparedProduct(absent());var r=preparePublication(p,UUID.randomUUID(),1,1);for(UUID id:List.of(p,UUID.randomUUID()))assertThatThrownBy(()->publications.execute(command(Kind.READ_CANDIDATE,"other-company",id,null,0,0,r.candidateDigest(),null,0,null,null,null,0,null))).hasMessage("Product publication DENIED");SecurityContextHolder.clearContext();assertThatThrownBy(()->publications.candidateForWorkflow(r.candidateDigest())).isInstanceOf(RuntimeException.class);assertThat(candidates(p)).isEqualTo(1);}
+    @Test void twoCompanyRequestsAndUnknownDigestsDoNotRevealProtectedExistence(){publicationActor("LOCAL");UUID p=preparedProduct(absent());var r=preparePublication(p,UUID.randomUUID(),1,1);for(UUID id:List.of(p,UUID.randomUUID()))assertThatThrownBy(()->publications.execute(command(Kind.READ_CANDIDATE,"other-company",id,null,0,0,r.candidateDigest(),null,0,null,null,null,0,null))).hasMessage("Product publication DENIED");assertThat(publications.candidateForWorkflow("0".repeat(64))).isEmpty();SecurityContextHolder.clearContext();assertThatThrownBy(()->publications.execute(ProductRevisionPublicationUseCase.Command.workflow(r.candidateDigest()))).hasMessage("Product publication DENIED");assertThat(publications.candidateForWorkflow(r.candidateDigest())).isEmpty();assertThat(publications.candidateForWorkflow("0".repeat(64))).isEmpty();assertThat(candidates(p)).isEqualTo(1);}
     @Test void revokedCatalogOrApprovalAllowsHistoricalReadAndWithdrawal(){publicationActor("LOCAL");UUID p=preparedProduct(absent());var r=published(p);jdbc.update("UPDATE hidra_custody_catalog_entry SET active=false WHERE id=?",PRODUCT);jdbc.update("UPDATE hidra_workflow_custody_publication_policy SET active=false WHERE company_party_id=?",COMPANY);
         assertThat(readPublication(Kind.READ_EXACT,p,r.publication().publicationId()).publication()).isEqualTo(r.publication());rejected(()->readPublication(Kind.ELIGIBLE_CURRENT,p,null));var w=transition(Kind.WITHDRAW,p,r.publication().publicationId(),1,null,UUID.randomUUID());assertThat(w.observedHead().state()).isEqualTo(State.WITHDRAWN);assertThat(events(p)).isEqualTo(2);
     }
@@ -950,7 +950,7 @@ public class ProductRevisionPublicationPostgresIntegrationTest {
         assertThat(TransactionSynchronizationManager.isSynchronizationActive()).isFalse();
         assertThatThrownBy(()->executor.execute(()->{try{publications.candidateForWorkflow(r.candidateDigest());}catch(RuntimeException swallowed){}return true;},()->{},()->{})).isInstanceOf(RuntimeException.class);
     }
-    @Test void nativeRevocationDeniesHistoricalReadAndReplay(){var f=publicationActor("LOCAL");UUID p=preparedProduct(absent()),request=UUID.randomUUID();var r=preparePublication(p,request,1,1);jdbc.update("UPDATE hidra_identity_login_session SET status='REVOKED',ended_at=clock_timestamp() WHERE user_id=? AND status='ACTIVE'",f.user());rejected(()->preparePublication(p,request,1,1));assertThatThrownBy(()->publications.candidateForWorkflow(r.candidateDigest())).isInstanceOf(RuntimeException.class);assertThat(candidates(p)).isEqualTo(1);}
+    @Test void nativeRevocationDeniesHistoricalReadAndReplay(){var f=publicationActor("LOCAL");UUID p=preparedProduct(absent()),request=UUID.randomUUID();var r=preparePublication(p,request,1,1);jdbc.update("UPDATE hidra_identity_login_session SET status='REVOKED',ended_at=clock_timestamp() WHERE user_id=? AND status='ACTIVE'",f.user());rejected(()->preparePublication(p,request,1,1));assertThatThrownBy(()->publications.execute(ProductRevisionPublicationUseCase.Command.workflow(r.candidateDigest()))).hasMessage("Product publication DENIED");assertThat(publications.candidateForWorkflow(r.candidateDigest())).isEmpty();assertThat(candidates(p)).isEqualTo(1);}
 
     @Test void historicalAndAdmissionPathsRetainActualDistinctFenceUnions(){publicationActor("LOCAL");UUID p=preparedProduct(absent());var sizes=new ArrayList<Integer>();doAnswer(i->{var fences=(List<dz.sh.hidra.platform.persistence.ProtectedRelationFence>)i.getArgument(1);assertThat(fences.stream().map(dz.sh.hidra.platform.persistence.ProtectedRelationFence::relation).distinct().count()).isEqualTo(fences.size());sizes.add(fences.size());return i.callRealMethod();}).when(publicationTarget()).captureImages(any(),anyList());var r=published(p);readPublication(Kind.READ_EXACT,p,r.publication().publicationId());transition(Kind.WITHDRAW,p,r.publication().publicationId(),1,null,UUID.randomUUID());assertThat(sizes).contains(37,50);assertThat(sizes).allMatch(n->n==37 || n==50);}
     @Test void storageWriterFirstRejectsCandidateAdmissionWithoutPartialEffect()throws Exception{publicationActor("LOCAL");UUID p=preparedProduct(absent());try(var connection=DriverManager.getConnection(POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword());var statement=connection.createStatement()){connection.setAutoCommit(false);statement.execute("LOCK TABLE "+PP+"_candidate IN ROW EXCLUSIVE MODE");rejected(()->preparePublication(p,UUID.randomUUID(),1,1));connection.rollback();}assertThat(candidates(p)).isZero();}
@@ -960,4 +960,25 @@ public class ProductRevisionPublicationPostgresIntegrationTest {
 
     @Test void companyRevocationBlocksHistoryAndWithdrawalWithoutErasingEvidence(){publicationActor("LOCAL");UUID p=preparedProduct(absent());var r=published(p);jdbc.update("UPDATE hidra_party_party SET status='INACTIVE' WHERE id=?",COMPANY);rejected(()->readPublication(Kind.READ_EXACT,p,r.publication().publicationId()));rejected(()->transition(Kind.WITHDRAW,p,r.publication().publicationId(),1,null,UUID.randomUUID()));assertThat(events(p)).isEqualTo(1);}
     @Test void explicitNativeDenyOverridesPublicationGrantBeforeCandidateEffect(){var f=publicationActor("LOCAL");UUID p=preparedProduct(absent());publicationGrant(f,"prepare","DENY","custody-company:"+COMPANY);assertThatThrownBy(()->preparePublication(p,UUID.randomUUID(),1,1)).hasMessage("Product publication DENIED");assertThat(candidates(p)).isZero();}
+
+    @Test void publicationTriggerUpgradePreservesHistoryAndGuardIdentity()throws Exception{
+        String database="publication_upgrade_"+UUID.randomUUID().toString().replace("-", "");
+        jdbc.execute("CREATE DATABASE "+database);
+        String url=POSTGRES.getJdbcUrl().replace("/"+POSTGRES.getDatabaseName(),"/"+database);
+        try{
+            var source=new org.springframework.jdbc.datasource.DriverManagerDataSource(url,POSTGRES.getUsername(),POSTGRES.getPassword());
+            var upgrade=new JdbcTemplate(source);
+            Flyway.configure().dataSource(source).target("20261027.006").load().migrate();
+            var history=upgrade.queryForList("SELECT installed_rank,version,script,checksum,success FROM flyway_schema_history ORDER BY installed_rank");
+            var guard=upgrade.queryForMap("SELECT oid,proowner,proacl::text AS acl,prosecdef,proconfig::text AS config FROM pg_proc WHERE oid='public.hidra_custody_publication_admit()'::regprocedure");
+            var latest=Flyway.configure().dataSource(source).target("20261028.001").load();
+            assertThat(latest.migrate().migrationsExecuted).isEqualTo(1);latest.validate();
+            assertThat(latest.info().pending()).isEmpty();
+            assertThat(upgrade.queryForList("SELECT installed_rank,version,script,checksum,success FROM flyway_schema_history ORDER BY installed_rank LIMIT ?",history.size())).isEqualTo(history);
+            assertThat(upgrade.queryForMap("SELECT oid,proowner,proacl::text AS acl,prosecdef,proconfig::text AS config FROM pg_proc WHERE oid='public.hidra_custody_publication_admit()'::regprocedure")).isEqualTo(guard);
+            assertThat(upgrade.queryForObject("SELECT encode(sha256(convert_to(prosrc,'UTF8')),'hex') FROM pg_proc WHERE oid='public.hidra_custody_publication_admit()'::regprocedure",String.class)).isEqualTo("a23cc60892de150168bacc81d637db033393637ad15c995dee0ddc5f9a1501de");
+        }finally{
+            jdbc.execute("DROP DATABASE "+database+" WITH (FORCE)");
+        }
+    }
 }

@@ -1835,6 +1835,87 @@ workflow until those gates pass. No Flyway version is reserved. Static
 inventory and source shape can be checked before publication; exact-SHA
 Full/Fast/Docs acceptance is pending and SITE is not claimed.
 
+
+
+### HAPI-599 Package A — durable identity, temporal persistence and history continuation — 2026-10-28
+
+**Owner package-boundary clarification.** The original **A / B / C** package
+structure remains authoritative. The earlier published A1 label describes only
+a *completed domain commit within Package A*; it is not a newly approved
+package, and no independently registered A2 or D stage is created. This
+continuation adds the remaining owner-private storage work under the SAME
+Package A. Future extra packages require explicit owner approval. This
+documentation records the classification without rewriting earlier append-only
+history or changing frozen task-table status.
+
+**Exact selected execution.** Previous source SHA
+`c4e87366f87b0d8a250e5249d13358352c5aa0f2` passed
+Full #946, Fast #249 and Docs #666. Owner Next selects a bounded
+Package A persistence commit, exact message:
+`feat(topology): persist installed units and guarded installation history`.
+CREATE only:
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/InstalledUnitRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcInstalledUnitRepositoryAdapter.java`
+- `src/main/resources/db/migration/V20261028_002__topology_installed_unit_identity_and_history.sql`
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/InstalledUnitPostgresIntegrationTest.java`
+
+MODIFY only `.github/ci-test-inventory.json` (one real new test class,
+seven cases, actual source SHA256) and `doc/roadmap/TASKS_HPS-006.md`.
+DELETE none. Do not alter earlier Flyway versions, public REST/OpenAPI,
+identity grants, existing Equipment or Assets models, approved manufacturer
+semantics, frozen ROADMAP/PHASES or unrelated registry entries. Reserved
+new migration version is `20261028.002` following the source-confirmed
+`V20261028_001` tail; verify uniqueness again at the guarded write.
+
+**Owned source and SQL contract.** Independent installed-unit immutable
+identity includes exact company, kind and explicitly classified provenance
+for manufacturer Party/model/serial. Physical identity uses unit id, never
+serial uniqueness; duplicate serials do not auto-merge. Owner-private
+persistence port and JDBC adapter return scoped exact reads, append
+installation evidence, optimistic revision closure and exact revision
+history. The new additive PostgreSQL schema enforces:
+1. Composite unit+company reference for installation, and a physical
+   `hidra_topology_equipment(id)` reference for the mounting position
+   (position company/business ownership still requires Package B).
+2. `btree_gist` effective-time half-open exclusion for **each unit** and
+   **each single-occupancy position**, enforced by PostgreSQL on simultaneous
+   writers, not only the Java snapshot validator.
+3. One-way closure of an open installation by expected revision, without
+   changing unit, position, company, start or recorded provenance.
+   The mutable effective projection and immutable per-revision event rows
+   remain separate: the first/open snapshot survives later closure.
+4. Native no-update/delete/truncate guards on identity/history and
+   reject-direct-event-insertion trigger protection. Repeated exact
+   identity registration is idempotent; changed contents are rejected.
+   Protected replace/relocate requires caller-managed same physical
+   transaction over close + append, with rollback on failure.
+
+**Synthetic validation and remaining acceptance.** One dedicated PostgreSQL
+Testcontainers class has seven tests: immutable unit/serial replay,
+versioned history, exclusion by unit/position, rollback, concurrent
+competing positions, direct mutation rejection and a fresh complete Flyway
+chain including `20261028.002`. The class is registered in the current
+ten-shard PostgreSQL CI inventory, with `baseline_seconds=0` explicitly
+UNMEASURED until actual execution. Local code/SQL review and source hashes
+are not PostgreSQL execution proof. The existing full CI runs on exact
+source SHA are required to admit this package.
+
+**Preservation and unfinished cross-owner obligations.** This is a
+private repository/storage capability only: no public use case, web
+controller, REST exposure or UI; no standalone grant, Party manufacturer
+role/kind/company eligibility, protected in-transaction admission or
+station connectivity qualification exists yet. **Package B** still owns
+live Identity/Party/position permissions, transaction admission and
+compensation/audit governance before any external mutation; **Package C**
+still owns authorized HTTP DTOs/contract and compatibility/consumer
+qualification. Existing `MaintainableAsset` ownership remains Assets-only;
+the optional link is only a neutral string and no Assets state is modified.
+No inferred simulator-ready manufacturer characteristic is asserted.
+HAPI-599 remains NOT_IMPLEMENTED/BLOCKED in the frozen registry until
+all its owner-scope, tests and API acceptance gates actually pass.
+This is NOT deployed, SITE accepted or numerical/P3 scope.
+
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

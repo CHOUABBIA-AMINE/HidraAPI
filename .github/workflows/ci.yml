@@ -370,17 +370,23 @@ jobs:
         fi
         psql --version
         mkdir -p target/database
-        DICTIONARY_ARGS=()
-        if [ -f .github/database-dictionary-ownership.json ]; then
-          DICTIONARY_ARGS+=(--ownership .github/database-dictionary-ownership.json --check doc/database/DATA_DICTIONARY.md)
-        fi
+        DICTIONARY_ARGS=(--ownership .github/database-dictionary-ownership.json)
         python3 .github/scripts/generate_data_dictionary.py \
           --collect target/database/schema.json \
           --source-sha "${{ github.sha }}" \
           --render target/database/DATA_DICTIONARY.md \
           "${DICTIONARY_ARGS[@]}" > target/database/verification.json
         cat target/database/verification.json
+        # Strict comparison remains mandatory after real migrated catalog capture.
+        python3 .github/scripts/generate_data_dictionary.py \
+          --input target/database/schema.json \
+          --source-sha "${{ github.sha }}" \
+          --render target/database/DATA_DICTIONARY.md \
+          --ownership .github/database-dictionary-ownership.json \
+          --check doc/database/DATA_DICTIONARY.md > target/database/comparison.json
+        cat target/database/comparison.json
     - name: Retain current database dictionary evidence
+      if: always()
       uses: actions/upload-artifact@v4
       with:
         name: hidra-database-schema-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}-api-contract
@@ -388,6 +394,7 @@ jobs:
           target/database/schema.json
           target/database/DATA_DICTIONARY.md
           target/database/verification.json
+          target/database/comparison.json
         if-no-files-found: error
     - name: Resolve OpenAPI compatibility base
       id: openapi-base

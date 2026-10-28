@@ -564,5 +564,29 @@
     ],
     "owner": "workflow",
     "purpose": "Workflow-owned empty explicit per-company publication definition/version/target/purpose policy; scalar company reference, no cross-owner FK, assignments, decisions, grants or qualification."
+  },
+  "public.hidra_topology_installed_unit": {
+    "evidence": [
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcInstalledUnitRepositoryAdapter.java",
+      "src/main/resources/db/migration/V20261028_002__topology_installed_unit_identity_and_history.sql"
+    ],
+    "owner": "topology",
+    "purpose": "Immutable Topology physical-unit identity and manufacturer/model/serial evidence, without Party eligibility attestation."
+  },
+  "public.hidra_topology_installed_unit_installation": {
+    "evidence": [
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcInstalledUnitRepositoryAdapter.java",
+      "src/main/resources/db/migration/V20261028_002__topology_installed_unit_identity_and_history.sql"
+    ],
+    "owner": "topology",
+    "purpose": "Topology effective installation projection with native temporal exclusions and optimistic closure; protected admission pending."
+  },
+  "public.hidra_topology_installed_unit_installation_event": {
+    "evidence": [
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcInstalledUnitRepositoryAdapter.java",
+      "src/main/resources/db/migration/V20261028_002__topology_installed_unit_identity_and_history.sql"
+    ],
+    "owner": "topology",
+    "purpose": "Immutable Topology installation history revision ledger populated by database trigger, distinct from effective projection."
   }
 }

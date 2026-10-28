@@ -1964,6 +1964,39 @@ or introduce a new A1/A2/D package. CI can reveal further defects; never
 preclaim a green gate.
 
 
+
+
+### HAPI-599 Package A — CI #948 physical dictionary ownership repair — 2026-10-28
+
+Full #948 on `6996cfcbfc1f35f1fab5f2f79b36abe12c8d9255` failed after
+Full #947 proxy/lock-capacity repair. The database dictionary renderer
+reported three unmapped owner-private tables:
+`public.hidra_topology_installed_unit`,
+`public.hidra_topology_installed_unit_installation` and
+`public.hidra_topology_installed_unit_installation_event`.
+These were created by the approved additive HAPI-599 Package A migration
+but omitted from reviewed `.github/database-dictionary-ownership.json`.
+No evidence supports relaxing owner validation or pretending the old
+`doc/database/DATA_DICTIONARY.md` is current.
+
+**Exact repair message and file scope.**
+`fix(topology): register installed-unit physical ownership and preserve catalog capture`.
+MODIFY ONLY `.github/database-dictionary-ownership.json`,
+`.github/workflows/ci.yml`, and `doc/roadmap/TASKS_HPS-006.md`.
+Register Topology as physical owner with precise source-linked semantic
+evidence for each relation. CI now captures and writes a real migrated
+catalog and its complete reviewed-ownership Markdown **before** applying
+the same strict `--check doc/database/DATA_DICTIONARY.md` comparison;
+`if: always()` retains the actual schema/catalog artifacts even on
+comparison failure. **The comparison is not disabled.** Its known
+remaining gate is approved regeneration of the checked-in dictionary
+using exact captured PostgreSQL metadata, not fabricated table columns.
+The next `Fail` should retrieve that real artifact, verify its
+relation evidence and register the reviewed generated dictionary under
+the existing Package A; only then can the Full gate be expected to
+pass. No new packages, tests skipped, production migration rewrites,
+security/OT changes or status promotion. HAPI-599 remains blocked.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

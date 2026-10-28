@@ -5961,4 +5961,57 @@ is invented from source review. Publish nine MODIFY paths with expected59e4e60,
 verify exact parent/tree/message/blobs, observe exact-SHA Full/Fast/Docs queue/start
 and STOP. HAPI-597 acceptance remains open; no593 integration or operational release.
 
+
+### HAPI-597 / Full944 native publication pre-read duplication repair — 2026-10-28
+
+Owner Fail selects exact main `78df2b0901319b82ae0a47f6ef231268cca6355f` (tree
+`bd0ccb46567e8cb10edda5921f4490f897d63134`).
+Full944/run40663866572 failed: protected aggregate 500ms budget was
+poisoned in publication HTTP shard6 (one expected 201 received 503) and
+operator qualification shard9 (three expected 201 received 503).
+Shards 0/1/2/3/4/5/7/8, Java unit/architecture, API/dictionary and
+static validation all passed. Full Verification Gate failed downstream.
+Docs661 and Fast247 passed. No industrial performance claims follow.
+
+**Authorized responsible Fail repair.** Exact message:
+`perf(identity): coalesce publication native pre-read checks`.
+MODIFY exactly
+`src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipant.java`,
+`src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedProductPublicationAuthorizationParticipant.java`,
+and this append-only phase task record. Zero CREATE/DELETE, no migration,
+configuration, authorization policy, schema, protected budget, test/source
+inventory, CI, workflow, API, solver, or other source changes.
+
+The product publication participant used to call
+`identity.requireCurrentProductPublicationPair` directly immediately before
+`reader.recheckProductPublicationPair`. The reader itself obtains native
+current reads (which require the full pair before graph queries) and
+independently requires the same current pair after both fresh graph queries.
+Likewise, the native `currentProductPublicationReads` used to call
+`requireCurrentProductPublicationPair` (including a fresh context read)
+then immediately repeat `productPublicationContext` for the timestamp.
+
+The narrow optimization removes the redundant participant pre-reader call
+and merges the duplicated native context reads into one, while retaining
+the exact pair/request/consumption predicate and separate native
+`requireCurrentClaims` for **both** scopes before any qualified graph
+read. The graph reader's independent full native post-read recheck remains
+unchanged, including fresh evidence sample; both graphs and decisions
+still compare at each protected boundary. No cross-call credential cache
+or decision memoization. Protected relation locks, Party/Workflow/Telemetry
+admissions, 500/750/250ms budget, native revocation, denial precedence,
+publication provisional DML before/after rechecks, aggregate rollback and
+final scalar SQL guard are preserved. The sampled native time moves
+slightly earlier and cannot extend the deadline.
+
+Focused source comparison confirms method signatures, claim predicates
+and post-read native check are intact; all existing tests/CI remain
+authoritative. Local full Java21/PostgreSQL environment is not provisioned.
+Actual Java21 compilation, 10-shard results, protected timing and final
+acceptance are pending new exact-SHA hosted CI; do not claim this source
+optimization meets 500ms on a loaded runner. Publish guarded main and
+observe applicable Full/Fast/Docs CI created/queued/started, then STOP.
+HAPI-597 final acceptance and separately registered HAPI-593 integration,
+frontend, industrial numerical/SITE qualification and release remain open.
+
 <!-- task-register:payload:end -->

@@ -789,8 +789,12 @@ public class ProtectedOperationIdentityParticipant {
     @Transactional(propagation=Propagation.MANDATORY)
     public ProductPublicationReads currentProductPublicationReads(ProductPublicationClaimPair pair,
             dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedProductPublicationAuthorizationContract.Request request) {
-        requireCurrentProductPublicationPair(pair,request);
+        // The native context is verified once before qualified graph reads;
+        // the reader independently checks the full pair again afterward.
+        if(pair==null || pair.owner!=this || !pair.request.equals(request) || !pair.used.get()) throw denied();
         Instant sampledAt=productPublicationContext(pair);
+        requireCurrentClaims(pair.company,pair.company.request);
+        requireCurrentClaims(pair.product,pair.product.request);
         return new ProductPublicationReads(new PairReads(pair.company,pair.company.request,pair.product,pair.product.request,pair.company.contribution),sampledAt);
     }
     @Transactional(propagation=Propagation.MANDATORY)

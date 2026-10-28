@@ -125,7 +125,8 @@ public class ProtectedProductPublicationAuthorizationParticipant
         try {
             var ticket=ticket(admission);
             if(!ticket.complete) throw denied();
-            identity.requireCurrentProductPublicationPair(ticket.pair,ticket.request);
+            // The reader checks the native pair before both fresh graph reads and
+            // independently again afterward. Avoid a redundant pre-reader check.
             var graphs=reader.recheckProductPublicationPair(ticket.pair,ticket.request);
             if(!sameGraph(ticket.graphs.company(),graphs.company()) || !sameGraph(ticket.graphs.facility(),graphs.facility()))throw denied();
             var before=evaluate(ticket.entry,ticket.request,ticket.graphs);

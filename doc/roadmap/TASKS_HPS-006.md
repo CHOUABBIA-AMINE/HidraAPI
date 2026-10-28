@@ -2692,6 +2692,98 @@ Package B acceptance, HAPI-599 NOT_IMPLEMENTED/BLOCKED, integrated writer/permis
 scope and release/deployment holds remain open pending exact-head full verification
 and independent evidence review. No successor implementation is selected.
 
+### HAPI-599 Package B — manufacturer evidence acceptance and protected writer preflight — 2026-10-28
+
+**Owner Next; exact-head independent evidence review.** Main
+`7c49a82d2de482b4305d29a3c1087bd818bc92fb` has Full #954/run
+`40695042943`, attempt 1, completed SUCCESS (manual development dispatch,
+serial_oracle=false, cached dependencies), and Docs #678/run `40694913299`
+SUCCESS. No Fast workflow was created for this documentation-only head.
+All ten PostgreSQL shards, unit/architecture, static validation, API/dictionary
+and Full Verification Gate passed. The separate serial Maven/oracle job was
+skipped by design; this is development software evidence, not release eligibility.
+
+The retained full bundle, artifact `12818888453`, was downloaded and its ZIP
+SHA-256 matched GitHub: `f62369b6b9922496923bef30f4b4907611323804ad08c895d18a7f86501c9f5d`.
+Independently checked all 499 evidence-listed file hashes, exact SHA/run/attempt,
+and reconstructed all raw XML reports against the current active inventory:
+492 unique classes, 3,610 exact cases, zero failures/errors/skips. Four explicitly
+archived greenfield classes remain excluded by existing policy, not newly waived.
+The Party manufacturer evidence class ran all 16 registered cases successfully
+in PostgreSQL shard 7, including all five owner-lock repair cases. Its observed
+suite time was 11.266 seconds; the scheduling inventory is not rewritten from
+this single observation. No new local JUnit/PostgreSQL run is claimed.
+
+Same-run dictionary verification is checked=true, source SHA above, PostgreSQL
+16.15, 184 migrations, 470 mappings, 531 relations and no unresolved owners.
+Source bundle SHA-256 remains `b224960330372f46f4a2c6012a1473d779188092314b5f393125682eb330097d`;
+new same-run catalog SHA-256 is `4afcab111de66a0c8c663ce4a947fc4948bae878ce2ad176e59838809f3e98df`.
+This capture is distinct from Full953; its checked dictionary SHA-256 is
+`4506748561ca6b7f0a5b66c3a3917e69d835bf3582a65055e07b954cbde6db3d`.
+API runtime and base compatibility evidence passed against base
+`78a34c610b2986e3a73900cac28af3fca31d05fa`; current API SHA-256
+`802756624b23eedbf939f137962737a2e0fa5580a8757d866ff6c4800925cc22`.
+
+**Bounded acceptance and hold disposition.** Package A remains accepted. The
+first Party-owned contribution within Package B, including its guarded owner-lock
+repair and truthful physical dictionary refresh, is now accepted for the tested
+development software scope. Both stages of the CI-first repair are complete;
+their pending exact-head full-verification hold is resolved by Full954. Preserve
+Full952's privilege failure and Full953's dictionary failure as historical evidence.
+Do not repeat these implementations. This does not accept the remaining Package B
+Identity/position/transaction writer, Package C, manufacturer-to-equipment-kind
+qualification, deployment role provisioning, engineering/SITE or production use.
+HAPI-599 remains NOT_IMPLEMENTED/BLOCKED in frozen ROADMAP/PHASES.
+
+**This selected one-file acceptance/registration stage.** Exact commit message:
+`docs(topology): accept manufacturer evidence and register protected writer preflight`.
+CREATE none; MODIFY only `doc/roadmap/TASKS_HPS-006.md`; DELETE none.
+Local docs/link validation and diff checks precede guarded publication; observe
+new exact-SHA Docs creation/start and stop. No runtime/source/status changes.
+
+**Remaining source seams revalidated on the accepted head.**
+- `TopologyProtectedAuthorizationContract.permissionCode` and
+  `TopologyScopedAccessContract.Operation` encode only station-revision actions.
+  `ProtectedOperationIdentityParticipant.qualifyPair` derives that exact family;
+  `JdbcProtectedAuthorizationEvidenceReader` validates the station family. A new
+  caller cannot relabel station authority as installed-unit authority.
+- `ProtectedTopologyAuthorizationParticipant` uses actual authenticated principal,
+  opaque preparation/admission, native Identity evidence and company/facility
+  decisions under real transactions; it is a source pattern, not an installed-unit
+  issuer. A constructible contribution or Boolean is not a grant.
+- `EquipmentJpaEntity.facilityId` is nullable, and node/pipeline-segment references
+  also exist. An equipment ID/FK does not prove a company-owned position. The
+  station facility-owner contract proves facility ownership only. Unresolved or
+  contradictory ownership must fail closed; no invented node/segment traversal.
+- `InstalledUnitRepositoryPort` exposes private register/record/close/find/history
+  storage. It explicitly requires protected orchestration and atomic close plus
+  replacement. `ProtectedStationAdmissionCoordinator` binds a station request,
+  station owners/fences and executor; copying its ticket does not authorize this
+  repository or a relocation across two facilities.
+
+**Next separately executable same-Package-B stage — source preflight only.**
+Exact message: `docs(topology): register installed-unit protected writer implementation`.
+CREATE none; MODIFY only this phase file; DELETE none. This registered next stage
+must review the real native Identity claims/permission readers and executor's
+compiled operation/DML family hooks, equipment position ownership and generation
+sources, InstalledUnit persistence events and temporal contracts, and existing
+architecture/test seams. Produce a concrete bounded CREATE/MODIFY/DELETE allowlist,
+exact implementation message and meaningful synthetic acceptance matrix before
+any runtime implementation. Do not create another A/B/C package or standalone task.
+
+The registration must settle exact installed-unit operation-to-permission and
+company/facility scope mapping (including unit registration without a position),
+current-principal/read/history denial and relocation source/destination permissions;
+position/facility/company binding and revocation fences; manufacturer capability
+versus absent equipment-kind mapping; one physical transaction and finite native
+validity/final recheck; precise SQL whitelist, CAS/close-replace concurrency and
+audit rollback. Preserve station permissions, no implicit production grants,
+no widened generic family bypass, no arbitrary timeout waiver, all ten shards
+and strict dictionary equality. Any required migration must be explicitly named
+and source justified; otherwise none is admitted. The preflight cannot claim code
+or tests exist. Public controller/DTO/OpenAPI (Package C), HAPI-600/601, simulator,
+frontend, release and deployment remain outside this next selection.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

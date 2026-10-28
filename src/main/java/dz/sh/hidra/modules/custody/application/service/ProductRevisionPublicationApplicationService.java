@@ -56,7 +56,7 @@ public class ProductRevisionPublicationApplicationService implements ProductRevi
             var prepared=coordinator.prepare();
             return executor.executePublication(()->{
                 var a=coordinator.acquire(prepared,command);admission.set(a);contribution.set(coordinator.collect(a));
-                var storage=coordinator.repository(a);boolean mutation=repository.mutation(storage);
+                var storage=coordinator.repository(a);repository.plan(storage,contribution.get());boolean mutation=repository.mutation(storage);
                 if(mutation)coordinator.beginProvisional(a,repository.mutationSql());
                 var result=repository.apply(storage,contribution.get());
                 // endProvisional revalidates after writes; reads/replays need that same check here.

@@ -214,6 +214,7 @@ public class JdbcProductRevisionPublicationRepositoryAdapter implements ProductR
         final JdbcProductRevisionPublicationRepositoryAdapter owner=JdbcProductRevisionPublicationRepositoryAdapter.this;
         final Command command;final Scope scope;final Thread thread=Thread.currentThread();final ConnectionHolder holder;final Connection connection;
         final int pid;final long xid;final String role;final List<Pin> pins=new ArrayList<>();
+        Contribution planned;boolean candidateExists;
         boolean active=true,rejected,authorized,applied,replayed,eligibility;String actor,commandDigest,digest,image;Envelope envelope;
         ProductRevisionPublication publication;Receipt receipt;Head head,selected;List<Event> history=List.of();String nextCursor;
         Component metadata,supplied;long suppliedMetadata;String classification;Facts facts;
@@ -332,19 +333,27 @@ public class JdbcProductRevisionPublicationRepositoryAdapter implements ProductR
     private void update(String sql,List<Object> args){if(jdbc.update(sql,args.toArray())!=1)throw fail(Reason.CONFLICT);}
     private List<Object> scopeArgs(Ticket t){return new ArrayList<>(Arrays.asList(t.scope.productDraftId(),t.scope.companyPartyId(),t.scope.catalogProductId()));}
     private void payload(List<Object> args,byte[] bytes){add(args,ProductRevisionPublicationCodec.FORMAT,bytes,ProductRevisionPublication.hash(bytes));}
-    @Override public Result apply(Admission admission,Contribution c){try{
-        var t=ticket(admission);if(!t.authorized || t.applied || c==null || c.backendPid()!=t.pid || c.transactionId()!=t.xid || !c.userId().equals(t.actor)
+    @Override public void plan(Admission admission,Contribution c){try{
+        var t=ticket(admission);if(!t.authorized || t.applied || t.planned!=null || c==null || c.backendPid()!=t.pid || c.transactionId()!=t.xid || !c.userId().equals(t.actor)
             || !c.scope().equals(t.scope))throw fail(Reason.UNAVAILABLE);
         if(needsEligibility(t)){
             if(!t.eligibility || c.policy()==null)throw fail(Reason.UNAVAILABLE);
             if(t.command.kind()==Kind.PREPARE){t.envelope=new Envelope(t.scope,t.metadata,t.supplied,t.suppliedMetadata,t.classification,ProductRevisionPublicationCodec.diagnostics(t.metadata,t.supplied),c.units(),c.policy());t.digest=ProductRevisionPublication.hash(codec.encode(t.envelope));}
             else if(!t.envelope.policy().equals(c.policy()) || !t.envelope.units().equals(c.units()) || c.approval()==null || !t.digest.equals(c.approval().digest()))throw fail(Reason.CONFLICT);
         }
+        t.now=now();
+        if(mutation(t) && t.command.kind()==Kind.PREPARE){
+            t.candidateExists=!jdbc.queryForList("SELECT candidate_digest FROM "+PREFIX+"_candidate WHERE candidate_digest=?",t.digest).isEmpty();
+            if(t.candidateExists && !candidate(t,t.digest).equals(t.envelope))throw fail(Reason.CONFLICT);
+        }
+        t.planned=c;
+    }catch(RuntimeException e){executor.rejectAdmission();throw e;}}
+    @Override public Result apply(Admission admission,Contribution c){try{
+        var t=ticket(admission);if(t.applied || t.planned==null || !t.planned.equals(c))throw fail(Reason.UNAVAILABLE);
         if(mutation(t)){
-            Instant at=now();var command=t.command;Event event=null;
-            if(command.kind()==Kind.PREPARE){var existing=jdbc.queryForList("SELECT candidate_digest FROM "+PREFIX+"_candidate WHERE candidate_digest=?",t.digest);
-                if(existing.isEmpty()){var args=scopeArgs(t);add(args,t.digest,t.metadata.version(),t.supplied.version());payload(args,codec.encode(t.envelope));args.addAll(audit(c));update(CANDIDATE_INSERT,args);}
-                else if(!candidate(t,t.digest).equals(t.envelope))throw fail(Reason.CONFLICT);
+            Instant at=t.now;var command=t.command;Event event=null;
+            if(command.kind()==Kind.PREPARE){
+                if(!t.candidateExists){var args=scopeArgs(t);add(args,t.digest,t.metadata.version(),t.supplied.version());payload(args,codec.encode(t.envelope));args.addAll(audit(c));update(CANDIDATE_INSERT,args);}
             }else{
                 UUID publicationId=command.publicationId();
                 if(command.kind()==Kind.PUBLISH){publicationId=UUID.randomUUID();t.publication=new ProductRevisionPublication(publicationId,t.envelope,c.approval());var args=scopeArgs(t);add(args,publicationId,t.digest);payload(args,codec.encode(t.publication));args.addAll(audit(c));update(PUBLICATION_INSERT,args);}

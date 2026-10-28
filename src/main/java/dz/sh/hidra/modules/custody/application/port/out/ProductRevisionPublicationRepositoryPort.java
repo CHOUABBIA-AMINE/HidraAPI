@@ -39,6 +39,7 @@ public interface ProductRevisionPublicationRepositoryPort {
     List<ProtectedRelationFence> finalFences(Admission admission);
     boolean mutation(Admission admission);
     Set<String> mutationSql();
+    void plan(Admission admission,Contribution contribution);
     Result apply(Admission admission,Contribution contribution);
     void captureImages(Admission admission,List<ProtectedRelationFence> fences);
     void flush();

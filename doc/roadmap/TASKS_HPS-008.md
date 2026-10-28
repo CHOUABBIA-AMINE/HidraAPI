@@ -4892,6 +4892,48 @@ exact parent/tree/message/three blobs and applicable CI creation/queue/start,
 then STOP. HAPI-596 remains NOT_IMPLEMENTED/IN_PROGRESS; B acceptance and C are
 not selected. HAPI-594/595 remain closed.
 
+### HAPI-596 Package B — Full932 provisional SQL-phase repair — 2026-10-28
+
+Owner Fail selects exact9087f89c88729bc4975a29e51ba7c5470682aefa.
+Full932/run40631168448 passed unit/architecture, API/dictionary, static and six
+PostgreSQL lanes. Shard4/job122627628371 ran311 cases with2 failures and23 errors,
+zero skips. Publication positives fail with SQLSTATE25000: SELECT clock_timestamp()
+is not admitted during the provisional phase. Its downstream final-guard test
+cannot reach its intended assertion. The executor correctly rejects this read;
+do not admit SELECT or broaden its six exact mutation SQL templates.
+
+Exact repair message: `fix(custody): plan publication reads before provisional writes`.
+MODIFY only ProductRevisionPublicationRepositoryPort,
+ProductRevisionPublicationApplicationService,
+JdbcProductRevisionPublicationRepositoryAdapter and this phase (four existing
+files; no CREATE/DELETE). Add a one-use repository plan step after collected
+owner evidence and before beginProvisional. It validates the immutable envelope,
+samples real database time and checks any existing candidate under the same
+retained fences/native window. Bind the resulting plan to its exact contribution.
+Apply consumes that plan once and issues only the already reviewed DML. Move
+both clock sampling and candidate-existence/integrity reads out of the provisional
+interval. Preserve response materialization, post-write owner currentness,
+physical-image capture, one final scalar guard, commit disclosure and all500/750/
+250ms limits. No schema, migration, SQL hash, production permission, architecture
+exception, dictionary or test assertion changes. Existing28 publication cases
+remain regression coverage, including native round trip, duplicate candidates,
+replay and actual expired final-guard rollback.
+
+The separate existing ProductEngineeringDraftNativeHttpPostgresIntegrationTest
+expiredNativeSessionCannotReadOrAppend also failed: expected403, observed503.
+Its log does not expose a sufficient underlying owner cause. Preserve that
+assertion and accepted594 production behavior; do not reinterpret503 as passing
+revocation evidence. This observation remains unresolved until exact-SHA hosted
+feedback; neither that test nor B acceptance is claimed green here.
+
+Available local Java syntax and supplemental Java17 stub-based type checks are
+advisory; hosted Java21/PostgreSQL tests remain required under AGENTS11.1.
+Inspect apply for absence of JDBC reads and retain existing mutation templates;
+publish with expected9087f89, verify four blobs/tree/parent/message and CI
+creation/queue/start, then STOP. HAPI-596 remains NOT_IMPLEMENTED/IN_PROGRESS;
+B acceptance/C and final engineering/SITE acceptance remain pending.594/595 stay
+closed; no subsequent package or qualification is selected.
+
 <a id="hapi-597"></a>
 ## HAPI-597 — Multi-product ownership/API compatibility qualification
 

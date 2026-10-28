@@ -2656,6 +2656,42 @@ HAPI-599 remains NOT_IMPLEMENTED/BLOCKED; no integrated permission/writer or Pac
 new package, simulator, SITE, release or deployment is selected. A green repair still
 requires independent evidence review before the separately registered next B scope.
 
+### HAPI-599 Package B — stage-two physical dictionary repair evidence — 2026-10-28
+
+Full #953 run `40692766055`, attempt `1`, exact source
+`846edc515748b07df8aaf7c4cc006dff5ee45ee4`: unit/architecture, static validation
+and all ten PostgreSQL shards passed. The API/dictionary lane failed on the retained
+strict physical dictionary comparison; its missing successful lane receipt then
+blocked the Full Verification Gate. This is the expressly anticipated stage-one
+dictionary drift, not successful full acceptance. No check or case is skipped.
+
+Genuine same-run schema artifact `12817353666` has verified ZIP SHA-256
+`71f4bb808960a7da2486bfff63e512d133d027f1390ad17d149f2c99bb526ed8`.
+The unchanged generator validates its exact source inventory/bundle against current
+migration/JPA files: 184 migrations, 470 mappings, 531 relations, zero unresolved
+owners; PostgreSQL `16.15 (Debian 16.15-1.pgdg13+2)`.
+Source bundle SHA-256 is `b224960330372f46f4a2c6012a1473d779188092314b5f393125682eb330097d`;
+catalog SHA-256 is `c6afd99019d3d6e2e777218a4a09fb1e5b48e7304392e7582054321160b9c245`.
+The regenerated Markdown matches the retained CI render byte-for-byte, SHA-256
+`a7e5f5a85ef2f5b981f105206e3c421c3dce2a17b647033467feefe1723225bd`.
+Reviewed changes are capture provenance/count and the new migration mention under
+its four Party relations; relation metadata otherwise remains unchanged.
+
+Stage two updates only the dictionary and this phase using its registered message.
+Local strict generator comparison passed (`reviewed_dictionary_checked=true`);
+documentation validation, 18 dictionary generator self-tests and `git diff --check`
+passed before publication. No local PostgreSQL execution is claimed. The strict CI gate remains
+unchanged; a new exact-head Full result is still required. This documentation-only
+scope does not trigger Full automatically, and the connected GitHub tools expose no
+workflow-dispatch operation. After publication, manually run HidraAPI CI on `main`
+with development mode, `serial_oracle=false`, normal cached dependencies.
+
+The earlier prepublication hold is superseded only by the authorized two-stage
+CI-first repair above. Publication of this truthful dictionary refresh is permitted;
+Package B acceptance, HAPI-599 NOT_IMPLEMENTED/BLOCKED, integrated writer/permission
+scope and release/deployment holds remain open pending exact-head full verification
+and independent evidence review. No successor implementation is selected.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

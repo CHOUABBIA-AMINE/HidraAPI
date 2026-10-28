@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `c9e4385904e2ec57695720d99e1bfe3e812c49a9`
+Captured source SHA: `846edc515748b07df8aaf7c4cc006dff5ee45ee4`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `306ac17f45e4d12c1491b6837f52adc22bb45e65890ed18584a5bf9cd472defe`.
-Migrations: 183; JPA mappings: 470; catalog relations: 531; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `b224960330372f46f4a2c6012a1473d779188092314b5f393125682eb330097d`.
+Migrations: 184; JPA mappings: 470; catalog relations: 531; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -19386,6 +19386,7 @@ Persisted ManufacturerProfileJpaEntity state; semantic authority remains with pa
 - Evidence: [ManufacturerProfileJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/ManufacturerProfileJpaEntity.java)
 - Migration mention (not inferred introduction): [V20260611_003__create_party_tables.sql](../../src/main/resources/db/migration/V20260611_003__create_party_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
+- Migration mention (not inferred introduction): [V20261028_003__party_installed_unit_manufacturer_evidence_owner_lock.sql](../../src/main/resources/db/migration/V20261028_003__party_installed_unit_manufacturer_evidence_owner_lock.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -19578,6 +19579,7 @@ Persisted PartyJpaEntity state; semantic authority remains with party.
 - Migration mention (not inferred introduction): [V20261023_001__organization_appointment_final_write_guard.sql](../../src/main/resources/db/migration/V20261023_001__organization_appointment_final_write_guard.sql)
 - Migration mention (not inferred introduction): [V20261023_002__organization_appointment_final_guard_clock_scope.sql](../../src/main/resources/db/migration/V20261023_002__organization_appointment_final_guard_clock_scope.sql)
 - Migration mention (not inferred introduction): [V20261023_003__organization_appointment_fingerprint_visibility.sql](../../src/main/resources/db/migration/V20261023_003__organization_appointment_fingerprint_visibility.sql)
+- Migration mention (not inferred introduction): [V20261028_003__party_installed_unit_manufacturer_evidence_owner_lock.sql](../../src/main/resources/db/migration/V20261028_003__party_installed_unit_manufacturer_evidence_owner_lock.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -19827,6 +19829,7 @@ Persisted PartyRoleJpaEntity state; semantic authority remains with party.
 - Evidence: [PartyRoleJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/PartyRoleJpaEntity.java)
 - Migration mention (not inferred introduction): [V20260611_003__create_party_tables.sql](../../src/main/resources/db/migration/V20260611_003__create_party_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
+- Migration mention (not inferred introduction): [V20261028_003__party_installed_unit_manufacturer_evidence_owner_lock.sql](../../src/main/resources/db/migration/V20261028_003__party_installed_unit_manufacturer_evidence_owner_lock.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -19870,6 +19873,7 @@ Persisted PartyRoleAssignmentJpaEntity state; semantic authority remains with pa
 - Migration mention (not inferred introduction): [V20260611_003__create_party_tables.sql](../../src/main/resources/db/migration/V20260611_003__create_party_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261004_041__hmr_041_party_party_role_assignment.sql](../../src/main/resources/db/migration/V20261004_041__hmr_041_party_party_role_assignment.sql)
+- Migration mention (not inferred introduction): [V20261028_003__party_installed_unit_manufacturer_evidence_owner_lock.sql](../../src/main/resources/db/migration/V20261028_003__party_installed_unit_manufacturer_evidence_owner_lock.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

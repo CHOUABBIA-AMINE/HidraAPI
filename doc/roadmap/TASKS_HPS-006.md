@@ -3942,6 +3942,81 @@ resuming the registered writer. HAPI-599 remains NOT_IMPLEMENTED/BLOCKED; writer
 public Package C, different-unit replacement, manufacturer-kind qualification,
 dependent tasks, frontend, simulator/P3, SITE, release and deployment remain pending.
 
+### HAPI-599 verification hold — Full961 native authorization fixture lock isolation — 2026-10-28
+
+**Owner Fail; exact failed gate.** Main
+`150e94713e68a15ef224b001b079343a4408302f` has Full961/run `40740921834`
+FAILED; Fast261 and Docs691 SUCCESS. Static, Java unit/architecture, API/dictionary
+and nine PostgreSQL shards passed. Shard8/job `123001978305` failed the unchanged
+Identity `ProtectedEngineeringDraftAuthorizationPostgresIntegrationTest`:
+six cases, zero assertion failures, one error, no skips. Its publication-actions
+case failed at line856/native admission with SQLSTATE55P03 acquiring SHARE ROW
+EXCLUSIVE NOWAIT on `public.hidra_identity_permission`, before any native permit
+or final guard. The dependent Full gate failure and absent successful lane receipt
+are consequences; no timeout or dictionary failure is indicated.
+
+The new SELECT-only company provider's28 cases passed, zero errors/failures/skips,
+12.094s observed, in successful shard4. Downloaded artifact `12839757963` ZIP SHA-256
+`bb00b51a58e110fc9d4718707494bd4bfd8adcc3f9b77fa0654fd84625bf8ec7`
+matches GitHub metadata; independently checked its14 listed file hashes, exact
+source/run/attempt and raw XML case identities against the unchanged aggregator.
+Failed-shard diagnostics artifact `12839631983` ZIP SHA-256
+`73ead3105f907cae3f2b2a2e58d8bf2b2793cd07b9ddc3fe9471bccba19f9b2f`
+also matches metadata. Passing company cases are focused evidence, not acceptance
+of a failed Full run or permission to start the writer.
+
+**Established fact versus inference.** The failed lock proves a competing backend
+held an incompatible relation lock. Its PID/type/mode were not retained, so the
+original blocker is unidentified. This isolated class runs synchronous native
+fixtures and repeatedly deletes permission/grant data, while its disposable server
+used default automatic maintenance. PostgreSQL16 VACUUM/ANALYZE takes SHARE UPDATE
+EXCLUSIVE, which conflicts with the required admission mode. Background maintenance
+is therefore a plausible source, not a proven cause. References:
+https://www.postgresql.org/docs/16/explicit-locking.html and
+https://www.postgresql.org/docs/16/runtime-config-autovacuum.html .
+Do not label production locking incorrect or claim that the original blocker has
+been identified. The security rejection remains correct under contention.
+
+**Bounded repair message and scope.** Exact message:
+`test(identity): isolate native authorization fixture maintenance locks`.
+CREATE/DELETE none. MODIFY only:
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedEngineeringDraftAuthorizationPostgresIntegrationTest.java`
+- `.github/ci-test-inventory.json` (only that existing suite's cases/source hash)
+- `doc/roadmap/TASKS_HPS-006.md`
+
+Disable ordinary autovacuum only in this class's short-lived PostgreSQL16 container
+using its server startup command. This is deterministic synthetic-fixture isolation,
+not a production database recommendation or a change to native admission. PostgreSQL
+still retains wraparound-safety behavior; no maintenance/operational qualification
+is claimed. All six original cases and their four real producer/action paths remain.
+No retry, success fallback, sleep, skipped assertion, weaker lock or deadline change.
+
+Add one regression asserting the test-only setting and an actual separate backend
+holding maintenance's SHARE UPDATE EXCLUSIVE mode on the permission relation. Native
+admission must reject with55P03 and REJECTED_BEFORE_COMMIT, create no guard receipt,
+then accept a freshly prepared native request only after explicit blocker rollback.
+This preserves tested conflict rejection instead of treating contention as success.
+The test harness also retains a post-rollback permission-lock snapshot on execution
+failure (PID/mode/backend type/state/wait event only, no query or credential text).
+It runs after the executor has closed the failed scope, grants no authority and
+rethrows the original error; an empty snapshot does not identify a vanished blocker.
+This diagnostic does not authorize SQL after a successful final guard.
+
+The existing suite now has7 cases; total497 active classes and3,698 expected cases.
+New company source/test bytes and all its28 cases are unchanged. Previous inventory
+timings/provenance, four historical exclusions and ten shards remain unchanged;
+all production sources, migrations, dictionary, workflow and native/final guards
+are untouched. The fix remains a CI-first fixture hypothesis until hosted results.
+
+**Available validation and hold.** Changed Java source parses; inventory validation
+and88 inventory/full-evidence validator self-tests pass. Focused Maven command for
+the changed and company suites exits127 (`mvn: command not found`); no local JUnit
+or PostgreSQL success is claimed. Documentation/link, source/case/scope preservation
+and whitespace checks precede guarded publication. Verify parent/tree/blobs, observe
+exact-SHA Full/Fast/Docs startup and STOP. If the conflict recurs, use retained actual
+backend evidence before another repair. HAPI-599 remains NOT_IMPLEMENTED/BLOCKED;
+company acceptance, atomic writer, Package C, SITE, release and deployment stay held.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

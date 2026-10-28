@@ -69,7 +69,8 @@ import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Only directory/source transport is synthetic; native crypto, origin, fences and owner state are
- * real.
+ * real. Automatic maintenance is isolated from success fixtures; explicit conflicting-lock
+ * coverage still requires native NOWAIT rejection, including maintenance's lock mode.
  */
 @Testcontainers(disabledWithoutDocker = true)
 @SpringBootTest(
@@ -107,6 +108,10 @@ public class ProtectedEngineeringDraftAuthorizationPostgresIntegrationTest {
                             "log_error_verbosity=terse",
                             "-c",
                             "track_commit_timestamp=on",
+                            // Test-only isolation: fixture cleanup churn must not start an unrelated
+                            // maintenance transaction during native NOWAIT admission.
+                            "-c",
+                            "autovacuum=off",
                             "-c",
                             "log_min_error_statement=panic",
                             "-c",
@@ -271,7 +276,8 @@ public class ProtectedEngineeringDraftAuthorizationPostgresIntegrationTest {
             Runnable inside,
             Runnable guardAction) {
         var saved = new AtomicReference<TopologyProtectedEngineeringDraftAuthorizationContract.Contribution>();
-        return executor.execute(
+        try {
+            return executor.execute(
                 () -> {
                     c3SelectRestrictedRole();
                     var result = paired.contribute(paired.acquire(p, request));
@@ -301,6 +307,25 @@ public class ProtectedEngineeringDraftAuthorizationPostgresIntegrationTest {
                     if (!Integer.valueOf(1).equals(count))
                         throw new IllegalStateException("Synthetic guard expired");
                 });
+        } catch (ProtectedTransactionExecutor.ExecutionFailure failure) {
+            // The executor has already rolled back/closed its scope. This independent diagnostic
+            // read grants no authority and cannot turn rejection into success. A vanished blocker
+            // yields an empty snapshot; never label it as a proven maintenance conflict.
+            try {
+                var locks=jdbc.queryForList("""
+                    SELECT l.pid,l.mode,l.granted,a.backend_type,a.state,a.wait_event_type,a.wait_event
+                    FROM pg_catalog.pg_locks l
+                    LEFT JOIN pg_catalog.pg_stat_activity a ON a.pid=l.pid
+                    WHERE l.locktype='relation'
+                      AND l.relation=pg_catalog.to_regclass('public.hidra_identity_permission')
+                    ORDER BY l.pid,l.mode
+                    """);
+                failure.addSuppressed(new IllegalStateException("Post-rollback permission lock snapshot: "+locks));
+            } catch (RuntimeException diagnosticFailure) {
+                failure.addSuppressed(diagnosticFailure);
+            }
+            throw failure;
+        }
     }
 
     private void permit(TopologyProtectedEngineeringDraftAuthorizationContract.Contribution c) {
@@ -834,6 +859,28 @@ public class ProtectedEngineeringDraftAuthorizationPostgresIntegrationTest {
     @Test void structuralOrStationEvidenceCannotEnterDraftQualifiedReader(){
         var f=fixture("LOCAL");both(f,"create");prepare(f);
         assertThatThrownBy(()->tx().executeWithoutResult(status->reader.loadQualifiedDraftPair(null,request()))).isInstanceOf(RuntimeException.class);
+    }
+
+    @Test void isolatedFixtureStillRejectsForeignMaintenanceModeLockBeforeAnyReceipt() throws Exception {
+        assertThat(jdbc.queryForObject("SHOW autovacuum",String.class)).isEqualTo("off");
+        var f=fixture("LOCAL");both(f,"create");var prepared=prepare(f);
+        int before=jdbc.queryForObject("SELECT count(*) FROM "+receipt(),Integer.class);
+        try(var blocker=DriverManager.getConnection(POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword())) {
+            blocker.setAutoCommit(false);
+            try(var statement=blocker.createStatement()) {
+                statement.execute("LOCK TABLE public.hidra_identity_permission IN SHARE UPDATE EXCLUSIVE MODE NOWAIT");
+                var failure=org.junit.jupiter.api.Assertions.assertThrows(
+                    ProtectedTransactionExecutor.ExecutionFailure.class,()->run(prepared,request()));
+                assertThat(failure.outcome()).isEqualTo(ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT);
+                Throwable cause=failure;
+                while(cause!=null && !(cause instanceof SQLException))cause=cause.getCause();
+                assertThat(cause).isInstanceOf(SQLException.class);
+                assertThat(((SQLException)cause).getSQLState()).isEqualTo("55P03");
+                assertThat(jdbc.queryForObject("SELECT count(*) FROM "+receipt(),Integer.class)).isEqualTo(before);
+            } finally {blocker.rollback();}
+        }
+        permit(run(prepare(f),request()));
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM "+receipt(),Integer.class)).isEqualTo(before+1);
     }
 
     private void publicationGrant(Fixture f,String action,String effect,String scope) {

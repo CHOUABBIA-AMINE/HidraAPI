@@ -2743,6 +2743,7 @@
         "companyGrantCannotAuthorizeAnotherNetwork",
         "eitherScopeDenyCannotProducePartialAuthority",
         "fourGenuineProducersAndFourActionsRequireBothExactCustomScopes",
+        "isolatedFixtureStillRejectsForeignMaintenanceModeLockBeforeAnyReceipt",
         "preparedEntryCannotBeReplayedOrMovedToAnotherActor",
         "publicationActionsRequireTheirOwnGenuineNativePairedResourceAndDeny",
         "structuralOrStationEvidenceCannotEnterDraftQualifiedReader"
@@ -2753,7 +2754,7 @@
       "lane": "postgres-integration",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedEngineeringDraftAuthorizationPostgresIntegrationTest.java",
-      "source_sha256": "a7cd42e41c33228e8644efdbbe2d0ddc830d063d54accd23fe03eaa6dc9b0735",
+      "source_sha256": "041c079c724b712d6984cbb43b8f61686e9b75338388baa758813cf2b6ecdd49",
       "supports": []
     },
     {

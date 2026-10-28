@@ -38,7 +38,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java",
-      "source_sha256": "5c7862afbe299436eb26b9146fada663df9c56c4b15650975987702a7f658788",
+      "source_sha256": "07ad78e93b53c8bfa558ef06b82787b19bb1d4e40c630fb33cab8d97e1df5e70",
       "supports": []
     },
     {
@@ -1308,7 +1308,7 @@
       "lane": "postgres-integration",
       "owner": "custody",
       "path": "src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/ProductRevisionPublicationPostgresIntegrationTest.java",
-      "source_sha256": "7c886d32fb13751529c67bc48a22500a19c3b06422e85c1bacd82bd4cc7bd8b7",
+      "source_sha256": "feb345127d7bf97d7d02e66925945c0ff10d457cf7360cfc44e40bb312f41ccf",
       "supports": []
     },
     {

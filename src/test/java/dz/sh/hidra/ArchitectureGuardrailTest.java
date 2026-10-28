@@ -792,5 +792,10 @@ class ArchitectureGuardrailTest {
         }
         assertTrue(isForbiddenCrossModuleDependency(consumer,"dz.sh.hidra.modules.workflow.infrastructure.persistence.adapter.JdbcCustodyProtectedProductPublicationApprovalAdapter"));
         assertTrue(isForbiddenCrossModuleDependency(consumer,"dz.sh.hidra.modules.identity.infrastructure.security.ProtectedProductPublicationAuthorizationParticipant"));
+        String repository="dz.sh.hidra.modules.custody.infrastructure.persistence.adapter.JdbcProductRevisionPublicationRepositoryAdapter";
+        assertTrue(isForbiddenCrossModuleDependency(repository,"dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedProductPublicationAuthorizationContract$Request"));
+        var scope=java.util.Arrays.stream(dz.sh.hidra.modules.custody.application.service.ProtectedProductPublicationAdmissionCoordinator.Contribution.class.getRecordComponents()).filter(c->c.getName().equals("scope")).findFirst().orElseThrow();
+        assertEquals(dz.sh.hidra.modules.custody.domain.model.ProductRevisionPublication.Scope.class,scope.getType());
+
     }
 }

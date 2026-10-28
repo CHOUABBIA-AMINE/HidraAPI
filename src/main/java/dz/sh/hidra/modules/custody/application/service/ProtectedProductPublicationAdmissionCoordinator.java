@@ -110,7 +110,7 @@ public class ProtectedProductPublicationAdmissionCoordinator {
                 var combined=new ArrayList<>(a.fences);combined.addAll(workflow.finalFences(a.workflow));combined.addAll(units.finalFences(a.units));
                 a.fences=distinct(combined);if(a.fences.size()!=50)throw invalid();
             }
-            a.result=new Contribution(a.request,p.generation(),i.bindingId(),i.sessionId(),i.userId(),
+            a.result=new Contribution(repository.scope(a.repository),p.generation(),i.bindingId(),i.sessionId(),i.userId(),
                     i.sampledAt(),i.validUntil(),i.backendPid(),i.transactionId(),snapshots,policy,approval);
             // This check covers eligibility and sealing; do not reread the same graph twice.
             a.permit=executor.sealAdmission();requireCurrent(a);return a.result;
@@ -183,7 +183,7 @@ public class ProtectedProductPublicationAdmissionCoordinator {
         @Override public void afterCompletion(int status){active=false;}
         @Override public String toString(){return "Admission[opaque product draft]";}
     }
-    public record Contribution(Request request,long partyGeneration,String bindingId,String sessionId,String userId,
+    public record Contribution(ProductRevisionPublication.Scope scope,long partyGeneration,String bindingId,String sessionId,String userId,
             Instant sampledAt,Instant validUntil,int backendPid,long transactionId,List<ProductRevisionPublication.Unit> units,
             ProductRevisionPublication.Policy policy,ProductRevisionPublication.Approval approval) {public Contribution {units=List.copyOf(units);}}
     private static List<ProtectedRelationFence> distinct(List<ProtectedRelationFence> fences){

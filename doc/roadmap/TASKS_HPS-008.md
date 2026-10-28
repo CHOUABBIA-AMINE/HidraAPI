@@ -4788,6 +4788,79 @@ NOT_IMPLEMENTED/IN_PROGRESS pending its independent final acceptance; HAPI-594/
 595 remain closed. No solver, engineering qualification, production/SITE
 acceptance, release or dependent package is selected.
 
+### HAPI-596 Package B — Full930 owner-boundary and actual dictionary repair — 2026-10-28
+
+**Owner-selected responsible repair.** Owner Fail selects repair of exact main
+cd4d94fb618568b02ccd684b6c13ba9a5acd4d73/tree
+2be4606ceae6ec31f835daba2904fb073407c8eb. Docs645/run40628015176 succeeded;
+Fast234/run40628015202 and Full930/run40628015250 failed. Do not accept B or
+advance C. This bounded repair's exact message is
+`fix(custody): preserve publication owner boundary and catalog evidence`.
+MODIFY only the existing coordinator, publication JDBC adapter, its PostgreSQL
+test, ArchitectureGuardrailTest, CI test inventory, physical dictionary and
+this owning phase (seven files; no CREATE/DELETE). This combines responsible
+source repair with the already registered actual-catalog dictionary follow-up
+under the owner's Fail instruction; no independent package or policy is selected.
+
+**Demonstrated source defect and repair.** Fast234 ran2096 cases and the Full930
+unit lane ran2140; each had exactly one architecture assertion failure, zero
+errors/skips. The actual ArchUnit dependency graph found the publication JDBC
+adapter reaching CustodyProtectedProductPublicationAuthorizationContract$Request
+through Contribution.request(), despite importing no Identity Java type directly.
+Native identity contributions must remain within the exact coordinator. Replace
+that outward field with the already defined Custody ProductRevisionPublication.Scope,
+constructed from the admitted repository scope; the repository checks full exact
+scope equality (including product draft) without accessing Identity types. Keep
+native Request and every native authority/reviewer check private to the coordinator.
+Update the expired final-guard test's contribution construction only; retain all
+28 PostgreSQL cases and original rollback assertions. The architecture regression
+still rejects this repository's dependency on Identity Request, and additionally
+checks that Contribution exposes the exact Custody-owned Scope record. No broad
+export exception, weakened architecture test or new allowlist is introduced.
+
+**Independent actual catalog evidence.** Full930 API diagnostics artifact
+12789854221 (ZIP SHA256
+79c5c49bd5372b5112a4adda5bbd7fdd65a14f4ddb6df99e2c04ca7bf71952ef)
+contains the actual migrated schema.json and verification.json. The latter
+explicitly reports physical dictionary drift, the registered initial-source
+follow-up. The unchanged generator independently validates all651 migration/JPA
+source hashes and the complete artifact, then deterministically renders and
+checks the reviewed dictionary with zero unresolved owners:181 migrations,
+470 mappings and528 relations on PostgreSQL16.15. Catalog document SHA256
+baa2a75289ffeb30f2a89c8c30440b271cb70ebf8f96f5f30f50bda7b027ecc7;
+source bundle SHA256
+d39e6b6cde437245b05a6dd4116a4685498c909aafe8f80b7ffef13c90ab1418;
+dictionary SHA256
+af1cd7d7936fa7a9fe12fa054b6f1f4ee092a180cd11c5bebe27da3e5d910b4d.
+Captured source stays cd4d94f; it is not relabeled as this future repair commit.
+The same API log independently reports runtime OpenAPI semantic equality at
+272 paths/296 operations/307 schemas; the API lane as a whole failed and its
+later compatibility steps are not claimed passing. No API artifact is edited.
+
+**Infrastructure failure and verification limits.** Six PostgreSQL lanes passed;
+postgres-4/job122617508267 failed in dependency setup because wget could not
+fetch apache-maven-3.9.11-bin.zip from Maven Central. It never executed tests,
+including the28 new publication PostgreSQL cases assigned to that shard. Missing
+reports and the final gate failure follow those real failures. Preserve seven
+shards, Maven download/cache policy, required-report gates and all test assertions;
+the new exact-SHA workflow is required to exercise the missing lane. No runtime
+failure inside those unexecuted cases is asserted or concealed.
+
+**Actual available local checks and stop.** The unchanged dictionary generator
+passed complete source/catalog validation, deterministic render and exact reviewed
+dictionary equality. Dictionary/documentation self-tests are run unchanged. A
+supplemental Java17 check using temporary Spring/technical stubs reproduces the
+old repository's Identity dependency in bytecode and proves its absence after the
+repair; this is advisory and not full Maven/ArchUnit acceptance. All selected
+Java sources must parse, original case inventories remain intact, and only the
+two modified test source hashes refresh. Java21/Maven/Docker/PostgreSQL are not
+provisioned under AGENTS11.1. Full runtime/architecture/PG verification remains
+hosted. Publish directly with expected cd4d94f, verify exact tree, seven blobs,
+parent/message and applicable CI creation/queue/start, then STOP. B acceptance
+and C stay pending; HAPI-596 remains NOT_IMPLEMENTED/IN_PROGRESS and594/595 stay
+closed. No solver, engineering qualification, release, production/SITE or
+unselected implementation is claimed.
+
 <a id="hapi-597"></a>
 ## HAPI-597 — Multi-product ownership/API compatibility qualification
 

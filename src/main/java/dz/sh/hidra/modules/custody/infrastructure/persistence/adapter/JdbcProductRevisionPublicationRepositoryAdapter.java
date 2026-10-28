@@ -334,7 +334,7 @@ public class JdbcProductRevisionPublicationRepositoryAdapter implements ProductR
     private void payload(List<Object> args,byte[] bytes){add(args,ProductRevisionPublicationCodec.FORMAT,bytes,ProductRevisionPublication.hash(bytes));}
     @Override public Result apply(Admission admission,Contribution c){try{
         var t=ticket(admission);if(!t.authorized || t.applied || c==null || c.backendPid()!=t.pid || c.transactionId()!=t.xid || !c.userId().equals(t.actor)
-            || !c.request().companyPartyId().equals(t.scope.companyPartyId()) || !c.request().catalogProductId().equals(t.scope.catalogProductId()))throw fail(Reason.UNAVAILABLE);
+            || !c.scope().equals(t.scope))throw fail(Reason.UNAVAILABLE);
         if(needsEligibility(t)){
             if(!t.eligibility || c.policy()==null)throw fail(Reason.UNAVAILABLE);
             if(t.command.kind()==Kind.PREPARE){t.envelope=new Envelope(t.scope,t.metadata,t.supplied,t.suppliedMetadata,t.classification,ProductRevisionPublicationCodec.diagnostics(t.metadata,t.supplied),c.units(),c.policy());t.digest=ProductRevisionPublication.hash(codec.encode(t.envelope));}

@@ -5623,4 +5623,117 @@ doc/model-remediation/RECONCILIATION.md:23380 | HPR-P25-053D | Multi-product own
 doc/model-remediation/RECONCILIATION.md:23743 | HPR-P25-053D | BLOCKED_SPECIFICATION | Multi-product ownership/API compatibility qualification
 ~~~~~~~~
 
+### HAPI-597 — source-backed qualification preflight and bounded registration — 2026-10-28
+
+Owner Next selects597 preflight after accepted596. Exact main
+bf6a3ada2aaef49cd3a2777c4f775eae16400b01, tree76f049253fe806959315fd540a213953513f2ec4,
+has Docs657/run40657823939 completed/success. Runtime/test/build source is unchanged
+from accepted e52fd0478fe46642cf5b478efb70473610ccd80a, Full941/Fast244/Docs656.
+That exact retained full evidence was independently reconstructed:487 classes,
+3556 cases, zero failures/errors/skips, actual same-run API/compatibility/catalog.
+Do not relabel those older runs as running on this documentation SHA.
+594/595/596 remain VERIFIED/COMPLETED; integrated593 remains independent.
+
+**This selected stage:** documentation-only discovery/registration, exact message
+`docs(custody): register multi-product qualification execution`.
+MODIFY only this phase and597's compact ULTIMATE_TASKS execution pointer. Zero
+CREATE/DELETE/runtime/test/schema/API/dictionary change. Retain original proposed
+paths and historical quoted evidence verbatim. NOT_IMPLEMENTED/BLOCKED remains
+the frozen current597 state during preflight; the registered successor may change
+only597 planning cells to IN_PROGRESS when it starts after successful Docs and
+another owner Next. This existing task refinement is not a new standalone task.
+No policy choice or external deployment data is needed to test already adopted
+Policy A; no numerical/engineering acceptance is introduced.
+
+**Current source contract and fixture discovery.** Actual supported authoring
+owners are ProductEngineeringDraft, SuppliedFluidPropertyRevision and
+ProductRevisionPublication, their inbound use cases and configured controllers.
+Supplied facts support GAS/LIQUID, MOLE_FRACTION/MASS_FRACTION, declared positive
+exact-decimal composition, DENSITY/DYNAMIC_VISCOSITY and GAS-only
+COMPRESSIBILITY_FACTOR, explicit absolute conditions, method/source/evidence
+and exact incomplete/null-vs-empty semantics. Existing bounds and owner unit
+policies are authoritative; this qualification does not add a supported shape.
+ProductPublicationSourceContract is the actual immutable scalar consumer surface:
+EXACT_HISTORICAL, ELIGIBLE_CURRENT and ELIGIBLE_EFFECTIVE; no actor or eligibility
+input, no automatic current fallback, engineeringQualified=false. Preserve original
+metadata/supplied formats/bytes/digests, versions, diagnostics, units and human
+approval; eligibility is separate from engineering suitability.
+
+CustodyGasFluidRevisionQueryService and SimulationGasFluidRevisionContract remain
+the distinct legacy qualified GAS path. resolve reattests exact stored digest,
+qualification/governance selectors, source/method effective window, current catalog
+snapshot and Workflow approval. Publication of GAS or LIQUID does not create
+that qualification or authorize a Simulation use. No consumer contract, wiring,
+new endpoint, algorithm, unit conversion or numerical qualification is selected.
+
+Reuse fixture patterns from ProductEngineeringDraftNativeHttpPostgresIntegrationTest,
+SuppliedFluidPropertyNativeHttpPostgresIntegrationTest and
+ProductRevisionPublicationNativeHttpPostgresIntegrationTest: real application
+context/MockMvc+springSecurity, real migrations/owner data/native sessions/scoped
+grants and actual Workflow human transitions. Fixtures live entirely in the
+single proposed qualification class; no inherited tests, new support file or
+fixture-only production hook. Native cryptography, identity binding, owner SQL,
+Workflow and final guard remain real. Only external directory transport may use
+the existing synthetic verification boundary. Runtime uses the nonowner accounts;
+administrator SQL is limited to fixture setup and deliberate corruption probes,
+never the operation being qualified. Preserve all existing class/case hashes.
+
+**Registered next implementation message:**
+`test(custody): qualify multi-product publication ownership`.
+CREATE exactly
+`src/test/java/dz/sh/hidra/modules/custody/qualification/ProductEngineeringOperatorQualificationTest.java`.
+MODIFY exactly .github/ci-test-inventory.json, this phase, the compact index pointer
+and status-only597 planning cells in ULTIMATE_ROADMAP/ULTIMATE_PHASES. Zero DELETE.
+No source/controller/contract/codec/migration/build/workflow/validator/artifact
+modification is admitted. If a real production defect is found, record its exact
+cause and bounded responsible repair before any production edit; do not soften
+the oracle or reinterpret an unexpected503 as success.
+
+**Exact authored case matrix for that successor (not executed in this preflight):**
+
+| Test method | Required observable behavior |
+|---|---|
+| gasMoleSourceRoundTripsThroughOwnersAndExport | Configured create/update/supply/prepare/human approve/publish; exact GAS mole bytes and scalar lexemes, never engineering qualified. |
+| liquidMassSourceRoundTripsWithoutNumericalQualification | Same real lifecycle with LIQUID mass basis and supported density/viscosity/conditions/method evidence; no GAS conversion or qualified Simulation export. |
+| twoCompaniesShareCatalogWithoutSharingOwnedHistory | Same catalog/local code, independent owner versions/publications; foreign exact/current/history/export reject without data disclosure. |
+| exactHistoricalExportSurvivesSourceAndHeadChanges | Publish then revise sources and withdraw; old envelope/approval/digests unchanged, current/effective eligibility absent without historical fallback. |
+| companyAndProductDenialsBlockReadPublishAndExport | Each independent scope and explicit DENY on every selected action; no publication/event/receipt or payload leak. |
+| revokedNativeSessionBlocksReplayAndExport | Real issued session revoked after positive flow; reject identical replay/read/export, preserve exact prior rows. |
+| staleAndMixedSourceVersionsCannotPublish | Mismatched metadata binding and stale independent versions reject with unchanged candidate/head/events. |
+| unsupportedLiquidCompressibilityNeverReachesStorage | Configured400; unchanged versions and receipts, no inferred property conversion. |
+| malformedCompositionAndSelectorsNeverReachOwners | Nonunit fraction sum, duplicates, unknown/server fields, coercions and mixed scalar selectors reject under existing bounds. |
+| policyAndUnitRevocationPreventEligibleSelection | Current policy/catalog/unit eligibility loss rejects current use; exact historical evidence stays reproducible only under fresh native read authority. |
+| corruptedStoredBytesNeverBecomeFallbackSelection | Fixture-controlled metadata/supplied byte or digest corruption; strict owner/read/export failure, no fallback or invented qualified result; restore isolated fixture state. |
+| failedFinalGuardRollsBackPublicationAndReceipt | Actual final SQL guard failure after provisional write leaves publication/head/event/request tables unchanged; no returned success. |
+| legacyQualifiedGasReplayKeepsExactIdentity | Real legacy source/revision/qualification fixture and approval; repeated exact resolve retains original format/digest/qualification IDs, current attestation and GAS supported-use restrictions. |
+| publicationCannotSubstituteLegacyGasQualification | New publication ID/digest cannot resolve as a legacy GAS qualification or cross-company/mixed selector; no consumer wiring or fabricated suitability. |
+
+All14 names are prospective. Admit the new actual source/case/hash inventory only
+when implemented; use the existing PostgreSQL classifier, unmeasured timing0 and
+scheduler fallback. Preserve all old inventory entries/timings/cases. Do not count
+inherited tests or reuse cumulative coverage as proof these scenarios executed.
+Run focused compilation/test selectors if tooling exists; Maven is currently absent,
+so AGENTS11.1 requires useful checks and hosted Java21/PostgreSQL feedback without
+provisioning a full local environment. Full/Fast/Docs must pass on exact implementation
+SHA, with raw14-case membership/source hashes, real rollback assertions and same-run
+runtime OpenAPI/base compatibility/complete catalog/dictionary equality. Existing
+API/dictionary snapshots remain untouched unless actual hosted drift requires a
+separately bounded artifact repair. Schema/source/JPA inputs should remain identical.
+
+**Separate final597 acceptance:** exact message
+`docs(custody): accept multi-product ownership qualification`.
+MODIFY only this phase, compact pointer and status-only597 cells in ROADMAP/PHASES.
+Require independent retained evidence and every matrix obligation before changing
+597 to VERIFIED/COMPLETED; do not close593 automatically. No engineering/SITE,
+liquid thermodynamics, numerical solver, frontend, release or deployment acceptance.
+
+**Preflight validation and stop.** Validate actual paths/class absence, unchanged
+accepted source/tree, two-document scope, append-only597 history, preserved task
+states and all compatibility anchors/phase memberships using unchanged docs checks;
+run available validator self-tests, offline API/inventory and whitespace checks.
+No new Java/native run is claimed. Publish this registration with expectedbf6a3ad,
+verify exact parent/tree/message/two-path blobs, observe exact-SHA Documentation
+CI queue/start and STOP. Next separately selects the registered14-case test stage
+only after this preflight's Docs succeeds; no implementation occurs here.
+
 <!-- task-register:payload:end -->

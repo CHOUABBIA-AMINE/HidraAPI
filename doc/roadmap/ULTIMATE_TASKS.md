@@ -104,6 +104,16 @@ This owner Next executes only the final four-file acceptance closure. HAPI-597
 requires a later separate selection; integrated593, engineering/SITE, numerical
 qualification, frontend, release and deployment remain independent.
 
+[HAPI-597](TASKS_HPS-008.md#hapi-597), multi-product ownership/API compatibility
+qualification, has a source-backed14-case test execution registered in its phase
+following accepted596 and Docs657 onbf6a3ada2aaef49cd3a2777c4f775eae16400b01.
+This owner Next executes only the two-document preflight. After its Docs success,
+a later Next selects the single real owner/filter/PostgreSQL qualification class
+and exact inventory/status scope. No proposed test has executed yet;597 remains
+NOT_IMPLEMENTED/BLOCKED until that separately selected implementation starts.
+Legacy qualified GAS and unqualified publication exports remain distinct; no
+consumer wiring, numerical qualification, integrated593 closure or deployment.
+
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent
 [HAPI-436](TASKS_HPS-024.md#hapi-436) are VERIFIED/COMPLETED within the accepted

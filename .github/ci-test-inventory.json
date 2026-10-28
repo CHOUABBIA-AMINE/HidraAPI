@@ -9934,7 +9934,7 @@
       "lane": "unit-architecture",
       "owner": "custody",
       "path": "src/test/java/dz/sh/hidra/modules/custody/api/rest/controller/ProductRevisionPublicationControllerTest.java",
-      "source_sha256": "997424677a5eba6b804189f71d291e98ad4582f6e65125e4520a614dcdca116d",
+      "source_sha256": "a9d7cb94400d9f9012153ab64a469a9cd31a2c1490f4af19fc26e777aebccbfe",
       "supports": []
     },
     {
@@ -9952,7 +9952,7 @@
       "lane": "unit-architecture",
       "owner": "custody",
       "path": "src/test/java/dz/sh/hidra/modules/custody/infrastructure/integration/ProductPublicationSourceQueryAdapterTest.java",
-      "source_sha256": "0480b3cb4713e149f38f9fd3644a77732d5217900fc2b61236b31cf036b2e9a3",
+      "source_sha256": "457294bab417b5a33feec83d57a227b62f547eb028e251c3a07e57af681d8b86",
       "supports": []
     },
     {
@@ -9975,7 +9975,7 @@
       "lane": "postgres-integration",
       "owner": "custody",
       "path": "src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/ProductRevisionPublicationNativeHttpPostgresIntegrationTest.java",
-      "source_sha256": "7b12f36391179aecd0d2da6b3743db2d7b584ce01d1e68dd702f7e0519dcb17d",
+      "source_sha256": "fef00594d64716811f92c52a4533033d58480b549e62c57a29036ff4ddcd4bbb",
       "supports": []
     }
   ],

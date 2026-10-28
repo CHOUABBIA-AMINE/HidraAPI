@@ -899,7 +899,14 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
     private HttpActor httpActor(String type){var f=publicationActor(type);var a=(org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken)SecurityContextHolder.getContext().getAuthentication();return new HttpActor(f,a.getToken().getTokenValue());}
     private String url(UUID p){return "/api/v1/custody/engineering-products/"+p+"/publications";}
     private String prep(UUID request){return "{\"requestId\":\""+request+"\",\"metadataVersion\":1,\"suppliedVersion\":1}";}
-    private org.springframework.test.web.servlet.ResultActions send(HttpActor a,UUID p,String method,String suffix,String body,String... query)throws Exception{SecurityContextHolder.clearContext();var b=org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request(org.springframework.http.HttpMethod.valueOf(method),url(p)+suffix).param("companyPartyId",COMPANY);if(a!=null)b.header("Authorization","Bearer "+a.token());for(int i=0;i<query.length;i+=2)b.param(query[i],query[i+1]);if(body!=null)b.contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(body);return http.perform(b);}
+    private org.springframework.test.web.servlet.ResultActions send(HttpActor a,UUID p,String method,String suffix,String body,String... query)throws Exception{SecurityContextHolder.clearContext();var b=org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request(org.springframework.http.HttpMethod.valueOf(method),url(p)+suffix).param("companyPartyId",COMPANY);if(a!=null)b.header("Authorization","Bearer "+a.token());for(int i=0;i<query.length;i+=2)b.param(query[i],query[i+1]);if(body!=null)b.contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(body);return http.perform(b).andDo(result->{
+        // Synthetic test diagnostics only: retain the real failure without weakening HTTP assertions.
+        if(result.getResponse().getStatus()>=500){
+            System.err.println("Publication HTTP failure: "+method+" "+suffix);
+            var failure=result.getResolvedException();
+            if(failure!=null)failure.printStackTrace(System.err);
+        }
+    });}
     private tools.jackson.databind.JsonNode json(org.springframework.test.web.servlet.ResultActions a)throws Exception{return JSON.readTree(a.andReturn().getResponse().getContentAsString());}
     private Selection humanApproval(HttpActor a,String digest){SecurityContextHolder.getContext().setAuthentication(new org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken(nativeDecoder.decode(a.token()),List.of()));currentActor=a.fixture();try{return approve(digest);}finally{SecurityContextHolder.clearContext();}}
     private String approvalJson(Selection a){return "{\"instanceId\":\""+a.instanceId()+"\",\"taskId\":\""+a.taskId()+"\",\"actionId\":\""+a.actionId()+"\"}";}

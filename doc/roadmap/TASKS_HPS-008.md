@@ -5380,6 +5380,38 @@ Publish with expected384e90c guard, verify parent/tree/message/three-path blobs,
 confirm applicable exact-SHA Full/Fast/Docs queue/start, then STOP. C acceptance
 and HAPI-596 final acceptance remain open; HAPI-597 and all successors unselected.
 
+### HAPI-596 Package C — Full940 exception restubbing repair and native diagnostics — 2026-10-28
+
+Owner Fail selects exact mainb4722a43312c26fe4b4678ec9fe7b09c4144b37e.
+Full940/run40653058771 compiles; static, API/dictionary and six PostgreSQL shards
+pass. Unit lane has two errors: iterative when(owner.execute(...)).thenThrow
+calls the preceding throwing stub on its next iteration. Use doThrow(...).when
+in both controller and scalar adapter tests, retaining every reason and assertion.
+No owner behavior changes or fallback are authorized.
+
+Shard4 has four native HTTP failures, all expected201/actual503. Current one-line
+assertions retain no underlying resolved exception. The cause remains unresolved;
+do not call these tests passing or infer a production repair from the status.
+Add synthetic test-only diagnostics to send: for5xx print method/suffix and the
+resolved exception/cause chain to stderr. Preserve strict201 expectations, real
+native producers, Workflow, scopes, final guard, transactions and all budgets.
+This is evidence collection for responsible C repair, not a waiver or acceptance.
+HTTP response sanitization and production logging are unchanged.
+
+Exact repair message: `fix(custody): restub publication failures and retain native diagnostics`.
+Allowed MODIFY: ProductPublicationSourceQueryAdapterTest,
+ProductRevisionPublicationControllerTest,
+ProductRevisionPublicationNativeHttpPostgresIntegrationTest,
+.github/ci-test-inventory.json and this phase. Zero CREATE/DELETE. Refresh only
+these three class hashes; retain every case/lane/timing. No production, migration,
+dependency, generated API or dictionary change. Run inventory, docs, OpenAPI and
+whitespace checks plus available validator self-tests. Maven remains unavailable;
+no local Java21/HTTP/PostgreSQL runtime success is claimed.
+
+Publish with expectedb4722a4; verify exact parent/tree/message/five-path blobs,
+observe exact-SHA Full/Fast/Docs queue/start and STOP under AGENTS11.1. Native503
+cause and C acceptance remain open. No final596 acceptance, HAPI-597 or successor.
+
 <a id="hapi-597"></a>
 ## HAPI-597 — Multi-product ownership/API compatibility qualification
 

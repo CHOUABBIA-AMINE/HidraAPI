@@ -2784,6 +2784,151 @@ and source justified; otherwise none is admitted. The preflight cannot claim cod
 or tests exist. Public controller/DTO/OpenAPI (Package C), HAPI-600/601, simulator,
 frontend, release and deployment remain outside this next selection.
 
+### HAPI-599 Package B — protected installed-unit writer source preflight and Identity registration — 2026-10-28
+
+**Selected registered preflight.** Owner Next selects exact message
+`docs(topology): register installed-unit protected writer implementation`.
+CREATE none; MODIFY only this phase file; DELETE none. Main
+`cfc858a2442ffc19feb8cf680c61c393f95a2fa0` has Docs #679 SUCCESS.
+Runtime acceptance remains Full954 on `7c49a82d2de482b4305d29a3c1087bd818bc92fb`:
+492 classes/3,610 cases, all ten PostgreSQL shards and strict API/dictionary gate.
+This is a source-backed registration within fixed Package B, not runtime code,
+an additional package or integrated HAPI-599 acceptance. Frozen states stay unchanged.
+
+**Actual native Identity seam.** `ProtectedOperationIdentityParticipant` admits a
+real native binding once, derives qualified claim reads from the actual principal,
+and retains issuer/actor/thread/connection/transaction/time context. Its current
+station `qualifyPair` compiles `topology:station-revision:*` and resource type
+`STATION_GRAPH_REVISION`. `JdbcProtectedAuthorizationEvidenceReader` validates
+those exact descriptors and other explicitly compiled families. The Organization
+claim-group implementation demonstrates one native sample for several bounded
+requirements and fresh final graph/time rechecks. It is a source pattern only:
+Organization credentials, station pairs and user-constructed scalar contributions
+must never become installed-unit credentials. No generic caller-chosen permission,
+resource, scope or family selector is admitted.
+
+**Concrete installed-unit Identity contract to implement next.** All operations
+require actual authenticated native Identity plus a current PERMIT for every
+derived scope; DENY dominates, otherwise INDETERMINATE is non-permitting. A typed
+request binds exact company, unit, applicable installation/replacement identities,
+and source/destination facility descriptors. These are requested descriptors, not
+proof of existence/ownership. Exact references are nonblank/unpadded, at most80
+Unicode code points; reject malformed operation-specific shapes before native
+consumption. Use one native sample for the entire group; require fresh owner checks
+and unchanged request through final recheck. No production permission/grant seed.
+
+| Operation | Exact permission code | Resource type / reference | Required scopes |
+|---|---|---|---|
+| REGISTER_UNIT | `topology:installed-unit:register` | `INSTALLED_UNIT` / unit ID | Company only |
+| READ_UNIT | `topology:installed-unit:read` | `INSTALLED_UNIT` / unit ID | Company only |
+| RECORD_INSTALLATION | `topology:installed-unit:record-installation` | `INSTALLED_UNIT_INSTALLATION` / new installation ID | Company and destination facility |
+| CLOSE_INSTALLATION | `topology:installed-unit:close-installation` | `INSTALLED_UNIT_INSTALLATION` / existing installation ID | Company and source facility |
+| RELOCATE | `topology:installed-unit:relocate` | `INSTALLED_UNIT_INSTALLATION` / source installation ID and replacement installation ID | Company and both source/destination facilities, for both installation resource identities |
+| READ_INSTALLATION | `topology:installed-unit:read-installation` | `INSTALLED_UNIT_INSTALLATION` / installation ID | Company and source facility |
+| READ_HISTORY | `topology:installed-unit:read-history` | `INSTALLED_UNIT_INSTALLATION` / installation ID | Company and source facility |
+
+Company scope is `CUSTOM` / `topology-company:<company ID>`; facility scope is
+`FACILITY` / exact facility ID. Both relocation resource IDs must differ; both
+facility descriptors remain bound even when equal (deduplicate identical required
+evaluations deterministically). Unit-only requests require no fabricated facility
+or installation ID; record requires destination only; close/read/history source
+only; relocation both plus replacement ID. Reject forbidden extra fields and
+missing fields. Derive requirement lists internally in deterministic resource/scope
+order, never accept an arbitrary list of permission strings. Maximum relocation
+work is six unique evaluations. Existing policy evaluator semantics stay unchanged.
+
+The exported contract provides opaque Prepared/Admission lifecycle, non-authoritative
+immutable scalar contributions, requireCurrent and exact technical final fences.
+Prepare precedes the physical transaction; acquire/contribute/current/fences require
+a genuine writable synchronized read-committed transaction. Tickets are single-use,
+issuer/principal/thread/holder/PID/XID/current-role bound and invalid after suspension
+or completion. Reject forged/replayed/mismatched-family inputs before disclosure;
+poison the issuing transaction on owner failure, including swallowed and foreign-
+thread misuse. Native/session/source/grant/policy temporal bounds remain authoritative;
+final reread must detect in-transaction changes as well as concurrent revocation.
+No new timeout, commit proof key family, optimistic Boolean or station-code alias.
+
+**Position/owner preflight disposition for the remaining writer.**
+`EquipmentJpaEntity` and V20260611_004 have nullable facility/node/segment placement;
+no equipment ownership-generation registry was found in the current migration chain.
+Do not invent a generation or infer a facility through a guessed node/segment path.
+The first protected writer must admit only a current directly identified facility
+whose existing owner export matches the company, and reject unresolved placement.
+Before implementation of that writer, separately register the exact equipment
+relation-lock/catalog/privilege strategy and owner export allowlist. Use a current
+fenced position read held through final guard; ID/FK and client facility IDs are
+insufficient. Source and destination positions must each be checked for relocation.
+No equipment-kind compatibility is implied by Party EQUIPMENT/INSTRUMENTATION
+capability; UNKNOWN/UNVERIFIED/VERIFIED supplied provenance remains distinct from
+eligibility. Known manufacturer references require the accepted live Party evidence;
+unknown provenance must never be promoted into verified qualification.
+
+**Atomic persistence/executor preflight disposition.** V20261028_002 fixes immutable
+unit company identity, half-open exclusion for unit/position occupancy, initial
+revision1, one CAS versioned closure and trigger-appended immutable event history.
+`JdbcInstalledUnitRepositoryAdapter` is private ordinary JDBC storage with unqualified
+SQL; its methods are not protected permission gates. The future writer must bind
+actual unit/company and installation/revision/position IDs before reads or mutations,
+use schema-qualified exact reviewed statements, close plus replacement in one
+physical transaction, and roll back both rows/events on any conflict or final failure.
+Missing/foreign installation/history must not disclose rows, counts or existence.
+
+`ProtectedTransactionExecutor` admits only compiled service/coordinator names and
+reviewed per-family provisional SQL. There is currently no installed-unit family.
+The future registration must name those exact classes and fixed statement hashes;
+do not widen table prefixes or reuse station permits. Preserve separate credential
+routing, native fences, finite standard500ms processing policy, minimum genuine
+validity deadline and final recheck immediately before commit. Custody/appointment
+policy overrides do not apply to this family. Keep trigger/catalog/privilege tests,
+own-transaction tampering, NOWAIT, stale CAS, overlap races, atomic relocation and
+history authorization in the later writer acceptance matrix. No migration or
+executor/storage modification is admitted by the next Identity-only step below.
+
+**Next executable implementation within the same Package B — Identity contribution only.**
+Exact message: `feat(identity): export guarded installed-unit operation authorization`.
+
+CREATE only:
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyInstalledUnitAuthorizationContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedTopologyInstalledUnitAuthorizationParticipant.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedTopologyInstalledUnitAuthorizationParticipantTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedTopologyInstalledUnitAuthorizationPostgresIntegrationTest.java`
+
+MODIFY only:
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipantTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java`
+- `.github/ci-test-inventory.json` (actual modified/new class cases and source hashes; unmeasured timings remain explicit)
+- `doc/roadmap/TASKS_HPS-006.md` (append actual evidence/limits)
+
+DELETE none. No Flyway, permission/grant data, Party repair, Topology writer/position
+adapter, executor/configuration, public REST/OpenAPI, dictionary or frozen registry
+changes. No foreign consumer exists yet, so do not add speculative cross-module
+allowlist exceptions. Identity owns all internal transport/graph types; exported
+contract scalars must not expose private Identity entities or authority-bearing
+structurally constructible credentials. Preserve every existing native family and
+its tests, and all ten shard membership/coverage controls.
+
+**Required implementation acceptance, not existing test claims.** Focused unit
+cases must cover all seven mappings and exact structural rejection, deterministic
+bounded relocation requirements, issuer/family/request isolation and denial merge.
+Fresh migrated PostgreSQL16 configured participant tests must prove real principal/
+native binding/session/source validation, absent/revoked/stale grants, independent
+company/facility denial, no station-permission substitution, both relocation IDs
+and scopes, same-facility dedup without omitted authority, native/time boundaries,
+current-policy changes, NOWAIT/fences, rollback and forged/replay/thread/transaction
+misuse. Exercise final graph rechecks after own-transaction edits. Require current
+architecture/private-owner tests and source inventory; run useful local checks and
+report unavailable Maven/PostgreSQL honestly under AGENTS11.1. Publish guarded main
+only in this allowlist, observe exact-SHA Full/Fast/Docs creation/start, then stop.
+This preflight passed local documentation/link validation and `git diff --check`;
+registered create/modify paths were checked against current files. No Java, Maven
+or PostgreSQL runtime execution occurred in this documentation-only stage.
+Hosted success accepts only the Identity contribution; separately register the
+position/facility admission and atomic writer scope after this gate passes.
+Package C, HAPI-600/601, frontend, simulation/P3, SITE, release and deployment remain
+unselected. HAPI-599 remains NOT_IMPLEMENTED/BLOCKED pending integrated B/C acceptance.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

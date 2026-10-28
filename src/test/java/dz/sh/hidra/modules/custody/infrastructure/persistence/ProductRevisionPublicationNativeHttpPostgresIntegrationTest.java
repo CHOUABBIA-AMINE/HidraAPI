@@ -97,7 +97,6 @@ import dz.sh.hidra.modules.custody.domain.model.SuppliedFluidPropertyRevision.*;
             "hidra.platform.security.jwt.token-issuer=hidra-api",
             "hidra.platform.security.jwt.audience=hidra-api"
         })
-@org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 @ActiveProfiles("test")
 @org.springframework.test.annotation.DirtiesContext(classMode=org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_CLASS)
 public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
@@ -232,6 +231,8 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
 
     @BeforeEach
     void initialize() {
+        http=org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup(webContext)
+                .apply(org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity()).build();
         administrator=new org.springframework.jdbc.datasource.DriverManagerDataSource(POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword());
         jdbc=new JdbcTemplate(administrator) {
             @Override public javax.sql.DataSource getDataSource(){return TransactionSynchronizationManager.isActualTransactionActive()?runtimeJdbc.getDataSource():administrator;}
@@ -891,7 +892,8 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
     private long events(UUID p){return jdbc.queryForObject("SELECT count(*) FROM "+PP+"_event WHERE product_draft_id=?",Long.class,p);}
     private long candidates(UUID p){return jdbc.queryForObject("SELECT count(*) FROM "+PP+"_candidate WHERE product_draft_id=?",Long.class,p);}
     private dz.sh.hidra.modules.custody.infrastructure.persistence.adapter.JdbcProductRevisionPublicationRepositoryAdapter publicationTarget(){return org.springframework.test.util.AopTestUtils.getUltimateTargetObject(publicationStorage);}
-    @Autowired org.springframework.test.web.servlet.MockMvc http;
+    @Autowired org.springframework.web.context.WebApplicationContext webContext;
+    private org.springframework.test.web.servlet.MockMvc http;
     @Autowired dz.sh.hidra.modules.custody.application.contract.publication.ProductPublicationSourceContract sources;
     private record HttpActor(Fixture fixture,String token) {}
     private HttpActor httpActor(String type){var f=publicationActor(type);var a=(org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken)SecurityContextHolder.getContext().getAuthentication();return new HttpActor(f,a.getToken().getTokenValue());}

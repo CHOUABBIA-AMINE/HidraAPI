@@ -5326,6 +5326,38 @@ remains NOT_IMPLEMENTED/IN_PROGRESS pending C and independent final acceptance.
 HAPI-597/593, engineering/SITE, frontend, numerical solver, release/deployment
 remain unselected. A later Fail repairs C's actual feedback before advancing.
 
+### HAPI-596 Package C — Full938 compilation and runtime contract repair — 2026-10-28
+
+Owner Fail selects only responsible C feedback at main1ebdaec104c25d695f615a636cfd54f209acdea8.
+Full938/run40650170041 failed test compilation before native cases could execute:
+AutoConfigureMockMvc references an optional Boot test module absent from this POM.
+Use the established real WebApplicationContext MockMvc builder with springSecurity,
+without new dependencies, disabled filters or changed cases. Refresh only this
+class source hash in the inventory; all case/lane/timing entries remain intact.
+
+Exact repair message: `fix(custody): configure publication HTTP tests and refresh runtime contract`.
+Allowed MODIFY: this phase, ProductRevisionPublicationNativeHttpPostgresIntegrationTest,
+.github/ci-test-inventory.json, doc/api/openapi.yaml and
+.github/documentation-validation.json. Zero CREATE/DELETE; production and migrations unchanged.
+
+API job122688147350 built the actual application and generated OpenAPI successfully
+in steps8/9, then failed canonical equality. Compatibility/catalog steps were skipped.
+Actual diagnostics artifact12799163248 ZIP SHA256
+c259cfb9d9a33c6a8135003ae96e3295c16c29f6a0458feff6f0bb47b66e5215
+matches the hosted log. Canonicalize that original JSON without inferred contract
+content:282 paths/306 operations/323 schemas. Preserve prior manifest provenance;
+new conclusion scope covers successful generation only, not the failed job/run.
+Unchanged local comparator passes against actual Full937 API: no supported breaks.
+Runtime equality, source inventory and documentation validation pass locally.
+No migration/JPA change or dictionary drift is demonstrated; dictionary unchanged.
+Maven remains unavailable; configured Java21/HTTP/PostgreSQL execution is pending CI.
+All existing cases remain required; source checks do not prove runtime success.
+
+Publish these five paths with expected1ebdaec and verify exact commit/tree/blobs,
+then observe applicable exact-SHA Full/Fast/Docs queue/start and STOP. C remains
+pending independent acceptance; HAPI-596 NOT_IMPLEMENTED/IN_PROGRESS is unchanged.
+No HAPI-597, final acceptance, engineering qualification, release or deployment.
+
 <a id="hapi-597"></a>
 ## HAPI-597 — Multi-product ownership/API compatibility qualification
 

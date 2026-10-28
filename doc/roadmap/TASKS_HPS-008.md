@@ -3614,9 +3614,9 @@ Legacy IDs: HPR-P25-053C
 
 Priority: P1
 
-Implementation Status: NOT_IMPLEMENTED
+Implementation Status: VERIFIED
 
-Planning Status: IN_PROGRESS
+Planning Status: COMPLETED
 
 Owning Module: `custody` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -5411,6 +5411,61 @@ no local Java21/HTTP/PostgreSQL runtime success is claimed.
 Publish with expectedb4722a4; verify exact parent/tree/message/five-path blobs,
 observe exact-SHA Full/Fast/Docs queue/start and STOP under AGENTS11.1. Native503
 cause and C acceptance remain open. No final596 acceptance, HAPI-597 or successor.
+
+### HAPI-596 — independent final software acceptance — 2026-10-28
+
+Owner Next selects the separately registered final acceptance, not HAPI-597.
+Exact implementation/repair SHA e52fd0478fe46642cf5b478efb70473610ccd80a,
+treefb10e4328ae7aaec666e91299aa6a911f43ef2f7, has Full941/run40654355028,
+Fast244/run40654354963 and Docs656/run40654354984 completed/success.
+
+Retained attempt1 full artifact12801216813 ZIP SHA256
+ ddee93ad76ce78c5382a073a6f3bddf7a352fc3a64602d58d8c6399d7bd20564
+matches the GitHub artifact digest. Independent unchanged full-evidence aggregation
+against exact source reproduces retained gate.json byte-semantically:487 active
+classes,3556 actual cases, zero failures/errors/skips. Every lane receipt/file
+hash, SHA/run/attempt, classifier/inventory/source hash and disjoint raw XML case
+membership passes. Development mode retains same_run_equivalence=false and
+release_eligible=false; skipped optional serial oracle is not a passing audit.
+
+Direct C suites execute controller7, scalar adapter5 and native HTTP10 cases;
+registered route/export/boundary regression cases remain in their actual source
+and complete raw membership. B domain17/storage29/lookup6 also pass; A identity20
+and protected Workflow approval14 plus existing human/transition/import cases
+remain represented in the complete validated inventory. Earlier accepted A/B
+proof and closed594/595 remain intact. Actual C configured paths cover four
+native producers, strict selectors, real human Workflow, original bytes, replay,
+withdraw/reactivate/effective/history, scoped denial/revocation and rollback.
+Full940's four503 failures remain failed history. They did not reproduce in941;
+no causal runtime fix or immunity from transient availability failure is claimed.
+All ten native assertions remain strict and pass without retry or budget change.
+
+Same-run API current SHA256
+70869f51da3759848aec4b43b43c0a20693b5aa77577f6e7c27a9583dff97c7e;
+actual successful-base54f0167 API SHA256
+9f5dd7301cd1b75ba6fda1c6bf745b1ccb312c79212143c81e7205eff5b4233a.
+Runtime/canonical equality and supported backward compatibility pass with
+282 paths/306 operations/323 schemas. Actual catalog SHA256
+1fb26d7c486f01a4588a099ca423b7351ced065b64877e1445b02e5652e21564;
+source bundle79da2df06361e83e1ee35b8fd4fe724af532a9f0d5f749a876e303e543e481ad.
+Complete182 migrations/470 mappings/528 relations, dictionary equality and zero
+unresolved owners pass. Existing artifact provenance remains truthful, not
+restamped to this documentation acceptance commit.
+
+A/B/C and responsible repairs are software accepted under Policy A; HAPI-596
+becomes VERIFIED/COMPLETED. Exact message:
+`docs(custody): accept governed product publication`.
+MODIFY only this phase, compact ULTIMATE_TASKS pointer and status-only596 cells
+in ULTIMATE_ROADMAP/ULTIMATE_PHASES. Zero CREATE/DELETE/runtime/artifact changes.
+Available docs/OpenAPI/inventory/whitespace and validator self-tests must pass;
+local Maven remains unavailable and no local Java/PostgreSQL proof is invented.
+Publish with expectede52fd04, verify exact four-path parent/tree/message/blobs,
+observe applicable exact-SHA Docs queue/start then STOP. Runtime evidence belongs
+to e52fd04; this documentation-only SHA does not claim a new Full/Fast execution.
+HAPI-597 is the next separate task-specific preflight/qualification selection;
+its blocked registry status is preserved until that selection. Integrated593,
+engineering/SITE/numerical qualification, frontend, release and deployment remain
+unaccepted and unexecuted. No successor starts in this turn.
 
 <a id="hapi-597"></a>
 ## HAPI-597 — Multi-product ownership/API compatibility qualification

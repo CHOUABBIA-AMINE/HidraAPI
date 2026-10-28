@@ -2034,6 +2034,98 @@ CI acceptance remains required on the new exact commit; failing deadline
 cases need a separate safe diagnosis/repair, never blanket test relaxation.
 HAPI-599 remains NOT_IMPLEMENTED/BLOCKED, and A/B/C packages remain fixed.
 
+### HAPI-599 Package A / Full950 — owner-requested500ms policy review and checked receipt repair — 2026-10-28
+
+Owner says Fail and explicitly asks whether500ms is arbitrary and can be skipped.
+Exact main0250d4d254b3677bffaaa032bec4ec6de6c3a593,
+treed3a00f8295994127428efdc48668ad0376cba4f2, Full950/run40679709702 FAILED.
+Docs670 passed. Eight PostgreSQL shards, unit and static pass; shards6/9 have
+three positive Custody publication failures caused by aggregate work cap expiry
+in SEALED phase at500.364/512.837/521.737ms. These are not native-expiry denials.
+The API lane independently fails its strict evidence gate despite real dictionary
+comparison success. Preserve all failed history and all installed-unit tests.
+
+**Finding and owner policy disposition.** The exact500ms value is the server's
+shared accepted writer-blocking work policy, not an industrial/HTTP SLA and not
+the native authorization lifetime. HAPI-778's2026-10-25 timing-policy review already
+established that distinction and adopted configurable bounded operation-family
+caps; its7500ms appointment cap is based on that family's measured workload, not
+proof Custody needs7500ms. No external timing specification or measured Custody
+SLA justifies the exact500ms aggregate cutoff. Owner's current request authorizes
+replacing that fixed cutoff for the three compiled Custody publication routes,
+not disabling finite resource limits or any authorization expiry.
+
+Use an independent immutable startup property
+hidra.platform.persistence.execution.custody-work-budget-ms, default1000ms,
+integer1..10000. This provisional two-times-old-cap policy covers the observed
+small overrun with bounded headroom; it is not a calibrated operational SLA or
+accepted load percentile. Never unlimited/zero, no request field, HTTP argument,
+profile bypass, runtime mutation or public numeric execution overload. Other
+families and ordinary execute retain500ms; appointment configuration remains
+independent and backward-compatible. Exact three already allowlisted compiled
+Custody service callers alone select the new cap. A private budget selector
+follows the existing caller whitelist; no new authority or credential route.
+
+Do NOT change native/source/token/grant/policy earliest-future bounds, activity,
+DENY precedence, row/transaction fences, the final scalar database-time guard,
+observed commit,250ms lock/750ms statement/1000ms idle settings or publication
+storage's existing500ms evidence window. The work cap is not an authority grace
+period: a final guard that observes expiry must still fail even with work time
+remaining. Because storage freshness remains500ms, this change does not promise
+that every operation longer than500ms will succeed. It removes a separate CPU/
+round-trip cutoff; actual guarded runtime success remains a hosted CI obligation.
+All183 published migrations and physical dictionary bytes remain unchanged.
+
+**Independent API failure.** Actual schema artifact12812436825 ZIP SHA256
+ afed529e2f9d959c9693ad1bc03055042c1a4aa1ccec0514cb04e08bb9dfdfd0
+contains same-source verification.json with reviewed_dictionary_checked=false
+from pre-comparison capture and comparison.json with true from successful strict
+--check. Source/catalog/dictionary digests match; generator comparison already
+passed. The sealing helper reads verification.json, so rejects the unchecked
+receipt. After the strict comparison command succeeds under set-e, copy its
+actual comparison.json to verification.json before artifact/seal steps. A failed
+comparison must never reach that copy; retain the initial unchecked receipt for
+failure diagnosis. Keep all strict source/hash/catalog/equality checks unchanged.
+No regenerated or guessed physical metadata and no relaxed evidence gate.
+
+**Registered message and scope.**
+`fix(ci): separate custody work policy and retain checked dictionary receipt`.
+MODIFY only ProtectedExecutionBudgetProperties, ProtectedTransactionExecutor,
+their two existing Java tests, .github/ci-test-inventory.json,
+.github/workflows/ci.yml, .github/scripts/test_verify_full_ci_evidence.py,
+this phase and compact ULTIMATE_TASKS pointer. Zero CREATE/DELETE, migration,
+JPA, DTO/controller/consumer/Identity validity or generated artifact changes.
+Preserve constructors used by existing appointment callers and all old cases;
+admit only actual added configuration/selector regression methods and source
+hashes. Ten mandatory balanced shards and separate class JVMs remain intact.
+
+Verify default/override independence, fail-closed malformed/out-of-range values,
+exact compiled-family budget selection, standard500ms preservation, finite new
+cap expiry and existing genuine native-expiry/final-guard rollback cases. Add an
+API evidence regression rejecting unchecked receipts and accepting only matching
+checked provenance with all other guards still active. Available local Java syntax,
+focused policy probes, CI/docs self-tests, inventory/OpenAPI/whitespace and exact
+scope/history checks are required; local Maven remains unavailable. Do not call
+new JUnit/PostgreSQL cases passed from source review. Successful current capture
+is evidence only for its original0250d4d source, not this new source SHA.
+
+Actual local results:88 CI inventory/evidence and29 documentation/OpenAPI validator
+self-tests pass (117 total); full docs/link/inventory and offline API validation
+pass. All four changed Java files parse. Actual policy record compiles through
+the available Java17 compiler with a temporary Environment signature, and default,
+finite bounds/nanoseconds and independence probes pass; this is not Spring/JUnit.
+Focused Maven command exits127 (mvn not found). Re-running the unchanged dictionary
+generator on the original actual950 schema with strict --check returns true:
+183 migrations/470 mappings/531 relations, zero unresolved owners; physical bytes
+and original capture SHA remain unchanged. All old cases and timing provenance
+are preserved. Five new JUnit cases are authored, not locally executed.
+
+Publish only these nine MODIFY paths with expected0250d4d, verify parent/tree/
+message/blobs and exact-SHA Full/Fast/Docs creation/queue/start then STOP. HAPI-599
+remains NOT_IMPLEMENTED/BLOCKED pending separate Package A acceptance and remaining
+B/C. Products' prior accepted behavior and statuses remain intact; operational
+workload/latency qualification, releases, deployment, numerical/P3 remain separate.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

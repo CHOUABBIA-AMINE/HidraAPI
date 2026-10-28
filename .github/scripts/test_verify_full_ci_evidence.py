@@ -550,6 +550,29 @@ class FullEvidenceTest(unittest.TestCase):
         current.write_text(json.dumps({'x-hidra-ci-source-sha': 'b' * 40}))
         with self.assertRaises(ValueError): full.api_facts(evidence, directory, self.root, SHA)
 
+    def test_unchecked_dictionary_receipt_rejects_and_checked_receipt_still_validates_catalog(self):
+        self.api_patch.stop()
+        directory = self.directory / 'api-contract'
+        files = directory / 'files'
+        current = files / 'target/openapi/hidra-api.json'
+        current.parent.mkdir(parents=True, exist_ok=True)
+        current.write_text(json.dumps({'x-hidra-ci-source-sha': SHA}))
+        database = files / 'target/database'
+        database.mkdir(parents=True, exist_ok=True)
+        (database / 'schema.json').write_text(json.dumps({'source_sha': SHA}))
+        receipt = database / 'verification.json'
+        evidence = {'files': {'files/' + name: 'f' * 64 for name in full.API_FILES}}
+        receipt.write_text(json.dumps({'source_sha': SHA, 'reviewed_dictionary_checked': False}))
+        with patch.object(full.dictionary, 'validate_document') as validate:
+            with self.assertRaisesRegex(ValueError, 'Stale or unchecked dictionary'):
+                full.api_facts(evidence, directory, self.root, SHA)
+            validate.assert_not_called()
+        receipt.write_text(json.dumps({'source_sha': SHA, 'reviewed_dictionary_checked': True}))
+        with patch.object(full.dictionary, 'validate_document', side_effect=ValueError('catalog validation still mandatory')) as validate:
+            with self.assertRaisesRegex(ValueError, 'catalog validation still mandatory'):
+                full.api_facts(evidence, directory, self.root, SHA)
+            validate.assert_called_once()
+
     def test_download_digest_mismatch_denies(self):
         from urllib.error import HTTPError
         error = HTTPError('https://api.github.com', 302, 'redirect',

@@ -9736,6 +9736,9 @@
       "baseline_seconds": 0,
       "cases": [
         "boundedServerConfigurationUsesExactMilliseconds",
+        "custodyBudgetDefaultsAndOverridesRemainIndependent",
+        "custodyMalformedOrUnboundedConfigurationFailsClosed",
+        "legacyAppointmentConstructorPreservesIndependentCustodyDefault",
         "malformedServerConfigurationFailsWithoutFallback",
         "missingConfigurationPreservesSharedDefault",
         "zeroNegativeAndAboveCeilingFailWithoutFallback"
@@ -9746,7 +9749,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/configuration/ProtectedExecutionBudgetPropertiesTest.java",
-      "source_sha256": "649ccbc08f5d72fea10d67b278d800b92b9714c7150140461fdfb2e2a090797b",
+      "source_sha256": "dc33a84135db0f5dfbfcfe45830d49c9daacb34325722849d3d2d79ed4fef8d3",
       "supports": []
     },
     {
@@ -9881,6 +9884,8 @@
         "changedServerBackendOrTransactionIdentityRejects",
         "commitDriverErrorIsIndeterminateWithoutRetry",
         "crossThreadCapturedHandleRejectsAndPoisons",
+        "custodyPolicyIsSelectedOnlyForItsThreeCompiledServiceNames",
+        "custodyWorkPolicyStillExpiresAndPoisonsAtItsFiniteCap",
         "datasourceCloseDuringWorkPoisonsAttempt",
         "datasourceDelegateAndBuilderEscapesPoisonCaughtErrors",
         "diagnosticAdmissionCannotMintDraftMutationPermit",
@@ -9928,7 +9933,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java",
-      "source_sha256": "228800601cb459571a61d2b8773d99d3cf44570767db31e00f8c114974fe0240",
+      "source_sha256": "7072d4c19ab7f982873838d8283fadac9284099e8082e32a070917b90995392d",
       "supports": []
     },
     {

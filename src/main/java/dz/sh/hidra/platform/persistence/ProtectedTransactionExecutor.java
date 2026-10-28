@@ -115,9 +115,16 @@ public final class ProtectedTransactionExecutor {
         if(!caller.equals(PRODUCT_PUBLICATION_SERVICE) && !caller.equals(FLUID_SERVICE) && !caller.equals(PRODUCT_SERVICE) && !caller.equals(DRAFT_SERVICE) && !caller.equals(PUBLICATION_SERVICE) && !caller.equals(APPOINTMENT_SERVICE) && !caller.equals(
             "dz.sh.hidra.modules.topology.application.service.ProtectedStationGraphOperationService"))
             throw new IllegalStateException("Unreviewed credential route caller");
-        long budgetNanos=caller.equals(APPOINTMENT_SERVICE) ? budgets.appointmentWorkBudgetNanos()
-                : dz.sh.hidra.platform.configuration.ProtectedExecutionBudgetProperties.STANDARD_WORK_BUDGET_MILLIS*1_000_000L;
+        long budgetNanos=publicationWorkBudgetNanos(caller);
         try(var route=credentialRouter().open()) {return executeWithBudget(work,flush,guard,budgetNanos);}
+    }
+
+    // Only executePublication, after its unchanged exact compiled-caller check, selects this policy.
+    private long publicationWorkBudgetNanos(String caller) {
+        if(caller.equals(APPOINTMENT_SERVICE))return budgets.appointmentWorkBudgetNanos();
+        if(caller.equals(PRODUCT_SERVICE) || caller.equals(FLUID_SERVICE) || caller.equals(PRODUCT_PUBLICATION_SERVICE))
+            return budgets.custodyWorkBudgetNanos();
+        return dz.sh.hidra.platform.configuration.ProtectedExecutionBudgetProperties.STANDARD_WORK_BUDGET_MILLIS*1_000_000L;
     }
 
     /** Reject before an ordinary caller can suspend an already protected physical execution. */

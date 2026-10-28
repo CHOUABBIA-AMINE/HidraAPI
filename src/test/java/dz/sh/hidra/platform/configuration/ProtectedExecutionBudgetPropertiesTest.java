@@ -48,4 +48,30 @@ class ProtectedExecutionBudgetPropertiesTest {
         assertThrows(RuntimeException.class,()->ProtectedExecutionBudgetProperties.from(new MockEnvironment()
                 .withProperty(ProtectedExecutionBudgetProperties.APPOINTMENT_PROPERTY,"unbounded")));
     }
+    @Test void custodyBudgetDefaultsAndOverridesRemainIndependent() {
+        var defaults=ProtectedExecutionBudgetProperties.from(new MockEnvironment());
+        assertEquals(1000,defaults.custodyWorkBudgetMillis());
+        assertEquals(1_000_000_000L,defaults.custodyWorkBudgetNanos());
+        for(long millis:new long[]{1,500,1000,7500,10000}) {
+            var value=ProtectedExecutionBudgetProperties.from(new MockEnvironment()
+                    .withProperty(ProtectedExecutionBudgetProperties.CUSTODY_PROPERTY,Long.toString(millis))
+                    .withProperty(ProtectedExecutionBudgetProperties.APPOINTMENT_PROPERTY,"2000"));
+            assertEquals(millis,value.custodyWorkBudgetMillis());
+            assertEquals(millis*1_000_000L,value.custodyWorkBudgetNanos());
+            assertEquals(2000,value.appointmentWorkBudgetMillis());
+        }
+        assertEquals(500,ProtectedExecutionBudgetProperties.STANDARD_WORK_BUDGET_MILLIS);
+    }
+    @Test void custodyMalformedOrUnboundedConfigurationFailsClosed() {
+        for(String invalid:new String[]{"0","-1","10001",Long.toString(Long.MAX_VALUE),"unbounded","1.5"})
+            assertThrows(RuntimeException.class,()->ProtectedExecutionBudgetProperties.from(new MockEnvironment()
+                    .withProperty(ProtectedExecutionBudgetProperties.CUSTODY_PROPERTY,invalid)));
+    }
+    @Test void legacyAppointmentConstructorPreservesIndependentCustodyDefault() {
+        var value=new ProtectedExecutionBudgetProperties(2000);
+        assertEquals(2000,value.appointmentWorkBudgetMillis());
+        assertEquals(1000,value.custodyWorkBudgetMillis());
+        assertThrows(IllegalArgumentException.class,()->new ProtectedExecutionBudgetProperties(2000,0));
+        assertThrows(IllegalArgumentException.class,()->new ProtectedExecutionBudgetProperties(0,1000));
+    }
 }

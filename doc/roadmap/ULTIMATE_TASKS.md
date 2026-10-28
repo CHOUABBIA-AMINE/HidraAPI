@@ -132,6 +132,14 @@ This selection is documentation/status reconciliation only; HAPI-598..603,
 HAPI-605 baseline, HidraWEB F06, industrial/SITE acceptance, simulator,
 release and deployment remain independently gated. No successor is selected.
 
+Owner Fail on Full950 authorizes the bounded Custody work-policy review and
+checked-dictionary-receipt correction recorded under HAPI-599 Package A.
+The fixed500ms processing cap is distinct from authority expiry; the three
+already compiled Custody callers gain a finite startup cap (default1000ms),
+while all native/storage deadlines, final guards and other operation families
+remain unchanged. Preserve ten shards and strict dictionary equality; no new
+software, SITE or deployment acceptance is implied by this pending repair.
+
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent
 [HAPI-436](TASKS_HPS-024.md#hapi-436) are VERIFIED/COMPLETED within the accepted

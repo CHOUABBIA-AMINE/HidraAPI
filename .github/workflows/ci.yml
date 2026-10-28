@@ -385,6 +385,8 @@ jobs:
           --ownership .github/database-dictionary-ownership.json \
           --check doc/database/DATA_DICTIONARY.md > target/database/comparison.json
         cat target/database/comparison.json
+        # Promote only the actual successful strict comparison receipt; failed checks stop above.
+        cp target/database/comparison.json target/database/verification.json
     - name: Retain current database dictionary evidence
       if: always()
       uses: actions/upload-artifact@v4

@@ -968,4 +968,34 @@ class ProtectedTransactionExecutorTest {
         executor.requireNoProtectedContext();var scope=new ProtectedOperationDataSource.Scope(500_000_000L);ProtectedOperationDataSource.CURRENT.set(scope);
         try{assertThatThrownBy(executor::requireNoProtectedContext).isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class);assertThatThrownBy(scope::healthy).isInstanceOf(RuntimeException.class);}finally{ProtectedOperationDataSource.CURRENT.remove();}
     }
+    @Test void custodyPolicyIsSelectedOnlyForItsThreeCompiledServiceNames() {
+        executor=new ProtectedTransactionExecutor(manager,ds,
+                new dz.sh.hidra.platform.configuration.ProtectedExecutionBudgetProperties(2000,1500));
+        for(String type:List.of("ProductEngineeringDraftApplicationService","SuppliedFluidPropertyRevisionApplicationService","ProductRevisionPublicationApplicationService")) {
+            long selected=org.springframework.test.util.ReflectionTestUtils.invokeMethod(executor,
+                    "publicationWorkBudgetNanos","dz.sh.hidra.modules.custody.application.service."+type);
+            assertThat(selected).isEqualTo(1_500_000_000L);
+        }
+        long appointment=org.springframework.test.util.ReflectionTestUtils.invokeMethod(executor,
+                "publicationWorkBudgetNanos","dz.sh.hidra.modules.organization.application.service.EmployeeAppointmentLifecycleApplicationService");
+        assertThat(appointment).isEqualTo(2_000_000_000L);
+        for(String caller:List.of("dz.sh.hidra.modules.topology.application.service.EngineeringNetworkDraftApplicationService",
+                "dz.sh.hidra.modules.topology.application.service.EngineeringRevisionPublicationApplicationService","unreviewed")) {
+            long selected=org.springframework.test.util.ReflectionTestUtils.invokeMethod(executor,"publicationWorkBudgetNanos",caller);
+            assertThat(selected).isEqualTo(500_000_000L);
+        }
+        // The private policy selector does not bypass the public route's unchanged caller whitelist.
+        assertThatThrownBy(()->executor.executePublication(()->"forbidden",()->{},this::guard))
+                .isInstanceOf(IllegalStateException.class).hasMessage("Unreviewed credential route caller");
+    }
+    @Test void custodyWorkPolicyStillExpiresAndPoisonsAtItsFiniteCap() {
+        var properties=dz.sh.hidra.platform.configuration.ProtectedExecutionBudgetProperties.defaults();
+        var scope=new ProtectedOperationDataSource.Scope(properties.custodyWorkBudgetNanos());
+        scope.started=System.nanoTime()-600_000_000L;
+        assertThatCode(scope::deadline).doesNotThrowAnyException();
+        scope.started=System.nanoTime()-properties.custodyWorkBudgetNanos()-1;
+        assertThatThrownBy(scope::deadline).isInstanceOf(IllegalStateException.class)
+                .hasMessage("Protected transaction poisoned: aggregate 1000ms work budget");
+        assertThat(scope.poisoned).isTrue();
+    }
 }

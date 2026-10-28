@@ -2555,6 +2555,107 @@ is inferred. After guarded documentation publication, observe
 Documentation Validation creation/queue/start on its exact SHA, then
 STOP before any later implementation.
 
+### HAPI-599 Package B — owner-authorized two-stage CI-first lock repair — 2026-10-28
+
+**Explicit owner authorization supersedes the publication hold prospectively.**
+Owner: “Proceed with the two-stage CI-first repair and update the publication hold accordingly”.
+Exact mainb84f81b4120ac44cdceb5805a36ae2662b2f323d,
+tree2e6fbfda7439c76ff6f07352aacb77c515e22865 has Docs676/run40688753886
+completed/success; Full952/run40686331829 remains failed on prior5e67781e.
+The previous requirement to stop before publishing without a local migrated catalog
+is superseded only for these two responsible repair stages. All strict physical
+catalog/source/equality, security and acceptance requirements remain mandatory.
+Do not provision a complete local environment or invent a schema capture/source SHA.
+
+**Stage one selected now.** Exact message remains
+`fix(party): retain read-only manufacturer evidence through guarded owner locks`.
+CREATE only V20261028_003__party_installed_unit_manufacturer_evidence_owner_lock.sql;
+MODIFY only JdbcTopologyInstalledUnitManufacturerEvidenceAdapter,
+TopologyInstalledUnitManufacturerEvidencePostgresIntegrationTest,
+.github/ci-test-inventory.json and this phase. Zero DELETE. Preserve the current
+actual doc/database/DATA_DICTIONARY.md byte-for-byte until real hosted collection.
+No workflow, generator, ownership metadata, public contract or frozen status change.
+Expect the strict dictionary comparison to reject the newly migrated source until
+stage two; retain that failed result and real same-run schema/render artifacts.
+The expected artifact gate is not software acceptance or a reason to suppress tests.
+
+**Lock-only implementation.** The new parameterless, fixed PL/pgSQL SECURITY DEFINER
+function public.hidra_party_lock_installed_unit_manufacturer_evidence() locks only
+Party, role, assignment and manufacturer profile in the original order with SHARE
+ROW EXCLUSIVE NOWAIT. It reads/writes no rows, has no dynamic SQL, returns void,
+uses trusted search_path=pg_catalog,pg_temp and remains within the caller transaction.
+Flyway transactionally creates it and revokes PUBLIC EXECUTE. It creates no role,
+production principal, membership, table grant or reader EXECUTE grant.
+Migration-owner privileges alone are not an accepted runtime configuration.
+
+**Required administrative provisioning before enabling an approved reader.**
+Use a reviewed, dedicated NOLOGIN/NOINHERIT non-superuser helper owner with no role
+memberships, CREATEROLE/CREATEDB/REPLICATION/BYPASSRLS authority or schema CREATE.
+It must not own the source tables; grant UPDATE without grant option on only the
+four fixed lock relations, the privilege required to acquire their chosen lock mode.
+Transfer function ownership through the schema administrator, revoke temporary
+schema CREATE used for ownership transfer, and explicitly grant non-grantable
+EXECUTE to the approved non-owner reader. Do not grant that reader application DML,
+column write privileges, helper-owner membership or PUBLIC EXECUTE. Test role names
+are synthetic fixtures only; actual production role identity is not invented here.
+Until this provisioning is satisfied the adapter fails closed, including against a
+superuser migration owner. This is not operator/company authorization or a deployed
+manufacturer/equipment-kind qualification.
+
+The adapter checks original relation/privilege/RLS/inheritance guards before calling
+the helper; additionally checks its exact namespace/signature, void/volatile/unsafe
+PLpgSQL/security-definer shape, no strict/leakproof/default/variadic arguments,
+fixed config and SHA256 of prosrc:
+81b4ac0abd37fca0f0b539e59ac5d0ea1a3c21217209be362248275bd7f15da1.
+It requires dedicated owner privileges, no runtime owner membership, and an explicit
+ACL limited to the owner plus current reader, with no PUBLIC/extra/grantable reader
+EXECUTE. It locks eligibility generation separately in ACCESS SHARE NOWAIT using
+the reader's ordinary SELECT privilege. Recheck helper catalog, original guards,
+all five actual fences and physical ticket before disclosure and final fences;
+rejection poisons the physical transaction. Existing issuer/thread/connection/XID/
+role/suspension/single-use/half-open-time/ambiguity and classification semantics remain.
+
+**Tests and evidence scope.** All11 prior cases retained; five actual new cases cover
+migration PUBLIC revoke plus explicit reader grant, owner-first blocked writer and
+post-commit release with same XID/current role, altered body/security/search path/
+superuser owner, PUBLIC execution/helper-owner membership/column-write forgery,
+and missing helper-owner lock privilege. They preserve original42501 DML denials,
+writer-first55P03, rollback and retained five fences. The test schema owner provisions
+a separate synthetic helper owner; no runtime DML privileges are widened. Sixteen
+methods are admitted with their actual source SHA; old entries/cases/timings and ten
+shards are preserved. No passing PostgreSQL result is claimed before hosted execution.
+
+Useful local source/syntax/header/scope/immutable-history, inventory, docs/offline
+API and CI/document-validator self-tests must pass before guarded publication.
+Maven/Docker/PostgreSQL are unavailable locally and are not provisioned; syntax or
+catalog predicate review is not native execution. Keep all183 older migrations and
+current dictionary unchanged. Publish with expectedb84f81b, verify parent/tree/message/
+five-path blobs, confirm exact-SHA Full/Fast/Docs creation/queue/start, then STOP under
+AGENTS11.1. New function/privilege behavior and16 raw cases must still pass in CI.
+
+Actual prepublication checks:117 unchanged CI/docs validator self-tests pass,
+source inventory and full documentation/link/offline API checks pass, and both
+changed Java files parse with the available compiler. Focused Maven execution
+exits127 (mvn not found). All183 prior migration Git blobs and physical dictionary
+bytes are unchanged; helper prosrc hash matches the new migration body. No new
+JUnit/PostgreSQL execution or successful physical catalog capture is claimed.
+
+**Stage two is already authorized, not another permission question.** After CI
+retains a genuine exact-stage-one migrated catalog, verify ZIP/source/run/attempt,
+complete migration/mapping/relation/owner metadata and generator provenance. Run the
+unchanged generator to regenerate doc/database/DATA_DICTIONARY.md. Exact follow-up
+message: `docs(party): refresh manufacturer owner-lock physical dictionary`.
+MODIFY only that dictionary and this phase; no generator/workflow/ownership/migration
+or test waiver. Verify exact equality and publish guarded main, then observe applicable
+exact-SHA CI/start and stop. If capture is absent because migration/tests fail, repair
+the responsible cause within the registered scope first; never synthesize a dictionary.
+Any documentation-only Full dispatch limitation must be reported honestly.
+
+Package B evidence remains unaccepted pending real owner/lock/catalog/full proof.
+HAPI-599 remains NOT_IMPLEMENTED/BLOCKED; no integrated permission/writer or Package C,
+new package, simulator, SITE, release or deployment is selected. A green repair still
+requires independent evidence review before the separately registered next B scope.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

@@ -107,6 +107,53 @@ public class JdbcTopologyInstalledUnitManufacturerEvidenceAdapter
                   'public.hidra_party_manufacturer_profile'::regclass))
         """;
 
+    private static final String OWNER_LOCK = "public.hidra_party_lock_installed_unit_manufacturer_evidence()";
+    private static final String OWNER_LOCK_GUARD = """
+        SELECT EXISTS (
+          SELECT 1 FROM pg_catalog.pg_proc p
+          JOIN pg_catalog.pg_namespace n ON n.oid=p.pronamespace
+          JOIN pg_catalog.pg_language l ON l.oid=p.prolang
+          JOIN pg_catalog.pg_roles o ON o.oid=p.proowner
+          WHERE p.oid=pg_catalog.to_regprocedure('public.hidra_party_lock_installed_unit_manufacturer_evidence()')
+            AND n.nspname='public' AND p.proname='hidra_party_lock_installed_unit_manufacturer_evidence'
+            AND p.prokind='f' AND p.prosecdef AND NOT p.proretset
+            AND NOT p.proisstrict AND NOT p.proleakproof
+            AND p.pronargs=0 AND p.pronargdefaults=0 AND p.provariadic=0
+            AND p.proargtypes=''::pg_catalog.oidvector
+            AND p.proallargtypes IS NULL AND p.proargmodes IS NULL AND p.proargnames IS NULL
+            AND p.prorettype='pg_catalog.void'::pg_catalog.regtype
+            AND p.provolatile='v' AND p.proparallel='u'
+            AND l.lanname='plpgsql' AND l.lanpltrusted
+            AND p.proconfig=ARRAY['search_path=pg_catalog, pg_temp']::pg_catalog.text[]
+            AND pg_catalog.encode(pg_catalog.sha256(pg_catalog.convert_to(p.prosrc,'UTF8')),'hex')='81b4ac0abd37fca0f0b539e59ac5d0ea1a3c21217209be362248275bd7f15da1'
+            AND NOT o.rolsuper AND NOT o.rolbypassrls AND NOT o.rolcanlogin
+            AND NOT o.rolcreaterole AND NOT o.rolcreatedb AND NOT o.rolreplication
+            AND NOT o.rolinherit
+            AND NOT EXISTS (SELECT 1 FROM pg_catalog.pg_auth_members m WHERE m.member=p.proowner OR m.roleid=p.proowner)
+            AND NOT pg_catalog.pg_has_role(current_user,p.proowner,'MEMBER')
+            AND NOT pg_catalog.has_schema_privilege(o.oid,'public','CREATE')
+            AND NOT pg_catalog.has_schema_privilege(o.oid,'pg_catalog','CREATE')
+            AND (SELECT pg_catalog.count(*)=4 AND pg_catalog.bool_and(
+                    c.relowner<>p.proowner
+                    AND pg_catalog.has_table_privilege(o.oid,c.oid,'UPDATE')
+                    AND NOT pg_catalog.has_table_privilege(o.oid,c.oid,'UPDATE WITH GRANT OPTION'))
+                 FROM pg_catalog.pg_class c WHERE c.oid IN (
+                    'public.hidra_party_party'::pg_catalog.regclass,
+                    'public.hidra_party_role'::pg_catalog.regclass,
+                    'public.hidra_party_role_assignment'::pg_catalog.regclass,
+                    'public.hidra_party_manufacturer_profile'::pg_catalog.regclass))
+            AND pg_catalog.has_function_privilege(current_user,p.oid,'EXECUTE')
+            AND EXISTS (
+                SELECT 1 FROM pg_catalog.aclexplode(COALESCE(p.proacl,pg_catalog.acldefault('f',p.proowner))) a
+                WHERE a.grantee=(SELECT oid FROM pg_catalog.pg_roles WHERE rolname=current_user)
+                  AND a.privilege_type='EXECUTE' AND NOT a.is_grantable)
+            AND NOT EXISTS (
+                SELECT 1 FROM pg_catalog.aclexplode(COALESCE(p.proacl,pg_catalog.acldefault('f',p.proowner))) a
+                WHERE a.grantee NOT IN (p.proowner,(SELECT oid FROM pg_catalog.pg_roles WHERE rolname=current_user))
+                   OR a.privilege_type<>'EXECUTE' OR (a.grantee<>p.proowner AND a.is_grantable))
+        )
+        """;
+
     private static final String HELD = """
         SELECT
           EXISTS (SELECT 1 FROM pg_catalog.pg_locks WHERE pid=pg_catalog.pg_backend_pid()
@@ -157,11 +204,13 @@ public class JdbcTopologyInstalledUnitManufacturerEvidenceAdapter
             String id = exact(manufacturerPartyId);
             ConnectionHolder holder = context();
             trustedSearchPath();
-            // Fixed order. NOWAIT prevents stale owner admissions behind concurrent writers.
-            jdbc.execute("LOCK TABLE " + PARTY + "," + ROLE + "," + ASSIGNMENT + ","
-                    + PROFILE + " IN SHARE ROW EXCLUSIVE MODE NOWAIT");
+            // Validate the fixed owner capability before invoking it; ordinary reader keeps no DML.
+            check(GUARD);
+            check(OWNER_LOCK_GUARD);
+            jdbc.execute("SELECT " + OWNER_LOCK);
             jdbc.execute("LOCK TABLE " + GENERATION + " IN ACCESS SHARE MODE NOWAIT");
             check(GUARD);
+            check(OWNER_LOCK_GUARD);
             check(HELD);
             Ticket ticket = jdbc.queryForObject(
                     "SELECT pg_catalog.pg_backend_pid(),pg_catalog.txid_current(),current_user",
@@ -184,6 +233,7 @@ public class JdbcTopologyInstalledUnitManufacturerEvidenceAdapter
             if (!ticket.used.compareAndSet(false,true)) throw invalid();
             trustedSearchPath();
             check(GUARD);
+            check(OWNER_LOCK_GUARD);
             check(HELD);
             List<Contribution> rows = jdbc.query(EVIDENCE,(row,n) -> {
                 if (!ticket.id.equals(row.getString("party_id"))
@@ -214,7 +264,10 @@ public class JdbcTopologyInstalledUnitManufacturerEvidenceAdapter
                         qualification.name(),observed,ticket.pid,ticket.xid);
             },ticket.id);
             if (rows.size()!=1) throw invalid(); // Missing, duplicate role or profile: never guess.
-            ticket(admission); // Recheck the physical transaction after the evidence read.
+            ticket(admission); // Recheck physical transaction, owner capability and fences before disclosure.
+            check(GUARD);
+            check(OWNER_LOCK_GUARD);
+            check(HELD);
             return rows.get(0);
         } catch (RuntimeException failure) {
             rollback();
@@ -228,6 +281,7 @@ public class JdbcTopologyInstalledUnitManufacturerEvidenceAdapter
         try {
             ticket(admission);
             check(GUARD);
+            check(OWNER_LOCK_GUARD);
             check(HELD);
             return List.of(
                     new ProtectedRelationFence(PARTY,ProtectedRelationFence.Mode.SHARE_ROW_EXCLUSIVE),

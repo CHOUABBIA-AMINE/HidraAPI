@@ -57,6 +57,10 @@ class TopologyInstalledUnitManufacturerEvidencePostgresIntegrationTest {
     private static final String ASSIGNMENT="public.hidra_party_role_assignment";
     private static final String GENERATION="public.hidra_party_eligibility_generation";
     private static final String ROLE="j_manufacturer_evidence",PASSWORD="synthetic-manufacturer-evidence";
+    private static final String LOCK_OWNER="j_manufacturer_lock_owner";
+    private static final String OTHER_ROLE="j_manufacturer_unreviewed";
+    private static final String LOCK_FUNCTION="public.hidra_party_lock_installed_unit_manufacturer_evidence()";
+    private boolean migrationRevokedPublicExecute;
     @Container static final PostgreSQLContainer<?> POSTGRES=new PostgreSQLContainer<>("postgres:16")
             .withCommand("postgres","-c","max_locks_per_transaction=256");
 
@@ -84,6 +88,17 @@ class TopologyInstalledUnitManufacturerEvidencePostgresIntegrationTest {
         admin.execute("GRANT SELECT ON "+GENERATION+" TO "+ROLE);
         runtime=new DriverManagerDataSource(POSTGRES.getJdbcUrl(),ROLE,PASSWORD);
         jdbc=new JdbcTemplate(runtime);
+        migrationRevokedPublicExecute=Boolean.TRUE.equals(admin.queryForObject(
+                "SELECT NOT EXISTS(SELECT 1 FROM pg_catalog.pg_proc p, LATERAL pg_catalog.aclexplode(COALESCE(p.proacl,pg_catalog.acldefault('f',p.proowner))) a WHERE p.oid=?::regprocedure AND a.grantee=0 AND a.privilege_type='EXECUTE')",
+                Boolean.class,LOCK_FUNCTION));
+        // Synthetic provisioning only. Migration creates no production reader/owner role or grant.
+        admin.execute("CREATE ROLE "+LOCK_OWNER+" NOLOGIN NOINHERIT NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS");
+        admin.execute("CREATE ROLE "+OTHER_ROLE+" NOLOGIN");
+        admin.execute("GRANT USAGE,CREATE ON SCHEMA public TO "+LOCK_OWNER);
+        admin.execute("GRANT UPDATE ON "+PARTY+","+ROLE_TABLE+","+ASSIGNMENT+","+PROFILE+" TO "+LOCK_OWNER);
+        admin.execute("ALTER FUNCTION "+LOCK_FUNCTION+" OWNER TO "+LOCK_OWNER);
+        admin.execute("REVOKE CREATE ON SCHEMA public FROM "+LOCK_OWNER);
+        admin.execute("GRANT EXECUTE ON FUNCTION "+LOCK_FUNCTION+" TO "+ROLE);
         var manager=new DataSourceTransactionManager(runtime);
         tx=new TransactionTemplate(manager);
         tx.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
@@ -330,5 +345,93 @@ class TopologyInstalledUnitManufacturerEvidencePostgresIntegrationTest {
             return null;
         }));
         assertEquals("QUALIFIED",evidence(f.party()).qualificationStatus());
+    }
+    @Test void helperHasNoPublicExecutionAndRequiresExplicitReaderGrant() {
+        assertTrue(migrationRevokedPublicExecute);
+        var f=fixture();
+        admin.execute("REVOKE EXECUTE ON FUNCTION "+LOCK_FUNCTION+" FROM "+ROLE);
+        try {
+            unavailable(f.party());
+            var denied=assertThrows(DataAccessException.class,()->tx.execute(s->{
+                jdbc.execute("SELECT "+LOCK_FUNCTION);return null;
+            }));
+            assertEquals("42501",((SQLException)denied.getMostSpecificCause()).getSQLState());
+        } finally {admin.execute("GRANT EXECUTE ON FUNCTION "+LOCK_FUNCTION+" TO "+ROLE);}
+        assertEquals(f.party(),evidence(f.party()).manufacturerPartyId());
+    }
+
+    @Test void ownerLocksStayInCallerTransactionAndBlockWriterUntilCommit() throws Exception {
+        var f=fixture();
+        try(Connection writer=admin.getDataSource().getConnection()) {
+            writer.setAutoCommit(false);
+            try(var setup=writer.createStatement()){setup.execute("SET lock_timeout='100ms'");}
+            tx.execute(s->{
+                String before=jdbc.queryForObject("SELECT current_user",String.class);
+                long xid=jdbc.queryForObject("SELECT pg_catalog.txid_current()",Long.class);
+                var ticket=owner.acquire(f.party());var proof=owner.read(ticket);
+                assertEquals(ROLE,before);
+                assertEquals(before,jdbc.queryForObject("SELECT current_user",String.class));
+                assertEquals(xid,proof.transactionId());
+                assertEquals(5,owner.finalFences(ticket).size());
+                var denied=assertThrows(SQLException.class,()->{
+                    try(var statement=writer.prepareStatement("UPDATE "+PROFILE+" SET qualification_status=qualification_status WHERE id=?")){
+                        statement.setString(1,f.profile());statement.executeUpdate();
+                    }
+                });
+                assertEquals("55P03",denied.getSQLState());return null;
+            });
+            writer.rollback();
+            try(var statement=writer.prepareStatement("UPDATE "+PROFILE+" SET qualification_status=qualification_status WHERE id=?")){
+                statement.setString(1,f.profile());assertEquals(1,statement.executeUpdate());
+            }
+            writer.rollback();
+        }
+    }
+
+    @Test void helperBodySecurityPathAndSuperuserOwnerTamperingReject() {
+        var f=fixture();
+        String definition=admin.queryForObject("SELECT pg_catalog.pg_get_functiondef(?::regprocedure)",String.class,LOCK_FUNCTION);
+        admin.execute("CREATE OR REPLACE FUNCTION "+LOCK_FUNCTION+" RETURNS void LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog,pg_temp AS $$ BEGIN PERFORM 1; END; $$");
+        try {unavailable(f.party());}finally{admin.execute(definition);}
+        admin.execute("ALTER FUNCTION "+LOCK_FUNCTION+" SECURITY INVOKER");
+        try {unavailable(f.party());}finally{admin.execute("ALTER FUNCTION "+LOCK_FUNCTION+" SECURITY DEFINER");}
+        admin.execute("ALTER FUNCTION "+LOCK_FUNCTION+" SET search_path=public,pg_catalog");
+        try {unavailable(f.party());}finally{admin.execute("ALTER FUNCTION "+LOCK_FUNCTION+" SET search_path=pg_catalog,pg_temp");}
+        admin.execute("ALTER FUNCTION "+LOCK_FUNCTION+" OWNER TO "+POSTGRES.getUsername());
+        try {unavailable(f.party());}finally{
+            admin.execute("GRANT CREATE ON SCHEMA public TO "+LOCK_OWNER);
+            admin.execute("ALTER FUNCTION "+LOCK_FUNCTION+" OWNER TO "+LOCK_OWNER);
+            admin.execute("REVOKE CREATE ON SCHEMA public FROM "+LOCK_OWNER);
+            admin.execute("GRANT EXECUTE ON FUNCTION "+LOCK_FUNCTION+" TO "+ROLE);
+        }
+        assertEquals(f.party(),evidence(f.party()).manufacturerPartyId());
+    }
+
+    @Test void publicExecutionOwnerMembershipAndColumnWriteGrantsReject() {
+        var f=fixture();
+        admin.execute("GRANT EXECUTE ON FUNCTION "+LOCK_FUNCTION+" TO PUBLIC");
+        try {unavailable(f.party());}finally{admin.execute("REVOKE EXECUTE ON FUNCTION "+LOCK_FUNCTION+" FROM PUBLIC");}
+        admin.execute("GRANT "+LOCK_OWNER+" TO "+ROLE);
+        try {unavailable(f.party());}finally{admin.execute("REVOKE "+LOCK_OWNER+" FROM "+ROLE);}
+        admin.execute("GRANT EXECUTE ON FUNCTION "+LOCK_FUNCTION+" TO "+OTHER_ROLE);
+        try {unavailable(f.party());}finally{admin.execute("REVOKE EXECUTE ON FUNCTION "+LOCK_FUNCTION+" FROM "+OTHER_ROLE);}
+        admin.execute("GRANT "+LOCK_OWNER+" TO "+OTHER_ROLE);
+        try {unavailable(f.party());}finally{admin.execute("REVOKE "+LOCK_OWNER+" FROM "+OTHER_ROLE);}
+        admin.execute("GRANT UPDATE(qualification_status) ON "+PROFILE+" TO "+ROLE);
+        try {unavailable(f.party());}finally{admin.execute("REVOKE UPDATE(qualification_status) ON "+PROFILE+" FROM "+ROLE);}
+        assertEquals(f.party(),evidence(f.party()).manufacturerPartyId());
+    }
+
+    @Test void helperOwnerWithoutRequiredLockPrivilegeCannotAdmit() {
+        var f=fixture();
+        admin.execute("REVOKE UPDATE ON "+ROLE_TABLE+" FROM "+LOCK_OWNER);
+        try {unavailable(f.party());}finally{admin.execute("GRANT UPDATE ON "+ROLE_TABLE+" TO "+LOCK_OWNER);}
+        assertEquals(f.party(),evidence(f.party()).manufacturerPartyId());
+        assertThrows(UnexpectedRollbackException.class,()->tx.execute(s->{
+            jdbc.update("UPDATE "+PARTY+" SET status=status WHERE id=?",f.party());
+            try {owner.read(new TopologyInstalledUnitManufacturerEvidenceContract.Admission(){});}
+            catch(IllegalStateException expected) { /* Failure cannot be swallowed into commit. */ }
+            return null;
+        }));
     }
 }

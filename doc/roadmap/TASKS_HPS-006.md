@@ -3844,6 +3844,104 @@ Three create paths are absent; old migration/provider bytes remain unchanged.
 Documentation/link, append-only scope and whitespace checks precede publication.
 No local PostgreSQL/JUnit execution or newly passing synthetic cases are claimed.
 
+### HAPI-599 Package B — SELECT-only company evidence implementation — 2026-10-28
+
+**Selected bounded prerequisite.** Owner Next refreshes exact main
+`820b77a9db1eac9853bd3e6d9fed1cd621ec913e`; Docs690/run `40738177482`
+completed SUCCESS. Unchanged prior runtime retains Full960/Fast260 acceptance;
+no new provider runtime success is inferred from that parent. Execute only the
+registered prerequisite, exact message
+`feat(party): export SELECT-only installed-unit company evidence`.
+
+CREATE only the registered company contract, JDBC adapter and dedicated PostgreSQL
+test class; MODIFY only `.github/ci-test-inventory.json` and this phase. DELETE none.
+The old company/manufacturer interfaces and adapters, old manufacturer fixture,
+Identity, Topology writer, platform/datasource, API, all185 migration files, physical
+dictionary and frozen ROADMAP/PHASES remain byte-for-byte unchanged. No role/grant
+seed or new schema is introduced; writer005 remains uncreated.
+
+**Actual owner contract and implementation.** New
+`TopologyInstalledUnitCompanyEvidenceContract` exposes opaque acquire, single-use
+read, requireCurrent and finalFences with scalar actual company Party ID, ACTIVE
+status, positive generation, PID/XID and database role. Scalar construction grants
+no authority; diagnostics redact identifiers. An ordinary company need not possess
+manufacturer role, assignment or profile. The new non-final Spring repository is
+proxyable and requires a genuine writable synchronized read-committed physical
+transaction. It rejects table/column/inherited DML on all five Party sources,
+ownership/elevated membership, schema CREATE, RLS/view/partition/inheritance and
+unreviewed source catalog changes.
+
+The adapter reuses003's exact fixed lock-only helper, guarded before and after its
+call. It requires the original body hash, volatility/security/path/signature, an
+isolated NOLOGIN/NOINHERIT owner, explicit non-grantable reader EXECUTE and no
+PUBLIC/extra grantee. Owner UPDATE on the fixed four relations has no table/column
+grant option or extra SELECT/DML capability; generation registry privileges and
+ownership are rejected. The reader itself has only SELECT on source relations
+and the explicit helper capability. Four strong source locks plus generation
+ACCESS SHARE remain in the caller transaction, a conservative contention scope
+already explicit in the registration. No dynamic lock target or broader owner
+provisioning is added.
+
+Real generation schema/function/trigger pins are retained in the new adapter;
+qualified relation/function lookups and observed tableoids prevent stale renamed
+relation substitution. Private tickets bind issuer, thread, holder/connection,
+PID/XID and database role. The first read retains private SHA-256 root/registry
+row images; requireCurrent freshly compares both images and current ACTIVE state,
+catalog/ACL/helper and held locks, without new LOCK statements. It neither consumes
+another read ticket nor guesses a manufacturer/company relationship. Completion,
+suspension, savepoint lock loss, forged/foreign/replayed tickets and wrong contexts
+invalidate authority. Ticket-consuming context checks run inside method bodies;
+failure poisons the original issuing holder even across a foreign thread.
+Synchronizations invalidate tickets and veto swallowed-error commit without SQL.
+
+**Authored tests, not yet runtime-accepted.** The dedicated28-case PostgreSQL16
+suite migrates the complete unchanged Flyway chain and wires actual Spring company
+and manufacturer beans with a SELECT-only reader and isolated helper owner. It
+covers non-manufacturer company, distinct/same manufacturer composition on the
+same actual PID/XID, deduplicated fence union, spare-ticket fresh manufacturer
+read, missing/inactive/retired/tombstoned company and actual denied direct source
+INSERT/UPDATE/DELETE. Privilege cases include Party table/column/inherited DML,
+other-source INSERT and missing SELECT, helper EXECUTE/body/security/path/owner/
+membership/schema/grant-option changes, generation/helper privileges, RLS/view
+replacement and generation function/trigger tampering.
+
+Concurrency/context cases cover raw held locks and commit release, both writer
+directions/NOWAIT, read-only/isolation rejection, forged/foreign/replayed/completed
+tickets, worker-thread/suspension/savepoint invalidation and swallowed failure.
+A separate synthetic witness table verifies rollback of earlier unrelated work;
+it is test-only, not a production migration. Deliberate same-transaction source
+mutation tests use an isolated schema-owner connection and switch to the actual
+restricted reader for observations; they check legal-name row images, generation,
+status and role changes. Reflection/scalar rejection checks preserve ticket privacy.
+The old manufacturer fixture's historical Party UPDATE grant remains explicit;
+only the new composition suite is authored to prove the SELECT-only combination.
+
+Inventory adds exactly this new class,28 exact cases and its actual source hash,
+baseline_seconds=0 explicitly unmeasured. All prior entries, case identities,
+timing/provenance, four historical exclusions and ten deterministic PostgreSQL
+shards are unchanged. Active inventory is497 classes (377 unit/architecture,
+120 PostgreSQL),3,697 expected cases. No skip, reclassification or measured timing
+is invented.
+
+**Actual available validation.** All three new Java sources parse. The actual new
+contract and existing relation-fence record compile with the available Java17
+compiler; seven scalar/redaction probes pass. This is not full Java21/Spring/JUnit
+validation. Current source/inventory validation and107 Python validator self-tests
+pass (35 inventory,53 full evidence,19 docs). Existing inventory entries/provenance
+compare unchanged after removing only the new entry. Focused command
+`mvn -q -Dtest=TopologyInstalledUnitCompanyEvidencePostgresIntegrationTest test`
+exits127: `mvn: command not found`. No local PostgreSQL/JUnit execution or passing
+new runtime cases are claimed; no full tool/service environment is provisioned.
+Documentation/link, exact scope and whitespace checks precede guarded publication.
+
+**Remaining hold.** This provider is implemented, not CI-accepted. Publish the five
+registered paths with expected-head guard and verified blobs/tree/parent; observe
+exact-SHA Full/Fast/Docs creation/queue/start and STOP. Independent exact-case and
+SELECT-only composition evidence must pass before accepting this prerequisite and
+resuming the registered writer. HAPI-599 remains NOT_IMPLEMENTED/BLOCKED; writer,
+public Package C, different-unit replacement, manufacturer-kind qualification,
+dependent tasks, frontend, simulator/P3, SITE, release and deployment remain pending.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

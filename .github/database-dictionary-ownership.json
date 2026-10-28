@@ -568,7 +568,9 @@
   "public.hidra_topology_installed_unit": {
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcInstalledUnitRepositoryAdapter.java",
-      "src/main/resources/db/migration/V20261028_002__topology_installed_unit_identity_and_history.sql"
+      "src/main/resources/db/migration/V20261028_002__topology_installed_unit_identity_and_history.sql",
+      "src/main/resources/db/migration/V20261028_005__topology_installed_unit_protected_operations.sql",
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcProtectedInstalledUnitRepositoryAdapter.java"
     ],
     "owner": "topology",
     "purpose": "Immutable Topology physical-unit identity and manufacturer/model/serial evidence, without Party eligibility attestation."
@@ -588,5 +590,13 @@
     ],
     "owner": "topology",
     "purpose": "Immutable Topology installation history revision ledger populated by database trigger, distinct from effective projection."
+  },
+  "public.hidra_topology_installed_unit_operation_request": {
+    "owner": "topology",
+    "purpose": "Immutable protected installed-unit command receipt and native actor/transaction provenance; not transferable authorization.",
+    "evidence": [
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcProtectedInstalledUnitRepositoryAdapter.java",
+      "src/main/resources/db/migration/V20261028_005__topology_installed_unit_protected_operations.sql"
+    ]
   }
 }

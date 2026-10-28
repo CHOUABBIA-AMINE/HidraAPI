@@ -33,6 +33,9 @@ import javax.sql.DataSource;
 /** Trusted compiled-owner callbacks only; no permission, protected API or business fence. */
 @Component
 public final class ProtectedTransactionExecutor {
+    private static final String INSTALLED_SERVICE="dz.sh.hidra.modules.topology.application.service.InstalledUnitLifecycleApplicationService";
+    private static final String INSTALLED_COORDINATOR="dz.sh.hidra.modules.topology.application.service.ProtectedInstalledUnitAdmissionCoordinator";
+    private static final Set<String> INSTALLED_DML_HASHES=Set.of("98d9e2d0cd9de0a5c85161d0bb465f4ab310a0ebd6208036eeb26572b3c35f46","13de71cd409afd07b736979dad5ad802324a4a40718dd7f411229492c81cb716","d55fab38a80ea7a81636dceb7d3af50c6a8e1c14410b58e1e8ff25a0557ae278","a10ecf5d21bc1a8efcdf7a7cbbf5e23104309f243b223a93c997a61d880d5bd7");
     private static final String PRODUCT_PUBLICATION_SERVICE="dz.sh.hidra.modules.custody.application.service.ProductRevisionPublicationApplicationService";
     private static final String PRODUCT_PUBLICATION_COORDINATOR="dz.sh.hidra.modules.custody.application.service.ProtectedProductPublicationAdmissionCoordinator";
     private static final Set<String> PRODUCT_PUBLICATION_DML_HASHES=Set.of("3c216e23ede48cc7eaf8a7d0fbd69ebb36ec492becfd258d7f2e9716f2abfc7b","e6366971cd3f33ccea87d34e808f76677fe1cd38326f0a4534777a3760211fb7","ec5361350fb1f8ab6b995e51425028d14e87305cefb469185b81d1a8616f0168","2a323fe9ab26838c24ae1f2bfd5cd2279e8b56da0d25c6e507f0300cb2cb4515","37a62c17c65bf88dca6462ff22c73c9c8c21f15bea4fc83435351d2fb071dd50","2a5cdfa1f5a75b72a4172371dce65a1d52189db7007f651feb3c93796535c68c");
@@ -112,7 +115,7 @@ public final class ProtectedTransactionExecutor {
     /** Select the private credential before any physical transaction; no business permission implied. */
     public <T> T executePublication(Supplier<T> work,Runnable flush,Runnable guard) {
         String caller=StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName();
-        if(!caller.equals(PRODUCT_PUBLICATION_SERVICE) && !caller.equals(FLUID_SERVICE) && !caller.equals(PRODUCT_SERVICE) && !caller.equals(DRAFT_SERVICE) && !caller.equals(PUBLICATION_SERVICE) && !caller.equals(APPOINTMENT_SERVICE) && !caller.equals(
+        if(!caller.equals(INSTALLED_SERVICE) && !caller.equals(PRODUCT_PUBLICATION_SERVICE) && !caller.equals(FLUID_SERVICE) && !caller.equals(PRODUCT_SERVICE) && !caller.equals(DRAFT_SERVICE) && !caller.equals(PUBLICATION_SERVICE) && !caller.equals(APPOINTMENT_SERVICE) && !caller.equals(
             "dz.sh.hidra.modules.topology.application.service.ProtectedStationGraphOperationService"))
             throw new IllegalStateException("Unreviewed credential route caller");
         long budgetNanos=publicationWorkBudgetNanos(caller);
@@ -267,7 +270,7 @@ public final class ProtectedTransactionExecutor {
         // Only the genuine compiled owner K coordinator can receive an opaque mutation permit.
         // Other callers can still seal read-only diagnostic admission (legacy contract).
         String caller=StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName();
-        if(!caller.equals(PRODUCT_PUBLICATION_COORDINATOR) && !caller.equals(FLUID_COORDINATOR) && !caller.equals(PRODUCT_COORDINATOR) && !caller.equals(DRAFT_COORDINATOR) && !caller.equals(PUBLICATION_COORDINATOR) && !caller.equals(
+        if(!caller.equals(INSTALLED_COORDINATOR) && !caller.equals(PRODUCT_PUBLICATION_COORDINATOR) && !caller.equals(FLUID_COORDINATOR) && !caller.equals(PRODUCT_COORDINATOR) && !caller.equals(DRAFT_COORDINATOR) && !caller.equals(PUBLICATION_COORDINATOR) && !caller.equals(
                     "dz.sh.hidra.modules.topology.application.service.ProtectedStationAdmissionCoordinator") && !caller.equals(APPOINTMENT_COORDINATOR))
             return null;
         var result=new ProvisionalPermit(this,s,caller);
@@ -278,7 +281,7 @@ public final class ProtectedTransactionExecutor {
     public void beginProvisional(ProvisionalPermit permit,Set<String> exactStatements) {
         var s=admissionScope();
         String caller=StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName();
-        if((!caller.equals(PRODUCT_PUBLICATION_COORDINATOR) && !caller.equals(FLUID_COORDINATOR) && !caller.equals(PRODUCT_COORDINATOR) && !caller.equals(DRAFT_COORDINATOR) && !caller.equals(PUBLICATION_COORDINATOR) && !caller.equals(
+        if((!caller.equals(INSTALLED_COORDINATOR) && !caller.equals(PRODUCT_PUBLICATION_COORDINATOR) && !caller.equals(FLUID_COORDINATOR) && !caller.equals(PRODUCT_COORDINATOR) && !caller.equals(DRAFT_COORDINATOR) && !caller.equals(PUBLICATION_COORDINATOR) && !caller.equals(
                     "dz.sh.hidra.modules.topology.application.service.ProtectedStationAdmissionCoordinator") && !caller.equals(APPOINTMENT_COORDINATOR))
           || permit==null || !caller.equals(permit.owner) || permit.issuer!=this || permit.scope!=s
           || s.provisionalPermit!=permit || permit.opened || permit.consumed
@@ -289,7 +292,9 @@ public final class ProtectedTransactionExecutor {
         Set<String> allowed=Set.copyOf(exactStatements);
         for(String sql:allowed) {
             if(sql==null || sql.contains(";") || sql.contains("--") || sql.contains("/*")
-               || !(caller.equals(PRODUCT_PUBLICATION_COORDINATOR)
+               || !(caller.equals(INSTALLED_COORDINATOR)
+                    ? INSTALLED_DML_HASHES.contains(statementDigest(sql))
+                    : caller.equals(PRODUCT_PUBLICATION_COORDINATOR)
                     ? PRODUCT_PUBLICATION_DML_HASHES.contains(statementDigest(sql))
                     : caller.equals(FLUID_COORDINATOR)
                     ? FLUID_PROVISIONAL_HASHES.contains(statementDigest(sql))
@@ -316,7 +321,7 @@ public final class ProtectedTransactionExecutor {
     public void endProvisional(ProvisionalPermit permit) {
         var s=admissionScope();
         String caller=StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName();
-        if((!caller.equals(PRODUCT_PUBLICATION_COORDINATOR) && !caller.equals(FLUID_COORDINATOR) && !caller.equals(PRODUCT_COORDINATOR) && !caller.equals(DRAFT_COORDINATOR) && !caller.equals(PUBLICATION_COORDINATOR) && !caller.equals(
+        if((!caller.equals(INSTALLED_COORDINATOR) && !caller.equals(PRODUCT_PUBLICATION_COORDINATOR) && !caller.equals(FLUID_COORDINATOR) && !caller.equals(PRODUCT_COORDINATOR) && !caller.equals(DRAFT_COORDINATOR) && !caller.equals(PUBLICATION_COORDINATOR) && !caller.equals(
                     "dz.sh.hidra.modules.topology.application.service.ProtectedStationAdmissionCoordinator") && !caller.equals(APPOINTMENT_COORDINATOR))
           || permit==null || !caller.equals(permit.owner) || permit.issuer!=this || permit.scope!=s || s.provisionalPermit!=permit
           || !permit.opened || permit.consumed || s.phase!=ProtectedOperationDataSource.Phase.PROVISIONAL) {
@@ -329,6 +334,14 @@ public final class ProtectedTransactionExecutor {
         var s=admissionScope();
         if(!s.admission || s.phase!=ProtectedOperationDataSource.Phase.OBSERVING) {
             s.reject("qualified admission required");s.healthy();
+        }
+    }
+    /** Only this reviewed compiled owner may revalidate during managed flush; no new SQL/deadline policy. */
+    public void requireInstalledUnitFinalPreparation() {
+        var s=admissionScope();
+        String caller=StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName();
+        if(!caller.equals(INSTALLED_COORDINATOR) || !s.admission || s.phase!=ProtectedOperationDataSource.Phase.FLUSHING) {
+            s.reject("unreviewed final preparation");s.healthy();
         }
     }
     public void rejectAdmission() {

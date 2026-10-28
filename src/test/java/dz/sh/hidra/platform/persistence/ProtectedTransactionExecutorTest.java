@@ -998,4 +998,16 @@ class ProtectedTransactionExecutorTest {
                 .hasMessage("Protected transaction poisoned: aggregate 1000ms work budget");
         assertThat(scope.poisoned).isTrue();
     }
+
+    @org.junit.jupiter.api.Test void installedUnitSqlAndStandardBudgetRemainExact() throws Exception {
+        var field=ProtectedTransactionExecutor.class.getDeclaredField("INSTALLED_DML_HASHES");field.setAccessible(true);
+        assertThat(field.get(null)).isEqualTo(java.util.Set.of("98d9e2d0cd9de0a5c85161d0bb465f4ab310a0ebd6208036eeb26572b3c35f46","13de71cd409afd07b736979dad5ad802324a4a40718dd7f411229492c81cb716","d55fab38a80ea7a81636dceb7d3af50c6a8e1c14410b58e1e8ff25a0557ae278","a10ecf5d21bc1a8efcdf7a7cbbf5e23104309f243b223a93c997a61d880d5bd7"));
+        long selected=org.springframework.test.util.ReflectionTestUtils.invokeMethod(executor,"publicationWorkBudgetNanos",
+            "dz.sh.hidra.modules.topology.application.service.InstalledUnitLifecycleApplicationService");
+        assertThat(selected).isEqualTo(500_000_000L);
+        assertThatThrownBy(executor::requireInstalledUnitFinalPreparation).isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(()->executor.execute(()->{executor.beginAdmission();executor.sealAdmission();return "diagnostic";},
+            executor::requireInstalledUnitFinalPreparation,this::guard))
+            .isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class).hasCauseInstanceOf(IllegalStateException.class);
+    }
 }

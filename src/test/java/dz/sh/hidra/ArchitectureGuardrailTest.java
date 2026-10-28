@@ -645,6 +645,23 @@ class ArchitectureGuardrailTest {
                 "Use dz.sh.hidra.modules.identity; identityaccess is a forbidden module/package.");
     }
 
+    private static final String INSTALLED_UNIT_COORDINATOR="dz.sh.hidra.modules.topology.application.service.ProtectedInstalledUnitAdmissionCoordinator";
+    private static final Set<String> INSTALLED_UNIT_OWNER_ROOTS=Set.of(
+        "dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract",
+        "dz.sh.hidra.modules.party.application.contract.topology.TopologyInstalledUnitCompanyEvidenceContract",
+        "dz.sh.hidra.modules.party.application.contract.topology.TopologyInstalledUnitManufacturerEvidenceContract");
+    @Test void installedUnitOwnerExportsRemainExactToReviewedCoordinator() {
+        for(String root:INSTALLED_UNIT_OWNER_ROOTS) {
+            assertFalse(isForbiddenCrossModuleDependency(INSTALLED_UNIT_COORDINATOR,root));
+            assertFalse(isForbiddenCrossModuleDependency(INSTALLED_UNIT_COORDINATOR+"$Admission",root+"$Admission"));
+            assertTrue(isForbiddenCrossModuleDependency(INSTALLED_UNIT_COORDINATOR+"Sibling",root));
+            assertTrue(isForbiddenCrossModuleDependency(INSTALLED_UNIT_COORDINATOR,root+"Sibling"));
+            assertTrue(isForbiddenCrossModuleDependency("dz.sh.hidra.modules.custody.application.service.Unregistered",root));
+        }
+        assertTrue(isForbiddenCrossModuleDependency(INSTALLED_UNIT_COORDINATOR,"dz.sh.hidra.modules.identity.infrastructure.security.ProtectedTopologyInstalledUnitAuthorizationParticipant"));
+        assertTrue(isForbiddenCrossModuleDependency(INSTALLED_UNIT_COORDINATOR,"dz.sh.hidra.modules.party.infrastructure.persistence.adapter.JdbcTopologyInstalledUnitCompanyEvidenceAdapter"));
+    }
+
     private static boolean isForbiddenCrossModuleDependency(
             String sourceClassName, String targetClassName) {
         String sourcePackage = packageName(sourceClassName);
@@ -655,6 +672,9 @@ class ArchitectureGuardrailTest {
         if (sourceModule == null || targetModule == null || sourceModule.equals(targetModule)) {
             return false;
         }
+        for(String root:INSTALLED_UNIT_OWNER_ROOTS)if(targetClassName.startsWith(root))
+            return !(targetClassName.equals(root) || targetClassName.startsWith(root+"$"))
+                || !sourceClassName.equals(INSTALLED_UNIT_COORDINATOR) && !sourceClassName.startsWith(INSTALLED_UNIT_COORDINATOR+"$");
         if(isProductPublicationSourceType(targetClassName))return true;
         if(isPublicationSpecific(targetClassName))return !isPublicationExportAllowed(sourceClassName,targetClassName);
         if (!isPrivateCrossModulePackage(targetPackage)) {

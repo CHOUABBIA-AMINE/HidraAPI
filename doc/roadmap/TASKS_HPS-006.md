@@ -4173,6 +4173,161 @@ company contract. HAPI-599 remains NOT_IMPLEMENTED/BLOCKED; writer, public Packa
 different-unit replacement, dependent tasks, qualification, release and deployment
 remain pending.
 
+### HAPI-599 Package B — protected installed-unit lifecycle implementation — 2026-10-28
+
+**Selected bounded runtime stage.** Owner Next refreshes main
+`1713955a61059e74b2a67ca5fba8fad378c812a8`, Docs694/run `40758860718`
+SUCCESS. Unchanged prior runtime retains independently reviewed Full962/Fast262.
+The accepted company prerequisite and explicit equipment-type FK amendment are
+applied in this single registered stage, exact message:
+`feat(topology): add protected installed-unit lifecycle operations`.
+
+CREATE the nine registered paths: inbound typed lifecycle use case, protected
+repository port, lifecycle service, admission coordinator, protected JDBC adapter,
+V20261028_005 migration, two application unit suites and dedicated PostgreSQL suite.
+MODIFY only the registered seven paths: protected executor, its unit suite, existing
+station admission boundary guardrail, global architecture guardrail, reviewed
+dictionary ownership JSON, CI inventory and this phase. DELETE none. No old provider,
+Identity reader/permission mapping, domain model/private repository, datasource,
+budget configuration, controller/OpenAPI, workflow or frozen registry change.
+All185 earlier migration files and the physical dictionary remain unchanged.
+
+**Implemented owner workflow.** Typed immutable commands cover REGISTER_UNIT,
+READ_UNIT, RECORD_INSTALLATION, CLOSE_INSTALLATION, same-unit RELOCATE,
+READ_INSTALLATION and READ_HISTORY. Their constructor rejects cross-operation
+payloads, padded/oversized references, stale-revision shapes, non-microsecond
+business instants and malformed intervals. Caller source/destination descriptors
+are assertions, never authority. Private pre-sample storage hints are re-read after
+fixed-order owner/storage fences; changed hints, foreign/missing identity, type,
+company or position bindings reject without returning foreign payloads.
+
+The compiled service prepares native authentication before opening its sole protected
+credential route/physical transaction. The coordinator acquires Identity, accepted
+SELECT-only company, optional known manufacturer, sorted unique positions, then
+owned storage/type fences. All owner samples/contributions follow lock acquisition.
+Native decisions must be PERMIT; company/manufacturer and position facts must agree
+with exact request references and actual PID/XID/database role. Company need not
+be a manufacturer; the same Party can provide both distinct contributions. UNKNOWN
+metadata remains UNKNOWN. Existing recognized planned/inactive position classifications
+are preserved as evidence, not relabeled operational readiness. Exact equipment-type
+ID equality is classification identity, not manufacturer compatibility or engineering
+qualification. No Assets state is touched by its optional neutral reference.
+
+The actual issuer fence union must equal the compiled action-specific expectation;
+overlapping Party/position sources deduplicate by strongest mode. Private tickets
+bind issuer/request/thread and actual holder/connection; forged, reused, suspended,
+foreign-thread and wrong-context use poisons the original transaction. Provider
+requireCurrent checks and spare manufacturer tickets re-read current evidence before
+final preparation without late LOCK statements. Native/manufacturer validity bounds
+are retained as a minimum and enforced against one final PostgreSQL clock sample.
+Time spent in the processing budget never extends source/grant/policy validity.
+
+The new service/coordinator alone join the exact compiled caller sets. Coordinator
+and executor independently pin all four complete parameterized SQL texts by SHA-256:
+unit insert, installation insert, expected-revision closure and immutable receipt
+insert. A one-use provisional permit bounds DML; no SQL-prefix exception, untrusted
+callback or borrowed station permit. The new exact-caller technical
+requireInstalledUnitFinalPreparation hook permits only this coordinator's checks in
+FLUSHING, preserving the general requireAdmission OBSERVING rule. All old SQL pins
+and processing policies remain; this owner uses the unchanged standard500ms budget.
+
+**Storage, replay and commit.** Closure and adjacent replacement installation use
+one transaction and the same physical unit, with source/destination facility grants.
+Native exclusion/uniqueness and optimistic revision remain authoritative; conflict
+rolls back closure, immutable history and receipt together. New recordedAt values
+come from the real database sample, not caller time. Original identity and event
+provenance are never overwritten. Exact request replay requires fresh authorization,
+exact canonical bytes and verified existing result/ledger; it appends nothing,
+never restores an old projection and explicitly marks its historical response.
+Conflicting or foreign request identity fails closed.
+
+Versioned canonical command/result bytes distinguish nulls and field boundaries,
+use strict UTF-8 and immutable timestamp representations, enforce bounded payloads
+and SHA-256 integrity, and reject trailing/noncanonical data. SQL literals needed
+for frozen guard predicates use hex-encoded UTF-8, avoiding quote/backslash ambiguity.
+Caller data cannot become a SQL template. Actor/binding/session, operation/request,
+company/unit/installation, expected revision, command/result digests, database role,
+PID/XID and sampled/expiry times are retained in the new immutable receipt.
+
+Catalog and source images are observed under held fences before owner sampling,
+compared again after managed flush and in the final SQL. These observations are
+integrity witnesses, not constructible business authority. Catalog checks include
+own/source role privileges, relation identity/kind/RLS/inheritance, old trigger
+bodies, exact native temporal exclusions, validated keys, receipt guards and the
+new FK/native referential triggers. Owner data images bind exact company/manufacturer
+roots/generations, applicable position/facility rows/generations and the real Identity
+mapping registry; no equipment generation is invented. Source fields unused by
+unit-only operations do not add position locks or implied facility scope.
+
+After exact provisional result/history verification, freeze retains owned row images,
+source/catalog images, coordinates, role, origin and exact fences. The final scalar
+statement rechecks strict time bounds, PID/XID/session/current role, catalogs, held
+locks and all retained images. Synchronizations veto commit and invalidate tickets
+without SQL; no SQL is permitted after sealing. The service returns materialized
+records only after observed physical commit and preserves executor indeterminate
+failure behavior. No after-commit compensation is introduced.
+
+**Additive schema and privileges.** The new186th migration adds the validated,
+non-deferrable fk_installed_unit_equipment_type with UPDATE/DELETE RESTRICT, and
+the new immutable operation-request relation/guards. Orphan kinds cause migration
+failure; no remap, fake type seed, historical cleanup or NOT VALID waiver. Native
+referential integrity protects parent identity through commit without type DML.
+The runtime keeps SELECT-only access to Party/position/type sources. Its private
+publisher needs INSERT/UPDATE on the four owned relations for native strong locks;
+immutable triggers and independent SQL pins prohibit identity/history/receipt rewrites.
+Existing event append triggers retain invoker semantics, including required event
+INSERT privilege. Ordinary credentials cannot mutate these owned relations or be
+a publisher member. Roles/grants are synthetic test provisioning only; the migration
+does not create production roles, broaden source helper grants or seed permissions.
+
+Reviewed ownership JSON registers the actual receipt relation/source and adds005
+FK provenance to the unit. The existing physical dictionary is intentionally retained
+until hosted capture. Registered follow-up remains
+`docs(topology): refresh protected installed-unit operations physical dictionary`,
+limited to the actual generated dictionary and this phase. Initial CI may reveal
+strict drift after capture or an actual runtime defect; repair real failures first.
+Never infer physical catalog facts, alter the generator or waive strict comparison.
+
+**Authored regression scope; runtime acceptance pending.** New unit suites contain
+9 coordinator and4 service cases; existing architecture/executor suites each gain
+one exact boundary case. The dedicated22-case PostgreSQL16 suite migrates full
+Flyway and wires actual Spring/JPA protected execution with separate ordinary,
+publisher and isolated helper owners. Only external directory/source transport is
+synthetic. One case executes every operation with LOCAL/LDAP/AD/OIDC native producers;
+others cover known/UNKNOWN manufacturer, company/type/facility mismatch, revoked
+read/replay, conflict/stale request/revision and atomic relocation rollback. They
+exercise real source privileges, ambient transaction, native NOWAIT, expired final
+bounds, actual SQL after guard, role/generation changes after freeze, missing FK/
+disabled trigger, both unmounted-kind race orders and SQLSTATE23503. Real worker,
+suspension and swallowed savepoint-control failures must roll back earlier provisional
+writes. Native qualification alone is warmed before each fixture; no lifecycle write
+bypasses the protected executor or its standard budget. Existing provider/context
+and platform indeterminate-commit tests remain mandatory.
+
+Inventory changes only actual six suite hashes/case lists and three new classes;
+all old timing, classification and scheduling provenance remains. New timings are
+unmeasured baseline0. Active inventory:500 classes (379 unit/architecture,
+121 PostgreSQL),3,735 expected exact cases, four unchanged historical exclusions,
+ten required deterministic PostgreSQL shards. No case is skipped or reclassified.
+
+**Actual local validation and limits.** All12 new/modified Java sources parse.
+The new writer/domain/owner contract sources compile against minimal framework API
+stubs with available Java17; five probes execute actual codec/canonical/pin logic.
+These checks are limited interface/logic proof, not full Java21/Spring/JUnit or
+PostgreSQL verification. Inventory, offline OpenAPI and125 validator self-tests pass
+(35 inventory,53 full evidence,18 dictionary,19 docs). Focused Maven exits127:
+`mvn: command not found`; no service environment is installed merely to reproduce CI.
+Documentation/link, exact16-file scope, unchanged old migrations/providers, source
+pin and whitespace checks precede guarded publication. No new runtime pass or
+physical catalog capture is claimed locally.
+
+Publish exact blobs/tree/parent with expected-head guard; observe exact-SHA Full/
+Fast/Docs creation/queue/start and STOP. This writer is implemented, not CI-accepted.
+Integrated HAPI-599 remains NOT_IMPLEMENTED/BLOCKED pending runtime/catalog and
+independent Package B/C acceptance. Different-unit replacement, manufacturer-kind
+qualification, public API, dependent tasks, frontend, simulation/P3, SITE, release
+and deployment remain separately pending.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

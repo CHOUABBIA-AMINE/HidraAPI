@@ -2929,6 +2929,93 @@ position/facility admission and atomic writer scope after this gate passes.
 Package C, HAPI-600/601, frontend, simulation/P3, SITE, release and deployment remain
 unselected. HAPI-599 remains NOT_IMPLEMENTED/BLOCKED pending integrated B/C acceptance.
 
+### HAPI-599 Package B — guarded installed-unit Identity contribution implementation — 2026-10-28
+
+**Owner Next; exact registered implementation.** Parent main
+`2d9385ee0be576631f02487fbf5fbcf82b9fb6f0` has Docs #680 SUCCESS.
+The accepted runtime baseline remains Full954 on `7c49a82d2de482b4305d29a3c1087bd818bc92fb`.
+This step executes only `feat(identity): export guarded installed-unit operation authorization`
+within the preceding four-CREATE/six-MODIFY allowlist. No delete, migration,
+Topology/Party implementation, executor, policy/grant seed, public API or frozen
+status change. Earlier preflight and Party acceptance remain historical evidence.
+
+**Implemented source.** `TopologyInstalledUnitAuthorizationContract` defines the
+seven registered permission mappings, exact bounded typed request shapes and
+deterministically derived company/facility requirements. Unit registration/read
+requires company only; installation operations require applicable facility scope;
+relocation binds both distinct installation IDs and both facility descriptors,
+with at most six evaluations (four for equal facilities). No arbitrary permission
+list or fabricated station authority is accepted. Contributions are immutable
+scalar observations; opaque private Prepared/Admission tickets carry authority
+only for their issuing owner lifecycle, never by structural construction.
+
+`ProtectedOperationIdentityParticipant` now issues a distinct private installed-unit
+native group from one real admission/sample. All children remain issuer, authenticated
+actor, request, thread, actual holder/connection, backend/XID, database-role and
+transaction-lifetime bound. Consume/current entry points reject inactive groups,
+request swaps, replay and cross-family descriptors; failures poison the issuing
+holder, including foreign-thread misuse. Native binding/source/session checks,
+retained Identity fences and temporal bounds remain required. A final boundary
+scan detects new own-transaction grant/policy cutoffs without issuing a new sample.
+
+`JdbcProtectedAuthorizationEvidenceReader` loads every required graph before any
+export, validates the exact new family only on genuine opaque credentials and
+rechecks under retained locks with fresh invocation-local rows. Existing structural
+diagnostic reads cannot select the installed-unit family. Public reader-surface
+tests now admit exactly the two new methods with their exact native-group/request
+and evidence signatures; old family assertions remain. No generic public family
+selector or private entity export was introduced.
+
+`ProtectedTopologyInstalledUnitAuthorizationParticipant` binds genuine native
+preparation/admission, evaluates every derived scope with the existing domain
+evaluator and permits only overall PERMIT. Any DENY or INDETERMINATE fails closed.
+Final checks compare the full freshly read graphs and decisions and revalidate
+native/physical context and bounded validity. Ticket invalidation and a SQL-free
+commit veto preserve rollback even when owner exceptions are swallowed.
+No business row or position ownership is asserted by this Identity contribution.
+
+**Authored tests and inventory; hosted execution still pending.** Six new standalone
+unit tests cover all seven mappings, structural shape/identifier rejection, exact
+relocation requirement order and bounded deduplication, denial precedence and
+forged admission rejection. Nineteen new configured PostgreSQL16 tests exercise
+actual LOCAL/OIDC native producers, all seven operations/coordinates/fences,
+company/source/destination denial, both relocation resource IDs under actual policy,
+same-facility deduplication, station-family exclusion, grant and policy rechecks,
+future cutoffs, actual source expiry, session revocation, role/actor replacement,
+request swap/replay/forgery, thread/transaction suspension, NOWAIT and rollback.
+The isolated PostgreSQL fixture uses a synthetic restricted role and genuine
+Flyway/native cryptography; production roles/data are not provisioned. Two existing
+unit suites each gain one family-isolation case; their previous cases are retained.
+
+The inventory changes only those two existing case/hash identities and the two
+actual new classes. New timings remain unmeasured baseline0; all old timing,
+greenfield and scheduling provenance is preserved byte-for-byte. There are now
+494 active classes (376 unit/architecture,118 PostgreSQL) plus four unchanged
+historical exclusions, with 3,637 expected active cases. Ten required shards and
+existing deterministic balancing remain intact; no suite is skipped or reclassified.
+
+**Actual available validation.** All eight changed Java sources parse. The real
+new contract and existing relation-fence type compile with the available Java17
+compiler, and seven reflective operation-shape probes pass; this is not a Java21
+Spring/JUnit run. 149 Python validator self-tests pass:35 inventory,53 full-evidence,
+19 docs,10 OpenAPI,18 dictionary,14 API-base resolution. Inventory/source classification,
+full docs/link validation, offline OpenAPI snapshot and diff whitespace checks pass.
+Focused `mvn -q -Dtest=ProtectedTopologyInstalledUnitAuthorizationParticipantTest,ProtectedTopologyInstalledUnitAuthorizationPostgresIntegrationTest test`
+exits127: `mvn: command not found`. No local JUnit/PostgreSQL execution or new physical
+catalog capture is claimed. No full tool/service environment is provisioned merely
+to reproduce CI, under AGENTS11.1. All184 existing migration files and the current
+physical dictionary remain unchanged.
+
+Publish only the exact ten allowed paths using the expected-head guard and registered
+message; verify blobs/tree/parent, observe exact-SHA Full/Fast/Docs startup and stop.
+The new native family is implemented, not yet CI-accepted. After genuine success,
+independently review its exact case evidence before registering the remaining
+position/facility admission and protected atomic writer within the same Package B.
+No Topology consumer/architecture exception or executable storage grant is supplied
+in this step. HAPI-599 remains NOT_IMPLEMENTED/BLOCKED pending integrated B/C;
+manufacturer-kind qualification, Package C, HAPI-600/601, simulator/P3, frontend,
+SITE, release and deployment remain unselected.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

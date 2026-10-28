@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedOperationIdentityParticipant
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-21
+ * @UpdatedOn   : 2026-10-28
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -290,6 +290,12 @@ public class ProtectedOperationIdentityParticipant {
      */
     @Transactional(propagation = Propagation.MANDATORY)
     public Contribution consumeClaims(QualifiedClaimRead qualified, AuthorizationEvaluationRequest request) {
+        if (qualified != null && qualified.installedUnit != null) {
+            try {
+                installedUnitChildContext(qualified.installedUnit);
+                if (!qualified.installedUnit.used.get() || !qualified.installedUnit.children.contains(qualified)) throw denied();
+            } catch (RuntimeException failure) { poisonInstalledUnit(qualified.installedUnit); throw failure; }
+        }
         if (qualified != null && qualified.organization != null) {
             try { organizationChildContext(qualified.organization); }
             catch (RuntimeException failure) { poisonOrganization(qualified.organization); throw failure; }
@@ -354,6 +360,12 @@ public class ProtectedOperationIdentityParticipant {
     @Transactional(propagation = Propagation.MANDATORY)
     public void requireCurrentClaims(
             QualifiedClaimRead qualified, AuthorizationEvaluationRequest request) {
+        if (qualified != null && qualified.installedUnit != null) {
+            try {
+                installedUnitChildContext(qualified.installedUnit);
+                if (!qualified.installedUnit.used.get() || !qualified.installedUnit.children.contains(qualified)) throw denied();
+            } catch (RuntimeException failure) { poisonInstalledUnit(qualified.installedUnit); throw failure; }
+        }
         if (qualified != null && qualified.organization != null) {
             try { organizationChildContext(qualified.organization); }
             catch (RuntimeException failure) { poisonOrganization(qualified.organization); throw failure; }
@@ -1027,6 +1039,197 @@ public class ProtectedOperationIdentityParticipant {
         @Override public String toString() { return "OrganizationClaimGroup[opaque]"; }
     }
 
+    /** One native sample issues an entire installed-unit family; no draft/station credential is reused. */
+    public InstalledUnitClaimGroup qualifyInstalledUnitGroup(Admitted admitted,
+            dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.Request request) {
+        InstalledUnitClaimGroup group = null;
+        try {
+            Objects.requireNonNull(request);
+            var holder = installedUnitHolder();
+            Contribution contribution = contribute(admitted);
+            group = new InstalledUnitClaimGroup(this, admitted, request, contribution, holder, jdbc.queryForObject("SELECT current_user",String.class));
+            var children = new java.util.ArrayList<QualifiedClaimRead>();
+            for (var required : request.requirements()) {
+                var scope = required.scope() == dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.Scope.COMPANY
+                        ? ScopeType.CUSTOM : ScopeType.FACILITY;
+                var evaluation = new AuthorizationEvaluationRequest(contribution.evidence().userId(),
+                        dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.permissionCode(request.operation()),
+                        required.resourceType(), required.resourceId(),
+                        new AuthorizationScope(scope, scope == ScopeType.CUSTOM ? "topology-company:" + required.scopeReference() : required.scopeReference(), null));
+                var child = new QualifiedClaimRead(this, admitted.prepared.actual, admitted.prepared.locator,
+                        evaluation, contribution, holder, false, null, false, false, false, group);
+                children.add(child);
+            }
+            group.children = List.copyOf(children);
+            TransactionSynchronizationManager.registerSynchronization(group);
+            installedUnitContext(group);
+            return group;
+        } catch (RuntimeException failure) { poisonInstalledUnit(group); throw failure; }
+    }
+
+    /** Synchronous Identity-private transport. Public structural construction grants nothing. */
+    public record InstalledUnitReads(List<QualifiedClaimRead> credentials,
+            List<AuthorizationEvaluationRequest> requests, Contribution contribution) {
+        public InstalledUnitReads { credentials = List.copyOf(credentials); requests = List.copyOf(requests); }
+    }
+
+    public InstalledUnitReads consumeInstalledUnitGroup(InstalledUnitClaimGroup group,
+            dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.Request request) {
+        try {
+            installedUnitContext(group);
+            if (!group.request.equals(request) || !group.used.compareAndSet(false, true)) throw denied();
+            return new InstalledUnitReads(group.children,
+                    group.children.stream().map(c -> c.request).toList(), group.contribution);
+        } catch (RuntimeException failure) { poisonInstalledUnit(group); throw failure; }
+    }
+
+    public void requireCurrentInstalledUnitGroup(InstalledUnitClaimGroup group,
+            dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.Request request) {
+        try {
+            installedUnitContext(group);
+            if (!group.used.get() || !group.request.equals(request)) throw denied();
+            for (var child : group.children) requireCurrentClaims(child, child.request);
+            // Retained locks exclude other writers, but an own-transaction/savepoint write must
+            // never shorten the bound derived at the original sample. Mirror the existing
+            // temporal collector's fixed columns; this recheck does not issue another sample.
+            String futureBoundaries = List.of(
+                    "authorization_policy_version:effective_from:effective_to",
+                    "group_role_grant:valid_from:valid_to", "login_session:started_at:expires_at",
+                    "operation_binding:issued_at:expires_at", "operation_binding:source_expires_at",
+                    "role_permission_grant:valid_from:valid_to", "subject_security_attribute:valid_from:valid_to",
+                    "user:locked_until", "user_group_membership:valid_from:valid_to",
+                    "user_permission_grant:valid_from:valid_to", "user_role_grant:valid_from:valid_to")
+                    .stream().flatMap(projection -> {
+                        String[] parts = projection.split(":");
+                        return java.util.Arrays.stream(parts).skip(1).map(column ->
+                                "SELECT " + column + " AS boundary FROM public.hidra_identity_" + parts[0]);
+                    }).collect(java.util.stream.Collectors.joining(" UNION ALL "));
+            if (!Boolean.TRUE.equals(jdbc.queryForObject(
+                    "SELECT NOT EXISTS (SELECT 1 FROM (" + futureBoundaries
+                            + ") installedUnit_boundaries WHERE boundary>?::timestamptz AND boundary<?::timestamptz)",
+                    Boolean.class, java.sql.Timestamp.from(group.contribution.evidence().observedAt()),
+                    java.sql.Timestamp.from(group.contribution.validUntil())))) throw denied();
+            var contribution = group.contribution;
+            if (!Boolean.TRUE.equals(jdbc.queryForObject(
+                    "WITH installedUnit_clock AS MATERIALIZED (SELECT pg_catalog.clock_timestamp() AS t) "
+                            + "SELECT t>=? AND t<? AND pg_catalog.pg_backend_pid()=? AND pg_catalog.txid_current()=? FROM installedUnit_clock",
+                    Boolean.class, java.sql.Timestamp.from(contribution.evidence().observedAt()),
+                    java.sql.Timestamp.from(contribution.validUntil()), contribution.backendPid(), contribution.transactionId()))) throw denied();
+            context(group.admitted.prepared);
+        } catch (RuntimeException failure) { poisonInstalledUnit(group); throw failure; }
+    }
+
+    /** Only a consumed genuine child in its own consumed group can request a final graph recheck. */
+    public InstalledUnitReads currentInstalledUnitReads(InstalledUnitClaimGroup group,
+            dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.Request request) {
+        requireCurrentInstalledUnitGroup(group, request);
+        return new InstalledUnitReads(group.children, group.children.stream().map(c -> c.request).toList(), group.contribution);
+    }
+
+    public Contribution currentInstalledUnitClaims(QualifiedClaimRead child, AuthorizationEvaluationRequest request) {
+        try {
+            if (!installedUnitCredential(child)) throw denied();
+            requireCurrentClaims(child, request);
+            return child.contribution;
+        } catch (RuntimeException failure) { poisonInstalledUnit(child == null ? null : child.installedUnit); throw failure; }
+    }
+
+    public boolean installedUnitCredential(QualifiedClaimRead child) {
+        return child != null && child.owner == this && child.used.get() && !child.engineeringDraft && !child.productDraft && !child.publication && !child.fluidProperty
+                && child.organization == null && child.installedUnit != null && child.installedUnit.owner == this
+                && child.installedUnit.used.get() && child.installedUnit.children.contains(child);
+    }
+
+    public void invalidateInstalledUnitGroup(InstalledUnitClaimGroup group) { poisonInstalledUnit(group); }
+
+    private org.springframework.jdbc.datasource.ConnectionHolder installedUnitHolder() {
+        if (!TransactionSynchronizationManager.isActualTransactionActive()
+                || !TransactionSynchronizationManager.isSynchronizationActive()
+                || TransactionSynchronizationManager.isCurrentTransactionReadOnly()
+                || !(connectionResource() instanceof org.springframework.jdbc.datasource.ConnectionHolder holder)
+                || holder.isRollbackOnly()) throw denied();
+        try {
+            if (org.springframework.transaction.interceptor.TransactionAspectSupport.currentTransactionStatus().isRollbackOnly()) throw denied();
+        } catch (org.springframework.transaction.NoTransactionException absent) { /* TransactionTemplate caller. */ }
+        return holder;
+    }
+
+    private void installedUnitContext(InstalledUnitClaimGroup group) {
+        installedUnitChildContext(group);
+        var holder = group.holder;
+        if (!Objects.equals(group.databaseRole,jdbc.queryForObject("SELECT current_user",String.class))) throw denied();
+        requireAdmitted(group.admitted);
+        var c = group.contribution;
+        var p = group.admitted.prepared;
+        settingsMatch(p.locator);
+        var stored = bindings.findByNativeIssuerAndJti(p.locator.nativeIssuer(), p.locator.jti()).orElseThrow(ProtectedOperationIdentityParticipant::denied);
+        registry.validatePersistentOrigin(stored);
+        var now = jdbc.queryForObject("SELECT pg_catalog.clock_timestamp()", java.sql.Timestamp.class);
+        if (!stored.equals(p.locator) || now == null || now.toInstant().isBefore(c.evidence().observedAt())
+                || !now.toInstant().isBefore(c.validUntil()) || !states.current(stored, now.toInstant())
+                || !Boolean.TRUE.equals(jdbc.queryForObject(
+                        "SELECT pg_catalog.pg_backend_pid()=? AND pg_catalog.txid_current()=?",
+                        Boolean.class, c.backendPid(), c.transactionId()))) throw denied();
+        for (var child : group.children) {
+            if (child.installedUnit != group || child.organization != null || child.owner != this || child.publication || child.engineeringDraft || child.productDraft || child.fluidProperty
+                    || child.contribution != c || child.transactionResource != holder
+                    || child.actual != p.actual || child.origin != group.thread) throw denied();
+        }
+    }
+
+    private void installedUnitChildContext(InstalledUnitClaimGroup group) {
+        var holder = installedUnitHolder();
+        if (group == null || group.owner != this || !group.active || group.thread != Thread.currentThread()
+                || group.holder != holder || group.connection != holder.getConnection()) throw denied();
+        context(group.admitted.prepared);
+    }
+
+    private void poisonInstalledUnit(InstalledUnitClaimGroup group) {
+        if (group != null) { installedUnitRollbackHolder(group.holder); group.active = false; }
+        if (connectionResource() instanceof org.springframework.jdbc.datasource.ConnectionHolder h) installedUnitRollbackHolder(h);
+        try { org.springframework.transaction.interceptor.TransactionAspectSupport.currentTransactionStatus().setRollbackOnly(); }
+        catch (org.springframework.transaction.NoTransactionException absent) { /* Direct template caller. */ }
+    }
+
+    private static void installedUnitRollbackHolder(org.springframework.jdbc.datasource.ConnectionHolder holder) {
+        holder.setRollbackOnly();
+        if (TransactionSynchronizationManager.isSynchronizationActive()
+                && TransactionSynchronizationManager.getResourceMap().containsValue(holder)) {
+            TransactionSynchronizationManager.registerSynchronization(new org.springframework.transaction.support.TransactionSynchronization() {
+                @Override public void beforeCommit(boolean readOnly) {
+                    if (holder.isRollbackOnly()) throw new org.springframework.security.access.AccessDeniedException("InstalledUnit native authority rejected transaction");
+                }
+            });
+        }
+    }
+
+    public static final class InstalledUnitClaimGroup implements org.springframework.transaction.support.TransactionSynchronization {
+        private final ProtectedOperationIdentityParticipant owner;
+        private final Admitted admitted;
+        private final dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.Request request;
+        private final Contribution contribution;
+        private final org.springframework.jdbc.datasource.ConnectionHolder holder;
+        private final java.sql.Connection connection;
+        private final String databaseRole;
+        private final Thread thread = Thread.currentThread();
+        private final AtomicBoolean used = new AtomicBoolean();
+        private volatile boolean active = true;
+        private List<QualifiedClaimRead> children = List.of();
+        private InstalledUnitClaimGroup(ProtectedOperationIdentityParticipant owner, Admitted admitted,
+                dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.Request request,
+                Contribution contribution, org.springframework.jdbc.datasource.ConnectionHolder holder, String databaseRole) {
+            this.databaseRole=Objects.requireNonNull(databaseRole);
+            this.owner = owner; this.admitted = admitted; this.request = request; this.contribution = contribution;
+            this.holder = holder; this.connection = holder.getConnection();
+        }
+        @Override public void suspend() { active = false; }
+        @Override public void beforeCommit(boolean readOnly) {
+            if (!active || holder.isRollbackOnly()) throw new org.springframework.security.access.AccessDeniedException("InstalledUnit native group invalidated");
+        }
+        @Override public void afterCompletion(int status) { active = false; }
+        @Override public String toString() { return "InstalledUnitClaimGroup[opaque]"; }
+    }
+
     /** Opaque one-shot claim-read credential. No public factory and no authority via fields. */
     public static final class QualifiedClaimRead {
         private final ProtectedOperationIdentityParticipant owner;
@@ -1042,6 +1245,7 @@ public class ProtectedOperationIdentityParticipant {
         private final boolean fluidProperty;
         private final boolean publication;
         private final OrganizationClaimGroup organization;
+        private final InstalledUnitClaimGroup installedUnit;
 
         private QualifiedClaimRead(
                 ProtectedOperationIdentityParticipant owner, Authentication actual,
@@ -1081,6 +1285,14 @@ public class ProtectedOperationIdentityParticipant {
                 OperationAuthenticationBinding locator, AuthorizationEvaluationRequest request,
                 Contribution contribution, Object transactionResource, boolean engineeringDraft,
                 OrganizationClaimGroup organization, boolean productDraft,boolean fluidProperty,boolean publication) {
+            this(owner,actual,locator,request,contribution,transactionResource,engineeringDraft,organization,productDraft,fluidProperty,publication,null);
+        }
+        private QualifiedClaimRead(ProtectedOperationIdentityParticipant owner, Authentication actual,
+                OperationAuthenticationBinding locator, AuthorizationEvaluationRequest request,
+                Contribution contribution, Object transactionResource, boolean engineeringDraft,
+                OrganizationClaimGroup organization, boolean productDraft, boolean fluidProperty,
+                boolean publication, InstalledUnitClaimGroup installedUnit) {
+            this.installedUnit=installedUnit;
             this.publication=publication;
             this.fluidProperty=fluidProperty;
             this.engineeringDraft=engineeringDraft;

@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedOperationIdentityParticipantTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-21
+ * @UpdatedOn   : 2026-10-28
  *
  * @Type        : Class
  * @Layer       : Identity Test
@@ -74,6 +74,18 @@ class ProtectedOperationIdentityParticipantTest {
     private Jwt verified;
     private String raw;
     private final Instant issued = Instant.parse("2026-10-15T00:00:00Z");
+
+    @Test void installedUnitGroupCannotBeSelectedWithoutPhysicalNativeAdmission() {
+        var request = new dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.Request(
+                dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.Operation.READ_UNIT,
+                "company", "unit", null, null, null, null);
+        assertThat(participant.installedUnitCredential(null)).isFalse();
+        assertThatThrownBy(() -> participant.qualifyInstalledUnitGroup(null, request)).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> participant.consumeInstalledUnitGroup(null, request)).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> participant.currentInstalledUnitClaims(null, null)).isInstanceOf(RuntimeException.class);
+        assertThat(Arrays.stream(ProtectedOperationIdentityParticipant.InstalledUnitClaimGroup.class.getDeclaredConstructors())
+                .allMatch(c -> Modifier.isPrivate(c.getModifiers()))).isTrue();
+    }
 
     @BeforeEach
     void setup() {

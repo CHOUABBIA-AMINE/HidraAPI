@@ -7,7 +7,7 @@
  *
  * @Name        : JdbcProtectedAuthorizationEvidenceReader
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-25
+ * @UpdatedOn   : 2026-10-28
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -184,18 +184,23 @@ public class JdbcProtectedAuthorizationEvidenceReader {
     private AuthorizationEvidence loadClaims(ProtectedOperationIdentityParticipant.QualifiedClaimRead credential,
             AuthorizationEvaluationRequest request,boolean organizationRecheck,Rows rows,
             boolean productRecheck,Instant productSample,boolean fluidFamily,boolean publicationFamily) {
+        return loadClaims(credential,request,organizationRecheck,rows,productRecheck,productSample,fluidFamily,publicationFamily,false);
+    }
+    private AuthorizationEvidence loadClaims(ProtectedOperationIdentityParticipant.QualifiedClaimRead credential,
+            AuthorizationEvaluationRequest request,boolean organizationRecheck,Rows rows,
+            boolean productRecheck,Instant productSample,boolean fluidFamily,boolean publicationFamily,boolean installedUnitRecheck) {
         try {
             rows.beginGraph();
             if (participant == null || bindings == null || companions == null
                     || registry == null || catalog == null) throw invalid();
-            var contribution = productRecheck ? (publicationFamily ? participant.currentProductPublicationClaims(credential,request) : fluidFamily ? participant.currentSuppliedFluidClaims(credential,request) : participant.currentProductClaims(credential, request))
+            var contribution = installedUnitRecheck ? participant.currentInstalledUnitClaims(credential,request) : productRecheck ? (publicationFamily ? participant.currentProductPublicationClaims(credential,request) : fluidFamily ? participant.currentSuppliedFluidClaims(credential,request) : participant.currentProductClaims(credential, request))
                     : organizationRecheck ? participant.currentOrganizationClaims(credential, request)
                     : participant.consumeClaims(credential, request);
             Evidence evidence = contribution.evidence();
             int pid = contribution.backendPid();
             long xid = contribution.transactionId();
             validate(evidence, request, pid, xid, participant.engineeringDraftCredential(credential),
-                    participant.organizationCredential(credential), participant.productDraftCredential(credential),participant.suppliedFluidCredential(credential),participant.productPublicationCredential(credential));
+                    participant.organizationCredential(credential), participant.productDraftCredential(credential),participant.suppliedFluidCredential(credential),participant.productPublicationCredential(credential),participant.installedUnitCredential(credential));
             qualifiedPhysicalFences(pid, xid);
             OperationAuthenticationBinding original =
                     bindings.findByNativeIssuerAndJti(evidence.issuer(), evidence.jti())
@@ -440,6 +445,59 @@ public class JdbcProtectedAuthorizationEvidenceReader {
         }
     }
 
+    /** Only a private native group may load this family. All children precede disclosure. */
+    public InstalledUnitAuthorizationEvidence loadQualifiedInstalledUnitGroup(
+            ProtectedOperationIdentityParticipant.InstalledUnitClaimGroup group,
+            dz.sh.hidra.modules.identity.application.contract.organization.InstalledUnitProtectedAppointmentAuthorizationContract.Request request) {
+        try {
+            if (participant == null) throw invalid();
+            var reads = participant.consumeInstalledUnitGroup(group, request);
+            var evidence = new java.util.ArrayList<AuthorizationEvidence>();
+            // Private to this synchronous read: retained owner fences exclude other writers.
+            // A final recheck always creates a fresh Rows, including after own-transaction writes.
+            var rows = new Rows(true);
+            for (int i = 0; i < reads.credentials().size(); i++) {
+                evidence.add(loadClaims(reads.credentials().get(i), reads.requests().get(i), false, rows));
+            }
+            participant.requireCurrentInstalledUnitGroup(group, request);
+            return new InstalledUnitAuthorizationEvidence(reads.requests(), evidence, reads.contribution());
+        } catch (RuntimeException failure) {
+            if (participant != null) participant.invalidateInstalledUnitGroup(group);
+            throw invalid();
+        }
+    }
+
+    /** Re-read under retained fences without issuing or consuming another credential/sample. */
+    public InstalledUnitAuthorizationEvidence recheckInstalledUnitGroup(
+            ProtectedOperationIdentityParticipant.InstalledUnitClaimGroup group,
+            dz.sh.hidra.modules.identity.application.contract.organization.InstalledUnitProtectedAppointmentAuthorizationContract.Request request) {
+        try {
+            if (participant == null) throw invalid();
+            var reads = participant.currentInstalledUnitReads(group, request);
+            var evidence = new java.util.ArrayList<AuthorizationEvidence>();
+            // Private to this synchronous read: retained owner fences exclude other writers.
+            // A final recheck always creates a fresh Rows, including after own-transaction writes.
+            var rows = new Rows(true);
+            for (int i = 0; i < reads.credentials().size(); i++) {
+                evidence.add(loadClaims(reads.credentials().get(i), reads.requests().get(i), false, rows, false, null, false, false, true));
+            }
+            participant.requireCurrentInstalledUnitGroup(group, request);
+            return new InstalledUnitAuthorizationEvidence(reads.requests(), evidence, reads.contribution());
+        } catch (RuntimeException failure) {
+            if (participant != null) participant.invalidateInstalledUnitGroup(group);
+            throw invalid();
+        }
+    }
+
+    public record InstalledUnitAuthorizationEvidence(List<AuthorizationEvaluationRequest> requests,
+            List<AuthorizationEvidence> evidence, ProtectedOperationIdentityParticipant.Contribution contribution) {
+        public InstalledUnitAuthorizationEvidence {
+            requests = List.copyOf(requests); evidence = List.copyOf(evidence);
+            if (requests.isEmpty() || requests.size() != evidence.size()) throw invalid();
+            Objects.requireNonNull(contribution);
+        }
+    }
+
     private void qualifiedPhysicalFences(int pid, long xid) {
         if (!Boolean.TRUE.equals(jdbc.queryForObject(QUALIFIED_PHYSICAL_FENCES, Boolean.class, pid, xid)))
             throw invalid();
@@ -491,6 +549,9 @@ public class JdbcProtectedAuthorizationEvidenceReader {
         validate(i,r,pid,xid,draft,organization,product,fluid,false);
     }
     private void validate(Evidence i, AuthorizationEvaluationRequest r, int pid, long xid,boolean draft,boolean organization,boolean product,boolean fluid,boolean publicationFamily) {
+        validate(i,r,pid,xid,draft,organization,product,fluid,publicationFamily,false);
+    }
+    private void validate(Evidence i, AuthorizationEvaluationRequest r, int pid, long xid,boolean draft,boolean organization,boolean product,boolean fluid,boolean publicationFamily,boolean installedUnitFamily) {
         if (!TransactionSynchronizationManager.isActualTransactionActive()
                 || TransactionSynchronizationManager.isCurrentTransactionReadOnly()
                 || i == null
@@ -528,7 +589,20 @@ public class JdbcProtectedAuthorizationEvidenceReader {
                         || i.externalGeneration() <= 0
                         || ("OIDC".equals(i.authenticationType())
                                 != (i.sourceExpiresAt() != null)))) throw invalid();
-        if (publicationFamily) {
+        if (installedUnitFamily) {
+            if (draft || organization || product || fluid || publicationFamily || !i.userId().equals(r.userId())
+                    || !Set.of("INSTALLED_UNIT","INSTALLED_UNIT_INSTALLATION").contains(r.resourceType())
+                    || !text(r.resourceReferenceId(),80) || r.scope()==null || r.scope().scopeCodeSnapshot()!=null
+                    || java.util.Arrays.stream(dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.Operation.values())
+                        .noneMatch(op -> dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.permissionCode(op).equals(r.permissionCode())
+                            && ((op==dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.Operation.REGISTER_UNIT
+                                || op==dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.Operation.READ_UNIT)
+                                =="INSTALLED_UNIT".equals(r.resourceType())))) throw invalid();
+            String ref=r.scope().scopeReferenceId();
+            if (r.scope().scopeType()==ScopeType.CUSTOM) {
+                if (ref==null || !ref.startsWith("topology-company:") || !text(ref.substring(17),80)) throw invalid();
+            } else if (r.scope().scopeType()!=ScopeType.FACILITY || !text(ref,80) || "INSTALLED_UNIT".equals(r.resourceType())) throw invalid();
+        } else if (publicationFamily) {
             if(draft || organization || product || fluid || !i.userId().equals(r.userId()) || !"PRODUCT_ENGINEERING_PUBLICATION".equals(r.resourceType())
                 || !text(r.resourceReferenceId(),80) || r.scope()==null || r.scope().scopeType()!=ScopeType.CUSTOM
                 || r.scope().scopeCodeSnapshot()!=null

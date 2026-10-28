@@ -2946,6 +2946,38 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "actualSourceExpiryCannotBeExtendedByNativeInstalledUnitAdmission",
+        "allSevenOperationsUseRealNativeIdentityAndExactPhysicalScopes",
+        "changedActorAndDatabaseRoleCannotKeepAdmissionCurrent",
+        "crossThreadMisusePoisonsTheOriginalTransaction",
+        "duplicateContributionAndSwallowedFailureVetoCommit",
+        "externalSourceBindingUsesTheSameInstalledUnitFamily",
+        "finalPolicyGraphChangesAndMalformedDenyFailClosed",
+        "futureDenyBoundaryIsRetained",
+        "missingCompanyOrEitherFacilityAndExplicitDenialReject",
+        "nativeGroupRejectsRequestSwapBeforeDisclosure",
+        "ownTransactionGrantRevocationFailsFinalRecheckAndRollsBackSentinel",
+        "relocationRequiresPermitForBothInstallationResourceIdentities",
+        "replayForgedAndCrossTransactionTicketsAreRejected",
+        "retainedIdentityLocksRejectConflictingWriterNowait",
+        "revokedNativeSessionCannotAdmit",
+        "sameFacilityRelocationDeduplicatesButBothResourceIdentitiesRemainBound",
+        "shortenedGrantValidityRejectsFinalRecheck",
+        "stationPermissionCannotSubstituteForInstalledUnitPermission",
+        "suspendedTransactionAndReadOnlyContextFailClosed"
+      ],
+      "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.ProtectedTopologyInstalledUnitAuthorizationPostgresIntegrationTest",
+      "dependency_reason": "HAPI-599 Package B installed-unit Identity: fresh PostgreSQL16 real native claims, permission graphs, locks and rollback; timing unmeasured.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedTopologyInstalledUnitAuthorizationPostgresIntegrationTest.java",
+      "source_sha256": "5a3ea7085c2f13e97a46e4796ef327352d5944f63bec72a1de49d98e1d6ef35e",
+      "supports": []
+    },
+    {
       "baseline_seconds": 11.133,
       "cases": [
         "admissionMethodsCannotRunOutsideProtectedExecutorScope",
@@ -3037,6 +3069,7 @@
         "custodyPairRowsReuseExactQueriesButSeparateParametersAndInvocations",
         "fakeDraftPairCannotBypassGenuineIssuerTransport",
         "hasNoJpaCacheWallClockDecisionPersistenceOrAuthorityExport",
+        "installedUnitFamilyRequiresOpaqueNativeGroupAndCannotUseStructuralDiagnosticRead",
         "organizationReaderRejectsMissingNativeOwnerBeforeAnySql",
         "preservesGrantOrderScopeWindowsAndDenyPrecedence",
         "preservesTypedAttributesAndConflicts",
@@ -3058,7 +3091,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java",
-      "source_sha256": "89934f40df1f70f4d0544f4fc8fff6cd6291166f26047cdb36f9e8d37e394f15",
+      "source_sha256": "d19ff7bd1b4a4861cb2a9473a9ed793d0ac26b6aabeaa703228b8995762c5748",
       "supports": []
     },
     {
@@ -3336,6 +3369,7 @@
         "contributionHasOnlyImmutableScalarEvidenceAndNoPermission",
         "directoryCaptureEntryPointsRemainPrivateAndHaveOnlyReviewedCallers",
         "handlesAreSingleUseAndBoundToThreadAndAmbientIdentity",
+        "installedUnitGroupCannotBeSelectedWithoutPhysicalNativeAdmission",
         "integratedNativeAdmissionRejectsNullBeforeAnyFenceOrClock",
         "nativeParserReuseAndReceiptProducerAllowlistRemainClosed",
         "postReadValidationRefusesUnconsumedHandleAndReplacedActualContext",
@@ -3354,7 +3388,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipantTest.java",
-      "source_sha256": "48c24607df7c07cf138192b28ab1e676643a2c7872d50896038d5e058a7253a1",
+      "source_sha256": "54cf188463e22e18e7d8c42dad0991ac5fd96dfa3437a1093d548b7215de308f",
       "supports": []
     },
     {
@@ -3429,6 +3463,25 @@
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedTopologyAuthorizationParticipantTest.java",
       "source_sha256": "107640bc00c988e68c3ec806eacb7e04058cee2037b2347cdf0e408a5be41ae0",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "denyDominatesIndeterminateAndNoScalarMintsAdmission",
+        "forgedTicketsAndMissingTransactionsCannotReachNativeReads",
+        "malformedAndOversizedReferencesCannotBeNormalizedIntoAuthority",
+        "operationShapesAndCompanyOnlyUnitReadsAreExact",
+        "relocationBindsBothResourcesAndScopesInCanonicalOrder",
+        "sevenExactMappingsNeverAliasStationAuthority"
+      ],
+      "class": "dz.sh.hidra.modules.identity.infrastructure.security.ProtectedTopologyInstalledUnitAuthorizationParticipantTest",
+      "dependency_reason": "HAPI-599 Package B installed-unit Identity: Exact contract shapes and mocked rejection mechanics; no live context/database; timing unmeasured.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedTopologyInstalledUnitAuthorizationParticipantTest.java",
+      "source_sha256": "ac96262a8ec1cf30094a32f5c1296b3ca71b734dbbd87c4d6a78439ff0f889cb",
       "supports": []
     },
     {

@@ -7,7 +7,7 @@
  *
  * @Name        : JdbcProtectedAuthorizationEvidenceReaderTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-25
+ * @UpdatedOn   : 2026-10-28
  *
  * @Type        : Class
  * @Layer       : Identity Test
@@ -39,6 +39,19 @@ import java.time.Instant;
 import java.util.*;
 
 class JdbcProtectedAuthorizationEvidenceReaderTest {
+    @Test void installedUnitFamilyRequiresOpaqueNativeGroupAndCannotUseStructuralDiagnosticRead() {
+        var request = new dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.Request(
+                dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.Operation.READ_UNIT,
+                "company", "unit", null, null, null, null);
+        clearInvocations(jdbc);
+        assertThatThrownBy(() -> reader.loadQualifiedInstalledUnitGroup(null, request)).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> reader.recheckInstalledUnitGroup(null, request)).isInstanceOf(RuntimeException.class);
+        verifyNoInteractions(jdbc);
+        var structural = new AuthorizationEvaluationRequest(USER,"topology:installed-unit:read","INSTALLED_UNIT","unit",
+                new AuthorizationScope(ScopeType.CUSTOM,"topology-company:company",null));
+        assertThatThrownBy(() -> reader.load(identity,structural,7,11)).isInstanceOf(RuntimeException.class);
+    }
+
     @Test void structuralAppointmentRequestsCannotSelectQualifiedOrganizationFamily() {
         for (var action : dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.Action.values()) {
             for (var kind : dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract.ResourceKind.values()) {
@@ -651,6 +664,7 @@ class JdbcProtectedAuthorizationEvidenceReaderTest {
                 .extracting(java.lang.reflect.Method::getName)
                 .containsExactlyInAnyOrder("load", "loadQualified", "loadQualifiedPair", "loadQualifiedDraftPair",
                         "loadQualifiedOrganizationGroup", "recheckOrganizationGroup",
+                        "loadQualifiedInstalledUnitGroup", "recheckInstalledUnitGroup",
                         "loadQualifiedProductPair", "recheckProductPair",
                         "loadQualifiedSuppliedFluidPair", "recheckSuppliedFluidPair", "loadQualifiedProductPublicationPair", "recheckProductPublicationPair");
         for (String name : List.of("loadQualifiedProductPair", "recheckProductPair")) {
@@ -660,6 +674,15 @@ class JdbcProtectedAuthorizationEvidenceReaderTest {
                         dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipant.ProductClaimPair.class,
                         dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedProductDraftAuthorizationContract.Request.class);
                 assertThat(method.getReturnType()).isEqualTo(JdbcProtectedAuthorizationEvidenceReader.PairedAuthorizationEvidence.class);
+            });
+        }
+        for (String name : List.of("loadQualifiedInstalledUnitGroup", "recheckInstalledUnitGroup")) {
+            assertThat(Arrays.stream(JdbcProtectedAuthorizationEvidenceReader.class.getDeclaredMethods())
+                    .filter(m -> m.getName().equals(name))).singleElement().satisfies(method -> {
+                assertThat(method.getParameterTypes()).containsExactly(
+                        dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipant.InstalledUnitClaimGroup.class,
+                        dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.Request.class);
+                assertThat(method.getReturnType()).isEqualTo(JdbcProtectedAuthorizationEvidenceReader.InstalledUnitAuthorizationEvidence.class);
             });
         }
         for (String name : List.of("loadQualifiedOrganizationGroup", "recheckOrganizationGroup")) {

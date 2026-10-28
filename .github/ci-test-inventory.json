@@ -6297,6 +6297,30 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "actualRelationFencesAndCatalogTamperingAreChecked",
+        "duplicateManufacturerProfileOrRoleIsNotSilentlySelected",
+        "effectiveDateWindowsAreHalfOpenAndReadFromDatabaseClock",
+        "manufacturerQualificationAndCapabilityDoNotImplyEquipmentKind",
+        "missingPartyInactivePartyOrMissingProfileFailClosed",
+        "qualifiedCurrentManufacturerReturnsOnlyPartyOwnedEvidence",
+        "revokedSuspendedOrNonManufacturerRolesFailClosed",
+        "staleReadOnlyForeignAndReplayedAdmissionAreRejected",
+        "swallowedOwnerRejectionMarksPhysicalTransactionForRollback",
+        "ticketCannotCrossThreadOrSuspendedTransaction",
+        "writerFirstPreventsUnlockedOwnerAdmissionWithoutWaiting"
+      ],
+      "class": "dz.sh.hidra.modules.party.infrastructure.persistence.TopologyInstalledUnitManufacturerEvidencePostgresIntegrationTest",
+      "dependency_reason": "HAPI-599 Package B: synthetic fresh PostgreSQL16/Flyway manufacturer owner evidence, actual transaction/locks/fences; timing unmeasured placeholder.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "party",
+      "path": "src/test/java/dz/sh/hidra/modules/party/infrastructure/persistence/TopologyInstalledUnitManufacturerEvidencePostgresIntegrationTest.java",
+      "source_sha256": "cabd02a05e5a315d1878422b0a17a8b19fc25372643ebdef03590094e20a4077",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
         "acquisitionRequiresAnActualBoundTransaction",
         "currentCheckRejectsFabricatedOrNullTicketsBeforeQueries",
         "fabricatedAdmissionCannotReachOwnerRowsAndMarksRollback",

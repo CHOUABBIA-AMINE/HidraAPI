@@ -2314,6 +2314,85 @@ not authorization, engineering qualification, SITE or deployment.
 After guarded publication observe exact-SHA Documentation Validation
 creation/queue/start then STOP.
 
+### HAPI-599 Package B — Party manufacturer evidence implementation — 2026-10-28
+
+**Selected bounded execution.** Documentation Validation #673/run
+`40684603102` on `945a2235b0bb3f2f95f73e5b75e342a60ccc13e2`
+completed SUCCESS. Prior runtime Full #951/Fast #253/Docs #671
+on `78a34c610b2986e3a73900cac28af3fca31d05fa` are SUCCESS.
+Owner `Next` selects the previously registered **first executable step within
+the same Package B**, exact message:
+`feat(party): export guarded installed-unit manufacturer evidence`.
+
+**Exact registered scope, no expansion.** CREATE only:
+- `src/main/java/dz/sh/hidra/modules/party/application/contract/topology/TopologyInstalledUnitManufacturerEvidenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JdbcTopologyInstalledUnitManufacturerEvidenceAdapter.java`
+- `src/test/java/dz/sh/hidra/modules/party/infrastructure/persistence/TopologyInstalledUnitManufacturerEvidencePostgresIntegrationTest.java`
+
+MODIFY only `.github/ci-test-inventory.json` (one PostgreSQL class,
+11 actual methods, source SHA256
+`cabd02a05e5a315d1878422b0a17a8b19fc25372643ebdef03590094e20a4077`,
+unmeasured baseline_seconds=0) and this append-only task record.
+DELETE none. No Flyway, JPA, Identity, Topology authorizer/writer,
+controller/API, permissions, schema catalog, full-CI workflow, frozen
+ROADMAP/PHASES or unrelated class changes.
+
+**Owner contribution only.** The new Party application contract defines an
+opaque single-use Admission and scalar Contribution (Party identity/current
+generation, manufacturer role/assignment, half-open effective validity,
+qualification requirement, capability/qualification class, database-clock
+sample and backend/transaction coordinates) plus required relation fences.
+The non-final Spring JDBC adapter requires an active read-committed,
+writable physical transaction, current Party status and generation, one
+ACTIVE role code `MANUFACTURER`, effective ACTIVE assignment and exactly
+one QUALIFIED manufacturer profile classified EQUIPMENT/INSTRUMENTATION.
+The code is a **lexical role evidence filter**, not a deployed role-ID
+authorization or a proof of a specific equipment-kind map. UNKNOWN,
+unverified, nonqualified/conditional, duplicate, nonmatching or stale
+evidence does not qualify a unit, model, or human operation.
+
+Five Party-owned relations are locked in a fixed NOWAIT order; catalog
+owner/privilege, relation type/RLS and physical locks are checked, and
+five typed final fences are exposed. The reader's database principal must
+have no direct write/REFERENCES/TRIGGER privilege on manufacturer profile,
+role or assignment, including column-level grants; any added grant fails
+closed. The synthetic runtime role can update Party status only under its
+existing generation-guarded owner record, but manufacturer/role/assignment
+evidence is SELECT-only. A separate schema owner performs concurrent
+writer tests without laundering mutation through the evidence reader. A private ticket is issuer, connection,
+transaction, backend, database-role, thread and completion bound.
+Failures mark the caller's physical transaction rollback-only.
+No company ownership or registered installed-unit permission is asserted.
+The existing station protected caller, Party reference contracts and
+Assets interfaces remain unchanged. Do not extrapolate manufacturer-role
+evidence to installed-unit authorization or live industrial qualification.
+
+**Authored synthetic tests, not local pass claims.** The new PostgreSQL
+Testcontainers class has 11 exact tests for positive identity/coordinates,
+absent/inactive/missing owner, revoked role, disallowed qualifications/
+capabilities, effective-time boundaries, duplicate profiles/assignments,
+forged/reused/stale tickets, cross-thread/suspension isolation,
+NOWAIT writer conflict, relation fences/RLS/privilege changes and swallowed
+failure rollback. It uses fresh Flyway PostgreSQL16 and a synthetic
+restricted role with no application/production data. CI inventory entry
+is inserted in class sort order; the previous 495 class records and ten
+shards are preserved byte-for-byte. Source SHA256 was calculated and
+cross-checked against an existing registered source/hash example.
+
+**Validation/limits.** Reviewed actual source, paths, enum spellings,
+relation names, JPA field columns, installed-unit owner limitations and
+the registered file scope. Existing inventory JSON is parseable and
+identical except the new entry; eleven actual `@Test` methods were matched.
+Local Java 21 (`javac 21.0.12.1`) is present, but Maven and Docker
+are unavailable, so new Java/JUnit and PostgreSQL tests have NOT been
+executed locally. Static review and synthetic test authorship are not
+runtime acceptance. Exact-SHA hosted Full/Fast/Docs and actual PostgreSQL
+acceptance remain required; no CI state is preclaimed. The future separate
+same-Package-B Identity/position/transaction writer stage must be
+registered from source and accepted; Package C is not selected.
+Integrated HAPI-599 remains NOT_IMPLEMENTED/BLOCKED in frozen tables.
+No SITE, simulator, release or deployment scope.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

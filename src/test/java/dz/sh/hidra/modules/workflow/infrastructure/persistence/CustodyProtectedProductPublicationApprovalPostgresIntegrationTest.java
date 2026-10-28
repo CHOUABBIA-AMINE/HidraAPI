@@ -64,6 +64,9 @@ public class CustodyProtectedProductPublicationApprovalPostgresIntegrationTest {
             public Optional<Target> eligibleTarget(String code,String id){return targetTypeCodes().contains(code) && TARGETS.contains(id)?Optional.of(new Target(id,id,"Synthetic publication envelope")):Optional.empty();}
         };}
     }
+    @org.springframework.test.context.bean.override.mockito.MockitoBean(name="custodyProductPublicationWorkflowTargetLookup",enforceOverride=true)
+    WorkflowOwnedTargetLookup replacedProductionLookup;
+    @Autowired java.util.List<WorkflowOwnedTargetLookup> targetLookups;
     @Autowired JdbcTemplate jdbc;@Autowired PlatformTransactionManager manager;
     @Autowired CustodyProtectedProductPublicationApprovalContract owner;
     @Autowired WorkflowApplicationService application;@Autowired ExecuteWorkflowTransitionUseCase transitions;@Autowired WorkflowTaskRepositoryPort tasks;
@@ -119,4 +122,9 @@ public class CustodyProtectedProductPublicationApprovalPostgresIntegrationTest {
         assertThrows(RuntimeException.class,()->within(exact(),owner::read));
     }
 
+    @Test void productionLookupDoesNotDuplicateTheIsolatedApprovalFixture(){
+        long count=targetLookups.stream().filter(t->"custody".equals(t.module()) && t.targetTypeCodes().contains("PRODUCT_SOURCE_PUBLICATION")).count();assertEquals(1,count);
+        org.mockito.Mockito.verify(replacedProductionLookup,org.mockito.Mockito.never()).eligibleTarget(org.mockito.ArgumentMatchers.anyString(),org.mockito.ArgumentMatchers.eq(digest));
+        assertTrue(org.mockito.Mockito.mockingDetails(replacedProductionLookup).isMock());
+    }
 }

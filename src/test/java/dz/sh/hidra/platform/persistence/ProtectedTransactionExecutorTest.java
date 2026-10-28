@@ -953,5 +953,19 @@ class ProtectedTransactionExecutorTest {
         assertThat(body).contains("FLUID_PROVISIONAL_HASHES.contains(statementDigest(sql))");
         assertThat(body).doesNotContain("sql.startsWith(\"INSERT INTO public.hidra_custody_", "sql.startsWith(\"UPDATE public.hidra_custody_");
     }
+    @Test void productPublicationStatementsAreSixExactReviewedTemplates() throws Exception {
+        var field=ProtectedTransactionExecutor.class.getDeclaredField("PRODUCT_PUBLICATION_DML_HASHES");field.setAccessible(true);
+        var adapter=Class.forName("dz.sh.hidra.modules.custody.infrastructure.persistence.adapter.JdbcProductRevisionPublicationRepositoryAdapter");var expected=new HashSet<String>();
+        for(String name:List.of("CANDIDATE_INSERT","PUBLICATION_INSERT","EVENT_INSERT","HEAD_INSERT","HEAD_UPDATE","REQUEST_INSERT")){
+            var sql=adapter.getDeclaredField(name);sql.setAccessible(true);String template=(String)sql.get(null);expected.add(HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(template.getBytes(java.nio.charset.StandardCharsets.UTF_8))));
+        }
+        assertThat(field.get(null)).isEqualTo(expected);assertThat(expected).hasSize(6);
+        String body=java.nio.file.Files.readString(java.nio.file.Path.of("src/main/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutor.java"));assertThat(body).contains("PRODUCT_PUBLICATION_DML_HASHES.contains(statementDigest(sql))");
+        assertThat(body).doesNotContain("sql.startsWith(\"INSERT INTO public.hidra_custody_", "sql.startsWith(\"UPDATE public.hidra_custody_");
+    }
+    @Test void protectedLookupRejectsActiveScopeBeforeAnySuspension(){
+        var executor=new ProtectedTransactionExecutor(mock(org.springframework.transaction.PlatformTransactionManager.class),mock(javax.sql.DataSource.class));
+        executor.requireNoProtectedContext();var scope=new ProtectedOperationDataSource.Scope(500_000_000L);ProtectedOperationDataSource.CURRENT.set(scope);
+        try{assertThatThrownBy(executor::requireNoProtectedContext).isInstanceOf(ProtectedTransactionExecutor.ExecutionFailure.class);assertThatThrownBy(scope::healthy).isInstanceOf(RuntimeException.class);}finally{ProtectedOperationDataSource.CURRENT.remove();}
+    }
 }
-

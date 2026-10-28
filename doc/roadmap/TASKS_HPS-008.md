@@ -4687,6 +4687,107 @@ implementation, not another policy choice or repetition of A. C,597/593,
 numerical engine, frontend, release/deployment remain unselected.
 
 
+### HAPI-596 Package B storage implemented; hosted verification pending — 2026-10-28
+
+**Selected stage and current source.** Owner explicitly selected Package B. Its
+accepted A runtime is9fe646f0b7780c91b3f5a96abc0cea9d21efa8f6 (Full929,
+Fast233 and Docs640 success); the prospective test-isolation amendment is
+ce0f4c06d9bce8f91d36655f5c75f08771ff7a25 (Docs641 success). Current green
+main79735d1949c4825f460b4d479f058cfd1117ebaa/tree
+7bfc78749936904bd8e23276f70f596d604c40ab includes three subsequent,
+independent policy-document commits only; its Docs run40590959373 succeeded.
+Preserve those commits. Exact selected message:
+`feat(custody): add governed product publication storage`.
+
+**Bounded source scope.** Exactly the12 CREATE and nine MODIFY paths registered
+above, including the named Workflow fixture amendment; zero DELETE. Domain,
+typed use-case/repository ports, coordinator/service, strict binary codec,
+private JDBC storage, production Workflow target lookup, three new test classes
+and migrationV20261027_006 are implemented. Only the five registered Custody
+relations gain dictionary-owner entries. Existing594/595 migrations, source,
+old raw/qualified consumers, HTTP routes and generated artifacts stay outside
+this stage. No business policy/Workflow definition or permission grant is seeded.
+
+**Implemented contract.** PREPARE pins independently numbered, current metadata
+and supplied revisions and exact original formats/bytes/hashes, metadata binding,
+classification, both owners' immutable completeness diagnostics, sorted admitted
+unit facts and configured Workflow definition/version/type/purpose. Its canonical
+digest excludes request/publication IDs, audit and approval, and stores only a
+candidate. Complete and incomplete valid source remains unqualified. PUBLISH
+requires unchanged current source and envelope facts plus real final human
+Workflow approval for the persisted digest. REACTIVATE preserves the exact old
+snapshot and admits fresh applicable policy/unit/approval and human facts.
+WITHDRAW preserves native company/product authority and valid storage/head while
+omitting live catalog/unit/approval eligibility. Historical disclosures retain
+original bytes under fresh READ/company proof. Consumer eligibility is separate;
+a withdrawal produces no effective source or fallback. Server database time and
+strictly increasing per-product event epochs/times drive CAS and explicit bounded
+asOf/history cursors. Actor/company/product/kind/request/body-bound replay returns
+the original receipt plus observed current head without repeating publication or
+reversing subsequent transitions.
+
+**Atomic admission and SQL.** Actual distinct fence unions are37 for historical
+reads/replays/withdrawal (24 Identity+2 Party+11 Custody) and50 when fresh Workflow
+and unit eligibility participates (+11 Workflow+2 Telemetry). Same PID/xid,
+thread/holder/connection, native500ms window and unchanged750ms statement/250ms
+lock budgets remain enforced. Exact compiled service/coordinator names and six
+actual SQL SHA256 templates extend the private executor route; older families
+and SQL hashes remain intact. Source-checked relation/column/key/constraint,
+trigger/function and role safety is retained through a captured physical image,
+owner currentness and one final scalar SQL guard. Immutable candidate/publication/
+event/receipt rows and protected head CAS reject ordinary DML, history mutation,
+invalid source binding, epoch/state/time/origin and stale head proposals.
+Responses materialize before the guard and leave only after known commit;
+indeterminate commit has no automatic retry. No query follows the final guard.
+
+**Workflow integration and tests.** The exact named production bean
+custodyProductPublicationWorkflowTargetLookup advertises only custody/
+PRODUCT_SOURCE_PUBLICATION and delegates to protected
+READ_CANDIDATE_FOR_WORKFLOW, with internally resolved scope, native READ/company
+proof, envelope verification and digest-only generic labels. Ordinary Workflow
+work suspends for that read; an existing protected context rejects before
+suspension and poisons its issuer. A's isolated context replaces only that named
+existing bean via enforceOverride and preserves its13 cases, adding the exact
+productionLookupDoesNotDuplicateTheIsolatedApprovalFixture regression. The new
+Custody PostgreSQL class keeps the real lookup and actual native authentication
+and human Workflow transition. New cases cover exact source/codec diagnostics,
+Unicode/decimal/null/empty, stale sources/approval, replay, native denial,
+company isolation/revocation, catalog/unit/approval revocation vs history and
+withdrawal, reactivation, CAS contention, effective/history boundaries, owner
+fence unions, immutable/ordinary SQL, forged epochs/time, ticket reuse and actual
+expired final scalar guard rollback. Existing import/architecture negatives are
+preserved and receive exact new coordinator exports/caller checks.
+
+**Local evidence and explicit limits.** All104 unchanged Python self-tests
+passed:34 CI classifier,51 full-evidence gate and19 documentation tests. All17
+selected Java sources parsed successfully with the available Java17 compiler
+module; production domain/codec/ports compiled and17 authored domain/codec
+methods passed a standalone runner using a temporary minimal assertion adapter.
+This is not a hosted JUnit/Maven result. Supplemental Java17 type checking with
+temporary Spring/technical stubs is advisory only. `mvn -q -DskipTests compile`
+could not run (exit127: mvn command not found); Java21/Maven/Docker/PostgreSQL
+were not installed under AGENTS11.1. The partial local review tree cannot prove
+the full repository inventory/architecture/documentation runtime; the whole-tree
+inventory and documentation validators reject missing files in this partial copy,
+not a verified hosted defect. Unchanged inventory entries
+must remain exact and the hosted lane provides whole-tree proof. No PostgreSQL,
+HTTP, OpenAPI compatibility, schema-catalog equality, full-suite or acceptance
+pass is claimed from local inspection. New classes retain unmeasured zero
+baseline durations and the existing conservative seven-shard scheduler policy.
+
+**Pending catalog and stop.** DATA_DICTIONARY.md remains unchanged because no
+actual migrated PostgreSQL catalog was available locally. Capture the exact
+hosted migrated catalog and perform only the separately registered
+`docs(custody): refresh product publication storage dictionary` follow-up after
+actual evidence. Preserve full catalog equality and zero unresolved owners;
+never synthesize physical metadata or waive a failed gate. Publish this bounded
+source commit with expected main79735d1, verify exact tree/parent/message/blobs/
+scope and observe applicable CI creation/queue/start, then STOP. Package B hosted
+verification and catalog disposition precede C. HAPI-596 remains
+NOT_IMPLEMENTED/IN_PROGRESS pending its independent final acceptance; HAPI-594/
+595 remain closed. No solver, engineering qualification, production/SITE
+acceptance, release or dependent package is selected.
+
 <a id="hapi-597"></a>
 ## HAPI-597 — Multi-product ownership/API compatibility qualification
 

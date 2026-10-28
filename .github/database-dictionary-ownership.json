@@ -82,6 +82,46 @@
     "owner": "custody",
     "purpose": "Custody-owned append-only canonical metadata revisions with expected-version sequencing, digest and native actor/physical transaction provenance; GAS/LIQUID labels do not qualify numerical properties or publish an engineering revision."
   },
+  "public.hidra_custody_product_publication": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261027_006__custody_product_revision_publications.sql",
+      "src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcProductRevisionPublicationRepositoryAdapter.java"
+    ],
+    "owner": "custody",
+    "purpose": "Custody-owned governed product publication snapshot; immutable source software evidence without engineering qualification."
+  },
+  "public.hidra_custody_product_publication_candidate": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261027_006__custody_product_revision_publications.sql",
+      "src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcProductRevisionPublicationRepositoryAdapter.java"
+    ],
+    "owner": "custody",
+    "purpose": "Custody-owned governed product publication candidate; immutable source software evidence without engineering qualification."
+  },
+  "public.hidra_custody_product_publication_event": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261027_006__custody_product_revision_publications.sql",
+      "src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcProductRevisionPublicationRepositoryAdapter.java"
+    ],
+    "owner": "custody",
+    "purpose": "Custody-owned governed product publication event; immutable source software evidence without engineering qualification."
+  },
+  "public.hidra_custody_product_publication_head": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261027_006__custody_product_revision_publications.sql",
+      "src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcProductRevisionPublicationRepositoryAdapter.java"
+    ],
+    "owner": "custody",
+    "purpose": "Custody-owned governed product publication head; immutable source software evidence without engineering qualification."
+  },
+  "public.hidra_custody_product_publication_request": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261027_006__custody_product_revision_publications.sql",
+      "src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcProductRevisionPublicationRepositoryAdapter.java"
+    ],
+    "owner": "custody",
+    "purpose": "Custody-owned governed product publication request; immutable source software evidence without engineering qualification."
+  },
   "public.hidra_custody_supplied_fluid_property_draft": {
     "evidence": [
       "src/main/resources/db/migration/V20261027_003__custody_supplied_fluid_properties.sql",

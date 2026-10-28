@@ -167,7 +167,7 @@ class ArchitectureGuardrailTest {
     }
 
     private static boolean isCustodyProductOwnerExport(String source, String target) {
-        if (isSuppliedFluidOwnerExport(source, target)) return true;
+        if (isSuppliedFluidOwnerExport(source, target) || isProductPublicationOwnerExport(source,target)) return true;
         String root="dz.sh.hidra.modules.party.application.contract.custody.CustodyProtectedPartyEligibilityContract";
         String consumer="dz.sh.hidra.modules.custody.application.service.ProtectedProductDraftAdmissionCoordinator";
         return (source.equals(consumer) || source.startsWith(consumer+"$"))
@@ -766,6 +766,7 @@ class ArchitectureGuardrailTest {
         "dz.sh.hidra.modules.workflow.application.contract.custody.CustodyProtectedProductPublicationApprovalContract");
     private static boolean isPublicationSpecific(String target){return PUBLICATION_ROOTS.stream().anyMatch(target::startsWith);}
     private static boolean isPublicationExportAllowed(String source,String target){
+        if(isProductPublicationOwnerExport(source,target))return true;
         String owner="dz.sh.hidra.modules.workflow.application.service.WorkflowTransitionApplicationService";
         return (source.equals(owner) || source.startsWith(owner+"$")) && (target.equals(PUBLICATION_HUMAN) || target.startsWith(PUBLICATION_HUMAN+"$"));
     }
@@ -778,5 +779,18 @@ class ArchitectureGuardrailTest {
             assertTrue(isForbiddenCrossModuleDependency("dz.sh.hidra.modules.custody.application.service.Other",root+"$Admission"));
         }
         assertTrue(isForbiddenCrossModuleDependency(owner,"dz.sh.hidra.modules.identity.infrastructure.security.ProtectedProductPublicationAuthorizationParticipant"));
+    }
+    private static boolean isProductPublicationOwnerExport(String source,String target){
+        String consumer="dz.sh.hidra.modules.custody.application.service.ProtectedProductPublicationAdmissionCoordinator";
+        return (source.equals(consumer) || source.startsWith(consumer+"$")) && Set.of("dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedProductPublicationAuthorizationContract","dz.sh.hidra.modules.workflow.application.contract.custody.CustodyProtectedProductPublicationApprovalContract","dz.sh.hidra.modules.party.application.contract.custody.CustodyProtectedPartyEligibilityContract","dz.sh.hidra.modules.telemetry.application.contract.custody.CustodyProtectedFluidUnitContract").stream().anyMatch(root->target.equals(root) || target.startsWith(root+"$"));
+    }
+    @Test void productPublicationOwnerExportsRemainExactAndPrivate(){
+        String consumer="dz.sh.hidra.modules.custody.application.service.ProtectedProductPublicationAdmissionCoordinator";
+        for(String root:Set.of("dz.sh.hidra.modules.identity.application.contract.custody.CustodyProtectedProductPublicationAuthorizationContract","dz.sh.hidra.modules.workflow.application.contract.custody.CustodyProtectedProductPublicationApprovalContract","dz.sh.hidra.modules.party.application.contract.custody.CustodyProtectedPartyEligibilityContract","dz.sh.hidra.modules.telemetry.application.contract.custody.CustodyProtectedFluidUnitContract")){
+            assertFalse(isForbiddenCrossModuleDependency(consumer,root));assertFalse(isForbiddenCrossModuleDependency(consumer,root+"$Admission"));
+            assertTrue(isForbiddenCrossModuleDependency(consumer+"Sibling",root));assertTrue(isForbiddenCrossModuleDependency(consumer,root+"Sibling"));
+        }
+        assertTrue(isForbiddenCrossModuleDependency(consumer,"dz.sh.hidra.modules.workflow.infrastructure.persistence.adapter.JdbcCustodyProtectedProductPublicationApprovalAdapter"));
+        assertTrue(isForbiddenCrossModuleDependency(consumer,"dz.sh.hidra.modules.identity.infrastructure.security.ProtectedProductPublicationAuthorizationParticipant"));
     }
 }

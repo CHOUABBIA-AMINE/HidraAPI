@@ -35,14 +35,14 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
             var found=new HashSet<String>();
             try(var files=Files.walk(Path.of("src/main/java"))) {for(var f:files.filter(x->x.toString().endsWith(".java")).toList())if(Files.readString(f).contains("."+method+"("))found.add(f.getFileName().toString());}
             var expected=method.equals("rejectAdmission")
-                ?Set.of("ProtectedSuppliedFluidPropertyAdmissionCoordinator.java","JdbcSuppliedFluidPropertyRevisionRepositoryAdapter.java","ProtectedProductDraftAdmissionCoordinator.java","JdbcProductEngineeringDraftRepositoryAdapter.java","ProtectedStationAdmissionCoordinator.java","ProtectedEmployeeAppointmentAdmissionCoordinator.java","JdbcStationGraphProtectedPublicationAdapter.java","ProtectedEngineeringDraftAdmissionCoordinator.java","JdbcEngineeringNetworkDraftRepositoryAdapter.java","ProtectedEngineeringPublicationAdmissionCoordinator.java","JdbcEngineeringRevisionPublicationRepositoryAdapter.java")
+                ?Set.of("ProtectedProductPublicationAdmissionCoordinator.java","JdbcProductRevisionPublicationRepositoryAdapter.java","ProtectedSuppliedFluidPropertyAdmissionCoordinator.java","JdbcSuppliedFluidPropertyRevisionRepositoryAdapter.java","ProtectedProductDraftAdmissionCoordinator.java","JdbcProductEngineeringDraftRepositoryAdapter.java","ProtectedStationAdmissionCoordinator.java","ProtectedEmployeeAppointmentAdmissionCoordinator.java","JdbcStationGraphProtectedPublicationAdapter.java","ProtectedEngineeringDraftAdmissionCoordinator.java","JdbcEngineeringNetworkDraftRepositoryAdapter.java","ProtectedEngineeringPublicationAdmissionCoordinator.java","JdbcEngineeringRevisionPublicationRepositoryAdapter.java")
                 :method.equals("requireAdmission")
-                    ?Set.of("ProtectedSuppliedFluidPropertyAdmissionCoordinator.java","ProtectedProductDraftAdmissionCoordinator.java","ProtectedStationAdmissionCoordinator.java","ProtectedEngineeringDraftAdmissionCoordinator.java",
+                    ?Set.of("ProtectedProductPublicationAdmissionCoordinator.java","ProtectedSuppliedFluidPropertyAdmissionCoordinator.java","ProtectedProductDraftAdmissionCoordinator.java","ProtectedStationAdmissionCoordinator.java","ProtectedEngineeringDraftAdmissionCoordinator.java",
                         "JdbcEngineeringGraphDraftRepositoryAdapter.java","JdbcEngineeringGraphStationWitnessAdapter.java",
                         "JdbcSurveyRouteProfileRepositoryAdapter.java","ProtectedEngineeringPublicationAdmissionCoordinator.java","JdbcEngineeringRevisionPublicationRepositoryAdapter.java")
                     :method.equals("beginAdmission")
-                        ?Set.of("ProtectedSuppliedFluidPropertyAdmissionCoordinator.java","ProtectedProductDraftAdmissionCoordinator.java","ProtectedStationAdmissionCoordinator.java","ProtectedEmployeeAppointmentAdmissionCoordinator.java","ProtectedEngineeringDraftAdmissionCoordinator.java","ProtectedEngineeringPublicationAdmissionCoordinator.java")
-                        :Set.of("ProtectedSuppliedFluidPropertyAdmissionCoordinator.java","ProtectedProductDraftAdmissionCoordinator.java","ProtectedStationAdmissionCoordinator.java","ProtectedEmployeeAppointmentAdmissionCoordinator.java","ProtectedEngineeringDraftAdmissionCoordinator.java","ProtectedEngineeringPublicationAdmissionCoordinator.java");
+                        ?Set.of("ProtectedProductPublicationAdmissionCoordinator.java","ProtectedSuppliedFluidPropertyAdmissionCoordinator.java","ProtectedProductDraftAdmissionCoordinator.java","ProtectedStationAdmissionCoordinator.java","ProtectedEmployeeAppointmentAdmissionCoordinator.java","ProtectedEngineeringDraftAdmissionCoordinator.java","ProtectedEngineeringPublicationAdmissionCoordinator.java")
+                        :Set.of("ProtectedProductPublicationAdmissionCoordinator.java","ProtectedSuppliedFluidPropertyAdmissionCoordinator.java","ProtectedProductDraftAdmissionCoordinator.java","ProtectedStationAdmissionCoordinator.java","ProtectedEmployeeAppointmentAdmissionCoordinator.java","ProtectedEngineeringDraftAdmissionCoordinator.java","ProtectedEngineeringPublicationAdmissionCoordinator.java");
             assertEquals(expected,found);
         }
     }
@@ -74,6 +74,10 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
             String productCoordinator="\"dz.sh.hidra.modules.custody.application.service.ProtectedProductDraftAdmissionCoordinator\"";
             assertEquals(name.equals("ProtectedTransactionExecutor")?1:0,s.split(java.util.regex.Pattern.quote(productService),-1).length-1);
             assertEquals(name.equals("ProtectedTransactionExecutor")?1:0,s.split(java.util.regex.Pattern.quote(productCoordinator),-1).length-1);
+            String newPublicationService="\"dz.sh.hidra.modules.custody.application.service.ProductRevisionPublicationApplicationService\"";
+            String newPublicationCoordinator="\"dz.sh.hidra.modules.custody.application.service.ProtectedProductPublicationAdmissionCoordinator\"";
+            assertEquals(name.equals("ProtectedTransactionExecutor")?1:0,s.split(java.util.regex.Pattern.quote(newPublicationService),-1).length-1);
+            assertEquals(name.equals("ProtectedTransactionExecutor")?1:0,s.split(java.util.regex.Pattern.quote(newPublicationCoordinator),-1).length-1);
             String fluidService="\"dz.sh.hidra.modules.custody.application.service.SuppliedFluidPropertyRevisionApplicationService\"";
             String fluidCoordinator="\"dz.sh.hidra.modules.custody.application.service.ProtectedSuppliedFluidPropertyAdmissionCoordinator\"";
             assertEquals(name.equals("ProtectedTransactionExecutor")?1:0,s.split(java.util.regex.Pattern.quote(fluidService),-1).length-1);
@@ -83,7 +87,7 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
             assertEquals(name.equals("ProtectedTransactionExecutor")?1:0,s.split(java.util.regex.Pattern.quote(publication),-1).length-1);
             assertEquals(name.equals("ProtectedTransactionExecutor")?1:0,s.split(java.util.regex.Pattern.quote(appointment),-1).length-1);
             assertEquals(name.equals("ProtectedTransactionExecutor")?1:0,s.split(java.util.regex.Pattern.quote(appointmentService),-1).length-1);
-            assertFalse(s.replace(fluidService,"\"reviewed-fluid-service\"").replace(fluidCoordinator,"\"reviewed-fluid-coordinator\"").replace(productService,"\"reviewed-product-service\"").replace(productCoordinator,"\"reviewed-product-coordinator\"").replace(appointmentService,"\"reviewed-appointment-service\"").replace(appointment,"\"reviewed-appointment-caller\"").replace(approved,"\"reviewed-caller\"").replace(publication,"\"reviewed-publication-caller\"").replace(draft,"\"reviewed-draft\"").replace(draftCoordinator,"\"reviewed-draft-coordinator\"").replace("\"dz.sh.hidra.modules.topology.application.service.EngineeringRevisionPublicationApplicationService\"","\"reviewed-publication-service\"").replace("\"dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringPublicationAdmissionCoordinator\"","\"reviewed-publication-coordinator\"").contains("dz.sh.hidra.modules."));
+            assertFalse(s.replace(newPublicationService,"\"reviewed-product-publication-service\"").replace(newPublicationCoordinator,"\"reviewed-product-publication-coordinator\"").replace(fluidService,"\"reviewed-fluid-service\"").replace(fluidCoordinator,"\"reviewed-fluid-coordinator\"").replace(productService,"\"reviewed-product-service\"").replace(productCoordinator,"\"reviewed-product-coordinator\"").replace(appointmentService,"\"reviewed-appointment-service\"").replace(appointment,"\"reviewed-appointment-caller\"").replace(approved,"\"reviewed-caller\"").replace(publication,"\"reviewed-publication-caller\"").replace(draft,"\"reviewed-draft\"").replace(draftCoordinator,"\"reviewed-draft-coordinator\"").replace("\"dz.sh.hidra.modules.topology.application.service.EngineeringRevisionPublicationApplicationService\"","\"reviewed-publication-service\"").replace("\"dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringPublicationAdmissionCoordinator\"","\"reviewed-publication-coordinator\"").contains("dz.sh.hidra.modules."));
         }
     }
     // HAPI-594A adds a distinct native product family; source-reviewed reader pin only, J stays fixed.
@@ -110,5 +114,12 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
         assertTrue(s.contains("IN SHARE MODE NOWAIT"));assertTrue(s.contains("TRIGGERS.equals(actual)"));
         assertFalse(s.contains(".modules.identity.infrastructure"));assertFalse(s.contains(".modules.custody.domain"));
         assertFalse(s.contains("Instant.now("));assertFalse(s.contains("INSERT INTO"));
+    }
+    @Test void productPublicationUsesActionSpecificExactFenceUnion() throws Exception {
+        String s=source("modules/custody/application/service/ProtectedProductPublicationAdmissionCoordinator.java");
+        assertTrue(s.contains("fences.size()!=37"));assertTrue(s.contains("a.fences.size()!=50"));assertTrue(s.contains("identity.reviewer(a.identity,e.actorId())"));
+        assertFalse(s.contains(".infrastructure."));assertFalse(s.contains("JdbcTemplate"));assertFalse(s.contains("Instant.now("));
+        String repository=source("modules/custody/infrastructure/persistence/adapter/JdbcProductRevisionPublicationRepositoryAdapter.java");
+        assertTrue(repository.contains("imageSql(fences)"));assertTrue(repository.contains("NEW_FUNCTIONS"));assertTrue(repository.contains("sampled_clock AS MATERIALIZED"));
     }
 }

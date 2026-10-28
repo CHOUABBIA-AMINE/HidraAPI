@@ -23,6 +23,7 @@
         "jpaTableNamesMustBeUnique",
         "kernelMustRemainFrameworkAndModuleIndependent",
         "platformJpaAccessMustRemainRestrictedToReviewedWorkbenchBoundary",
+        "productPublicationOwnerExportsRemainExactAndPrivate",
         "protectedTransactionJpaExceptionsRemainExactAndTechnical",
         "publicationExportsAdmitOnlyRegisteredHumanTransitionConsumer",
         "simulationOwnerEvidenceExportsKeepPrivateTypesClosed",
@@ -37,7 +38,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java",
-      "source_sha256": "03b4cd12cc03b9b72c38ee574671def2d2e6fc2f60ade6fbf7c694be03115fea",
+      "source_sha256": "5c7862afbe299436eb26b9146fada663df9c56c4b15650975987702a7f658788",
       "supports": []
     },
     {
@@ -76,6 +77,7 @@
         "directWireDomainRepresentationLeakageRemainsAbsent",
         "fictionalModuleEventScaffoldingRemainsAbsent",
         "finalClosureEvidenceRecordsCompletedRerun",
+        "productPublicationImportsHaveOnlyExactOwnerRoots",
         "publicationCoordinatorAddsOnlyTheExactReviewedIdentityContract",
         "residualProjectionVocabularyRemainsRemovedAndDocumented",
         "suppliedFluidExportsStayExactToTheirCoordinator"
@@ -86,7 +88,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java",
-      "source_sha256": "7ecfe489b3404d4c8589a9173e1cf5c13c25c6e3a785d3d5599a0281868d66f1",
+      "source_sha256": "c896b94f4f77db0f9bbdda44b53e77eee6f651bf40bcca34280d3a036790d7ae",
       "supports": []
     },
     {
@@ -1069,6 +1071,36 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "candidateDigestExcludesPublicationAndApprovalAudit",
+        "cursorPreservesScopeAsOfAndHighWater",
+        "equalOrBackwardEventClocksReject",
+        "firstTransitionCannotWithdrawOrReactivate",
+        "incompleteSourceRemainsExplicitAndUnqualified",
+        "nullAndEmptyFactListsHaveDifferentEnvelopes",
+        "originalDecimalSpellingSurvivesPublicationBytes",
+        "preservesUnicodeAndIndependentVersionNumbers",
+        "rejectsDiagnosticSubstitution",
+        "rejectsSourceHashSubstitution",
+        "rejectsStaleSuppliedMetadataBinding",
+        "rejectsTrailingUnknownAndMalformedEncoding",
+        "rejectsUnsortedOrDuplicateUnitFacts",
+        "requestReplayRequiresOriginalActorScopeAndBody",
+        "staleExpectedHeadCannotTransition",
+        "subMicrosecondTimeAndMalformedIdentityReject",
+        "withdrawAndReactivateUseContiguousEpochs"
+      ],
+      "class": "dz.sh.hidra.modules.custody.domain.model.ProductRevisionPublicationTest",
+      "dependency_reason": "Pure JVM domain/codec or mocked public owner delegation",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "custody",
+      "path": "src/test/java/dz/sh/hidra/modules/custody/domain/model/ProductRevisionPublicationTest.java",
+      "source_sha256": "91b17d0087baab13c263667f6dd7ed7d679ffecb813e050d00bdf31e313ca05d",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
         "bothFractionBasesAreDeclaredForBothLabels",
         "codecRejectsTruncationUnknownVersionTrailingAndMalformedUtf8",
         "collectionsAreBoundedUniqueAndDefensivelyCopied",
@@ -1089,6 +1121,25 @@
       "owner": "custody",
       "path": "src/test/java/dz/sh/hidra/modules/custody/domain/model/SuppliedFluidPropertyRevisionTest.java",
       "source_sha256": "d0b40c2f9b9a51865a127700203c9a677196aa0ae271ce333f20ba048c1fc7f0",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "advertisesOnlyExactProductTarget",
+        "delegatesAuthorizationAndReturnsOnlyBoundDigestLabel",
+        "nestingRejectionOccursBeforeSuspensionOrOwnerRead",
+        "ordinaryWorkflowTransactionIsSuspendedForProtectedRead",
+        "ownerDenialCannotBecomeExistenceAndSubstitutionRejects",
+        "unsupportedMalformedAndNullTargetsNeverReachOwner"
+      ],
+      "class": "dz.sh.hidra.modules.custody.infrastructure.integration.CustodyProductPublicationWorkflowTargetLookupTest",
+      "dependency_reason": "Pure JVM domain/codec or mocked public owner delegation",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "custody",
+      "path": "src/test/java/dz/sh/hidra/modules/custody/infrastructure/integration/CustodyProductPublicationWorkflowTargetLookupTest.java",
+      "source_sha256": "53fc11e52913b79d388fec28ad6136e775821128561e804fea198b02b9245ee4",
       "supports": []
     },
     {
@@ -1217,6 +1268,47 @@
       "owner": "custody",
       "path": "src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/ProductEngineeringDraftPostgresIntegrationTest.java",
       "source_sha256": "c115714ec4cc0fe0fe37c1370900a254725474142b4afac7be4d667679e8901b",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "allFiveTablesRejectOrdinaryDmlAndEvidenceRemainsImmutable",
+        "changedBodyOrActorCannotReplayReceipt",
+        "companyRevocationBlocksHistoryAndWithdrawalWithoutErasingEvidence",
+        "concurrentPublishersWithSameExpectedHeadCommitExactlyOneEvent",
+        "disabledPublicationTriggerRejectsEvenHistoricalRead",
+        "effectiveAtWithdrawalHasNoFallbackAndRejectsFuture",
+        "explicitNativeDenyOverridesPublicationGrantBeforeCandidateEffect",
+        "finalFenceSubstitutionRollsBackProvisionalPublication",
+        "foreignOrCompletedStorageAdmissionsCannotDisclose",
+        "fourNativeProducersCanPrepareWithoutInventedApproval",
+        "historicalAndAdmissionPathsRetainActualDistinctFenceUnions",
+        "historyCursorRetainsHighWaterAndRejectsSubstitutedScopeOrAsOf",
+        "independentSourceSequencesAndOriginalDecimalBytesArePinned",
+        "metadataOnlyAuthorityCannotPrepareOrDiscloseCandidate",
+        "missingSuppliedAndStaleExplicitVersionsRejectWithoutCandidate",
+        "nativePrepareRealHumanWorkflowAndPublishRetainExactIncompleteBytes",
+        "nativeRevocationDeniesHistoricalReadAndReplay",
+        "ordinaryPublisherSqlCannotForgeNoncontiguousEpochOrBackwardClock",
+        "prepareAndPublishReplayReturnOriginalReceiptAndObservedLaterHead",
+        "reactivateNeedsFreshApplicableApprovalAndExactUnitPolicy",
+        "realExpiredFinalScalarGuardRollsBackCandidateAndReceipt",
+        "receiptReadRequiresOriginalActorAndReportsObservedHead",
+        "revokedCatalogOrApprovalAllowsHistoricalReadAndWithdrawal",
+        "revokedUnitsDoNotEraseHistoryOrPreventWithdrawal",
+        "stalePreparedSourceAndApprovalSubstitutionCannotPublish",
+        "storageWriterFirstRejectsCandidateAdmissionWithoutPartialEffect",
+        "twoCompanyRequestsAndUnknownDigestsDoNotRevealProtectedExistence",
+        "workflowLookupSuspendsOrdinaryWorkAndProtectedNestingPoisonsIssuer"
+      ],
+      "class": "dz.sh.hidra.modules.custody.infrastructure.persistence.ProductRevisionPublicationPostgresIntegrationTest",
+      "dependency_reason": "Actual PostgreSQL/native authentication/Workflow and protected commit evidence",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "custody",
+      "path": "src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/ProductRevisionPublicationPostgresIntegrationTest.java",
+      "source_sha256": "7c886d32fb13751529c67bc48a22500a19c3b06422e85c1bacd82bd4cc7bd8b7",
       "supports": []
     },
     {
@@ -7535,6 +7627,7 @@
         "existingReaderAndJContractsRemainUnchanged",
         "identityAdmissionAndCollectorHaveOnlyReviewedCallers",
         "platformHasNoBusinessModuleDependencies",
+        "productPublicationUsesActionSpecificExactFenceUnion",
         "publicationAdmissionKeepsTheSingleClockAndPrivateSourceBoundaries",
         "publicationOwnerTicketsRemainOpaqueAndPolicyUsesRetainedOwnerFences"
       ],
@@ -7544,7 +7637,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java",
-      "source_sha256": "f862c4e1a73bae794dcbb76e4ceac95ebfad1a816f3371831bf20cdb3e0500ec",
+      "source_sha256": "1efc23bbd65a9e294ed9864f5f51f2824492a6ee6611b5d83feb759ab2c4e9f7",
       "supports": []
     },
     {
@@ -9057,6 +9150,7 @@
         "ordinaryRoleCannotMutatePolicyAndExistingActionHistoryStaysImmutable",
         "policyPreparationHasNoApprovalAndRetainsAllElevenFences",
         "policyWriterFirstRejectsNowaitAdmission",
+        "productionLookupDoesNotDuplicateTheIsolatedApprovalFixture",
         "replayAndCompletedTicketsCannotBeReused",
         "retainedOwnerFencesBlockConcurrentPolicyWriter",
         "revokedPolicyDefinitionAndBindingFailClosed",
@@ -9070,7 +9164,7 @@
       "lane": "postgres-integration",
       "owner": "workflow",
       "path": "src/test/java/dz/sh/hidra/modules/workflow/infrastructure/persistence/CustodyProtectedProductPublicationApprovalPostgresIntegrationTest.java",
-      "source_sha256": "d340d2122430dad30171636acc8a66b808e2fdc51bb55b21cb3e942ba65ea7c1",
+      "source_sha256": "e8d9c2335973a9edd15344a45aef8e0547b39d66a74b1dc9f94a19c86d547e6a",
       "supports": []
     },
     {
@@ -9662,6 +9756,8 @@
         "preparedQueryProbesLiveParticipationAtExecutionOnce",
         "preparedQueryRejectsBackendChangeAfterPreparationBeforeUserSql",
         "productProvisionalStatementsAreExactReviewedTemplates",
+        "productPublicationStatementsAreSixExactReviewedTemplates",
+        "protectedLookupRejectsActiveScopeBeforeAnySuspension",
         "providerMayResetAutocommitOnlyAfterObservedPhysicalCommit",
         "publicationCredentialEntryRejectsUnreviewedCallerBeforeWork",
         "rawConnectionAndDatasourceUnwrapReject",
@@ -9682,7 +9778,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java",
-      "source_sha256": "bde98547f894aa4b12a406e04162e05b4502080a1d91da3a175b2168ea40381f",
+      "source_sha256": "228800601cb459571a61d2b8773d99d3cf44570767db31e00f8c114974fe0240",
       "supports": []
     },
     {

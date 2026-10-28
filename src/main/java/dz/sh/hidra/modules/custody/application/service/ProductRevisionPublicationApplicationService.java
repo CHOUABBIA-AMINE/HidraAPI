@@ -42,8 +42,22 @@ public class ProductRevisionPublicationApplicationService implements ProductRevi
         var suspended=new org.springframework.transaction.support.TransactionTemplate(manager);
         suspended.setPropagationBehavior(org.springframework.transaction.TransactionDefinition.PROPAGATION_NOT_SUPPORTED);
         return suspended.execute(status->{
-            try {var result=execute(Command.workflow(digest));return Optional.of(result.candidateDigest());}
-            catch(Failure denied){if(denied.reason()==Reason.DENIED)return Optional.empty();throw denied;}
+            // NOT_SUPPORTED suspends the caller but may create its own empty synchronization.
+            // The credential route must open outside synchronization as well as outside a transaction.
+            boolean scaffold=status instanceof org.springframework.transaction.support.DefaultTransactionStatus state
+                    && state.isNewSynchronization();
+            if(scaffold){
+                if(TransactionSynchronizationManager.isActualTransactionActive()
+                        || !TransactionSynchronizationManager.getSynchronizations().isEmpty())throw new Failure(Reason.UNAVAILABLE);
+                TransactionSynchronizationManager.clearSynchronization();
+            }
+            try {
+                try {var result=execute(Command.workflow(digest));return Optional.of(result.candidateDigest());}
+                catch(Failure denied){if(denied.reason()==Reason.DENIED)return Optional.empty();throw denied;}
+            } finally {
+                // Restore only this template's scaffold; Spring resumes the suspended caller.
+                if(scaffold)TransactionSynchronizationManager.initSynchronization();
+            }
         });
     }
     @Override public Result execute(Command command) {

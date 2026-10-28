@@ -849,6 +849,11 @@ public class ProductRevisionPublicationPostgresIntegrationTest {
         jdbc.execute("GRANT SELECT ON "+policy+" TO c3_source_claim_app");jdbc.execute("GRANT SELECT,UPDATE ON "+policy+" TO c3_publication_app");
     }
     private Fixture publicationActor(String type){var f=fluidActor(type);currentActor=f;
+        var raw=((org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken)
+                SecurityContextHolder.getContext().getAuthentication()).getToken().getTokenValue();
+        var verified=nativeDecoder.decode(raw);assertThat(verified.getSubject()).isEqualTo(f.user());
+        SecurityContextHolder.getContext().setAuthentication(
+                new org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken(verified,List.of()));
         jdbc.update("UPDATE hidra_identity_user SET display_name='Synthetic Publication Reviewer' WHERE id=?",f.user());
         for(String action:List.of("read","prepare","publish","withdraw","reactivate"))for(String scope:List.of("custody-company:"+COMPANY,"custody-product:"+PRODUCT))publicationGrant(f,action,"GRANT",scope);
         return f;
@@ -920,7 +925,31 @@ public class ProductRevisionPublicationPostgresIntegrationTest {
     @Test void finalFenceSubstitutionRollsBackProvisionalPublication(){publicationActor("LOCAL");UUID p=preparedProduct(absent());var r=preparePublication(p,UUID.randomUUID(),1,1);var a=approve(r.candidateDigest());doAnswer(i->{var fs=new ArrayList<dz.sh.hidra.platform.persistence.ProtectedRelationFence>((List<dz.sh.hidra.platform.persistence.ProtectedRelationFence>)i.getArgument(2));fs.removeLast();i.getArguments()[2]=fs;return i.callRealMethod();}).when(publicationTarget()).finalGuard(any(),any(),anyList());rejected(()->publish(p,r.candidateDigest(),a,0,null,UUID.randomUUID()));assertThat(events(p)).isZero();assertThat(jdbc.queryForObject("SELECT count(*) FROM "+PP+" WHERE product_draft_id=?",Long.class,p)).isZero();}
     @Test void allFiveTablesRejectOrdinaryDmlAndEvidenceRemainsImmutable()throws Exception{publicationActor("LOCAL");UUID p=preparedProduct(absent());published(p);for(String table:List.of(PP,PP+"_candidate",PP+"_event",PP+"_request",PP+"_head")){assertThatThrownBy(()->runtimeJdbc.update("DELETE FROM "+table+" WHERE product_draft_id=?",p)).isInstanceOf(RuntimeException.class);try(var connection=publisher();var statement=connection.createStatement()){for(String sql:List.of("DELETE FROM "+table,"TRUNCATE "+table))assertThatThrownBy(()->statement.execute(sql)).isInstanceOf(SQLException.class);if(!table.endsWith("_head"))assertThatThrownBy(()->statement.execute("UPDATE "+table+" SET created_at=clock_timestamp()")).isInstanceOf(SQLException.class);}}assertThat(events(p)).isEqualTo(1);}
     @Test void disabledPublicationTriggerRejectsEvenHistoricalRead(){publicationActor("LOCAL");UUID p=preparedProduct(absent());var r=published(p);jdbc.execute("ALTER TABLE "+PP+"_event DISABLE TRIGGER custody_publication_event_admit");try{rejected(()->readPublication(Kind.READ_EXACT,p,r.publication().publicationId()));}finally{jdbc.execute("ALTER TABLE "+PP+"_event ENABLE TRIGGER custody_publication_event_admit");}}
-    @Test void workflowLookupSuspendsOrdinaryWorkAndProtectedNestingPoisonsIssuer(){publicationActor("LOCAL");UUID p=preparedProduct(absent());var r=preparePublication(p,UUID.randomUUID(),1,1);tx().executeWithoutResult(s->{assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();assertThat(productionLookup.eligibleTarget("PRODUCT_SOURCE_PUBLICATION",r.candidateDigest())).isPresent();assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();});assertThatThrownBy(()->executor.execute(()->{try{publications.candidateForWorkflow(r.candidateDigest());}catch(RuntimeException swallowed){}return true;},()->{},()->{})).isInstanceOf(RuntimeException.class);}
+    @Test void workflowLookupSuspendsOrdinaryWorkAndProtectedNestingPoisonsIssuer(){
+        publicationActor("LOCAL");UUID p=preparedProduct(absent());var r=preparePublication(p,UUID.randomUUID(),1,1);
+        var suspends=new AtomicInteger();var resumes=new AtomicInteger();
+        tx().executeWithoutResult(s->{
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization(){
+                @Override public void suspend(){suspends.incrementAndGet();}
+                @Override public void resume(){resumes.incrementAndGet();}
+            });
+            var resources=Map.copyOf(TransactionSynchronizationManager.getResourceMap());
+            var synchronizations=TransactionSynchronizationManager.getSynchronizations();
+            assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
+            assertThat(productionLookup.eligibleTarget("PRODUCT_SOURCE_PUBLICATION",r.candidateDigest())).isPresent();
+            assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
+            assertThat(TransactionSynchronizationManager.getResourceMap()).isEqualTo(resources);
+            assertThat(TransactionSynchronizationManager.getSynchronizations()).isEqualTo(synchronizations);
+            assertThatThrownBy(()->publications.candidateForWorkflow("invalid-digest")).isInstanceOf(RuntimeException.class);
+            assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
+            assertThat(TransactionSynchronizationManager.getResourceMap()).isEqualTo(resources);
+            assertThat(TransactionSynchronizationManager.getSynchronizations()).isEqualTo(synchronizations);
+        });
+        assertThat(suspends).hasValue(2);assertThat(resumes).hasValue(2);
+        assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isFalse();
+        assertThat(TransactionSynchronizationManager.isSynchronizationActive()).isFalse();
+        assertThatThrownBy(()->executor.execute(()->{try{publications.candidateForWorkflow(r.candidateDigest());}catch(RuntimeException swallowed){}return true;},()->{},()->{})).isInstanceOf(RuntimeException.class);
+    }
     @Test void nativeRevocationDeniesHistoricalReadAndReplay(){var f=publicationActor("LOCAL");UUID p=preparedProduct(absent()),request=UUID.randomUUID();var r=preparePublication(p,request,1,1);jdbc.update("UPDATE hidra_identity_login_session SET status='REVOKED',ended_at=clock_timestamp() WHERE user_id=? AND status='ACTIVE'",f.user());rejected(()->preparePublication(p,request,1,1));assertThatThrownBy(()->publications.candidateForWorkflow(r.candidateDigest())).isInstanceOf(RuntimeException.class);assertThat(candidates(p)).isEqualTo(1);}
 
     @Test void historicalAndAdmissionPathsRetainActualDistinctFenceUnions(){publicationActor("LOCAL");UUID p=preparedProduct(absent());var sizes=new ArrayList<Integer>();doAnswer(i->{var fences=(List<dz.sh.hidra.platform.persistence.ProtectedRelationFence>)i.getArgument(1);assertThat(fences.stream().map(dz.sh.hidra.platform.persistence.ProtectedRelationFence::relation).distinct().count()).isEqualTo(fences.size());sizes.add(fences.size());return i.callRealMethod();}).when(publicationTarget()).captureImages(any(),anyList());var r=published(p);readPublication(Kind.READ_EXACT,p,r.publication().publicationId());transition(Kind.WITHDRAW,p,r.publication().publicationId(),1,null,UUID.randomUUID());assertThat(sizes).contains(37,50);assertThat(sizes).allMatch(n->n==37 || n==50);}

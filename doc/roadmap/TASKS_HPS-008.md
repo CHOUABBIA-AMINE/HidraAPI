@@ -4975,6 +4975,66 @@ verify parent/tree/message/blobs and applicable CI creation/queue/start, then
 STOP. HAPI-596 remains NOT_IMPLEMENTED/IN_PROGRESS; B acceptance and C remain
 pending,594/595 closed. No engineering qualification or production/SITE claim.
 
+### HAPI-596 Package B — Full934 Workflow suspension and native actor fixture repair — 2026-10-28
+
+Owner Fail selects exact main6bfdd45e2517aadc6168c2877ba9c40e080016df,
+parent156479f8d335c3bec3cd4899b6942b54d88b4269,
+treedd7815e0e004a84305345a2e443f7288e5a9b88f.
+Full934/run40634440532 failed; Fast238/run40634440683 and
+Docs649/run40634440541 succeeded. Unit/architecture, static, API/dictionary and
+six PostgreSQL shards succeeded. Shard4/job122638035620 executed311 cases with
+zero failures,16 errors and zero skips:14 reach the real Workflow actor mismatch
+and two stop in publication execute's ambient synchronization check. The earlier
+candidate audit-window constraint failure is absent from this run's error summary;
+this is progress evidence, not full Package B acceptance.
+
+Exact repair message:
+`fix(custody): restore publication workflow lookup and actor fixture`.
+MODIFY exactly these four existing paths, zero CREATE/DELETE:
+
+- src/main/java/dz/sh/hidra/modules/custody/application/service/ProductRevisionPublicationApplicationService.java
+- src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/ProductRevisionPublicationPostgresIntegrationTest.java
+- .github/ci-test-inventory.json
+- doc/roadmap/TASKS_HPS-008.md
+
+NOT_SUPPORTED suspends the ordinary caller but Spring can initialize a new empty
+synchronization for its callback. Both execute and the private credential router
+correctly require no ambient synchronization. Inside only this callback, identify
+its new synchronization through DefaultTransactionStatus, require no active
+transaction and no registered callbacks, temporarily clear the empty scaffold,
+and restore it in finally for normal Spring cleanup/resumption. Never clear caller
+callbacks, relax the ordinary execute/router guards, mutate manager configuration
+or suspend an already protected execution. The pre-suspension protected-context
+check and issuer poisoning remain unchanged. The existing PostgreSQL case now
+retains and compares the caller's exact resource map and synchronization list
+after successful lookup and a throwing lookup, counts both suspend/resume pairs,
+and checks cleanup before exercising the existing poisoned-issuer negative.
+
+The publication fixture inherited a deliberately forged Jwt wrapper subject from
+native-boundary tests. Native admission re-verifies its raw token, but ordinary
+Workflow reads Authentication.getName() and correctly rejects forged-wrapper
+against the supplied real user ID. In publicationActor only, decode the actual
+native token with the configured native decoder, assert its subject equals the
+fixture user, and install that verified JwtAuthenticationToken. Keep the raw
+four-producer token/provenance and real Workflow human ownership checks. Do not
+change CurrentSecurityContext, Identity, Workflow, production permissions, negative
+assertions, schema, migrations, SQL templates, dictionary, final scalar guard,
+37/50 fences or500/750/250ms budgets. All28 cases and existing invocation IDs
+remain; only the publication test's source hash changes in the inventory.
+
+Local evidence:19 unchanged documentation validator self-tests PASS; the two
+changed Java sources parse with the available Java17 compiler (syntax only).
+Exact scope, original-byte preservation, unchanged test identities and one-hash
+inventory checks are required before publication. Maven compile cannot execute:
+exit127, mvn command not found. No Java21/Maven/Docker/PostgreSQL environment is
+provisioned under AGENTS11.1. Actual Spring suspension, native authentication,
+real Workflow round trip and PostgreSQL acceptance remain hosted CI obligations;
+source inspection is not their runtime proof. Publish with expected6bfdd45e,
+verify exact parent/tree/message/blobs/scope, observe applicable exact-SHA CI
+creation/queue/start, then STOP. HAPI-596 remains NOT_IMPLEMENTED/IN_PROGRESS;
+Package B acceptance, separately registered C and final acceptance remain pending.
+HAPI-594/595 stay closed; no dependent task, qualification, release or deployment.
+
 <a id="hapi-597"></a>
 ## HAPI-597 — Multi-product ownership/API compatibility qualification
 

@@ -1791,6 +1791,50 @@ and exact scope; it does not execute Java, Flyway, PostgreSQL or runtime OpenAPI
 Documentation CI on the exact new docs-only SHA is the remaining gate; observe
 startup after guarded publication and stop.
 
+
+
+### HAPI-599 Package A1 — pure-Java installed-unit identity and effective installation invariants — 2026-10-28
+
+**Registered bounded execution after owner Next.** Documentation CI #665 on
+`f3a30d18f5d2461fbc9a002e71d37dd1ddf67fa7` passed. This one
+existing HAPI-599 / HPR-P25-054A child package has exact message:
+`feat(topology): introduce installed-unit domain identity and effective installation invariants`.
+
+CREATE: `src/main/java/dz/sh/hidra/modules/topology/domain/model/InstalledUnit.java`,
+`src/main/java/dz/sh/hidra/modules/topology/domain/model/InstalledUnitInstallation.java`,
+`src/test/java/dz/sh/hidra/modules/topology/domain/model/InstalledUnitTest.java`,
+`src/test/java/dz/sh/hidra/modules/topology/domain/model/InstalledUnitInstallationTest.java`.
+MODIFY: `doc/roadmap/TASKS_HPS-006.md`,
+`.github/ci-test-inventory.json`. DELETE: none. Do not alter unrelated
+modules, existing migrations or frozen ROADMAP/PHASES status cells.
+
+**Domain scope.** Topology now represents a physical-unit id distinct from
+the topological Equipment position and optional Assets MaintainableAsset.
+Manufacturer Party/model/serial evidence is explicitly UNKNOWN, UNVERIFIED
+or VERIFIED, with provenance for known values. A supplied classification
+does not attest Party role, current eligibility, company ownership or
+engineering qualification; repeated serials do not merge two units.
+Immutable effective installation declarations contain unit/position/company,
+inclusive start/exclusive end, provenance, recorded time and revision. A
+candidate snapshot rejects duplicate installation identities and overlapping
+unit/single-position occupancy, preserving adjacent replacement history.
+Ten synthetic JUnit tests cover these invariants. Their two test classes
+are exact-source registered in the CI unit-architecture lane with fast
+selection. `baseline_seconds=0` for both is explicitly an **unmeasured
+scheduling placeholder**, not observed test runtime.
+
+**Not completed.** No persisted identity/history, atomic relocation or
+replacement, PostgreSQL temporal exclusion/lock/race protection, owner-backed
+manufacturer role/kind/company validation, protected Identity authorization,
+REST contract/OpenAPI or manufacturer curve data has been delivered.
+A1 is partial pure-Java domain implementation only; package A2 must
+register database and repository, B protected owner evidence, and C
+transport/qualification under separately selected exact messages and
+allowlists. HAPI-599 remains NOT_IMPLEMENTED/BLOCKED as an integrated
+workflow until those gates pass. No Flyway version is reserved. Static
+inventory and source shape can be checked before publication; exact-SHA
+Full/Fast/Docs acceptance is pending and SITE is not claimed.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

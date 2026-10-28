@@ -4089,6 +4089,90 @@ start it within this acceptance stage. Different-unit replacement, public Packag
 manufacturer-kind qualification, dependent tasks, frontend, simulation/P3, SITE,
 release and deployment remain separately pending.
 
+### HAPI-599 Package B — close writer equipment-type reference integrity registration — 2026-10-28
+
+**Owner Next; source review before runtime mutation.** Exact main
+`ce886b328e56f4c13780fd4b7d76f0f6a3dba53f` has Docs693/run `40753082049`
+SUCCESS. Its unchanged runtime retains independently accepted Full962/Fast262.
+Company evidence is accepted; no company-provider work is repeated. The remaining
+writer review finds a concrete unregistered schema requirement, rather than a CI
+failure or a missing local environment.
+
+V20261028_002 defines immutable unit `equipment_kind_id` as nonempty varchar80
+but has no equipment-type FK. HMR-054 retired legacy equipment-kind enum columns;
+current classification is `hidra_topology_equipment_type.id`, as already selected
+in this writer's registration. V20260929_001 constrains existing Equipment and
+EquipmentTypeVersion references, not the later installed-unit table. The accepted
+position helper004 locks equipment/facility, not equipment-type catalog rows.
+The writer requires SELECT-only catalog access and had reserved005 for receipts
+without explicitly registering the required existing-unit reference constraint.
+
+**Concrete race and chosen correction.** Registration of a standalone unit can
+read an unused type, then race a separate transaction deleting that type. ACCESS
+SHARE does not exclude ordinary row changes; an application existence/final check
+alone cannot retain the reference through physical commit. Granting type UPDATE
+just to obtain a stronger lock would violate the registered source privilege
+boundary. Do not create an unregistered helper or fabricate a type generation.
+Use the database's native owned-reference integrity instead. Before runtime work,
+make this additive schema requirement explicit in the existing005 scope.
+
+**This one corrective registration stage.** Exact message:
+`docs(topology): pin installed-unit equipment-type reference integrity`.
+CREATE/DELETE none; MODIFY only this phase, append-only. No SQL migration, unit,
+provider, writer or test source is created in this stage. This closes technical
+scope before changing an existing relation, following AGENTS file-scope controls;
+it does not implement or accept the protected writer.
+
+**Amendment to the next writer implementation, not a new package/provider.** Keep
+the exact nine CREATE/seven MODIFY allowlist and message
+`feat(topology): add protected installed-unit lifecycle operations`. In the already
+listed `V20261028_005__topology_installed_unit_protected_operations.sql`, add:
+
+```sql
+ALTER TABLE public.hidra_topology_installed_unit
+    ADD CONSTRAINT fk_installed_unit_equipment_type
+    FOREIGN KEY (equipment_kind_id)
+    REFERENCES public.hidra_topology_equipment_type(id)
+    ON UPDATE RESTRICT ON DELETE RESTRICT NOT DEFERRABLE;
+```
+
+The constraint is immediately validated, not NOT VALID or deferred. Existing
+orphan kinds must cause migration failure and explicit evidence review; no silent
+delete, inferred kind remap, manufactured catalog seed or history rewrite. Preserve
+all185 prior migration bytes. This is an owned Topology reference, not a cross-module
+FK, manufacturer-kind compatibility rule, ACTIVE-only eligibility policy or Assets
+ownership change. Existing domain evidence classifications remain unchanged.
+
+The protected adapter must verify the actual validated, non-deferrable FK identity,
+child/parent relation and key columns, RESTRICT actions and enabled native referential
+triggers, alongside its type catalog guards. Application comparisons still bind
+the unit's exact kind ID to the selected position's actual equipmentTypeId. Runtime
+credentials retain SELECT-only catalog access; the FK retains parent-key integrity
+for the owned write. No late lock, owner helper change or additional public API.
+
+Use only the already registered new lifecycle PostgreSQL suite for fresh-chain
+constraint validation, unknown-type rejection with SQLSTATE23503, referenced-type
+deletion/key-change rejection, both deletion/registration transaction orders and
+rollback. Verify the actual restricted publisher can insert a valid reference
+without type UPDATE/DELETE grants, and that disabling/substituting the FK or its
+native guards is rejected before disclosure/commit. No runtime result is claimed
+before those tests exist and hosted CI executes them.
+
+In the allowed ownership JSON, retain existing source evidence and add actual005
+constraint provenance to the unit relation as appropriate, plus the already planned
+receipt ownership entry. The genuine catalog/dictionary follow-up remains the same
+registered two-file refresh; capture new FK metadata from CI rather than inventing it.
+No separate type-provider implementation or additional preliminary stage is selected.
+
+**Available checks and next execution.** Confirmed current FK inventory/source
+columns and absence of005; documentation/link, append-only scope and whitespace
+checks precede guarded publication. No local PostgreSQL/Java execution or new case
+success is claimed for this one-file stage. Observe exact-SHA Docs startup and STOP.
+Next resumes the registered writer with this concrete005 requirement and accepted
+company contract. HAPI-599 remains NOT_IMPLEMENTED/BLOCKED; writer, public Package C,
+different-unit replacement, dependent tasks, qualification, release and deployment
+remain pending.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

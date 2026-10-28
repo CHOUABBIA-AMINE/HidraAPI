@@ -5358,6 +5358,28 @@ then observe applicable exact-SHA Full/Fast/Docs queue/start and STOP. C remains
 pending independent acceptance; HAPI-596 NOT_IMPLEMENTED/IN_PROGRESS is unchanged.
 No HAPI-597, final acceptance, engineering qualification, release or deployment.
 
+### HAPI-596 Package C — Full939 request-builder shadowing repair — 2026-10-28
+
+Owner Fail selects responsible C feedback on exact main384e90c3f7ce93649638fae330b650ee4be152d1.
+Full939/run40652457727 API contract/dictionary and static lanes passed. Test lanes
+failed compilation before execution: native HTTP test line911 resolves get to
+its local get(String, UUID) owner helper instead of Spring's request builder.
+Fully qualify that single MockMvcRequestBuilders.get call, preserving the real
+foreign-company/unknown-target denial assertions and configured security.
+Inspect remaining request-builder calls for the same collision; send already
+qualifies request. No production, dependency, migration or generated artifact change.
+
+Exact repair message: `fix(custody): qualify publication HTTP denial request builder`.
+Allowed MODIFY only ProductRevisionPublicationNativeHttpPostgresIntegrationTest,
+.github/ci-test-inventory.json and this phase; zero CREATE/DELETE. Refresh only
+the modified class source hash; retain every case, lane and timing baseline.
+Run source inventory, documentation, offline OpenAPI and whitespace checks.
+Maven is unavailable locally; Java21 compilation and native HTTP/PostgreSQL
+execution remain pending hosted CI. Prior compilation failure is not test success.
+Publish with expected384e90c guard, verify parent/tree/message/three-path blobs,
+confirm applicable exact-SHA Full/Fast/Docs queue/start, then STOP. C acceptance
+and HAPI-596 final acceptance remain open; HAPI-597 and all successors unselected.
+
 <a id="hapi-597"></a>
 ## HAPI-597 — Multi-product ownership/API compatibility qualification
 

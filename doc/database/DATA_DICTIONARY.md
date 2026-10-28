@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `846edc515748b07df8aaf7c4cc006dff5ee45ee4`
+Captured source SHA: `3d56a99ba2f3ddcce32354e8f757ca2cc03f63d7`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `b224960330372f46f4a2c6012a1473d779188092314b5f393125682eb330097d`.
-Migrations: 184; JPA mappings: 470; catalog relations: 531; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `cc3a447e4bf313777b59a85124f57e2d244973ee7ff53a9da24155dc4a94b74c`.
+Migrations: 185; JPA mappings: 470; catalog relations: 531; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -27212,6 +27212,7 @@ Topology-owned equipment state; legacy_equipment_kind is retained historical dat
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261006_009__hmr_054_equipment_catalog_and_attachments.sql](../../src/main/resources/db/migration/V20261006_009__hmr_054_equipment_catalog_and_attachments.sql)
 - Migration mention (not inferred introduction): [V20261028_002__topology_installed_unit_identity_and_history.sql](../../src/main/resources/db/migration/V20261028_002__topology_installed_unit_identity_and_history.sql)
+- Migration mention (not inferred introduction): [V20261028_004__topology_installed_unit_position_owner_lock.sql](../../src/main/resources/db/migration/V20261028_004__topology_installed_unit_position_owner_lock.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -27470,6 +27471,7 @@ Persisted FacilityJpaEntity state; semantic authority remains with topology.
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261006_009__hmr_054_equipment_catalog_and_attachments.sql](../../src/main/resources/db/migration/V20261006_009__hmr_054_equipment_catalog_and_attachments.sql)
 - Migration mention (not inferred introduction): [V20261018_002__p25_topology_facility_owner_generations.sql](../../src/main/resources/db/migration/V20261018_002__p25_topology_facility_owner_generations.sql)
+- Migration mention (not inferred introduction): [V20261028_004__topology_installed_unit_position_owner_lock.sql](../../src/main/resources/db/migration/V20261028_004__topology_installed_unit_position_owner_lock.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

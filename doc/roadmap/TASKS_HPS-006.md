@@ -3361,6 +3361,48 @@ Green code/catalog and independent exact-case review must precede protected atom
 writer registration. HAPI-599 stays NOT_IMPLEMENTED/BLOCKED pending integrated B/C;
 public API, HAPI-600/601, simulation/P3, frontend, SITE, release/deployment remain unselected.
 
+### HAPI-599 Package B — position ownership physical dictionary refresh — 2026-10-28
+
+Owner Fail follows the registered catalog refresh on exact main
+`3d56a99ba2f3ddcce32354e8f757ca2cc03f63d7`. Full958/run `40707378238`,
+attempt1, failed only its API/dictionary lane and dependent Full gate after
+successful real schema capture. Static, unit/architecture and all ten PostgreSQL
+shards passed; Fast259 and Docs685 also passed. No runtime repair, case skip or
+check waiver is indicated by these results. The stale dictionary failure was
+explicitly anticipated by the preceding CI-first implementation registration.
+
+Exact message: `docs(topology): refresh installed-unit position ownership physical dictionary`.
+CREATE/DELETE none; MODIFY only `doc/database/DATA_DICTIONARY.md` and this phase.
+The same-run schema artifact `12823523667` is named for the exact source/run/attempt;
+its downloaded ZIP SHA-256 matches GitHub metadata:
+`1a2d8e82da1fe4d8320ec5ffe88bfa66aeec52c6dd67818e6ecb8168f6b7aa3b`.
+The unchanged generator validates the complete current migration/JPA source bundle
+against the actual captured document: PostgreSQL `16.15 (Debian 16.15-1.pgdg13+2)`,
+185 migrations,470 mappings,531 relations, zero unresolved owners.
+Source bundle SHA-256 `cc3a447e4bf313777b59a85124f57e2d244973ee7ff53a9da24155dc4a94b74c`;
+catalog SHA-256 `dab338588d135ad39b80b9ea230a5cfe2b77cdcb5ce804de2bbd8a44fa22e1e3`;
+render SHA-256 `e6f6d5cb926e419f6e8c2739d3c1d5fc24b53211eaf2401ff8f40b92f25bcb6a`.
+The locally regenerated Markdown matches the retained CI render byte-for-byte.
+Reviewed diff is capture/source provenance, migration count184 to185 and a mention
+of V20261028_004 under its equipment/facility relations; all physical relation
+metadata is otherwise unchanged. No catalog fact was inferred or synthesized.
+
+The strict generator comparison passes against the refreshed dictionary with
+reviewed_dictionary_checked=true. All18 generator self-tests, documentation/link
+validation and whitespace checks pass before publication. No local PostgreSQL/JUnit execution is claimed. All production,
+test, migration, ownership, generator and workflow bytes are preserved in this
+refresh. Strict dictionary equality remains mandatory; Full958 remains a failed
+historical run and does not become accepted by rewriting its receipt.
+
+After guarded publication observe exact-SHA Docs startup and stop. This two-file
+documentation-only scope is excluded from automatic Full CI; connected GitHub tools
+provide no workflow dispatch operation. Manually run HidraAPI CI on main using
+verification_mode=development, serial_oracle=false, dependency_cache=cached.
+Position ownership and integrated Package B acceptance remain open until new
+exact-head Full success and independent case/evidence review. HAPI-599 remains
+NOT_IMPLEMENTED/BLOCKED; no protected atomic writer, Package C, SITE, release or
+deployment is selected by this repair.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

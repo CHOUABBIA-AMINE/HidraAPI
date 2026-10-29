@@ -1568,7 +1568,11 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
     }
     private org.springframework.test.web.servlet.MvcResult installedProblem(String bearer,InstalledUnitLifecycleUseCase.Command command,
             int expectedStatus,String code,String... privateValues) throws Exception {
-        var result=installedHttp(bearer,command).andExpect(status().is(expectedStatus)).andExpect(jsonPath("$.code").value(code))
+        var result=installedHttp(bearer,command).andDo(actual->{
+            // Private CI diagnostics only; the real status/code and nondisclosure assertions stay mandatory.
+            if(actual.getResponse().getStatus()!=expectedStatus && actual.getResolvedException()!=null)
+                actual.getResolvedException().printStackTrace();
+        }).andExpect(status().is(expectedStatus)).andExpect(jsonPath("$.code").value(code))
             .andExpect(jsonPath("$.unit").doesNotExist()).andExpect(jsonPath("$.replacementUnit").doesNotExist())
             .andExpect(jsonPath("$.history").doesNotExist()).andExpect(jsonPath("$.replayed").doesNotExist())
             .andExpect(jsonPath("$.cause").doesNotExist()).andExpect(jsonPath("$.trace").doesNotExist()).andReturn();
@@ -1716,7 +1720,7 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
         }
         unchangedReplacement(r,before);failures.clear();
         var entered=new CountDownLatch(1);var release=new CountDownLatch(1);var held=new AtomicBoolean();var worker=Executors.newSingleThreadExecutor();
-        doAnswer(inv->{Object result=inv.callRealMethod();var c=(InstalledUnitLifecycleUseCase.Command)ReflectionTestUtils.getField(inv.getArgument(0),"command");
+        doAnswer(inv->{Object result=inv.callRealMethod();var c=(InstalledUnitLifecycleUseCase.Command)ReflectionTestUtils.getField((Object)inv.getArgument(0),"command");
             if(c.equals(history) && held.compareAndSet(false,true)) {
                 entered.countDown();if(!release.await(5,TimeUnit.SECONDS))throw new AssertionError("HTTP reader/writer handshake exceeded bounded test window");
             }
@@ -1738,6 +1742,7 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
     @Test void installedUnitHttpRealFinalSourceFacilityRoleAndTimeRejectionsRollBack() throws Exception {
         for(String fault:List.of("source","facility","role","time")) {
             var setup=installedHttpReplacementFixture();var r=setup.replacement();String bearer=setup.bearer(),before=effects();var rejected=new AtomicBoolean();
+            clearInvocations(protectedStore); // Count only this faulted request, excluding three genuine setup writes.
             doAnswer(inv->{inv.callRealMethod();
                 if(fault.equals("time")) {
                     Object ticket=inv.getArgument(0);var origin=(dz.sh.hidra.modules.topology.application.port.out.ProtectedInstalledUnitRepositoryPort.Origin)ReflectionTestUtils.getField(ticket,"origin");
@@ -1760,6 +1765,7 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
     @Test void installedUnitHttpLostCommitAcknowledgementIsIndeterminateAndRetryIsExactReplay() throws Exception {
         var setup=installedHttpReplacementFixture();var r=setup.replacement();String bearer=setup.bearer();
         long installations=count("installed_unit_installation"),events=count("installed_unit_installation_event"),receipts=count("installed_unit_operation_request");
+        clearInvocations(protectedStore); // Preserve the exact one-final-guard assertion for the selected request.
         var armed=new AtomicReference<Thread>();var committedThenLost=new AtomicBoolean();
         doAnswer(inv->{inv.callRealMethod();armed.set(Thread.currentThread());return null;}).when(protectedStore).freeze(any(),any(),anyList());
         doAnswer(inv->{

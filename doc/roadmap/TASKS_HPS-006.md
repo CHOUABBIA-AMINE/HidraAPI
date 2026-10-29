@@ -6719,6 +6719,58 @@ frozen statuses unchanged. Any actual runtime source defect must receive a preci
 registered repair rather than relaxed expectations. HAPI-600/601, frontend,
 simulation/P3, operator/SITE approval, release and deployment remain unselected.
 
+### HAPI-599 Package C — qualification fixture repair and conflict diagnostics — 2026-10-29
+
+**Exact-head failure and bounded registration.** Owner Fail refreshes main
+ a0c4cbf4bbf5c01a90ca73060d0cf510581a65ab, tree
+976e587d1ac8562060c6a08ad7ec48ad7c701c59. Full/run40896984366 fails
+PostgreSQL shard6/job123528695153:162 cases, four failures, zero errors/skips.
+Fast/run40896984651 and Docs/run40896984749 pass; unit/architecture, static,
+API/dictionary and the other nine PostgreSQL shards pass. The aggregate fails
+because required exact-case evidence is incomplete; this is not an accepted Full.
+Diagnostic artifact12907288870 ZIP SHA256
+7e282d95aee8cbf1d56bcabd4659d8660265f6301815cc74dac8805fb7f80f1c
+was downloaded and digest-verified against the actual job upload before XML review.
+Execute one test-only repair message
+`test(topology): repair HTTP qualification fixture instrumentation`.
+CREATE/DELETE none; MODIFY exactly the lifecycle PostgreSQL test, its inventory
+source hash and this append-only phase. No production or workflow mutation.
+
+**Three diagnosed test instrumentation repairs.** Both final-fault and lost-commit
+cases expected exactly one finalGuard invocation but counted four: the three genuine
+HTTP setup writes plus the selected request. Clear only recorded storage-spy
+invocations after setup, preserving real delegation and the exact one-call assertion,
+final rejection/commit visitation and all rollback/replay assertions. No atLeastOnce
+substitution or altered runtime guard is introduced.
+
+The reader/writer test timed out before its entered latch. Its generic
+inv.getArgument(0) supplied directly to overloaded ReflectionTestUtils.getField
+selects the Class overload rather than Object, introducing a Ticket-to-Class cast.
+Pass an explicitly typed Object to select instance-field access. The real observe
+call, current command equality, native fences, SQLSTATE55P03, complete history result
+and1000ms work cap remain mandatory. The5second handoff timeout is unchanged.
+
+**Fourth failure remains unresolved pending private evidence.** The changed-second-
+unit replay-conflict request returned503 instead of required409. The raw XML/logs
+contain no underlying resolved exception, so there is no supported production fix
+yet. Preserve exact409 CONFLICT and all nondisclosure/no-effects assertions; do not
+accept503 as conflict. On an HTTP status mismatch only, the helper now prints the
+actual MockMvc resolved exception and private cause chain into CI diagnostics.
+Nothing is added to the HTTP response. This stage repairs three diagnosed fixture
+issues and instruments the fourth; it does not claim all four causes are repaired.
+If it persists, recover the exact new cause and register its bounded responsible
+repair before changing production source or advancing acceptance.
+
+**Validation and publication hold.** All48 required cases and the original41 method
+bodies remain, inventory retains509 classes/505 active/3,806 required cases and ten
+unchanged shards. Java syntax/AST preservation, inventory, documentation and whitespace
+checks are static evidence only. Focused Maven is attempted with installed tools;
+mvn is unavailable, so no local runtime pass is claimed. Guarded direct-main publish
+uses expected a0c4cbf, verifies exact blobs/tree/parent/three-file scope, observes new
+Full/Fast/Docs creation/startup and stops without awaiting completion. A/B acceptance
+remains; C, integrated HAPI-599, release and deployment holds remain. No downstream
+stage is selected. A green rerun still requires independent full-matrix review.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

@@ -1272,11 +1272,24 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
             var secondRegister=register(replacement);
             installedHttp(actor,secondRegister).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
             String replacementSourceInstallation=id();
-            installedHttp(actor,record(replacement,p,replacementSourceInstallation))
+            // First occupied p during [START, START+10); that history remains immutable.
+            // The second unit may occupy p only from the first vacancy boundary.
+            var secondPlacement=new InstalledUnitLifecycleUseCase.Command(
+                    InstalledUnitLifecycleUseCase.Operation.RECORD_INSTALLATION,
+                    id(),COMPANY,replacement.id(),replacementSourceInstallation,null,
+                    null,pos(p),null,START.plusSeconds(10),null,
+                    "synthetic HTTP occupancy after relocation",0);
+            installedHttp(actor,secondPlacement)
                     .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
             InstalledUnit third=unit(p);
             installedHttp(actor,register(third)).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
-            var exchange=replace(replacement,third,p,replacementSourceInstallation);
+            // Replacement closes the second occupancy at +20 and opens the third at +20.
+            // It does not rewrite either earlier historical placement.
+            var exchange=new InstalledUnitLifecycleUseCase.Command(
+                    InstalledUnitLifecycleUseCase.Operation.REPLACE,id(),COMPANY,
+                    replacement.id(),replacementSourceInstallation,id(),pos(p),pos(p),
+                    null,START.plusSeconds(20),START.plusSeconds(20),
+                    "synthetic HTTP replacement provenance",1,third.id());
             installedHttp(actor,exchange).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
                     .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.replacementUnit.id").value(third.id()));
             String after=effects();

@@ -6378,6 +6378,58 @@ startup and STOP. HAPI-599 remains NOT_IMPLEMENTED/BLOCKED pending all native
 HTTP test cases and full evidence success. HAPI-600/601, P3 and deployment
 remain unselected.
 
+
+### HAPI-599 Package C — correct overlapping synthetic HTTP occupancy chronology — 2026-10-29
+
+**Owner Fail; same bounded stage.** Refreshed main `fb30d20515e73b9656917916710193f2bec7c943`
+(tree `456485bd2797ef58377ce813cf900600c10477ae`), Full CI #978/run 40883317392
+FAILED; Fast #276 and Documentation #715 SUCCEEDED on this exact SHA.
+Full CI unit/architecture, static, API-contract/dictionary and PostgreSQL
+shards 0–5 and 7–9 succeeded. Shard 6 executed 155 cases and reported one
+failure, zero errors and zero skips. The three newly added bearer/native
+HTTP tests compile; the native HTTP lifecycle test fails at line 1276:
+expected 200, received 503. The other two HTTP tests pass.
+The full evidence gate failed because shard 6 failed.
+
+**Root-cause evidence and bounded correction.** The failing
+`RECORD_INSTALLATION` call reuses `record(replacement,p,...)`, which
+starts the replacement source installation at `START`. The first
+installed unit already occupied that exact position in
+`[START, START+10 seconds)`, prior to relocation.
+`InstalledUnitInstallation` uses start-inclusive, end-exclusive
+nonoverlap, and `JdbcProtectedInstalledUnitRepositoryAdapter` verifies
+the migrated GiST exclusion constraint
+`ex_installed_unit_effective_position`. Reusing the earlier timestamp
+is not an eligible positive fixture. Preserve the database constraint
+and protected native checks rather than weakening them.
+
+**Registered one-stage test correction.** Exact commit message:
+`test(topology): correct native HTTP occupancy chronology`.
+MODIFY only:
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedInstalledUnitLifecyclePostgresIntegrationTest.java`
+  — in the one new native HTTP lifecycle test, place the second unit at
+  `START+10s` (the first position's vacancy boundary), and replace it at
+  `START+20s`; the first position is occupied on `[0,10)`, the second
+  on `[10,20)`, and the final unit on `[20,+infinity)`. Keep the existing
+  shared `record` and `replace` helpers unchanged for all other tests.
+- `.github/ci-test-inventory.json` — update only that existing
+  test class's exact source SHA256 from
+  `8a9a6cf77ab4b0b4c6b00220b8631280f29f0bc155b1c4e2e371d3b1fa4eace6`
+  to `2538122fc6799f6fad204795239ff29ddfb557f18a4ab59c1653e2b7e39509bb`.
+- `doc/roadmap/TASKS_HPS-006.md` — append this evidence and scope record.
+
+CREATE/DELETE none. Preserve all 41 native fixture tests, 509 registered
+test classes, ten PostgreSQL shards, existing test method names, the
+other two passing HTTP cases, shared fixture helpers, production
+Domain/Application/adapters, per-resource Identity authority, revocation,
+authorization, rollback, database schema/Flyway, HTTP contracts, scripts
+and CI workflows. This chronology is synthetic test data, not a
+calibration or historical production-data adjustment. Static source and
+inventory checks do not establish a Java/PostgreSQL pass; GitHub CI must
+validate runtime acceptance. After guarded publication observe exact-SHA
+workflow startup and STOP. Keep HAPI-599 NOT_IMPLEMENTED/BLOCKED pending
+full evidence success; do not advance HAPI-600/601 or P3.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

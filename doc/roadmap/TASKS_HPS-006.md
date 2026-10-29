@@ -4750,6 +4750,106 @@ passes, independently review its complete retained evidence before Package B
 acceptance or another registered stage. SITE, frontend, simulation/P3, release and
 deployment remain unselected.
 
+### HAPI-599 Package B — protected installed-unit lifecycle acceptance — 2026-10-29
+
+**Owner Next; exact-head evidence.** Main
+`b91e1488aaefb828ca9ea4a719e553516dc26540` has manually dispatched Full969/run
+`40837033975` and Docs701/run `40836544519` completed SUCCESS. All ten PostgreSQL
+shards, Java21 unit/architecture, static, API/dictionary and Full gate succeeded.
+Development mode, attempt1, cached dependencies and serial_oracle=false are explicit;
+the separate serial diagnostic is skipped by policy, not a skipped required test.
+release_eligible=false, optimized_adoption_eligible=false and same_run_equivalence=false
+remain explicit. No audit, industrial performance, release or deployment acceptance.
+Fast268 passed on runtime/test parent d8e3f65; the dictionary-only head has no
+applicable Fast push trigger. Full969 independently executes the complete required
+unit/architecture partition on the corrected exact SHA; no missing Fast run is
+fabricated or borrowed as an exact-head receipt.
+
+**Independent retained-evidence review.** Downloaded same-run/attempt1 full bundle
+artifact12880489832. ZIP SHA256 matches GitHub metadata:
+a74f6c2e0a4407ab08a27352926568ba2fb15ad1ca2a0427302437641591e174.
+The unchanged full-evidence aggregator reproduces gate.json byte-for-byte against
+current source/inventory, checking all507 retained file hashes, source/run/attempt,
+required lane membership, exact raw class/case identities and current/base API/
+dictionary provenance. Reproduced gate SHA256
+e78f99390b22f3baff5ad2bdb51ba36344aea2edfdfefad10e924b68fd6edb2d.
+All500 active classes/3,739 exact cases reconcile with zero failures/errors/skips.
+Four approved historical exclusions, ten required shards and all timing/classification
+baselines remain unchanged. No unrestricted serial equivalence is claimed.
+
+Focused actual raw reports, all zero failures/errors/skips:
+
+- ProtectedInstalledUnitLifecyclePostgresIntegrationTest:23 cases,61.476s suite total.
+- ProtectedInstalledUnitAdmissionCoordinatorTest:9 cases; InstalledUnitLifecycleApplicationServiceTest:4 cases.
+- ProtectedExecutionBudgetPropertiesTest:9 cases; ProtectedTransactionExecutorTest:54 cases.
+- TopologyInstalledUnitCompanyEvidencePostgresIntegrationTest:28 cases.
+- TopologyInstalledUnitManufacturerEvidencePostgresIntegrationTest:16 cases.
+- InstalledUnitPositionOwnershipPostgresIntegrationTest:23 cases.
+- ProtectedTopologyInstalledUnitAuthorizationPostgresIntegrationTest:19 cases.
+
+The lifecycle suite includes every seven-operation path through genuine native
+LOCAL/LDAP/AD/OIDC producers, same-unit atomic relocation, exact replay, native
+expiry, revoked/scoped authority, current company/manufacturer/position evidence,
+constraint/privilege/trigger failures, immutable history, stale/conflicting commands,
+source/destination overlap rollback, wrong final lock mode, both equipment-kind
+race orders and thread/suspension/savepoint poisoning. The repaired post-freeze
+role/generation cases require false from the actual final scalar guard and unchanged
+owned effects; isolated administrative connections do not bypass the production
+resource-map guard. Suite totals are not per-operation latency percentiles.
+
+**Strict physical/API evidence.** Same-run receipt is checked=true on b91e148:
+PostgreSQL16.15,186 migrations,470 JPA mappings,532 relations, zero unresolved owners.
+Source bundle SHA256 efd5680512a4a8627dfc4ea5ae27a1725089963f7bf5f646079f6d3699383ec4;
+catalog SHA256 2386787886111362e489f1bb8618f00a735590823912d3eeeda183ae09abcf9a;
+checked render SHA256 2bc2a682ed748585cd3f8cd2ed0a1b5d397c2513955e5503288dca745300fe60.
+The reviewed dictionary's real d8e3f65 capture remains truthful; the unchanged
+comparison ignores only its validated capture-source line. API compatibility passed
+against base98d77d88fc0551826427d32bb96ffc835bf27545. Current API SHA256
+33d2fe80e5eb3c9d9d7b9a6f7ff47bec55c23a56a30bb78d4164829c8e53c3be;
+base API SHA256 0b0e2cb9b489ba53dc64fe08e0a195fbdab02a19ed066c2b7b0eb3370a3a7676.
+No installed-unit HTTP routes exist yet; passing existing API compatibility does
+not invent Package C delivery.
+
+**Bounded acceptance and hold update.** Accept the protected writer and its owner
+composition for the seven implemented backend operations in the tested development
+scope. Clear its implementation/runtime/catalog verification hold, including the
+two-stage CI-first repair and genuine dictionary follow-up. Preserve all failed
+historical runs and diagnostic limits; no claim that a passing run proves permanent
+stability. Existing Package A and independently accepted owner contributions remain
+accepted and are not repeated. The installed-unit work budget remains independently
+bounded/configurable, default1000ms, with native authority expiry and all final
+checks unchanged; no operational SLA follows from this configuration.
+
+This accepts same-unit relocation, not atomic replacement by another unit, public
+REST/browser qualification, manufacturer-to-kind engineering compatibility, station
+configuration/incidence, Assets aggregate ownership or manufacturer characteristic
+editing. HAPI-599 integrated NOT_IMPLEMENTED/BLOCKED remains in the frozen registry
+pending remaining replacement/API qualification; the bounded writer is no longer
+CI-blocked. This acceptance does not mark HAPI-600/601 or any dependent task complete.
+Release/publication and deployment remain separately held and unselected.
+
+**This one selected acceptance commit.** Exact message:
+`docs(topology): accept protected installed-unit lifecycle operations`.
+CREATE/DELETE none; MODIFY only this phase, append-only. Independent bundle/gate
+reproduction, documentation/link, scope and whitespace checks precede guarded
+publication. No local Maven/Java/PostgreSQL rerun is claimed. Publish verified
+parent/tree/blob to main with expected-head guard, observe applicable exact-SHA
+Docs creation/start and STOP. Documentation-only acceptance adds no runtime drift.
+
+**Next registered stage, NOT EXECUTED.** Exact message:
+`docs(topology): register installed-unit API and replacement preflight`.
+CREATE/DELETE none; MODIFY only this phase. Re-read current owner policy, public
+contracts and accepted seven-operation source. Determine the remaining atomic
+replacement descriptor/permission/transaction obligation before exposing an HTTP
+operation: RELOCATE's single unitId cannot authorize replacing a different unit,
+and separate close/install requests cannot claim atomic replacement. Register exact
+candidate contract/adapter/DTO/controller/test/migration scope only from that review.
+Reconcile Package C's typed current/history/replay/error/company-scope requirements
+with actual runtime seams and define the bounded execution sequence before code.
+Do not implement an eighth operation, fabricate an owner contract or repeat accepted
+writer work in this preflight. Other tasks, frontend, simulation/P3, SITE, release
+and deployment remain unselected.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

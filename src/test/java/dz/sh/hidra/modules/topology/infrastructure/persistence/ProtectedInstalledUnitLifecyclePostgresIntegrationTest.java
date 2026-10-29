@@ -1240,6 +1240,14 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
         return installedHttp(installedBearer(actor,command),command);
     }
 
+    private org.springframework.test.web.servlet.ResultActions installedHttpWithCurrentGrant(
+            Fixture actor,String bearer,InstalledUnitLifecycleUseCase.Command command) throws Exception {
+        // Do not mint redundant temporal provenance for every request. The real
+        // security filter decodes the same bearer, and the owner rechecks native scope.
+        authorize(actor,command);
+        return installedHttp(bearer,command);
+    }
+
     @Test void installedUnitHttpLifecycleCrossesRealBearerSecurityAndNativeFences() throws Exception {
         for(String type:List.of("LOCAL","LDAP","ACTIVE_DIRECTORY","OIDC")) {
             cleanEvidence();
@@ -1247,30 +1255,33 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
             Place p=place(),q=other(p);
             InstalledUnit first=unit(p),replacement=unit(p);
             var reg=register(first);
-            installedHttp(actor,reg).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+            // One accepted native bearer per actor; reuse it for sequential HTTP requests.
+            // The owner's current resource-scoped authorization is still checked per command.
+            String bearer=installedBearer(actor,reg);
+            installedHttpWithCurrentGrant(actor,bearer,reg).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
                     .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.unit.id").value(first.id()));
-            installedHttp(actor,reg).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+            installedHttpWithCurrentGrant(actor,bearer,reg).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
                     .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.replayed").value(true));
-            installedHttp(actor,read(first)).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
+            installedHttpWithCurrentGrant(actor,bearer,read(first)).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
             String firstInstallation=id(),movedInstallation=id();
             var placed=record(first,p,firstInstallation);
-            installedHttp(actor,placed).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
+            installedHttpWithCurrentGrant(actor,bearer,placed).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
             for(var operation:List.of(InstalledUnitLifecycleUseCase.Operation.READ_INSTALLATION,
                     InstalledUnitLifecycleUseCase.Operation.READ_HISTORY)) {
                 var c=new InstalledUnitLifecycleUseCase.Command(operation,null,COMPANY,first.id(),
                     firstInstallation,null,pos(p),null,null,null,null,null,0);
-                installedHttp(actor,c).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
+                installedHttpWithCurrentGrant(actor,bearer,c).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
             }
             var move=new InstalledUnitLifecycleUseCase.Command(InstalledUnitLifecycleUseCase.Operation.RELOCATE,
                     id(),COMPANY,first.id(),firstInstallation,movedInstallation,pos(p),pos(q),null,
                     START.plusSeconds(10),START.plusSeconds(10),"synthetic HTTP relocation",1);
-            installedHttp(actor,move).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
+            installedHttpWithCurrentGrant(actor,bearer,move).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
             var close=new InstalledUnitLifecycleUseCase.Command(InstalledUnitLifecycleUseCase.Operation.CLOSE_INSTALLATION,
                     id(),COMPANY,first.id(),movedInstallation,null,pos(q),null,null,null,START.plusSeconds(20),null,1);
-            installedHttp(actor,close).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
+            installedHttpWithCurrentGrant(actor,bearer,close).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
 
             var secondRegister=register(replacement);
-            installedHttp(actor,secondRegister).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
+            installedHttpWithCurrentGrant(actor,bearer,secondRegister).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
             String replacementSourceInstallation=id();
             // First occupied p during [START, START+10); that history remains immutable.
             // The second unit may occupy p only from the first vacancy boundary.
@@ -1279,10 +1290,10 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
                     id(),COMPANY,replacement.id(),replacementSourceInstallation,null,
                     null,pos(p),null,START.plusSeconds(10),null,
                     "synthetic HTTP occupancy after relocation",0);
-            installedHttp(actor,secondPlacement)
+            installedHttpWithCurrentGrant(actor,bearer,secondPlacement)
                     .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
             InstalledUnit third=unit(p);
-            installedHttp(actor,register(third)).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
+            installedHttpWithCurrentGrant(actor,bearer,register(third)).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
             // Replacement closes the second occupancy at +20 and opens the third at +20.
             // It does not rewrite either earlier historical placement.
             var exchange=new InstalledUnitLifecycleUseCase.Command(
@@ -1290,10 +1301,10 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
                     replacement.id(),replacementSourceInstallation,id(),pos(p),pos(p),
                     null,START.plusSeconds(20),START.plusSeconds(20),
                     "synthetic HTTP replacement provenance",1,third.id());
-            installedHttp(actor,exchange).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+            installedHttpWithCurrentGrant(actor,bearer,exchange).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
                     .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.replacementUnit.id").value(third.id()));
             String after=effects();
-            installedHttp(actor,exchange).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+            installedHttpWithCurrentGrant(actor,bearer,exchange).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
                     .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.replayed").value(true));
             assertThat(effects()).isEqualTo(after);
             assertThat(admin().queryForObject("SELECT count(*) FROM public.hidra_topology_installed_unit_operation_request WHERE request_id=?",Long.class,exchange.requestId())).isEqualTo(1);

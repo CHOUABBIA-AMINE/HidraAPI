@@ -6430,6 +6430,55 @@ validate runtime acceptance. After guarded publication observe exact-SHA
 workflow startup and STOP. Keep HAPI-599 NOT_IMPLEMENTED/BLOCKED pending
 full evidence success; do not advance HAPI-600/601 or P3.
 
+
+### HAPI-599 Package C — reuse genuine HTTP bearer to keep temporal census bounded — 2026-10-29
+
+**Owner Fail; exact-source gate.** Main `b8032c05b9576fe3ca9dff290019cee5dea12536`, tree `3a696d9784cbb3f2c4cf024e6eba08dc6aa78998`.
+Full CI #979/run 40885609484 FAILED; Fast Feedback #277 and
+Documentation #716 SUCCEEDED on this SHA. Full CI static, API/dictionary,
+Java unit/architecture and PostgreSQL shards 0–5, 7–9 passed.
+PostgreSQL shard 6: 155 cases, 0 failures, 1 error, 0 skips.
+`atomicReplacementCommitsAndReplaysThroughAllFourGenuineNativeProducers`
+failed `InstalledUnitLifecycleFailure UNAVAILABLE` because
+`JdbcIdentityTemporalEventCollector.sampleAndCompile` raised
+`Temporal census exceeds reviewed bound`.
+
+**Evidence-based cause.** The Identity collector samples current and
+retained login sessions and operation bindings (the latter has two
+temporal projections), among other authority timelines; its accepted
+limit is 1024 entries. The added genuine native HTTP lifecycle test
+called `installedBearer(actor,command)` on every HTTP step,
+re-authenticating the same actor and creating redundant permanent
+temporal evidence. Existing `cleanEvidence` deliberately preserves
+protected authentication provenance and may not erase it to make CI
+pass. The new HTTP lifecycle test passed on CI #979, but its extra
+session/binding churn preceded the failing older native test.
+
+**One bounded registered test-fixture repair.** Exact commit message:
+`test(topology): reuse native HTTP bearer across lifecycle`.
+MODIFY only:
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedInstalledUnitLifecyclePostgresIntegrationTest.java`:
+  mint one accepted native bearer per actor in the four-producer HTTP
+  lifecycle and reuse it for sequential HTTP calls; individually
+  authorize each command's current scoped grants, pass the same genuine
+  bearer through the actual Spring Security filters, and retain all
+  owner native identity, transaction, rollback and replay checks.
+  The two other HTTP cases and existing native helpers stay unchanged.
+- `.github/ci-test-inventory.json`:
+  change only this unchanged 41-case class's exact SHA256 from
+  `2538122fc6799f6fad204795239ff29ddfb557f18a4ab59c1653e2b7e39509bb` to `753c4c96284136e52b30c7148baddb137fb272545bc525c00f626c4743213847`.
+- `doc/roadmap/TASKS_HPS-006.md`: append CI and repair evidence.
+
+CREATE/DELETE none. Preserve the collector's 1024-entry bound, retained
+authentication provenance, all 41 test cases, 509 classes, 10 shards,
+permission revocation/deny semantics, schema, production Domain,
+Application and adapters, workflows and timing. No local Maven/Docker
+proof is claimed; exact source, permission flow and SHA256 checks are
+pre-publication static verification only. Guarded main publication
+must be followed by exact-SHA workflow startup verification and STOP.
+HAPI-599 remains NOT_IMPLEMENTED/BLOCKED until Full CI and native
+lifecycle evidence pass; HAPI-600/601, P3 and deployment unselected.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

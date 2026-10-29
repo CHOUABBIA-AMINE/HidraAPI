@@ -5954,6 +5954,108 @@ No HAPI-599 status closure, HAPI-600/601, frontend,
 simulation/P3, production/SITE or deployment work follows
 automatically from this source stage.
 
+### HAPI-599 Package C — restore REST DTO boundary and negative test verification — 2026-10-29
+
+**Owner Fail; exact-head verification.** Main
+`186b6aa937cf3192dc7513caa7c38c6b3b094ee6` is the
+preceding Package C implementation SHA. Full #973/run
+`40871493395` and Fast #272/run `40871493349` both
+FAILED; Documentation #710/run `40871493422` SUCCEEDED.
+In Full #973 static validation and **all ten PostgreSQL shards**
+SUCCEEDED. Java21 unit/architecture, API-contract canonical
+OpenAPI comparison and the dependent Full gate FAILED.
+No accepted replacement-writer regression was reported.
+The API job reached runtime OpenAPI generation but stops at
+`Runtime OpenAPI differs from canonical snapshot`; consequently
+its later physical dictionary/compatibility artifact is not
+completed. That is an independent outstanding generated
+snapshot follow-up, not evidence of physical dictionary drift.
+
+**Source-linked failures, scope, correction.**
+Unit/Fast raw logs show HRA-102
+`ForensicRemediationClosureTest.directWireDomainRepresentationLeakageRemainsAbsent`
+rejecting the REST Request class directly referencing non-enum Domain
+`InstalledUnit`. This repair replaces the wire-facing
+`InstalledUnit.Evidence` fields with a strict, transport-owned
+`InstalledUnitLifecycleRequests.Evidence` record carrying
+value/classification/provenance, while the existing REST mapper
+alone constructs the actual immutable Domain
+`InstalledUnit.Evidence`. All three original known/unknown
+classifications, source validation, current Party authorization,
+company and physical identity constraints remain. The HRA-102
+architecture guard is preserved unchanged.
+
+`InstalledUnitLifecycleControllerTest.anonymousAndUntrustedPathNeverDiscloseProtectedUnit`
+reported expected 400/actual 200 for a MockMvc URL literal containing
+`%20company`; test request creation did not provide the decoded
+padded `@RequestParam` value to Spring. The same negative test now
+supplies `.param("companyPartyId"," company")`, exercising
+the actual path-to-owner mapper's strict whitespace check.
+The test continues to require 400 **before** owner calls; there
+is no validator relaxation. The separate
+`deniedAndIndeterminateOutcomesRevealNoPrivateEvidence`
+case raised the previously stubbed DENIED exception while attempting
+to restub via `when(...).thenThrow`; it now uses
+`doThrow(...).when(...)` without invoking the former stub
+and still asserts both 403 DENIED and 503 INDETERMINATE with
+non-disclosing bodies. The qualification test expecting
+`IllegalArgumentException` is corrected to the actual
+`InvalidTopologyValueException` domain invariant for UNKNOWN
+evidence with invented value/provenance. No domain code,
+exception subtype or test assertion is removed.
+
+**One bounded runtime repair stage.** Exact message:
+`fix(topology): restore installed-unit REST transport boundaries`.
+CREATE/DELETE none; MODIFY exactly:
+
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/request/InstalledUnitLifecycleRequests.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/mapper/InstalledUnitLifecycleRestMapper.java`
+- `src/test/java/dz/sh/hidra/modules/topology/api/rest/InstalledUnitLifecycleControllerTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/api/rest/InstalledUnitLifecycleRestMapperTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/qualification/InstalledUnitLifecycleOperatorQualificationTest.java`
+- `.github/ci-test-inventory.json`
+- `doc/roadmap/TASKS_HPS-006.md` (this append-only record)
+
+Update only the three modified test-source SHA256 values in the
+existing 509-class inventory. Preserve all original 20 new
+cases and prior case names/locations, ten PostgreSQL shards,
+full inventory acceptance and all five existing new tests.
+The protected application, Domain, Identity, Party, Assets,
+SQL pins, migrations, architecture checks, CI workflows,
+physical dictionary, OpenAPI snapshot and its strict validator
+remain untouched.
+
+**Available validation and limitations.** Read and
+compared current source to the four actual failed case
+messages; the prior published Java code had already compiled
+on Java21 in CI #973 and all ten PostgreSQL shards passed,
+but the corrected source is not yet built/tested. Source-level
+prepublication checks cover the exact bounded changes,
+architecture import removal, retained request and
+failure semantics and hash/case membership; these are NOT
+passing Maven/JUnit/PostgreSQL runtime tests. Local Maven,
+Docker and PostgreSQL runtime are unavailable; AGENTS11.1
+CI-first applies. Commit reviewed blobs/tree/parent with
+expected-head guard; observe applicable exact-SHA CI
+creation/queue/start and STOP. Further failures select
+responsible focused repairs before Package C acceptance.
+
+**Explicit remaining Package C hold.** The new eight-route
+runtime OpenAPI still requires the separately registered,
+genuinely generated exact-SHA `doc/api/openapi.yaml` and
+`.github/documentation-validation.json` refresh. Do not
+hand-edit that artifact or weaken
+`.github/scripts/validate_openapi_snapshot.py`.
+Full's API-contract lane cannot pass on the stale
+snapshot; this repair does **not** claim an all-green
+Full run. The genuine authenticated multi-native-source
+PostgreSQL HTTP behavior/denial/rollback qualification
+registered for Package C also remains unimplemented:
+schema-only PostgreSQL and MockMvc controller tests are not
+an end-to-end replacement. Integrated HAPI-599 stays
+NOT_IMPLEMENTED/BLOCKED; no HAPI-600/601, frontend,
+simulation/P3, OT action, SITE or deployment is selected.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

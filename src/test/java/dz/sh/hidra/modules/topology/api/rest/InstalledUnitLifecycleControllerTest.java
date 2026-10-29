@@ -101,12 +101,13 @@ class InstalledUnitLifecycleControllerTest {
         verifyNoInteractions(useCase);
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("transport-only",null,List.of()));
         mvc.perform(get(BASE+"/installations/inst?companyPartyId=company&positionId=pos")).andExpect(status().isBadRequest());
-        mvc.perform(get(BASE+"?companyPartyId=%20company")).andExpect(status().isBadRequest());
+        mvc.perform(get(BASE).param("companyPartyId"," company")).andExpect(status().isBadRequest());
         verifyNoInteractions(useCase);
     }
     @Test void deniedAndIndeterminateOutcomesRevealNoPrivateEvidence() throws Exception {
         for(var kind:List.of(InstalledUnitLifecycleFailure.Kind.DENIED,InstalledUnitLifecycleFailure.Kind.INDETERMINATE)) {
-            when(useCase.execute(any())).thenThrow(new InstalledUnitLifecycleFailure(kind,new IllegalStateException("private native token sqlstate")));
+            doThrow(new InstalledUnitLifecycleFailure(kind,new IllegalStateException("private native token sqlstate")))
+                    .when(useCase).execute(any());
             mvc.perform(get(BASE+"?companyPartyId=company"))
                     .andExpect(status().is(kind==InstalledUnitLifecycleFailure.Kind.DENIED?403:503))
                     .andExpect(jsonPath("$.code").value(kind.name()))

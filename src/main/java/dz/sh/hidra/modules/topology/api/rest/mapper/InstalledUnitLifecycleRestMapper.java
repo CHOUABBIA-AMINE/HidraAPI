@@ -19,7 +19,9 @@
  */
 package dz.sh.hidra.modules.topology.api.rest.mapper;
 
+import dz.sh.hidra.modules.topology.api.rest.request.InstalledUnitLifecycleRequests;
 import dz.sh.hidra.modules.topology.api.rest.request.InstalledUnitLifecycleRequests.*;
+import dz.sh.hidra.modules.topology.api.rest.response.InstalledUnitLifecycleResponses;
 import dz.sh.hidra.modules.topology.api.rest.response.InstalledUnitLifecycleResponses.*;
 import dz.sh.hidra.modules.topology.application.port.in.InstalledUnitLifecycleUseCase;
 import dz.sh.hidra.modules.topology.application.port.in.InstalledUnitLifecycleUseCase.*;
@@ -37,10 +39,17 @@ public final class InstalledUnitLifecycleRestMapper {
         return new Command(operation,request,exact(company),exact(unit),installation,replacementInstallation,
                 from,to,registration,starts,ends,provenance,revision,replacementUnit);
     }
+    /** Exactly one wire-to-Domain transition; never expose Domain objects in request DTOs. */
+    private static InstalledUnit.Evidence domainEvidence(InstalledUnitLifecycleRequests.Evidence value) {
+        Objects.requireNonNull(value);
+        return new InstalledUnit.Evidence(value.value(),InstalledUnit.Verification.valueOf(value.verification()),
+                value.sourceReference());
+    }
     public static Command register(String unit,Register body) {
         Objects.requireNonNull(body);
         var identity=new InstalledUnit(exact(unit),exact(body.companyPartyId()),exact(body.equipmentKindId()),
-                body.manufacturerParty(),body.manufacturerModel(),body.serialNumber(),body.maintainableAssetId());
+                domainEvidence(body.manufacturerParty()),domainEvidence(body.manufacturerModel()),
+                domainEvidence(body.serialNumber()),body.maintainableAssetId());
         return command(Operation.REGISTER_UNIT,body.requestId(),body.companyPartyId(),unit,
                 null,null,null,null,identity,null,null,null,0,null);
     }
@@ -82,8 +91,8 @@ public final class InstalledUnitLifecycleRestMapper {
         return command(Operation.READ_HISTORY,null,company,unit,exact(installation),null,
                 position(positionId,facilityId),null,null,null,null,null,0,null);
     }
-    private static Evidence evidence(InstalledUnit.Evidence value) {
-        return value==null?null:new Evidence(value.value(),value.verification().name(),value.sourceReference());
+    private static InstalledUnitLifecycleResponses.Evidence evidence(InstalledUnit.Evidence value) {
+        return value==null?null:new InstalledUnitLifecycleResponses.Evidence(value.value(),value.verification().name(),value.sourceReference());
     }
     private static Unit unit(InstalledUnit value) {
         return value==null?null:new Unit(value.id(),value.companyPartyId(),value.equipmentKindId(),

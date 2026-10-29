@@ -19,7 +19,6 @@
  */
 package dz.sh.hidra.modules.topology.api.rest.request;
 
-import dz.sh.hidra.modules.topology.domain.model.InstalledUnit;
 import io.swagger.v3.oas.annotations.media.Schema;
 import tools.jackson.core.JsonParser;
 import tools.jackson.databind.*;
@@ -32,11 +31,15 @@ import java.util.Set;
 public final class InstalledUnitLifecycleRequests {
     private InstalledUnitLifecycleRequests() {}
 
+    /** Wire-only provenance; Domain evidence is constructed solely by the adapter mapper. */
+    @Schema(name="InstalledUnitEvidenceRequest")
+    public record Evidence(String value,String verification,String sourceReference) {}
+
     @Schema(name="InstalledUnitRegisterRequest")
     @JsonDeserialize(using=RegisterDeserializer.class)
     public record Register(String requestId,String companyPartyId,String equipmentKindId,
-            InstalledUnit.Evidence manufacturerParty,InstalledUnit.Evidence manufacturerModel,
-            InstalledUnit.Evidence serialNumber,String maintainableAssetId) {}
+            Evidence manufacturerParty,Evidence manufacturerModel,
+            Evidence serialNumber,String maintainableAssetId) {}
 
     @Schema(name="InstalledUnitRecordInstallationRequest")
     @JsonDeserialize(using=RecordDeserializer.class)
@@ -100,17 +103,16 @@ public final class InstalledUnitLifecycleRequests {
             throw DatabindException.from(parser,"Expected revision outside bounds");
         }
     }
-    private static InstalledUnit.Evidence evidence(JsonParser parser,JsonNode root,String key) {
+    private static Evidence evidence(JsonParser parser,JsonNode root,String key) {
         JsonNode value=object(parser,root.get(key),Set.of("verification","value","sourceReference"));
         String classification=string(parser,value,"verification",true,16);
-        InstalledUnit.Verification verification;
-        try {verification=InstalledUnit.Verification.valueOf(classification);}
-        catch(IllegalArgumentException invalid){throw DatabindException.from(parser,"Unknown evidence classification");}
+        if(!Set.of("UNKNOWN","UNVERIFIED","VERIFIED").contains(classification))
+            throw DatabindException.from(parser,"Unknown evidence classification");
         String source=string(parser,value,"sourceReference",false,1024);
         String text=string(parser,value,"value",false,1024);
-        if(verification==InstalledUnit.Verification.UNKNOWN ? (source!=null || text!=null) : (source==null || text==null))
+        if("UNKNOWN".equals(classification) ? (source!=null || text!=null) : (source==null || text==null))
             throw DatabindException.from(parser,"Evidence value/provenance mismatch");
-        return new InstalledUnit.Evidence(text,verification,source);
+        return new Evidence(text,classification,source);
     }
     private static JsonNode root(JsonParser parser,DeserializationContext context,Set<String> fields) {
         return object(parser,context.readTree(parser),fields);

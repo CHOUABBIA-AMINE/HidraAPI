@@ -32,11 +32,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class InstalledUnitLifecycleRestMapperTest {
     private static final Instant AT=Instant.parse("2026-10-29T10:00:00Z");
     private static final InstalledUnit.Evidence UNKNOWN=InstalledUnit.Evidence.unknown();
+    private static final dz.sh.hidra.modules.topology.api.rest.request.InstalledUnitLifecycleRequests.Evidence UNKNOWN_WIRE =
+            new dz.sh.hidra.modules.topology.api.rest.request.InstalledUnitLifecycleRequests.Evidence(null,"UNKNOWN",null);
     private static InstalledUnit unit(String id) {
         return new InstalledUnit(id,"company","kind",UNKNOWN,UNKNOWN,UNKNOWN,null);
     }
     @Test void eachMutationBindsPathCompanyAndOneOwnerOperation() {
-        var registered=InstalledUnitLifecycleRestMapper.register("unit",new Register("req","company","kind",UNKNOWN,UNKNOWN,UNKNOWN,null));
+        var registered=InstalledUnitLifecycleRestMapper.register("unit",new Register("req","company","kind",UNKNOWN_WIRE,UNKNOWN_WIRE,UNKNOWN_WIRE,null));
         assertEquals(Operation.REGISTER_UNIT,registered.operation());assertEquals("unit",registered.registration().id());
         var recorded=InstalledUnitLifecycleRestMapper.record("unit",new RecordInstallation("req","company","inst","position","facility",AT,null,"source"));
         assertEquals(new Position("position","facility"),recorded.destination());

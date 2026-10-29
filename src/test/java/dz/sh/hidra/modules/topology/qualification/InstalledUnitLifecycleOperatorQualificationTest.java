@@ -34,6 +34,10 @@ class InstalledUnitLifecycleOperatorQualificationTest {
     private static InstalledUnit unit(String id,InstalledUnit.Evidence party,InstalledUnit.Evidence model,InstalledUnit.Evidence serial) {
         return new InstalledUnit(id,"company","kind",party,model,serial,null);
     }
+    private static dz.sh.hidra.modules.topology.api.rest.request.InstalledUnitLifecycleRequests.Evidence wire(InstalledUnit.Evidence value) {
+        return new dz.sh.hidra.modules.topology.api.rest.request.InstalledUnitLifecycleRequests.Evidence(
+                value.value(),value.verification().name(),value.sourceReference());
+    }
     @Test void repeatedMarkedSerialDoesNotCollapseIndependentPhysicalUnitIdentity() {
         var party=known("manufacturer",InstalledUnit.Verification.VERIFIED);
         var model=known("model",InstalledUnit.Verification.UNVERIFIED);
@@ -43,9 +47,9 @@ class InstalledUnitLifecycleOperatorQualificationTest {
         assertNotEquals(first.id(),second.id());
         assertEquals(first.serialNumber(),second.serialNumber());
         var command1=InstalledUnitLifecycleRestMapper.register(first.id(),
-                new Register("request-one","company","kind",party,model,serial,null));
+                new Register("request-one","company","kind",wire(party),wire(model),wire(serial),null));
         var command2=InstalledUnitLifecycleRestMapper.register(second.id(),
-                new Register("request-two","company","kind",party,model,serial,null));
+                new Register("request-two","company","kind",wire(party),wire(model),wire(serial),null));
         assertNotEquals(command1.unitId(),command2.unitId());
         assertEquals(command1.registration().serialNumber(),command2.registration().serialNumber());
     }
@@ -56,7 +60,8 @@ class InstalledUnitLifecycleOperatorQualificationTest {
         assertEquals("UNKNOWN",result.unit().manufacturerParty().verification());
         assertNull(result.unit().serialNumber().value());
         assertNull(result.unit().manufacturerModel().sourceReference());
-        assertThrows(IllegalArgumentException.class,()->new InstalledUnit.Evidence("invented",InstalledUnit.Verification.UNKNOWN,"invented"));
+        assertThrows(dz.sh.hidra.modules.topology.domain.exception.InvalidTopologyValueException.class,
+                ()->new InstalledUnit.Evidence("invented",InstalledUnit.Verification.UNKNOWN,"invented"));
     }
     @Test void verificationLabelIsAuthoredEvidenceNotEngineeringQualification() {
         var party=known("manufacturer",InstalledUnit.Verification.VERIFIED);

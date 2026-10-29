@@ -146,13 +146,12 @@ industrial/SITE acceptance, release and deployment remain separately gated.
 No successor implementation is selected by this closure.
 
 [HAPI-600](TASKS_HPS-006.md#hapi-600), effective station configuration and
-connectivity, is selected for source-backed preflight and remains
-NOT_IMPLEMENTED/BLOCKED. HAPI-588/599 prerequisites are accepted; Docs723 passed
-the599 closure. The owning phase identifies the missing exact graph-position-
-physical-installation binding, effective/history semantics and protected owner
-transaction obligations. Next is bounded executable registration, not runtime
-implementation from the former six proposed filenames. HAPI-601..603 and parent598
-remain independently gated.
+connectivity, is NOT_IMPLEMENTED/IN_PROGRESS. Docs724 passed its source preflight;
+HAPI-588/599 remain accepted. Its owning phase now admits exact A/B/C packages:
+versioned configuration/schema, distinct native authority and atomic source/final-
+guard integration, then configured HTTP/qualification. Package A is next after
+this registration's Documentation CI acceptance. No implementation or industrial
+qualification is claimed; HAPI-601..603 and parent598 remain independently gated.
 
 The historical Full950 Custody work-policy and dictionary-receipt repair is
 resolved in HAPI-599's accepted evidence. Its finite startup cap remains distinct

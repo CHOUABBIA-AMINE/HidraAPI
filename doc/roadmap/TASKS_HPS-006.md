@@ -7050,7 +7050,7 @@ Priority: P1
 
 Implementation Status: NOT_IMPLEMENTED
 
-Planning Status: BLOCKED
+Planning Status: IN_PROGRESS
 
 Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -7362,6 +7362,335 @@ published exact-SHA Docs gate. No new Java/Maven/PostgreSQL/HTTP execution, nume
 evidence, API/dictionary refresh or HAPI-600 implementation acceptance is claimed.
 Publish guarded main, verify parent/tree/message/blobs/two paths, observe applicable
 Documentation CI creation/queue/start and STOP.
+
+
+### HAPI-600 protected station configuration execution registration — 2026-10-29
+
+Owner Next after Docs724/run40921302069 SUCCESS selects this registration.
+Main5fb3e728a8e551270fa0efe1aa61129ceb60f32a, parent347df8a165cfaabb5fd50c53a7d330263a9d02d6,
+tree0edb187e19709470abf4161a139e2c1c6c7d9a1f. Unchanged accepted runtime
+027534fe2087c3bc0bdb58e4b6799efcddd6e3ae has Full983/Fast281/Docs721 SUCCESS.
+HAPI-588/599 prerequisites remain VERIFIED/COMPLETED. Historical specification
+holds above are resolved for the concrete scope below, not for HAPI-598/601..603.
+
+Exact current message:
+`docs(topology): register effective station configuration execution`.
+This registration changes exactly four governance files: this phase record,
+ULTIMATE_TASKS.md pointer, and HAPI-600 planning status only in
+ULTIMATE_ROADMAP.md/ULTIMATE_PHASES.md. HAPI-600 becomes
+NOT_IMPLEMENTED/IN_PROGRESS. No runtime source, test, schema, API, dictionary,
+CI policy or another task changes in this documentation turn.
+
+#### Source reconciliation and selected bounded behavior
+
+Recovered current StationInternalGraphRevisionCodec bounds are1,048,576 payload
+bytes,10,000 collection members and65,536 string bytes. Do not change that V1
+format or reinterpret its Unit.equipmentId. Configuration owns a new format and
+explicit binding snapshots while reusing the exact graph and its validator.
+Installed-unit protected storage/coordinator already freezes source/state/catalog
+images and seals one final guarded SQL statement; platform routing admits exact
+compiled callers and exact DML hashes. Neither its general repository nor the
+eight lifecycle actions permit arbitrary configuration writes. Identity currently
+has a distinct InstalledUnitClaimGroup; add a distinct configuration group rather
+than disguising configuration IDs as installation/unit IDs.
+
+SAVE requires the actual ACTIVE StationGraphPublicationHead for the exact
+facility and matching revision/epoch, a COMPLETE structurally qualified graph,
+and graph effective coverage of the declared configuration interval. Source
+classification remains supplied evidence, not human approval. No unpublished
+DRAFT graph is silently made eligible. Graph withdrawal/reselection later yields
+SOURCE_CHANGED without rewriting history.
+
+One company/facility configuration stream has immutable revisions and one
+CAS-selected declaration head. SAVE appends a revision and atomically selects it
+at expectedEpoch (0 means no head). Epoch increments exactly once. No independent
+future schedule, approval/publication workflow, withdrawal or physical actuation
+is introduced. Revisions may have overlapping declared applicability ranges;
+old selected declarations become history. READ_CURRENT returns only the selected
+declaration with explicit current applicability; it never searches older revisions
+to invent a fallback. READ_REVISION and LIST_HISTORY expose bounded immutable
+evidence under current authorization, not stale credentials.
+
+A revision pins exact facility/company, graph revision ID/format/SHA256, graph
+snapshot and mandatory expected ACTIVE station-publication head epoch/revision,
+declared [effectiveFrom,effectiveUntil) range, source/evidence reference, author
+provenance, request ID, canonical digest and all position-binding evidence.
+Finite instants have PostgreSQL microsecond precision; end null means unbounded,
+otherwise strictly after start. Recorded time is server database time, distinct
+from supplied applicability. No clock coercion, default calibration or latest-
+revision substitution.
+
+Every graph unit position has exactly one declared disposition:
+CONNECTED or ISOLATED with exact unit ID, installation ID and immutable installation
+event revision/snapshot; or UNOCCUPIED with no fabricated physical unit/install ID.
+UNOCCUPIED must also be proved against actual absence of installation coverage,
+not just accepted because a caller omitted a binding. PRESENT bindings cover the
+entire declared range and match actual company, facility, equipment position and
+equipment kind at save. No duplicate physical unit or position, mismatched station,
+dangling installation, gap or overlapping effective occupancy may be accepted.
+Unknown/missing required binding is an error, not UNOCCUPIED by default.
+Manufacturer/model/serial/Assets references remain separate evidence and are not
+newly qualified by configuration save.
+
+Declared activeEdgeIds are an exact subset of the pinned graph edges. Build the
+active structural view from those edges and CONNECTED positions only; selected
+edges may not touch isolated/unoccupied unit ports. Reuse the existing direction,
+cycle, duplicate-port and dangling-endpoint validation; derive series/parallel
+from that active view rather than a single station-wide enum. Explicit all-isolated
+or unoccupied configurations retain their declared state and no-connected-path
+diagnostic; this never proves an operating flow path or machine readiness.
+No actual valve, telemetry or running state is inferred from the declarations.
+
+New configuration-format bounds: at most128 position dispositions and1,048,576
+canonical UTF-8 bytes including the pinned graph and evidence snapshots, with
+65,536-byte evidence text. These are explicit software/DoS limits, not industrial
+capacity assumptions; reject excess without truncation. Existing graph-format
+limits remain unchanged. Canonical ordering and exact IDs use current Topology
+identity validation; reject malformed UTF-8/Unicode, duplicate keys/IDs, unknown
+fields/enums/formats and trailing payload data. Null and unknown evidence are
+never converted into manufactured engineering facts.
+
+Future installation closure, movement, replacement, graph reselection or company
+change cannot rewrite saved configuration history. Current applicability is
+evaluated separately: APPLICABLE, OUTSIDE_DECLARED_INTERVAL or SOURCE_CHANGED,
+with bounded source diagnostics. APPLICABLE means only that this software's
+declared interval and current source checks agree, not industrial qualification.
+Historical exact reads return original pinned evidence with current applicability
+separate. SAVE/replay never creates, closes, moves, replaces or retires a unit.
+A freshly authorized exact request replay returns the pinned committed revision
+without another epoch/event/write; changed request content conflicts.
+
+#### Package A — pure configuration and owner persistence schema
+
+Next executable package after successful registration Docs:
+`feat(topology): add versioned installed station configuration storage`.
+
+CREATE exactly:
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/StationInstalledConfiguration.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/StationInstalledConfigurationCodec.java`
+- `src/main/resources/db/migration/V20261029_002__topology_station_installed_configurations.sql`
+- `src/test/java/dz/sh/hidra/modules/topology/domain/model/StationInstalledConfigurationTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/StationInstalledConfigurationCodecTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/StationInstalledConfigurationPostgresIntegrationTest.java`
+
+MODIFY exactly:
+- `.github/ci-test-inventory.json`
+- `.github/database-dictionary-ownership.json`
+- `doc/database/DATA_DICTIONARY.md` — generated actual migrated catalog only
+- `doc/roadmap/TASKS_HPS-006.md`
+
+Pure-Java domain owns immutable declaration/bindings, exact evidence validation,
+active-edge structure, interval and duplicate invariants. Codec maps explicitly;
+no framework/JPA/Jackson/domain-external imports in domain. Reuse existing
+StationInternalGraph/Revision/Validator rather than duplicate the graph aggregate.
+
+Migration adds hidra_topology_station_configuration_revision, _member, _head and
+_request tables. Revision identity is company/facility/revision with immutable
+canonical payload/format/digest/provenance and positive epoch; members reference
+the exact revision, position and optional existing installation event identity.
+Constrain valid disposition/nullable binding combinations, positive revisions,
+finite ordered interval, uniqueness and owner-consistent references in SQL.
+The head references an actual matching revision with positive CAS epoch.
+Request key(company,facility,requestId) is unique with canonical command digest
+and immutable result reference. Immutable revision/member/request rows reject
+UPDATE/DELETE/TRUNCATE. Only head CAS is mutable. No blanket archive-range
+exclusion or new operational grants/fixtures. Preserve every599 migration/table/
+trigger and all installed-unit lifecycle history. Detailed guarded application
+writer isB;A creates no public route or ordinary unguarded writer bean.
+
+A proves nine-unit/three-station domain snapshots, mixed/isolated/unoccupied
+structure and negative cases; deterministic codec round-trip/corruption/format/
+Unicode/bounds; real fresh-schema FK/check/uniqueness/CAS and immutable-history
+constraints/rollback. Tests distinguish pure snapshot checks from actual source
+eligibility, which isB. Add real exact inventory cases/hashes with unmeasured
+new-suite timing explicit. If local database is unavailable, retain the current
+dictionary until actual same-SHA hosted catalog recovery and refresh within this
+same package's responsible follow-up; dictionary equality is not waived andA
+cannot be accepted before its genuine catalog evidence is complete.
+
+#### Package B — native authority and atomic source/final-guard integration
+
+Depends on acceptedA. Exact message:
+`feat(topology): protect effective station configuration operations`.
+
+CREATE exactly:
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyStationConfigurationAuthorizationContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedTopologyStationConfigurationAuthorizationParticipant.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/model/StationInstalledConfigurationFailure.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/StationInstalledConfigurationUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/StationInstalledConfigurationRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/StationConfigurationSourceEvidencePort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/StationInstalledConfigurationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/ProtectedStationConfigurationAdmissionCoordinator.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationInstalledConfigurationRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationConfigurationSourceEvidenceAdapter.java`
+- `src/main/resources/db/migration/V20261029_003__topology_station_configuration_protected_operations.sql`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedTopologyStationConfigurationAuthorizationPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/application/service/StationInstalledConfigurationApplicationServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/application/service/ProtectedStationConfigurationAdmissionCoordinatorTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedStationInstalledConfigurationPostgresIntegrationTest.java`
+
+MODIFY exactly:
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java`
+- `src/main/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutor.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `.github/ci-test-inventory.json`
+- `.github/database-dictionary-ownership.json`
+- `doc/database/DATA_DICTIONARY.md` — actual capture only
+- `doc/roadmap/TASKS_HPS-006.md`
+
+Use cases SAVE, READ_CURRENT, READ_REVISION, LIST_HISTORY are fully typed;
+caller descriptors never grant authority. Identity issues a distinct native
+configuration claim group and company/facility decisions for resource
+STATION_INSTALLED_CONFIGURATION and action-specific
+topology:installed-configuration:save/read/history permissions. READ_REVISION
+uses read; LIST_HISTORY uses history. Each referenced physical unit additionally
+requires current topology:installed-unit:read on INSTALLED_UNIT with its company
+scope. Do not repurpose an installation/graph credential for this resource.
+One genuine native contribution qualifies the exact bounded requirement group;
+retain current provider/session/binding/claim generations, DENY precedence,
+indeterminate rejection, opaque one-use issuer/holder/role/thread/XID checks,
+source-retention privacy, fresh authority and original collector/row bounds.
+The evidence reader has no clock query; clocks stay in the actual native/final
+owner boundary. Public reader surface and source pins must be updated narrowly
+with exact typed signatures; preserve all other bans and existing-family checks.
+
+Reuse TopologyInstalledUnitCompanyEvidenceContract for its actual SELECT-only
+Party owner evidence; do not add a foreign private import or a new manufacturer
+qualification rule. The new Topology-private source port/adapter acquires pinned
+graph/head, positions/facility ownership/generation, unit/company and installation
+projection/event witnesses including absence/phantom exclusion. Its constructible
+snapshots are data, not permissions. One real physical transaction retains the
+union of reviewed relation fences in deterministic order, with actual exact
+table/column/constraint/function/trigger/privilege checks and owner participation.
+Historical reads use pinned saved evidence; current applicability queries never
+replace that evidence. Authorization precedes protected discovery, total counts,
+existence, revision/history content and replay/conflict disclosure.
+
+Only the concrete new service/coordinator may obtain the credential route and
+configuration DML permit. Pin exact compiled SQL hashes from actualA/B code in the
+owner coordinator and technical executor; do not guess hashes in registration or
+admit broad INSERT/UPDATE prefixes. Use current installedUnitWorkBudgetNanos
+as the new family startup work cap, with no numeric/property/default change.
+It remains separate from native/source validity and final database time. No
+slower-loop success claim, unbounded budget or change to another family follows.
+
+The new repository owns the exact receipt, mutation, read-snapshot and freeze
+protocol. Before the final guard, collect and freeze actual source/state/catalog
+images and permission/time evidence. Exactly one final SQL guard proves retained
+fences, actual backend/transaction/role, current ownership/installation/graph
+conditions, head/request/result invariants and one database-time sample; no
+owner SQL may follow it. Work callbacks must not call owner queries after the
+executor has sealed the final guard. Failures poison original holders even when
+swallowed or attempted from another thread; no partial rows or provisional DTO
+may escape. Changed source/receipt/version conflicts preserve exact owner error
+meaning through actual Spring DataAccessException translation; unrelated storage
+faults remain unavailable. Unknown commit acknowledgement stays INDETERMINATE,
+with fresh authorized exact replay, never blind automatic retry.
+
+B migration adds only the three compatible permission definitions and reviewed
+protected-operation SQL/final-guard/immutability enforcement required by this
+new family. It does not assign roles or weaken599 invariants. Derive real pins
+and catalog checks from the new SQL; current last source migration is029001,
+but recheck both registered versions beforeA/B publication. If a filename is
+consumed concurrently, reconcile this task's technical record before code.
+
+Native acceptance includes four supported authentication producers, both-scope
+and referenced-unit DENY, inactive/missing/malformed authority, source-generation/
+time changes, foreign/replayed/suspended/cross-thread handles, full rollback,
+current/history company isolation, same/different request replay and CAS writers.
+Source tests race unit closure/replacement, position/facility/company/graph changes,
+absence becoming occupied and final-fence/schema tampering. Native no-skip tests
+prove all nine units/three stations and exact revision reload. Retain lifecycle
+A/B/C and source-reader/executor architecture regressions. Pin actual source/cases;
+no mocked coordinator or constructed grant is a substitute for native execution.
+
+#### Package C — configured HTTP, artifacts and independent qualification
+
+Depends on acceptedA/B. Exact message:
+`feat(topology): expose installed station configuration authoring`.
+
+CREATE exactly:
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/StationInstalledConfigurationController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/request/StationInstalledConfigurationRequests.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/response/StationInstalledConfigurationResponses.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/mapper/StationInstalledConfigurationRestMapper.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/StationInstalledConfigurationApiExceptionHandler.java`
+- `src/test/java/dz/sh/hidra/modules/topology/api/rest/StationInstalledConfigurationApiExceptionHandlerTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/api/rest/StationInstalledConfigurationRestMapperTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/api/rest/controller/StationInstalledConfigurationControllerTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/qualification/StationInstalledConfigurationOperatorQualificationTest.java`
+
+MODIFY exactly:
+- `.github/ci-test-inventory.json`
+- `doc/api/openapi.yaml` — generated configured runtime only
+- `doc/database/DATA_DICTIONARY.md` — verified actual catalog only
+- `doc/roadmap/TASKS_HPS-006.md`
+
+Routes: PUT/GET /api/v1/topology/facilities/{id}/installed-configuration,
+GET /api/v1/topology/facilities/{id}/installed-configuration/revisions/{revisionId}
+and GET /api/v1/topology/facilities/{id}/installed-configuration/history.
+companyPartyId is explicit scope, never proof. PUT carries requestId, revisionId,
+expectedEpoch, graph identity/digest/expected selection evidence, applicability,
+position dispositions/binding references, activeEdgeIds and source evidence.
+Server supplies recorded time, actor/native coordinates and canonical digests;
+caller audit/authority flags are rejected. No JPA entity or public domain object
+is a REST DTO. Responses distinguish pinned configuration, selected epoch/replay,
+current applicability and bounded diagnostics. History uses an exclusive epoch
+cursor and limit1..100, with authorization before count/content.
+
+Return exact200 for save/replay/read/history;400 invalid/malformed,401 genuine
+unauthenticated,403 denied/foreign scope without protected disclosure,404 only
+authorized absence,409 proven request/version/source-selection conflict,503
+unavailable or unknown commit with explicit distinction and sanitized ProblemDetail.
+Do not convert arbitrary faults into409 or accept status ranges in native tests.
+Constructor wiring exposes real configured handlers; standalone MockMvc tests
+alone do not prove the chain.
+
+Independent native HTTP qualification proves nine units/three stations, mixed
+and isolated/unoccupied structure, exact immutable reload/current drift/history,
+both-company/reference-unit denials, stale/changed replay, source and CAS races,
+translated conflicts, no-SQL-after-final-guard, four-producer native provenance,
+rollback, lost acknowledgement after selected actual commit and authorized replay.
+Generate API from the actual application; compare runtime snapshot/base-compatible
+existing operations and genuine same-run catalog/dictionary. Retain old topology/
+unit formats, endpoints and ownership. Structural declarations and authored
+verification labels are not human engineering approval, live SCADA, numerical
+simulation, a material-property/characteristic link, SITE acceptance or deployment.
+
+#### Common validation, evidence and final closure
+
+DELETE none forA/B/C. Proposed source paths above are absent at registration;
+existing MODIFY paths are checked in the current tree. New placement genuinely
+required by implementation must be source-backed and admitted here first; no
+automatic scope expansion. Preserve all ten PostgreSQL shards, budgets, old
+timings/cases and strict Full evidence gates. New unmeasured test timing is
+explicitly unmeasured; never invent values or remove cases to obtain green.
+CI-first policy permits useful existing local checks and truthful pending
+hosted evidence, not acceptance based on a skipped database test.
+
+Each package publishes one bounded registered implementation/repair at a time,
+observes exact-SHA applicable CI startup and stops. Acceptance needs actual
+required Full/Fast/Docs, raw required case membership, no failures/errors/skips
+and the relevant actual API/catalog evidence. Source presence can update only
+the actual partial implementation disposition; full HAPI-600 VERIFIED/COMPLETED
+requires the complete independent matrix. Its separately selected final message
+is `docs(topology): accept effective station configuration software`, limited to
+the four governance files used by this registration. Never close parent598,
+select601..603 or frontend/numerical/release work by this task's acceptance.
+
+This registration validation: live native participant/group, reader, compiled
+executor route/hash/budget, installed-unit frozen storage/coordinator and graph
+codec recovery; exact migration chain/path admission, old task history and only600
+status synchronization;19 current documentation-validator self-tests and focused
+Markdown/navigation/whitespace checks. No new Java/Maven/native/HTTP/PostgreSQL
+execution, source implementation or generated-artifact refresh is claimed now.
+Publish guarded main with expected5fb3e72, verify exact four paths/message/parent/
+tree/blobs, observe exact-SHA Documentation CI creation/startup and STOP beforeA.
 
 <a id="hapi-602"></a>
 ## HAPI-602 — Versioned installed-unit/characteristic links

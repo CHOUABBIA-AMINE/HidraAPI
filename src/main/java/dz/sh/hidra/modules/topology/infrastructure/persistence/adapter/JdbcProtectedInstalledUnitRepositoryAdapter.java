@@ -7,7 +7,7 @@
  *
  * @Name        : JdbcProtectedInstalledUnitRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-28
+ * @UpdatedOn   : 2026-10-29
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -109,11 +109,16 @@ pg_catalog.current_setting('transaction_isolation')='read committed' AND pg_cata
         String who=quote(ordinary);return " AND current_user<>"+who+" AND NOT pg_catalog.pg_has_role("+who+"::name,current_user,'MEMBER')"
             +" AND NOT EXISTS(SELECT 1 FROM pg_catalog.pg_class c WHERE c.oid IN ('"+U+"'::regclass,'"+I+"'::regclass,'"+H+"'::regclass,'"+R+"'::regclass) AND (pg_catalog.pg_has_role("+who+"::name,c.relowner,'MEMBER') OR pg_catalog.has_table_privilege("+who+"::name,c.oid,'INSERT,UPDATE,DELETE,TRUNCATE,TRIGGER') OR pg_catalog.has_any_column_privilege("+who+"::name,c.oid,'INSERT,UPDATE,REFERENCES')))";
     }
-    private void catalog() {
+    private void catalog() { catalog(null); }
+    private void catalog(Ticket ticket) {
         var identity=executor.publicationDatabaseIdentity();
-        String schemas=jdbc.queryForObject("SELECT pg_catalog.array_to_json(pg_catalog.current_schemas(true))::text",String.class);
-        if(schemas==null || !schemas.startsWith("[\"pg_catalog\""))throw invalid();
-        if(!Boolean.TRUE.equals(jdbc.queryForObject("SELECT "+CATALOG+ordinaryDenied(identity.ordinaryUser())+" AND current_user=? AND session_user=current_user",Boolean.class,identity.publisherUser())))throw invalid();
+        String schemas=jdbc.queryForObject("SELECT pg_catalog.array_to_json(pg_catalog.current_schemas(true))::pg_catalog.text",String.class);
+        if(schemas==null || !(schemas.equals("[\"pg_catalog\"]") || schemas.startsWith("[\"pg_catalog\",")))throw invalid();
+        String coordinates=ticket==null?"":" AND pg_catalog.pg_backend_pid()="+ticket.pid+" AND pg_catalog.txid_current()="+ticket.xid
+            +" AND current_user="+quote(ticket.role)+" AND "+held(finalFences(ticket));
+        if(!Boolean.TRUE.equals(jdbc.queryForObject("SELECT "+CATALOG
+            +ordinaryDenied(identity.ordinaryUser())+" AND current_user=? AND session_user=current_user"+coordinates,
+            Boolean.class,identity.publisherUser())))throw invalid();
     }
     @Override public Hint discover(Command command) {
         try{context();catalog();return new Hint(unit(command),installation(command.companyPartyId(),command.installationId()));}
@@ -159,7 +164,7 @@ pg_catalog.current_setting('transaction_isolation')='read committed' AND pg_cata
     }
     @Override public Snapshot observe(Admission a) {
         try {
-            var t=ticket(a);catalog();checkCoordinates(t);var c=t.command;
+            var t=ticket(a);catalog(t);var c=t.command;
             var receipts=c.requestId()==null?List.<Map<String,Object>>of():jdbc.queryForList("SELECT * FROM "+R+" WHERE request_id=? AND company_party_id=? AND tableoid=pg_catalog.to_regclass('"+R+"')",c.requestId(),c.companyPartyId());
             String digest=null;Result result=null;
             if(receipts.size()>1)throw invalid();
@@ -173,9 +178,6 @@ pg_catalog.current_setting('transaction_isolation')='read committed' AND pg_cata
             return new Snapshot(unit(c),installation(c.companyPartyId(),c.installationId()),installation(c.companyPartyId(),c.replacementInstallationId()),
                 history(c.companyPartyId(),c.installationId()),history(c.companyPartyId(),c.replacementInstallationId()),digest,result);
         }catch(RuntimeException failure){reject(a);throw failure;}
-    }
-    private void checkCoordinates(Ticket t) {
-        if(!Boolean.TRUE.equals(jdbc.queryForObject("SELECT pg_catalog.pg_backend_pid()=? AND pg_catalog.txid_current()=? AND current_user=? AND "+held(finalFences(t)),Boolean.class,t.pid,t.xid,t.role)))throw invalid();
     }
     @Override public Set<String> mutationSql(){caller();return MUTATIONS;}
     @Override public List<ProtectedRelationFence> finalFences(Admission a) {
@@ -244,7 +246,13 @@ pg_catalog.current_setting('transaction_isolation')='read committed' AND pg_cata
         }catch(RuntimeException failure){reject(a);throw failure;}
     }
     private static String held(List<ProtectedRelationFence> fences) {
-        if(fences.isEmpty())throw invalid();return fences.stream().map(f->"EXISTS(SELECT 1 FROM pg_catalog.pg_locks WHERE pid=pg_catalog.pg_backend_pid() AND granted AND locktype='relation' AND relation=pg_catalog.to_regclass("+quote(f.relation())+") AND mode="+quote(f.mode().catalog())+")").collect(java.util.stream.Collectors.joining(" AND "));
+        if(fences.isEmpty() || fences.stream().map(ProtectedRelationFence::relation).distinct().count()!=fences.size())throw invalid();
+        String required=fences.stream().map(f->"(pg_catalog.to_regclass("+quote(f.relation())+"),"+quote(f.mode().catalog())+")")
+            .collect(java.util.stream.Collectors.joining(","));
+        // One pg_locks scan matches every exact relation AND mode; a stronger/different mode is not substituted.
+        return "(SELECT count(DISTINCT required.relation)="+fences.size()+" FROM (VALUES "+required+") required(relation,mode)"
+            +" JOIN pg_catalog.pg_locks actual ON actual.relation=required.relation AND actual.mode=required.mode"
+            +" WHERE actual.pid=pg_catalog.pg_backend_pid() AND actual.granted AND actual.locktype='relation')";
     }
     private String stateSql(Ticket t) {
         var c=t.command;String unit=quote(c.unitId()),company=quote(c.companyPartyId());String ids=quote(c.installationId()==null?"":c.installationId())+","+quote(c.replacementInstallationId()==null?"":c.replacementInstallationId());
@@ -256,14 +264,16 @@ pg_catalog.current_setting('transaction_isolation')='read committed' AND pg_cata
     }
     private String state(Ticket t){return jdbc.queryForObject("SELECT "+stateSql(t),String.class);}
     private static String catalogImage(List<ProtectedRelationFence> fences) {
-        String relations=fences.stream().map(f->"pg_catalog.to_regclass("+quote(f.relation())+")").collect(java.util.stream.Collectors.joining(","));
-        return "pg_catalog.encode(pg_catalog.sha256(pg_catalog.convert_to(pg_catalog.jsonb_build_array("
+        String oids=fences.stream().map(f->"(pg_catalog.to_regclass("+quote(f.relation())+"))").collect(java.util.stream.Collectors.joining(","));
+        String relations="SELECT oid FROM protected_catalog_relations";
+        // Resolve the retained relation identities once per observation, including the sole final statement.
+        return "(WITH protected_catalog_relations AS MATERIALIZED (SELECT oid FROM (VALUES "+oids+") required(oid)) SELECT pg_catalog.encode(pg_catalog.sha256(pg_catalog.convert_to(pg_catalog.jsonb_build_array("
             +"(SELECT jsonb_agg(jsonb_build_array(oid,relowner,relacl,relkind,relpersistence,relrowsecurity,relforcerowsecurity,relispartition) ORDER BY oid) FROM pg_catalog.pg_class WHERE oid IN ("+relations+")),"
             +"(SELECT jsonb_agg(to_jsonb(x) ORDER BY oid) FROM pg_catalog.pg_constraint x WHERE conrelid IN ("+relations+") OR confrelid IN ("+relations+")),"
             +"(SELECT jsonb_agg(to_jsonb(x) ORDER BY oid) FROM pg_catalog.pg_trigger x WHERE tgrelid IN ("+relations+")),"
             +"(SELECT jsonb_agg(jsonb_build_array(p.oid,p.proowner,p.proacl,p.proconfig,p.prosecdef,p.prosrc) ORDER BY p.oid) FROM pg_catalog.pg_proc p WHERE p.oid IN (SELECT tgfoid FROM pg_catalog.pg_trigger WHERE tgrelid IN ("+relations+")) OR p.oid IN (pg_catalog.to_regprocedure('public.hidra_party_lock_installed_unit_manufacturer_evidence()'),pg_catalog.to_regprocedure('public.hidra_topology_lock_installed_unit_position_ownership()'))),"
             +"(SELECT jsonb_agg(to_jsonb(x) ORDER BY oid) FROM pg_catalog.pg_roles x),"
-            +"(SELECT jsonb_agg(to_jsonb(x) ORDER BY roleid,member,grantor) FROM pg_catalog.pg_auth_members x))::text,'UTF8')),'hex')";
+            +"(SELECT jsonb_agg(to_jsonb(x) ORDER BY roleid,member,grantor) FROM pg_catalog.pg_auth_members x))::text,'UTF8')),'hex'))";
     }
     private static String sourceSql(Ticket t) {
         String parties=quote(t.command.companyPartyId())+(t.logical.manufacturerParty().isKnown()?","+quote(t.logical.manufacturerParty().value()):"");
@@ -283,10 +293,11 @@ pg_catalog.current_setting('transaction_isolation')='read committed' AND pg_cata
     @Override public void freeze(Admission a,Origin origin,List<ProtectedRelationFence> fences) {
         try {
             var t=ticket(a);if(t.frozen || t.state==null || origin.backendPid()!=t.pid || origin.transactionId()!=t.xid)throw invalid();
-            catalog();checkCoordinates(t);if(!t.state.equals(state(t)))throw invalid();
+            catalog(t);
             if(fences.stream().map(ProtectedRelationFence::relation).distinct().count()!=fences.size() || !fences.containsAll(finalFences(t)))throw invalid();
-            if(!t.baselineFences.equals(fences) || !t.initialCatalog.equals(jdbc.queryForObject("SELECT "+catalogImage(fences),String.class))
-                || !t.initialSources.equals(jdbc.queryForObject("SELECT "+sourceSql(t),String.class)))throw invalid();
+            if(!t.baselineFences.equals(fences) || !Boolean.TRUE.equals(jdbc.queryForObject(
+                "SELECT "+stateSql(t)+"=? AND "+catalogImage(fences)+"=? AND "+sourceSql(t)+"=?",
+                Boolean.class,t.state,t.initialCatalog,t.initialSources)))throw invalid();
             t.origin=origin;t.fences=List.copyOf(fences);t.catalog=t.initialCatalog;t.frozen=true;
         }catch(RuntimeException failure){reject(a);throw failure;}
     }

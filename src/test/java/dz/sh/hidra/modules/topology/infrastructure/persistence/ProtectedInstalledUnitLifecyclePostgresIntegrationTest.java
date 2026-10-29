@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedInstalledUnitLifecyclePostgresIntegrationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-28
+ * @UpdatedOn   : 2026-10-29
  *
  * @Type        : Class
  * @Layer       : Topology Test
@@ -978,6 +978,24 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
         assertThatThrownBy(()->lifecycle.execute(record)).isInstanceOf(RuntimeException.class);assertThat(effects()).isEqualTo(before);
     }
 
+    @Test void setBasedLockObservationRequiresEveryExactRelationAndMode() throws Exception {
+        // Isolated native SQL proof; this administrative connection grants no lifecycle authority.
+        var method=dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.JdbcProtectedInstalledUnitRepositoryAdapter.class
+            .getDeclaredMethod("held",List.class);method.setAccessible(true);
+        var unit=new dz.sh.hidra.platform.persistence.ProtectedRelationFence("public.hidra_topology_installed_unit",dz.sh.hidra.platform.persistence.ProtectedRelationFence.Mode.ACCESS_SHARE);
+        var installation=new dz.sh.hidra.platform.persistence.ProtectedRelationFence("public.hidra_topology_installed_unit_installation",dz.sh.hidra.platform.persistence.ProtectedRelationFence.Mode.ACCESS_SHARE);
+        try(var connection=DriverManager.getConnection(POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword());var statement=connection.createStatement()) {
+            connection.setAutoCommit(false);statement.execute("LOCK TABLE public.hidra_topology_installed_unit,public.hidra_topology_installed_unit_installation IN ACCESS SHARE MODE NOWAIT");
+            try(var result=statement.executeQuery("SELECT "+method.invoke(null,List.of(unit,installation)))){assertThat(result.next()).isTrue();assertThat(result.getBoolean(1)).isTrue();}
+            var wrongMode=new dz.sh.hidra.platform.persistence.ProtectedRelationFence(unit.relation(),dz.sh.hidra.platform.persistence.ProtectedRelationFence.Mode.SHARE_ROW_EXCLUSIVE);
+            try(var result=statement.executeQuery("SELECT "+method.invoke(null,List.of(wrongMode,installation)))){assertThat(result.next()).isTrue();assertThat(result.getBoolean(1)).isFalse();}
+            var missing=new dz.sh.hidra.platform.persistence.ProtectedRelationFence("public.hidra_topology_installed_unit_operation_request",dz.sh.hidra.platform.persistence.ProtectedRelationFence.Mode.SHARE_ROW_EXCLUSIVE);
+            try(var result=statement.executeQuery("SELECT "+method.invoke(null,List.of(unit,installation,missing)))){assertThat(result.next()).isTrue();assertThat(result.getBoolean(1)).isFalse();}
+            var duplicate=org.junit.jupiter.api.Assertions.assertThrows(java.lang.reflect.InvocationTargetException.class,()->method.invoke(null,List.of(unit,unit)));
+            assertThat(duplicate.getCause()).isInstanceOf(IllegalStateException.class);connection.rollback();
+        }
+    }
+
     @Test void expiredFinalBoundRollsBackProvisionalRootAndReceipt() {
         var f=fixture("LOCAL");var p=place();var u=unit(p);var c=register(u);authorize(f,c);login(f);String before=effects();
         doAnswer(inv->{
@@ -1085,7 +1103,9 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
         var f=fixture("LOCAL");var p=place();var u=unit(p);var c=register(u);authorize(f,c);login(f);String before=effects();
         doAnswer(inv->{
             var connection=org.springframework.jdbc.datasource.DataSourceUtils.getConnection(jdbc.getDataSource());
-            assertThatThrownBy(connection::setSavepoint).isInstanceOf(RuntimeException.class);
+            var rejected=org.junit.jupiter.api.Assertions.assertThrows(SQLException.class,connection::setSavepoint);
+            assertThat(rejected.getSQLState()).isEqualTo("25000");
+            assertThat(rejected).hasMessageContaining("savepoint/abort prohibited");
             return inv.callRealMethod();
         }).when(admissionCoordinator).prepareFinal(any());
         try{assertThatThrownBy(()->lifecycle.execute(c)).isInstanceOf(RuntimeException.class);verify(admissionCoordinator).prepareFinal(any());}finally{reset(admissionCoordinator);}

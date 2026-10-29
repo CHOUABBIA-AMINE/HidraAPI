@@ -8873,6 +8873,7 @@
         "overlapDuringRelocationRollsBackClosureEventAndReceipt",
         "rolePrivilegeChangeAfterFreezeIsRejectedByFinalCatalogImage",
         "scopedRevocationDeniesFreshReadsAndExactReplayWithoutEffects",
+        "setBasedLockObservationRequiresEveryExactRelationAndMode",
         "sourceGenerationChangeAfterFreezeCannotPassFinalGuard",
         "sqlAfterRealFinalGuardPoisonsCommitInsteadOfReturningSuccess",
         "staleRevisionAndConflictingRequestIdentityLeaveNoExtraEvidence",
@@ -8886,7 +8887,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedInstalledUnitLifecyclePostgresIntegrationTest.java",
-      "source_sha256": "ec57fbc5a8392db56aa24c997d9892e623d3bcf818d19ae0542f7b1679b41c02",
+      "source_sha256": "9f1368afff2cb11a1ba16ddf00f8808b2ce8a7bca95149a582ab7322e80660e5",
       "supports": []
     },
     {

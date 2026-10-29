@@ -200,7 +200,7 @@ public class JdbcTopologyInstalledUnitCompanyEvidenceAdapter implements Topology
             // Admission SELECTs must use executeQuery; consume the helper's single void row.
             jdbc.queryForObject("SELECT " + OWNER_LOCK, (row,n) -> Boolean.TRUE);
             jdbc.execute("LOCK TABLE "+GENERATION+" IN ACCESS SHARE MODE NOWAIT");
-            checkCatalog();check(HELD);
+            checkCatalog(true);
             var ticket=jdbc.queryForObject("SELECT pg_catalog.pg_backend_pid(),pg_catalog.txid_current(),current_user",
                 (row,n)->new Ticket(id,holder,row.getInt(1),row.getLong(2),row.getString(3)));
             if(ticket==null)throw invalid();
@@ -212,20 +212,20 @@ public class JdbcTopologyInstalledUnitCompanyEvidenceAdapter implements Topology
         try {
             var ticket=ticket(admission);
             if(!ticket.used.compareAndSet(false,true))throw invalid();
-            checkCatalog();check(HELD);var image=image(ticket);ticket.image=image;
-            ticket(admission);checkCatalog();check(HELD);return image.contribution();
+            var image=image(ticket);ticket.image=image;
+            ticket(admission);return image.contribution();
         }catch(RuntimeException failure){poison(admission);throw failure;}
     }
     @Override public void requireCurrent(Admission admission) {
         try {
-            var ticket=ticket(admission);checkCatalog();check(HELD);
+            var ticket=ticket(admission);
             if(ticket.image==null || !ticket.image.equals(image(ticket)))throw invalid();
-            ticket(admission);checkCatalog();check(HELD);
+            ticket(admission);
         }catch(RuntimeException failure){poison(admission);throw failure;}
     }
     @Override public List<ProtectedRelationFence> finalFences(Admission admission) {
         try {
-            ticket(admission);checkCatalog();check(HELD);
+            ticket(admission);
             return List.of(new ProtectedRelationFence(PARTY,ProtectedRelationFence.Mode.SHARE_ROW_EXCLUSIVE),
                 new ProtectedRelationFence(ROLE,ProtectedRelationFence.Mode.SHARE_ROW_EXCLUSIVE),
                 new ProtectedRelationFence(ASSIGNMENT,ProtectedRelationFence.Mode.SHARE_ROW_EXCLUSIVE),
@@ -249,7 +249,8 @@ public class JdbcTopologyInstalledUnitCompanyEvidenceAdapter implements Topology
         var holder=context();
         if(!(admission instanceof Ticket t) || t.issuer!=this || !t.active || t.thread!=Thread.currentThread()
             || t.holder!=holder || t.connection!=holder.getConnection())throw invalid();
-        if(!Boolean.TRUE.equals(jdbc.queryForObject("SELECT pg_catalog.pg_backend_pid()=? AND pg_catalog.txid_current()=? AND current_user=?",
+        trustedSearchPath();
+        if(!Boolean.TRUE.equals(jdbc.queryForObject(catalogSql(true)+" AND pg_catalog.pg_backend_pid()=? AND pg_catalog.txid_current()=? AND current_user=?",
             Boolean.class,t.pid,t.xid,t.role)))throw invalid();return t;
     }
     private ConnectionHolder context() {
@@ -262,10 +263,17 @@ public class JdbcTopologyInstalledUnitCompanyEvidenceAdapter implements Topology
         }catch(java.sql.SQLException failure){throw invalid();}
         return holder;
     }
-    private void checkCatalog() {
+    // The same fail-closed predicates share one snapshot/round trip; no result is cached.
+    private void checkCatalog() { checkCatalog(false); }
+    private void checkCatalog(boolean fences) { trustedSearchPath();check(catalogSql(fences)); }
+    // Validate name resolution before parsing predicates containing existing unqualified built-in names.
+    private void trustedSearchPath() {
         String schemas=jdbc.queryForObject("SELECT pg_catalog.array_to_json(pg_catalog.current_schemas(true))::pg_catalog.text",String.class);
         if(schemas==null || !(schemas.equals("[\"pg_catalog\"]") || schemas.startsWith("[\"pg_catalog\",")))throw invalid();
-        check(GUARD);check(OWNER_LOCK_GUARD);
+    }
+    private static String catalogSql(boolean fences) {
+        return "SELECT ("+GUARD+") AND ("+OWNER_LOCK_GUARD+")"
+            +(fences?" AND ("+HELD+")":"");
     }
     private void check(String sql){if(!Boolean.TRUE.equals(jdbc.queryForObject(sql,Boolean.class)))throw invalid();}
     private static String exact(String id) {

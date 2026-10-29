@@ -4395,6 +4395,103 @@ unaccepted pending runtime and dictionary gates; HAPI-599's integrated frozen
 NOT_IMPLEMENTED/BLOCKED baseline remains. Further hosted failures select repair,
 never an automatic budget increase, skipped test or dependent implementation.
 
+### HAPI-599 Package B — observed work-cap query repair — 2026-10-29
+
+**Exact-head failure.** Owner Fail selects main
+`3d3c31d77b845e7d54358a228b51bda014080935`. Full964/run `40816904394` failed;
+Fast264/run `40816904518` and Docs696/run `40816904848` succeeded. Unit/architecture
+and nine PostgreSQL shards passed, establishing that the preceding exact export
+and executeQuery fixes cleared their demonstrated gates. PostgreSQL shard8/job
+`123259994582` executed204 cases,3 failures/11 errors, all14 in the new lifecycle
+suite. Eleven error traces explicitly report the aggregate500ms cap, including
+222 statements/507.7ms in PROVISIONAL,297 statements/509–532ms in FLUSHING,
+298 statements/592–610ms in SEALED and343 statements/542ms for known manufacturer.
+Two assertions could not reach finalGuard. The savepoint case reached its fault
+callback but incorrectly expected RuntimeException: the datasource correctly
+rejected setSavepoint with SQLException/SQLSTATE25000, savepoint/abort prohibited.
+This is an assertion-type defect, separate from the observed work-cap overruns.
+
+**Registered bounded repair.** Exact message:
+`perf(topology): batch installed-unit admission catalog observations`.
+CREATE/DELETE none. MODIFY only these seven existing paths:
+
+- src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JdbcTopologyInstalledUnitCompanyEvidenceAdapter.java
+- src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JdbcTopologyInstalledUnitManufacturerEvidenceAdapter.java
+- src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcInstalledUnitPositionOwnershipAdapter.java
+- src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcProtectedInstalledUnitRepositoryAdapter.java
+- src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedInstalledUnitLifecyclePostgresIntegrationTest.java
+- .github/ci-test-inventory.json
+- doc/roadmap/TASKS_HPS-006.md
+
+The narrow existing-provider amendment permits batching current observations only.
+Their complete GUARD, OWNER_LOCK_GUARD, HELD and EVIDENCE literals remain byte-exact.
+At acquisition, catalog/helper predicates share a scalar query; post-lock
+observation also requires the existing held-fence predicate. Every consumed ticket
+checks issuer/thread/holder/connection locally, validates trusted search path in a
+separate fully qualified query before parsing predicates with existing unqualified
+built-in names, then observes PID/XID/role, catalog/helper and held fences together. Read/current methods still
+check before and after the evidence read; no observation is cached or waived.
+Manufacturer's post-read/fence observations now also check trusted search path.
+Company/position image and generation comparisons, all failure poisoning and SQL-free
+synchronizations remain. No public contract, helper body, grant or lock acquisition
+order/mode changes. The coordinator's initial qualification, fence union and full
+before-DML/after-flush owner rechecks remain byte-exact.
+
+Storage preserves the separate trusted search-path preflight and combines its
+catalog/role and ticket-coordinate/owned-fence checks into one current query. Freeze compares owned-state, source and catalog
+images in one statement, preserving all three comparisons and baseline fence equality.
+Held-lock observation matches a VALUES relation/mode set against one pg_locks
+reference and counts distinct required relation identities, rejecting empty/duplicate
+requirements and accepting only the exact retained modes. Catalog imaging materializes
+the required relation OIDs once per observation instead of repeating every lookup
+across class/constraint/trigger/function subqueries. All original catalog fields,
+role/member images, sorting, source and owned-state content remain. The final
+statement still rechecks all retained evidence and one strict native clock sample;
+no SQL is introduced after sealing. Four DML templates/hashes remain byte-exact.
+
+**Regression and limit.** Correct only the existing swallowed-savepoint assertion to
+SQLException, exact25000 and the rejection message; its outer execution rejection,
+callback verification and no-effects checks remain. Add one native PostgreSQL case
+for the optimized lock observation: all exact requirements succeed, wrong mode and
+an additional unheld relation fail, and duplicate requirements reject before query.
+Its separate administrative connection is isolated SQL evidence, not lifecycle
+authority. All existing22 lifecycle cases remain mandatory; the suite now has23.
+Inventory changes only its actual source hash/case list, retaining timings,
+classification and ten-shard scheduling. Active inventory remains500 classes,
+now3,736 cases; no skip, reclassification or workflow modification.
+
+The observed500ms cap is a finite server work policy, independently reviewed in the
+prior owner-requested policy record; it does not extend native evidence validity.
+This repair targets avoidable query work and preserves that cap, custody/appointment
+budgets, datasource enforcement and final authority deadlines. New runtime timing
+and a successful complete lifecycle remain unproved until hosted CI; do not claim
+that batching has already met the cap or that all later failures are known.
+
+**Dictionary/acceptance hold.** The API lane's capture log reports186 migrations,
+470 mappings,532 relations, zero unresolved owners on PostgreSQL16.15; reviewed
+strict comparison remains pending. Source bundle efd5680512a4a8627dfc4ea5ae27a1725089963f7bf5f646079f6d3699383ec4;
+catalog3cd3c3a55b73b62548f511211878c602779b9e02d29cf4c1dc183f5af9856e43;
+generated dictionary a8381307b9838b1bb7112861e0e14b56774df114558ec37b52c356411b900c72.
+These are log observations, not independently verified artifacts. Preserve the
+physical dictionary until the registered genuine-catalog verification/refresh under
+`docs(topology): refresh protected installed-unit operations physical dictionary`.
+No generator, immutable migration or acceptance waiver. Writer and integrated
+HAPI-599 remain unaccepted; Package C/API, dependent tasks, frontend, simulation/P3,
+SITE, releases and deployment are not selected.
+
+**Actual local validation.** Five changed Java sources parse under available Java17.
+Actual writer, three changed owner adapters and their domain/public-contract sources
+compile against minimal framework API stubs; five actual codec/canonical/pin probes
+pass. Nine actual forensic source-check methods pass with a minimal assertion harness.
+These are limited source/logic checks, not full Java21/Spring/JUnit/PostgreSQL proof.
+Inventory, documentation/link validation, offline OpenAPI and125 validator self-tests
+pass (35 inventory,53 full-evidence,18 dictionary,19 docs). Focused Maven exits127,
+mvn: command not found. No environment is provisioned for local verification.
+Check seven-file scope, preserved guards/pins/migrations/dictionary/budgets and
+whitespace; publish verified tree/blobs/parent to main with expected-head guard,
+observe applicable exact-SHA CI creation/start and STOP. Further failures require
+repair before independent runtime/catalog acceptance or dependent work.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

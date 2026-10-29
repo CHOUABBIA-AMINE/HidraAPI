@@ -181,7 +181,7 @@ public class JdbcInstalledUnitPositionOwnershipAdapter implements InstalledUnitP
             // Admission SELECTs must use executeQuery; consume the helper's single void row.
             jdbc.queryForObject("SELECT " + OWNER_LOCK, (row,n) -> Boolean.TRUE);
             jdbc.execute("LOCK TABLE "+GENERATION+" IN ACCESS SHARE MODE NOWAIT");
-            checkCatalog();check(HELD);
+            checkCatalog(true);
             var ticket=jdbc.queryForObject("SELECT pg_catalog.pg_backend_pid(),pg_catalog.txid_current(),current_user",
                 (row,n)->new Ticket(id,holder,row.getInt(1),row.getLong(2),row.getString(3)));
             if(ticket==null)throw invalid();
@@ -195,7 +195,7 @@ public class JdbcInstalledUnitPositionOwnershipAdapter implements InstalledUnitP
             var ticket=ticket(admission);
             if(!ticket.used.compareAndSet(false,true))throw invalid();
             var image=image(ticket);ticket.image=image;
-            ticket(admission);checkCatalog();check(HELD);return image.contribution();
+            ticket(admission);return image.contribution();
         }catch(RuntimeException failure){poison(admission);throw failure;}
     }
     @Override
@@ -203,20 +203,19 @@ public class JdbcInstalledUnitPositionOwnershipAdapter implements InstalledUnitP
         try {
             var ticket=ticket(admission);
             if(ticket.image==null || !ticket.image.equals(image(ticket)))throw invalid();
-            ticket(admission);checkCatalog();check(HELD);
+            ticket(admission);
         }catch(RuntimeException failure){poison(admission);throw failure;}
     }
     @Override
     public List<ProtectedRelationFence> finalFences(Admission admission) {
         try {
-            ticket(admission);checkCatalog();check(HELD);
+            ticket(admission);
             return List.of(new ProtectedRelationFence(EQUIPMENT,ProtectedRelationFence.Mode.SHARE_ROW_EXCLUSIVE),
                 new ProtectedRelationFence(FACILITY,ProtectedRelationFence.Mode.SHARE_ROW_EXCLUSIVE),
                 new ProtectedRelationFence(GENERATION,ProtectedRelationFence.Mode.ACCESS_SHARE));
         }catch(RuntimeException failure){poison(admission);throw failure;}
     }
     private Image image(Ticket ticket) {
-        checkCatalog();check(HELD);
         var rows=jdbc.query(EVIDENCE,(row,n)->{
             if(!ticket.id.equals(row.getString("position_id")) || row.getString("node_id")!=null || row.getString("pipeline_segment_id")!=null
                 || !row.getBoolean("present") || row.getLong("generation")<=0)throw invalid();
@@ -236,7 +235,8 @@ public class JdbcInstalledUnitPositionOwnershipAdapter implements InstalledUnitP
         var holder=context();
         if(!(admission instanceof Ticket t) || t.issuer!=this || !t.active || t.thread!=Thread.currentThread()
             || t.holder!=holder || t.connection!=holder.getConnection())throw invalid();
-        if(!Boolean.TRUE.equals(jdbc.queryForObject("SELECT pg_catalog.pg_backend_pid()=? AND pg_catalog.txid_current()=? AND current_user=?",
+        trustedSearchPath();
+        if(!Boolean.TRUE.equals(jdbc.queryForObject(catalogSql(true)+" AND pg_catalog.pg_backend_pid()=? AND pg_catalog.txid_current()=? AND current_user=?",
             Boolean.class,t.pid,t.xid,t.role)))throw invalid();return t;
     }
     private ConnectionHolder context() {
@@ -245,10 +245,17 @@ public class JdbcInstalledUnitPositionOwnershipAdapter implements InstalledUnitP
             || !(TransactionSynchronizationManager.getResource(source) instanceof ConnectionHolder holder) || holder.isRollbackOnly())throw invalid();
         return holder;
     }
-    private void checkCatalog() {
+    // The same fail-closed predicates share one snapshot/round trip; no result is cached.
+    private void checkCatalog() { checkCatalog(false); }
+    private void checkCatalog(boolean fences) { trustedSearchPath();check(catalogSql(fences)); }
+    // Validate name resolution before parsing predicates containing existing unqualified built-in names.
+    private void trustedSearchPath() {
         String schemas=jdbc.queryForObject("SELECT pg_catalog.array_to_json(pg_catalog.current_schemas(true))::pg_catalog.text",String.class);
         if(schemas==null || !(schemas.equals("[\"pg_catalog\"]") || schemas.startsWith("[\"pg_catalog\",")))throw invalid();
-        check(GUARD);check(OWNER_LOCK_GUARD);
+    }
+    private static String catalogSql(boolean fences) {
+        return "SELECT ("+GUARD+") AND ("+OWNER_LOCK_GUARD+")"
+            +(fences?" AND ("+HELD+")":"");
     }
     private void check(String sql) { if(!Boolean.TRUE.equals(jdbc.queryForObject(sql,Boolean.class)))throw invalid(); }
     private static String exact(String id) {

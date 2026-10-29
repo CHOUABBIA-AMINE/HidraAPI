@@ -203,16 +203,12 @@ public class JdbcTopologyInstalledUnitManufacturerEvidenceAdapter
         try {
             String id = exact(manufacturerPartyId);
             ConnectionHolder holder = context();
-            trustedSearchPath();
             // Validate the fixed owner capability before invoking it; ordinary reader keeps no DML.
-            check(GUARD);
-            check(OWNER_LOCK_GUARD);
+            checkCatalog(false);
             // Admission SELECTs must use executeQuery; consume the helper's single void row.
             jdbc.queryForObject("SELECT " + OWNER_LOCK, (row,n) -> Boolean.TRUE);
             jdbc.execute("LOCK TABLE " + GENERATION + " IN ACCESS SHARE MODE NOWAIT");
-            check(GUARD);
-            check(OWNER_LOCK_GUARD);
-            check(HELD);
+            checkCatalog(true);
             Ticket ticket = jdbc.queryForObject(
                     "SELECT pg_catalog.pg_backend_pid(),pg_catalog.txid_current(),current_user",
                     (row,n) -> new Ticket(id,holder,holder.getConnection(),row.getInt(1),
@@ -232,10 +228,6 @@ public class JdbcTopologyInstalledUnitManufacturerEvidenceAdapter
         try {
             Ticket ticket = ticket(admission);
             if (!ticket.used.compareAndSet(false,true)) throw invalid();
-            trustedSearchPath();
-            check(GUARD);
-            check(OWNER_LOCK_GUARD);
-            check(HELD);
             List<Contribution> rows = jdbc.query(EVIDENCE,(row,n) -> {
                 if (!ticket.id.equals(row.getString("party_id"))
                         || !row.getBoolean("present")
@@ -266,9 +258,6 @@ public class JdbcTopologyInstalledUnitManufacturerEvidenceAdapter
             },ticket.id);
             if (rows.size()!=1) throw invalid(); // Missing, duplicate role or profile: never guess.
             ticket(admission); // Recheck physical transaction, owner capability and fences before disclosure.
-            check(GUARD);
-            check(OWNER_LOCK_GUARD);
-            check(HELD);
             return rows.get(0);
         } catch (RuntimeException failure) {
             rollback();
@@ -281,9 +270,6 @@ public class JdbcTopologyInstalledUnitManufacturerEvidenceAdapter
     public List<ProtectedRelationFence> finalFences(Admission admission) {
         try {
             ticket(admission);
-            check(GUARD);
-            check(OWNER_LOCK_GUARD);
-            check(HELD);
             return List.of(
                     new ProtectedRelationFence(PARTY,ProtectedRelationFence.Mode.SHARE_ROW_EXCLUSIVE),
                     new ProtectedRelationFence(ROLE,ProtectedRelationFence.Mode.SHARE_ROW_EXCLUSIVE),
@@ -302,8 +288,9 @@ public class JdbcTopologyInstalledUnitManufacturerEvidenceAdapter
                 || ticket.issuer!=this || !ticket.active || ticket.thread!=Thread.currentThread()
                 || ticket.holder!=holder || ticket.connection!=holder.getConnection())
             throw invalid();
+        trustedSearchPath();
         if (!Boolean.TRUE.equals(jdbc.queryForObject(
-                "SELECT pg_catalog.pg_backend_pid()=? AND pg_catalog.txid_current()=? AND current_user=?",
+                catalogSql(true)+" AND pg_catalog.pg_backend_pid()=? AND pg_catalog.txid_current()=? AND current_user=?",
                 Boolean.class,ticket.pid,ticket.xid,ticket.role))) throw invalid();
         return ticket;
     }
@@ -317,12 +304,16 @@ public class JdbcTopologyInstalledUnitManufacturerEvidenceAdapter
         return holder;
     }
 
+    // Preserve catalog, helper, search-path and held-fence checks in one current snapshot.
+    private void checkCatalog(boolean fences) { trustedSearchPath();check(catalogSql(fences)); }
+    // Validate name resolution before parsing predicates containing existing unqualified built-in names.
     private void trustedSearchPath() {
-        String schemas = jdbc.queryForObject(
-                "SELECT pg_catalog.array_to_json(pg_catalog.current_schemas(true))::pg_catalog.text",
-                String.class);
-        if (schemas==null || !(schemas.equals("[\"pg_catalog\"]")
-                || schemas.startsWith("[\"pg_catalog\","))) throw invalid();
+        String schemas=jdbc.queryForObject("SELECT pg_catalog.array_to_json(pg_catalog.current_schemas(true))::pg_catalog.text",String.class);
+        if(schemas==null || !(schemas.equals("[\"pg_catalog\"]") || schemas.startsWith("[\"pg_catalog\",")))throw invalid();
+    }
+    private static String catalogSql(boolean fences) {
+        return "SELECT ("+GUARD+") AND ("+OWNER_LOCK_GUARD+")"
+            +(fences?" AND ("+HELD+")":"");
     }
     private void check(String sql) {
         if (!Boolean.TRUE.equals(jdbc.queryForObject(sql,Boolean.class))) throw invalid();

@@ -1149,6 +1149,177 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
         assertThat(admin().queryForObject("SELECT effective_until IS NULL AND revision=1 FROM public.hidra_topology_installed_unit_installation WHERE installation_id=?",Boolean.class,r.command().installationId())).isTrue();
         assertThat(admin().queryForObject("SELECT count(*) FROM public.hidra_topology_installed_unit_installation WHERE installation_id=?",Integer.class,r.command().replacementInstallationId())).isZero();
     }
+    // Package C uses the same fresh-schema/native-issuer fixture already verified for the B writer.
+    // The real Spring Security filter processes genuine bearer tokens; no mock authentication.
+    @Autowired org.springframework.web.context.WebApplicationContext installedHttpContext;
+    private org.springframework.test.web.servlet.MockMvc installedMvc;
+    private org.springframework.test.web.servlet.MockMvc installedMvc() {
+        if(installedMvc==null)
+            installedMvc=org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup(installedHttpContext)
+                .apply(org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity()).build();
+        return installedMvc;
+    }
+    private String installedBearer(Fixture actor,InstalledUnitLifecycleUseCase.Command command) {
+        authorize(actor,command);
+        login(actor); // LOCAL, LDAP, AD and OIDC use their accepted native producer fixtures.
+        var jwt=(org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken)
+                SecurityContextHolder.getContext().getAuthentication();
+        return jwt.getToken().getTokenValue();
+    }
+    private org.springframework.test.web.servlet.ResultActions installedHttp(String bearer,
+            InstalledUnitLifecycleUseCase.Command c) throws Exception {
+        String base="/api/v1/topology/installed-units/"+c.unitId();
+        String item=base+"/installations/"+c.installationId();
+        org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder request;
+        Map<String,Object> body=new LinkedHashMap<>();
+        if(c.requestId()!=null)body.put("requestId",c.requestId());
+        body.put("companyPartyId",c.companyPartyId());
+        switch(c.operation()) {
+            case REGISTER_UNIT -> {
+                request=org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put(base);
+                body.put("equipmentKindId",c.registration().equipmentKindId());
+                var unknown=Map.of("verification","UNKNOWN");
+                body.put("manufacturerParty",unknown);
+                body.put("manufacturerModel",unknown);
+                body.put("serialNumber",unknown);
+            }
+            case READ_UNIT -> request=org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(base)
+                .param("companyPartyId",c.companyPartyId());
+            case RECORD_INSTALLATION -> {
+                request=org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(base+"/installations");
+                body.put("installationId",c.installationId());
+                body.put("positionId",c.destination().positionId());
+                body.put("facilityId",c.destination().facilityId());
+                body.put("effectiveFrom",c.effectiveFrom().toString());
+                if(c.effectiveUntil()!=null)body.put("effectiveUntil",c.effectiveUntil().toString());
+                body.put("evidenceReference",c.evidenceReference());
+            }
+            case CLOSE_INSTALLATION -> {
+                request=org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(item+"/close");
+                body.put("positionId",c.source().positionId());
+                body.put("facilityId",c.source().facilityId());
+                body.put("effectiveUntil",c.effectiveUntil().toString());
+                body.put("expectedRevision",c.expectedRevision());
+            }
+            case RELOCATE -> {
+                request=org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(item+"/relocate");
+                body.put("replacementInstallationId",c.replacementInstallationId());
+                body.put("sourcePositionId",c.source().positionId());
+                body.put("sourceFacilityId",c.source().facilityId());
+                body.put("destinationPositionId",c.destination().positionId());
+                body.put("destinationFacilityId",c.destination().facilityId());
+                body.put("effectiveAt",c.effectiveFrom().toString());
+                body.put("evidenceReference",c.evidenceReference());
+                body.put("expectedRevision",c.expectedRevision());
+            }
+            case REPLACE -> {
+                request=org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(item+"/replace");
+                body.put("replacementUnitId",c.replacementUnitId());
+                body.put("replacementInstallationId",c.replacementInstallationId());
+                body.put("positionId",c.source().positionId());
+                body.put("facilityId",c.source().facilityId());
+                body.put("effectiveAt",c.effectiveFrom().toString());
+                body.put("evidenceReference",c.evidenceReference());
+                body.put("expectedRevision",c.expectedRevision());
+            }
+            case READ_INSTALLATION,READ_HISTORY -> request=org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(
+                    item+(c.operation()==InstalledUnitLifecycleUseCase.Operation.READ_HISTORY?"/history":""))
+                .param("companyPartyId",c.companyPartyId()).param("positionId",c.source().positionId())
+                .param("facilityId",c.source().facilityId());
+            default -> throw new IllegalArgumentException("Unregistered HTTP operation");
+        }
+        if(c.requestId()!=null)request.contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                .content(JSON.writeValueAsString(body));
+        if(bearer!=null)request.header("Authorization","Bearer "+bearer);
+        // No ambient JwtAuthenticationToken is trusted by MockMvc.
+        SecurityContextHolder.clearContext();
+        return installedMvc().perform(request);
+    }
+    private org.springframework.test.web.servlet.ResultActions installedHttp(Fixture actor,
+            InstalledUnitLifecycleUseCase.Command command) throws Exception {
+        return installedHttp(installedBearer(actor,command),command);
+    }
+
+    @Test void installedUnitHttpLifecycleCrossesRealBearerSecurityAndNativeFences() throws Exception {
+        for(String type:List.of("LOCAL","LDAP","ACTIVE_DIRECTORY","OIDC")) {
+            cleanEvidence();
+            Fixture actor=fixture(type);
+            Place p=place(),q=other(p);
+            InstalledUnit first=unit(p),replacement=unit(p);
+            var reg=register(first);
+            installedHttp(actor,reg).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+                    .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.unit.id").value(first.id()));
+            installedHttp(actor,reg).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+                    .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.replayed").value(true));
+            installedHttp(actor,read(first)).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
+            String firstInstallation=id(),movedInstallation=id();
+            var placed=record(first,p,firstInstallation);
+            installedHttp(actor,placed).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
+            for(var operation:List.of(InstalledUnitLifecycleUseCase.Operation.READ_INSTALLATION,
+                    InstalledUnitLifecycleUseCase.Operation.READ_HISTORY)) {
+                var c=new InstalledUnitLifecycleUseCase.Command(operation,null,COMPANY,first.id(),
+                    firstInstallation,null,pos(p),null,null,null,null,null,0);
+                installedHttp(actor,c).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
+            }
+            var move=new InstalledUnitLifecycleUseCase.Command(InstalledUnitLifecycleUseCase.Operation.RELOCATE,
+                    id(),COMPANY,first.id(),firstInstallation,movedInstallation,pos(p),pos(q),null,
+                    START.plusSeconds(10),START.plusSeconds(10),"synthetic HTTP relocation",1);
+            installedHttp(actor,move).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
+            var close=new InstalledUnitLifecycleUseCase.Command(InstalledUnitLifecycleUseCase.Operation.CLOSE_INSTALLATION,
+                    id(),COMPANY,first.id(),movedInstallation,null,pos(q),null,null,null,START.plusSeconds(20),null,1);
+            installedHttp(actor,close).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
+
+            var secondRegister=register(replacement);
+            installedHttp(actor,secondRegister).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
+            String replacementSourceInstallation=id();
+            installedHttp(actor,record(replacement,p,replacementSourceInstallation))
+                    .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
+            InstalledUnit third=unit(p);
+            installedHttp(actor,register(third)).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
+            var exchange=replace(replacement,third,p,replacementSourceInstallation);
+            installedHttp(actor,exchange).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+                    .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.replacementUnit.id").value(third.id()));
+            String after=effects();
+            installedHttp(actor,exchange).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+                    .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.replayed").value(true));
+            assertThat(effects()).isEqualTo(after);
+            assertThat(admin().queryForObject("SELECT count(*) FROM public.hidra_topology_installed_unit_operation_request WHERE request_id=?",Long.class,exchange.requestId())).isEqualTo(1);
+        }
+    }
+
+    @Test void installedUnitHttpBearerDenialAndRevocationHideEvidence() throws Exception {
+        var f=fixture("LOCAL");var p=place();var u=unit(p);var registration=register(u);
+        installedHttp(f,registration).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
+        var read=read(u);
+        String valid=installedBearer(f,read);
+        installedHttp(valid,read).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
+        String before=effects();
+        installedHttp(null,read).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isUnauthorized());
+        installedHttp("not.a.valid.jwt",read).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isUnauthorized());
+        jdbc.update("UPDATE public.hidra_identity_user_permission_grant SET status='REVOKED' WHERE user_id=?",f.user());
+        installedHttp(valid,read).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isForbidden());
+        installedHttp(valid,registration).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isForbidden());
+        assertThat(effects()).isEqualTo(before);
+    }
+
+    @Test void installedUnitHttpPostClosureFailureRollsBackBothPhysicalIdentities() throws Exception {
+        var r=replacementFixture("LOCAL");var c=r.command();
+        String token=installedBearer(r.actor(),c),before=effects();
+        var hit=new AtomicBoolean();
+        doAnswer(inv->{
+            String sql=inv.getArgument(0);
+            if(sql.startsWith("INSERT INTO public.hidra_topology_installed_unit_operation_request")){
+                hit.set(true);throw new IllegalStateException("synthetic HTTP post-closure fault");
+            }
+            return inv.callRealMethod();
+        }).when(jdbc).update(anyString(),any(Object[].class));
+        try {
+            installedHttp(token,c).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isServiceUnavailable());
+            assertThat(hit.get()).isTrue();
+        } finally {reset(jdbc);}
+        unchangedReplacement(r,before);
+    }
+
     @Test void atomicReplacementCommitsAndReplaysThroughAllFourGenuineNativeProducers() {
         for(String type:List.of("LOCAL","LDAP","ACTIVE_DIRECTORY","OIDC")) {
             cleanEvidence();var r=replacementFixture(type);var result=execute(r.actor(),r.command());

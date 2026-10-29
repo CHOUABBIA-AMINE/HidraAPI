@@ -6144,6 +6144,117 @@ Integrated HAPI-599 stays NOT_IMPLEMENTED/BLOCKED;
 do not advance HAPI-600/601, P3, frontend,
 industrial SITE or deployment.
 
+### HAPI-599 Package C — authenticated native HTTP lifecycle qualification slice — 2026-10-29
+
+**Owner Next — selected one bounded execution stage.** Refreshed
+main `39f6c431aebe568aea7d6cc855d9b2c53d0a18da`;
+Docs #712/run `40876941255` and Full #975/run
+`40876941249` both SUCCESS on this identical SHA.
+Full's static, Java21 unit/architecture, API contract and
+genuine dictionary comparison, all ten PostgreSQL shards and
+final evidence gate succeeded. Its standalone Maven-verify
+job remains skipped by workflow design. The source-bound
+OpenAPI snapshot repair and previous Package C MockMvc
+contracts have cleared development CI, not integrated
+HTTP qualification.
+
+**Owned boundary and technical decision.** Extend the
+*already executing* synthetic PostgreSQL16/real native
+producer fixture
+`ProtectedInstalledUnitLifecyclePostgresIntegrationTest`
+rather than clone its 1,341-line fixture, create duplicate
+owner aggregates, seed artificial production grants, or
+mock the authority use case. The test class already owns
+actual LOCAL/LDAP/ACTIVE_DIRECTORY/OIDC signed source
+producers, current permission/role/facility fences,
+separate runtime/publisher Postgres principals, actual
+issuer provenance, protected transaction/rollback,
+atomic receipt/replay verification, and specialized native
+lock/temporal negative scenarios. The new tests add the
+*actual Spring Security filter and REST transport* to
+those same native sources. Product code, security setup
+and accepted Package B invariants remain unchanged.
+
+**Exact registered change and message.**
+`test(topology): exercise installed-unit lifecycle native HTTP`.
+MODIFY exactly:
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedInstalledUnitLifecyclePostgresIntegrationTest.java`
+- `.github/ci-test-inventory.json` (the exact test-class
+  SHA256 and three new method names only; 509 classes/ten
+  PostgreSQL shards and every prior case unchanged)
+- `doc/roadmap/TASKS_HPS-006.md` (this append-only record).
+CREATE/DELETE none. No source in Identity, Party,
+Topology Domain/Application/REST production, Assets,
+migrations, SQL pins, architecture checks, CI workflows,
+security configuration, OpenAPI, physical dictionary or
+frozen ROADMAP/PHASES is modified. Package B regression
+tests retain their original assertions and semantics.
+
+**Three actual new @Test cases (41 vs 38 in this class).**
+- `installedUnitHttpLifecycleCrossesRealBearerSecurityAndNativeFences`:
+  for LOCAL, LDAP, ACTIVE_DIRECTORY and OIDC,
+  obtain the genuine signed Hidra bearer after the existing
+  producer authenticates; clear the ambient context
+  before each request; use the configured MockMvc
+  Spring Security filter. Assert protected HTTP200
+  registration and replay, unit read, exact installation
+  placement/read/history, same-unit relocation/closure
+  and distinct-unit atomic replacement/replay.
+  Assert replacement unit ID, no extra exact receipt,
+  and stable physical row counts after replay.
+- `installedUnitHttpBearerDenialAndRevocationHideEvidence`:
+  actual authenticated read succeeds; anonymous/malformed
+  bearer fail with 401, then a current native grant
+  revocation blocks both read and replay with 403 and
+  no extra physical write/events/receipts.
+- `installedUnitHttpPostClosureFailureRollsBackBothPhysicalIdentities`:
+  genuine bearer and native permission prepare,
+  inject one test-only SQLException-equivalent
+  failpoint at the real final receipt insertion,
+  assert HTTP503, actual failpoint visitation and
+  unchanged physical source closure, replacement
+  installation, events and receipts after rollback.
+  All inputs remain synthetic, with no production
+  data/import/backfill or live OT source.
+
+**Review and validation limits.** The old test class
+contained 38 distinct @Test method declarations;
+the new blob adds exactly the three named methods,
+for 41. The registry preserves all 38 prior cases,
+other 508 source-hashed classes, ten shards and
+retained test timings; the class digest derives from
+the actual submitted Java blob (SHA256
+`29ac8ff2d2d37761037a083c27d8d524fc784de6e30ef09d55a4ba36b9f0ff79`).
+Existing fixture behavior was read at the exact base
+SHA; the appended HTTP tests use actual
+`@SpringBootTest`, Testcontainers, verified native
+issuers, Jackson3 and the supported MockMvc
+`springSecurity()` setup pattern. Source/allowlist/
+case integrity checks are not Maven/JUnit execution.
+Maven, Docker and PostgreSQL runtime were unavailable
+locally; AGENTS11.1 CI-first explicitly applies.
+Run new exact-SHA Full/Fast/Docs as applicable,
+verify creation or startup and STOP without waiting.
+A green whole run is an initial development gate,
+not independent acceptance of every negative case.
+
+**Remaining Package C acceptance.** Full actual
+HTTP case results, checked authenticated owner
+revocation, protected company/resource nondisclosure,
+repeated/unknown serial provenance, concurrency
+writer-first/reader-first HTTP boundaries, exact
+indeterminate commit behavior, time/facility source
+changes, API snapshot and consumer compatibility
+must be independently reviewed. Existing Package B
+native tests cover parts of those behaviors beneath
+HTTP, and standalone MockMvc covers DTO shape,
+but neither substitutes for authenticated configured
+HTTP evidence. If new exact-SHA CI fails,
+repair the responsible tests/implementation before
+any further package acceptance. No HAPI-599 status
+closure, HAPI-600/601, frontend, simulation/P3,
+operational/SITE qualification or deployment follows.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

@@ -6479,6 +6479,153 @@ must be followed by exact-SHA workflow startup verification and STOP.
 HAPI-599 remains NOT_IMPLEMENTED/BLOCKED until Full CI and native
 lifecycle evidence pass; HAPI-600/601, P3 and deployment unselected.
 
+### HAPI-599 Package C — Full980 independent HTTP evidence review and remaining qualification — 2026-10-29
+
+**Selected single owner Next review.** Refreshed main
+1724ea1dc18a3dccf75936ca28cd1f9a733175fe, actual tree
+0808952c5de12ee129ed76f97d33595ed2f32650. Full980/run40888010859,
+Fast278/run40888010721 and Docs717/run40888010772 all SUCCESS on that exact source.
+Recover the actual current sources, rather than the older99704af local checkpoint;
+the recovered complete tree matches GitHub byte-exact before review. This stage's
+exact message is `docs(topology): review native installed-unit HTTP acceptance`.
+MODIFY only this append-only phase; CREATE/DELETE none. No runtime task executes here.
+
+**Independently reproduced aggregate.** Genuine Full980 aggregate artifact12903188259,
+hidra-full-ci-evidence-1724ea1dc18a3dccf75936ca28cd1f9a733175fe-40888010859-1,
+has verified ZIP SHA256
+2b87eb2e7b76163a8aaa1d9fa52669269806fd83887707b212810f675421e549.
+The unchanged source-matched aggregator independently reproduces gate.json exactly,
+SHA2566f3a0f07e990160e87af3162321e658b6232c3f958443125d2ceb58eef2d2a0d.
+It verifies505 active classes/3,799 exact cases, zero failures/errors/skips, all ten
+PostgreSQL shards and every mandatory lane at run attempt1. The inventory has509
+registered classes INCLUDING four owner-approved historical exclusions; references
+to509 classes are not evidence of509 executed classes. No classifier, case, timing,
+shard or exclusion change is made. Development partitioned/cached evidence retains
+serial_oracle=false, same_run_equivalence=false and release_eligible=false.
+No serial-oracle, deployment, real-world or release qualification is inferred.
+
+**Raw case/source reconciliation.** ProtectedInstalledUnitLifecyclePostgresIntegrationTest
+has41 passing cases/207.459s: the38 retained native writer cases plus these three
+actual Spring Security/MockMvc/native-owner/PostgreSQL HTTP cases:
+
+| Exact case | Runtime | Verified bounded behavior |
+|---|---|---|
+| installedUnitHttpLifecycleCrossesRealBearerSecurityAndNativeFences | 28.900s | All eight operations through genuine LOCAL/LDAP/AD/OIDC bearer sources; registration and replacement replay, one replacement receipt and no replay effects |
+| installedUnitHttpBearerDenialAndRevocationHideEvidence | 1.788s | Anonymous and malformed bearer401; current native grant revocation403 for read and replay; no extra effects |
+| installedUnitHttpPostClosureFailureRollsBackBothPhysicalIdentities | 2.588s | Actual receipt-insert fault reached after replacement writes; HTTP503 and rollback of source closure, replacement, events and receipt |
+
+The positive chronology retains immutable nonoverlap: first position occupancy
+[START,START+10), replacement source[START+10,START+20), final unit[START+20,+infinity).
+One genuine bearer per producer is reused; every command still checks current native
+scope. The collector's1024-entry bound and retained authentication provenance remain
+unchanged. No original authentication evidence is deleted to obtain these passes.
+
+Other actual passing reports: controller5/0.111s, mapper5/0.008s, typed exception
+handler3/0.003s, operator qualification4/0.003s, API catalog3/7.559s, native coordinator
+14/0.316s, application service8/0.192s, executor55/1.119s and route interceptor15/0.589s.
+The three catalog-only cases remain catalog proof, not three more HTTP workflow cases.
+The four operator cases remain scalar/mapper semantics, not industrial or human
+workflow qualification. Earlier failed runs remain historical evidence; Full980
+now establishes the corrected source's passing bounded runtime slice.
+
+**Derived artifacts independently checked.** The actual Full980 API capture matches
+the reviewed snapshot after the validator's sole allowed source-stamp normalization:
+314 operations/289 paths/333 schemas. Current generated API SHA256
+a0b2eaf2e2a03a4af4ccb73fee572bc4723f6aa699424bf15210a7c952af2998;
+reviewed snapshot stamp16524872e26292ff42af56d6e0a8f296cdf5c44b and SHA256
+0c2b6876503aacb64c49bf113b9b9bcb35f7d64a4ce89c9519160758ecc053a3
+remain truthful. The unchanged compatibility checker passes against actual base
+39f6c431aebe568aea7d6cc855d9b2c53d0a18da, successful Full975/run40876941249;
+base API SHA256a09d80d851e62f2ec618ae9b966a4567efc071a4fd688466aa1b6a0931c2d15d.
+This verifies supported consumer compatibility to that declared base, not a complete
+frontend consumer or older absent-client qualification.
+
+The unchanged dictionary generator validates the current source inventory against
+the genuine Full980 catalog and reviewed dictionary: PostgreSQL16.15,187 migrations,
+470 JPA mappings,532 relations, zero unresolved owners, reviewed_dictionary_checked=true.
+Source bundle3d52c5026c50b48591e8f34e8905bc92b60ebcf31176512abdc60fc6e273aafb;
+current catalog JSONdcd8facedfa32a0a993a589aa766ef94af4d650b03130f104f0968e214a10b02.
+Existing published migration/dictionary/OpenAPI bytes and generation provenance are
+preserved; no redundant artifact refresh is required by this review.
+
+**Acceptance disposition and explicit remaining matrix.** ACCEPT only the tested
+initial C HTTP slice and current API/catalog compatibility evidence above. Package A
+and accepted Package B remain accepted. Package C as a whole is PARTIAL; integrated
+HAPI-599 retains its frozen NOT_IMPLEMENTED/BLOCKED status until the registered full
+qualification and separate acceptance review are satisfied.
+
+| Registered C requirement | Current evidence | Remaining acceptance obligation |
+|---|---|---|
+| Eight operations/four native producers | Genuine HTTP PASS | Preserve this source-backed matrix |
+| Authentication and grant revocation | Genuine HTTP PASS | Extend to actual company/facility and either-unit rejection without disclosure |
+| Authorized absence versus unauthorized existence | B/native and handler support | Genuine HTTP404 only after fresh authority; denied/foreign evidence stays undisclosed |
+| Replay, conflict and bounded history | HTTP replay PASS; B/native conflict/history support | HTTP stale revision, changed second unit/operation and exact two-version history assertions |
+| Atomic failure rollback | Genuine HTTP503/rollback PASS | Preserve visited failpoint and exact unchanged physical evidence |
+| Serial/provenance and Assets separation | Four scalar/mapper cases PASS; HTTP helper currently sends UNKNOWN | Persist/read repeated marked serials as separate IDs with authored known/unverified/UNKNOWN provenance; no merge/qualification/Assets mutation |
+| Simultaneous replacement and read/write ordering | B/native concurrency support | Deterministic actual HTTP competing replacement and writer-first/reader-first boundaries; no partial response/history/effects |
+| Owner/facility source and temporal changes | B/native final source/role/time rejection support | Genuine HTTP fail-closed behavior with visited actual final checks and unchanged effects |
+| Indeterminate physical completion | Handler/service/executor unit support | Actual owner/executor commit-boundary ambiguity through HTTP503 INDETERMINATE, then fresh authorized retry/replay; no provisional success |
+
+Do not substitute mapper-produced503, a pre-commit injected rollback, or an ignored
+failing response for actual indeterminate physical completion. Likewise B's lower-
+layer cases support, but do not independently satisfy, the remaining HTTP obligations.
+
+**Exact next executable test-only stage.** Message:
+`test(topology): complete native installed-unit HTTP qualification`.
+CREATE/DELETE none; MODIFY only:
+
+```text
+src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedInstalledUnitLifecyclePostgresIntegrationTest.java
+.github/ci-test-inventory.json
+doc/roadmap/TASKS_HPS-006.md
+```
+
+Extend the real configured HTTP fixture for the remaining matrix; preserve all41
+old case identities/assertions and all native producers. Fix the REGISTER test
+request builder's three hard-coded UNKNOWN evidence objects so it faithfully sends
+the supplied typed registration evidence and optional maintainableAssetId, using
+strict real DTO JSON. This is fixture fidelity, not an endpoint contract change.
+Use existing actual Party manufacturer/profile/position/company fixtures; no public
+claim factory or fabricated owner contribution. Assert physical rows, exact response
+provenance and cross-aggregate non-effects after commit/rollback as appropriate.
+
+Reuse genuine bearers and bounded current grants. Admit idempotent positive fixture
+grant seeding by exact actor/code/resource/scope/reference/effect and current valid
+bounds, so repeated positive HTTP steps do not append duplicate temporal entries;
+negative calls must never silently restore revoked grants. Preserve independent
+native current authorization on every request. Do not raise the1024 census cap,
+erase retained sessions/bindings/claims, skip tests, reclassify a suite or invent timing.
+Register only actual new case names/source hashes; preserve509 registered classes,
+four historical exclusions and ten shards. Keep native producer creation finite.
+
+For indeterminate completion, the actual executor calls manager.commit only after
+its single closed final guard; its caught outcome is INDETERMINATE when physical
+commit was attempted/observed. A test-only spy may delegate the real protected
+transaction manager commit, then simulate lost acknowledgement for that selected
+transaction, armed only by its real storage/final-check path. Require actual fault
+visitation, HTTP503/INDETERMINATE and no disclosed provisional result, inspect physical
+effects only after scope exit, then assert fresh authorized exact replay without
+new effects. Do not intercept JWT/login setup commits or replace the executor with
+a mock. Other faults must likewise prove their intended real path was reached;
+unknown infrastructure errors may not count as tested business denial/conflict.
+
+Use deterministic concurrency barriers and real restricted-role/owner transactions,
+not sleeps or caller-supplied actor/security context. Require explicit exact public
+statuses/codes and nondisclosure based on actual typed meaning; do not accept arbitrary
+4xx/5xx responses to hide a cause. No production Domain/Application/Identity/Party/
+Assets/executor/route-interceptor/REST, budget, migration, dictionary, OpenAPI, workflow
+or security-rule change is admitted. If actual runtime qualification exposes a source
+defect needing another path, register its precise repair before that extra mutation.
+
+**Validation and STOP.** This review runs source/tree/suite/provenance reconciliation,
+independent aggregate reproduction, runtime snapshot/base compatibility, captured
+catalog/dictionary check, documentation/link and whitespace validation. It authors
+no Java code and claims no new local Maven/PostgreSQL run. Publish this sole verified
+phase blob/tree/parent directly to main with expected1724ea1 guard; observe exact-SHA
+Docs creation/start, then STOP. Next executes the bounded qualification stage above;
+C closure, HAPI-600/601, frontend, simulation/P3, operator/SITE approval, release and
+deployment are not selected by this review.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

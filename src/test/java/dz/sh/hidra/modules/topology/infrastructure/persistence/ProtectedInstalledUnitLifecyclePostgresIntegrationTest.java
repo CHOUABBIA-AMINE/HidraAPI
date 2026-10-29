@@ -1178,7 +1178,7 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
             String denied=List.of(c.unitId(),c.replacementUnitId(),c.installationId(),c.replacementInstallationId()).get(n);
             String policy=policy("DENY","{\"op\":\"eq\",\"attribute\":\"resource.referenceId\",\"type\":\"STRING\",\"value\":\""+denied+"\"}");
             login(r.actor());String before=effects();assertThatThrownBy(()->lifecycle.execute(c)).isInstanceOf(RuntimeException.class);unchangedReplacement(r,before);
-            jdbc.update("UPDATE public.hidra_identity_authorization_policy SET status='INACTIVE' WHERE id=?",policy);
+            jdbc.update("UPDATE public.hidra_identity_authorization_policy SET status=? WHERE id=?",PolicyStatus.DISABLED.name(),policy);
             assertThat(execute(r.actor(),c).replacementUnit()).isEqualTo(r.second());
         }
     }

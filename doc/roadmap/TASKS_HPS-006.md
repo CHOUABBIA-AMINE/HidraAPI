@@ -5588,6 +5588,72 @@ the separately registered truthful dictionary follow-up; accept B only after com
 exact-head evidence review. C/API and integrated HAPI-599 remain pending. HAPI-600/601,
 frontend, simulation/P3, SITE, release and deployment remain unselected.
 
+### HAPI-599 B — exact-head replacement CI repair envelope — 2026-10-29
+
+**Owner Fail; bounded two-stage repair only.** Main122df88dd07524cfc6295b4124f1dd76ada9b2bf,
+tree0fdf0a7e7d7880129570344c70fa8e71ea7b8931, has Full971/run40864071179 FAILURE;
+Fast/run40864071144 and Docs/run40864071168 SUCCESS. Static and Java21 unit/architecture
+jobs pass; nine PostgreSQL shards pass. Shard8 reports220 cases, zero failures/skips
+and one error. The actual lifecycle report has38 cases,37 passing and one error,
+denialOfEitherPhysicalUnitOrInstallationRejectsEntireReplacement, at its restored
+positive control (line1182), not the preceding expected denial/rollback assertion.
+No aggregate or complete replacement acceptance is claimed from this failed run.
+
+**Source-backed cause and minimal fix.** The new fixture writes status=INACTIVE to
+Identity authorization_policy. PolicyStatus permits DRAFT, ACTIVE, DISABLED, RETIRED;
+INACTIVE is malformed evidence. Reader.state uses Enum.valueOf(PolicyStatus,...),
+and the native group reader deliberately rejects corrupt evidence, producing
+UNAVAILABLE through protected execution rollback. Preserve that fail-closed behavior.
+Restore the test policy using a parameter bound to PolicyStatus.DISABLED.name(),
+then retain the real authorized positive control and all four denial targets.
+No production Identity/Topology, exception mapping, reader pin, deadline, SQL,
+constraint, migration or workflow change is necessary or admitted for this defect.
+
+**Two exact commits, one final guarded branch advancement.** The current owner Fail
+repairs both demonstrated blockers in the existing CI-first repair order. First:
+`fix(topology): restore valid disabled policy fixture`.
+MODIFY only the lifecycle PostgreSQL test, its existing .github/ci-test-inventory.json
+source hash and this append-only phase. No cases are removed/added/renamed; active500
+classes/3,775 exact cases and ten shards remain. CREATE/DELETE none.
+
+Second, the already required truthful dictionary follow-up:
+`docs(database): refresh installed-unit replacement dictionary`.
+MODIFY only doc/database/DATA_DICTIONARY.md and this append-only phase; no manifest,
+source, migration, CI policy, OpenAPI or schema mutation. Both stages are prepared
+and reviewed before publication; retain separate commits and verify each tree/parent/
+blob set. Advance main once to their final head with expected122df88 guard and
+observe applicable exact-head Full/Fast/Docs creation/start, then STOP. This envelope
+is CI repair plus the registered derived-artifact follow-up, not later roadmap work.
+
+**Genuine catalog blocker and evidence.** The API/dictionary job migrated187 scripts
+and captured PostgreSQL16.15/470 mappings/532 relations, zero unresolved owners.
+It failed only the reviewed dictionary equality check; its schema ZIP artifact
+12893101259 has verified SHA256
+7c81a2a7fdda656bd3c0c9a457813c94f759a77d696b52fa7f03acee44c58796.
+Actual catalog/source capture SHA is122df88dd07524cfc6295b4124f1dd76ada9b2bf;
+source bundle3d52c5026c50b48591e8f34e8905bc92b60ebcf31176512abdc60fc6e273aafb,
+catalog JSON9f7c6ddf872313f84a6c251ef6f52ee80e2bb4190712a0b1bdbd9cd0dbf0062a,
+rendered dictionary63ffec73e5342133ec801d02d41c18c5a7d1b3d8ab213d6b42f69990920dc436.
+The unchanged generator must validate current migration/JPA source inventory and
+ownership against that capture, reproduce the artifact Markdown byte-exact, and
+check the replacement reviewed dictionary before stage2. The fixture-only repair
+cannot invalidate that schema source bundle. No physical facts are guessed.
+
+Shard8 diagnostic ZIP12893605939 SHA256
+2496c2c5448b2011f8e4181fd2bf68a5df53ba31fd0816c0ff163d861c99bc73
+is independently verified; its raw Surefire report confirms the exact failing case,
+private cause chain and37 passing lifecycle cases. It is diagnostic evidence, not
+passing lane evidence. Local Java syntax, inventory/enum-source and whitespace checks
+are useful; Maven remains absent (mvn: command not found), so corrected native runtime
+acceptance awaits the final head's hosted CI. No local environment is provisioned.
+
+**Hold update.** This first commit repairs the fixture only. Dictionary publication
+hold is satisfied only by stage2's validated real capture; B replacement acceptance
+still requires complete exact-head Full success and independent evidence review.
+C/API, integrated HAPI-599, HAPI-600/601, frontend, simulation/P3, SITE, release and
+deployment remain pending/unselected. No task is closed by fixture repair or schema
+capture alone.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

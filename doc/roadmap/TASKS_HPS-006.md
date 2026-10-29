@@ -1504,9 +1504,9 @@ Legacy IDs: HPR-P25-054A
 
 Priority: P1
 
-Implementation Status: NOT_IMPLEMENTED
+Implementation Status: VERIFIED
 
-Planning Status: BLOCKED
+Planning Status: COMPLETED
 
 Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -6950,6 +6950,94 @@ dictionary check all pass. This is retained hosted evidence review, not a newly 
 local Java21/Maven/PostgreSQL test. Run documentation/link and whitespace validation;
 publish the sole phase blob with expected027534f guard, verify parent/tree/scope,
 observe exact-SHA Docs creation/startup, then STOP before the next registered stage.
+
+### HAPI-599 — integrated installed-unit identity software acceptance and closure — 2026-10-29
+
+**Selected registered final stage.** Owner Next selects
+`docs(topology): close installed-unit identity software acceptance`.
+Live main71f733e311588985ff5919d59c417c4fcf8c5ea0, tree
+116b2b43d7eb0d9805d57bcf989392cb47c45365, has exact-head
+Docs/run40918231600 SUCCESS. It changes only the Package C acceptance record;
+current runtime remains the verified027534fe2087c3bc0bdb58e4b6799efcddd6e3ae,
+with Full983/run40914785665, Fast/run40914785747 and Docs/run40914785810 SUCCESS.
+CREATE/DELETE none. MODIFY exactly this phase, ULTIMATE_ROADMAP.md,
+ULTIMATE_PHASES.md and ULTIMATE_TASKS.md. This stage closes only the registered
+HAPI-599/HPR-P25-054A backend development software obligation.
+
+**Independent integrated reconciliation, not a new implementation claim.**
+HAPI-567 prerequisite is VERIFIED/COMPLETED in the canonical register; current
+Identity native operation authorization, physical transaction participation and
+final-fence implementation remain present and tested. Approved OD-HAPI-599-01/02/03
+are matched to accepted A/B/C and current owner contracts as follows:
+
+| Approved obligation | Current source and accepted execution evidence |
+|---|---|
+| Separate physical unit, Topology position and optional Assets identity | InstalledUnit and InstalledUnitInstallation remain distinct pure-Java records; equipment position is referenced separately; optional maintainableAssetId remains a neutral label. Native HTTP persists distinct repeated-serial IDs and snapshots all actual Assets tables unchanged. No aggregate merge or hidden maintenance write is introduced. |
+| Authored manufacturer/model/serial evidence and uncertainty | Mandatory UNKNOWN/UNVERIFIED/VERIFIED classifications and source/value invariants remain explicit. Known model requires identified manufacturer; serial markings never become global identity. Actual Party manufacturer/profile/role/current eligibility is checked via its public owner contract; missing/inactive/wrong role/profile/capability evidence fails closed. Manufacturer qualification does not imply equipment-kind or numerical model fitness. |
+| Company and actual equipment-position scope | SELECT-only Party company contribution and Topology position/facility owner contribution retain actual backend/transaction binding, current generation/image checks, native fences and catalog/privilege restrictions. Exact installation descriptors and matching position equipment kind remain mandatory. Current company ownership is not inferred from an Assets label or serial. |
+| Atomic temporal installation lifecycle and immutable audit | Additive identity/history, protected-operations and replacement migrations enforce unit/company references, effective-range exclusions, one-way revisioned closure and immutable event/receipt evidence. Eight typed use cases retain current native authority, strict command binding, protected SQL pins and the single physical final guard. Real native and HTTP cases prove stale/conflict rejection, atomic replacement/relocation/close, concurrent occupancy exclusion, full fault rollback and bounded immutable exact history. |
+| Authorization before protected existence/history/replay | Genuine configured HTTP chain and four native producer sources remain; current scoped grants and DENY on either physical unit/installation are checked. Authorized absence404 is distinct from denied/foreign existence403; no result or private diagnostics disclose protected identifiers. Revoked authority cannot replay or read history. |
+| Public transport and uncertain completion | Strict operation-specific DTOs, mapper, eight routes and sanitized ProblemDetail preserve INVALID400, UNAUTHENTICATED401, DENIED403, authorized NOT_FOUND404, proven CONFLICT409 and UNAVAILABLE/INDETERMINATE503. Real translated repository conflict now retains its owner meaning; unrelated storage failures remain unavailable. A selected real commit followed by lost acknowledgement yields INDETERMINATE and exact authorized replay without duplicate effects. |
+
+Package A was independently accepted after Full951; Package B's manufacturer,
+Identity, position and company contributions and original lifecycle were separately
+accepted; its final different-unit atomic replacement was accepted after Full972.
+Package C and current API/catalog were independently accepted in the preceding
+Full983 review. Those dated source-specific records remain immutable history.
+This final review rechecks actual current source and retained raw evidence rather
+than treating old green badges or proposed filenames as implementation proof.
+
+**Exact current software proof.** Independently reproduced Full983's gate again,
+using the unchanged aggregator and source inventory against actual retained lane
+files and raw XML:505 active classes/3,808 required cases, zero failures/errors/skips,
+all ten PostgreSQL shards at attempt1. The17 source-matched installed-unit suites
+contain218 passing cases, including48 native lifecycle cases, ten actual HTTP cases,
+seven physical identity/history cases,16 manufacturer cases,25 native authorization
+cases,23 position-owner cases and28 SELECT-only company-owner cases. The additional
+API-catalog suite and ten dedicated unit/API/scalar suites complete the same218-case
+total. Full raw
+suite membership and classifications are checked by the reproduced aggregate.
+
+Retained aggregate artifact12914939314 ZIP SHA256
+63269c08446061b3f5b19e2092ff4746773c2a18e474a106e96bf306c0b8b079;
+gate SHA256fed9f3e407e3bbbc8254e142519f029132400fbafa6d01b59c8744cdf7012bea;
+inventory SHA256f81156c8cf64df099c1cab1fbabecf5bcb0bc0db17d5f22278dcd93aeef04b06.
+The immediately preceding C review independently verified314 API operations/289
+paths/333 schemas, runtime snapshot equality and retained-base compatibility;
+actual PostgreSQL16.15 catalog/dictionary has187 migrations,470 mappings,
+532 relations and zero unresolved owners. Its exact API/catalog/source-bundle
+hashes remain in that record. No source/schema/API bytes have changed since.
+Four historical exclusions remain outside505 active classes;509 is registered
+inventory size, not executed-class count. No new local Maven/PostgreSQL run is claimed.
+
+**Final disposition.** HAPI-599 is VERIFIED/COMPLETED for its approved synthetic
+backend development software scope. Synchronize only its two status fields in
+this task and both canonical tables; add its current acceptance/execution pointer
+without changing any other task status, definition, dependency or link target.
+The former integrated implementation/C CI and software acceptance holds are resolved.
+Historical NOT_IMPLEMENTED/BLOCKED and failed-run records remain dated evidence,
+not competing current dispositions. No extra runtime implementation remains within
+this accepted bounded task; optional improvements must not reopen it automatically.
+
+HAPI-598's five-child integrated parent remains PARTIAL/BLOCKED. HAPI-600 station
+configuration/incidence, HAPI-601 manufacturer characteristics, HAPI-602 links,
+HAPI-603 consumer qualification and frontend implementation remain separate tasks.
+Neither equipment classification nor authored VERIFIED metadata establishes an
+engineering characteristic, calibrated model, human approval or real-world fitness.
+Development-partitioned/cached evidence retains serial_oracle=false,
+same_run_equivalence=false, optimized_adoption_eligible=false and release_eligible=false.
+Industrial calibration, operator/SITE/IT-OT acceptance, numerical simulation/P3,
+release and deployment remain unselected and independently gated.
+
+**Validation and publication.** Current source/owner-decision/prerequisite matrix,
+17-suite/218-case raw review and independent complete-gate reproduction pass.
+Run documentation/navigation/status agreement and whitespace checks, plus exact
+four-file/status-only-table and append-only-history verification. Publish directly
+to main with expected71f733e guard and the exact registered message; verify every
+blob, tree, sole parent and four-file scope, observe exact-SHA Docs creation/startup,
+then STOP. This documentation-only stage needs no redundant Full dispatch and
+selects no successor implementation. A later owner Next may select the next bounded
+roadmap preflight; no HAPI-600/601 or parent closure is executed automatically here.
 
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity

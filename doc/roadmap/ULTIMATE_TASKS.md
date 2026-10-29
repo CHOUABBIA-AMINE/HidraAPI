@@ -132,13 +132,23 @@ This selection is documentation/status reconciliation only; HAPI-598..603,
 HAPI-605 baseline, HidraWEB F06, industrial/SITE acceptance, simulator,
 release and deployment remain independently gated. No successor is selected.
 
-Owner Fail on Full950 authorizes the bounded Custody work-policy review and
-checked-dictionary-receipt correction recorded under HAPI-599 Package A.
-The fixed500ms processing cap is distinct from authority expiry; the three
-already compiled Custody callers gain a finite startup cap (default1000ms),
-while all native/storage deadlines, final guards and other operation families
-remain unchanged. Preserve ten shards and strict dictionary equality; no new
-software, SITE or deployment acceptance is implied by this pending repair.
+[HAPI-599](TASKS_HPS-006.md#hapi-599), independent installed-unit identity and
+references, is VERIFIED/COMPLETED for its approved backend development software
+scope. Owner Next selects its registered final four-document closure after
+independent A/B/C acceptance and current source/owner-decision reconciliation.
+Full983/run40914785665, Fast/run40914785747 and Docs/run40914785810 passed on
+027534fe2087c3bc0bdb58e4b6799efcddd6e3ae; Docs/run40918231600 passed on the
+unchanged-runtime C acceptance head71f733e311588985ff5919d59c417c4fcf8c5ea0.
+The phase retains17 dedicated suites/218 cases, all48 native lifecycle cases,
+3,808-case complete evidence, API/catalog provenance and development limits.
+HAPI-598 remains PARTIAL/BLOCKED; HAPI-600/601/602/603, frontend, numerical/P3,
+industrial/SITE acceptance, release and deployment remain separately gated.
+No successor implementation is selected by this closure.
+
+The historical Full950 Custody work-policy and dictionary-receipt repair is
+resolved in HAPI-599's accepted evidence. Its finite startup cap remains distinct
+from authority expiry; native/storage deadlines, final guards and other operation
+families remain unchanged. Ten shards and strict dictionary equality are preserved.
 
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent

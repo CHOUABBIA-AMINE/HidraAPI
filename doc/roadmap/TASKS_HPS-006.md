@@ -7901,6 +7901,77 @@ SITE remain separately gated. Publish this two-document review with expected-hea
 guard, verify exact parent/tree/blobs/message and observe Documentation startup,
 then STOP before the registered follow-up.
 
+
+### HAPI-600 Package A — populated storage and boundary qualification follow-up — 2026-10-29
+
+Owner Next/Continue executes the registered six-file stage on main
+`27c20edb09bad80eea066f201cdf6cd6a2b10935`, tree
+`0c3ace975cc0b75aadd32580b9ed0031665aac68`; exact-head Docs728/run40934038652
+SUCCESS. Exact message: `test(topology): qualify station configuration storage invariants`.
+CREATE/DELETE none. MODIFY only the previously registered configuration domain,
+three configuration test classes, CI test inventory and this phase file.
+
+The configuration-local active-structure report now traverses declared active
+edges and connected unit incidence from suction to discharge, retaining existing
+generic graph diagnostics/series/parallel results and adding NO_CONNECTED_PATH
+when no such path exists. Generic graph code and serialized V1 bytes are unchanged.
+All17 prior test identities remain; only the registered contradictory isolated
+empty-diagnostics expectation changes. Thirteen new cases bring the configuration
+matrix to30:9 domain,8 codec,13 PostgreSQL. New checks cover128/129 positions,
+65,536-byte UTF-8 witnesses, exact1,048,576-byte payload and one-byte excess,
+malformed Unicode, populated nine-unit/three-station exact canonical reload,
+real invalid SQL constraints/references/uniqueness, immutable UPDATE/DELETE/TRUNCATE,
+head epochs/stale selection, full transaction rollback and competing epoch writers.
+Synthetic schema-owner fixtures use the full fresh Flyway chain with original
+constraints/triggers enabled; installation events come from their real trigger.
+These storage fixtures do not establish Package B native authority or HTTP behavior.
+
+**Known unresolved regression, not hidden or waived.** Source inspection found
+ck_station_configuration_member_binding can evaluate to SQL UNKNOWN for an otherwise
+occupied member with NULL installation_revision: `installation_revision > 0` is
+UNKNOWN, and PostgreSQL CHECK accepts UNKNOWN; the composite event FK also does
+not reject a null component. New test
+occupiedBindingCannotPassSqlCheckWithNullInstallationRevision requires SQLSTATE23514
+and the binding constraint identity, with no inserted member. It is expected to
+fail against the current migration until the separate additive repair below.
+This is a source-derived prediction, not a claimed local PostgreSQL execution.
+The test is retained enabled and in the required inventory. This commit is not
+an acceptance claim and does not claim green Full CI.
+
+**Next registered responsible additive repair.** Exact message:
+`fix(topology): reject null station installation revisions`.
+CREATE only `src/main/resources/db/migration/V20261029_002_1__topology_station_configuration_binding_null_guard.sql`.
+MODIFY only this phase file and, when genuine catalog evidence is available,
+`doc/database/DATA_DICTIONARY.md`. DELETE none. Recheck live migration ordering
+and filename before publication. Version20261029.002.1 follows the existing002
+and precedes reserved Package B003. Drop/recreate only the existing binding CHECK
+with an explicit IS NOT NULL requirement for occupied installation_revision;
+preserve its name, all other nullability/disposition/interval rules, references,
+immutability and old migration bytes. Use the unchanged new regression as the
+negative proof and populated valid bindings as positive proof. No role grants,
+new authority, fixture bypass, numerical changes or Package B selection follows.
+If actual PostgreSQL catalog capture is unavailable locally, retain the genuine
+current dictionary and record the pending strict hosted capture/refresh; never
+invent catalog bytes or waive the strict dictionary gate. Acceptance remains
+pending exact-SHA required Full/Fast/Docs and all30 raw cases without skips,
+with actual catalog/API evidence and any responsible follow-up correction.
+
+Validation performed before publication:35 inventory-validator self-tests passed;
+19 documentation-validator self-tests passed; exact changed-case membership,
+source hashes, unchanged other inventory entries and disjoint ten-shard membership
+checked. Local Java runtime is17; javac, Maven, Docker and PostgreSQL tooling are
+absent. Attempted pure-source javac check could not run (`javac: command not found`).
+No local Java/JUnit, Maven or PostgreSQL pass is claimed. New suite timing remains
+zero/unmeasured; existing recorded timings and all ten shards are unchanged.
+Hosted CI supplies the runtime result, including the expected regression failure.
+
+Preserve all migrations, workflows, dictionary/API bytes, native authority,
+transaction budgets and frozen status rows. Publish the exact six-file stage to
+main with expected-head guard and verified parent/tree/blobs/message, observe
+applicable exact-SHA Full/Fast/Docs creation/startup and STOP. Package A remains
+unaccepted; B/C and parent598/601..603, frontend, P3, SITE, release and deployment
+remain independently gated.
+
 <a id="hapi-602"></a>
 ## HAPI-602 — Versioned installed-unit/characteristic links
 

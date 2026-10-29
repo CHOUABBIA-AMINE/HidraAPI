@@ -101,4 +101,51 @@ class StationInstalledConfigurationCodecTest {
         assertArrayEquals(saved,codec.encode(codec.decode(raw)));
         assertNotEquals(codec.sha256(raw),codec.sha256(copy));
     }
+
+    private StationInstalledConfiguration payloadSnapshot(List<String> witnesses) {
+        String f="synthetic-payload-boundary";
+        var units=new ArrayList<Unit>();
+        var edges=new ArrayList<Edge>();
+        var positions=new ArrayList<Position>();
+        for(int i=0;i<witnesses.size();i++) {
+            units.add(new Unit("p"+i,f,"i"+i,"o"+i));
+            edges.add(new Edge("in"+i,"s","i"+i));
+            edges.add(new Edge("out"+i,"o"+i,"d"));
+            positions.add(new Position("p"+i,Disposition.ISOLATED,"u"+i,"install"+i,1,
+                FROM,null,witnesses.get(i)));
+        }
+        var graph=new StationInternalGraph(f,"graph",Status.COMPLETE,
+            List.of(new Header("suction",HeaderKind.SUCTION,"s"),
+                    new Header("discharge",HeaderKind.DISCHARGE,"d")),units,edges);
+        var revision=new StationInternalGraphRevision(f,"graph",graph,SourceClassification.SYNTHETIC,
+            FROM,FROM,null,"synthetic:graph",null,Qualification.STRUCTURALLY_QUALIFIED);
+        return new StationInstalledConfiguration("company",f,"config","request",0,1,1,revision,
+            StationInternalGraphRevisionCodec.FORMAT,graphCodec.sha256(graphCodec.encode(revision)),
+            FROM,null,FROM,"synthetic:source","binding","session","user",positions,List.of());
+    }
+    @Test void canonicalPayloadAcceptsExactByteLimitAndRejectsOneMoreByte() {
+        var witnesses=new ArrayList<>(Collections.nCopies(16,"e"));
+        for(int i=0;i<15;i++) witnesses.set(i,"e".repeat(StationInstalledConfigurationCodec.MAX_TEXT_BYTES));
+        int remaining=StationInstalledConfigurationCodec.MAX_PAYLOAD_BYTES-codec.encode(payloadSnapshot(witnesses)).length;
+        assertTrue(remaining>0 && remaining+2<=StationInstalledConfigurationCodec.MAX_TEXT_BYTES);
+        witnesses.set(15,"e".repeat(remaining+1));
+        var exact=payloadSnapshot(witnesses);
+        var bytes=codec.encode(exact);
+        assertEquals(StationInstalledConfigurationCodec.MAX_PAYLOAD_BYTES,bytes.length);
+        assertEquals(exact,codec.decode(bytes));
+        assertEquals(64,codec.sha256(bytes).length());
+        witnesses.set(15,witnesses.get(15)+"e");
+        var excess=payloadSnapshot(witnesses);
+        assertThrows(InvalidTopologyValueException.class,()->codec.encode(excess));
+        assertThrows(InvalidTopologyValueException.class,
+            ()->codec.decode(Arrays.copyOf(bytes,bytes.length+1)));
+    }
+    @Test void maximumUtf8WitnessRoundTripsAndMalformedUnicodeCannotEncode() {
+        String max="é".repeat(StationInstalledConfigurationCodec.MAX_TEXT_BYTES/2);
+        var exact=payloadSnapshot(List.of(max));
+        assertEquals(exact,codec.decode(codec.encode(exact)));
+        assertThrows(InvalidTopologyValueException.class,()->payloadSnapshot(List.of(max+"a")));
+        var malformed=payloadSnapshot(List.of("synthetic:"+(char)0xd800));
+        assertThrows(InvalidTopologyValueException.class,()->codec.encode(malformed));
+    }
 }

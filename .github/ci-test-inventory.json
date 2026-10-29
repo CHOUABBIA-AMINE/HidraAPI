@@ -8570,12 +8570,15 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "acceptsMaximumPositionsAndRejectsOneAdditionalPosition",
+        "evidenceBoundsCountUtf8BytesAtExactLimit",
         "mixedAndAllIsolatedOrUnoccupiedKeepExplicitStructuralMeaning",
         "nineDistinctPhysicalUnitsAcrossThreeStationSnapshots",
         "rejectsEdgesTouchingUnavailablePortsAndUnknownOrDuplicateEdges",
         "rejectsFabricatedUnoccupiedWitnessAndInsufficientInstallationCoverage",
         "rejectsMissingDuplicateOrForeignPositionsAndReusedPhysicalUnit",
-        "rejectsTimestampPrecisionSourceAndEpochContradictions"
+        "rejectsTimestampPrecisionSourceAndEpochContradictions",
+        "unoccupiedAndDisconnectedConnectedDeclarationsReportNoConnectedPath"
       ],
       "class": "dz.sh.hidra.modules.topology.domain.model.StationInstalledConfigurationTest",
       "dependency_reason": "HAPI-600 A deterministic domain/codec contract; JVM only",
@@ -8583,7 +8586,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/domain/model/StationInstalledConfigurationTest.java",
-      "source_sha256": "c7366f7bf2c61a717a97a9f620d2be43c5e02c09af0a2dae5d86bc43a79f6749",
+      "source_sha256": "979aee0ba06ce358d5d6ed79cbc33c7e54cf570187c85e64ba1446d7162190b2",
       "supports": []
     },
     {
@@ -9128,11 +9131,19 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "competingRevisionTransactionsCommitOneEpochAndRollBackLoser",
         "freshFlywayCreatesFourConfigurationRelations",
+        "headAdvancesOneEpochAndRejectsStaleSameRevisionAndRollback",
         "headIsConstrainedToExactRevisionAndSelectedEpoch",
         "immutableRevisionMemberRequestRetainUpdateDeleteAndTruncateFences",
         "invalidHeadReferenceFailsUnderRealForeignKey",
-        "physicalMemberRequiresOwnedUnitAndInstallationEventWitness"
+        "occupiedBindingCannotPassSqlCheckWithNullInstallationRevision",
+        "physicalMemberRequiresOwnedUnitAndInstallationEventWitness",
+        "populatedImmutableRowsRejectUpdateDeleteAndTruncateWithoutChangingEvidence",
+        "populatedMemberRejectsIncompleteBindingForeignWitnessAndDuplicateUnit",
+        "populatedNineUnitThreeStationSnapshotsReloadExactCanonicalEvidence",
+        "populatedReceiptsRejectDuplicateRequestBadDigestAndForeignResult",
+        "populatedRevisionRejectsBadPeriodEpochFormatDigestAndGraphReference"
       ],
       "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.StationInstalledConfigurationPostgresIntegrationTest",
       "dependency_reason": "HAPI-600 A fresh Flyway PostgreSQL constraints and integrity; requires Docker",
@@ -9140,7 +9151,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/StationInstalledConfigurationPostgresIntegrationTest.java",
-      "source_sha256": "cc198406eabe1376329eae7b84414b25ed3ff530e1c7d1815619d7cec0f48154",
+      "source_sha256": "22df4f187b93fb65e207145a6ab9ba2cab076f5a80d49dc5e490a9f75c20cfec",
       "supports": []
     },
     {
@@ -9319,9 +9330,11 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "canonicalPayloadAcceptsExactByteLimitAndRejectsOneMoreByte",
         "canonicalRoundTripRetainsPinnedGraphAndEvidence",
         "defensiveInputAndOutputBytesDoNotMutateCanonicalSnapshot",
         "inputPermutationsProduceIdenticalCanonicalBytes",
+        "maximumUtf8WitnessRoundTripsAndMalformedUnicodeCannotEncode",
         "rejectsInvalidStringsNonCanonicalByteOrderAndUnknownMarkers",
         "rejectsMismatchBetweenDeclaredGraphDigestAndActualGraph",
         "rejectsTrailingTruncationUnknownFormatAndByteTampering"
@@ -9332,7 +9345,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/StationInstalledConfigurationCodecTest.java",
-      "source_sha256": "3bfd3fb17b5895112ecf484e6a3c5fae18c05dc3a57759c761a17fec81c50fcc",
+      "source_sha256": "4ac8a7b2dbcfe0bc738a053a20f739b400a44e8509822f1217a7382d8c3dee59",
       "supports": []
     },
     {

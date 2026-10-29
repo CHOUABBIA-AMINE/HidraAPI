@@ -89,7 +89,7 @@ class StationInstalledConfigurationTest {
         var isolated=create("synthetic-station-a",p,List.of());
         assertTrue(isolated.activeStructure().parallelPairs().isEmpty());
         assertTrue(isolated.activeStructure().seriesPairs().isEmpty());
-        assertTrue(isolated.activeStructure().diagnostics().isEmpty());
+        assertEquals(List.of("NO_CONNECTED_PATH"),isolated.activeStructure().diagnostics());
     }
     @Test void rejectsMissingDuplicateOrForeignPositionsAndReusedPhysicalUnit() {
         var p=fixture("synthetic-station-a").positions();
@@ -128,5 +128,50 @@ class StationInstalledConfigurationTest {
                 0,1,1,x.pinnedGraph(),x.graphPayloadFormat(),x.graphSha256(),
                 x.effectiveFrom().plusNanos(1),x.effectiveUntil(),x.recordedAt(),x.sourceReference(),
                 x.actorBindingId(),x.actorSessionId(),x.actorUserId(),x.positions(),x.activeEdgeIds()));
+    }
+
+    private static StationInstalledConfiguration sized(int count, String source) {
+        String facility="synthetic-boundary";
+        var units=new ArrayList<Unit>();
+        var edges=new ArrayList<Edge>();
+        var positions=new ArrayList<Position>();
+        for(int i=0;i<count;i++) {
+            units.add(new Unit("p"+i,facility,"i"+i,"o"+i));
+            edges.add(new Edge("in"+i,"s","i"+i));
+            edges.add(new Edge("out"+i,"o"+i,"d"));
+            positions.add(new Position("p"+i,Disposition.UNOCCUPIED,null,null,0,null,null,null));
+        }
+        var graph=new StationInternalGraph(facility,"graph",Status.COMPLETE,
+            List.of(new Header("suction",HeaderKind.SUCTION,"s"),
+                    new Header("discharge",HeaderKind.DISCHARGE,"d")),units,edges);
+        var revision=new StationInternalGraphRevision(facility,"graph",graph,SourceClassification.SYNTHETIC,
+            FROM,FROM,null,"synthetic:graph",null,Qualification.STRUCTURALLY_QUALIFIED);
+        return new StationInstalledConfiguration("company",facility,"config","request",0,1,1,
+            revision,FORMAT,"0".repeat(64),FROM,UNTIL,FROM,source,"binding","session","user",
+            positions,List.of());
+    }
+    @Test void acceptsMaximumPositionsAndRejectsOneAdditionalPosition() {
+        var max=sized(StationInstalledConfiguration.MAX_POSITIONS,"synthetic:boundary");
+        assertEquals(128,max.positions().size());
+        assertEquals(List.of("NO_CONNECTED_PATH"),max.activeStructure().diagnostics());
+        assertThrows(InvalidTopologyValueException.class,
+            ()->sized(StationInstalledConfiguration.MAX_POSITIONS+1,"synthetic:boundary"));
+    }
+    @Test void evidenceBoundsCountUtf8BytesAtExactLimit() {
+        String max="é".repeat(StationInstalledConfiguration.MAX_TEXT_BYTES/2);
+        assertEquals(max,sized(1,max).sourceReference());
+        assertThrows(InvalidTopologyValueException.class,()->sized(1,max+"a"));
+        assertThrows(InvalidTopologyValueException.class,()->new Position("p",Disposition.CONNECTED,
+            "u","i",1,FROM,null,max+"a"));
+        assertEquals(max,new Position("p",Disposition.CONNECTED,"u","i",1,FROM,null,max)
+            .installationEvidenceReference());
+    }
+    @Test void unoccupiedAndDisconnectedConnectedDeclarationsReportNoConnectedPath() {
+        assertEquals(List.of("NO_CONNECTED_PATH"),sized(3,"synthetic:unoccupied").activeStructure().diagnostics());
+        var x=fixture("synthetic-station-a");
+        var disconnected=create(x.facilityId(),x.positions(),List.of());
+        assertTrue(disconnected.activeStructure().diagnostics().contains("NO_CONNECTED_PATH"));
+        assertTrue(disconnected.activeStructure().diagnostics().contains("UNCONNECTED_INLET:synthetic-station-a-p1"));
+        assertFalse(x.activeStructure().diagnostics().contains("NO_CONNECTED_PATH"));
     }
 }

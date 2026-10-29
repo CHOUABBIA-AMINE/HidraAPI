@@ -151,9 +151,31 @@ public record StationInstalledConfiguration(
                 .map(Position::positionId).collect(Collectors.toSet());
         var units = pinnedGraph.graph().units().stream().filter(u -> connected.contains(u.equipmentId())).toList();
         var edges = pinnedGraph.graph().edges().stream().filter(e -> activeEdgeIds.contains(e.id())).toList();
-        return new StationInternalGraphValidator().inspect(new StationInternalGraph(facilityId,
+        var report = new StationInternalGraphValidator().inspect(new StationInternalGraph(facilityId,
                 pinnedGraph.revisionId(), StationInternalGraph.Status.DRAFT,
                 pinnedGraph.graph().headers(), units, edges));
+        // This is configuration-local: the generic graph validator retains its existing semantics.
+        var adjacency = new HashMap<String, List<String>>();
+        edges.forEach(e -> adjacency.computeIfAbsent(e.fromPortId(), k -> new ArrayList<>()).add(e.toPortId()));
+        units.forEach(u -> adjacency.computeIfAbsent(u.inletPortId(), k -> new ArrayList<>()).add(u.outletPortId()));
+        var targets = pinnedGraph.graph().headers().stream()
+                .filter(h -> h.kind() == StationInternalGraph.HeaderKind.DISCHARGE)
+                .map(StationInternalGraph.Header::portId).collect(Collectors.toSet());
+        var queue = new ArrayDeque<String>();
+        pinnedGraph.graph().headers().stream()
+                .filter(h -> h.kind() == StationInternalGraph.HeaderKind.SUCTION)
+                .forEach(h -> queue.add(h.portId()));
+        var seen = new HashSet<String>();
+        while (!queue.isEmpty()) {
+            String port = queue.removeFirst();
+            if (!seen.add(port)) continue;
+            if (targets.contains(port)) return report;
+            queue.addAll(adjacency.getOrDefault(port, List.of()));
+        }
+        var diagnostics = new TreeSet<>(report.diagnostics());
+        diagnostics.add("NO_CONNECTED_PATH");
+        return new StationInternalGraphValidator.Report(List.copyOf(diagnostics),
+                report.seriesPairs(), report.parallelPairs());
     }
 
     private static void micro(Instant instant) {
@@ -175,3 +197,4 @@ public record StationInstalledConfiguration(
         return new InvalidTopologyValueException(message);
     }
 }
+

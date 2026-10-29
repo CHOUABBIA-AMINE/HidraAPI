@@ -5306,6 +5306,166 @@ writer candidate before its runtime mutation. B replacement, C/API and integrate
 HAPI-599 remain pending; accepted A and seven-operation B writer remain accepted.
 HAPI-600/601, frontend, simulation/P3, SITE, release and deployment are unselected.
 
+### HAPI-599 B — accepted native replacement prerequisite and writer registration — 2026-10-29
+
+**Selected single registration stage.** Owner Next refreshes main
+0bc010986868cf336fcdc0a03017b0513737eb87, tree
+bb5c32ba4b9db537767e333484fb920e8995dbc2. Full970/run40859834953,
+Fast/run40859834846 and Docs/run40859834836 are SUCCESS on that exact SHA.
+The preceding implementation requires exact-head success and independent evidence
+review before revalidating/registering the physical writer. This stage satisfies
+that gate and makes the existing candidate executable; it does not implement DML.
+Exact registration message: `docs(topology): register atomic installed-unit replacement writer`.
+MODIFY only this phase, append-only; CREATE/DELETE none.
+
+**Independently checked hosted evidence.** Downloaded genuine aggregate artifact
+12891327674, hidra-full-ci-evidence-0bc010986868cf336fcdc0a03017b0513737eb87-40859834953-1.
+ZIP SHA2564555078f0151448cb168dab1d92037e8504d3b806a86c2fff29138f796bc7d53
+matches the GitHub artifact digest. The unchanged repository aggregator independently
+reproduces gate.json exactly, SHA256
+53b3de8fe75d466a57827dbac173949286b4a81e1df50cd4a2a2f9a2e1ecd9d2.
+All500 active classes and3,750 exact cases are present: zero errors, failures or skips,
+all ten PostgreSQL lanes, attempt1, cached dependencies. This is development-
+partitioned evidence, serial_oracle=false, same_run_equivalence=false and
+release_eligible=false; no serial-oracle or release qualification is inferred.
+
+Actual focused reports: native installed-unit authorization25 cases/53.119s,
+public authorization participant11/0.159s, admission boundary9/0.310s,
+accepted seven-operation writer23/65.157s and protected executor54/1.038s,
+all zero errors/failures/skips. Native suite includes all four genuine producers,
+both permission components, six descriptor bindings, wrong permission-row types,
+missing grants, denial, substitution rollback and revocation/expiry. This accepts
+the bounded Identity replacement prerequisite, preserving the prior A and seven-
+operation B acceptance; it does not establish physical replacement or transport.
+
+Hosted PostgreSQL16.15 catalog remains186 migrations/470 JPA mappings/532 relations,
+zero unresolved owners, reviewed dictionary checked. Current catalog confirms the
+receipt has no replacement_unit_id and its validated operation check is exactly
+hidra_topology_installed_unit_operation_request_operation_check, permitting only
+REGISTER_UNIT, RECORD_INSTALLATION, CLOSE_INSTALLATION and RELOCATE. The current
+receipt unit/company FK remains nondeferrable with existing NO ACTION behavior;
+do not rewrite it when adding the separate replacement FK. The accepted native
+permission pair supersedes every earlier single replace-code proposal.
+
+**Revalidated live implementation seams.** The Topology Command enum still has the
+original seven operations; Request bridging still uses its compatible seven-argument
+Identity constructor. Hint/Snapshot/Result each expose one physical unit. Coordinator
+acquisition and spare final read cover one manufacturer; they must cover both stored
+units, using stable manufacturer identity ordering and deduplication with separate
+one-use spare reads. Current position/company/native origin checks, final fence union
+and authority lifetime remain mandatory. UNKNOWN manufacturer remains UNKNOWN.
+Adapter observation, state/final-guard images and replay verification currently bind
+one unit. Extend those exact images to both stored unit identities for REPLACE so
+an omitted/replaced second unit cannot pass a final guard or receipt replay.
+
+All four existing mutation SQL strings are fixed; coordinator and executor require
+exact hashes. Existing binary command/result envelopes write version1 and decode
+strictly with canonical re-encoding, a1MiB total bound and bounded UTF-8 fields.
+Preserve all seven old command/result bytes and historical receipt replay. Add only
+a distinct version2 encoding for REPLACE, binding both full physical-unit identities
+and installation descriptors in canonical command/result bytes. Retain old public
+constructors with null optional replacement unit; forbid second-unit descriptors
+for legacy operations. No decoder fallback, hash bypass or caller-supplied SQL.
+
+**Next executable B writer — exact message and allowlist.**
+`feat(topology): add atomic installed-unit replacement`.
+CREATE exactly:
+
+```text
+src/main/java/dz/sh/hidra/modules/topology/application/model/InstalledUnitLifecycleFailure.java
+src/main/resources/db/migration/V20261029_001__topology_installed_unit_replacement.sql
+```
+
+MODIFY exactly:
+
+```text
+src/main/java/dz/sh/hidra/modules/topology/application/port/in/InstalledUnitLifecycleUseCase.java
+src/main/java/dz/sh/hidra/modules/topology/application/port/out/ProtectedInstalledUnitRepositoryPort.java
+src/main/java/dz/sh/hidra/modules/topology/application/service/InstalledUnitLifecycleApplicationService.java
+src/main/java/dz/sh/hidra/modules/topology/application/service/ProtectedInstalledUnitAdmissionCoordinator.java
+src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcProtectedInstalledUnitRepositoryAdapter.java
+src/main/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutor.java
+src/test/java/dz/sh/hidra/modules/topology/application/service/ProtectedInstalledUnitAdmissionCoordinatorTest.java
+src/test/java/dz/sh/hidra/modules/topology/application/service/InstalledUnitLifecycleApplicationServiceTest.java
+src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedInstalledUnitLifecyclePostgresIntegrationTest.java
+src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java
+.github/database-dictionary-ownership.json
+.github/ci-test-inventory.json
+doc/roadmap/TASKS_HPS-006.md
+```
+
+DELETE none. All13 MODIFY paths exist; both CREATE paths are absent. The migration
+filename is free after186 published files ending V20261028_005; recheck immediately
+before writing and preserve every published migration byte. No production Identity,
+Party provider, domain-model, REST, OpenAPI, workflow or budget change is authorized.
+
+**Admitted behavior and storage delta.** REPLACE closes one open source installation
+and starts a distinct registered physical unit at the same exact position/facility/
+company, at one microsecond-precision effective instant strictly after source start.
+Require distinct unit/installation IDs, exact expected source revision, same actual
+equipment-type identity for both units and position, and bounded source evidence.
+Replacement is open-ended revision1. Retain original source provenance/recordedAt;
+new recordedAt uses the common native sample. No implicit registration, serial/model
+edit, cross-company move, different-position swap or Assets qualification. Existing
+half-open exclusion constraints reject any incompatible current/future occupancy.
+Closure, replacement insert, immutable events and one receipt commit or roll back
+together. Fresh native authorization includes both typed permission components and
+all six exact requirements before any result disclosure, including receipt replay.
+
+Add nullable replacement_unit_id varchar(80) to the existing receipt, one validated
+nondeferrable composite FK to installed_unit(id,company_party_id) with ON UPDATE/
+DELETE RESTRICT, and a named operation/descriptor check requiring non-null distinct
+replacement ID for REPLACE and null for old operations. Replace only the captured
+operation check to admit REPLACE; preserve all existing checks, FK semantics, primary
+key and immutable/origin trigger/function bytes. Do not fabricate historical IDs.
+Catalog admission and final guard must validate the actual new column type/nullability,
+FK keys/actions/validation/deferrability, its exact native RI triggers and check
+semantics, alongside all existing source/privilege/origin/constraint guards.
+
+Retain four old SQL strings/pins byte-exact. Add one complete fixed replacement
+receipt INSERT and independently pin its actual hash in coordinator and executor;
+no prefixes, wildcard shape or new caller. Reuse reviewed closure/installation DML
+and the existing installed-unit private credential route and finite1000ms work cap.
+Native authority expiry, statement/lock bounds, final SQL ordering, rollback poisoning
+and indeterminate commit handling remain unchanged. Do not increase the budget based
+on unmeasured replacement behavior.
+
+Typed failure categories retain INVALID/UNAUTHENTICATED/DENIED/NOT_FOUND/CONFLICT/
+UNAVAILABLE/INDETERMINATE. NOT_FOUND requires fresh exact authority/owner checks;
+CONFLICT requires a proven authorized revision, request or owned occupancy conflict.
+Catalog/origin/privilege/unknown SQL errors fail closed, preserving private diagnostics.
+Do not map all integrity failures to business conflicts or perform queries after
+poisoning/sealing. Preserve protected executor indeterminate outcomes. No REST cause-
+message parsing or success conversion is admitted.
+
+**Required verification and publication hold.** Keep all23 accepted writer cases
+and existing unit/executor cases. Add genuine PostgreSQL coverage for all four native
+origins, either unit/facility denied, both known manufacturers/different manufacturers/
+UNKNOWN, occupied replacement unit including future overlap, source revision and
+expiry, racing replacements, injected failures after closure and after insertion,
+zero partial events/receipts, idempotent replay without restoring projections, changed
+second-unit/operation conflict, old version1 receipt compatibility, missing new FK/
+privileges and actual final source/role/time rejection. Unit checks cover descriptor
+shapes, old constructors, exact bytes, two-unit owner facts, typed error handling and
+the fifth fixed SQL pin. Register only real added case/source hashes; retain ten shards.
+
+Use available tooling and the focused lifecycle/coordinator/service/executor suites
+under AGENTS11.1. Missing Maven/services are reported, not provisioned solely for local
+verification. Publish the bounded writer directly to main with expected-head guard,
+verify parent/tree/blobs and observe applicable Full/Fast/Docs startup, then STOP.
+Schema dictionary publication remains on hold for genuine hosted187-migration catalog
+capture and its separately registered truthful dictionary follow-up; no physical metadata
+is inferred. Full CI, dictionary reconciliation and independent replacement evidence
+are required before B replacement acceptance. C/API, integrated HAPI-599, HAPI-600/601,
+frontend, simulation/P3, SITE, release and deployment remain pending/unselected.
+
+This registration runs documentation/link, append-only scope and whitespace checks,
+then verified single-file publication with expected-head guard and Docs startup.
+No new runtime test pass or physical replacement implementation is claimed here.
+Next executes the exact15-file B writer scope above; it does not repeat registration
+or automatically implement C. An actual newly discovered scope contradiction must
+be documented before any extra file mutation.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

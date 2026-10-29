@@ -5698,6 +5698,160 @@ guard, confirm Full/Fast/Docs creation/start on that SHA, then STOP. No wait for
 completion and no automatic C/API or task closure. Integrated HAPI-599 and all later
 roadmap, frontend, simulation/P3, SITE, release and deployment work remain unselected.
 
+### HAPI-599 Package B — atomic replacement acceptance and Package C API implementation registration — 2026-10-29
+
+**Selected one-stage owner Next, exact acceptance source.** Main
+`99704afede97f28ff33562c6ed56441f87b8b771` (replacement
+implementation `122df88dd07524cfc6295b4124f1dd76ada9b2bf`,
+test-fixture repair `b1a7a3d28888f93c9899f05dd259f0e1974cf8f3`,
+and genuine replacement dictionary `99704afede97f28ff33562c6ed56441f87b8b771`).
+Documentation #708/run `40866014609`, Fast Feedback #271/run
+`40866014613`, and Full #972/run `40866014637` completed
+SUCCESS on this identical source. The Full final-gate job
+`123425605540` confirms the same source SHA/run/attempt1, 500
+classes and 3,775 cases, **zero failures/errors/skips**, all ten
+PostgreSQL shards, unit/architecture, static and API/dictionary lanes
+successful. PostgreSQL shard8/job `123420858108` verifies its 15
+classes, 220 cases and zero failures/errors/skips. The artifact
+`hidra-full-ci-evidence-99704afede97f28ff33562c6ed56441f87b8b771-40866014637-1`
+is uploaded as artifact ID `12894123153`; the hosted log records ZIP
+SHA256 `361712cf24735c07f5266c56ca6cf2015f7d6d89f3fd451e51c656ced92ab3f3`.
+The final gate reports development-partitioned/cached,
+`serial_oracle=false`, `release_eligible=false`,
+`optimized_adoption_eligible=false` and `same_run_equivalence=false`.
+This is source-linked hosted CI, not local operational/serial proof.
+
+**Independent scope review and result.** At this exact SHA,
+`InstalledUnitLifecycleUseCase` exports eight typed operations including
+REPLACE, preserving the original constructor; REPLACE binds two distinct
+units/installation identifiers, one company and equal actual source/
+destination positions with microsecond-precise close/start.
+`ProtectedInstalledUnitAdmissionCoordinator` acquires current Identity,
+Party manufacturer and Topology position contributions, retains source
+fences and performs final/current guards. The application service
+executes the protected physical transaction and converts only typed
+failures; an indeterminate commit is not reported as success. The
+JDBC repository checks the additive receipt FK/check/catalog, a fixed
+fifth replacement receipt SQL, matching equipment kind, canonical
+version2 while retaining version1 replay, current state and atomic
+closure/insertion/events/receipt with rollback. The actual PostgreSQL
+suite contains `atomicReplacementCommitsAndReplaysThroughAllFourGenuineNativeProducers`,
+`replacementDeniesMissingEitherPermissionComponentOrFacilityWithoutWrites`,
+`denialOfEitherPhysicalUnitOrInstallationRejectsEntireReplacement`,
+`replacementRejectsCurrentAndFutureOccupancyAndRollsBackSourceClosure`,
+`replacementFailureAfterClosureOrAfterNewInsertionRollsBackAllEvidence`,
+`replacementReplayDoesNotRestoreLaterClosedProjectionAndLegacyReceiptsStayVersionOne`,
+`replacementRejectsMissingNewForeignKeyOrPublisherPrivilege` and
+`replacementFinalGuardRejectsActualSourceRoleAndTimeChanges`.
+The earlier #971 one-case invalid-policy fixture failure is repaired
+with the defined `DISABLED` policy status; its failed run remains historical
+evidence, not suppressed. Fresh Flyway/dictionary validation succeeds on
+the corrected 187-migration source; no migration was rewritten.
+
+**Bounded acceptance.** ACCEPT Package B's atomic cross-unit replacement
+implementation and prior seven-operation lifecycle in the tested
+development-only software scope. Clear the replacement writer,
+fixture and physical-dictionary acceptance hold. Do NOT assert a
+deployed permission seed, production use, industrial suitability,
+serial uniqueness, equipment-model validation, standalone public
+REST or a completed operator workflow. Package A and previously
+accepted Party/Identity/position source contracts retain their own
+acceptance; no reimplementation. HAPI-599 integrated remains
+NOT_IMPLEMENTED/BLOCKED in the frozen ROADMAP/PHASES until Package C
+public API/qualification and follow-up verification are accepted.
+No HAPI-600/601, simulation/P3, OT actuation, frontend, SITE, release
+or deployment is authorized by this review.
+
+**Exact next executable Package C transport stage — REGISTERED, not executed.**
+The present docs-only acceptance/registration commit message is
+`docs(topology): accept atomic replacement and register installed-unit API`.
+CREATE none; MODIFY only `doc/roadmap/TASKS_HPS-006.md`;
+DELETE none. Next runtime implementation message:
+`feat(topology): expose protected installed-unit lifecycle API`.
+
+Next runtime stage CREATE exactly these 10 paths (all verified absent on
+this main SHA):
+
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/request/InstalledUnitLifecycleRequests.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/response/InstalledUnitLifecycleResponses.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/mapper/InstalledUnitLifecycleRestMapper.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/InstalledUnitLifecycleController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/InstalledUnitLifecycleApiExceptionHandler.java`
+- `src/test/java/dz/sh/hidra/modules/topology/api/rest/InstalledUnitLifecycleControllerTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/api/rest/InstalledUnitLifecycleRestMapperTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/api/rest/InstalledUnitLifecycleApiExceptionHandlerTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/InstalledUnitLifecycleApiPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/qualification/InstalledUnitLifecycleOperatorQualificationTest.java`
+
+MODIFY only `.github/ci-test-inventory.json` (actual class/cases/hash,
+preserve ten shards) and this append-only phase; DELETE none.
+Do not edit the accepted installed-unit Domain/Application/Identity/
+Party/Assets/executor/JPA/persistence/migration sources, native SQL pins,
+security filter rules, budgets, dictionary, OpenAPI snapshots or CI.
+If source reveals a necessary additional existing file, register its exact
+scope before mutation; never bypass the allowlist.
+
+**C REST contract and invariants.** Reconcile to the accepted B
+`InstalledUnitLifecycleUseCase` and `InstalledUnitLifecycleFailure.Kind`;
+use exact private typed adapter/DTO mapping, not persistence entities.
+Base: `/api/v1/topology/installed-units`. Expose only:
+`PUT /{unitId}` REGISTER_UNIT;
+`GET /{unitId}` READ_UNIT;
+`POST /{unitId}/installations` RECORD_INSTALLATION;
+`POST /{unitId}/installations/{installationId}/close` CLOSE_INSTALLATION;
+`POST /{unitId}/installations/{installationId}/relocate` RELOCATE;
+`POST /{unitId}/installations/{installationId}/replace` REPLACE;
+`GET /{unitId}/installations/{installationId}` READ_INSTALLATION;
+`GET /{unitId}/installations/{installationId}/history` READ_HISTORY.
+Return 200 for successful owner results including explicit replay; do
+not claim 201 from replay or invention. Every request binds exact
+company; every mutation supplies requestId and matching exact path,
+body, source/destination/evidence/version constraints. Reject unknown
+JSON fields, coercion, padded/over-80-codepoint IDs, timestamp precision
+outside microseconds, invalid serial/manufacturer evidence semantics,
+cross-operation fields, fabricated actor/permission/native claims and
+unbounded history/disclosure. Current/history reads remain current-
+authorized and company/resource-scoped. The history route is exact
+installation history (at most two immutable versions), not a unit-wide
+search/export. UNKNOWN and unverified serial/model/manufacturer evidence
+remain explicit and nonqualifying; no cross-unit serial merge, search
+or automatic engineering qualification.
+
+**Error/security acceptance.** Use a controller-scoped non-disclosing
+ProblemDetail handler, matching existing Topology REST patterns:
+400 INVALID/parse, 401 genuinely unauthenticated,
+403 DENIED, 404 only freshly authorized NOT_FOUND,
+409 source-proven CONFLICT, 503 UNAVAILABLE/INDETERMINATE.
+Never inspect private cause messages, expose exception chains, permit
+anonymous scope, derive authority from caller DTOs or treat HTTP
+authenticated status as native permission. Never change existing
+security rules to `permitAll`. Native admission still precedes
+protected existence/history/replay disclosure and every mutation
+commits or rolls back as one transaction. No controller-managed ambient
+protected transaction or second writer route.
+
+**C acceptance cases and deferred derived artifacts.**
+Require DTO/mapper/ProblemDetail/MockMvc negative coverage plus actual
+Spring/security/native four-producer PostgreSQL HTTP coverage for
+all eight operations, company/facility and either-unit denial,
+authenticated missing versus unauthorized existence, exact replay
+and stale/conflict, simultaneous replacement, absence of partial
+events/receipts after injected failure, bounded two-version history,
+repeated/unknown/unverified serial provenance, Assets separation,
+and typed 503 indeterminate. Include a controlled operator
+qualification matrix checking negative claims; it does not establish
+industrial calibration or approve a human decision workflow.
+Use exact-source inventory/case hashes and architecture tests.
+After runtime/API capture, separately register a truthful generated
+`doc/api/openapi.yaml` and `.github/documentation-validation.json`
+snapshot follow-up with source/ZIP/provenance proof; do not hand-edit
+snapshots or let an expected documentation mismatch waive CI.
+CI-first publication then exact-SHA Full/Fast/Docs creation/start and
+STOP. Separate independent API evidence acceptance is required before
+integrated HAPI-599 status change. This docs stage requires only
+append-only scope/source checking, whitespace/link validation and
+guarded documentation CI startup, not new runtime execution.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

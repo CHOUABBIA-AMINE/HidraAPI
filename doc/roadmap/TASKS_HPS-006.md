@@ -4679,6 +4679,77 @@ strict dictionary gates. Retain the registered genuine-catalog follow-up under
 no dependent task, Package C/API, frontend, simulation/P3, SITE, release or deployment
 is selected here.
 
+### HAPI-599 Package B — protected operations physical dictionary refresh — 2026-10-29
+
+Owner Fail refreshes main `d8e3f65d78f0a88e756fb6841e96e9a743b47aef`.
+Full968/run `40834985871` FAILED only API/dictionary job `123317559914` and the
+dependent Full gate. Static, unit/architecture and all ten PostgreSQL shards
+SUCCEEDED. Fast268/run `40834985887` and Docs700/run `40834985881` SUCCEEDED.
+The API log reports genuine catalog capture followed by Physical dictionary drift;
+its later API lane evidence is absent because strict comparison stops execution.
+No runtime repair is selected on this head. Execute the previously registered
+two-file follow-up, exact message:
+`docs(topology): refresh protected installed-unit operations physical dictionary`.
+MODIFY only doc/database/DATA_DICTIONARY.md and this phase. CREATE/DELETE none.
+
+**Independent artifact verification.** Downloaded same-head/run/attempt1 schema
+artifact12880396611. ZIP SHA256 matches GitHub metadata:
+1215d651c7a39259307140182ec731eead20205d0393b73e85054b73e4e631aa.
+The unchanged generator validates schema.json against current complete migration/JPA
+inventory and reviewed ownership, then reproduces the retained generated Markdown
+byte-for-byte. Captured PostgreSQL16.15 (Debian16.15-1.pgdg13+2), disposable hidra_test,
+186 migrations,470 JPA mappings,532 catalog relations, zero unresolved owners.
+Capture source remains the real d8e3f65d78f0a88e756fb6841e96e9a743b47aef, never
+relabeled as this documentation commit. Source bundle SHA256
+aligns with current unchanged sources: efd5680512a4a8627dfc4ea5ae27a1725089963f7bf5f646079f6d3699383ec4.
+Catalog artifact SHA256 99bcf4c8fae9d8988c44f01fdaa56764549eb536b3d7b31e32193550568d793c;
+rendered dictionary SHA256 462c3e030867f4ec9b80072a814da0c21ff380440f5d38bf8226e44f4da7bb64.
+The original receipt truthfully has reviewed_dictionary_checked=false; its comparison
+file records the failed old-document check. Neither historical receipt is rewritten
+or promoted to a hosted strict pass.
+
+Separately downloaded same-run PostgreSQL8 artifact12880696662, ZIP SHA256
+1489be14768cb610a245f1a560ef8ad29cc957256270a7dd8708e7386384facc.
+Verified all15 retained report hashes and exact source/run/attempt/inventory
+provenance, and reran the unchanged inventory report checker:15 classes/205 cases,
+zero failures/errors/skips. The lifecycle raw XML independently reports23 cases,
+zero failures/errors/skips,65.037s suite total. It includes successful all-seven-
+operations/four-native-producers and real final role/generation rejection cases.
+Suite total is not an operation-latency percentile. This focused evidence does not
+invent complete Full acceptance or an uncollected all500-class aggregate artifact.
+
+**Actual physical delta.** Review confirms the only added relation section is the
+immutable installed-unit operation-request receipt:19 columns,5 constraints and2
+user triggers, all from the real migrated catalog. Existing installed-unit section
+adds the validated, non-deferrable equipment-kind FK to equipment_type(id), with
+UPDATE/DELETE RESTRICT, and source evidence for005/protected adapter. Equipment-type
+section gains the real005 migration mention. Every other existing relation section
+is unchanged; no relation is removed. Generation basis truthfully advances to186
+migrations/532 relations and the actual capture/source bundle. No inferred metadata,
+handwritten physical facts, JPA remap, old migration edit or role/grant change.
+
+**Validation and narrowed hold.** The unchanged generator's --input/--source-sha/
+--ownership/--check command now passes against this reviewed dictionary, yielding
+reviewed_dictionary_checked=true locally for the genuine retained artifact.
+Documentation/link, exact two-file scope, source/generator/workflow preservation and
+whitespace checks pass. No new local Java/PostgreSQL runtime is claimed or required
+for this catalog-only correction. The earlier runtime-failure hold is cleared by
+the successful required lanes at d8e3f65; overall writer/Package B acceptance remains
+pending successful strict API/dictionary/Full verification on the corrected head.
+Frozen HAPI-599 integrated NOT_IMPLEMENTED/BLOCKED remains; Package C/API and other
+dependent work are not selected.
+
+Publish verified two-file blobs/tree/parent directly to main with expected-head
+guard; observe applicable Docs CI creation/start and STOP. Existing workflow filters
+exclude doc/** and Markdown-only pushes from Full/Fast, and connected GitHub tools
+provide no workflow_dispatch operation. Require a manual HidraAPI CI dispatch on
+this new main head with verification_mode=development, serial_oracle=false,
+dependency_cache=cached. Do not touch runtime/workflow files to manufacture a push
+trigger, rerun an old SHA as new-head proof or waive the strict gate. After that run
+passes, independently review its complete retained evidence before Package B
+acceptance or another registered stage. SITE, frontend, simulation/P3, release and
+deployment remain unselected.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

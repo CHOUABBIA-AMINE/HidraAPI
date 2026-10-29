@@ -7208,6 +7208,161 @@ doc/model-remediation/RECONCILIATION.md:23395 | HPR-P25-054B | Effective facilit
 doc/model-remediation/RECONCILIATION.md:23745 | HPR-P25-054B | BLOCKED_SPECIFICATION | Effective station configuration and connectivity
 ~~~~~~~~
 
+
+### HAPI-600 effective installed-station configuration preflight — 2026-10-29
+
+Owner Next selects this bounded source-backed preflight after HAPI-599 closure.
+Main347df8a165cfaabb5fd50c53a7d330263a9d02d6, sole parent
+71f733e311588985ff5919d59c417c4fcf8c5ea0, tree
+034e2b602db6bece00aa51a9420cddc1ed15bd94. Exact-head Docs723/run40919671333
+completed SUCCESS. Runtime remains027534fe2087c3bc0bdb58e4b6799efcddd6e3ae,
+with Full983/Fast281/Docs721 SUCCESS. These runs establish the accepted
+prerequisites' bounded scopes, not HAPI-600 implementation or industrial fitness.
+HAPI-588 and HAPI-599 are VERIFIED/COMPLETED; no completed work is reopened.
+
+Exact preflight message:
+`docs(topology): define installed station configuration preflight`.
+CREATE/DELETE none; MODIFY only this phase file and the compact ULTIMATE_TASKS
+execution pointer. Append source/contract findings here and preserve all previous
+history. Keep HAPI-600 NOT_IMPLEMENTED/BLOCKED in its header and both canonical
+tables: the earlier six source filenames remain proposals, not an executable
+allowlist. No runtime/schema/API/test/inventory/workflow modification is selected.
+
+#### Current source and the actual remaining gap
+
+- StationInternalGraph has facility/revision IDs, headers, directed ports/edges
+  and Unit.equipmentId. Its serialized field does not bind a physical InstalledUnit,
+  installation ID or installation evidence revision. Preserve that historical
+  field/format; resolve an explicit equipment-position-to-installation binding
+  rather than reinterpreting old bytes as independent physical-unit IDs.
+- StationInternalGraphValidator already rejects reversed incidence, duplicate
+  directed edges and cycles, reports dangling/unconnected ports and derives
+  structural series/parallel pairs. Reuse it; do not create another competing
+  station graph, infer pressure/flow behavior, or label structural reachability
+  as hydraulic or compressor-machine qualification.
+- StationInternalGraphRevision/RepositoryPort preserve exact facility/revision,
+  payload format/digest and supplied effective/source evidence. The append/read
+  port explicitly does not enact head selection or approval. Existing protected
+  station publication operations own their CAS epochs and lifecycle separately.
+- InstalledUnitInstallation owns physical unit, position, company, effective
+  start-inclusive/end-exclusive interval, recorded time, evidence and revision.
+  Its pure-Java non-overlap checker handles a supplied snapshot only. Migration
+  V20261028_002 adds actual unit/position effective-range exclusions, immutable
+  event history and the one-way closure projection. V20261029_001 supports
+  distinct-unit atomic replacement. Reuse this lifecycle without new installation,
+  relocation, retirement or replacement side effects in configuration authoring.
+- InstalledUnitLifecycleUseCase exposes the eight accepted typed lifecycle
+  operations and exact descriptors. Its protected repository is command/admission
+  bound, not a general arbitrary-configuration query API. Calling multiple public
+  use cases in separate transactions cannot prove an atomic configuration save.
+- InstalledUnitPositionOwnershipPort supplies actual equipment kind, facility,
+  company, status, generation and physical coordinates. The installed-unit
+  coordinator combines native Identity, Party and position/storage contributions,
+  pins mutation SQL and freezes one final guard. Its compiled operation family
+  is not a permission to author a different aggregate; do not reuse a lifecycle
+  credential as configuration authority or widen caller/SQL-prefix allowances.
+- TopologyInstalledUnitAuthorizationContract explicitly covers installed units
+  and installations. Configuration-specific action/resource/current-scope
+  requirements still need registration. Preserve Identity ownership and current
+  company/facility/unit non-disclosure, before exact reads/history/replay/conflicts.
+- The six proposed StationInstalledConfiguration source paths are absent from
+  this live tree. Legacy RECONCILIATION records HPR-P25-054B BLOCKED_SPECIFICATION,
+  not an unresolved business-owner policy decision. No additional real station,
+  manufacturer curve or deployment calibration data is required for this scope.
+
+#### Concrete contract to refine into the executable registration
+
+Topology owns a configuration aggregate that pins one exact station graph
+revision/format/digest and explicit membership rows: physical unit ID,
+installation ID/evidence revision, equipment position and exact station/company.
+A physical unit identity, position identity, manufacturer model/serial and optional
+Assets label stay distinct. Canonical IDs/ordering, payload schema/digest,
+request replay and expected-version CAS must be specified before code.
+
+Represent recorded time separately from the declared applicability interval.
+Use existing half-open installation semantics; at authoring, every selected
+binding must belong to that station/company and cover the declared interval.
+Do not invent a grace period, silently choose latest installation or coerce time
+precision. A later closed/moved/replaced installation must not mutate saved
+configuration evidence. Current eligibility must detect source drift or missing
+coverage; historical reads reproduce the exact saved evidence under fresh authority.
+Revision alternatives can share historical ranges: do not apply a blanket
+non-overlap constraint to every archived revision. Any selected effective schedule
+must have an independently specified single-selection/CAS rule.
+
+Reuse the directed header/port incidence, with explicit membership binding and
+declared included/isolated disposition. Missing endpoints, wrong owner/kind,
+duplicate binding, simultaneous reuse of one physical unit, contradictory time,
+unknown ports and unsupported cycles are rejected. Draft incompleteness and
+selected complete applicability must be distinct. Series/parallel/isolated labels
+describe supplied structure only: no inferred live valve state, performance curve,
+flow direction under all conditions, running state or control command.
+
+An actual configuration operation must authorize its own company/facility and
+referenced-unit requirements and acquire all graph, owner, installation/history
+and storage fences in one physical transaction. Pin exact graph digest/head epoch
+where selected/current status matters and exact installation revisions. Recheck
+closure/replacement, ownership, grants and time at the final guarded boundary.
+Retain opaque issuer/connection/transaction binding, current native provenance,
+read-only owner participants where available, exact mutation SQL, rollback and
+uncertain-commit semantics. A controller precheck or sequential query loop cannot
+replace this proof. Preserve current operation-family budgets and all ten shards.
+
+The eventual transport continues the task's proposed facility-scoped installed-
+configuration operation, plus bounded current/exact revision/history reads.
+Register concrete request/response DTOs, mappings, operation IDs, sanitized
+400/401/403/404/409/503 behavior and pagination before exposing it. Descriptors
+never substitute for owner evidence. Existing installed-unit and graph endpoints,
+published snapshots and decoded historical formats remain compatible.
+A historical configuration, authored VERIFIED label or structural validator
+does not qualify HAPI-601 characteristics, HAPI-602 links, HAPI-603 consumers,
+HAPI-605 baselines, simulator/P3, SITE or real-world station operation.
+
+#### Delivery and acceptance to register next
+
+Proposed packages under HAPI-600, not independent task IDs or selected runtime:
+A: pure domain/binding/codec and additive owner persistence with immutable exact
+history and meaningful database constraints; B: current native authorization,
+atomic owner reads, fences, SQL/final-guard/replay integration; C: configured HTTP,
+OpenAPI/dictionary and independent operator qualification/compatibility.
+Package boundaries and exact messages/file allowlists must be admitted after
+recovering all required native reader/SQL/platform/DTO/exception/test seams.
+Reuse existing equivalent types; the former six filenames cannot cover those
+obligations alone. New migration placement must be rechecked after current last
+V20261029_001__topology_installed_unit_replacement.sql. No filename is reserved now.
+
+Acceptance matrix must include nine distinct synthetic units across three stations;
+series, parallel, mixed and explicit isolated declarations; proper adjacent
+interval boundaries and installation closure/replacement; wrong-company/station/
+position/kind and dangling/duplicate bindings; exact graph and installation
+snapshot reload after source changes; authorization before existence/history/replay;
+same/different-body replay and CAS writers; concurrent occupancy/owner/grant/source
+changes; complete rollback and controlled unknown completion. Use actual native
+HTTP/PostgreSQL/final-guard cases, not only constructed domain fixtures. Preserve
+all accepted599 lifecycle and588 graph cases; add exact new inventory cases/hashes
+without fabricated timings, changed shard policy or reduced protected checks.
+
+Next exact documentation stage after this preflight's Docs acceptance:
+`docs(topology): register effective station configuration execution`.
+Its technical write scope is the HAPI-600 phase record and compact pointer, plus
+status-only HAPI-600 rows in ROADMAP/PHASES only when a complete executable
+allowlist/contracts/test matrix has actually been admitted. No new owner approval
+is inferred to be necessary for routine implementation choices; report a concrete
+semantic conflict if source recovery actually reveals one. Do not start code
+from proposals or automatically advance to HAPI-601/602/603 or close parent598.
+
+#### Validation and stop
+
+Live exact-head source/graph/installation/authorization/position/transaction and
+two migration recovery, prerequisites/current statuses and six proposed-file
+absence checked.19 existing documentation-validator self-tests PASS; source-backed
+claims, Markdown parsing, append-only history, unchanged statuses and exact two-file
+scope checked locally. Full documentation/navigation validation remains the
+published exact-SHA Docs gate. No new Java/Maven/PostgreSQL/HTTP execution, numerical
+evidence, API/dictionary refresh or HAPI-600 implementation acceptance is claimed.
+Publish guarded main, verify parent/tree/message/blobs/two paths, observe applicable
+Documentation CI creation/queue/start and STOP.
+
 <a id="hapi-602"></a>
 ## HAPI-602 — Versioned installed-unit/characteristic links
 

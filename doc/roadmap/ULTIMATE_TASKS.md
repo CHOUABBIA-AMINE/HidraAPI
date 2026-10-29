@@ -145,6 +145,15 @@ HAPI-598 remains PARTIAL/BLOCKED; HAPI-600/601/602/603, frontend, numerical/P3,
 industrial/SITE acceptance, release and deployment remain separately gated.
 No successor implementation is selected by this closure.
 
+[HAPI-600](TASKS_HPS-006.md#hapi-600), effective station configuration and
+connectivity, is selected for source-backed preflight and remains
+NOT_IMPLEMENTED/BLOCKED. HAPI-588/599 prerequisites are accepted; Docs723 passed
+the599 closure. The owning phase identifies the missing exact graph-position-
+physical-installation binding, effective/history semantics and protected owner
+transaction obligations. Next is bounded executable registration, not runtime
+implementation from the former six proposed filenames. HAPI-601..603 and parent598
+remain independently gated.
+
 The historical Full950 Custody work-policy and dictionary-receipt repair is
 resolved in HAPI-599's accepted evidence. Its finite startup cap remains distinct
 from authority expiry; native/storage deadlines, final guards and other operation

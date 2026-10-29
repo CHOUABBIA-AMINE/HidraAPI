@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedInstalledUnitRepositoryPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-28
+ * @UpdatedOn   : 2026-10-29
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -28,10 +28,16 @@ import java.util.*;
 /** Internal storage authority stays with its opaque issuer, not the constructible result records. */
 public interface ProtectedInstalledUnitRepositoryPort {
     interface Admission {}
-    record Hint(InstalledUnit unit,InstalledUnitInstallation source) {}
+    record Hint(InstalledUnit unit,InstalledUnitInstallation source,InstalledUnit replacementUnit) {
+        public Hint(InstalledUnit unit,InstalledUnitInstallation source){this(unit,source,null);}
+    }
     record Snapshot(InstalledUnit unit,InstalledUnitInstallation source,InstalledUnitInstallation replacement,
             List<InstalledUnitInstallation> history,List<InstalledUnitInstallation> replacementHistory,
-            String receiptDigest,Result receiptResult) {
+            String receiptDigest,Result receiptResult,InstalledUnit replacementUnit) {
+        public Snapshot(InstalledUnit unit,InstalledUnitInstallation source,InstalledUnitInstallation replacement,
+                List<InstalledUnitInstallation> history,List<InstalledUnitInstallation> replacementHistory,String receiptDigest,Result receiptResult) {
+            this(unit,source,replacement,history,replacementHistory,receiptDigest,receiptResult,null);
+        }
         public Snapshot {history=List.copyOf(history);replacementHistory=List.copyOf(replacementHistory);}
     }
     record Origin(String actorId,String bindingId,String sessionId,Instant sampledAt,Instant validUntil,int backendPid,long transactionId) {}

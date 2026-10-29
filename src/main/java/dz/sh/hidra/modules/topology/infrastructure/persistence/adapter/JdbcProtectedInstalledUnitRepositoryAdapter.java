@@ -28,6 +28,8 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.time.Instant;
+import dz.sh.hidra.modules.topology.application.model.InstalledUnitLifecycleFailure;
+import dz.sh.hidra.modules.topology.application.model.InstalledUnitLifecycleFailure.Kind;
 import java.util.*;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -42,7 +44,8 @@ public class JdbcProtectedInstalledUnitRepositoryAdapter implements ProtectedIns
     private static final String INSTALL_INSERT="INSERT INTO public.hidra_topology_installed_unit_installation (installation_id,unit_id,position_id,company_party_id,effective_from,effective_until,recorded_at,evidence_reference,revision) VALUES (?,?,?,?,?,?,?,?,?)";
     private static final String CLOSE="UPDATE public.hidra_topology_installed_unit_installation SET effective_until=?,revision=revision+1 WHERE company_party_id=? AND installation_id=? AND revision=? AND effective_until IS NULL";
     private static final String RECEIPT_INSERT="INSERT INTO public.hidra_topology_installed_unit_operation_request (request_id,operation,company_party_id,unit_id,installation_id,replacement_installation_id,expected_revision,canonical_command,command_sha256,result_payload,result_sha256,actor_user_id,binding_id,session_id,sampled_at,valid_until,backend_pid,transaction_id,database_role) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-    private static final Set<String> MUTATIONS=Set.of(UNIT_INSERT,INSTALL_INSERT,CLOSE,RECEIPT_INSERT);
+    private static final String REPLACEMENT_RECEIPT_INSERT="INSERT INTO public.hidra_topology_installed_unit_operation_request (request_id,operation,company_party_id,unit_id,installation_id,replacement_installation_id,expected_revision,canonical_command,command_sha256,result_payload,result_sha256,actor_user_id,binding_id,session_id,sampled_at,valid_until,backend_pid,transaction_id,database_role,replacement_unit_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    private static final Set<String> MUTATIONS=Set.of(UNIT_INSERT,INSTALL_INSERT,CLOSE,RECEIPT_INSERT,REPLACEMENT_RECEIPT_INSERT);
     private static final String CATALOG="""
 pg_catalog.current_setting('transaction_isolation')='read committed' AND pg_catalog.current_setting('transaction_read_only')='off'
  AND pg_catalog.current_setting('session_replication_role')='origin'
@@ -87,6 +90,27 @@ pg_catalog.current_setting('transaction_isolation')='read committed' AND pg_cata
  AND (SELECT proconfig=ARRAY['search_path=pg_catalog, pg_temp']::text[] FROM pg_catalog.pg_proc
  WHERE oid=pg_catalog.to_regprocedure('public.hidra_topology_installed_unit_request_guard()'))
         """;
+    private static final String REPLACEMENT_CATALOG="""
+ AND EXISTS(SELECT 1 FROM pg_catalog.pg_attribute WHERE attrelid=pg_catalog.to_regclass('public.hidra_topology_installed_unit_operation_request')
+   AND attname='replacement_unit_id' AND attnum=20 AND atttypid='varchar'::regtype AND atttypmod=84 AND NOT attnotnull
+   AND NOT attisdropped AND attidentity='' AND attgenerated='' AND NOT atthasdef)
+ AND EXISTS(SELECT 1 FROM pg_catalog.pg_constraint WHERE conrelid=pg_catalog.to_regclass('public.hidra_topology_installed_unit_operation_request')
+   AND conname='fk_installed_request_replacement_unit_company' AND contype='f' AND convalidated AND NOT condeferrable AND NOT condeferred
+   AND confrelid=pg_catalog.to_regclass('public.hidra_topology_installed_unit') AND conkey=ARRAY[20,3]::smallint[] AND confkey=ARRAY[1,2]::smallint[]
+   AND confupdtype='r' AND confdeltype='r' AND confmatchtype='s'
+   AND (SELECT count(*)=4 AND count(DISTINCT tgfoid)=4 AND bool_and(tgenabled='O' AND tgisinternal
+     AND tgfoid IN (SELECT p.oid FROM pg_catalog.pg_proc p JOIN pg_catalog.pg_namespace n ON n.oid=p.pronamespace
+       WHERE n.nspname='pg_catalog' AND p.pronargs=0 AND p.prorettype='trigger'::regtype
+       AND p.proname IN ('RI_FKey_check_ins','RI_FKey_check_upd','RI_FKey_restrict_del','RI_FKey_restrict_upd')))
+     FROM pg_catalog.pg_trigger WHERE tgconstraint=pg_constraint.oid))
+ AND (SELECT count(*)=2 AND bool_and(contype='c' AND convalidated AND NOT condeferrable AND NOT connoinherit AND
+   ((conname='ck_installed_request_operation' AND regexp_replace(pg_catalog.pg_get_constraintdef(oid),'[()[:space:]]','','g')=
+     'CHECKoperation::text=ANYARRAY[''REGISTER_UNIT''::charactervarying,''RECORD_INSTALLATION''::charactervarying,''CLOSE_INSTALLATION''::charactervarying,''RELOCATE''::charactervarying,''REPLACE''::charactervarying]::text[]')
+    OR (conname='ck_installed_request_replacement_unit' AND regexp_replace(pg_catalog.pg_get_constraintdef(oid),'[()[:space:]]','','g')=
+     'CHECKCASEWHENoperation::text=''REPLACE''::textTHENreplacement_unit_idISNOTNULLANDreplacement_unit_id::text<>unit_id::textELSEreplacement_unit_idISNULLEND')))
+   FROM pg_catalog.pg_constraint WHERE conrelid=pg_catalog.to_regclass('public.hidra_topology_installed_unit_operation_request')
+    AND conname IN ('ck_installed_request_operation','ck_installed_request_replacement_unit'))
+        """;
     private static final String U="public.hidra_topology_installed_unit",I=U+"_installation",H=I+"_event",R=U+"_operation_request";
     private final JdbcTemplate jdbc;private final DataSource source;private final EntityManager em;private final ProtectedTransactionExecutor executor;
     public JdbcProtectedInstalledUnitRepositoryAdapter(JdbcTemplate jdbc,EntityManager em,ProtectedTransactionExecutor executor) {
@@ -116,12 +140,12 @@ pg_catalog.current_setting('transaction_isolation')='read committed' AND pg_cata
         if(schemas==null || !(schemas.equals("[\"pg_catalog\"]") || schemas.startsWith("[\"pg_catalog\",")))throw invalid();
         String coordinates=ticket==null?"":" AND pg_catalog.pg_backend_pid()="+ticket.pid+" AND pg_catalog.txid_current()="+ticket.xid
             +" AND current_user="+quote(ticket.role)+" AND "+held(finalFences(ticket));
-        if(!Boolean.TRUE.equals(jdbc.queryForObject("SELECT "+CATALOG
+        if(!Boolean.TRUE.equals(jdbc.queryForObject("SELECT "+CATALOG+REPLACEMENT_CATALOG
             +ordinaryDenied(identity.ordinaryUser())+" AND current_user=? AND session_user=current_user"+coordinates,
             Boolean.class,identity.publisherUser())))throw invalid();
     }
     @Override public Hint discover(Command command) {
-        try{context();catalog();return new Hint(unit(command),installation(command.companyPartyId(),command.installationId()));}
+        try{context();catalog();return new Hint(unit(command),installation(command.companyPartyId(),command.installationId()),unit(command.companyPartyId(),command.replacementUnitId()));}
         catch(RuntimeException failure){reject(null);throw failure;}
     }
     @Override public Admission acquire(Command command,Hint expected,List<ProtectedRelationFence> expectedFences) {
@@ -131,7 +155,7 @@ pg_catalog.current_setting('transaction_isolation')='read committed' AND pg_cata
             jdbc.execute("LOCK TABLE public.hidra_topology_equipment_type IN ACCESS SHARE MODE NOWAIT");catalog();
             var principals=executor.publicationDatabaseIdentity();
             var t=jdbc.queryForObject("SELECT pg_catalog.pg_backend_pid(),pg_catalog.txid_current(),current_user",(row,n)->new Ticket(command,h,row.getInt(1),row.getLong(2),row.getString(3),principals.ordinaryUser()));
-            if(t==null || !expected.equals(new Hint(unit(command),installation(command.companyPartyId(),command.installationId()))))throw invalid();
+            if(t==null || !expected.equals(new Hint(unit(command),installation(command.companyPartyId(),command.installationId()),unit(command.companyPartyId(),command.replacementUnitId()))))throw invalid();
             var logical=expected.unit()==null?command.registration():expected.unit();
             if(logical==null || !Boolean.TRUE.equals(jdbc.queryForObject("SELECT EXISTS(SELECT 1 FROM public.hidra_topology_equipment_type WHERE id=? AND tableoid=pg_catalog.to_regclass('public.hidra_topology_equipment_type'))",Boolean.class,logical.equipmentKindId())))throw invalid();
             t.hint=expected;t.logical=logical;t.baselineFences=List.copyOf(expectedFences);
@@ -144,9 +168,11 @@ pg_catalog.current_setting('transaction_isolation')='read committed' AND pg_cata
             TransactionSynchronizationManager.registerSynchronization(t);return t;
         }catch(RuntimeException failure){reject(null);throw failure;}
     }
-    private InstalledUnit unit(Command c) {
+    private InstalledUnit unit(Command c) {return unit(c.companyPartyId(),c.unitId());}
+    private InstalledUnit unit(String company,String id) {
+        if(id==null)return null;
         var list=jdbc.query("SELECT * FROM "+U+" WHERE id=? AND company_party_id=? AND tableoid=pg_catalog.to_regclass('"+U+"')",(row,n)->new InstalledUnit(row.getString("id"),row.getString("company_party_id"),row.getString("equipment_kind_id"),
-            evidence(row,"manufacturer_party"),evidence(row,"manufacturer_model"),evidence(row,"serial"),row.getString("maintainable_asset_id")),c.unitId(),c.companyPartyId());
+            evidence(row,"manufacturer_party"),evidence(row,"manufacturer_model"),evidence(row,"serial"),row.getString("maintainable_asset_id")),id,company);
         if(list.size()>1)throw invalid();return list.isEmpty()?null:list.get(0);
     }
     private static InstalledUnit.Evidence evidence(ResultSet r,String p)throws SQLException{return new InstalledUnit.Evidence(r.getString(p+"_value"),InstalledUnit.Verification.valueOf(r.getString(p+"_verification")),r.getString(p+"_source"));}
@@ -171,12 +197,16 @@ pg_catalog.current_setting('transaction_isolation')='read committed' AND pg_cata
             if(!receipts.isEmpty()) {
                 var receipt=receipts.get(0);byte[] canonical=(byte[])receipt.get("canonical_command"),payload=(byte[])receipt.get("result_payload");
                 digest=(String)receipt.get("command_sha256");
-                if(!digest.equals(sha(canonical)) || !Objects.equals(receipt.get("result_sha256"),sha(payload))
-                    || !Objects.equals(receipt.get("unit_id"),c.unitId()) || !Objects.equals(receipt.get("operation"),c.operation().name())
-                    || !Arrays.equals(canonical,commandBytes(c)))throw invalid();result=decode(payload);
+                if(!Objects.equals(digest,sha(canonical)) || !Objects.equals(receipt.get("result_sha256"),sha(payload)))throw invalid();
+                var prior=decode(payload);
+                if(Objects.equals(receipt.get("unit_id"),c.unitId()) && !Arrays.equals(canonical,commandBytes(c)))
+                    throw new InstalledUnitLifecycleFailure(Kind.CONFLICT,null);
+                if(!Objects.equals(receipt.get("unit_id"),c.unitId()) || !Objects.equals(receipt.get("operation"),c.operation().name())
+                    || !Objects.equals(receipt.get("replacement_unit_id"),c.replacementUnitId())
+                    || !Arrays.equals(canonical,commandBytes(c)))throw invalid();result=prior;
             }
             return new Snapshot(unit(c),installation(c.companyPartyId(),c.installationId()),installation(c.companyPartyId(),c.replacementInstallationId()),
-                history(c.companyPartyId(),c.installationId()),history(c.companyPartyId(),c.replacementInstallationId()),digest,result);
+                history(c.companyPartyId(),c.installationId()),history(c.companyPartyId(),c.replacementInstallationId()),digest,result,unit(c.companyPartyId(),c.replacementUnitId()));
         }catch(RuntimeException failure){reject(a);throw failure;}
     }
     @Override public Set<String> mutationSql(){caller();return MUTATIONS;}
@@ -202,24 +232,44 @@ pg_catalog.current_setting('transaction_isolation')='read committed' AND pg_cata
                     }
                 }
                 case RECORD_INSTALLATION -> insert(result.installation());
-                case CLOSE_INSTALLATION,RELOCATE -> {
-                    if(jdbc.update(CLOSE,timestamp(c.effectiveUntil()),c.companyPartyId(),c.installationId(),c.expectedRevision())!=1)throw invalid();
-                    if(c.operation()==Operation.RELOCATE)insert(result.replacement());
+                case CLOSE_INSTALLATION,RELOCATE,REPLACE -> {
+                    if(jdbc.update(CLOSE,timestamp(c.effectiveUntil()),c.companyPartyId(),c.installationId(),c.expectedRevision())!=1)throw new InstalledUnitLifecycleFailure(Kind.CONFLICT,null);
+                    if(c.operation()==Operation.RELOCATE || c.operation()==Operation.REPLACE)insert(result.replacement());
                 }
                 default -> throw invalid();
             }
             byte[] canonical=commandBytes(c),payload=encode(result);
+            if(c.operation()==Operation.REPLACE) {
+                if(jdbc.update(REPLACEMENT_RECEIPT_INSERT,c.requestId(),c.operation().name(),c.companyPartyId(),c.unitId(),c.installationId(),c.replacementInstallationId(),c.expectedRevision(),canonical,sha(canonical),payload,sha(payload),origin.actorId(),origin.bindingId(),origin.sessionId(),timestamp(origin.sampledAt()),timestamp(origin.validUntil()),origin.backendPid(),origin.transactionId(),t.role,c.replacementUnitId())!=1)throw invalid();
+            }else {
             if(jdbc.update(RECEIPT_INSERT,c.requestId(),c.operation().name(),c.companyPartyId(),c.unitId(),c.installationId(),c.replacementInstallationId(),c.expectedRevision(),canonical,sha(canonical),payload,sha(payload),origin.actorId(),origin.bindingId(),origin.sessionId(),timestamp(origin.sampledAt()),timestamp(origin.validUntil()),origin.backendPid(),origin.transactionId(),t.role)!=1)throw invalid();
-        }catch(RuntimeException failure){reject(a);throw failure;}
+            }
+        }catch(RuntimeException failure){reject(a);
+            for(Throwable cause=failure;cause!=null;cause=cause.getCause())if(cause instanceof SQLException sql && "23P01".equals(sql.getSQLState())) {
+                try {
+                    Object diagnostic=sql.getClass().getMethod("getServerErrorMessage").invoke(sql);
+                    if(diagnostic==null)continue;
+                    Object constraint=diagnostic.getClass().getMethod("getConstraint").invoke(diagnostic);
+                    if(constraint instanceof String name && Set.of("ex_installed_unit_effective_unit","ex_installed_unit_effective_position").contains(name))
+                        throw new InstalledUnitLifecycleFailure(Kind.CONFLICT,failure);
+                }catch(ReflectiveOperationException | SecurityException unavailable){/* Unknown diagnostics remain unavailable. */}
+            }
+            throw failure;
+        }
     }
     @Override public void verifyResult(Admission a,Result result,boolean replay) {
         try {
             var t=ticket(a);var s=observe(a);var c=t.command;
             if(!Objects.equals(result.unit(),s.unit()) || !result.unit().id().equals(c.unitId()) || !result.unit().companyPartyId().equals(c.companyPartyId()))throw invalid();
             if(c.operation()==Operation.REGISTER_UNIT && !result.unit().equals(c.registration()))throw invalid();
+            if(!Objects.equals(result.replacementUnit(),s.replacementUnit()))throw invalid();
+            if(c.operation()==Operation.REPLACE ? result.replacementUnit()==null
+                || !result.replacementUnit().id().equals(c.replacementUnitId())
+                || !result.replacementUnit().companyPartyId().equals(c.companyPartyId())
+                || !result.replacementUnit().equipmentKindId().equals(result.unit().equipmentKindId()) : result.replacementUnit()!=null)throw invalid();
             if(c.mutation()) {
                 if(!Objects.equals(s.receiptDigest(),commandDigest(c)) || s.receiptResult()==null
-                    || !Arrays.equals(encode(new Result(result.unit(),result.installation(),result.replacement(),result.history(),false)),encode(s.receiptResult())))throw invalid();
+                    || !Arrays.equals(encode(new Result(result.unit(),result.installation(),result.replacement(),result.history(),false,result.replacementUnit())),encode(s.receiptResult())))throw invalid();
             }
             if(result.installation()!=null) {
                 var x=result.installation();
@@ -228,17 +278,17 @@ pg_catalog.current_setting('transaction_isolation')='read committed' AND pg_cata
                     || position==null || !x.equipmentPositionId().equals(position.positionId()))throw invalid();
                 if(c.operation()==Operation.RECORD_INSTALLATION && (!x.effectiveFrom().equals(c.effectiveFrom())
                     || !Objects.equals(x.effectiveUntil(),c.effectiveUntil()) || !x.evidenceReference().equals(c.evidenceReference()) || x.revision()!=1))throw invalid();
-                if((c.operation()==Operation.CLOSE_INSTALLATION || c.operation()==Operation.RELOCATE)
+                if((c.operation()==Operation.CLOSE_INSTALLATION || c.operation()==Operation.RELOCATE || c.operation()==Operation.REPLACE)
                     && (!Objects.equals(x.effectiveUntil(),c.effectiveUntil()) || x.revision()!=c.expectedRevision()+1))throw invalid();
                 if(!result.installation().installedUnitId().equals(c.unitId()) || !s.history().contains(result.installation()))throw invalid();
                 if(!replay && !result.installation().equals(s.source()))throw invalid();
             } else if(c.installationId()!=null)throw invalid();
-            if(result.replacement()!=null && (c.operation()!=Operation.RELOCATE || !result.replacement().installationId().equals(c.replacementInstallationId())
+            if(result.replacement()!=null && ((c.operation()!=Operation.RELOCATE && c.operation()!=Operation.REPLACE) || !result.replacement().installationId().equals(c.replacementInstallationId())
                 || !result.replacement().equipmentPositionId().equals(c.destination().positionId()) || !result.replacement().companyPartyId().equals(c.companyPartyId())
                 || !result.replacement().effectiveFrom().equals(c.effectiveFrom()) || result.replacement().effectiveUntil()!=null
                 || !result.replacement().evidenceReference().equals(c.evidenceReference()) || result.replacement().revision()!=1))throw invalid();
-            if(c.operation()==Operation.RELOCATE && result.replacement()==null)throw invalid();
-            if(result.replacement()!=null && (!s.replacementHistory().contains(result.replacement()) || !result.replacement().installedUnitId().equals(c.unitId())
+            if((c.operation()==Operation.RELOCATE || c.operation()==Operation.REPLACE) && result.replacement()==null)throw invalid();
+            if(result.replacement()!=null && (!s.replacementHistory().contains(result.replacement()) || !result.replacement().installedUnitId().equals(c.operation()==Operation.REPLACE?c.replacementUnitId():c.unitId())
                 || !replay && !result.replacement().equals(s.replacement())))throw invalid();
             for(var h:result.history())if(!s.history().contains(h))throw invalid();
             if(c.operation()==Operation.READ_HISTORY && !result.history().equals(s.history()))throw invalid();
@@ -255,9 +305,9 @@ pg_catalog.current_setting('transaction_isolation')='read committed' AND pg_cata
             +" WHERE actual.pid=pg_catalog.pg_backend_pid() AND actual.granted AND actual.locktype='relation')";
     }
     private String stateSql(Ticket t) {
-        var c=t.command;String unit=quote(c.unitId()),company=quote(c.companyPartyId());String ids=quote(c.installationId()==null?"":c.installationId())+","+quote(c.replacementInstallationId()==null?"":c.replacementInstallationId());
+        var c=t.command;String unit=quote(c.unitId())+(c.replacementUnitId()==null?"":","+quote(c.replacementUnitId())),company=quote(c.companyPartyId());String ids=quote(c.installationId()==null?"":c.installationId())+","+quote(c.replacementInstallationId()==null?"":c.replacementInstallationId());
         return "pg_catalog.encode(pg_catalog.sha256(pg_catalog.convert_to(pg_catalog.jsonb_build_array("
-            +"(SELECT jsonb_agg(to_jsonb(x) ORDER BY id) FROM "+U+" x WHERE id="+unit+"),"
+            +"(SELECT jsonb_agg(to_jsonb(x) ORDER BY id) FROM "+U+" x WHERE id IN ("+unit+")),"
             +"(SELECT jsonb_agg(to_jsonb(x) ORDER BY installation_id) FROM "+I+" x WHERE company_party_id="+company+" AND installation_id IN ("+ids+")),"
             +"(SELECT jsonb_agg(to_jsonb(x) ORDER BY installation_id,revision) FROM "+H+" x WHERE company_party_id="+company+" AND installation_id IN ("+ids+")),"
             +"(SELECT jsonb_agg(to_jsonb(x) ORDER BY request_id) FROM "+R+" x WHERE request_id="+quote(c.requestId()==null?"":c.requestId())+"))::text,'UTF8')),'hex')";
@@ -276,7 +326,8 @@ pg_catalog.current_setting('transaction_isolation')='read committed' AND pg_cata
             +"(SELECT jsonb_agg(to_jsonb(x) ORDER BY roleid,member,grantor) FROM pg_catalog.pg_auth_members x))::text,'UTF8')),'hex'))";
     }
     private static String sourceSql(Ticket t) {
-        String parties=quote(t.command.companyPartyId())+(t.logical.manufacturerParty().isKnown()?","+quote(t.logical.manufacturerParty().value()):"");
+        String parties=quote(t.command.companyPartyId())+(t.logical.manufacturerParty().isKnown()?","+quote(t.logical.manufacturerParty().value()):"")
+            +(t.hint.replacementUnit()!=null && t.hint.replacementUnit().manufacturerParty().isKnown()?","+quote(t.hint.replacementUnit().manufacturerParty().value()):"");
         var placements=new ArrayList<Position>();if(t.command.source()!=null)placements.add(t.command.source());if(t.command.destination()!=null)placements.add(t.command.destination());
         String positions=placements.isEmpty()?quote(""):placements.stream().map(p->quote(p.positionId())).collect(java.util.stream.Collectors.joining(","));
         String facilities=placements.isEmpty()?quote(""):placements.stream().map(p->quote(p.facilityId())).collect(java.util.stream.Collectors.joining(","));
@@ -305,7 +356,7 @@ pg_catalog.current_setting('transaction_isolation')='read committed' AND pg_cata
         var t=ticket(a);if(!t.frozen || t.guarded)throw invalid();t.guarded=true;
         return Boolean.TRUE.equals(jdbc.queryForObject("WITH observed AS MATERIALIZED (SELECT pg_catalog.clock_timestamp() t) SELECT "
             +"(SELECT t FROM observed)>=?::timestamptz AND (SELECT t FROM observed)<?::timestamptz AND pg_catalog.pg_backend_pid()=? AND pg_catalog.txid_current()=? AND current_user=? AND session_user=current_user"
-            +" AND "+CATALOG+ordinaryDenied(t.ordinary)+" AND "+held(t.fences)+" AND "+stateSql(t)+"=? AND "+catalogImage(t.fences)+"=? AND "+sourceSql(t)+"=?",
+            +" AND "+CATALOG+REPLACEMENT_CATALOG+ordinaryDenied(t.ordinary)+" AND "+held(t.fences)+" AND "+stateSql(t)+"=? AND "+catalogImage(t.fences)+"=? AND "+sourceSql(t)+"=?",
             Boolean.class,timestamp(t.origin.sampledAt()),timestamp(t.origin.validUntil()),t.pid,t.xid,t.role,t.state,t.catalog,t.initialSources));
     }
     @Override public void flush(){caller();context();em.flush();}
@@ -330,6 +381,10 @@ pg_catalog.current_setting('transaction_isolation')='read committed' AND pg_cata
     private interface Writer {void write(DataOutputStream out)throws IOException;}
     private static byte[] bytes(Writer writer) {
         try{var b=new ByteArrayOutputStream();var out=new DataOutputStream(b);out.writeInt(1);writer.write(out);out.flush();if(b.size()>1048576)throw invalid();return b.toByteArray();}
+        catch(IOException failure){throw invalid();}
+    }
+    private static byte[] replacementBytes(Writer writer) {
+        try{var b=new ByteArrayOutputStream();var out=new DataOutputStream(b);out.writeInt(2);writer.write(out);out.flush();if(b.size()>1048576)throw invalid();return b.toByteArray();}
         catch(IOException failure){throw invalid();}
     }
     private static byte[] utf8(String value) {
@@ -364,14 +419,18 @@ pg_catalog.current_setting('transaction_isolation')='read committed' AND pg_cata
         return !in.readBoolean()?null:new InstalledUnitInstallation(text(in),text(in),text(in),text(in),instant(in),instant(in),instant(in),text(in),in.readLong());
     }
     private static byte[] encode(Result result) {
+        if(result.replacementUnit()!=null)return replacementBytes(out->{unit(out,result.unit());installation(out,result.installation());installation(out,result.replacement());out.writeInt(result.history().size());for(var x:result.history())installation(out,x);out.writeBoolean(result.replayed());unit(out,result.replacementUnit());});
         return bytes(out->{unit(out,result.unit());installation(out,result.installation());installation(out,result.replacement());out.writeInt(result.history().size());for(var x:result.history())installation(out,x);out.writeBoolean(result.replayed());});
     }
     private static Result decode(byte[] value) {
         if(value==null || value.length>1048576)throw invalid();
-        try{var in=new DataInputStream(new ByteArrayInputStream(value));if(in.readInt()!=1)throw invalid();var unit=unit(in);var source=installation(in);var replacement=installation(in);int n=in.readInt();if(n<0 || n>2)throw invalid();var history=new ArrayList<InstalledUnitInstallation>();for(int k=0;k<n;k++)history.add(installation(in));var result=new Result(unit,source,replacement,history,in.readBoolean());if(in.available()!=0 || result.replayed() || !Arrays.equals(value,encode(result)))throw invalid();return result;}
+        try{var in=new DataInputStream(new ByteArrayInputStream(value));int version=in.readInt();if(version!=1 && version!=2)throw invalid();var unit=unit(in);var source=installation(in);var replacement=installation(in);int n=in.readInt();if(n<0 || n>2)throw invalid();var history=new ArrayList<InstalledUnitInstallation>();for(int k=0;k<n;k++)history.add(installation(in));boolean replayed=in.readBoolean();var second=version==2?unit(in):null;if(version==2 && second==null)throw invalid();var result=new Result(unit,source,replacement,history,replayed,second);if(in.available()!=0 || result.replayed() || !Arrays.equals(value,encode(result)))throw invalid();return result;}
         catch(IOException failure){throw invalid();}
     }
     private static byte[] commandBytes(Command c) {
+        if(c.operation()==Operation.REPLACE)return replacementBytes(out->{text(out,c.operation().name());text(out,c.requestId());text(out,c.companyPartyId());text(out,c.unitId());text(out,c.installationId());text(out,c.replacementInstallationId());
+            for(var p:new Position[]{c.source(),c.destination()}){out.writeBoolean(p!=null);if(p!=null){text(out,p.positionId());text(out,p.facilityId());}}
+            unit(out,c.registration());instant(out,c.effectiveFrom());instant(out,c.effectiveUntil());text(out,c.evidenceReference());out.writeLong(c.expectedRevision());text(out,c.replacementUnitId());});
         return bytes(out->{text(out,c.operation().name());text(out,c.requestId());text(out,c.companyPartyId());text(out,c.unitId());text(out,c.installationId());text(out,c.replacementInstallationId());
             for(var p:new Position[]{c.source(),c.destination()}){out.writeBoolean(p!=null);if(p!=null){text(out,p.positionId());text(out,p.facilityId());}}
             unit(out,c.registration());instant(out,c.effectiveFrom());instant(out,c.effectiveUntil());text(out,c.evidenceReference());out.writeLong(c.expectedRevision());});

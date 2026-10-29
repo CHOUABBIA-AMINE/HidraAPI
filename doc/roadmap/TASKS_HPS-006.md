@@ -5466,6 +5466,128 @@ Next executes the exact15-file B writer scope above; it does not repeat registra
 or automatically implement C. An actual newly discovered scope contradiction must
 be documented before any extra file mutation.
 
+### HAPI-599 B — atomic installed-unit replacement writer implementation — 2026-10-29
+
+**Selected registered runtime stage.** Owner Next refreshes main
+cfadeedf2f8f64eef9fba9c85d8ca4e61b60dc60, tree
+df6c1427efe61388cf5fe6ed80add546b688f755, Docs/run40861524936 SUCCESS.
+Its unchanged runtime retains independently verified Full970 acceptance of the native
+replacement prerequisite. Execute exact message
+`feat(topology): add atomic installed-unit replacement` and the registered15 paths:
+CREATE2, MODIFY13, DELETE none. This implements the physical writer, not C transport
+or integrated HAPI-599 acceptance.
+
+**Atomic typed operation.** Append REPLACE and replacementUnitId to Command;
+retain its original13-argument constructor. Require different physical units and
+installation IDs, equal exact source/destination position and facility, bounded
+references/evidence, expected source revision and one microsecond-precision close/
+start instant. Legacy operations reject a second unit. The source must be open and
+the instant strictly after its effective start. Extend Hint/Snapshot/Result with
+optional replacement unit facts and compatible old constructors; replay retains
+both units. Both stored units must belong to the exact company and have the actual
+position's equipment-type identity. No implicit registration, serial/model edit,
+foreign-company transfer, different-position swap or engineering/Assets qualification.
+
+The coordinator bridges to the accepted two-code/six-requirement native Request;
+one genuine native authorization sample and exact owner contributions still govern
+all effects and disclosure. Acquire known manufacturer tickets in sorted identity
+order, deduplicating shared manufacturers and retaining separate one-use spare
+reads for final preparation. Verify each actual contribution's native coordinates
+and validity; take the minimum bound across both manufacturers and native authority.
+UNKNOWN remains UNKNOWN. Position/company checks, current checks, opaque admissions,
+exact fence union and poisoning stay active. Both units and both manufacturer source
+identities are included in storage observation and final state/source images.
+
+The existing closure CAS and insertion execute in one provisional window. New
+installation starts at the source close, is open-ended revision1 and uses the common
+native sampledAt for recordedAt; old provenance/recordedAt and immutable revisions
+remain. Existing unit/position exclusion constraints reject incompatible current or
+future occupancy. Closure, replacement insertion, event revisions and exactly one
+receipt commit together or roll back. Replay requires fresh exact authorization,
+checks immutable history and never restores a later changed effective projection.
+
+**Canonical compatibility and bounded SQL.** Every legacy command/result retains
+version1 bytes, field order, strict UTF-8/bounds, hashes and historical replay. REPLACE
+alone uses version2, explicitly binding the second unit in command bytes and both
+full unit facts in the result. Unknown versions, incomplete/noncanonical/trailing
+payloads fail closed. Existing four mutation SQL texts and their hashes are unchanged.
+Add only the complete replacement receipt INSERT, SHA256
+1503d363ee40899cad0081f42e84f728d974409236ebc5fe96e631e571330495,
+independently pinned in coordinator and executor. No caller/credential route, SQL
+prefix, budget, authority expiry, lock/statement policy or final-statement relaxation.
+The accepted installed-unit1000ms cap and other families' budgets remain unchanged.
+
+**Additive schema and catalog guards.** The free filename is now the187th migration,
+V20261029_001__topology_installed_unit_replacement.sql. It adds nullable
+replacement_unit_id varchar(80) to the immutable receipt and the validated
+nondeferrable fk_installed_request_replacement_unit_company composite FK to
+installed_unit(id,company_party_id), ON UPDATE/DELETE RESTRICT. Replace only the
+previous operation check with ck_installed_request_operation admitting REPLACE;
+ck_installed_request_replacement_unit uses an unambiguous CASE requiring a distinct
+non-null replacement ID for REPLACE and null for every old operation. Existing
+receipt FK/actions/checks, all186 published migration bytes and trigger/function
+bodies remain unchanged; no historical row rewrite or production role/grant seed.
+
+Catalog and sole final guard verify actual appended column type/position/nullability,
+FK keys/actions/validation/deferrability and all four exact native RI functions,
+plus both compiled check expressions. Only whitespace/parentheses are normalized
+for these fixed ANY/CASE expressions, whose token sequences and CASE structure
+remain exact. No arbitrary predicate is accepted. Existing privilege/catalog/trigger/
+origin invariants remain. The ownership manifest adds genuine migration provenance
+for the existing receipt; reviewed dictionary/schema/OpenAPI snapshots stay unchanged.
+Their next refresh awaits an actual hosted187-migration catalog, not inferred metadata.
+
+**Typed owner failures.** InstalledUnitLifecycleFailure exposes fixed INVALID,
+UNAUTHENTICATED, DENIED, NOT_FOUND, CONFLICT, UNAVAILABLE and INDETERMINATE categories
+with non-disclosing messages and retained private causes. NOT_FOUND is emitted for
+an absent installation only after fresh exact native and owner checks. Proven stale
+revision/owned request/occupancy conflicts retain CONFLICT. Only the two exact native
+occupancy exclusion constraint diagnostics receive SQL conflict classification;
+unknown SQL/integrity/catalog/origin/privilege failures remain unavailable/fail-closed.
+Receipt hashes/canonical result validity are checked before classifying a changed
+owned request. No query follows poisoning; executor indeterminate commit outcome
+always dominates an earlier business meaning and cannot return success.
+
+**Authored verification; authoritative CI pending.** Preserve all existing case
+identities, adding25 exact cases in the same four suites. Coordinator now14 cases,
+service8, executor55 and native lifecycle38 (all23 original lifecycle cases retained).
+New PostgreSQL cases exercise four genuine producers, both permissions/facility,
+either unit/installation denial, current/future occupancy, source revision and expiry,
+fault injection specifically after closure and after new insertion, zero partial
+projection/events/receipts, version1 replay and replacement replay after later close,
+changed second unit/operation, missing FK/privilege, actual final source/role/time
+rejection, distinct/shared manufacturers with independent spare reads, UNKNOWN,
+foreign company/different equipment type, competing replacements and authorized
+absence versus revoked authority. Actual native issuers/owner adapters/storage/commit
+machinery execute; only external transports and explicit failure points are mocked.
+The JdbcTemplate spy delegates real calls except the selected injected failure.
+Manufacturer fixtures clean their temporary role assignments to preserve old tests.
+
+Inventory changes only four suite hashes and actual added case names: active500
+classes/3,775 exact cases, same ten PostgreSQL shard assignments, timings/classification,
+all old cases and four historical exclusions. No workflow change, omitted or skipped case.
+
+**Available local evidence and limits.** Modified Java syntax checks and compilation
+of actual writer/domain/public owner contracts against existing minimal framework
+API stubs are useful bounded checks, not Spring/Java21/JUnit/PostgreSQL runtime proof.
+Seventeen isolated actual prior/current codec probes pass: all seven legacy command
+bytes and legacy result bytes unchanged, old constructor compatibility, replacement
+version2/second-unit binding/roundtrip/replay and malformed receipt rejection.
+Nine forensic source checks pass under the existing minimal assertion harness.
+The35 inventory and53 full-evidence validator self-tests pass; offline OpenAPI
+snapshot validation passes at306 operations/282 paths/323 schemas, unchanged.
+Focused Maven exits127, mvn: command not found; no environment is provisioned solely
+for local verification. Documentation/link, inventory, exact scope/SQL-pin/migration
+preservation and whitespace checks precede publication. No hosted pass or physical
+catalog capture for this new writer is claimed yet.
+
+Publish verified tree/blobs/parent directly to main with expected-head guard; observe
+applicable Full/Fast/Docs creation/start and STOP. B replacement is implemented,
+not accepted. Keep dictionary publication on hold until genuine catalog capture and
+the separately registered truthful dictionary follow-up; accept B only after complete
+exact-head evidence review. C/API and integrated HAPI-599 remain pending. HAPI-600/601,
+frontend, simulation/P3, SITE, release and deployment remain unselected.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

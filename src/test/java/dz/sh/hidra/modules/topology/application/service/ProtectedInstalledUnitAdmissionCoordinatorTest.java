@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedInstalledUnitAdmissionCoordinatorTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-28
+ * @UpdatedOn   : 2026-10-29
  *
  * @Type        : Class
  * @Layer       : Test
@@ -67,7 +67,7 @@ class ProtectedInstalledUnitAdmissionCoordinatorTest {
     @Test void mutationSqlPinsAreExactAcrossCoordinatorAndTechnicalExecutor() throws Exception {
         var c=ProtectedInstalledUnitAdmissionCoordinator.class.getDeclaredField("DML_HASHES");c.setAccessible(true);
         var e=ProtectedTransactionExecutor.class.getDeclaredField("INSTALLED_DML_HASHES");e.setAccessible(true);
-        assertEquals(4,((Set<?>)c.get(null)).size());assertEquals(c.get(null),e.get(null));
+        assertEquals(5,((Set<?>)c.get(null)).size());assertEquals(c.get(null),e.get(null));
     }
 
     private record Setup(Command command,ProtectedInstalledUnitAdmissionCoordinator.Prepared prepared,ProtectedInstalledUnitRepositoryPort.Admission storageTicket) {}
@@ -107,5 +107,57 @@ class ProtectedInstalledUnitAdmissionCoordinatorTest {
     @Test void preparedTicketCannotBeConsumedTwice() throws Exception {
         var f=registrationSetup(true);coordinator.acquire(f.prepared(),f.command());
         assertThrows(RuntimeException.class,()->coordinator.acquire(f.prepared(),f.command()));verify(identity,times(1)).contribute(any());verify(storage,never()).apply(any(),any(),any());
+    }
+
+    private Command replacement(String second,Position destination) {
+        return new Command(Operation.REPLACE,"request","company","unit","old","new",new Position("position","facility"),destination,
+            null,Instant.EPOCH.plusSeconds(1),Instant.EPOCH.plusSeconds(1),"replacement source",1,second);
+    }
+    @Test void replacementBindsDistinctUnitsAndOneExactPositionInNativeRequest() throws Exception {
+        var c=replacement("second",new Position("position","facility"));assertTrue(c.mutation());
+        var method=ProtectedInstalledUnitAdmissionCoordinator.class.getDeclaredMethod("request",Command.class);method.setAccessible(true);
+        var r=(TopologyInstalledUnitAuthorizationContract.Request)method.invoke(null,c);
+        assertEquals(TopologyInstalledUnitAuthorizationContract.Operation.REPLACE,r.operation());assertEquals("second",r.replacementUnitId());
+        assertEquals(6,r.requirements().size());assertEquals("facility",r.sourceFacilityId());assertEquals(r.sourceFacilityId(),r.destinationFacilityId());
+    }
+    @Test void replacementRejectsMissingSameOversizedAndDifferentPositionDescriptors() {
+        for(String invalid:Arrays.asList(null,"unit"," second","x".repeat(81)))
+            assertThrows(IllegalArgumentException.class,()->replacement(invalid,new Position("position","facility")));
+        assertThrows(IllegalArgumentException.class,()->replacement("second",new Position("other","facility")));
+        assertThrows(IllegalArgumentException.class,()->replacement("second",new Position("position","other")));
+        assertThrows(IllegalArgumentException.class,()->new Command(Operation.REPLACE,"request","company","unit","old","old",
+            new Position("position","facility"),new Position("position","facility"),null,Instant.EPOCH,Instant.EPOCH,"evidence",1,"second"));
+    }
+    @Test void legacyConstructorsRetainAbsentSecondUnitAndRejectHiddenSecondUnit() {
+        assertNull(read().replacementUnitId());assertEquals(7,Arrays.stream(Operation.values()).filter(x->x!=Operation.REPLACE).count());
+        assertThrows(IllegalArgumentException.class,()->new Command(Operation.READ_UNIT,null,"company","unit",null,null,null,null,null,null,null,null,0,"second"));
+        var unknown=InstalledUnit.Evidence.unknown();var u=new InstalledUnit("unit","company","kind",unknown,unknown,unknown,null);
+        var v=new InstalledUnit("second","company","kind",unknown,unknown,unknown,null);
+        assertNull(new Result(u,null,null,List.of(),false).replacementUnit());
+        assertEquals(v,new Result(u,null,null,List.of(),false,v).replay().replacementUnit());
+    }
+    @Test void compiledSqlPinsPreserveFourLegacyShapesAndAddOnlyReplacementReceipt() throws Exception {
+        var field=ProtectedInstalledUnitAdmissionCoordinator.class.getDeclaredField("DML_HASHES");field.setAccessible(true);
+        var adapter=dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.JdbcProtectedInstalledUnitRepositoryAdapter.class;
+        var statements=adapter.getDeclaredField("MUTATIONS");statements.setAccessible(true);
+        var actual=new HashSet<String>();for(Object sql:(Set<?>)statements.get(null))actual.add(HexFormat.of().formatHex(
+            java.security.MessageDigest.getInstance("SHA-256").digest(sql.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8))));
+        assertEquals(field.get(null),actual);assertTrue(actual.contains("1503d363ee40899cad0081f42e84f728d974409236ebc5fe96e631e571330495"));
+    }
+    @Test void replacementCodecRetainsLegacyEnvelopeAndBindsBothUnitFacts() throws Exception {
+        var adapter=dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.JdbcProtectedInstalledUnitRepositoryAdapter.class;
+        var command=adapter.getDeclaredMethod("commandBytes",Command.class);command.setAccessible(true);
+        var encode=adapter.getDeclaredMethod("encode",Result.class);encode.setAccessible(true);var decode=adapter.getDeclaredMethod("decode",byte[].class);decode.setAccessible(true);
+        byte[] old=(byte[])command.invoke(null,read());assertEquals(1,java.nio.ByteBuffer.wrap(old).getInt());
+        var c=replacement("second",new Position("position","facility"));byte[] changed=(byte[])command.invoke(null,c);
+        assertEquals(2,java.nio.ByteBuffer.wrap(changed).getInt());assertFalse(Arrays.equals(changed,(byte[])command.invoke(null,replacement("third",new Position("position","facility")))));
+        var unknown=InstalledUnit.Evidence.unknown();var u=new InstalledUnit("unit","company","kind",unknown,unknown,unknown,null);var v=new InstalledUnit("second","company","kind",unknown,unknown,unknown,null);
+        var source=new dz.sh.hidra.modules.topology.domain.model.InstalledUnitInstallation("old","unit","position","company",Instant.EPOCH,Instant.EPOCH.plusSeconds(1),Instant.EPOCH,"evidence",2);
+        var next=new dz.sh.hidra.modules.topology.domain.model.InstalledUnitInstallation("new","second","position","company",Instant.EPOCH.plusSeconds(1),null,Instant.EPOCH,"replacement source",1);
+        var expected=new Result(u,source,next,List.of(source),false,v);byte[] payload=(byte[])encode.invoke(null,expected);
+        assertEquals(2,java.nio.ByteBuffer.wrap(payload).getInt());assertEquals(expected,decode.invoke(null,(Object)payload));
+        assertThrows(java.lang.reflect.InvocationTargetException.class,()->decode.invoke(null,(Object)Arrays.copyOf(payload,payload.length+1)));
+        byte[] legacy=(byte[])encode.invoke(null,new Result(u,null,null,List.of(),false));assertEquals(1,java.nio.ByteBuffer.wrap(legacy).getInt());
+        assertEquals(new Result(u,null,null,List.of(),false),decode.invoke(null,(Object)legacy));
     }
 }

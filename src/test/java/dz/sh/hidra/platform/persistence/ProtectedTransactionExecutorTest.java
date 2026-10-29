@@ -1001,7 +1001,7 @@ class ProtectedTransactionExecutorTest {
 
     @org.junit.jupiter.api.Test void installedUnitSqlAndBoundedFamilyBudgetRemainExact() throws Exception {
         var field=ProtectedTransactionExecutor.class.getDeclaredField("INSTALLED_DML_HASHES");field.setAccessible(true);
-        assertThat(field.get(null)).isEqualTo(java.util.Set.of("98d9e2d0cd9de0a5c85161d0bb465f4ab310a0ebd6208036eeb26572b3c35f46","13de71cd409afd07b736979dad5ad802324a4a40718dd7f411229492c81cb716","d55fab38a80ea7a81636dceb7d3af50c6a8e1c14410b58e1e8ff25a0557ae278","a10ecf5d21bc1a8efcdf7a7cbbf5e23104309f243b223a93c997a61d880d5bd7"));
+        assertThat(field.get(null)).isEqualTo(java.util.Set.of("98d9e2d0cd9de0a5c85161d0bb465f4ab310a0ebd6208036eeb26572b3c35f46","13de71cd409afd07b736979dad5ad802324a4a40718dd7f411229492c81cb716","d55fab38a80ea7a81636dceb7d3af50c6a8e1c14410b58e1e8ff25a0557ae278","a10ecf5d21bc1a8efcdf7a7cbbf5e23104309f243b223a93c997a61d880d5bd7","1503d363ee40899cad0081f42e84f728d974409236ebc5fe96e631e571330495"));
         long selected=org.springframework.test.util.ReflectionTestUtils.invokeMethod(executor,"publicationWorkBudgetNanos",
             "dz.sh.hidra.modules.topology.application.service.InstalledUnitLifecycleApplicationService");
         assertThat(selected).isEqualTo(1_000_000_000L);
@@ -1032,4 +1032,17 @@ class ProtectedTransactionExecutorTest {
         assertThat(scope.poisoned).isTrue();assertThat(new ProtectedOperationDataSource.Scope().workBudgetNanos).isEqualTo(500_000_000L);
     }
 
+
+    @Test void installedReplacementReceiptPinDoesNotAdmitAnyOtherOwnerOrSqlShape() throws Exception {
+        var field=ProtectedTransactionExecutor.class.getDeclaredField("INSTALLED_DML_HASHES");field.setAccessible(true);
+        var pins=(java.util.Set<?>)field.get(null);assertThat(pins).hasSize(5);
+        assertThat(pins.contains("1503d363ee40899cad0081f42e84f728d974409236ebc5fe96e631e571330495")).isTrue();
+        for(String sql:List.of("INSERT INTO public.hidra_topology_installed_unit_operation_request DEFAULT VALUES",
+            "DELETE FROM public.hidra_topology_installed_unit","UPDATE public.hidra_topology_installed_unit SET id=id")) {
+            var sha=java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(sql.getBytes(java.nio.charset.StandardCharsets.UTF_8)));
+            assertThat(pins.contains(sha)).isFalse();
+        }
+        assertThatThrownBy(()->executor.executePublication(()->"forbidden",()->{},this::guard))
+            .isInstanceOf(IllegalStateException.class).hasMessage("Unreviewed credential route caller");
+    }
 }

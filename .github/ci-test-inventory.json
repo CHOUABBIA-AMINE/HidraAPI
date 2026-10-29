@@ -8146,8 +8146,12 @@
       "cases": [
         "failedPhysicalCommitNeverReturnsProvisionalResult",
         "falseFinalGuardCannotProduceSuccess",
+        "indeterminateExecutorOutcomeAlwaysDominatesEarlierBusinessMeaning",
+        "missingAuthenticationRetainsUnauthenticatedMeaningBeforeAnyStorageRead",
         "nestedProtectedContextIsRejectedBeforeNativePreparation",
-        "orderKeepsFinalOwnerChecksAfterFlushAndBeforeCommittedReturn"
+        "orderKeepsFinalOwnerChecksAfterFlushAndBeforeCommittedReturn",
+        "typedOwnerFailureRetainsMeaningAndPrivateCauseAfterExecutorRollback",
+        "unavailableFailuresCannotMasqueradeAsBusinessConflict"
       ],
       "class": "dz.sh.hidra.modules.topology.application.service.InstalledUnitLifecycleApplicationServiceTest",
       "dependency_reason": "HAPI-599 protected installed-unit lifecycle; actual owner admission, exact SQL/commit and replay invariants; timings unmeasured",
@@ -8155,7 +8159,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/application/service/InstalledUnitLifecycleApplicationServiceTest.java",
-      "source_sha256": "e8d2d636d65c0d8ece595fa2d84dfa2fdb41ef23e53d2435d7b6815e54c74876",
+      "source_sha256": "c6fe790ed25b48a47814b9b93e76a13dcd0e5205d21adb14031f37c7d4ba4ced",
       "supports": []
     },
     {
@@ -8178,13 +8182,18 @@
       "cases": [
         "ambientTransactionCannotPrepareOrConsumeNativeEntry",
         "arbitrarySqlCannotEnterEvenAfterPermittedNativeAdmission",
+        "compiledSqlPinsPreserveFourLegacyShapesAndAddOnlyReplacementReceipt",
         "exactNativeOperationDescriptorsAreDerivedFromTypedCommand",
         "forgedPreparationCannotReachAnyOwnerOrDml",
         "invalidCrossOperationPayloadsCannotHideInCommandDigest",
+        "legacyConstructorsRetainAbsentSecondUnitAndRejectHiddenSecondUnit",
         "mutationSqlPinsAreExactAcrossCoordinatorAndTechnicalExecutor",
         "ownerDenyCannotOpenProvisionalMutation",
         "preparedTicketCannotBeConsumedTwice",
-        "publicTicketShapesContainNoConstructorOrAuthorityFactory"
+        "publicTicketShapesContainNoConstructorOrAuthorityFactory",
+        "replacementBindsDistinctUnitsAndOneExactPositionInNativeRequest",
+        "replacementCodecRetainsLegacyEnvelopeAndBindsBothUnitFacts",
+        "replacementRejectsMissingSameOversizedAndDifferentPositionDescriptors"
       ],
       "class": "dz.sh.hidra.modules.topology.application.service.ProtectedInstalledUnitAdmissionCoordinatorTest",
       "dependency_reason": "HAPI-599 protected installed-unit lifecycle; actual owner admission, exact SQL/commit and replay invariants; timings unmeasured",
@@ -8192,7 +8201,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/application/service/ProtectedInstalledUnitAdmissionCoordinatorTest.java",
-      "source_sha256": "a526ff84a16c222bcd1637c33ce28c0504b0147160949380079df55980ab15f9",
+      "source_sha256": "e98e106dfc97092b70a25f43aefb8cf5f63b19905988e0ce3e561158087fea69",
       "supports": []
     },
     {
@@ -8869,24 +8878,39 @@
       "baseline_seconds": 0,
       "cases": [
         "allSevenOperationsCommitThroughEachGenuineNativeProducer",
+        "atomicReplacementCommitsAndReplaysThroughAllFourGenuineNativeProducers",
+        "competingReplacementsCommitAtMostOneAtomicSuccess",
         "currentCompanySuspensionDeniesAuthorizedReadWithoutLeakingPayload",
         "databaseKindReferenceIsValidatedAndRestrictsDeletionWithoutCatalogDmlGrant",
         "deletionFirstCannotRaceProtectedRegistrationIntoDanglingKind",
+        "denialOfEitherPhysicalUnitOrInstallationRejectsEntireReplacement",
         "disabledReceiptTriggerAndWrongPositionKindFailBeforeMutation",
         "expiredFinalBoundRollsBackProvisionalRootAndReceipt",
         "foreignThreadTicketMisusePoisonsOriginalWriterDespiteSwallowedFailure",
         "knownManufacturerRequiresCurrentRealPartyEvidence",
         "missingDestinationScopeAndChangedCompanyCannotPartiallyMoveUnit",
+        "missingInstallationIsReportedOnlyAfterFreshExactAuthorizationAndOwnerChecks",
         "missingNativeKindConstraintCannotBeSubstitutedByApplicationExistenceCheck",
         "nativeKindConstraintRejectsUnknownReferenceWith23503",
         "nativeWriterFirstConflictRejectsNowaitWithoutUnitOrReceipt",
         "ordinaryRoleCannotMutatePrivateStorageAndAdmissionRejectsAmbientTransaction",
         "overlapDuringRelocationRollsBackClosureEventAndReceipt",
+        "replacementCannotUseForeignCompanyOrDifferentEquipmentTypeUnit",
+        "replacementDeniesMissingEitherPermissionComponentOrFacilityWithoutWrites",
+        "replacementFailureAfterClosureOrAfterNewInsertionRollsBackAllEvidence",
+        "replacementFinalGuardRejectsActualSourceRoleAndTimeChanges",
+        "replacementRejectsCurrentAndFutureOccupancyAndRollsBackSourceClosure",
+        "replacementRejectsMissingNewForeignKeyOrPublisherPrivilege",
+        "replacementReplayDoesNotRestoreLaterClosedProjectionAndLegacyReceiptsStayVersionOne",
+        "replacementRevalidatesBothDifferentManufacturersAndPreservesUnknownEvidence",
+        "replacementRevocationBeforeReplayAndExpiryBeforeMutationRemainFailClosed",
+        "replacementSharedManufacturerUsesOneFactAndOneIndependentSpareRead",
         "rolePrivilegeChangeAfterFreezeIsRejectedByFinalCatalogImage",
         "scopedRevocationDeniesFreshReadsAndExactReplayWithoutEffects",
         "setBasedLockObservationRequiresEveryExactRelationAndMode",
         "sourceGenerationChangeAfterFreezeCannotPassFinalGuard",
         "sqlAfterRealFinalGuardPoisonsCommitInsteadOfReturningSuccess",
+        "staleRevisionAndChangedSecondUnitOrOperationConflictDoNotAppendReceipts",
         "staleRevisionAndConflictingRequestIdentityLeaveNoExtraEvidence",
         "suspendedWriterCannotResumeWithEarlierOwnerTickets",
         "swallowedSavepointControlCannotCommitEarlierProvisionalWrites",
@@ -8898,7 +8922,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedInstalledUnitLifecyclePostgresIntegrationTest.java",
-      "source_sha256": "46ce440f5c6f97f375b9739e1aceaed75cc9d2e0de7fc2027fb77d2aa6486608",
+      "source_sha256": "7a1f44b7b1f1534074d6eebdac995cc951a2b649c89460181578c783e123066b",
       "supports": []
     },
     {
@@ -10174,6 +10198,7 @@
         "finishedHandleCannotBecomeUnscoped",
         "fluidProvisionalStatementsAreExactReviewedTemplates",
         "graphSqlProvisionalFamilyDoesNotGrantUnreviewedOwnerExecution",
+        "installedReplacementReceiptPinDoesNotAdmitAnyOtherOwnerOrSqlShape",
         "installedUnitSqlAndBoundedFamilyBudgetRemainExact",
         "installedUnitWorkPolicyRetainsFiniteExpiryAndStandardDefault",
         "mutableOrJdbcResultsCannotBeDelivered",
@@ -10206,7 +10231,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java",
-      "source_sha256": "a262c115fdc41817deb6ccfb03e5fa9d0cb89c78724ab0307ce334d8cb22d3c0",
+      "source_sha256": "a1204e5fbb5dcb9b4396ba658802fa16649d1f1a8c8e5ed208246c6b5cde585e",
       "supports": []
     },
     {

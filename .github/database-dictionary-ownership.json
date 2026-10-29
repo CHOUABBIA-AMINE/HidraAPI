@@ -596,7 +596,8 @@
     "purpose": "Immutable protected installed-unit command receipt and native actor/transaction provenance; not transferable authorization.",
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcProtectedInstalledUnitRepositoryAdapter.java",
-      "src/main/resources/db/migration/V20261028_005__topology_installed_unit_protected_operations.sql"
+      "src/main/resources/db/migration/V20261028_005__topology_installed_unit_protected_operations.sql",
+      "src/main/resources/db/migration/V20261029_001__topology_installed_unit_replacement.sql"
     ]
   }
 }

@@ -161,7 +161,7 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
     }
 
 
-    @Autowired JdbcTemplate jdbc;
+    @MockitoSpyBean JdbcTemplate jdbc;
     @Autowired InstalledUnitLifecycleUseCase lifecycle;
     @MockitoSpyBean dz.sh.hidra.modules.topology.application.service.ProtectedInstalledUnitAdmissionCoordinator admissionCoordinator;
     @Autowired dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract installedWriterIdentity;
@@ -194,16 +194,16 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
     private InstalledUnitLifecycleUseCase.Command record(InstalledUnit u,Place p,String installation){return new InstalledUnitLifecycleUseCase.Command(InstalledUnitLifecycleUseCase.Operation.RECORD_INSTALLATION,id(),COMPANY,u.id(),installation,null,null,pos(p),null,START,null,"synthetic occupancy",0);}
     private dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.Request nativeRequest(InstalledUnitLifecycleUseCase.Command c) {
         return new dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.Request(
-            dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.Operation.valueOf(c.operation().name()),c.companyPartyId(),c.unitId(),c.installationId(),c.replacementInstallationId(),c.source()==null?null:c.source().facilityId(),c.destination()==null?null:c.destination().facilityId());
+            dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.Operation.valueOf(c.operation().name()),c.companyPartyId(),c.unitId(),c.installationId(),c.replacementInstallationId(),c.source()==null?null:c.source().facilityId(),c.destination()==null?null:c.destination().facilityId(),c.replacementUnitId());
     }
     private void authorize(Fixture f,InstalledUnitLifecycleUseCase.Command c) {
-        var request=nativeRequest(c);String code=dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.permissionCode(request.operation());
-        String permission=jdbc.queryForList("SELECT id FROM public.hidra_identity_permission WHERE code=?",String.class,code).stream().findFirst().orElse(null);
-        if(permission==null){permission=id();jdbc.update("INSERT INTO public.hidra_identity_permission(id,code,permission_domain,resource_type,action,sensitive,status,created_at,updated_at) VALUES(?,?,'topology',?,?,false,'ACTIVE',now(),now())",permission,code,request.requirements().getFirst().resourceType(),code.substring("topology:installed-unit:".length()));}
-        var seen=new HashSet<String>();
+        var request=nativeRequest(c);var seen=new HashSet<String>();
         for(var requirement:request.requirements()) {
+            String code=dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.permissionCode(request.operation(),requirement.resourceType());
+            String permission=jdbc.queryForList("SELECT id FROM public.hidra_identity_permission WHERE code=?",String.class,code).stream().findFirst().orElse(null);
+            if(permission==null){permission=id();jdbc.update("INSERT INTO public.hidra_identity_permission(id,code,permission_domain,resource_type,action,sensitive,status,created_at,updated_at) VALUES(?,?,'topology',?,?,false,'ACTIVE',now(),now())",permission,code,requirement.resourceType(),code.substring("topology:installed-unit:".length()));}
             String scope=requirement.scope().name(),ref=scope.equals("COMPANY")?"topology-company:"+requirement.scopeReference():requirement.scopeReference();
-            if(!seen.add(scope+":"+ref))continue;
+            if(!seen.add(code+":"+scope+":"+ref))continue;
             jdbc.update("INSERT INTO public.hidra_identity_user_permission_grant(id,user_id,permission_id,effect,scope_type,scope_reference_id,grant_reason,emergency_access,valid_from,valid_to,status,created_at) VALUES(?,?,?,'GRANT',?,?,'synthetic installed writer',false,now()-interval '1 hour',now()+interval '1 hour','ACTIVE',now())",id(),f.user(),permission,scope.equals("COMPANY")?"CUSTOM":"FACILITY",ref);
         }
     }
@@ -293,7 +293,7 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
         jdbc.execute("CREATE TABLE " + receipt() + "(id integer PRIMARY KEY)");
         c3NonownerCapture();ensureCompany();
         // Warm only genuine native qualification, without business storage or a protected writer bypass.
-        // Every lifecycle operation below still runs under the unchanged protected500ms budget.
+        // Every lifecycle operation below still runs under the accepted installed-unit1000ms budget.
         var f=fixture("LOCAL");var unit=new InstalledUnit("native-warm-unit",COMPANY,"native-warm-kind",
             InstalledUnit.Evidence.unknown(),InstalledUnit.Evidence.unknown(),InstalledUnit.Evidence.unknown(),null);
         var cmd=register(unit);authorize(f,cmd);login(f);
@@ -1132,6 +1132,209 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
             return inv.callRealMethod();
         }).when(admissionCoordinator).prepareFinal(any());
         try{assertThatThrownBy(()->lifecycle.execute(c)).isInstanceOf(RuntimeException.class);verify(admissionCoordinator).prepareFinal(any());}finally{reset(admissionCoordinator);}
+        assertThat(effects()).isEqualTo(before);
+    }
+
+    private InstalledUnitLifecycleUseCase.Command replace(InstalledUnit u,InstalledUnit v,Place p,String oldInstallation) {
+        return new InstalledUnitLifecycleUseCase.Command(InstalledUnitLifecycleUseCase.Operation.REPLACE,id(),COMPANY,u.id(),oldInstallation,id(),pos(p),pos(p),null,
+            START.plusSeconds(10),START.plusSeconds(10),"synthetic replacement provenance",1,v.id());
+    }
+    private record ReplacementFixture(Fixture actor,Place place,InstalledUnit source,InstalledUnit second,InstalledUnitLifecycleUseCase.Command command){}
+    private ReplacementFixture replacementFixture(String type) {
+        var f=fixture(type);var p=place();var u=unit(p);var v=unit(p);execute(f,register(u));execute(f,register(v));String old=id();execute(f,record(u,p,old));
+        return new ReplacementFixture(f,p,u,v,replace(u,v,p,old));
+    }
+    private void unchangedReplacement(ReplacementFixture r,String before) {
+        assertThat(effects()).isEqualTo(before);
+        assertThat(admin().queryForObject("SELECT effective_until IS NULL AND revision=1 FROM public.hidra_topology_installed_unit_installation WHERE installation_id=?",Boolean.class,r.command().installationId())).isTrue();
+        assertThat(admin().queryForObject("SELECT count(*) FROM public.hidra_topology_installed_unit_installation WHERE installation_id=?",Integer.class,r.command().replacementInstallationId())).isZero();
+    }
+    @Test void atomicReplacementCommitsAndReplaysThroughAllFourGenuineNativeProducers() {
+        for(String type:List.of("LOCAL","LDAP","ACTIVE_DIRECTORY","OIDC")) {
+            cleanEvidence();var r=replacementFixture(type);var result=execute(r.actor(),r.command());
+            assertThat(result.unit()).isEqualTo(r.source());assertThat(result.replacementUnit()).isEqualTo(r.second());
+            assertThat(result.installation().effectiveUntil()).isEqualTo(result.replacement().effectiveFrom());
+            assertThat(result.installation().revision()).isEqualTo(2);assertThat(result.replacement().revision()).isEqualTo(1);
+            assertThat(result.replacement().installedUnitId()).isEqualTo(r.second().id());assertThat(result.replacement().effectiveUntil()).isNull();
+            var row=admin().queryForMap("SELECT canonical_command,result_payload,replacement_unit_id,actor_user_id,backend_pid,transaction_id FROM public.hidra_topology_installed_unit_operation_request WHERE request_id=?",r.command().requestId());
+            assertThat(row.get("replacement_unit_id")).isEqualTo(r.second().id());assertThat(row.get("actor_user_id")).isEqualTo(r.actor().user());
+            assertThat(java.nio.ByteBuffer.wrap((byte[])row.get("canonical_command")).getInt()).isEqualTo(2);
+            assertThat(java.nio.ByteBuffer.wrap((byte[])row.get("result_payload")).getInt()).isEqualTo(2);
+            String after=effects();assertThat(execute(r.actor(),r.command())).isEqualTo(result.replay());assertThat(effects()).isEqualTo(after);
+        }
+    }
+    @Test void replacementDeniesMissingEitherPermissionComponentOrFacilityWithoutWrites() {
+        for(String missing:List.of("replace-unit","replace-installation","FACILITY")) {
+            cleanEvidence();var r=replacementFixture("LOCAL");authorize(r.actor(),r.command());
+            if(missing.equals("FACILITY"))jdbc.update("DELETE FROM public.hidra_identity_user_permission_grant WHERE user_id=? AND scope_type='FACILITY'",r.actor().user());
+            else jdbc.update("DELETE FROM public.hidra_identity_user_permission_grant WHERE user_id=? AND permission_id IN (SELECT id FROM public.hidra_identity_permission WHERE code=?)",r.actor().user(),"topology:installed-unit:"+missing);
+            login(r.actor());String before=effects();assertThatThrownBy(()->lifecycle.execute(r.command())).isInstanceOf(RuntimeException.class);unchangedReplacement(r,before);
+            assertThat(execute(r.actor(),r.command()).replacementUnit()).isEqualTo(r.second());
+        }
+    }
+    @Test void denialOfEitherPhysicalUnitOrInstallationRejectsEntireReplacement() {
+        for(int n=0;n<4;n++) {
+            cleanEvidence();var r=replacementFixture("LOCAL");authorize(r.actor(),r.command());var c=r.command();
+            String denied=List.of(c.unitId(),c.replacementUnitId(),c.installationId(),c.replacementInstallationId()).get(n);
+            String policy=policy("DENY","{\"op\":\"eq\",\"attribute\":\"resource.referenceId\",\"type\":\"STRING\",\"value\":\""+denied+"\"}");
+            login(r.actor());String before=effects();assertThatThrownBy(()->lifecycle.execute(c)).isInstanceOf(RuntimeException.class);unchangedReplacement(r,before);
+            jdbc.update("UPDATE public.hidra_identity_authorization_policy SET status='INACTIVE' WHERE id=?",policy);
+            assertThat(execute(r.actor(),c).replacementUnit()).isEqualTo(r.second());
+        }
+    }
+    @Test void replacementRejectsCurrentAndFutureOccupancyAndRollsBackSourceClosure() {
+        for(boolean future:List.of(false,true)) {
+            cleanEvidence();var r=replacementFixture("LOCAL");var other=other(r.place());var occupancy=record(r.second(),other,id());
+            if(future)occupancy=new InstalledUnitLifecycleUseCase.Command(occupancy.operation(),occupancy.requestId(),COMPANY,r.second().id(),occupancy.installationId(),null,null,pos(other),null,START.plusSeconds(100),null,"future occupancy",0);
+            execute(r.actor(),occupancy);authorize(r.actor(),r.command());login(r.actor());String before=effects();
+            assertThatThrownBy(()->lifecycle.execute(r.command())).isInstanceOf(RuntimeException.class);unchangedReplacement(r,before);
+        }
+    }
+    @Test void replacementFailureAfterClosureOrAfterNewInsertionRollsBackAllEvidence() {
+        for(boolean afterInsert:List.of(false,true)) {
+            cleanEvidence();var r=replacementFixture("LOCAL");authorize(r.actor(),r.command());login(r.actor());String before=effects();var reached=new AtomicBoolean();
+            doAnswer(inv->{String sql=inv.getArgument(0);
+                if(sql.startsWith(afterInsert?"INSERT INTO public.hidra_topology_installed_unit_operation_request":"INSERT INTO public.hidra_topology_installed_unit_installation ")) {
+                    reached.set(true);throw new IllegalStateException(afterInsert?"synthetic failure after new insertion":"synthetic failure after closure");
+                }
+                return inv.callRealMethod();
+            }).when(jdbc).update(anyString(),any(Object[].class));
+            try{assertThatThrownBy(()->lifecycle.execute(r.command())).isInstanceOf(RuntimeException.class);assertThat(reached.get()).isTrue();}
+            finally{reset(jdbc);}
+            unchangedReplacement(r,before);assertThat(execute(r.actor(),r.command()).replacementUnit()).isEqualTo(r.second());
+        }
+    }
+    @Test void staleRevisionAndChangedSecondUnitOrOperationConflictDoNotAppendReceipts() {
+        var r=replacementFixture("LOCAL");var c=r.command();
+        var stale=new InstalledUnitLifecycleUseCase.Command(c.operation(),c.requestId(),COMPANY,c.unitId(),c.installationId(),c.replacementInstallationId(),c.source(),c.destination(),null,c.effectiveFrom(),c.effectiveUntil(),c.evidenceReference(),2,c.replacementUnitId());
+        authorize(r.actor(),stale);login(r.actor());String before=effects();assertThatThrownBy(()->lifecycle.execute(stale)).isInstanceOfSatisfying(dz.sh.hidra.modules.topology.application.model.InstalledUnitLifecycleFailure.class,
+            failure->assertThat(failure.kind()).isEqualTo(dz.sh.hidra.modules.topology.application.model.InstalledUnitLifecycleFailure.Kind.CONFLICT));unchangedReplacement(r,before);
+        execute(r.actor(),c);var third=unit(r.place());execute(r.actor(),register(third));before=effects();
+        var changed=new InstalledUnitLifecycleUseCase.Command(c.operation(),c.requestId(),COMPANY,c.unitId(),c.installationId(),c.replacementInstallationId(),c.source(),c.destination(),null,c.effectiveFrom(),c.effectiveUntil(),c.evidenceReference(),1,third.id());
+        authorize(r.actor(),changed);login(r.actor());assertThatThrownBy(()->lifecycle.execute(changed)).isInstanceOf(RuntimeException.class);assertThat(effects()).isEqualTo(before);
+        var moved=new InstalledUnitLifecycleUseCase.Command(InstalledUnitLifecycleUseCase.Operation.RELOCATE,c.requestId(),COMPANY,c.unitId(),c.installationId(),c.replacementInstallationId(),c.source(),c.destination(),null,c.effectiveFrom(),c.effectiveUntil(),c.evidenceReference(),1);
+        authorize(r.actor(),moved);login(r.actor());assertThatThrownBy(()->lifecycle.execute(moved)).isInstanceOf(RuntimeException.class);assertThat(effects()).isEqualTo(before);
+    }
+    @Test void replacementReplayDoesNotRestoreLaterClosedProjectionAndLegacyReceiptsStayVersionOne() {
+        var f=fixture("LOCAL");var p=place();var u=unit(p);var v=unit(p);var registration=register(u);execute(f,registration);execute(f,register(v));
+        String old=id();var original=record(u,p,old);var recorded=execute(f,original);var c=replace(u,v,p,old);var replaced=execute(f,c);
+        var close=new InstalledUnitLifecycleUseCase.Command(InstalledUnitLifecycleUseCase.Operation.CLOSE_INSTALLATION,id(),COMPANY,v.id(),c.replacementInstallationId(),null,pos(p),null,null,null,START.plusSeconds(20),null,1);execute(f,close);
+        String before=effects();assertThat(execute(f,c)).isEqualTo(replaced.replay());assertThat(execute(f,original)).isEqualTo(recorded.replay());assertThat(execute(f,registration).replayed()).isTrue();assertThat(effects()).isEqualTo(before);
+        assertThat(admin().queryForObject("SELECT revision=2 AND effective_until IS NOT NULL FROM public.hidra_topology_installed_unit_installation WHERE installation_id=?",Boolean.class,c.replacementInstallationId())).isTrue();
+        for(String request:List.of(registration.requestId(),original.requestId())) {
+            var row=admin().queryForMap("SELECT canonical_command,result_payload,replacement_unit_id FROM public.hidra_topology_installed_unit_operation_request WHERE request_id=?",request);
+            assertThat(java.nio.ByteBuffer.wrap((byte[])row.get("canonical_command")).getInt()).isEqualTo(1);assertThat(java.nio.ByteBuffer.wrap((byte[])row.get("result_payload")).getInt()).isEqualTo(1);assertThat(row.get("replacement_unit_id")).isNull();
+        }
+    }
+    @Test void replacementRejectsMissingNewForeignKeyOrPublisherPrivilege() {
+        var r=replacementFixture("LOCAL");authorize(r.actor(),r.command());login(r.actor());String before=effects();
+        admin().execute("ALTER TABLE public.hidra_topology_installed_unit_operation_request DROP CONSTRAINT fk_installed_request_replacement_unit_company");
+        try{assertThatThrownBy(()->lifecycle.execute(r.command())).isInstanceOf(RuntimeException.class);}
+        finally{admin().execute("ALTER TABLE public.hidra_topology_installed_unit_operation_request ADD CONSTRAINT fk_installed_request_replacement_unit_company FOREIGN KEY(replacement_unit_id,company_party_id) REFERENCES public.hidra_topology_installed_unit(id,company_party_id) ON UPDATE RESTRICT ON DELETE RESTRICT NOT DEFERRABLE");}
+        unchangedReplacement(r,before);admin().execute("REVOKE INSERT ON public.hidra_topology_installed_unit_operation_request FROM "+PUBLISHER);
+        try{assertThatThrownBy(()->lifecycle.execute(r.command())).isInstanceOf(RuntimeException.class);}
+        finally{admin().execute("GRANT INSERT ON public.hidra_topology_installed_unit_operation_request TO "+PUBLISHER);}
+        unchangedReplacement(r,before);assertThat(execute(r.actor(),r.command()).replacementUnit()).isEqualTo(r.second());
+    }
+    @Test void replacementFinalGuardRejectsActualSourceRoleAndTimeChanges() {
+        for(String fault:List.of("source","role","time")) {
+            cleanEvidence();var r=replacementFixture("LOCAL");authorize(r.actor(),r.command());login(r.actor());String before=effects();var rejected=new AtomicBoolean();
+            doAnswer(inv->{inv.callRealMethod();
+                if(fault.equals("time")) {
+                    Object ticket=inv.getArgument(0);var origin=(dz.sh.hidra.modules.topology.application.port.out.ProtectedInstalledUnitRepositoryPort.Origin)ReflectionTestUtils.getField(ticket,"origin");
+                    ReflectionTestUtils.setField(ticket,"origin",new dz.sh.hidra.modules.topology.application.port.out.ProtectedInstalledUnitRepositoryPort.Origin(origin.actorId(),origin.bindingId(),origin.sessionId(),origin.sampledAt(),origin.sampledAt(),origin.backendPid(),origin.transactionId()));
+                }else try(var connection=DriverManager.getConnection(POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword());var statement=connection.createStatement()) {
+                    statement.execute(fault.equals("role")?"ALTER ROLE "+PUBLISHER+" BYPASSRLS":"UPDATE public.hidra_party_eligibility_generation SET generation=generation+1 WHERE party_id='"+COMPANY+"'");
+                }
+                return null;
+            }).when(protectedStore).freeze(any(),any(),anyList());
+            doAnswer(inv->{Object result=inv.callRealMethod();rejected.set(Boolean.FALSE.equals(result));return result;}).when(protectedStore).finalGuard(any());
+            try{assertThatThrownBy(()->lifecycle.execute(r.command())).isInstanceOf(RuntimeException.class);assertThat(rejected.get()).isTrue();}
+            finally{reset(protectedStore);if(fault.equals("role"))admin().execute("ALTER ROLE "+PUBLISHER+" NOBYPASSRLS");}
+            unchangedReplacement(r,before);
+        }
+    }
+    @Test void replacementRevocationBeforeReplayAndExpiryBeforeMutationRemainFailClosed() {
+        var r=replacementFixture("LOCAL");execute(r.actor(),r.command());String before=effects();login(r.actor());
+        jdbc.update("UPDATE public.hidra_identity_user_permission_grant SET status='REVOKED' WHERE user_id=?",r.actor().user());
+        assertThatThrownBy(()->lifecycle.execute(r.command())).isInstanceOf(RuntimeException.class);assertThat(effects()).isEqualTo(before);
+        var fresh=replacementFixture("LOCAL");authorize(fresh.actor(),fresh.command());login(fresh.actor());before=effects();
+        jdbc.update("UPDATE public.hidra_identity_user_permission_grant SET valid_to=clock_timestamp() WHERE user_id=?",fresh.actor().user());
+        assertThatThrownBy(()->lifecycle.execute(fresh.command())).isInstanceOf(RuntimeException.class);unchangedReplacement(fresh,before);
+    }
+    private InstalledUnit manufactured(Place p) {
+        var a=admin();String type=id(),manufacturer=id(),assignment=id(),profile=id();
+        a.update("INSERT INTO public.hidra_party_type(id,code,status,created_at,updated_at) VALUES(?,?,'ACTIVE',now(),now())",type,type);
+        a.update("INSERT INTO public.hidra_party_party(id,code,party_type_id,legal_name,country_code,status,created_at,updated_at) VALUES(?,?,?,'Manufacturer','DZ','ACTIVE',now(),now())",manufacturer,manufacturer,type);
+        var roles=a.queryForList("SELECT id FROM public.hidra_party_role WHERE code='MANUFACTURER'",String.class);String role=roles.isEmpty()?id():roles.getFirst();
+        if(roles.isEmpty())a.update("INSERT INTO public.hidra_party_role(id,code,qualification_required_by_default,status,created_at,updated_at) VALUES(?,'MANUFACTURER',true,'ACTIVE',now(),now())",role);
+        a.update("INSERT INTO public.hidra_party_role_assignment(id,party_id,role_id,valid_from,status,qualification_required,created_at,updated_at) VALUES(?,?,?,now()-interval '1 hour','ACTIVE',true,now(),now())",assignment,manufacturer,role);
+        a.update("INSERT INTO public.hidra_party_manufacturer_profile(id,party_id,capability_type,qualification_status,created_at,updated_at) VALUES(?,?,'EQUIPMENT','QUALIFIED',now(),now())",profile,manufacturer);
+        return new InstalledUnit(id(),COMPANY,p.kind(),new InstalledUnit.Evidence(manufacturer,InstalledUnit.Verification.UNVERIFIED,"synthetic provenance"),InstalledUnit.Evidence.unknown(),InstalledUnit.Evidence.unknown(),null);
+    }
+    @Test void replacementRevalidatesBothDifferentManufacturersAndPreservesUnknownEvidence() {
+        var f=fixture("LOCAL");var p=place();var u=manufactured(p);var v=manufactured(p);
+        try {
+        execute(f,register(u));execute(f,register(v));String old=id();execute(f,record(u,p,old));var c=replace(u,v,p,old);
+        for(var manufacturer:List.of(u.manufacturerParty().value(),v.manufacturerParty().value())) {
+            authorize(f,c);login(f);String before=effects();admin().update("UPDATE public.hidra_party_manufacturer_profile SET qualification_status='SUSPENDED' WHERE party_id=?",manufacturer);
+            try{assertThatThrownBy(()->lifecycle.execute(c)).isInstanceOf(RuntimeException.class);assertThat(effects()).isEqualTo(before);}
+            finally{admin().update("UPDATE public.hidra_party_manufacturer_profile SET qualification_status='QUALIFIED' WHERE party_id=?",manufacturer);}
+        }
+        assertThat(execute(f,c).replacementUnit()).isEqualTo(v);
+        var r=replacementFixture("LOCAL");assertThat(execute(r.actor(),r.command()).replacementUnit().manufacturerParty().verification()).isEqualTo(InstalledUnit.Verification.UNKNOWN);
+            }finally{clearManufacturers(List.of(u,v));}
+    }
+    @Test void competingReplacementsCommitAtMostOneAtomicSuccess() throws Exception {
+        var r=replacementFixture("LOCAL");var third=unit(r.place());execute(r.actor(),register(third));var other=replace(r.source(),third,r.place(),r.command().installationId());
+        authorize(r.actor(),r.command());authorize(r.actor(),other);login(r.actor());var authentication=SecurityContextHolder.getContext().getAuthentication();
+        long installations=count("installed_unit_installation"),events=count("installed_unit_installation_event"),receipts=count("installed_unit_operation_request");
+        var start=new CountDownLatch(1);var ready=new CountDownLatch(2);var workers=Executors.newFixedThreadPool(2);
+        var tasks=new ArrayList<Future<Boolean>>();
+        try {
+            for(var command:List.of(r.command(),other))tasks.add(workers.submit(()->{var context=SecurityContextHolder.createEmptyContext();context.setAuthentication(authentication);SecurityContextHolder.setContext(context);ready.countDown();
+                try{if(!start.await(5,TimeUnit.SECONDS))throw new AssertionError("Replacement race did not start");try{lifecycle.execute(command);return true;}catch(RuntimeException rejected){return false;}}
+                finally{SecurityContextHolder.clearContext();}}));
+            assertThat(ready.await(5,TimeUnit.SECONDS)).isTrue();start.countDown();int successes=0;for(var task:tasks)if(task.get(10,TimeUnit.SECONDS))successes++;
+            assertThat(successes).isEqualTo(1);assertThat(count("installed_unit_installation")).isEqualTo(installations+1);assertThat(count("installed_unit_installation_event")).isEqualTo(events+2);assertThat(count("installed_unit_operation_request")).isEqualTo(receipts+1);
+        }finally{start.countDown();workers.shutdownNow();assertThat(workers.awaitTermination(5,TimeUnit.SECONDS)).isTrue();}
+    }
+
+    private void clearManufacturers(List<InstalledUnit> units) {
+        var a=admin();for(String id:units.stream().map(u->u.manufacturerParty().value()).distinct().toList()) {
+            a.update("DELETE FROM public.hidra_party_manufacturer_profile WHERE party_id=?",id);
+            a.update("DELETE FROM public.hidra_party_role_assignment WHERE party_id=?",id);
+        }
+        a.execute("DELETE FROM public.hidra_party_role r WHERE r.code='MANUFACTURER' AND NOT EXISTS(SELECT 1 FROM public.hidra_party_role_assignment a WHERE a.role_id=r.id)");
+    }
+    @Test void replacementSharedManufacturerUsesOneFactAndOneIndependentSpareRead() {
+        var f=fixture("LOCAL");var p=place();var u=manufactured(p);var v=new InstalledUnit(id(),COMPANY,p.kind(),u.manufacturerParty(),InstalledUnit.Evidence.unknown(),InstalledUnit.Evidence.unknown(),null);
+        try {
+            execute(f,register(u));execute(f,register(v));String old=id();execute(f,record(u,p,old));var c=replace(u,v,p,old);var checked=new AtomicBoolean();
+            doAnswer(inv->{Object ticket=inv.getArgument(0);var facts=(Map<?,?>)ReflectionTestUtils.getField(ticket,"manufacturers");var spares=(Map<?,?>)ReflectionTestUtils.getField(ticket,"spareManufacturers");
+                assertThat(facts).hasSize(1);assertThat(spares).hasSize(1);checked.set(true);return inv.callRealMethod();
+            }).when(admissionCoordinator).prepareFinal(any());
+            try{assertThat(execute(f,c).replacementUnit()).isEqualTo(v);assertThat(checked.get()).isTrue();}finally{reset(admissionCoordinator);}
+        }finally{clearManufacturers(List.of(u,v));}
+    }
+    @Test void replacementCannotUseForeignCompanyOrDifferentEquipmentTypeUnit() {
+        var r=replacementFixture("LOCAL");var other=place();var different=unit(other);execute(r.actor(),register(different));
+        String foreign=id();admin().update(rawUnitSql(),foreign,id(),r.place().kind());
+        for(String second:List.of(different.id(),foreign)) {
+            var c=r.command();var changed=new InstalledUnitLifecycleUseCase.Command(c.operation(),c.requestId(),COMPANY,c.unitId(),c.installationId(),c.replacementInstallationId(),c.source(),c.destination(),null,c.effectiveFrom(),c.effectiveUntil(),c.evidenceReference(),1,second);
+            authorize(r.actor(),changed);login(r.actor());String before=effects();assertThatThrownBy(()->lifecycle.execute(changed)).isInstanceOf(RuntimeException.class).hasMessageNotContaining(second);unchangedReplacement(r,before);
+        }
+        assertThat(execute(r.actor(),r.command()).replacementUnit()).isEqualTo(r.second());
+    }
+
+    @Test void missingInstallationIsReportedOnlyAfterFreshExactAuthorizationAndOwnerChecks() {
+        var r=replacementFixture("LOCAL");var c=replace(r.source(),r.second(),r.place(),id());authorize(r.actor(),c);login(r.actor());String before=effects();
+        assertThatThrownBy(()->lifecycle.execute(c)).isInstanceOfSatisfying(dz.sh.hidra.modules.topology.application.model.InstalledUnitLifecycleFailure.class,
+            failure->assertThat(failure.kind()).isEqualTo(dz.sh.hidra.modules.topology.application.model.InstalledUnitLifecycleFailure.Kind.NOT_FOUND));
+        assertThat(effects()).isEqualTo(before);
+        jdbc.update("UPDATE public.hidra_identity_user_permission_grant SET status='REVOKED' WHERE user_id=?",r.actor().user());
+        assertThatThrownBy(()->lifecycle.execute(c)).isInstanceOfSatisfying(dz.sh.hidra.modules.topology.application.model.InstalledUnitLifecycleFailure.class,
+            failure->assertThat(failure.kind()).isEqualTo(dz.sh.hidra.modules.topology.application.model.InstalledUnitLifecycleFailure.Kind.DENIED));
         assertThat(effects()).isEqualTo(before);
     }
 }

@@ -4492,6 +4492,40 @@ whitespace; publish verified tree/blobs/parent to main with expected-head guard,
 observe applicable exact-SHA CI creation/start and STOP. Further failures require
 repair before independent runtime/catalog acceptance or dependent work.
 
+### HAPI-599 Package B — savepoint assertion compilation repair — 2026-10-29
+
+Owner Fail selects main `67320ada19f68e7875ff43445150a02200d0dae6`.
+Full965/run `40831498840` and Fast265/run `40831498878` failed;
+Docs697/run `40831499085` passed. Full unit job `123306527088` and PostgreSQL
+shard8/job `123306527382` both identify the same testCompile error at the lifecycle
+suite's line1108: assertThat(SQLException) is ambiguous between Iterable and generic
+assertion overloads, and IterableAssert has no hasMessageContaining. SQLException
+implements Iterable<Throwable>. Every Maven test lane compiles this same source;
+their failures do not establish ten independent runtime regressions. No lifecycle
+runtime/performance acceptance is obtained from this head. The API/dictionary lane
+also retains the separately pending strict catalog comparison.
+
+Exact bounded repair message:
+`fix(topology): disambiguate savepoint rejection message assertion`.
+CREATE/DELETE none. MODIFY only
+src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedInstalledUnitLifecyclePostgresIntegrationTest.java,
+.github/ci-test-inventory.json and this phase. Assert on rejected.getMessage() as a
+String and require the same savepoint/abort prohibited message. Preserve assertThrows
+SQLException, exact SQLSTATE25000, the intentionally swallowed failure, real final
+preparation, outer protected rejection, reached-callback verification and no-effects
+assertions. No production/query/budget/migration/dictionary/workflow change. The
+23 lifecycle cases,500 active classes,3,736 required cases and ten shards remain;
+only the suite source hash changes in inventory.
+
+Local syntax, inventory, documentation/link and whitespace checks pass. Focused Maven
+cannot run: exit127, mvn: command not found. No Java21/Spring/JUnit/PostgreSQL pass
+is invented; previous limited source harnesses did not exercise AssertJ overload
+resolution. Publish exact three-file tree/blobs/parent with expected-head guard,
+observe applicable exact-SHA CI creation/start and STOP. The query optimization's
+runtime result and500ms compliance remain pending hosted execution. Writer/Package B
+acceptance and the registered genuine-catalog dictionary refresh remain on hold;
+no API, dependent stage, release or deployment is selected.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

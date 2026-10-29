@@ -1105,7 +1105,7 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
             var connection=org.springframework.jdbc.datasource.DataSourceUtils.getConnection(jdbc.getDataSource());
             var rejected=org.junit.jupiter.api.Assertions.assertThrows(SQLException.class,connection::setSavepoint);
             assertThat(rejected.getSQLState()).isEqualTo("25000");
-            assertThat(rejected).hasMessageContaining("savepoint/abort prohibited");
+            assertThat(rejected.getMessage()).contains("savepoint/abort prohibited");
             return inv.callRealMethod();
         }).when(admissionCoordinator).prepareFinal(any());
         try{assertThatThrownBy(()->lifecycle.execute(c)).isInstanceOf(RuntimeException.class);verify(admissionCoordinator).prepareFinal(any());}finally{reset(admissionCoordinator);}

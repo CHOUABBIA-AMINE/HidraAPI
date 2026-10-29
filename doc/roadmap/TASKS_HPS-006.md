@@ -6255,6 +6255,82 @@ any further package acceptance. No HAPI-599 status
 closure, HAPI-600/601, frontend, simulation/P3,
 operational/SITE qualification or deployment follows.
 
+### HAPI-599 Package C — resolve anonymous HTTP overload compilation failure — 2026-10-29
+
+**Owner Fail; exact-source failure evidence.** Main
+`555da34a4f684b60c48a30296a0041a3b8b8ef50`;
+Full CI #976/run `40879594436` FAILED and Fast
+Feedback #274/run `40879594410` FAILED, while
+Documentation #713/run `40879594412` SUCCEEDED.
+Full's API-contract/dictionary and static lanes SUCCEEDED;
+unit/architecture and all ten PostgreSQL shards FAILED
+during Java Maven test compilation before running the
+selected test suites. The same source line
+`ProtectedInstalledUnitLifecyclePostgresIntegrationTest.java:1297`
+fails in both Full and Fast:
+
+```text
+reference to installedHttp is ambiguous
+both installedHttp(String, InstalledUnitLifecycleUseCase.Command)
+and installedHttp(Fixture, InstalledUnitLifecycleUseCase.Command) match
+```
+
+The call `installedHttp(null,read)` in
+`installedUnitHttpBearerDenialAndRevocationHideEvidence`
+is a Java null-literal overload resolution ambiguity;
+the absence of generated Surefire reports is a
+downstream compilation consequence, not separate
+proof of failing business cases. The previous
+Full #975/run `40876941249` passed on the pre-HTTP
+test source. The currently added genuine bearer/native
+HTTP runtime assertions have **not** executed yet.
+
+**One bounded registered correction.** Exact commit message:
+`test(topology): disambiguate anonymous native HTTP bearer`.
+CREATE/DELETE none; MODIFY only:
+
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedInstalledUnitLifecyclePostgresIntegrationTest.java`
+  — change only the overload selector from
+  `installedHttp(null,read)` to
+  `installedHttp((String) null,read)`, preserving the
+  actual anonymous request and 401 expectation
+- `.github/ci-test-inventory.json` — replace only
+  this same class's verified source SHA256
+  `29ac8ff2d2d37761037a083c27d8d524fc784de6e30ef09d55a4ba36b9f0ff79`
+  with
+  `8a9a6cf77ab4b0b4c6b00220b8631280f29f0bc155b1c4e2e371d3b1fa4eace6`
+- `doc/roadmap/TASKS_HPS-006.md`
+  — this append-only failure and repair record.
+
+**Preservation and validation.** The source replacement
+is exactly one occurrence; every other Java character,
+the previous 38 native tests and all three new
+HTTP tests (41 total), every test assertion and
+current auth/rollback invariant are unchanged.
+The new SHA256 is calculated from the actual GitHub
+blob with an independently checked reference
+hash algorithm; the CI inventory remains 509 classes
+and ten PostgreSQL shards, with no case selection,
+timing, baseline or unrelated class change.
+No production endpoint, Domain, Application, owner
+permission, database migration, SQL lock, OpenAPI
+snapshot, dictionary, security rule, workflow or
+CI script is changed.
+
+This source-level check establishes the targeted
+compilation ambiguity is disambiguated; it does
+NOT constitute a Java/Maven/JUnit/PostgreSQL test
+pass. The local Maven and Docker environments
+remain unavailable. Follow AGENTS11.1: guarded
+direct-main publication with exact parent/tree,
+three-file allowlist, blob verification and actual
+exact-SHA CI startup, then STOP. If new CI surfaces
+runtime assertion or integration failures, repair
+their actual cause before Package C acceptance.
+Integrated HAPI-599 remains NOT_IMPLEMENTED/BLOCKED.
+No HAPI-600/601, deployment, operator/SITE acceptance
+or P3 simulation is authorized.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

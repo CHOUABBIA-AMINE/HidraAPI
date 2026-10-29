@@ -1294,7 +1294,7 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
         String valid=installedBearer(f,read);
         installedHttp(valid,read).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
         String before=effects();
-        installedHttp(null,read).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isUnauthorized());
+        installedHttp((String) null,read).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isUnauthorized());
         installedHttp("not.a.valid.jwt",read).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isUnauthorized());
         jdbc.update("UPDATE public.hidra_identity_user_permission_grant SET status='REVOKED' WHERE user_id=?",f.user());
         installedHttp(valid,read).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isForbidden());

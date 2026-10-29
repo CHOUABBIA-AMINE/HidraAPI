@@ -149,9 +149,13 @@ No successor implementation is selected by this closure.
 connectivity, is NOT_IMPLEMENTED/IN_PROGRESS. Docs724 passed its source preflight;
 HAPI-588/599 remain accepted. Its owning phase now admits exact A/B/C packages:
 versioned configuration/schema, distinct native authority and atomic source/final-
-guard integration, then configured HTTP/qualification. Package A is next after
-this registration's Documentation CI acceptance. No implementation or industrial
-qualification is claimed; HAPI-601..603 and parent598 remain independently gated.
+guard integration, then configured HTTP/qualification. Package A source and its
+physical dictionary repair have passed Full985 on89e492a1b17fb4d4b454709b84e6c0774281c2a7.
+Independent review retained3,825 passing raw cases but found missing behavioral
+storage/boundary qualification and the isolated-path diagnostic gap. Its owning
+phase registers the focused same-package follow-up; A is not yet independently
+accepted and B/C remain gated. HAPI-601..603 and parent598 remain independent;
+no industrial qualification is claimed.
 
 The historical Full950 Custody work-policy and dictionary-receipt repair is
 resolved in HAPI-599's accepted evidence. Its finite startup cap remains distinct

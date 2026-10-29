@@ -7815,6 +7815,92 @@ owner must run **HidraAPI CI** manually on the corrected main SHA with
 `dependency_cache=cached` before Package A acceptance. Do not alter
 unrelated source or CI configuration to manufacture a trigger.
 
+
+
+### HAPI-600 Package A — independent Full985 review and remaining acceptance gate — 2026-10-29
+
+**Owner Next, one bounded evidence review.** Live main
+`89e492a1b17fb4d4b454709b84e6c0774281c2a7`, sole parent
+`096b95d1efb5420b2973957e75eb6f8e58b0a396`, tree
+`b4652b6dfc8a694baa2eb452761c78e3b9e2b8e2`.
+Exact message for this two-file review:
+`docs(topology): record station configuration storage acceptance gaps`.
+MODIFY only this phase file (append-only within HAPI-600) and the compact
+ULTIMATE_TASKS execution pointer. CREATE/DELETE none; frozen statuses unchanged.
+
+**Verified hosted evidence.** Full985/run40931532620 attempt1 completed SUCCESS
+on that exact SHA; Docs727/run40929063969 SUCCESS. Full986/run40931603434
+was cancelled; it is not a failure of Full985 and supplies no acceptance evidence.
+Full985 passed static, Java21 unit/architecture, all ten PostgreSQL shards,
+configured API snapshot/compatibility, actual database dictionary comparison
+and final Full gate. Raw full artifact12924425450 was downloaded and inspected;
+ZIP SHA256 `51038105d49f667ec444dc7382a6059e33fed11426148ffa4bf3956e13e2e134`.
+Independent reconstruction from508 XML class reports gives3,825 tests,
+zero failures/errors/skips, matching gate.json. The512 registered-class figure
+is an inventory count; it must not be substituted for508 executed class reports.
+All17 configuration cases are present:6 domain,6 codec,5 PostgreSQL.
+
+Same-run catalog verification reports PostgreSQL16.15,188 migrations,
+536 relations,470 JPA mappings, no unresolved owners and reviewed_dictionary_checked=true.
+Source bundle SHA256 `18c41fbd10616d0d9a21365fed66ea3804e27b47d9d14e330ff3704bd4d89552`;
+catalog SHA256 `1ff59694ece4598442000ecc9b42fc81348b7c78ea157a3b672c986a67283f14`.
+Current API SHA256 `598276dfc2a2a3160ac3cadd278294d638323d93952a3e9b3e302b92cc7e9f85`;
+compatibility base027534fe2087c3bc0bdb58e4b6799efcddd6e3ae.
+The dictionary repair's strict hosted gate is resolved. This development-partitioned
+run has serial_oracle=false, release_eligible=false and same_run_equivalence=false;
+no serial/release equivalence or industrial acceptance is inferred.
+
+**Acceptance gap found in actual source.** The five PostgreSQL cases prove fresh
+relations, selected catalog FKs/checks/triggers and one real missing-head-reference
+rejection. They do not execute valid revision/member/request storage followed by
+invalid binding/period/check/uniqueness mutations, UPDATE/DELETE/TRUNCATE rejection
+on populated immutable tables, successful and stale head transitions or transaction
+rollback. Catalog existence alone does not satisfy the registered Package A
+behavioral matrix. Domain/codec tests also do not exercise all registered size
+boundaries, and the all-isolated fixture currently asserts empty diagnostics
+rather than the registered explicit no-connected-path diagnostic. These are
+unresolved qualification/contract gaps, not failed Full985 cases. No unsupported
+database defect or successful missing case is claimed.
+
+**Next registered same-package follow-up, not executed here.** Exact message:
+`test(topology): qualify station configuration storage invariants`.
+CREATE/DELETE none. MODIFY exactly:
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/StationInstalledConfiguration.java`
+- `src/test/java/dz/sh/hidra/modules/topology/domain/model/StationInstalledConfigurationTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/StationInstalledConfigurationCodecTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/StationInstalledConfigurationPostgresIntegrationTest.java`
+- `.github/ci-test-inventory.json`
+- `doc/roadmap/TASKS_HPS-006.md`
+
+Retain all17 existing case identities and assertions except the specifically
+contradictory empty all-isolated diagnostics expectation; replace it with the
+registered explicit no-connected-path result and preserve its series/parallel
+assertions. Add deterministic max/excess position, evidence and canonical byte
+bounds and actual populated PostgreSQL mutation/rollback/CAS cases. Reuse existing
+synthetic owner fixtures and real full Flyway; never disable triggers/constraints
+to manufacture a valid row. Domain diagnostic change must remain configuration-
+local and preserve existing graph contracts. Do not alter global graph semantics.
+Refresh exact test source hashes/case membership; retain all prior inventory
+entries, ten shards, unmeasured timing honesty and strict Full gates.
+
+No migration, codec production implementation, workflow, time budget, authority,
+HTTP/OpenAPI, dictionary, role grant or frozen status change is admitted by this
+follow-up. If behavioral checks expose a source/schema defect outside this
+allowlist, retain the failing evidence and register its exact additive repair
+before changing that source; do not edit historical migrations or repurpose
+the reserved Package B migration. Required follow-up acceptance is successful
+exact-SHA Full/Fast/Docs, raw new/old case membership with no skips and actual
+catalog/API gates. Useful available local checks follow AGENTS CI-first;
+unavailable local services are reported, never counted as a pass.
+
+Package A remains implemented in its source scope but **not independently accepted**;
+HAPI-600 frozen NOT_IMPLEMENTED/IN_PROGRESS remains unchanged until its separately
+registered closure. B depends on accepted A and remains unselected; C depends on
+accepted A/B. HAPI-598,601..603, frontend, simulation/P3, release, deployment and
+SITE remain separately gated. Publish this two-document review with expected-head
+guard, verify exact parent/tree/blobs/message and observe Documentation startup,
+then STOP before the registered follow-up.
+
 <a id="hapi-602"></a>
 ## HAPI-602 — Versioned installed-unit/characteristic links
 

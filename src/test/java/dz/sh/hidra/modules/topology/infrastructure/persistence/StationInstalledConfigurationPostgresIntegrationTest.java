@@ -165,7 +165,7 @@ class StationInstalledConfigurationPostgresIntegrationTest {
         db.update("INSERT INTO public.hidra_topology_station_graph_revision"
             +"(facility_id,revision_id,payload_format,canonical_payload,sha256) VALUES(?,?,?,?,?)",
             facility,revision.revisionId(),StationInternalGraphRevisionCodec.FORMAT,raw,graphCodec.sha256(raw));
-        return new Fixture(company,facility,revision,List.copyOf(positions));
+        return new Fixture(company,facility,graphCodec.decode(raw),List.copyOf(positions));
     }
     private StationInstalledConfiguration declaration(Fixture f,String revision,long epoch,String request) {
         return new StationInstalledConfiguration(f.company(),f.facility(),revision,request,epoch-1,epoch,1,

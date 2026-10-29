@@ -119,6 +119,7 @@ class StationInstalledConfigurationCodecTest {
                     new Header("discharge",HeaderKind.DISCHARGE,"d")),units,edges);
         var revision=new StationInternalGraphRevision(f,"graph",graph,SourceClassification.SYNTHETIC,
             FROM,FROM,null,"synthetic:graph",null,Qualification.STRUCTURALLY_QUALIFIED);
+        revision=graphCodec.decode(graphCodec.encode(revision));
         return new StationInstalledConfiguration("company",f,"config","request",0,1,1,revision,
             StationInternalGraphRevisionCodec.FORMAT,graphCodec.sha256(graphCodec.encode(revision)),
             FROM,null,FROM,"synthetic:source","binding","session","user",positions,List.of());

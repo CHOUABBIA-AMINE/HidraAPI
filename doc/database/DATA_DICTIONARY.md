@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `d8e3f65d78f0a88e756fb6841e96e9a743b47aef`
+Captured source SHA: `122df88dd07524cfc6295b4124f1dd76ada9b2bf`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `efd5680512a4a8627dfc4ea5ae27a1725089963f7bf5f646079f6d3699383ec4`.
-Migrations: 186; JPA mappings: 470; catalog relations: 532; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `3d52c5026c50b48591e8f34e8905bc92b60ebcf31176512abdc60fc6e273aafb`.
+Migrations: 187; JPA mappings: 470; catalog relations: 532; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -27810,6 +27810,7 @@ Immutable Topology physical-unit identity and manufacturer/model/serial evidence
 - Evidence: [JdbcProtectedInstalledUnitRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcProtectedInstalledUnitRepositoryAdapter.java)
 - Migration mention (not inferred introduction): [V20261028_002__topology_installed_unit_identity_and_history.sql](../../src/main/resources/db/migration/V20261028_002__topology_installed_unit_identity_and_history.sql)
 - Migration mention (not inferred introduction): [V20261028_005__topology_installed_unit_protected_operations.sql](../../src/main/resources/db/migration/V20261028_005__topology_installed_unit_protected_operations.sql)
+- Migration mention (not inferred introduction): [V20261029_001__topology_installed_unit_replacement.sql](../../src/main/resources/db/migration/V20261029_001__topology_installed_unit_replacement.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -27977,7 +27978,9 @@ Immutable protected installed-unit command receipt and native actor/transaction 
 
 - Evidence: [JdbcProtectedInstalledUnitRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcProtectedInstalledUnitRepositoryAdapter.java)
 - Evidence: [V20261028_005__topology_installed_unit_protected_operations.sql](../../src/main/resources/db/migration/V20261028_005__topology_installed_unit_protected_operations.sql)
+- Evidence: [V20261029_001__topology_installed_unit_replacement.sql](../../src/main/resources/db/migration/V20261029_001__topology_installed_unit_replacement.sql)
 - Migration mention (not inferred introduction): [V20261028_005__topology_installed_unit_protected_operations.sql](../../src/main/resources/db/migration/V20261028_005__topology_installed_unit_protected_operations.sql)
+- Migration mention (not inferred introduction): [V20261029_001__topology_installed_unit_replacement.sql](../../src/main/resources/db/migration/V20261029_001__topology_installed_unit_replacement.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -28000,17 +28003,22 @@ Immutable protected installed-unit command receipt and native actor/transaction 
 | backend_pid | integer | False | None; identity=; generated= | No current mapped Java column | — |
 | transaction_id | bigint | False | None; identity=; generated= | No current mapped Java column | — |
 | database_role | name | False | None; identity=; generated= | No current mapped Java column | — |
+| replacement_unit_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
 
 #### Constraints
 
+- `ck_installed_request_operation`: CHECK (operation::text = ANY (ARRAY['REGISTER_UNIT'::character varying, 'RECORD_INSTALLATION'::character varying, 'CLOSE_INSTALLATION'::character varying, 'RELOCATE'::character varying, 'REPLACE'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["operation"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_installed_request_replacement_unit`: CHECK (<br>CASE<br>    WHEN operation::text = 'REPLACE'::text THEN replacement_unit_id IS NOT NULL AND replacement_unit_id::text &lt;&gt; unit_id::text<br>    ELSE replacement_unit_id IS NULL<br>END)
+  - Catalog attributes: {"columns": ["operation", "replacement_unit_id", "unit_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `fk_installed_request_replacement_unit_company`: FOREIGN KEY (replacement_unit_id, company_party_id) REFERENCES hidra_topology_installed_unit(id, company_party_id) ON UPDATE RESTRICT ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["replacement_unit_id", "company_party_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id", "company_party_id"], "match": "s", "on_delete": "r", "on_update": "r", "schema": "public", "table": "hidra_topology_installed_unit"}, "type": "f", "validated": true}
 - `hidra_topology_installed_unit_ope_unit_id_company_party_id_fkey`: FOREIGN KEY (unit_id, company_party_id) REFERENCES hidra_topology_installed_unit(id, company_party_id)
   - Catalog attributes: {"columns": ["unit_id", "company_party_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id", "company_party_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_installed_unit"}, "type": "f", "validated": true}
 - `hidra_topology_installed_unit_operation_request_check`: CHECK (expected_revision &gt;= 0 AND sampled_at &lt; valid_until AND backend_pid &gt; 0 AND transaction_id &gt; 0)
   - Catalog attributes: {"columns": ["expected_revision", "sampled_at", "valid_until", "backend_pid", "transaction_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
 - `hidra_topology_installed_unit_operation_request_check1`: CHECK (octet_length(canonical_command) &lt;= 1048576 AND octet_length(result_payload) &lt;= 1048576)
   - Catalog attributes: {"columns": ["canonical_command", "result_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
-- `hidra_topology_installed_unit_operation_request_operation_check`: CHECK (operation::text = ANY (ARRAY['REGISTER_UNIT'::character varying, 'RECORD_INSTALLATION'::character varying, 'CLOSE_INSTALLATION'::character varying, 'RELOCATE'::character varying]::text[]))
-  - Catalog attributes: {"columns": ["operation"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
 - `hidra_topology_installed_unit_operation_request_pkey`: PRIMARY KEY (request_id)
   - Catalog attributes: {"columns": ["request_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
 

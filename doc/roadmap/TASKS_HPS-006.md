@@ -5654,6 +5654,50 @@ C/API, integrated HAPI-599, HAPI-600/601, frontend, simulation/P3, SITE, release
 deployment remain pending/unselected. No task is closed by fixture repair or schema
 capture alone.
 
+### HAPI-599 B — truthful replacement dictionary follow-up — 2026-10-29
+
+**Second registered repair stage.** The verified fixture repair object is
+b1a7a3d28888f93c9899f05dd259f0e1974cf8f3, tree
+43f5c1780a42dd1808dac1d958f4cfc37b89472e, parent122df88dd07524cfc6295b4124f1dd76ada9b2bf.
+Main remains at the expected parent until this prepared two-stage envelope is complete.
+Exact message: `docs(database): refresh installed-unit replacement dictionary`.
+MODIFY exactly doc/database/DATA_DICTIONARY.md and this append-only phase;
+CREATE/DELETE none. No production, migration, ownership manifest, documentation
+manifest, test, OpenAPI or workflow change in this second commit.
+
+**Actual generation and review.** Validate source122df88dd07524cfc6295b4124f1dd76ada9b2bf
+schema.json from genuine artifact12893101259 using the unchanged generator and
+current .github/database-dictionary-ownership.json. All migration/JPA source hashes
+match the captured inventory; the fixture repair changes no schema inputs. Re-rendered
+Markdown matches the hosted DATA_DICTIONARY.md byte-exact, SHA256
+63ffec73e5342133ec801d02d41c18c5a7d1b3d8ab213d6b42f69990920dc436.
+The actual migrated PostgreSQL16.15 catalog contains187 migrations,470 JPA mappings,
+532 relations and zero unresolved owners. Its source bundle and catalog/ZIP hashes
+are recorded in the preceding repair stage; capture source remains the genuine
+runtime commit rather than relabeling it as this documentation commit.
+
+The complete dictionary delta has43 unified-diff lines: capture/source-bundle/count
+metadata, new migration mentions on installed_unit and operation_request, the new
+replacement_unit_id column and its actual validated composite FK/RESTRICT actions,
+new operation and CASE descriptor checks replacing the previous operation check.
+Other relations and existing trigger/function evidence are unchanged. No guessed
+physical field, fabricated catalog capture or edited generated predicate.
+
+Run generator --input/--source-sha/--ownership/--check against the replacement reviewed
+dictionary, requiring actual captured-source equality and reviewed_dictionary_checked=true;
+then documentation/link, exact two-file scope and whitespace checks. The generator
+also independently reproduces the artifact render; no local PostgreSQL provisioning
+or new runtime pass is claimed. The prior one-case fixture error still requires the
+final repaired head's hosted success. All3,775 exact tests and ten shards remain mandatory.
+
+**Updated hold.** The derived dictionary refresh obligation is now satisfied from
+real catalog evidence; remove that artifact-publication hold only. B replacement
+acceptance remains on hold for full exact-head CI and independent evidence review.
+Advance main once to this final descendant using the original122df88 expected-head
+guard, confirm Full/Fast/Docs creation/start on that SHA, then STOP. No wait for
+completion and no automatic C/API or task closure. Integrated HAPI-599 and all later
+roadmap, frontend, simulation/P3, SITE, release and deployment work remain unselected.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

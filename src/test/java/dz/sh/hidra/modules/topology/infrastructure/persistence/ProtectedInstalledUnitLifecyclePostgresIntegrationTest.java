@@ -1014,11 +1014,22 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
         assertThat(effects()).isEqualTo(before);
     }
     @Test void rolePrivilegeChangeAfterFreezeIsRejectedByFinalCatalogImage() {
-        var f=fixture("LOCAL");var p=place();var u=unit(p);var c=register(u);authorize(f,c);login(f);String before=effects();
-        doAnswer(inv->{inv.callRealMethod();admin().execute("ALTER ROLE "+PUBLISHER+" BYPASSRLS");return null;}).when(protectedStore).freeze(any(),any(),anyList());
-        try{assertThatThrownBy(()->lifecycle.execute(c)).isInstanceOf(RuntimeException.class);}
-        finally{reset(protectedStore);admin().execute("ALTER ROLE "+PUBLISHER+" NOBYPASSRLS");}
-        assertThat(effects()).isEqualTo(before);
+        var f=fixture("LOCAL");var p=place();var u=unit(p);var c=register(u);authorize(f,c);login(f);String before=effects();var observedRejection=new AtomicBoolean();
+        doAnswer(inv->{
+            inv.callRealMethod();var resources=Map.copyOf(TransactionSynchronizationManager.getResourceMap());
+            // External committed fault: raw JDBC must not enlist another resource in the protected transaction.
+            try(var connection=DriverManager.getConnection(POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword());var statement=connection.createStatement()) {
+                assertThat(connection.getAutoCommit()).isTrue();statement.execute("ALTER ROLE "+PUBLISHER+" BYPASSRLS");
+            }
+            assertThat(TransactionSynchronizationManager.getResourceMap()).isEqualTo(resources);return null;
+        }).when(protectedStore).freeze(any(),any(),anyList());
+        doAnswer(inv->{Object result=inv.callRealMethod();observedRejection.set(Boolean.FALSE.equals(result));return result;}).when(protectedStore).finalGuard(any());
+        try {
+            var rejection=org.junit.jupiter.api.Assertions.assertThrows(RuntimeException.class,()->lifecycle.execute(c));
+            if(!observedRejection.get())throw new AssertionError("Expected rejection by the real final catalog guard; retaining earlier failure diagnostics",rejection);
+            verify(protectedStore).finalGuard(any());
+        }finally{reset(protectedStore);admin().execute("ALTER ROLE "+PUBLISHER+" NOBYPASSRLS");}
+        assertThat(observedRejection.get()).isTrue();assertThat(effects()).isEqualTo(before);
     }
     private String unmountedKind() {
         String kind=id();admin().update("INSERT INTO public.hidra_topology_equipment_type(id,code,name,status,created_at,updated_at) VALUES(?,?,'Unmounted synthetic','ACTIVE',now(),now())",kind,kind);return kind;
@@ -1072,7 +1083,15 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
 
     @Test void sourceGenerationChangeAfterFreezeCannotPassFinalGuard() {
         var f=fixture("LOCAL");var p=place();var u=unit(p);var c=register(u);authorize(f,c);login(f);String before=effects();var observedRejection=new AtomicBoolean();
-        doAnswer(inv->{inv.callRealMethod();admin().update("UPDATE public.hidra_party_eligibility_generation SET generation=generation+1 WHERE party_id=?",COMPANY);return null;}).when(protectedStore).freeze(any(),any(),anyList());
+        doAnswer(inv->{
+            inv.callRealMethod();var resources=Map.copyOf(TransactionSynchronizationManager.getResourceMap());
+            // External committed fault: raw JDBC must not enlist another resource in the protected transaction.
+            try(var connection=DriverManager.getConnection(POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword());
+                var statement=connection.prepareStatement("UPDATE public.hidra_party_eligibility_generation SET generation=generation+1 WHERE party_id=?")) {
+                assertThat(connection.getAutoCommit()).isTrue();statement.setString(1,COMPANY);assertThat(statement.executeUpdate()).isEqualTo(1);
+            }
+            assertThat(TransactionSynchronizationManager.getResourceMap()).isEqualTo(resources);return null;
+        }).when(protectedStore).freeze(any(),any(),anyList());
         doAnswer(inv->{Object result=inv.callRealMethod();observedRejection.set(Boolean.FALSE.equals(result));return result;}).when(protectedStore).finalGuard(any());
         try {
             var rejection=org.junit.jupiter.api.Assertions.assertThrows(RuntimeException.class,()->lifecycle.execute(c));

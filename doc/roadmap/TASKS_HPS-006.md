@@ -4623,6 +4623,62 @@ success and the generation fault's exact underlying rejection remain hosted chec
 No Package C/API, dependent task, frontend, simulation/P3, SITE, release or deployment
 is selected automatically.
 
+### HAPI-599 Package B — isolate post-freeze administrative fault connections — 2026-10-29
+
+**Exact-head failure.** Owner Fail selects main
+`b9a09071c22e14323e2bde03d27a609fb8aa0477`. Full967/run `40833637056` failed;
+Fast267/run `40833636981` and Docs699/run `40833636812` passed. Static, unit/
+architecture and nine PostgreSQL shards passed. Shard8/job `123313270659` reports
+205 cases with1 failure/zero errors/skips. The lifecycle suite reports23 cases with
+1 failure/zero errors/skips, hence22 reported passes, including the all-seven-
+operations/four-native-producers case, native-expiry and finite-budget regressions.
+No new aggregate-budget failure is reported on this head; do not infer a production
+latency percentile or overall acceptance from that result.
+
+The retained original rejection identifies the remaining generation-change failure:
+ProtectedInstalledUnitAdmissionCoordinator.finalGuard calls current, which rejects
+before the repository finalGuard. Source inspection shows the post-freeze callback
+uses admin().update through a new JdbcTemplate/DriverManagerDataSource while Spring
+transaction synchronization is active. That managed access can bind a second JDBC
+holder into the thread's resource map, which intentionally must match the admission
+snapshot. It does not isolate the intended external committed generation fault from
+the transaction-resource boundary. The analogous role-change callback uses the same
+managed administrative path; its generic rejection alone does not prove the final
+catalog predicate was reached. Preserve the production resource-map check.
+
+**Bounded repair.** Exact message:
+`test(topology): isolate post-freeze catalog fault connections`.
+CREATE/DELETE none. MODIFY only
+src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedInstalledUnitLifecyclePostgresIntegrationTest.java,
+.github/ci-test-inventory.json and this phase. Both post-freeze generation and role
+injections now open/close raw DriverManager connections, require autocommit and
+perform the deliberate committed change without Spring-managed resource enlistment.
+Generation UPDATE remains parameterized and must affect exactly one row. Each
+callback snapshots and verifies the protected thread's resource map is unchanged.
+The real freeze and final guard still run. Strengthen the role case to require the
+same observed false real final result, reached finalGuard and full owned-effects
+rollback as the generation case. Preserve the original outer rejection as assertion
+cause if either case fails earlier; restore publisher privilege in finally. No test
+is skipped or weakened, no fake authority or successful guard is substituted.
+
+All production sources, resource/owner/native checks, independent1000ms installed-
+unit work policy, other budgets, immutable migrations, dictionary and workflows
+remain unchanged. Inventory changes only the actual suite source hash, retaining
+all23 cases and timing/classification/shard assignments. Active500 classes/3,739
+required cases and all ten PostgreSQL shards remain mandatory.
+
+**Local validation and hold.** Changed Java source parses under available Java17;
+inventory, documentation/link, three-file scope and whitespace checks pass. Focused
+Maven exits127, mvn: command not found. Raw-connection fault isolation and final
+predicate/rollback success require hosted PostgreSQL evidence; source inspection is
+not runtime acceptance. Publish verified blobs/tree/parent directly to main with
+expected-head guard, observe applicable exact-SHA CI creation/start and STOP.
+Writer/Package B and integrated HAPI-599 remain held pending actual runtime and
+strict dictionary gates. Retain the registered genuine-catalog follow-up under
+`docs(topology): refresh protected installed-unit operations physical dictionary`;
+no dependent task, Package C/API, frontend, simulation/P3, SITE, release or deployment
+is selected here.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

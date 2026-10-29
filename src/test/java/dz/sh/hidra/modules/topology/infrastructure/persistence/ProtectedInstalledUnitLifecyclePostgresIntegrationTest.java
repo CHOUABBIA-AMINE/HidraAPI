@@ -1074,7 +1074,11 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
         var f=fixture("LOCAL");var p=place();var u=unit(p);var c=register(u);authorize(f,c);login(f);String before=effects();var observedRejection=new AtomicBoolean();
         doAnswer(inv->{inv.callRealMethod();admin().update("UPDATE public.hidra_party_eligibility_generation SET generation=generation+1 WHERE party_id=?",COMPANY);return null;}).when(protectedStore).freeze(any(),any(),anyList());
         doAnswer(inv->{Object result=inv.callRealMethod();observedRejection.set(Boolean.FALSE.equals(result));return result;}).when(protectedStore).finalGuard(any());
-        try{assertThatThrownBy(()->lifecycle.execute(c)).isInstanceOf(RuntimeException.class);verify(protectedStore).finalGuard(any());}finally{reset(protectedStore);}
+        try {
+            var rejection=org.junit.jupiter.api.Assertions.assertThrows(RuntimeException.class,()->lifecycle.execute(c));
+            if(!observedRejection.get())throw new AssertionError("Expected rejection by the real final source-generation guard; retaining earlier failure diagnostics",rejection);
+            verify(protectedStore).finalGuard(any());
+        }finally{reset(protectedStore);}
         assertThat(observedRejection.get()).isTrue();assertThat(effects()).isEqualTo(before);
     }
 

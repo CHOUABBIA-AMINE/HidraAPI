@@ -4526,6 +4526,103 @@ runtime result and500ms compliance remain pending hosted execution. Writer/Packa
 acceptance and the registered genuine-catalog dictionary refresh remain on hold;
 no API, dependent stage, release or deployment is selected.
 
+### HAPI-599 Package B — measured installed-unit work policy review — 2026-10-29
+
+**Exact-head evidence.** Owner Fail selects main
+`96ea1ce12500482a69ad964926611cc7577c9c6e`. Full966/run `40831922407` failed;
+Fast266/run `40831922376` and Docs698/run `40831922403` passed. Unit/architecture,
+static validation and nine PostgreSQL shards passed. Shard8/job `123307860212`
+reports205 cases with1 failure/2 errors. All three belong to the dedicated lifecycle
+suite:23 cases,1 failure/2 errors/zero skips, hence20 reported passes. Batching and
+the compilation correction cleared most preceding failures, including the new exact
+lock-mode regression and the corrected savepoint test, without accepting the whole
+writer. missingNativeKindConstraintCannotBeSubstitutedByApplicationExistenceCheck
+fails during its post-restoration registration at267 statements/585.455ms in FLUSHING;
+allSevenOperationsCommitThroughEachGenuineNativeProducer fails on relocation at515
+statements/503.187ms in FLUSHING. Both traces explicitly name aggregate500ms work
+budget. sourceGenerationChangeAfterFreezeCannotPassFinalGuard fails because its
+finalGuard callback is not reached; its original rejection is not visible in the
+Mockito verification output. Do not assert its underlying reason is established.
+
+**Reviewed policy amendment and scope.** The owner's earlier request asks whether
+the500ms value is arbitrary and can be skipped. The existing policy review separates
+the exact finite server work cap from native authority lifetime and from an accepted
+industrial/HTTP SLA. Full964 and Full966 now establish that this new multi-owner,
+six-requirement relocation family can exceed that cap even after batching. Repeated
+removal of source checks would reduce assurance; retain the optimized implementation
+and every owner recheck. Amend this family's earlier preserve-standard500ms
+registration explicitly, applying the existing bounded startup-policy pattern used
+for Custody/appointments. This is a documented family policy review based on measured
+failures, not an unlimited timeout bypass or a claim of calibrated performance.
+
+Exact message:
+`fix(topology): bound installed-unit work independently of authority expiry`.
+CREATE/DELETE none. MODIFY only these seven existing paths:
+
+- src/main/java/dz/sh/hidra/platform/configuration/ProtectedExecutionBudgetProperties.java
+- src/main/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutor.java
+- src/test/java/dz/sh/hidra/platform/configuration/ProtectedExecutionBudgetPropertiesTest.java
+- src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java
+- src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedInstalledUnitLifecyclePostgresIntegrationTest.java
+- .github/ci-test-inventory.json
+- doc/roadmap/TASKS_HPS-006.md
+
+Add immutable startup property
+hidra.platform.persistence.execution.installed-unit-work-budget-ms, default1000ms,
+integer1..10000, with malformed/out-of-range values failing startup. Default1000ms
+is provisional two-times-standard development headroom for the measured503–585ms
+attempts, not a measured end-to-end percentile, operator SLA or promise that every
+remaining operation finishes. Preserve the existing one-/two-argument property
+constructors with independent defaults. No request/HTTP numeric input, mutable
+setter, runtime update or public numeric execution overload. Only the exact already
+allowlisted InstalledUnitLifecycleApplicationService selects this budget through
+the private executor policy selector. The public compiled-caller whitelist remains
+byte-exact. Ordinary execute and all other standard families retain500ms; Custody
+and appointment policies remain independent and unchanged.
+
+Native/source/token/grant/policy validity, earliest future bounds, source status,
+DENY precedence, exact relation/row fences, all owner current checks, pinned DML,
+managed flush, final scalar database clock, commit observation and indeterminate
+outcomes remain unchanged. Keep250ms lock/750ms statement/1000ms idle settings,
+the datasource's finite deadline enforcement and all immutable migrations. The new
+work budget never extends validUntil or accepts expiry in the final guard. Existing
+real expiry, changed generation/role, replay, denial, rollback, misuse and four native
+producer paths remain required; no retry, skip or weaker assertion.
+
+**Regression/diagnostic changes.** Add two configuration cases for independent defaults/
+overrides and malformed/unbounded rejection; preserve legacy constructor coverage.
+The existing exact installed-unit executor case retains all four SQL pins, checks
+default/custom family selection, sibling/unreviewed/standard500ms isolation and the
+unchanged public route rejection. Add one finite-cap case proving installed-unit
+work still expires/poisons and default Scope remains500ms, without sleeps. In the
+existing generation-change PostgreSQL case, retain the actual outer rejection as
+an AssertionError cause if the real final guard is not reached. This preserves
+suppressed diagnostics rather than masking them with Mockito's invocation failure;
+callback verification, required false final result and no-effects checks remain.
+The suite still has23 cases. Inventory changes only these three actual suite hashes,
+the renamed existing executor case and three new cases. Active500 classes now require
+3,739 cases across the same ten shards; no scheduling/timing baseline change.
+
+**Available local validation.** Four changed Java production/unit sources and the
+changed PostgreSQL source parse under Java17. Actual budget configuration and all
+nine configuration test methods execute against minimal Environment/assertion API
+stubs. Extracted actual private selector and unchanged Scope deadline code execute
+finite-cap/default/independent-family probes. These are limited logic/source proof,
+not integrated executor, Maven/JUnit/Spring or PostgreSQL acceptance. Inventory,
+documentation/link validation, offline OpenAPI and125 validator self-tests pass;
+focused Maven exits127, mvn: command not found. No environment is provisioned solely
+for local verification. Check seven-file scope, exact allowlist/unchanged runtime
+security and bounded selector delta, then publish verified tree/blobs/parent with
+expected-head guard, observe applicable exact-SHA CI creation/start and STOP.
+
+Writer/Package B and integrated HAPI-599 acceptance remain held until actual runtime
+and strict catalog gates pass. The existing genuine-catalog follow-up remains
+`docs(topology): refresh protected installed-unit operations physical dictionary`;
+no physical dictionary, generator, migration or workflow is changed here. New budget
+success and the generation fault's exact underlying rejection remain hosted checks.
+No Package C/API, dependent task, frontend, simulation/P3, SITE, release or deployment
+is selected automatically.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

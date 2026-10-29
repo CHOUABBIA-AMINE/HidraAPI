@@ -8887,7 +8887,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedInstalledUnitLifecyclePostgresIntegrationTest.java",
-      "source_sha256": "5d00d9e8465f9066c938d0887295247dfe3bd26fbdf284d26b4c8b4529b868a5",
+      "source_sha256": "6b4923b8cf5c96c1af30ee3368fb93ee8f920a83dde9f9cc4f30f51955419d91",
       "supports": []
     },
     {
@@ -9996,6 +9996,8 @@
         "boundedServerConfigurationUsesExactMilliseconds",
         "custodyBudgetDefaultsAndOverridesRemainIndependent",
         "custodyMalformedOrUnboundedConfigurationFailsClosed",
+        "installedUnitBudgetDefaultsAndOverridesRemainIndependent",
+        "installedUnitMalformedOrUnboundedConfigurationFailsClosed",
         "legacyAppointmentConstructorPreservesIndependentCustodyDefault",
         "malformedServerConfigurationFailsWithoutFallback",
         "missingConfigurationPreservesSharedDefault",
@@ -10007,7 +10009,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/configuration/ProtectedExecutionBudgetPropertiesTest.java",
-      "source_sha256": "dc33a84135db0f5dfbfcfe45830d49c9daacb34325722849d3d2d79ed4fef8d3",
+      "source_sha256": "ada7ff52baa98c011a47850cb708d5b80846194801ca1952a3db288bf7da0a57",
       "supports": []
     },
     {
@@ -10161,7 +10163,8 @@
         "finishedHandleCannotBecomeUnscoped",
         "fluidProvisionalStatementsAreExactReviewedTemplates",
         "graphSqlProvisionalFamilyDoesNotGrantUnreviewedOwnerExecution",
-        "installedUnitSqlAndStandardBudgetRemainExact",
+        "installedUnitSqlAndBoundedFamilyBudgetRemainExact",
+        "installedUnitWorkPolicyRetainsFiniteExpiryAndStandardDefault",
         "mutableOrJdbcResultsCannotBeDelivered",
         "nativeControlAndMultipleSqlReject",
         "nestedExecutorPoisonsOuterAttempt",
@@ -10192,7 +10195,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java",
-      "source_sha256": "a6b25d688d51fddc3ddbaedcbeeb52db87012e6a934f3909c0bf95856c2f4a08",
+      "source_sha256": "a262c115fdc41817deb6ccfb03e5fa9d0cb89c78724ab0307ce334d8cb22d3c0",
       "supports": []
     },
     {

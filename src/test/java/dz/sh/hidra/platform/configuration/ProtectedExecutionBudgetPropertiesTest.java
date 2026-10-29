@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedExecutionBudgetPropertiesTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-25
+ * @UpdatedOn   : 2026-10-29
  *
  * @Type        : Class
  * @Layer       : Platform Test
@@ -67,10 +67,34 @@ class ProtectedExecutionBudgetPropertiesTest {
             assertThrows(RuntimeException.class,()->ProtectedExecutionBudgetProperties.from(new MockEnvironment()
                     .withProperty(ProtectedExecutionBudgetProperties.CUSTODY_PROPERTY,invalid)));
     }
+    @Test void installedUnitBudgetDefaultsAndOverridesRemainIndependent() {
+        var defaults=ProtectedExecutionBudgetProperties.from(new MockEnvironment());
+        assertEquals(1000,defaults.installedUnitWorkBudgetMillis());
+        assertEquals(1_000_000_000L,defaults.installedUnitWorkBudgetNanos());
+        for(long millis:new long[]{1,500,1000,7500,10000}) {
+            var value=ProtectedExecutionBudgetProperties.from(new MockEnvironment()
+                    .withProperty(ProtectedExecutionBudgetProperties.INSTALLED_UNIT_PROPERTY,Long.toString(millis))
+                    .withProperty(ProtectedExecutionBudgetProperties.CUSTODY_PROPERTY,"1500")
+                    .withProperty(ProtectedExecutionBudgetProperties.APPOINTMENT_PROPERTY,"2000"));
+            assertEquals(millis,value.installedUnitWorkBudgetMillis());
+            assertEquals(millis*1_000_000L,value.installedUnitWorkBudgetNanos());
+            assertEquals(1500,value.custodyWorkBudgetMillis());
+            assertEquals(2000,value.appointmentWorkBudgetMillis());
+        }
+        assertEquals(500,ProtectedExecutionBudgetProperties.STANDARD_WORK_BUDGET_MILLIS);
+    }
+    @Test void installedUnitMalformedOrUnboundedConfigurationFailsClosed() {
+        for(String invalid:new String[]{"0","-1","10001",Long.toString(Long.MAX_VALUE),"unbounded","1.5"})
+            assertThrows(RuntimeException.class,()->ProtectedExecutionBudgetProperties.from(new MockEnvironment()
+                    .withProperty(ProtectedExecutionBudgetProperties.INSTALLED_UNIT_PROPERTY,invalid)));
+    }
     @Test void legacyAppointmentConstructorPreservesIndependentCustodyDefault() {
         var value=new ProtectedExecutionBudgetProperties(2000);
         assertEquals(2000,value.appointmentWorkBudgetMillis());
         assertEquals(1000,value.custodyWorkBudgetMillis());
+        assertEquals(1000,value.installedUnitWorkBudgetMillis());
+        assertEquals(1000,new ProtectedExecutionBudgetProperties(2000,1500).installedUnitWorkBudgetMillis());
+        assertThrows(IllegalArgumentException.class,()->new ProtectedExecutionBudgetProperties(2000,1500,0));
         assertThrows(IllegalArgumentException.class,()->new ProtectedExecutionBudgetProperties(2000,0));
         assertThrows(IllegalArgumentException.class,()->new ProtectedExecutionBudgetProperties(0,1000));
     }

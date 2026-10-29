@@ -7,7 +7,7 @@
  *
  * @Name        : JdbcTopologyInstalledUnitCompanyEvidenceAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-28
+ * @UpdatedOn   : 2026-10-29
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -197,7 +197,8 @@ public class JdbcTopologyInstalledUnitCompanyEvidenceAdapter implements Topology
         try {
             String id=exact(exactCompanyPartyId);var holder=context();checkCatalog();
             // The fixed helper alone takes strong source locks. Reader has SELECT and explicit EXECUTE only.
-            jdbc.execute("SELECT "+OWNER_LOCK);
+            // Admission SELECTs must use executeQuery; consume the helper's single void row.
+            jdbc.queryForObject("SELECT " + OWNER_LOCK, (row,n) -> Boolean.TRUE);
             jdbc.execute("LOCK TABLE "+GENERATION+" IN ACCESS SHARE MODE NOWAIT");
             checkCatalog();check(HELD);
             var ticket=jdbc.queryForObject("SELECT pg_catalog.pg_backend_pid(),pg_catalog.txid_current(),current_user",

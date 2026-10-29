@@ -4328,6 +4328,73 @@ independent Package B/C acceptance. Different-unit replacement, manufacturer-kin
 qualification, public API, dependent tasks, frontend, simulation/P3, SITE, release
 and deployment remain separately pending.
 
+### HAPI-599 Package B — exact-head CI admission/architecture repair — 2026-10-29
+
+**Failure evidence and bounded authorization.** Owner Fail selects repair of main
+`9cefca5f0c21656a1762909301d03a08facc2e46`, not a dependent stage. Full963/run
+`40771139283` and Fast263/run `40771139398` failed; Docs695/run `40771139280`
+succeeded. Full unit/architecture job `123108335051` executed2,204 cases with one
+failure: ForensicRemediationClosureTest.crossModulePrivateImportsRemainClosed
+rejects the new coordinator's TopologyInstalledUnitAuthorizationContract import.
+PostgreSQL shard8/job `123108335524` executed204 cases with6 failures/11 errors;
+all17 failing cases belong to the new lifecycle suite. Successful paths stop in
+company acquisition with suppressed SQLSTATE25000: admission SELECT requires
+executeQuery for SELECT public.hidra_party_lock_installed_unit_manufacturer_evidence().
+Later fault callbacks consequently are not reached. Nine other PostgreSQL shards
+succeeded. These observations do not prove any later writer path or identify a
+500ms timeout defect.
+
+Exact repair message:
+`fix(topology): execute installed-unit owner lock queries through admission`.
+CREATE/DELETE none. MODIFY only the three existing adapters
+JdbcTopologyInstalledUnitCompanyEvidenceAdapter,
+JdbcTopologyInstalledUnitManufacturerEvidenceAdapter and
+JdbcInstalledUnitPositionOwnershipAdapter at their registered Party/Topology
+infrastructure persistence adapter paths; src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java;
+.github/ci-test-inventory.json; this phase. This expands the earlier writer's
+preserve-provider restriction only for the demonstrated execution-method integration
+error. No contract, SQL text/function body, lock order/mode, grant, native issuer,
+source pin, datasource enforcement or timing policy changes.
+
+**Repair.** All three fixed helper SELECTs use JdbcTemplate.queryForObject with a
+row mapper consuming their single void result, which dispatches executeQuery.
+The same helper functions and subsequent ACCESS SHARE generation locks remain.
+Company fails first in this head; manufacturer and position contain the identical
+incompatible execute call and must be repaired before those paths can execute.
+The protected datasource's admission restriction remains unchanged. The forensic
+scanner admits only the exact installed-unit coordinator and exact public Identity
+contract root/nested types. In the existing case, positive checks and sibling-root,
+sibling-consumer and private-provider negatives preserve the boundary. Only that
+suite's source hash changes in inventory; all500 active classes/3,735 cases and ten
+PostgreSQL shards remain mandatory.
+
+**Dictionary and acceptance hold.** The API lane captured a genuine migrated
+PostgreSQL16.15 catalog:186 migrations,470 JPA mappings,532 relations, zero unresolved
+owners. The strict comparison still fails as explicitly anticipated for005.
+Source bundle SHA256 efd5680512a4a8627dfc4ea5ae27a1725089963f7bf5f646079f6d3699383ec4;
+catalog e7a1694ba837e92349c3ccf0eef350ee45f2a660fd4b74f1c95ddebc5ba29821;
+generated dictionary f22d09141f9ab4ce62369f598fb42b615d21cfc4006086f5559cb284eff417bc.
+These are capture-log facts, not independent artifact verification or acceptance.
+The physical dictionary remains unchanged in this runtime repair. After actual
+runtime defects are cleared, execute the registered truthful artifact verification/
+refresh under `docs(topology): refresh protected installed-unit operations physical dictionary`.
+Do not alter the generator or waive strict comparison. No release publication,
+Package B acceptance, Package C/API or dependent task is authorized by this repair.
+
+**Local validation and publication rule.** Four changed Java sources parse with the
+available Java17 compiler. All nine actual forensic source-check methods execute
+successfully using a minimal assertion/annotation harness; this is limited source
+verification, not Maven/JUnit runtime proof. Inventory, documentation/link validation,
+offline OpenAPI and125 validator self-tests pass (35 inventory,53 full-evidence,
+18 dictionary,19 docs). Focused Maven cannot run: exit127, mvn: command not found.
+No environment is provisioned solely for local verification. Check bounded diff,
+unchanged migration/dictionary/platform/security sources and whitespace, then publish
+verified blobs/tree/parent directly to main with expected-head guard. Observe
+applicable exact-SHA CI creation/start and STOP. Writer implementation remains
+unaccepted pending runtime and dictionary gates; HAPI-599's integrated frozen
+NOT_IMPLEMENTED/BLOCKED baseline remains. Further hosted failures select repair,
+never an automatic budget increase, skipped test or dependent implementation.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

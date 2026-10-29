@@ -7,7 +7,7 @@
  *
  * @Name        : JdbcTopologyInstalledUnitManufacturerEvidenceAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-28
+ * @UpdatedOn   : 2026-10-29
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -207,7 +207,8 @@ public class JdbcTopologyInstalledUnitManufacturerEvidenceAdapter
             // Validate the fixed owner capability before invoking it; ordinary reader keeps no DML.
             check(GUARD);
             check(OWNER_LOCK_GUARD);
-            jdbc.execute("SELECT " + OWNER_LOCK);
+            // Admission SELECTs must use executeQuery; consume the helper's single void row.
+            jdbc.queryForObject("SELECT " + OWNER_LOCK, (row,n) -> Boolean.TRUE);
             jdbc.execute("LOCK TABLE " + GENERATION + " IN ACCESS SHARE MODE NOWAIT");
             check(GUARD);
             check(OWNER_LOCK_GUARD);

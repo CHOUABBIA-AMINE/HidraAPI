@@ -7,7 +7,7 @@
  *
  * @Name        : ForensicRemediationClosureTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-27
+ * @UpdatedOn   : 2026-10-29
  *
  * @Type        : Test
  * @Layer       : Architecture Test
@@ -150,6 +150,13 @@ class ForensicRemediationClosureTest {
         assertFalse(custodyProductOwnerExport(productConsumer,productRoot+"Sibling"));
         assertFalse(custodyProductOwnerExport("dz.sh.hidra.modules.custody.application.service.Other",productRoot));
         assertFalse(custodyProductOwnerExport(productConsumer,"dz.sh.hidra.modules.party.infrastructure.persistence.adapter.JdbcCustodyProtectedPartyEligibilityAdapter"));
+        String installedConsumer="dz.sh.hidra.modules.topology.application.service.ProtectedInstalledUnitAdmissionCoordinator";
+        String installedRoot="dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract";
+        assertTrue(installedUnitOwnerExport(installedConsumer,installedRoot));
+        assertTrue(installedUnitOwnerExport(installedConsumer,installedRoot+".Admission"));
+        assertFalse(installedUnitOwnerExport(installedConsumer,installedRoot+"Sibling"));
+        assertFalse(installedUnitOwnerExport(installedConsumer+"Sibling",installedRoot));
+        assertFalse(installedUnitOwnerExport(installedConsumer,"dz.sh.hidra.modules.identity.infrastructure.security.ProtectedTopologyInstalledUnitAuthorizationParticipant"));
         List<String> violations = new ArrayList<>();
         for (SourceType source : sources().values()) {
             String sourceModule = module(source.packageName());
@@ -194,12 +201,19 @@ class ForensicRemediationClosureTest {
                         && imported.equals("dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedEngineeringDraftAuthorizationContract")) {
                     continue;
                 }
+                if (installedUnitOwnerExport(source.fqcn(), imported)) continue;
                 if (organizationOwnerExport(source.fqcn(), imported)) continue;
                 if (custodyProductOwnerExport(source.fqcn(), imported)) continue;
                 violations.add(source.fqcn() + " -> " + imported);
             }
         }
         assertTrue(violations.isEmpty(), () -> "Unapproved cross-module imports: " + violations);
+    }
+
+    private static boolean installedUnitOwnerExport(String source,String imported) {
+        String consumer="dz.sh.hidra.modules.topology.application.service.ProtectedInstalledUnitAdmissionCoordinator";
+        String root="dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract";
+        return source.equals(consumer) && (imported.equals(root) || imported.startsWith(root+"."));
     }
 
     private static boolean custodyProductOwnerExport(String source,String imported) {

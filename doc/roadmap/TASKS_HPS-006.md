@@ -6822,6 +6822,135 @@ A/B acceptance remains. C and integrated HAPI-599 acceptance, release and deploy
 remain held until actual full evidence and independent matrix review. No downstream
 stage is selected; no green result is inferred from this source repair.
 
+### HAPI-599 Package C — Full983 native HTTP qualification acceptance — 2026-10-29
+
+**Selected independent evidence review.** Owner Next refreshes main
+027534fe2087c3bc0bdb58e4b6799efcddd6e3ae, tree
+77d18c44faa131452e5e840ed4f05f2670fcdbeb. Full983/run40914785665,
+Fast/run40914785747 and Docs/run40914785810 all completed SUCCESS on this exact
+implementation SHA. This sole documentation stage has message
+`docs(topology): accept native installed-unit HTTP qualification`.
+CREATE/DELETE none; MODIFY only this phase, append-only. No new runtime, snapshot,
+inventory, workflow or frozen status-table mutation is selected here.
+
+**Independent aggregate and source reconciliation.** Downloaded the genuine Full983
+aggregate artifact12914939314,7,261,066 bytes, and verified ZIP SHA256
+63269c08446061b3f5b19e2092ff4746773c2a18e474a106e96bf306c0b8b079
+against its GitHub artifact digest. Retained gate SHA256
+fed9f3e407e3bbbc8254e142519f029132400fbafa6d01b59c8744cdf7012bea.
+Reproduced the entire gate object exactly with the unchanged current aggregator,
+source inventory, raw Surefire XML, lane/source/workflow provenance and needs.
+The inventory SHA256 is
+f81156c8cf64df099c1cab1fbabecf5bcb0bc0db17d5f22278dcd93aeef04b06.
+All505 active classes/3,808 exact required cases passed, zero failures/errors/skips;
+509 registered classes include four unchanged historical exclusions, not509 executed
+classes. Every required partition, all ten PostgreSQL shards and run attempt1 agree.
+Mode remains development-partitioned/cached, serial_oracle=false,
+same_run_equivalence=false, release_eligible=false and optimized_adoption_eligible=false.
+No serial-oracle or release qualification is inferred from this passing aggregate.
+
+**Actual native HTTP matrix, independently matched to source and raw XML.**
+ProtectedInstalledUnitLifecyclePostgresIntegrationTest passes all48 cases/185.200s,
+including the original41 preserved methods and seven new cases. Its ten actual HTTP
+cases use configured Spring Security, genuine bearer verification, accepted native
+issuers/owner adapters and restricted-role PostgreSQL transactions. Schema-only and
+mocked-controller suites are supporting evidence, not substitutes for these cases.
+
+| Exact HTTP case suffix (all prefixed installedUnitHttp) | Actual seconds | Accepted bounded evidence |
+|---|---:|---|
+| LifecycleCrossesRealBearerSecurityAndNativeFences | 21.108 | All eight operations via LOCAL, LDAP, ACTIVE_DIRECTORY and OIDC; actual registration/replacement replay, immutable nonoverlap and one receipt |
+| BearerDenialAndRevocationHideEvidence | 1.367 | Anonymous/malformed bearer401, revoked current grant403 for read/replay, no new effects |
+| PostClosureFailureRollsBackBothPhysicalIdentities | 1.942 | Visited real receipt-insert fault after provisional writes; HTTP503 with full physical rollback |
+| ScopesAndEitherResourceDenialNeverDiscloseEvidence | 3.044 | DENY for either unit/installation, missing facility grant, wrong facility, nondisclosing foreign existing/absent identity, suspended company fail-closed and restored success |
+| AuthorizedAbsenceConflictsAndBoundedHistoryUseCurrentAuthority | 4.483 | Authorized404 versus denied403, stale/changed-second-unit/changed-operation409, exact replay, two immutable history revisions and current history revocation403 |
+| RepeatedSerialAndUnknownProvenanceNeverMergeOrMutateAssets | 2.175 | Actual Party evidence and HTTP persistence/read of distinct same-marked-serial IDs, UNVERIFIED source labels and UNKNOWN without invented facts; unchanged all actual Assets tables |
+| CompetingReplacementsExposeOnlyOneAtomicCommittedResult | 2.059 | Genuine concurrent HTTP contenders, exactly one success; loser constrained to typed conflict or proven native55P03, one replacement/two events/one receipt |
+| WriterFirstAndReaderFirstKeepHistoryAtomic | 2.961 | Independent native writer rejects HTTP reader; admitted HTTP reader retains fences against writer, actual55P03, complete one-version read and subsequent two-version committed history |
+| RealFinalSourceFacilityRoleAndTimeRejectionsRollBack | 6.065 | All four post-freeze company/facility generation, database role and temporal faults visit actual false final guard; HTTP503 and unchanged physical effects |
+| LostCommitAcknowledgementIsIndeterminateAndRetryIsExactReplay | 2.305 | Selected real manager commit completes then acknowledgement fault; actual503 INDETERMINATE, no provisional result, one physical commit and freshly authorized exact replay without duplicate effects |
+
+The last row is a controlled acknowledgement-loss experiment after a real physical
+commit, not a network incident or a claim every indeterminate outcome commits.
+All unexpected statuses remain failures; private diagnostic chains do not enter
+HTTP bodies. Finite test barrier timeouts do not alter the1000ms work cap. The1024
+collector bound, retained authentication provenance and exact scoped current grants
+remain. Negative requests never restore revoked grants. No skips, permissive status
+ranges, changed classification or invented timings obtain these passes.
+
+**Responsible production repair accepted.** The formerly failing changed-second-unit
+request now passes exact409 CONFLICT through the real translated repository path.
+Coordinator preserves typed owner meaning only when directly wrapped by Spring
+DataAccessException, retains the private wrapper and keeps unrelated errors unavailable.
+Its16-case unit suite/0.220s passes both actual Spring-converter regressions:
+translatedRepositoryConflictRetainsOwnerMeaningBeforeAdmissionSeals/0.007s and
+translatedUnrelatedStorageFailureRemainsUnavailableBeforeAdmissionSeals/0.002s.
+Both assert admission rejection before sealing/DML. The prior fixture failures also
+pass with exact one-final-guard visitation, real delegation and correct Object-field
+reflection. Full981/982 failures remain historical; they are not waived or renamed.
+
+Other exact passing support: application8/0.142s, controller5/0.080s,
+mapper5/0.008s, ProblemDetail handler3/0.005s, scalar operator semantics4/0.001s,
+API catalog3/7.913s and protected executor55/0.841s. The four scalar operator cases
+remain authored-evidence semantics rather than human engineering qualification.
+
+**Current API/catalog independently checked.** The actual captured current OpenAPI
+SHA2561bff6d0f9978aca5ecacee71d11557efc617bf41a83fdbef01fc531d45b7d155
+matches the reviewed snapshot under the validator's sole source-stamp normalization:
+314 operations/289 paths/333 schemas. Compatibility passes against the retained
+base artifact declared1724ea1dc18a3dccf75936ca28cd1f9a733175fe by this run,
+base API SHA256a09d80d851e62f2ec618ae9b966a4567efc071a4fd688466aa1b6a0931c2d15d.
+This is an independent comparison of retained API artifacts, not a new execution of
+the old base or a complete frontend consumer qualification. Existing reviewed snapshot
+stamp16524872e26292ff42af56d6e0a8f296cdf5c44b and bytes remain truthful.
+
+Current dictionary check passes against this genuine same-run PostgreSQL16.15 catalog:
+187 migrations,470 JPA mappings,532 relations, zero unresolved owners,
+reviewed_dictionary_checked=true. Catalog SHA256
+1b46268e89c89e942f5821cb68e14dae7f3be3e6b302559db8af9aee53ed57d0;
+source bundle3d52c5026c50b48591e8f34e8905bc92b60ebcf31176512abdc60fc6e273aafb;
+checked renderf8935aa46ed00f25f4144e0f4338dab635ee370ef835720dd6798e978c522df5.
+Unchanged dictionary/OpenAPI history is preserved; no redundant refresh is selected.
+
+**Acceptance and publication hold update.** ACCEPT Package C for the registered
+synthetic development software HTTP/qualification scope. Its former outstanding
+nine-row acceptance matrix is satisfied by the current source and passing evidence
+above. Package A and B acceptance remains intact: A/B/C are now independently accepted
+for their bounded software scopes. C's implementation-CI and HTTP-qualification holds
+are resolved. Integrated HAPI-599 closure/status synchronization remains a separately
+selected final review; current frozen NOT_IMPLEMENTED/BLOCKED fields are preserved
+in this stage. Human engineering/operator approval, calibration, SITE/IT-OT operation,
+frontend delivery, simulation/P3, release and deployment remain unselected and unproven.
+No test label, serial marking or verification label grants engineering authority.
+
+**Exact next registered stage, not executed here.** Message
+`docs(topology): close installed-unit identity software acceptance`.
+CREATE/DELETE none; MODIFY only these four documentation paths:
+- doc/roadmap/TASKS_HPS-006.md
+- doc/roadmap/ULTIMATE_ROADMAP.md
+- doc/roadmap/ULTIMATE_PHASES.md
+- doc/roadmap/ULTIMATE_TASKS.md
+
+Refresh live main and applicable CI; independently reconcile HAPI-599's approved
+owner decisions, prerequisite HAPI-567 and accepted A/B/C against current source,
+immutable schema/history, owner contracts, genuine execution evidence and explicit
+limits. If the complete bounded software obligation is still satisfied, append its
+integrated acceptance evidence, synchronize only HAPI-599 to VERIFIED/COMPLETED in
+the task and both canonical tables, and update the compact execution pointer.
+Do not change another task, select HAPI-600/601, close HAPI-598's five-package parent,
+merge Assets/Topology/Party ownership, invent manufacturer-model characteristics,
+or imply release/SITE acceptance. If a material gap is actually found, record its
+precise bounded continuation instead of closing the task. Preserve every previous
+evidence record and all other table statuses/targets. Run documentation/navigation/
+status agreement and whitespace checks, publish guarded main with exact parent/tree/
+blobs/four-file scope, observe exact-SHA Docs creation/startup and STOP.
+
+**This stage validation and STOP.** Independent aggregate reproduction, raw suite/case
+and source review, runtime API equality/base compatibility and current physical
+dictionary check all pass. This is retained hosted evidence review, not a newly run
+local Java21/Maven/PostgreSQL test. Run documentation/link and whitespace validation;
+publish the sole phase blob with expected027534f guard, verify parent/tree/scope,
+observe exact-SHA Docs creation/startup, then STOP before the next registered stage.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

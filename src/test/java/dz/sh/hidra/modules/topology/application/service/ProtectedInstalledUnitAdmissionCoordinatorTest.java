@@ -160,4 +160,31 @@ class ProtectedInstalledUnitAdmissionCoordinatorTest {
         byte[] legacy=(byte[])encode.invoke(null,new Result(u,null,null,List.of(),false));assertEquals(1,java.nio.ByteBuffer.wrap(legacy).getInt());
         assertEquals(new Result(u,null,null,List.of(),false),decode.invoke(null,(Object)legacy));
     }
+    @Test void translatedRepositoryConflictRetainsOwnerMeaningBeforeAdmissionSeals() throws Exception {
+        var f=registrationSetup(true);
+        var reason=new dz.sh.hidra.modules.topology.application.model.InstalledUnitLifecycleFailure(
+            dz.sh.hidra.modules.topology.application.model.InstalledUnitLifecycleFailure.Kind.CONFLICT,null);
+        var translated=org.springframework.orm.jpa.EntityManagerFactoryUtils.convertJpaAccessExceptionIfPossible(reason);
+        assertInstanceOf(org.springframework.dao.InvalidDataAccessApiUsageException.class,translated);
+        assertSame(reason,translated.getCause());when(storage.observe(f.storageTicket())).thenThrow(translated);
+        var actual=assertThrows(dz.sh.hidra.modules.topology.application.model.InstalledUnitLifecycleFailure.class,
+            ()->coordinator.acquire(f.prepared(),f.command()));
+        assertEquals(reason.kind(),actual.kind());assertSame(translated,actual.getCause());
+        verify(storage).reject(f.storageTicket());verify(executor).rejectAdmission();
+        verify(executor,never()).sealAdmission();verify(executor,never()).beginProvisional(any(),any());
+        verify(storage,never()).apply(any(),any(),any());
+    }
+    @Test void translatedUnrelatedStorageFailureRemainsUnavailableBeforeAdmissionSeals() throws Exception {
+        var f=registrationSetup(true);var reason=new IllegalStateException("synthetic private storage diagnostic");
+        var translated=org.springframework.orm.jpa.EntityManagerFactoryUtils.convertJpaAccessExceptionIfPossible(reason);
+        assertInstanceOf(org.springframework.dao.InvalidDataAccessApiUsageException.class,translated);
+        assertSame(reason,translated.getCause());when(storage.observe(f.storageTicket())).thenThrow(translated);
+        var actual=assertThrows(dz.sh.hidra.modules.topology.application.model.InstalledUnitLifecycleFailure.class,
+            ()->coordinator.acquire(f.prepared(),f.command()));
+        assertEquals(dz.sh.hidra.modules.topology.application.model.InstalledUnitLifecycleFailure.Kind.UNAVAILABLE,actual.kind());
+        assertSame(translated,actual.getCause());assertFalse(actual.getMessage().contains("private"));
+        verify(storage).reject(f.storageTicket());verify(executor).rejectAdmission();
+        verify(executor,never()).sealAdmission();verify(storage,never()).apply(any(),any(),any());
+    }
+
 }

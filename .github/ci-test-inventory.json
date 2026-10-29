@@ -8245,7 +8245,9 @@
         "publicTicketShapesContainNoConstructorOrAuthorityFactory",
         "replacementBindsDistinctUnitsAndOneExactPositionInNativeRequest",
         "replacementCodecRetainsLegacyEnvelopeAndBindsBothUnitFacts",
-        "replacementRejectsMissingSameOversizedAndDifferentPositionDescriptors"
+        "replacementRejectsMissingSameOversizedAndDifferentPositionDescriptors",
+        "translatedRepositoryConflictRetainsOwnerMeaningBeforeAdmissionSeals",
+        "translatedUnrelatedStorageFailureRemainsUnavailableBeforeAdmissionSeals"
       ],
       "class": "dz.sh.hidra.modules.topology.application.service.ProtectedInstalledUnitAdmissionCoordinatorTest",
       "dependency_reason": "HAPI-599 protected installed-unit lifecycle; actual owner admission, exact SQL/commit and replay invariants; timings unmeasured",
@@ -8253,7 +8255,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/application/service/ProtectedInstalledUnitAdmissionCoordinatorTest.java",
-      "source_sha256": "e98e106dfc97092b70a25f43aefb8cf5f63b19905988e0ce3e561158087fea69",
+      "source_sha256": "b2f3a7cbac34c02bb385cac9d19d9c045d251389a470c422e301c20e4a61f2a4",
       "supports": []
     },
     {

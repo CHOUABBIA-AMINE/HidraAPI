@@ -6771,6 +6771,57 @@ Full/Fast/Docs creation/startup and stops without awaiting completion. A/B accep
 remains; C, integrated HAPI-599, release and deployment holds remain. No downstream
 stage is selected. A green rerun still requires independent full-matrix review.
 
+### HAPI-599 Package C — preserve repository conflict through persistence translation — 2026-10-29
+
+**Exact-head failure and registered production repair.** Owner Fail refreshes main
+82d1dbe224205eb220af28dc867e4e71a6886020, tree
+c8917690c92c2c76930c7cf71419186fc6e0e031. Full/run40901262114,
+PostgreSQL shard6/job123543860373 reports162 cases, one failure, zero errors/skips.
+The three preceding instrumentation failures now pass. Other nine PostgreSQL shards,
+unit/architecture, static validation and API/dictionary pass; Full gate fails.
+The remaining HTTP changed-second-unit request still correctly requires409 CONFLICT
+but receives503 UNAVAILABLE. Exact private diagnostics establish the complete chain:
+storage.observe line203 throws InstalledUnitLifecycleFailure(CONFLICT);
+EntityManagerFactoryUtils.convertJpaAccessExceptionIfPossible wraps its
+IllegalStateException subtype as InvalidDataAccessApiUsageException; coordinator
+acquire/denial then misclassifies this wrapper as UNAVAILABLE. The outer typed
+UNAVAILABLE dominates the deeper conflict in service mapping. This is a real
+production error-classification defect, not a timing or assertion problem.
+
+**One bounded repair stage.** Exact message
+`fix(topology): preserve translated installed-unit conflict meaning`.
+CREATE/DELETE none. MODIFY only:
+- src/main/java/dz/sh/hidra/modules/topology/application/service/ProtectedInstalledUnitAdmissionCoordinator.java
+- src/test/java/dz/sh/hidra/modules/topology/application/service/ProtectedInstalledUnitAdmissionCoordinatorTest.java
+- .github/ci-test-inventory.json
+- doc/roadmap/TASKS_HPS-006.md (this append-only record).
+
+Coordinator denial preserves a typed owner failure only when it is the direct cause
+of a Spring DataAccessException. It constructs the same typed kind with the entire
+private wrapper retained as cause. Existing direct typed failures, authentication/
+authorization classification and generic UNAVAILABLE fallback remain. It does not
+scan arbitrary nested causes, reinterpret SQLSTATEs, bypass admission, return a
+provisional result or weaken rollback/final checks. Exception superclass and all
+wire DTO/status contracts stay unchanged.
+
+Two regression cases use the actual Spring JPA exception conversion function and
+the normal coordinator acquire path with a permitted native fixture: translated
+owner CONFLICT retains its exact kind/private wrapper and rejects before sealing or
+DML; translated unrelated IllegalStateException remains UNAVAILABLE and rejects.
+The existing real HTTP409 assertion, all48 PostgreSQL cases and all original41
+methods remain unchanged. Inventory adds only these two actual unit cases and their
+suite source hash:509 classes,505 active,3,808 required cases, ten unchanged shards.
+No schema, API, dictionary, workflow, security, budget, collector or SQL pin change.
+
+**Validation and hold.** Available Java syntax parsing, inventory, documentation,
+exact four-file scope and whitespace checks precede guarded publication. Focused
+Maven is attempted; mvn is unavailable, so local Java21/Spring/PostgreSQL execution
+is not claimed. Publish against expected82d1dbe, verify blobs/tree/parent/scope,
+observe applicable exact-head Full/Fast/Docs startup and stop without waiting.
+A/B acceptance remains. C and integrated HAPI-599 acceptance, release and deployment
+remain held until actual full evidence and independent matrix review. No downstream
+stage is selected; no green result is inferred from this source repair.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

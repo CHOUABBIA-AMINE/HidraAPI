@@ -237,6 +237,10 @@ public class ProtectedInstalledUnitAdmissionCoordinator {
     private static AccessDeniedException denied(){return new AccessDeniedException("Installed-unit operation unavailable");}
     private static RuntimeException denial(RuntimeException cause) {
         if(cause instanceof InstalledUnitLifecycleFailure)return cause;
+        // Persistence translation wraps owner IllegalStateException subtypes; keep their exact meaning.
+        if(cause instanceof org.springframework.dao.DataAccessException
+            && cause.getCause() instanceof InstalledUnitLifecycleFailure typed)
+            return new InstalledUnitLifecycleFailure(typed.kind(),cause);
         return new InstalledUnitLifecycleFailure(cause instanceof AccessDeniedException?Kind.DENIED:Kind.UNAVAILABLE,cause);
     }
     public static final class Prepared {

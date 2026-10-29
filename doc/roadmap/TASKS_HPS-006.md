@@ -5113,6 +5113,105 @@ No new Java/PostgreSQL pass is claimed. Observe applicable exact-SHA Docs startu
 and STOP. Next selects only the seven-file native replacement prerequisite above;
 no automatic B writer, C, HAPI-600/601, frontend, simulation/P3, SITE, release or deployment.
 
+### HAPI-599 B — replacement permission/resource binding correction — 2026-10-29
+
+**Owner Next; source-backed prerequisite correction before runtime mutation.**
+Main177d5488b63bc3503480f27d126b4379e085796b has Docs703/run40856741712 SUCCESS;
+unchanged accepted runtime retains Full969. Next selected the seven-file native
+replacement prerequisite. Implementation inspection finds a contradiction in that
+registration: six requirements cover two resource types, but one proposed replace
+permission cannot be defined for both. Do not implement the contradictory contract,
+weaken generic permission validation or silently write outside its file allowlist.
+This single corrective registration changes only this phase, append-only, message:
+`docs(identity): correct replacement permission resource bindings`.
+CREATE/DELETE none. No runtime implementation or test/CI pass is claimed here.
+
+**Exact invariant and affected source.** JdbcProtectedAuthorizationEvidenceReader
+loads the permission by code, requires exactly one active row and compares its
+resource_type to each AuthorizationEvaluationRequest.resourceType; otherwise it
+returns PERMISSION_INELIGIBLE. This existing generic rule is shared by owner families
+and must remain byte-exact. ProtectedOperationIdentityParticipant.qualifyInstalledUnitGroup
+currently computes one permissionCode(request.operation()) for every requirement.
+ProtectedTopologyInstalledUnitAuthorizationParticipant.evaluate independently
+compares that same one-argument code. Changing the public Request and reader's
+installed-unit admission branch alone cannot issue/verify the required mixed-resource
+replacement group. The preceding preflight overlooked these two concrete call sites.
+
+**Corrected bounded contract.** Retain one typed REPLACE operation and one genuine
+native group/sample, with six exact required decisions. Use distinct permission
+codes bound to their existing resource types:
+
+| Permission code | Resource type | Required descriptors/scopes |
+|---|---|---|
+| topology:installed-unit:replace-unit | INSTALLED_UNIT | Source and replacement unit; company CUSTOM scope for each |
+| topology:installed-unit:replace-installation | INSTALLED_UNIT_INSTALLATION | Source and replacement installation; company CUSTOM plus same FACILITY scope for each |
+
+Both unit and installation permission components are necessary; either alone must
+fail. Preserve source/replacement identity distinction, company binding and same-
+facility replacement semantics. Supersede only the preceding proposal for a single
+topology:installed-unit:replace code; no runtime permission with that code was added.
+No wildcard resource type, duplicate permission code, resource-agnostic grant,
+permission alias to RELOCATE or generic caller-supplied permission list is admitted.
+
+Add a resource-specific permissionCode(operation,resourceType) overload in the
+existing public contract. Derive its input from each exact Requirement, not caller
+permission text. Reject unsupported operation/resource combinations. Existing
+permissionCode(operation) and all seven old codes/requirements remain unchanged;
+for the new REPLACE value, the one-argument method must reject rather than select
+one incomplete component. Native group construction and public-participant evaluation
+use the resource-specific overload; both still compare exact descriptor/permission
+pairs. In the reader's installed-unit-family admission branch, validate the allowed
+operation/resource combination before invoking the overload, so a legacy unit/
+installation mismatch cannot become an exception-driven stream shortcut. Preserve
+all generic permission-row eligibility, claim consumption, opaque-ticket ownership,
+source/temporal/native sampling, fences, current rechecks and other operation families.
+No additional authentication, role/grant migration, public factory or storage capability.
+
+**Next executable native prerequisite — corrected nine-file scope.** Keep exact message
+`feat(identity): authorize atomic installed-unit replacement`.
+CREATE/DELETE none. MODIFY only:
+
+```text
+src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyInstalledUnitAuthorizationContract.java
+src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipant.java
+src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedTopologyInstalledUnitAuthorizationParticipant.java
+src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java
+src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedTopologyInstalledUnitAuthorizationParticipantTest.java
+src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedTopologyInstalledUnitAuthorizationPostgresIntegrationTest.java
+src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java
+.github/ci-test-inventory.json
+doc/roadmap/TASKS_HPS-006.md
+```
+
+This explicitly supersedes the prior seven-file allowlist and byte-exact preservation
+of the two issuer/evaluator methods only for their fixed per-requirement code
+selection. Their sampling/group/context/evaluation algorithms remain; no wider
+Identity rewrite is registered. Keep the prior reviewed reader-pin amendment bounded
+to its installed-unit-family admission branch, updating the actual source hash only
+after complete delta review. All other reader/J/provider source pins remain mandatory.
+
+Preserve every old case and constructor. Add meaningful unit/native PostgreSQL cases
+for both permission/resource bindings and six descriptors, missing either component,
+either-unit/installation policy denial, wrong permission-row resource_type, forged
+or substituted descriptor/resource, malformed/oversized/same-unit requests, company/
+facility shape, revocation/expiry and all four genuine native producers. Fixtures
+must create distinct correctly typed permission rows and grants for both codes;
+setting one permission's resource_type to a wildcard is not proof. Inventory records
+actual source/case hashes only. Neither Topology replacement DML, additive migration,
+receipt format, HTTP API, budget, schema/dictionary nor workflow is changed by this
+native prerequisite. The previous B writer/C candidates remain subsequent, with the
+corrected permission pair carried through their public contract and qualification.
+
+**Validation and boundary.** Confirmed all nine existing paths, exact three affected
+native code-selection/admission seams and the shared permission-row invariant.
+Documentation/link, append-only single-file scope and whitespace checks precede
+verified parent/tree/blob publication directly to main with expected-head guard.
+Observe applicable exact-SHA Docs creation/start and STOP. No local Java/PostgreSQL
+rerun is needed for this registration. Next selects the corrected native prerequisite
+only; its implementation/CI acceptance remains pending. Accepted A/seven-operation B
+writer remain accepted; integrated HAPI-599/B replacement/C and all dependent tasks,
+frontend, simulation/P3, SITE, release and deployment remain open/unselected.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `122df88dd07524cfc6295b4124f1dd76ada9b2bf`
+Captured source SHA: `096b95d1efb5420b2973957e75eb6f8e58b0a396`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `3d52c5026c50b48591e8f34e8905bc92b60ebcf31176512abdc60fc6e273aafb`.
-Migrations: 187; JPA mappings: 470; catalog relations: 532; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `18c41fbd10616d0d9a21365fed66ea3804e27b47d9d14e330ff3704bd4d89552`.
+Migrations: 188; JPA mappings: 470; catalog relations: 536; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -27213,6 +27213,7 @@ Topology-owned equipment state; legacy_equipment_kind is retained historical dat
 - Migration mention (not inferred introduction): [V20261006_009__hmr_054_equipment_catalog_and_attachments.sql](../../src/main/resources/db/migration/V20261006_009__hmr_054_equipment_catalog_and_attachments.sql)
 - Migration mention (not inferred introduction): [V20261028_002__topology_installed_unit_identity_and_history.sql](../../src/main/resources/db/migration/V20261028_002__topology_installed_unit_identity_and_history.sql)
 - Migration mention (not inferred introduction): [V20261028_004__topology_installed_unit_position_owner_lock.sql](../../src/main/resources/db/migration/V20261028_004__topology_installed_unit_position_owner_lock.sql)
+- Migration mention (not inferred introduction): [V20261029_002__topology_station_installed_configurations.sql](../../src/main/resources/db/migration/V20261029_002__topology_station_installed_configurations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -27811,6 +27812,7 @@ Immutable Topology physical-unit identity and manufacturer/model/serial evidence
 - Migration mention (not inferred introduction): [V20261028_002__topology_installed_unit_identity_and_history.sql](../../src/main/resources/db/migration/V20261028_002__topology_installed_unit_identity_and_history.sql)
 - Migration mention (not inferred introduction): [V20261028_005__topology_installed_unit_protected_operations.sql](../../src/main/resources/db/migration/V20261028_005__topology_installed_unit_protected_operations.sql)
 - Migration mention (not inferred introduction): [V20261029_001__topology_installed_unit_replacement.sql](../../src/main/resources/db/migration/V20261029_001__topology_installed_unit_replacement.sql)
+- Migration mention (not inferred introduction): [V20261029_002__topology_station_installed_configurations.sql](../../src/main/resources/db/migration/V20261029_002__topology_station_installed_configurations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -27933,6 +27935,7 @@ Immutable Topology installation history revision ledger populated by database tr
 - Evidence: [JdbcInstalledUnitRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcInstalledUnitRepositoryAdapter.java)
 - Evidence: [V20261028_002__topology_installed_unit_identity_and_history.sql](../../src/main/resources/db/migration/V20261028_002__topology_installed_unit_identity_and_history.sql)
 - Migration mention (not inferred introduction): [V20261028_002__topology_installed_unit_identity_and_history.sql](../../src/main/resources/db/migration/V20261028_002__topology_installed_unit_identity_and_history.sql)
+- Migration mention (not inferred introduction): [V20261029_002__topology_station_installed_configurations.sql](../../src/main/resources/db/migration/V20261029_002__topology_station_installed_configurations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -28532,6 +28535,235 @@ Persisted TopologySnapshotJpaEntity state; semantic authority remains with topol
 
 None captured in this catalog category.
 
+### public.hidra_topology_station_configuration_head
+
+Owner: **topology**; relation kind: `r`.
+
+Topology-owned monotone CAS selected declaration for a company/facility, referencing the exact immutable revision and epoch; not permission or operational readiness.
+
+- Evidence: [StationInstalledConfiguration.java](../../src/main/java/dz/sh/hidra/modules/topology/domain/model/StationInstalledConfiguration.java)
+- Evidence: [StationInstalledConfigurationCodec.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/StationInstalledConfigurationCodec.java)
+- Evidence: [V20261029_002__topology_station_installed_configurations.sql](../../src/main/resources/db/migration/V20261029_002__topology_station_installed_configurations.sql)
+- Evidence: [StationInstalledConfigurationPostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/StationInstalledConfigurationPostgresIntegrationTest.java)
+- Migration mention (not inferred introduction): [V20261029_002__topology_station_installed_configurations.sql](../../src/main/resources/db/migration/V20261029_002__topology_station_installed_configurations.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| facility_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| revision_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| head_epoch | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `ck_station_configuration_head_epoch`: CHECK (head_epoch &gt; 0)
+  - Catalog attributes: {"columns": ["head_epoch"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `fk_station_configuration_head_selection`: FOREIGN KEY (company_party_id, facility_id, revision_id, head_epoch) REFERENCES hidra_topology_station_configuration_revision(company_party_id, facility_id, revision_id, selected_epoch) ON UPDATE RESTRICT ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["company_party_id", "facility_id", "revision_id", "head_epoch"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["company_party_id", "facility_id", "revision_id", "selected_epoch"], "match": "s", "on_delete": "r", "on_update": "r", "schema": "public", "table": "hidra_topology_station_configuration_revision"}, "type": "f", "validated": true}
+- `pk_station_configuration_head`: PRIMARY KEY (company_party_id, facility_id)
+  - Catalog attributes: {"columns": ["company_party_id", "facility_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `pk_station_configuration_head`: CREATE UNIQUE INDEX pk_station_configuration_head ON public.hidra_topology_station_configuration_head USING btree (company_party_id, facility_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `trg_station_configuration_head_cas`: CREATE TRIGGER trg_station_configuration_head_cas BEFORE INSERT OR DELETE OR UPDATE ON hidra_topology_station_configuration_head FOR EACH ROW EXECUTE FUNCTION hidra_station_configuration_head_cas()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_station_configuration_head_cas()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_station_configuration_head_cas()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    IF TG_OP='INSERT' THEN<br>        IF NEW.head_epoch&lt;&gt;1 THEN<br>            RAISE EXCEPTION 'Station configuration first selection must be epoch one' USING ERRCODE='23514';<br>        END IF;<br>    ELSIF TG_OP='UPDATE' THEN<br>        IF NEW.company_party_id&lt;&gt;OLD.company_party_id OR NEW.facility_id&lt;&gt;OLD.facility_id OR<br>           OLD.head_epoch=9223372036854775807::bigint OR NEW.head_epoch&lt;&gt;OLD.head_epoch+1 OR<br>           NEW.revision_id=OLD.revision_id THEN<br>            RAISE EXCEPTION 'Station configuration selection requires a new revision and one epoch step' USING ERRCODE='23514';<br>        END IF;<br>    ELSE<br>        RAISE EXCEPTION 'Station configuration selection cannot be removed' USING ERRCODE='23514';<br>    END IF;<br>    RETURN NEW;<br>END;<br>$function$<br>
+- `trg_station_configuration_head_no_truncate`: CREATE TRIGGER trg_station_configuration_head_no_truncate BEFORE TRUNCATE ON hidra_topology_station_configuration_head FOR EACH STATEMENT EXECUTE FUNCTION hidra_station_configuration_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_station_configuration_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_station_configuration_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Station configuration immutable evidence cannot be changed' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
+### public.hidra_topology_station_configuration_member
+
+Owner: **topology**; relation kind: `r`.
+
+Topology-owned immutable per-position disposition and pinned physical installation event references, without asserting current source eligibility.
+
+- Evidence: [StationInstalledConfiguration.java](../../src/main/java/dz/sh/hidra/modules/topology/domain/model/StationInstalledConfiguration.java)
+- Evidence: [StationInstalledConfigurationCodec.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/StationInstalledConfigurationCodec.java)
+- Evidence: [V20261029_002__topology_station_installed_configurations.sql](../../src/main/resources/db/migration/V20261029_002__topology_station_installed_configurations.sql)
+- Evidence: [StationInstalledConfigurationPostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/StationInstalledConfigurationPostgresIntegrationTest.java)
+- Migration mention (not inferred introduction): [V20261029_002__topology_station_installed_configurations.sql](../../src/main/resources/db/migration/V20261029_002__topology_station_installed_configurations.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| facility_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| revision_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| position_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| disposition | character varying(16) | False | None; identity=; generated= | No current mapped Java column | — |
+| installed_unit_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| installation_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| installation_revision | bigint | True | None; identity=; generated= | No current mapped Java column | — |
+| installation_from | timestamp with time zone | True | None; identity=; generated= | No current mapped Java column | — |
+| installation_until | timestamp with time zone | True | None; identity=; generated= | No current mapped Java column | — |
+| installation_evidence_reference | text | True | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `ck_station_configuration_member_binding`: CHECK (disposition::text = 'UNOCCUPIED'::text AND installed_unit_id IS NULL AND installation_id IS NULL AND installation_revision IS NULL AND installation_from IS NULL AND installation_until IS NULL AND installation_evidence_reference IS NULL OR (disposition::text = ANY (ARRAY['CONNECTED'::character varying, 'ISOLATED'::character varying]::text[])) AND installed_unit_id IS NOT NULL AND installation_id IS NOT NULL AND installation_revision &gt; 0 AND installation_from IS NOT NULL AND (installation_until IS NULL OR installation_until &gt; installation_from) AND NULLIF(btrim(installation_evidence_reference), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["disposition", "installed_unit_id", "installation_id", "installation_revision", "installation_from", "installation_until", "installation_evidence_reference"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_station_configuration_member_disposition`: CHECK (disposition::text = ANY (ARRAY['CONNECTED'::character varying, 'ISOLATED'::character varying, 'UNOCCUPIED'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["disposition"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_station_configuration_member_position`: CHECK (position_id::text = btrim(position_id::text) AND length(position_id::text) &gt; 0)
+  - Catalog attributes: {"columns": ["position_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `fk_station_configuration_member_event`: FOREIGN KEY (installation_id, installation_revision) REFERENCES hidra_topology_installed_unit_installation_event(installation_id, revision) ON UPDATE RESTRICT ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["installation_id", "installation_revision"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["installation_id", "revision"], "match": "s", "on_delete": "r", "on_update": "r", "schema": "public", "table": "hidra_topology_installed_unit_installation_event"}, "type": "f", "validated": true}
+- `fk_station_configuration_member_position`: FOREIGN KEY (position_id) REFERENCES hidra_topology_equipment(id) ON UPDATE RESTRICT ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["position_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "r", "schema": "public", "table": "hidra_topology_equipment"}, "type": "f", "validated": true}
+- `fk_station_configuration_member_revision`: FOREIGN KEY (company_party_id, facility_id, revision_id) REFERENCES hidra_topology_station_configuration_revision(company_party_id, facility_id, revision_id) ON UPDATE RESTRICT ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["company_party_id", "facility_id", "revision_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["company_party_id", "facility_id", "revision_id"], "match": "s", "on_delete": "r", "on_update": "r", "schema": "public", "table": "hidra_topology_station_configuration_revision"}, "type": "f", "validated": true}
+- `fk_station_configuration_member_unit_company`: FOREIGN KEY (installed_unit_id, company_party_id) REFERENCES hidra_topology_installed_unit(id, company_party_id) ON UPDATE RESTRICT ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["installed_unit_id", "company_party_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id", "company_party_id"], "match": "s", "on_delete": "r", "on_update": "r", "schema": "public", "table": "hidra_topology_installed_unit"}, "type": "f", "validated": true}
+- `pk_station_configuration_member`: PRIMARY KEY (company_party_id, facility_id, revision_id, position_id)
+  - Catalog attributes: {"columns": ["company_party_id", "facility_id", "revision_id", "position_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `pk_station_configuration_member`: CREATE UNIQUE INDEX pk_station_configuration_member ON public.hidra_topology_station_configuration_member USING btree (company_party_id, facility_id, revision_id, position_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `uq_station_configuration_member_installation`: CREATE UNIQUE INDEX uq_station_configuration_member_installation ON public.hidra_topology_station_configuration_member USING btree (company_party_id, facility_id, revision_id, installation_id) WHERE (installation_id IS NOT NULL)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `uq_station_configuration_member_physical_unit`: CREATE UNIQUE INDEX uq_station_configuration_member_physical_unit ON public.hidra_topology_station_configuration_member USING btree (company_party_id, facility_id, revision_id, installed_unit_id) WHERE (installed_unit_id IS NOT NULL)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `trg_station_configuration_member_immutable`: CREATE TRIGGER trg_station_configuration_member_immutable BEFORE DELETE OR UPDATE ON hidra_topology_station_configuration_member FOR EACH ROW EXECUTE FUNCTION hidra_station_configuration_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_station_configuration_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_station_configuration_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Station configuration immutable evidence cannot be changed' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `trg_station_configuration_member_no_truncate`: CREATE TRIGGER trg_station_configuration_member_no_truncate BEFORE TRUNCATE ON hidra_topology_station_configuration_member FOR EACH STATEMENT EXECUTE FUNCTION hidra_station_configuration_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_station_configuration_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_station_configuration_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Station configuration immutable evidence cannot be changed' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
+### public.hidra_topology_station_configuration_request
+
+Owner: **topology**; relation kind: `r`.
+
+Topology-owned immutable idempotent configuration-command digest and exact result reference; no bearer or authorization grant.
+
+- Evidence: [StationInstalledConfiguration.java](../../src/main/java/dz/sh/hidra/modules/topology/domain/model/StationInstalledConfiguration.java)
+- Evidence: [StationInstalledConfigurationCodec.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/StationInstalledConfigurationCodec.java)
+- Evidence: [V20261029_002__topology_station_installed_configurations.sql](../../src/main/resources/db/migration/V20261029_002__topology_station_installed_configurations.sql)
+- Evidence: [StationInstalledConfigurationPostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/StationInstalledConfigurationPostgresIntegrationTest.java)
+- Migration mention (not inferred introduction): [V20261029_002__topology_station_installed_configurations.sql](../../src/main/resources/db/migration/V20261029_002__topology_station_installed_configurations.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| facility_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| request_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| command_sha256 | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| revision_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| selected_epoch | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_binding_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| recorded_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `ck_station_configuration_request_digest`: CHECK (command_sha256::text ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["command_sha256"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_station_configuration_request_ids`: CHECK (length(btrim(request_id::text)) &gt; 0 AND request_id::text = btrim(request_id::text) AND length(btrim(actor_binding_id::text)) &gt; 0 AND actor_binding_id::text = btrim(actor_binding_id::text))
+  - Catalog attributes: {"columns": ["request_id", "actor_binding_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `fk_station_configuration_request_result`: FOREIGN KEY (company_party_id, facility_id, revision_id, selected_epoch) REFERENCES hidra_topology_station_configuration_revision(company_party_id, facility_id, revision_id, selected_epoch) ON UPDATE RESTRICT ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["company_party_id", "facility_id", "revision_id", "selected_epoch"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["company_party_id", "facility_id", "revision_id", "selected_epoch"], "match": "s", "on_delete": "r", "on_update": "r", "schema": "public", "table": "hidra_topology_station_configuration_revision"}, "type": "f", "validated": true}
+- `pk_station_configuration_request`: PRIMARY KEY (company_party_id, facility_id, request_id)
+  - Catalog attributes: {"columns": ["company_party_id", "facility_id", "request_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `pk_station_configuration_request`: CREATE UNIQUE INDEX pk_station_configuration_request ON public.hidra_topology_station_configuration_request USING btree (company_party_id, facility_id, request_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `trg_station_configuration_request_immutable`: CREATE TRIGGER trg_station_configuration_request_immutable BEFORE DELETE OR UPDATE ON hidra_topology_station_configuration_request FOR EACH ROW EXECUTE FUNCTION hidra_station_configuration_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_station_configuration_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_station_configuration_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Station configuration immutable evidence cannot be changed' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `trg_station_configuration_request_no_truncate`: CREATE TRIGGER trg_station_configuration_request_no_truncate BEFORE TRUNCATE ON hidra_topology_station_configuration_request FOR EACH STATEMENT EXECUTE FUNCTION hidra_station_configuration_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_station_configuration_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_station_configuration_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Station configuration immutable evidence cannot be changed' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
+### public.hidra_topology_station_configuration_revision
+
+Owner: **topology**; relation kind: `r`.
+
+Topology-owned immutable canonical installed-station configuration snapshot with pinned graph, source and actor provenance; not a qualified engineering model.
+
+- Evidence: [StationInstalledConfiguration.java](../../src/main/java/dz/sh/hidra/modules/topology/domain/model/StationInstalledConfiguration.java)
+- Evidence: [StationInstalledConfigurationCodec.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/StationInstalledConfigurationCodec.java)
+- Evidence: [V20261029_002__topology_station_installed_configurations.sql](../../src/main/resources/db/migration/V20261029_002__topology_station_installed_configurations.sql)
+- Evidence: [StationInstalledConfigurationPostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/StationInstalledConfigurationPostgresIntegrationTest.java)
+- Migration mention (not inferred introduction): [V20261029_002__topology_station_installed_configurations.sql](../../src/main/resources/db/migration/V20261029_002__topology_station_installed_configurations.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| facility_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| revision_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| request_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| expected_epoch | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| selected_epoch | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| graph_head_epoch | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| graph_revision_id | text | False | None; identity=; generated= | No current mapped Java column | — |
+| graph_payload_format | text | False | None; identity=; generated= | No current mapped Java column | — |
+| graph_sha256 | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| payload_format | text | False | None; identity=; generated= | No current mapped Java column | — |
+| canonical_payload | bytea | False | None; identity=; generated= | No current mapped Java column | — |
+| canonical_sha256 | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| effective_from | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| effective_until | timestamp with time zone | True | None; identity=; generated= | No current mapped Java column | — |
+| recorded_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| source_reference | text | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_binding_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_session_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_user_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `ck_station_configuration_epoch`: CHECK (expected_epoch &gt;= 0 AND expected_epoch &lt; '9223372036854775807'::bigint AND selected_epoch = (expected_epoch + 1) AND graph_head_epoch &gt; 0)
+  - Catalog attributes: {"columns": ["expected_epoch", "selected_epoch", "graph_head_epoch"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_station_configuration_format`: CHECK (graph_payload_format = 'HIDRA_TOPOLOGY_STATION_GRAPH_REVISION_V1'::text AND payload_format = 'HIDRA_TOPOLOGY_STATION_INSTALLED_CONFIGURATION_V1'::text AND octet_length(canonical_payload) &gt;= 1 AND octet_length(canonical_payload) &lt;= 1048576)
+  - Catalog attributes: {"columns": ["graph_payload_format", "payload_format", "canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_station_configuration_identity`: CHECK (company_party_id::text = btrim(company_party_id::text) AND length(company_party_id::text) &gt; 0 AND facility_id::text = btrim(facility_id::text) AND length(facility_id::text) &gt; 0 AND revision_id::text = btrim(revision_id::text) AND length(revision_id::text) &gt; 0 AND request_id::text = btrim(request_id::text) AND length(request_id::text) &gt; 0 AND actor_binding_id::text = btrim(actor_binding_id::text) AND length(actor_binding_id::text) &gt; 0 AND actor_session_id::text = btrim(actor_session_id::text) AND length(actor_session_id::text) &gt; 0 AND actor_user_id::text = btrim(actor_user_id::text) AND length(actor_user_id::text) &gt; 0)
+  - Catalog attributes: {"columns": ["company_party_id", "facility_id", "revision_id", "request_id", "actor_binding_id", "actor_session_id", "actor_user_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_station_configuration_integrity`: CHECK (graph_sha256::text ~ '^[0-9a-f]{64}$'::text AND canonical_sha256::text ~ '^[0-9a-f]{64}$'::text AND canonical_sha256::text = encode(sha256(canonical_payload), 'hex'::text))
+  - Catalog attributes: {"columns": ["graph_sha256", "canonical_sha256", "canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_station_configuration_period`: CHECK (effective_until IS NULL OR effective_until &gt; effective_from)
+  - Catalog attributes: {"columns": ["effective_until", "effective_from"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_station_configuration_source`: CHECK (length(btrim(source_reference)) &gt; 0 AND source_reference = btrim(source_reference))
+  - Catalog attributes: {"columns": ["source_reference"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `fk_station_configuration_graph`: FOREIGN KEY (facility_id, graph_revision_id) REFERENCES hidra_topology_station_graph_revision(facility_id, revision_id) ON UPDATE RESTRICT ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["facility_id", "graph_revision_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["facility_id", "revision_id"], "match": "s", "on_delete": "r", "on_update": "r", "schema": "public", "table": "hidra_topology_station_graph_revision"}, "type": "f", "validated": true}
+- `pk_station_configuration_revision`: PRIMARY KEY (company_party_id, facility_id, revision_id)
+  - Catalog attributes: {"columns": ["company_party_id", "facility_id", "revision_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `uq_station_configuration_revision_epoch`: UNIQUE (company_party_id, facility_id, revision_id, selected_epoch)
+  - Catalog attributes: {"columns": ["company_party_id", "facility_id", "revision_id", "selected_epoch"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `uq_station_configuration_selected_epoch`: UNIQUE (company_party_id, facility_id, selected_epoch)
+  - Catalog attributes: {"columns": ["company_party_id", "facility_id", "selected_epoch"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+
+#### Indexes
+
+- `pk_station_configuration_revision`: CREATE UNIQUE INDEX pk_station_configuration_revision ON public.hidra_topology_station_configuration_revision USING btree (company_party_id, facility_id, revision_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `uq_station_configuration_revision_epoch`: CREATE UNIQUE INDEX uq_station_configuration_revision_epoch ON public.hidra_topology_station_configuration_revision USING btree (company_party_id, facility_id, revision_id, selected_epoch)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `uq_station_configuration_selected_epoch`: CREATE UNIQUE INDEX uq_station_configuration_selected_epoch ON public.hidra_topology_station_configuration_revision USING btree (company_party_id, facility_id, selected_epoch)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `trg_station_configuration_revision_immutable`: CREATE TRIGGER trg_station_configuration_revision_immutable BEFORE DELETE OR UPDATE ON hidra_topology_station_configuration_revision FOR EACH ROW EXECUTE FUNCTION hidra_station_configuration_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_station_configuration_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_station_configuration_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Station configuration immutable evidence cannot be changed' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `trg_station_configuration_revision_no_truncate`: CREATE TRIGGER trg_station_configuration_revision_no_truncate BEFORE TRUNCATE ON hidra_topology_station_configuration_revision FOR EACH STATEMENT EXECUTE FUNCTION hidra_station_configuration_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_station_configuration_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_station_configuration_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Station configuration immutable evidence cannot be changed' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
 ### public.hidra_topology_station_graph_head
 
 Owner: **topology**; relation kind: `r`.
@@ -28663,6 +28895,7 @@ Topology-owned immutable station graph declarations with canonical byte integrit
 - Evidence: [V20261011_002__p25_topology_station_graph_revisions.sql](../../src/main/resources/db/migration/V20261011_002__p25_topology_station_graph_revisions.sql)
 - Migration mention (not inferred introduction): [V20261011_002__p25_topology_station_graph_revisions.sql](../../src/main/resources/db/migration/V20261011_002__p25_topology_station_graph_revisions.sql)
 - Migration mention (not inferred introduction): [V20261018_003__p25_topology_protected_station_graph_operations.sql](../../src/main/resources/db/migration/V20261018_003__p25_topology_protected_station_graph_operations.sql)
+- Migration mention (not inferred introduction): [V20261029_002__topology_station_installed_configurations.sql](../../src/main/resources/db/migration/V20261029_002__topology_station_installed_configurations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

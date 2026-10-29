@@ -4850,6 +4850,269 @@ Do not implement an eighth operation, fabricate an owner contract or repeat acce
 writer work in this preflight. Other tasks, frontend, simulation/P3, SITE, release
 and deployment remain unselected.
 
+### HAPI-599 — API and atomic replacement source preflight — 2026-10-29
+
+**Selected stage and live evidence.** Owner Next selects exactly
+`docs(topology): register installed-unit API and replacement preflight`.
+Main8394ee9224eae404d874c0677e1fd036d8c2e0b5 has Docs702/run40839951319 SUCCESS;
+its unchanged runtime/dictionary retains independently accepted Full969/run40837033975
+on b91e1488aaefb828ca9ea4a719e553516dc26540:500 classes/3,739 cases, zero failures,
+errors or skips. CREATE/DELETE none; MODIFY only this phase, append-only. This
+preflight changes no runtime contract, permission, schema, test, API, status or
+accepted evidence. A is accepted; B's seven-operation writer is accepted, while
+atomic replacement by a different unit remains. C is not implemented.
+
+**Recovered source and concrete gaps.** Re-read owner Option A decisions01/02/03,
+current InstalledUnitLifecycleUseCase, ProtectedInstalledUnitRepositoryPort,
+InstalledUnitLifecycleApplicationService, ProtectedInstalledUnitAdmissionCoordinator,
+JdbcProtectedInstalledUnitRepositoryAdapter, Identity's public
+TopologyInstalledUnitAuthorizationContract, ProtectedTopologyInstalledUnitAuthorizationParticipant,
+ProtectedOperationIdentityParticipant's installed-unit group and
+JdbcProtectedAuthorizationEvidenceReader's installed-unit branch; migrations002/005,
+current schema receipt, existing Topology REST DTO/mapper/controller/failure patterns,
+HidraSecurityConfiguration, OpenAPI manifest, architecture guards and inventory.
+
+- Command and Identity Request each carry one unitId. RELOCATE closes/reopens that
+  same unit; Result.replacement is a replacement installation, not another physical
+  unit. No REST adapter exists. Two separately committed close/install calls cannot
+  satisfy owner-approved atomic replacement.
+- The Identity issuer already builds one private claim group and common native
+  sample from Request.requirements; its participant compares every exact descriptor
+  and uses current fences/rechecks. Preserve that machinery. The private reader
+  currently admits INSTALLED_UNIT resources only for REGISTER_UNIT/READ_UNIT and
+  installation resources for the other five codes. It cannot authorize both unit
+  identities under a distinct replacement permission without a bounded extension.
+- 005's receipt has one unit/company FK and an operation check containing only
+  REGISTER_UNIT, RECORD_INSTALLATION, CLOSE_INSTALLATION and RELOCATE. Its canonical
+  command/result format is version1. It cannot truthfully retain another unit ID
+  by reusing replacementInstallationId or reinterpreting old bytes.
+- Coordinator failures are generic AccessDeniedException with suppressed causes;
+  the executor preserves rejected/indeterminate physical outcomes. Current output
+  cannot safely distinguish authorized absence, stale CAS/occupancy conflict and
+  infrastructure failure for HTTP404/409/503. No controller may infer business
+  status by scanning generic messages or exposing suppressed SQL/native provenance.
+- Existing immutable unit/installation models, owned closure/insert SQL and native
+  half-open exclusions can represent replacement without rewriting prior identity
+  or events. Keep Party/type/position evidence and optional Assets reference meanings.
+  Current field enums classify authored evidence; they do not prove engineering
+  suitability, serial uniqueness, model provenance approval or permission authority.
+
+**Bounded replacement semantics selected from OD-HAPI-599-03.** REPLACE is distinct
+from RELOCATE. Replace one open source installation with another already registered
+physical unit at the same exact mounting position/facility/company. Require distinct
+old/new unit IDs and installation IDs, expected source revision, one microsecond-
+precision effective instant strictly after source start and bounded source evidence.
+Replacement unit and position must have the same actual equipment-type ID; both
+units have the same actual company. No implicit registration, identity/model/serial
+edit, cross-company transfer, different-position swap or engineering qualification.
+The new half-open installation starts exactly at the old effective close, revision1,
+and is open-ended. Existing native unit/position exclusion rejects any incompatible
+replacement-unit occupancy, including future overlap. Old recordedAt/provenance and
+immutable event history remain; new recordedAt comes from the retained native sample.
+Closure, new installation/events and one canonical receipt commit or roll back together.
+
+Use a distinct permission topology:installed-unit:replace. Its single native request
+binds both physical units, both installations, company and one facility: company
+CUSTOM topology-company:<id> on each unit, and company plus FACILITY on each
+installation, six exact requirements total. No facility scope is invented for a
+unit resource. All six must PERMIT, with DENY precedence and common native origin,
+PID/XID/role/strict validity; no relocated permission, caller actor or borrowed claim.
+Topology independently rechecks both stored units, the old installation and actual
+position ownership. Acquire current known manufacturer contributions for both units,
+retaining spare one-use reads and stable identity order/deduplication; UNKNOWN stays
+UNKNOWN. Existing company/position/root fences remain, including exact final union.
+No new Party provider, source lock helper, broad grant or generic callback is needed.
+
+**Next executable B prerequisite — native descriptor extension only.** Exact message:
+`feat(identity): authorize atomic installed-unit replacement`.
+CREATE/DELETE none. MODIFY only these seven paths:
+
+```text
+src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyInstalledUnitAuthorizationContract.java
+src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java
+src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedTopologyInstalledUnitAuthorizationParticipantTest.java
+src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedTopologyInstalledUnitAuthorizationPostgresIntegrationTest.java
+src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java
+.github/ci-test-inventory.json
+doc/roadmap/TASKS_HPS-006.md
+```
+
+Add REPLACE and optional replacementUnitId to the existing public Request; retain
+its seven-argument constructor for the original seven operations with null second
+unit. REPLACE requires the six descriptors above and equal source/destination
+facility; every other operation forbids replacementUnitId. Preserve old permission
+codes, exact requirement lists, constructors and decisions. Extend only the reader's
+installed-unit resource-type/permission binding for REPLACE; its unit-FACILITY ban
+and all other owner families remain. Existing opaque issuer/participant/group,
+native sampling, temporal collector, source fences and evaluation algorithm remain
+byte-exact. No public generic list of permission strings or caller claim factory.
+
+The existing boundary test pins reader SHA256
+3b734e9fa7d78372a5555d551ed4e45428515f280fb4e973a76d9a734ea2fa56.
+This explicitly reviewed one-branch extension supersedes that reader-only pin:
+verify the complete bounded source delta, then pin the new actual bytes. Preserve
+all J/provider pins and the existing boundary assertions; never remove the hash
+check. Extend actual unit/native PostgreSQL suites for six requirements, distinct/
+missing IDs, same facility, denial of either unit/installation scope, wrong resource
+family, request substitution, source revocation/expiry and all four native producers.
+Keep every original case. Admit actual source/case hashes only; no Topology writer,
+DDL, production permission seed, controller or workflow change in this prerequisite.
+Use useful available checks and AGENTS11.1 CI-first publication, then STOP at CI startup.
+Require its exact-head hosted success before the replacement writer stage.
+
+**Subsequent B writer candidate, not executable in this turn.** Intended message:
+`feat(topology): add atomic installed-unit replacement`.
+After the native prerequisite is accepted, revalidate/register this exact candidate
+scope before mutation. CREATE:
+
+```text
+src/main/java/dz/sh/hidra/modules/topology/application/model/InstalledUnitLifecycleFailure.java
+src/main/resources/db/migration/V20261029_001__topology_installed_unit_replacement.sql
+```
+
+MODIFY:
+
+```text
+src/main/java/dz/sh/hidra/modules/topology/application/port/in/InstalledUnitLifecycleUseCase.java
+src/main/java/dz/sh/hidra/modules/topology/application/port/out/ProtectedInstalledUnitRepositoryPort.java
+src/main/java/dz/sh/hidra/modules/topology/application/service/InstalledUnitLifecycleApplicationService.java
+src/main/java/dz/sh/hidra/modules/topology/application/service/ProtectedInstalledUnitAdmissionCoordinator.java
+src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcProtectedInstalledUnitRepositoryAdapter.java
+src/main/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutor.java
+src/test/java/dz/sh/hidra/modules/topology/application/service/ProtectedInstalledUnitAdmissionCoordinatorTest.java
+src/test/java/dz/sh/hidra/modules/topology/application/service/InstalledUnitLifecycleApplicationServiceTest.java
+src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedInstalledUnitLifecyclePostgresIntegrationTest.java
+src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java
+.github/database-dictionary-ownership.json
+.github/ci-test-inventory.json
+doc/roadmap/TASKS_HPS-006.md
+```
+
+The migration filename is currently free after the186-file chain ending005; recheck
+live history before reserving/writing it. Preserve all old migration bytes. Add a
+nullable replacement_unit_id and validated non-deferrable same-company unit FK,
+with UPDATE/DELETE RESTRICT, to the existing receipt, and replace only its currently captured operation check
+hidra_topology_installed_unit_operation_request_operation_check with a named check
+admitting REPLACE. Require a non-null distinct replacement ID only for REPLACE and
+null for legacy operations; no historical row rewrite/default fabricated identity.
+Keep receipt immutability/origin functions and all existing trigger-body hashes.
+Guard the new column/check/FK and native RI machinery in the real catalog before
+admitting writes. No new production role/grant or source helper.
+
+Append optional replacement unit fields to typed command/hint/snapshot/result with
+retained old constructors; forbid them for legacy operations. Keep all original
+seven canonical command/result encodings byte-exact as version1; use a separate
+version2 envelope only for REPLACE, retaining strict decoding/bounds/canonical hashes
+and historical version1 replay. Bind both unit IDs and exact descriptors in request
+and response bytes. Retain all four existing SQL texts/hashes; add one complete fixed
+replacement receipt insert template with its own independent coordinator/executor
+pin. Reuse existing closure/installation statements, private credential route and
+finite1000ms installed-unit policy. Do not widen the caller whitelist, allow SQL
+prefixes or relax authority expiry/lock/statement/final-guard rules.
+
+Typed failures must preserve INVALID/UNAUTHENTICATED/DENIED/NOT_FOUND/CONFLICT/
+UNAVAILABLE/INDETERMINATE meaning without revealing foreign existence or database
+provenance. NOT_FOUND may be raised only after fresh exact authority/owner checks;
+CONFLICT only for authorized expected-revision/request/owned occupancy conflicts.
+Catalog, native, privilege, origin and unknown SQL failures remain fail-closed;
+never classify every integrity violation as409. Preserve original diagnostics
+privately and executor indeterminate outcomes; do not query after poisoning/sealing
+or convert indeterminate commit to success. Source-specific classification belongs
+in the private adapter/application stage, not a REST cause-message parser.
+
+Required new PostgreSQL proofs include all four native origins, either-unit/facility
+scope denial, two different manufacturers/UNKNOWN, occupied replacement unit,
+source CAS/expiry, racing replacements, failure after closure and after new insert,
+no partial events/receipts, replay without projection restoration, changed second
+unit/operation conflict, old version1 receipt replay, missing new FK/privileges and
+actual final source/role/time rejection. Keep all23 accepted lifecycle cases and old
+unit/platform cases. Capture genuine new schema in CI, then perform the usual
+truthful dictionary follow-up in a separate two-document stage; never infer physical
+metadata. Accept the remaining B replacement scope only from complete exact-head evidence.
+
+**C transport candidate after B acceptance.** Intended implementation message:
+`feat(topology): expose protected installed-unit lifecycle API`.
+Candidate CREATE paths, each currently absent:
+
+```text
+src/main/java/dz/sh/hidra/modules/topology/api/rest/request/InstalledUnitLifecycleRequests.java
+src/main/java/dz/sh/hidra/modules/topology/api/rest/response/InstalledUnitLifecycleResponses.java
+src/main/java/dz/sh/hidra/modules/topology/api/rest/mapper/InstalledUnitLifecycleRestMapper.java
+src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/InstalledUnitLifecycleController.java
+src/main/java/dz/sh/hidra/modules/topology/api/rest/InstalledUnitLifecycleApiExceptionHandler.java
+src/test/java/dz/sh/hidra/modules/topology/api/rest/InstalledUnitLifecycleControllerTest.java
+src/test/java/dz/sh/hidra/modules/topology/api/rest/InstalledUnitLifecycleRestMapperTest.java
+src/test/java/dz/sh/hidra/modules/topology/api/rest/InstalledUnitLifecycleApiExceptionHandlerTest.java
+src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/InstalledUnitLifecycleApiPostgresIntegrationTest.java
+src/test/java/dz/sh/hidra/modules/topology/qualification/InstalledUnitLifecycleOperatorQualificationTest.java
+```
+
+Candidate MODIFY only inventory and this phase; no security permitAll, production
+writer, schema or generic CRUD exposure. Reconcile this candidate with the accepted
+B contract before selecting implementation. Route base follows current Topology
+/api/v1/topology/installed-units. Proposed operation mapping:
+
+| HTTP and relative path | Typed owner operation | Successful result |
+|---|---|---|
+| PUT /{unitId} | REGISTER_UNIT | 200 immutable unit/result; exact request replay explicit |
+| GET /{unitId} | READ_UNIT | 200 authorized unit |
+| POST /{unitId}/installations | RECORD_INSTALLATION | 200 installation/result |
+| POST /{unitId}/installations/{installationId}/close | CLOSE_INSTALLATION | 200 closed installation/result |
+| POST /{unitId}/installations/{installationId}/relocate | RELOCATE | 200 same-unit closure/new installation |
+| POST /{unitId}/installations/{installationId}/replace | REPLACE | 200 both units and atomic installation result |
+| GET /{unitId}/installations/{installationId} | READ_INSTALLATION | 200 authorized current installation |
+| GET /{unitId}/installations/{installationId}/history | READ_HISTORY | 200 bounded immutable versions |
+
+200 is deliberate: existing Result.replayed alone does not prove a resource was
+newly inserted; no fabricated201 or insert status. Require explicit company on
+every command/read, requestId on mutations, exact path/body consistency and source/
+destination assertions as appropriate. No arbitrary operation selector, caller actor,
+binding/session/role/permission, server recordedAt or authority-expiry fields. Strict
+JSON rejects unknown fields, coercion, overflow, padded/over80-code-point IDs,
+non-microsecond timestamps, malformed/ambiguous evidence and cross-operation fields;
+retain current bounded UTF-8/payload limits rather than force legacy80-character IDs
+into UUID36. UNKNOWN/value/provenance relationships remain explicit. Response DTOs
+map exact authored evidence and expose unit/installation IDs, effective periods,
+revision and replay state; no entities, raw receipts, native claims or SQL details.
+History here is per installation, at most two immutable versions; no unbounded
+unit-wide list/search/export is silently added. Replay needs current authorization.
+
+Apply400 invalid structure,401 actual unauthenticated entry,403 denied scope,
+404 only authorized unavailable target,409 proven business conflict and503 unavailable/
+indeterminate completion, with fixed non-disclosing ProblemDetail codes. Preserve
+native authentication and exact application authorization even in test profiles;
+HTTP authorities alone cannot manufacture admission. Do not expose diagnostic
+exception chains, stack traces, tokens, native coordinates or publisher identities.
+
+Known/repeated manufacturer-scoped serial markings remain separate physical IDs,
+never global uniqueness or automatic merge. Qualification must exercise repeated/
+unknown/unverified serial evidence, explicit provenance and controlled human review
+without silently upgrading metadata into engineering qualification. A new candidate-
+search or merge workflow is not admitted: any need to disclose other unit IDs/counts
+requires its own exact current authorization contract and source registration.
+
+MockMvc DTO/mapper/error cases must be complemented by actual Spring/security/native
+issuer/PostgreSQL HTTP tests for all eight operations, denial before disclosure,
+stale/conflicting/replay behavior, rollback, historical reads, serial-policy limits
+and Assets isolation. Register real class/case/source hashes only after tests exist.
+After authoritative API capture, refresh doc/api/openapi.yaml and
+.github/documentation-validation.json plus this phase in a separately registered
+truthful snapshot follow-up; no handwritten or guessed OpenAPI/source SHA. The
+existing snapshot has306 operations/282 paths/323 schemas and remains unchanged here.
+C acceptance and integrated HAPI-599 closure require independently verified complete
+Full/current-base API/catalog evidence and the actual replacement/API qualification
+matrix, not only controller mocks or the earlier seven-operation acceptance.
+
+**Validation and execution boundary.** The proposed187th migration is a reservation only;
+no migration is created now. All186 published scripts, accepted domain/writer/owner
+sources, four SQL pins, budgets, global source boundaries, API/dictionary artifacts,
+CI workflows/inventory and frozen statuses are untouched in this one-document stage.
+Source/path checks, documentation/link validation and whitespace checks precede
+verified parent/tree/blob publication directly to main with expected-head guard.
+No new Java/PostgreSQL pass is claimed. Observe applicable exact-SHA Docs startup
+and STOP. Next selects only the seven-file native replacement prerequisite above;
+no automatic B writer, C, HAPI-600/601, frontend, simulation/P3, SITE, release or deployment.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

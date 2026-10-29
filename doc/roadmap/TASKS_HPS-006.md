@@ -6626,6 +6626,99 @@ Docs creation/start, then STOP. Next executes the bounded qualification stage ab
 C closure, HAPI-600/601, frontend, simulation/P3, operator/SITE approval, release and
 deployment are not selected by this review.
 
+### HAPI-599 Package C — remaining native HTTP qualification implementation — 2026-10-29
+
+**Selected exact registered test-only stage.** Owner Next refreshes main
+165fb38040ebd6129adf4899ae40376743435834, tree
+293d168d16acfd1d4771889af7cac5553bc75f39, Docs/run40893795542 SUCCESS.
+The unchanged runtime retains independently reviewed Full980/3,799-case success.
+Execute message `test(topology): complete native installed-unit HTTP qualification`.
+CREATE/DELETE none; MODIFY exactly the registered lifecycle PostgreSQL test,
+.github/ci-test-inventory.json and this append-only phase. No production, schema,
+OpenAPI, dictionary, security, budget, collector or workflow change.
+
+**Authored seven meaningful HTTP cases, not yet accepted runtime evidence.** Retain
+all41 original methods and assertions; the same class now has48 methods. New cases:
+
+| Actual new case | Required proof authored |
+|---|---|
+| installedUnitHttpScopesAndEitherResourceDenialNeverDiscloseEvidence | Policy DENY on each unit/installation, missing facility grant, wrong facility descriptor, equal nondisclosing foreign-company existing/absent responses, suspended owner fail-closed, then restored genuine replacement success |
+| installedUnitHttpAuthorizedAbsenceConflictsAndBoundedHistoryUseCurrentAuthority | Fresh-authorized missing installation404 versus denied403, stale revision409, exact replacement replay, two immutable history revisions, changed registered second unit/operation409, history grant revocation403 and no new effects |
+| installedUnitHttpRepeatedSerialAndUnknownProvenanceNeverMergeOrMutateAssets | Real Party manufacturer evidence, two separately persisted IDs with repeated marked UNVERIFIED serial/model and authored provenance, UNKNOWN without invented values, explicit association label, exact unchanged snapshots of all actual Assets tables |
+| installedUnitHttpCompetingReplacementsExposeOnlyOneAtomicCommittedResult | Two actual bearer HTTP requests start behind a barrier; one200, loser proven typed revision conflict409 or native NOWAIT503 with private SQLSTATE55P03, and exactly one replacement/two events/one receipt |
+| installedUnitHttpWriterFirstAndReaderFirstKeepHistoryAtomic | Independent native writer lock rejects actual HTTP reader NOWAIT; real admitted HTTP reader retains fences while HTTP writer is rejected; real private55P03 proof, complete one-version response, then committed two-version history |
+| installedUnitHttpRealFinalSourceFacilityRoleAndTimeRejectionsRollBack | Actual final guard returns false after post-freeze company generation, facility generation, role or temporal fault; HTTP503 UNAVAILABLE, visited final check, full rollback and no partial evidence |
+| installedUnitHttpLostCommitAcknowledgementIsIndeterminateAndRetryIsExactReplay | Real protected manager commit completes before synthetic lost acknowledgement; actual executor returns503 INDETERMINATE with no result disclosure, one committed physical operation, then freshly authorized exact replay with no extra effects |
+
+The tests use the configured Spring Security filter chain, actual native bearer
+verification, real owner adapters, restricted-role physical transaction, current
+Identity scope, immutable receipt/history and actual final SQL/commit machinery.
+No mock authentication or constructed admission is introduced. Problem responses
+assert exact code/status, absence of result/history/private fields and no referenced
+unit/installation/foreign-company disclosure. The race's two permitted loser outcomes
+are independently constrained by actual source evidence: a captured typed conflict
+or an actual native lock SQLSTATE, not arbitrary4xx/5xx acceptance.
+
+**Fixture fidelity and temporal bounds.** REGISTER's test-only HTTP builder now
+serializes the supplied three Evidence values/classifications/provenance and optional
+maintainableAssetId, replacing its hard-coded UNKNOWN objects. Existing UNKNOWN
+requests still encode UNKNOWN without invented values; the real strict DTO decoder
+and mapper handle the new known values. Every original test method remains unchanged.
+
+Positive grant seeding now reuses an already active non-emergency GRANT only for the
+exact actor, permission ID/code/resource type, physical scope and reference, with
+current start and a sufficiently future end. Negative HTTP requests never invoke
+that seed helper; revocation, missing grants and native current checks remain real.
+No GRANT is treated as an authorization contribution or bypasses the native reader.
+
+The seven new cases reuse the genuine LOCAL bearer already produced and successfully
+qualified by the existing BeforeEach warm path, capturing that real actor/token before
+its ordinary permission fixtures are cleared. Setup and test operations then execute
+through real HTTP with explicit current grants; no additional native producer is
+created for each setup step. The original warm qualification and all four-producer
+cases remain. The new final-fault loop reuses that same genuine bearer across its
+independent physical resources. No retained login/session/binding/claim evidence is
+erased, no census filter/cap is changed, and no1024-entry limit is increased. This
+bounds additional provenance rather than repeating the earlier authentication churn.
+
+**Real barriers and fault visitation.** Concurrency uses CountDownLatch/Future
+coordination and restricted/native relation fences, without sleeps. Finite test
+handoff/cleanup timeouts do not replace or raise the real1000ms installed-unit work
+cap; time-bound authority and all final checks remain mandatory. The test captures
+private acquire/perform rejection causes solely to distinguish a genuine lock/revision
+conflict from unrelated infrastructure failure. Nothing private enters the HTTP body.
+
+Only selected fault seams are spied. PlatformTransactionManager becomes a real-delegate
+spy in this test fixture; its commit fault is armed only after the real protected
+storage freeze on the same thread. JWT/setup transaction commits delegate unchanged.
+The selected commit delegates fully, then raises TransactionSystemException to model
+lost acknowledgement. The actual executor's observed physical commit sets its genuine
+INDETERMINATE outcome. Physical inspection happens after scope exit, and an unchanged
+retry must return replay, never a second write. This is a synthetic acknowledgement-
+loss proof, not a real network incident or proof that every indeterminate operation
+has committed. All spies, role faults, latches and workers are restored/closed.
+
+**Exact inventory and local evidence.** Source/case hash records only this modified
+suite and its seven actual new names. Inventory remains509 registered classes,
+505 active plus four unchanged historical exclusions,3,806 required exact cases,
+ten unchanged PostgreSQL shards and unchanged timing/classification metadata.
+No case is removed, skipped or reclassified. Available Java syntax parsing and
+source/fixture/method preservation checks are bounded static evidence, not integrated
+Java21/Spring/JUnit/PostgreSQL execution. Focused Maven command
+`mvn -q -Dtest=ProtectedInstalledUnitLifecyclePostgresIntegrationTest test`
+exits127: mvn: command not found. Do not provision a local service environment solely
+for tests. Inventory, documentation/link, exact three-file/append-only scope and
+whitespace checks precede publication; no new runtime pass is invented.
+
+**CI-first boundary and hold.** Publish verified blobs/tree/parent directly to main
+with expected165fb380 guard, observe applicable exact-head Full/Fast/Docs creation/
+startup, then STOP without waiting. This stage authors the remaining HTTP qualification;
+its successful execution and independent matrix review are still required for C
+acceptance. Package A/B acceptance stays; C and integrated HAPI-599 remain open with
+frozen statuses unchanged. Any actual runtime source defect must receive a precise
+registered repair rather than relaxed expectations. HAPI-600/601, frontend,
+simulation/P3, operator/SITE approval, release and deployment remain unselected.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

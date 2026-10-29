@@ -22,6 +22,7 @@ package dz.sh.hidra.modules.topology.infrastructure.persistence;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import dz.sh.hidra.HidraApplication;
 import dz.sh.hidra.modules.topology.application.port.in.InstalledUnitLifecycleUseCase;
@@ -204,6 +205,11 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
             if(permission==null){permission=id();jdbc.update("INSERT INTO public.hidra_identity_permission(id,code,permission_domain,resource_type,action,sensitive,status,created_at,updated_at) VALUES(?,?,'topology',?,?,false,'ACTIVE',now(),now())",permission,code,requirement.resourceType(),code.substring("topology:installed-unit:".length()));}
             String scope=requirement.scope().name(),ref=scope.equals("COMPANY")?"topology-company:"+requirement.scopeReference():requirement.scopeReference();
             if(!seen.add(code+":"+scope+":"+ref))continue;
+            // Idempotent positive seeding only. Negative HTTP calls never invoke this helper.
+            // Keep real native current-scope checks; avoid duplicate permanent temporal entries.
+            Integer present=jdbc.queryForObject("SELECT count(*) FROM public.hidra_identity_user_permission_grant g JOIN public.hidra_identity_permission p ON p.id=g.permission_id WHERE g.user_id=? AND g.permission_id=? AND p.code=? AND p.resource_type=? AND p.status='ACTIVE' AND g.effect='GRANT' AND g.scope_type=? AND g.scope_reference_id=? AND g.status='ACTIVE' AND NOT g.emergency_access AND g.valid_from<=clock_timestamp() AND (g.valid_to IS NULL OR g.valid_to>clock_timestamp()+interval '30 minutes')",
+                Integer.class,f.user(),permission,code,requirement.resourceType(),scope.equals("COMPANY")?"CUSTOM":"FACILITY",ref);
+            if(present!=null && present>0)continue;
             jdbc.update("INSERT INTO public.hidra_identity_user_permission_grant(id,user_id,permission_id,effect,scope_type,scope_reference_id,grant_reason,emergency_access,valid_from,valid_to,status,created_at) VALUES(?,?,?,'GRANT',?,?,'synthetic installed writer',false,now()-interval '1 hour',now()+interval '1 hour','ACTIVE',now())",id(),f.user(),permission,scope.equals("COMPANY")?"CUSTOM":"FACILITY",ref);
         }
     }
@@ -229,7 +235,7 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
     // Failure injection only: real event persistence and real owner transaction still execute.
 
     @Autowired ProtectedTransactionExecutor executor;
-    @Autowired PlatformTransactionManager manager;
+    @MockitoSpyBean PlatformTransactionManager manager;
     @Autowired AuthenticateDirectUserUseCase direct;
     @Autowired CompleteAuthenticatedPrincipalUseCase completion;
     @Autowired DirectAuthenticationPort directPort;
@@ -297,6 +303,9 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
         var f=fixture("LOCAL");var unit=new InstalledUnit("native-warm-unit",COMPANY,"native-warm-kind",
             InstalledUnit.Evidence.unknown(),InstalledUnit.Evidence.unknown(),InstalledUnit.Evidence.unknown(),null);
         var cmd=register(unit);authorize(f,cmd);login(f);
+        installedWarmActor=f;
+        installedWarmBearer=((org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken)
+            SecurityContextHolder.getContext().getAuthentication()).getToken().getTokenValue();
         var prepared=installedWriterIdentity.prepare();
         tx().executeWithoutResult(status->{
             var ticket=installedWriterIdentity.acquire(prepared,nativeRequest(cmd));
@@ -1152,6 +1161,8 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
     // Package C uses the same fresh-schema/native-issuer fixture already verified for the B writer.
     // The real Spring Security filter processes genuine bearer tokens; no mock authentication.
     @Autowired org.springframework.web.context.WebApplicationContext installedHttpContext;
+    private Fixture installedWarmActor;
+    private String installedWarmBearer;
     private org.springframework.test.web.servlet.MockMvc installedMvc;
     private org.springframework.test.web.servlet.MockMvc installedMvc() {
         if(installedMvc==null)
@@ -1178,10 +1189,10 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
             case REGISTER_UNIT -> {
                 request=org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put(base);
                 body.put("equipmentKindId",c.registration().equipmentKindId());
-                var unknown=Map.of("verification","UNKNOWN");
-                body.put("manufacturerParty",unknown);
-                body.put("manufacturerModel",unknown);
-                body.put("serialNumber",unknown);
+                body.put("manufacturerParty",installedHttpEvidence(c.registration().manufacturerParty()));
+                body.put("manufacturerModel",installedHttpEvidence(c.registration().manufacturerModel()));
+                body.put("serialNumber",installedHttpEvidence(c.registration().serialNumber()));
+                if(c.registration().maintainableAssetId()!=null)body.put("maintainableAssetId",c.registration().maintainableAssetId());
             }
             case READ_UNIT -> request=org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(base)
                 .param("companyPartyId",c.companyPartyId());
@@ -1531,5 +1542,243 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
         assertThatThrownBy(()->lifecycle.execute(c)).isInstanceOfSatisfying(dz.sh.hidra.modules.topology.application.model.InstalledUnitLifecycleFailure.class,
             failure->assertThat(failure.kind()).isEqualTo(dz.sh.hidra.modules.topology.application.model.InstalledUnitLifecycleFailure.Kind.DENIED));
         assertThat(effects()).isEqualTo(before);
+    }
+
+    private record InstalledHttpFixture(ReplacementFixture replacement,String bearer){}
+    private InstalledHttpFixture installedHttpReplacementFixture() throws Exception {
+        // Reuse the genuine LOCAL producer already exercised by @BeforeEach. Its grants were
+        // removed by cleanEvidence; every HTTP operation below gets explicitly scoped current grants.
+        var actor=installedWarmActor;String bearer=installedWarmBearer;var p=place();var u=unit(p);var v=unit(p);
+        installedHttpWithCurrentGrant(actor,bearer,register(u)).andExpect(status().isOk());
+        installedHttpWithCurrentGrant(actor,bearer,register(v)).andExpect(status().isOk());
+        String source=id();installedHttpWithCurrentGrant(actor,bearer,record(u,p,source)).andExpect(status().isOk());
+        var command=replace(u,v,p,source);authorize(actor,command);
+        return new InstalledHttpFixture(new ReplacementFixture(actor,p,u,v,command),bearer);
+    }
+    private Map<String,Object> installedHttpEvidence(InstalledUnit.Evidence evidence) {
+        var value=new LinkedHashMap<String,Object>();value.put("verification",evidence.verification().name());
+        if(evidence.value()!=null)value.put("value",evidence.value());
+        if(evidence.sourceReference()!=null)value.put("sourceReference",evidence.sourceReference());
+        return value;
+    }
+    private InstalledUnitLifecycleUseCase.Command httpReplacementVersion(InstalledUnitLifecycleUseCase.Command c,
+            String request,String company,String unit,String installation,String second,long revision) {
+        return new InstalledUnitLifecycleUseCase.Command(c.operation(),request,company,unit,installation,c.replacementInstallationId(),c.source(),c.destination(),null,
+            c.effectiveFrom(),c.effectiveUntil(),c.evidenceReference(),revision,second);
+    }
+    private org.springframework.test.web.servlet.MvcResult installedProblem(String bearer,InstalledUnitLifecycleUseCase.Command command,
+            int expectedStatus,String code,String... privateValues) throws Exception {
+        var result=installedHttp(bearer,command).andExpect(status().is(expectedStatus)).andExpect(jsonPath("$.code").value(code))
+            .andExpect(jsonPath("$.unit").doesNotExist()).andExpect(jsonPath("$.replacementUnit").doesNotExist())
+            .andExpect(jsonPath("$.history").doesNotExist()).andExpect(jsonPath("$.replayed").doesNotExist())
+            .andExpect(jsonPath("$.cause").doesNotExist()).andExpect(jsonPath("$.trace").doesNotExist()).andReturn();
+        String body=result.getResponse().getContentAsString();
+        for(String value:privateValues)assertThat(body).doesNotContain(value);
+        return result;
+    }
+    @Test void installedUnitHttpScopesAndEitherResourceDenialNeverDiscloseEvidence() throws Exception {
+        var setup=installedHttpReplacementFixture();var r=setup.replacement();var c=r.command();String bearer=setup.bearer();String before=effects();
+        for(String target:List.of(c.unitId(),c.replacementUnitId(),c.installationId(),c.replacementInstallationId())) {
+            String policy=policy("DENY","{\"op\":\"eq\",\"attribute\":\"resource.referenceId\",\"type\":\"STRING\",\"value\":\""+target+"\"}");
+            try{installedProblem(bearer,c,403,"DENIED",c.unitId(),c.replacementUnitId(),target);unchangedReplacement(r,before);}
+            finally{jdbc.update("UPDATE public.hidra_identity_authorization_policy SET status=? WHERE id=?",PolicyStatus.DISABLED.name(),policy);}
+        }
+        jdbc.update("DELETE FROM public.hidra_identity_user_permission_grant WHERE user_id=? AND scope_type='FACILITY' AND permission_id IN (SELECT id FROM public.hidra_identity_permission WHERE code='topology:installed-unit:replace-installation')",r.actor().user());
+        installedProblem(bearer,c,403,"DENIED",c.unitId(),c.replacementUnitId());unchangedReplacement(r,before);authorize(r.actor(),c);
+        var wrongPlace=new InstalledUnitLifecycleUseCase.Position(c.source().positionId(),id());
+        var wrongFacility=new InstalledUnitLifecycleUseCase.Command(c.operation(),c.requestId(),COMPANY,c.unitId(),c.installationId(),c.replacementInstallationId(),wrongPlace,wrongPlace,null,c.effectiveFrom(),c.effectiveUntil(),c.evidenceReference(),1,c.replacementUnitId());
+        installedProblem(bearer,wrongFacility,403,"DENIED",c.unitId(),c.replacementUnitId());unchangedReplacement(r,before);
+        String foreignCompany=id(),absentUnit=id();
+        var foreign=httpReplacementVersion(c,c.requestId(),foreignCompany,c.unitId(),c.installationId(),c.replacementUnitId(),1);
+        var absent=httpReplacementVersion(c,c.requestId(),foreignCompany,absentUnit,c.installationId(),c.replacementUnitId(),1);
+        String hidden=installedProblem(bearer,foreign,403,"DENIED",foreignCompany,c.unitId(),c.replacementUnitId()).getResponse().getContentAsString();
+        assertThat(installedProblem(bearer,absent,403,"DENIED",foreignCompany,absentUnit).getResponse().getContentAsString()).isEqualTo(hidden);
+        unchangedReplacement(r,before);
+        admin().update("UPDATE public.hidra_party_party SET status='SUSPENDED' WHERE id=?",COMPANY);
+        try{installedProblem(bearer,c,503,"UNAVAILABLE",c.unitId(),c.replacementUnitId());unchangedReplacement(r,before);}
+        finally{admin().update("UPDATE public.hidra_party_party SET status='ACTIVE' WHERE id=?",COMPANY);}
+        installedHttp(bearer,c).andExpect(status().isOk()).andExpect(jsonPath("$.replacementUnit.id").value(r.second().id()));
+    }
+    @Test void installedUnitHttpAuthorizedAbsenceConflictsAndBoundedHistoryUseCurrentAuthority() throws Exception {
+        var setup=installedHttpReplacementFixture();var r=setup.replacement();var c=r.command();String bearer=setup.bearer();String before=effects();
+        String absent=id();var missing=httpReplacementVersion(c,id(),COMPANY,c.unitId(),absent,c.replacementUnitId(),1);
+        installedProblem(bearer,missing,404,"NOT_FOUND",absent,c.unitId(),c.replacementUnitId());unchangedReplacement(r,before);
+        String policy=policy("DENY","{\"op\":\"eq\",\"attribute\":\"resource.referenceId\",\"type\":\"STRING\",\"value\":\""+absent+"\"}");
+        try{installedProblem(bearer,missing,403,"DENIED",absent,c.unitId());unchangedReplacement(r,before);}
+        finally{jdbc.update("UPDATE public.hidra_identity_authorization_policy SET status=? WHERE id=?",PolicyStatus.DISABLED.name(),policy);}
+        var stale=httpReplacementVersion(c,id(),COMPANY,c.unitId(),c.installationId(),c.replacementUnitId(),2);
+        installedProblem(bearer,stale,409,"CONFLICT",c.unitId());unchangedReplacement(r,before);
+        installedHttp(bearer,c).andExpect(status().isOk());String after=effects();
+        installedHttp(bearer,c).andExpect(status().isOk()).andExpect(jsonPath("$.replayed").value(true));assertThat(effects()).isEqualTo(after);
+        var history=new InstalledUnitLifecycleUseCase.Command(InstalledUnitLifecycleUseCase.Operation.READ_HISTORY,null,COMPANY,c.unitId(),c.installationId(),null,c.source(),null,null,null,null,null,0);
+        installedHttpWithCurrentGrant(r.actor(),bearer,history).andExpect(status().isOk()).andExpect(jsonPath("$.history.length()").value(2))
+            .andExpect(jsonPath("$.history[0].revision").value(1)).andExpect(jsonPath("$.history[1].revision").value(2));
+        var third=unit(r.place());installedHttpWithCurrentGrant(r.actor(),bearer,register(third)).andExpect(status().isOk());after=effects();
+        var changed=httpReplacementVersion(c,c.requestId(),COMPANY,c.unitId(),c.installationId(),third.id(),1);
+        installedProblem(bearer,changed,409,"CONFLICT",third.id(),c.unitId());assertThat(effects()).isEqualTo(after);
+        var wrongOperation=new InstalledUnitLifecycleUseCase.Command(InstalledUnitLifecycleUseCase.Operation.RELOCATE,c.requestId(),COMPANY,c.unitId(),c.installationId(),c.replacementInstallationId(),c.source(),c.destination(),null,c.effectiveFrom(),c.effectiveUntil(),c.evidenceReference(),1);
+        authorize(r.actor(),wrongOperation);installedProblem(bearer,wrongOperation,409,"CONFLICT",c.unitId());assertThat(effects()).isEqualTo(after);
+        jdbc.update("UPDATE public.hidra_identity_user_permission_grant SET status='REVOKED' WHERE user_id=? AND permission_id IN (SELECT id FROM public.hidra_identity_permission WHERE code='topology:installed-unit:read-history')",r.actor().user());
+        installedProblem(bearer,history,403,"DENIED",c.installationId(),c.unitId());assertThat(effects()).isEqualTo(after);
+    }
+    private Map<String,String> installedAssetsSnapshot() {
+        var a=admin();var result=new TreeMap<String,String>();
+        for(String table:a.queryForList("SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname='public' AND tablename LIKE 'hidra_asset_%' ORDER BY tablename",String.class)) {
+            if(!table.matches("hidra_asset_[a-z0-9_]+"))throw new AssertionError("Unexpected synthetic Assets relation");
+            result.put(table,a.queryForObject("SELECT COALESCE(jsonb_agg(to_jsonb(x) ORDER BY to_jsonb(x)::text)::text,'[]') FROM public."+table+" x",String.class));
+        }
+        assertThat(result).isNotEmpty();return result;
+    }
+    @Test void installedUnitHttpRepeatedSerialAndUnknownProvenanceNeverMergeOrMutateAssets() throws Exception {
+        var actor=installedWarmActor;var p=place();var seed=manufactured(p);
+        var model=new InstalledUnit.Evidence("synthetic model",InstalledUnit.Verification.UNVERIFIED,"synthetic model source");
+        var serial=new InstalledUnit.Evidence("synthetic-mark-"+id(),InstalledUnit.Verification.UNVERIFIED,"synthetic serial source");
+        var first=new InstalledUnit(seed.id(),COMPANY,p.kind(),seed.manufacturerParty(),model,serial,"unresolved-asset-label");
+        var second=new InstalledUnit(id(),COMPANY,p.kind(),seed.manufacturerParty(),model,serial,"unresolved-asset-label");var unknown=unit(p);
+        var firstCommand=register(first);String bearer=installedWarmBearer;var assets=installedAssetsSnapshot();long units=count("installed_unit");
+        try {
+            for(var c:List.of(firstCommand,register(second)))installedHttpWithCurrentGrant(actor,bearer,c).andExpect(status().isOk())
+                .andExpect(jsonPath("$.unit.id").value(c.unitId())).andExpect(jsonPath("$.unit.serialNumber.value").value(serial.value()))
+                .andExpect(jsonPath("$.unit.serialNumber.verification").value("UNVERIFIED"))
+                .andExpect(jsonPath("$.unit.serialNumber.sourceReference").value(serial.sourceReference()))
+                .andExpect(jsonPath("$.unit.manufacturerModel.verification").value("UNVERIFIED"))
+                .andExpect(jsonPath("$.unit.maintainableAssetId").value("unresolved-asset-label"));
+            installedHttpWithCurrentGrant(actor,bearer,read(first)).andExpect(status().isOk()).andExpect(jsonPath("$.unit.id").value(first.id()))
+                .andExpect(jsonPath("$.unit.manufacturerParty.value").value(seed.manufacturerParty().value()))
+                .andExpect(jsonPath("$.unit.manufacturerParty.sourceReference").value(seed.manufacturerParty().sourceReference()));
+            installedHttpWithCurrentGrant(actor,bearer,read(second)).andExpect(status().isOk()).andExpect(jsonPath("$.unit.id").value(second.id()));
+            installedHttpWithCurrentGrant(actor,bearer,register(unknown)).andExpect(status().isOk())
+                .andExpect(jsonPath("$.unit.serialNumber.verification").value("UNKNOWN"))
+                .andExpect(jsonPath("$.unit.serialNumber.value").doesNotExist()).andExpect(jsonPath("$.unit.serialNumber.sourceReference").doesNotExist());
+            assertThat(count("installed_unit")).isEqualTo(units+3);
+            assertThat(admin().queryForObject("SELECT count(DISTINCT id) FROM public.hidra_topology_installed_unit WHERE company_party_id=? AND serial_value=?",Integer.class,COMPANY,serial.value())).isEqualTo(2);
+            assertThat(installedAssetsSnapshot()).isEqualTo(assets);
+        }finally{clearManufacturers(List.of(first,second));}
+    }
+
+    private boolean installedSqlState(Throwable failure,String state) {
+        var seen=Collections.newSetFromMap(new IdentityHashMap<Throwable,Boolean>());var pending=new ArrayDeque<Throwable>();pending.add(failure);
+        while(!pending.isEmpty()) {
+            var cause=pending.removeFirst();if(!seen.add(cause))continue;
+            if(cause instanceof SQLException sql && state.equals(sql.getSQLState()))return true;
+            if(cause.getCause()!=null)pending.add(cause.getCause());pending.addAll(Arrays.asList(cause.getSuppressed()));
+        }
+        return false;
+    }
+    private void installedCaptureOwnerFailures(Queue<Throwable> failures) {
+        doAnswer(inv->{try{return inv.callRealMethod();}catch(RuntimeException failure){failures.add(failure);throw failure;}})
+            .when(admissionCoordinator).acquire(any(),any());
+        doAnswer(inv->{try{return inv.callRealMethod();}catch(RuntimeException failure){failures.add(failure);throw failure;}})
+            .when(admissionCoordinator).perform(any());
+    }
+    @Test void installedUnitHttpCompetingReplacementsExposeOnlyOneAtomicCommittedResult() throws Exception {
+        var setup=installedHttpReplacementFixture();var r=setup.replacement();String bearer=setup.bearer();var third=unit(r.place());installedHttpWithCurrentGrant(r.actor(),bearer,register(third)).andExpect(status().isOk());var other=replace(r.source(),third,r.place(),r.command().installationId());
+        authorize(r.actor(),other);installedMvc();
+        long installations=count("installed_unit_installation"),events=count("installed_unit_installation_event"),receipts=count("installed_unit_operation_request");
+        var failures=new ConcurrentLinkedQueue<Throwable>();installedCaptureOwnerFailures(failures);
+        var ready=new CountDownLatch(2);var start=new CountDownLatch(1);var workers=Executors.newFixedThreadPool(2);
+        var results=new ArrayList<Future<org.springframework.test.web.servlet.MvcResult>>();
+        try {
+            for(var c:List.of(r.command(),other))results.add(workers.submit(()->{ready.countDown();
+                try{if(!start.await(5,TimeUnit.SECONDS))throw new AssertionError("HTTP replacement race did not start");return installedHttp(bearer,c).andReturn();}
+                finally{SecurityContextHolder.clearContext();}}));
+            assertThat(ready.await(5,TimeUnit.SECONDS)).isTrue();start.countDown();int successes=0;
+            for(var future:results) {
+                var result=future.get(10,TimeUnit.SECONDS);int code=result.getResponse().getStatus();String body=result.getResponse().getContentAsString();
+                if(code==200){successes++;assertThat(JSON.readTree(body).path("replacementUnit").path("id").stringValue()).isIn(r.second().id(),third.id());}
+                else if(code==409) {
+                    assertThat(JSON.readTree(body).path("code").stringValue()).isEqualTo("CONFLICT");
+                    assertThat(failures.stream().anyMatch(f->f instanceof dz.sh.hidra.modules.topology.application.model.InstalledUnitLifecycleFailure typed
+                        && typed.kind()==dz.sh.hidra.modules.topology.application.model.InstalledUnitLifecycleFailure.Kind.CONFLICT)).isTrue();
+                }else {
+                    assertThat(code).isEqualTo(503);assertThat(JSON.readTree(body).path("code").stringValue()).isEqualTo("UNAVAILABLE");
+                    assertThat(failures.stream().anyMatch(f->installedSqlState(f,"55P03"))).isTrue();
+                }
+                if(code!=200)assertThat(body).doesNotContain(r.source().id(),r.second().id(),third.id());
+            }
+            assertThat(successes).isEqualTo(1);
+            assertThat(count("installed_unit_installation")).isEqualTo(installations+1);
+            assertThat(count("installed_unit_installation_event")).isEqualTo(events+2);
+            assertThat(count("installed_unit_operation_request")).isEqualTo(receipts+1);
+            assertThat(admin().queryForObject("SELECT revision=2 AND effective_until IS NOT NULL FROM public.hidra_topology_installed_unit_installation WHERE installation_id=?",Boolean.class,r.command().installationId())).isTrue();
+        }finally{start.countDown();workers.shutdownNow();assertThat(workers.awaitTermination(5,TimeUnit.SECONDS)).isTrue();reset(admissionCoordinator);}
+    }
+    @Test void installedUnitHttpWriterFirstAndReaderFirstKeepHistoryAtomic() throws Exception {
+        var setup=installedHttpReplacementFixture();var r=setup.replacement();String bearer=setup.bearer();
+        var history=new InstalledUnitLifecycleUseCase.Command(InstalledUnitLifecycleUseCase.Operation.READ_HISTORY,null,COMPANY,r.source().id(),r.command().installationId(),null,pos(r.place()),null,null,null,null,null,0);
+        authorize(r.actor(),history);installedHttp(bearer,history).andExpect(status().isOk()).andExpect(jsonPath("$.history.length()").value(1));String before=effects();
+        var failures=new ConcurrentLinkedQueue<Throwable>();installedCaptureOwnerFailures(failures);
+        // A genuine independent writer already owns the native relation lock; the HTTP reader must fail NOWAIT.
+        try(var writer=DriverManager.getConnection(POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword());var statement=writer.createStatement()) {
+            writer.setAutoCommit(false);statement.execute("LOCK TABLE public.hidra_topology_installed_unit IN ROW EXCLUSIVE MODE");
+            installedProblem(bearer,history,503,"UNAVAILABLE",r.source().id(),r.command().installationId());
+            assertThat(failures.stream().anyMatch(f->installedSqlState(f,"55P03"))).isTrue();writer.rollback();
+        }
+        unchangedReplacement(r,before);failures.clear();
+        var entered=new CountDownLatch(1);var release=new CountDownLatch(1);var held=new AtomicBoolean();var worker=Executors.newSingleThreadExecutor();
+        doAnswer(inv->{Object result=inv.callRealMethod();var c=(InstalledUnitLifecycleUseCase.Command)ReflectionTestUtils.getField(inv.getArgument(0),"command");
+            if(c.equals(history) && held.compareAndSet(false,true)) {
+                entered.countDown();if(!release.await(5,TimeUnit.SECONDS))throw new AssertionError("HTTP reader/writer handshake exceeded bounded test window");
+            }
+            return result;
+        }).when(protectedStore).observe(any());
+        try {
+            var reader=worker.submit(()->{try{return installedHttp(bearer,history).andReturn();}finally{SecurityContextHolder.clearContext();}});
+            assertThat(entered.await(5,TimeUnit.SECONDS)).isTrue();
+            try{installedProblem(bearer,r.command(),503,"UNAVAILABLE",r.source().id(),r.second().id());}
+            finally{release.countDown();}
+            var result=reader.get(5,TimeUnit.SECONDS);assertThat(result.getResponse().getStatus()).isEqualTo(200);
+            assertThat(JSON.readTree(result.getResponse().getContentAsString()).path("history").size()).isEqualTo(1);
+            assertThat(failures.stream().anyMatch(f->installedSqlState(f,"55P03"))).isTrue();unchangedReplacement(r,before);
+        }finally{release.countDown();worker.shutdownNow();assertThat(worker.awaitTermination(5,TimeUnit.SECONDS)).isTrue();reset(protectedStore,admissionCoordinator);}
+        installedHttp(bearer,r.command()).andExpect(status().isOk());
+        installedHttp(bearer,history).andExpect(status().isOk()).andExpect(jsonPath("$.history.length()").value(2))
+            .andExpect(jsonPath("$.history[0].revision").value(1)).andExpect(jsonPath("$.history[1].revision").value(2));
+    }
+    @Test void installedUnitHttpRealFinalSourceFacilityRoleAndTimeRejectionsRollBack() throws Exception {
+        for(String fault:List.of("source","facility","role","time")) {
+            var setup=installedHttpReplacementFixture();var r=setup.replacement();String bearer=setup.bearer(),before=effects();var rejected=new AtomicBoolean();
+            doAnswer(inv->{inv.callRealMethod();
+                if(fault.equals("time")) {
+                    Object ticket=inv.getArgument(0);var origin=(dz.sh.hidra.modules.topology.application.port.out.ProtectedInstalledUnitRepositoryPort.Origin)ReflectionTestUtils.getField(ticket,"origin");
+                    ReflectionTestUtils.setField(ticket,"origin",new dz.sh.hidra.modules.topology.application.port.out.ProtectedInstalledUnitRepositoryPort.Origin(origin.actorId(),origin.bindingId(),origin.sessionId(),origin.sampledAt(),origin.sampledAt(),origin.backendPid(),origin.transactionId()));
+                }else try(var connection=DriverManager.getConnection(POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword())) {
+                    if(fault.equals("role")){try(var statement=connection.createStatement()){statement.execute("ALTER ROLE "+PUBLISHER+" BYPASSRLS");}}
+                    else {
+                        String sql=fault.equals("facility")?"UPDATE public.hidra_topology_facility_owner_generation SET generation=generation+1 WHERE facility_id=?":"UPDATE public.hidra_party_eligibility_generation SET generation=generation+1 WHERE party_id=?";
+                        try(var statement=connection.prepareStatement(sql)){statement.setString(1,fault.equals("facility")?r.place().facility():COMPANY);assertThat(statement.executeUpdate()).isEqualTo(1);}
+                    }
+                }
+                return null;
+            }).when(protectedStore).freeze(any(),any(),anyList());
+            doAnswer(inv->{Object result=inv.callRealMethod();rejected.set(Boolean.FALSE.equals(result));return result;}).when(protectedStore).finalGuard(any());
+            try{installedProblem(bearer,r.command(),503,"UNAVAILABLE",r.source().id(),r.second().id());assertThat(rejected.get()).isTrue();verify(protectedStore).finalGuard(any());}
+            finally{reset(protectedStore);if(fault.equals("role"))admin().execute("ALTER ROLE "+PUBLISHER+" NOBYPASSRLS");}
+            unchangedReplacement(r,before);
+        }
+    }
+    @Test void installedUnitHttpLostCommitAcknowledgementIsIndeterminateAndRetryIsExactReplay() throws Exception {
+        var setup=installedHttpReplacementFixture();var r=setup.replacement();String bearer=setup.bearer();
+        long installations=count("installed_unit_installation"),events=count("installed_unit_installation_event"),receipts=count("installed_unit_operation_request");
+        var armed=new AtomicReference<Thread>();var committedThenLost=new AtomicBoolean();
+        doAnswer(inv->{inv.callRealMethod();armed.set(Thread.currentThread());return null;}).when(protectedStore).freeze(any(),any(),anyList());
+        doAnswer(inv->{
+            if(armed.compareAndSet(Thread.currentThread(),null)) {
+                inv.callRealMethod(); // Genuine protected physical commit completes; only its acknowledgement is lost.
+                committedThenLost.set(true);throw new org.springframework.transaction.TransactionSystemException("synthetic private commit acknowledgement loss");
+            }
+            return inv.callRealMethod();
+        }).when(manager).commit(any(org.springframework.transaction.TransactionStatus.class));
+        try {
+            installedProblem(bearer,r.command(),503,"INDETERMINATE",r.source().id(),r.second().id(),"private commit acknowledgement loss");
+            assertThat(committedThenLost.get()).isTrue();verify(protectedStore).finalGuard(any());
+        }finally{reset(manager,protectedStore);}
+        // Outside the completed protected scope, the database may contain the one physically committed operation.
+        assertThat(count("installed_unit_installation")).isEqualTo(installations+1);
+        assertThat(count("installed_unit_installation_event")).isEqualTo(events+2);
+        assertThat(count("installed_unit_operation_request")).isEqualTo(receipts+1);
+        String committed=effects();
+        installedHttp(bearer,r.command()).andExpect(status().isOk()).andExpect(jsonPath("$.replayed").value(true))
+            .andExpect(jsonPath("$.replacementUnit.id").value(r.second().id()));assertThat(effects()).isEqualTo(committed);
     }
 }

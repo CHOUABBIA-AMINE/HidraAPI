@@ -6331,6 +6331,53 @@ Integrated HAPI-599 remains NOT_IMPLEMENTED/BLOCKED.
 No HAPI-600/601, deployment, operator/SITE acceptance
 or P3 simulation is authorized.
 
+
+### HAPI-599 Package C — native HTTP route permission handoff repair — 2026-10-29
+
+**Owner Fail, bounded registration.** Exact parent `ab6751d5f2310f67bcd35db5174310aac8486341` (tree `48bf08a9803d9859e2a2321a23988afd78d5a6e9`);
+Full CI #977/run 40880737068 FAILED on the exact head, while Fast #275 and
+Docs #714 SUCCEEDED. Full static, unit/architecture, API/dictionary and
+PostgreSQL shards 0–5 and 7–9 passed. PostgreSQL shard 6 ran 155 cases
+with three failures and no errors/skips; the three new
+`ProtectedInstalledUnitLifecyclePostgresIntegrationTest` native HTTP
+cases received 403 instead of expected 200, 200 and 503.
+The aggregate evidence gate failed consequentially, not independently.
+
+**Source-backed root cause.** `HidraRouteAuthorizationInterceptor` guards
+owned engineering/product workflows by exact controller, method, HTTP verb
+and route tuple, delegating authenticated operations to native scoped
+Identity authority. The eight real `InstalledUnitLifecycleController`
+endpoints were absent from that allowlist. Its generic
+`topology:installed-units:{read|update|execute}` check is not equivalent
+to the installed-unit owner permissions and rejected valid synthetic
+native bearer requests before the current fenced use case was reached.
+This failure does not justify an unrestricted permission grant, a
+fixture bypass, disabling the interceptor, or accepting a 403 as success.
+
+**Registered one-stage correction.** Exact commit message:
+`fix(security): delegate installed-unit HTTP routes to native authority`.
+MODIFY only:
+- `src/main/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptor.java`:
+  add precisely eight compiled controller/method/verb/pattern tuples; retain
+  the authenticated-principal guard and ordinary route checks otherwise
+- `src/test/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptorTest.java`:
+  one deterministic regression verifies all eight positive tuples and rejects
+  wrong verbs, routes, controllers, methods, anonymous and unauthenticated
+  principals, with no resolver/biz execution for delegated requests
+- `.github/ci-test-inventory.json`: add the real unit case and exact source
+  SHA256 `1aba9b1161fb7bb396c5e5d7a33411cc38138c756d46a87530c0339dfd1ce002`; preserve 509 classes, 10 shards and timing
+- `doc/roadmap/TASKS_HPS-006.md`: append this failure/repair record.
+
+CREATE/DELETE none. Preserve native per-resource grants, DENY precedence,
+revocation, source authentication, freshness, protected transaction/rollback,
+all 41 existing native fixture tests, SQL, migrations, APIs, OpenAPI, workflows,
+and all other modules. Local Maven/Docker/PostgreSQL proof was unavailable;
+static source, exact tuple, test registration and hash checks are not runtime
+proof. On guarded direct-main publication, observe applicable exact-SHA CI
+startup and STOP. HAPI-599 remains NOT_IMPLEMENTED/BLOCKED pending all native
+HTTP test cases and full evidence success. HAPI-600/601, P3 and deployment
+remain unselected.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

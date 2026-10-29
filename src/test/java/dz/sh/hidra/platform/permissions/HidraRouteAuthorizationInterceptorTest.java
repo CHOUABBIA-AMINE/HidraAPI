@@ -7,7 +7,7 @@
  *
  * @Name        : HidraRouteAuthorizationInterceptorTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-25
+ * @UpdatedOn   : 2026-10-29
  *
  * @Type        : Class
  * @Layer       : Platform Test
@@ -395,6 +395,56 @@ class HidraRouteAuthorizationInterceptorTest {
             assertThrows(AccessDeniedException.class,()->interceptor.preHandle(request,new MockHttpServletResponse(),handlerMethod()));
             SecurityContextHolder.clearContext();assertThrows(AccessDeniedException.class,()->interceptor.preHandle(request,new MockHttpServletResponse(),handler));
             SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("fixture",null,List.of()));
+        }
+    }
+
+    @Test void installedUnitDelegationRequiresEightExactAuthenticatedTuples() throws Exception {
+        var resolver=org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class);
+        var interceptor=new HidraRouteAuthorizationInterceptor(resolver,naming,true,"jwt");
+        var owner=new dz.sh.hidra.modules.topology.api.rest.controller.InstalledUnitLifecycleController(
+                org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.InstalledUnitLifecycleUseCase.class));
+        String base="/api/v1/topology/installed-units/{unitId}";
+        String installation=base+"/installations/{installationId}";
+        String[] names={"register","readUnit","record","close","relocate","replace","readInstallation","history"};
+        String[] verbs={"PUT","GET","POST","POST","POST","POST","GET","GET"};
+        String[] routes={base,base,base+"/installations",installation+"/close",
+                installation+"/relocate",installation+"/replace",installation,installation+"/history"};
+        for(int i=0;i<names.length;i++) {
+            String name=names[i], route=routes[i], verb=verbs[i];
+            var method=java.util.Arrays.stream(owner.getClass().getMethods())
+                    .filter(m->m.getName().equals(name)).findFirst().orElseThrow();
+            var handler=new HandlerMethod(owner,method);
+            var request=new MockHttpServletRequest(verb,route.replace("{unitId}","selected")
+                    .replace("{installationId}","selected-installation"));
+            request.setAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE,route);
+            SecurityContextHolder.getContext().setAuthentication(
+                    new UsernamePasswordAuthenticationToken("operator",null,List.of()));
+            org.mockito.Mockito.clearInvocations(resolver);
+            assertTrue(interceptor.preHandle(request,new MockHttpServletResponse(),handler));
+            org.mockito.Mockito.verifyNoInteractions(resolver);
+
+            request.setMethod("DELETE");
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(
+                    request,new MockHttpServletResponse(),handler));
+            request.setMethod(verb);
+            request.setAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE,route+"/sibling");
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(
+                    request,new MockHttpServletResponse(),handler));
+            request.setAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE,route);
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(
+                    request,new MockHttpServletResponse(),handlerMethod()));
+            String wrongName=names[(i+1)%names.length];
+            var wrongMethod=java.util.Arrays.stream(owner.getClass().getMethods())
+                    .filter(m->m.getName().equals(wrongName)).findFirst().orElseThrow();
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(
+                    request,new MockHttpServletResponse(),new HandlerMethod(owner,wrongMethod)));
+            SecurityContextHolder.clearContext();
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(
+                    request,new MockHttpServletResponse(),handler));
+            SecurityContextHolder.getContext().setAuthentication(
+                    new UsernamePasswordAuthenticationToken("operator",null));
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(
+                    request,new MockHttpServletResponse(),handler));
         }
     }
 }

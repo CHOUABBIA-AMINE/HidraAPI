@@ -7,7 +7,7 @@
  *
  * @Name        : HidraRouteAuthorizationInterceptor
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-25
+ * @UpdatedOn   : 2026-10-29
  *
  * @Type        : Class
  * @Layer       : Platform
@@ -100,7 +100,8 @@ public final class HidraRouteAuthorizationInterceptor implements HandlerIntercep
                 || isOwnedLocalExchangeRoute(handlerMethod,routePattern,request.getMethod())
                 || isOwnedProductDraftRoute(handlerMethod,routePattern,request.getMethod())
                 || isOwnedSuppliedFluidRoute(handlerMethod,routePattern,request.getMethod())
-                || isOwnedProductPublicationRoute(handlerMethod,routePattern,request.getMethod())) {
+                || isOwnedProductPublicationRoute(handlerMethod,routePattern,request.getMethod())
+                || isOwnedInstalledUnitLifecycleRoute(handlerMethod,routePattern,request.getMethod())) {
             if (authentication == null || !authentication.isAuthenticated()
                     || authentication instanceof AnonymousAuthenticationToken) {
                 throw new AccessDeniedException("Engineering draft authentication required.");
@@ -114,6 +115,27 @@ public final class HidraRouteAuthorizationInterceptor implements HandlerIntercep
         }
 
         throw new AccessDeniedException("Missing required permission: " + requiredPermission);
+    }
+
+
+    // Only these compiled HTTP handlers may defer the generic route grant to the
+    // installed-unit owner's current, resource-scoped native Identity authority.
+    // The controller still requires a real authenticated principal; every command
+    // and read passes through the protected use case and its transactional fences.
+    private static boolean isOwnedInstalledUnitLifecycleRoute(HandlerMethod handler,String route,String verb) {
+        if(handler==null || route==null || verb==null || !handler.getBeanType().getName().equals(
+                "dz.sh.hidra.modules.topology.api.rest.controller.InstalledUnitLifecycleController"))return false;
+        return switch(verb+" "+route+" "+handler.getMethod().getName()) {
+            case "PUT /api/v1/topology/installed-units/{unitId} register",
+                 "GET /api/v1/topology/installed-units/{unitId} readUnit",
+                 "POST /api/v1/topology/installed-units/{unitId}/installations record",
+                 "POST /api/v1/topology/installed-units/{unitId}/installations/{installationId}/close close",
+                 "POST /api/v1/topology/installed-units/{unitId}/installations/{installationId}/relocate relocate",
+                 "POST /api/v1/topology/installed-units/{unitId}/installations/{installationId}/replace replace",
+                 "GET /api/v1/topology/installed-units/{unitId}/installations/{installationId} readInstallation",
+                 "GET /api/v1/topology/installed-units/{unitId}/installations/{installationId}/history history" -> true;
+            default -> false;
+        };
     }
 
     private static boolean isOwnedProductPublicationRoute(HandlerMethod handler,String route,String verb) {

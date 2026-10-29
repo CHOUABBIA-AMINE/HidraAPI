@@ -10177,6 +10177,7 @@
         "engineeringDraftNeverDelegatesAnonymousOrDifferentController",
         "exchangeDelegatesOnlyFourExactAuthenticatedControllerTuples",
         "forbidsMissingEffectivePermission",
+        "installedUnitDelegationRequiresEightExactAuthenticatedTuples",
         "permitsAnonymousDirectLoginBeforeRoutePermissionResolution",
         "permitsMatchingEffectivePermission",
         "productDraftDelegationRequiresExactAuthenticatedOwnerTuples",
@@ -10191,7 +10192,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptorTest.java",
-      "source_sha256": "73c796fa3c64f181aeef436e807e1ee9416d5468b669f270d3ef2ed02922ebb3",
+      "source_sha256": "1aba9b1161fb7bb396c5e5d7a33411cc38138c756d46a87530c0339dfd1ce002",
       "supports": []
     },
     {

@@ -8568,6 +8568,25 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "mixedAndAllIsolatedOrUnoccupiedKeepExplicitStructuralMeaning",
+        "nineDistinctPhysicalUnitsAcrossThreeStationSnapshots",
+        "rejectsEdgesTouchingUnavailablePortsAndUnknownOrDuplicateEdges",
+        "rejectsFabricatedUnoccupiedWitnessAndInsufficientInstallationCoverage",
+        "rejectsMissingDuplicateOrForeignPositionsAndReusedPhysicalUnit",
+        "rejectsTimestampPrecisionSourceAndEpochContradictions"
+      ],
+      "class": "dz.sh.hidra.modules.topology.domain.model.StationInstalledConfigurationTest",
+      "dependency_reason": "HAPI-600 A deterministic domain/codec contract; JVM only",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/domain/model/StationInstalledConfigurationTest.java",
+      "source_sha256": "c7366f7bf2c61a717a97a9f620d2be43c5e02c09af0a2dae5d86bc43a79f6749",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0.004,
       "cases": [
         "preservesSyntheticRevisionAndDistinctHistoryIdentity",
@@ -9107,6 +9126,24 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "freshFlywayCreatesFourConfigurationRelations",
+        "headIsConstrainedToExactRevisionAndSelectedEpoch",
+        "immutableRevisionMemberRequestRetainUpdateDeleteAndTruncateFences",
+        "invalidHeadReferenceFailsUnderRealForeignKey",
+        "physicalMemberRequiresOwnedUnitAndInstallationEventWitness"
+      ],
+      "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.StationInstalledConfigurationPostgresIntegrationTest",
+      "dependency_reason": "HAPI-600 A fresh Flyway PostgreSQL constraints and integrity; requires Docker",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/StationInstalledConfigurationPostgresIntegrationTest.java",
+      "source_sha256": "cc198406eabe1376329eae7b84414b25ed3ff530e1c7d1815619d7cec0f48154",
+      "supports": []
+    },
+    {
       "baseline_seconds": 10.952,
       "cases": [
         "blankAndNullIdentitiesFailRatherThanReturnAbsence",
@@ -9278,6 +9315,25 @@
       "source_sha256": "1f2b1af22b7c470051349d028ed0e17d1f0ca0a110f682bc85e3321a58a090af",
       "supports": [],
       "timing_status": "unmeasured-new-suite"
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "canonicalRoundTripRetainsPinnedGraphAndEvidence",
+        "defensiveInputAndOutputBytesDoNotMutateCanonicalSnapshot",
+        "inputPermutationsProduceIdenticalCanonicalBytes",
+        "rejectsInvalidStringsNonCanonicalByteOrderAndUnknownMarkers",
+        "rejectsMismatchBetweenDeclaredGraphDigestAndActualGraph",
+        "rejectsTrailingTruncationUnknownFormatAndByteTampering"
+      ],
+      "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.StationInstalledConfigurationCodecTest",
+      "dependency_reason": "HAPI-600 A deterministic domain/codec contract; JVM only",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/StationInstalledConfigurationCodecTest.java",
+      "source_sha256": "3bfd3fb17b5895112ecf484e6a3c5fae18c05dc3a57759c761a17fec81c50fcc",
+      "supports": []
     },
     {
       "baseline_seconds": 0.145,

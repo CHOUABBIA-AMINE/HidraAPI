@@ -7692,6 +7692,60 @@ execution, source implementation or generated-artifact refresh is claimed now.
 Publish guarded main with expected5fb3e72, verify exact four paths/message/parent/
 tree/blobs, observe exact-SHA Documentation CI creation/startup and STOP beforeA.
 
+
+### HAPI-600 Package A — versioned installed station configuration storage — 2026-10-29
+
+**Owner Next, registered stage.** Refreshed main `7b03664f614cab1ac9c7031c5b00ff0575931981`, tree
+`ffb2a7a64ace1e17bc094f2ae29c694eb3ae54d8`; Docs725 SUCCESS.
+Unchanged runtime Full983 and Fast281 are SUCCESS on `027534fe`.
+Exact message: `feat(topology): add versioned installed station configuration storage`.
+
+CREATE exactly: topology Domain `StationInstalledConfiguration.java`,
+infrastructure `StationInstalledConfigurationCodec.java`,
+migration `V20261029_002__topology_station_installed_configurations.sql`,
+and three tests `StationInstalledConfigurationTest.java`,
+`StationInstalledConfigurationCodecTest.java`,
+`StationInstalledConfigurationPostgresIntegrationTest.java`.
+MODIFY only `.github/ci-test-inventory.json`,
+`.github/database-dictionary-ownership.json` and this phase file.
+DELETE none. The previously admitted generated `doc/database/DATA_DICTIONARY.md`
+is intentionally preserved: actual PostgreSQL16 migrated catalog capture is
+unavailable locally; it MUST be generated/reviewed from real same-SHA hosted
+database evidence before Package A is independently accepted. Do not invent
+physical columns or waive strict dictionary equality.
+
+Domain pins company/facility, qualified graph revision/format/digest and
+publication epoch, exact applicability, native actor/source provenance,
+CAS-selected revision epoch, explicit CONNECTED/ISOLATED/UNOCCUPIED
+positions and immutable installation event witnesses. Strict invariants
+require full station-position disposition, unique unit/position identities,
+time coverage and active-edge subset with no touches to isolated ports;
+the existing graph validator derives structural diagnostics. No inferred
+flow, calibration or fresh authority is granted.
+
+Independent codec uses canonical bounded binary V1, strict UTF-8,
+normalized IDs, pinned graph bytes and digest, exact decode and corruption
+rejection. Additive four-relation PostgreSQL schema owns revision/member/
+head/request, precise position/unit/company/event FKs, immutable provenance
+and content checksum, epoch/period/disposition checks, unique per-revision
+unit and CAS head enforcement, immutable update/delete/truncate triggers.
+No new ordinary writer, HTTP adapter or cross-owner direct mutation.
+New tests: 6 domain, 6 codec, 5 actual fresh-Flyway PostgreSQL schema
+cases; 17 registered case names/source hashes and 512 registered classes
+total; all prior inventory entries, ten shards and zero=unmeasured
+new timing are preserved. Database suite covers bounded catalog
+checks/invalid-head FK, not full native Package B authority or CAS races.
+
+Existing 599 lifecycle, immutable migrations, Identity/Party/Assets
+authority, graph V1, OpenAPI, workflows, selected budgets and frozen
+roadmap status are preserved. No local Maven, Docker, PostgreSQL run is
+claimed. Static source, exact test inventory and schema-owner checks
+precede CI-first guarded main publication. Observe exact-SHA Full/Fast/
+Docs creation or startup and STOP; actual hosted compile/DB/catalog
+proof and any same-package CI repair remain pending acceptance. HAPI-600
+stays NOT_IMPLEMENTED/IN_PROGRESS; B/C, 598 parent, 601..603,
+frontend, P3, release and SITE are not selected.
+
 <a id="hapi-602"></a>
 ## HAPI-602 — Versioned installed-unit/characteristic links
 

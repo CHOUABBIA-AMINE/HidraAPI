@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedTopologyInstalledUnitAuthorizationParticipantTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-28
+ * @UpdatedOn   : 2026-10-29
  *
  * @Type        : Class
  * @Layer       : Identity Test
@@ -39,7 +39,7 @@ class ProtectedTopologyInstalledUnitAuthorizationParticipantTest {
     }
     @Test void sevenExactMappingsNeverAliasStationAuthority() {
         var codes=List.of("register","read","record-installation","close-installation","relocate","read-installation","read-history");
-        for(int i=0;i<Operation.values().length;i++)
+        for(int i=0;i<codes.size();i++)
             assertThat(TopologyInstalledUnitAuthorizationContract.permissionCode(Operation.values()[i]))
                 .isEqualTo("topology:installed-unit:"+codes.get(i));
     }
@@ -80,6 +80,57 @@ class ProtectedTopologyInstalledUnitAuthorizationParticipantTest {
         assertThat(new Contribution(r,decisions,"b","s","u",at,at.plusSeconds(1),1,1).overallDecision()).isEqualTo(Decision.DENY);
         assertThat(Admission.class.isInstance(c)).isFalse();
         assertThatThrownBy(()->new Contribution(r,List.of(),"b","s","u",at,at.plusSeconds(1),1,1)).isInstanceOf(IllegalArgumentException.class);
+    }
+    @Test void replacementRequiresTwoDistinctResourceBoundPermissionCodes() {
+        assertThat(TopologyInstalledUnitAuthorizationContract.permissionCode(Operation.REPLACE,"INSTALLED_UNIT"))
+            .isEqualTo("topology:installed-unit:replace-unit");
+        assertThat(TopologyInstalledUnitAuthorizationContract.permissionCode(Operation.REPLACE,"INSTALLED_UNIT_INSTALLATION"))
+            .isEqualTo("topology:installed-unit:replace-installation");
+        assertThatThrownBy(()->TopologyInstalledUnitAuthorizationContract.permissionCode(Operation.REPLACE)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(()->TopologyInstalledUnitAuthorizationContract.permissionCode(Operation.REPLACE,"STATION_GRAPH_REVISION")).isInstanceOf(IllegalArgumentException.class);
+        for(var op:List.of(Operation.REGISTER_UNIT,Operation.READ_UNIT,Operation.RECORD_INSTALLATION,Operation.CLOSE_INSTALLATION,Operation.RELOCATE,Operation.READ_INSTALLATION,Operation.READ_HISTORY)) {
+            String type=op==Operation.REGISTER_UNIT || op==Operation.READ_UNIT?"INSTALLED_UNIT":"INSTALLED_UNIT_INSTALLATION";
+            assertThat(TopologyInstalledUnitAuthorizationContract.permissionCode(op,type)).isEqualTo(TopologyInstalledUnitAuthorizationContract.permissionCode(op));
+            assertThatThrownBy(()->TopologyInstalledUnitAuthorizationContract.permissionCode(op,type.equals("INSTALLED_UNIT")?"INSTALLED_UNIT_INSTALLATION":"INSTALLED_UNIT")).isInstanceOf(IllegalArgumentException.class);
+        }
+    }
+    @Test void replacementBindsBothUnitsAndInstallationsWithSixImmutableRequirements() {
+        var r=new Request(Operation.REPLACE,"company","old-unit","old-install","new-install","facility","facility","new-unit");
+        assertThat(r.requirements()).hasSize(6).doesNotHaveDuplicates();
+        assertThat(r.requirements().stream().filter(x->x.resourceType().equals("INSTALLED_UNIT")).toList())
+            .containsExactly(new Requirement("INSTALLED_UNIT","new-unit",Scope.COMPANY,"company"),new Requirement("INSTALLED_UNIT","old-unit",Scope.COMPANY,"company"));
+        assertThat(r.requirements().stream().filter(x->x.resourceType().equals("INSTALLED_UNIT_INSTALLATION")).map(Requirement::resourceId).distinct())
+            .containsExactly("new-install","old-install");
+        assertThat(r.requirements().stream().filter(x->x.scope()==Scope.FACILITY)).hasSize(2).allMatch(x->x.scopeReference().equals("facility"));
+        assertThatThrownBy(()->r.requirements().clear()).isInstanceOf(UnsupportedOperationException.class);
+        var sameText=new Request(Operation.REPLACE,"company","one","one","two","facility","facility","two");
+        assertThat(sameText.requirements()).hasSize(6); // Cross-type identity text never collapses two authority targets.
+    }
+    @Test void malformedReplacementAndLegacySecondUnitDescriptorsAreRejected() {
+        for(String unit:Arrays.asList(null,"old-unit","", " padded", "x".repeat(81)))
+            assertThatThrownBy(()->new Request(Operation.REPLACE,"company","old-unit","old-install","new-install","facility","facility",unit)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(()->new Request(Operation.REPLACE,"company","old-unit",null,"new-install","facility","facility","new-unit")).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(()->new Request(Operation.REPLACE,"company","old-unit","old-install","old-install","facility","facility","new-unit")).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(()->new Request(Operation.REPLACE,"company","old-unit","old-install","new-install",null,"facility","new-unit")).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(()->new Request(Operation.REPLACE,"company","old-unit","old-install","new-install","left","right","new-unit")).isInstanceOf(IllegalArgumentException.class);
+        for(var op:List.of(Operation.REGISTER_UNIT,Operation.READ_UNIT,Operation.RECORD_INSTALLATION,Operation.CLOSE_INSTALLATION,Operation.RELOCATE,Operation.READ_INSTALLATION,Operation.READ_HISTORY)) {
+            var old=request(op);
+            assertThatThrownBy(()->new Request(op,old.companyPartyId(),old.unitId(),old.installationId(),old.replacementInstallationId(),old.sourceFacilityId(),old.destinationFacilityId(),"new-unit")).isInstanceOf(IllegalArgumentException.class);
+        }
+    }
+    @Test void legacyRequestConstructorRetainsExactSevenOperationDescriptors() {
+        for(var op:List.of(Operation.REGISTER_UNIT,Operation.READ_UNIT,Operation.RECORD_INSTALLATION,Operation.CLOSE_INSTALLATION,Operation.RELOCATE,Operation.READ_INSTALLATION,Operation.READ_HISTORY)) {
+            var old=request(op);
+            var current=new Request(op,old.companyPartyId(),old.unitId(),old.installationId(),old.replacementInstallationId(),old.sourceFacilityId(),old.destinationFacilityId(),null);
+            assertThat(old).isEqualTo(current);assertThat(old.requirements()).isEqualTo(current.requirements());assertThat(old.replacementUnitId()).isNull();
+        }
+    }
+    @Test void replacementDenialOfAnyRequiredTargetDominatesOtherDecisions() {
+        var r=new Request(Operation.REPLACE,"company","old-unit","old-install","new-install","facility","facility","new-unit");var at=Instant.parse("2026-10-29T00:00:00Z");
+        for(var denied:r.requirements()) {
+            var decisions=r.requirements().stream().map(q->new ResourceDecision(q,q.equals(denied)?Decision.DENY:Decision.PERMIT)).toList();
+            assertThat(new Contribution(r,decisions,"binding","session","user",at,at.plusSeconds(1),1,1).overallDecision()).isEqualTo(Decision.DENY);
+        }
     }
     @Test void forgedTicketsAndMissingTransactionsCannotReachNativeReads() {
         var nativeOwner=mock(ProtectedOperationIdentityParticipant.class);

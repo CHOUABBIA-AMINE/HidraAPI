@@ -5212,6 +5212,100 @@ only; its implementation/CI acceptance remains pending. Accepted A/seven-operati
 writer remain accepted; integrated HAPI-599/B replacement/C and all dependent tasks,
 frontend, simulation/P3, SITE, release and deployment remain open/unselected.
 
+### HAPI-599 B — native atomic replacement authorization implementation — 2026-10-29
+
+**Selected bounded stage.** Owner Next refreshes main
+`e92b641697f5641ae7e9295d2eb0f7f544fb0d07`, Docs704/run40857711668 SUCCESS.
+Unchanged accepted runtime retains Full969; the corrected nine-file registration
+now executes under exact message:
+`feat(identity): authorize atomic installed-unit replacement`.
+CREATE/DELETE none; MODIFY exactly the nine registered paths. This delivers the
+Identity prerequisite only, not replacement DML, a schema change or a public API.
+
+**Implemented typed descriptor and permissions.** Append REPLACE to the public
+operation enum and replacementUnitId to Request, retaining the seven-argument
+constructor for all seven accepted operations. Replacement requires distinct unit
+IDs, distinct installation IDs and equal non-null source/destination facility;
+existing exact bounded reference validation applies to every added descriptor.
+Legacy operations reject a second unit. Canonical immutable requirements contain
+two INSTALLED_UNIT company targets and two INSTALLED_UNIT_INSTALLATION targets,
+each installation requiring company plus facility, exactly six decisions. Identical
+ID text across different resource types does not collapse separate targets.
+
+The resource-specific permissionCode overload validates its operation/resource
+combination and returns topology:installed-unit:replace-unit or
+topology:installed-unit:replace-installation for the two respective types. The
+one-argument method still returns every old code unchanged and rejects REPLACE,
+preventing selection of an incomplete single component. No generic replace alias,
+wildcard or caller-provided permission array. Public descriptor/scalar construction
+still creates no admission or claim authority.
+
+**Minimal native integration.** The actual native group builder chooses each
+child's fixed code from its exact Requirement.resourceType. The public participant
+independently compares that expected code, resource ID/type, company/facility and
+common native origin. Its evaluation algorithm, deny precedence and materialized
+contribution semantics remain. The existing reader's installed-unit-only admission
+branch validates allowed operation/resource combinations before resolving the code;
+all generic permission row cardinality/activity/exact resource_type checks remain
+byte-exact. Unit FACILITY scope remains prohibited. All other reader families,
+opaque group/context/claim consumption, one native sample, owner/thread/holder/PID/
+XID binding, temporal collector, native source lifetime, current rechecks, fences
+and poisoning/commit veto mechanisms remain unchanged. Beyond header dates, the
+issuer/evaluator production changes are exactly their two code-selection call sites.
+
+The admitted reader delta is pinned to its actual SHA256
+4cb50a86bf8e307a742fb64e29fdfcccab24cb793e3987a1d2234a7dd004f27d,
+replacing the explicitly superseded3b734e9f pin. The existing guardrail assertion
+remains active; every J/provider hash is preserved. No production role, grant,
+permission seed, schema, migration, datasource, budget or workflow is changed.
+Topology's accepted seven-operation writer and its version1 canonical receipts are
+byte-exact; the separate physical replacement writer is still pending.
+
+**Authored regression evidence; hosted runtime pending.** Preserve all original
+unit6/native19/guardrail9 case identities. Add five unit cases: the two code bindings
+and unsupported/single-code rejection, six immutable distinct targets, malformed
+replacement and forbidden legacy second-unit descriptors, retained legacy constructor
+semantics and denial of any one of the six targets. Unit suite now11 cases.
+
+Add six actual PostgreSQL cases, suite now25: mixed permission types through genuine
+LOCAL/LDAP/AD/OIDC producers, missing either component or facility, denial of either
+unit/installation identity, wrong permission-row resource_type, request substitutions
+with swallowed-failure rollback and rechecks of both revoked/shortened components.
+Negative grant/type/policy cases retain positive controls after restoring valid
+fixtures. Existing real reader calls are observed, never replaced with fabricated
+graphs or decisions. Directory coverage delegates to the actual
+LdapCredentialVerificationAdapter and verification registry with only external LDAP
+transport mocked, following the already accepted lifecycle fixture; source capsules,
+native completion and private issuance fences remain real. Public native evidence
+is checked for all six exact descriptor/code bindings and actual authentication type.
+Company/unit ownership and business replacement are deliberately not claimed from
+this Identity-only fixture. No concurrency/expiry test is removed or relaxed.
+
+Inventory changes only the three modified suite hashes and eleven actual added
+case names; all other cases, timing/classification/shard assignments and four
+historical exclusions remain unchanged. Active500 classes now require3,750 exact
+cases across the same ten PostgreSQL shards. No skipped or reclassified case.
+
+**Available local validation.** All seven modified Java sources parse under available
+Java17. Twenty-three probes compile and execute actual prior/current public-contract
+sources in isolated class loaders, comparing original operation codes/requirements,
+same-facility relocation and constructor compatibility, plus new six-target/two-code
+and invalid-descriptor behavior. This is limited pure contract proof, not integrated
+Java21/Spring/JUnit/native PostgreSQL verification. Nine actual forensic source-check
+methods pass under a minimal assertion harness. Inventory, offline OpenAPI and88
+validator self-tests pass (35 inventory,53 full evidence), with documentation/link,
+exact nine-file scope, pin preservation and whitespace checks before publication.
+Focused Maven exits127, mvn: command not found; no environment is provisioned solely
+for local tests. No new runtime pass or catalog capture is invented.
+
+Publish verified blobs/tree/parent directly to main with expected-head guard;
+observe applicable exact-SHA Full/Fast/Docs creation/start and STOP. This native
+replacement prerequisite is implemented, not CI-accepted. After exact-head success
+and independent evidence review, revalidate/register the existing B replacement
+writer candidate before its runtime mutation. B replacement, C/API and integrated
+HAPI-599 remain pending; accepted A and seven-operation B writer remain accepted.
+HAPI-600/601, frontend, simulation/P3, SITE, release and deployment are unselected.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

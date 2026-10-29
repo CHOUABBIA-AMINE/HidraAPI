@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedOperationIdentityParticipant
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-28
+ * @UpdatedOn   : 2026-10-29
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -1053,7 +1053,7 @@ public class ProtectedOperationIdentityParticipant {
                 var scope = required.scope() == dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.Scope.COMPANY
                         ? ScopeType.CUSTOM : ScopeType.FACILITY;
                 var evaluation = new AuthorizationEvaluationRequest(contribution.evidence().userId(),
-                        dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.permissionCode(request.operation()),
+                        dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.permissionCode(request.operation(),required.resourceType()),
                         required.resourceType(), required.resourceId(),
                         new AuthorizationScope(scope, scope == ScopeType.CUSTOM ? "topology-company:" + required.scopeReference() : required.scopeReference(), null));
                 var child = new QualifiedClaimRead(this, admitted.prepared.actual, admitted.prepared.locator,

@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedTopologyInstalledUnitAuthorizationPostgresIntegrationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-28
+ * @UpdatedOn   : 2026-10-29
  *
  * @Type        : Class
  * @Layer       : Identity Test
@@ -446,29 +446,94 @@ public class ProtectedTopologyInstalledUnitAuthorizationPostgresIntegrationTest 
             switch(op) { case CLOSE_INSTALLATION, RELOCATE, READ_INSTALLATION, READ_HISTORY -> "source"; default -> null; },
             op==Operation.RECORD_INSTALLATION || op==Operation.RELOCATE ? "destination" : null);
     }
-    private String permission(Request request) {
-        String code=TopologyInstalledUnitAuthorizationContract.permissionCode(request.operation());
+    private String permission(Request request) { return permission(request,request.requirements().getFirst().resourceType()); }
+    private String permission(Request request,String resourceType) {
+        String code=TopologyInstalledUnitAuthorizationContract.permissionCode(request.operation(),resourceType);
         var found=jdbc.queryForList("SELECT id FROM "+T+"permission WHERE code=?",String.class,code);
         if(!found.isEmpty())return found.getFirst();
         String id=id();
         jdbc.update("INSERT INTO "+T+"permission(id,code,permission_domain,resource_type,action,sensitive,status,created_at,updated_at) VALUES (?,?,'topology',?,?,false,'ACTIVE',clock_timestamp(),clock_timestamp())",
-            id,code,request.requirements().getFirst().resourceType(),code.substring("topology:installed-unit:".length()));
+            id,code,resourceType,code.substring("topology:installed-unit:".length()));
         return id;
     }
     private String grant(Fixture f,Request request,Scope scope,String reference,String effect) {
+        return grant(f,request,request.requirements().getFirst().resourceType(),scope,reference,effect);
+    }
+    private String grant(Fixture f,Request request,String resourceType,Scope scope,String reference,String effect) {
         String id=id();
         jdbc.update("INSERT INTO "+T+"user_permission_grant(id,user_id,permission_id,effect,scope_type,scope_reference_id,grant_reason,emergency_access,valid_from,valid_to,status,created_at) VALUES (?,?,?,?,?,?,'synthetic installed-unit',false,clock_timestamp()-interval '1 hour',clock_timestamp()+interval '1 hour','ACTIVE',clock_timestamp())",
-            id,f.user(),permission(request),effect,scope==Scope.COMPANY?"CUSTOM":"FACILITY",scope==Scope.COMPANY?"topology-company:"+reference:reference);
+            id,f.user(),permission(request,resourceType),effect,scope==Scope.COMPANY?"CUSTOM":"FACILITY",scope==Scope.COMPANY?"topology-company:"+reference:reference);
         return id;
     }
     private void grants(Fixture f,Request r) {
-        grant(f,r,Scope.COMPANY,COMPANY,"GRANT");
-        r.requirements().stream().filter(q->q.scope()==Scope.FACILITY).map(Requirement::scopeReference).distinct()
-            .forEach(ref->grant(f,r,Scope.FACILITY,ref,"GRANT"));
+        var seen=new HashSet<String>();
+        for(var q:r.requirements())if(seen.add(q.resourceType()+":"+q.scope()+":"+q.scopeReference()))
+            grant(f,r,q.resourceType(),q.scope(),q.scopeReference(),"GRANT");
     }
     private TopologyInstalledUnitAuthorizationContract.Prepared prepared(Fixture f) {
+        if(f.type().equals("LDAP") || f.type().equals("ACTIVE_DIRECTORY"))return directoryPrepared(f);
         ambient(authenticate(f).accessToken()); return installed.prepare();
     }
+    private TopologyInstalledUnitAuthorizationContract.Prepared directoryPrepared(
+            Fixture f) {
+        var properties =
+                new dz.sh.hidra.platform.configuration.HidraLdapSecurityProperties(
+                        true,
+                        "ldap://synthetic.invalid:389",
+                        "dc=synthetic,dc=invalid",
+                        "ou=people",
+                        "(uid={0})",
+                        null,
+                        null,
+                        null,
+                        null);
+        var adapter =
+                new LdapCredentialVerificationAdapter(
+                        mock(org.springframework.ldap.core.support.LdapContextSource.class),
+                        properties,
+                        verificationRegistry);
+        var template = mock(org.springframework.ldap.core.LdapTemplate.class);
+        ReflectionTestUtils.setField(adapter, "ldapTemplate", template);
+        var context = mock(javax.naming.directory.DirContext.class);
+        var attrs = new javax.naming.directory.BasicAttributes(true);
+        attrs.put("entryUUID", f.subject());
+        attrs.put("uid", f.user());
+        attrs.put("memberOf", " private-original-directory-group ");
+        try {
+            when(context.getAttributes(any(javax.naming.Name.class), any(String[].class)))
+                    .thenReturn(attrs);
+            when(template.authenticate(
+                            anyString(),
+                            anyString(),
+                            anyString(),
+                            any(
+                                    org.springframework.ldap.core
+                                            .AuthenticatedLdapEntryContextCallback.class)))
+                    .thenAnswer(
+                            i -> {
+                                ((org.springframework.ldap.core
+                                                        .AuthenticatedLdapEntryContextCallback)
+                                                i.getArgument(3))
+                                        .executeWithContext(
+                                                context,
+                                                new org.springframework.ldap.core
+                                                        .LdapEntryIdentification(
+                                                        new javax.naming.ldap.LdapName(
+                                                                "uid=synthetic,ou=people,dc=synthetic,dc=invalid"),
+                                                        new javax.naming.ldap.LdapName(
+                                                                "uid=synthetic,ou=people")));
+                                return true;
+                            });
+        } catch (javax.naming.NamingException impossible) {
+            throw new IllegalStateException(impossible);
+        }
+        doAnswer(i -> adapter.verify(i.getArgument(0), i.getArgument(1)))
+                .when(directory)
+                .verify(f.user(), "synthetic-password");
+        ReflectionTestUtils.setField(ldap, "verifiedClaimReceiptEnabled", true);
+        ambient(authenticate(f).accessToken());return installed.prepare();
+    }
+
     private TopologyInstalledUnitAuthorizationContract.Admission contribute(TopologyInstalledUnitAuthorizationContract.Prepared p,Request r) {
         var ticket=installed.acquire(p,r); var result=installed.contribute(ticket);
         assertThat(result.overallDecision()).isEqualTo(Decision.PERMIT);
@@ -479,7 +544,7 @@ public class ProtectedTopologyInstalledUnitAuthorizationPostgresIntegrationTest 
     }
     @Test void allSevenOperationsUseRealNativeIdentityAndExactPhysicalScopes() {
         var f=fixture("LOCAL");
-        for(var op:Operation.values()) {
+        for(var op:List.of(Operation.REGISTER_UNIT,Operation.READ_UNIT,Operation.RECORD_INSTALLATION,Operation.CLOSE_INSTALLATION,Operation.RELOCATE,Operation.READ_INSTALLATION,Operation.READ_HISTORY)) {
             var r=request(op);grants(f,r);var p=prepared(f);
             tx().executeWithoutResult(s->{c3SelectRestrictedRole();var ticket=contribute(p,r);
                 assertThat(installed.finalFences(ticket)).isEqualTo(JdbcIdentityAuthorityFence.requiredRelationFences());});
@@ -662,6 +727,84 @@ public class ProtectedTopologyInstalledUnitAuthorizationPostgresIntegrationTest 
         cleanEvidence();grants(f,r);
         policy("DENY","{\"op\":\"eq\",\"attribute\":\"resource.referenceId\",\"type\":\"STRING\",\"value\":\"unrelated\"}");
         var p=prepared(f);tx().executeWithoutResult(status->{c3SelectRestrictedRole();contribute(p,r);});
+    }
+
+    private Request replacement() { return new Request(Operation.REPLACE,COMPANY,"old-unit","old-install","new-install","facility","facility","new-unit"); }
+    @Test void replacementCarriesBothPermissionTypesThroughEveryNativeProducer() {
+        var r=replacement();
+        var observed=new AtomicReference<JdbcProtectedAuthorizationEvidenceReader.InstalledUnitAuthorizationEvidence>();
+        doAnswer(inv->{var actual=(JdbcProtectedAuthorizationEvidenceReader.InstalledUnitAuthorizationEvidence)inv.callRealMethod();observed.set(actual);return actual;})
+            .when(reader).loadQualifiedInstalledUnitGroup(any(),eq(r));
+        try {
+            for(String type:List.of("LOCAL","LDAP","ACTIVE_DIRECTORY","OIDC")) {
+                cleanEvidence();var f=fixture(type);grants(f,r);var p=prepared(f);observed.set(null);
+                tx().executeWithoutResult(status->{c3SelectRestrictedRole();var a=contribute(p,r);assertThat(installed.finalFences(a)).isEqualTo(JdbcIdentityAuthorityFence.requiredRelationFences());});
+                var actual=observed.get();assertThat(actual).isNotNull();assertThat(actual.requests()).hasSize(6);
+                for(int n=0;n<r.requirements().size();n++) {
+                    var expected=r.requirements().get(n);var request=actual.requests().get(n);
+                    assertThat(request.resourceReferenceId()).isEqualTo(expected.resourceId());
+                    assertThat(request.resourceType()).isEqualTo(expected.resourceType());
+                    assertThat(request.permissionCode()).isEqualTo(TopologyInstalledUnitAuthorizationContract.permissionCode(Operation.REPLACE,expected.resourceType()));
+                }
+                assertThat(actual.contribution().evidence().authenticationType()).isEqualTo(type);
+            }
+        }finally{reset(reader);}
+    }
+    @Test void replacementCannotOmitEitherPermissionComponentOrInstallationFacility() {
+        var f=fixture("LOCAL");var r=replacement();
+        for(String missing:List.of("INSTALLED_UNIT","INSTALLED_UNIT_INSTALLATION","FACILITY")) {
+            cleanEvidence();grants(f,r);
+            if(missing.equals("FACILITY"))jdbc.update("DELETE FROM "+T+"user_permission_grant WHERE user_id=? AND scope_type='FACILITY'",f.user());
+            else jdbc.update("DELETE FROM "+T+"user_permission_grant WHERE user_id=? AND permission_id=?",f.user(),permission(r,missing));
+            var p=prepared(f);assertThatThrownBy(()->tx().executeWithoutResult(status->{c3SelectRestrictedRole();contribute(p,r);})).isInstanceOf(RuntimeException.class);
+        }
+        cleanEvidence();grants(f,r);var p=prepared(f);tx().executeWithoutResult(status->{c3SelectRestrictedRole();contribute(p,r);});
+    }
+    @Test void replacementDenialOfEitherUnitOrInstallationRejectsTheWholeGroup() {
+        var f=fixture("LOCAL");var r=replacement();
+        for(String denied:List.of(r.unitId(),r.replacementUnitId(),r.installationId(),r.replacementInstallationId())) {
+            cleanEvidence();grants(f,r);policy("DENY","{\"op\":\"eq\",\"attribute\":\"resource.referenceId\",\"type\":\"STRING\",\"value\":\""+denied+"\"}");
+            var p=prepared(f);assertThatThrownBy(()->tx().executeWithoutResult(status->{c3SelectRestrictedRole();contribute(p,r);})).isInstanceOf(RuntimeException.class);
+        }
+        cleanEvidence();grants(f,r);var p=prepared(f);tx().executeWithoutResult(status->{c3SelectRestrictedRole();contribute(p,r);});
+    }
+    @Test void replacementNeverWaivesPermissionRowResourceTypeEligibility() {
+        var f=fixture("LOCAL");var r=replacement();
+        for(String type:List.of("INSTALLED_UNIT","INSTALLED_UNIT_INSTALLATION")) {
+            cleanEvidence();grants(f,r);
+            jdbc.update("UPDATE "+T+"permission SET resource_type=? WHERE id=?",type.equals("INSTALLED_UNIT")?"INSTALLED_UNIT_INSTALLATION":"INSTALLED_UNIT",permission(r,type));
+            var p=prepared(f);assertThatThrownBy(()->tx().executeWithoutResult(status->{c3SelectRestrictedRole();contribute(p,r);})).isInstanceOf(RuntimeException.class);
+        }
+        cleanEvidence();grants(f,r);var p=prepared(f);tx().executeWithoutResult(status->{c3SelectRestrictedRole();contribute(p,r);});
+    }
+    @Test void replacementRequestSubstitutionPoisonsTheOriginalNativeGroup() {
+        var f=fixture("LOCAL");var r=replacement();
+        var swapped=List.of(
+            new Request(Operation.REPLACE,COMPANY,"other-unit",r.installationId(),r.replacementInstallationId(),"facility","facility",r.replacementUnitId()),
+            new Request(Operation.REPLACE,COMPANY,r.unitId(),r.installationId(),r.replacementInstallationId(),"facility","facility","other-unit"),
+            new Request(Operation.REPLACE,COMPANY,r.unitId(),"other-install",r.replacementInstallationId(),"facility","facility",r.replacementUnitId()),
+            new Request(Operation.REPLACE,COMPANY,r.unitId(),r.installationId(),"other-install","facility","facility",r.replacementUnitId()),
+            new Request(Operation.REPLACE,COMPANY,r.unitId(),r.installationId(),r.replacementInstallationId(),"other-facility","other-facility",r.replacementUnitId()));
+        for(var changed:swapped) {
+            cleanEvidence();grants(f,r);ambient(authenticate(f).accessToken());var p=participant.prepare();
+            assertThatThrownBy(()->tx().executeWithoutResult(status->{c3SelectRestrictedRole();jdbc.update("INSERT INTO "+receipt()+" VALUES (9)");
+                var group=participant.qualifyInstalledUnitGroup(participant.admit(p),r);
+                try{reader.loadQualifiedInstalledUnitGroup(group,changed);}catch(RuntimeException expected){/* Swallowing must not save the original transaction. */}
+            })).isInstanceOf(RuntimeException.class);
+            assertThat(jdbc.queryForObject("SELECT count(*) FROM "+receipt(),Integer.class)).isZero();
+        }
+    }
+    @Test void replacementRechecksBothPermissionComponentsAndTemporalBounds() {
+        var f=fixture("LOCAL");var r=replacement();
+        for(String type:List.of("INSTALLED_UNIT","INSTALLED_UNIT_INSTALLATION"))for(boolean expire:List.of(false,true)) {
+            cleanEvidence();grants(f,r);String permission=permission(r,type);var p=prepared(f);
+            assertThatThrownBy(()->tx().executeWithoutResult(status->{c3SelectRestrictedRole();var a=contribute(p,r);jdbc.update("INSERT INTO "+receipt()+" VALUES (10)");
+                if(expire)jdbc.update("UPDATE "+T+"user_permission_grant SET valid_to=clock_timestamp() WHERE user_id=? AND permission_id=?",f.user(),permission);
+                else jdbc.update("UPDATE "+T+"user_permission_grant SET status='REVOKED' WHERE user_id=? AND permission_id=?",f.user(),permission);
+                installed.requireCurrent(a);
+            })).isInstanceOf(RuntimeException.class);
+            assertThat(jdbc.queryForObject("SELECT count(*) FROM "+receipt(),Integer.class)).isZero();
+        }
     }
 
 }

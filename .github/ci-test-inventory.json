@@ -2962,6 +2962,12 @@
         "nativeGroupRejectsRequestSwapBeforeDisclosure",
         "ownTransactionGrantRevocationFailsFinalRecheckAndRollsBackSentinel",
         "relocationRequiresPermitForBothInstallationResourceIdentities",
+        "replacementCannotOmitEitherPermissionComponentOrInstallationFacility",
+        "replacementCarriesBothPermissionTypesThroughEveryNativeProducer",
+        "replacementDenialOfEitherUnitOrInstallationRejectsTheWholeGroup",
+        "replacementNeverWaivesPermissionRowResourceTypeEligibility",
+        "replacementRechecksBothPermissionComponentsAndTemporalBounds",
+        "replacementRequestSubstitutionPoisonsTheOriginalNativeGroup",
         "replayForgedAndCrossTransactionTicketsAreRejected",
         "retainedIdentityLocksRejectConflictingWriterNowait",
         "revokedNativeSessionCannotAdmit",
@@ -2976,7 +2982,7 @@
       "lane": "postgres-integration",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedTopologyInstalledUnitAuthorizationPostgresIntegrationTest.java",
-      "source_sha256": "f548743aa80022366a5946e9c12b02cbf281d92a3953fc5160f2eee8d2093e3a",
+      "source_sha256": "ce460f50592a64cc454e43d6e4085aaf2b0527d56e478f1422953a539c8356d3",
       "supports": []
     },
     {
@@ -3472,9 +3478,14 @@
       "cases": [
         "denyDominatesIndeterminateAndNoScalarMintsAdmission",
         "forgedTicketsAndMissingTransactionsCannotReachNativeReads",
+        "legacyRequestConstructorRetainsExactSevenOperationDescriptors",
         "malformedAndOversizedReferencesCannotBeNormalizedIntoAuthority",
+        "malformedReplacementAndLegacySecondUnitDescriptorsAreRejected",
         "operationShapesAndCompanyOnlyUnitReadsAreExact",
         "relocationBindsBothResourcesAndScopesInCanonicalOrder",
+        "replacementBindsBothUnitsAndInstallationsWithSixImmutableRequirements",
+        "replacementDenialOfAnyRequiredTargetDominatesOtherDecisions",
+        "replacementRequiresTwoDistinctResourceBoundPermissionCodes",
         "sevenExactMappingsNeverAliasStationAuthority"
       ],
       "class": "dz.sh.hidra.modules.identity.infrastructure.security.ProtectedTopologyInstalledUnitAuthorizationParticipantTest",
@@ -3483,7 +3494,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedTopologyInstalledUnitAuthorizationParticipantTest.java",
-      "source_sha256": "ac96262a8ec1cf30094a32f5c1296b3ca71b734dbbd87c4d6a78439ff0f889cb",
+      "source_sha256": "2514cd20ef0fdd3aad6d034be34eaf674244f4f863ee958a621e523b99e53aa1",
       "supports": []
     },
     {
@@ -7858,7 +7869,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java",
-      "source_sha256": "f64d36c0fa664b129acde996be6725d938bfd37ce7360238879647ceebac075d",
+      "source_sha256": "f45d45025655ef92435ce40e5b2490c09d9a0f39c6ffbbe5742c42ea48b61eb1",
       "supports": []
     },
     {

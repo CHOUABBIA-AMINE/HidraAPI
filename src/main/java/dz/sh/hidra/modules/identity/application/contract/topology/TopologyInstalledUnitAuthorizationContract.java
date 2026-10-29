@@ -7,7 +7,7 @@
  *
  * @Name        : TopologyInstalledUnitAuthorizationContract
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-28
+ * @UpdatedOn   : 2026-10-29
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -33,7 +33,7 @@ public interface TopologyInstalledUnitAuthorizationContract {
     interface Prepared {}
     interface Admission {}
     enum Operation { REGISTER_UNIT, READ_UNIT, RECORD_INSTALLATION, CLOSE_INSTALLATION,
-        RELOCATE, READ_INSTALLATION, READ_HISTORY }
+        RELOCATE, READ_INSTALLATION, READ_HISTORY, REPLACE }
     enum Decision { PERMIT, DENY, INDETERMINATE }
     enum Scope { COMPANY, FACILITY }
 
@@ -46,7 +46,22 @@ public interface TopologyInstalledUnitAuthorizationContract {
             case RELOCATE -> "relocate";
             case READ_INSTALLATION -> "read-installation";
             case READ_HISTORY -> "read-history";
+            case REPLACE -> throw new IllegalArgumentException("Replacement requires a resource-specific permission");
         };
+    }
+
+    /** One workflow may require distinct permissions; each permission still covers one exact resource type. */
+    static String permissionCode(Operation operation, String resourceType) {
+        Objects.requireNonNull(operation);
+        if (operation == Operation.REPLACE) {
+            if ("INSTALLED_UNIT".equals(resourceType)) return "topology:installed-unit:replace-unit";
+            if ("INSTALLED_UNIT_INSTALLATION".equals(resourceType)) return "topology:installed-unit:replace-installation";
+            throw new IllegalArgumentException("Invalid replacement resource type");
+        }
+        String expected = operation == Operation.REGISTER_UNIT || operation == Operation.READ_UNIT
+                ? "INSTALLED_UNIT" : "INSTALLED_UNIT_INSTALLATION";
+        if (!expected.equals(resourceType)) throw new IllegalArgumentException("Invalid operation resource type");
+        return permissionCode(operation);
     }
 
     record Requirement(String resourceType, String resourceId, Scope scope, String scopeReference) {
@@ -60,25 +75,49 @@ public interface TopologyInstalledUnitAuthorizationContract {
     /** Source/destination are separately bound even when both name the same facility. */
     record Request(Operation operation, String companyPartyId, String unitId,
             String installationId, String replacementInstallationId,
-            String sourceFacilityId, String destinationFacilityId) {
+            String sourceFacilityId, String destinationFacilityId, String replacementUnitId) {
+        public Request(Operation operation, String companyPartyId, String unitId,
+                String installationId, String replacementInstallationId,
+                String sourceFacilityId, String destinationFacilityId) {
+            this(operation,companyPartyId,unitId,installationId,replacementInstallationId,
+                    sourceFacilityId,destinationFacilityId,null);
+        }
         public Request {
             Objects.requireNonNull(operation); exact(companyPartyId); exact(unitId);
-            for (String id : new String[]{installationId,replacementInstallationId,sourceFacilityId,destinationFacilityId})
+            for (String id : new String[]{installationId,replacementInstallationId,sourceFacilityId,destinationFacilityId,replacementUnitId})
                 if (id != null) exact(id);
             boolean unit = operation == Operation.REGISTER_UNIT || operation == Operation.READ_UNIT;
             boolean record = operation == Operation.RECORD_INSTALLATION;
             boolean relocate = operation == Operation.RELOCATE;
-            if (unit ? installationId != null || replacementInstallationId != null || sourceFacilityId != null || destinationFacilityId != null
-                : installationId == null || (relocate ? replacementInstallationId == null || installationId.equals(replacementInstallationId)
-                    || sourceFacilityId == null || destinationFacilityId == null
-                    : replacementInstallationId != null || (record ? sourceFacilityId != null || destinationFacilityId == null
-                        : sourceFacilityId == null || destinationFacilityId != null)))
-                throw new IllegalArgumentException("Invalid operation descriptors");
+            if (operation == Operation.REPLACE) {
+                if (replacementUnitId == null || unitId.equals(replacementUnitId)
+                        || installationId == null || replacementInstallationId == null
+                        || installationId.equals(replacementInstallationId) || sourceFacilityId == null
+                        || !sourceFacilityId.equals(destinationFacilityId))
+                    throw new IllegalArgumentException("Invalid replacement descriptors");
+            } else {
+                if (replacementUnitId != null) throw new IllegalArgumentException("Unexpected replacement unit");
+                if (unit ? installationId != null || replacementInstallationId != null || sourceFacilityId != null || destinationFacilityId != null
+                    : installationId == null || (relocate ? replacementInstallationId == null || installationId.equals(replacementInstallationId)
+                        || sourceFacilityId == null || destinationFacilityId == null
+                        : replacementInstallationId != null || (record ? sourceFacilityId != null || destinationFacilityId == null
+                            : sourceFacilityId == null || destinationFacilityId != null)))
+                    throw new IllegalArgumentException("Invalid operation descriptors");
+            }
         }
         public List<Requirement> requirements() {
             var values = new TreeSet<Requirement>(Comparator.comparing(Requirement::resourceType)
                     .thenComparing(Requirement::resourceId).thenComparing(r -> r.scope().name())
                     .thenComparing(Requirement::scopeReference));
+            if (operation == Operation.REPLACE) {
+                for (String id : List.of(unitId,replacementUnitId))
+                    values.add(new Requirement("INSTALLED_UNIT",id,Scope.COMPANY,companyPartyId));
+                for (String id : List.of(installationId,replacementInstallationId)) {
+                    values.add(new Requirement("INSTALLED_UNIT_INSTALLATION",id,Scope.COMPANY,companyPartyId));
+                    values.add(new Requirement("INSTALLED_UNIT_INSTALLATION",id,Scope.FACILITY,sourceFacilityId));
+                }
+                return List.copyOf(values);
+            }
             boolean unit = operation == Operation.REGISTER_UNIT || operation == Operation.READ_UNIT;
             String type = unit ? "INSTALLED_UNIT" : "INSTALLED_UNIT_INSTALLATION";
             var resources = replacementInstallationId == null ? List.of(unit ? unitId : installationId)

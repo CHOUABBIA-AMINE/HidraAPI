@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedStationAdmissionBoundaryGuardrailTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-28
+ * @UpdatedOn   : 2026-10-29
  *
  * @Type        : Class
  * @Layer       : Test
@@ -94,9 +94,9 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
             assertFalse(s.replace(installedService,"\"reviewed-installed-service\"").replace(installedCoordinator,"\"reviewed-installed-coordinator\"").replace(newPublicationService,"\"reviewed-product-publication-service\"").replace(newPublicationCoordinator,"\"reviewed-product-publication-coordinator\"").replace(fluidService,"\"reviewed-fluid-service\"").replace(fluidCoordinator,"\"reviewed-fluid-coordinator\"").replace(productService,"\"reviewed-product-service\"").replace(productCoordinator,"\"reviewed-product-coordinator\"").replace(appointmentService,"\"reviewed-appointment-service\"").replace(appointment,"\"reviewed-appointment-caller\"").replace(approved,"\"reviewed-caller\"").replace(publication,"\"reviewed-publication-caller\"").replace(draft,"\"reviewed-draft\"").replace(draftCoordinator,"\"reviewed-draft-coordinator\"").replace("\"dz.sh.hidra.modules.topology.application.service.EngineeringRevisionPublicationApplicationService\"","\"reviewed-publication-service\"").replace("\"dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringPublicationAdmissionCoordinator\"","\"reviewed-publication-coordinator\"").contains("dz.sh.hidra.modules."));
         }
     }
-    // HAPI-599B adds the reviewed opaque installed-unit Identity family; retain exact reader and unchanged J pins.
+    // HAPI-599B admits the reviewed per-resource replacement binding; pin actual reader bytes and unchanged J contracts.
     @Test void existingReaderAndJContractsRemainUnchanged() throws Exception {
-        assertEquals("3b734e9fa7d78372a5555d551ed4e45428515f280fb4e973a76d9a734ea2fa56",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(Path.of("src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java")))));
+        assertEquals("4cb50a86bf8e307a742fb64e29fdfcccab24cb793e3987a1d2234a7dd004f27d",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(Path.of("src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java")))));
         assertEquals("ae4b5c36fbe2531ab5fc82988a05206ad850dfb5377792f7201d2394eb5c41cc",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(Path.of("src/main/java/dz/sh/hidra/modules/party/application/contract/topology/TopologyProtectedPartyEligibilityContract.java")))));
         assertEquals("11a7e8b269fd96e4132437831b6efd4184c1cd17765438d52bb022decaf3e886",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(Path.of("src/main/java/dz/sh/hidra/modules/topology/application/contract/station/StationProtectedFacilityOwnershipContract.java")))));
         assertEquals("b4ed2114a0af4d715d3da994ed096b2d0b184f5106ddf68cd16dd8cedbdc666c",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(Path.of("src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JdbcTopologyProtectedPartyEligibilityAdapter.java")))));

@@ -7,7 +7,7 @@
  *
  * @Name        : JdbcProtectedAuthorizationEvidenceReader
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-28
+ * @UpdatedOn   : 2026-10-29
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -594,10 +594,11 @@ public class JdbcProtectedAuthorizationEvidenceReader {
                     || !Set.of("INSTALLED_UNIT","INSTALLED_UNIT_INSTALLATION").contains(r.resourceType())
                     || !text(r.resourceReferenceId(),80) || r.scope()==null || r.scope().scopeCodeSnapshot()!=null
                     || java.util.Arrays.stream(dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.Operation.values())
-                        .noneMatch(op -> dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.permissionCode(op).equals(r.permissionCode())
-                            && ((op==dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.Operation.REGISTER_UNIT
+                        .noneMatch(op -> (op==dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.Operation.REPLACE
+                            || ((op==dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.Operation.REGISTER_UNIT
                                 || op==dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.Operation.READ_UNIT)
-                                =="INSTALLED_UNIT".equals(r.resourceType())))) throw invalid();
+                                =="INSTALLED_UNIT".equals(r.resourceType())))
+                            && dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.permissionCode(op,r.resourceType()).equals(r.permissionCode()))) throw invalid();
             String ref=r.scope().scopeReferenceId();
             if (r.scope().scopeType()==ScopeType.CUSTOM) {
                 if (ref==null || !ref.startsWith("topology-company:") || !text(ref.substring(17),80)) throw invalid();

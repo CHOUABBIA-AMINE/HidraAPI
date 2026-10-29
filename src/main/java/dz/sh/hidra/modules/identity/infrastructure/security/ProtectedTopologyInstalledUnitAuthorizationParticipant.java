@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedTopologyInstalledUnitAuthorizationParticipant
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-28
+ * @UpdatedOn   : 2026-10-29
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -126,7 +126,7 @@ public class ProtectedTopologyInstalledUnitAuthorizationParticipant
             String ref=scope==dz.sh.hidra.modules.identity.domain.value.ScopeType.CUSTOM
                     ? "topology-company:"+expected.scopeReference() : expected.scopeReference();
             if (!bound.evidence().userId().equals(actual.userId())
-                    || !TopologyInstalledUnitAuthorizationContract.permissionCode(request.operation()).equals(actual.permissionCode())
+                    || !TopologyInstalledUnitAuthorizationContract.permissionCode(request.operation(),expected.resourceType()).equals(actual.permissionCode())
                     || !expected.resourceType().equals(actual.resourceType()) || !expected.resourceId().equals(actual.resourceReferenceId())
                     || actual.scope()==null || actual.scope().scopeType()!=scope
                     || !ref.equals(actual.scope().scopeReferenceId()) || actual.scope().scopeCodeSnapshot()!=null) throw denied();

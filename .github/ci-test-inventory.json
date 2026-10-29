@@ -7981,6 +7981,58 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "indeterminateCompletionMustNotBeMappedToConflictOrSuccess",
+        "mapsOnlyOwnerTypedReasonsToFixedStatuses",
+        "parserAndPathErrorsCannotExposePrivateRequestContent"
+      ],
+      "class": "dz.sh.hidra.modules.topology.api.rest.InstalledUnitLifecycleApiExceptionHandlerTest",
+      "dependency_reason": "Topology typed protected error sanitization test",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/api/rest/InstalledUnitLifecycleApiExceptionHandlerTest.java",
+      "source_sha256": "7adb23345af4f0e265bf4caf9b44e3b26110841b0b5744a8325591d665ad88e8",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "allEightRoutesBindExactTypedOperationsWithoutAlternativeWriter",
+        "anonymousAndUntrustedPathNeverDiscloseProtectedUnit",
+        "deniedAndIndeterminateOutcomesRevealNoPrivateEvidence",
+        "malformedUnknownCoercedAndCallerClaimFieldsRejectBeforeUseCase",
+        "mutationRequiresBodyAndExplicitCompanyWithoutAuthoritySubstitution"
+      ],
+      "class": "dz.sh.hidra.modules.topology.api.rest.InstalledUnitLifecycleControllerTest",
+      "dependency_reason": "Topology protected HTTP route/strict body and no-disclosure MockMvc test",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/api/rest/InstalledUnitLifecycleControllerTest.java",
+      "source_sha256": "1a9463e41977fe37479b7f92411a783f44f7638f1eb03bbf5e043add1916f44d",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "distinctPhysicalUnitsAndSourceRevisionCannotBeReinterpreted",
+        "eachMutationBindsPathCompanyAndOneOwnerOperation",
+        "readsNeverRequireRequestIdAndUseExactCompanyPositionScope",
+        "replacementResultKeepsBothPhysicalIdentities",
+        "responsePreservesUnknownEvidenceAndHistoryWithoutNativeCoordinates"
+      ],
+      "class": "dz.sh.hidra.modules.topology.api.rest.InstalledUnitLifecycleRestMapperTest",
+      "dependency_reason": "Topology typed command/response mapping and replay evidence test",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/api/rest/InstalledUnitLifecycleRestMapperTest.java",
+      "source_sha256": "291aba33d8916c0172b5e7225612fa7838a230bbf9bbbf07fb4d225663c39ab8",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0.208,
       "cases": [
         "mapsStrictSurveyTransportWithoutDomainSerialization",
@@ -8784,6 +8836,22 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "databaseDoesNotAllowGenericReplacementRequestShape",
+        "freshMigratedReceiptHasExactReplacementColumnAndForeignKey",
+        "retainedInstalledUnitReceiptHasImmutableHistoryTrigger"
+      ],
+      "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.InstalledUnitLifecycleApiPostgresIntegrationTest",
+      "dependency_reason": "HAPI-599 C fresh Flyway schema/catalog checks; not full authenticated native HTTP proof",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/InstalledUnitLifecycleApiPostgresIntegrationTest.java",
+      "source_sha256": "6bd346fe44600835acd21911d8aefa2c0ac80735743a6280d73f8162d2a6b5d4",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
         "bothOwnerLocksStayInReaderTransactionAndReleaseAtCommit",
         "crossThreadFailurePoisonsOriginalPhysicalTransaction",
         "directPositionOwnerEvidenceHasActualCoordinatesAndThreeFences",
@@ -9294,6 +9362,23 @@
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/reference/JpaLeakDetectionTopologyAssetContractAdapterTest.java",
       "source_sha256": "85cee65bd7f6378fac131bc0bbe8a47f357f6a491b3387278b671d5d6a3b538b",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "repeatedMarkedSerialDoesNotCollapseIndependentPhysicalUnitIdentity",
+        "sourceAndAssetAssociationAreLabelsNotCrossAggregateMutation",
+        "unknownProvenanceNeverManufacturesSerialOrModel",
+        "verificationLabelIsAuthoredEvidenceNotEngineeringQualification"
+      ],
+      "class": "dz.sh.hidra.modules.topology.qualification.InstalledUnitLifecycleOperatorQualificationTest",
+      "dependency_reason": "HAPI-599 C controlled serial/provenance and Assets-separation boundary cases",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/qualification/InstalledUnitLifecycleOperatorQualificationTest.java",
+      "source_sha256": "b6f992098845e84e98c6728aca62e141dd4521c829aca61b1cd0de057b59eaf4",
       "supports": []
     },
     {

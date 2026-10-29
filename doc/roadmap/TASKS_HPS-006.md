@@ -5852,6 +5852,108 @@ integrated HAPI-599 status change. This docs stage requires only
 append-only scope/source checking, whitespace/link validation and
 guarded documentation CI startup, not new runtime execution.
 
+### HAPI-599 Package C — protected installed-unit REST implementation — 2026-10-29
+
+**Selected exact registered stage.** Docs #709/run `40868785249` on parent
+`30506289c0ea44119c8326da35505c7444421dde` completed SUCCESS;
+the unchanged accepted runtime baseline Full #972, Fast #271 and Docs
+#708 all passed on `99704afede97f28ff33562c6ed56441f87b8b771`.
+This stage has exact message
+`feat(topology): expose protected installed-unit lifecycle API`;
+CREATE the previously registered **10** Java production/test paths, MODIFY
+only `.github/ci-test-inventory.json` and this append-only phase;
+DELETE none. No existing Party, Identity, Assets, Topology Domain/
+Application/persistence, SQL pin, migration, security configuration,
+workflow, snapshots or frozen ROADMAP/PHASES paths are changed.
+
+**Actual implementation.** The new transport-only
+`InstalledUnitLifecycleController` maps the eight exact registered
+routes under `/api/v1/topology/installed-units`:
+PUT unit registration; GET unit; POST installation registration;
+POST close; POST relocate; POST two-unit atomic replacement;
+GET an exact installation; and GET its bounded immutable history.
+It calls only the existing `InstalledUnitLifecycleUseCase.execute`
+and requires a genuine non-anonymous Spring authentication before
+asking the existing owner to perform native Identity and owner checks.
+No native authorization is minted from input, and no alternate DML
+writer, persistence repository or controllable transaction is exposed.
+
+The request class defines five operation-specific strict JSON bodies
+via the repository's Jackson3 custom `ValueDeserializer` pattern:
+unknown JSON keys, numeric/string coercion, absent mandatory IDs,
+padded or overlong references, noncanonical UTC instants or finer-than-
+microsecond precision, forbidden native/actor descriptors, invalid
+verification classifications and value/provenance mismatches reject.
+The application-bound exact company and source/destination position
+descriptors are supplied explicitly; read routes require exact company,
+and installation/history require actual position and facility
+descriptors. REPLACE includes a distinct physical replacementUnitId
+and a separate new installation ID; equal position/facility and
+one effective instant are bound to the already accepted typed
+application command. Every write requires a requestId; all responses
+use transport DTOs without JPA entities, native coordinates, SQL
+details or implied engineering qualification. Typed ProblemDetail
+maps INVALID to 400, UNAUTHENTICATED to 401, DENIED 403, authorized
+NOT_FOUND 404, proven CONFLICT 409 and unavailable/indeterminate 503;
+domain invalid values are also non-disclosing 400. Successful owner
+results are HTTP 200 and keep their explicit replay indicator.
+
+**Actual synthetic coverage authored; not yet hosted-pass claims.**
+Five new test classes contain **20 actual @Test methods**:
+- `InstalledUnitLifecycleControllerTest` — five MockMvc
+  route/descriptor/unauthenticated/denial and input-rejection cases.
+- `InstalledUnitLifecycleRestMapperTest` — five command,
+  scope, replacement and immutable-response cases.
+- `InstalledUnitLifecycleApiExceptionHandlerTest` — three
+  typed error and private cause sanitization cases.
+- `InstalledUnitLifecycleApiPostgresIntegrationTest` — three
+  fresh-schema Flyway/Testcontainers checks for replacement receipt
+  column, validated FK/check and immutable trigger. **This class
+  currently verifies only the PostgreSQL catalog, not genuine
+  authenticated native HTTP workflow.**
+- `InstalledUnitLifecycleOperatorQualificationTest` — four
+  controlled serial/provenance/UNKNOWN/Assets-reference semantics
+  cases. These do **not** constitute industrial engineering
+  qualification or a real operator decision workflow.
+
+The inventory adds these five source-hashed classes in sorted order,
+retains the previously registered 504 entries and ten PostgreSQL
+shards, adds twenty named cases without removing any existing case,
+and records new baseline timings as unmeasured=0. Actual content was
+fetched from the five submitted Java blobs and SHA-256 computed using
+a separately verified reference algorithm; no test result or CI
+duration is fabricated. Existing accepted Package B native
+PostgreSQL and executor tests remain intact.
+
+**Validation and explicit acceptance hold.** Registered
+paths and actual source, ID/class names, method declarations,
+immutable migration/Flyway chain, previous inventory entries,
+and current Package B contracts were source-inspected. Local
+`mvn` and Docker are unavailable; the new Java/Jackson/Spring
+compilation and tests have **not** been run locally. New source
+blobs and inventory checks are preparation checks, not native
+HTTP runtime evidence. Publish under AGENTS11.1 CI-first policy
+only with verified tree/parent/blob/scope and expected-head guard;
+observe new exact-SHA Full/Fast/Docs creation/start, then STOP.
+
+**Package C qualification is NOT ACCEPTED by code authorship or
+any green aggregate CI alone.** The registered requirement to
+demonstrate genuine Spring-security/native-issuer PostgreSQL HTTP
+success and denial for all eight operations/four producers, replay,
+history, rollback and appropriate authority/facility revocation is
+still outstanding in the new API-specific integration suite.
+It must be registered as a bounded focused continuation or
+repair once exact-SHA CI reveals any compilation or test defects.
+Do not represent schema-only testing or MockMvc mocks as this
+end-to-end acceptance. After real API capture, register and execute
+the separate truthful `doc/api/openapi.yaml` and
+`.github/documentation-validation.json` generated snapshot
+follow-up, preserving actual source/manifest evidence and strict
+compatibility checks; do not infer or handwrite OpenAPI metadata.
+No HAPI-599 status closure, HAPI-600/601, frontend,
+simulation/P3, production/SITE or deployment work follows
+automatically from this source stage.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

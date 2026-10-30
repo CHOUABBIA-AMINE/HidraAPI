@@ -162,6 +162,18 @@ HAPI-601 remains independently blocked on manufacturer-policy/contract admission
 and HAPI-602/603 stay blocked on registered dependencies. No successor task
 is selected by this closure.
 
+[HAPI-601](TASKS_HPS-007.md#hapi-601), manufacturer engineering source facts,
+has an **owner-approved V1 policy** for compressor speed-line maps, valve
+characteristics, supplier parameter tables and governed operating limits with
+explicit units, reference conditions and source evidence. Supplier-declared,
+actual manufacturer-certified and Workflow-qualified are distinct evidence
+states; no missing certificate or source fact is manufactured. The owning
+phase records three review-gated A/B/C software packages and exact proposed
+messages, but independent architecture/database/Identity/API contract admission
+remains open. HAPI-601 therefore stays NOT_IMPLEMENTED/BLOCKED, while HAPI-602
+remains blocked on its exact installed-unit binding dependencies. No interpolation,
+numerical P3, industrial calibration, HidraWEB or deployment is selected.
+
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent
 [HAPI-436](TASKS_HPS-024.md#hapi-436) are VERIFIED/COMPLETED within the accepted

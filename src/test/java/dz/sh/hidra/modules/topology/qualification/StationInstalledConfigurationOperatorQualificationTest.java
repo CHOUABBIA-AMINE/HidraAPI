@@ -701,9 +701,17 @@ class StationInstalledConfigurationOperatorQualificationTest {
         org.springframework.security.core.context.SecurityContextHolder.clearContext();
         var armed=new java.util.concurrent.atomic.AtomicReference<Thread>();
         var physicallyCommitted=new java.util.concurrent.atomic.AtomicBoolean();
-        org.mockito.Mockito.clearInvocations(nativeRepositorySpy);
+        // The repository is transactional: stub the Mockito target, never its Spring
+        // proxy. Intercepting the proxy here would open a transaction while argument
+        // matchers are still being recorded, corrupting subsequent test state.
+        var repositoryTarget=org.springframework.test.util.AopTestUtils
+            .<dz.sh.hidra.modules.topology.infrastructure.persistence.adapter
+                .JdbcStationInstalledConfigurationRepositoryAdapter>getUltimateTargetObject(nativeRepositorySpy);
+        assertTrue(org.mockito.Mockito.mockingDetails(repositoryTarget).isSpy(),
+            "Repository final preparation must be intercepted at its Mockito spy target");
+        org.mockito.Mockito.clearInvocations(repositoryTarget);
         org.mockito.Mockito.doAnswer(inv->{inv.callRealMethod();armed.set(Thread.currentThread());return null;})
-            .when(nativeRepositorySpy).prepareFinal(org.mockito.ArgumentMatchers.any(),
+            .when(repositoryTarget).prepareFinal(org.mockito.ArgumentMatchers.any(),
                 org.mockito.ArgumentMatchers.any(),org.mockito.ArgumentMatchers.anyList());
         org.mockito.Mockito.doAnswer(inv->{
             if(armed.compareAndSet(Thread.currentThread(),null)){
@@ -725,8 +733,8 @@ class StationInstalledConfigurationOperatorQualificationTest {
                 .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.content()
                     .string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString(c.revisionId()))));
             assertTrue(physicallyCommitted.get(),"The selected physical commit must succeed before acknowledgement loss");
-            org.mockito.Mockito.verify(nativeRepositorySpy).finalGuard(org.mockito.ArgumentMatchers.any());
-        }finally{org.mockito.Mockito.reset(guardedTransactionManager,nativeRepositorySpy);}
+            org.mockito.Mockito.verify(repositoryTarget).finalGuard(org.mockito.ArgumentMatchers.any());
+        }finally{org.mockito.Mockito.reset(guardedTransactionManager,repositoryTarget);}
         for(String suffix:List.of("revision","request"))
             assertEquals(1,owner.queryForObject(
                 "SELECT count(*) FROM public.hidra_topology_station_configuration_"+suffix+" WHERE facility_id=?",

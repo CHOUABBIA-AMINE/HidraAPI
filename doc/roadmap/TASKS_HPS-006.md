@@ -9546,6 +9546,114 @@ piecemeal B3-S2 package. After publication verify parent/tree/blobs/
 four-path scope, observed exact-SHA Full and Docs workflow queue/start,
 then STOP rather than running or waiting for further stages.
 
+
+### HAPI-600 B3-S2 — consolidated exact-SHA technical verification accepted — 2026-10-30
+
+**Registered original stage and exact message preserved.**
+`feat(topology): protect effective station configuration operations`.
+No B3-S2A/B/C or further split is adopted. This append-only closeout
+reconciles the single original B3-S2 package against independently
+inspected exact-SHA hosted CI and source. It does not alter the frozen
+HAPI-600 ROADMAP/PHASES disposition, parent/child dependencies, technical
+scope, authorization or runtime behavior.
+
+**Final source and verified execution point.** Original B3-S2 source
+and consolidated native acceptance tests are present on current
+`main` `41ddd823ab835d667078a561ab73fd4909254d1d`, parent
+`a5d22ba6e89876a1dfdd21446cca7fee1ec32aaf`, tree
+`aa7d707088e04490a2f1d7957d183f2e4f4e51dd`.
+[Full CI #1005, attempt 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41061138745)
+is completed **SUCCESS** at exactly that SHA and
+[Documentation #752](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41061138744)
+completed **SUCCESS** at the same SHA. Full's genuine
+`development-partitioned` aggregate reports **515 test classes,
+3,919 executed tests, 0 failures, 0 errors and 0 skips**. API/physical
+catalog, static guardrails, Java 21 unit and architecture, all
+**14 actual PostgreSQL integration shards** and the mandatory
+Full Verification Gate completed success; the alternate serial
+`Java 21 Maven verification` job was intentionally unselected by
+this existing development CI mode. The Full verifier expressly reports
+`serial_oracle=false`, `same_run_equivalence=false`,
+`optimized_adoption_eligible=false` and `release_eligible=false`.
+These are **not** silently converted to production, serial-oracle,
+release, time-budget or SITE evidence.
+
+**Native test and integration evidence (actual same-run inventory,
+not mock substitutes).**
+- The retained `ProtectedStationInstalledConfigurationPostgresIntegrationTest`
+  has **28 recorded method identities**; PostgreSQL shard 8 raw
+  inventory reports **9 classes, 113 tests, 0 failures/errors/skips**.
+  Actual Spring application wiring and a PostgreSQL16/Flyway fresh
+  schema use distinct ordinary and restricted publisher SQL roles.
+  Its genuine native service SAVE/replay, READ_CURRENT,
+  READ_REVISION and LIST_HISTORY tests cover LOCAL, LDAP,
+  ACTIVE_DIRECTORY and OIDC, **three stations with nine installed
+  physical units per producer**, immutable membership and receipt
+  counts, current/historical reload, denial, session/grant revocation,
+  source/actor changes, stale CAS and two-thread contested same-head
+  CAS. Post-write canonical graph ordering is verified against exact
+  source bytes, not Java input-collection order.
+- The same twenty-eight-case suite exercises actual source writer
+  table-lock contention, Identity grant-writer lock contention,
+  a vacant installation phantom exclusion/release, wrong company,
+  changed same-request engineering payload, privileged publisher
+  catalog drift/restoration, expired original final bound, and
+  genuine SQL attempted after the scalar final SQL guard; rejected
+  writes are checked against physical revision/member/head/receipt
+  rows with no partial append.
+- The retained separate native
+  `ProtectedTopologyStationConfigurationAuthorizationPostgresIntegrationTest`
+  has **23 case identities** proving the distinct configuration
+  permission family, both company and facility scopes,
+  mandatory per-unit permissions, four authenticated producers,
+  DENY precedence, native role/holder/actor/time/session authority,
+  source and permission changes, foreign/replayed/cross-thread
+  tickets, genuine source-lock competition and fail-closed rollback.
+  Source-evidence and identity admission remain separate owners.
+- The B3-S2 `StationInstalledConfigurationApplicationServiceTest`
+  now has **7** registered service tests, including explicit
+  `INDETERMINATE` physical commit-outcome translation and proof
+  that the application attempts protected execution **once only**,
+  with no automatic retry. The native coordinator has **6**
+  boundary tests. Application mocks are **not** represented as
+  proof of a lost actual database commit acknowledgment.
+
+**Independent source-to-register disposition.**
+The four original B3-S2 operations, restricted SQL repository/source
+and distinct Identity contracts, source/authority fencing, canonical
+immutable revisions, CAS/idempotent replay, exact DML statement pins,
+no unauthorized source DML, one physical original transaction,
+mandatory fresh original identity, single final scalar SQL guard,
+no permitted owner SQL after it, poisoned rollback and non-disclosing
+denial have combined source and exact-SHA synthetic execution evidence.
+The previously recorded #998/#1002/#1004 responsible CI failures were
+corrected without deleting tests, relaxing migration/privileges,
+weakening final guards or removing the Full gate; the final
+**unmodified source** has passed #1005.
+
+**Outcome: B3-S2 technically VERIFIED/ACCEPTED for the development
+platform only**, subject to preserving this exact-SHA evidence and
+the established fail-closed controls. This is a bounded **B3-S2
+technical acceptance**, not a change to any parent registry cell:
+HAPI-600 remains **NOT_IMPLEMENTED / IN_PROGRESS** pending its
+independently owned **Package C**, and HAPI-602 remains BLOCKED.
+No new REST interface or complete operator authoring workflow exists
+by virtue of B3-S2, and no production credentials, deployment,
+calibration, industrial simulator or SITE acceptance is inferred.
+A real lost-commit-acknowledgment HTTP/API integration and authorized
+replay remain expressly registered for **Package C**; they are not
+falsely attributed to this B3-S2 test suite.
+
+**Publication control.** This closeout modifies only
+`doc/roadmap/TASKS_HPS-006.md` under the original B3-S2 exact
+message. Verify expected-head parent, tree, document blob,
+preservation of all prior evidence and the applicable exact-SHA
+Documentation/Full workflow startup. STOP immediately after observed
+startup, without advancing to Package C. A subsequent owner `Next`
+selects the **one** next registered Package C stage:
+`feat(topology): expose installed station configuration authoring`.
+If this closeout CI fails, owner `Fail` repairs that gate first.
+
 <a id="hapi-602"></a>
 ## HAPI-602 — Versioned installed-unit/characteristic links
 

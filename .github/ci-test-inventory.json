@@ -9224,6 +9224,24 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "absentSourceLocksRejectBeforeAnyProtectedEvidence",
+        "graphWithoutActivePublicationFailsClosedEvenWithLocks",
+        "selectedPublishedGraphAndInstallationEventsReloadUnderActualLocks",
+        "sourceChangesAfterObservationPoisonOriginalTransaction",
+        "sourceReaderRejectsTransactionlessCall"
+      ],
+      "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.ProtectedStationInstalledConfigurationPostgresIntegrationTest",
+      "dependency_reason": "HAPI-600 B3-S1 source-only real fresh-Flyway PostgreSQL lock, graph/install snapshot and fail-closed tests; restricted nonowner authority/final guard remain B3-S2; timing unmeasured",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedStationInstalledConfigurationPostgresIntegrationTest.java",
+      "source_sha256": "7158a9ab003e4b181e431ad55f949795d0281e50904d04bb8634ebf073a04a7a",
+      "supports": []
+    },
+    {
       "baseline_seconds": 11.151,
       "cases": [
         "competingRevisionTransactionsCommitOneEpochAndRollBackLoser",
@@ -11674,7 +11692,7 @@
         ]
       }
     },
-    "per_class_overhead_estimate_seconds": 4.0,
+    "per_class_overhead_estimate_seconds": 4,
     "prior_refresh": {
       "source_sha": "d97071d03bf086055680486ded9f76cfc0dd8efd",
       "run_id": 40659696342,

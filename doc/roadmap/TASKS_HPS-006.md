@@ -8753,6 +8753,36 @@ authorization, historic failure records, numerical/P3, SITE and release gates.
 After guarded publication observe exact-SHA Documentation CI creation/start
 and STOP. Next user Next selects B3-S1 only, never S2 or C automatically.
 
+### HAPI-600 B3-S1 — source-only evidence implementation — 2026-10-30
+
+Owner Next executes only registered B3-S1. Exact message:
+`feat(topology): qualify station configuration source evidence`.
+CREATE the two registered Java sources and one focused PostgreSQL integration
+test; MODIFY this append-only record and the actual CI test inventory only;
+DELETE none. The private adapter has no DML, permissions, HTTP route or lock
+provisioning: it requires eight already-held SHARE ROW EXCLUSIVE relation
+locks on the original physical transaction. Missing locks fail closed before
+protected source disclosure. B3-S2 remains responsible for actual restricted
+runtime lock acquisition and the complete native transaction/final SQL guard.
+No equivalent production-role capability is inferred from fixture-owner locks.
+
+The source observes real current station owner/generation, ACTIVE graph head,
+exact graph canonical content and digest, individual positions and owned units,
+current installation/event revision/effective interval, and absence for explicitly
+UNOCCUPIED positions. Recheck compares full source images in the original
+connection/role/backend/XID and poisons the transaction on failure. The source
+snapshot is not an authorization, engineering approval or field command.
+Five named Testcontainers PostgreSQL16/Flyway test methods are registered
+with actual source SHA256 `7158a9ab003e4b181e431ad55f949795d0281e50904d04bb8634ebf073a04a7a`; new timing is unmeasured.
+Native integration, exact runtime grants, original final SQL guard,
+cross-station nine-unit qualification, current API, and raw CI acceptance
+remain B3-S2/C or independent acceptance gates; do not promote S1 to
+VERIFIED solely from source/fixtures or a pending CI. The frozen parent
+HAPI-600 status remains NOT_IMPLEMENTED/IN_PROGRESS. No Flyway, existing
+application/security/CI workflow, dictionary, Topology history, P3,
+SITE or release scope changes here. After guarded publication, observe
+applicable exact-SHA CI startup and STOP.
+
 <a id="hapi-602"></a>
 ## HAPI-602 — Versioned installed-unit/characteristic links
 

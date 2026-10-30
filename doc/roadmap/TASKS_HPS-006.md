@@ -8298,6 +8298,128 @@ application/source/repository/executor/schema and integration qualification afte
 accepted B2. Its actual SQL pins/catalog checks must derive from real code and
 current schema, never registration guesses. No B2/B3 code is included in B1.
 
+
+
+### HAPI-600 Package B2 — distinct native station-configuration authority — 2026-10-30
+
+Owner Next executes the registered B2 stage after B1 feedback. Refreshed main
+`ec653d9d2658cf47bb7e273ae005fae4acc66cc2`, sole parent
+`fa0dfbc7c46e0b9d7ac891ad59e4970e57329dd7`, tree
+`ee8373d01a0c5b41cc13cab06ae3a8da84900960`.
+Exact-source Full990/run40999492223, Fast285/run40999492184 and
+Docs733/run40999492238 completed SUCCESS. B1 contract bytes remain unchanged;
+this evidence selects no writer/HTTP workflow or completed HAPI-600 parent.
+
+Exact registered message: `feat(identity): qualify native station configuration authority`.
+CREATE exactly:
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedTopologyStationConfigurationAuthorizationParticipant.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedTopologyStationConfigurationAuthorizationPostgresIntegrationTest.java`
+MODIFY exactly:
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java`
+- `.github/ci-test-inventory.json`
+- `doc/roadmap/TASKS_HPS-006.md`
+DELETE none. This is the exact original B2 allowlist; no placement expansion.
+
+**Implementation.** Identity's native owner now issues a distinct private-constructor
+StationConfigurationClaimGroup and exact child credentials for B1 descriptors.
+One genuine native contribution binds its request, actor/provider/session/binding
+and actual backend/XID; original native provenance, source retention, mapping
+generation and temporal collection paths are reused without replacing their
+checks. Group/request equality covers operation, company/facility, revision and
+referenced-unit set before disclosure. Handles retain issuer, actual principal,
+original thread, exact JDBC holder/connection, database role, one-use consumption,
+suspension/completion invalidation and current retained-state checks.
+Group/child misuse poisons the original holder, including swallowed failures and
+cross-thread attempts; managed commit cannot salvage the rejected holder.
+
+The distinct Spring participant implements only the B1 configuration contract.
+It evaluates configuration company AND facility requirements plus current
+company-scoped read on every described physical unit, retaining DENY precedence
+and indeterminate rejection. Its contribution is inspectable data, not an
+Admission or a grant. It rechecks full evidence and native validity before
+returning final Identity relation fences. No installed-unit/station/draft/product
+credential becomes configuration authority.
+
+The JDBC reader admits exactly two new typed public entry points:
+loadQualifiedStationConfigurationGroup and recheckStationConfigurationGroup,
+taking the opaque native group and exact B1 request and returning the distinct
+StationConfigurationAuthorizationEvidence. Both load every child before returning
+content; recheck uses the original consumed credentials and a fresh group-local
+Rows, not another native sample. Configuration codes are save/read/history on
+STATION_INSTALLED_CONFIGURATION; referenced units accept only installed-unit:read
+with company scope. Other family validation and public signature tests remain.
+No clock query, EntityManager, source retention bypass or new public scalar
+authority overload is added to the reader. The original Rows implementation
+including1024-row per-graph cap and1025-query limit is byte-preserved.
+Clocks remain in the genuine native owner boundaries. Collector budgets,
+transaction executor routing, work limits and all old operation families remain.
+
+Architecture review found the existing broad Identity-to-Topology contract prefix
+would implicitly expose the new root to arbitrary Topology callers. B2 explicitly
+closes that new root/nested/sibling space to cross-module consumers, while retaining
+same-owner Identity usage. Its test pins the private-constructor group and its
+separation from InstalledUnitClaimGroup. B3 must separately admit the exact
+reviewed coordinator; no writer/executor caller is enabled by B2. Admission caller
+scan admits only the new concrete Identity participant in addition to existing
+callers; original collector and platform source rules remain.
+
+**Tests/inventory.** Added23 native PostgreSQL cases using the accepted real
+LOCAL/LDAP/ACTIVE_DIRECTORY/OIDC producer fixtures and actual signed/native
+decoder/session/issuer/fences. Only external-directory/source transport fixtures
+are mocked, as in the accepted predecessor. Tests cover all four operations/
+producers, company/facility/unit permission requirements and DENY, station
+permission non-substitution, exact resource types and inactive permissions,
+original identity graph/temporal rechecks, malformed policy, expiry, foreign/
+replayed/suspended/read-only/cross-thread handles, rollback despite swallowed
+failures, retained locks, request/unit-set/revision/company/operation substitution,
+one-use group/child consumption and family discrimination. Typed signature and
+structural-diagnostic rejection tests supplement the native suite; they do not
+replace it. Existing cases remain enabled. Source PermissionStatus was inspected;
+negative fixtures use its actual DISABLED value rather than an invented state.
+
+Changed source fingerprints and complete case lists are in the actual inventory:
+- src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java: 24 cases; SHA256 `87fcee58efb73ac9b6c8fb68a5ed94f1f209b6341cd6a46fd2ef6ebb68c6c2d1`.
+- src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedTopologyStationConfigurationAuthorizationPostgresIntegrationTest.java: 23 cases; SHA256 `1b701f08d14d5a1fc4ea316a40eb4f025423dceed1937df4bfe77046e73599dc`.
+- src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java: 22 cases; SHA256 `892869c2152eedf2b660b3c13cb50bdb38a414a22a5e514916d2a7b34e6034bd`.
+- src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java: 9 cases; SHA256 `f5ba278c9ae803219f88276b7c86c82d82da60f47e0219f7294976858f1fb441`.
+One new native suite has baseline_seconds=0 explicitly unmeasured. All other
+inventory entries and non-class metadata are preserved; only the three edited
+existing test identities/hashes and their added cases are refreshed.
+Registered classes514 (including4 retained historical exclusions); active510.
+All ten native shards remain disjoint and complete; no timing baseline is invented.
+
+**Validation/limits.** Available local checks:19 documentation-validator self-tests
+and35 inventory-validator self-tests passed; changed-source delimiter structure,
+exact old/new test membership/source hashes, complete disjoint partition membership,
+reader forbidden operations and byte-preserved Rows were checked. javac/Maven
+are unavailable locally; Java21/Spring/ArchUnit/PostgreSQL execution is not claimed.
+These static checks are not native runtime proof. Hosted exact-SHA Full/Fast/Docs,
+all23 raw new cases and existing native regressions must establish B2 acceptance;
+repair actual failing gates first. No mocked or skipped database case counts as
+a pass and no B2 acceptance is claimed from source presence.
+
+B2 adds no production permission seed, role grant, schema, API/OpenAPI change,
+source adapter, repository writer, executor route/hash, budget or physical
+configuration operation. Application source completeness and actual pinned/stored
+unit-union authorization remain B3 obligations; caller descriptors never prove
+that every unit has been listed. The original B3 exact message remains
+`feat(topology): protect effective station configuration operations`, using its
+remaining registered owner/source/repository/executor/schema files only after
+accepted B2 and fresh source/migration review. B3 must derive actual SQL hashes and
+catalog witnesses from its real implementation, preserve all original final-guard/
+rollback/unknown-commit requirements and admit only its exact coordinator export.
+No B3 code is implemented in this stage.
+
+Publish directly to main with expected-head guard, exact nine-file scope and
+verified parent/tree/blobs/message; observe exact-SHA applicable CI creation/start
+then STOP. Parent HAPI-600 frozen status is unchanged; A acceptance stays bounded,
+B remains incomplete and C depends on accepted A/B. Parent598,601..603, frontend,
+numerical/P3, SCADA/OT control, SITE, release and deployment remain unselected.
+
 <a id="hapi-602"></a>
 ## HAPI-602 — Versioned installed-unit/characteristic links
 

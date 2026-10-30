@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedStationAdmissionBoundaryGuardrailTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-29
+ * @UpdatedOn   : 2026-10-30
  *
  * @Type        : Class
  * @Layer       : Test
@@ -47,7 +47,7 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
         }
     }
     @Test void identityAdmissionAndCollectorHaveOnlyReviewedCallers() throws Exception {
-        var expected=Map.of("collectFenced",Set.of("JdbcIdentityAuthorityFence.java"),"acquireNowait",Set.of("ProtectedOperationIdentityParticipant.java"),"admit",Set.of("ProtectedTopologyInstalledUnitAuthorizationParticipant.java","ProtectedProductPublicationAuthorizationParticipant.java","ProtectedFluidPropertyAuthorizationParticipant.java","ProtectedProductDraftAuthorizationParticipant.java","ProtectedTopologyAuthorizationParticipant.java","ProtectedEngineeringDraftAuthorizationParticipant.java","ProtectedOrganizationAppointmentAuthorizationParticipant.java"));
+        var expected=Map.of("collectFenced",Set.of("JdbcIdentityAuthorityFence.java"),"acquireNowait",Set.of("ProtectedOperationIdentityParticipant.java"),"admit",Set.of("ProtectedTopologyStationConfigurationAuthorizationParticipant.java","ProtectedTopologyInstalledUnitAuthorizationParticipant.java","ProtectedProductPublicationAuthorizationParticipant.java","ProtectedFluidPropertyAuthorizationParticipant.java","ProtectedProductDraftAuthorizationParticipant.java","ProtectedTopologyAuthorizationParticipant.java","ProtectedEngineeringDraftAuthorizationParticipant.java","ProtectedOrganizationAppointmentAuthorizationParticipant.java"));
         for(var item:expected.entrySet()) {
             var found=new HashSet<String>();try(var files=Files.walk(Path.of("src/main/java"))) {for(var f:files.filter(x->x.toString().endsWith(".java")).toList())if(Files.readString(f).contains("."+item.getKey()+"("))found.add(f.getFileName().toString());}assertEquals(item.getValue(),found);
         }
@@ -134,3 +134,4 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
         assertTrue(adapter.contains("Kind.READ_EXACT"));assertTrue(adapter.contains("Kind.ELIGIBLE_CURRENT"));assertTrue(adapter.contains("Kind.ELIGIBLE_EFFECTIVE"));assertFalse(adapter.contains("JdbcTemplate"));assertFalse(adapter.contains("actorId,"));
     }
 }
+

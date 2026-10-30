@@ -7,7 +7,7 @@
  *
  * @Name        : JdbcProtectedAuthorizationEvidenceReader
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-29
+ * @UpdatedOn   : 2026-10-30
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -189,18 +189,25 @@ public class JdbcProtectedAuthorizationEvidenceReader {
     private AuthorizationEvidence loadClaims(ProtectedOperationIdentityParticipant.QualifiedClaimRead credential,
             AuthorizationEvaluationRequest request,boolean organizationRecheck,Rows rows,
             boolean productRecheck,Instant productSample,boolean fluidFamily,boolean publicationFamily,boolean installedUnitRecheck) {
+        return loadClaims(credential,request,organizationRecheck,rows,productRecheck,productSample,
+                fluidFamily,publicationFamily,installedUnitRecheck,false);
+    }
+    private AuthorizationEvidence loadClaims(ProtectedOperationIdentityParticipant.QualifiedClaimRead credential,
+            AuthorizationEvaluationRequest request,boolean organizationRecheck,Rows rows,
+            boolean productRecheck,Instant productSample,boolean fluidFamily,boolean publicationFamily,
+            boolean installedUnitRecheck,boolean stationConfigurationRecheck) {
         try {
             rows.beginGraph();
             if (participant == null || bindings == null || companions == null
                     || registry == null || catalog == null) throw invalid();
-            var contribution = installedUnitRecheck ? participant.currentInstalledUnitClaims(credential,request) : productRecheck ? (publicationFamily ? participant.currentProductPublicationClaims(credential,request) : fluidFamily ? participant.currentSuppliedFluidClaims(credential,request) : participant.currentProductClaims(credential, request))
+            var contribution = stationConfigurationRecheck ? participant.currentStationConfigurationClaims(credential,request) : installedUnitRecheck ? participant.currentInstalledUnitClaims(credential,request) : productRecheck ? (publicationFamily ? participant.currentProductPublicationClaims(credential,request) : fluidFamily ? participant.currentSuppliedFluidClaims(credential,request) : participant.currentProductClaims(credential, request))
                     : organizationRecheck ? participant.currentOrganizationClaims(credential, request)
                     : participant.consumeClaims(credential, request);
             Evidence evidence = contribution.evidence();
             int pid = contribution.backendPid();
             long xid = contribution.transactionId();
             validate(evidence, request, pid, xid, participant.engineeringDraftCredential(credential),
-                    participant.organizationCredential(credential), participant.productDraftCredential(credential),participant.suppliedFluidCredential(credential),participant.productPublicationCredential(credential),participant.installedUnitCredential(credential));
+                    participant.organizationCredential(credential), participant.productDraftCredential(credential),participant.suppliedFluidCredential(credential),participant.productPublicationCredential(credential),participant.installedUnitCredential(credential),participant.stationConfigurationCredential(credential));
             qualifiedPhysicalFences(pid, xid);
             OperationAuthenticationBinding original =
                     bindings.findByNativeIssuerAndJti(evidence.issuer(), evidence.jti())
@@ -498,6 +505,59 @@ public class JdbcProtectedAuthorizationEvidenceReader {
         }
     }
 
+    /** Only a private native group may load this family. All children precede disclosure. */
+    public StationConfigurationAuthorizationEvidence loadQualifiedStationConfigurationGroup(
+            ProtectedOperationIdentityParticipant.StationConfigurationClaimGroup group,
+            dz.sh.hidra.modules.identity.application.contract.topology.TopologyStationConfigurationAuthorizationContract.Request request) {
+        try {
+            if (participant == null) throw invalid();
+            var reads = participant.consumeStationConfigurationGroup(group, request);
+            var evidence = new java.util.ArrayList<AuthorizationEvidence>();
+            // Private to this synchronous read: retained owner fences exclude other writers.
+            // A final recheck always creates a fresh Rows, including after own-transaction writes.
+            var rows = new Rows(true);
+            for (int i = 0; i < reads.credentials().size(); i++) {
+                evidence.add(loadClaims(reads.credentials().get(i), reads.requests().get(i), false, rows));
+            }
+            participant.requireCurrentStationConfigurationGroup(group, request);
+            return new StationConfigurationAuthorizationEvidence(reads.requests(), evidence, reads.contribution());
+        } catch (RuntimeException failure) {
+            if (participant != null) participant.invalidateStationConfigurationGroup(group);
+            throw invalid();
+        }
+    }
+
+    /** Re-read under retained fences without issuing or consuming another credential/sample. */
+    public StationConfigurationAuthorizationEvidence recheckStationConfigurationGroup(
+            ProtectedOperationIdentityParticipant.StationConfigurationClaimGroup group,
+            dz.sh.hidra.modules.identity.application.contract.topology.TopologyStationConfigurationAuthorizationContract.Request request) {
+        try {
+            if (participant == null) throw invalid();
+            var reads = participant.currentStationConfigurationReads(group, request);
+            var evidence = new java.util.ArrayList<AuthorizationEvidence>();
+            // Private to this synchronous read: retained owner fences exclude other writers.
+            // A final recheck always creates a fresh Rows, including after own-transaction writes.
+            var rows = new Rows(true);
+            for (int i = 0; i < reads.credentials().size(); i++) {
+                evidence.add(loadClaims(reads.credentials().get(i), reads.requests().get(i), false, rows, false, null, false, false, false, true));
+            }
+            participant.requireCurrentStationConfigurationGroup(group, request);
+            return new StationConfigurationAuthorizationEvidence(reads.requests(), evidence, reads.contribution());
+        } catch (RuntimeException failure) {
+            if (participant != null) participant.invalidateStationConfigurationGroup(group);
+            throw invalid();
+        }
+    }
+
+    public record StationConfigurationAuthorizationEvidence(List<AuthorizationEvaluationRequest> requests,
+            List<AuthorizationEvidence> evidence, ProtectedOperationIdentityParticipant.Contribution contribution) {
+        public StationConfigurationAuthorizationEvidence {
+            requests = List.copyOf(requests); evidence = List.copyOf(evidence);
+            if (requests.isEmpty() || requests.size() != evidence.size()) throw invalid();
+            Objects.requireNonNull(contribution);
+        }
+    }
+
     private void qualifiedPhysicalFences(int pid, long xid) {
         if (!Boolean.TRUE.equals(jdbc.queryForObject(QUALIFIED_PHYSICAL_FENCES, Boolean.class, pid, xid)))
             throw invalid();
@@ -552,6 +612,9 @@ public class JdbcProtectedAuthorizationEvidenceReader {
         validate(i,r,pid,xid,draft,organization,product,fluid,publicationFamily,false);
     }
     private void validate(Evidence i, AuthorizationEvaluationRequest r, int pid, long xid,boolean draft,boolean organization,boolean product,boolean fluid,boolean publicationFamily,boolean installedUnitFamily) {
+        validate(i,r,pid,xid,draft,organization,product,fluid,publicationFamily,installedUnitFamily,false);
+    }
+    private void validate(Evidence i, AuthorizationEvaluationRequest r, int pid, long xid,boolean draft,boolean organization,boolean product,boolean fluid,boolean publicationFamily,boolean installedUnitFamily,boolean stationConfigurationFamily) {
         if (!TransactionSynchronizationManager.isActualTransactionActive()
                 || TransactionSynchronizationManager.isCurrentTransactionReadOnly()
                 || i == null
@@ -589,7 +652,21 @@ public class JdbcProtectedAuthorizationEvidenceReader {
                         || i.externalGeneration() <= 0
                         || ("OIDC".equals(i.authenticationType())
                                 != (i.sourceExpiresAt() != null)))) throw invalid();
-        if (installedUnitFamily) {
+        if (stationConfigurationFamily) {
+            if (draft || organization || product || fluid || publicationFamily || installedUnitFamily
+                    || !i.userId().equals(r.userId()) || !text(r.resourceReferenceId(),80)
+                    || r.scope()==null || r.scope().scopeCodeSnapshot()!=null) throw invalid();
+            boolean configuration="STATION_INSTALLED_CONFIGURATION".equals(r.resourceType());
+            boolean unit="INSTALLED_UNIT".equals(r.resourceType());
+            if (!(configuration && Set.of("topology:installed-configuration:save","topology:installed-configuration:read",
+                    "topology:installed-configuration:history").contains(r.permissionCode())
+                    || unit && "topology:installed-unit:read".equals(r.permissionCode()))) throw invalid();
+            String ref=r.scope().scopeReferenceId();
+            if (r.scope().scopeType()==ScopeType.CUSTOM) {
+                if (ref==null || !ref.startsWith("topology-company:") || !text(ref.substring(17),80)) throw invalid();
+            } else if (!configuration || r.scope().scopeType()!=ScopeType.FACILITY
+                    || !r.resourceReferenceId().equals(ref) || !text(ref,80)) throw invalid();
+        } else if (installedUnitFamily) {
             if (draft || organization || product || fluid || publicationFamily || !i.userId().equals(r.userId())
                     || !Set.of("INSTALLED_UNIT","INSTALLED_UNIT_INSTALLATION").contains(r.resourceType())
                     || !text(r.resourceReferenceId(),80) || r.scope()==null || r.scope().scopeCodeSnapshot()!=null
@@ -1321,3 +1398,4 @@ public class JdbcProtectedAuthorizationEvidenceReader {
         }
     }
 }
+

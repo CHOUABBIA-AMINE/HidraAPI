@@ -30,6 +30,7 @@
         "publicationScalarExportRemainsExactAndHasNoUnregisteredConsumer",
         "simulationOwnerEvidenceExportsKeepPrivateTypesClosed",
         "simulationTelemetryEvidenceExportKeepsOwnerInternalsPrivate",
+        "stationConfigurationNativeAuthorityStaysPrivateUntilReviewedTopologyIntegration",
         "suppliedFluidExportsStayExactToTheirCoordinator",
         "transactionalOrganizationResponsibilityServicesMustRemainProxyable",
         "transitionalCrossModuleAllowlistMustRemainExactAndInUse"
@@ -40,7 +41,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java",
-      "source_sha256": "0d28d4e8e69bc9359595d5870ebadc9a2be3d7008d0935f81cc5a64c3723de83",
+      "source_sha256": "87fcee58efb73ac9b6c8fb68a5ed94f1f209b6341cd6a46fd2ef6ebb68c6c2d1",
       "supports": []
     },
     {
@@ -3011,6 +3012,42 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "actualSourceExpiryCannotBeExtendedByNativeStationConfigurationAdmission",
+        "changedActorAndDatabaseRoleCannotKeepAdmissionCurrent",
+        "configurationCompanyFacilityAndReferencedUnitPermissionsAreAllMandatory",
+        "crossThreadMisusePoisonsTheOriginalTransaction",
+        "duplicateContributionAndSwallowedFailureVetoCommit",
+        "duplicatedNativeGroupAndChildConsumptionPoisonOriginalHolder",
+        "externalSourceBindingUsesTheDistinctConfigurationFamily",
+        "finalPolicyGraphChangesAndMalformedDenyFailClosed",
+        "fourOperationsUseFourRealNativeProducersAndExactConfigurationScopes",
+        "futureDenyBoundaryIsRetained",
+        "inactiveOrMismatchedPermissionRowsCannotAuthorizeConfigurationOrUnits",
+        "nativeConfigurationChildrenNeverBecomeInstalledUnitOrStationCredentials",
+        "nativeGroupRejectsRequestSwapBeforeDisclosure",
+        "ownTransactionGrantRevocationFailsFinalRecheckAndRollsBackSentinel",
+        "referencedPhysicalUnitDenialRejectsEntireConfigurationGroup",
+        "replayForgedAndCrossTransactionTicketsAreRejected",
+        "requestCanonicalOrderingNeverCollapsesConfigurationAndUnitAuthority",
+        "retainedIdentityLocksRejectConflictingWriterNowait",
+        "revokedNativeSessionCannotAdmit",
+        "shortenedGrantValidityRejectsFinalRecheck",
+        "stationGraphPermissionCannotSubstituteForConfigurationAuthority",
+        "suspendedTransactionAndReadOnlyContextFailClosed",
+        "unitSetRevisionCompanyAndOperationSwapsPoisonOriginalNativeGroup"
+      ],
+      "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.ProtectedTopologyStationConfigurationAuthorizationPostgresIntegrationTest",
+      "dependency_reason": "HAPI-600 B2 genuine native Identity configuration group; real PostgreSQL/full producer fixtures; no HTTP/writer claim",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedTopologyStationConfigurationAuthorizationPostgresIntegrationTest.java",
+      "source_sha256": "1b701f08d14d5a1fc4ea316a40eb4f025423dceed1937df4bfe77046e73599dc",
+      "supports": []
+    },
+    {
       "baseline_seconds": 11.133,
       "cases": [
         "admissionMethodsCannotRunOutsideProtectedExecutorScope",
@@ -3114,6 +3151,7 @@
         "rejectsUnknownClaimCoverageInsteadOfAssumingAbsence",
         "requiresMatchingPhysicalCoordinatesAndCompleteIdentityFences",
         "requiresWritableReadCommittedParticipation",
+        "stationConfigurationFamilyRequiresOpaqueNativeGroupAndCannotUseStructuralDiagnosticRead",
         "structuralAppointmentRequestsCannotSelectQualifiedOrganizationFamily",
         "structuralDiagnosticEvidenceCannotSelectEngineeringDraftFamily",
         "suppliedFluidFamilyCannotBeSelectedByDiagnosticEvidenceOrForgedPair"
@@ -3124,7 +3162,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java",
-      "source_sha256": "d19ff7bd1b4a4861cb2a9473a9ed793d0ac26b6aabeaa703228b8995762c5748",
+      "source_sha256": "892869c2152eedf2b660b3c13cb50bdb38a414a22a5e514916d2a7b34e6034bd",
       "supports": []
     },
     {
@@ -7894,7 +7932,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java",
-      "source_sha256": "f45d45025655ef92435ce40e5b2490c09d9a0f39c6ffbbe5742c42ea48b61eb1",
+      "source_sha256": "f5ba278c9ae803219f88276b7c86c82d82da60f47e0219f7294976858f1fb441",
       "supports": []
     },
     {

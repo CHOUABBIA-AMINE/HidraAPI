@@ -7,7 +7,7 @@
  *
  * @Name        : JdbcProtectedAuthorizationEvidenceReaderTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-28
+ * @UpdatedOn   : 2026-10-30
  *
  * @Type        : Class
  * @Layer       : Identity Test
@@ -48,6 +48,19 @@ class JdbcProtectedAuthorizationEvidenceReaderTest {
         assertThatThrownBy(() -> reader.recheckInstalledUnitGroup(null, request)).isInstanceOf(RuntimeException.class);
         verifyNoInteractions(jdbc);
         var structural = new AuthorizationEvaluationRequest(USER,"topology:installed-unit:read","INSTALLED_UNIT","unit",
+                new AuthorizationScope(ScopeType.CUSTOM,"topology-company:company",null));
+        assertThatThrownBy(() -> reader.load(identity,structural,7,11)).isInstanceOf(RuntimeException.class);
+    }
+
+    @Test void stationConfigurationFamilyRequiresOpaqueNativeGroupAndCannotUseStructuralDiagnosticRead() {
+        var request = new dz.sh.hidra.modules.identity.application.contract.topology.TopologyStationConfigurationAuthorizationContract.Request(
+                dz.sh.hidra.modules.identity.application.contract.topology.TopologyStationConfigurationAuthorizationContract.Operation.READ_CURRENT,
+                "company", "facility", null, List.of("unit"));
+        clearInvocations(jdbc);
+        assertThatThrownBy(() -> reader.loadQualifiedStationConfigurationGroup(null, request)).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> reader.recheckStationConfigurationGroup(null, request)).isInstanceOf(RuntimeException.class);
+        verifyNoInteractions(jdbc);
+        var structural = new AuthorizationEvaluationRequest(USER,"topology:installed-configuration:read","STATION_INSTALLED_CONFIGURATION","facility",
                 new AuthorizationScope(ScopeType.CUSTOM,"topology-company:company",null));
         assertThatThrownBy(() -> reader.load(identity,structural,7,11)).isInstanceOf(RuntimeException.class);
     }
@@ -665,6 +678,7 @@ class JdbcProtectedAuthorizationEvidenceReaderTest {
                 .containsExactlyInAnyOrder("load", "loadQualified", "loadQualifiedPair", "loadQualifiedDraftPair",
                         "loadQualifiedOrganizationGroup", "recheckOrganizationGroup",
                         "loadQualifiedInstalledUnitGroup", "recheckInstalledUnitGroup",
+                        "loadQualifiedStationConfigurationGroup", "recheckStationConfigurationGroup",
                         "loadQualifiedProductPair", "recheckProductPair",
                         "loadQualifiedSuppliedFluidPair", "recheckSuppliedFluidPair", "loadQualifiedProductPublicationPair", "recheckProductPublicationPair");
         for (String name : List.of("loadQualifiedProductPair", "recheckProductPair")) {
@@ -683,6 +697,15 @@ class JdbcProtectedAuthorizationEvidenceReaderTest {
                         dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipant.InstalledUnitClaimGroup.class,
                         dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract.Request.class);
                 assertThat(method.getReturnType()).isEqualTo(JdbcProtectedAuthorizationEvidenceReader.InstalledUnitAuthorizationEvidence.class);
+            });
+        }
+        for (String name : List.of("loadQualifiedStationConfigurationGroup", "recheckStationConfigurationGroup")) {
+            assertThat(Arrays.stream(JdbcProtectedAuthorizationEvidenceReader.class.getDeclaredMethods())
+                    .filter(m -> m.getName().equals(name))).singleElement().satisfies(method -> {
+                assertThat(method.getParameterTypes()).containsExactly(
+                        dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipant.StationConfigurationClaimGroup.class,
+                        dz.sh.hidra.modules.identity.application.contract.topology.TopologyStationConfigurationAuthorizationContract.Request.class);
+                assertThat(method.getReturnType()).isEqualTo(JdbcProtectedAuthorizationEvidenceReader.StationConfigurationAuthorizationEvidence.class);
             });
         }
         for (String name : List.of("loadQualifiedOrganizationGroup", "recheckOrganizationGroup")) {
@@ -793,3 +816,4 @@ class JdbcProtectedAuthorizationEvidenceReaderTest {
         assertThat(sqls).hasSize(1);
     }
 }
+

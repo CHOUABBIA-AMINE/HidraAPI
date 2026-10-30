@@ -7,7 +7,7 @@
  *
  * @Name        : ArchitectureGuardrailTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-27
+ * @UpdatedOn   : 2026-10-30
  *
  * @Type        : Class
  * @Layer       : Test
@@ -675,6 +675,8 @@ class ArchitectureGuardrailTest {
         for(String root:INSTALLED_UNIT_OWNER_ROOTS)if(targetClassName.startsWith(root))
             return !(targetClassName.equals(root) || targetClassName.startsWith(root+"$"))
                 || !sourceClassName.equals(INSTALLED_UNIT_COORDINATOR) && !sourceClassName.startsWith(INSTALLED_UNIT_COORDINATOR+"$");
+        // B2 exports no configuration authority to Topology; B3 must admit its exact coordinator.
+        if(targetClassName.startsWith("dz.sh.hidra.modules.identity.application.contract.topology.TopologyStationConfigurationAuthorizationContract"))return true;
         if(isProductPublicationSourceType(targetClassName))return true;
         if(isPublicationSpecific(targetClassName))return !isPublicationExportAllowed(sourceClassName,targetClassName);
         if (!isPrivateCrossModulePackage(targetPackage)) {
@@ -830,5 +832,18 @@ class ArchitectureGuardrailTest {
             assertTrue(isForbiddenCrossModuleDependency(consumer,root));assertTrue(isForbiddenCrossModuleDependency(consumer,root+"$Source"));assertTrue(isForbiddenCrossModuleDependency(consumer,root+"Sibling"));assertTrue(isForbiddenCrossModuleDependency(consumer,"dz.sh.hidra.modules.custody.infrastructure.integration.ProductPublicationSourceQueryAdapter"));
         }
         for(var type:dz.sh.hidra.modules.custody.application.contract.publication.ProductPublicationSourceContract.class.getDeclaredClasses())if(type.isRecord())for(var component:type.getRecordComponents())assertFalse(component.getGenericType().getTypeName().contains(".domain."));
+    }
+
+    @Test
+    void stationConfigurationNativeAuthorityStaysPrivateUntilReviewedTopologyIntegration() {
+        String root="dz.sh.hidra.modules.identity.application.contract.topology.TopologyStationConfigurationAuthorizationContract";
+        assertTrue(isForbiddenCrossModuleDependency("dz.sh.hidra.modules.topology.application.service.Other",root));
+        assertTrue(isForbiddenCrossModuleDependency("dz.sh.hidra.modules.topology.application.service.Other",root+"$Contribution"));
+        assertTrue(isForbiddenCrossModuleDependency("dz.sh.hidra.modules.topology.application.service.Other",root+"Sibling"));
+        var group=dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipant.StationConfigurationClaimGroup.class;
+        assertEquals(0,group.getConstructors().length);
+        for(var constructor:group.getDeclaredConstructors())assertTrue(java.lang.reflect.Modifier.isPrivate(constructor.getModifiers()));
+        for(var field:group.getDeclaredFields())assertTrue(java.lang.reflect.Modifier.isPrivate(field.getModifiers()));
+        assertFalse(dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipant.InstalledUnitClaimGroup.class.isAssignableFrom(group));
     }
 }

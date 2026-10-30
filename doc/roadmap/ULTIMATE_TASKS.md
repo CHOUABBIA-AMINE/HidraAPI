@@ -202,6 +202,18 @@ only**, not its implementation or CI; it does not approve B or C contracts.
 Next `Next` executes A source implementation after the current Docs gate.
 HAPI-601 remains NOT_IMPLEMENTED/BLOCKED; no issue/PR or extra task.
 
+
+HAPI-601 Package B technical **direction** was expressly approved by the owner
+on 2026-10-30; a documentation-only exact-source contract and candidate
+CREATE/MODIFY/SQL/test ledger are registered in
+[HPS-007](TASKS_HPS-007.md#hapi-601) against `dbfece384345543088364d53338919ed0989b8d4`
+(Full #1016, Docs #769 passed). This does **not** accept unregistered B
+permission/resource codes, native Party/Identity/Workflow/DDL contracts,
+future implementation paths, or Package C. B implementation remains gated
+on a separate explicit exact-contract/write-scope admission; no Java,
+migration, permission or frozen ROADMAP/PHASES status change is selected.
+HAPI-601 remains NOT_IMPLEMENTED/BLOCKED.
+
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent
 [HAPI-436](TASKS_HPS-024.md#hapi-436) are VERIFIED/COMPLETED within the accepted

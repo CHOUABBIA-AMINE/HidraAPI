@@ -228,6 +228,18 @@ A future `Next` may select ONE entire B implementation, without further
 discretionary splitting or duplicate owner acceptance. HAPI-601 remains
 NOT_IMPLEMENTED/BLOCKED; C/HAPI-602/P3/deployment unchanged.
 
+HAPI-601 unified Package B — owner approved a **Workflow protected-query guard
+scope amendment**: two existing Workflow MODIFY paths and one new
+PostgreSQL integration-test CREATE path, exclusively within the existing
+ONE unsplit `feat(simulation): protect supplied manufacturer characteristic revisions`
+implementation commit. See [HPS-007](TASKS_HPS-007.md#hapi-601) for
+exact paths, protected read-before-disclosure cases (including lists,
+counts, instance/task/history and transition metadata), original native
+authority and mandatory test acceptance. Owner approval covers the three
+paths; no B implementation, further split, Phase status update, Package C,
+HAPI-602, deployment or numerical engine is implied. HAPI-601 remains
+NOT_IMPLEMENTED/BLOCKED.
+
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent
 [HAPI-436](TASKS_HPS-024.md#hapi-436) are VERIFIED/COMPLETED within the accepted

@@ -8106,6 +8106,87 @@ Full gate can be accepted. Do not change workflows or add source churn to create
 a trigger. Next gate is corrected-SHA Full verification, then independent Package A
 raw-case/catalog evidence review; no Package B execution is selected here.
 
+
+
+### HAPI-600 Package A — independent storage software acceptance — 2026-10-30
+
+Owner Next selects one bounded Package A evidence/acceptance record. Refreshed
+main `8a6626f55fe68f8f97f195d74620b8978ca2a03f`, sole parent
+`7db0529cb78eddf26618da28b11d368f73654f42`, tree
+`7cc24a090ebb998e0f8dcf5069574d1110cd7c6a`.
+Exact message: `docs(topology): accept station configuration storage package`.
+CREATE/DELETE none; MODIFY only this phase file and compact ULTIMATE_TASKS
+execution pointer. No frozen ROADMAP/PHASES status row changes; HAPI-600 parent
+remains NOT_IMPLEMENTED/IN_PROGRESS until its complete independently gated scope.
+
+**Corrected-source CI.** Full989/run40997110643 attempt1 SUCCESS and
+Docs731/run40996979945 SUCCESS on this exact SHA. Fast284/run40943265808
+SUCCESS on7db0529; compare of the subsequent dictionary-refresh commit shows only
+dictionary/phase documentation changes, so runtime/test/fast inventory bytes are
+unchanged. No exact-current-SHA Fast run is invented. Full989 independently passed
+Java21 unit/architecture, all ten PostgreSQL shards, static checks, configured API
+snapshot/compatibility, strict migrated dictionary comparison and Full final gate.
+The serial lane is intentionally skipped by development-partitioned mode; this
+is distinct from skipped test cases. serial_oracle=false and release_eligible=false;
+no serial equivalence, release readiness or operational acceptance is inferred.
+
+**Independent raw evidence.** Downloaded artifact12951977593:
+hidra-full-ci-evidence-8a6626f55fe68f8f97f195d74620b8978ca2a03f-40997110643-1.
+ZIP SHA256 `25715b8d6b2696e49bf15a6243d74fdd525b198a44ffe76ceb5e4d094b505e13`;
+gate.json SHA256 `0f4a9dd7d06886d2503c7d0fb719c5f3ae3ab0ec851a14093efc82f5e8a767bd`.
+Reconstructed508 XML reports:3,838 test cases, zero failures/errors/skips,
+matching the same-source/run/attempt gate totals. All30 Package A raw case names
+match the live required inventory exactly:9 domain,8 codec,13 fresh PostgreSQL.
+Fetched live suite sources and matched exact source SHA256 identities:
+- domain: `979aee0ba06ce358d5d6ed79cbc33c7e54cf570187c85e64ba1446d7162190b2`
+- codec: `e06640ae2aaa46b10b905060318da34672e2a4e7cc94d0a366eaf41a29478e99`
+- PostgreSQL: `b47fb58d245c0fc828bfffd0cf876f5a8f757202facdca5f4ad8165e6d89cbe2`
+
+This matrix includes nine physical units/three synthetic stations, mixed/isolated/
+unoccupied structure and NO_CONNECTED_PATH diagnostics, exact128-position/
+65,536-byte text/1,048,576-byte payload boundaries, canonical UTF-8 corruption/
+round-trip rejection, populated exact reload, binding/FK/check/uniqueness rejection,
+NULL installation revision rejection, immutable history, stale epochs, rollback
+and competing-writer one-epoch behavior. Full987 ordering-fixture failures and
+NULL guard defect are resolved; Full988 dictionary drift is resolved by the
+actual artifact refresh and Full989 strict comparison. Prior failed records
+remain intact and are not relabeled as successful runs.
+
+**Same-run API/catalog.** Current generated API SHA256
+`6c2305dfdbe041af53a7e93667d80ee14b883dfaf0de936aa0e8be925ac20b62`;
+compatibility base89e492a1b17fb4d4b454709b84e6c0774281c2a7. Actual catalog SHA256
+`f4ee473c4dd01860c306246673e108677aafe30980cb00e6b96740f43b297014`;
+source bundle `93fe3edb6930ebe918e8582226a9ccab48fec27c0acc0b5eb2e35480478efcb9`.
+Verification records PostgreSQL16.15,189 migrations,536 relations,470 JPA mappings,
+no unresolved owners and reviewed_dictionary_checked=true. Same-run generated
+dictionary SHA256 `1c5f41aa0c8b44466cef3e900fca173ffc0d1f25b1a5898a04fc9fd342449d55`
+belongs to the current capture; earlier committed artifact fingerprints retain
+their original source metadata. Do not confuse generator-normalized strict
+comparison success with byte identity between captures from different SHAs.
+
+**Disposition.** Package A is independently accepted for its bounded development
+software domain/codec/schema contract. It creates no public writer, native
+authorization route, current-source eligibility guarantee or HTTP workflow.
+Schema-owner storage fixtures are not native Identity/Party authority proof.
+HAPI-600 full acceptance still requires accepted Packages B/C. Engineering
+qualification, SCADA/OT access, numerical simulation, industrial calibration,
+SITE acceptance, release and deployment remain outside this acceptance.
+
+Next executable registered stage is Package B under its existing exact message
+`feat(topology): protect effective station configuration operations` and exact
+allowlist above, after refreshing this review's Docs acceptance, current native/
+source/executor contracts and migration order. Existing002.1 now precedes reserved
+003; the old dated “last migration029001” wording is historical, not a current pin.
+Package B is not implemented or published by this record. No source paths,
+permissions or later task statuses are added by Package A acceptance.
+
+Local validation for this evidence-only change:19 documentation-validator
+self-tests passed; exact30 case/source identities matched retained raw XML;
+full counts and same-run catalog/gate identities independently checked.
+No new local Java/Maven/PostgreSQL run is claimed. Publish the exact two-file
+record with expected-head guard, verify parent/tree/blobs/message, observe
+Documentation CI creation/startup and STOP before B.
+
 <a id="hapi-602"></a>
 ## HAPI-602 — Versioned installed-unit/characteristic links
 

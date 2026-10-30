@@ -151,10 +151,12 @@ HAPI-588/599 remain accepted. Its owning phase now admits exact A/B/C packages:
 versioned configuration/schema, distinct native authority and atomic source/final-
 guard integration, then configured HTTP/qualification. Package A source and its
 physical dictionary repair have passed Full985 on89e492a1b17fb4d4b454709b84e6c0774281c2a7.
-Independent review retained3,825 passing raw cases but found missing behavioral
-storage/boundary qualification and the isolated-path diagnostic gap. Its owning
-phase registers the focused same-package follow-up; A is not yet independently
-accepted and B/C remain gated. HAPI-601..603 and parent598 remain independent;
+Package A is independently accepted after its responsible qualification/schema/
+dictionary repairs: Full989 and Docs731 passed on8a6626f55fe68f8f97f195d74620b8978ca2a03f.
+Independent raw evidence retains3,838 passing cases, including all30 exact A cases,
+and strict actual catalog/API gates. The owning phase records bounded storage
+acceptance and limits; Package B is the next separately executed registered stage,
+and C remains dependent on accepted A/B. HAPI-601..603 and parent598 remain independent;
 no industrial qualification is claimed.
 
 The historical Full950 Custody work-policy and dictionary-receipt repair is

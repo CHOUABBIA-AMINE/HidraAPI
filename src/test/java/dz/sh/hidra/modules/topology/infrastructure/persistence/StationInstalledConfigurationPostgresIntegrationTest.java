@@ -211,12 +211,31 @@ class StationInstalledConfigurationPostgresIntegrationTest {
         insert(db,"member",row,changes);
     }
     private void receipt(JdbcTemplate db,StationInstalledConfiguration x,Map<String,Object> changes) {
+        // The B3-S2 trigger checks the ORIGINAL SQL statement's real backend/XID/clock.
+        // The fixture is a schema-owner constraint test, not a native Identity admission.
+        // Capture these values inside the insertion itself, also for autocommit callers.
         var row=new LinkedHashMap<String,Object>();
         row.put("company_party_id",x.companyPartyId());row.put("facility_id",x.facilityId());
         row.put("request_id",x.requestId());row.put("command_sha256",codec.sha256(codec.encode(x)));
         row.put("revision_id",x.revisionId());row.put("selected_epoch",x.selectedEpoch());
-        row.put("actor_binding_id",x.actorBindingId());row.put("recorded_at",Timestamp.from(x.recordedAt()));
-        insert(db,"request",row,changes);
+        row.put("actor_binding_id",x.actorBindingId());
+        changes.forEach((column,value)->{
+            if(!row.containsKey(column))throw new AssertionError("Unknown receipt fixture column: "+column);
+            row.put(column,value);
+        });
+        assertEquals(1,db.update("""
+            WITH origin AS MATERIALIZED (SELECT pg_catalog.clock_timestamp() AS sampled)
+            INSERT INTO public.hidra_topology_station_configuration_request
+                (company_party_id,facility_id,request_id,command_sha256,revision_id,selected_epoch,
+                 actor_binding_id,recorded_at,actor_session_id,actor_user_id,sampled_at,valid_until,
+                 backend_pid,transaction_id,database_role)
+            SELECT ?,?,?,?,?,?,?,origin.sampled,?,?,origin.sampled-interval '1 second',
+                origin.sampled+interval '1 minute',
+                pg_catalog.pg_backend_pid(),pg_catalog.txid_current(),session_user
+            FROM origin
+            """,row.get("company_party_id"),row.get("facility_id"),row.get("request_id"),
+            row.get("command_sha256"),row.get("revision_id"),row.get("selected_epoch"),
+            row.get("actor_binding_id"),x.actorSessionId(),x.actorUserId()));
     }
     private int select(JdbcTemplate db,StationInstalledConfiguration x,long expected) {
         if(expected==0) return db.update("INSERT INTO "+PREFIX+"head(company_party_id,facility_id,revision_id,head_epoch)"

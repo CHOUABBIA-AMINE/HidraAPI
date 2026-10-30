@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `7db0529cb78eddf26618da28b11d368f73654f42`
+Captured source SHA: `796a3ef065169f9d301dd60bc050f3fe4366c80d`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `93fe3edb6930ebe918e8582226a9ccab48fec27c0acc0b5eb2e35480478efcb9`.
-Migrations: 189; JPA mappings: 470; catalog relations: 536; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `791c6a17869ec91f3f5087bae3fdc9127b84377fab41ec6b02c6a02d05c00403`.
+Migrations: 190; JPA mappings: 470; catalog relations: 536; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -27214,6 +27214,7 @@ Topology-owned equipment state; legacy_equipment_kind is retained historical dat
 - Migration mention (not inferred introduction): [V20261028_002__topology_installed_unit_identity_and_history.sql](../../src/main/resources/db/migration/V20261028_002__topology_installed_unit_identity_and_history.sql)
 - Migration mention (not inferred introduction): [V20261028_004__topology_installed_unit_position_owner_lock.sql](../../src/main/resources/db/migration/V20261028_004__topology_installed_unit_position_owner_lock.sql)
 - Migration mention (not inferred introduction): [V20261029_002__topology_station_installed_configurations.sql](../../src/main/resources/db/migration/V20261029_002__topology_station_installed_configurations.sql)
+- Migration mention (not inferred introduction): [V20261029_003__topology_station_configuration_protected_operations.sql](../../src/main/resources/db/migration/V20261029_003__topology_station_configuration_protected_operations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -27474,6 +27475,7 @@ Persisted FacilityJpaEntity state; semantic authority remains with topology.
 - Migration mention (not inferred introduction): [V20261006_009__hmr_054_equipment_catalog_and_attachments.sql](../../src/main/resources/db/migration/V20261006_009__hmr_054_equipment_catalog_and_attachments.sql)
 - Migration mention (not inferred introduction): [V20261018_002__p25_topology_facility_owner_generations.sql](../../src/main/resources/db/migration/V20261018_002__p25_topology_facility_owner_generations.sql)
 - Migration mention (not inferred introduction): [V20261028_004__topology_installed_unit_position_owner_lock.sql](../../src/main/resources/db/migration/V20261028_004__topology_installed_unit_position_owner_lock.sql)
+- Migration mention (not inferred introduction): [V20261029_003__topology_station_configuration_protected_operations.sql](../../src/main/resources/db/migration/V20261029_003__topology_station_configuration_protected_operations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -27683,6 +27685,7 @@ Owner-issued monotone live/tombstone witness for protected Facility ownership; n
 - Evidence: [V20261018_002__p25_topology_facility_owner_generations.sql](../../src/main/resources/db/migration/V20261018_002__p25_topology_facility_owner_generations.sql)
 - Evidence: [JdbcStationProtectedFacilityOwnershipAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationProtectedFacilityOwnershipAdapter.java)
 - Migration mention (not inferred introduction): [V20261018_002__p25_topology_facility_owner_generations.sql](../../src/main/resources/db/migration/V20261018_002__p25_topology_facility_owner_generations.sql)
+- Migration mention (not inferred introduction): [V20261029_003__topology_station_configuration_protected_operations.sql](../../src/main/resources/db/migration/V20261029_003__topology_station_configuration_protected_operations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -27813,6 +27816,7 @@ Immutable Topology physical-unit identity and manufacturer/model/serial evidence
 - Migration mention (not inferred introduction): [V20261028_005__topology_installed_unit_protected_operations.sql](../../src/main/resources/db/migration/V20261028_005__topology_installed_unit_protected_operations.sql)
 - Migration mention (not inferred introduction): [V20261029_001__topology_installed_unit_replacement.sql](../../src/main/resources/db/migration/V20261029_001__topology_installed_unit_replacement.sql)
 - Migration mention (not inferred introduction): [V20261029_002__topology_station_installed_configurations.sql](../../src/main/resources/db/migration/V20261029_002__topology_station_installed_configurations.sql)
+- Migration mention (not inferred introduction): [V20261029_003__topology_station_configuration_protected_operations.sql](../../src/main/resources/db/migration/V20261029_003__topology_station_configuration_protected_operations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -27875,6 +27879,7 @@ Topology effective installation projection with native temporal exclusions and o
 - Evidence: [JdbcInstalledUnitRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcInstalledUnitRepositoryAdapter.java)
 - Evidence: [V20261028_002__topology_installed_unit_identity_and_history.sql](../../src/main/resources/db/migration/V20261028_002__topology_installed_unit_identity_and_history.sql)
 - Migration mention (not inferred introduction): [V20261028_002__topology_installed_unit_identity_and_history.sql](../../src/main/resources/db/migration/V20261028_002__topology_installed_unit_identity_and_history.sql)
+- Migration mention (not inferred introduction): [V20261029_003__topology_station_configuration_protected_operations.sql](../../src/main/resources/db/migration/V20261029_003__topology_station_configuration_protected_operations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -27936,6 +27941,7 @@ Immutable Topology installation history revision ledger populated by database tr
 - Evidence: [V20261028_002__topology_installed_unit_identity_and_history.sql](../../src/main/resources/db/migration/V20261028_002__topology_installed_unit_identity_and_history.sql)
 - Migration mention (not inferred introduction): [V20261028_002__topology_installed_unit_identity_and_history.sql](../../src/main/resources/db/migration/V20261028_002__topology_installed_unit_identity_and_history.sql)
 - Migration mention (not inferred introduction): [V20261029_002__topology_station_installed_configurations.sql](../../src/main/resources/db/migration/V20261029_002__topology_station_installed_configurations.sql)
+- Migration mention (not inferred introduction): [V20261029_003__topology_station_configuration_protected_operations.sql](../../src/main/resources/db/migration/V20261029_003__topology_station_configuration_protected_operations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -28546,6 +28552,7 @@ Topology-owned monotone CAS selected declaration for a company/facility, referen
 - Evidence: [V20261029_002__topology_station_installed_configurations.sql](../../src/main/resources/db/migration/V20261029_002__topology_station_installed_configurations.sql)
 - Evidence: [StationInstalledConfigurationPostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/StationInstalledConfigurationPostgresIntegrationTest.java)
 - Migration mention (not inferred introduction): [V20261029_002__topology_station_installed_configurations.sql](../../src/main/resources/db/migration/V20261029_002__topology_station_installed_configurations.sql)
+- Migration mention (not inferred introduction): [V20261029_003__topology_station_configuration_protected_operations.sql](../../src/main/resources/db/migration/V20261029_003__topology_station_configuration_protected_operations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -28589,6 +28596,7 @@ Topology-owned immutable per-position disposition and pinned physical installati
 - Evidence: [StationInstalledConfigurationPostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/StationInstalledConfigurationPostgresIntegrationTest.java)
 - Migration mention (not inferred introduction): [V20261029_002__topology_station_installed_configurations.sql](../../src/main/resources/db/migration/V20261029_002__topology_station_installed_configurations.sql)
 - Migration mention (not inferred introduction): [V20261029_002_1__topology_station_configuration_binding_null_guard.sql](../../src/main/resources/db/migration/V20261029_002_1__topology_station_configuration_binding_null_guard.sql)
+- Migration mention (not inferred introduction): [V20261029_003__topology_station_configuration_protected_operations.sql](../../src/main/resources/db/migration/V20261029_003__topology_station_configuration_protected_operations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -28652,6 +28660,7 @@ Topology-owned immutable idempotent configuration-command digest and exact resul
 - Evidence: [V20261029_002__topology_station_installed_configurations.sql](../../src/main/resources/db/migration/V20261029_002__topology_station_installed_configurations.sql)
 - Evidence: [StationInstalledConfigurationPostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/StationInstalledConfigurationPostgresIntegrationTest.java)
 - Migration mention (not inferred introduction): [V20261029_002__topology_station_installed_configurations.sql](../../src/main/resources/db/migration/V20261029_002__topology_station_installed_configurations.sql)
+- Migration mention (not inferred introduction): [V20261029_003__topology_station_configuration_protected_operations.sql](../../src/main/resources/db/migration/V20261029_003__topology_station_configuration_protected_operations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -28663,6 +28672,13 @@ Topology-owned immutable idempotent configuration-command digest and exact resul
 | selected_epoch | bigint | False | None; identity=; generated= | No current mapped Java column | — |
 | actor_binding_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
 | recorded_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_session_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_user_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| sampled_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| valid_until | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| backend_pid | integer | False | None; identity=; generated= | No current mapped Java column | — |
+| transaction_id | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| database_role | name | False | None; identity=; generated= | No current mapped Java column | — |
 
 #### Constraints
 
@@ -28670,6 +28686,8 @@ Topology-owned immutable idempotent configuration-command digest and exact resul
   - Catalog attributes: {"columns": ["command_sha256"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
 - `ck_station_configuration_request_ids`: CHECK (length(btrim(request_id::text)) &gt; 0 AND request_id::text = btrim(request_id::text) AND length(btrim(actor_binding_id::text)) &gt; 0 AND actor_binding_id::text = btrim(actor_binding_id::text))
   - Catalog attributes: {"columns": ["request_id", "actor_binding_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_station_configuration_request_physical_origin`: CHECK (backend_pid &gt; 0 AND transaction_id &gt; 0 AND valid_until &gt; sampled_at AND actor_session_id::text = btrim(actor_session_id::text) AND length(actor_session_id::text) &gt; 0 AND actor_user_id::text = btrim(actor_user_id::text) AND length(actor_user_id::text) &gt; 0)
+  - Catalog attributes: {"columns": ["backend_pid", "transaction_id", "valid_until", "sampled_at", "actor_session_id", "actor_user_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
 - `fk_station_configuration_request_result`: FOREIGN KEY (company_party_id, facility_id, revision_id, selected_epoch) REFERENCES hidra_topology_station_configuration_revision(company_party_id, facility_id, revision_id, selected_epoch) ON UPDATE RESTRICT ON DELETE RESTRICT
   - Catalog attributes: {"columns": ["company_party_id", "facility_id", "revision_id", "selected_epoch"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["company_party_id", "facility_id", "revision_id", "selected_epoch"], "match": "s", "on_delete": "r", "on_update": "r", "schema": "public", "table": "hidra_topology_station_configuration_revision"}, "type": "f", "validated": true}
 - `pk_station_configuration_request`: PRIMARY KEY (company_party_id, facility_id, request_id)
@@ -28688,6 +28706,9 @@ Topology-owned immutable idempotent configuration-command digest and exact resul
 - `trg_station_configuration_request_no_truncate`: CREATE TRIGGER trg_station_configuration_request_no_truncate BEFORE TRUNCATE ON hidra_topology_station_configuration_request FOR EACH STATEMENT EXECUTE FUNCTION hidra_station_configuration_immutable()
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_station_configuration_immutable()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_station_configuration_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Station configuration immutable evidence cannot be changed' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `trg_station_configuration_request_origin`: CREATE TRIGGER trg_station_configuration_request_origin BEFORE INSERT ON hidra_topology_station_configuration_request FOR EACH ROW EXECUTE FUNCTION hidra_station_configuration_request_origin()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_station_configuration_request_origin()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_station_configuration_request_origin()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    IF TG_OP &lt;&gt; 'INSERT' OR<br>       NEW.backend_pid IS DISTINCT FROM pg_catalog.pg_backend_pid() OR<br>       NEW.transaction_id IS DISTINCT FROM pg_catalog.txid_current() OR<br>       NEW.database_role IS DISTINCT FROM session_user OR<br>       session_user IS DISTINCT FROM current_setting('role',true)::name AND<br>           current_setting('role',true) &lt;&gt; 'none' OR<br>       pg_catalog.clock_timestamp() &lt; NEW.sampled_at OR<br>       pg_catalog.clock_timestamp() &gt;= NEW.valid_until OR<br>       NEW.recorded_at &lt; NEW.sampled_at OR<br>       NEW.recorded_at &gt;= NEW.valid_until THEN<br>        RAISE EXCEPTION 'Station configuration receipt origin unavailable' USING ERRCODE='23514';<br>    END IF;<br>    RETURN NEW;<br>END;<br>$function$<br>
 
 ### public.hidra_topology_station_configuration_revision
 
@@ -28700,6 +28721,7 @@ Topology-owned immutable canonical installed-station configuration snapshot with
 - Evidence: [V20261029_002__topology_station_installed_configurations.sql](../../src/main/resources/db/migration/V20261029_002__topology_station_installed_configurations.sql)
 - Evidence: [StationInstalledConfigurationPostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/StationInstalledConfigurationPostgresIntegrationTest.java)
 - Migration mention (not inferred introduction): [V20261029_002__topology_station_installed_configurations.sql](../../src/main/resources/db/migration/V20261029_002__topology_station_installed_configurations.sql)
+- Migration mention (not inferred introduction): [V20261029_003__topology_station_configuration_protected_operations.sql](../../src/main/resources/db/migration/V20261029_003__topology_station_configuration_protected_operations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -28774,6 +28796,7 @@ Topology-owned current station graph publication selection with monotone epoch a
 - Evidence: [V20261018_003__p25_topology_protected_station_graph_operations.sql](../../src/main/resources/db/migration/V20261018_003__p25_topology_protected_station_graph_operations.sql)
 - Evidence: [JdbcStationGraphProtectedPublicationAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationGraphProtectedPublicationAdapter.java)
 - Migration mention (not inferred introduction): [V20261018_003__p25_topology_protected_station_graph_operations.sql](../../src/main/resources/db/migration/V20261018_003__p25_topology_protected_station_graph_operations.sql)
+- Migration mention (not inferred introduction): [V20261029_003__topology_station_configuration_protected_operations.sql](../../src/main/resources/db/migration/V20261029_003__topology_station_configuration_protected_operations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -28897,6 +28920,7 @@ Topology-owned immutable station graph declarations with canonical byte integrit
 - Migration mention (not inferred introduction): [V20261011_002__p25_topology_station_graph_revisions.sql](../../src/main/resources/db/migration/V20261011_002__p25_topology_station_graph_revisions.sql)
 - Migration mention (not inferred introduction): [V20261018_003__p25_topology_protected_station_graph_operations.sql](../../src/main/resources/db/migration/V20261018_003__p25_topology_protected_station_graph_operations.sql)
 - Migration mention (not inferred introduction): [V20261029_002__topology_station_installed_configurations.sql](../../src/main/resources/db/migration/V20261029_002__topology_station_installed_configurations.sql)
+- Migration mention (not inferred introduction): [V20261029_003__topology_station_configuration_protected_operations.sql](../../src/main/resources/db/migration/V20261029_003__topology_station_configuration_protected_operations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

@@ -157,6 +157,16 @@ class ForensicRemediationClosureTest {
         assertFalse(installedUnitOwnerExport(installedConsumer,installedRoot+"Sibling"));
         assertFalse(installedUnitOwnerExport(installedConsumer+"Sibling",installedRoot));
         assertFalse(installedUnitOwnerExport(installedConsumer,"dz.sh.hidra.modules.identity.infrastructure.security.ProtectedTopologyInstalledUnitAuthorizationParticipant"));
+        // HAPI-600 B3-S2 admits only the already-reviewed Identity export
+        // to its exact Topology coordinator, never a sibling or concrete adapter.
+        String configConsumer="dz.sh.hidra.modules.topology.application.service.ProtectedStationConfigurationAdmissionCoordinator";
+        String configRoot="dz.sh.hidra.modules.identity.application.contract.topology.TopologyStationConfigurationAuthorizationContract";
+        assertTrue(stationConfigurationOwnerExport(configConsumer,configRoot));
+        assertTrue(stationConfigurationOwnerExport(configConsumer,configRoot+".Admission"));
+        assertFalse(stationConfigurationOwnerExport(configConsumer+"Sibling",configRoot));
+        assertFalse(stationConfigurationOwnerExport(configConsumer,configRoot+"Sibling"));
+        assertFalse(stationConfigurationOwnerExport(configConsumer,
+            "dz.sh.hidra.modules.identity.infrastructure.security.ProtectedTopologyStationConfigurationAuthorizationParticipant"));
         List<String> violations = new ArrayList<>();
         for (SourceType source : sources().values()) {
             String sourceModule = module(source.packageName());
@@ -201,6 +211,7 @@ class ForensicRemediationClosureTest {
                         && imported.equals("dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedEngineeringDraftAuthorizationContract")) {
                     continue;
                 }
+                if (stationConfigurationOwnerExport(source.fqcn(), imported)) continue;
                 if (installedUnitOwnerExport(source.fqcn(), imported)) continue;
                 if (organizationOwnerExport(source.fqcn(), imported)) continue;
                 if (custodyProductOwnerExport(source.fqcn(), imported)) continue;
@@ -210,6 +221,11 @@ class ForensicRemediationClosureTest {
         assertTrue(violations.isEmpty(), () -> "Unapproved cross-module imports: " + violations);
     }
 
+    private static boolean stationConfigurationOwnerExport(String source,String imported) {
+        String consumer="dz.sh.hidra.modules.topology.application.service.ProtectedStationConfigurationAdmissionCoordinator";
+        String root="dz.sh.hidra.modules.identity.application.contract.topology.TopologyStationConfigurationAuthorizationContract";
+        return source.equals(consumer) && (imported.equals(root) || imported.startsWith(root+"."));
+    }
     private static boolean installedUnitOwnerExport(String source,String imported) {
         String consumer="dz.sh.hidra.modules.topology.application.service.ProtectedInstalledUnitAdmissionCoordinator";
         String root="dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract";

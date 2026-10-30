@@ -86,12 +86,12 @@
         "suppliedFluidExportsStayExactToTheirCoordinator"
       ],
       "class": "dz.sh.hidra.ForensicRemediationClosureTest",
-      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
+      "dependency_reason": "HAPI-600 B3-S2 exact Identity-export coordinator allowance and sibling/private-adapter negative coverage; inherited HRA-120 architecture closure unchanged",
       "fast": true,
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java",
-      "source_sha256": "0a0b48ae8376ffa92cb522727985bd1dd99428e224acba5eea73db715427a033",
+      "source_sha256": "a2019f6da291dc2086184994ba99c4ffb97f52e6cbaa6d1cc6b2786f875b9347",
       "supports": []
     },
     {
@@ -9465,12 +9465,12 @@
         "populatedRevisionRejectsBadPeriodEpochFormatDigestAndGraphReference"
       ],
       "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.StationInstalledConfigurationPostgresIntegrationTest",
-      "dependency_reason": "HAPI-600 A fresh Flyway PostgreSQL constraints and integrity; requires Docker",
+      "dependency_reason": "HAPI-600 B3-S2 fixture origin supplied atomically by original SQL backend/XID/clock in synthetic owner tests; all original station configuration constraints, CAS and rollback cases retained",
       "fast": false,
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/StationInstalledConfigurationPostgresIntegrationTest.java",
-      "source_sha256": "b47fb58d245c0fc828bfffd0cf876f5a8f757202facdca5f4ad8165e6d89cbe2",
+      "source_sha256": "72c562c165a60223d082d7742599da3cc03e4c8dc510d523f7635a27ab5f10c9",
       "supports": []
     },
     {

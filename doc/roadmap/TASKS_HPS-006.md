@@ -9082,6 +9082,85 @@ or native role tests), owner Fail repairs the responsible defect within
 this **same** B3-S2 scope before another Next. Do not start Package C,
 frontend, numerical simulation, release or deployment automatically.
 
+### HAPI-600 B3-S2 — Full CI #998 responsible failure repair — 2026-10-30
+
+**One existing stage, no additional subdivision.** The implementation
+commit `796a3ef065169f9d301dd60bc050f3fe4366c80d` triggered Full CI #998
+([run](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41035014575))
+**FAILURE** and Documentation #745
+([run](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41035014741))
+**SUCCESS**. Full's static lane and 13 of 14 PostgreSQL shards passed;
+shard 11, Java21 unit/architecture, and API/catalog failed. The Full
+Verification Gate failure is downstream, not an independent permission
+to advance. Exact raw causes:
+
+- `ForensicRemediationClosureTest.crossModulePrivateImportsRemainClosed`
+  rejected the B3-S2 coordinator's **already reviewed** public
+  `TopologyStationConfigurationAuthorizationContract` import.
+  `ArchitectureGuardrailTest` on this head already enforces the same
+  exact coordinator/root-only import and denies private Identity
+  adapters, sibling consumers and sibling contracts. The separate
+  forensic scanner needs the identical precise exception; a
+  package-wide export, removed scan, ignored failure or public
+  authorization factory is prohibited.
+- Existing 13-case schema-owner
+  `StationInstalledConfigurationPostgresIntegrationTest` fixtures
+  inserted request rows using only the original eight columns and
+  historical `recorded_at`. B3-S2's immutable receipt-origin SQL
+  trigger rightly requires authentic current backend, XID, role and
+  sampled time in **the same original SQL insertion**. Five
+  failures/errors from `23514` and downstream mismatched expected
+  `23505` resulted. The fixture must capture the actual PostgreSQL
+  session clock, PID/XID/role *inside that statement* without disabling
+  or weakening the trigger; all previous negative constraints,
+  multi-station/nine-unit, historical-source, head CAS, concurrency
+  and rollback cases must remain in the inventory.
+- The physical dictionary check rejected unchanged
+  `doc/database/DATA_DICTIONARY.md`. Full #998's actual migrated
+  PostgreSQL16.15 artifact
+  `hidra-database-schema-796a3ef065169f9d301dd60bc050f3fe4366c80d-41035014575-1-api-contract`
+  (artifact ID `12967871908`) reports 190 migrations, 470 JPA
+  mappings, 536 relations, zero unresolved owners and physical
+  catalog SHA-256
+  `1e207ef7d23351f755f085f2a3da89f56888cc306e05d94e06bd33006f8e7a2b`.
+  Its rendered dictionary has Git blob SHA
+  `e3a48c8b7ac319fa212064ca9494b59788e1160f`,
+  verified against the exact recovered artifact bytes, not estimated
+  or generated from a model-only schema.
+
+**Source-evidenced exact CI-repair scope amendment to the existing
+B3-S2 stage only.** In addition to the already registered
+`.github/ci-test-inventory.json`, `doc/database/DATA_DICTIONARY.md`
+and `doc/roadmap/TASKS_HPS-006.md`, two cross-cutting *test-only*
+paths were previously omitted from B3-S2's exact modify allowlist and
+must be named to address the actual failed gate:
+- `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+  — add exact station-configuration coordinator/contract allowance
+  and explicit sibling/private-adapter negative assertions;
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/StationInstalledConfigurationPostgresIntegrationTest.java`
+  — supply authentic receipt-origin fixture coordinates through
+  one PostgreSQL INSERT statement, retaining all old assertions.
+
+These are required correction dependencies **of B3-S2**, not new
+tasks, packages, preflight stages or B1/B2 Identity changes. No Java
+production source, Flyway migration, old trigger, existing CI workflow,
+status table, privileged role policy or artifact generator is modified
+by this repair. All registered original B3-S2 acceptance remains
+applicable and the parent HAPI-600 remains NOT_IMPLEMENTED/IN_PROGRESS.
+The relevant previously missing test entries are registered with actual
+source SHA-256, preserving case identities and no-skip requirements.
+An explicit narrowly bounded amendment is recorded rather than silently
+treating unrelated files as originally authorized.
+
+**Exact corrective commit message:**
+`fix(topology): restore protected station configuration CI integrity`.
+Publish to main only with expected head `796a3ef065169f9d301dd60bc050f3fe4366c80d`
+and verify parent/tree/exact five-file scope. Observe new exact-SHA
+Full/Docs creation/start, then STOP. Source inspection and previous
+Full #998 failures do not prove repair acceptance. If the next Full
+CI fails, remain within B3-S2 and repair the first causal gate;
+do not select Package C or rewrite the retained migration history.
+
 <a id="hapi-602"></a>
 ## HAPI-602 — Versioned installed-unit/characteristic links
 

@@ -8976,6 +8976,46 @@ this registration selects **B3-S2A only**. A B3-S2A failure must be
 repaired before B, and B before C. Preserve all original
 B3-S2 scope/acceptance as union, with no scope expansion.
 
+### HAPI-600 B3-S2 — owner governance correction: revoke unauthorized nested partition — 2026-10-30
+
+**Effective execution instruction; supersedes ONLY the B3-S2A/B/C registration
+introduced in commit `e1866cb2eb2c198f555de6e90718281dc5c57d26`.**
+The owner identified that B3-S2 was already a sub-stage of HAPI-600
+Package B / B3 and that creating further B3-S2A/B/C
+execution stages violated the task non-resplitting constraint.
+The additional partition was **not authorized** and is **withdrawn**.
+Its detailed historical text above is retained solely as an audit
+record; it is not an executable plan, task registry, dependency gate
+or permission for additional commits. Documentation Validation #743
+SUCCESS is validation of syntax/consistency only, **not owner approval**
+of that partition. This correction is not a new task or execution stage.
+
+**Next registered stage is exactly one B3-S2**, as originally
+registered in the source-first B3 execution record:
+`feat(topology): protect effective station configuration operations`.
+Execute the **entire already registered B3-S2 CREATE/MODIFY allowlist
+and integrated acceptance** as one bounded implementation, including
+the native protected database capability, application, repository,
+Identity/source-fence integration, final SQL guard, revision CAS/replay
+and negative/rollback/concurrency tests. Never split B3-S2 again or
+create B3-S2A/B/C labels. If an actual material blocker makes
+full execution impossible, disclose it and stop for owner direction;
+do not replace implementation with a further planning/registration
+commit or bypass security acceptance.
+
+**Preservation.** No previously implemented B3-S1 source or tests,
+migration, Identity authority, CI policy, frozen ROADMAP/PHASES
+status, legacy mapping or history is changed by this correction.
+Exact source precursor `0d5a28f4624f094552b18c15eda562c35c6eacb6`
+has Full #997 and Docs #742 SUCCESS (3,887 tests, zero
+failures/errors/skips). Parent HAPI-600 remains incomplete;
+B3-S2 has not been implemented. Owner correction selected
+**retraction of the unauthorized split**, not execution of B3-S2.
+This corrective governance commit has exact message
+`docs(topology): retract unauthorized B3-S2 subpackages`.
+After publishing with expected-head guard, verify Documentation CI
+creation/queued or started and STOP.
+
 <a id="hapi-602"></a>
 ## HAPI-602 — Versioned installed-unit/characteristic links
 

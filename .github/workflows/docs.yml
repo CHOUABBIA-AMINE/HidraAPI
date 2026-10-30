@@ -64,7 +64,33 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Select documentation-only validation
+      id: scope
+      env:
+        EVENT_NAME: ${{ github.event_name }}
+        BEFORE_SHA: ${{ github.event.before }}
+        BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      run: |
+        python3 - <<'PY'
+        import os, subprocess
+        from pathlib import PurePosixPath
+        event = os.environ['EVENT_NAME']
+        base = os.environ['BASE_SHA'] if event == 'pull_request' else os.environ['BEFORE_SHA']
+        docs_only = True  # Unknown/new refs retain validation rather than skipping it.
+        if base and set(base) != {'0'}:
+            revisions = [base + '...' + os.environ['HEAD_SHA']] if event == 'pull_request' else [base, os.environ['GITHUB_SHA']]
+            files = subprocess.check_output(['git', 'diff', '--name-only', '-z', *revisions]).decode().split('\0')
+            # Match Full CI's paths-ignore: it owns every mixed/code change.
+            docs_only = all(p.startswith(('doc/', 'docs/')) or PurePosixPath(p).match('*.md') for p in files if p)
+        with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+            output.write('docs_only=' + str(docs_only).lower() + '\n')
+        print('Documentation-only validators selected:', docs_only)
+        PY
     - name: Test canonical documentation validators
+      if: steps.scope.outputs.docs_only == 'true'
       run: |
         python3 .github/scripts/test_validate_docs.py
         python3 .github/scripts/test_validate_openapi_snapshot.py
@@ -74,6 +100,7 @@ jobs:
         python3 .github/scripts/test_verify_full_ci_evidence.py
         python3 .github/scripts/verify_ci_test_inventory.py
     - name: Validate canonical documentation and OpenAPI snapshot
+      if: steps.scope.outputs.docs_only == 'true'
       run: |
         python3 .github/scripts/validate_docs.py
         python3 .github/scripts/validate_openapi_snapshot.py

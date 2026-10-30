@@ -222,6 +222,61 @@ class InventoryTest(unittest.TestCase):
         self.assertTrue(all(lanes[lane] for lane in ci.postgres_lanes(manifest)))
         self.assertEqual(manifest, before)
 
+    def test_fourteen_shards_are_complete_disjoint_balanced_and_deterministic(self):
+        manifest = fixture(self.root, postgres_shards=14)
+        database = [e for e in manifest['classes'] if e['lane'] == 'postgres-integration']
+        for index, entry in enumerate(database): entry['baseline_seconds'] = index + 1
+        for index in range(30):
+            name = f'Load{index}DatabaseTest'
+            path = source(self.root, name, f'import org.testcontainers.containers.PostgreSQLContainer;\nclass {name} {{}}\n')
+            manifest['classes'].append(dict(database[0], **{'class': 'example.' + name,
+                'path': path.relative_to(self.root).as_posix(), 'source_sha256': ci.digest(path.read_bytes()),
+                'baseline_seconds': (index % 10) + 1}))
+        ci.validate(self.root, manifest)
+        before = copy.deepcopy(manifest)
+        lanes = ci.partitions(manifest)
+        self.assertEqual(lanes, ci.partitions(manifest))
+        names = [name for lane in ci.postgres_lanes(manifest) for name in lanes[lane]]
+        expected = [e['class'] for e in manifest['classes'] if e['lane'] == 'postgres-integration']
+        self.assertCountEqual(names, expected)
+        self.assertEqual(len(names), len(set(names)))
+        self.assertEqual(len(ci.postgres_lanes(manifest)), 14)
+        weights = {e['class']: e['baseline_seconds'] for e in manifest['classes']}
+        loads = [sum(weights[name] for name in lanes[lane]) for lane in ci.postgres_lanes(manifest)]
+        self.assertLessEqual(max(loads) - min(loads), max(weights.values()))
+        self.assertTrue(all(lanes[lane] for lane in ci.postgres_lanes(manifest)))
+        self.assertEqual(manifest, before)
+
+    def test_split_estimate_is_scheduling_only_and_requires_exact_case_membership(self):
+        manifest = fixture(self.root, postgres_shards=14)
+        entry = next(e for e in manifest['classes'] if e['lane'] == 'postgres-integration')
+        entry['baseline_seconds'] = 0
+        manifest['scheduling_timing_refresh'] = {'per_class_overhead_estimate_seconds': 4,
+            'estimates': {entry['class']: {'seconds': 200, 'basis': 'Exact prior cases; new setup unmeasured',
+                                         'cases': entry['cases'][:]}}}
+        before = copy.deepcopy(manifest)
+        lanes = ci.partitions(manifest)
+        self.assertEqual(manifest, before)
+        self.assertEqual(len(lanes['postgres-0']), 1)
+        self.assertEqual(lanes['postgres-0'], [entry['class']])
+        self.assertEqual(entry['baseline_seconds'], 0)
+        manifest['scheduling_timing_refresh']['estimates'][entry['class']]['cases'] = ['omitted']
+        with self.assertRaisesRegex(ValueError, 'stale split-suite'):
+            ci.partitions(manifest)
+
+    def test_invalid_split_estimates_and_overhead_fail_closed(self):
+        for value in (-1, float('nan'), float('inf'), True, '4', 31):
+            manifest = fixture(self.root, postgres_shards=14)
+            manifest['scheduling_timing_refresh'] = {'per_class_overhead_estimate_seconds': value}
+            with self.subTest(overhead=value), self.assertRaises(ValueError): ci.partitions(manifest)
+        for value in (-1, 0, float('nan'), float('inf'), True, '20'):
+            manifest = fixture(self.root, postgres_shards=14)
+            entry = next(e for e in manifest['classes'] if e['lane'] == 'postgres-integration')
+            entry['baseline_seconds'] = 0
+            manifest['scheduling_timing_refresh'] = {'estimates': {entry['class']:
+                {'seconds': value, 'cases': entry['cases'], 'basis': 'Unmeasured split'}}}
+            with self.subTest(seconds=value), self.assertRaises(ValueError): ci.partitions(manifest)
+
     def test_unreviewed_or_empty_shard_count_denies(self):
         for count in (0, 1, 6, 8, 9, 11, True, '3', 3, 4, 5):
             with self.subTest(count=count):

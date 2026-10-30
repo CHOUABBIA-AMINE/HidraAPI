@@ -1220,6 +1220,111 @@ is selected automatically. Current source statuses remain unchanged; hosted
 acceptance and actual new timings are pending the corrective run.
 
 
+### 2026-10-30 — owner-approved seven-minute CI maintenance
+
+The owner explicitly selected the preceding CI review recommendations with
+“Do your recommendations”: refresh measured scheduling weights, decompose the
+long appointment suite without dropping cases, expand to fourteen isolated
+PostgreSQL shards, consolidate automatic Fast/unit execution, and avoid duplicate
+documentation validation on mixed changes. This is bounded HAPI-045 maintenance;
+accepted HAPI-045/046/436 statuses and all other roadmap statuses remain unchanged.
+Seven minutes is a development feedback target, not a test timeout, transaction
+budget, engineering SLA or already achieved performance acceptance.
+Retain exact message: `ci: automate fast feedback and preserve full verification gates`.
+
+**Recovered baseline.** Main64e5978d456d53362770e949aa47d9c2fa62cf02 has
+successful Full992/run41002910538, Fast287/run41002910615 and Docs735.
+Full992 elapsed workflow interval is8m38s; earlier successful Full990 and Full989
+are10m24s and11m15s. Authenticated aggregate artifact12954621096 has ZIP SHA256
+`df0fd3e0a2f73b1777375f24fde29f6655112b0028fbb476a66a7b5e7df1107c`.
+Its510 raw reports contain3875 distinct cases, zero failures/errors/skips and
+no duplicated case identities in the full partition union. Fast independently
+selects383 of the unit classes and2205 cases already covered by Full. This is
+execution overlap, not evidence that distinct business/security assertions are
+obsolete. No test is removed as redundant. The optional serial oracle was skipped
+and the API lane skipped Java tests as intended for development mode.
+
+**Exact write scope (13 files; three CREATE, ten MODIFY).**
+
+- MODIFY `.github/workflows/ci.yml`, `.github/workflows/ci-fast-feedback.yml`,
+  `.github/workflows/docs.yml`, `.github/ci-test-inventory.json`.
+- MODIFY `.github/scripts/verify_ci_test_inventory.py`,
+  `.github/scripts/test_verify_ci_test_inventory.py`,
+  `.github/scripts/verify_full_ci_evidence.py`,
+  `.github/scripts/test_verify_full_ci_evidence.py` and this owning phase record.
+- MODIFY `src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/EmployeeAppointmentConcurrencyPostgresIntegrationTest.java`.
+- CREATE the same-package `EmployeeAppointmentPostgresFixture.java`,
+  `EmployeeAppointmentNativeLifecyclePostgresIntegrationTest.java` and
+  `EmployeeAppointmentCurrentReadPostgresIntegrationTest.java`.
+
+**Case-preserving decomposition.** The original82-case suite measured368.401
+suite seconds,436 job-wall seconds, and occupied a shard alone. Keep54 structural/
+storage/concurrency cases under the original concrete class, move8 native
+lifecycle/producer/API cases to NativeLifecycle and20 current-read/native-failure
+cases to CurrentRead. Every original test method body is byte-identical and occurs
+exactly once. Explicit case-to-class/support associations and new exact source
+hashes are recorded in the inventory. The new abstract fixture contains zero
+executable test methods. Shared helper bodies, synthetic data, native LOCAL/LDAP/
+AD/OIDC setup, real grants/roles, JDBC observer, assertions, fault injection,
+Flyway/schema validation and clock/lock/rollback requirements are retained.
+Only formerly private top-level fixture members gain package access for inheritance;
+nested driver internals remain private. All new types are test-only in the same
+package. Inherited JUnit/Spring/Testcontainers setup and cleanup are retained;
+each concrete PostgreSQL class keeps its own JVM/database lifecycle, with no
+same-database parallel tests or retry. Audit still selects every concrete class.
+
+**Scheduling.** Refresh all124 active PostgreSQL baseline suite measurements
+from Full992 XML, checking each exact case set and success/skip counts; retain
+report hashes, source/run/attempt/artifact and nested prior timing history.
+The three split suites stay explicitly baseline0/unmeasured. Their scheduling-only
+estimates sum their actual moved testcase times plus the original suite residual
+for each new class; they do not claim measured new setup/runtime. A separate4s
+per-class JVM allowance is explicitly estimated, not a measured report value.
+The scheduler validates estimate type, positive finite bounds, exact case list
+and stated basis; it never mutates measurements or authorizes missing coverage.
+Existing unknown-suite median fallback remains. Fourteen deterministic disjoint
+shards have modeled loads274.594..278.540 seconds,7..10 classes each; these exclude
+fixed runner/build/queue/gate overhead. Regrouping, extra fixture setup, runner
+variation and concurrent-job capacity can change actual times/cost. No sub-seven-
+minute guarantee or cost-neutral claim is made. Review naturally produced runs;
+do not dispatch unchanged benchmarks solely to manufacture timing samples.
+
+**Workflow consolidation.** Full's complete386-class/2273-case unit lane remains
+the automatic early result, followed independently by the mandatory full gate.
+Fast remains explicitly manually dispatchable for diagnostics, with no automatic
+push/PR duplicate. Docs retains push/PR/manual entry points, but its actual Git
+change selector runs validators only for documentation-only changes; Full's
+mandatory static lane owns mixed/code changes. Push before/head and PR three-dot
+base/head match the respective path-filter semantics, including a merge checkout
+with unrelated changes. Unknown/new refs conservatively retain Docs validation; an
+unavailable Git diff fails the selector rather than silently passing validation.
+Docs manual dispatch still validates. The API lane also stops repeating the base-
+resolver self-test already enforced by Full static validation; independent optional
+audit diagnostics remain intact. Every required static validator remains
+in Full; no source selection, mandatory gate, API/catalog/dictionary equality,
+cache provenance, partial-rerun attestation or release restriction is weakened.
+
+**Validation.** Available local checks:38 inventory/scheduling tests,54 full-gate/
+release evidence tests and19 documentation-validator fixtures PASS. Tests cover
+fourteen complete/disjoint/nonempty deterministic shards, source-bound split
+estimates, invalid estimates/overhead, every missing shard, fresh-hash omitted/
+overlapping/skipped fourteenth-shard reports, and exact older-attempt job
+attestation through shard13. Workflow YAML and14-member matrix agree; actual
+Docs selector executed against disposable Git histories for docs-only/mixed,
+new-ref/manual and PR merge cases. Focused source/support hashes, all82 unchanged
+bodies once, zero abstract-fixture cases, unchanged3875-case union and historical
+exclusions PASS. Java lexical delimiters are balanced; this is not compilation.
+The partial local checkout cannot execute full canonical source/documentation
+validation. Java21/Maven/PostgreSQL runtime tests were not run locally; available
+Java is17 and Maven/services are absent. No complete environment was provisioned.
+Hosted exact-commit CI owns runtime/inheritance/isolation/performance acceptance.
+
+**Disposition.** Implementation is pending new exact-SHA hosted acceptance and
+measured wall timing. It does not select HAPI-600 B3, promote B2 acceptance,
+change runtime budgets/deadlines, POM, migrations, dictionary, API, release policy,
+version, deployment or simulator/OT scope. Publish guarded main, verify exact
+parent/tree/file scope, observe applicable CI queued/started and STOP.
+
 <a id="hapi-046"></a>
 ## HAPI-046 — Timing, runner cost and adoption decision
 

@@ -237,6 +237,10 @@ jobs:
         - 7
         - 8
         - 9
+        - 10
+        - 11
+        - 12
+        - 13
   api-contract:
     name: API contract and dictionary
     runs-on: ubuntu-latest
@@ -405,7 +409,6 @@ jobs:
         GH_TOKEN: ${{ github.token }}
       run: |
         set -euo pipefail
-        python3 .github/scripts/test_resolve_openapi_base.py
         python3 .github/scripts/resolve_openapi_base.py | tee target/openapi/base-provenance.txt
     - name: Generate base-revision OpenAPI contract
       shell: bash

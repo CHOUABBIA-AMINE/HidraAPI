@@ -67,7 +67,7 @@ class FullEvidenceTest(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name) / 'source'
         self.root.mkdir()
-        self.manifest = fixture(self.root, postgres_shards=10)
+        self.manifest = fixture(self.root, postgres_shards=14)
         (self.root / 'pom.xml').write_text('<project/>')
         script = self.root / '.github/scripts/verify_ci_test_inventory.py'
         script.parent.mkdir(parents=True)
@@ -86,7 +86,7 @@ class FullEvidenceTest(unittest.TestCase):
         for lane in full.REQUIRED_LANES:
             lane_root = self.directory / lane
             lane_root.mkdir()
-            job = {'oracle': 'verify', 'postgres-0': 'postgres-integration', 'postgres-1': 'postgres-integration', 'postgres-2': 'postgres-integration', 'postgres-3': 'postgres-integration', 'postgres-4': 'postgres-integration', 'postgres-5': 'postgres-integration', 'postgres-6': 'postgres-integration', 'postgres-7': 'postgres-integration', 'postgres-8': 'postgres-integration', 'postgres-9': 'postgres-integration'}.get(lane, lane)
+            job = 'postgres-integration' if lane in inventory.postgres_lanes(self.manifest) else {'oracle': 'verify'}.get(lane, lane)
             evidence = {'format': 1, 'source_sha': SHA, 'run_id': 5, 'run_attempt': 2,
                         'lane': lane, 'job': job, 'inventory_sha256': self.fingerprint,
                         'classifier_sha256': inventory.digest(script.read_bytes()), 'files': {}}
@@ -153,7 +153,7 @@ class FullEvidenceTest(unittest.TestCase):
         api.assert_called_once_with('actions/runs/5/attempts/1/jobs', 'jobs')
 
     def test_new_shards_require_exact_earlier_job_attestation(self):
-        for index in (7, 8, 9):
+        for index in range(7, 14):
             job = {'name': f'PostgreSQL integration shard {index}', 'head_sha': SHA,
                    'run_attempt': 1, 'workflow_name': 'HidraAPI CI',
                    'status': 'completed', 'conclusion': 'success'}
@@ -235,7 +235,7 @@ class FullEvidenceTest(unittest.TestCase):
         with self.assertRaises(ValueError): self.aggregate()  # audit is single-attempt strict
 
 
-    def test_development_requires_all_ten_partitions_and_denies_release_equivalence(self):
+    def test_development_requires_all_fourteen_partitions_and_denies_release_equivalence(self):
         self.prepare_development()
         result = self.development()
         self.assertEqual(result['mode'], 'development-partitioned')
@@ -244,8 +244,8 @@ class FullEvidenceTest(unittest.TestCase):
         self.assertFalse(result['fallback_required'])
         self.assertTrue(result['fallback_available'])
         self.assertFalse(result['optimized_adoption_eligible'])
-        self.assertEqual(result['classes'], 11)
-        self.assertEqual(result['counts'], dict(tests=11, failures=0, errors=0, skipped=0))
+        self.assertEqual(result['classes'], 15)
+        self.assertEqual(result['counts'], dict(tests=15, failures=0, errors=0, skipped=0))
         self.assertEqual(set(result['lane_evidence']), set(full.REQUIRED_LANES) - {'oracle'})
         with self.assertRaises(ValueError): self.aggregate()  # audit is still the default
 
@@ -273,7 +273,7 @@ class FullEvidenceTest(unittest.TestCase):
 
     def test_development_missing_any_shard_denies(self):
         self.prepare_development()
-        for index in range(10):
+        for index in range(14):
             with self.subTest(index=index):
                 path = self.directory / f'postgres-{index}/evidence.json'
                 original = path.read_bytes()
@@ -292,6 +292,28 @@ class FullEvidenceTest(unittest.TestCase):
         for mutation in ('omit', 'overlap', 'skip'):
             with self.subTest(mutation=mutation):
                 directory = self.directory / 'postgres-4'
+                receipt = directory / 'evidence.json'; old_receipt = receipt.read_bytes()
+                original = next((directory / 'reports').glob('*.xml')); old_report = original.read_bytes()
+                if mutation == 'omit':
+                    original.unlink(); changed = original
+                elif mutation == 'overlap':
+                    changed = report(directory / 'reports', name='example.UnitTest')
+                else:
+                    name = inventory.ET.fromstring(old_report).get('name')
+                    changed = report(directory / 'reports', name=name, outcome='skipped')
+                document = json.loads(old_receipt)
+                if changed.exists(): document['files'][changed.relative_to(directory).as_posix()] = inventory.digest(changed.read_bytes())
+                else: del document['files'][changed.relative_to(directory).as_posix()]
+                receipt.write_bytes(inventory.canonical(document))
+                with self.assertRaises(ValueError): self.development()
+                if changed != original: changed.unlink()
+                original.write_bytes(old_report); receipt.write_bytes(old_receipt)
+
+    def test_fourteenth_shard_omission_overlap_and_skip_deny_with_fresh_hashes(self):
+        self.prepare_development()
+        for mutation in ('omit', 'overlap', 'skip'):
+            with self.subTest(mutation=mutation):
+                directory = self.directory / 'postgres-13'
                 receipt = directory / 'evidence.json'; old_receipt = receipt.read_bytes()
                 original = next((directory / 'reports').glob('*.xml')); old_report = original.read_bytes()
                 if mutation == 'omit':
@@ -329,7 +351,7 @@ class FullEvidenceTest(unittest.TestCase):
         result = full.aggregate(self.root, self.directory, SHA, 5, 2, self.needs, dependency_cache='cold')
         self.assertTrue(result['same_run_equivalence'])
         self.assertEqual(result['dependency_cache_mode'], 'cold')
-        self.assertEqual(len(result['dependency_cache']), 13)
+        self.assertEqual(len(result['dependency_cache']), 17)
         with self.assertRaises(ValueError): self.aggregate()
 
     def test_missing_or_mixed_cache_evidence_denies(self):
@@ -368,8 +390,8 @@ class FullEvidenceTest(unittest.TestCase):
         self.assertFalse(result['serial_oracle'])
         self.assertFalse(result['same_run_equivalence'])
         self.assertFalse(result['release_eligible'])
-        self.assertEqual(result['classes'], 11)
-        self.assertEqual(result['counts']['tests'], 11)
+        self.assertEqual(result['classes'], 15)
+        self.assertEqual(result['counts']['tests'], 15)
         with self.assertRaises(ValueError): self.aggregate()  # default internal/release audit remains strict
 
     def test_parallel_cold_audit_preserves_all_cache_checks(self):
@@ -377,7 +399,7 @@ class FullEvidenceTest(unittest.TestCase):
         result = full.aggregate(self.root, self.directory, SHA, 5, 2, self.needs,
                                 mode='audit', dependency_cache='cold', serial_oracle=False)
         self.assertEqual(result['dependency_cache_mode'], 'cold')
-        self.assertEqual(len(result['dependency_cache']), 12)
+        self.assertEqual(len(result['dependency_cache']), 16)
         self.change('postgres-4', dependency_cache={})
         with self.assertRaises(ValueError): full.aggregate(self.root, self.directory, SHA, 5, 2,
                                                           self.needs, mode='audit', dependency_cache='cold', serial_oracle=False)

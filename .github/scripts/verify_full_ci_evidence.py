@@ -18,10 +18,10 @@ import io
 import verify_ci_test_inventory as inventory
 import generate_data_dictionary as dictionary
 
-REQUIRED_LANES = ('static-validation', 'unit-architecture', 'postgres-0', 'postgres-1', 'postgres-2', 'postgres-3', 'postgres-4', 'postgres-5', 'postgres-6', 'postgres-7', 'postgres-8', 'postgres-9', 'api-contract', 'oracle')
+REQUIRED_LANES = ('static-validation', 'unit-architecture', 'postgres-0', 'postgres-1', 'postgres-2', 'postgres-3', 'postgres-4', 'postgres-5', 'postgres-6', 'postgres-7', 'postgres-8', 'postgres-9', 'postgres-10', 'postgres-11', 'postgres-12', 'postgres-13', 'api-contract', 'oracle')
 REQUIRED_NEEDS = ('static-validation', 'unit-architecture', 'postgres-integration', 'api-contract', 'verify')
 REQUIRED_JOB_NAMES = ('Static validation', 'Java 21 unit and architecture', 'PostgreSQL integration shard 0',
-                      'PostgreSQL integration shard 1', 'PostgreSQL integration shard 2', 'PostgreSQL integration shard 3', 'PostgreSQL integration shard 4', 'PostgreSQL integration shard 5', 'PostgreSQL integration shard 6', 'PostgreSQL integration shard 7', 'PostgreSQL integration shard 8', 'PostgreSQL integration shard 9', 'API contract and dictionary',
+                      'PostgreSQL integration shard 1', 'PostgreSQL integration shard 2', 'PostgreSQL integration shard 3', 'PostgreSQL integration shard 4', 'PostgreSQL integration shard 5', 'PostgreSQL integration shard 6', 'PostgreSQL integration shard 7', 'PostgreSQL integration shard 8', 'PostgreSQL integration shard 9', 'PostgreSQL integration shard 10', 'PostgreSQL integration shard 11', 'PostgreSQL integration shard 12', 'PostgreSQL integration shard 13', 'API contract and dictionary',
                       'Java 21 Maven verification', 'Full Verification Gate')
 API_FILES = ('target/openapi/hidra-api.json', 'target/openapi/hidra-api-base.json',
              'target/openapi/base-provenance.txt', 'target/database/schema.json',
@@ -184,7 +184,7 @@ def verify_earlier_lane_job(lane, sha, run, attempt):
                  'unit-architecture': 'Java 21 unit and architecture',
                  'api-contract': 'API contract and dictionary',
                  'oracle': 'Java 21 Maven verification'}
-    for index in range(10):
+    for index in range(14):
         job_names[f'postgres-{index}'] = f'PostgreSQL integration shard {index}'
     expected = job_names.get(lane)
     if expected is None or type(attempt) is not int or attempt < 1:
@@ -236,10 +236,7 @@ def aggregate(root, directory, sha, run, attempt, needs, mode='audit', dependenc
         classifier = inventory.digest((root / '.github/scripts/verify_ci_test_inventory.py').read_bytes())
         if evidence.get('classifier_sha256') != classifier:
             raise ValueError('Wrong selection helper revision')
-        expected_job = {'oracle': 'verify', 'postgres-0': 'postgres-integration',
-                        'postgres-1': 'postgres-integration', 'postgres-2': 'postgres-integration',
-                        'postgres-3': 'postgres-integration', 'postgres-4': 'postgres-integration',
-                         'postgres-5': 'postgres-integration', 'postgres-6': 'postgres-integration', 'postgres-7': 'postgres-integration', 'postgres-8': 'postgres-integration', 'postgres-9': 'postgres-integration'}.get(lane, lane)
+        expected_job = 'postgres-integration' if lane in inventory.postgres_lanes(manifest) else {'oracle': 'verify'}.get(lane, lane)
         if evidence.get('job') != expected_job:
             raise ValueError('Missing owning job identity')
         by_attempt = candidates.setdefault(lane, {})

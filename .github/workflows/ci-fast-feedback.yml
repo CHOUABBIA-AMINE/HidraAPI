@@ -1,47 +1,7 @@
 name: HidraAPI Fast Feedback
+# Automatic early feedback is the complete unit/architecture lane in ci.yml.
+# Retain an explicit manual diagnostic without repeating 2,205 cases on every push.
 'on':
-  push:
-    branches:
-    - main
-    paths:
-    - src/main/**
-    - src/test/**
-    - pom.xml
-    - .mvn/**
-    - mvnw
-    - mvnw.cmd
-    - .github/ci-test-inventory.json
-    - .github/scripts/verify_ci_test_inventory.py
-    - .github/scripts/test_verify_ci_test_inventory.py
-    - .github/scripts/verify_full_ci_evidence.py
-    - .github/scripts/test_verify_full_ci_evidence.py
-    - .github/scripts/generate_data_dictionary.py
-    - .github/scripts/test_generate_data_dictionary.py
-    - .github/scripts/resolve_openapi_base.py
-    - .github/scripts/test_resolve_openapi_base.py
-    - .github/workflows/ci-fast-feedback.yml
-    - .github/workflows/ci.yml
-  pull_request:
-    branches:
-    - main
-    paths:
-    - src/main/**
-    - src/test/**
-    - pom.xml
-    - .mvn/**
-    - mvnw
-    - mvnw.cmd
-    - .github/ci-test-inventory.json
-    - .github/scripts/verify_ci_test_inventory.py
-    - .github/scripts/test_verify_ci_test_inventory.py
-    - .github/scripts/verify_full_ci_evidence.py
-    - .github/scripts/test_verify_full_ci_evidence.py
-    - .github/scripts/generate_data_dictionary.py
-    - .github/scripts/test_generate_data_dictionary.py
-    - .github/scripts/resolve_openapi_base.py
-    - .github/scripts/test_resolve_openapi_base.py
-    - .github/workflows/ci-fast-feedback.yml
-    - .github/workflows/ci.yml
   workflow_dispatch: null
 permissions:
   contents: read

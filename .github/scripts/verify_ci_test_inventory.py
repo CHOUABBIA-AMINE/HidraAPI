@@ -14,7 +14,7 @@ import statistics
 import subprocess
 import xml.etree.ElementTree as ET
 
-LANES = ('fast', 'unit-architecture', 'postgres-0', 'postgres-1', 'postgres-2', 'postgres-3', 'postgres-4', 'postgres-5', 'postgres-6', 'postgres-7', 'postgres-8', 'postgres-9', 'oracle', 'historical')
+LANES = ('fast', 'unit-architecture', 'postgres-0', 'postgres-1', 'postgres-2', 'postgres-3', 'postgres-4', 'postgres-5', 'postgres-6', 'postgres-7', 'postgres-8', 'postgres-9', 'postgres-10', 'postgres-11', 'postgres-12', 'postgres-13', 'oracle', 'historical')
 APPROVED_GREENFIELD_ARCHIVE = frozenset({
     'dz.sh.hidra.modules.organization.infrastructure.persistence.OrganizationEmployeeContactBackfillMigrationTest',
     'dz.sh.hidra.modules.organization.infrastructure.persistence.OrganizationMultilingualCompatibilityRetirementMigrationTest',
@@ -133,7 +133,7 @@ def validate(root, manifest):
 
 def postgres_lanes(manifest):
     count = manifest.get('postgres_shards', 2)
-    if type(count) is not int or count not in (2, 3, 4, 5, 7, 10):
+    if type(count) is not int or count not in (2, 3, 4, 5, 7, 10, 14):
         raise ValueError('Unreviewed PostgreSQL shard count')
     return tuple(f'postgres-{index}' for index in range(count))
 
@@ -150,8 +150,20 @@ def partitions(manifest):
     # Zero means unmeasured, not free. Keep recorded measurements unchanged;
     # a scheduling-only median estimate prevents all new suites piling into one lane.
     unmeasured_weight = statistics.median(measured) if measured else 1.0
+    timing = manifest.get('scheduling_timing_refresh', {})
+    estimates = timing.get('estimates', {})
+    overhead = timing.get('per_class_overhead_estimate_seconds', 0)
+    if type(overhead) not in (int, float) or not 0 <= overhead <= 30:
+        raise ValueError('Invalid scheduling overhead estimate')
     def weight(entry):
-        return entry['baseline_seconds'] if entry['baseline_seconds'] > 0 else unmeasured_weight
+        seconds = entry['baseline_seconds']
+        if seconds == 0 and entry['class'] in estimates:
+            estimate = estimates[entry['class']]
+            seconds = estimate.get('seconds')
+            if (type(seconds) not in (int, float) or not 0 < seconds < 86400
+                    or estimate.get('cases') != entry['cases'] or not estimate.get('basis')):
+                raise ValueError('Invalid or stale split-suite scheduling estimate')
+        return (seconds if seconds > 0 else unmeasured_weight) + overhead
     for entry in sorted(database, key=lambda e: (-weight(e), e['class'])):
         index = min(range(len(lanes)), key=lambda i: (totals[i], i))
         shards[index].append(entry['class'])

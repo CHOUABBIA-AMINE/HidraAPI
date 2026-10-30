@@ -132,7 +132,7 @@ class StationInstalledConfigurationControllerTest {
         }
     }
     @Test void onlyAuthorizedOwnerAbsenceCanTranslateTo404() throws Exception {
-        when(owner.execute(any())).thenReturn(new Result(null,List.of(),false));
+        doReturn(new Result(null,List.of(),false)).when(owner).execute(any());
         mvc.perform(get(PATH).param("companyPartyId","company")).andExpect(status().isNotFound());
         verify(owner).execute(any());
     }

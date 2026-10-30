@@ -8783,6 +8783,32 @@ application/security/CI workflow, dictionary, Topology history, P3,
 SITE or release scope changes here. After guarded publication, observe
 applicable exact-SHA CI startup and STOP.
 
+### HAPI-600 B3-S1 — Full CI #995 startup repair — 2026-10-30
+
+Exact source baseline `dc8a40d1b47d1b4e7cfcde9b2c817128d6b42ee6`:
+Documentation Validation #740 passed, Full CI #995 failed on that exact SHA.
+The API contract/dictionary startup lane and all 14 PostgreSQL shards
+reported `AopConfigException` / `Cannot subclass final class
+JdbcStationConfigurationSourceEvidenceAdapter`. This is the first causal
+failure; later Spring context-threshold skips, missing API/dictionary
+artifacts, and Full Verification Gate failure are downstream. Java 21
+unit/architecture and static validation lanes passed; they do not override
+the failed Full gate.
+
+The bounded CI-first correction changes only the infrastructure adapter's
+`public final class` declaration to `public class`. Spring Boot's
+existing class-based CGLIB transactional proxy can then subclass the
+`@Repository` and intercept its unchanged `@Transactional(MANDATORY)`
+methods. Source lock/role/transaction checks, observable behavior,
+application ports, SQL schema, migration history, CI inventory/cases,
+shard count, protected policy and task statuses remain unchanged.
+No tests are weakened or skipped. Completion of this corrective change
+does not imply all five previously registered focused PostgreSQL methods
+have passed; wait for actual exact-SHA CI raw results before accepting S1.
+B3-S2 and C remain unselected. Exact repair message:
+`fix(topology): allow transactional proxy of station source evidence adapter`.
+No further stage executes in this repair turn.
+
 <a id="hapi-602"></a>
 ## HAPI-602 — Versioned installed-unit/characteristic links
 

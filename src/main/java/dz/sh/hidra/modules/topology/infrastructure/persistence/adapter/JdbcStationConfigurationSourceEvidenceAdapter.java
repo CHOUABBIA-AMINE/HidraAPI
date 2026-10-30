@@ -47,7 +47,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
  * It does not imply native Identity, Party, manufacturer or operational approval.
  */
 @Repository
-public final class JdbcStationConfigurationSourceEvidenceAdapter implements StationConfigurationSourceEvidencePort {
+public class JdbcStationConfigurationSourceEvidenceAdapter implements StationConfigurationSourceEvidencePort {
     private static final List<String> RELATIONS=List.of(
         "public.hidra_topology_equipment",
         "public.hidra_topology_facility",

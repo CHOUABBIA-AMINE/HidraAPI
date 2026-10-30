@@ -174,6 +174,15 @@ remains open. HAPI-601 therefore stays NOT_IMPLEMENTED/BLOCKED, while HAPI-602
 remains blocked on its exact installed-unit binding dependencies. No interpolation,
 numerical P3, industrial calibration, HidraWEB or deployment is selected.
 
+HAPI-601 technical preflight was owner-authorized for A/B/C only and
+registered in [HPS-007](TASKS_HPS-007.md#hapi-601) against
+291a5e7b30f5d95c769a036f5fcee646503cc9d7 (Docs #764 passed).
+Source-backed review separates A's pure domain/codec design from B's
+Party/Identity/Workflow/protected-PostgreSQL owner gaps and C's HTTP gates.
+No independent technical reviewer signature has been obtained; A is
+review-ready, B/C remain unresolved, and HAPI-601 is NOT_IMPLEMENTED/BLOCKED.
+No HAPI-602, numerical engine, HidraWEB, SITE or deployment is selected.
+
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent
 [HAPI-436](TASKS_HPS-024.md#hapi-436) are VERIFIED/COMPLETED within the accepted

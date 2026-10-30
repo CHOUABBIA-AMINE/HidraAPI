@@ -9426,6 +9426,10 @@
         "closedAndRevisedInstallationCannotMatchStaleWitness",
         "explicitSyntheticPublisherGrantDoesNotGrantSourceDml",
         "graphWithoutActivePublicationFailsClosedEvenWithLocks",
+        "nativeAuthorizedSecondEpochAndHistoryCannotBeChangedByStaleCas",
+        "nativeFourProducersSaveReplayReadAndHistoryAcrossThreeStationsNineUnits",
+        "nativeSourceAndRoleEnforcementRejectMissingInstallationAndOrdinaryDml",
+        "nativeUnitDenialAndRevocationHideCurrentAndRejectReplayWithoutMutation",
         "newlyOccupiedVacantPositionInvalidatesOriginalSourceTicket",
         "ordinarySyntheticRoleCannotExecuteUnprovisionedSourceLock",
         "positionMovedToAnotherStationCannotBeRetainedAsSource",
@@ -9440,12 +9444,12 @@
         "wrongCompanyCannotReadStationSourceEvenWithLocks"
       ],
       "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.ProtectedStationInstalledConfigurationPostgresIntegrationTest",
-      "dependency_reason": "HAPI-600 B3-S1 retained source negatives and B3-S2 locked schema/role/receipt-origin plus genuine concurrent vacant-position phantom exclusion on PostgreSQL16/Flyway; positive four-producer native service/role qualification remains open, no skips",
+      "dependency_reason": "HAPI-600 B3-S2 native service, separate real PostgreSQL roles and genuine LOCAL/LDAP/ACTIVE_DIRECTORY/OIDC producer integration candidate across three stations/nine units per producer, current/history/replay/CAS/deny/source fail-closed. Hosted raw no-skip acceptance pending.",
       "fast": false,
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedStationInstalledConfigurationPostgresIntegrationTest.java",
-      "source_sha256": "8b377ec3fdc5238c593915f3bee2949dd5bf019312f40a76e6079ccd240dd764",
+      "source_sha256": "bdb8425dc376ded5107f213e09e991132ef244e2c4df5bf2c2cf9ba5523e28ff",
       "supports": []
     },
     {

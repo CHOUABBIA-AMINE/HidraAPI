@@ -9253,6 +9253,73 @@ without skips, then independently assess remaining acceptance; Package C
 is not selected by this continuation. Stop after observing new Full/Docs
 CI creation/start.
 
+
+### HAPI-600 B3-S2 — real native station configuration integration candidate — 2026-10-30
+
+**Selection and exact predecessor:** Owner Next continues the one B3-S2 stage;
+there is no B3-S2A/B/C partition. At main
+`fea8a277b96a877d75cce6e066601a8f08271fe8`,
+[Full CI #1001](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41043396761)
+and [Docs #748](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41043396757)
+both completed SUCCESS. Prior green cases did not prove original native
+service/Identity/restricted-publisher integration.
+
+**Exact message:** `feat(topology): protect effective station configuration operations`.
+CREATE/DELETE none. MODIFY only the previously registered B3-S2 paths:
+`src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedStationInstalledConfigurationPostgresIntegrationTest.java`,
+`.github/ci-test-inventory.json`, and this append-only record. The
+test fixture provides role setup ONLY in disposable PostgreSQL16; no
+production Identity grant, runtime implementation, migration, preexisting
+security trigger, CI workflow, roadmap cell, nested stage, public API,
+deployment or simulation is changed.
+
+**Genuine Spring and PostgreSQL integration candidate:** the retained
+Topology source suite now has a Spring Boot Testcontainers context and
+two actual nonowner PostgreSQL session principals (ordinary APP and
+separately configured restricted PUBLISHER). The restricted PUBLISHER
+has only needed identity-fence maintenance rights and topology
+configuration ledger INSERT/head UPDATE, the frozen SECURITY DEFINER
+source-lock EXECUTE and source SELECT; it does not gain source-DML
+rights. Ordinary APP has no SELECT on protected configuration revisions.
+Tests use the real four native LOCAL, LDAP, ACTIVE_DIRECTORY and signed
+OIDC producers, actual Identity role/source/session authority, native
+use-case/coordinator/repository execution and physical transaction, not
+mocked permits. Fresh synthetic fixtures select 3 published stations
+with 3 physically installed units each and immutable graph evidence.
+
+Four additional retained-inventory test case IDs:
+- `nativeFourProducersSaveReplayReadAndHistoryAcrossThreeStationsNineUnits`:
+  SAVE, exact authorized replay, READ_CURRENT, READ_REVISION,
+  LIST_HISTORY, 3 stations/9 units **per producer**, database member
+  and request-receipt counts and native actor provenance;
+- `nativeAuthorizedSecondEpochAndHistoryCannotBeChangedByStaleCas`:
+  two immutable revisions, authorized epoch/history reload and
+  conflicting stale CAS rollback;
+- `nativeUnitDenialAndRevocationHideCurrentAndRejectReplayWithoutMutation`:
+  direct physical-unit DENY, subsequent grant revocation, no new
+  request receipts on either attempted protected operation;
+- `nativeSourceAndRoleEnforcementRejectMissingInstallationAndOrdinaryDml`:
+  ordinary protected-revision denial, restricted source-DML denial,
+  changed installation witness and zero protected request receipts.
+
+The 17 earlier source/lock/receipt cases remain. New source SHA-256:
+`bdb8425dc376ded5107f213e09e991132ef244e2c4df5bf2c2cf9ba5523e28ff`;
+test inventory now registers 21 methods. New baseline elapsed seconds
+remain unmeasured, never invented. The test code is an **unexecuted
+candidate locally**: no Maven/PostgreSQL/Docker access from the
+connector workspace. Only exact-SHA Full/Docs and retained raw no-skip
+case membership can establish compilation/runtime acceptance.
+
+**Acceptance remains independent:** validate actual native outcome,
+role grants, original source races, final guard/no-SQL-after-guard and
+unknown-commit acknowledgement obligations before accepting B3-S2.
+No change to parent HAPI-600 NOT_IMPLEMENTED/IN_PROGRESS disposition,
+Package C eligibility, operational qualification or release. If the
+new CI reports failures, repair the first causal gate within registered
+B3-S2 scope before any next package. Verify guarded parent, tree,
+blobs, exact three-file scope, CI creation/start on the new SHA and
+STOP, without treating queued tests as passing.
+
 <a id="hapi-602"></a>
 ## HAPI-602 — Versioned installed-unit/characteristic links
 

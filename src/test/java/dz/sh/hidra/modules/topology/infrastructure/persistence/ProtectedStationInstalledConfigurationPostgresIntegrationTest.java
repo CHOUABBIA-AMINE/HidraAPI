@@ -38,10 +38,298 @@ import org.testcontainers.junit.jupiter.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers(disabledWithoutDocker=true)
+@org.springframework.boot.test.context.SpringBootTest(
+    classes=dz.sh.hidra.HidraApplication.class,
+    webEnvironment=org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK,
+    properties={
+        "hidra.platform.persistence.execution.installed-unit-work-budget-ms=10000",
+        "hidra.platform.security.ldap.enabled=true",
+        "hidra.platform.security.ldap.url=ldap://synthetic.invalid:389",
+        "hidra.platform.security.ldap.base-dn=dc=synthetic,dc=invalid",
+        "hidra.platform.security.ldap.user-search-base=ou=people",
+        "hidra.platform.security.ldap.user-search-filter=(uid={0})",
+        "hidra.platform.security.jwt.hmac-secret=synthetic-completion-test-key-32-bytes-only",
+        "hidra.platform.security.jwt.token-issuer=hidra-api",
+        "hidra.platform.security.jwt.audience=hidra-api"
+    })
+@org.springframework.test.context.ActiveProfiles("test")
+@org.springframework.test.annotation.DirtiesContext(
+    classMode=org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_CLASS)
 class ProtectedStationInstalledConfigurationPostgresIntegrationTest {
     @Container static final PostgreSQLContainer<?> POSTGRES =
-        new PostgreSQLContainer<>("postgres:16").withCommand("postgres","-c","max_locks_per_transaction=256");
+        new PostgreSQLContainer<>("postgres:16").withCommand("postgres",
+            "-c","max_locks_per_transaction=256","-c","track_commit_timestamp=on");
     private static volatile boolean migrated;
+
+    private static final String APP="config_native_app",PUBLISHER="config_native_publisher";
+    private static final String PASSWORD="synthetic-configuration-role-only";
+    private static final String T="public.hidra_identity_";
+    private static final String KEY="synthetic-completion-test-key-32-bytes-only";
+    private static final String OIDC_SOURCE="https://oidc.synthetic.invalid";
+
+    @org.springframework.test.context.DynamicPropertySource
+    static void nativeDatabase(org.springframework.test.context.DynamicPropertyRegistry properties) {
+        if(!POSTGRES.isRunning()) POSTGRES.start();
+        Flyway.configure().dataSource(POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),
+            POSTGRES.getPassword()).load().migrate();
+        var owner=new JdbcTemplate(new DriverManagerDataSource(POSTGRES.getJdbcUrl(),
+            POSTGRES.getUsername(),POSTGRES.getPassword()));
+        owner.execute("REVOKE CREATE ON SCHEMA public FROM PUBLIC");
+        for(String role:List.of(APP,PUBLISHER)) {
+            owner.execute("CREATE ROLE "+role+" LOGIN PASSWORD '"+PASSWORD+"'");
+            owner.execute("GRANT USAGE ON SCHEMA public TO "+role);
+            owner.execute("GRANT SELECT ON ALL TABLES IN SCHEMA public TO "+role);
+        }
+        owner.execute("GRANT CREATE ON DATABASE "+POSTGRES.getDatabaseName()+" TO "+APP);
+        for(String table:owner.queryForList(
+                "SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname='public' "
+                +"AND tablename LIKE 'hidra_identity_%'",String.class)) {
+            if(!table.matches("hidra_identity_[a-z0-9_]+"))throw new IllegalStateException();
+            owner.execute("GRANT INSERT,UPDATE,DELETE ON public."+table+" TO "+APP);
+        }
+        owner.execute("REVOKE INSERT,UPDATE,DELETE ON "
+            +"public.hidra_identity_external_mapping_generation FROM "+APP);
+        owner.execute("REVOKE SELECT ON public.hidra_topology_station_configuration_revision FROM "+APP);
+        for(var relation:dz.sh.hidra.modules.identity.infrastructure.persistence.adapter
+                .JdbcIdentityAuthorityFence.requiredRelationFences()) {
+            if(relation.mode()!=dz.sh.hidra.platform.persistence.ProtectedRelationFence.Mode.ACCESS_SHARE)
+                owner.execute("GRANT UPDATE ON "+relation.relation()+" TO "+PUBLISHER);
+        }
+        for(String relation:List.of("revision","member","request"))
+            owner.execute("GRANT INSERT ON public.hidra_topology_station_configuration_"
+                +relation+" TO "+PUBLISHER);
+        owner.execute("GRANT INSERT,UPDATE ON "
+            +"public.hidra_topology_station_configuration_head TO "+PUBLISHER);
+        owner.execute("GRANT EXECUTE ON FUNCTION "
+            +"public.hidra_station_configuration_lock_sources() TO "+PUBLISHER);
+        properties.add("spring.datasource.url",POSTGRES::getJdbcUrl);
+        properties.add("spring.datasource.username",()->APP);
+        properties.add("spring.datasource.password",()->PASSWORD);
+        properties.add("spring.flyway.url",POSTGRES::getJdbcUrl);
+        properties.add("spring.flyway.user",POSTGRES::getUsername);
+        properties.add("spring.flyway.password",POSTGRES::getPassword);
+        properties.add("spring.flyway.enabled",()->true);
+        properties.add("spring.jpa.hibernate.ddl-auto",()->"validate");
+        properties.add("hidra.platform.persistence.publication.enabled",()->true);
+        properties.add("hidra.platform.persistence.publication.username",()->PUBLISHER);
+        properties.add("hidra.platform.persistence.publication.password",()->PASSWORD);
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    dz.sh.hidra.modules.topology.application.port.in.StationInstalledConfigurationUseCase protectedService;
+    @org.springframework.beans.factory.annotation.Autowired
+    dz.sh.hidra.modules.identity.application.port.in.AuthenticateDirectUserUseCase direct;
+    @org.springframework.beans.factory.annotation.Autowired
+    dz.sh.hidra.modules.identity.application.port.in.CompleteAuthenticatedPrincipalUseCase completion;
+    @org.springframework.beans.factory.annotation.Autowired
+    org.springframework.security.crypto.password.PasswordEncoder passwords;
+    @org.springframework.beans.factory.annotation.Autowired
+    dz.sh.hidra.modules.identity.infrastructure.security.IdentityOidcJwtAuthenticationConverter oidc;
+    @org.springframework.beans.factory.annotation.Autowired
+    dz.sh.hidra.modules.identity.infrastructure.security.LdapAuthenticationProvider ldap;
+    @org.springframework.beans.factory.annotation.Autowired
+    dz.sh.hidra.modules.identity.infrastructure.security.TrustedAuthenticationVerificationRegistry verificationRegistry;
+    @org.springframework.test.context.bean.override.mockito.MockitoBean
+    dz.sh.hidra.modules.identity.application.port.out.LdapCredentialVerificationPort directory;
+    @org.springframework.test.context.bean.override.mockito.MockitoBean(name="externalOidcJwtDecoder")
+    org.springframework.security.oauth2.jwt.JwtDecoder externalDecoder;
+    @org.springframework.beans.factory.annotation.Autowired
+    JdbcTemplate nativeJdbc;
+    private final org.springframework.security.oauth2.jwt.JwtEncoder sourceEncoder=
+        org.springframework.security.oauth2.jwt.NimbusJwtEncoder.withSecretKey(
+            new javax.crypto.spec.SecretKeySpec(KEY.getBytes(java.nio.charset.StandardCharsets.UTF_8),
+                "HmacSHA256")).algorithm(org.springframework.security.oauth2.jose.jws.MacAlgorithm.HS256).build();
+    private final org.springframework.security.oauth2.jwt.JwtDecoder verifiedExternal=
+        org.springframework.security.oauth2.jwt.NimbusJwtDecoder.withSecretKey(
+            new javax.crypto.spec.SecretKeySpec(KEY.getBytes(java.nio.charset.StandardCharsets.UTF_8),
+                "HmacSHA256")).macAlgorithm(org.springframework.security.oauth2.jose.jws.MacAlgorithm.HS256).build();
+
+    private record NativeActor(String user,String provider,String subject,String type) {}
+    private static String syntheticId(){return UUID.randomUUID().toString();}
+    private static org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
+            ambient(String raw) {
+        var wrapper=org.springframework.security.oauth2.jwt.Jwt.withTokenValue(raw)
+            .header("alg","HS256").issuer("synthetic-wrapper").subject("synthetic-wrapper")
+            .issuedAt(Instant.now().minusSeconds(1))
+            .expiresAt(Instant.now().plusSeconds(3600)).build();
+        var auth=new org.springframework.security.oauth2.server.resource.authentication
+            .JwtAuthenticationToken(wrapper,List.of());
+        auth.setAuthenticated(true);
+        org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(auth);
+        return auth;
+    }
+    @org.junit.jupiter.api.BeforeEach
+    void initializeNativeAuthentication() {
+        org.springframework.security.core.context.SecurityContextHolder.clearContext();
+        org.mockito.Mockito.when(externalDecoder.decode(org.mockito.ArgumentMatchers.anyString()))
+            .thenAnswer(invocation->verifiedExternal.decode(invocation.getArgument(0)));
+        org.springframework.test.util.ReflectionTestUtils.setField(oidc,
+            "verifiedClaimReceiptEnabled",true);
+    }
+    @org.junit.jupiter.api.AfterEach
+    void clearNativeAuthentication() {
+        org.springframework.security.core.context.SecurityContextHolder.clearContext();
+        org.springframework.test.util.ReflectionTestUtils.setField(oidc,
+            "verifiedClaimReceiptEnabled",false);
+        org.springframework.test.util.ReflectionTestUtils.setField(ldap,
+            "verifiedClaimReceiptEnabled",false);
+    }
+    private NativeActor nativeActor(String type) {
+        nativeJdbc.update("UPDATE "+T+"provider SET status='INACTIVE' WHERE status='ACTIVE'");
+        String user=syntheticId(),provider=syntheticId(),link=syntheticId();
+        String subject="  exact-synthetic-é-"+link+"  ";
+        Timestamp now=Timestamp.from(Instant.now());
+        nativeJdbc.update("INSERT INTO "+T+"user"
+            +"(id,username,user_type,status,failed_login_count,created_at,updated_at)"
+            +" VALUES (?,?,'HUMAN','ACTIVE',0,?,?)",user,user,now,now);
+        nativeJdbc.update("INSERT INTO "+T+"provider"
+            +"(id,code,name,provider_type,issuer_uri,directory_base_dn,user_search_base,status,"
+            +"sync_enabled,just_in_time_provisioning_enabled,created_at,updated_at)"
+            +" VALUES (?,?,'Synthetic configuration',?,?,?,?,'ACTIVE',false,false,?,?)",
+            provider,provider,type,"OIDC".equals(type)?OIDC_SOURCE:null,
+            "LDAP".equals(type)||"ACTIVE_DIRECTORY".equals(type)?"dc=synthetic,dc=invalid":null,
+            "LDAP".equals(type)||"ACTIVE_DIRECTORY".equals(type)?"ou=people":null,now,now);
+        if("LOCAL".equals(type)) {
+            nativeJdbc.update("INSERT INTO "+T+"local_credential"
+                +"(id,user_id,password_hash,credential_status,created_at,updated_at)"
+                +" VALUES (?, ?,?,'ACTIVE',?,?)",syntheticId(),user,
+                passwords.encode("synthetic-password"),now,now);
+        }else{
+            nativeJdbc.update("INSERT INTO "+T+"external_identity"
+                +"(id,user_id,identity_provider_id,external_subject,status,created_at,updated_at)"
+                +" VALUES (?,?,?,?,'LINKED',?,?)",link,user,provider,subject,now,now);
+        }
+        return new NativeActor(user,provider,subject,type);
+    }
+    private void directoryCredential(NativeActor actor) {
+        var settings=new dz.sh.hidra.platform.configuration.HidraLdapSecurityProperties(
+            true,"ldap://synthetic.invalid:389","dc=synthetic,dc=invalid","ou=people",
+            "(uid={0})",null,null,null,null);
+        var adapter=new dz.sh.hidra.modules.identity.infrastructure.security.LdapCredentialVerificationAdapter(
+            org.mockito.Mockito.mock(org.springframework.ldap.core.support.LdapContextSource.class),
+            settings,verificationRegistry);
+        var ldapTemplate=org.mockito.Mockito.mock(org.springframework.ldap.core.LdapTemplate.class);
+        org.springframework.test.util.ReflectionTestUtils.setField(adapter,"ldapTemplate",ldapTemplate);
+        var context=org.mockito.Mockito.mock(javax.naming.directory.DirContext.class);
+        var attrs=new javax.naming.directory.BasicAttributes(true);
+        attrs.put("entryUUID",actor.subject());attrs.put("uid",actor.user());
+        attrs.put("memberOf"," private-original-directory-group ");
+        try{
+            org.mockito.Mockito.when(context.getAttributes(
+                org.mockito.ArgumentMatchers.any(javax.naming.Name.class),
+                org.mockito.ArgumentMatchers.any(String[].class))).thenReturn(attrs);
+            org.mockito.Mockito.when(ldapTemplate.authenticate(
+                org.mockito.ArgumentMatchers.anyString(),
+                org.mockito.ArgumentMatchers.anyString(),
+                org.mockito.ArgumentMatchers.anyString(),
+                org.mockito.ArgumentMatchers.any(org.springframework.ldap.core
+                    .AuthenticatedLdapEntryContextCallback.class))).thenAnswer(invocation->{
+                ((org.springframework.ldap.core.AuthenticatedLdapEntryContextCallback)
+                    invocation.getArgument(3)).executeWithContext(context,
+                    new org.springframework.ldap.core.LdapEntryIdentification(
+                        new javax.naming.ldap.LdapName(
+                            "uid=synthetic,ou=people,dc=synthetic,dc=invalid"),
+                        new javax.naming.ldap.LdapName("uid=synthetic,ou=people")));
+                return true;
+            });
+        }catch(javax.naming.NamingException failure){throw new IllegalStateException(failure);}
+        org.mockito.Mockito.doAnswer(i->adapter.verify(i.getArgument(0),i.getArgument(1)))
+            .when(directory).verify(actor.user(),"synthetic-password");
+        org.springframework.test.util.ReflectionTestUtils.setField(ldap,
+            "verifiedClaimReceiptEnabled",true);
+    }
+    private void login(NativeActor actor) {
+        if("LDAP".equals(actor.type()) || "ACTIVE_DIRECTORY".equals(actor.type()))
+            directoryCredential(actor);
+        if("OIDC".equals(actor.type())) {
+            var token=sourceEncoder.encode(org.springframework.security.oauth2.jwt
+                .JwtEncoderParameters.from(org.springframework.security.oauth2.jwt.JwtClaimsSet.builder()
+                    .issuer(OIDC_SOURCE).subject(actor.subject()).audience(List.of("hidra-api"))
+                    .issuedAt(Instant.now().minusSeconds(1))
+                    .expiresAt(Instant.now().plusSeconds(300))
+                    .claim("groups",List.of("private-original-group")).build()));
+            var principal=oidc.convert(verifiedExternal.decode(token.getTokenValue()));
+            org.springframework.security.core.context.SecurityContextHolder.getContext()
+                .setAuthentication(principal);
+            var actual=(dz.sh.hidra.modules.identity.domain.model.HidraPrincipal)
+                principal.getPrincipal();
+            var input=new dz.sh.hidra.modules.identity.application.model.AuthenticatedPrincipalInput(
+                actual.userId(),actual.username(),actual.displayName(),
+                actual.authenticationType(),actual.identityProviderId(),actual.roles(),
+                actual.permissions(),actual.externalIdentityId(),null);
+            var result=completion.complete(input,"synthetic-ip","synthetic-agent",
+                "synthetic-correlation");
+            ambient(result.accessToken());
+        } else {
+            var result=direct.authenticate(new dz.sh.hidra.modules.identity.application.model
+                .DirectAuthenticationCommand(
+                    dz.sh.hidra.modules.identity.domain.value.ProviderType.valueOf(actor.type()),
+                    actor.user(),"synthetic-password","synthetic-ip","synthetic-agent",
+                    "synthetic-correlation"));
+            ambient(result.accessToken());
+        }
+    }
+    private void authorize(NativeActor actor,
+          dz.sh.hidra.modules.topology.application.port.in.StationInstalledConfigurationUseCase.Command c,
+          Collection<String> units) {
+        var req=new dz.sh.hidra.modules.identity.application.contract.topology
+            .TopologyStationConfigurationAuthorizationContract.Request(
+                dz.sh.hidra.modules.identity.application.contract.topology
+                    .TopologyStationConfigurationAuthorizationContract.Operation.valueOf(c.operation().name()),
+                c.companyPartyId(),c.facilityId(),c.revisionId(),List.copyOf(new TreeSet<>(units)));
+        for(var q:req.requirements()) {
+            String code=dz.sh.hidra.modules.identity.application.contract.topology
+                .TopologyStationConfigurationAuthorizationContract.permissionCode(
+                    req.operation(),q.resourceType());
+            var ids=nativeJdbc.queryForList("SELECT id FROM "+T+"permission WHERE code=?",
+                String.class,code);
+            String permission=ids.isEmpty()?syntheticId():ids.getFirst();
+            if(ids.isEmpty())nativeJdbc.update("INSERT INTO "+T+"permission"
+                +"(id,code,permission_domain,resource_type,action,sensitive,status,created_at,updated_at)"
+                +" VALUES (?,?,'topology',?,?,false,'ACTIVE',now(),now())",
+                permission,code,q.resourceType(),code.substring(code.lastIndexOf(':')+1));
+            String scope=q.scope().name().equals("COMPANY")?"CUSTOM":"FACILITY";
+            String value=scope.equals("CUSTOM")?"topology-company:"+q.scopeReference():q.scopeReference();
+            Integer count=nativeJdbc.queryForObject(
+                "SELECT count(*) FROM "+T+"user_permission_grant "
+                +"WHERE user_id=? AND permission_id=? AND effect='GRANT' AND status='ACTIVE' "
+                +"AND scope_type=? AND scope_reference_id=? AND valid_to>clock_timestamp()",
+                Integer.class,actor.user(),permission,scope,value);
+            if(count!=null && count>0)continue;
+            nativeJdbc.update("INSERT INTO "+T+"user_permission_grant"
+                +"(id,user_id,permission_id,effect,scope_type,scope_reference_id,grant_reason,"
+                +"emergency_access,valid_from,valid_to,status,created_at)"
+                +" VALUES (?,?,?,'GRANT',?,?,'synthetic native configuration',false,"
+                +"now()-interval '1 hour',now()+interval '1 hour','ACTIVE',now())",
+                syntheticId(),actor.user(),permission,scope,value);
+        }
+    }
+    private static dz.sh.hidra.modules.topology.application.port.in.StationInstalledConfigurationUseCase.Command
+            command(dz.sh.hidra.modules.topology.application.port.in.StationInstalledConfigurationUseCase.Operation kind,
+            StationInstalledConfiguration c) {
+        return new dz.sh.hidra.modules.topology.application.port.in
+            .StationInstalledConfigurationUseCase.Command(kind,c.companyPartyId(),
+                c.facilityId(),kind==dz.sh.hidra.modules.topology.application.port.in
+                    .StationInstalledConfigurationUseCase.Operation.SAVE
+                    || kind==dz.sh.hidra.modules.topology.application.port.in
+                    .StationInstalledConfigurationUseCase.Operation.READ_REVISION
+                    ? c.revisionId():null,
+                kind==dz.sh.hidra.modules.topology.application.port.in
+                    .StationInstalledConfigurationUseCase.Operation.SAVE?c:null,
+                kind==dz.sh.hidra.modules.topology.application.port.in
+                    .StationInstalledConfigurationUseCase.Operation.LIST_HISTORY?10:0);
+    }
+    private static List<String> unitRefs(StationInstalledConfiguration c) {
+        return c.positions().stream().map(StationInstalledConfiguration.Position::installedUnitId)
+            .filter(Objects::nonNull).sorted().toList();
+    }
+    private dz.sh.hidra.modules.topology.application.port.in.StationInstalledConfigurationUseCase.Result
+            nativeExecute(NativeActor actor,
+              dz.sh.hidra.modules.topology.application.port.in.StationInstalledConfigurationUseCase.Command c,
+              Collection<String> refs) {
+        authorize(actor,c,refs);login(actor);return protectedService.execute(c);
+    }
+
     private static final Instant FROM=Instant.parse("2026-02-01T00:00:00Z");
     private static final String LOCK_ALL="""
         LOCK TABLE public.hidra_topology_equipment,
@@ -462,4 +750,163 @@ class ProtectedStationInstalledConfigurationPostgresIntegrationTest {
               AND t.tgname='trg_station_configuration_request_origin' AND t.tgenabled='O'
             """,Integer.class));
     }
+
+    private static StationInstalledConfiguration successor(StationInstalledConfiguration old,
+            long epoch,String revision,String request) {
+        return new StationInstalledConfiguration(old.companyPartyId(),old.facilityId(),
+            revision,request,epoch-1,epoch,old.graphHeadEpoch(),
+            old.pinnedGraph(),old.graphPayloadFormat(),old.graphSha256(),
+            old.effectiveFrom(),old.effectiveUntil(),old.recordedAt(),
+            old.sourceReference(),old.actorBindingId(),old.actorSessionId(),
+            old.actorUserId(),old.positions(),old.activeEdgeIds());
+    }
+
+    @Test void nativeFourProducersSaveReplayReadAndHistoryAcrossThreeStationsNineUnits() {
+        JdbcTemplate owner=jdbc();
+        for(String provider:List.of("LOCAL","LDAP","ACTIVE_DIRECTORY","OIDC")) {
+            NativeActor actor=nativeActor(provider);
+            for(int station=0;station<3;station++) {
+                var stationFixture=fixture(owner,true);
+                var c=stationFixture.declaration();
+                var refs=unitRefs(c);
+                assertEquals(3,refs.size());
+                var saved=nativeExecute(actor,command(
+                    dz.sh.hidra.modules.topology.application.port.in
+                        .StationInstalledConfigurationUseCase.Operation.SAVE,c),refs);
+                assertNotNull(saved.declaration());
+                assertFalse(saved.replayed());
+                assertEquals(1,saved.declaration().selectedEpoch());
+                assertEquals(actor.user(),saved.declaration().actorUserId());
+                assertNotEquals(c.actorBindingId(),saved.declaration().actorBindingId());
+                var replay=nativeExecute(actor,command(
+                    dz.sh.hidra.modules.topology.application.port.in
+                        .StationInstalledConfigurationUseCase.Operation.SAVE,c),refs);
+                assertTrue(replay.replayed());
+                assertEquals(saved.declaration(),replay.declaration());
+                for(var op:List.of(
+                    dz.sh.hidra.modules.topology.application.port.in
+                        .StationInstalledConfigurationUseCase.Operation.READ_CURRENT,
+                    dz.sh.hidra.modules.topology.application.port.in
+                        .StationInstalledConfigurationUseCase.Operation.READ_REVISION)) {
+                    var result=nativeExecute(actor,command(op,c),refs);
+                    assertEquals(saved.declaration(),result.declaration());
+                }
+                var history=nativeExecute(actor,command(
+                    dz.sh.hidra.modules.topology.application.port.in
+                        .StationInstalledConfigurationUseCase.Operation.LIST_HISTORY,c),refs);
+                assertEquals(List.of(saved.declaration()),history.history());
+                assertEquals(3,owner.queryForObject(
+                    "SELECT count(*) FROM public.hidra_topology_station_configuration_member "
+                    +"WHERE company_party_id=? AND facility_id=? AND revision_id=?",
+                    Integer.class,c.companyPartyId(),c.facilityId(),c.revisionId()));
+                assertEquals(1,owner.queryForObject(
+                    "SELECT count(*) FROM public.hidra_topology_station_configuration_request "
+                    +"WHERE company_party_id=? AND facility_id=? AND request_id=?",
+                    Integer.class,c.companyPartyId(),c.facilityId(),c.requestId()));
+            }
+        }
+    }
+
+    @Test void nativeAuthorizedSecondEpochAndHistoryCannotBeChangedByStaleCas() {
+        JdbcTemplate owner=jdbc();
+        NativeActor actor=nativeActor("LOCAL");
+        StationInstalledConfiguration first=fixture(owner,true).declaration();
+        var refs=unitRefs(first);
+        var saved=nativeExecute(actor,command(
+            dz.sh.hidra.modules.topology.application.port.in
+                .StationInstalledConfigurationUseCase.Operation.SAVE,first),refs).declaration();
+        StationInstalledConfiguration second=successor(first,2,syntheticId(),syntheticId());
+        var newer=nativeExecute(actor,command(
+            dz.sh.hidra.modules.topology.application.port.in
+                .StationInstalledConfigurationUseCase.Operation.SAVE,second),refs).declaration();
+        assertEquals(2,newer.selectedEpoch());
+        assertEquals(saved.facilityId(),newer.facilityId());
+        var current=nativeExecute(actor,command(
+            dz.sh.hidra.modules.topology.application.port.in
+                .StationInstalledConfigurationUseCase.Operation.READ_CURRENT,second),refs);
+        assertEquals(newer,current.declaration());
+        var history=nativeExecute(actor,command(
+            dz.sh.hidra.modules.topology.application.port.in
+                .StationInstalledConfigurationUseCase.Operation.LIST_HISTORY,second),refs);
+        assertEquals(List.of(newer,saved),history.history());
+        var oldRevision=nativeExecute(actor,command(
+            dz.sh.hidra.modules.topology.application.port.in
+                .StationInstalledConfigurationUseCase.Operation.READ_REVISION,first),refs);
+        assertEquals(saved,oldRevision.declaration());
+        int before=owner.queryForObject(
+            "SELECT count(*) FROM public.hidra_topology_station_configuration_revision "
+            +"WHERE facility_id=?",Integer.class,first.facilityId());
+        StationInstalledConfiguration stale=successor(first,2,syntheticId(),syntheticId());
+        var staleCommand=command(dz.sh.hidra.modules.topology.application.port.in
+            .StationInstalledConfigurationUseCase.Operation.SAVE,stale);
+        authorize(actor,staleCommand,refs);login(actor);
+        assertThrows(RuntimeException.class,()->protectedService.execute(staleCommand));
+        assertEquals(before,owner.queryForObject(
+            "SELECT count(*) FROM public.hidra_topology_station_configuration_revision "
+            +"WHERE facility_id=?",Integer.class,first.facilityId()));
+    }
+
+    @Test void nativeUnitDenialAndRevocationHideCurrentAndRejectReplayWithoutMutation() {
+        JdbcTemplate owner=jdbc();
+        NativeActor actor=nativeActor("LOCAL");
+        StationInstalledConfiguration c=fixture(owner,true).declaration();
+        var save=command(dz.sh.hidra.modules.topology.application.port.in
+            .StationInstalledConfigurationUseCase.Operation.SAVE,c);
+        var refs=unitRefs(c);
+        var saved=nativeExecute(actor,save,refs);
+        var read=command(dz.sh.hidra.modules.topology.application.port.in
+            .StationInstalledConfigurationUseCase.Operation.READ_CURRENT,c);
+        authorize(actor,read,refs);
+        nativeJdbc.update("INSERT INTO "+T+"user_permission_grant("
+            +"id,user_id,permission_id,effect,scope_type,scope_reference_id,grant_reason,"
+            +"emergency_access,valid_from,valid_to,status,created_at) "
+            +"SELECT ?,?,p.id,'DENY','CUSTOM',?,'synthetic explicit physical unit denial',"
+            +"false,now()-interval '1 hour',now()+interval '1 hour','ACTIVE',now() "
+            +"FROM "+T+"permission p WHERE p.code='topology:installed-unit:read'",
+            syntheticId(),actor.user(),"topology-company:"+c.companyPartyId());
+        login(actor);
+        assertThrows(RuntimeException.class,()->protectedService.execute(read));
+        int receipts=owner.queryForObject(
+            "SELECT count(*) FROM public.hidra_topology_station_configuration_request "
+            +"WHERE facility_id=?",Integer.class,c.facilityId());
+        assertEquals(1,receipts);
+        nativeJdbc.update("UPDATE "+T+"user_permission_grant SET status='REVOKED' "
+            +"WHERE user_id=?",actor.user());
+        login(actor);
+        assertThrows(RuntimeException.class,()->protectedService.execute(save));
+        assertEquals(receipts,owner.queryForObject(
+            "SELECT count(*) FROM public.hidra_topology_station_configuration_request "
+            +"WHERE facility_id=?",Integer.class,c.facilityId()));
+        assertNotNull(saved.declaration());
+    }
+
+    @Test void nativeSourceAndRoleEnforcementRejectMissingInstallationAndOrdinaryDml() {
+        JdbcTemplate owner=jdbc();
+        NativeActor actor=nativeActor("LOCAL");
+        Fixture f=fixture(owner,true);
+        var c=f.declaration();
+        var command=command(dz.sh.hidra.modules.topology.application.port.in
+            .StationInstalledConfigurationUseCase.Operation.SAVE,c);
+        var refs=unitRefs(c);
+        assertEquals(Boolean.TRUE,nativeJdbc.queryForObject(
+            "SELECT NOT has_table_privilege(current_user,"
+            +"'public.hidra_topology_station_configuration_revision','SELECT')",
+            Boolean.class));
+        assertEquals(Boolean.TRUE,owner.queryForObject(
+            "SELECT NOT has_table_privilege(?::name,"
+            +"'public.hidra_topology_installed_unit_installation','UPDATE') "
+            +"AND has_function_privilege(?::name,"
+            +"'public.hidra_station_configuration_lock_sources()','EXECUTE')",
+            Boolean.class,PUBLISHER,PUBLISHER));
+        owner.update("UPDATE public.hidra_topology_installed_unit_installation "
+            +"SET effective_until=?,revision=revision+1 WHERE installation_id=?",
+            Timestamp.from(c.effectiveFrom().plusSeconds(500)),
+            c.positions().getFirst().installationId());
+        authorize(actor,command,refs);login(actor);
+        assertThrows(RuntimeException.class,()->protectedService.execute(command));
+        assertEquals(0,owner.queryForObject(
+            "SELECT count(*) FROM public.hidra_topology_station_configuration_request "
+            +"WHERE facility_id=?",Integer.class,c.facilityId()));
+    }
+
 }

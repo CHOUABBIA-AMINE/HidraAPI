@@ -1968,6 +1968,31 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "constructibleScalarsNeverImplementOpaqueNativeHandleTypes",
+        "defaultDiagnosticsDoNotExposeActorOrRequestedResourceReferences",
+        "denyDominatesIndeterminateRegardlessOfResourceOrder",
+        "descriptorAndContributionListsCannotBeChangedAfterConstruction",
+        "everyOperationRequiresBothCompanyAndFacilityConfigurationDecisions",
+        "exactDecisionMembershipRejectsMissingDuplicateExtraAndReorderedResources",
+        "exactOperationPermissionsRemainSeparateFromPhysicalUnitRead",
+        "malformedReferencesAreRejectedWithoutAuthorityTargetNormalization",
+        "maximumReferencedUnitsAreAcceptedAndOneMoreIsRejected",
+        "physicalAndTemporalContributionBoundsCannotBeInventedOrEmpty",
+        "revisionIdentityIsRequiredOnlyForSaveAndExactRevisionRead",
+        "unitReferencesAreCanonicalUniqueAndDoNotAliasConfigurationResources"
+      ],
+      "class": "dz.sh.hidra.modules.identity.application.contract.topology.TopologyStationConfigurationAuthorizationContractTest",
+      "dependency_reason": "HAPI-600 B1 pure typed authorization descriptor invariants; no native/database authority claim",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyStationConfigurationAuthorizationContractTest.java",
+      "source_sha256": "258a64436f04a045ffe96c56ab951add581b92026fd9a2462f8706ca96b92a5d",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0.001,
       "cases": [
         "delegatesOwnerEligibilityAndKeepsCanonicalId"

@@ -8187,6 +8187,117 @@ No new local Java/Maven/PostgreSQL run is claimed. Publish the exact two-file
 record with expected-head guard, verify parent/tree/blobs/message, observe
 Documentation CI creation/startup and STOP before B.
 
+
+
+### HAPI-600 Package B1 — exact authorization descriptor contract — 2026-10-30
+
+Owner Next selects Package B after acceptedA and Docs732/run40998935968 SUCCESS
+on mainfa0dfbc7c46e0b9d7ac891ad59e4970e57329dd7, parent8a6626f55fe68f8f97f195d74620b8978ca2a03f,
+treedd60b01065624c862dc1f351a02976d5da432f32.
+Source review recovered current InstalledUnit authorization contract/participant,
+native ProtectedOperationIdentityParticipant, JdbcProtectedAuthorizationEvidenceReader,
+ProtectedTransactionExecutor and their reader/boundary/native tests. These are
+distinct guarded mechanisms, not interchangeable grants.
+
+**Bounded technical split of existing B; no new parent task/status.** The
+original B allowlist remains the parent integration scope. B1 completes its
+exact descriptor contract first; B2 supplies distinct native claim-group/
+reader/participant integration and native acceptance; B3 supplies the source/
+writer/final-guard integration and remaining original B acceptance. Each later
+step must refresh its source, have an exact admitted scope/message and obtain
+its own CI feedback. Parent B is not accepted by B1. This record admits one
+focused pure-Java contract test path under its real Identity owner, replacing
+no native PostgreSQL test with mocks.
+
+B1 exact message: `feat(identity): define station configuration authorization descriptors`.
+CREATE exactly:
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyStationConfigurationAuthorizationContract.java`
+- `src/test/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyStationConfigurationAuthorizationContractTest.java`
+MODIFY only `.github/ci-test-inventory.json` and this phase file. DELETE none.
+No new bean/writer, public endpoint, migration, existing native group, reader,
+executor route/hash/budget, architecture export or cross-module consumer is added.
+
+The typed descriptor covers SAVE, READ_CURRENT, READ_REVISION, LIST_HISTORY,
+exact company/facility and optional operation-specific revision identity plus
+at most128 exact unique referenced physical units. SAVE and READ_REVISION require
+a revision; other operations reject it. Configuration authority targets the stable
+facility configuration aggregate, with company AND facility requirements.
+Referenced units additionally require installed-unit:read in the company scope.
+Canonical resource-type/id/scope ordering retains distinct types even when ID text
+matches. Configuration permissions are save/read/history; READ_REVISION uses read.
+Reject padded/blank/oversized/malformed references, duplicates and unexpected
+descriptor shapes without silently normalizing an authority target.
+Returned requirements and decision lists are immutable. Constructible Request,
+Requirement and Contribution records are data, never proof of source completeness,
+native provenance or ownership. Prepared/Admission remain opaque interfaces for
+the future issuer; no scalar contribution implements them. Contribution requires
+exact ordered requirement membership, nonempty actor/session/binding references,
+positive backend/XID and strictly increasing sampledAt/validUntil. DENY dominates
+INDETERMINATE, which dominates PERMIT. toString discloses no identity/source values.
+
+Native B2 must issue a distinct configuration group with unchanged current
+provider/session/binding/generation, one-use issuer/holder/role/thread/XID and
+original bounded collection semantics, plus both-scope/unit DENY and four-producer
+PostgreSQL acceptance. B3 must derive the actual referenced-unit union from pinned
+source/stored snapshots before disclosing protected content; callers cannot omit
+a unit to evade authorization. Request equality by itself is no authority.
+The original concrete reader/executor boundaries stay closed until narrowly
+reviewed native/source integration. No foreign implementation class import or
+installed-unit credential substitution is authorized by B1.
+
+B1 acceptance requires all exact contract cases, unchanged prior inventory,
+Full/Fast/Docs exact-SHA feedback and preserved architecture/native regressions.
+No local compiler/Maven/PostgreSQL availability is assumed. Source/descriptor
+verification does not establish native operation, HTTP/API or industrial acceptance.
+Register the actual cases/hashes with new timing0 explicitly unmeasured; retain
+all ten PostgreSQL shards and old cases. Publish one bounded CI-first commit,
+verify expected parent/tree/blobs/message, observe applicable CI startup and STOP.
+
+
+B1 implementation/validation record (same bounded stage): the exact contract
+and12 JUnit5 cases above were created. New suite source SHA256
+`258a64436f04a045ffe96c56ab951add581b92026fd9a2462f8706ca96b92a5d`; all original inventory entries, timings/cases/hashes and
+ten PostgreSQL shards remain unchanged; one new JVM/fast suite is added with
+baseline_seconds=0 (unmeasured). Case identities cover operation permission
+separation, revision shapes, both configuration scopes, canonical distinct unit
+targets,128/129 bound, malformed Unicode/identity rejection, immutable copies,
+exact ordered contribution membership, DENY/INDETERMINATE precedence,
+physical/temporal scalar bounds, opaque-handle distinction and safe diagnostics.
+No local Java/JUnit runtime result is claimed: javac/Maven are unavailable;
+19 documentation-validator and35 inventory-validator self-tests passed; all512
+prior inventory entries and non-class metadata are unchanged, and disjoint ten-shard
+membership was checked before CI-first publication. Runtime Java21/ArchUnit/regression
+validation remains pending exact-SHA hosted CI. HAPI-600 parent and Package B
+remain incomplete; B1 source presence is not native authorization acceptance.
+
+Next bounded native B2 stage (after B1 CI feedback), exact message:
+`feat(identity): qualify native station configuration authority`.
+CREATE the original B participant
+`src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedTopologyStationConfigurationAuthorizationParticipant.java`
+and native suite
+`src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedTopologyStationConfigurationAuthorizationPostgresIntegrationTest.java`.
+MODIFY only the original B native participant, JDBC evidence reader and its
+focused test, ArchitectureGuardrailTest, ProtectedStationAdmissionBoundaryGuardrailTest,
+CI inventory and this phase record. This means the exact paths in original B
+for ProtectedOperationIdentityParticipant.java,
+JdbcProtectedAuthorizationEvidenceReader.java,
+JdbcProtectedAuthorizationEvidenceReaderTest.java,
+ArchitectureGuardrailTest.java and ProtectedStationAdmissionBoundaryGuardrailTest.java;
+no unnamed path is admitted. B1 contract bytes stay preserved unless a separately
+source-backed contract correction is registered. The genuinely distinct group
+must verify actual provider/session/generation and row bounds and retain all
+existing family bans; add no issuer/clock shortcut to the public reader.
+Native suite must prove the actual four producers, company/facility and referenced-
+unit DENY, stale/malformed/missing evidence, foreign/replayed/suspended/cross-thread
+handles and rollback. Constructed Contribution values and mocked coordinator
+results do not satisfy B2 acceptance. No executor route, application writer,
+DML hashes, migration or HTTP route is selected by B2.
+
+B3 retains the original B exact message and remaining original file allowlist for
+application/source/repository/executor/schema and integration qualification after
+accepted B2. Its actual SQL pins/catalog checks must derive from real code and
+current schema, never registration guesses. No B2/B3 code is included in B1.
+
 <a id="hapi-602"></a>
 ## HAPI-602 — Versioned installed-unit/characteristic links
 

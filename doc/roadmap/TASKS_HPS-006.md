@@ -9654,6 +9654,115 @@ selects the **one** next registered Package C stage:
 `feat(topology): expose installed station configuration authoring`.
 If this closeout CI fails, owner `Fail` repairs that gate first.
 
+
+### HAPI-600 — single Package C integrated HTTP-authoring candidate (2026-10-30)
+
+**Owner-selected ONE Package C, no C1/C2/C3.** Expected main
+`20cad1e761ea2916a26cf44538cb1a80c7f44cbf`: Docs #753
+SUCCESS; corresponding source `41ddd823ab835d667078a561ab73fd4909254d1d`
+passed [Full CI #1005](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41061138745)
+with 3919 synthetic development tests and zero failed/errored/skipped.
+Exact original registered message:
+`feat(topology): expose installed station configuration authoring`.
+No nested step, release, new migration, Identity grant, operation
+approval, IT/OT connection, field command or simulator execution.
+
+CREATE all **nine** originally registered Package C Java paths:
+five transport owner files
+(`StationInstalledConfigurationController.java`,
+`StationInstalledConfigurationRequests.java`,
+`StationInstalledConfigurationResponses.java`,
+`StationInstalledConfigurationRestMapper.java`,
+`StationInstalledConfigurationApiExceptionHandler.java`)
+under `modules/topology/api/rest`, plus their three REST tests
+(`StationInstalledConfigurationApiExceptionHandlerTest.java`,
+`StationInstalledConfigurationRestMapperTest.java`,
+`controller/StationInstalledConfigurationControllerTest.java`)
+and a single independent
+`modules/topology/qualification/StationInstalledConfigurationOperatorQualificationTest.java`.
+All paths have the registered exact suffixes and ownership.
+MODIFY `.github/ci-test-inventory.json` and this append-only record.
+
+**Source-confirmed minimal Package C contract reconciliation,
+explicitly registering two necessary existing-owner MODIFY paths in
+this ONE Package C rather than silently changing B3-S2.**
+Original `StationInstalledConfigurationUseCase.Command` lacks the
+registered exclusive history cursor; the original JDBC repository
+reads only a highest-epoch limit window. A REST-only filter would
+fabricate deep history and return a false next cursor. Therefore the
+bounded C change additionally modifies:
+`src/main/java/dz/sh/hidra/modules/topology/application/port/in/StationInstalledConfigurationUseCase.java`
+(add optional exclusive `beforeEpoch`, preserve original six-argument
+command constructor); and
+`src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationInstalledConfigurationRepositoryAdapter.java`
+(read `limit+1` authorized rows filtered strictly
+`selected_epoch<beforeEpoch`, use identical query at precommit
+freeze, and translate a **proven** same-request changed engineering
+payload/digest to typed conflict after native authorization).
+These **two paths are beyond the original Package C MODIFY allowlist**
+but indispensable for that registered C behavior, explicitly recorded
+rather than concealed. This is not a new separate task or approval of
+altered B3 security. The original source relation fences, DML statement
+hashes, strict publisher credentials, final scalar SQL guard, holder,
+immutability and migration bytes remain unchanged.
+
+The transport candidate exposes PUT/GET current, GET exact revision
+and GET descending history at
+`/api/v1/topology/facilities/{facilityId}/installed-configuration`.
+Strict recursive JSON DTO parsing rejects unrecognized nested actor
+and grant fields, scalar coercion, invalid ranges and mismatched
+canonical graph digest. Native owner fills recorded time and actor
+provenance. Only fully authorized history and one lookahead row
+are used for an exclusive epoch cursor, never a public total count.
+ProblemDetail maps owner codes to exact 400/401/403/404/409/503,
+with no private SQL/claim leakage. Responses provide pinned revisions,
+provenance, structure and series/parallel diagnostics, never claimed
+engineering qualification, live operational state or operator approval.
+
+**One combined candidate test inventory:** three REST test classes
+plus one genuine Spring application/PostgreSQL16 Testcontainers
+qualification class. The latter reuses native B3-S2 Identity
+producers and roles for LOCAL/LDAP/ACTIVE_DIRECTORY/OIDC,
+three synthetic station fixtures and nine referenced physical units
+per producer, SAVE/replay/current/revision/history, immutable
+ledger checks, partly vacant positions, company denial,
+changed-body conflict, exclusive history cursor and Spring
+controller registration. The test invokes the real Spring owner
+with a standalone MockMvc adapter built around the real
+Spring-registered controller; this does **not** prove the configured
+HTTP servlet filter/security chain, and is not claimed to do so.
+Existing B3-S2 tests are preserved, not copied into a new stage.
+
+**Outstanding original C acceptance (do not waive).**
+`doc/api/openapi.yaml` is not changed by guessing generated
+content: it must be regenerated from the **real configured runtime**
+and compared with compatibility and prior APIs on an actual hosted
+run. No new migration is introduced, so
+`doc/database/DATA_DICTIONARY.md` is preserved until genuine
+fresh-schema validation warrants an actual captured change.
+Likewise a genuine lost-acknowledgment after committed physical
+selection followed by fresh authorized HTTP replay, complete
+configured filter-chain authority and same-SHA no-skip test/
+catalog/API evidence are not claimed by the candidate tests.
+These are **acceptance gaps within this same ONE Package C**,
+not C1/C2/C3. The originally enumerated C scope did not include
+the two source-backed cursor owner files; their explicit
+technical registration here requires owner-governance
+reconciliation if exact allowlist review rejects them.
+No local Java/Maven/Docker/PostgreSQL test completion is claimed;
+only hosted CI establishes execution evidence.
+
+**Status and publication stop:** Package C is an integrated
+CI-first implementation **candidate, NOT ACCEPTED**. Parent
+HAPI-600 remains NOT_IMPLEMENTED/IN_PROGRESS; HAPI-602 remains
+blocked. Verify one expected-head main commit with exactly
+13 paths (nine CREATE, four MODIFY including two owner
+read-only compatibility files, inventory and this record),
+original exact message, parent/tree/blobs and new Full/Docs
+workflow creation/queue/start; then **STOP**. A future `Fail`
+repairs the causal issue within this same Package C, with
+no subdivision or automatic next-stage advancement.
+
 <a id="hapi-602"></a>
 ## HAPI-602 — Versioned installed-unit/characteristic links
 

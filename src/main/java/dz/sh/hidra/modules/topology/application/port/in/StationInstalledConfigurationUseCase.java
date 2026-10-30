@@ -27,7 +27,17 @@ import java.util.Objects;
 public interface StationInstalledConfigurationUseCase {
     enum Operation { SAVE, READ_CURRENT, READ_REVISION, LIST_HISTORY }
     record Command(Operation operation,String companyPartyId,String facilityId,String revisionId,
-                   StationInstalledConfiguration declaration,int limit) {
+                   StationInstalledConfiguration declaration,int limit,Long beforeEpoch,boolean lookahead) {
+        /** Preserve all original B3 callers; cursor is valid only for LIST_HISTORY. */
+        public Command(Operation operation,String companyPartyId,String facilityId,String revisionId,
+                       StationInstalledConfiguration declaration,int limit) {
+            this(operation,companyPartyId,facilityId,revisionId,declaration,limit,null,false);
+        }
+        /** C-only paged read requests one extra native-authorized row for next cursor. */
+        public Command(Operation operation,String companyPartyId,String facilityId,String revisionId,
+                       StationInstalledConfiguration declaration,int limit,Long beforeEpoch) {
+            this(operation,companyPartyId,facilityId,revisionId,declaration,limit,beforeEpoch,true);
+        }
         public Command {
             Objects.requireNonNull(operation);
             exact(companyPartyId);exact(facilityId);
@@ -43,6 +53,8 @@ public interface StationInstalledConfigurationUseCase {
                 throw new IllegalArgumentException("Unexpected configuration data");
             if(operation==Operation.LIST_HISTORY ? limit<1 || limit>100 : limit!=0)
                 throw new IllegalArgumentException("Bounded history limit required");
+            if(operation==Operation.LIST_HISTORY ? beforeEpoch!=null && beforeEpoch<1 : beforeEpoch!=null || lookahead)
+                throw new IllegalArgumentException("Exclusive positive history epoch is required");
         }
         private static void exact(String value) {
             if(value==null || value.isBlank() || !value.equals(value.strip())

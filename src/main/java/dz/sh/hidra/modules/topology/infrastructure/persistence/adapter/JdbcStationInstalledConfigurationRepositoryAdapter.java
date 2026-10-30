@@ -222,10 +222,17 @@ public class JdbcStationInstalledConfigurationRepositoryAdapter implements Stati
             (r,n)->row(r),t.command.companyPartyId(),t.command.facilityId(),revision);
         if(rows.size()>1)throw unavailable();return rows.isEmpty()?null:rows.get(0);
     }
-    private List<StationInstalledConfiguration> history(Ticket t,int limit){
-        var rows=jdbc.query("SELECT * FROM public.hidra_topology_station_configuration_revision "
-            +"WHERE company_party_id=? AND facility_id=? ORDER BY selected_epoch DESC LIMIT ?",
-            (r,n)->row(r),t.command.companyPartyId(),t.command.facilityId(),limit);
+    private List<StationInstalledConfiguration> history(Ticket t,int limit,Long beforeEpoch,boolean lookahead){
+        // Fetch one extra authenticated row for a truthful exclusive-epoch next cursor.
+        // All these rows join the native referenced-unit authorization before disclosure.
+        if(limit<1 || limit>100 || beforeEpoch!=null && beforeEpoch<1)throw unavailable();
+        var sql="SELECT * FROM public.hidra_topology_station_configuration_revision "
+            +"WHERE company_party_id=? AND facility_id=? ";
+        var rows=beforeEpoch==null
+            ?jdbc.query(sql+"ORDER BY selected_epoch DESC LIMIT ?",
+                (r,n)->row(r),t.command.companyPartyId(),t.command.facilityId(),limit+(lookahead?1:0))
+            :jdbc.query(sql+"AND selected_epoch<? ORDER BY selected_epoch DESC LIMIT ?",
+                (r,n)->row(r),t.command.companyPartyId(),t.command.facilityId(),beforeEpoch,limit+(lookahead?1:0));
         return List.copyOf(rows);
     }
     private StationInstalledConfiguration current(Ticket t){
@@ -253,7 +260,7 @@ public class JdbcStationInstalledConfigurationRepositoryAdapter implements Stati
             StationInstalledConfiguration requested=null;String digest=null,revision=null;
             if(command.operation()==Operation.READ_REVISION)requested=revision(t,command.revisionId());
             if(command.operation()==Operation.LIST_HISTORY){
-                t.snapshot=new Snapshot(current,null,history(t,command.limit()),null,null);
+                t.snapshot=new Snapshot(current,null,history(t,command.limit(),command.beforeEpoch(),command.lookahead()),null,null);
             }else if(command.operation()==Operation.SAVE) {
                 var receipts=jdbc.query("SELECT command_sha256,revision_id FROM "
                     +"public.hidra_topology_station_configuration_request WHERE company_party_id=? "
@@ -317,7 +324,8 @@ public class JdbcStationInstalledConfigurationRepositoryAdapter implements Stati
             if(snapshot.requestDigest()!=null){
                 if(!snapshot.requestDigest().equals(digest)
                   || !Objects.equals(snapshot.requestRevision(),declaration.revisionId())
-                  || !sameEngineering(c.declaration(),snapshot.revision()))throw unavailable();
+                  || !sameEngineering(c.declaration(),snapshot.revision()))
+                    throw new StationInstalledConfigurationFailure(Kind.CONFLICT,null);
                 t.result=new Result(snapshot.revision(),List.of(),true);return t.result;
             }
             var current=snapshot.current();
@@ -378,7 +386,7 @@ public class JdbcStationInstalledConfigurationRepositoryAdapter implements Stati
             if(t.command.operation()==Operation.READ_REVISION
               && !Objects.equals(t.result.declaration(),revision(t,t.command.revisionId())))throw unavailable();
             if(t.command.operation()==Operation.LIST_HISTORY
-              && !t.result.history().equals(history(t,t.command.limit())))throw unavailable();
+              && !t.result.history().equals(history(t,t.command.limit(),t.command.beforeEpoch(),t.command.lookahead())))throw unavailable();
             t.origin=origin;t.fences=List.copyOf(fences);t.expectedEpoch=current==null?0:current.selectedEpoch();
             t.expectedRevision=current==null?null:current.revisionId();t.frozen=true;
         }catch(RuntimeException e){reject(a);throw e;}

@@ -7859,6 +7859,24 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "allFourExactRoutesDelegateOnlyToProtectedOwner",
+        "anonymousDoesNotDispatchAnyProtectedSourceOperation",
+        "forgedIdentityAndMalformedHistorySelectorsFailBeforeOwner",
+        "nativeTypedDenialsAndUnknownCommitNeverDiscloseProtectedFacts",
+        "onlyAuthorizedOwnerAbsenceCanTranslateTo404"
+      ],
+      "class": "dz.sh.hidra.modules.topology.api.rest.controller.StationInstalledConfigurationControllerTest",
+      "dependency_reason": "HAPI-600 Package C: strict station configuration HTTP transport and owner-sanitized response contract (synthetic, no native authority proof).",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/api/rest/controller/StationInstalledConfigurationControllerTest.java",
+      "source_sha256": "4bbeb3c13a24fafd07876fc928614c0ce91e5678827b29b5fb77a5b774cba182",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0.127,
       "cases": [
         "graphReadDefaultsToCurrentAndSupportsExplicitHistoricalVersion",
@@ -8000,6 +8018,39 @@
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/api/rest/InstalledUnitLifecycleRestMapperTest.java",
       "source_sha256": "0dffb9a6e5bbcc9497caae6f9ba85f990222414c05443250ea0a599619a1daf4",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "fixedOwnerKindsNeverExposeNativeStackOrProtectedDetails",
+        "malformedRequestCannotDiscloseAttemptedPayload",
+        "uncertainCommitIsNeverReportedAsConflictOrSuccessfulWrite"
+      ],
+      "class": "dz.sh.hidra.modules.topology.api.rest.StationInstalledConfigurationApiExceptionHandlerTest",
+      "dependency_reason": "HAPI-600 Package C: strict station configuration HTTP transport and owner-sanitized response contract (synthetic, no native authority proof).",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/api/rest/StationInstalledConfigurationApiExceptionHandlerTest.java",
+      "source_sha256": "57686c99b1f510c38d73ad0889955f20c3b78508562ee93eb4e6c59b32e3a98d",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "canonicalInstantsAndHistoryEpochCursorsMustBeExact",
+        "exclusiveHistoryCursorUsesOnlyFullyAuthorizedExtraRow",
+        "malformedHashSyntaxOrGraphScopeIsRejectedBeforeProtectedOwner",
+        "saveMapsExplicitWireOnlyAndRecomputesPinnedGraphDigest"
+      ],
+      "class": "dz.sh.hidra.modules.topology.api.rest.StationInstalledConfigurationRestMapperTest",
+      "dependency_reason": "HAPI-600 Package C: strict station configuration HTTP transport and owner-sanitized response contract (synthetic, no native authority proof).",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/api/rest/StationInstalledConfigurationRestMapperTest.java",
+      "source_sha256": "e2dd64bce722573ebb377fc1b1af17e3e6ce8ec5d17d84e9bb6f3c142eb4849e",
       "supports": []
     },
     {
@@ -9619,6 +9670,24 @@
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/qualification/InstalledUnitLifecycleOperatorQualificationTest.java",
       "source_sha256": "98a9e2b2670f4aa80c80cb3d8a97e8244983145ac32a261fd6c10f9e2adaacfc",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "actualHttpFourProducersThreeStationsNineUnitsSaveReplayCurrentRevisionHistory",
+        "nativeHttpChangedReplayBodyMaps409AndPreservesCommittedSource",
+        "nativeHttpSequentialEpochHistoryCursorIsExclusiveAndAuthorized",
+        "nativeHttpVacantPositionAndForeignCompanyCannotBecomeOperatingOrDisclosureRights",
+        "springRegistersAllFourProtectedConfigurationHttpRoutes"
+      ],
+      "class": "dz.sh.hidra.modules.topology.qualification.StationInstalledConfigurationOperatorQualificationTest",
+      "dependency_reason": "HAPI-600 Package C: real Spring-discovered HTTP controller, four native Identity login producers, physical company/facility/unit authorization, fresh PostgreSQL16 publisher/source/catalog, 3 stations/9 installed units per producer, saved immutable revision replay/history, vacant position/foreign company denial, body conflict and exclusive epoch pagination; synthetic only; lost-commit-acknowledgement not inferred.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/qualification/StationInstalledConfigurationOperatorQualificationTest.java",
+      "source_sha256": "71925891efa55fa8c4d7d9913cbb5d4a7219cb90be6770b01b53f8ebe631b338",
       "supports": []
     },
     {

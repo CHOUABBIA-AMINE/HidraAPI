@@ -9455,6 +9455,97 @@ Publish with expected-head guard, verify exact parent/tree/message
 and three changed paths/blobs, observe new exact-SHA Full/Docs
 creation/queue/start and STOP without waiting for results.
 
+
+### HAPI-600 B3-S2 — owner's ONE consolidated remaining-verification batch and CI #1004 repair — 2026-10-30
+
+**Exact failure and predecessor.** Current main
+`a5d22ba6e89876a1dfdd21446cca7fee1ec32aaf`:
+[Full CI #1004](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41057861656)
+FAILURE, [Docs #751](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41057861646)
+SUCCESS. Full static/API/Java unit and 13 PostgreSQL shards passed; only
+shard 8 failed. Its exact retained 23-case native station configuration
+suite recorded 0 assertion failures, 2 setup/runtime errors, 0 skipped.
+The newly added post-final-guard fault-injection test attempted
+`Mockito.doAnswer(...).when(nativeStoreSpy).finalGuard(any())` at a
+Spring AOP repository proxy whose method requires an **already active**
+transaction. The proxy invoked a real MANDATORY method while configuring
+the spy, failed `IllegalTransactionStateException`, and left unfinished
+Mockito matchers. The subsequent unrelated source-lock test failed its
+`@BeforeEach` with `UnfinishedStubbingException`; not a physical-source
+regression. The aggregate Full verification gate rejected absent clean
+raw reports correctly, and must remain enforced.
+
+**Owner-selected execution boundary.** The owner explicitly directs:
+`Please for the remaining verification gather them in one step`.
+This amends execution packaging **within the originally registered
+B3-S2**, not a new B3-S2A/B/C stage or authorization for Package C.
+Use its unchanged exact message:
+`feat(topology): protect effective station configuration operations`.
+CREATE/DELETE none. MODIFY only **four original B3-S2 allowed paths**:
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedStationInstalledConfigurationPostgresIntegrationTest.java` —
+  move real final-guard fault injection from Spring-transaction-proxied
+  JDBC adapter spy to the existing unannotated native application
+  coordinator spy. Preserve real repository final SQL guard execution,
+  physical transaction, after-guard SQL rejection and four-ledger
+  rollback. Retain **all 23** previous native cases. Add **five**
+  named native PostgreSQL/Spring/Identity cases in the **same package**:
+  - `nativeSourceFirstLockBlocksSaveWithoutPartialLedgerAndReleaseRecovers`
+    (external real source writer lock before protected SAVE, no partial
+    revision/head/member/receipt, release and same request recovery);
+  - `nativeIdentityGrantWriterLockBlocksAuthorizationAndReleaseRecovers`
+    (external real Identity grant writer lock, fail-closed admission and
+    recovery without grant bypass);
+  - `nativePrivilegeCatalogTamperingFailsBeforeSaveAndRestorationAllowsSameRequest`
+    (temporary real publisher BYPASSRLS role drift, denied write,
+    restore original role and successful authentic write);
+  - `nativeChangedReplayBodyAndForeignCompanyCannotDiscloseOrOverwriteHistory`
+    (same request identity with different engineering bytes rejected,
+    foreign company read denial, original ledger and authorized read
+    unchanged);
+  - `nativeExpiredFinalBoundaryRollsBackAllFourImmutableLedgers`
+    (test-only expired repository origin after genuine final preparation,
+    actual final guard must reject and rollback all four ledgers).
+  The existing `nativeCompetingFirstEpochWritersCommitExactlyOneHeadAndImmutableReceipt`
+  remains a true physical two-thread contested CAS test.
+- `src/test/java/dz/sh/hidra/modules/topology/application/service/StationInstalledConfigurationApplicationServiceTest.java` —
+  add `indeterminatePhysicalCommitIsExplicitAndNeverAutomaticallyRetried`
+  for precise service mapping of an executor's original
+  `INDETERMINATE` outcome and exactly one execution attempt; no
+  fake PostgreSQL unknown-commit acknowledgement claim.
+- `.github/ci-test-inventory.json` — register **28** original + added
+  native cases and **7** service cases, with precise UTF-8 Java
+  SHA-256 `f2ccee518a4041329330c5b86c99642368296c49b05aedbef5de2c3a94fcb323`
+  and `2c087baab775e3d3828b818bd90a23324015ba554f4b29a940a921f4a7753c0b`.
+  Other class identities and zero-skip inventory rules are preserved.
+- `doc/roadmap/TASKS_HPS-006.md` — this append-only evidence.
+
+**What this batch does not claim.** No runtime Domain/Application/JDBC
+behavior, native Identity contract, source/migration, owner permission,
+protected DML hash, PostgreSQL trigger, production database credentials,
+workflow, roadmap state, numerical solver, REST API or external equipment
+is changed. All tests are synthetic. The test-only coordinator spy
+does not mint a permission or replace the protected final SQL guard.
+External lock tests require genuine source/Identity locks and guarded
+authorization; privilege mutation is fully restored in `finally`.
+This batch attempts to close all **currently identified** B3-S2
+verification gaps with **one** registered publication. No local
+Maven/Docker/PostgreSQL test execution is claimed.
+
+**Last gate, not automatic completion.** New exact-SHA Full/Docs must
+compile and execute every registered test with zero skips, correct
+PostgreSQL role/lock behavior, physical rollback, no premature security
+disclosure, strict guard/no SQL after guard and integrity of the
+aggregate report. The unknown physical commit outcome remains a
+separate runtime property; the mocked mapping test validates only
+service translation/no auto-retry. Source inspection and green CI alone
+are not industrial/SITE acceptance. Only independently reconciled
+original B3-S2 acceptance may close B3-S2 and enable next Package C;
+parent HAPI-600 remains NOT_IMPLEMENTED/IN_PROGRESS. If CI fails,
+repair its **first causal gate** within this same batch, without a new
+piecemeal B3-S2 package. After publication verify parent/tree/blobs/
+four-path scope, observed exact-SHA Full and Docs workflow queue/start,
+then STOP rather than running or waiting for further stages.
+
 <a id="hapi-602"></a>
 ## HAPI-602 — Versioned installed-unit/characteristic links
 

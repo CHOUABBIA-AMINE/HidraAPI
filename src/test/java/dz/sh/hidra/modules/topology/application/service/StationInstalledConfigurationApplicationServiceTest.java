@@ -111,4 +111,24 @@ class StationInstalledConfigurationApplicationServiceTest {
             "company","station",null,null,101));
         verifyNoInteractions(coordinator,executor);
     }
+
+    @Test void indeterminatePhysicalCommitIsExplicitAndNeverAutomaticallyRetried() throws Exception {
+        var command=read();
+        var prepared=mock(ProtectedStationConfigurationAdmissionCoordinator.Prepared.class);
+        when(coordinator.prepare(command)).thenReturn(prepared);
+        var constructor=ProtectedTransactionExecutor.ExecutionFailure.class.getDeclaredConstructor(
+            ProtectedTransactionExecutor.Outcome.class,Throwable.class);
+        constructor.setAccessible(true);
+        var unknown=constructor.newInstance(
+            ProtectedTransactionExecutor.Outcome.INDETERMINATE,
+            new IllegalStateException("synthetic commit acknowledgment lost"));
+        when(executor.executePublication(any(),any(),any())).thenThrow(unknown);
+        var result=assertThrows(StationInstalledConfigurationFailure.class,
+            ()->service.execute(command));
+        assertEquals(StationInstalledConfigurationFailure.Kind.INDETERMINATE,result.kind());
+        verify(executor,times(1)).executePublication(any(),any(),any());
+        verify(coordinator,times(1)).prepare(command);
+        verify(coordinator,never()).acquire(any(),any());
+    }
+
 }

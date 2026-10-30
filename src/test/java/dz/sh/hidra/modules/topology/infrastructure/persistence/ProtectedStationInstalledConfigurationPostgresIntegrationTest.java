@@ -136,7 +136,7 @@ class ProtectedStationInstalledConfigurationPostgresIntegrationTest {
     @org.springframework.beans.factory.annotation.Autowired
     JdbcTemplate nativeJdbc;
     @org.springframework.test.context.bean.override.mockito.MockitoSpyBean
-    dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.JdbcStationInstalledConfigurationRepositoryAdapter nativeStoreSpy;
+    dz.sh.hidra.modules.topology.application.service.ProtectedStationConfigurationAdmissionCoordinator nativeCoordinatorSpy;
 
     private final org.springframework.security.oauth2.jwt.JwtEncoder sourceEncoder=
         org.springframework.security.oauth2.jwt.NimbusJwtEncoder.withSecretKey(
@@ -1001,14 +1001,164 @@ class ProtectedStationInstalledConfigurationPostgresIntegrationTest {
             // neither a swallowed failure nor a post-guard statement may commit.
             nativeJdbc.queryForObject("SELECT 1",Integer.class);
             return result;
-        }).when(nativeStoreSpy).finalGuard(org.mockito.ArgumentMatchers.any());
+        }).when(nativeCoordinatorSpy).finalGuard(org.mockito.ArgumentMatchers.any());
         try {
             assertThrows(dz.sh.hidra.modules.topology.application.model
                 .StationInstalledConfigurationFailure.class,
                 ()->protectedService.execute(request));
-            org.mockito.Mockito.verify(nativeStoreSpy).finalGuard(
+            org.mockito.Mockito.verify(nativeCoordinatorSpy).finalGuard(
                 org.mockito.ArgumentMatchers.any());
-        }finally{org.mockito.Mockito.reset(nativeStoreSpy);}
+        }finally{org.mockito.Mockito.reset(nativeCoordinatorSpy);}
+        for(String suffix:List.of("revision","member","head","request"))
+            assertEquals(0,owner.queryForObject(
+                "SELECT count(*) FROM public.hidra_topology_station_configuration_"+suffix
+                +" WHERE facility_id=?",Integer.class,c.facilityId()),suffix);
+    }
+
+    @Test void nativeSourceFirstLockBlocksSaveWithoutPartialLedgerAndReleaseRecovers() throws Exception {
+        JdbcTemplate owner=jdbc();
+        NativeActor actor=nativeActor("LOCAL");
+        StationInstalledConfiguration c=fixture(owner,true).declaration();
+        var save=command(dz.sh.hidra.modules.topology.application.port.in
+            .StationInstalledConfigurationUseCase.Operation.SAVE,c);
+        var refs=unitRefs(c);
+        authorize(actor,save,refs);login(actor);
+        try(var external=java.sql.DriverManager.getConnection(POSTGRES.getJdbcUrl(),
+                POSTGRES.getUsername(),POSTGRES.getPassword())) {
+            external.setAutoCommit(false);
+            try(var statement=external.createStatement()) {
+                statement.execute("LOCK TABLE public.hidra_topology_installed_unit_installation"
+                    +" IN ROW EXCLUSIVE MODE");
+            }
+            assertThrows(dz.sh.hidra.modules.topology.application.model
+                .StationInstalledConfigurationFailure.class,
+                ()->protectedService.execute(save));
+            for(String suffix:List.of("head","revision","member","request"))
+                assertEquals(0,owner.queryForObject(
+                    "SELECT count(*) FROM public.hidra_topology_station_configuration_"+suffix
+                    +" WHERE facility_id=?",Integer.class,c.facilityId()),suffix);
+            external.rollback();
+        }
+        assertNotNull(nativeExecute(actor,save,refs).declaration());
+    }
+
+    @Test void nativeIdentityGrantWriterLockBlocksAuthorizationAndReleaseRecovers() throws Exception {
+        JdbcTemplate owner=jdbc();
+        NativeActor actor=nativeActor("LOCAL");
+        StationInstalledConfiguration c=fixture(owner,true).declaration();
+        var save=command(dz.sh.hidra.modules.topology.application.port.in
+            .StationInstalledConfigurationUseCase.Operation.SAVE,c);
+        var refs=unitRefs(c);
+        authorize(actor,save,refs);login(actor);
+        try(var external=java.sql.DriverManager.getConnection(POSTGRES.getJdbcUrl(),
+                POSTGRES.getUsername(),POSTGRES.getPassword())) {
+            external.setAutoCommit(false);
+            try(var statement=external.createStatement()) {
+                statement.execute("LOCK TABLE public.hidra_identity_user_permission_grant"
+                    +" IN ROW EXCLUSIVE MODE");
+            }
+            assertThrows(dz.sh.hidra.modules.topology.application.model
+                .StationInstalledConfigurationFailure.class,
+                ()->protectedService.execute(save));
+            assertEquals(0,owner.queryForObject(
+                "SELECT count(*) FROM public.hidra_topology_station_configuration_request "
+                +"WHERE facility_id=?",Integer.class,c.facilityId()));
+            external.rollback();
+        }
+        assertNotNull(nativeExecute(actor,save,refs).declaration());
+    }
+
+    @Test void nativePrivilegeCatalogTamperingFailsBeforeSaveAndRestorationAllowsSameRequest() {
+        JdbcTemplate owner=jdbc();
+        NativeActor actor=nativeActor("LOCAL");
+        StationInstalledConfiguration c=fixture(owner,true).declaration();
+        var save=command(dz.sh.hidra.modules.topology.application.port.in
+            .StationInstalledConfigurationUseCase.Operation.SAVE,c);
+        var refs=unitRefs(c);
+        authorize(actor,save,refs);login(actor);
+        owner.execute("ALTER ROLE "+PUBLISHER+" BYPASSRLS");
+        try {
+            assertThrows(dz.sh.hidra.modules.topology.application.model
+                .StationInstalledConfigurationFailure.class,
+                ()->protectedService.execute(save));
+            assertEquals(0,owner.queryForObject(
+                "SELECT count(*) FROM public.hidra_topology_station_configuration_revision "
+                +"WHERE facility_id=?",Integer.class,c.facilityId()));
+        } finally {owner.execute("ALTER ROLE "+PUBLISHER+" NOBYPASSRLS");}
+        assertNotNull(nativeExecute(actor,save,refs).declaration());
+    }
+
+    @Test void nativeChangedReplayBodyAndForeignCompanyCannotDiscloseOrOverwriteHistory() {
+        JdbcTemplate owner=jdbc();
+        NativeActor actor=nativeActor("LOCAL");
+        StationInstalledConfiguration c=fixture(owner,true).declaration();
+        var refs=unitRefs(c);
+        var save=command(dz.sh.hidra.modules.topology.application.port.in
+            .StationInstalledConfigurationUseCase.Operation.SAVE,c);
+        var accepted=nativeExecute(actor,save,refs).declaration();
+        var changed=new StationInstalledConfiguration(c.companyPartyId(),c.facilityId(),
+            c.revisionId(),c.requestId(),c.expectedEpoch(),c.selectedEpoch(),
+            c.graphHeadEpoch(),c.pinnedGraph(),c.graphPayloadFormat(),c.graphSha256(),
+            c.effectiveFrom(),c.effectiveUntil(),c.recordedAt(),
+            "synthetic:different-replay-body",c.actorBindingId(),c.actorSessionId(),
+            c.actorUserId(),c.positions(),c.activeEdgeIds());
+        var altered=command(dz.sh.hidra.modules.topology.application.port.in
+            .StationInstalledConfigurationUseCase.Operation.SAVE,changed);
+        authorize(actor,altered,refs);login(actor);
+        assertThrows(dz.sh.hidra.modules.topology.application.model
+            .StationInstalledConfigurationFailure.class,
+            ()->protectedService.execute(altered));
+        var foreign=new dz.sh.hidra.modules.topology.application.port.in
+            .StationInstalledConfigurationUseCase.Command(
+                dz.sh.hidra.modules.topology.application.port.in
+                    .StationInstalledConfigurationUseCase.Operation.READ_CURRENT,
+                syntheticId(),c.facilityId(),null,null,0);
+        login(actor);
+        assertThrows(dz.sh.hidra.modules.topology.application.model
+            .StationInstalledConfigurationFailure.class,
+            ()->protectedService.execute(foreign));
+        assertEquals(1,owner.queryForObject(
+            "SELECT count(*) FROM public.hidra_topology_station_configuration_revision "
+            +"WHERE facility_id=?",Integer.class,c.facilityId()));
+        assertEquals(1,owner.queryForObject(
+            "SELECT count(*) FROM public.hidra_topology_station_configuration_request "
+            +"WHERE facility_id=?",Integer.class,c.facilityId()));
+        var read=command(dz.sh.hidra.modules.topology.application.port.in
+            .StationInstalledConfigurationUseCase.Operation.READ_CURRENT,c);
+        assertEquals(accepted,nativeExecute(actor,read,refs).declaration());
+    }
+
+    @Test void nativeExpiredFinalBoundaryRollsBackAllFourImmutableLedgers() {
+        JdbcTemplate owner=jdbc();
+        NativeActor actor=nativeActor("LOCAL");
+        StationInstalledConfiguration c=fixture(owner,true).declaration();
+        var save=command(dz.sh.hidra.modules.topology.application.port.in
+            .StationInstalledConfigurationUseCase.Operation.SAVE,c);
+        var refs=unitRefs(c);
+        authorize(actor,save,refs);login(actor);
+        org.mockito.Mockito.doAnswer(invocation->{
+            Object answer=invocation.callRealMethod();
+            var admission=invocation.getArgument(0);
+            var storage=org.springframework.test.util.ReflectionTestUtils.getField(admission,"storage");
+            var origin=(dz.sh.hidra.modules.topology.application.port.out
+                .StationInstalledConfigurationRepositoryPort.Origin)
+                org.springframework.test.util.ReflectionTestUtils.getField(storage,"origin");
+            assertNotNull(origin);
+            var expired=new dz.sh.hidra.modules.topology.application.port.out
+                .StationInstalledConfigurationRepositoryPort.Origin(
+                    origin.bindingId(),origin.sessionId(),origin.userId(),
+                    origin.sampledAt().minusSeconds(120),
+                    origin.sampledAt().minusSeconds(60),
+                    origin.backendPid(),origin.transactionId());
+            org.springframework.test.util.ReflectionTestUtils.setField(storage,"origin",expired);
+            return answer;
+        }).when(nativeCoordinatorSpy).prepareFinal(org.mockito.ArgumentMatchers.any());
+        try {
+            assertThrows(dz.sh.hidra.modules.topology.application.model
+                .StationInstalledConfigurationFailure.class,()->protectedService.execute(save));
+            org.mockito.Mockito.verify(nativeCoordinatorSpy).finalGuard(
+                org.mockito.ArgumentMatchers.any());
+        } finally {org.mockito.Mockito.reset(nativeCoordinatorSpy);}
         for(String suffix:List.of("revision","member","head","request"))
             assertEquals(0,owner.queryForObject(
                 "SELECT count(*) FROM public.hidra_topology_station_configuration_"+suffix

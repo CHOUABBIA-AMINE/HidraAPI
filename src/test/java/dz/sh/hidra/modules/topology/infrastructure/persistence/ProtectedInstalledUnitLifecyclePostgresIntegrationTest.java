@@ -81,6 +81,8 @@ import javax.crypto.spec.SecretKeySpec;
         classes = HidraApplication.class,
         webEnvironment = SpringBootTest.WebEnvironment.MOCK,
         properties = {
+            // Finite synthetic functional-qualification ceiling; native expiry remains independent.
+            "hidra.platform.persistence.execution.installed-unit-work-budget-ms=10000",
             "hidra.platform.security.ldap.enabled=true",
             "hidra.platform.security.ldap.url=ldap://synthetic.invalid:389",
             "hidra.platform.security.ldap.base-dn=dc=synthetic,dc=invalid",
@@ -299,7 +301,7 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
         jdbc.execute("CREATE TABLE " + receipt() + "(id integer PRIMARY KEY)");
         c3NonownerCapture();ensureCompany();
         // Warm only genuine native qualification, without business storage or a protected writer bypass.
-        // Every lifecycle operation below still runs under the accepted installed-unit1000ms budget.
+        // Functional qualification uses the finite test-only work cap; runtime defaults remain unchanged.
         var f=fixture("LOCAL");var unit=new InstalledUnit("native-warm-unit",COMPANY,"native-warm-kind",
             InstalledUnit.Evidence.unknown(),InstalledUnit.Evidence.unknown(),InstalledUnit.Evidence.unknown(),null);
         var cmd=register(unit);authorize(f,cmd);login(f);

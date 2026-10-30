@@ -7039,6 +7039,69 @@ then STOP. This documentation-only stage needs no redundant Full dispatch and
 selects no successor implementation. A later owner Next may select the next bounded
 roadmap preflight; no HAPI-600/601 or parent closure is executed automatically here.
 
+### 2026-10-30 — Full993 native replacement functional-fixture repair
+
+Owner Fail selects only the responsible CI repair on main
+8ab3d636bd47b3eb6e20df7a51fb0f6f53c45944. Full993/run41005524198
+failed PostgreSQL shard1/job123899433680; all thirteen other database shards,
+unit/architecture, static and actual API/dictionary passed. The three decomposed
+appointment suites passed with their original82 cases. Full gate failure follows
+the mandatory failed lane and is not a separate evidence-validator defect.
+
+The sole failing native installed-unit case is
+`atomicReplacementCommitsAndReplaysThroughAllFourGenuineNativeProducers`
+in ProtectedInstalledUnitLifecyclePostgresIntegrationTest (48 total cases).
+Its actual protected operation reached phase SEALED with577 user statements and
+elapsed1018554150ns, exceeding the provisional1000ms work cap by18.554150ms.
+It correctly failed closed with REJECTED_BEFORE_COMMIT/UNAVAILABLE; this is
+neither a compilation/inheritance defect nor evidence that the cap can be bypassed.
+The failed lane executed139 cases with one error, no assertion failures/skips.
+
+**Bounded correction and exact message.**
+`test(topology): bound native installed-unit qualification work`.
+MODIFY only the native test source above, its exact source digest in
+.github/ci-test-inventory.json and this append-only HAPI-599 evidence record.
+Set only that SpringBootTest fixture's existing installed-unit work-budget
+property to10000ms, the already supported finite synthetic qualification ceiling.
+Correct the fixture comment so it no longer claims execution under1000ms.
+No executable test body, case ID, assertion, SQL, source fixture, producer,
+retry policy, schema, runtime default/property implementation, workflow/shard,
+scheduling weight or authorization validity is changed. The original1000ms
+runtime default stays; the fixture now proves functionality under a larger
+test-only ceiling and does not prove operation latency within that default.
+
+Independent deadline proof is retained unchanged:
+ProtectedExecutionBudgetPropertiesTest.installedUnitBudgetDefaultsAndOverridesRemainIndependent,
+installedUnitMalformedOrUnboundedConfigurationFailsClosed, and
+ProtectedTransactionExecutorTest.installedUnitWorkPolicyRetainsFiniteExpiryAndStandardDefault
+continue to assert exact defaults, bounded configuration, enforced expiry and
+poisoning. Existing native expiry/revocation, scope, rollback and all four genuine
+producer/replay cases remain required. Native authority expiry,500ms standard
+family policy, lock/statement/idle timeouts and final SQL guard are not extended.
+The repository's pre-existing appointment qualification fixture already uses
+the same finite10000ms test-only pattern. This repair isolates functional
+qualification from variable hosted runner speed; it is not performance acceptance.
+
+**Timing observations.** Full993 database job wall seconds across shards0..13:
+325/485/292/357/318/316/331/372/345/312/353/333/293/330.
+Thirteen successful lanes were below seven minutes; failed shard1 was8m05s.
+Do not claim that the full workflow achieved the seven-minute target.
+Fourteen shards and disjoint512-class/3875-case inventory remain unchanged.
+The failed run is diagnostic evidence, not new green acceptance or a basis
+for increasing runtime defaults. Review subsequent naturally produced timing;
+no unchanged benchmark rerun or further optimization is selected here.
+
+**Validation and limits.** Inverse source-edit verification preserves all48 test
+bodies/case identities and reconstructs the parent exactly. Inventory diff changes
+only this source SHA256, leaving every case and scheduling field intact.
+Available38 inventory,54 full-evidence and19 documentation-validator fixtures PASS.
+Java21/Maven/PostgreSQL tests were not executed locally (Java17, no complete
+service environment); hosted exact-SHA execution remains the acceptance gate.
+HAPI-599 prior bounded acceptance is retained as historical evidence;
+HAPI-600 B2/B3 and performance/release/deployment acceptance do not advance.
+Publish guarded main, verify exact parent/tree/three-path scope, observe new
+applicable CI queued/started and STOP.
+
 <a id="hapi-600"></a>
 ## HAPI-600 — Effective station configuration and connectivity
 

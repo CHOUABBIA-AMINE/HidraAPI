@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Regression coverage for repair CI against an unbootable immediate predecessor."""
 
+import io
 import json
 import os
 import subprocess
@@ -8,6 +9,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
+from urllib.error import HTTPError, URLError
 
 import resolve_openapi_base as resolver
 
@@ -125,6 +127,72 @@ class VerifiedBaseTest(unittest.TestCase):
         with patch.dict(os.environ, environment), patch.object(resolver, "github_history", return_value=self.history(self.workflow(self.first))):
             resolver.main()
         self.assertEqual(f"sha={self.first}\n", output.read_text(encoding="utf-8"))
+
+    def test_transient_504_retries_and_uses_only_returned_verified_history(self):
+        history = {"workflow_runs": [self.workflow(self.first)]}
+        response = io.BytesIO(json.dumps(history).encode("utf-8"))
+        gateway = HTTPError("https://api.github.com", 504, "Gateway Timeout", None, None)
+        with patch.dict(os.environ, {"GH_TOKEN": "test-token"}), \
+                patch.object(resolver, "urlopen", side_effect=[gateway, response]) as opener, \
+                patch.object(resolver.time, "sleep") as pause:
+            page = resolver.github_history("example/HidraAPI", "main")(1)
+        self.assertEqual(history, page)
+        self.assertEqual(2, opener.call_count)
+        pause.assert_called_once_with(1)
+
+    def test_transient_502_503_and_network_timeout_retry_with_bounded_backoff(self):
+        history = {"workflow_runs": [self.workflow(self.first)]}
+        failures = [
+            HTTPError("https://api.github.com", 502, "Bad Gateway", None, None),
+            HTTPError("https://api.github.com", 503, "Unavailable", None, None),
+        ]
+        with patch.dict(os.environ, {"GH_TOKEN": "test-token"}), \
+                patch.object(resolver, "urlopen", side_effect=[
+                    *failures, io.BytesIO(json.dumps(history).encode("utf-8"))
+                ]) as opener, patch.object(resolver.time, "sleep") as pause:
+            self.assertEqual(history, resolver.github_history("example/HidraAPI", "main")(1))
+        self.assertEqual(3, opener.call_count)
+        self.assertEqual([((1,), {}), ((2,), {})], [
+            (call.args, call.kwargs) for call in pause.call_args_list
+        ])
+        with patch.dict(os.environ, {"GH_TOKEN": "test-token"}), \
+                patch.object(resolver, "urlopen", side_effect=[
+                    URLError("connection reset"),
+                    io.BytesIO(json.dumps(history).encode("utf-8")),
+                ]) as opener, patch.object(resolver.time, "sleep") as pause:
+            self.assertEqual(history, resolver.github_history("example/HidraAPI", "main")(1))
+        self.assertEqual(2, opener.call_count)
+        pause.assert_called_once_with(1)
+
+    def test_transient_failure_exhaustion_remains_fail_closed(self):
+        failures = [
+            HTTPError("https://api.github.com", 504, "Gateway Timeout", None, None)
+            for _ in range(3)
+        ]
+        with patch.dict(os.environ, {"GH_TOKEN": "test-token"}), \
+                patch.object(resolver, "urlopen", side_effect=failures) as opener, \
+                patch.object(resolver.time, "sleep") as pause:
+            with self.assertRaisesRegex(RuntimeError, "HTTP 504.*attempt 3/3.*no unverified fallback"):
+                resolver.github_history("example/HidraAPI", "main")(1)
+        self.assertEqual(3, opener.call_count)
+        self.assertEqual(2, pause.call_count)
+
+    def test_nontransient_http_and_malformed_json_do_not_retry(self):
+        with patch.dict(os.environ, {"GH_TOKEN": "test-token"}), \
+                patch.object(resolver, "urlopen", side_effect=HTTPError(
+                    "https://api.github.com", 403, "Forbidden", None, None
+                )) as opener, patch.object(resolver.time, "sleep") as pause:
+            with self.assertRaisesRegex(RuntimeError, "HTTP 403.*attempt 1/3"):
+                resolver.github_history("example/HidraAPI", "main")(1)
+        opener.assert_called_once()
+        pause.assert_not_called()
+        with patch.dict(os.environ, {"GH_TOKEN": "test-token"}), \
+                patch.object(resolver, "urlopen", return_value=io.BytesIO(b"{broken")) as opener, \
+                patch.object(resolver.time, "sleep") as pause:
+            with self.assertRaisesRegex(RuntimeError, "invalid JSON.*no unverified fallback"):
+                resolver.github_history("example/HidraAPI", "main")(1)
+        opener.assert_called_once()
+        pause.assert_not_called()
 
     def test_repository_and_token_requirements_fail_closed_without_network(self):
         with self.assertRaises(ValueError):

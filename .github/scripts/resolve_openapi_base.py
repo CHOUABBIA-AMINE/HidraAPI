@@ -8,6 +8,7 @@ import os
 import re
 import subprocess
 import sys
+import time
 from pathlib import Path
 from typing import Callable
 from urllib.error import HTTPError, URLError
@@ -89,13 +90,31 @@ def github_history(repository: str, branch: str) -> Callable[[int], dict]:
             "Accept": "application/vnd.github+json", "Authorization": f"Bearer {token}",
             "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "HidraAPI-OpenAPI-base",
         })
-        try:
-            with urlopen(request, timeout=20) as response:
-                result = json.load(response)
-        except HTTPError as failure:
-            raise RuntimeError(f"GitHub workflow-history lookup failed: HTTP {failure.code}.") from None
-        except (URLError, TimeoutError, json.JSONDecodeError):
-            raise RuntimeError("GitHub workflow-history lookup failed; no unverified fallback is allowed.") from None
+        # Retry only transient transport/service failures; never weaken provenance
+        # selection or substitute an unverified compatibility baseline.
+        for attempt in range(1, 4):
+            try:
+                with urlopen(request, timeout=20) as response:
+                    result = json.load(response)
+                break
+            except HTTPError as failure:
+                if failure.code not in (502, 503, 504) or attempt == 3:
+                    raise RuntimeError(
+                        f"GitHub workflow-history lookup failed: HTTP {failure.code} "
+                        f"(attempt {attempt}/3); no unverified fallback is allowed."
+                    ) from None
+            except (URLError, TimeoutError):
+                if attempt == 3:
+                    raise RuntimeError(
+                        "GitHub workflow-history lookup failed after 3 attempts; "
+                        "no unverified fallback is allowed."
+                    ) from None
+            except json.JSONDecodeError:
+                raise RuntimeError(
+                    "GitHub workflow-history lookup returned invalid JSON; "
+                    "no unverified fallback is allowed."
+                ) from None
+            time.sleep(attempt)
         if not isinstance(result, dict):
             raise RuntimeError("GitHub returned invalid workflow-history data.")
         return result

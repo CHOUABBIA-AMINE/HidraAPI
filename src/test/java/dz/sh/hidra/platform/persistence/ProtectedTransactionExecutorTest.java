@@ -1045,4 +1045,26 @@ class ProtectedTransactionExecutorTest {
         assertThatThrownBy(()->executor.executePublication(()->"forbidden",()->{},this::guard))
             .isInstanceOf(IllegalStateException.class).hasMessage("Unreviewed credential route caller");
     }
+
+    @Test void stationConfigurationAdmissionAndFinalPreparationRejectOutsidePhysicalScope(){
+        assertThatThrownBy(executor::requireAdmissionForSourceLock)
+            .isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(executor::requireStationConfigurationFinalPreparation)
+            .isInstanceOf(IllegalStateException.class);
+    }
+    @Test void stationConfigurationDmlPinsAreExactAndDoNotOpenOtherOwnerRoutes() throws Exception {
+        var f=ProtectedTransactionExecutor.class.getDeclaredField("STATION_CONFIG_DML_HASHES");
+        f.setAccessible(true);
+        var pins=(java.util.Set<?>)f.get(null);
+        assertThat(pins).hasSize(5);
+        for(String sql:List.of("DELETE FROM public.hidra_topology_station_configuration_revision",
+            "UPDATE public.hidra_topology_station_configuration_revision SET revision_id=revision_id",
+            "INSERT INTO public.hidra_topology_installed_unit DEFAULT VALUES")) {
+            var digest=java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256")
+                .digest(sql.getBytes(java.nio.charset.StandardCharsets.UTF_8)));
+            assertThat(pins.contains(digest)).isFalse();
+        }
+        assertThatThrownBy(()->executor.executePublication(()->"forbidden",()->{},this::guard))
+            .isInstanceOf(IllegalStateException.class).hasMessage("Unreviewed credential route caller");
+    }
 }

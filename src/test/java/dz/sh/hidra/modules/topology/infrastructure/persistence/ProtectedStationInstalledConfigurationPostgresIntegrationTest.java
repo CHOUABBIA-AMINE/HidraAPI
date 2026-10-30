@@ -327,4 +327,91 @@ class ProtectedStationInstalledConfigurationPostgresIntegrationTest {
             s.setRollbackOnly();
         });
     }
+
+    @Test void protectedSourceLockFunctionKeepsAllTwelveRelationsOnOriginalTransaction(){
+        JdbcTemplate db=jdbc();
+        tx(db).executeWithoutResult(t->{
+            db.execute("SELECT public.hidra_station_configuration_lock_sources()");
+            Integer count=db.queryForObject("""
+                SELECT count(*) FROM pg_catalog.pg_locks
+                WHERE pid=pg_catalog.pg_backend_pid() AND granted AND locktype='relation'
+                  AND mode='ShareRowExclusiveLock'
+                  AND relation IN (
+                    'public.hidra_topology_equipment'::regclass,
+                    'public.hidra_topology_facility'::regclass,
+                    'public.hidra_topology_facility_owner_generation'::regclass,
+                    'public.hidra_topology_installed_unit'::regclass,
+                    'public.hidra_topology_installed_unit_installation'::regclass,
+                    'public.hidra_topology_installed_unit_installation_event'::regclass,
+                    'public.hidra_topology_station_graph_head'::regclass,
+                    'public.hidra_topology_station_graph_revision'::regclass,
+                    'public.hidra_topology_station_configuration_revision'::regclass,
+                    'public.hidra_topology_station_configuration_member'::regclass,
+                    'public.hidra_topology_station_configuration_head'::regclass,
+                    'public.hidra_topology_station_configuration_request'::regclass)
+                """,Integer.class);
+            assertEquals(12,count);
+        });
+    }
+
+    @Test void ordinarySyntheticRoleCannotExecuteUnprovisionedSourceLock(){
+        JdbcTemplate db=jdbc();
+        String role="synthetic_station_denied_"+UUID.randomUUID().toString().replace("-","");
+        db.execute("CREATE ROLE "+role+" NOLOGIN");
+        try{
+            tx(db).executeWithoutResult(t->{
+                db.execute("SET LOCAL ROLE "+role);
+                assertThrows(org.springframework.dao.DataAccessException.class,
+                    ()->db.execute("SELECT public.hidra_station_configuration_lock_sources()"));
+                t.setRollbackOnly();
+            });
+        }finally{db.execute("DROP ROLE "+role);}
+    }
+
+    @Test void explicitSyntheticPublisherGrantDoesNotGrantSourceDml(){
+        JdbcTemplate db=jdbc();
+        String role="synthetic_station_publisher_"+UUID.randomUUID().toString().replace("-","");
+        db.execute("CREATE ROLE "+role+" NOLOGIN");
+        try{
+            db.execute("GRANT EXECUTE ON FUNCTION public.hidra_station_configuration_lock_sources() TO "+role);
+            tx(db).executeWithoutResult(t->{
+                db.execute("SET LOCAL ROLE "+role);
+                Boolean denied=db.queryForObject("""
+                    SELECT NOT pg_catalog.has_table_privilege(current_user,
+                        'public.hidra_topology_installed_unit_installation','UPDATE')
+                      AND NOT pg_catalog.has_table_privilege(current_user,
+                        'public.hidra_topology_equipment','INSERT')
+                      AND pg_catalog.has_function_privilege(current_user,
+                        'public.hidra_station_configuration_lock_sources()','EXECUTE')
+                    """,Boolean.class);
+                assertEquals(Boolean.TRUE,denied);
+                db.execute("SELECT public.hidra_station_configuration_lock_sources()");
+                Integer locks=db.queryForObject("""
+                    SELECT count(*) FROM pg_catalog.pg_locks
+                    WHERE pid=pg_catalog.pg_backend_pid() AND granted
+                      AND locktype='relation' AND mode='ShareRowExclusiveLock'
+                    """,Integer.class);
+                assertTrue(locks>=12);
+                t.setRollbackOnly();
+            });
+        }finally{
+            db.execute("REVOKE EXECUTE ON FUNCTION public.hidra_station_configuration_lock_sources() FROM "+role);
+            db.execute("DROP ROLE "+role);
+        }
+    }
+
+    @Test void protectedRequestReceiptNeedsNativeTransactionOriginColumns(){
+        JdbcTemplate db=jdbc();migrate();
+        Set<String> columns=new HashSet<>(db.queryForList("""
+            SELECT column_name FROM information_schema.columns
+            WHERE table_schema='public' AND table_name='hidra_topology_station_configuration_request'
+            """,String.class));
+        assertTrue(columns.containsAll(Set.of("actor_session_id","actor_user_id","sampled_at",
+            "valid_until","backend_pid","transaction_id","database_role")));
+        assertEquals(1,db.queryForObject("""
+            SELECT count(*) FROM pg_catalog.pg_trigger t
+            WHERE t.tgrelid='public.hidra_topology_station_configuration_request'::regclass
+              AND t.tgname='trg_station_configuration_request_origin' AND t.tgenabled='O'
+            """,Integer.class));
+    }
 }

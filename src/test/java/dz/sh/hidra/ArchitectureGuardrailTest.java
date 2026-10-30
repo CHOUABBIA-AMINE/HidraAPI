@@ -675,8 +675,15 @@ class ArchitectureGuardrailTest {
         for(String root:INSTALLED_UNIT_OWNER_ROOTS)if(targetClassName.startsWith(root))
             return !(targetClassName.equals(root) || targetClassName.startsWith(root+"$"))
                 || !sourceClassName.equals(INSTALLED_UNIT_COORDINATOR) && !sourceClassName.startsWith(INSTALLED_UNIT_COORDINATOR+"$");
-        // B2 exports no configuration authority to Topology; B3 must admit its exact coordinator.
-        if(targetClassName.startsWith("dz.sh.hidra.modules.identity.application.contract.topology.TopologyStationConfigurationAuthorizationContract"))return true;
+        // B3-S2 exports ONLY the native Identity contract root/nested records to its
+        // exact compiled Topology coordinator. The repository port/adapter, siblings
+        // and all private Identity participants remain forbidden.
+        String configurationRoot="dz.sh.hidra.modules.identity.application.contract.topology.TopologyStationConfigurationAuthorizationContract";
+        if(targetClassName.startsWith(configurationRoot)) {
+            String reviewed="dz.sh.hidra.modules.topology.application.service.ProtectedStationConfigurationAdmissionCoordinator";
+            return !(targetClassName.equals(configurationRoot) || targetClassName.startsWith(configurationRoot+"$"))
+                || !(sourceClassName.equals(reviewed) || sourceClassName.startsWith(reviewed+"$"));
+        }
         if(isProductPublicationSourceType(targetClassName))return true;
         if(isPublicationSpecific(targetClassName))return !isPublicationExportAllowed(sourceClassName,targetClassName);
         if (!isPrivateCrossModulePackage(targetPackage)) {
@@ -840,6 +847,13 @@ class ArchitectureGuardrailTest {
         assertTrue(isForbiddenCrossModuleDependency("dz.sh.hidra.modules.topology.application.service.Other",root));
         assertTrue(isForbiddenCrossModuleDependency("dz.sh.hidra.modules.topology.application.service.Other",root+"$Contribution"));
         assertTrue(isForbiddenCrossModuleDependency("dz.sh.hidra.modules.topology.application.service.Other",root+"Sibling"));
+        String approved="dz.sh.hidra.modules.topology.application.service.ProtectedStationConfigurationAdmissionCoordinator";
+        assertFalse(isForbiddenCrossModuleDependency(approved,root));
+        assertFalse(isForbiddenCrossModuleDependency(approved+"$Admission",root+"$Contribution"));
+        assertTrue(isForbiddenCrossModuleDependency(approved+"Sibling",root));
+        assertTrue(isForbiddenCrossModuleDependency("dz.sh.hidra.modules.topology.application.port.out.StationInstalledConfigurationRepositoryPort",root));
+        assertTrue(isForbiddenCrossModuleDependency(approved,
+            "dz.sh.hidra.modules.identity.infrastructure.security.ProtectedTopologyStationConfigurationAuthorizationParticipant"));
         var group=dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipant.StationConfigurationClaimGroup.class;
         assertEquals(0,group.getConstructors().length);
         for(var constructor:group.getDeclaredConstructors())assertTrue(java.lang.reflect.Modifier.isPrivate(constructor.getModifiers()));

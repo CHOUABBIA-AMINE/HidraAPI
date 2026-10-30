@@ -33,6 +33,10 @@ import javax.sql.DataSource;
 /** Trusted compiled-owner callbacks only; no permission, protected API or business fence. */
 @Component
 public final class ProtectedTransactionExecutor {
+    private static final String STATION_CONFIG_SERVICE="dz.sh.hidra.modules.topology.application.service.StationInstalledConfigurationApplicationService";
+    private static final String STATION_CONFIG_COORDINATOR="dz.sh.hidra.modules.topology.application.service.ProtectedStationConfigurationAdmissionCoordinator";
+    private static final String STATION_CONFIG_REPOSITORY="dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.JdbcStationInstalledConfigurationRepositoryAdapter";
+    private static final Set<String> STATION_CONFIG_DML_HASHES=Set.of("a526f8833040c3c7b6c4510538438cbeb6d2b0b0a603f647bf30c0a2cca095f9","7ce1197ed30cc3278fc03074d45b0c483472529bfd09b2784db655a0ee924c5b","5591e291eb0dbdef51ad2150363e65506143b4551f5d70ba4f6cfacd776dc01c","ef47e69fb0ce03dd54cf45eb5ab98fb0a1a94705892bec66c517d19a31fe438c","390240eb897a42dd62ed11d94d9682d6cb103224e9ba121845da9b352e6b7f40");
     private static final String INSTALLED_SERVICE="dz.sh.hidra.modules.topology.application.service.InstalledUnitLifecycleApplicationService";
     private static final String INSTALLED_COORDINATOR="dz.sh.hidra.modules.topology.application.service.ProtectedInstalledUnitAdmissionCoordinator";
     private static final Set<String> INSTALLED_DML_HASHES=Set.of("98d9e2d0cd9de0a5c85161d0bb465f4ab310a0ebd6208036eeb26572b3c35f46","13de71cd409afd07b736979dad5ad802324a4a40718dd7f411229492c81cb716","d55fab38a80ea7a81636dceb7d3af50c6a8e1c14410b58e1e8ff25a0557ae278","a10ecf5d21bc1a8efcdf7a7cbbf5e23104309f243b223a93c997a61d880d5bd7","1503d363ee40899cad0081f42e84f728d974409236ebc5fe96e631e571330495");
@@ -115,7 +119,7 @@ public final class ProtectedTransactionExecutor {
     /** Select the private credential before any physical transaction; no business permission implied. */
     public <T> T executePublication(Supplier<T> work,Runnable flush,Runnable guard) {
         String caller=StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName();
-        if(!caller.equals(INSTALLED_SERVICE) && !caller.equals(PRODUCT_PUBLICATION_SERVICE) && !caller.equals(FLUID_SERVICE) && !caller.equals(PRODUCT_SERVICE) && !caller.equals(DRAFT_SERVICE) && !caller.equals(PUBLICATION_SERVICE) && !caller.equals(APPOINTMENT_SERVICE) && !caller.equals(
+        if(!caller.equals(STATION_CONFIG_SERVICE) && !caller.equals(INSTALLED_SERVICE) && !caller.equals(PRODUCT_PUBLICATION_SERVICE) && !caller.equals(FLUID_SERVICE) && !caller.equals(PRODUCT_SERVICE) && !caller.equals(DRAFT_SERVICE) && !caller.equals(PUBLICATION_SERVICE) && !caller.equals(APPOINTMENT_SERVICE) && !caller.equals(
             "dz.sh.hidra.modules.topology.application.service.ProtectedStationGraphOperationService"))
             throw new IllegalStateException("Unreviewed credential route caller");
         long budgetNanos=publicationWorkBudgetNanos(caller);
@@ -271,7 +275,7 @@ public final class ProtectedTransactionExecutor {
         // Only the genuine compiled owner K coordinator can receive an opaque mutation permit.
         // Other callers can still seal read-only diagnostic admission (legacy contract).
         String caller=StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName();
-        if(!caller.equals(INSTALLED_COORDINATOR) && !caller.equals(PRODUCT_PUBLICATION_COORDINATOR) && !caller.equals(FLUID_COORDINATOR) && !caller.equals(PRODUCT_COORDINATOR) && !caller.equals(DRAFT_COORDINATOR) && !caller.equals(PUBLICATION_COORDINATOR) && !caller.equals(
+        if(!caller.equals(STATION_CONFIG_COORDINATOR) && !caller.equals(INSTALLED_COORDINATOR) && !caller.equals(PRODUCT_PUBLICATION_COORDINATOR) && !caller.equals(FLUID_COORDINATOR) && !caller.equals(PRODUCT_COORDINATOR) && !caller.equals(DRAFT_COORDINATOR) && !caller.equals(PUBLICATION_COORDINATOR) && !caller.equals(
                     "dz.sh.hidra.modules.topology.application.service.ProtectedStationAdmissionCoordinator") && !caller.equals(APPOINTMENT_COORDINATOR))
             return null;
         var result=new ProvisionalPermit(this,s,caller);
@@ -282,7 +286,7 @@ public final class ProtectedTransactionExecutor {
     public void beginProvisional(ProvisionalPermit permit,Set<String> exactStatements) {
         var s=admissionScope();
         String caller=StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName();
-        if((!caller.equals(INSTALLED_COORDINATOR) && !caller.equals(PRODUCT_PUBLICATION_COORDINATOR) && !caller.equals(FLUID_COORDINATOR) && !caller.equals(PRODUCT_COORDINATOR) && !caller.equals(DRAFT_COORDINATOR) && !caller.equals(PUBLICATION_COORDINATOR) && !caller.equals(
+        if((!caller.equals(STATION_CONFIG_COORDINATOR) && !caller.equals(INSTALLED_COORDINATOR) && !caller.equals(PRODUCT_PUBLICATION_COORDINATOR) && !caller.equals(FLUID_COORDINATOR) && !caller.equals(PRODUCT_COORDINATOR) && !caller.equals(DRAFT_COORDINATOR) && !caller.equals(PUBLICATION_COORDINATOR) && !caller.equals(
                     "dz.sh.hidra.modules.topology.application.service.ProtectedStationAdmissionCoordinator") && !caller.equals(APPOINTMENT_COORDINATOR))
           || permit==null || !caller.equals(permit.owner) || permit.issuer!=this || permit.scope!=s
           || s.provisionalPermit!=permit || permit.opened || permit.consumed
@@ -295,6 +299,8 @@ public final class ProtectedTransactionExecutor {
             if(sql==null || sql.contains(";") || sql.contains("--") || sql.contains("/*")
                || !(caller.equals(INSTALLED_COORDINATOR)
                     ? INSTALLED_DML_HASHES.contains(statementDigest(sql))
+                    : caller.equals(STATION_CONFIG_COORDINATOR)
+                    ? STATION_CONFIG_DML_HASHES.contains(statementDigest(sql))
                     : caller.equals(PRODUCT_PUBLICATION_COORDINATOR)
                     ? PRODUCT_PUBLICATION_DML_HASHES.contains(statementDigest(sql))
                     : caller.equals(FLUID_COORDINATOR)
@@ -322,7 +328,7 @@ public final class ProtectedTransactionExecutor {
     public void endProvisional(ProvisionalPermit permit) {
         var s=admissionScope();
         String caller=StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName();
-        if((!caller.equals(INSTALLED_COORDINATOR) && !caller.equals(PRODUCT_PUBLICATION_COORDINATOR) && !caller.equals(FLUID_COORDINATOR) && !caller.equals(PRODUCT_COORDINATOR) && !caller.equals(DRAFT_COORDINATOR) && !caller.equals(PUBLICATION_COORDINATOR) && !caller.equals(
+        if((!caller.equals(STATION_CONFIG_COORDINATOR) && !caller.equals(INSTALLED_COORDINATOR) && !caller.equals(PRODUCT_PUBLICATION_COORDINATOR) && !caller.equals(FLUID_COORDINATOR) && !caller.equals(PRODUCT_COORDINATOR) && !caller.equals(DRAFT_COORDINATOR) && !caller.equals(PUBLICATION_COORDINATOR) && !caller.equals(
                     "dz.sh.hidra.modules.topology.application.service.ProtectedStationAdmissionCoordinator") && !caller.equals(APPOINTMENT_COORDINATOR))
           || permit==null || !caller.equals(permit.owner) || permit.issuer!=this || permit.scope!=s || s.provisionalPermit!=permit
           || !permit.opened || permit.consumed || s.phase!=ProtectedOperationDataSource.Phase.PROVISIONAL) {
@@ -338,6 +344,23 @@ public final class ProtectedTransactionExecutor {
         }
     }
     /** Only this reviewed compiled owner may revalidate during managed flush; no new SQL/deadline policy. */
+    /** Only the compiled storage adapter may request its fixed security-definer source lock. */
+    public void requireAdmissionForSourceLock() {
+        var s=admissionScope();
+        String caller=StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName();
+        if(!caller.equals(STATION_CONFIG_REPOSITORY) || !s.admission
+            || s.phase!=ProtectedOperationDataSource.Phase.ADMITTING) {
+            s.reject("unreviewed station configuration lock caller");s.healthy();
+        }
+    }
+    public void requireStationConfigurationFinalPreparation(){
+        var s=admissionScope();
+        String caller=StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName();
+        if(!caller.equals(STATION_CONFIG_COORDINATOR) || !s.admission
+            || s.phase!=ProtectedOperationDataSource.Phase.FLUSHING){
+            s.reject("unreviewed station configuration final preparation");s.healthy();
+        }
+    }
     public void requireInstalledUnitFinalPreparation() {
         var s=admissionScope();
         String caller=StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName();

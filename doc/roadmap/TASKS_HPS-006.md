@@ -9016,6 +9016,72 @@ This corrective governance commit has exact message
 After publishing with expected-head guard, verify Documentation CI
 creation/queued or started and STOP.
 
+### HAPI-600 B3-S2 — integrated protected operation candidate — 2026-10-30
+
+**Single registered stage.** Exact message:
+`feat(topology): protect effective station configuration operations`.
+This execution does NOT introduce B3-S2A/B/C or any further subdivision.
+Source baseline main
+`6f7495d65cf8c3a51c56f098ef51c71ed698f01a` had Docs #744
+SUCCESS; the most recent native Full #997 SUCCESS was on preceding
+`0d5a28f4624f094552b18c15eda562c35c6eacb6`. No new-SHA
+Full/Docs verdict exists before this candidate is published.
+
+**Implemented source candidate within the exact registered B3-S2 allowlist.**
+Nine CREATE paths: original inbound use case, typed redacted failure,
+guarded outbound repository port, application service, native Identity
+admission coordinator, JDBC repository, `V20261029_003` PostgreSQL
+migration, and two focused application/service unit suites.
+MODIFY only: `ProtectedTransactionExecutor.java`, its test,
+`ProtectedStationAdmissionBoundaryGuardrailTest.java`,
+`ArchitectureGuardrailTest.java`,
+`ProtectedStationInstalledConfigurationPostgresIntegrationTest.java`,
+`.github/ci-test-inventory.json` and this task record.
+No existing B1/B2 Identity, S1 source adapter, domain model, old migration,
+roadmap/phase status, public API, simulation/P3 or workflow is modified.
+No unregistered SQL/permission grants to PUBLIC or assumed deployment role.
+
+The application keeps all four original operations private, derives
+unit-resource descriptors from source-restricted storage under a single
+physical protected transaction, requires the original native Identity
+contribution, compares the S1 selected graph and installation sources
+for SAVE, and preserves station/company scopes and provenance.
+A fixed SECURITY DEFINER PostgreSQL function locks the 8 S1 source
+relations and 4 configuration ledger relations without source DML grants;
+PUBLIC EXECUTE is revoked, and **an actual configured, restricted publisher
+must be explicitly provisioned** with function and configuration-table
+rights before runtime availability. Existing ordinary DB credentials
+receive no such grants. Source locks and role/ACL/catalog checks are
+revalidated; only the exact reviewed DML statement shapes may enter the
+one-use provisional window. One final scalar SQL guard precedes physical
+commit; unknown commit never automatically retries; immutable source
+snapshots remain separate from operational or engineering approval.
+
+**Evidence and acceptance limits.** The test inventory includes two new
+six-case unit classes, two new executor cases and four additional
+PostgreSQL16/Flyway role/lock/receipt tests (the focused PostgreSQL class
+now has sixteen named cases); existing architecture guardrail cases were
+updated to the reviewed exact coordinator only. Tests are synthetic
+and not industrial/SITE acceptance. This environment cannot run
+Maven, Docker/PostgreSQL, or the fresh PostgreSQL dictionary capture;
+the generated dictionary is therefore **not fabricated or updated**.
+The new migration necessarily requires an actual fresh-schema dictionary
+capture and exact-SHA CI validation before B3-S2 may be accepted.
+The existing role model must be tested as an actual distinct publisher
+and native Identity producers, including three stations/nine units,
+full current/history, concurrent CAS, replay, rollback, source races,
+schema tampering and no-skip raw report membership. These remain
+unproven until verified by CI/raw evidence; a queued or green summary
+alone does not close the full registered gate. The parent HAPI-600
+status stays NOT_IMPLEMENTED/IN_PROGRESS until independently accepted.
+
+**Publication control.** Guard main expected HEAD, verify parent/tree/
+exact modified paths and Full/Docs workflow creation/start on this
+commit, then STOP. If Full fails (including dictionary drift, compile
+or native role tests), owner Fail repairs the responsible defect within
+this **same** B3-S2 scope before another Next. Do not start Package C,
+frontend, numerical simulation, release or deployment automatically.
+
 <a id="hapi-602"></a>
 ## HAPI-602 — Versioned installed-unit/characteristic links
 

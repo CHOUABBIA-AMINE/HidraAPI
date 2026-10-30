@@ -9676,6 +9676,8 @@
       "baseline_seconds": 0,
       "cases": [
         "actualHttpFourProducersThreeStationsNineUnitsSaveReplayCurrentRevisionHistory",
+        "configuredHttpLostCommitAcknowledgementReturnsIndeterminateThenExactReplay",
+        "configuredSecurityChainVerifiesRealBearerAndCurrentConfigurationGrants",
         "nativeHttpChangedReplayBodyMaps409AndPreservesCommittedSource",
         "nativeHttpSequentialEpochHistoryCursorIsExclusiveAndAuthorized",
         "nativeHttpVacantPositionAndForeignCompanyCannotBecomeOperatingOrDisclosureRights",
@@ -9687,7 +9689,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/qualification/StationInstalledConfigurationOperatorQualificationTest.java",
-      "source_sha256": "71925891efa55fa8c4d7d9913cbb5d4a7219cb90be6770b01b53f8ebe631b338",
+      "source_sha256": "b0f608dae77f22ca9adae6b68168fcf3af535fcab0a3c49a13e98391eb37171f",
       "supports": []
     },
     {

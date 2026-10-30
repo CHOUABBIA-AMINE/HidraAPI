@@ -138,6 +138,22 @@ class StationInstalledConfigurationOperatorQualificationTest {
     @org.springframework.test.context.bean.override.mockito.MockitoSpyBean
     dz.sh.hidra.modules.topology.application.service.ProtectedStationConfigurationAdmissionCoordinator nativeCoordinatorSpy;
 
+
+    @org.springframework.beans.factory.annotation.Autowired
+    org.springframework.web.context.WebApplicationContext securedWebContext;
+    @org.springframework.test.context.bean.override.mockito.MockitoSpyBean
+    org.springframework.transaction.PlatformTransactionManager guardedTransactionManager;
+    private org.springframework.test.web.servlet.MockMvc securedMvc(){
+        return org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup(securedWebContext)
+            .apply(org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity())
+            .build();
+    }
+    private static String issuedBearer(){
+        return ((org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken)
+            org.springframework.security.core.context.SecurityContextHolder.getContext()
+                .getAuthentication()).getToken().getTokenValue();
+    }
+
     private final org.springframework.security.oauth2.jwt.JwtEncoder sourceEncoder=
         org.springframework.security.oauth2.jwt.NimbusJwtEncoder.withSecretKey(
             new javax.crypto.spec.SecretKeySpec(KEY.getBytes(java.nio.charset.StandardCharsets.UTF_8),
@@ -627,5 +643,107 @@ class StationInstalledConfigurationOperatorQualificationTest {
                 "$.history[0].selectedEpoch").value(1))
             .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath(
                 "$.nextCursor").doesNotExist());
+    }
+
+    @Test void configuredSecurityChainVerifiesRealBearerAndCurrentConfigurationGrants() throws Exception {
+        var owner=jdbc();var actor=nativeActor("LOCAL");var c=fixture(owner,true).declaration();
+        var refs=unitRefs(c);
+        var save=command(dz.sh.hidra.modules.topology.application.port.in.StationInstalledConfigurationUseCase.Operation.SAVE,c);
+        var read=command(dz.sh.hidra.modules.topology.application.port.in.StationInstalledConfigurationUseCase.Operation.READ_CURRENT,c);
+        authorize(actor,save,refs);login(actor);String bearer=issuedBearer();
+        var http=securedMvc();
+        org.springframework.security.core.context.SecurityContextHolder.clearContext();
+        http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(path(c))
+            .param("companyPartyId",c.companyPartyId()))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isUnauthorized());
+        http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(path(c))
+            .param("companyPartyId",c.companyPartyId()).header("Authorization","Bearer not.a.valid.jwt"))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isUnauthorized());
+        http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put(path(c))
+            .header("Authorization","Bearer "+bearer)
+            .contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(wire(c)))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath(
+                "$.snapshot.revisionId").value(c.revisionId()));
+        authorize(actor,read,refs);
+        org.springframework.security.core.context.SecurityContextHolder.clearContext();
+        http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(path(c))
+            .param("companyPartyId",c.companyPartyId()).header("Authorization","Bearer "+bearer))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath(
+                "$.snapshot.revisionId").value(c.revisionId()));
+        assertEquals(1,owner.queryForObject(
+            "SELECT count(*) FROM public.hidra_topology_station_configuration_request WHERE facility_id=?",
+            Integer.class,c.facilityId()));
+        owner.update("UPDATE public.hidra_identity_user_permission_grant SET status='REVOKED' "
+            +"WHERE user_id=? AND status='ACTIVE'",actor.user());
+        org.springframework.security.core.context.SecurityContextHolder.clearContext();
+        http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(path(c))
+            .param("companyPartyId",c.companyPartyId()).header("Authorization","Bearer "+bearer))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isForbidden())
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath(
+                "$.code").value("DENIED"))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.content()
+                .string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString(c.revisionId()))));
+        http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put(path(c))
+            .header("Authorization","Bearer "+bearer)
+            .contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(wire(c)))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isForbidden());
+        assertEquals(1,owner.queryForObject(
+            "SELECT count(*) FROM public.hidra_topology_station_configuration_request WHERE facility_id=?",
+            Integer.class,c.facilityId()));
+    }
+    @Test void configuredHttpLostCommitAcknowledgementReturnsIndeterminateThenExactReplay() throws Exception {
+        var owner=jdbc();var actor=nativeActor("LOCAL");var c=fixture(owner,true).declaration();
+        var save=command(dz.sh.hidra.modules.topology.application.port.in.StationInstalledConfigurationUseCase.Operation.SAVE,c);
+        authorize(actor,save,unitRefs(c));login(actor);String bearer=issuedBearer();
+        var http=securedMvc();
+        org.springframework.security.core.context.SecurityContextHolder.clearContext();
+        var armed=new java.util.concurrent.atomic.AtomicReference<Thread>();
+        var physicallyCommitted=new java.util.concurrent.atomic.AtomicBoolean();
+        org.mockito.Mockito.clearInvocations(nativeCoordinatorSpy);
+        org.mockito.Mockito.doAnswer(inv->{inv.callRealMethod();armed.set(Thread.currentThread());return null;})
+            .when(nativeCoordinatorSpy).prepareFinal(org.mockito.ArgumentMatchers.any());
+        org.mockito.Mockito.doAnswer(inv->{
+            if(armed.compareAndSet(Thread.currentThread(),null)){
+                inv.callRealMethod();
+                physicallyCommitted.set(true);
+                throw new org.springframework.transaction.TransactionSystemException(
+                    "synthetic station configuration commit acknowledgement loss");
+            }
+            return inv.callRealMethod();
+        }).when(guardedTransactionManager).commit(
+            org.mockito.ArgumentMatchers.any(org.springframework.transaction.TransactionStatus.class));
+        try{
+            http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put(path(c))
+                .header("Authorization","Bearer "+bearer)
+                .contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(wire(c)))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isServiceUnavailable())
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath(
+                    "$.code").value("INDETERMINATE"))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.content()
+                    .string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString(c.revisionId()))));
+            assertTrue(physicallyCommitted.get(),"The selected physical commit must succeed before acknowledgement loss");
+            org.mockito.Mockito.verify(nativeCoordinatorSpy).finalGuard(org.mockito.ArgumentMatchers.any());
+        }finally{org.mockito.Mockito.reset(guardedTransactionManager,nativeCoordinatorSpy);}
+        for(String suffix:List.of("revision","request"))
+            assertEquals(1,owner.queryForObject(
+                "SELECT count(*) FROM public.hidra_topology_station_configuration_"+suffix+" WHERE facility_id=?",
+                Integer.class,c.facilityId()));
+        assertEquals(c.positions().size(),owner.queryForObject(
+            "SELECT count(*) FROM public.hidra_topology_station_configuration_member WHERE facility_id=?",
+            Integer.class,c.facilityId()));
+        org.springframework.security.core.context.SecurityContextHolder.clearContext();
+        http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put(path(c))
+            .header("Authorization","Bearer "+bearer)
+            .contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(wire(c)))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath(
+                "$.replayed").value(true))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath(
+                "$.snapshot.revisionId").value(c.revisionId()));
+        assertEquals(1,owner.queryForObject(
+            "SELECT count(*) FROM public.hidra_topology_station_configuration_request WHERE facility_id=?",
+            Integer.class,c.facilityId()));
     }
 }

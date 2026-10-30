@@ -447,4 +447,60 @@ class HidraRouteAuthorizationInterceptorTest {
                     request,new MockHttpServletResponse(),handler));
         }
     }
+
+    @Test void stationConfigurationDelegationRequiresFourExactAuthenticatedOwnerTuples() throws Exception {
+        var resolver=org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class);
+        var interceptor=new HidraRouteAuthorizationInterceptor(resolver,naming,true,"jwt");
+        var useCase=org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in
+            .StationInstalledConfigurationUseCase.class);
+        var controller=new dz.sh.hidra.modules.topology.api.rest.controller
+            .StationInstalledConfigurationController(useCase);
+        String root="/api/v1/topology/facilities/{facilityId}/installed-configuration";
+        String[] names={"save","current","revision","history"};
+        String[] verbs={"PUT","GET","GET","GET"};
+        String[] routes={root,root,root+"/revisions/{revisionId}",root+"/history"};
+        for(int i=0;i<names.length;i++){
+            String methodName=names[i],verb=verbs[i],route=routes[i];
+            var method=java.util.Arrays.stream(controller.getClass().getMethods())
+                .filter(m->m.getName().equals(methodName)).findFirst().orElseThrow();
+            var handler=new HandlerMethod(controller,method);
+            var request=new MockHttpServletRequest(verb,route.replace("{facilityId}","facility")
+                .replace("{revisionId}","revision"));
+            request.setAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE,route);
+            SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("operator",null,List.of()));
+            org.mockito.Mockito.clearInvocations(resolver);
+            assertTrue(interceptor.preHandle(request,new MockHttpServletResponse(),handler));
+            org.mockito.Mockito.verifyNoInteractions(resolver,useCase);
+
+            request.setMethod("DELETE");
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(
+                request,new MockHttpServletResponse(),handler));
+            request.setMethod(verb);
+            request.setAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE,route+"/sibling");
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(
+                request,new MockHttpServletResponse(),handler));
+            request.setAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE,route);
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(
+                request,new MockHttpServletResponse(),handlerMethod()));
+            String wrongName=names[(i+1)%names.length];
+            var wrongMethod=java.util.Arrays.stream(controller.getClass().getMethods())
+                .filter(m->m.getName().equals(wrongName)).findFirst().orElseThrow();
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(
+                request,new MockHttpServletResponse(),new HandlerMethod(controller,wrongMethod)));
+            SecurityContextHolder.clearContext();
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(
+                request,new MockHttpServletResponse(),handler));
+            SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("operator",null));
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(
+                request,new MockHttpServletResponse(),handler));
+            SecurityContextHolder.getContext().setAuthentication(
+                new org.springframework.security.authentication.AnonymousAuthenticationToken(
+                    "synthetic-key","anonymous",List.of(new SimpleGrantedAuthority("ROLE_ANONYMOUS"))));
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(
+                request,new MockHttpServletResponse(),handler));
+        }
+        org.mockito.Mockito.verifyNoInteractions(useCase);
+    }
 }

@@ -101,7 +101,8 @@ public final class HidraRouteAuthorizationInterceptor implements HandlerIntercep
                 || isOwnedProductDraftRoute(handlerMethod,routePattern,request.getMethod())
                 || isOwnedSuppliedFluidRoute(handlerMethod,routePattern,request.getMethod())
                 || isOwnedProductPublicationRoute(handlerMethod,routePattern,request.getMethod())
-                || isOwnedInstalledUnitLifecycleRoute(handlerMethod,routePattern,request.getMethod())) {
+                || isOwnedInstalledUnitLifecycleRoute(handlerMethod,routePattern,request.getMethod())
+                || isOwnedStationConfigurationRoute(handlerMethod,routePattern,request.getMethod())) {
             if (authentication == null || !authentication.isAuthenticated()
                     || authentication instanceof AnonymousAuthenticationToken) {
                 throw new AccessDeniedException("Engineering draft authentication required.");
@@ -117,6 +118,20 @@ public final class HidraRouteAuthorizationInterceptor implements HandlerIntercep
         throw new AccessDeniedException("Missing required permission: " + requiredPermission);
     }
 
+
+    // An exact compiled handler delegates only to the native protected station-configuration
+    // owner. Ordinary route permissions still apply to every other tuple.
+    private static boolean isOwnedStationConfigurationRoute(HandlerMethod handler,String route,String verb) {
+        if(handler==null || route==null || verb==null || !handler.getBeanType().getName().equals(
+                "dz.sh.hidra.modules.topology.api.rest.controller.StationInstalledConfigurationController"))return false;
+        return switch(verb+" "+route+" "+handler.getMethod().getName()) {
+            case "PUT /api/v1/topology/facilities/{facilityId}/installed-configuration save",
+                 "GET /api/v1/topology/facilities/{facilityId}/installed-configuration current",
+                 "GET /api/v1/topology/facilities/{facilityId}/installed-configuration/revisions/{revisionId} revision",
+                 "GET /api/v1/topology/facilities/{facilityId}/installed-configuration/history history" -> true;
+            default -> false;
+        };
+    }
 
     // Only these compiled HTTP handlers may defer the generic route grant to the
     // installed-unit owner's current, resource-scoped native Identity authority.

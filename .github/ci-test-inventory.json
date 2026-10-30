@@ -10507,6 +10507,7 @@
         "productDraftDelegationRequiresExactAuthenticatedOwnerTuples",
         "productPublicationDelegationRequiresExactAuthenticatedOwnerTuples",
         "publicationDelegatesOnlyEightAuthenticatedExactCompiledTuples",
+        "stationConfigurationDelegationRequiresFourExactAuthenticatedOwnerTuples",
         "suppliedFluidDelegationRequiresExactAuthenticatedOwnerTuples",
         "surveyDelegationRequiresExactNativeControllerMethodAndAuthentication"
       ],
@@ -10516,7 +10517,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptorTest.java",
-      "source_sha256": "1aba9b1161fb7bb396c5e5d7a33411cc38138c756d46a87530c0339dfd1ce002",
+      "source_sha256": "a5c8dd22c4dacdbb29e6f400b340a0c0a681b3c5999d8b24d337238f016113f9",
       "supports": []
     },
     {

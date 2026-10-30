@@ -9161,6 +9161,56 @@ Full #998 failures do not prove repair acceptance. If the next Full
 CI fails, remain within B3-S2 and repair the first causal gate;
 do not select Package C or rewrite the retained migration history.
 
+
+### HAPI-600 B3-S2 — concurrent source-absence regression continuation — 2026-10-30
+
+**Scope and authority.** Owner Next continues the existing **single B3-S2**
+source-and-atomic-operation stage after exact-main Full #999
+([run](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41037738379))
+and Documentation #746
+([run](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41037738370))
+both completed SUCCESS on `29855046c853141f00da8e4c5d1f72ffb96db135`.
+The development-partitioned gate reports 3,905 cases across 515 classes,
+zero failures/errors/test skips, all 14 PostgreSQL shards plus API/catalog,
+and no serial oracle or release eligibility. This green predecessor does
+**not** establish the original B3-S2 integrated-native acceptance.
+
+This bounded continuation retains the original B3-S2 registered message
+`feat(topology): protect effective station configuration operations`.
+CREATE/DELETE none; MODIFY only
+`src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedStationInstalledConfigurationPostgresIntegrationTest.java`,
+`.github/ci-test-inventory.json` and this append-only task record.
+No new B3-S2A/B/C subdivision, production code, SQL migration, authority
+grant, runtime workflow, frontend, release or roadmap status change.
+
+**New synthetic regression, execution pending exact-SHA CI.**
+`protectedSourceLockExcludesConcurrentVacancyPhantomUntilRelease`
+adds a real two-session PostgreSQL16/Flyway test for the original
+transaction's 12-table source fence and an initially vacant position.
+The second transaction attempts a real installation INSERT with a bounded
+PostgreSQL lock timeout; the case requires SQLSTATE `55P03`, unchanged
+source evidence and original source requalification while the first
+transaction holds its lock. It then requires the same INSERT to succeed
+after source lock release, discriminating missing privileges/foreign keys
+from the protected-lock exclusion. This tests one source-concurrency
+boundary; it does not fabricate Identity admission, operate field
+equipment or establish industrial timing. Old test classes/cases are
+retained. The new test source SHA-256 is `8b377ec3fdc5238c593915f3bee2949dd5bf019312f40a76e6079ccd240dd764`.
+Its registered baseline_seconds remains zero/unmeasured.
+No fresh Java, Docker or native test execution is claimed locally.
+
+**Remaining acceptance hold.** This new regression alone does not prove
+the required genuine native service/Identity and restricted-publisher
+end-to-end workflow. Four authentication producers, nine units across
+three stations, authorization-before-disclosure, immutable authorized
+history, CAS/replay, full source/authority races, rollback and final SQL
+guard still require actual integrated raw evidence before accepting
+B3-S2 or selecting Package C. Parent HAPI-600 remains
+NOT_IMPLEMENTED/IN_PROGRESS. Existing migrations, protections, strict
+CI evidence rules and no-skip case requirements remain unchanged.
+Observe exact-SHA Full/Docs creation/start and STOP. No adoption of
+the serial oracle or release/deployment readiness is inferred.
+
 <a id="hapi-602"></a>
 ## HAPI-602 — Versioned installed-unit/characteristic links
 

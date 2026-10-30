@@ -9430,6 +9430,7 @@
         "ordinarySyntheticRoleCannotExecuteUnprovisionedSourceLock",
         "positionMovedToAnotherStationCannotBeRetainedAsSource",
         "protectedRequestReceiptNeedsNativeTransactionOriginColumns",
+        "protectedSourceLockExcludesConcurrentVacancyPhantomUntilRelease",
         "protectedSourceLockFunctionKeepsAllTwelveRelationsOnOriginalTransaction",
         "roleChangeAfterSourceReadInvalidatesIssuerCoordinates",
         "selectedPublishedGraphAndInstallationEventsReloadUnderActualLocks",
@@ -9439,12 +9440,12 @@
         "wrongCompanyCannotReadStationSourceEvenWithLocks"
       ],
       "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.ProtectedStationInstalledConfigurationPostgresIntegrationTest",
-      "dependency_reason": "HAPI-600 B3-S1 retained source negatives and B3-S2 locked schema/role/receipt-origin synthetic PostgreSQL16/Flyway cases; native positive runtime integration remains acceptance gate, no skips",
+      "dependency_reason": "HAPI-600 B3-S1 retained source negatives and B3-S2 locked schema/role/receipt-origin plus genuine concurrent vacant-position phantom exclusion on PostgreSQL16/Flyway; positive four-producer native service/role qualification remains open, no skips",
       "fast": false,
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedStationInstalledConfigurationPostgresIntegrationTest.java",
-      "source_sha256": "6b24c994f41eb9449f944b5825ebb9b47fc97222c2aefe32e7aa83fc2815875a",
+      "source_sha256": "8b377ec3fdc5238c593915f3bee2949dd5bf019312f40a76e6079ccd240dd764",
       "supports": []
     },
     {

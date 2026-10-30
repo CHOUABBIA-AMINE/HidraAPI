@@ -328,6 +328,54 @@ class ProtectedStationInstalledConfigurationPostgresIntegrationTest {
         });
     }
 
+
+    @Test void protectedSourceLockExcludesConcurrentVacancyPhantomUntilRelease(){
+        JdbcTemplate db=jdbc();
+        Fixture f=fixture(db,true,true);
+        String kind=db.queryForObject("SELECT equipment_type_id FROM public.hidra_topology_equipment "
+            +"WHERE id=?",String.class,f.firstPosition());
+        String unit=id(),installation=id();
+        db.update("INSERT INTO public.hidra_topology_installed_unit(id,company_party_id,equipment_kind_id,"
+                +"manufacturer_party_verification,manufacturer_model_verification,serial_verification)"
+                +" VALUES(?,?,?,'UNKNOWN','UNKNOWN','UNKNOWN')",
+            unit,f.declaration().companyPartyId(),kind);
+        String insert="INSERT INTO public.hidra_topology_installed_unit_installation("
+            +"installation_id,unit_id,position_id,company_party_id,effective_from,recorded_at,"
+            +"evidence_reference,revision) VALUES(?,?,?,?,?,?,'synthetic:concurrent-occupancy',1)";
+        Object[] values={installation,unit,f.firstPosition(),f.declaration().companyPartyId(),
+            Timestamp.from(FROM),Timestamp.from(FROM)};
+        JdbcTemplate outside=jdbc();
+        var concurrent=java.util.concurrent.Executors.newSingleThreadExecutor();
+        try {
+            tx(db).executeWithoutResult(status->{
+                db.execute("SELECT public.hidra_station_configuration_lock_sources()");
+                var adapter=new JdbcStationConfigurationSourceEvidenceAdapter(db);
+                var ticket=adapter.acquire(f.declaration());
+                assertEquals(3,adapter.read(ticket).positionCount());
+                var attempted=concurrent.submit(()->tx(outside).executeWithoutResult(inner->{
+                    outside.execute("SET LOCAL lock_timeout='750ms'");
+                    var denied=assertThrows(org.springframework.dao.DataAccessException.class,
+                        ()->outside.update(insert,values));
+                    assertInstanceOf(java.sql.SQLException.class,denied.getMostSpecificCause());
+                    assertEquals("55P03",
+                        ((java.sql.SQLException)denied.getMostSpecificCause()).getSQLState());
+                    inner.setRollbackOnly();
+                }));
+                assertDoesNotThrow(()->attempted.get(10,java.util.concurrent.TimeUnit.SECONDS));
+                adapter.requireCurrent(ticket);
+            });
+        }finally{
+            concurrent.shutdownNow();
+        }
+        assertEquals(0,db.queryForObject(
+            "SELECT count(*) FROM public.hidra_topology_installed_unit_installation "
+            +"WHERE installation_id=?",Integer.class,installation));
+        assertEquals(1,db.update(insert,values));
+        assertEquals(1,db.queryForObject(
+            "SELECT count(*) FROM public.hidra_topology_installed_unit_installation "
+            +"WHERE installation_id=?",Integer.class,installation));
+    }
+
     @Test void protectedSourceLockFunctionKeepsAllTwelveRelationsOnOriginalTransaction(){
         JdbcTemplate db=jdbc();
         tx(db).executeWithoutResult(t->{

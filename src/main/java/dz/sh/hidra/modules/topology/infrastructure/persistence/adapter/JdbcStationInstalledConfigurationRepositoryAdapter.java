@@ -270,19 +270,25 @@ public class JdbcStationInstalledConfigurationRepositoryAdapter implements Stati
     }
     @Override public Set<String> mutationSql(){caller();return MUTATIONS;}
     /** Caller engineering values are not native actor identity or receipt timestamps. */
-    private static StationInstalledConfiguration attributed(StationInstalledConfiguration c,Origin origin){
-        return new StationInstalledConfiguration(c.companyPartyId(),c.facilityId(),c.revisionId(),
+    private StationInstalledConfiguration attributed(StationInstalledConfiguration c,Origin origin){
+        // Materialize the SAME canonical graph/list order as the persisted immutable payload.
+        // Returning a noncanonical Java record makes a truthful post-write read appear different.
+        return codec.decode(codec.encode(new StationInstalledConfiguration(c.companyPartyId(),c.facilityId(),c.revisionId(),
             c.requestId(),c.expectedEpoch(),c.selectedEpoch(),c.graphHeadEpoch(),c.pinnedGraph(),
             c.graphPayloadFormat(),c.graphSha256(),c.effectiveFrom(),c.effectiveUntil(),
             origin.sampledAt(),c.sourceReference(),origin.bindingId(),origin.sessionId(),
-            origin.userId(),c.positions(),c.activeEdgeIds());
+            origin.userId(),c.positions(),c.activeEdgeIds())));
+    }
+    private static boolean samePinnedGraph(StationInstalledConfiguration c,StationInstalledConfiguration stored){
+        var graphCodec=new StationInternalGraphRevisionCodec();
+        return Arrays.equals(graphCodec.encode(c.pinnedGraph()),graphCodec.encode(stored.pinnedGraph()));
     }
     private static boolean sameEngineering(StationInstalledConfiguration c,StationInstalledConfiguration stored){
         return stored!=null && c.companyPartyId().equals(stored.companyPartyId())
           && c.facilityId().equals(stored.facilityId()) && c.revisionId().equals(stored.revisionId())
           && c.requestId().equals(stored.requestId()) && c.expectedEpoch()==stored.expectedEpoch()
           && c.selectedEpoch()==stored.selectedEpoch() && c.graphHeadEpoch()==stored.graphHeadEpoch()
-          && c.pinnedGraph().equals(stored.pinnedGraph())
+          && samePinnedGraph(c,stored)
           && c.graphPayloadFormat().equals(stored.graphPayloadFormat())
           && c.graphSha256().equals(stored.graphSha256())
           && c.effectiveFrom().equals(stored.effectiveFrom())

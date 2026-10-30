@@ -9320,6 +9320,72 @@ B3-S2 scope before any next package. Verify guarded parent, tree,
 blobs, exact three-file scope, CI creation/start on the new SHA and
 STOP, without treating queued tests as passing.
 
+
+### HAPI-600 B3-S2 — Full CI #1002 canonical reload failure repair — 2026-10-30
+
+**Exact source and failure evidence.** Main
+`af95873e4bc319cf456e1c08a2c8d692d3c02827` produced
+[Full CI #1002](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41046595729)
+FAILURE and
+[Documentation #749](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41046595741)
+SUCCESS. All other 13 PostgreSQL shards, Java21 unit/architecture,
+static, API/dictionary lanes passed. PostgreSQL shard 8's actual
+21-case `ProtectedStationInstalledConfigurationPostgresIntegrationTest`
+reported 0 assertion failures, 3 runtime errors, 0 skipped:
+`nativeFourProducersSaveReplayReadAndHistoryAcrossThreeStationsNineUnits`,
+`nativeAuthorizedSecondEpochAndHistoryCannotBeChangedByStaleCas` and
+`nativeUnitDenialAndRevocationHideCurrentAndRejectReplayWithoutMutation`.
+All three failed in the original service's **SAVE** final preparation:
+`JdbcStationInstalledConfigurationRepositoryAdapter.prepareFinal`,
+line 369, `!t.result.declaration().equals(current)`, before the
+protected final guard/commit. The Full gate was correctly failed as a
+downstream mandatory dependency; do not weaken evidence gates.
+
+**Source-backed causal correction in the existing B3-S2 stage only.**
+`StationInternalGraphRevisionCodec.encode` canonically sorts graph
+headers, units and edges by ID. The real synthetic fixture intentionally
+supplies headers as `suction,discharge`, which persist and decode as
+`discharge,suction`. Java record equality on the unnormalized input
+and the correctly decoded immutable row is consequently false even
+though their canonical graph bytes are equal. The replay engineering
+comparison likewise depended on input graph list order. The **owner
+repository**, not Identity/authorization or the final guard, must
+normalize the server-attributed SAVE result through its existing strict
+`StationInstalledConfigurationCodec.encode/decode`, verifying payload
+canonicality and matching the immutable persisted row. Its replay
+engineering graph equality must compare exact canonical graph revision
+bytes, rather than raw collection order. All other engineering fields,
+command digest, source admission, company/unit authority, head CAS,
+immutable append-only evidence, source locks, final SQL guard and
+closed transaction guarantees remain enforced.
+
+**Exact already-registered B3-S2 message:**
+`feat(topology): protect effective station configuration operations`.
+CREATE/DELETE none. MODIFY only:
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationInstalledConfigurationRepositoryAdapter.java` —
+  canonical attributed result and exact wire-graph replay comparison;
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedStationInstalledConfigurationPostgresIntegrationTest.java` —
+  explicit unsorted-before/sorted-after native SAVE assertions and
+  byte-exact graph equality, retaining all 21 prior cases and runtime
+  authentication/role/immutability checks;
+- `.github/ci-test-inventory.json` — update the changed test's actual
+  SHA-256 to
+  `78f919ddbe59236349550906068af2749cc84ddc6bb3cbb8617a17c090638281`;
+- `doc/roadmap/TASKS_HPS-006.md` — this append-only causal audit.
+
+This is the original registered B3-S2 repository/test/inventory scope,
+**not** another substage. There is no permission relaxation, fake
+publisher, trigger bypass, SQL migration, benchmark change, roadmap
+status change, CI bypass, public API, release or deployment action.
+No Maven/PostgreSQL was executed locally in this connector-only repair.
+Exact-SHA hosted Full/Docs compilation, all raw registered cases and
+zero skips remain mandatory. Until those results and full integrated
+original acceptance are independently inspected, B3-S2 is still
+unaccepted and HAPI-600 remains NOT_IMPLEMENTED/IN_PROGRESS.
+Publish to existing main with expected parent
+`af95873e4bc319cf456e1c08a2c8d692d3c02827`, verify parent,
+tree, four blobs/message and Full/Docs CI creation/start, then STOP.
+
 <a id="hapi-602"></a>
 ## HAPI-602 — Versioned installed-unit/characteristic links
 

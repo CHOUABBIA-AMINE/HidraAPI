@@ -770,6 +770,10 @@ class ProtectedStationInstalledConfigurationPostgresIntegrationTest {
                 var c=stationFixture.declaration();
                 var refs=unitRefs(c);
                 assertEquals(3,refs.size());
+                // The input order is intentionally noncanonical: the stored graph sorts by ID.
+                assertEquals(List.of("suction","discharge"),
+                    c.pinnedGraph().graph().headers().stream()
+                        .map(StationInternalGraph.Header::id).toList());
                 var saved=nativeExecute(actor,command(
                     dz.sh.hidra.modules.topology.application.port.in
                         .StationInstalledConfigurationUseCase.Operation.SAVE,c),refs);
@@ -778,6 +782,11 @@ class ProtectedStationInstalledConfigurationPostgresIntegrationTest {
                 assertEquals(1,saved.declaration().selectedEpoch());
                 assertEquals(actor.user(),saved.declaration().actorUserId());
                 assertNotEquals(c.actorBindingId(),saved.declaration().actorBindingId());
+                assertEquals(List.of("discharge","suction"),
+                    saved.declaration().pinnedGraph().graph().headers().stream()
+                        .map(StationInternalGraph.Header::id).toList());
+                assertArrayEquals(new StationInternalGraphRevisionCodec().encode(c.pinnedGraph()),
+                    new StationInternalGraphRevisionCodec().encode(saved.declaration().pinnedGraph()));
                 var replay=nativeExecute(actor,command(
                     dz.sh.hidra.modules.topology.application.port.in
                         .StationInstalledConfigurationUseCase.Operation.SAVE,c),refs);

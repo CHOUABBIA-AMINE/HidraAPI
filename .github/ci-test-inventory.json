@@ -9444,12 +9444,12 @@
         "wrongCompanyCannotReadStationSourceEvenWithLocks"
       ],
       "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.ProtectedStationInstalledConfigurationPostgresIntegrationTest",
-      "dependency_reason": "HAPI-600 B3-S2 native service, separate real PostgreSQL roles and genuine LOCAL/LDAP/ACTIVE_DIRECTORY/OIDC producer integration candidate across three stations/nine units per producer, current/history/replay/CAS/deny/source fail-closed. Hosted raw no-skip acceptance pending.",
+      "dependency_reason": "HAPI-600 B3-S2 21 retained real PostgreSQL/Spring native Identity/role/source-fence cases, including canonical graph ordering vs persisted commit/replay; #1002 three false-negative post-write comparisons require exact-SHA validation, no skips",
       "fast": false,
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedStationInstalledConfigurationPostgresIntegrationTest.java",
-      "source_sha256": "bdb8425dc376ded5107f213e09e991132ef244e2c4df5bf2c2cf9ba5523e28ff",
+      "source_sha256": "78f919ddbe59236349550906068af2749cc84ddc6bb3cbb8617a17c090638281",
       "supports": []
     },
     {

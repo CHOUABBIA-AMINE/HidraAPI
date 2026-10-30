@@ -146,23 +146,20 @@ industrial/SITE acceptance, release and deployment remain separately gated.
 No successor implementation is selected by this closure.
 
 [HAPI-600](TASKS_HPS-006.md#hapi-600), effective station configuration and
-connectivity, is NOT_IMPLEMENTED/IN_PROGRESS. Docs724 passed its source preflight;
-HAPI-588/599 remain accepted. Its owning phase now admits exact A/B/C packages:
-versioned configuration/schema, distinct native authority and atomic source/final-
-guard integration, then configured HTTP/qualification. Package A source and its
-physical dictionary repair have passed Full985 on89e492a1b17fb4d4b454709b84e6c0774281c2a7.
-Package A is independently accepted after its responsible qualification/schema/
-dictionary repairs: Full989 and Docs731 passed on8a6626f55fe68f8f97f195d74620b8978ca2a03f.
-Independent raw evidence retains3,838 passing cases, including all30 exact A cases,
-and strict actual catalog/API gates. The owning phase records bounded storage
-acceptance and limits; Package B is the next separately executed registered stage,
-and C remains dependent on accepted A/B. HAPI-601..603 and parent598 remain independent;
-no industrial qualification is claimed.
-
-The historical Full950 Custody work-policy and dictionary-receipt repair is
-resolved in HAPI-599's accepted evidence. Its finite startup cap remains distinct
-from authority expiry; native/storage deadlines, final guards and other operation
-families remain unchanged. Ten shards and strict dictionary equality are preserved.
+connectivity, remains NOT_IMPLEMENTED/IN_PROGRESS. Package A's immutable station
+configuration schema/domain/codec is independently accepted after Full989 and
+real PostgreSQL dictionary validation. B1 exact typed Identity descriptor is
+implemented; Package B2's native configuration authorization is independently
+accepted for its bounded synthetic software scope: exact-source Full992,
+Fast287 and Docs735 SUCCESS, all23 native PostgreSQL cases passing with zero
+failures/errors/skips. Full994 and Docs737 later passed on the current
+e005ba3 source; native B2 implementation and case identities are unchanged.
+Fourteen latest PostgreSQL shards and the strict Full release gate are preserved.
+This is not engineering or release acceptance. The next separately authorized
+stage is registered B3 protected Topology source/write/final-guard integration,
+`feat(topology): protect effective station configuration operations`, **not yet
+executed or accepted**. Package C, parent598, HAPI-601..603, frontend,
+numerical/P3 and deployment remain separately gated.
 
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent

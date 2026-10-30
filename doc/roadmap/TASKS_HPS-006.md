@@ -8544,6 +8544,101 @@ runtime acceptance; B3 and configuration writer are not enabled by this repair.
 Package A acceptance and frozen HAPI-600 parent status remain; C,598,601..603,
 frontend, P3, SCADA/OT, industrial/SITE, release and deployment remain unselected.
 
+
+### HAPI-600 Package B2 — independent native authorization acceptance — 2026-10-30
+
+**Selected bounded evidence acceptance.** Owner Continue after the independently
+reviewed exact-head CI #994. Exact registered acceptance message:
+`docs(topology): accept native station configuration authority`.
+CREATE/DELETE none; MODIFY only this append-only task register and the compact
+`doc/roadmap/ULTIMATE_TASKS.md` execution pointer. This closes the **B2
+native Identity admission** contract only, not protected Topology configuration
+authoring, Package B3 or the complete HAPI-600 task. ROADMAP/PHASES current
+NOT_IMPLEMENTED/IN_PROGRESS fields and all other task dispositions stay fixed.
+
+**Source/prerequisite and accepted runtime.** Package A's independent acceptance
+and B1 descriptor contract remain intact. B2 native owner/reader/guardrails
+were implemented at `7bcce5a1f79376e5db6e6a4beb9430e04190958a`;
+the focused reviewed reader-source pin repair was published at
+`64e5978d456d53362770e949aa47d9c2fa62cf02`.
+On that exact accepted B2 source SHA, Full CI #992
+(run41002910538), Fast Feedback #287 (run41002910615)
+and Documentation #735 (run41002910527) all completed SUCCESS.
+The prior failed Full #991/Fast #286 and its precise stale reader-pin defect
+remain retained historical failures; their actual source-bound correction
+is verified rather than waived.
+
+**Independent case evidence (same-source run/attempt).** Downloaded the
+Full #992 attempt1 aggregate artifact12954621096 with verified ZIP
+SHA256 `df0fd3e0a2f73b1777375f24fde29f6655112b0028fbb476a66a7b5e7df1107c`.
+Parsed the actual retained JUnit XML: the distinct
+`ProtectedTopologyStationConfigurationAuthorizationPostgresIntegrationTest`
+has **23/23 executed cases, zero failures/errors/skips**. Names match the
+registered23 case identities: four genuine provider sources;
+SAVE/READ_CURRENT/READ_REVISION/LIST_HISTORY; independent company/facility
+and every referenced-unit permission/DENY; wrong-family substitution;
+native actor/session/generation/expiry; current source rechecks; original
+transaction/role, one-use holder and cross-thread poison; final recheck
+revocation, malformed/inactive permissions and rollback. Constructed scalar
+Contribution values and mocked external-directory fixtures are not treated
+as native permissions or independent user/operator approval.
+The same run's independent Full gate reports **3,875 cases, zero
+failures/errors/skips, 510 active classes and ten PostgreSQL shards**.
+Its Java/architecture, API/strict dictionary and static lanes all succeeded;
+development mode intentionally skips the serial oracle job, not test cases.
+
+**Current-head corroboration without rewriting older evidence.** The live
+main `e005ba3fa26fe6f7b538078aed5db26861666624` has
+Full #994/run41006595682 and Docs #737/run41006595664 SUCCESS.
+The current Full #994 gate was independently read from its real same-run
+artifact12956261379; it records 3,875 executed cases, zero failures/errors/
+skips, 512 active classes, fourteen PostgreSQL shards and the final
+verification gate success. The same native B2 suite again has 23/23
+passing actual XML cases. Exact diff from accepted B2 source
+`64e5978` to `e005ba3` covers CI/workflow/inventory/documentation
+and unrelated Organization and installed-unit **test** fixtures;
+the B2 production Identity participant/reader/contract and its native
+23-case test source have no changed path. Fast #287 is a successful
+exact-B2-source run, not a falsely claimed Fast run on the present
+documentation/test-fixture HEAD. The later #993 workflow failure and
+#994 bounded test-fixture repair are historical; their completion
+does not imply a new B2 authorization design.
+
+**B2 disposition and limits.** ACCEPT the registered B2 native authorization
+implementation for its bounded **synthetic backend development** scope.
+It preserves original private Identity issuance, selected current producer
+and temporal rechecks, actor/session/backend/transaction restrictions,
+DENY-before-disclosure, fail-closed family separation, immutable provenance
+and existing native budgets/constraints. No public configuration writer,
+physical-current source witness union, Topology DML permission, engine
+execution, active equipment control, schema grant, REST API or selected
+configuration publication is established by B2. This acceptance is not
+operational, calibrated, industrial/SITE, release or deployment approval.
+
+**Next executable registered stage, NOT executed here.** Package B3 remains
+`feat(topology): protect effective station configuration operations`
+with the already registered **remaining** Topology application/domain
+failure/ports/services, source/repository adapters, genuine protected-operation
+migration, platform executor and focused native integration tests.
+B1/B2 completed Identity files are not recreated or silently expanded.
+Before B3 code, refresh live main/source/migrations/actual constraints, reconcile
+the remaining original B allowlist and exact compiled SQL pins, and preserve
+one original final SQL guard, source/authority recheck, immutable audit and
+unknown-commit semantics. Execute it in one coherent bounded registered
+package or separately register narrowly bounded subpackages before any code.
+B3 must receive its own exact-SHA CI and independent raw acceptance before
+Package C. HAPI-600 remains NOT_IMPLEMENTED/IN_PROGRESS, HAPI-598 remains
+PARTIAL/BLOCKED, and HAPI-601..603 remain separately gated.
+
+**Validation/publication rule.** Independent Full992/994 raw XML/gate evidence
+and current B2 source-diff/case membership were checked; this is no new local
+Maven/PostgreSQL execution. Preserve all source, schema, workflows, CI inventory,
+timings, dictionary, security and release gates byte-for-byte in this
+documentation-only acceptance. Validate exact two-file scope, append-only task
+history, compact pointer and whitespace; publish with expected-head guard,
+verify parent/tree/blobs/message, observe exact-SHA Documentation Validation
+creation/start then STOP. Do not automatically execute B3 in this turn.
+
 <a id="hapi-602"></a>
 ## HAPI-602 — Versioned installed-unit/characteristic links
 

@@ -714,7 +714,10 @@ class StationInstalledConfigurationOperatorQualificationTest {
             .when(repositoryTarget).prepareFinal(org.mockito.ArgumentMatchers.any(),
                 org.mockito.ArgumentMatchers.any(),org.mockito.ArgumentMatchers.anyList());
         org.mockito.Mockito.doAnswer(inv->{
-            if(armed.compareAndSet(Thread.currentThread(),null)){
+            // MANDATORY repository methods complete participating Spring statuses before
+            // the outer protected guard. Only the new transaction is a physical commit.
+            var status=inv.getArgument(0,org.springframework.transaction.TransactionStatus.class);
+            if(status.isNewTransaction() && armed.compareAndSet(Thread.currentThread(),null)){
                 inv.callRealMethod();
                 physicallyCommitted.set(true);
                 throw new org.springframework.transaction.TransactionSystemException(

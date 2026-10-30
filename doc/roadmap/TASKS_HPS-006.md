@@ -8639,6 +8639,120 @@ history, compact pointer and whitespace; publish with expected-head guard,
 verify parent/tree/blobs/message, observe exact-SHA Documentation Validation
 creation/start then STOP. Do not automatically execute B3 in this turn.
 
+### HAPI-600 Package B3 — source-first bounded execution registration — 2026-10-30
+
+**Execution selection and scope.** Owner Next selects HAPI-600 Package B3 after
+the independently accepted A, B1 and B2 stages. This record uses B3's
+already-authorized option to register smaller packages before introducing
+new protected writer code. Existing parent HAPI-600 stays
+NOT_IMPLEMENTED/IN_PROGRESS. No code is implemented or CI runtime case
+executed by this registration. Exact-source main `a83ccf3ec8f9f8e14b41b653667e8b44b0e25876`,
+tree `dfe4e485a7390af78d1f5339dd7e4ea54689324d`, parent `e005ba3fa26fe6f7b538078aed5db26861666624`;
+Documentation #738 SUCCESS on this head; Full #994 SUCCESS on the preceding
+`e005ba3fa26fe6f7b538078aed5db26861666624` source. Documentation-only
+head does not masquerade as Full/Fast validation.
+
+**Existing source boundaries recovered.** The real native
+`TopologyStationConfigurationAuthorizationContract` and
+`ProtectedTopologyStationConfigurationAuthorizationParticipant` are already
+present from B1/B2; preserve their producer, original transaction, session,
+generation, one-use ticket, DENY and final-fence semantics. Existing
+`StationInstalledConfiguration`, canonical codec and four-relation
+`V20261029_002__topology_station_installed_configurations.sql` are A-owned.
+The migration inventory currently contains 189 files, including additive
+`V20261029_002_1__topology_station_configuration_binding_null_guard.sql`;
+the proposed B `V20261029_003` path is absent and must be rechecked before
+publication. Current `ProtectedTransactionExecutor`,
+`ProtectedInstalledUnitAdmissionCoordinator`,
+`JdbcInstalledUnitPositionOwnershipAdapter`, the Party-owned
+`TopologyInstalledUnitCompanyEvidenceContract`, and graph-owner contracts
+are retained patterns, not delegated configuration authority. Existing
+`StationRevisionOwnerQueryService` is a sequential observation, not a
+transaction-fenced authorization or publication source.
+
+**B3-S1 — read-only current-source evidence contract; FIRST execution.**
+Exact registered commit message:
+`feat(topology): qualify station configuration source evidence`.
+CREATE exactly:
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/StationConfigurationSourceEvidencePort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationConfigurationSourceEvidenceAdapter.java`
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedStationInstalledConfigurationPostgresIntegrationTest.java`
+MODIFY exactly:
+- `.github/ci-test-inventory.json`
+- `doc/roadmap/TASKS_HPS-006.md`
+DELETE none. All paths are a subset of the original registered B allowlist.
+The port exposes exact, typed, bounded source observations and validity
+checks for facility/company, currently selected graph/head, position/equipment,
+installed-unit installation events and demonstrated absence (phantom
+exclusion). It does not create tokens, choose grants, mutate configuration
+heads, reveal protected data through HTTP, or impersonate the separate
+Party/Identity owners. The adapter uses current PostgreSQL table/column/
+function/lock and owner-source facts checked against live schema, with
+parameterized SELECT-only statements and clear fail-closed missing, inconsistent,
+changed, unavailable and unqualified evidence. No inferred running state,
+company permission, calibration, manufacturer eligibility or effective-current
+approval. Test the exact real transaction/source fences, old/new head,
+unit relocation/closure/replacement, unoccupied becoming occupied, wrong
+company/station, malformed evidence, concurrent change, catalog/privilege
+tampering and rollback where applicable using synthetic fresh-schema PostgreSQL;
+register actual class/case/hash/partition only after writing the tests.
+No Docker skip or source review is PostgreSQL proof. B3-S1 is not acceptable
+until applicable exact-SHA CI and required raw cases prove these outcomes.
+This source-only stage MUST NOT add a writer, DML permit or public endpoint.
+
+**B3-S2 — fully protected atomic application/repository integration; AFTER S1 acceptance.**
+Preserve original B3 message exactly:
+`feat(topology): protect effective station configuration operations`.
+CREATE exactly the remaining original B3 files:
+- `src/main/java/dz/sh/hidra/modules/topology/application/model/StationInstalledConfigurationFailure.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/StationInstalledConfigurationUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/StationInstalledConfigurationRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/StationInstalledConfigurationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/ProtectedStationConfigurationAdmissionCoordinator.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationInstalledConfigurationRepositoryAdapter.java`
+- `src/main/resources/db/migration/V20261029_003__topology_station_configuration_protected_operations.sql`
+- `src/test/java/dz/sh/hidra/modules/topology/application/service/StationInstalledConfigurationApplicationServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/application/service/ProtectedStationConfigurationAdmissionCoordinatorTest.java`
+MODIFY only the remaining registered B3 scope where actual source proves necessary:
+- `src/main/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutor.java`
+- `src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedStationInstalledConfigurationPostgresIntegrationTest.java`
+- `.github/ci-test-inventory.json`
+- `.github/database-dictionary-ownership.json` (only supported physical owner metadata)
+- `doc/database/DATA_DICTIONARY.md` (only exact actual migrated catalog capture)
+- `doc/roadmap/TASKS_HPS-006.md`
+Existing B1/B2 Identity contract, participant and protected reader source
+MUST remain byte-unchanged unless a demonstrated source gap is independently
+registered with exact files/tests before implementation; no silent B2 rewrite.
+DELETE none. Before S2, recheck source, migration order, real catalog and
+compiled SQL statement hashes; no registered hash is guessed from this plan.
+Implement SAVE, READ_CURRENT, READ_REVISION and LIST_HISTORY only inside a
+single original transaction/role/holder with current native company/facility/
+per-unit authority, source-fence union, bounded CAS/replay and immutable
+provenance. Enforce one final SQL guard and no owner SQL afterward, swallowed-
+failure poison, non-disclosing denied reads, strict error translation, no
+automatic unknown-commit retry and fresh authorized replay. No public REST
+adapter or field actuation. Native tests prove all supported producers,
+three stations/nine units, current/history/denial, schema tampering,
+source/authority races, rollback, exact replay and concurrent CAS; preserve
+existing tests, shard/oracle policy and time budgets. A genuine new migration
+requires fresh dictionary capture and exact-SHA Full/eligible Fast/Docs
+with raw no-skip case membership. No green from disabled assertions or
+mocked native permission. S2 cannot begin merely because S1 code exists;
+S1's independent acceptance is required.
+
+**Publication/acceptance boundaries for this registration.** Change only
+`doc/roadmap/TASKS_HPS-006.md` and the compact
+`doc/roadmap/ULTIMATE_TASKS.md` pointer, append-only without altering original
+A/B1/B2 evidence. Exact documentation registration message:
+`docs(topology): register source-first protected configuration B3 stages`.
+Preserve frozen ROADMAP/PHASES cells, CI/test inventory, runtime, schema,
+authorization, historic failure records, numerical/P3, SITE and release gates.
+After guarded publication observe exact-SHA Documentation CI creation/start
+and STOP. Next user Next selects B3-S1 only, never S2 or C automatically.
+
 <a id="hapi-602"></a>
 ## HAPI-602 — Versioned installed-unit/characteristic links
 

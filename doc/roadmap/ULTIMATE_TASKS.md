@@ -155,11 +155,14 @@ Fast287 and Docs735 SUCCESS, all23 native PostgreSQL cases passing with zero
 failures/errors/skips. Full994 and Docs737 later passed on the current
 e005ba3 source; native B2 implementation and case identities are unchanged.
 Fourteen latest PostgreSQL shards and the strict Full release gate are preserved.
-This is not engineering or release acceptance. The next separately authorized
-stage is registered B3 protected Topology source/write/final-guard integration,
-`feat(topology): protect effective station configuration operations`, **not yet
-executed or accepted**. Package C, parent598, HAPI-601..603, frontend,
-numerical/P3 and deployment remain separately gated.
+This is not engineering or release acceptance. B3 has now been explicitly split into source-first B3-S1 and atomic
+writer B3-S2 in the owning HPS-006 phase record. B3-S1 is the next
+registered implementation with exact message
+`feat(topology): qualify station configuration source evidence`; S2 retains
+`feat(topology): protect effective station configuration operations`.
+Neither is implemented or accepted by registration alone. B3-S2 awaits
+independent S1 CI acceptance. Package C, parent598, HAPI-601..603,
+frontend, numerical/P3 and deployment remain separately gated.
 
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent

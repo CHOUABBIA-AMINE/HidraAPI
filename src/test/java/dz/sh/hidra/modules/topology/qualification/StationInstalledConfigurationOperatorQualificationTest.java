@@ -727,6 +727,41 @@ class StationInstalledConfigurationOperatorQualificationTest {
             http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put(path(c))
                 .header("Authorization","Bearer "+bearer)
                 .contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(wire(c)))
+                .andDo(result->{
+                    // Test-only failure provenance: never log a bearer, resource ID,
+                    // request body, protected evidence, exception message or SQL.
+                    if(!result.getResponse().getContentAsString().contains("INDETERMINATE")){
+                        var chain=new java.util.ArrayList<String>();
+                        for(Throwable error=result.getResolvedException();error!=null;error=error.getCause()){
+                            String label=error.getClass().getSimpleName();
+                            if(error instanceof dz.sh.hidra.modules.topology.application.model
+                                    .StationInstalledConfigurationFailure failure)
+                                label+="["+failure.kind()+"]";
+                            if(error instanceof dz.sh.hidra.platform.persistence
+                                    .ProtectedTransactionExecutor.ExecutionFailure execution)
+                                label+="["+execution.outcome()+"]";
+                            var first=java.util.Arrays.stream(error.getStackTrace())
+                                .filter(frame->frame.getClassName().startsWith("dz.sh.hidra."))
+                                .findFirst().orElse(null);
+                            if(first!=null)label+="@"+first.getClassName()+"."+
+                                first.getMethodName()+":"+first.getLineNumber();
+                            chain.add(label);
+                            if(chain.size()>=12)break;
+                        }
+                        var repositoryCalls=org.mockito.Mockito.mockingDetails(repositoryTarget)
+                            .getInvocations().stream().map(inv->inv.getMethod().getName()).toList();
+                        var transactionCalls=org.mockito.Mockito.mockingDetails(guardedTransactionManager)
+                            .getInvocations().stream().map(inv->inv.getMethod().getName()).toList();
+                        System.err.println("HAPI-600 TEST-ONLY COMMIT-LOSS DIAGNOSTIC "+
+                            "status="+result.getResponse().getStatus()+
+                            " freezeCalls="+java.util.Collections.frequency(repositoryCalls,"prepareFinal")+
+                            " finalGuardCalls="+java.util.Collections.frequency(repositoryCalls,"finalGuard")+
+                            " managerCommitCalls="+java.util.Collections.frequency(transactionCalls,"commit")+
+                            " armed="+(armed.get()!=null)+
+                            " committedWitness="+physicallyCommitted.get()+
+                            " exceptionChain="+chain);
+                    }
+                })
                 .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isServiceUnavailable())
                 .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath(
                     "$.code").value("INDETERMINATE"))

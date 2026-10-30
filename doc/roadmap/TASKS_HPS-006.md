@@ -8809,6 +8809,36 @@ B3-S2 and C remain unselected. Exact repair message:
 `fix(topology): allow transactional proxy of station source evidence adapter`.
 No further stage executes in this repair turn.
 
+### HAPI-600 B3-S1 — negative PostgreSQL acceptance hardening — 2026-10-30
+
+The exact-SHA Full CI #996 and Docs #741 completed SUCCESS on
+`b7a739d5cdb99c698524f43495affa618ae62cab`; all 14 PostgreSQL
+shards and Full Verification Gate succeeded. This closes the original
+CGLIB startup failure, but the five-case S1 test was insufficient for
+the recorded independent source-negative-case acceptance. Owner Next
+continues only that still-open acceptance, not B3-S2.
+
+A bounded source-test-only continuation changes exactly the existing
+`src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedStationInstalledConfigurationPostgresIntegrationTest.java`,
+`.github/ci-test-inventory.json`, and this append-only record.
+No production, identity, owner source, Flyway, dictionary, workflow,
+shard, policy or roadmap-status files change. Exact message:
+`test(topology): harden station configuration source evidence acceptance`.
+The test class grows from 5 to 12 actual named PostgreSQL16/Flyway
+cases covering wrong company, station position moved to another owner,
+stale graph epoch, closed/versioned installation witness,
+new occupancy after initial verified vacancy, same-transaction
+catalog-column mutation and original connection-role change.
+These tests retain the original live catalog and source-fence
+requirements; fixture DML uses synthetic schema-owner transactions
+and rolls back source tampering. Actual SHA-256 of the revised test
+source is `f38d90361d0f51857fb7f5d723cf9792748bc68aea451e2f329b787eaa54378f`. No claim of nonowner runtime lock
+provisioning, concurrent external phantom qualification, manufacturer
+qualification or B3-S2 SAVE/READ_CURRENT/READ_REVISION/LIST_HISTORY.
+New CI must execute every named case without skip; independent B3-S1
+acceptance still requires reviewing raw exact-SHA evidence. B3-S2
+remains gated and is not selected by this continuation.
+
 <a id="hapi-602"></a>
 ## HAPI-602 — Versioned installed-unit/characteristic links
 

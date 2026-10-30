@@ -9227,18 +9227,25 @@
       "baseline_seconds": 0,
       "cases": [
         "absentSourceLocksRejectBeforeAnyProtectedEvidence",
+        "catalogColumnMutationFailsClosedAndRestoresOnRollback",
+        "closedAndRevisedInstallationCannotMatchStaleWitness",
         "graphWithoutActivePublicationFailsClosedEvenWithLocks",
+        "newlyOccupiedVacantPositionInvalidatesOriginalSourceTicket",
+        "positionMovedToAnotherStationCannotBeRetainedAsSource",
+        "roleChangeAfterSourceReadInvalidatesIssuerCoordinates",
         "selectedPublishedGraphAndInstallationEventsReloadUnderActualLocks",
         "sourceChangesAfterObservationPoisonOriginalTransaction",
-        "sourceReaderRejectsTransactionlessCall"
+        "sourceReaderRejectsTransactionlessCall",
+        "staleGraphHeadEpochCannotBeTreatedAsCurrent",
+        "wrongCompanyCannotReadStationSourceEvenWithLocks"
       ],
       "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.ProtectedStationInstalledConfigurationPostgresIntegrationTest",
-      "dependency_reason": "HAPI-600 B3-S1 source-only real fresh-Flyway PostgreSQL lock, graph/install snapshot and fail-closed tests; restricted nonowner authority/final guard remain B3-S2; timing unmeasured",
+      "dependency_reason": "HAPI-600 B3-S1 source-only PostgreSQL16/Flyway lock, canonical graph/event, wrong company/station, stale epoch, closure, vacancy phantom, role and catalog drift; runtime nonowner grants/final SQL remain B3-S2; timing unmeasured",
       "fast": false,
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedStationInstalledConfigurationPostgresIntegrationTest.java",
-      "source_sha256": "7158a9ab003e4b181e431ad55f949795d0281e50904d04bb8634ebf073a04a7a",
+      "source_sha256": "f38d90361d0f51857fb7f5d723cf9792748bc68aea451e2f329b787eaa54378f",
       "supports": []
     },
     {

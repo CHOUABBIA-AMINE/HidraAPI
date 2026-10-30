@@ -9386,6 +9386,75 @@ Publish to existing main with expected parent
 `af95873e4bc319cf456e1c08a2c8d692d3c02827`, verify parent,
 tree, four blobs/message and Full/Docs CI creation/start, then STOP.
 
+
+### HAPI-600 B3-S2 — native competing-writer and post-final-guard integration qualification — 2026-10-30
+
+**No new stage or scope expansion.** Owner `Next` selected continuation of
+original already-registered HAPI-600 B3-S2, with exact commit message
+`feat(topology): protect effective station configuration operations`.
+Current `main` `a2db3a634cde060c01a550ec7c1a23e4e01bc060`
+has [Full CI #1003, attempt 2](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41048379922)
+completed **SUCCESS** following an isolated first-attempt Maven wrapper
+distribution-download failure on PostgreSQL shard 6, and
+[Documentation #750](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41048379954)
+completed **SUCCESS**. The recovery retried only failed jobs at the
+same exact SHA. All required development-mode Full lanes and the
+aggregate evidence gate reported success. Green source/integration
+execution is **not** sufficient for untested original B3-S2 guarantees.
+
+**Remaining verified coverage gap:** The retained twenty-one-case native
+station-configuration suite proves SAVE and reads/history across genuine
+four authentication producers, three stations/nine physical units per
+producer, stale sequential CAS, explicit denial, replay, restricted
+source-lock evidence and ordinary role restrictions. It did **not**
+execute two competing protected SAVE writers for the same epoch via
+real parallel Java threads, nor inject SQL after the genuine final
+guard and assert a complete four-ledger rollback. These are already
+registered B3-S2 criteria; a separate B3-S2A/B/C stage is forbidden.
+
+**Bounded implementation, no source or privilege changes.** MODIFY only
+the existing registered B3-S2 paths:
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedStationInstalledConfigurationPostgresIntegrationTest.java`:
+  retain all twenty-one original cases and add
+  `nativeCompetingFirstEpochWritersCommitExactlyOneHeadAndImmutableReceipt`,
+  which uses two real concurrent threads sharing an authenticated,
+  native-produced actor and distinct same-epoch SAVE command/request
+  identities and asserts exactly one committed head, revision,
+  immutable receipt and three physical member records, with an
+  authorized current read; and
+  `nativeSqlAfterActualFinalGuardCannotCommitProvisionalConfiguration`,
+  which spies the original protected JDBC repository final guard,
+  executes the original guard, injects an otherwise unrelated
+  post-guard SQL statement, requires fail-closed service rejection
+  and verifies zero configuration head, revision, member or receipt
+  rows on the physical database after rollback.
+- `.github/ci-test-inventory.json`: retain previous twenty-one cases,
+  register both additional methods (now twenty-three), update the
+  actual UTF-8 Java test source SHA-256 to
+  `43b9ce6a8da4ed45e70c54373b661ecca801bf874d1ab931be2e18c476673f8a`.
+- `doc/roadmap/TASKS_HPS-006.md`: append this evidence only.
+
+CREATE/DELETE none. No changes to runtime repository, domain, Identity,
+source selection, authorization grants, protected SQL/DML hashes,
+migration ordering, security barrier, final guard implementation,
+workflow policy, response contracts, ROADMAP/PHASES status,
+release/deployment, live IT/OT or simulation. The test-only spy does
+not replace the real original final guard or turn a denial into a
+permit. No local Maven/Docker/PostgreSQL runtime is claimed.
+Exact-SHA Full/Docs CI plus retained raw case membership and zero skips
+must determine the qualification outcome. Any CI failure is a first
+responsible B3-S2 repair and must not be waived or bypassed.
+
+**Acceptance remaining:** The registered B3-S2 complete original
+integration matrix, especially live in-transaction source and
+Identity authority changes, catalog tampering, rollback and
+indeterminate commit acknowledgement, must be independently
+reconciled before B3-S2 acceptance. HAPI-600 remains
+NOT_IMPLEMENTED/IN_PROGRESS and Package C stays blocked.
+Publish with expected-head guard, verify exact parent/tree/message
+and three changed paths/blobs, observe new exact-SHA Full/Docs
+creation/queue/start and STOP without waiting for results.
+
 <a id="hapi-602"></a>
 ## HAPI-602 — Versioned installed-unit/characteristic links
 

@@ -135,6 +135,9 @@ class ProtectedStationInstalledConfigurationPostgresIntegrationTest {
     org.springframework.security.oauth2.jwt.JwtDecoder externalDecoder;
     @org.springframework.beans.factory.annotation.Autowired
     JdbcTemplate nativeJdbc;
+    @org.springframework.test.context.bean.override.mockito.MockitoSpyBean
+    dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.JdbcStationInstalledConfigurationRepositoryAdapter nativeStoreSpy;
+
     private final org.springframework.security.oauth2.jwt.JwtEncoder sourceEncoder=
         org.springframework.security.oauth2.jwt.NimbusJwtEncoder.withSecretKey(
             new javax.crypto.spec.SecretKeySpec(KEY.getBytes(java.nio.charset.StandardCharsets.UTF_8),
@@ -918,4 +921,97 @@ class ProtectedStationInstalledConfigurationPostgresIntegrationTest {
             +"WHERE facility_id=?",Integer.class,c.facilityId()));
     }
 
+
+    @Test void nativeCompetingFirstEpochWritersCommitExactlyOneHeadAndImmutableReceipt() throws Exception {
+        JdbcTemplate owner=jdbc();
+        NativeActor actor=nativeActor("LOCAL");
+        StationInstalledConfiguration first=fixture(owner,true).declaration();
+        StationInstalledConfiguration rival=successor(first,1,syntheticId(),syntheticId());
+        var writeA=command(dz.sh.hidra.modules.topology.application.port.in
+            .StationInstalledConfigurationUseCase.Operation.SAVE,first);
+        var writeB=command(dz.sh.hidra.modules.topology.application.port.in
+            .StationInstalledConfigurationUseCase.Operation.SAVE,rival);
+        var refs=unitRefs(first);
+        authorize(actor,writeA,refs);
+        authorize(actor,writeB,refs);
+        login(actor);
+        var bearer=org.springframework.security.core.context.SecurityContextHolder
+            .getContext().getAuthentication();
+        var start=new java.util.concurrent.CountDownLatch(1);
+        var workers=java.util.concurrent.Executors.newFixedThreadPool(2);
+        try {
+            java.util.concurrent.Callable<Boolean> left=()->{
+                org.springframework.security.core.context.SecurityContextHolder.getContext()
+                    .setAuthentication(bearer);
+                try {
+                    if(!start.await(5,java.util.concurrent.TimeUnit.SECONDS))
+                        throw new AssertionError("Concurrent first writer did not start");
+                    try{protectedService.execute(writeA);return true;}
+                    catch(dz.sh.hidra.modules.topology.application.model
+                        .StationInstalledConfigurationFailure conflict){return false;}
+                }finally{org.springframework.security.core.context.SecurityContextHolder.clearContext();}
+            };
+            java.util.concurrent.Callable<Boolean> right=()->{
+                org.springframework.security.core.context.SecurityContextHolder.getContext()
+                    .setAuthentication(bearer);
+                try {
+                    if(!start.await(5,java.util.concurrent.TimeUnit.SECONDS))
+                        throw new AssertionError("Concurrent rival writer did not start");
+                    try{protectedService.execute(writeB);return true;}
+                    catch(dz.sh.hidra.modules.topology.application.model
+                        .StationInstalledConfigurationFailure conflict){return false;}
+                }finally{org.springframework.security.core.context.SecurityContextHolder.clearContext();}
+            };
+            var a=workers.submit(left);var b=workers.submit(right);start.countDown();
+            assertEquals(1,(a.get(20,java.util.concurrent.TimeUnit.SECONDS)?1:0)
+                +(b.get(20,java.util.concurrent.TimeUnit.SECONDS)?1:0));
+        }finally{workers.shutdownNow();}
+        assertEquals(1,owner.queryForObject(
+            "SELECT count(*) FROM public.hidra_topology_station_configuration_head "
+            +"WHERE facility_id=? AND head_epoch=1",Integer.class,first.facilityId()));
+        assertEquals(1,owner.queryForObject(
+            "SELECT count(*) FROM public.hidra_topology_station_configuration_revision "
+            +"WHERE facility_id=?",Integer.class,first.facilityId()));
+        assertEquals(1,owner.queryForObject(
+            "SELECT count(*) FROM public.hidra_topology_station_configuration_request "
+            +"WHERE facility_id=?",Integer.class,first.facilityId()));
+        assertEquals(3,owner.queryForObject(
+            "SELECT count(*) FROM public.hidra_topology_station_configuration_member "
+            +"WHERE facility_id=?",Integer.class,first.facilityId()));
+        var read=command(dz.sh.hidra.modules.topology.application.port.in
+            .StationInstalledConfigurationUseCase.Operation.READ_CURRENT,first);
+        var saved=nativeExecute(actor,read,refs).declaration();
+        assertTrue(saved.revisionId().equals(first.revisionId())
+            || saved.revisionId().equals(rival.revisionId()));
+        assertEquals(1,saved.selectedEpoch());
+    }
+
+    @Test void nativeSqlAfterActualFinalGuardCannotCommitProvisionalConfiguration() {
+        JdbcTemplate owner=jdbc();
+        NativeActor actor=nativeActor("LOCAL");
+        StationInstalledConfiguration c=fixture(owner,true).declaration();
+        var request=command(dz.sh.hidra.modules.topology.application.port.in
+            .StationInstalledConfigurationUseCase.Operation.SAVE,c);
+        var refs=unitRefs(c);
+        authorize(actor,request,refs);login(actor);
+        org.mockito.Mockito.doAnswer(invocation->{
+            Object result=invocation.callRealMethod();
+            assertEquals(Boolean.TRUE,result);
+            // Test-only injected statement after the genuine scalar final SQL guard:
+            // neither a swallowed failure nor a post-guard statement may commit.
+            nativeJdbc.queryForObject("SELECT 1",Integer.class);
+            return result;
+        }).when(nativeStoreSpy).finalGuard(org.mockito.ArgumentMatchers.any());
+        try {
+            assertThrows(dz.sh.hidra.modules.topology.application.model
+                .StationInstalledConfigurationFailure.class,
+                ()->protectedService.execute(request));
+            org.mockito.Mockito.verify(nativeStoreSpy).finalGuard(
+                org.mockito.ArgumentMatchers.any());
+        }finally{org.mockito.Mockito.reset(nativeStoreSpy);}
+        for(String suffix:List.of("revision","member","head","request"))
+            assertEquals(0,owner.queryForObject(
+                "SELECT count(*) FROM public.hidra_topology_station_configuration_"+suffix
+                +" WHERE facility_id=?",Integer.class,c.facilityId()),suffix);
+    }
 }

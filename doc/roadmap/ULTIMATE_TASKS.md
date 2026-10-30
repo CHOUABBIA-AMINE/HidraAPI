@@ -155,14 +155,16 @@ Fast287 and Docs735 SUCCESS, all23 native PostgreSQL cases passing with zero
 failures/errors/skips. Full994 and Docs737 later passed on the current
 e005ba3 source; native B2 implementation and case identities are unchanged.
 Fourteen latest PostgreSQL shards and the strict Full release gate are preserved.
-This is not engineering or release acceptance. B3 has now been explicitly split into source-first B3-S1 and atomic
-writer B3-S2 in the owning HPS-006 phase record. B3-S1 is the next
-registered implementation with exact message
-`feat(topology): qualify station configuration source evidence`; S2 retains
-`feat(topology): protect effective station configuration operations`.
-Neither is implemented or accepted by registration alone. B3-S2 awaits
-independent S1 CI acceptance. Package C, parent598, HAPI-601..603,
-frontend, numerical/P3 and deployment remain separately gated.
+This is not engineering or release acceptance. B3-S1 source-only evidence
+is now independently synthetic-CI accepted by exact-SHA Full #997 and Docs
+#742 (3,887 tests, zero failures/errors/skips), as recorded in
+[TASKS_HPS-006.md](TASKS_HPS-006.md#hapi-600). B3-S2 is partitioned
+into registered A/B/C packages before privileged code: A is the next
+registered execution, B requires accepted A, and C retains the original
+message `feat(topology): protect effective station configuration operations`.
+The B3-S2 integration and parent HAPI-600 remain unimplemented; no
+Identity/native writer/engine, SITE or deployment acceptance is implied.
+Parent HAPI-598, HAPI-601..603, and UI successors are separately gated.
 
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent

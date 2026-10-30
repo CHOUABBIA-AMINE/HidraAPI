@@ -8839,6 +8839,143 @@ New CI must execute every named case without skip; independent B3-S1
 acceptance still requires reviewing raw exact-SHA evidence. B3-S2
 remains gated and is not selected by this continuation.
 
+### HAPI-600 B3-S1 acceptance and B3-S2 execution partition — 2026-10-30
+
+**Accepted bounded precursor; no runtime write authority.** Exact main SHA
+`0d5a28f4624f094552b18c15eda562c35c6eacb6`, parent
+`b7a739d5cdb99c698524f43495affa618ae62cab`. Full CI #997
+([run](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41025319855))
+SUCCESS; Documentation Validation #742
+([run](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41025319859))
+SUCCESS. The actual Full gate recorded 3,887 test executions across 513
+classes with zero failures, errors and skips; all 14 PostgreSQL shards,
+static validation, API/catalog and Full Verification Gate succeeded.
+The B3-S1 source-only reader, revised twelve-name PostgreSQL inventory and
+lock/current-source negative evidence are accepted for **that bounded
+synthetic read-only contract**. The checks do not establish restricted-role
+runtime lock provisioning, automatic safe source-lock acquisition,
+concurrent external phantom proof, native owner permission, atomic writer,
+historical authorized reads or SITE readiness. Never promote parent
+HAPI-600 to VERIFIED from this result.
+
+**Execution authorization and conflict resolution.** The original
+registered B3-S2 requires nine new files plus a real protected
+writer/SQL migration, executor caller/statement hashes, exact native
+Identity admission, restricted relation-lock capability, dictionary
+capture and substantial source/permission/race/rollback tests in **one**
+atomic package. Its security-relevant SQL privilege provisioning
+cannot be honestly qualified merely from the green source-only gate;
+the three work boundaries require separate fresh-schema and
+exact-SHA acceptance. Pursuant to the owner-authorized option to split
+large registered parent packages into A/B/C with independent
+messages, the existing B3-S2 scope is partitioned into the following
+ordered B3-S2A/B/C implementation packages. All paths below are
+members of the **already registered** B3-S2 CREATE/MODIFY allowlists.
+This registration is documentation-only and does not implement any
+of them. The original B3-S2 final commit message is preserved
+verbatim on package C. No status-table or structural governance
+change, branch/PR or other task is selected.
+
+**B3-S2A — first, source-fenced PostgreSQL lock and storage policy.**
+Exact implementation message:
+`feat(topology): establish protected station configuration SQL fences`.
+CREATE only:
+- `src/main/resources/db/migration/V20261029_003__topology_station_configuration_protected_operations.sql`.
+MODIFY only:
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedStationInstalledConfigurationPostgresIntegrationTest.java`;
+- `.github/ci-test-inventory.json`;
+- `.github/database-dictionary-ownership.json` (only measured migrated catalog ownership);
+- `doc/database/DATA_DICTIONARY.md` (only actual fresh PostgreSQL capture);
+- `doc/roadmap/TASKS_HPS-006.md`.
+DELETE none. Implement the **fixed-scope lock-only**, explicitly
+non-public and non-grantable source-fence capability for the eight
+S1 source relations without manufacturing runtime credentials or
+grants; verify its ownership/ACL/search_path, actual PostgreSQL
+lock semantics, negative ordinary/cross-role use, catalog tampering,
+epoch/CAS, immutable revision/member/request, rollback, and concurrent
+insert/absence exclusion with synthetic fresh-schema tests. Retain
+existing triggers/history and require a true restricted nonowner
+provisioning check at final integration. The migration must be
+additive, immutable thereafter and properly version ordered; do not
+assume a schema-owner test proves least-privilege role deployment.
+**No public writer, unguarded DML or application entry point** in A.
+Acceptance: validated fresh Flyway/PostgreSQL16, correct dictionary and
+test inventory and exact-SHA required CI with actual no-skip cases.
+
+**B3-S2B — next, private versioned storage and contracts.**
+Exact implementation message:
+`feat(topology): add guarded station configuration repository`.
+CREATE only:
+- `src/main/java/dz/sh/hidra/modules/topology/application/model/StationInstalledConfigurationFailure.java`;
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/StationInstalledConfigurationUseCase.java`;
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/StationInstalledConfigurationRepositoryPort.java`;
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationInstalledConfigurationRepositoryAdapter.java`.
+MODIFY only:
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedStationInstalledConfigurationPostgresIntegrationTest.java`;
+- `.github/ci-test-inventory.json`;
+- `doc/roadmap/TASKS_HPS-006.md`.
+DELETE none. Provide a strict opaque one-use admission-backed owner
+adapter, bounded canonical decode/encode/digest and immutable
+SAVE/current/revision/history/receipt storage primitives. The
+unwired repository must reject calls without authentic protected
+executor/coordinator and exact SQL/fence admission; no accessible
+unprotected mutation route. Test actual repository CAS, source
+witness, request digest and replay, tamper, rollback, foreign
+company denial and race cases on fresh synthetic PostgreSQL.
+Do not fabricate a native authorized public use case in B. Full
+protected logical workflow and registered hard-coded DML hashes
+require C; B is not an independently approved writer. Acceptance:
+no usable write bypass and exact-SHA CI with no-skip cases.
+
+**B3-S2C — final, full originally registered protected operation.**
+Preserve the **original** exact B3-S2 commit message:
+`feat(topology): protect effective station configuration operations`.
+CREATE only:
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/StationInstalledConfigurationApplicationService.java`;
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/ProtectedStationConfigurationAdmissionCoordinator.java`;
+- `src/test/java/dz/sh/hidra/modules/topology/application/service/StationInstalledConfigurationApplicationServiceTest.java`;
+- `src/test/java/dz/sh/hidra/modules/topology/application/service/ProtectedStationConfigurationAdmissionCoordinatorTest.java`.
+MODIFY only:
+- `src/main/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutor.java`;
+- `src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java`;
+- `src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java`;
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`;
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedStationInstalledConfigurationPostgresIntegrationTest.java`;
+- `.github/ci-test-inventory.json`;
+- `doc/roadmap/TASKS_HPS-006.md`.
+DELETE none. Wire native B1/B2 Identity admission and S1 source
+evidence on the *same physical transaction, role, ConnectionHolder,
+backend PID and XID*, union required relation fences, apply precise
+per-unit/company/facility authority **before disclosure**, execute
+bounded versioned save/replay and current/revision/history reads,
+and guard all retained audit/provenance. The executor must compile
+and whitelist **actual** DML template hashes, never unchecked or
+guessed hashes. Enforce one genuine final SQL guard followed by no
+further owner SQL, current authority/source and strict transaction
+deadlines, indeterminate commit semantics (no implicit retry), and
+swallowed-failure poisoning. Validate all producer modes and
+three-station/nine-unit/deny/stale/race/replay scenarios with exact
+synthetic PostgreSQL and architecture tests. Existing B1/B2 Identity
+contract/participant/reader remain byte unchanged unless an
+independent source-backed authorization change is explicitly
+registered and approved. No REST endpoints, physical actuation,
+external engine, deployment, numerical/P3 or SITE acceptance.
+Acceptance: Full/eligible Fast/Docs exact-SHA and raw named cases,
+no CI weakening, independently reviewed security and migrated
+dictionary. Parent HAPI-600 remains gated; C is not invoked
+automatically after A/B.
+
+**This registration-stage publication.** Change only
+`doc/roadmap/TASKS_HPS-006.md` and the compact
+`doc/roadmap/ULTIMATE_TASKS.md` pointer, keeping original records
+append-only. Exact registration message:
+`docs(topology): partition protected station configuration B3-S2 delivery`.
+Check exact expected main SHA/parent/tree and Documentation CI
+created/queued or started, then STOP. The **next** user Next after
+this registration selects **B3-S2A only**. A B3-S2A failure must be
+repaired before B, and B before C. Preserve all original
+B3-S2 scope/acceptance as union, with no scope expansion.
+
 <a id="hapi-602"></a>
 ## HAPI-602 — Versioned installed-unit/characteristic links
 

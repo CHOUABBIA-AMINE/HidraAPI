@@ -8420,6 +8420,67 @@ then STOP. Parent HAPI-600 frozen status is unchanged; A acceptance stays bounde
 B remains incomplete and C depends on accepted A/B. Parent598,601..603, frontend,
 numerical/P3, SCADA/OT control, SITE, release and deployment remain unselected.
 
+
+
+### HAPI-600 Package B2 — Full991 reviewed reader source-pin repair — 2026-10-30
+
+Owner Fail; refreshed main `7bcce5a1f79376e5db6e6a4beb9430e04190958a`,
+sole parent `ec653d9d2658cf47bb7e273ae005fae4acc66cc2`, tree
+`4d06cf65909f554002ef54d819236002b9c2457c`.
+Full991/run41001926627 and Fast286/run41001926644 FAILED; Docs734/run41001926634
+SUCCESS. Actual Java21 job123888069318 and Fast job123888069540 logs both identify
+one failure: ProtectedStationAdmissionBoundaryGuardrailTest.existingReaderAndJContractsRemainUnchanged,
+line99, still expected the pre-B2 JDBC reader hash. Full's Java lane reports2,273
+cases/1 failure/0 errors/skips; Fast reports2,205 cases/1 failure/0 errors/skips.
+All ten Full PostgreSQL shards, static validation and API/dictionary passed.
+The final Full gate failed consequently. No native/database failure or timeout
+is established by this run; individual raw-case acceptance remains separate.
+
+**Registered responsible three-file correction.** Exact message:
+`test(identity): refresh reviewed configuration reader source pin`.
+CREATE/DELETE none. MODIFY exactly:
+- `src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java`
+- `.github/ci-test-inventory.json`
+- `doc/roadmap/TASKS_HPS-006.md`
+
+The B2 source change legitimately added two typed opaque-group reader entry points,
+private configuration-family validation and a distinct native recheck path, but
+the hard source pin in the existing guardrail was omitted from that stage's update.
+Before refreshing it, recovered the actual reader at current SHA and its B1
+predecessor, reviewed the16 public reader methods (the14 existing methods plus
+exactly loadQualifiedStationConfigurationGroup/recheckStationConfigurationGroup),
+and confirmed forbidden clock/JPA/DML/structural authority operations remain absent.
+The original Rows body is unchanged, preserving1024 per-graph row budget and1025
+query limit; existing family-specific validation and typed signature checks remain.
+All ten PostgreSQL shards passed with the B2 source; this is not a blanket
+permission to pin arbitrary source or remove architecture/security assertions.
+
+Independently matched the fetched reader bytes to local retained bytes and hashed:
+old `4cb50a86bf8e307a742fb64e29fdfcccab24cb793e3987a1d2234a7dd004f27d`;
+reviewed current `844bcb3eb78c0406c77a3801a25b344d6595c2350acba4c4a30a24893550e418`.
+Replace only that expected reader digest and add its review comment. The four
+other Party/Topology source pins and every existing assertion remain unchanged.
+Retain the existing test name/9 exact cases as stable inventory identities.
+Updated only this suite's source hash to
+`699ac15aee1d20fadb7486bdb0b314630614a421593544cc74e56b699815f719`.
+All other inventory entries, cases, timings,514 registered classes and ten
+PostgreSQL shards are preserved. No test is disabled, removed or relaxed.
+
+Validation:19 documentation-validator and35 inventory-validator self-tests passed.
+A reversible text comparison independently confirms only the expected digest/
+review-comment changed in the test; exact case membership is unchanged and
+inventory hash matches edited bytes. Reader source bans and unchanged Rows were
+checked against B1; no production source was changed by this repair.
+No new local Java/JUnit/PostgreSQL execution is claimed because the local compiler/
+Maven/services remain unavailable. Hosted exact-SHA Full/Fast/Docs must verify
+the corrected guardrail. Do not relabel Full991/Fast286 as successful.
+
+Publish one expected-head guarded commit, verify exact paths/parent/tree/blobs/
+message, observe exact-SHA applicable CI startup then STOP. B2 remains pending
+runtime acceptance; B3 and configuration writer are not enabled by this repair.
+Package A acceptance and frozen HAPI-600 parent status remain; C,598,601..603,
+frontend, P3, SCADA/OT, industrial/SITE, release and deployment remain unselected.
+
 <a id="hapi-602"></a>
 ## HAPI-602 — Versioned installed-unit/characteristic links
 

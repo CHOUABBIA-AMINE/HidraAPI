@@ -214,6 +214,20 @@ on a separate explicit exact-contract/write-scope admission; no Java,
 migration, permission or frozen ROADMAP/PHASES status change is selected.
 HAPI-601 remains NOT_IMPLEMENTED/BLOCKED.
 
+
+HAPI-601 Package B: the owner expressly approved **one unified, unsplit
+implementation package** (no B1/B2/B3) and explicit deny-by-default
+company-to-manufacturer Party authorization on 2026-10-30. Exact final
+technical contract, 19 CREATE and 11 MODIFY maximum paths, two additive
+Flyway migrations, one implementation message and integrated negative,
+security, Workflow and PostgreSQL gates are registered in
+[HPS-007](TASKS_HPS-007.md#hapi-601) from
+`81f50308d0d79406b19f83531b49d2bb9bb87f63` (Docs #770 SUCCESS).
+This is a documentation-only technical admission, not a code commit.
+A future `Next` may select ONE entire B implementation, without further
+discretionary splitting or duplicate owner acceptance. HAPI-601 remains
+NOT_IMPLEMENTED/BLOCKED; C/HAPI-602/P3/deployment unchanged.
+
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent
 [HAPI-436](TASKS_HPS-024.md#hapi-436) are VERIFIED/COMPLETED within the accepted

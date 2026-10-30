@@ -482,4 +482,24 @@ Package A MODIFY only `.github/ci-test-inventory.json` for actual cases/hashes a
 
 **Disposition.** HAPI-601's **A technical-contract decision is ACCEPTED by owner**. A **source implementation is still NOT_IMPLEMENTED**; HAPI-601 overall remains `NOT_IMPLEMENTED / BLOCKED` until its own separately verified A/B/C software acceptance. Package B's native Party/Identity/Workflow/PostgreSQL contracts and Package C's protected API contract need their **own direct owner decisions**, with no false bypass of security/database/testing gates. No GitHub issues or PRs. Next `Next` selects **Package A implementation only** after successful current documentation CI.
 
+### HAPI-601 — owner-approved Package A implementation evidence (2026-10-30)
+
+**Selected stage.** Owner explicitly approved the four-file Package A technical contract, documented at parent `a20f887aed0129879627b47bacaef5737a0a8c79`; its [Docs #767](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41099047083) **SUCCESS**. This is only **HAPI-601 Package A**; exact implementation message `feat(simulation): model immutable manufacturer supplied characteristics`. No GitHub issues or PRs. No HAPI-602 or other stage selected.
+
+**Exact CREATE (four files):**
+- `src/main/java/dz/sh/hidra/modules/simulation/domain/model/ManufacturerCharacteristicRevision.java`
+- `src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/ManufacturerCharacteristicRevisionCodec.java`
+- `src/test/java/dz/sh/hidra/modules/simulation/domain/model/ManufacturerCharacteristicRevisionTest.java`
+- `src/test/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/ManufacturerCharacteristicRevisionCodecTest.java`
+
+**Exact MODIFY:** `.github/ci-test-inventory.json` (two new source-hash-linked test classes, seven plus six JUnit test cases; preserve 523 previous entries) and `doc/roadmap/TASKS_HPS-007.md` (append this truthful source evidence). DELETE none; no migrations, Identity, Party, Workflow, permissions, REST, engine, UI or frozen Simulation codec modifications.
+
+**Implementation details.** Pure-Java immutable `ManufacturerCharacteristicRevision` distinct from existing network/fluid-bound Simulation equipment-input aggregates. It carries exact immutable source/revision/document reference/SHA-256, manufacturer Party/model *references*, recorded/effective times, supplier-declared or synthetic origin, explicit reference pressure/temperature/method, typed V1 compressor speed-line maps, valve drop/opening/flow, parameter tables with typed ordered axes and outputs and operating limits. Explicit SI quantities/units; strict positive/range/ordering/uniqueness/scale/precision/text/collection checks and defensive list copies. Optional certificate reference evidence is bound to exact source/revision/doc/manufacturer/model/family/validity; it does **not** verify authenticity, certify source, or imply Workflow approval. It is forbidden on synthetic input. No interpolation, solver or installed-unit binding.
+
+**Codec and provenance.** Separate bounded canonical `HIDRA_MANUFACTURER_CHARACTERISTIC_SOURCE_V1` binary codec; maximum 1 MiB, bounded strict UTF-8 and declared counts, tag/kind/scale/timestamps, no truncation/trailing bytes and byte-equal decode/re-encode; SHA-256 hashes exact canonical bytes. Existing equipment/regulator codecs are untouched. Java 21 local compilation passed and 13/13 new @Test cases passed in a lightweight isolated JUnit-compatible stub/reflection harness (zero failures), covering four families, provenance differences, strict malformed-byte rejection and source invariants. **Not Maven Surefire, real repository ArchUnit or exact-SHA CI**: full proof remains pending.
+
+**Manifest source digests and lane.** `ManufacturerCharacteristicRevisionTest.java` = `bbb6cf025742afa2f55ddccb5fb9d91cbc57c874cbf924f29db1b15e9208121f` (7 cases); `ManufacturerCharacteristicRevisionCodecTest.java` = `07a36567348ff4fec78c92a4f199c80ca4bc84f5045428a770afdfc26dfd47fe` (6 cases); both are pure-Java `unit-architecture` with `fast=true`, `baseline_seconds=0` (explicitly **unmeasured**, not a speed claim).
+
+**Truthful disposition and STOP.** A source is implemented **pending exact-SHA CI acceptance**, not yet verified or engineering accepted. HAPI-601 remains `NOT_IMPLEMENTED / BLOCKED` overall in ROADMAP/PHASES because B secure persistence/qualification and C protected HTTP are not implemented. First evaluate Full/Fast/Docs actual exact-commit status, repair any failed A-scoped CI before selecting another stage, then separately obtain the owner's B technical-contract decision. Do not automatically advance or claim release, deployment, SITE or operational acceptance.
+
 <!-- task-register:payload:end -->

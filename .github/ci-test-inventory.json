@@ -7172,6 +7172,26 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "acceptsFourSuppliedFamiliesAndIndependentRevisions",
+        "certificateIsOnlySourceMetadataAndCannotCoverOtherRevisionOrSynthetic",
+        "nestedCollectionsAreDefensivelyImmutable",
+        "refusesMissingIdentityEvidenceAndReferenceConditions",
+        "rejectsUnknownUnitsDuplicateTableColumnsAndRows",
+        "rejectsUnorderedCompressorAndValveSamplesAndInvalidFractions",
+        "sourceTemporalAndTextBoundsAreExplicit"
+      ],
+      "class": "dz.sh.hidra.modules.simulation.domain.model.ManufacturerCharacteristicRevisionTest",
+      "dependency_reason": "New isolated pure-Java source invariant test; no live DB or service; unmeasured timing",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "simulation",
+      "path": "src/test/java/dz/sh/hidra/modules/simulation/domain/model/ManufacturerCharacteristicRevisionTest.java",
+      "source_sha256": "bbb6cf025742afa2f55ddccb5fb9d91cbc57c874cbf924f29db1b15e9208121f",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0.026,
       "cases": [
         "absentOriginAndInvalidIntervalsReject",
@@ -7523,6 +7543,25 @@
       "owner": "simulation",
       "path": "src/test/java/dz/sh/hidra/modules/simulation/infrastructure/integration/TopologyScopeEvidenceQueryAdapterTest.java",
       "source_sha256": "5dfc20acfbce185f783efdce09d186ad299eeaa2bd1fcd26fc11d3ae9260f1fe",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "certificateEvidenceIsRoundTrippedWithoutCertificationPromotion",
+        "exactScaleAndProvenanceChangeDigestAndRevisionIdentity",
+        "formatAndSourceEnvelopeRefuseInconsistentData",
+        "invalidHeaderMarkersLengthsAndUtf8AreRejected",
+        "roundTripsAllFourKindsWithExactBytesAndCanonicalHeader",
+        "truncatedTrailingAndOversizedBytesFailClosed"
+      ],
+      "class": "dz.sh.hidra.modules.simulation.infrastructure.persistence.adapter.ManufacturerCharacteristicRevisionCodecTest",
+      "dependency_reason": "New isolated pure-Java canonical codec test; no live DB or service; unmeasured timing",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "simulation",
+      "path": "src/test/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/ManufacturerCharacteristicRevisionCodecTest.java",
+      "source_sha256": "07a36567348ff4fec78c92a4f199c80ca4bc84f5045428a770afdfc26dfd47fe",
       "supports": []
     },
     {

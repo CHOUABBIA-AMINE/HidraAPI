@@ -9211,6 +9211,48 @@ CI evidence rules and no-skip case requirements remain unchanged.
 Observe exact-SHA Full/Docs creation/start and STOP. No adoption of
 the serial oracle or release/deployment readiness is inferred.
 
+
+### HAPI-600 B3-S2 — fix registered station-configuration budget selection — 2026-10-30
+
+**Validated predecessor:** exact main `b2baf1e11d41507ffab7f67a3a25fc706a36bf43`:
+[Full CI #1000](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41040759367)
+and [Docs #747](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41040759256)
+are completed SUCCESS. The previous B3-S2 vacancy phantom regression is
+present; passing that case does not complete four-producer integration acceptance.
+
+**Observed runtime defect:** `ProtectedTransactionExecutor.publicationWorkBudgetNanos`
+selected `STANDARD_WORK_BUDGET_MILLIS` (500ms) for the newly admitted
+`STATION_CONFIG_SERVICE`, despite the already registered B3 Package B
+requirement to use `installedUnitWorkBudgetNanos()`. The registered
+default installed-unit budget is 1,000ms and is configurable using
+the pre-existing property; it is a finite development cap, **not**
+a general performance SLA and not an extension of native grant validity.
+
+**Bounded existing B3-S2 correction:** retain the original registered
+commit message `feat(topology): protect effective station configuration operations`.
+MODIFY exactly the already allowed paths
+`src/main/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutor.java`,
+`src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java`,
+`.github/ci-test-inventory.json` and this append-only task evidence.
+New JUnit case `stationConfigurationUsesInstalledUnitWorkBudgetWithoutWideningOtherFamilies`
+tests actual budget selection with distinct configured values for the new
+station service, existing installed-unit, custody, appointment and ordinary
+draft. The changed executor only adds `STATION_CONFIG_SERVICE` to the
+pre-existing installed-unit budget branch. No new property, numeric constant,
+default, role, protected operation scope, Identity producer, schema,
+authorization validity, CI workflow, status, nested stage, simulation,
+frontend or release claim is added. The test source SHA-256 is
+`4275c5031f64152dc0dcce8aa397e32980d8fd2a20191074e1b421a5384ce052`; no local Maven execution or timing benchmark is claimed.
+
+**Acceptance hold:** original B3-S2 genuine native Identity/role,
+authorization-before-disclosure, restricted publisher, SAVE/read/history,
+three-station/nine-unit, source/authority races, CAS/replay and final guard
+still require positive end-to-end raw evidence. Parent HAPI-600 remains
+NOT_IMPLEMENTED/IN_PROGRESS. Exact-SHA CI must run registered cases
+without skips, then independently assess remaining acceptance; Package C
+is not selected by this continuation. Stop after observing new Full/Docs
+CI creation/start.
+
 <a id="hapi-602"></a>
 ## HAPI-602 — Versioned installed-unit/characteristic links
 

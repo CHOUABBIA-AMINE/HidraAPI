@@ -210,6 +210,36 @@ class ProtectedTransactionExecutorTest {
         assertThat(commits).hasValue(0);
     }
 
+
+    @Test void stationConfigurationUsesInstalledUnitWorkBudgetWithoutWideningOtherFamilies() throws Exception {
+        var settings=new dz.sh.hidra.platform.configuration.ProtectedExecutionBudgetProperties(
+            7_500,2_200,3_456);
+        var selected=new ProtectedTransactionExecutor(manager,ds,settings);
+        var policy=ProtectedTransactionExecutor.class.getDeclaredMethod(
+            "publicationWorkBudgetNanos",String.class);
+        policy.setAccessible(true);
+        java.util.function.Function<String,Long> workBudget=service->{
+            try {return (Long)policy.invoke(selected,service);}
+            catch(ReflectiveOperationException failure){throw new IllegalStateException(failure);}
+        };
+        assertThat(workBudget.apply(
+            "dz.sh.hidra.modules.topology.application.service.StationInstalledConfigurationApplicationService"))
+            .isEqualTo(settings.installedUnitWorkBudgetNanos());
+        assertThat(workBudget.apply(
+            "dz.sh.hidra.modules.topology.application.service.InstalledUnitLifecycleApplicationService"))
+            .isEqualTo(settings.installedUnitWorkBudgetNanos());
+        assertThat(workBudget.apply(
+            "dz.sh.hidra.modules.custody.application.service.ProductRevisionPublicationApplicationService"))
+            .isEqualTo(settings.custodyWorkBudgetNanos());
+        assertThat(workBudget.apply(
+            "dz.sh.hidra.modules.organization.application.service.EmployeeAppointmentLifecycleApplicationService"))
+            .isEqualTo(settings.appointmentWorkBudgetNanos());
+        assertThat(workBudget.apply(
+            "dz.sh.hidra.modules.topology.application.service.EngineeringNetworkDraftApplicationService"))
+            .isEqualTo(dz.sh.hidra.platform.configuration.ProtectedExecutionBudgetProperties
+                .STANDARD_WORK_BUDGET_MILLIS*1_000_000L);
+    }
+
     @Test
     void successfulScalarExecutionCommitsBeforeReturning() {
         assertThat(run(() -> "result", () -> {}, this::guard)).isEqualTo("result");

@@ -10548,6 +10548,7 @@
         "selectedFiniteScopeBudgetExpiresWithoutAnAuthorizationGrace",
         "stationConfigurationAdmissionAndFinalPreparationRejectOutsidePhysicalScope",
         "stationConfigurationDmlPinsAreExactAndDoNotOpenOtherOwnerRoutes",
+        "stationConfigurationUsesInstalledUnitWorkBudgetWithoutWideningOtherFamilies",
         "successfulScalarExecutionCommitsBeforeReturning",
         "swallowedExpiredHandlePoisonsNewAttempt",
         "transactionLocalJitSetupPrecedesWorkAndCannotSilentlyFail",
@@ -10558,12 +10559,12 @@
         "zeroFinalStatementsRejectAndRollBack"
       ],
       "class": "dz.sh.hidra.platform.persistence.ProtectedTransactionExecutorTest",
-      "dependency_reason": "Candidate included; simulated JDBC/JPA provider and actual Spring lifecycle, no external service",
+      "dependency_reason": "Candidate included; simulated JDBC/JPA provider and actual Spring lifecycle, no external service; B3-S2 station configuration reuses installed-unit configurable finite development cap, not standard 500ms",
       "fast": true,
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java",
-      "source_sha256": "add7ca0910b9cdda1c481d69eb9c4e7cac2db938113ba72217f4a20c11bbe87e",
+      "source_sha256": "4275c5031f64152dc0dcce8aa397e32980d8fd2a20191074e1b421a5384ce052",
       "supports": []
     },
     {

@@ -194,6 +194,14 @@ owner's specific A contract acceptance; B/C are separately review-gated.
 No new GitHub issues/PRs; #136 was closed at owner request.
 HAPI-601 remains NOT_IMPLEMENTED/BLOCKED; HAPI-602/solver/deployment excluded.
 
+HAPI-601 Package A technical contract was **explicitly accepted by the owner**
+on 2026-10-30 under the registered A/B/C-only review-process exception.
+The source-backed four-file A model/codec and test allowlist is recorded in
+[HPS-007](TASKS_HPS-007.md#hapi-601). This approves **A technical admission
+only**, not its implementation or CI; it does not approve B or C contracts.
+Next `Next` executes A source implementation after the current Docs gate.
+HAPI-601 remains NOT_IMPLEMENTED/BLOCKED; no issue/PR or extra task.
+
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent
 [HAPI-436](TASKS_HPS-024.md#hapi-436) are VERIFIED/COMPLETED within the accepted

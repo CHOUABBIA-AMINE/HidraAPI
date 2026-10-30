@@ -183,6 +183,17 @@ No independent technical reviewer signature has been obtained; A is
 review-ready, B/C remain unresolved, and HAPI-601 is NOT_IMPLEMENTED/BLOCKED.
 No HAPI-602, numerical engine, HidraWEB, SITE or deployment is selected.
 
+HAPI-601 only: owner-approved review-process exception (2026-10-30).
+The owner replaces separate independent technical reviewer sign-off with
+documented exact-source technical analysis by the assistant plus the owner's
+explicit **separate final contract acceptance for A, B, and C**.
+The previous independent-review notes remain historical evidence; safeguards,
+source ownership, effective authorization, real PostgreSQL/Workflow and test
+gates remain mandatory. A technical design is review-ready but pending the
+owner's specific A contract acceptance; B/C are separately review-gated.
+No new GitHub issues/PRs; #136 was closed at owner request.
+HAPI-601 remains NOT_IMPLEMENTED/BLOCKED; HAPI-602/solver/deployment excluded.
+
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent
 [HAPI-436](TASKS_HPS-024.md#hapi-436) are VERIFIED/COMPLETED within the accepted

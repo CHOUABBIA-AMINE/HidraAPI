@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `096b95d1efb5420b2973957e75eb6f8e58b0a396`
+Captured source SHA: `7db0529cb78eddf26618da28b11d368f73654f42`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `18c41fbd10616d0d9a21365fed66ea3804e27b47d9d14e330ff3704bd4d89552`.
-Migrations: 188; JPA mappings: 470; catalog relations: 536; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `93fe3edb6930ebe918e8582226a9ccab48fec27c0acc0b5eb2e35480478efcb9`.
+Migrations: 189; JPA mappings: 470; catalog relations: 536; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -28588,6 +28588,7 @@ Topology-owned immutable per-position disposition and pinned physical installati
 - Evidence: [V20261029_002__topology_station_installed_configurations.sql](../../src/main/resources/db/migration/V20261029_002__topology_station_installed_configurations.sql)
 - Evidence: [StationInstalledConfigurationPostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/StationInstalledConfigurationPostgresIntegrationTest.java)
 - Migration mention (not inferred introduction): [V20261029_002__topology_station_installed_configurations.sql](../../src/main/resources/db/migration/V20261029_002__topology_station_installed_configurations.sql)
+- Migration mention (not inferred introduction): [V20261029_002_1__topology_station_configuration_binding_null_guard.sql](../../src/main/resources/db/migration/V20261029_002_1__topology_station_configuration_binding_null_guard.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -28605,7 +28606,7 @@ Topology-owned immutable per-position disposition and pinned physical installati
 
 #### Constraints
 
-- `ck_station_configuration_member_binding`: CHECK (disposition::text = 'UNOCCUPIED'::text AND installed_unit_id IS NULL AND installation_id IS NULL AND installation_revision IS NULL AND installation_from IS NULL AND installation_until IS NULL AND installation_evidence_reference IS NULL OR (disposition::text = ANY (ARRAY['CONNECTED'::character varying, 'ISOLATED'::character varying]::text[])) AND installed_unit_id IS NOT NULL AND installation_id IS NOT NULL AND installation_revision &gt; 0 AND installation_from IS NOT NULL AND (installation_until IS NULL OR installation_until &gt; installation_from) AND NULLIF(btrim(installation_evidence_reference), ''::text) IS NOT NULL)
+- `ck_station_configuration_member_binding`: CHECK (disposition::text = 'UNOCCUPIED'::text AND installed_unit_id IS NULL AND installation_id IS NULL AND installation_revision IS NULL AND installation_from IS NULL AND installation_until IS NULL AND installation_evidence_reference IS NULL OR (disposition::text = ANY (ARRAY['CONNECTED'::character varying, 'ISOLATED'::character varying]::text[])) AND installed_unit_id IS NOT NULL AND installation_id IS NOT NULL AND installation_revision IS NOT NULL AND installation_revision &gt; 0 AND installation_from IS NOT NULL AND (installation_until IS NULL OR installation_until &gt; installation_from) AND NULLIF(btrim(installation_evidence_reference), ''::text) IS NOT NULL)
   - Catalog attributes: {"columns": ["disposition", "installed_unit_id", "installation_id", "installation_revision", "installation_from", "installation_until", "installation_evidence_reference"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
 - `ck_station_configuration_member_disposition`: CHECK (disposition::text = ANY (ARRAY['CONNECTED'::character varying, 'ISOLATED'::character varying, 'UNOCCUPIED'::character varying]::text[]))
   - Catalog attributes: {"columns": ["disposition"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}

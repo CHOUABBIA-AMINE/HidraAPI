@@ -8044,6 +8044,68 @@ parent/tree/blobs/message and applicable exact-SHA CI creation/start, then STOP.
 HAPI-600 frozen status and Package A acceptance remain unchanged; B/C,598,601..603,
 frontend, numerical/P3, industrial/SITE, release and deployment remain unselected.
 
+
+
+### HAPI-600 Package A — Full988 genuine binding-guard dictionary refresh — 2026-10-30
+
+Owner Fail executes the registered metadata-only follow-up. Main
+`7db0529cb78eddf26618da28b11d368f73654f42`, parent
+`0dbc4d753cebe9d2c9c2eaeaa98f9eb2fb2bf0b7`, tree
+`114feb7f06b16d22bf1974b082247f4a77cd3528`.
+Exact message: `docs(database): refresh station configuration binding guard dictionary`.
+CREATE/DELETE none; MODIFY only doc/database/DATA_DICTIONARY.md and this phase file.
+
+Full988/run40943265475 attempt1 FAILED in API contract/dictionary job123691872791:
+the strict reviewed dictionary check reports physical dictionary drift after the
+additive binding-null guard migration. Unit/architecture, all ten real PostgreSQL
+shards and static validation passed. Fast284/run40943265808 and
+Docs730/run40943265803 SUCCESS on the same SHA. Full final gate failed because
+the required dictionary lane failed. No timeout, budget or test skip is implicated.
+Job logs were retrieved; this observation does not itself replace independent
+raw-case acceptance or establish full Package A closure.
+
+Actual same-SHA CI artifact12927054932:
+hidra-database-schema-7db0529cb78eddf26618da28b11d368f73654f42-40943265475-1-api-contract.
+Downloaded ZIP SHA256:
+`0c052208069cb360a69dda62cc3f6250027cc5fe33f3d10f1ffbfab9125c3aa5`.
+Its actual schema.json SHA256:
+`44df80ee682a432850ec29b3bae381b4c721659d2af6190215b8ebe50c4b464a`.
+Actual generated dictionary:3,510,141 bytes, SHA256
+`6374d8ad8ee31c3bc9d27e0edb95d05cf11d3a2b287178892ab8296f028f16a5`,
+Git blob `7effe756f84e9307c56b396c33a828fa81b17a0c`.
+Source bundle SHA256:
+`93fe3edb6930ebe918e8582226a9ccab48fec27c0acc0b5eb2e35480478efcb9`.
+Artifact verification records PostgreSQL16.15,189 migrations,536 relations,
+470 JPA mappings and zero unresolved owners. reviewed_dictionary_checked=false
+belongs to this failed pre-refresh comparison and is not rewritten as success.
+
+The replacement is byte-exact to the actual generated artifact: independently
+hashed local ZIP/schema/dictionary, recovered previous Git dictionary blob
+4cc6501a4545b055d4d86fb331cf2d49521b2940 and reconstructed the limited artifact
+differences; the created Git blob exactly matches the independently computed
+artifact Git SHA. Differences are captured-source/bundle/migration metadata,
+the new migration mention and actual explicit installation_revision IS NOT NULL
+in the binding CHECK. No inferred columns, fabricated schema facts or generated
+bytes from a different source are substituted.
+
+Validation:19 documentation-validator self-tests passed; exact two-file scope,
+append-only task record and artifact-to-blob identity checked. No new local
+Java/Maven/PostgreSQL runtime execution is claimed by this metadata correction.
+All Java, tests and30 registered configuration case identities, inventory hashes,
+ten shards, migrations, API, workflow configuration, authority and budgets remain
+unchanged. Package A remains independently unaccepted and frozen task statuses
+remain unchanged. B/C,598,601..603, frontend, numerical/P3, SITE, deployment and
+release remain separately gated.
+
+Publish with expected-head guard and exact parent/tree/blob/message verification;
+observe exact-SHA Documentation CI startup and STOP. Markdown-only pushes do not
+trigger Full/Fast. No workflow-dispatch tool is connected: owner must run
+**HidraAPI CI** manually on corrected main with verification_mode=development,
+serial_oracle=false, dependency_cache=cached before the strict corrected-SHA
+Full gate can be accepted. Do not change workflows or add source churn to create
+a trigger. Next gate is corrected-SHA Full verification, then independent Package A
+raw-case/catalog evidence review; no Package B execution is selected here.
+
 <a id="hapi-602"></a>
 ## HAPI-602 — Versioned installed-unit/characteristic links
 

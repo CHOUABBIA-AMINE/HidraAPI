@@ -61,4 +61,30 @@ class ManufacturerCharacteristicOperatorQualificationTest {
             new ManufacturerCharacteristicRevisionRequests.Qualify("company-a",null)));
         verifyNoInteractions(port);
     }
+
+    /** A mocked Workflow port is NOT a terminal approval or a native HTTP verification. */
+    @Test void forgedWorkflowReferenceIsNeverPromotedToQualification() {
+        SecurityContextHolder.getContext().setAuthentication(
+            new UsernamePasswordAuthenticationToken("synthetic",null,List.of()));
+        var port=mock(ManufacturerCharacteristicRevisionUseCase.class);
+        when(port.execute(any())).thenThrow(new org.springframework.security.access.AccessDeniedException(
+            "wrong target digest, task or terminal action"));
+        var controller=new ManufacturerCharacteristicRevisionController(port);
+        assertThrows(org.springframework.security.access.AccessDeniedException.class,()->
+            controller.qualify("m-source","v1",suppliedApproval()));
+        verify(port).execute(any());
+    }
+
+    @Test void incompleteWorkflowReferenceIsRejectedBeforeOwnerInvocation() {
+        SecurityContextHolder.getContext().setAuthentication(
+            new UsernamePasswordAuthenticationToken("synthetic",null,List.of()));
+        var port=mock(ManufacturerCharacteristicRevisionUseCase.class);
+        var controller=new ManufacturerCharacteristicRevisionController(port);
+        var incomplete=new ManufacturerCharacteristicRevisionRequests.Qualify("company-a",
+            new ManufacturerCharacteristicRevisionRequests.Approval(
+                "definition-a",1,"manufacturer-revision","QUALIFY",null,"task-a","action-a"));
+        assertThrows(NullPointerException.class,()->
+            controller.qualify("m-source","v1",incomplete));
+        verifyNoInteractions(port);
+    }
 }

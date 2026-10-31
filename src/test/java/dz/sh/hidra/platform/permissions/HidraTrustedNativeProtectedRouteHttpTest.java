@@ -161,4 +161,37 @@ class HidraTrustedNativeProtectedRouteHttpTest {
                 mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(TRUSTED)));
         assertEquals(0, owner.calls.get());
     }
+
+    @Test void realManufacturerTupleRegistryRejectsWrongVerbAndSiblingPattern() throws Exception {
+        // The actual compiled manufacturer methods (not an annotation or name alias) are
+        // independently reconciled by Platform's startup validator.
+        var registry=new HidraTrustedNativeProtectedRouteRegistry();
+        var routes=registry.candidates();
+        assertEquals(5,routes.size());
+        var expected=java.util.Set.of(
+            "PUT /api/v1/simulation/manufacturer-characteristics/{sourceId}/revisions/{revisionId}",
+            "GET /api/v1/simulation/manufacturer-characteristics/{sourceId}/revisions/{revisionId}",
+            "GET /api/v1/simulation/manufacturer-characteristics/{sourceId}/history",
+            "GET /api/v1/simulation/manufacturer-characteristics/{sourceId}/revisions/{revisionId}/certificate",
+            "POST /api/v1/simulation/manufacturer-characteristics/{sourceId}/revisions/{revisionId}/qualification");
+        assertEquals(expected,routes.stream().map(r->r.verb()+" "+r.pattern())
+            .collect(java.util.stream.Collectors.toSet()));
+        var controller=new dz.sh.hidra.modules.simulation.api.rest.controller
+            .ManufacturerCharacteristicRevisionController(org.mockito.Mockito.mock(
+                dz.sh.hidra.modules.simulation.application.port.in
+                    .ManufacturerCharacteristicRevisionUseCase.class));
+        var actual=new RequestMappingHandlerMapping();
+        for(var entry:routes) {
+            actual.registerMapping(RequestMappingInfo.paths(entry.pattern())
+                .methods(RequestMethod.valueOf(entry.verb())).build(),controller,entry.method());
+        }
+        new HidraTrustedNativeProtectedRouteStartupValidator(actual,registry).validate();
+        for(var entry:routes) {
+            var handler=new org.springframework.web.method.HandlerMethod(controller,entry.method());
+            assertTrue(registry.isTrusted(handler,entry.verb(),entry.pattern()));
+            assertTrue(!registry.isTrusted(handler,
+                entry.verb().equals("GET")?"PUT":"GET",entry.pattern()));
+            assertTrue(!registry.isTrusted(handler,entry.verb(),entry.pattern()+"/sibling"));
+        }
+    }
 }

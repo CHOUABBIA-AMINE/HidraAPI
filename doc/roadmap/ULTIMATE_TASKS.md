@@ -391,6 +391,16 @@ records the actual successful generation-step artifact and bounded canonical
 snapshot/manifest repair; full exact-repair-SHA CI, dictionary and compatibility
 remain REQUIRED. HAPI-601 stays NOT_ACCEPTED; no HAPI-602/P3 selection.
 
+HAPI-601 owner-admitted native HTTP qualification implementation (2026-10-31):
+The separately approved one-commit test-only stage is recorded in
+[HPS-007](TASKS_HPS-007.md#hapi-601) with nine real LOCAL native/Flyway/
+PostgreSQL HTTP cases, source-verified controller/Workflow-boundary/Platform
+regressions, and a 14-shard exact inventory refresh. LDAP/OIDC, independent
+terminal Workflow, supplier certificate and full HTTP negative cases remain
+formal HAPI-601 acceptance gaps. CI-first submission is NOT final acceptance;
+HAPI-602 and P3 remain unselected.
+
+
 
 HAPI-601 Package C manufacturer HTTP/security qualification **registration only**:
 owner explicitly approved defining the bounded proof amendment after exact

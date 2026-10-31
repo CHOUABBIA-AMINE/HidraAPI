@@ -7145,7 +7145,9 @@
       "cases": [
         "allFiveMethodsRequireIndependentPlatformMarker",
         "declaredReadOperationReturnsOnlyCommittedCertificateFreeResult",
+        "deniedDocumentaryReadDisclosesNeitherSourceNorItsExistence",
         "historyUsesOnlyProtectedPagedUseCaseAndNeverReturnsTotalCount",
+        "independentlyRoutedCertificateCannotBorrowReadRevisionOperation",
         "saveRejectsMismatchedPathBeforeOwnerInvocation",
         "unauthenticatedHandlerDoesNotReadSource"
       ],
@@ -7155,7 +7157,7 @@
       "lane": "unit-architecture",
       "owner": "simulation",
       "path": "src/test/java/dz/sh/hidra/modules/simulation/api/rest/controller/ManufacturerCharacteristicRevisionControllerTest.java",
-      "source_sha256": "4abb43cc491e0e372b89cb11fe113fd79867773834fff0f9bf54c6ffeada22a7",
+      "source_sha256": "d99b549f14f17d20582c0fa728d96d5ebee3d5d49b985540fe89f6c5ebadc892",
       "supports": []
     },
     {
@@ -7652,6 +7654,28 @@
       "supports": []
     },
     {
+      "class": "dz.sh.hidra.modules.simulation.infrastructure.persistence.ManufacturerCharacteristicNativeHttpPostgresIntegrationTest",
+      "path": "src/test/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/ManufacturerCharacteristicNativeHttpPostgresIntegrationTest.java",
+      "owner": "simulation",
+      "lane": "postgres-integration",
+      "fast": false,
+      "baseline_seconds": 0,
+      "dependency_reason": "HAPI-601 owner-admitted configured native LOCAL HTTP/Identity/Party/Workflow and real Flyway/PostgreSQL security qualification; Docker required; unmeasured new class",
+      "supports": [],
+      "cases": [
+        "absentAndMalformedBearerCannotReadOrWriteSource",
+        "certificateRequiresItsOwnCurrentPermissionEvenAfterRevisionRead",
+        "currentPartySuspensionBlocksPreviouslyAuthorizedRevision",
+        "foreignSourceAndWrongHttpVerbDoNotInheritNativeAuthority",
+        "historyCursorRejectsTamperingAndQualificationCannotInventWorkflow",
+        "immutableReplayOfSameIssuerTokenDoesNotAppendAnotherRevision",
+        "missingSourceScopeAndExplicitDenyPrecedeExistenceAndReplay",
+        "realLocalBearerPersistsCanonicalSourceAndReadsThroughConfiguredFilters",
+        "replayAfterSessionRevocationCannotMutatePreviouslyCommittedSource"
+      ],
+      "source_sha256": "5526cb1104b47ff8607e35584c715d49975190962388c27db3e8bb94ac21157b"
+    },
+    {
       "baseline_seconds": 0,
       "cases": [
         "canonicalSourceManufacturerMismatchFailsBeforeAnyHistoryPage",
@@ -7750,6 +7774,8 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "forgedWorkflowReferenceIsNeverPromotedToQualification",
+        "incompleteWorkflowReferenceIsRejectedBeforeOwnerInvocation",
         "missingApprovalRefusedBeforeNativeOwnerInvocation",
         "qualificationPassesExactWorkflowEvidenceAndNeverClaimsEngineCapability",
         "unauthenticatedQualificationNeverInvokesWorkflowOwner"
@@ -7760,7 +7786,7 @@
       "lane": "unit-architecture",
       "owner": "simulation",
       "path": "src/test/java/dz/sh/hidra/modules/simulation/qualification/ManufacturerCharacteristicOperatorQualificationTest.java",
-      "source_sha256": "44339b0a7c0770ce01e432507a907f70d3e37453b9b2317f8e091cf024a3d3d8",
+      "source_sha256": "9d731933a7eb8a35098645fe3b6c4f0e0fbf42de4ac9555dbadfed7d26e6445d",
       "supports": []
     },
     {
@@ -10743,6 +10769,7 @@
         "exactNativeControllerRouteDelegatesWithoutGenericPermission",
         "ordinaryPermissionsStillGovernUnregisteredRoutes",
         "productionManufacturerRegistryDoesNotDelegateSyntheticController",
+        "realManufacturerTupleRegistryRejectsWrongVerbAndSiblingPattern",
         "wrongVerbCannotReuseNativeDelegation"
       ],
       "class": "dz.sh.hidra.platform.permissions.HidraTrustedNativeProtectedRouteHttpTest",
@@ -10751,7 +10778,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java",
-      "source_sha256": "c73ff45a7b3709059882795793c7deda3ec2f07eaa7aa0e8793c287a387ffa90",
+      "source_sha256": "813a384d1139ac4c0d8a377e7721a3437884c5ebbd4b131519475581c668ae85",
       "supports": []
     },
     {

@@ -101,4 +101,45 @@ class ManufacturerCharacteristicRevisionControllerTest {
                     dz.sh.hidra.platform.permissions.NativeProtectedOperation.class));
         }
     }
+
+    /** Standalone MVC checks transport/error shape only, not native Identity admission. */
+    @Test void deniedDocumentaryReadDisclosesNeitherSourceNorItsExistence() throws Exception {
+        authenticated();
+        var port=mock(ManufacturerCharacteristicRevisionUseCase.class);
+        when(port.execute(any())).thenThrow(
+            new org.springframework.security.access.AccessDeniedException("private manufacturer m-source"));
+        var mvc=MockMvcBuilders.standaloneSetup(new ManufacturerCharacteristicRevisionController(port))
+            .setControllerAdvice(new ManufacturerCharacteristicRevisionApiExceptionHandler()).build();
+        var response=mvc.perform(MockMvcRequestBuilders.get(ROOT+"/revisions/v1")
+            .param("companyPartyId","company-a")).andReturn().getResponse();
+        assertEquals(403,response.getStatus());
+        assertTrue(response.getContentAsString().contains("DENIED"));
+        assertFalse(response.getContentAsString().contains("private manufacturer"));
+        assertFalse(response.getContentAsString().contains("m-source"));
+        verify(port).execute(any());
+    }
+
+    @Test void independentlyRoutedCertificateCannotBorrowReadRevisionOperation() throws Exception {
+        authenticated();
+        var port=mock(ManufacturerCharacteristicRevisionUseCase.class);
+        when(port.execute(any())).thenAnswer(call->{
+            ManufacturerCharacteristicRevisionUseCase.Command command=call.getArgument(0);
+            assertEquals(ManufacturerCharacteristicRevisionUseCase.Operation.READ_CERTIFICATE,
+                command.operation());
+            assertEquals("company-a",command.companyPartyId());
+            assertEquals("v1",command.revisionId());
+            assertNull(command.approval());
+            assertNull(command.suppliedRevision());
+            return new ManufacturerCharacteristicRevisionUseCase.Result(command.operation(),
+                "company-a","m-source","v1",SHA,source(),List.of(),AT,false);
+        });
+        var mvc=MockMvcBuilders.standaloneSetup(new ManufacturerCharacteristicRevisionController(port))
+            .setControllerAdvice(new ManufacturerCharacteristicRevisionApiExceptionHandler()).build();
+        var response=mvc.perform(MockMvcRequestBuilders.get(ROOT+"/revisions/v1/certificate")
+            .param("companyPartyId","company-a")).andReturn().getResponse();
+        assertEquals(200,response.getStatus());
+        assertFalse(response.getContentAsString().contains("issuerReference"));
+        verify(port).execute(any());
+        verify(port,never()).pageHistory(any());
+    }
 }

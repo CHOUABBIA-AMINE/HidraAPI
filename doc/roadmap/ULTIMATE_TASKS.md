@@ -260,6 +260,16 @@ contracts remain unchanged. See [HPS-007](TASKS_HPS-007.md#hapi-601) for
 source-backed gaps and the platform-first, separately review-gated sequence.
 No platform implementation, HAPI-601 pagination code or Package C is selected.
 
+HPS-023 platform pagination policy — owner-directed **source-backed preflight**
+is recorded in [HPS-023](TASKS_HPS-023.md#hapi-698) as
+`PENDING_BASELINE_APPROVAL`, separately from completed HAPI-698/KER-009.
+It proposes startup-bound application-property pagination defaults/limits in
+platform configuration, without changing kernel contracts, current Workbench/
+Telemetry/Organization behavior or protected HAPI-601 history. The candidate
+implementation message, exact paths, compatibility/security gates and owner
+adoption requirement are documented in the owning phase. No runtime task,
+new ID or change to ROADMAP/PHASES statuses is selected.
+
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent
 [HAPI-436](TASKS_HPS-024.md#hapi-436) are VERIFIED/COMPLETED within the accepted

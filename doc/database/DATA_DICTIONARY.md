@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `796a3ef065169f9d301dd60bc050f3fe4366c80d`
+Captured source SHA: `13006bcff8d6a6b3de0268f763932fd1ab4ef558`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `791c6a17869ec91f3f5087bae3fdc9127b84377fab41ec6b02c6a02d05c00403`.
-Migrations: 190; JPA mappings: 470; catalog relations: 536; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `d3de75e854683f232338941acefef95792b9d1d812817755afddaf9755f0b777`.
+Migrations: 192; JPA mappings: 470; catalog relations: 539; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -19256,6 +19256,7 @@ Owner-issued monotone live/tombstone witness for protected ACTIVE Party eligibil
 - Migration mention (not inferred introduction): [V20261021_003__organization_appointment_ownership_lifecycle.sql](../../src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql)
 - Migration mention (not inferred introduction): [V20261023_001__organization_appointment_final_write_guard.sql](../../src/main/resources/db/migration/V20261023_001__organization_appointment_final_write_guard.sql)
 - Migration mention (not inferred introduction): [V20261023_003__organization_appointment_fingerprint_visibility.sql](../../src/main/resources/db/migration/V20261023_003__organization_appointment_fingerprint_visibility.sql)
+- Migration mention (not inferred introduction): [V20261030_001__party_manufacturer_source_authorizations.sql](../../src/main/resources/db/migration/V20261030_001__party_manufacturer_source_authorizations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -19387,6 +19388,7 @@ Persisted ManufacturerProfileJpaEntity state; semantic authority remains with pa
 - Migration mention (not inferred introduction): [V20260611_003__create_party_tables.sql](../../src/main/resources/db/migration/V20260611_003__create_party_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261028_003__party_installed_unit_manufacturer_evidence_owner_lock.sql](../../src/main/resources/db/migration/V20261028_003__party_installed_unit_manufacturer_evidence_owner_lock.sql)
+- Migration mention (not inferred introduction): [V20261030_001__party_manufacturer_source_authorizations.sql](../../src/main/resources/db/migration/V20261030_001__party_manufacturer_source_authorizations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -19420,6 +19422,58 @@ Persisted ManufacturerProfileJpaEntity state; semantic authority remains with pa
 #### Triggers
 
 None captured in this catalog category.
+
+### public.hidra_party_manufacturer_source_authorization
+
+Owner: **party**; relation kind: `r`.
+
+Party-owned explicit current company-to-manufacturer and exact model-scoped grant with revocation history; not implicit manufacturer role, product certification or Identity authorization.
+
+- Evidence: [V20261030_001__party_manufacturer_source_authorizations.sql](../../src/main/resources/db/migration/V20261030_001__party_manufacturer_source_authorizations.sql)
+- Evidence: [JdbcSimulationManufacturerEvidenceAdapter.java](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JdbcSimulationManufacturerEvidenceAdapter.java)
+- Migration mention (not inferred introduction): [V20261030_001__party_manufacturer_source_authorizations.sql](../../src/main/resources/db/migration/V20261030_001__party_manufacturer_source_authorizations.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| authorization_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| manufacturer_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| manufacturer_model_reference | character varying(240) | False | None; identity=; generated= | No current mapped Java column | — |
+| authorization_status | character varying(16) | False | None; identity=; generated= | No current mapped Java column | — |
+| valid_from | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| valid_until | timestamp with time zone | True | None; identity=; generated= | No current mapped Java column | — |
+| revoked_at | timestamp with time zone | True | None; identity=; generated= | No current mapped Java column | — |
+| generation | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| created_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| updated_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `ck_party_manufacturer_authorization_reference`: CHECK (btrim(authorization_id::text) = authorization_id::text AND length(authorization_id::text) &gt; 0 AND btrim(manufacturer_model_reference::text) = manufacturer_model_reference::text AND length(manufacturer_model_reference::text) &gt; 0 AND (valid_until IS NULL OR valid_until &gt; valid_from) AND updated_at &gt;= created_at AND (authorization_status::text = 'REVOKED'::text) = (revoked_at IS NOT NULL) AND (revoked_at IS NULL OR revoked_at &gt;= created_at))
+  - Catalog attributes: {"columns": ["authorization_id", "manufacturer_model_reference", "valid_until", "valid_from", "updated_at", "created_at", "authorization_status", "revoked_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_party_manufacturer_source_auth_authorization_status_check`: CHECK (authorization_status::text = ANY (ARRAY['ACTIVE'::character varying, 'REVOKED'::character varying, 'EXPIRED'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["authorization_status"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_party_manufacturer_source_auth_manufacturer_party_id_fkey`: FOREIGN KEY (manufacturer_party_id) REFERENCES hidra_party_party(id)
+  - Catalog attributes: {"columns": ["manufacturer_party_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_party_party"}, "type": "f", "validated": true}
+- `hidra_party_manufacturer_source_authoriza_company_party_id_fkey`: FOREIGN KEY (company_party_id) REFERENCES hidra_party_party(id)
+  - Catalog attributes: {"columns": ["company_party_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_party_party"}, "type": "f", "validated": true}
+- `hidra_party_manufacturer_source_authorization_generation_check`: CHECK (generation &gt; 0)
+  - Catalog attributes: {"columns": ["generation"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_party_manufacturer_source_authorization_pkey`: PRIMARY KEY (authorization_id)
+  - Catalog attributes: {"columns": ["authorization_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `hidra_party_manufacturer_source_authorization_pkey`: CREATE UNIQUE INDEX hidra_party_manufacturer_source_authorization_pkey ON public.hidra_party_manufacturer_source_authorization USING btree (authorization_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `uq_party_manufacturer_active_company_model`: CREATE UNIQUE INDEX uq_party_manufacturer_active_company_model ON public.hidra_party_manufacturer_source_authorization USING btree (company_party_id, manufacturer_party_id, manufacturer_model_reference) WHERE (((authorization_status)::text = 'ACTIVE'::text) AND (revoked_at IS NULL))
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `tr_party_manufacturer_authorization_guard`: CREATE TRIGGER tr_party_manufacturer_authorization_guard BEFORE DELETE OR UPDATE ON hidra_party_manufacturer_source_authorization FOR EACH ROW EXECUTE FUNCTION hidra_party_manufacturer_authorization_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_party_manufacturer_authorization_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_party_manufacturer_authorization_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    IF TG_OP='DELETE' THEN<br>       RAISE EXCEPTION 'Manufacturer authorization deletion prohibited' USING ERRCODE='42501';<br>    END IF;<br>    IF TG_OP='UPDATE' THEN<br>        IF (NEW.authorization_id,NEW.company_party_id,NEW.manufacturer_party_id,<br>            NEW.manufacturer_model_reference,NEW.valid_from,NEW.created_at)<br>           IS DISTINCT FROM<br>           (OLD.authorization_id,OLD.company_party_id,OLD.manufacturer_party_id,<br>            OLD.manufacturer_model_reference,OLD.valid_from,OLD.created_at)<br>           OR NEW.generation&lt;=OLD.generation<br>           OR OLD.authorization_status&lt;&gt;'ACTIVE'<br>           OR (NEW.authorization_status='ACTIVE' AND NEW.revoked_at IS NOT NULL)<br>        THEN RAISE EXCEPTION 'Manufacturer authorization identity/history immutable' USING ERRCODE='42501'; END IF;<br>    END IF;<br>    RETURN NEW;<br>END;<br>$function$<br>
 
 ### public.hidra_party_operator_profile
 
@@ -19580,6 +19634,7 @@ Persisted PartyJpaEntity state; semantic authority remains with party.
 - Migration mention (not inferred introduction): [V20261023_002__organization_appointment_final_guard_clock_scope.sql](../../src/main/resources/db/migration/V20261023_002__organization_appointment_final_guard_clock_scope.sql)
 - Migration mention (not inferred introduction): [V20261023_003__organization_appointment_fingerprint_visibility.sql](../../src/main/resources/db/migration/V20261023_003__organization_appointment_fingerprint_visibility.sql)
 - Migration mention (not inferred introduction): [V20261028_003__party_installed_unit_manufacturer_evidence_owner_lock.sql](../../src/main/resources/db/migration/V20261028_003__party_installed_unit_manufacturer_evidence_owner_lock.sql)
+- Migration mention (not inferred introduction): [V20261030_001__party_manufacturer_source_authorizations.sql](../../src/main/resources/db/migration/V20261030_001__party_manufacturer_source_authorizations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -19830,6 +19885,7 @@ Persisted PartyRoleJpaEntity state; semantic authority remains with party.
 - Migration mention (not inferred introduction): [V20260611_003__create_party_tables.sql](../../src/main/resources/db/migration/V20260611_003__create_party_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261028_003__party_installed_unit_manufacturer_evidence_owner_lock.sql](../../src/main/resources/db/migration/V20261028_003__party_installed_unit_manufacturer_evidence_owner_lock.sql)
+- Migration mention (not inferred introduction): [V20261030_001__party_manufacturer_source_authorizations.sql](../../src/main/resources/db/migration/V20261030_001__party_manufacturer_source_authorizations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -19874,6 +19930,7 @@ Persisted PartyRoleAssignmentJpaEntity state; semantic authority remains with pa
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261004_041__hmr_041_party_party_role_assignment.sql](../../src/main/resources/db/migration/V20261004_041__hmr_041_party_party_role_assignment.sql)
 - Migration mention (not inferred introduction): [V20261028_003__party_installed_unit_manufacturer_evidence_owner_lock.sql](../../src/main/resources/db/migration/V20261028_003__party_installed_unit_manufacturer_evidence_owner_lock.sql)
+- Migration mention (not inferred introduction): [V20261030_001__party_manufacturer_source_authorizations.sql](../../src/main/resources/db/migration/V20261030_001__party_manufacturer_source_authorizations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -24710,6 +24767,145 @@ Persisted SimulationInputSnapshotJpaEntity state; semantic authority remains wit
 
 None captured in this catalog category.
 
+### public.hidra_simulation_manufacturer_characteristic_qualification
+
+Owner: **simulation**; relation kind: `r`.
+
+Simulation-owned append-only qualification receipt bound to an immutable manufacturer revision and exact terminal Workflow evidence; historical approval alone never grants current Party/Identity authority.
+
+- Evidence: [V20261030_002__simulation_manufacturer_characteristic_sources.sql](../../src/main/resources/db/migration/V20261030_002__simulation_manufacturer_characteristic_sources.sql)
+- Evidence: [JdbcManufacturerCharacteristicRevisionRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/JdbcManufacturerCharacteristicRevisionRepositoryAdapter.java)
+- Migration mention (not inferred introduction): [V20261030_002__simulation_manufacturer_characteristic_sources.sql](../../src/main/resources/db/migration/V20261030_002__simulation_manufacturer_characteristic_sources.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| qualification_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| source_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| revision_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| source_sha256 | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| workflow_target_digest | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| workflow_instance_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| workflow_task_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| workflow_action_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| approver_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| approver_display_name | character varying(160) | False | None; identity=; generated= | No current mapped Java column | — |
+| approved_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| qualified_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| qualifying_user_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| operation_binding_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| backend_pid | integer | False | None; identity=; generated= | No current mapped Java column | — |
+| transaction_id | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| database_role | name | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `ck_sim_manufacturer_qualification`: CHECK (source_sha256 ~ '^[0-9a-f]{64}$'::text AND workflow_target_digest ~ '^[0-9a-f]{64}$'::text AND qualified_at &gt;= approved_at AND char_length(approver_id::text) &gt; 0 AND char_length(approver_display_name::text) &gt; 0)
+  - Catalog attributes: {"columns": ["source_sha256", "workflow_target_digest", "qualified_at", "approved_at", "approver_id", "approver_display_name"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `fk_sim_manufacturer_qualification_revision`: FOREIGN KEY (company_party_id, source_id, revision_id) REFERENCES hidra_simulation_manufacturer_characteristic_revision(company_party_id, source_id, revision_id)
+  - Catalog attributes: {"columns": ["company_party_id", "source_id", "revision_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["company_party_id", "source_id", "revision_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_simulation_manufacturer_characteristic_revision"}, "type": "f", "validated": true}
+- `hidra_simulation_manufacturer_characteris_transaction_id_check1`: CHECK (transaction_id &gt; 0)
+  - Catalog attributes: {"columns": ["transaction_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_manufacturer_characteristic_backend_pid_check1`: CHECK (backend_pid &gt; 0)
+  - Catalog attributes: {"columns": ["backend_pid"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_manufacturer_characteristic_qualification_pkey`: PRIMARY KEY (qualification_id)
+  - Catalog attributes: {"columns": ["qualification_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `uq_sim_manufacturer_one_qualification`: UNIQUE (company_party_id, source_id, revision_id)
+  - Catalog attributes: {"columns": ["company_party_id", "source_id", "revision_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `uq_sim_manufacturer_one_workflow_action`: UNIQUE (workflow_action_id)
+  - Catalog attributes: {"columns": ["workflow_action_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+
+#### Indexes
+
+- `hidra_simulation_manufacturer_characteristic_qualification_pkey`: CREATE UNIQUE INDEX hidra_simulation_manufacturer_characteristic_qualification_pkey ON public.hidra_simulation_manufacturer_characteristic_qualification USING btree (qualification_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `uq_sim_manufacturer_one_qualification`: CREATE UNIQUE INDEX uq_sim_manufacturer_one_qualification ON public.hidra_simulation_manufacturer_characteristic_qualification USING btree (company_party_id, source_id, revision_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `uq_sim_manufacturer_one_workflow_action`: CREATE UNIQUE INDEX uq_sim_manufacturer_one_workflow_action ON public.hidra_simulation_manufacturer_characteristic_qualification USING btree (workflow_action_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `trg_sim_manufacturer_qualification_immutable`: CREATE TRIGGER trg_sim_manufacturer_qualification_immutable BEFORE DELETE OR UPDATE ON hidra_simulation_manufacturer_characteristic_qualification FOR EACH ROW EXECUTE FUNCTION hidra_simulation_manufacturer_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_simulation_manufacturer_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_simulation_manufacturer_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN RAISE EXCEPTION 'Manufacturer characteristic evidence is immutable' USING ERRCODE='42501'; END;<br>$function$<br>
+- `trg_sim_manufacturer_qualification_origin`: CREATE TRIGGER trg_sim_manufacturer_qualification_origin BEFORE INSERT ON hidra_simulation_manufacturer_characteristic_qualification FOR EACH ROW EXECUTE FUNCTION hidra_simulation_manufacturer_insert_origin()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_simulation_manufacturer_insert_origin()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_simulation_manufacturer_insert_origin()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br> IF NEW.backend_pid IS DISTINCT FROM pg_catalog.pg_backend_pid()<br>    OR NEW.transaction_id IS DISTINCT FROM pg_catalog.txid_current()<br>    OR NEW.database_role IS DISTINCT FROM session_user<br>    OR pg_catalog.current_setting('transaction_isolation')&lt;&gt;'read committed'<br>    OR pg_catalog.current_setting('transaction_read_only')&lt;&gt;'off'<br>    OR pg_catalog.current_setting('session_replication_role')&lt;&gt;'origin'<br>    THEN RAISE EXCEPTION 'Manufacturer original transaction witness invalid' USING ERRCODE='42501'; END IF;<br> IF TG_TABLE_NAME='hidra_simulation_manufacturer_characteristic_revision' THEN<br>    IF pg_catalog.encode(pg_catalog.sha256(NEW.canonical_payload),'hex')&lt;&gt;NEW.payload_sha256 THEN<br>       RAISE EXCEPTION 'Manufacturer canonical digest mismatch' USING ERRCODE='23514'; END IF;<br> ELSE<br>    IF NOT EXISTS(<br>      SELECT 1 FROM public.hidra_simulation_manufacturer_characteristic_revision r<br>      WHERE r.company_party_id=NEW.company_party_id AND r.source_id=NEW.source_id<br>      AND r.revision_id=NEW.revision_id AND r.payload_sha256=NEW.source_sha256<br>      AND r.workflow_target_digest=NEW.workflow_target_digest<br>      AND NEW.qualified_at&gt;=r.inserted_at<br>    ) THEN RAISE EXCEPTION 'Manufacturer qualification/source mismatch' USING ERRCODE='23514'; END IF;<br> END IF;<br> RETURN NEW;<br>END;<br>$function$<br>
+- `trg_sim_manufacturer_qualification_truncate`: CREATE TRIGGER trg_sim_manufacturer_qualification_truncate BEFORE TRUNCATE ON hidra_simulation_manufacturer_characteristic_qualification FOR EACH STATEMENT EXECUTE FUNCTION hidra_simulation_manufacturer_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_simulation_manufacturer_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_simulation_manufacturer_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN RAISE EXCEPTION 'Manufacturer characteristic evidence is immutable' USING ERRCODE='42501'; END;<br>$function$<br>
+
+### public.hidra_simulation_manufacturer_characteristic_revision
+
+Owner: **simulation**; relation kind: `r`.
+
+Simulation-owned immutable canonical manufacturer characteristic source with digest, declared engineering applicability and original transaction provenance; no numerical solver or operational certification.
+
+- Evidence: [V20261030_002__simulation_manufacturer_characteristic_sources.sql](../../src/main/resources/db/migration/V20261030_002__simulation_manufacturer_characteristic_sources.sql)
+- Evidence: [JdbcManufacturerCharacteristicRevisionRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/JdbcManufacturerCharacteristicRevisionRepositoryAdapter.java)
+- Evidence: [ManufacturerCharacteristicRevision.java](../../src/main/java/dz/sh/hidra/modules/simulation/domain/model/ManufacturerCharacteristicRevision.java)
+- Migration mention (not inferred introduction): [V20261030_002__simulation_manufacturer_characteristic_sources.sql](../../src/main/resources/db/migration/V20261030_002__simulation_manufacturer_characteristic_sources.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| source_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| revision_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| manufacturer_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| manufacturer_model_reference | character varying(240) | False | None; identity=; generated= | No current mapped Java column | — |
+| payload_format | character varying(80) | False | 'HIDRA_MANUFACTURER_CHARACTERISTIC_SOURCE_V1'::character varying; identity=; generated= | No current mapped Java column | — |
+| canonical_payload | bytea | False | None; identity=; generated= | No current mapped Java column | — |
+| payload_sha256 | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| workflow_target_digest | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| document_sha256 | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| source_recorded_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| effective_from | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| effective_until | timestamp with time zone | True | None; identity=; generated= | No current mapped Java column | — |
+| source_origin | character varying(32) | False | None; identity=; generated= | No current mapped Java column | — |
+| creator_user_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| operation_binding_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| session_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| backend_pid | integer | False | None; identity=; generated= | No current mapped Java column | — |
+| transaction_id | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| database_role | name | False | None; identity=; generated= | No current mapped Java column | — |
+| inserted_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `ck_sim_manufacturer_characteristic_integrity`: CHECK (payload_format::text = 'HIDRA_MANUFACTURER_CHARACTERISTIC_SOURCE_V1'::text AND octet_length(canonical_payload) &gt;= 1 AND octet_length(canonical_payload) &lt;= 1048576 AND payload_sha256 ~ '^[0-9a-f]{64}$'::text AND workflow_target_digest ~ '^[0-9a-f]{64}$'::text AND document_sha256 ~ '^[0-9a-f]{64}$'::text AND char_length(company_party_id::text) &gt; 0 AND char_length(source_id::text) &gt; 0 AND char_length(revision_id::text) &gt; 0 AND effective_from IS NOT NULL AND (effective_until IS NULL OR effective_until &gt; effective_from) AND source_recorded_at &lt;= inserted_at)
+  - Catalog attributes: {"columns": ["payload_format", "canonical_payload", "payload_sha256", "workflow_target_digest", "document_sha256", "company_party_id", "source_id", "revision_id", "effective_from", "effective_until", "source_recorded_at", "inserted_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_manufacturer_characterist_transaction_id_check`: CHECK (transaction_id &gt; 0)
+  - Catalog attributes: {"columns": ["transaction_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_manufacturer_characteristi_source_origin_check`: CHECK (source_origin::text = ANY (ARRAY['SUPPLIER_DECLARED'::character varying, 'SYNTHETIC'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["source_origin"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_manufacturer_characteristic__backend_pid_check`: CHECK (backend_pid &gt; 0)
+  - Catalog attributes: {"columns": ["backend_pid"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `pk_sim_manufacturer_characteristic_revision`: PRIMARY KEY (company_party_id, source_id, revision_id)
+  - Catalog attributes: {"columns": ["company_party_id", "source_id", "revision_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `uq_sim_manufacturer_characteristic_target`: UNIQUE (workflow_target_digest)
+  - Catalog attributes: {"columns": ["workflow_target_digest"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+
+#### Indexes
+
+- `idx_sim_manufacturer_characteristic_history`: CREATE INDEX idx_sim_manufacturer_characteristic_history ON public.hidra_simulation_manufacturer_characteristic_revision USING btree (company_party_id, source_id, source_recorded_at, revision_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+- `pk_sim_manufacturer_characteristic_revision`: CREATE UNIQUE INDEX pk_sim_manufacturer_characteristic_revision ON public.hidra_simulation_manufacturer_characteristic_revision USING btree (company_party_id, source_id, revision_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `uq_sim_manufacturer_characteristic_target`: CREATE UNIQUE INDEX uq_sim_manufacturer_characteristic_target ON public.hidra_simulation_manufacturer_characteristic_revision USING btree (workflow_target_digest)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `trg_sim_manufacturer_revision_immutable`: CREATE TRIGGER trg_sim_manufacturer_revision_immutable BEFORE DELETE OR UPDATE ON hidra_simulation_manufacturer_characteristic_revision FOR EACH ROW EXECUTE FUNCTION hidra_simulation_manufacturer_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_simulation_manufacturer_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_simulation_manufacturer_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN RAISE EXCEPTION 'Manufacturer characteristic evidence is immutable' USING ERRCODE='42501'; END;<br>$function$<br>
+- `trg_sim_manufacturer_revision_origin`: CREATE TRIGGER trg_sim_manufacturer_revision_origin BEFORE INSERT ON hidra_simulation_manufacturer_characteristic_revision FOR EACH ROW EXECUTE FUNCTION hidra_simulation_manufacturer_insert_origin()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_simulation_manufacturer_insert_origin()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_simulation_manufacturer_insert_origin()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br> IF NEW.backend_pid IS DISTINCT FROM pg_catalog.pg_backend_pid()<br>    OR NEW.transaction_id IS DISTINCT FROM pg_catalog.txid_current()<br>    OR NEW.database_role IS DISTINCT FROM session_user<br>    OR pg_catalog.current_setting('transaction_isolation')&lt;&gt;'read committed'<br>    OR pg_catalog.current_setting('transaction_read_only')&lt;&gt;'off'<br>    OR pg_catalog.current_setting('session_replication_role')&lt;&gt;'origin'<br>    THEN RAISE EXCEPTION 'Manufacturer original transaction witness invalid' USING ERRCODE='42501'; END IF;<br> IF TG_TABLE_NAME='hidra_simulation_manufacturer_characteristic_revision' THEN<br>    IF pg_catalog.encode(pg_catalog.sha256(NEW.canonical_payload),'hex')&lt;&gt;NEW.payload_sha256 THEN<br>       RAISE EXCEPTION 'Manufacturer canonical digest mismatch' USING ERRCODE='23514'; END IF;<br> ELSE<br>    IF NOT EXISTS(<br>      SELECT 1 FROM public.hidra_simulation_manufacturer_characteristic_revision r<br>      WHERE r.company_party_id=NEW.company_party_id AND r.source_id=NEW.source_id<br>      AND r.revision_id=NEW.revision_id AND r.payload_sha256=NEW.source_sha256<br>      AND r.workflow_target_digest=NEW.workflow_target_digest<br>      AND NEW.qualified_at&gt;=r.inserted_at<br>    ) THEN RAISE EXCEPTION 'Manufacturer qualification/source mismatch' USING ERRCODE='23514'; END IF;<br> END IF;<br> RETURN NEW;<br>END;<br>$function$<br>
+- `trg_sim_manufacturer_revision_truncate`: CREATE TRIGGER trg_sim_manufacturer_revision_truncate BEFORE TRUNCATE ON hidra_simulation_manufacturer_characteristic_revision FOR EACH STATEMENT EXECUTE FUNCTION hidra_simulation_manufacturer_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_simulation_manufacturer_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_simulation_manufacturer_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN RAISE EXCEPTION 'Manufacturer characteristic evidence is immutable' USING ERRCODE='42501'; END;<br>$function$<br>
 ### public.hidra_simulation_model
 
 Owner: **simulation**; relation kind: `r`.

@@ -166,10 +166,10 @@ public class RevisionApprovalEvidencePostgresIntegrationTest {
         var result=tx.execute(status->evidence.resolve(request).orElseThrow());
         assertEquals(actor,result.actorId());
         assertEquals(completed,result.actedAt());
-        assertTrue(tx.execute(status->evidence.resolve(new RevisionApprovalEvidenceContract.Request(
-                "simulation","b".repeat(64),definition,1,type,purpose,instance,task,action,Instant.now())).isEmpty()));
-        assertTrue(tx.execute(status->evidence.resolve(new RevisionApprovalEvidenceContract.Request(
-                "simulation",targetDigest,definition,1,type,"wrong-purpose",instance,task,action,Instant.now())).isEmpty()));
+        assertTrue(Boolean.TRUE.equals(tx.execute(status->evidence.resolve(new RevisionApprovalEvidenceContract.Request(
+                "simulation","b".repeat(64),definition,1,type,purpose,instance,task,action,Instant.now())).isEmpty())));
+        assertTrue(Boolean.TRUE.equals(tx.execute(status->evidence.resolve(new RevisionApprovalEvidenceContract.Request(
+                "simulation",targetDigest,definition,1,type,"wrong-purpose",instance,task,action,Instant.now())).isEmpty())));
     }
 
 }

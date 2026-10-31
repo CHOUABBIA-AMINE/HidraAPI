@@ -392,6 +392,22 @@ snapshot/manifest repair; full exact-repair-SHA CI, dictionary and compatibility
 remain REQUIRED. HAPI-601 stays NOT_ACCEPTED; no HAPI-602/P3 selection.
 
 
+HAPI-601 Package C manufacturer HTTP/security qualification **registration only**:
+owner explicitly approved defining the bounded proof amendment after exact
+[Full #1026](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41207778805)
+and [Docs #789](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41207778975)
+SUCCESS at `b71ee1496cdff45a1bd99da3818a2e6920171b6d`. [HPS-007](TASKS_HPS-007.md#hapi-601)
+registers the missing configured-JWT/native Identity/Party/Workflow HTTP-to-real-
+PostgreSQL cases, a proposed 1 CREATE / 7 MODIFY / 0 DELETE **test-only** maximum
+ledger and proposed source message
+`test(simulation): qualify manufacturer native HTTP security`.
+Documentation stage: `docs(simulation): register manufacturer HTTP security qualification amendment`.
+This is **not** final admission or implementation of the candidate test ledger.
+A separate owner signoff and exact-SHA test results remain required; no
+ROADMAP/PHASES status, producer permissions, OpenAPI, migration, HAPI-602,
+numerical P3, SITE or deployment is changed.
+
+
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent
 [HAPI-436](TASKS_HPS-024.md#hapi-436) are VERIFIED/COMPLETED within the accepted

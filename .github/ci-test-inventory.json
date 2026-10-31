@@ -34,7 +34,8 @@
         "stationConfigurationNativeAuthorityStaysPrivateUntilReviewedTopologyIntegration",
         "suppliedFluidExportsStayExactToTheirCoordinator",
         "transactionalOrganizationResponsibilityServicesMustRemainProxyable",
-        "transitionalCrossModuleAllowlistMustRemainExactAndInUse"
+        "transitionalCrossModuleAllowlistMustRemainExactAndInUse",
+        "trustedNativeRoutesCannotBeSelfRegisteredByBusinessModules"
       ],
       "class": "dz.sh.hidra.ArchitectureGuardrailTest",
       "dependency_reason": "Candidate included; ArchUnit/JVM/source",
@@ -42,7 +43,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java",
-      "source_sha256": "a76b13721fa4be69d590e6d8ab13bf277204b55b84235f377aca9af0f54291f3",
+      "source_sha256": "d341500d1c00968876d1a9434c1859850eaa8c149ee23633859b4cf1db47a01f",
       "supports": []
     },
     {
@@ -10674,6 +10675,7 @@
       "cases": [
         "anonymousProtectedRouteStillRequiresPermission",
         "appointmentDelegationRequiresEveryExactControllerMethodVerbAndPattern",
+        "catalogLabelsOnlyIndependentPlatformTrustedNativeTuples",
         "derivesIdentityRoadmapPermissionFormat",
         "engineeringDraftNativeOwnerOnlyHandlesExactSixCompiledOperations",
         "engineeringDraftNeverDelegatesAnonymousOrDifferentController",
@@ -10687,7 +10689,8 @@
         "publicationDelegatesOnlyEightAuthenticatedExactCompiledTuples",
         "stationConfigurationDelegationRequiresFourExactAuthenticatedOwnerTuples",
         "suppliedFluidDelegationRequiresExactAuthenticatedOwnerTuples",
-        "surveyDelegationRequiresExactNativeControllerMethodAndAuthentication"
+        "surveyDelegationRequiresExactNativeControllerMethodAndAuthentication",
+        "trustedPlatformRegistryStillRequiresAuthenticatedExactCompiledTuple"
       ],
       "class": "dz.sh.hidra.platform.permissions.HidraRouteAuthorizationInterceptorTest",
       "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
@@ -10695,7 +10698,66 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptorTest.java",
-      "source_sha256": "a5c8dd22c4dacdbb29e6f400b340a0c0a681b3c5999d8b24d337238f016113f9",
+      "source_sha256": "779ecc01516e7c17fcf9b371432e7a7021b25b50158db70c61c9d4743707276b",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "annotationOnlyControllerCannotSkipGenericPermission",
+        "anonymousRequestIsDeniedBeforeNativeHandler",
+        "exactNativeControllerRouteDelegatesWithoutGenericPermission",
+        "ordinaryPermissionsStillGovernUnregisteredRoutes",
+        "productionEmptyRegistryDoesNotDelegatesSyntheticController",
+        "wrongVerbCannotReuseNativeDelegation"
+      ],
+      "class": "dz.sh.hidra.platform.permissions.HidraTrustedNativeProtectedRouteHttpTest",
+      "dependency_reason": "HPS-023 new synthetic Platform native-route security qualification; pure JVM/standalone MVC, no database",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "platform",
+      "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java",
+      "source_sha256": "9c2e8cbcd4ad6347d83a336bb05d6d0e36551d5ecbe83371e01b16ad2177bafc",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "duplicateAndInvalidEntriesAreRejected",
+        "markedMethodCannotSelfRegister",
+        "matchingRequiresBothVerifiedTupleAndMethodMarker",
+        "productionRegistryStartsEmpty",
+        "trustedDeclarationsAreImmutableAndCannotBeSilentlyReplaced",
+        "unvalidatedTrustedEntryNeverDelegates",
+        "verifiedEntryMatchesExactCompiledSignatureVerbAndRoute"
+      ],
+      "class": "dz.sh.hidra.platform.permissions.HidraTrustedNativeProtectedRouteRegistryTest",
+      "dependency_reason": "HPS-023 new synthetic Platform native-route security qualification; pure JVM/standalone MVC, no database",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "platform",
+      "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java",
+      "source_sha256": "8f3431ba50d25ec67a618358cef9fd40cbc18ce3cbe9d4eca266bdebc205d849",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "exactMappedAnnotatedRouteBecomesTrustedOnlyAfterValidation",
+        "noTrustedProductionEntriesAllowCleanStartup",
+        "rejectedStartupNeverActivatesTrustedDelegation",
+        "startupFailsOnAbsentControllerMapping",
+        "startupFailsOnAmbiguousRegisteredMapping",
+        "startupFailsOnWrongVerbOrPattern",
+        "startupFailsWhenMethodIsNotAnnotated"
+      ],
+      "class": "dz.sh.hidra.platform.permissions.HidraTrustedNativeProtectedRouteStartupValidatorTest",
+      "dependency_reason": "HPS-023 new synthetic Platform native-route security qualification; pure JVM/standalone MVC, no database",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "platform",
+      "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java",
+      "source_sha256": "1dcb3bbf952a3ff11000dc6f89208960b7fb3d96f7e1f0bb5d0f9d76d59679c9",
       "supports": []
     },
     {

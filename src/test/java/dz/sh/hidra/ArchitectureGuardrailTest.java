@@ -884,4 +884,27 @@ class ArchitectureGuardrailTest {
         for(var field:group.getDeclaredFields())assertTrue(java.lang.reflect.Modifier.isPrivate(field.getModifiers()));
         assertFalse(dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipant.InstalledUnitClaimGroup.class.isAssignableFrom(group));
     }
+
+    @Test void trustedNativeRoutesCannotBeSelfRegisteredByBusinessModules() {
+        String prefix="dz.sh.hidra.platform.permissions.";
+        for(String name:Set.of("NativeProtectedOperation",
+                "HidraTrustedNativeProtectedRouteRegistry",
+                "HidraTrustedNativeProtectedRouteStartupValidator")) {
+            var actual=PRODUCTION_CLASSES.get(prefix+name);
+            assertTrue(actual.getDirectDependenciesFromSelf().stream()
+                    .noneMatch(d -> d.getTargetClass().getName().startsWith(MODULE_PREFIX)));
+        }
+        var registry=dz.sh.hidra.platform.permissions.HidraTrustedNativeProtectedRouteRegistry.class;
+        assertEquals(1,registry.getConstructors().length);
+        assertEquals(0,registry.getConstructors()[0].getParameterCount());
+        assertTrue(java.util.Arrays.stream(registry.getMethods())
+                .noneMatch(m -> Set.of("register","authorize","grant","addTrusted").contains(m.getName())));
+        var marker=dz.sh.hidra.platform.permissions.NativeProtectedOperation.class;
+        assertTrue(marker.isAnnotationPresent(java.lang.annotation.Retention.class));
+        assertEquals(java.lang.annotation.RetentionPolicy.RUNTIME,
+                marker.getAnnotation(java.lang.annotation.Retention.class).value());
+        assertEquals(java.util.Set.of(java.lang.annotation.ElementType.METHOD),
+                java.util.Set.of(marker.getAnnotation(java.lang.annotation.Target.class).value()));
+    }
+
 }

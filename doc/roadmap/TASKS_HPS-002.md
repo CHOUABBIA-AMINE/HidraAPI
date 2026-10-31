@@ -10874,4 +10874,28 @@ and strict fail-closed decisions remain. No Identity Java, catalog
 permission, grant, migration, native evaluator or frozen status is
 altered; HPS-023 records the full maximum proposed file/test ledger.
 
+
+### HPS-002 — native Identity authority preserved by trusted Platform route source (2026-10-31; CI-PENDING)
+
+The owner explicitly admitted HPS-023 Platform source at
+`fd60ab6b5f23437dc7c2ed44c01b45bd632645cc` after successful Docs #785.
+Exact expected message:
+`feat(platform): enforce trusted native-protected route registration`. A Platform method marker alone does not
+authorize protected operations: immutable Platform-controlled tuples
+must also match compiled MVC mapping/handler and pass startup
+validation, and the existing interceptor then requires current
+authentication. The Platform registry holds **zero actual
+production tuples**, confers no native grant and does not fetch,
+cache or evaluate Identity authority. Existing nine owner route
+families are retained; every native use case still performs
+its original resource/company authorization, Identity DENY/revocation
+and Party/Workflow protected transaction/final guards. Ordinary
+untrusted routes retain the effective permission resolver. No
+Identity permission codes, role privileges, authentication
+providers, data migration or runtime claim authority have been
+changed by this bounded Platform source. Future real manufacturer
+route registration and business authorization tests remain
+separately gated; no source-linked CI pass or Package C acceptance
+is presumed by this prepublication entry.
+
 <!-- task-register:payload:end -->

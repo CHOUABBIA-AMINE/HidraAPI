@@ -26,6 +26,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -51,17 +52,32 @@ public final class HidraRouteAuthorizationInterceptor implements HandlerIntercep
             "/api/v1/identity/me/permissions"
     );
 
+    private final HidraTrustedNativeProtectedRouteRegistry trustedNativeRoutes;
     private final HidraEffectivePermissionResolver permissionResolver;
     private final HidraRoutePermissionNaming permissionNaming;
     private final boolean securityEnabled;
     private final String authenticationMode;
 
+    /** Retains the historical direct-construction test contract. */
+    public HidraRouteAuthorizationInterceptor(
+            HidraEffectivePermissionResolver permissionResolver,
+            HidraRoutePermissionNaming permissionNaming,
+            boolean securityEnabled,
+            String authenticationMode
+    ) {
+        this(permissionResolver, permissionNaming, securityEnabled, authenticationMode,
+                new HidraTrustedNativeProtectedRouteRegistry());
+    }
+
+    @Autowired
     public HidraRouteAuthorizationInterceptor(
             HidraEffectivePermissionResolver permissionResolver,
             HidraRoutePermissionNaming permissionNaming,
             @Value("${hidra.platform.security.enabled:true}") boolean securityEnabled,
-            @Value("${hidra.platform.security.authentication-mode:jwt}") String authenticationMode
+            @Value("${hidra.platform.security.authentication-mode:jwt}") String authenticationMode,
+            HidraTrustedNativeProtectedRouteRegistry trustedNativeRoutes
     ) {
+        this.trustedNativeRoutes = Objects.requireNonNull(trustedNativeRoutes, "Trusted Platform routes must not be null.");
         this.permissionResolver = Objects.requireNonNull(permissionResolver, "Permission resolver must not be null.");
         this.permissionNaming = Objects.requireNonNull(permissionNaming, "Permission naming must not be null.");
         this.securityEnabled = securityEnabled;
@@ -102,7 +118,8 @@ public final class HidraRouteAuthorizationInterceptor implements HandlerIntercep
                 || isOwnedSuppliedFluidRoute(handlerMethod,routePattern,request.getMethod())
                 || isOwnedProductPublicationRoute(handlerMethod,routePattern,request.getMethod())
                 || isOwnedInstalledUnitLifecycleRoute(handlerMethod,routePattern,request.getMethod())
-                || isOwnedStationConfigurationRoute(handlerMethod,routePattern,request.getMethod())) {
+                || isOwnedStationConfigurationRoute(handlerMethod,routePattern,request.getMethod())
+                || trustedNativeRoutes.isTrusted(handlerMethod, request.getMethod(), routePattern)) {
             if (authentication == null || !authentication.isAuthenticated()
                     || authentication instanceof AnonymousAuthenticationToken) {
                 throw new AccessDeniedException("Engineering draft authentication required.");

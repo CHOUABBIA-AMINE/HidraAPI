@@ -345,6 +345,21 @@ The implementation contract is NOT owner-admitted for code.
 HPS-002 retains Identity authority; HAPI-601 Package C remains
 NOT_IMPLEMENTED/BLOCKED and all frozen status tables stay unchanged.
 
+
+HPS-023 trusted native-protected Platform route source:
+owner explicitly approved the six-CREATE/eight-MODIFY ledger from
+`fd60ab6b5f23437dc7c2ed44c01b45bd632645cc` (Docs #785 SUCCESS). Exact source-stage message:
+`feat(platform): enforce trusted native-protected route registration`. HPS-023 now records the source-backed
+immutable, startup-qualified Platform route registry, empty
+production trust set, interceptor/catalog wiring and 23 new
+synthetic case identities across three new and two updated JVM
+test classes; source-linked CI inventory preserved.
+CI-first source submission is NOT acceptance: actual exact-SHA
+Full/Docs CI, security/architecture/HTTP and applicable PostgreSQL
+checks remain pending. HPS-002 owns native grants/DENY and
+HAPI-601 Package C stays NOT_IMPLEMENTED/BLOCKED; no frozen
+status rows, real controller, privilege or migration changed.
+
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent
 [HAPI-436](TASKS_HPS-024.md#hapi-436) are VERIFIED/COMPLETED within the accepted

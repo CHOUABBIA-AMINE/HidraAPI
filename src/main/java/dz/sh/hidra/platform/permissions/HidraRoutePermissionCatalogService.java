@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -38,13 +39,25 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 @Service
 public final class HidraRoutePermissionCatalogService {
 
+    private final HidraTrustedNativeProtectedRouteRegistry trustedNativeRoutes;
     private final RequestMappingHandlerMapping handlerMapping;
     private final HidraRoutePermissionNaming permissionNaming;
 
+    /** Keeps direct construction compatible with the legacy catalog tests. */
     public HidraRoutePermissionCatalogService(
-            @Qualifier("requestMappingHandlerMapping") RequestMappingHandlerMapping handlerMapping,
+            RequestMappingHandlerMapping handlerMapping,
             HidraRoutePermissionNaming permissionNaming
     ) {
+        this(handlerMapping, permissionNaming, new HidraTrustedNativeProtectedRouteRegistry());
+    }
+
+    @Autowired
+    public HidraRoutePermissionCatalogService(
+            @Qualifier("requestMappingHandlerMapping") RequestMappingHandlerMapping handlerMapping,
+            HidraRoutePermissionNaming permissionNaming,
+            HidraTrustedNativeProtectedRouteRegistry trustedNativeRoutes
+    ) {
+        this.trustedNativeRoutes = Objects.requireNonNull(trustedNativeRoutes, "Trusted Platform routes must not be null.");
         this.handlerMapping = Objects.requireNonNull(handlerMapping, "RequestMappingHandlerMapping must not be null.");
         this.permissionNaming = Objects.requireNonNull(permissionNaming, "HidraRoutePermissionNaming must not be null.");
     }
@@ -89,7 +102,8 @@ public final class HidraRoutePermissionCatalogService {
                 parts.resource(),
                 action,
                 permission,
-                "backend-enforced"
+                trustedNativeRoutes.isTrusted(method, representativeMethod, route)
+                        ? "native-owner-delegated" : "backend-enforced"
         );
     }
 

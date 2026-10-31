@@ -503,4 +503,71 @@ class HidraRouteAuthorizationInterceptorTest {
         }
         org.mockito.Mockito.verifyNoInteractions(useCase);
     }
+
+    static final class TrustedRouteFixture {
+        @NativeProtectedOperation
+        public String write(String id) { return id; }
+
+        @NativeProtectedOperation
+        public String write(Integer id) { return id.toString(); }
+    }
+
+    @Test void trustedPlatformRegistryStillRequiresAuthenticatedExactCompiledTuple() throws Exception {
+        var owner = new TrustedRouteFixture();
+        var method = TrustedRouteFixture.class.getMethod("write", String.class);
+        String route = "/api/v1/platform/protected-synthetic";
+        var declaration = new HidraTrustedNativeProtectedRouteRegistry.Route(
+                TrustedRouteFixture.class, method, "POST", route);
+        var registry = new HidraTrustedNativeProtectedRouteRegistry(List.of(declaration));
+        registry.activate(List.of(declaration));
+        var resolver = org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class);
+        var interceptor = new HidraRouteAuthorizationInterceptor(resolver, naming, true, "jwt", registry);
+        var request = new MockHttpServletRequest("POST", route);
+        request.setAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE, route);
+        var handler = new HandlerMethod(owner, method);
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("fixture", null, List.of()));
+        assertTrue(interceptor.preHandle(request, new MockHttpServletResponse(), handler));
+        org.mockito.Mockito.verifyNoInteractions(resolver);
+        SecurityContextHolder.clearContext();
+        assertThrows(AccessDeniedException.class, () ->
+                interceptor.preHandle(request, new MockHttpServletResponse(), handler));
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("fixture", null));
+        assertThrows(AccessDeniedException.class, () ->
+                interceptor.preHandle(request, new MockHttpServletResponse(), handler));
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("fixture", null, List.of()));
+        var overload = new HandlerMethod(owner, TrustedRouteFixture.class.getMethod("write", Integer.class));
+        assertThrows(AccessDeniedException.class, () ->
+                interceptor.preHandle(request, new MockHttpServletResponse(), overload));
+        request.setMethod("GET");
+        assertThrows(AccessDeniedException.class, () ->
+                interceptor.preHandle(request, new MockHttpServletResponse(), handler));
+        request.setMethod("POST");
+        request.setAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE, route + "/sibling");
+        assertThrows(AccessDeniedException.class, () ->
+                interceptor.preHandle(request, new MockHttpServletResponse(), handler));
+    }
+
+
+
+    @Test void catalogLabelsOnlyIndependentPlatformTrustedNativeTuples() throws Exception {
+        var owned = new TrustedRouteFixture();
+        var method = TrustedRouteFixture.class.getMethod("write", String.class);
+        String route = "/api/v1/platform/protected-synthetic";
+        var declared = new HidraTrustedNativeProtectedRouteRegistry.Route(
+                TrustedRouteFixture.class, method, "POST", route);
+        var registry = new HidraTrustedNativeProtectedRouteRegistry(List.of(declared));
+        var mapping = new org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping();
+        mapping.registerMapping(org.springframework.web.servlet.mvc.method.RequestMappingInfo
+                .paths(route).methods(org.springframework.web.bind.annotation.RequestMethod.POST).build(),
+                owned, method);
+        var catalog = new HidraRoutePermissionCatalogService(mapping, naming, registry);
+        assertEquals("backend-enforced", catalog.routes().get(0).enforcementStatus());
+        new HidraTrustedNativeProtectedRouteStartupValidator(mapping, registry).validate();
+        assertEquals("native-owner-delegated", catalog.routes().get(0).enforcementStatus());
+        assertEquals("platform:protected-synthetic:execute", catalog.routes().get(0).permission());
+        assertEquals(1, catalog.routes().size());
+    }
 }

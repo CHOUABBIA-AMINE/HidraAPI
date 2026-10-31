@@ -36836,4 +36836,107 @@ can change code. HAPI-601 stays NOT_IMPLEMENTED/BLOCKED; its Package C
 and HAPI-602, numerical/P3, SITE, OT control, frontend and deployment
 remain unselected.
 
+
+### HPS-023 — owner-approved trusted native-protected route Platform source submission (2026-10-31; CI-PENDING)
+
+**Admission and exact baseline.** The owner expressly accepted the HPS-023
+six-CREATE/eight-MODIFY/zero-DELETE implementation contract after the
+documentation preflight passed [Docs #785](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41190283382)
+at `fd60ab6b5f23437dc7c2ed44c01b45bd632645cc`. Registered implementation commit message:
+`feat(platform): enforce trusted native-protected route registration`. This is a CI-first **source submission**, not verified
+runtime execution, manufacturer Package C completion, industrial
+acceptance, or an authorization grant. The exact commit SHA and
+GitHub workflow state must be independently verified after publication.
+
+**Platform-owned implementation (all source changes bounded).**
+- CREATE `NativeProtectedOperation` runtime method-intent marker;
+  `HidraTrustedNativeProtectedRouteRegistry` with immutable
+  Platform-controlled compiled class/reflected-method/HTTP-verb/
+  exact-MVC-pattern tuples and a deliberately **empty production
+  initial set**; `HidraTrustedNativeProtectedRouteStartupValidator`
+  that requires the exact method annotation, unique mapped handler,
+  single matching verb/pattern and no colliding mapping before
+  activating the registry. Missing, changed, ambiguous or unmarked
+  entries reject Spring startup; an unvalidated entry never delegates.
+- MODIFY `HidraRouteAuthorizationInterceptor` to use the
+  startup-verified exact intersection after all nine existing native
+  predicates and before ordinary generic permission fallback. Require
+  an authenticated, nonanonymous principal; no claims, generic route
+  permission, module annotation, untrusted mapping or configuration
+  enables native delegation. Preserve existing four-argument
+  constructor for focused legacy unit tests and inject the
+  Platform-owned registry through an annotated five-argument Spring
+  constructor. Do not change security-disabled legacy behavior.
+- MODIFY `HidraRoutePermissionCatalogService`: retain all existing
+  descriptor fields, ordinary generic naming and two-argument
+  construction compatibility; a future verified registered tuple
+  reports `native-owner-delegated` enforcement, not a false
+  generic-permission grant. Zero production entries means no new
+  native-listed HTTP route in this package.
+
+**Source-linked tests and exact inventory disposition.**
+- CREATE `HidraTrustedNativeProtectedRouteRegistryTest`: 7 methods
+  covering empty production default, annotation-only refusal,
+  unvalidated entries, exact overload/class/method/verb/path,
+  immutability, duplicate/invalid declarations and two-factor trust.
+- CREATE `HidraTrustedNativeProtectedRouteStartupValidatorTest`:
+  7 methods covering empty startup, valid mapped activation,
+  missing/stale mappings, verb/pattern drift, missing marker,
+  ambiguity and failure remaining inactive.
+- CREATE `HidraTrustedNativeProtectedRouteHttpTest`: 6 pure JVM
+  standalone MockMvc methods with real compiled Spring MVC handler
+  selection, authenticated and anonymous behavior, native delegation
+  vs generic fallback, wrong HTTP verb and empty production registry.
+  This does not claim a real manufacturer owner controller exists.
+- MODIFY `HidraRouteAuthorizationInterceptorTest` with two exact
+  native trusted tuple/overload/authentication and
+  catalog-versus-grant regressions;
+  retain all 16 existing cases. MODIFY `ArchitectureGuardrailTest`
+  with one Platform ownership/no-public-self-registration guard;
+  retain all 25 previously recorded cases.
+- MODIFY `.github/ci-test-inventory.json` by classifying the
+  three new fast unit/architecture suites and source-linking all
+  23 new test method identities (7+7+6+2+1), preserving all 533
+  previous class classifications, existing scheduling measurements,
+  PostgreSQL lanes and service dependency policy. The three new
+  class baseline durations are 0 (unmeasured), **not a benchmark**.
+  Test execution, pass counts and complete startup/HTTP validity
+  require actual hosted CI evidence; manifest classification alone
+  cannot prove that tests passed.
+
+**Source scope and protected ownership.** No modifications to
+Simulation manufacturer REST DTOs/adapters or coordinator, Identity,
+Party, Workflow, topology, access grants, protected database
+transactions, old Flyway migrations, production settings, the
+WebMvcConfigurer, `RoutePermissionDescriptor`, OpenAPI, CI workflow
+scheduling or frozen ROADMAP/PHASES. Original native owner checks and
+protected Identity/Party/Workflow resource, source and final fences
+remain authoritative. Annotation-only and derived
+`simulation:manufacturer-characteristics:execute` never replace
+`simulation:manufacturer-characteristic:save`. No new genuine
+production tuple is trusted in this stage.
+
+**Validation and remaining acceptance.** Verified from exact
+prepared Git object transformations: all 14 candidate files
+(6 CREATE, 8 MODIFY, 0 DELETE) are within the admitted ledger;
+the original nine owner predicates and REST shape remain in place.
+The test inventory was checked for all 536 class identities and
+sorted ownership with new case names/source SHA-256. SHA-256 helper
+was validated against the standard `abc` vector. Local Java 21
+is present but Maven/PostgreSQL/Docker and a complete checkout are
+not provisioned; no local compilation, JUnit, MockMvc,
+PostgreSQL, OpenAPI or ArchitectureGuardrail **pass** is asserted.
+The required exact-SHA CI source, class-inventory, unit/HTTP/architecture
+and any applicable real non-skipped PostgreSQL evidence must be
+inspected before any implementation/engineering acceptance.
+If the workflow fails, repair that failure first; do not
+automatically implement HAPI-601 Package C. No deployment, SITE,
+external IdP/OT or numerical simulation evidence is claimed.
+
+**Disposition.** HPS-023 Platform implementation is SUBMITTED
+FOR CI (not yet VERIFIED). HAPI-601 Package C stays
+NOT_IMPLEMENTED/BLOCKED until this Platform change receives
+qualified CI evidence and the owning module's separately
+admitted exact REST/native-security tests and contract.
+
 <!-- task-register:payload:end -->

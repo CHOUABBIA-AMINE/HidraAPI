@@ -1006,4 +1006,153 @@ Until this *separate* approval, the implementation stays
 HidraWEB or deployment is selected. Frozen ROADMAP/PHASES statuses
 remain HAPI-601 NOT_IMPLEMENTED/BLOCKED.
 
+### HAPI-601 — owner-approved streamed full-source integrity and bounded history pagination amendment (2026-10-31)
+
+**Owner decisions and exact current evidence.** The owner accepted the previously
+recorded HAPI-601 bounded whole-source authorization, explicitly weaker live-keyset
+consistency, exact development settings (maximum **64 distinct company/manufacturer/
+model subjects per history source**, cursor TTL **15 minutes**, separate
+HMAC-SHA256 current key plus optional previous rotation key), and then expressly
+approved **bounded streaming source-integrity validation** under unchanged protected
+execution limits. These decisions supersede the preceding *unverified* distinct-
+column-only eligibility projection as a sufficient source identity proof.
+Source at `1dc095b0bd7822dce01fdab0cd5adaa4a848da6b` passed [Documentation Validation #781](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41177862392);
+the latest [Full CI #1021](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41173608113)
+passed at its preceding runtime SHA `90f97740f37b2ce3ed41a81dcf1cfc3d35a1ac20`,
+not at this docs HEAD. This is the one **documentation-only amendment**:
+`docs(simulation): admit streamed manufacturer history integrity contract`.
+CREATE/DELETE none; MODIFY only `doc/roadmap/TASKS_HPS-007.md` (append only)
+and `doc/roadmap/ULTIMATE_TASKS.md` (compact pointer). It executes no
+Java, SQL, migration, test or configuration change and proves no runtime behavior.
+
+**Verified threat / invariant.** The stored revision row contains
+`manufacturer_party_id`, `manufacturer_model_reference`, and immutable
+`canonical_payload`. `ManufacturerCharacteristicRevisionCodec.decode`
+validates canonical framing, re-encoding and bounded payload bytes.
+`JdbcManufacturerCharacteristicRevisionRepositoryAdapter.stored(ResultSet)`
+verifies SHA-256, source/revision identities, manufacturer/model columns,
+document digest and payload format against decoded source. The existing
+`V20261030_002__simulation_manufacturer_characteristic_sources.sql`
+BEFORE INSERT trigger verifies the SHA-256 of `canonical_payload` and
+the original PID/XID/role, but it does **not** prove the manufacturer/model
+relational columns agree with decoded canonical bytes. A distinct SQL
+projection of those unverified columns **cannot** replace full source
+validation. The old `history` reader validates all returned rows but
+denies after row 256. The exact immutable schema and Flyway history remain
+unchanged.
+
+**Admitted implementation direction, fail closed.** In each new original
+protected READ COMMITTED transaction, obtain the existing Simulation source
+relation lock and native Identity `LIST_HISTORY` permission **before** any
+scoped source query. Use one deterministic, fully-consumed, ordered streaming
+JDBC traversal of **every** row for the exact company/source; keep a bounded
+driver fetch batch, verify each raw row with the existing canonical
+`stored`/codec checks, and discard its payload immediately rather than
+accumulating `List<Stored>`. Reject any decoding, SHA, source, manufacturer/
+model, canonical document or reference inconsistency, without page, existence,
+cursor, qualification or count disclosure. Maintain an in-memory set of at
+most **64 distinct** canonical (manufacturer party, model reference) pairs;
+the 65th denies the **entire** history, never silently truncates or
+authorizes a first page. Do not conflate 64 *distinct subjects* with a
+64-row history cap. A complete traversal that cannot finish under actual
+SQL and protected execution budgets fails the entire operation; no
+partial-result or distinct-projection fallback is allowed. Source integrity
+is re-proved **for every page request**, including continuation, under the
+same physical locks and original PID/XID/role. No elevated database grant,
+new Party interface or persistent snapshot is part of this stage.
+
+After successful complete source validation, obtain fresh Party owner
+admission/evidence for **all** verified pairs (including off-page
+manufacturers/models), enforce authorization/generation/temporal/role
+rechecks and all final relation fences, and deny if any fails.
+Only after this complete authority proof may a bounded page of canonical
+summary records and optional lookahead be materialized. A single-pass
+streaming implementation may retain at most `effectivePageSize+1`
+summary-only candidates (not canonical payloads) by comparing **persisted
+PostgreSQL** `source_recorded_at` with `revision_id`; it must still
+consume/verify *all* source rows. Protect qualification lookups on
+returned rows with the same physical admission; never expand certificate
+access or introduce total counts. Same timestamp ties use PostgreSQL
+microsecond ordering, not unproven Java nanosecond equality.
+
+The existing `ProtectedTransactionExecutor` manufacturer work budget
+is **500 ms**, with `SET LOCAL statement_timeout='750ms'`; neither value
+is to be weakened. The work budget is checked at executor phases, not a
+guaranteed asynchronous interrupt of an in-flight SQL statement.
+The PostgreSQL statement timeout is per statement, not a promise of
+bounded source cardinality. Bounded per-row payload (codec max
+1,048,576 bytes), **64 subjects**, `effectivePageSize+1` summaries and
+finite SQL/transaction deadlines limit memory and work; do **not**
+claim a workload-independent maximum completion time or that a large
+history is automatically pageable. Existing index
+`(company_party_id,source_id,source_recorded_at,revision_id)` is an
+ordering candidate, not measured cost proof. Source cardinality, SQL
+EXPLAIN/BUFFERS, fetch behavior, lock latency, stream exhaustion
+and >256 synthetic revisions must be tested in actual PostgreSQL.
+If meaningful bounded workload cannot pass without timing/privilege
+relaxations, STOP for a separately accepted owner/schema/index
+prerequisite, not a bypass.
+
+**Cursor/compatibility policies (owner-accepted values, code pending).**
+Reuse HPS-023 opt-in `HidraPaginationProperties.resolveSize` and
+`validateCursor`; manufacturer history uses no hardcoded independent
+50/100 page maximum and does not change existing Workbench/Telemetry/
+Organization behavior. The proposed Simulation-specific token has
+canonical version, company/source, effective page size, persisted ordered
+last key, issued/expiry, key ID and domain-separated HMAC-SHA256,
+verified constant-time against a separate minimum-256-bit key.
+Provision a **dedicated** current key through a restricted environment/
+secret provider; previous key and its ID are optional and verification-
+only until expired. A missing/invalid current key must **disable/reject
+the new paginated operation**, not produce unsigned cursors or block
+unrelated legacy endpoints by an accidental mandatory property
+reference. No built-in production secret, reuse of JWT/Identity keys or
+secret logging. Cursor TTL is 900 seconds; no earlier cross-request
+snapshot, stable count or no-skip-under-backdated-insert assertion
+is introduced. Replayed unexpired cursors require fresh complete
+source authorization. A DB insertion after an earlier page may be
+missed when backdated at/before its ordering key; restarting history
+is the supported way to see the new source.
+
+**Source-scope reconciliation for the already proposed one-commit
+implementation** `feat(simulation): paginate protected manufacturer history`.
+The proposed MODIFY list remains the five Simulation use-case/repository/
+coordinator/service/JDBC paths, three focused existing Simulation tests,
+`src/main/resources/application.properties` only for approved
+opt-in settings and secret references, `.github/ci-test-inventory.json`
+only when actual inventory changes, and this owning phase file.
+Proposed CREATE paths remain the Simulation application cursor port,
+Simulation infrastructure HMAC adapter, and its focused test, as
+recorded immediately above. The existing
+`ManufacturerCharacteristicRevisionCodec.java` needs **no mutation**
+if its bounded canonical decode and `stored` verification can be
+reused; there is no approved Party source change, new Flyway migration,
+new SQL index, compiler-caller expansion, or platform budget change.
+Where enforcing the current 500 ms budget and genuine test evidence
+requires a different path, STOP for an exact scoped amendment.
+No separate B1/B2/B3 split, Package C or downstream implementation
+is admitted by this amendment. The owner's values/algorithm direction
+are approved; the final Java package remains an independently
+validated bounded next stage using its exact registered message.
+
+**Acceptance must demonstrate:** authorized first page plus unauthorized
+manufacturer/model only on a later page denies **everything**; forged
+canonical payload whose SHA matches relational bytes but manufacturer/
+model columns disagree is rejected before Party/page disclosure; 64
+distinct pairs pass subject to real workload limits and 65 deny;
+repeated model across >256 revisions does not silently exceed the
+subject cap; no materialization of full payload history; forged/
+tampered/foreign-company/expired/rotated-key cursor fails; same
+microsecond/tie key sorting; concurrent revoked Party grants;
+backdated/later inserts and repeat cursor under documented live semantics;
+empty/denied uniformity, no protected existence or count leakage;
+success only after physical commit and one final guard, rollback/
+indeterminate commit, no broader SQL/roles or weakened Workflow
+read-before-disclosure; existing SAVE/READ/QUALIFY/CERTIFICATE paths
+unchanged. Real fresh-schema PostgreSQL/JUnit, architecture boundaries,
+key rotation and exact-SHA Java/DB CI are mandatory. A skipped Docker
+test is **not** PostgreSQL proof. ROADMAP/PHASES retain HAPI-601
+NOT_IMPLEMENTED/BLOCKED; HAPI-602, C, P3/SITE, OT and deployment
+remain out of scope.
+
 <!-- task-register:payload:end -->

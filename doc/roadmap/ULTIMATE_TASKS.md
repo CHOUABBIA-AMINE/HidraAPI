@@ -298,6 +298,20 @@ insufficient for this candidate; no implementation or Party/migration
 changes are selected. Next requires explicit exact contract, work-budget,
 signing-key and file-ledger admission. HAPI-601 remains NOT_IMPLEMENTED/BLOCKED.
 
+HAPI-601 source-integrity amendment: owner approved bounded streaming
+verification of *every canonical manufacturer revision* before any
+history page, reconciling the previous unsafe distinct-column-only
+candidate. Approved development settings remain 64 distinct subjects,
+15-minute HMAC-SHA256 cursor and existing 500 ms/750 ms protected
+budgets; incomplete or over-budget source scans deny completely.
+[HPS-007](TASKS_HPS-007.md#hapi-601) records exact fail-closed
+algorithm, existing source-test ledger, genuine PostgreSQL gates and
+separate no-migration posture. This is governance admission of the
+direction, **not** a code/CI implementation or Party/DDL authorization.
+The next bounded source stage retains
+`feat(simulation): paginate protected manufacturer history`.
+HAPI-601 stays NOT_IMPLEMENTED/BLOCKED.
+
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent
 [HAPI-436](TASKS_HPS-024.md#hapi-436) are VERIFIED/COMPLETED within the accepted

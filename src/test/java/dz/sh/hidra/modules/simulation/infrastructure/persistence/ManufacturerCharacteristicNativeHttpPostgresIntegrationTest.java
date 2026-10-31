@@ -161,6 +161,10 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
     @Autowired AuthenticateDirectUserUseCase authentication;
     @Autowired PasswordEncoder passwords;
     @Autowired Flyway flyway;
+    @Autowired @org.springframework.beans.factory.annotation.Qualifier("hidraJwtDecoder")
+    org.springframework.security.oauth2.jwt.JwtDecoder actualDecoder;
+    @Autowired dz.sh.hidra.modules.identity.application.port.out.OperationAuthenticationBindingRepositoryPort actualBindings;
+    @Autowired dz.sh.hidra.modules.identity.infrastructure.security.TrustedAuthenticationVerificationRegistry actualProvenance;
     // Real owner methods execute as usual. Spies observe stage *names* only;
     // they do not stub native Identity, Party, Workflow or persistence.
     @MockitoSpyBean dz.sh.hidra.modules.simulation.application.service.ManufacturerCharacteristicRevisionApplicationService apiOwner;
@@ -298,6 +302,45 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
     private String path(String revision){return source+"/revisions/"+revision;}
     private long count(String table){return admin.queryForObject("SELECT count(*) FROM "+table
         +" WHERE company_party_id=? AND source_id=?",Long.class,company,source);}
+    /**
+     * Private CI-only, read-only probe of the *real* native signing, binding and provenance
+     * readers. Emits booleans and exception class names, never any claim, token, ID,
+     * private source, authorization evidence or policy evaluation. Never grants authority.
+     */
+    private void diagnoseNativeBoundToken() {
+        try {
+            var decoded=actualDecoder.decode(token);
+            var wire=org.springframework.test.util.ReflectionTestUtils.invokeMethod(
+                null,
+                dz.sh.hidra.modules.identity.infrastructure.security.TopologyOperationAuthenticationQueryAdapter.class,
+                "rawClaims",token);
+            var bound=actualBindings.findByNativeIssuerAndJti(
+                decoded.getIssuer()==null?"":decoded.getIssuer().toString(),decoded.getId());
+            System.err.println("HAPI601 PRIVATE CI BINDING signed=true rawPresent="
+                +(wire!=null)+" repositoryPresent="+bound.isPresent());
+            if(bound.isPresent()) {
+                var binding=bound.orElseThrow();
+                boolean wireMatches=wire!=null&&Boolean.TRUE.equals(
+                    org.springframework.test.util.ReflectionTestUtils.invokeMethod(wire,"matches",binding));
+                boolean jwtMatches=java.util.Objects.equals(decoded.getSubject(),binding.userId())
+                    &&java.util.Objects.equals(decoded.getIssuedAt(),binding.issuedAt())
+                    &&java.util.Objects.equals(decoded.getExpiresAt(),binding.expiresAt())
+                    &&java.util.Objects.equals(decoded.getClaimAsString("authentication_type"),
+                        binding.authenticationType())
+                    &&java.util.Objects.equals(decoded.getClaimAsString("identity_provider_id"),
+                        binding.providerId());
+                boolean originMatches;
+                try {actualProvenance.validatePersistentOrigin(binding);originMatches=true;}
+                catch(RuntimeException ex) {originMatches=false;}
+                System.err.println("HAPI601 PRIVATE CI BINDING rawMatches="+wireMatches
+                    +" normalizedMatches="+jwtMatches+" originMatches="+originMatches);
+            }
+        } catch (RuntimeException x) {
+            System.err.println("HAPI601 PRIVATE CI BINDING probeErrorClass="
+                +x.getClass().getSimpleName());
+        }
+    }
+
     private static String methodNames(Object spy) {
         // Diagnostic whitelist: never log private parties, IDs, source payloads,
         // native grants, credentials, request bodies or Java exception messages.
@@ -320,6 +363,7 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
                 +" coordinator="+methodNames(coordinator));
             System.err.println("HAPI601 PRIVATE CI STAGES identity="+methodNames(nativeIdentity)
                 +" party="+methodNames(nativeParty)+" persistence="+methodNames(nativeSource));
+            diagnoseNativeBoundToken();
         }
         performed.andExpect(status().isOk())
             .andExpect(jsonPath("$.sourceId").value(source))

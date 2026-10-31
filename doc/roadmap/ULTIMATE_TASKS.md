@@ -431,6 +431,8 @@ HAPI-601 CI-first repair (2026-10-31): Full [#1027](https://github.com/CHOUABBIA
 
 HAPI-601 CI #1028 diagnostic (2026-10-31): the same six real-manufacturer HTTP save 403 failures remain after the Party test-role grant repair. [HPS-007](TASKS_HPS-007.md#hapi-601) now registers a bounded, private CI stage-probe change to establish the actual denial boundary, with unchanged mandatory HTTP 200 assertions, all nine integration methods and 14 PostgreSQL shards. Root cause unverified; HAPI-601 NOT_ACCEPTED; HAPI-602/P3 unselected.
 
+HAPI-601 CI #1029 (2026-10-31): six manufacturer HTTP 403 failures were traced to native Identity `prepare`, before Party/persistence. A bounded read-only test JWT/binding/provenance probe is registered in [HPS-007](TASKS_HPS-007.md#hapi-601) for exact new-SHA CI; original tests stay strict. HAPI-601 NOT_ACCEPTED, HAPI-602/P3 unselected.
+
 ## Phase files
 
 | Phase | Definition file | Tasks |

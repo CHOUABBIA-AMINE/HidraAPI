@@ -252,6 +252,14 @@ future scope and any whole-history authorization proof must be separately
 accepted. HAPI-601 remains NOT_IMPLEMENTED/BLOCKED; no HAPI-602, P3,
 deployment or operational acceptance follows.
 
+HAPI-601 pagination architecture correction: after [Docs #776](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41169335389),
+the owner directed reuse of a **shared property-configured platform pagination policy**
+(HPS-023), not hardcoded manufacturer-only page or scan limits. HAPI-698 kernel
+primitives retain their COMPLETED status, and all existing module API/security
+contracts remain unchanged. See [HPS-007](TASKS_HPS-007.md#hapi-601) for
+source-backed gaps and the platform-first, separately review-gated sequence.
+No platform implementation, HAPI-601 pagination code or Package C is selected.
+
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent
 [HAPI-436](TASKS_HPS-024.md#hapi-436) are VERIFIED/COMPLETED within the accepted

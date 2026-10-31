@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import org.springframework.stereotype.Service;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.support.DefaultTransactionStatus;
@@ -57,7 +58,8 @@ public final class ManufacturerCharacteristicRevisionApplicationService
             throw new IllegalStateException("Manufacturer source requires a new original transaction");
         var prepared=coordinator.prepare(command);
         var admission=new AtomicReference<ProtectedManufacturerCharacteristicAdmissionCoordinator.Admission>();
-        return executor.executePublication(()->{
+        try {
+            return executor.executePublication(()->{
             var a=coordinator.acquire(prepared,command);
             admission.set(a);
             return coordinator.perform(a);
@@ -70,6 +72,15 @@ public final class ManufacturerCharacteristicRevisionApplicationService
             if(!coordinator.finalGuard(a))
                 throw new IllegalStateException("Manufacturer final source guard unavailable");
         });
+        } catch (ProtectedTransactionExecutor.ExecutionFailure failure) {
+            // Translate only a trusted owner denial rejected before commit.
+            // Preserve 503 for indeterminate outcomes and every non-denial failure.
+            // No source existence or private exception message is disclosed.
+            if (failure.outcome() == ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT
+                    && failure.getCause() instanceof AccessDeniedException)
+                throw new AccessDeniedException("Manufacturer characteristic denied");
+            throw failure;
+        }
     }
 
 

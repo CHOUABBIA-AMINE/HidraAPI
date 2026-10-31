@@ -293,7 +293,29 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
         if(bearer!=null)request.header("Authorization","Bearer "+bearer);
         if(payload!=null)request.contentType(MediaType.APPLICATION_JSON).content(payload);
         else request.param("companyPartyId",company);
-        return http.perform(request);
+        var result=http.perform(request);
+        // Only failed private CI requests: report class/method provenance, never
+        // token, resource identity, SQL details, claim values or exception message.
+        if(result.andReturn().getResponse().getStatus()==503) {
+            Throwable observed=result.andReturn().getResolvedException();
+            Throwable cause=observed==null?null:observed.getCause();
+            String outcome=observed instanceof
+                dz.sh.hidra.platform.persistence.ProtectedTransactionExecutor.ExecutionFailure failure
+                    ?failure.outcome().name():"not-execution-failure";
+            String origin=cause==null||cause.getStackTrace().length==0?"none":
+                cause.getStackTrace()[0].getClassName()+"#"
+                    +cause.getStackTrace()[0].getMethodName();
+            System.err.println("HAPI601 PRIVATE CI 503 method="+method+" outcome="+outcome
+                +" resolved="+(observed==null?"none":observed.getClass().getSimpleName())
+                +" cause="+(cause==null?"none":cause.getClass().getSimpleName())
+                +" sourceMethod="+origin);
+            System.err.println("HAPI601 PRIVATE CI 503 service="+methodNames(apiOwner)
+                +" coordinator="+methodNames(coordinator)
+                +" identity="+methodNames(nativeIdentity));
+            System.err.println("HAPI601 PRIVATE CI 503 party="+methodNames(nativeParty)
+                +" persistence="+methodNames(nativeSource));
+        }
+        return result;
     }
     private String path(String revision){return source+"/revisions/"+revision;}
     private long count(String table){return admin.queryForObject("SELECT count(*) FROM "+table

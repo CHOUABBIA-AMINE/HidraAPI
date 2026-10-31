@@ -435,6 +435,8 @@ HAPI-601 CI #1029 (2026-10-31): six manufacturer HTTP 403 failures were traced t
 
 HAPI-601 CI #1030 preflight fix (2026-10-31): the six manufacturer HTTP 403 requests were traced to a Spring `PROPAGATION_NEVER` empty-synchronization conflict in native Identity `prepare()`. [HPS-007](TASKS_HPS-007.md#hapi-601) records the bounded removal of that self-conflicting annotation, with explicit no-ambient-transaction/no-sync guards preserved, the broken extra probe removed, and nine strict test assertions unchanged. Exact new-SHA Full/Docs required; HAPI-601 NOT_ACCEPTED, HAPI-602/P3 unselected.
 
+HAPI-601 CI #1031 (2026-10-31): preflight repair now permits successful native SAVE/READ, but five forbidden operations returned 503 instead of 403; genuine two-row history also returned 503. [HPS-007](TASKS_HPS-007.md#hapi-601) registers a bounded mapping only for trusted precommit owner denials plus safe stage diagnostics for the *unresolved* history 503. Exact new-SHA Full/Docs required; HAPI-601 NOT_ACCEPTED and HAPI-602/P3 unselected.
+
 ## Phase files
 
 | Phase | Definition file | Tasks |

@@ -92,7 +92,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java",
-      "source_sha256": "a2019f6da291dc2086184994ba99c4ffb97f52e6cbaa6d1cc6b2786f875b9347",
+      "source_sha256": "1bc76cd0a2f982f2225c910b29549abae29562ba5da3736fbed298792548d0a5",
       "supports": []
     },
     {
@@ -3163,7 +3163,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java",
-      "source_sha256": "892869c2152eedf2b660b3c13cb50bdb38a414a22a5e514916d2a7b34e6034bd",
+      "source_sha256": "005745261aeb734e5aeca11c5a61a53a6e3b7a01b9709bebc3e42572862e6543",
       "supports": []
     },
     {
@@ -8081,7 +8081,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java",
-      "source_sha256": "2175a75e57896b2976e284859120bedaac7f42d8c02bfacdb305dc201e5c2544",
+      "source_sha256": "b69fed9ce4b2ab872ad96bf78b15c81e51b839ad058eb0d061a648c062dee0a7",
       "supports": []
     },
     {
@@ -10150,7 +10150,7 @@
       "lane": "postgres-integration",
       "owner": "workflow",
       "path": "src/test/java/dz/sh/hidra/modules/workflow/infrastructure/persistence/RevisionApprovalEvidencePostgresIntegrationTest.java",
-      "source_sha256": "4c0fa62f5e56cbe256cde6e875938bed6183f607a18d9d9fb8f755465c78c771",
+      "source_sha256": "3f6c875e121d6d9aac6e83253cccaf4c5af4c0229f4b44d7b73dd60800b0aa25",
       "supports": []
     },
     {

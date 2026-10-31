@@ -167,6 +167,16 @@ class ForensicRemediationClosureTest {
         assertFalse(stationConfigurationOwnerExport(configConsumer,configRoot+"Sibling"));
         assertFalse(stationConfigurationOwnerExport(configConsumer,
             "dz.sh.hidra.modules.identity.infrastructure.security.ProtectedTopologyStationConfigurationAuthorizationParticipant"));
+        String manufacturerConsumer = "dz.sh.hidra.modules.simulation.application.service.ProtectedManufacturerCharacteristicAdmissionCoordinator";
+        for (String root : Set.of(
+                "dz.sh.hidra.modules.identity.application.contract.simulation.SimulationManufacturerCharacteristicAuthorizationContract",
+                "dz.sh.hidra.modules.party.application.contract.simulation.SimulationManufacturerEvidenceContract")) {
+            assertTrue(manufacturerCharacteristicOwnerExport(manufacturerConsumer, root));
+            assertFalse(manufacturerCharacteristicOwnerExport(manufacturerConsumer + "Sibling", root));
+            assertFalse(manufacturerCharacteristicOwnerExport(manufacturerConsumer, root + ".Sibling"));
+        }
+        assertFalse(manufacturerCharacteristicOwnerExport(manufacturerConsumer,
+                "dz.sh.hidra.modules.identity.infrastructure.security.ProtectedSimulationManufacturerCharacteristicAuthorizationParticipant"));
         List<String> violations = new ArrayList<>();
         for (SourceType source : sources().values()) {
             String sourceModule = module(source.packageName());
@@ -211,6 +221,7 @@ class ForensicRemediationClosureTest {
                         && imported.equals("dz.sh.hidra.modules.identity.application.contract.topology.TopologyProtectedEngineeringDraftAuthorizationContract")) {
                     continue;
                 }
+                if (manufacturerCharacteristicOwnerExport(source.fqcn(), imported)) continue;
                 if (stationConfigurationOwnerExport(source.fqcn(), imported)) continue;
                 if (installedUnitOwnerExport(source.fqcn(), imported)) continue;
                 if (organizationOwnerExport(source.fqcn(), imported)) continue;
@@ -219,6 +230,15 @@ class ForensicRemediationClosureTest {
             }
         }
         assertTrue(violations.isEmpty(), () -> "Unapproved cross-module imports: " + violations);
+    }
+
+    /** Only the reviewed Simulation coordinator may consume the two named owner exports. */
+    private static boolean manufacturerCharacteristicOwnerExport(String source, String imported) {
+        return source.equals("dz.sh.hidra.modules.simulation.application.service.ProtectedManufacturerCharacteristicAdmissionCoordinator")
+                && Set.of(
+                        "dz.sh.hidra.modules.identity.application.contract.simulation.SimulationManufacturerCharacteristicAuthorizationContract",
+                        "dz.sh.hidra.modules.party.application.contract.simulation.SimulationManufacturerEvidenceContract")
+                        .contains(imported);
     }
 
     private static boolean stationConfigurationOwnerExport(String source,String imported) {

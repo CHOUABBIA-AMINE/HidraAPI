@@ -680,7 +680,12 @@ class JdbcProtectedAuthorizationEvidenceReaderTest {
                         "loadQualifiedInstalledUnitGroup", "recheckInstalledUnitGroup",
                         "loadQualifiedStationConfigurationGroup", "recheckStationConfigurationGroup",
                         "loadQualifiedProductPair", "recheckProductPair",
-                        "loadQualifiedSuppliedFluidPair", "recheckSuppliedFluidPair", "loadQualifiedProductPublicationPair", "recheckProductPublicationPair");
+                        "loadQualifiedSuppliedFluidPair", "recheckSuppliedFluidPair", "loadQualifiedProductPublicationPair", "recheckProductPublicationPair", "loadManufacturer");
+        // New manufacturer reader remains a single typed physical-evidence method.
+        assertThat(JdbcProtectedAuthorizationEvidenceReader.class.getMethod(
+                        "loadManufacturer", Evidence.class, AuthorizationEvaluationRequest.class,
+                        int.class, long.class).getReturnType())
+                .isEqualTo(AuthorizationEvidence.class);
         for (String name : List.of("loadQualifiedProductPair", "recheckProductPair")) {
             assertThat(Arrays.stream(JdbcProtectedAuthorizationEvidenceReader.class.getDeclaredMethods())
                     .filter(m -> m.getName().equals(name))).singleElement().satisfies(method -> {

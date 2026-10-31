@@ -132,7 +132,7 @@ public class RevisionApprovalEvidencePostgresIntegrationTest {
                 end="manufacturer-end-"+suffix,instance="manufacturer-instance-"+suffix,
                 task="manufacturer-task-"+suffix,action="manufacturer-action-"+suffix;
         String targetDigest="a".repeat(64);
-        Instant completed=Instant.now().minusSeconds(1);
+        Instant completed=Instant.now().minusSeconds(1).truncatedTo(java.time.temporal.ChronoUnit.MICROS);
         Timestamp done=Timestamp.from(completed);
         jdbc.update("INSERT INTO hidra_identity_user(id,username,display_name,user_type,status,failed_login_count,created_at,activated_at,updated_at)"
                 +" VALUES (?,?,'Synthetic Manufacturer Reviewer','HUMAN','ACTIVE',0,now(),now(),now())",actor,actor);

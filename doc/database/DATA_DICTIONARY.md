@@ -6,7 +6,7 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `13006bcff8d6a6b3de0268f763932fd1ab4ef558`
+Captured source SHA: `2001971758d21f02040b867e709270cd04b8c11d`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
 Generator format: 1; source bundle SHA-256: `d3de75e854683f232338941acefef95792b9d1d812817755afddaf9755f0b777`.
 Migrations: 192; JPA mappings: 470; catalog relations: 539; unresolved owners: 0.
@@ -24906,6 +24906,7 @@ Simulation-owned immutable canonical manufacturer characteristic source with dig
 - `trg_sim_manufacturer_revision_truncate`: CREATE TRIGGER trg_sim_manufacturer_revision_truncate BEFORE TRUNCATE ON hidra_simulation_manufacturer_characteristic_revision FOR EACH STATEMENT EXECUTE FUNCTION hidra_simulation_manufacturer_immutable()
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_simulation_manufacturer_immutable()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_simulation_manufacturer_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN RAISE EXCEPTION 'Manufacturer characteristic evidence is immutable' USING ERRCODE='42501'; END;<br>$function$<br>
+
 ### public.hidra_simulation_model
 
 Owner: **simulation**; relation kind: `r`.

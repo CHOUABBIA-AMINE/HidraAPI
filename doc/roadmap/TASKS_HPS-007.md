@@ -842,4 +842,168 @@ remains review-gated. Package C, HAPI-602 and all downstream tasks remain
 blocked. This documentation stage ends after exact-head guarded publication
 and Documentation Validation run creation/queue/start verification.
 
+### HAPI-601 — approved bounded-eligibility / live-keyset direction; candidate implementation contract (2026-10-31)
+
+**Decision and delivery boundary.** Following the source-backed security preflight
+on `16489a27124844e3c7a680b3bd31aeaef92ad877` ([Documentation Validation #780](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41177485909)
+SUCCESS), the owner explicitly **approved the design direction**, not the future Java/SQL
+implementation: (A) bounded *complete* manufacturer/model eligibility for the entire
+company/source before any page or continuation is disclosed, and (B) an integrity-
+protected, openly weaker **live keyset** cursor, not a cross-request snapshot.
+This commit only registers a candidate technical implementation contract:
+`docs(simulation): define bounded manufacturer history pagination contract`.
+CREATE/DELETE none; MODIFY **only** this append-only
+`doc/roadmap/TASKS_HPS-007.md` and compact `doc/roadmap/ULTIMATE_TASKS.md`.
+The exact code-path ledger and numeric policy values below are **proposals**
+requiring a *separate owner acceptance* before any runtime mutation.
+Do not treat an approved direction or green Docs CI as engineering acceptance.
+
+**Bounded-context and owner contract.** HAPI-601 in Simulation owns immutable
+manufacturer characteristic source revisions, history selection and protected
+results. Identity exclusively owns native `LIST_HISTORY` permission
+`simulation:manufacturer-characteristic:history`; Party exclusively owns
+current `Requirement(companyPartyId,manufacturerPartyId,manufacturerModelReference)`
+evidence, generations and revocation. HPS-023 exclusively owns startup-bound
+shared pagination defaults/max/cursor-length input validation, not module
+authorization or keyset semantics. No new Party public API or existing Identity
+permission is proposed for the initially selected bounded-traversal direction.
+The protected source/Party/Identity locks, PID/XID, restricted role,
+READ COMMITTED and physical final guard all stay in the **same original
+`ProtectedTransactionExecutor` transaction per request**. No user-visible
+protected data, existence, counts, `hasNext`, cursor, history or qualification
+is released before final guards and successful physical commit.
+
+**Candidate protected eligibility algorithm (not implemented).**
+1. Reject invalid page-size and malformed cursor inputs independently of
+   protected source existence, with uniform non-disclosing faults. Resolve
+   requested page size through `HidraPaginationProperties.resolveSize` and
+   existing owner-specific stricter resource maximum; no fixed manufacturer
+   page limit `50/100` is accepted as an independent policy.
+2. Within the *new* original restricted physical transaction, acquire the
+   same Simulation immutable-source lock and Identity `LIST_HISTORY`
+   native permission before source lookup. A Simulation-owned repository port
+   may project **only** the exact company/source's distinct
+   `(manufacturer_party_id,manufacturer_model_reference)` pairs from the
+   already stored canonical-source identity columns. Prefer fixed SQL with
+   projected columns and `LIMIT permitted_subjects+1`, not a full payload
+   materialization, raw caller SQL, or joins into private Party tables.
+   A finite **resource work/subject budget must first be approved** and
+   supplied through owner-controlled startup configuration (HPS-023 remains
+   shared page policy; an additional stricter resource budget is separate).
+   Reject no rows, overflow, mismatch, uncertainty or query budget overrun
+   **before disclosure**. An output `LIMIT` alone does not bound scan CPU/IO:
+   the current `(company,source,source_recorded_at,revision_id)` index is
+   not a proven efficient distinct-subject index. PostgreSQL plan/buffer/
+   latency results and canonical identity/provenance verification are hard
+   acceptance gates. If projection cannot prove complete authorized coverage
+   at finite cost, STOP and register an explicit Party-owned/batch/owned-index
+   prerequisite rather than admitting a partial first page.
+3. For **every** distinct pair (including those belonging only to later
+   pages), call the existing Party owner contract to obtain fresh company/
+   manufacturer/model authority on the exact PID/XID/role. Preserve active
+   authorization, source, profile/role/generation, validity, DENY precedence,
+   relation locks and final `requireCurrent` for **all** pairs. Do not
+   replace source-wide authorization with page-only checks, grants from
+   prior requests or a cursor assertion. Check that every page and lookahead
+   revision belongs to this complete, verified source projection and that
+   database identity columns match immutable canonical payload evidence.
+4. Only after complete eligibility, execute fixed indexed keyset SQL ordered
+   by the **persisted PostgreSQL** `source_recorded_at` (microsecond
+   precision), then `revision_id`, with strict company/source predicates
+   and a bounded `pageSize+1` lookahead. No total-count or source-existence
+   metadata API is introduced. Qualification flags remain protected.
+   Each request rechecks the entire source's applicable Party grants and
+   Identity authority and completes the existing flush/final-fence/commit
+   protocol before returning any result.
+
+**Candidate live-keyset semantics (owner-approved direction, not code).**
+- Cursor format: canonical versioned URL-safe encoding, scope bound to exact
+  `companyPartyId`, `sourceId`, *accepted page size*, persisted ordering
+  tuple (not decoded `Instant` nanos), issued/expiry instants, token key ID
+  and domain-separated MAC (e.g., HMAC-SHA256) with constant-time
+  authentication. `HidraPaginationProperties.validateCursor` checks only
+  bounded input length; a Simulation-owned signing adapter must authenticate,
+  check canonicality/version/scope/expiry and reject truncation, ambiguity,
+  overlong tokens, tampering and unsupported rotation before any source
+  lookup. Require a **separate** startup-managed signing key and explicit
+  key rotation policy; neither the JWT key nor Identity proof key may be
+  reused. This is only a navigation hint, not Identity/Party authorization.
+- Each page is a **new, independently authorized READ COMMITTED transaction**.
+  The cursor records the last emitted `(source_recorded_at,revision_id)`,
+  not a promise that the historical set remains fixed. Existing immutable
+  records strictly after the last key are eligible for subsequent pages;
+  revisions inserted later with an ordering key at/before that position can
+  be **missed** by an in-progress traversal. Later appended records strictly
+  after the cursor may appear. A restarted traversal can see newly inserted
+  and backdated rows; a repeat of a valid cursor is allowed only as a new
+  authorization event, not accepted as prior permission or treated as a
+  single-use anti-replay proof. Absent a persistent generation/snapshot,
+  **no complete-snapshot, no-skip-under-concurrent-insert, fixed-total,
+  or end-of-history permanence guarantee** is claimed. `hasNext` refers
+  only to the currently authorized page and one lookahead at its transaction.
+- Client documentation must tell operators that keyset pages are a
+  **live view**, not a signed engineering revision baseline. Formal
+  reproducibility and pinned engineering input sets are separate workflows,
+  never inferred from a history cursor.
+
+**Proposed exact runtime write ledger (NOT ADMITTED).** MODIFY only after
+the owner approves exact contract/scope:
+- `src/main/java/dz/sh/hidra/modules/simulation/application/port/in/ManufacturerCharacteristicRevisionUseCase.java`: add source-scoped typed history-page request/response, no total; preserve existing six-argument `Command` and five current operations for compatibility.
+- `src/main/java/dz/sh/hidra/modules/simulation/application/port/out/ManufacturerCharacteristicRevisionRepositoryPort.java`: typed complete-source principal projection and persisted-timestamp keyset page; no unbounded public history export.
+- `src/main/java/dz/sh/hidra/modules/simulation/application/service/ProtectedManufacturerCharacteristicAdmissionCoordinator.java`: prepare/acquire/authorize-all/perform/final-guard new page.
+- `src/main/java/dz/sh/hidra/modules/simulation/application/service/ManufacturerCharacteristicRevisionApplicationService.java`: dispatch history-page publication via the same protected executor.
+- `src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/JdbcManufacturerCharacteristicRevisionRepositoryAdapter.java`: fixed indexed SQL, complete principal projection, strict bounded paging and persisted microsecond ordering; preserve pinned INSERT SQL and source qualifications.
+- `src/main/resources/application.properties`: *candidate only*, explicit resource work budget and **separately provisioned cursor secret reference**; startup fail-closed policy and profile compatibility must be admitted before naming values.
+- `src/test/java/dz/sh/hidra/modules/simulation/application/service/ManufacturerCharacteristicRevisionApplicationServiceTest.java`;
+  `src/test/java/dz/sh/hidra/modules/simulation/qualification/ManufacturerCharacteristicNativeQualificationTest.java`;
+  `src/test/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/ManufacturerCharacteristicRevisionPostgresIntegrationTest.java`:
+  focused API, protected non-disclosure, and real fresh PostgreSQL tests.
+- `.github/ci-test-inventory.json`: only real changed test hashes/cases;
+  `doc/roadmap/TASKS_HPS-007.md`: append source/test acceptance evidence.
+
+Candidate CREATE paths, contingent on interface/module review:
+- `src/main/java/dz/sh/hidra/modules/simulation/application/port/out/ManufacturerCharacteristicHistoryCursorPort.java` — engine/framework-neutral port for signed cursor claims, never an authorization credential;
+- `src/main/java/dz/sh/hidra/modules/simulation/infrastructure/security/HmacManufacturerCharacteristicHistoryCursorAdapter.java` — strictly validated MAC/expiry/key lifecycle with isolated secret;
+- `src/test/java/dz/sh/hidra/modules/simulation/infrastructure/security/HmacManufacturerCharacteristicHistoryCursorAdapterTest.java` — deterministic malformed/canonical/scope/rotation/security cases.
+These are **proposed file names only**, not existing files or approved creates.
+Proposed earlier ten-file implementation scope is **superseded as a sufficient
+ledger** by this larger candidate; no source/CI/migration write is authorized.
+No Party source changes are currently selected. New Party contract, source
+index/Flyway migration or DB integrity witness requires **another narrowly
+approved exact-path amendment** if feasibility evidence demands it.
+No existing migrations may be rewritten.
+
+**Mandatory implementation and acceptance gates.** (i) Exact request API
+backward compatibility, synthetic tests and source-scoped permissions;
+(ii) authorized page 1 with an unauthorized off-page distinct model denies
+the *entire* request, including `hasNext`, foreign-company source,
+same model repeated, missing grant, role deactivation/expiry/revocation,
+empty/denied uniformity, overflow and unbounded-work rejection;
+(iii) original PID/XID/current role, same physical Party/Identity
+relations, temporal fence, concurrent revoke, final guard, successful
+commit before publication, rollback/unknown commit and protected-query
+non-disclosure; (iv) real PostgreSQL >256 revisions with distinct
+principal projection, EXPLAIN/BUFFERS and bounded work, duplicate
+recorded timestamps with SQL microseconds, adjacent pages/lookahead,
+cursor HMAC expiry/key rotation/tampering/foreign scope; (v) late and
+backdated inserts before/after cursor must demonstrate the **declared
+weaker semantics**, including restart; (vi) no certificate leakage,
+no unapproved schema change, no source-role elevation, no regression
+to Workflow read gates, other four operations, platform/kernel
+pagination or unrelated current APIs; (vii) test inventory,
+Architecture/Java 21 and genuine PostgreSQL CI at the exact SHA.
+Do not substitute Testcontainers skipped for PostgreSQL proof.
+Deployment data, calibrated numerical P3, SITE and operations are excluded.
+
+**Required next owner acceptance before code.** Explicitly accept an exact
+finite source-work/subject budget and SQL cost strategy, secret
+provisioning/rotation/configuration and compatibility rules, the proposed
+MODIFY/CREATE ledger (including any necessary new PostgreSQL index/Party
+contract), cursor expiry and error behavior, and the final implementation
+commit `feat(simulation): paginate protected manufacturer history`.
+Until this *separate* approval, the implementation stays
+`CONTRACT_PENDING_ADMISSION`; no Package C, HAPI-602, numeric simulator,
+HidraWEB or deployment is selected. Frozen ROADMAP/PHASES statuses
+remain HAPI-601 NOT_IMPLEMENTED/BLOCKED.
+
 <!-- task-register:payload:end -->

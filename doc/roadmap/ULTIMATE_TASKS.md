@@ -288,6 +288,16 @@ historical HAPI-601 status or downstream gate changes. Exact preflight
 message: `docs(simulation): preflight protected manufacturer history pagination security`.
 Next requires an explicit owner-approved security contract and file ledger.
 
+HAPI-601 owner-approved technical **direction**, code **not** admitted:
+bounded complete-source manufacturer/model authorization and integrity-protected
+**live-keyset** history, explicitly without cross-request snapshot guarantees.
+[HPS-007](TASKS_HPS-007.md#hapi-601) now records the candidate exact
+Simulation/crypto/config/test write ledger, stronger non-disclosure/SQL-cost
+gates and separate signer/key decisions. The prior 10-file ledger is
+insufficient for this candidate; no implementation or Party/migration
+changes are selected. Next requires explicit exact contract, work-budget,
+signing-key and file-ledger admission. HAPI-601 remains NOT_IMPLEMENTED/BLOCKED.
+
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent
 [HAPI-436](TASKS_HPS-024.md#hapi-436) are VERIFIED/COMPLETED within the accepted

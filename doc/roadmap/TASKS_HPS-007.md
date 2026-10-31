@@ -1269,4 +1269,22 @@ are unchanged by this documentation-only dependency registration.
 HAPI-601 stays NOT_IMPLEMENTED/BLOCKED; HAPI-602, P3, SITE,
 and deployment remain excluded.
 
+
+### HAPI-601 — Package C blocked pending separately admitted Platform registration (2026-10-31)
+
+Docs #784 succeeded at `180210d6bc9b9f173bc8ec8f0df7362684e69f37`. Owner Next selected
+only the HPS-023 exact implementation-ledger preflight. Its candidate
+six-CREATE/eight-MODIFY Platform source/test/evidence ledger and
+proposed message `feat(platform): enforce trusted native-protected
+route registration` are NOT source-authorized or implemented.
+No native-protected manufacturer REST controller is registered.
+The existing proposed seven Simulation REST/DTO/error/test CREATE
+paths cannot alone authorize a new route; independent trusted Platform
+compiled tuple, original Identity/Party/Workflow and transaction/final
+guards, genuine HTTP and PostgreSQL nondisclosure proof are still
+required. Neither an annotation nor a generic route permission
+grants native manufacturer access. The internal protected history
+cursor remains unchanged. HAPI-601 stays NOT_IMPLEMENTED/BLOCKED;
+HAPI-602, P3, SITE and deployment remain excluded.
+
 <!-- task-register:payload:end -->

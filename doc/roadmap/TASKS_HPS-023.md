@@ -36716,4 +36716,124 @@ implementation scope; HAPI-601 Package C remains blocked until that
 prerequisite is actually validated. HAPI-602, P3/SITE, OT/deployment
 remain excluded.
 
+
+### HPS-023 — trusted native-protected route exact implementation preflight (2026-10-31; DOCUMENTATION ONLY)
+
+**Source, selection and status.** Owner Next selects one registered HPS-023
+documentation-only implementation-admission preflight. Current main
+`180210d6bc9b9f173bc8ec8f0df7362684e69f37` has successful Docs #784; parent
+`f28dcb475b6a0a62f39791559f539024db468df9` has successful
+Full #1022 and Docs #783. Exact documentation message:
+`docs(platform): specify trusted native-protected route implementation admission`.
+Proposed *future* Platform implementation message:
+`feat(platform): enforce trusted native-protected route registration`.
+This candidate message, implementation ledger and design need a separate
+owner admission before any runtime source change. No HAPI ID, fixed phase
+membership, ROADMAP/PHASES status, effective grant or production contract
+is altered here.
+
+**Verified source and authority.** The current
+`HidraRouteAuthorizationInterceptor` has nine explicit `isOwned*Route`
+compiled controller/method/verb/pattern families; all unmatched MVC
+tuples use `HidraRoutePermissionNaming` and
+`HidraEffectivePermissionResolver`. `HidraRoutePermissionCatalogService`
+publishes derived route metadata. `HidraPermissionWebMvcConfiguration`
+already registers the interceptor on `/api/v1/**`.
+`HidraRouteAuthorizationInterceptorTest` covers exact native families
+and generic fallback; `ArchitectureGuardrailTest` guards ownership.
+The proposed manufacturer POST route does not exist. Derived generic
+`simulation:manufacturer-characteristics:execute` must never replace
+native `simulation:manufacturer-characteristic:save`.
+Identity/HPS-002 owns current user/resource permissions, DENY and
+revocation; Simulation/Party/Workflow own their original protected
+transactions, source evidence, final guards and business decisions.
+
+**Candidate design; NO code admission.**
+1. A REST-side `@NativeProtectedOperation` on a compiled method is only
+   an intent declaration. An immutable independently maintained
+   Platform-trusted registry must separately allow the EXACT concrete
+   controller identity, reflected Java signature (including all parameter
+   types), verb and MVC route pattern. Never accept module self-registration,
+   annotation scans, arbitrary Spring beans, runtime properties, caller
+   headers, claims, path prefixes, wildcards or an `ANY` verb.
+2. At startup validate each trusted tuple against actual Spring
+   `RequestMappingHandlerMapping` and declaration: precisely one unique
+   compiled `HandlerMethod`, matching full signature, HTTP method and
+   path pattern. Fail startup on missing/stale, conflicting, duplicate
+   or ambiguous trusted mappings and missing declarations. At request
+   time use resolved handler and `BEST_MATCHING_PATTERN_ATTRIBUTE`,
+   never caller-selected route metadata.
+3. Preserve all nine existing native `isOwned*Route` checks and their
+   behavior until a separately approved migration. A new route delegates
+   the generic check only if the trusted registry intersects the compiled
+   declaration and a nonanonymous authenticated principal is present.
+   The original native owner authorization and physical transaction/final
+   fences MUST run; no registry/annotation is a grant. Ordinary generic
+   permission enforcement stays active for unregistered or mismatched
+   routes. No disclosure of protected existence/count/history on DENY,
+   REVOKED, INDETERMINATE or owner lookup failures; never cache grants.
+4. Initially register **no new production routes** because HAPI-601
+   Package C has no accepted REST controller. Use synthetic compiled
+   Spring MVC test fixtures to prove the mechanism. Later actual
+   manufacturer registration needs a separate explicitly accepted
+   Platform-owned tuple change plus the owning module's compiled
+   HTTP-native-transaction proof. The old Package C seven-file list
+   cannot self-authorize a native bypass.
+5. Preserve existing `RoutePermissionDescriptor` wire shape and
+   ordinary catalog metadata. For a future genuinely registered native
+   route, distinguish native delegation from generic derived permission
+   without implying catalog display grants business authority.
+
+**Exact MAXIMUM PROPOSED implementation allowlist — NOT YET ADMITTED.**
+CREATE only:
+- `src/main/java/dz/sh/hidra/platform/permissions/NativeProtectedOperation.java`
+- `src/main/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistry.java`
+- `src/main/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidator.java`
+- `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java`
+- `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java`
+- `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java`
+
+MODIFY only:
+- `src/main/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptor.java`
+- `src/main/java/dz/sh/hidra/platform/permissions/HidraRoutePermissionCatalogService.java`
+- `src/test/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptorTest.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `.github/ci-test-inventory.json` (changed/new actual tests only)
+- `doc/roadmap/TASKS_HPS-023.md` (append real execution evidence)
+- `doc/roadmap/TASKS_HPS-002.md` (append Identity ownership evidence)
+- `doc/roadmap/ULTIMATE_TASKS.md` (pointer only)
+
+DELETE none. `HidraPermissionWebMvcConfiguration.java` and
+`RoutePermissionDescriptor.java` are READ-ONLY; the current interceptor
+wiring is sufficient as designed. All foreign module source,
+existing migrations/privileges/production configuration, OpenAPI
+snapshots, workflow files and frozen ROADMAP/PHASES are excluded.
+If exact source shows an unregistered additional file is needed,
+STOP for a separate bounded owner-reviewed amendment.
+
+**Future acceptance.** Focused JUnit + Spring MVC/MockMvc security:
+valid trusted tuple, overload, wrong bean/signature/verb/route,
+annotation-only, registry-only, anonymous, missing authentication,
+stale/duplicate/ambiguous startup rejection, untrusted module
+registration, and the empty initial production registry; ensure no
+owner use-case invocation on HTTP denial. Regression-test every existing
+native `isOwned*Route` family and the generic permission path, catalog
+representation, compiled route matching and no `permitAll`.
+Verify owner DENY/REVOKED/INDETERMINATE/foreign-company nondisclosure
+and original native/final guards, not a synthetic controller shortcut.
+Use ArchitectureGuardrailTest to reject Platform/private-module
+imports and self-authorizing module hooks. Inventory new tests in
+the CI manifest. Required exact-SHA Full CI, real non-skipped relevant
+PostgreSQL tests and actual API/catalog checks remain independent
+acceptance gates. Publish only one exact-message implementation commit
+with expected-head guard and observed new-SHA CI start, then stop;
+skipped tests and synthetic data are not SITE qualification.
+
+**Stop and next gate.** This is a reviewed TECHNICAL CANDIDATE,
+not an approved executable file ledger. Owner must expressly accept
+the exact Platform implementation contract before a future Next
+can change code. HAPI-601 stays NOT_IMPLEMENTED/BLOCKED; its Package C
+and HAPI-602, numerical/P3, SITE, OT control, frontend and deployment
+remain unselected.
+
 <!-- task-register:payload:end -->

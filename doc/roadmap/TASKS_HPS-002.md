@@ -10856,4 +10856,22 @@ owner-reviewed implementation ledger and tests. Nothing in this
 registration approves a source rewrite, runtime security bypass,
 additional grants, migration or HAPI-602 progression.
 
+
+### HPS-002 — trusted-route Platform implementation technical preflight (2026-10-31)
+
+The owner selected a documentation-only exact-source preflight under
+HPS-023 at `180210d6bc9b9f173bc8ec8f0df7362684e69f37`, not source admission. Proposed message
+`feat(platform): enforce trusted native-protected route registration`
+requires separate owner acceptance. Identity alone owns current
+native grants, DENY/revocation, scope and temporal authorization.
+A REST declaration plus immutable independent Platform routing tuple
+only selects the owner native evaluation; it never grants access or
+authorizes existence, counts, history, certificate or qualification.
+The derived generic `simulation:manufacturer-characteristics:execute`
+is not native `simulation:manufacturer-characteristic:save`.
+All native Party/Identity/Workflow original transaction/final guards
+and strict fail-closed decisions remain. No Identity Java, catalog
+permission, grant, migration, native evaluator or frozen status is
+altered; HPS-023 records the full maximum proposed file/test ledger.
+
 <!-- task-register:payload:end -->

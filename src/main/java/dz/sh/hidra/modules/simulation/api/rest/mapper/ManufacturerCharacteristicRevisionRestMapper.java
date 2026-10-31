@@ -25,7 +25,8 @@ public final class ManufacturerCharacteristicRevisionRestMapper {
                 revision.certificate().certificateSha256(), revision.certificate().sourceId(),
                 revision.certificate().revisionId(), revision.certificate().sourceDocumentSha256(),
                 revision.certificate().manufacturerPartyId(), revision.certificate().manufacturerModelReference(),
-                revision.certificate().characteristicKind(), revision.certificate().validFrom(),
+                ManufacturerCharacteristicRevision.Kind.valueOf(revision.certificate().characteristicKind().name()),
+                revision.certificate().validFrom(),
                 revision.certificate().validUntil());
         ManufacturerCharacteristicRevision.Family family = switch(revision.family()) {
             case CompressorMap c -> new ManufacturerCharacteristicRevision.CompressorMap(
@@ -48,7 +49,8 @@ public final class ManufacturerCharacteristicRevisionRestMapper {
                     axis(v.axis()),v.minimumInclusive(),v.maximumInclusive(),v.evidenceReference())).toList());
         };
         return new ManufacturerCharacteristicRevision(revision.sourceId(),revision.revisionId(),
-            revision.recordedAt(),revision.effectiveFrom(),revision.effectiveUntil(),revision.origin(),
+            revision.recordedAt(),revision.effectiveFrom(),revision.effectiveUntil(),
+            ManufacturerCharacteristicRevision.Origin.valueOf(revision.origin().name()),
             revision.manufacturerPartyId(),revision.manufacturerModelReference(),revision.documentReference(),
             revision.documentSha256(),reference,certificate,family);
     }
@@ -61,7 +63,7 @@ public final class ManufacturerCharacteristicRevisionRestMapper {
         var c=source.certificate();
         var certificate=c==null?null:new Certificate(c.issuerReference(),c.certificateReference(),
                 c.certificateSha256(),c.sourceId(),c.revisionId(),c.sourceDocumentSha256(),
-                c.manufacturerPartyId(),c.manufacturerModelReference(),c.characteristicKind(),
+                c.manufacturerPartyId(),c.manufacturerModelReference(),Kind.valueOf(c.characteristicKind().name()),
                 c.validFrom(),c.validUntil());
         Family family = switch(source.family()) {
             case ManufacturerCharacteristicRevision.CompressorMap x -> new CompressorMap(
@@ -81,17 +83,20 @@ public final class ManufacturerCharacteristicRevisionRestMapper {
                     v.minimumInclusive(),v.maximumInclusive(),v.evidenceReference())).toList());
         };
         return new Revision(source.sourceId(),source.revisionId(),source.recordedAt(),
-            source.effectiveFrom(),source.effectiveUntil(),source.origin(),source.manufacturerPartyId(),
+            source.effectiveFrom(),source.effectiveUntil(),Origin.valueOf(source.origin().name()),
+            source.manufacturerPartyId(),
             source.manufacturerModelReference(),source.documentReference(),source.documentSha256(),
             reference,certificate,family);
     }
 
     private static ManufacturerCharacteristicRevision.Axis axis(Axis source) {
         Objects.requireNonNull(source,"axis");
-        return new ManufacturerCharacteristicRevision.Axis(source.quantity(),source.unit());
+        return new ManufacturerCharacteristicRevision.Axis(
+                ManufacturerCharacteristicRevision.Quantity.valueOf(source.quantity().name()),
+                ManufacturerCharacteristicRevision.Unit.valueOf(source.unit().name()));
     }
     private static Axis axisDto(ManufacturerCharacteristicRevision.Axis a) {
-        return new Axis(a.quantity(),a.unit());
+        return new Axis(Quantity.valueOf(a.quantity().name()), Unit.valueOf(a.unit().name()));
     }
     private static <T> List<T> require(List<T> items) {
         return Objects.requireNonNull(items,"missing bounded collection");

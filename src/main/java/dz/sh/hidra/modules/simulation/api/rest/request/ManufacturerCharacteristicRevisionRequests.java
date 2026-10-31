@@ -2,7 +2,6 @@ package dz.sh.hidra.modules.simulation.api.rest.request;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import dz.sh.hidra.modules.simulation.domain.model.ManufacturerCharacteristicRevision;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -14,12 +13,20 @@ import java.util.List;
 public final class ManufacturerCharacteristicRevisionRequests {
     private ManufacturerCharacteristicRevisionRequests() {}
 
+    // Transport-owned vocabularies; conversion to domain happens only in the mapper.
+    public enum Origin { SUPPLIER_DECLARED, SYNTHETIC }
+    public enum Kind { COMPRESSOR_MAP, VALVE_MAP, PARAMETER_TABLE, OPERATING_LIMITS }
+    public enum Unit { KILOGRAM_PER_SECOND, REVOLUTION_PER_MINUTE, JOULE_PER_KILOGRAM,
+        FRACTION, PASCAL_ABSOLUTE, PASCAL_DIFFERENTIAL, KELVIN }
+    public enum Quantity { MASS_FLOW, ROTATIONAL_SPEED, SPECIFIC_HEAD, EFFICIENCY,
+        OPENING, ABSOLUTE_PRESSURE, DIFFERENTIAL_PRESSURE, TEMPERATURE }
+
     public record Save(@NotBlank String companyPartyId, @Valid @NotNull Revision revision) {}
     public record Qualify(@NotBlank String companyPartyId, @Valid @NotNull Approval approval) {}
     public record Approval(String definitionId, int definitionVersion, String targetTypeId,
             String purposeId, String instanceId, String taskId, String actionId) {}
     public record Revision(String sourceId, String revisionId, Instant recordedAt, Instant effectiveFrom,
-            Instant effectiveUntil, ManufacturerCharacteristicRevision.Origin origin, String manufacturerPartyId,
+            Instant effectiveUntil, Origin origin, String manufacturerPartyId,
             String manufacturerModelReference, String documentReference, String documentSha256,
             @Valid @NotNull ReferenceConditions referenceConditions, @Valid Certificate certificate,
             @Valid @NotNull Family family) {}
@@ -27,10 +34,10 @@ public final class ManufacturerCharacteristicRevisionRequests {
             String methodReference) {}
     public record Certificate(String issuerReference, String certificateReference, String certificateSha256,
             String sourceId, String revisionId, String sourceDocumentSha256, String manufacturerPartyId,
-            String manufacturerModelReference, ManufacturerCharacteristicRevision.Kind characteristicKind,
+            String manufacturerModelReference, Kind characteristicKind,
             Instant validFrom, Instant validUntil) {}
-    public record Axis(ManufacturerCharacteristicRevision.Quantity quantity,
-            ManufacturerCharacteristicRevision.Unit unit) {}
+    public record Axis(Quantity quantity,
+            Unit unit) {}
     public record SpeedLine(BigDecimal speedRevolutionsPerMinute, List<CompressorPoint> points) {}
     public record CompressorPoint(BigDecimal massFlowKilogramsPerSecond,
             BigDecimal specificHeadJoulesPerKilogram, BigDecimal efficiencyFraction) {}

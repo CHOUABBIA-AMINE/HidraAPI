@@ -130,7 +130,7 @@ public class ProtectedSimulationManufacturerCharacteristicAuthorizationParticipa
         requireCurrent(admission);return JdbcIdentityAuthorityFence.requiredRelationFences();
     }
     private static AuthorizationEvaluationRequest claim(String actor,Request r,String digest,String scope) {
-        return new AuthorizationEvaluationRequest(actor,permissionCode(r.operation()),RESOURCE_TYPE,digest,
+        return new AuthorizationEvaluationRequest(actor,SimulationManufacturerCharacteristicAuthorizationContract.permissionCode(r.operation()),RESOURCE_TYPE,digest,
                 new AuthorizationScope(ScopeType.CUSTOM,scope,null));
     }
     private static String digest(Request r) {

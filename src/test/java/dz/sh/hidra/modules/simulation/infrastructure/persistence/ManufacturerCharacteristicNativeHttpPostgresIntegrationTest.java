@@ -50,6 +50,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -160,6 +161,13 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
     @Autowired AuthenticateDirectUserUseCase authentication;
     @Autowired PasswordEncoder passwords;
     @Autowired Flyway flyway;
+    // Real owner methods execute as usual. Spies observe stage *names* only;
+    // they do not stub native Identity, Party, Workflow or persistence.
+    @MockitoSpyBean dz.sh.hidra.modules.simulation.application.service.ManufacturerCharacteristicRevisionApplicationService apiOwner;
+    @MockitoSpyBean dz.sh.hidra.modules.simulation.application.service.ProtectedManufacturerCharacteristicAdmissionCoordinator coordinator;
+    @MockitoSpyBean dz.sh.hidra.modules.identity.infrastructure.security.ProtectedSimulationManufacturerCharacteristicAuthorizationParticipant nativeIdentity;
+    @MockitoSpyBean dz.sh.hidra.modules.party.infrastructure.persistence.adapter.JdbcSimulationManufacturerEvidenceAdapter nativeParty;
+    @MockitoSpyBean dz.sh.hidra.modules.simulation.infrastructure.persistence.adapter.JdbcManufacturerCharacteristicRevisionRepositoryAdapter nativeSource;
     private JdbcTemplate admin;
     private MockMvc http;
     private String company, manufacturer, source, user, token;
@@ -290,9 +298,30 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
     private String path(String revision){return source+"/revisions/"+revision;}
     private long count(String table){return admin.queryForObject("SELECT count(*) FROM "+table
         +" WHERE company_party_id=? AND source_id=?",Long.class,company,source);}
+    private static String methodNames(Object spy) {
+        // Diagnostic whitelist: never log private parties, IDs, source payloads,
+        // native grants, credentials, request bodies or Java exception messages.
+        return org.mockito.Mockito.mockingDetails(spy).getInvocations().stream()
+            .map(i->i.getMethod().getName()).distinct().sorted().toList().toString();
+    }
+
     private void save(String revision)throws Exception{
         allow(Operation.SAVE,revision);
-        http("PUT",path(revision),body(revision),token).andExpect(status().isOk())
+        var performed=http("PUT",path(revision),body(revision),token);
+        var actual=performed.andReturn();
+        if(actual.getResponse().getStatus()!=200) {
+            String resolved=actual.getResolvedException()==null?"none":
+                actual.getResolvedException().getClass().getSimpleName();
+            String response=actual.getResponse().getContentAsString();
+            String code=response.contains("\"code\":\"DENIED\"")?"DENIED":"not-DENIED";
+            System.err.println("HAPI601 PRIVATE CI STAGES status="+actual.getResponse().getStatus()
+                +" code="+code+" resolvedClass="+resolved);
+            System.err.println("HAPI601 PRIVATE CI STAGES service="+methodNames(apiOwner)
+                +" coordinator="+methodNames(coordinator));
+            System.err.println("HAPI601 PRIVATE CI STAGES identity="+methodNames(nativeIdentity)
+                +" party="+methodNames(nativeParty)+" persistence="+methodNames(nativeSource));
+        }
+        performed.andExpect(status().isOk())
             .andExpect(jsonPath("$.sourceId").value(source))
             .andExpect(jsonPath("$.revisionId").value(revision));
     }

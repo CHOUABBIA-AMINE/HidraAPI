@@ -429,6 +429,8 @@ This pointer selects no new benchmark, publication policy, source change or rele
 
 HAPI-601 CI-first repair (2026-10-31): Full [#1027](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41213728019) failed six configured manufacturer HTTP/PostgreSQL `SAVE` assertions (403 instead of 200). [HPS-007](TASKS_HPS-007.md#hapi-601) records the exact test-only Party final-fence publisher privilege repair with unchanged assertions, pending exact new-SHA CI. HAPI-601 stays NOT_ACCEPTED; HAPI-602/P3 not selected.
 
+HAPI-601 CI #1028 diagnostic (2026-10-31): the same six real-manufacturer HTTP save 403 failures remain after the Party test-role grant repair. [HPS-007](TASKS_HPS-007.md#hapi-601) now registers a bounded, private CI stage-probe change to establish the actual denial boundary, with unchanged mandatory HTTP 200 assertions, all nine integration methods and 14 PostgreSQL shards. Root cause unverified; HAPI-601 NOT_ACCEPTED; HAPI-602/P3 unselected.
+
 ## Phase files
 
 | Phase | Definition file | Tasks |

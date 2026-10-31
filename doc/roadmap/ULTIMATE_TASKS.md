@@ -372,6 +372,17 @@ ledger; exact owner contract acceptance is still required. No new native
 permission, Platform production tuple, Flyway migration, ROADMAP/PHASES
 status, HAPI-602, numerical/P3, SITE or deployment is selected.
 
+
+HAPI-601 Package C source implementation stage: owner explicitly accepted
+the five-route technical contract and bounded maximum ledger following
+[Documentation #787](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41193548809)
+SUCCESS at `517b10d947e383d7162e26a5a9b6284be868eeee`. [HPS-007](TASKS_HPS-007.md#hapi-601)
+records one submitted `feat(simulation): expose supplied manufacturer characteristic authoring`
+source stage, 7 CREATE / 7 MODIFY / 0 DELETE: exact native manufacturer REST handlers,
+Platform compiled tuple registry, typed request/response mapping, synthetic tests
+and CI inventory. CI/full PostgreSQL and runtime OpenAPI remain REQUIRED; status
+remains NOT_IMPLEMENTED/BLOCKED until accepted. No HAPI-602, P3, SITE or deployment.
+
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent
 [HAPI-436](TASKS_HPS-024.md#hapi-436) are VERIFIED/COMPLETED within the accepted

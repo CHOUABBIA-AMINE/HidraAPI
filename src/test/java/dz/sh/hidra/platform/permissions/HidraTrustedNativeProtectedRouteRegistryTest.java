@@ -34,9 +34,14 @@ class HidraTrustedNativeProtectedRouteRegistryTest {
                 Owner.class, Owner.class.getMethod("save", String.class), "POST", PATH);
     }
 
-    @Test void productionRegistryStartsEmpty() throws Exception {
+    @Test void productionRegistryDeclaresOnlyFiveUnverifiedManufacturerTuples() throws Exception {
         var registry = new HidraTrustedNativeProtectedRouteRegistry();
-        assertTrue(registry.candidates().isEmpty());
+        assertEquals(5,registry.candidates().size());
+        assertEquals(java.util.Set.of("save","revision","history","certificate","qualify"),
+                registry.candidates().stream().map(v->v.method().getName())
+                    .collect(java.util.stream.Collectors.toSet()));
+        assertTrue(registry.candidates().stream().allMatch(v->
+                v.method().isAnnotationPresent(NativeProtectedOperation.class)));
         assertFalse(registry.isTrusted(new HandlerMethod(new Owner(), row().method()), "POST", PATH));
     }
 

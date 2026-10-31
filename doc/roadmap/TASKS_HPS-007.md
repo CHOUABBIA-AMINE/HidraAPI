@@ -1340,4 +1340,33 @@ DELETE none; READ-ONLY: `HidraRouteAuthorizationInterceptor.java`, `HidraRoutePe
 
 **This selected registration stage.** Exact documentation commit message `docs(simulation): admit manufacturer characteristic package C technical contract`; CREATE/DELETE zero, MODIFY **only** `doc/roadmap/TASKS_HPS-007.md` (append before its retained payload-end marker) and `doc/roadmap/ULTIMATE_TASKS.md` (one concise current-execution pointer). Preserve previous text and frozen states. This records a source-backed candidate after user authorization to prepare/register, **not final approval of these newly specified exact route signatures, the 8 CREATE/11 MODIFY implementation ledger, or implementation itself**. Next gate is the owner's specific final acceptance of this full contract; only a subsequent independently selected `Next` may execute the one implementation commit. Publish guarded main, check exact parent/tree/blobs and observe new-SHA Documentation Validation startup, then STOP.
 
+
+### HAPI-601 — Package C source implementation submission (2026-10-31; CI PENDING)
+
+**Owner admission and exact source.** The owner subsequently stated "I approve" specifically in answer to final acceptance of the registered HAPI-601 Package C five-route, bounded 8-CREATE/11-MODIFY/0-DELETE technical implementation contract. It is a single source stage, not acceptance of production use or further stages. Parent `517b10d947e383d7162e26a5a9b6284be868eeee`, tree `ccfed8365008415bb1fc302f3289bf78144aad0d`, Documentation Validation [#787](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41193548809) SUCCESS; baseline Full [#1023](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41191513815) succeeded only for the earlier runtime SHA. Exact single-stage publication message: `feat(simulation): expose supplied manufacturer characteristic authoring`.
+
+**Bounded source submission, 7 CREATE / 7 MODIFY / 0 DELETE.** CREATE:
+- `src/main/java/dz/sh/hidra/modules/simulation/api/rest/controller/ManufacturerCharacteristicRevisionController.java`
+- `src/main/java/dz/sh/hidra/modules/simulation/api/rest/request/ManufacturerCharacteristicRevisionRequests.java`
+- `src/main/java/dz/sh/hidra/modules/simulation/api/rest/response/ManufacturerCharacteristicRevisionResponses.java`
+- `src/main/java/dz/sh/hidra/modules/simulation/api/rest/mapper/ManufacturerCharacteristicRevisionRestMapper.java`
+- `src/main/java/dz/sh/hidra/modules/simulation/api/rest/ManufacturerCharacteristicRevisionApiExceptionHandler.java`
+- `src/test/java/dz/sh/hidra/modules/simulation/api/rest/controller/ManufacturerCharacteristicRevisionControllerTest.java`
+- `src/test/java/dz/sh/hidra/modules/simulation/qualification/ManufacturerCharacteristicOperatorQualificationTest.java`
+
+MODIFY:
+- `src/main/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistry.java`
+- `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java`
+- `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java`
+- `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java`
+- `.github/ci-test-inventory.json`
+- `doc/roadmap/TASKS_HPS-007.md` (this append)
+- `doc/roadmap/ULTIMATE_TASKS.md` (execution pointer only).
+
+The submitted code binds five exact `@NativeProtectedOperation` controller handlers through **independently Platform-owned, fixed reflective signatures**, startup matching and an immutable tuple list; Platform never imports private Simulation source classes and modules cannot self-register. Requests explicitly map the four discriminated supplied families, signed SHA/documentary data, exact immutable path identity, Workflow approval reference and bounded source-history query to the existing inbound Simulation use case; no persistence entity is a REST response. Separate certificate read, no total history count, source-scoped live HMAC continuation and exact company/native grants preserve the original authorization and transaction/final-guard owner. JWT authentication is required by configured infrastructure and independently checked by handler; no generic route permission is treated as a grant.
+
+**Intentional, source-supported exceptions.** The previously proposed optional `ManufacturerCharacteristicRevisionFailure.java` and two application-service/admission-coordinator modifications were **not** selected because the protected coordinator collapses unproven semantic conflict distinctions to denial. A 409 is NOT_ESTABLISHED; 403 is nondisclosing denial and 503 distinguishes unavailability from an indeterminate physical outcome, with no blind retry advice. No 404 is manufactured for a hidden/denied revision. The pre-existing PostgreSQL integration test is preserved unchanged; no Flyway/schema, dictionary, generic security interceptor, Party/Identity/Workflow, engine/OT, SITE or application configuration changes. The `doc/api/openapi.yaml` snapshot is deliberately **not** hand-written: only a genuine configured runtime snapshot may update it after source-linked validation.
+
+**Test and acceptance state.** Two new synthetic JVM test classes (5 controller and 3 qualification methods) and the three previously registered Platform JVM test class source hashes and changed method identities are recorded in `.github/ci-test-inventory.json`. Existing PostgreSQL source integrity, >256 revision paging and 65th manufacturer negative fixtures remain. Java 21 compiler exists only in an isolated container here; the repository Maven dependencies/runtime and Docker/PostgreSQL service were **not locally executed**. Source/blob and method/registry shape checks do not establish compilation, configured JWT/MockMvc security integration, real PostgreSQL scope, source commit/replay/rollback under HTTP, dynamic OpenAPI or documentation snapshot equivalence. Exact-SHA Full CI and Docs CI on the *new* commit, zero skipped applicable PostgreSQL checks, compiled Architecture/Platform startup and controller tests, runtime OpenAPI, error semantical acceptance and owner final HAPI-601 task reconciliation remain gates. **Source submitted / CI pending, not CI-accepted, engineering accepted, SITE accepted or deployed.** HAPI-602 and P3 remain unselected. If the new CI fails, repair this bounded stage on `Fail`, without advancing.
+
 <!-- task-register:payload:end -->

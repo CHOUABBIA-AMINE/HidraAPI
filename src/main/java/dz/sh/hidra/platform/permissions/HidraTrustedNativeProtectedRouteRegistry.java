@@ -11,8 +11,8 @@ import org.springframework.web.method.HandlerMethod;
 /**
  * Independently controlled Platform whitelist for native-protected HTTP routes.
  * No business module, annotation scan or application property can add entries.
- * Production intentionally starts with an empty registry until separately
- * reviewed Platform source registers an actual protected owner controller.
+ * Production activates only five separately approved manufacturer tuples after
+ * exact Spring MVC compilation validation. This is NOT a native Identity grant.
  */
 @Component
 public final class HidraTrustedNativeProtectedRouteRegistry {
@@ -21,7 +21,7 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
     private volatile Set<Route> verified = Set.of();
 
     public HidraTrustedNativeProtectedRouteRegistry() {
-        this(List.of());
+        this(manufacturerCandidates());
     }
 
     // Deliberately package-private for Platform's synthetic qualification tests.
@@ -29,6 +29,37 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
         this.candidates = List.copyOf(Objects.requireNonNull(candidates, "trusted route declarations"));
         if (new HashSet<>(this.candidates).size() != this.candidates.size()) {
             throw new IllegalArgumentException("Duplicate trusted native-protected route");
+        }
+    }
+
+    /**
+     * Independent, fixed Platform-owned five-tuple registration.
+     * Literal reflective class/method signatures avoid a prohibited Platform->module
+     * compile dependency. No scans, configuration overrides or runtime registration.
+     */
+    private static List<Route> manufacturerCandidates() {
+        final String prefix="dz.sh.hidra.modules.simulation.api.rest.";
+        final String controllerName=prefix+"controller.ManufacturerCharacteristicRevisionController";
+        final String base="/api/v1/simulation/manufacturer-characteristics/{sourceId}";
+        try {
+            Class<?> controller=Class.forName(controllerName);
+            Class<?> save=Class.forName(prefix+"request.ManufacturerCharacteristicRevisionRequests$Save");
+            Class<?> qualify=Class.forName(prefix+"request.ManufacturerCharacteristicRevisionRequests$Qualify");
+            return List.of(
+                new Route(controller,controller.getDeclaredMethod("save",String.class,String.class,save),
+                    "PUT",base+"/revisions/{revisionId}"),
+                new Route(controller,controller.getDeclaredMethod("revision",String.class,String.class,String.class),
+                    "GET",base+"/revisions/{revisionId}"),
+                new Route(controller,controller.getDeclaredMethod("history",String.class,String.class,
+                    Integer.class,String.class),"GET",base+"/history"),
+                new Route(controller,controller.getDeclaredMethod("certificate",String.class,String.class,
+                    String.class),"GET",base+"/revisions/{revisionId}/certificate"),
+                new Route(controller,controller.getDeclaredMethod("qualify",String.class,String.class,qualify),
+                    "POST",base+"/revisions/{revisionId}/qualification")
+            );
+        } catch (ClassNotFoundException | NoSuchMethodException contractDrift) {
+            throw new IllegalStateException("Missing approved compiled manufacturer native route contract",
+                    contractDrift);
         }
     }
 

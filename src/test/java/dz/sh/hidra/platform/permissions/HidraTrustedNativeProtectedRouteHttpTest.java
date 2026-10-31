@@ -150,12 +150,13 @@ class HidraTrustedNativeProtectedRouteHttpTest {
         org.mockito.Mockito.verify(resolver).hasPermission(any(), anyString());
     }
 
-    @Test void productionEmptyRegistryDoesNotDelegatesSyntheticController() throws Exception {
+    @Test void productionManufacturerRegistryDoesNotDelegateSyntheticController() throws Exception {
         var owner = new OwnerController();
         var resolver = org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class);
         authenticated();
-        var mvc = mvc(owner, new UntrustedController(), resolver,
-                new HidraTrustedNativeProtectedRouteRegistry());
+        var registry = new HidraTrustedNativeProtectedRouteRegistry();
+        assertEquals(5,registry.candidates().size());
+        var mvc = mvc(owner, new UntrustedController(), resolver,registry);
         assertThrows(Exception.class, () ->
                 mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(TRUSTED)));
         assertEquals(0, owner.calls.get());

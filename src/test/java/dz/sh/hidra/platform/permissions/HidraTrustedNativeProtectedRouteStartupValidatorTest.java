@@ -39,11 +39,12 @@ class HidraTrustedNativeProtectedRouteStartupValidatorTest {
         return mapping;
     }
 
-    @Test void noTrustedProductionEntriesAllowCleanStartup() {
+    @Test void productionNativeManufacturerRoutesFailWithoutCompiledMappings() {
         var registry = new HidraTrustedNativeProtectedRouteRegistry();
-        new HidraTrustedNativeProtectedRouteStartupValidator(
-                new RequestMappingHandlerMapping(), registry).validate();
-        assertTrue(registry.candidates().isEmpty());
+        assertTrue(registry.candidates().size()==5);
+        assertThrows(IllegalStateException.class, ()->
+                new HidraTrustedNativeProtectedRouteStartupValidator(
+                    new RequestMappingHandlerMapping(), registry).validate());
     }
 
     @Test void exactMappedAnnotatedRouteBecomesTrustedOnlyAfterValidation() throws Exception {

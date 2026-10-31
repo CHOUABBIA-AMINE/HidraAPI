@@ -64,7 +64,10 @@ public class ProtectedSimulationManufacturerCharacteristicAuthorizationParticipa
         this.identity=Objects.requireNonNull(identity);this.reader=Objects.requireNonNull(reader);
         this.jdbc=Objects.requireNonNull(jdbc);this.source=Objects.requireNonNull(jdbc.getDataSource());
     }
-    @Override @Transactional(propagation=Propagation.NEVER)
+    // A Spring PROPAGATION_NEVER interceptor may create an empty synchronization
+    // even without a physical transaction, making the explicit no-sync guard
+    // below reject every valid native HTTP caller. Do not add that interceptor.
+    @Override
     public Prepared prepare() {
         var authentication=SecurityContextHolder.getContext().getAuthentication();
         if(authentication==null||!authentication.isAuthenticated()

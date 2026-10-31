@@ -433,6 +433,8 @@ HAPI-601 CI #1028 diagnostic (2026-10-31): the same six real-manufacturer HTTP s
 
 HAPI-601 CI #1029 (2026-10-31): six manufacturer HTTP 403 failures were traced to native Identity `prepare`, before Party/persistence. A bounded read-only test JWT/binding/provenance probe is registered in [HPS-007](TASKS_HPS-007.md#hapi-601) for exact new-SHA CI; original tests stay strict. HAPI-601 NOT_ACCEPTED, HAPI-602/P3 unselected.
 
+HAPI-601 CI #1030 preflight fix (2026-10-31): the six manufacturer HTTP 403 requests were traced to a Spring `PROPAGATION_NEVER` empty-synchronization conflict in native Identity `prepare()`. [HPS-007](TASKS_HPS-007.md#hapi-601) records the bounded removal of that self-conflicting annotation, with explicit no-ambient-transaction/no-sync guards preserved, the broken extra probe removed, and nine strict test assertions unchanged. Exact new-SHA Full/Docs required; HAPI-601 NOT_ACCEPTED, HAPI-602/P3 unselected.
+
 ## Phase files
 
 | Phase | Definition file | Tasks |

@@ -277,6 +277,17 @@ opt-in only. HAPI-601 history remains a separate blocked consumer pending
 source-wide authorization and PostgreSQL evidence. See
 [TASKS_HPS-023.md](TASKS_HPS-023.md#hapi-698) for exact scope and acceptance.
 
+HAPI-601 security preflight: the owner approved a **documentation-only**
+source-backed review of whole-history manufacturer/model authorization and
+cursor consistency at green HPS-023 platform source `90f97740f37b2ce3ed41a81dcf1cfc3d35a1ac20`.
+[HPS-007](TASKS_HPS-007.md#hapi-601) records candidate bounded
+complete-eligibility traversal versus a Party-owned batch contract, and
+cross-request cursor/snapshot alternatives. These remain **proposals**;
+no Party/SQL/migration/Simulation implementation is admitted, and no
+historical HAPI-601 status or downstream gate changes. Exact preflight
+message: `docs(simulation): preflight protected manufacturer history pagination security`.
+Next requires an explicit owner-approved security contract and file ledger.
+
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent
 [HAPI-436](TASKS_HPS-024.md#hapi-436) are VERIFIED/COMPLETED within the accepted

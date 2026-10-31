@@ -698,4 +698,148 @@ Package A MODIFY only `.github/ci-test-inventory.json` for actual cases/hashes a
 
 **Exact selected governance write and acceptance.** Commit `docs(simulation): align manufacturer pagination with platform configuration`. CREATE none; MODIFY **only** `doc/roadmap/TASKS_HPS-007.md` (append-only) and `doc/roadmap/ULTIMATE_TASKS.md` (compact pointer); DELETE none. Do **not** edit HPS-023, HAPI-698, ROADMAP/PHASES, Java, properties, tests, SQL, OpenAPI, or CI inventory. Accept only preserved preceding text, exact guarded Git parent/tree/blob, and new Documentation Validation startup; this is no Java/PostgreSQL test or software acceptance. A further owner-approved platform task admission is needed before any cross-module implementation. HAPI-601 remains NOT_IMPLEMENTED/BLOCKED; HAPI-602, P3 numerical, certification, SITE and deployment remain excluded.
 
+### HAPI-601 — protected manufacturer history authorization and cursor security preflight (2026-10-31; CONTRACT_PENDING_ADMISSION)
+
+**Owner-selected stage and evidence.** The owner explicitly approved a documentation-only
+source/security preflight after the HAPI-601 pagination integration direction was approved.
+Parent `90f97740f37b2ce3ed41a81dcf1cfc3d35a1ac20` (`feat(platform): configure shared pagination policy`) has [Full CI
+#1021](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41173608113)
+and [Documentation Validation #779](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41173608054)
+completed SUCCESS at the same SHA. This preflight does **not** approve a new Party contract,
+migration, cursor implementation, tests, expanded security privileges or a Java/SQL write.
+Its exact message is `docs(simulation): preflight protected manufacturer history pagination security`;
+CREATE/DELETE none; MODIFY only this append-only `TASKS_HPS-007.md` and the compact
+`ULTIMATE_TASKS.md` pointer. HAPI-601 remains NOT_IMPLEMENTED/BLOCKED in frozen
+ROADMAP/PHASES. No new HAPI task number or legacy mapping is invented.
+
+**Source-backed ownership, API reality and non-disclosure invariant.**
+- Simulation owns immutable characteristic revision source, indexed history retrieval and the
+  protected application coordinator. `ManufacturerCharacteristicRevisionUseCase.Command`
+  has no page/cursor selector, `Result.history` has no continuation, and the repository's
+  `history(Admission,company,source)` yields at most 256 rows, rejecting a 257th.
+- Identity owns the exact `LIST_HISTORY` operation and native permission
+  `simulation:manufacturer-characteristic:history`. `ProtectedManufacturerCharacteristicAdmissionCoordinator.acquire`
+  currently authorizes it before selecting source history, then calls Party separately
+  for **every selected revision**, rechecks evidence and final relation fences in the
+  original `ProtectedTransactionExecutor` transaction. An apparently permitted first
+  page must not reveal rows, source existence, totals, `hasNext` or a cursor if any
+  relevant out-of-page revision would make the whole source history ineligible.
+- Party owns `SimulationManufacturerEvidenceContract.Requirement(companyPartyId,
+  manufacturerPartyId,manufacturerModelReference)`. Its JDBC adapter takes a genuine
+  original-transaction, owner-table lock and verifies company/model-specific active
+  authorizations, Party/role state, generations and validity. It exposes **one tuple**
+  per admission; no reviewed source-wide/batch authorization or completeness witness
+  is implemented. Simulation must not query Party's private authorization tables
+  directly or treat a cursor as a native permission.
+- `V20261030_002__simulation_manufacturer_characteristic_sources.sql` has immutable
+  `(company_party_id,source_id,revision_id)` identity, `source_recorded_at`,
+  `inserted_at`, and an index on `(company_party_id,source_id,source_recorded_at,revision_id)`.
+  `hidra_simulation_manufacturer_lock_sources()` locks source/qualification tables
+  SHARE ROW EXCLUSIVE NOWAIT inside the required READ COMMITTED transaction.
+  This protects each **individual** physical transaction; it does not keep a
+  cross-request historical snapshot. The timestamp CHECK
+  `source_recorded_at<=inserted_at` does not make historical ordering equal to
+  insertion/commit order or establish a monotonic commit sequence.
+- HPS-023 `HidraPaginationProperties` is already registered through Spring: startup
+  `hidra.api.pagination.default-size`, `max-size`, `max-cursor-length`
+  (initial defaults 50/200/4096); `resolveSize` and `validateCursor` are
+  opt-in technical bounds, never authority. The older manufacturer-specific
+  fixed 50/100 and 4096/128 scan/model proposals were **not** adopted.
+
+**Security contract candidate A — bounded complete source eligibility (PROPOSED ONLY).**
+Following Identity `LIST_HISTORY` admission and within the original locked
+transaction, a Simulation-owned source-selection adapter may inspect a
+*complete and provably bounded* projection of distinct manufacturer/model
+identities for the exact company/source. A one-extra-row overflow check must
+fail closed before any externally observable history metadata. Every distinct
+identity requires a fresh Party-owned `Requirement` admission, exact physical
+PID/XID/role checks, generation/expiry recheck and relation fences. Any
+unresolved or inconsistent source identity, absent grant, excessive source
+cardinality or indeterminate completeness denies the **entire** history,
+including a page that otherwise appears valid. No private Party table join,
+unbounded full-payload scan, extra database role or arbitrary fixed limit is
+authorized. This option is **unproven** until reviewed bounded SQL execution
+plans, source-integrity reconciliation, workload policy, race tests and exact
+authorization checks demonstrate complete coverage at a finite cost.
+Alternatively, a Party-owned batch/source-scope evidence contract might be
+necessary; that requires separate Party owner interface/adapter/test scope and
+approval. Neither option is implemented or authorized by this preflight.
+
+**Security contract candidate B — cursor and cross-request consistency (PROPOSED ONLY).**
+A versioned, canonical, server-integrity-protected cursor would bind exact
+company/source, persisted PostgreSQL ordering tuple (microsecond-precision
+`source_recorded_at` plus `revision_id`), accepted page selector,
+policy version/expiry and an explicitly defined source consistency boundary.
+Use separately managed secrets and key rotation if a MAC is selected; do
+not reuse Identity/JWT secrets, leak certificates, grant material, SQL or
+source payload, or represent a cursor as authorization evidence. Reject
+malformed, oversized, altered, expired and foreign-scope tokens **before**
+protected source lookup; authenticate and reauthorize each page in a *fresh*
+original restricted transaction. A source-locked READ COMMITTED query and
+keyset alone do **not** establish repeatable-read history across requests.
+`inserted_at` high water alone does not prove monotonic commit order,
+exclude late commits with earlier timestamps, or prevent backdated
+`source_recorded_at` from sorting behind a cursor. Do not claim a
+snapshot, no-skip guarantee or a stable `hasNext` from that evidence.
+The owner must separately select either a **provable stable snapshot/
+monotonic source generation** (potential new owned persistence/schema and
+migration) or an explicitly described weaker live-keyset consistency
+contract with corresponding caller-visible limitations; no choice is
+implicit here. Source-wide eligibility remains fresh per page regardless
+of cursor integrity.
+
+**Source-backed candidate implementation ledger — NOT ADMITTED.**
+Existing Simulation-only proposal `feat(simulation): paginate protected manufacturer history`
+lists MODIFY `ManufacturerCharacteristicRevisionUseCase.java`,
+`ManufacturerCharacteristicRevisionRepositoryPort.java`,
+`ProtectedManufacturerCharacteristicAdmissionCoordinator.java`,
+`JdbcManufacturerCharacteristicRevisionRepositoryAdapter.java`,
+possibly `ManufacturerCharacteristicRevisionApplicationService.java`,
+three existing focused Simulation tests,
+`.github/ci-test-inventory.json` for true inventory changes and this phase
+file. Full repository-relative paths are recorded in the preceding HAPI-601
+prerequisite section. The proposed complete-eligibility contract may need
+**additional** `src/main/java/dz/sh/hidra/modules/party/application/contract/simulation/SimulationManufacturerEvidenceContract.java`,
+`src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JdbcSimulationManufacturerEvidenceAdapter.java`
+and existing/new Party native PostgreSQL tests. A stable snapshot may need
+a separate reviewed Simulation-owned schema/adapter/trigger change plus
+genuine PostgreSQL tests. Any such addition is outside the original
+10-path ledger; no migration name or new test path is admitted or invented.
+An explicit owner-approved exact CREATE/MODIFY/DELETE ledger and dependency
+registration are mandatory *before* implementation. Do not retroactively
+edit past acceptance or frozen status cells.
+
+**Mandatory acceptance cases for a future approved implementation.**
+Original PID/XID/READ COMMITTED, authority before source existence and
+metadata, and final Party/Identity/Workflow/source fences must survive.
+Test an authorized first page with an **unauthorized manufacturer/model in
+a later page** (entire request denied), mixed-model/multi-company sources,
+complete distinct-identity projection and bounded overflow, source and grant
+mutations/revocations during and between page requests, group grant expiry,
+denied/absent indistinguishability, terminal and empty history, >256 revisions
+without materializing all payloads, page-size/environment overrides with
+stricter owner cap, byte-accurate SQL timestamp tie ordering, foreign-scope/
+tampered/replayed/expired cursor, secret rotation if used, concurrent append
+and backdated inserts (before/after cursor), qualification privacy,
+no cross-company metadata leakage, rollback and indeterminate commit.
+Use real fresh-schema PostgreSQL and configured authorization identities;
+Docker-skipped integration tests are not proof, nor are source review and
+green documentation CI. Verify existing five non-history operations, Workflow
+query guards, kernel/Workbench/Telemetry/Organization API compatibility,
+unchanged migration history, test inventory and applicable runtime
+OpenAPI. No live OT, P3 numerical solver, certificate synthesis, SITE,
+HidraWEB, release or deployment is selected.
+
+**Pending owner decisions and next gate.** (1) Admit and cost-bound a
+source-wide complete-eligibility mechanism (per-tuple bounded traversal
+versus independently reviewed Party batch) without weaker authorization;
+(2) select exact cursor consistency semantics and any stable snapshot
+storage mechanism, including handling of backdated/late inserts;
+(3) approve owner-vetted file/SQL/test ledger, finite policy values and
+exact implementation package. Until these are accepted and genuinely
+validated, `feat(simulation): paginate protected manufacturer history`
+remains review-gated. Package C, HAPI-602 and all downstream tasks remain
+blocked. This documentation stage ends after exact-head guarded publication
+and Documentation Validation run creation/queue/start verification.
+
 <!-- task-register:payload:end -->

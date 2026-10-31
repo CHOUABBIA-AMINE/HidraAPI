@@ -360,6 +360,18 @@ checks remain pending. HPS-002 owns native grants/DENY and
 HAPI-601 Package C stays NOT_IMPLEMENTED/BLOCKED; no frozen
 status rows, real controller, privilege or migration changed.
 
+HAPI-601 Package C REST/trusted Platform registration technical contract:
+owner selected the **documentation-only** exact-source contract admission
+at 583f8e2609a737c092b30e18f48d3c2f1c98517b (Full CI #1023 and Docs #786 SUCCESS).
+[HPS-007](TASKS_HPS-007.md#hapi-601) now records the five proposed
+REST/native routes, identity/security and live-history semantics, typed
+conflict/indeterminate error gap, and the bounded maximum 8-CREATE /
+11-MODIFY/0-DELETE implementation ledger. Registered documentation message:
+`docs(simulation): admit manufacturer characteristic package C technical contract`. This **does not** admit or implement that
+ledger; exact owner contract acceptance is still required. No new native
+permission, Platform production tuple, Flyway migration, ROADMAP/PHASES
+status, HAPI-602, numerical/P3, SITE or deployment is selected.
+
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent
 [HAPI-436](TASKS_HPS-024.md#hapi-436) are VERIFIED/COMPLETED within the accepted

@@ -36613,4 +36613,107 @@ strict owner caps, cursor controls, startup immutability and Spring bean factory
 Actual local Maven runtime validation is not claimed; exact-SHA development CI
 and documentation validation must start and complete before software acceptance.
 
+### HPS-023 — owner-approved trusted protected-route registration prerequisite for HAPI-601 Package C (2026-10-31; DOCUMENTATION ONLY)
+
+**Registration authority and sequence.** The owner explicitly approved registering a
+reusable, Platform-owned HTTP protected-route authorization prerequisite under existing
+Platform/Authorization governance, **before** HAPI-601 Package C. Registration-only
+commit message: `docs(platform): register trusted protected-route authorization prerequisite`.
+Selected parent `f28dcb475b6a0a62f39791559f539024db468df9` passed [Full CI #1022](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41180564343)
+and [Documentation Validation #783](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41180564336).
+This is an incremental cross-phase *dependency record*, not a new HAPI/HPS/HPR
+identifier, alteration to the frozen ROADMAP/PHASES dependency/status tables,
+implementation selection, acceptance of Package C, or reopening an already
+completed platform task. Identity/Authorization (HPS-002) retains the
+meaning and evaluation of effective and native permission grants; Platform
+(HPS-023) owns routing and enforcement. Simulation (HAPI-601) only owns
+manufacturer commands, authoritative source eligibility, business invariants
+and protected coordinator flow.
+
+**Verified implementation mismatch at parent.**
+`src/main/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptor.java`
+currently has individually hardcoded `isOwned*Route` predicates for reviewed
+native-protected controller/method/HTTP-verb/route tuples. A recognized tuple
+requires authentication then delegates the resource-specific decision to the
+existing native owner. Every unmatched tuple uses
+`HidraRoutePermissionNaming.permissionFor(...)` and
+`HidraEffectivePermissionResolver.hasPermission(...)`.
+The generated generic route code for a proposed POST
+`/api/v1/simulation/manufacturer-characteristics` would be
+`simulation:manufacturer-characteristics:execute`, while the existing
+`SimulationManufacturerCharacteristicAuthorizationContract` requires
+`simulation:manufacturer-characteristic:save` inside the original
+protected transaction. These codes are **not equivalent**, and adding
+a controller to an unconditional generic or annotation-only bypass
+would weaken native resource authority. The cited POST path is only
+a Package C proposal, not a runtime endpoint. The existing
+`HidraRoutePermissionCatalogService` advertises derived route metadata,
+not a verified native-delegation registration. Module-scoped
+`@RestControllerAdvice` handles response errors, **not** route access.
+
+**Owner-accepted architecture, implementation NOT admitted.** A business
+module may *declare* a native-protected operation through a transport-side,
+compile-time-reviewed public declaration; it cannot grant itself an exemption.
+A **separately controlled, immutable, trusted Platform registration** must
+approve an exact Spring MVC `HandlerMethod` controller identity plus method
+signature, HTTP verb and best-matching route pattern. Validate this against
+the actual Spring mapping at startup, reject ambiguity/collision/stale
+entries and keep unregistered/mismatched routes on their current default
+generic permission checks. A true registered protected route requires an
+authenticated, nonanonymous current principal at the HTTP boundary, then
+always executes its *reviewed native Identity/Party owner authorization and
+original protected transaction/final guards*; no annotation, caller-supplied
+header, JWT permission claim, route name, catalog entry or registration
+metadata is authority to see a resource, count or history. Preserve
+revocation, DENY precedence, company/resource scope, role/temporal fences,
+unknown-commit behavior, configured security chain and all existing
+`isOwned*Route` exact-allowlist behavior until a separately authorized,
+fully qualified migration. No route-wide bypass or global
+`permitAll` is permitted. No permission is renamed, created or
+relaxed by this registration.
+
+**Required separate source-backed implementation admission.** Before any
+Platform code, reconcile a bounded exact CREATE/MODIFY/DELETE ledger and
+exact implementation commit message under HPS-023, with HPS-002 review
+of trust and permission semantics. Candidate affected Platform paths
+for inspection, **not yet authorized for modification**, include
+`src/main/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptor.java`,
+`src/main/java/dz/sh/hidra/platform/permissions/HidraRoutePermissionCatalogService.java`,
+`src/main/java/dz/sh/hidra/platform/configuration/HidraPermissionWebMvcConfiguration.java`
+only if wiring requires it, their real unit/HTTP tests, any separately
+selected trusted registry/contract CREATE paths, architecture guardrails
+and `.github/ci-test-inventory.json` for actual test changes. Do not
+create an unreviewed annotation or platform-to-Simulation concrete
+dependency. Runtime API controllers, HAPI-601 manufacturer history,
+Party/Identity owner implementations, Flyway and privileges are **not**
+part of this registration.
+
+**Platform/Identity acceptance criteria for a future source stage.**
+Prove current compiled tuple matches and declared/trusted registration
+intersection; renamed controller, wrong handler method/signature,
+wrong verb/pattern, unregistered declaration and module self-registration
+must **never** receive native-owner delegation. Prove unauthenticated/
+anonymous rejection, ordinary route permission unchanged, current
+protected owner native PERMIT/DENY/REVOKED/INDETERMINATE and other-company
+denials without protected existence/count disclosure. Verify startup
+mapping/registration collisions, permission-catalog accuracy, all
+currently reviewed `isOwned*Route` tuples, pre-/post-handler behavior,
+source/final fences and original commit semantics, plus actual
+Spring MVC/security and architecture tests. The platform registry
+must not cache grants or replace resource authorization. Obtain exact-SHA
+Java/CI and non-skipped PostgreSQL evidence for relevant protected
+flows; synthetic tests do not establish SITE acceptance.
+
+**Scope of this registration-only commit.** Append to
+`doc/roadmap/TASKS_HPS-023.md` (Platform primary),
+`doc/roadmap/TASKS_HPS-002.md` (Identity authority boundary),
+`doc/roadmap/TASKS_HPS-007.md` (HAPI-601 Package C dependency)
+and add a compact pointer in `doc/roadmap/ULTIMATE_TASKS.md`.
+CREATE/DELETE none, ROADMAP/PHASES unchanged, no production Java, tests,
+configuration, privileges, Flyway, OpenAPI or runtime approval.
+The **next gate** is independently admitted exact-source Platform
+implementation scope; HAPI-601 Package C remains blocked until that
+prerequisite is actually validated. HAPI-602, P3/SITE, OT/deployment
+remain excluded.
+
 <!-- task-register:payload:end -->

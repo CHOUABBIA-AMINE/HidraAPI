@@ -322,6 +322,18 @@ HMAC cursor; the legacy operations are preserved. See
 runtime/PostgreSQL acceptance gates. HAPI-601 stays NOT_IMPLEMENTED/BLOCKED
 in the frozen status tables until whole-task acceptance.
 
+HPS-023 / HPS-002 trusted native-protected route prerequisite for
+HAPI-601 Package C: the owner approved *registration*, not implementation,
+of a Platform-enforced, independently reviewed exact compiled
+controller/method/verb/route declaration. A module cannot exempt itself;
+Identity retains grant/DENY and native resource authorization ownership.
+The generic `simulation:manufacturer-characteristics:execute` code
+cannot substitute for native `simulation:manufacturer-characteristic:save`.
+HPS-023 owns the source-backed Platform implementation ledger/acceptance
+gate; HPS-002 records its Identity authority boundary; HPS-007 tracks
+Package C as the still-blocked consumer. No new task ID/status change,
+Java/API/privilege change, acceptance of C, HAPI-602 or deployment.
+
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent
 [HAPI-436](TASKS_HPS-024.md#hapi-436) are VERIFIED/COMPLETED within the accepted

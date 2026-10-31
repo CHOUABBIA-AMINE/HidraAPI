@@ -1244,4 +1244,29 @@ PostgreSQL tests demonstrate the new protected path. Any CI failure
 enters `Fail` repair before roadmap advancement; qualified results
 do not authorize Package C, HAPI-602 or deployment.
 
+### HAPI-601 — Package C awaits trusted Platform protected-route registration (2026-10-31; DEPENDENCY REGISTERED)
+
+The owner explicitly chose a reusable shared-security path instead of
+HAPI-601 ownership of `HidraRouteAuthorizationInterceptor`.
+At parent `f28dcb475b6a0a62f39791559f539024db468df9`, [Full CI #1022](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41180564343)
+and [Docs #783](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41180564336)
+passed. HPS-023 now registers the Platform-owned, independently trusted
+native-protected HTTP route prerequisite; HPS-002 owns permission
+meaning and Identity grants. The Package C candidate remains the
+existing seven Simulation REST/request/response/mapper/advice/test
+CREATE proposals and exact proposed message
+`feat(simulation): expose supplied manufacturer characteristic authoring`.
+These files are **not** yet accepted as sufficient or executed:
+the REST route mappings, DTO/error/OpenAPI behavior and source-linked
+HTTP tests still require separate exact technical admission and a
+qualified Platform registration. No HAPI-601 module may self-exempt
+the Platform's general route checks; no generic route permission can
+replace current Identity `SAVE`, `READ_REVISION`,
+`LIST_HISTORY`, `READ_CERTIFICATE` or `QUALIFY` native
+authorization. Existing internal history source, HMAC cursor,
+whole-source Party admission, original transaction and final guards
+are unchanged by this documentation-only dependency registration.
+HAPI-601 stays NOT_IMPLEMENTED/BLOCKED; HAPI-602, P3, SITE,
+and deployment remain excluded.
+
 <!-- task-register:payload:end -->

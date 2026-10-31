@@ -10828,4 +10828,32 @@ Future discoveries, refined exact file scope, accepted tests, blockers and decis
 
 **Status and next gate.** HAPI-689 remains `PARTIAL / BLOCKED` at publication baseline `ce0f4c06d9bce8f91d36655f5c75f08771ff7a25`. Owner policy selection is now documented; implementation, focused negative and concurrency tests, source/owner coverage, CI and engineering acceptance remain unproven. All frozen ROADMAP/PHASES status cells remain intact. HAPI-599 and HAPI-611 owner decisions are intentionally outside this commit and require separate registered stages.
 
+### HPS-002 — Identity authority boundary for trusted protected-route platform prerequisite (2026-10-31; REGISTRATION ONLY)
+
+The owner approved a cross-phase, **Platform-owned** trusted
+protected-route *registration prerequisite* before HAPI-601 Package C.
+See HPS-023's matching registration at selected source
+`f28dcb475b6a0a62f39791559f539024db468df9`; exact documentation message:
+`docs(platform): register trusted protected-route authorization prerequisite`.
+This is an append-only ownership cross-reference under existing
+HPS-002; it is **not** a new Identity task, new permission, renamed
+authorization code or change to any frozen HPS-002 status.
+
+Identity alone owns the permission catalog, grant/DENY semantics,
+resource-scoped native permission evidence, revocation and authorization
+evaluation. The protected manufacturer contract currently selects
+`simulation:manufacturer-characteristic:save`, `:read`, `:history`,
+`simulation:manufacturer-certificate:read` and
+`simulation:manufacturer-characteristic:qualify`, not a generic
+`simulation:manufacturer-characteristics:execute` equivalence.
+Platform may independently trust a *compiled HTTP route tuple* for
+delegation, but a module annotation or declaration may not authorize
+itself, override Identity permission evaluation or expose protected
+existence/count/history. Simulation coordinates the existing original
+transaction Party/Identity/final guards. Any future change to native
+permission semantics or Identity paths requires a separate, exact
+owner-reviewed implementation ledger and tests. Nothing in this
+registration approves a source rewrite, runtime security bypass,
+additional grants, migration or HAPI-602 progression.
+
 <!-- task-register:payload:end -->

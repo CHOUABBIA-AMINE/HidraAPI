@@ -383,6 +383,15 @@ Platform compiled tuple registry, typed request/response mapping, synthetic test
 and CI inventory. CI/full PostgreSQL and runtime OpenAPI remain REQUIRED; status
 remains NOT_IMPLEMENTED/BLOCKED until accepted. No HAPI-602, P3, SITE or deployment.
 
+HAPI-601 Fail / OpenAPI-only reconciliation (2026-10-31): Full
+[#1025](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41203839131)
+confirmed unit/architecture, static and 14 PostgreSQL shards passed, but
+runtime OpenAPI equality failed. [HPS-007](TASKS_HPS-007.md#hapi-601)
+records the actual successful generation-step artifact and bounded canonical
+snapshot/manifest repair; full exact-repair-SHA CI, dictionary and compatibility
+remain REQUIRED. HAPI-601 stays NOT_ACCEPTED; no HAPI-602/P3 selection.
+
+
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent
 [HAPI-436](TASKS_HPS-024.md#hapi-436) are VERIFIED/COMPLETED within the accepted

@@ -223,3 +223,11 @@ resolved, but HAPI-590's retained PARTIAL/BLOCKED status and separate acceptance
 gate remain pending. HAPI-778 is not marked accepted by this repair. Exact
 repair-SHA applicable CI must run; no full workflow success or software,
 engineering, deployment or operational acceptance is inferred here.
+
+## HAPI-601 CI #1025 generated manufacturer contract reconciliation — 2026-10-31
+
+The owner-selected Fail repair addresses [Full CI #1025](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41203839131) on executable source `07af36e5061a8b300814cc396e8c0c2cdb9cee8f`. Unit/architecture, static validation and all fourteen PostgreSQL partitions succeeded; the API job failed strict runtime snapshot equality, and the dependent full-evidence gate failed. The API application build and named runtime-generation step 9 succeeded; the API job and entire workflow did **not** pass.
+
+The actual `openapi/hidra-api.json` member came from diagnostic artifact `13043436381` (API job `124544800340`); ZIP SHA256 `e287d10ddec9dabd51abaea81b3dc96247074a06ce6f807e5a4672c31de4d909`, JSON member SHA256 `c535a953aefe0a8c1e75b39f50a3094ed1aeeb2c4161459cca72e7f84b7b19c5`. The canonical sorted compact form has SHA256 `f9a60a38ba8cec568cffb9f2acf871545d8e0978f4fbc73da4f571aa0905f17b` and Git blob `5a3798e053ee262aec01d0f5bd24e739b2cf8f09`: 296 paths, 323 operations and 369 schemas. The new document preserves every prior path, schema, security requirement and other contract object except the generator SHA; it adds only four manufacturer path items/five methods and their 21 generated transport schemas. This was exact artifact reconstruction, not manually invented field contracts. The manifest scopes success to generation, retains previous provenance, and records that Full CI failed.
+
+This is a documentation/manifest reconciliation within the incomplete HAPI-601 Package C source stage, not HAPI-601 engineering acceptance. Fresh exact-repair-SHA CI must confirm generated equality, real PostgreSQL dictionary capture, supported backward compatibility, and full coverage. No live industrial qualification, HAPI-602, numerical engine, OT control or deployment is admitted.

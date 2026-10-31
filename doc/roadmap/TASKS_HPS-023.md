@@ -36577,4 +36577,40 @@ This is a **proposal**, not a new registered HAPI or a grant to mutate the six s
 
 **This registration-only deliverable.** Exact commit `docs(platform): preflight shared property-driven pagination contract`. CREATE/DELETE none; MODIFY exactly `doc/roadmap/TASKS_HPS-023.md` (append-only preflight, all existing per-task payload preserved) and `doc/roadmap/ULTIMATE_TASKS.md` (brief pointer). No API implementation, migration, CI inventory, config-properties file, kernel code, frozen roadmap/phase status, or HAPI-601 Package C change. Confirm expected-head guarded parent/tree/two blobs and Documentation Validation created/queued/started at the new SHA, then STOP. Next gate is **explicit owner adoption of the platform implementation contract and ledger** under the existing governance framework—not automatic application of an unapproved implementation.
 
+### HPS-023 — owner-admitted shared pagination policy implementation (2026-10-31)
+
+The owner explicitly approved the prior HPS-023 source-backed technical contract and its
+bounded proposed implementation ledger in the ongoing conversation. This selects only
+`feat(platform): configure shared pagination policy` on parent
+`8279104c628bf8f9ac2acf6de7d1941ed9a96ca4`, whose Documentation Validation #778 succeeded. Existing HAPI-698/KER-009
+is preserved; this is an admitted HPS-023 incremental platform policy, not a
+renumbering or reopening of a completed kernel task. No ROUTEMAP/PHASES statuses
+or manufacturer Package C implementation are selected.
+
+Approved initial values are conservative *development defaults derived from existing
+contracts*, not industrial calibration: default size 50 (Workbench), max size 200
+(Workbench/kernel), max cursor length 4096 (Topology continuation). The configurable
+absolute page ceiling 10000 matches the largest existing Telemetry trend limit;
+it is a finite safety ceiling, not a grant to any endpoint. At startup the three
+mandatory keys resolve from `application.properties` through optional environment
+overrides. Invalid/missing, reversed, zero and above-ceiling values fail closed;
+changes require restart. An immutable single Spring bean exposes opt-in effective
+size/cursor validation against caller-provided stricter owner caps. No new resource
+automatically consumes the policy, and no security decision or protected metadata
+is delegated to the platform. Future changes to numeric limits or per-resource
+integration require explicit compatibility and owner authorization.
+
+Implementation allowlist: CREATE
+`src/main/java/dz/sh/hidra/platform/configuration/HidraPaginationProperties.java`,
+`src/test/java/dz/sh/hidra/platform/configuration/HidraPaginationPropertiesTest.java`;
+MODIFY `src/main/java/dz/sh/hidra/platform/configuration/HidraTransactionConfiguration.java`,
+`src/main/resources/application.properties`, `.github/ci-test-inventory.json`,
+`doc/roadmap/TASKS_HPS-023.md`, `doc/roadmap/ULTIMATE_TASKS.md`.
+No DELETE, schema migration, OpenAPI/REST change, simulation history page/cursor,
+module-wide retrofit, or altered Workbench/Telemetry/Organization limits.
+Focused policy checks: required/malformed values, configuration ceilings,
+strict owner caps, cursor controls, startup immutability and Spring bean factory.
+Actual local Maven runtime validation is not claimed; exact-SHA development CI
+and documentation validation must start and complete before software acceptance.
+
 <!-- task-register:payload:end -->

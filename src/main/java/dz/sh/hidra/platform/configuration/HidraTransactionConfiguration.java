@@ -40,6 +40,11 @@ import javax.sql.DataSource;
 @EnableTransactionManagement
 public class HidraTransactionConfiguration {
     @Bean
+    HidraPaginationProperties hidraPaginationProperties(Environment environment) {
+        return HidraPaginationProperties.from(environment);
+    }
+
+    @Bean
     ProtectedExecutionBudgetProperties protectedExecutionBudgetProperties(Environment environment) {
         return ProtectedExecutionBudgetProperties.from(environment);
     }

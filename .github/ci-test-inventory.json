@@ -10518,6 +10518,28 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "cursorsStayBoundedWithoutBecomingAuthorization",
+        "effectivePageSizeNeverOverridesResourceLimits",
+        "existingSpringConfigurationSuppliesOneTypedBean",
+        "finiteConfigurationCeilingsRejectExcessiveValues",
+        "immutableStartupPolicyUsesExplicitEnvironmentValues",
+        "malformedPropertiesNeverBecomeUnlimited",
+        "profileSpecificEnvironmentValuesRequireReconstruction",
+        "requiredPropertiesFailClosedWhenMissing",
+        "zeroNegativeAndReversedBoundsFailFast"
+      ],
+      "class": "dz.sh.hidra.platform.configuration.HidraPaginationPropertiesTest",
+      "dependency_reason": "HPS-023 shared platform property-policy startup validation; JVM/MockEnvironment only, no database or HTTP consumer change; new test timing not measured",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "platform",
+      "path": "src/test/java/dz/sh/hidra/platform/configuration/HidraPaginationPropertiesTest.java",
+      "source_sha256": "594984926f4de2daeefd63003d27ebcb5e08e75621acd0bf02d90587916c24e1",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0.158,
       "cases": [
         "acceptsCompleteProductionRuntimeContract",

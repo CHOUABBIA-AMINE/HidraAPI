@@ -270,6 +270,13 @@ implementation message, exact paths, compatibility/security gates and owner
 adoption requirement are documented in the owning phase. No runtime task,
 new ID or change to ROADMAP/PHASES statuses is selected.
 
+Owner approval after Docs #778 admits the bounded HPS-023 shared startup
+pagination policy implementation under `feat(platform): configure shared pagination policy`.
+Defaults 50/200 and cursor 4096 retain current endpoint behavior; the policy is
+opt-in only. HAPI-601 history remains a separate blocked consumer pending
+source-wide authorization and PostgreSQL evidence. See
+[TASKS_HPS-023.md](TASKS_HPS-023.md#hapi-698) for exact scope and acceptance.
+
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent
 [HAPI-436](TASKS_HPS-024.md#hapi-436) are VERIFIED/COMPLETED within the accepted

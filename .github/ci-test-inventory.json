@@ -7157,6 +7157,7 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "historyPageQueryValidatesScopeAndNullCannotAcquirePrivileges",
         "invalidWorkflowDigestDoesNotInvokeProtectedExecutor",
         "malformedExactCompanySourceAndRevisionAreRejected",
         "missingCommandIsRejectedBeforeNativePreparation"
@@ -7167,7 +7168,7 @@
       "lane": "unit-architecture",
       "owner": "simulation",
       "path": "src/test/java/dz/sh/hidra/modules/simulation/application/service/ManufacturerCharacteristicRevisionApplicationServiceTest.java",
-      "source_sha256": "8a39db050bb87b4635755340851cd992269681936c6fb929bffa513abe85da13",
+      "source_sha256": "a44c623e7f43b5465b2a0110d2c370a0b1427f5f7dc9a4caa77135c3eb0eab6d",
       "supports": []
     },
     {
@@ -7596,8 +7597,11 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "canonicalSourceManufacturerMismatchFailsBeforeAnyHistoryPage",
         "originalTransactionAndDatabaseShaMustMatch",
-        "schemaRejectsMissingSourceAndUnverifiedApprovalSubstitution"
+        "scansBeyondLegacy256RevisionsWithOnlyBoundedPageAndCompleteSubjectProof",
+        "schemaRejectsMissingSourceAndUnverifiedApprovalSubstitution",
+        "sixtyFifthDistinctCanonicalManufacturerModelFailsClosed"
       ],
       "class": "dz.sh.hidra.modules.simulation.infrastructure.persistence.ManufacturerCharacteristicRevisionPostgresIntegrationTest",
       "dependency_reason": "New actual PostgreSQL/container integration contract; CI measurement pending",
@@ -7605,7 +7609,7 @@
       "lane": "postgres-integration",
       "owner": "simulation",
       "path": "src/test/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/ManufacturerCharacteristicRevisionPostgresIntegrationTest.java",
-      "source_sha256": "c346b93626d9165f0e7fd380f7cb5a4577e79c6a84cda7902932ddb35228d003",
+      "source_sha256": "0e9e6984891158913c8721d66124688d5a1529c4f75ac5cfb6abfb50c32a9e77",
       "supports": []
     },
     {
@@ -7689,6 +7693,24 @@
       "owner": "simulation",
       "path": "src/test/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/SimulationEquipmentParameterRevisionCodecTest.java",
       "source_sha256": "bc47aeed2c6028fb7cfd0eeb414ca87ba3f42f37645778ba4dbf5e0bd8750e0c",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "alteredForeignCompanyOrSizeAndNonCanonicalTokensDeny",
+        "invalidPersistedPositionAndScopeAreRejected",
+        "previousKeyIsVerificationOnlyAndBadOrMissingKeysFailClosed",
+        "replayNeedsFreshAuthorizationAndExpiryIsStrict",
+        "roundTripPreservesExactCompanySourceSizeAndPersistedMicrosecondPosition"
+      ],
+      "class": "dz.sh.hidra.modules.simulation.infrastructure.security.HmacManufacturerCharacteristicHistoryCursorAdapterTest",
+      "dependency_reason": "Source-scoped HAPI-601 protected pagination qualification; timing pending",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "simulation",
+      "path": "src/test/java/dz/sh/hidra/modules/simulation/infrastructure/security/HmacManufacturerCharacteristicHistoryCursorAdapterTest.java",
+      "source_sha256": "fcf68a65fd2d584b0f5d1d9a5158055dc5338cf47d663ea9a83679a620340d53",
       "supports": []
     },
     {

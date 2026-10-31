@@ -72,6 +72,29 @@ public final class ManufacturerCharacteristicRevisionApplicationService
         });
     }
 
+
+    @Override public HistoryPageResult pageHistory(HistoryPageQuery query) {
+        Objects.requireNonNull(query);
+        if(TransactionSynchronizationManager.isActualTransactionActive()
+                ||TransactionSynchronizationManager.isSynchronizationActive())
+            throw new IllegalStateException("Manufacturer history requires a new original transaction");
+        var prepared=coordinator.preparePage(query);
+        var admission=new AtomicReference<ProtectedManufacturerCharacteristicAdmissionCoordinator.Admission>();
+        return executor.executePublication(()->{
+            var a=coordinator.acquirePage(prepared);
+            admission.set(a);
+            return coordinator.performPage(a);
+        },()->{
+            var a=Objects.requireNonNull(admission.get(),"Missing manufacturer history admission");
+            coordinator.prepareFinal(a);
+            coordinator.flush();
+        },()->{
+            var a=Objects.requireNonNull(admission.get(),"Missing manufacturer history admission");
+            if(!coordinator.finalGuard(a))
+                throw new IllegalStateException("Manufacturer history guard unavailable");
+        });
+    }
+
     /**
      * Called only by Workflow's manufacturer-owned lookup. Suspends an existing Workflow
      * read transaction and verifies original native Identity, Party and source scope on a

@@ -53,4 +53,15 @@ class ManufacturerCharacteristicRevisionApplicationServiceTest {
         assertThrows(NullPointerException.class,()->new Command(Operation.SAVE,"company","s","v1",null,null));
         assertThrows(NullPointerException.class,()->new Command(Operation.QUALIFY,"company","s","v1",null,null));
     }
+    @Test void historyPageQueryValidatesScopeAndNullCannotAcquirePrivileges(){
+        assertThrows(IllegalArgumentException.class,()->new HistoryPageQuery(" company","source",10,null));
+        assertThrows(IllegalArgumentException.class,()->new HistoryPageQuery("company"," source",10,null));
+        var coordinator=mock(ProtectedManufacturerCharacteristicAdmissionCoordinator.class);
+        var repo=mock(ManufacturerCharacteristicRevisionRepositoryPort.class);
+        var executor=mock(ProtectedTransactionExecutor.class);
+        var manager=mock(PlatformTransactionManager.class);
+        var service=new ManufacturerCharacteristicRevisionApplicationService(coordinator,repo,executor,manager);
+        assertThrows(NullPointerException.class,()->service.pageHistory(null));
+        verifyNoInteractions(coordinator,repo,executor,manager);
+    }
 }

@@ -312,6 +312,16 @@ The next bounded source stage retains
 `feat(simulation): paginate protected manufacturer history`.
 HAPI-601 stays NOT_IMPLEMENTED/BLOCKED.
 
+HAPI-601 internal protected manufacturer-history pagination code was
+published under `feat(simulation): paginate protected manufacturer history`
+as a **CI-pending development prerequisite**, not REST Package C or
+completed HAPI-601. It uses canonical full-source streaming with
+all-subject Party grants, HPS-023 page limits and a dedicated 15-minute
+HMAC cursor; the legacy operations are preserved. See
+[HPS-007](TASKS_HPS-007.md#hapi-601) for exact changed-path ledger and
+runtime/PostgreSQL acceptance gates. HAPI-601 stays NOT_IMPLEMENTED/BLOCKED
+in the frozen status tables until whole-task acceptance.
+
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent
 [HAPI-436](TASKS_HPS-024.md#hapi-436) are VERIFIED/COMPLETED within the accepted

@@ -1155,4 +1155,93 @@ test is **not** PostgreSQL proof. ROADMAP/PHASES retain HAPI-601
 NOT_IMPLEMENTED/BLOCKED; HAPI-602, C, P3/SITE, OT and deployment
 remain out of scope.
 
+### HAPI-601 — protected manufacturer history internal pagination implementation (2026-10-31; CI_PENDING)
+
+**Registered execution.** The selected exact message is
+`feat(simulation): paginate protected manufacturer history`; scope is
+the previously owner-approved HAPI-601 internal backend prerequisite, not
+the separate Package C REST/API authoring or HAPI-602. The preceding
+security contract requires complete streaming canonical source validation
+and source-wide Identity/Party authorization before any page metadata.
+Current parent `cea9aedb455c0eba60e5b7bb5e9d9898fbd94076` has [Documentation Validation #782](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41179584463)
+SUCCESS; the latest pre-implementation runtime CI [Full #1021](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41173608113)
+ran on earlier code SHA `90f97740f37b2ce3ed41a81dcf1cfc3d35a1ac20`.
+These results are not proof of this implementation. Exact new-SHA
+Java/PostgreSQL CI must be created/started and observed separately.
+
+**Scope ledger.** CREATE exactly:
+- `src/main/java/dz/sh/hidra/modules/simulation/application/port/out/ManufacturerCharacteristicHistoryCursorPort.java`
+- `src/main/java/dz/sh/hidra/modules/simulation/infrastructure/security/HmacManufacturerCharacteristicHistoryCursorAdapter.java`
+- `src/test/java/dz/sh/hidra/modules/simulation/infrastructure/security/HmacManufacturerCharacteristicHistoryCursorAdapterTest.java`
+
+MODIFY exactly:
+- `src/main/java/dz/sh/hidra/modules/simulation/application/port/in/ManufacturerCharacteristicRevisionUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/simulation/application/port/out/ManufacturerCharacteristicRevisionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/simulation/application/service/ProtectedManufacturerCharacteristicAdmissionCoordinator.java`
+- `src/main/java/dz/sh/hidra/modules/simulation/application/service/ManufacturerCharacteristicRevisionApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/JdbcManufacturerCharacteristicRevisionRepositoryAdapter.java`
+- `src/main/resources/application.properties`
+- `src/test/java/dz/sh/hidra/modules/simulation/application/service/ManufacturerCharacteristicRevisionApplicationServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/ManufacturerCharacteristicRevisionPostgresIntegrationTest.java`
+- `.github/ci-test-inventory.json` (actual changed/new test inventories only)
+- `doc/roadmap/TASKS_HPS-007.md` (append only)
+- `doc/roadmap/ULTIMATE_TASKS.md` (compact pointer).
+
+DELETE none. No change to Party or Identity implementations, Workflow,
+existing Flyway migrations, physical execution budget, native privilege
+configuration, other modules, canonical codec, ROADMAP/PHASES or
+HAPI-601 Package C. The existing six-argument `Command`, existing
+`execute` operations, and their auth contract remain unchanged.
+The new `HistoryPageQuery`/`HistoryPageResult` are internal
+use-case contracts; no controller or runtime OpenAPI route is claimed.
+
+**Implementation design.** The new opt-in use-case validates the shared
+HPS-023 page and cursor limits, checks a dedicated signing key, and
+authenticates any continuation before entering protected source lookup.
+Each request executes a new original protected transaction under the
+existing compiled manufacturer service route and unchanged physical
+final-guard restrictions. The JDBC adapter uses a forward-only fetch
+batch of 32 and fully consumes every row for the exact company/source,
+decoding canonical manufacturer payloads and checking SHA, relational
+source/revision/model identities, document digest and canonical framing.
+It retains at most 64 unique canonical manufacturer/model pairs and at
+most `pageSize+1` **summary-only** candidates; a 65th distinct pair,
+invalid payload, incomplete stream, overrun or denied Party tuple fails
+the entire history before disclosure. A fresh Party owner ticket is
+required for every unique subject, including those outside the requested
+page, and all tickets participate in the original Identity/Party/source
+relation fences and final scalar. Qualification flags are read only
+for the admitted page. No certificate reference or source payload is
+returned by paging.
+
+The ordered continuation key uses the **persisted PostgreSQL** microsecond
+timestamp and `revision_id`; SQL evaluates the tuple comparison using
+the database's ordering semantics, not Java locale collation. Cursor
+bytes are canonical URL-safe base64 of domain-separated HMAC-SHA256
+signed version/scope/page selector/last key/issue-expiry/key ID.
+Tokens expire in 900 seconds; current and optional previous keys are
+distinct, rotation is verification-only for the previous key. A
+missing current key denies only paging, not legacy endpoints.
+The signing key must be independently provisioned as base64url
+from `HIDRA_SIM_MANUFACTURER_HISTORY_CURSOR_CURRENT_KEY` (minimum
+256-bit entropy); no embedded live secret. HPS-023 remains startup-bound,
+not hot-reloaded. Backdated inserts at/before a previously returned
+cursor may be missed until traversal restarts; there is no immutable
+snapshot or engineering-revision certification guarantee.
+
+**Proposed test / remaining proof.** Focused JUnit coverage includes
+cursor round-trip, foreign company/source, tampering, key rotation,
+expiry and unavailable-key denial; use-case preflight denial; and
+synthetic fresh-schema PostgreSQL tests with >256 canonical revisions,
+SQL tie pagination, a forged manufacturer column, and the 65th
+distinct model. Original 500 ms overall protected work budget and
+750 ms PostgreSQL statement timeout are unchanged. Source inspection
+and synthetic tests cannot by themselves establish actual PostgreSQL
+streaming/locking, full Party revocation races, bounded industrial
+performance or SITE acceptance. The work must **not** be marked
+accepted until applicable exact-SHA Full CI and genuine non-skipped
+PostgreSQL tests demonstrate the new protected path. Any CI failure
+enters `Fail` repair before roadmap advancement; qualified results
+do not authorize Package C, HAPI-602 or deployment.
+
 <!-- task-register:payload:end -->

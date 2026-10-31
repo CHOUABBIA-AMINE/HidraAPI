@@ -27,6 +27,8 @@ import dz.sh.hidra.modules.identity.application.contract.simulation.SimulationMa
 import dz.sh.hidra.modules.party.application.contract.simulation.SimulationManufacturerEvidenceContract;
 import dz.sh.hidra.platform.persistence.ProtectedRelationFence;
 import dz.sh.hidra.platform.persistence.ProtectedTransactionExecutor;
+import dz.sh.hidra.platform.configuration.HidraPaginationProperties;
+import org.springframework.core.env.Environment;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.time.Instant;
@@ -57,13 +59,24 @@ public final class ProtectedManufacturerCharacteristicAdmissionCoordinator {
     private final ManufacturerCharacteristicApprovalEvidencePort approvals;
     private final ManufacturerCharacteristicRevisionRepositoryPort repository;
     private final ProtectedTransactionExecutor executor;
+    private final HidraPaginationProperties pagination;
+    private final ManufacturerCharacteristicHistoryCursorPort cursors;
+    private final int maximumPrincipals;
     public ProtectedManufacturerCharacteristicAdmissionCoordinator(
             SimulationManufacturerCharacteristicAuthorizationContract identity,
             SimulationManufacturerEvidenceContract party,ManufacturerCharacteristicApprovalEvidencePort approvals,
-            ManufacturerCharacteristicRevisionRepositoryPort repository,ProtectedTransactionExecutor executor) {
+            ManufacturerCharacteristicRevisionRepositoryPort repository,ProtectedTransactionExecutor executor,
+            HidraPaginationProperties pagination,ManufacturerCharacteristicHistoryCursorPort cursors,
+            Environment environment) {
         this.identity=Objects.requireNonNull(identity);this.party=Objects.requireNonNull(party);
         this.approvals=Objects.requireNonNull(approvals);this.repository=Objects.requireNonNull(repository);
         this.executor=Objects.requireNonNull(executor);
+        this.pagination=Objects.requireNonNull(pagination);
+        this.cursors=Objects.requireNonNull(cursors);
+        this.maximumPrincipals=Objects.requireNonNull(environment).getRequiredProperty(
+                "hidra.simulation.manufacturer-history.max-subjects",Integer.class);
+        if(maximumPrincipals<1 || maximumPrincipals>64)
+            throw new IllegalArgumentException("Invalid manufacturer history subject budget");
     }
 
     public Prepared prepare(Command command) {
@@ -71,6 +84,27 @@ public final class ProtectedManufacturerCharacteristicAdmissionCoordinator {
         if(command==null || TransactionSynchronizationManager.isActualTransactionActive()
                 || TransactionSynchronizationManager.isSynchronizationActive())throw denied();
         return new Prepared(this,command,null,identity.prepare());
+    }
+
+    public Prepared preparePage(HistoryPageQuery query) {
+        executor.requireNoProtectedContext();
+        Objects.requireNonNull(query);
+        if(!cursors.available())throw denied();
+        int size=pagination.resolveSize(query.requestedSize(),pagination.maxSize());
+        pagination.validateCursor(query.cursor(),pagination.maxCursorLength());
+        var after=query.cursor()==null?null:cursors.decode(
+                query.cursor(),query.companyPartyId(),query.sourceId(),size);
+        Command command=new Command(Operation.LIST_HISTORY,query.companyPartyId(),query.sourceId(),
+                null,null,null);
+        Prepared prepared=prepare(command);
+        prepared.pageQuery=query;
+        prepared.pageSize=size;
+        prepared.after=after;
+        return prepared;
+    }
+    public Admission acquirePage(Prepared prepared) {
+        if(prepared==null || prepared.pageQuery==null)throw denied();
+        return acquire(prepared,prepared.command);
     }
     public Prepared prepareWorkflowTarget(String digest,boolean history) {
         executor.requireNoProtectedContext();
@@ -90,17 +124,25 @@ public final class ProtectedManufacturerCharacteristicAdmissionCoordinator {
             var auth=identity.acquire(prepared.nativePrepared,authorization(command));
             var origin=identity.contribute(auth);
             if(origin.decision()!=SimulationManufacturerCharacteristicAuthorizationContract.Decision.PERMIT)throw denied();
+            HistoryScan scan=prepared.pageQuery==null?null:repository.scanHistory(storage,
+                    command.companyPartyId(),command.sourceId(),prepared.pageSize,
+                    prepared.after,maximumPrincipals);
             List<Stored> selected = switch(command.operation()){
                 case SAVE -> List.of();
-                case LIST_HISTORY -> repository.history(storage,command.companyPartyId(),command.sourceId());
+                case LIST_HISTORY -> scan==null
+                        ? repository.history(storage,command.companyPartyId(),command.sourceId()) : List.of();
                 default -> List.of(repository.read(storage,key).orElseThrow(
                     ProtectedManufacturerCharacteristicAdmissionCoordinator::denied));
             };
-            if(command.operation()==Operation.LIST_HISTORY && selected.isEmpty())throw denied();
+            if(command.operation()==Operation.LIST_HISTORY && scan==null && selected.isEmpty())throw denied();
             ManufacturerCharacteristicRevision source=command.operation()==Operation.SAVE
-                ?command.suppliedRevision():selected.getFirst().revision();
+                ?command.suppliedRevision():scan==null?selected.getFirst().revision():null;
             var grants=new ArrayList<PartyGrant>();
-            if(command.operation()==Operation.LIST_HISTORY){
+            if(scan!=null) {
+                for(Principal principal:scan.principals())grants.add(partyGrant(
+                        principal.manufacturerPartyId(),principal.manufacturerModelReference(),
+                        command.companyPartyId(),origin));
+            } else if(command.operation()==Operation.LIST_HISTORY){
                 for(Stored item:selected)grants.add(partyGrant(item.revision(),command.companyPartyId(),origin));
             } else grants.add(partyGrant(source,command.companyPartyId(),origin));
             var fences=union(identity.finalFences(auth),repository.finalFences(storage),partyFences(grants));
@@ -122,6 +164,9 @@ public final class ProtectedManufacturerCharacteristicAdmissionCoordinator {
             }
             a=new Admission(this,command,prepared.target,storage,auth,origin,List.copyOf(grants),
                     List.copyOf(selected),approval,fences);
+            a.pageQuery=prepared.pageQuery;
+            a.pageSize=prepared.pageSize;
+            a.pageScan=scan;
             TransactionSynchronizationManager.registerSynchronization(a);
             for(var grant:grants)party.requireCurrent(grant.admission());
             identity.requireCurrent(auth);
@@ -159,13 +204,16 @@ public final class ProtectedManufacturerCharacteristicAdmissionCoordinator {
     private PartyGrant partyGrant(
             ManufacturerCharacteristicRevision revision,String company,
             SimulationManufacturerCharacteristicAuthorizationContract.Contribution identityResult) {
-        var requirement=new SimulationManufacturerEvidenceContract.Requirement(
-                company,revision.manufacturerPartyId(),revision.manufacturerModelReference());
+        return partyGrant(revision.manufacturerPartyId(),revision.manufacturerModelReference(),company,identityResult);
+    }
+    private PartyGrant partyGrant(String manufacturer,String model,String company,
+            SimulationManufacturerCharacteristicAuthorizationContract.Contribution identityResult) {
+        var requirement=new SimulationManufacturerEvidenceContract.Requirement(company,manufacturer,model);
         var admission=party.acquire(requirement);
         var evidence=party.read(admission);
         if(!company.equals(evidence.companyPartyId())
-                ||!revision.manufacturerPartyId().equals(evidence.manufacturerPartyId())
-                ||!revision.manufacturerModelReference().equals(evidence.manufacturerModelReference())
+                ||!manufacturer.equals(evidence.manufacturerPartyId())
+                ||!model.equals(evidence.manufacturerModelReference())
                 ||evidence.backendPid()!=identityResult.backendPid()
                 ||evidence.transactionId()!=identityResult.transactionId()
                 ||!evidence.databaseRole().equals(identityResult.databaseRole())
@@ -284,6 +332,40 @@ public final class ProtectedManufacturerCharacteristicAdmissionCoordinator {
         }catch(RuntimeException fault){reject(a);throw denied();}
     }
 
+
+    public HistoryPageResult performPage(Admission admission) {
+        Admission a=current(admission);
+        try {
+            if(a.pageQuery==null || a.pageScan==null || !a.used.compareAndSet(false,true))
+                throw denied();
+            identity.requireCurrent(a.auth);
+            for(var p:a.partyTickets)party.requireCurrent(p.admission());
+            var views=new ArrayList<RevisionSummary>();
+            for(RevisionSummary raw:a.pageScan.summaries()) {
+                var key=new Key(a.command.companyPartyId(),a.command.sourceId(),raw.revisionId());
+                views.add(new RevisionSummary(raw.sourceId(),raw.revisionId(),raw.payloadSha256(),
+                        raw.recordedAt(),raw.effectiveFrom(),raw.effectiveUntil(),
+                        repository.qualification(a.storage,key).isPresent()));
+            }
+            String next=null;
+            if(a.pageScan.hasNext()){
+                if(views.isEmpty())throw denied();
+                var last=views.getLast();
+                next=cursors.encode(a.command.companyPartyId(),a.command.sourceId(),a.pageSize,
+                        new ManufacturerCharacteristicHistoryCursorPort.Position(
+                                last.recordedAt(),last.revisionId()));
+                pagination.validateCursor(next,pagination.maxCursorLength());
+            }
+            Instant now=a.origin.observedAt();
+            a.result=new Result(Operation.LIST_HISTORY,a.command.companyPartyId(),
+                    a.command.sourceId(),null,null,null,views,now,false);
+            a.pageResult=new HistoryPageResult(views,next,now);
+            identity.requireCurrent(a.auth);
+            for(var p:a.partyTickets)party.requireCurrent(p.admission());
+            return a.pageResult;
+        }catch(RuntimeException fault){reject(a);throw denied();}
+    }
+
     /** Fixed source shape only; never trust a caller-provided SQL statement. */
     private String mutationSql(boolean source) {
         var texts=repository.mutationSql();
@@ -373,6 +455,9 @@ public final class ProtectedManufacturerCharacteristicAdmissionCoordinator {
         private final Command command;private final WorkflowTargetRequest target;
         private final SimulationManufacturerCharacteristicAuthorizationContract.Prepared nativePrepared;
         private final Thread thread=Thread.currentThread();private final AtomicBoolean used=new AtomicBoolean();
+        private HistoryPageQuery pageQuery;
+        private int pageSize;
+        private ManufacturerCharacteristicHistoryCursorPort.Position after;
         private Prepared(ProtectedManufacturerCharacteristicAdmissionCoordinator owner,Command command,
                 WorkflowTargetRequest target,SimulationManufacturerCharacteristicAuthorizationContract.Prepared nativePrepared){
             this.owner=owner;this.command=command;this.target=target;this.nativePrepared=nativePrepared;
@@ -392,6 +477,10 @@ public final class ProtectedManufacturerCharacteristicAdmissionCoordinator {
         private ProtectedTransactionExecutor.ProvisionalPermit permit;
         private boolean active=true,frozen,guarded;
         private Result result;
+        private HistoryPageQuery pageQuery;
+        private int pageSize;
+        private HistoryScan pageScan;
+        private HistoryPageResult pageResult;
         private Admission(ProtectedManufacturerCharacteristicAdmissionCoordinator owner,Command command,
                 WorkflowTargetRequest target,ManufacturerCharacteristicRevisionRepositoryPort.Admission storage,
                 SimulationManufacturerCharacteristicAuthorizationContract.Admission auth,

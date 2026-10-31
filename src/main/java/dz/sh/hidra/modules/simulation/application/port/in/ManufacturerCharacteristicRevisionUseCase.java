@@ -79,6 +79,21 @@ public interface ManufacturerCharacteristicRevisionUseCase {
         @Override public String toString() { return "ManufacturerCharacteristicResult[redacted]"; }
     }
 
+
+    /** A live view; no cross-request snapshot or reproducibility guarantee. */
+    record HistoryPageQuery(String companyPartyId,String sourceId,Integer requestedSize,String cursor) {
+        public HistoryPageQuery { exact(companyPartyId); exact(sourceId); }
+        @Override public String toString(){ return "ManufacturerHistoryPageQuery[redacted]"; }
+    }
+    record HistoryPageResult(List<RevisionSummary> history,String nextCursor,Instant completedAt) {
+        public HistoryPageResult {
+            history=List.copyOf(history);
+            Objects.requireNonNull(completedAt);
+        }
+        @Override public String toString(){ return "ManufacturerHistoryPageResult[redacted]"; }
+    }
+    HistoryPageResult pageHistory(HistoryPageQuery query);
+
     Result execute(Command command);
 
     private static void exact(String text) {

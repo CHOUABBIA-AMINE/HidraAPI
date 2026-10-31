@@ -112,6 +112,62 @@ public class JdbcManufacturerCharacteristicRevisionRepositoryAdapter
         if(rows.size()>256)throw denied();
         return List.copyOf(rows);
     }
+
+    /** Streams every immutable row for canonical-integrity proof, retaining only page summaries. */
+    @Override @Transactional(propagation=Propagation.MANDATORY)
+    public HistoryScan scanHistory(Admission admission,String company,String source,int size,
+            dz.sh.hidra.modules.simulation.application.port.out.ManufacturerCharacteristicHistoryCursorPort.Position after,
+            int maximumPrincipals) {
+        current(admission);
+        if(size<1 || size>10_000 || maximumPrincipals<1 || maximumPrincipals>64)
+            throw denied();
+        String beyond = after == null ? "TRUE"
+                : "(source_recorded_at,revision_id)>(?::timestamptz,?::varchar)";
+        String query = "SELECT *, "+beyond+" AS beyond FROM "+SOURCE
+                +" WHERE company_party_id=? AND source_id=? ORDER BY source_recorded_at,revision_id";
+        try {
+            return jdbc.query(connection -> {
+                var statement=connection.prepareStatement(query,
+                        java.sql.ResultSet.TYPE_FORWARD_ONLY,java.sql.ResultSet.CONCUR_READ_ONLY);
+                statement.setFetchSize(32);
+                int index=1;
+                if(after!=null){
+                    statement.setTimestamp(index++,java.sql.Timestamp.from(after.recordedAt()));
+                    statement.setString(index++,after.revisionId());
+                }
+                statement.setString(index++,company);
+                statement.setString(index,source);
+                return statement;
+            },rs->{
+                var principals=new java.util.LinkedHashSet<Principal>();
+                var candidates=new java.util.ArrayList<ManufacturerCharacteristicRevisionUseCase.RevisionSummary>();
+                boolean any=false;
+                while(rs.next()){
+                    any=true;
+                    // Each row is decoded, SHA checked and compared with its relational owner identity.
+                    // No canonical bytes or decoded families are retained beyond this iteration.
+                    Stored stored=stored(rs);
+                    if(!company.equals(stored.key().companyPartyId())
+                            ||!source.equals(stored.key().sourceId()))throw denied();
+                    var manufacturer=stored.revision();
+                    principals.add(new Principal(manufacturer.manufacturerPartyId(),
+                            manufacturer.manufacturerModelReference()));
+                    if(principals.size()>maximumPrincipals)throw denied();
+                    java.time.Instant persisted=rs.getObject("source_recorded_at",
+                            java.time.OffsetDateTime.class).toInstant();
+                    if(persisted.getNano()%1_000!=0)throw denied();
+                    if(rs.getBoolean("beyond") && candidates.size()<=size)
+                        candidates.add(new ManufacturerCharacteristicRevisionUseCase.RevisionSummary(
+                            source,stored.key().revisionId(),stored.payloadSha256(),persisted,
+                            manufacturer.effectiveFrom(),manufacturer.effectiveUntil(),false));
+                }
+                if(!any)throw denied();
+                boolean more=candidates.size()>size;
+                if(more)candidates.remove(candidates.size()-1);
+                return new HistoryScan(List.copyOf(principals),List.copyOf(candidates),more);
+            });
+        }catch(RuntimeException fault){throw denied();}
+    }
     @Override @Transactional(propagation=Propagation.MANDATORY)
     public Optional<Stored> byWorkflowTarget(Admission admission,String digest){
         current(admission);

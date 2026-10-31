@@ -50,6 +50,19 @@ public interface ManufacturerCharacteristicRevisionRepositoryPort {
     Admission acquire(ManufacturerCharacteristicRevisionUseCase.Command command);
     Optional<Stored> read(Admission admission, Key key);
     List<Stored> history(Admission admission, String companyPartyId, String sourceId);
+    /** Source-wide proof MUST finish before a page or its lookahead is disclosed. */
+    record Principal(String manufacturerPartyId, String manufacturerModelReference) {}
+    record HistoryScan(List<Principal> principals,
+                       List<ManufacturerCharacteristicRevisionUseCase.RevisionSummary> summaries,
+                       boolean hasNext) {
+        public HistoryScan {
+            principals=List.copyOf(principals);
+            summaries=List.copyOf(summaries);
+        }
+    }
+    HistoryScan scanHistory(Admission admission, String companyPartyId, String sourceId,
+                            int pageSize, ManufacturerCharacteristicHistoryCursorPort.Position after,
+                            int maximumDistinctPrincipals);
     Optional<Stored> byWorkflowTarget(Admission admission, String domainSeparatedDigest);
     Optional<Qualification> qualification(Admission admission, Key key);
     /** Idempotent replay is allowed only for identical original payload and immutable provenance. */

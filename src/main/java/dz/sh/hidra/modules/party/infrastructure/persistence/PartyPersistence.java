@@ -42,6 +42,9 @@ public final class PartyPersistence {
     public static final String VENDOR_QUALIFICATION_TABLE = "hidra_party_vendor_qualification";
     public static final String CONTRACTOR_QUALIFICATION_TABLE = "hidra_party_contractor_qualification";
     public static final String MANUFACTURER_PROFILE_TABLE = "hidra_party_manufacturer_profile";
+    /** Party owns explicit per-company/model authorization; not inferred from role or relationship. */
+    public static final String MANUFACTURER_SOURCE_AUTHORIZATION_TABLE =
+            "hidra_party_manufacturer_source_authorization";
     public static final String OWNER_PROFILE_TABLE = "hidra_party_owner_profile";
     public static final String OPERATOR_PROFILE_TABLE = "hidra_party_operator_profile";
     public static final String PARTY_CERTIFICATION_TABLE = "hidra_party_certification";

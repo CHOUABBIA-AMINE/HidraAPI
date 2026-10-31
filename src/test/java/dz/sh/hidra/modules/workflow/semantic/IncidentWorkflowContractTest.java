@@ -49,6 +49,17 @@ class IncidentWorkflowContractTest {
         when(config.requireActiveCatalog("purpose","WORKFLOW_PURPOSE")).thenReturn(new WorkflowConfigurationPort.Catalog("purpose","WORKFLOW_PURPOSE","INCIDENT_CLOSURE",true));
         when(config.activeBinding("definition","incident","type","purpose")).thenReturn(true);return instance;
     }
+    @Test void manufacturerSourceExistenceRequiresProtectedQuery() {
+        when(query.instance("known")).thenReturn(new WorkflowQueryUseCase.InstanceView(
+            "known","def",1,"purpose","incident","type","case",null,null,
+            "STARTED",null,"actor","user","Actor",null,null,null,null));
+        when(query.instance("foreign")).thenThrow(new org.springframework.security.access.AccessDeniedException("Unavailable"));
+        when(query.instance("missing")).thenThrow(new java.util.NoSuchElementException("Unavailable"));
+        assertTrue(owner.exists("known"));
+        assertFalse(owner.exists("foreign"));
+        assertFalse(owner.exists("missing"));
+        assertFalse(owner.exists(null));
+    }
     @Test void existenceOrUnrelatedTargetDoesNotAttestClosure() {
         assertFalse(owner.closureApproved("workflow","incident","actor",at));
         var instance=approvedInstance();when(instance.targetId()).thenReturn("other");assertFalse(owner.closureApproved("workflow","incident","actor",at));

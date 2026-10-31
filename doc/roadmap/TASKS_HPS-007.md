@@ -634,4 +634,20 @@ Package A MODIFY only `.github/ci-test-inventory.json` for actual cases/hashes a
 
 **Disposition.** HAPI-601 remains `NOT_IMPLEMENTED / BLOCKED` globally; A source exists, B source and protected Workflow queries are pending implementation/CI; C and HAPI-602 remain independently gated. No numerical/P3, Web, OT deployment, SITE acceptance, extra issues or PRs.
 
+### HAPI-601 — owner-approved unified B reference-read closure and implementation attempt (2026-10-31)
+
+**Owner decision already given in project conversation.** The owner approved adding six exact existing Workflow MODIFY files to the same unified HAPI-601 Package B, then directed the assistant to complete the task without additional artificial slices or repeated scope approvals. This entry records that decision without changing the registered task message or allowing unlisted paths. The resulting maximum write allowlist is **20 CREATE and 19 MODIFY**, and may be smaller if evidence prevents dictionary edits.
+
+**Six approved additional MODIFY paths (all within the one B commit):**
+- `src/main/java/dz/sh/hidra/modules/workflow/application/service/AuditWorkflowReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/service/DocumentsApprovalReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/service/IncidentWorkflowQueryService.java`
+- `src/test/java/dz/sh/hidra/modules/workflow/application/service/AuditWorkflowReferenceQueryServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/workflow/application/service/DocumentsApprovalReferenceQueryServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/workflow/semantic/IncidentWorkflowContractTest.java`
+
+**Architectural decision already approved.** Workflow may independently record human decisions; those decisions are evidence, not current source authorization. Simulation may qualify a manufacturer revision only after current native Identity, explicit Party company/manufacturer/model authority, source applicability and exact final Workflow evidence are jointly rechecked in the original protected transaction. Workflow query/reference existence requires prior source-owner authorization. Preserve all existing nonmanufacturer behavior.
+
+**CI-first implementation qualification.** This registration belongs to the single `feat(simulation): protect supplied manufacturer characteristic revisions` implementation commit. It does NOT attest Java compilation, database migration, PostgreSQL role grants, concurrent revocation correctness, CI success, full B acceptance, any operational data, or industrial validation. Missing executable native-positive/negative and physical PostgreSQL gates remain acceptance work until actual tests and CI evidence prove them. The existing physical dictionary must not be modified without migrated catalog evidence. Package C, HAPI-602 and numerical/P3 remain excluded.
+
 <!-- task-register:payload:end -->

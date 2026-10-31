@@ -563,6 +563,46 @@ public class JdbcProtectedAuthorizationEvidenceReader {
             throw invalid();
     }
 
+    /**
+     * The manufacturer family is exact, native-only and denied by default.
+     * Called solely after a genuine one-use ProtectedOperationIdentityParticipant admission
+     * has fixed the same physical PID/XID; no policy or grant is synthesized.
+     */
+    @Transactional(propagation = Propagation.MANDATORY)
+    public AuthorizationEvidence loadManufacturer(
+            Evidence origin, AuthorizationEvaluationRequest request, int backendPid, long transactionId) {
+        try {
+            if(origin==null || request==null || request.scope()==null
+                || !origin.userId().equals(request.userId())
+                || !"MANUFACTURER_CHARACTERISTIC_REVISION".equals(request.resourceType())
+                || request.resourceReferenceId()==null
+                || !request.resourceReferenceId().matches("[0-9a-f]{64}")
+                || request.scope().scopeType()!=dz.sh.hidra.modules.identity.domain.value.ScopeType.CUSTOM
+                || request.scope().scopeCodeSnapshot()!=null
+                || request.scope().scopeReferenceId()==null
+                || !(request.scope().scopeReferenceId().startsWith("simulation-company:")
+                     || request.scope().scopeReferenceId().equals(
+                           "simulation-source:"+request.resourceReferenceId()))
+                || !java.util.Set.of(
+                       "simulation:manufacturer-characteristic:save",
+                       "simulation:manufacturer-characteristic:read",
+                       "simulation:manufacturer-characteristic:history",
+                       "simulation:manufacturer-certificate:read",
+                       "simulation:manufacturer-characteristic:qualify").contains(request.permissionCode())
+                || !java.util.Set.of("LOCAL","LDAP","ACTIVE_DIRECTORY","OIDC").contains(origin.authenticationType())
+                || origin.observedAt()==null || origin.expiresAt()==null
+                || !origin.observedAt().isBefore(origin.expiresAt()))
+                 throw invalid();
+            coordinates(backendPid,transactionId);
+            qualifiedPhysicalFences(backendPid,transactionId);
+            if(!RELATIONS.stream().map(PREFIX::concat).toList().equals(
+                    jdbc.queryForList(HELD,String.class)))throw invalid();
+            var graph=read(origin,request,new Rows());
+            coordinates(backendPid,transactionId);
+            return graph;
+        }catch(RuntimeException failure) {throw invalid();}
+    }
+
     @Transactional(propagation = Propagation.MANDATORY)
     public AuthorizationEvidence load(
             Evidence identity,

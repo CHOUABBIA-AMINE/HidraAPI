@@ -42,7 +42,13 @@ public class IncidentWorkflowQueryService implements IncidentWorkflowContract {
         this.instances=Objects.requireNonNull(instances);this.configuration=Objects.requireNonNull(configuration);this.query=Objects.requireNonNull(query);
         this.actions=Objects.requireNonNull(actions);this.tasks=Objects.requireNonNull(tasks);this.actors=Objects.requireNonNull(actors);
     }
-    public boolean exists(String id) {return id!=null && !id.isBlank() && instances.findById(id.trim()).isPresent();}
+    public boolean exists(String id) {
+        if(id==null||id.isBlank())return false;
+        try{return query.instance(id.trim())!=null;}
+        catch(java.util.NoSuchElementException | org.springframework.security.access.AccessDeniedException unavailable){
+            return false;
+        }
+    }
     @Transactional
     public boolean closureApproved(String id,String incidentId,String actorId,Instant at) {
         if(id==null || incidentId==null || actorId==null || at==null || actors.eligibleActor(actorId,at).isEmpty()) return false;

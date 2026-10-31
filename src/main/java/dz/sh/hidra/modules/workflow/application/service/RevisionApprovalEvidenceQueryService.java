@@ -40,11 +40,26 @@ public class RevisionApprovalEvidenceQueryService implements RevisionApprovalEvi
     private final WorkflowTaskRepositoryPort tasks;
     private final WorkflowActionRepositoryPort actions;
     private final WorkflowConfigurationPort configuration;
+    private final ManufacturerWorkflowFencePort manufacturerFence;
+    /** Workflow owns this exact protected evidence locking contract. */
+    public interface ManufacturerWorkflowFencePort {
+        void lockCurrentManufacturerApprovalEvidence();
+    }
+    /** Preserve existing unit-test and ordinary Workflow wiring. */
     public RevisionApprovalEvidenceQueryService(WorkflowInstanceRepositoryPort instances,
             WorkflowTaskRepositoryPort tasks, WorkflowActionRepositoryPort actions,
             WorkflowConfigurationPort configuration) {
-        this.instances = instances; this.tasks = tasks; this.actions = actions;
-        this.configuration = configuration;
+        this(instances,tasks,actions,configuration,null);
+    }
+    @org.springframework.beans.factory.annotation.Autowired
+    public RevisionApprovalEvidenceQueryService(WorkflowInstanceRepositoryPort instances,
+            WorkflowTaskRepositoryPort tasks, WorkflowActionRepositoryPort actions,
+            WorkflowConfigurationPort configuration,ManufacturerWorkflowFencePort manufacturerFence) {
+        this.instances = Objects.requireNonNull(instances);
+        this.tasks = Objects.requireNonNull(tasks);
+        this.actions = Objects.requireNonNull(actions);
+        this.configuration = Objects.requireNonNull(configuration);
+        this.manufacturerFence = manufacturerFence;
     }
     @Override
     @Transactional(readOnly = true)
@@ -57,7 +72,23 @@ public class RevisionApprovalEvidenceQueryService implements RevisionApprovalEvi
         if ("custody".equals(r.targetModule())) {
             type = "GAS_FLUID_REVISION"; purpose = "GAS_FLUID_INPUT_QUALIFICATION";
         } else if ("simulation".equals(r.targetModule())) {
-            type = "EQUIPMENT_PARAMETER_REVISION"; purpose = "EQUIPMENT_PARAMETER_QUALIFICATION";
+            // Two independent Simulation targets; a purpose from the other family is never admitted.
+            try {
+                var providedType = configuration.requireActiveCatalog(r.targetTypeId(), "WORKFLOW_TARGET_TYPE");
+                type = providedType.code();
+            } catch (InvalidWorkflowValueException unavailableType) { return Optional.empty(); }
+            purpose = switch (type) {
+                case "EQUIPMENT_PARAMETER_REVISION" -> "EQUIPMENT_PARAMETER_QUALIFICATION";
+                case "MANUFACTURER_CHARACTERISTIC_REVISION" -> "MANUFACTURER_CHARACTERISTIC_QUALIFICATION";
+                default -> null;
+            };
+            if (purpose == null) return Optional.empty();
+            if ("MANUFACTURER_CHARACTERISTIC_REVISION".equals(type)) {
+                // Lock the complete Workflow evidence graph inside the actual originating
+                // Simulation transaction before fetching any approval or active binding.
+                if (manufacturerFence == null) return Optional.empty();
+                manufacturerFence.lockCurrentManufacturerApprovalEvidence();
+            }
         } else return Optional.empty();
         try {
             var t = configuration.requireActiveCatalog(r.targetTypeId(), "WORKFLOW_TARGET_TYPE");

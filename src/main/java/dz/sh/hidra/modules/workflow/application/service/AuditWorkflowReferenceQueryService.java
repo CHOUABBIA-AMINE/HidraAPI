@@ -19,11 +19,17 @@
  */
 package dz.sh.hidra.modules.workflow.application.service;
 import dz.sh.hidra.modules.workflow.application.contract.audit.AuditWorkflowReferenceContract;
-import dz.sh.hidra.modules.workflow.application.port.out.WorkflowInstanceRepositoryPort;
+import dz.sh.hidra.modules.workflow.application.port.in.WorkflowQueryUseCase;
+import java.util.NoSuchElementException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 @Service
 public final class AuditWorkflowReferenceQueryService implements AuditWorkflowReferenceContract {
-    private final WorkflowInstanceRepositoryPort repository;
-    public AuditWorkflowReferenceQueryService(WorkflowInstanceRepositoryPort repository) {this.repository=java.util.Objects.requireNonNull(repository);}
-    public boolean exists(String id) {return id!=null && !id.isBlank() && repository.findById(id.trim()).isPresent();}
+    private final WorkflowQueryUseCase queries;
+    public AuditWorkflowReferenceQueryService(WorkflowQueryUseCase queries) {this.queries=java.util.Objects.requireNonNull(queries);}
+    public boolean exists(String id) {
+        if(id==null||id.isBlank())return false;
+        try {return queries.instance(id.trim())!=null;}
+        catch(NoSuchElementException | AccessDeniedException unavailable){return false;}
+    }
 }

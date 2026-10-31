@@ -26,4 +26,12 @@ public interface WorkflowOwnedTargetLookup {
     String module();
     Set<String> targetTypeCodes();
     Optional<Target> eligibleTarget(String typeCode, String targetId);
+
+    /** Protected manufacturer targets must explicitly opt into each live owner-authorized disclosure.
+     * Ordinary Workflow task membership does not grant this access.
+     * Default denial is deliberate; other owner lookups are not invoked for this policy. */
+    enum ProtectedRead { REVISION, HISTORY }
+    default boolean protectedReadAllowed(String typeCode, String targetDigest, ProtectedRead operation) {
+        return false;
+    }
 }

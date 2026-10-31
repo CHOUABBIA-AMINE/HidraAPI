@@ -26,6 +26,13 @@ import dz.sh.hidra.modules.workflow.infrastructure.persistence.entity.WorkflowTa
 import dz.sh.hidra.modules.workflow.infrastructure.persistence.entity.WorkflowTransitionJpaEntity;
 import jakarta.persistence.EntityManager;
 import dz.sh.hidra.modules.workflow.application.service.WorkflowExecutionOwnership;
+import dz.sh.hidra.modules.workflow.application.service.RevisionApprovalEvidenceQueryService.ManufacturerWorkflowFencePort;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+import dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup;
+import dz.sh.hidra.modules.workflow.infrastructure.persistence.entity.WorkflowCatalogEntryJpaEntity;
+import org.springframework.security.access.AccessDeniedException;
 import dz.sh.hidra.modules.workflow.infrastructure.persistence.entity.WorkflowStepJpaEntity;
 import dz.sh.hidra.modules.workflow.infrastructure.persistence.mapper.WorkflowPersistenceMapper;
 import java.util.List;
@@ -38,7 +45,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Transactional(readOnly = true)
-public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase {
+public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase, ManufacturerWorkflowFencePort {
 
     private static final String ALL_PERMISSIONS = "*";
     private static final Set<String> ACTIONABLE_TASK_STATES = Set.of("OPEN", "CLAIMED", "IN_REVIEW");
@@ -48,11 +55,45 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase {
     );
 
     private final EntityManager entityManager;
+    private final JdbcTemplate jdbc;
     private final WorkflowExecutionOwnership ownership;
+    private final List<WorkflowOwnedTargetLookup> targetOwners;
 
-    public JpaWorkflowQueryAdapter(EntityManager entityManager,WorkflowExecutionOwnership ownership) {
-        this.ownership=Objects.requireNonNull(ownership);
+    public JpaWorkflowQueryAdapter(EntityManager entityManager, WorkflowExecutionOwnership ownership,
+            List<WorkflowOwnedTargetLookup> targetOwners, JdbcTemplate jdbc) {
+        this.ownership = Objects.requireNonNull(ownership);
         this.entityManager = Objects.requireNonNull(entityManager, "EntityManager must not be null.");
+        this.targetOwners = List.copyOf(targetOwners);
+        this.jdbc=Objects.requireNonNull(jdbc);
+    }
+
+    private static final List<String> MANUFACTURER_WORKFLOW_TABLES=List.of(
+        "public.hidra_workflow_action",
+        "public.hidra_workflow_definition",
+        "public.hidra_workflow_definition_target_binding",
+        "public.hidra_workflow_instance",
+        "public.hidra_workflow_state_history",
+        "public.hidra_workflow_step",
+        "public.hidra_workflow_task",
+        "public.hidra_workflow_transition",
+        "public.hidra_workflow_type_catalog");
+
+    /** Workflow-owned original-transaction fence, never a grant or delegated business decision. */
+    @Override
+    @Transactional(propagation=Propagation.MANDATORY,readOnly=false)
+    public void lockCurrentManufacturerApprovalEvidence() {
+        if (!TransactionSynchronizationManager.isActualTransactionActive()
+                || TransactionSynchronizationManager.isCurrentTransactionReadOnly()
+                || !Boolean.TRUE.equals(jdbc.queryForObject(
+                    "SELECT current_setting('transaction_isolation')='read committed' "
+                    +"AND current_setting('transaction_read_only')='off' "
+                    +"AND current_setting('session_replication_role')='origin' "
+                    +"AND pg_catalog.pg_backend_pid()>0 AND pg_catalog.txid_current()>0",
+                    Boolean.class)))
+            throw new IllegalStateException("Original Workflow approval transaction required");
+        // SHARE conflicts with concurrent Workflow writes; NOWAIT is fail-closed and bounded.
+        for (String table : MANUFACTURER_WORKFLOW_TABLES)
+            jdbc.execute("LOCK TABLE " + table + " IN SHARE MODE NOWAIT");
     }
 
     @Override
@@ -63,6 +104,7 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase {
                 .getResultList().stream()
                 .filter(entity -> belongsToActor(entity, actorReference))
                 .filter(entity -> matchesView(entity, normalizedView))
+                .filter(this::canDiscloseTask)
                 .map(this::taskView)
                 .toList();
         return page(all, page, size);
@@ -74,6 +116,7 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase {
         if (entity == null) {
             throw new NoSuchElementException("Unknown workflow task: " + id);
         }
+        requireTaskRead(entity, WorkflowOwnedTargetLookup.ProtectedRead.REVISION);
         return taskView(entity);
     }
 
@@ -83,6 +126,7 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase {
         if (instance == null) {
             throw new NoSuchElementException("Unknown workflow instance: " + instanceId);
         }
+        requireProtectedRead(instance, WorkflowOwnedTargetLookup.ProtectedRead.REVISION);
         if (!NON_TERMINAL_INSTANCE_STATES.contains(String.valueOf(instance.status()))) {
             throw new NoSuchElementException("Workflow instance has no actionable current task: " + instanceId);
         }
@@ -106,14 +150,17 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase {
         if (entity == null) {
             throw new NoSuchElementException("Unknown workflow instance: " + id);
         }
+        requireProtectedRead(entity, WorkflowOwnedTargetLookup.ProtectedRead.REVISION);
         return instanceView(entity);
     }
 
     @Override
     public List<TimelineEntry> timeline(String instanceId) {
-        if (entityManager.find(WorkflowInstanceJpaEntity.class, instanceId) == null) {
+        WorkflowInstanceJpaEntity instance = entityManager.find(WorkflowInstanceJpaEntity.class, instanceId);
+        if (instance == null) {
             throw new NoSuchElementException("Unknown workflow instance: " + instanceId);
         }
+        requireProtectedRead(instance, WorkflowOwnedTargetLookup.ProtectedRead.HISTORY);
         return entityManager
                 .createQuery(
                         "select e from WorkflowActionJpaEntity e where e.instanceId = :instance order by e.actionSequence",
@@ -135,6 +182,7 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase {
         if (instance == null) {
             throw new NoSuchElementException("Unknown workflow instance: " + task.instanceId());
         }
+        requireProtectedRead(instance, WorkflowOwnedTargetLookup.ProtectedRead.REVISION);
         boolean assigned = belongsToActiveActor(task, actorReference);
         boolean actionable = ACTIONABLE_TASK_STATES.contains(String.valueOf(task.status()))
                 && task.completedAt() == null
@@ -150,6 +198,44 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase {
                 .getResultList().stream()
                 .map(transition -> actionView(transition, assigned && actionable, permissions))
                 .toList();
+    }
+
+    /** Metadata examination stays server-side; protected values are never returned before this guard. */
+    private boolean canDiscloseTask(WorkflowTaskJpaEntity task) {
+        WorkflowInstanceJpaEntity instance = entityManager.find(WorkflowInstanceJpaEntity.class, task.instanceId());
+        if (instance == null) return false;
+        try {
+            requireProtectedRead(instance, WorkflowOwnedTargetLookup.ProtectedRead.REVISION);
+            return true;
+        } catch (NoSuchElementException | AccessDeniedException denied) { return false; }
+    }
+
+    private void requireTaskRead(WorkflowTaskJpaEntity task, WorkflowOwnedTargetLookup.ProtectedRead access) {
+        WorkflowInstanceJpaEntity instance = entityManager.find(WorkflowInstanceJpaEntity.class, task.instanceId());
+        if (instance == null) throw new NoSuchElementException("Workflow task unavailable.");
+        requireProtectedRead(instance, access);
+    }
+
+    private void requireProtectedRead(WorkflowInstanceJpaEntity instance, WorkflowOwnedTargetLookup.ProtectedRead access) {
+        if (!"simulation".equals(instance.targetModule())) return;
+        WorkflowCatalogEntryJpaEntity type = entityManager.find(WorkflowCatalogEntryJpaEntity.class, instance.targetTypeId());
+        if (type == null || !"WORKFLOW_TARGET_TYPE".equals(type.catalogName()) || !type.active())
+            throw new NoSuchElementException("Workflow target unavailable.");
+        if (!"MANUFACTURER_CHARACTERISTIC_REVISION".equals(type.code())) return;
+        if (instance.targetId() == null || !instance.targetId().matches("[0-9a-f]{64}"))
+            throw new NoSuchElementException("Workflow target unavailable.");
+        var owners = targetOwners.stream()
+                .filter(o -> "simulation".equals(o.module())
+                        && o.targetTypeCodes().contains("MANUFACTURER_CHARACTERISTIC_REVISION")).toList();
+        if (owners.size() != 1) throw new NoSuchElementException("Workflow target unavailable.");
+        try {
+            if (!owners.getFirst().protectedReadAllowed(
+                    "MANUFACTURER_CHARACTERISTIC_REVISION", instance.targetId(), access))
+                throw new NoSuchElementException("Workflow target unavailable.");
+        } catch (RuntimeException unavailable) {
+            // A native denial, unavailable PostgreSQL principal or revoked grant is non-disclosing.
+            throw new NoSuchElementException("Workflow target unavailable.");
+        }
     }
 
     private boolean belongsToActor(WorkflowTaskJpaEntity entity, String actorReference) {

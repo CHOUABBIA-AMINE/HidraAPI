@@ -18,20 +18,22 @@
  *
  */
 package dz.sh.hidra.modules.workflow.application.service;
-import dz.sh.hidra.modules.workflow.application.port.out.WorkflowInstanceRepositoryPort;
-import dz.sh.hidra.modules.workflow.domain.model.WorkflowInstance;
-import dz.sh.hidra.modules.workflow.domain.value.WorkflowInstanceStatus;
-import java.time.Instant;
-import java.lang.reflect.Proxy;
-import java.util.Optional;
+import dz.sh.hidra.modules.workflow.application.port.in.WorkflowQueryUseCase;
+import java.util.NoSuchElementException;
+import org.springframework.security.access.AccessDeniedException;
+import static org.mockito.Mockito.*;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 class DocumentsApprovalReferenceQueryServiceTest {
     @Test void existenceIsOwnerControlledWithoutInventingApprovalLifecycle(){
-        Instant at=Instant.parse("2026-10-07T00:00:00Z");
-        var instance=new WorkflowInstance("wf","def",1,"purpose","documents","type","version",null,null,WorkflowInstanceStatus.STARTED,null,"actor","user","Actor",null,at,null,null,null,at,at);
-        var repo=(WorkflowInstanceRepositoryPort)Proxy.newProxyInstance(getClass().getClassLoader(),new Class<?>[]{WorkflowInstanceRepositoryPort.class},(p,m,a)->"wf".equals(a[0])?Optional.of(instance):Optional.empty());
-        var service=new DocumentsApprovalReferenceQueryService(repo);
-        assertTrue(service.exists(" wf "));assertFalse(service.exists("missing"));assertFalse(service.exists(null));
+        var queries=mock(WorkflowQueryUseCase.class);
+        var service=new DocumentsApprovalReferenceQueryService(queries);
+        when(queries.instance("wf")).thenReturn(new WorkflowQueryUseCase.InstanceView(
+            "wf","def",1,"purpose","documents","type","version",null,null,"STARTED",null,
+            "actor","user","Actor",null,null,null,null));
+        when(queries.instance("missing")).thenThrow(new NoSuchElementException("Unavailable"));
+        when(queries.instance("foreign")).thenThrow(new AccessDeniedException("Unavailable"));
+        assertTrue(service.exists(" wf "));assertFalse(service.exists("missing"));
+        assertFalse(service.exists("foreign"));assertFalse(service.exists(null));
     }
 }

@@ -18,16 +18,22 @@
  *
  */
 package dz.sh.hidra.modules.workflow.application.service;
-import dz.sh.hidra.modules.workflow.application.port.out.WorkflowInstanceRepositoryPort;
-import dz.sh.hidra.modules.workflow.domain.model.WorkflowInstance;
-import java.util.Optional;
+import dz.sh.hidra.modules.workflow.application.port.in.WorkflowQueryUseCase;
+import java.util.NoSuchElementException;
+import org.springframework.security.access.AccessDeniedException;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 class AuditWorkflowReferenceQueryServiceTest {
  @Test void onlyOwnerProvenReferencesResolve() {
-  var repo=mock(WorkflowInstanceRepositoryPort.class);var service=new AuditWorkflowReferenceQueryService(repo);
-  when(repo.findById("known")).thenReturn(Optional.of(mock(WorkflowInstance.class)));
-  assertFalse(service.exists(null));assertFalse(service.exists(" "));assertFalse(service.exists("missing"));assertTrue(service.exists(" known "));
+  var queries=mock(WorkflowQueryUseCase.class);var service=new AuditWorkflowReferenceQueryService(queries);
+  when(queries.instance("known")).thenReturn(new WorkflowQueryUseCase.InstanceView(
+    "known","def",1,"purpose","hse","type","target",null,null,"STARTED",null,
+    "actor","user","Actor",null,null,null,null));
+  when(queries.instance("missing")).thenThrow(new NoSuchElementException("Unavailable"));
+  when(queries.instance("foreign")).thenThrow(new AccessDeniedException("Unavailable"));
+  assertFalse(service.exists(null));assertFalse(service.exists(" "));
+  assertFalse(service.exists("missing"));assertFalse(service.exists("foreign"));
+  assertTrue(service.exists(" known "));
  }
 }

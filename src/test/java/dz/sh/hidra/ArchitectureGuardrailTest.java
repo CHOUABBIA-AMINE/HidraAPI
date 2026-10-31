@@ -167,6 +167,11 @@ class ArchitectureGuardrailTest {
                 && ORGANIZATION_OWNER_EXPORTS.stream().anyMatch(root -> target.equals(root) || target.startsWith(root + "$"));
     }
 
+    private static boolean isManufacturerOwnerExport(String source,String target) {
+        return (source.equals("dz.sh.hidra.modules.simulation.application.service.ProtectedManufacturerCharacteristicAdmissionCoordinator")
+                || source.startsWith("dz.sh.hidra.modules.simulation.application.service.ProtectedManufacturerCharacteristicAdmissionCoordinator$"))
+                && MANUFACTURER_OWNER_ROOTS.stream().anyMatch(root->target.equals(root)||target.startsWith(root+"$"));
+    }
     private static boolean isCustodyProductOwnerExport(String source, String target) {
         if (isSuppliedFluidOwnerExport(source, target) || isProductPublicationOwnerExport(source,target)) return true;
         String root="dz.sh.hidra.modules.party.application.contract.custody.CustodyProtectedPartyEligibilityContract";
@@ -380,6 +385,7 @@ class ArchitectureGuardrailTest {
                 }
                 if (isOrganizationOwnerExport(source.getName(), target.getName())) continue;
                 if (isCustodyProductOwnerExport(source.getName(), target.getName())) continue;
+                if (isManufacturerOwnerExport(source.getName(), target.getName())) continue;
 
                 violations.add(source.getName() + " -> " + target.getName());
             }
@@ -646,6 +652,20 @@ class ArchitectureGuardrailTest {
     }
 
     private static final String INSTALLED_UNIT_COORDINATOR="dz.sh.hidra.modules.topology.application.service.ProtectedInstalledUnitAdmissionCoordinator";
+    private static final String MANUFACTURER_COORDINATOR =
+            "dz.sh.hidra.modules.simulation.application.service.ProtectedManufacturerCharacteristicAdmissionCoordinator";
+    private static final Set<String> MANUFACTURER_OWNER_ROOTS=Set.of(
+            "dz.sh.hidra.modules.party.application.contract.simulation.SimulationManufacturerEvidenceContract",
+            "dz.sh.hidra.modules.identity.application.contract.simulation.SimulationManufacturerCharacteristicAuthorizationContract");
+    @Test void manufacturerNativeAndPartyOwnerExportsRemainExact() {
+        for(String root:MANUFACTURER_OWNER_ROOTS){
+            assertFalse(isForbiddenCrossModuleDependency(MANUFACTURER_COORDINATOR,root));
+            assertTrue(isForbiddenCrossModuleDependency(MANUFACTURER_COORDINATOR+"Other",root));
+            assertTrue(isForbiddenCrossModuleDependency("dz.sh.hidra.modules.simulation.application.service.Other",root));
+            assertTrue(isForbiddenCrossModuleDependency(MANUFACTURER_COORDINATOR,
+                root.replace(".application.contract.simulation.",".infrastructure.persistence.")));
+        }
+    }
     private static final Set<String> INSTALLED_UNIT_OWNER_ROOTS=Set.of(
         "dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract",
         "dz.sh.hidra.modules.party.application.contract.topology.TopologyInstalledUnitCompanyEvidenceContract",
@@ -672,6 +692,10 @@ class ArchitectureGuardrailTest {
         if (sourceModule == null || targetModule == null || sourceModule.equals(targetModule)) {
             return false;
         }
+        for(String root:MANUFACTURER_OWNER_ROOTS)if(targetClassName.equals(root)
+                || targetClassName.startsWith(root+"$"))
+            return !(sourceClassName.equals(MANUFACTURER_COORDINATOR)
+                || sourceClassName.startsWith(MANUFACTURER_COORDINATOR+"$"));
         for(String root:INSTALLED_UNIT_OWNER_ROOTS)if(targetClassName.startsWith(root))
             return !(targetClassName.equals(root) || targetClassName.startsWith(root+"$"))
                 || !sourceClassName.equals(INSTALLED_UNIT_COORDINATOR) && !sourceClassName.startsWith(INSTALLED_UNIT_COORDINATOR+"$");

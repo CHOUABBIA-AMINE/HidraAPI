@@ -240,6 +240,18 @@ paths; no B implementation, further split, Phase status update, Package C,
 HAPI-602, deployment or numerical engine is implied. HAPI-601 remains
 NOT_IMPLEMENTED/BLOCKED.
 
+HAPI-601 protected manufacturer history pagination: the owner approved
+registration of an **internal, bounded backend prerequisite before Package C**.
+The indexed B history query still denies above 256 revisions and has no
+cursor/page contract; a keyset proposal and explicit per-revision Party/Identity
+non-disclosure, mixed-model, concurrent-revocation and PostgreSQL gates are
+recorded in [HPS-007](TASKS_HPS-007.md#hapi-601) at the exact green
+B-repair source `3870d57a16c008afdba799ed45c9d3008f6b810b` (Full #1020; Docs #775).
+This is **registration only**, not pagination implementation or C admission;
+future scope and any whole-history authorization proof must be separately
+accepted. HAPI-601 remains NOT_IMPLEMENTED/BLOCKED; no HAPI-602, P3,
+deployment or operational acceptance follows.
+
 [HAPI-045](TASKS_HPS-024.md#hapi-045),
 [HAPI-046](TASKS_HPS-024.md#hapi-046) and parent
 [HAPI-436](TASKS_HPS-024.md#hapi-436) are VERIFIED/COMPLETED within the accepted

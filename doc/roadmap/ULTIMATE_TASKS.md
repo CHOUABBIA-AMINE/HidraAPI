@@ -427,6 +427,8 @@ reconciles all four child obligations. Five complete DB sets, the optional
 serial diagnostic and strict release evidence restrictions remain unchanged.
 This pointer selects no new benchmark, publication policy, source change or release.
 
+HAPI-601 CI-first repair (2026-10-31): Full [#1027](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41213728019) failed six configured manufacturer HTTP/PostgreSQL `SAVE` assertions (403 instead of 200). [HPS-007](TASKS_HPS-007.md#hapi-601) records the exact test-only Party final-fence publisher privilege repair with unchanged assertions, pending exact new-SHA CI. HAPI-601 stays NOT_ACCEPTED; HAPI-602/P3 not selected.
+
 ## Phase files
 
 | Phase | Definition file | Tasks |

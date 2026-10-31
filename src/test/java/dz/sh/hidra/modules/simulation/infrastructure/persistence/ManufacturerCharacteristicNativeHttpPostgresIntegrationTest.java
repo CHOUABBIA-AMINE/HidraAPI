@@ -115,6 +115,16 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
                 admin.execute("GRANT UPDATE ON "+fence.relation()+" TO "+PUBLISHER);
         for(String table:List.of(REV,QUAL))
             admin.execute("GRANT SELECT,INSERT,UPDATE ON "+table+" TO "+PUBLISHER);
+        // The real Party owner publishes SHARE_ROW_EXCLUSIVE final relation fences.
+        // PostgreSQL requires a table-level UPDATE privilege for that lock strength;
+        // the test-only publication role previously had SELECT and could never
+        // complete an otherwise valid manufacturer save. This grant is confined to
+        // this disposable Testcontainers catalog; production grants are unchanged.
+        for(String table:List.of("hidra_party_party","hidra_party_eligibility_generation",
+                "hidra_party_role","hidra_party_role_assignment",
+                "hidra_party_manufacturer_profile",
+                "hidra_party_manufacturer_source_authorization"))
+            admin.execute("GRANT UPDATE ON public."+table+" TO "+PUBLISHER);
         provisionLock(admin,"manufacturer_party_lock_owner",
             "public.hidra_party_manufacturer_authorization_lock()",
             List.of("hidra_party_party","hidra_party_eligibility_generation","hidra_party_role",

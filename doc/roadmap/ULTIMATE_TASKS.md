@@ -455,6 +455,8 @@ Owner-approved progress status correction (2026-11-01): **[HAPI-601](TASKS_HPS-0
 
 HAPI-602 Package B source-backed draft persistence (2026-11-01): [HPS-006](TASKS_HPS-006.md#hapi-602) records a real forward-only PostgreSQL migration with immutable DRAFT revision/head/receipt, manufacturer SHA-256 source FK/check, physical GiST interval exclusion and no PUBLIC role grants, plus nine PostgreSQL 16 integration cases and strict inventory/ownership registration. This is a CI-first **partial backend foundation**, not a native-authorized publisher, REST API, Workflow-approved configuration or qualified simulation input. New-SHA Flyway/Postgres and reviewed exact-catalog dictionary remain acceptance gates. HAPI-601 IMPLEMENTED/COMPLETED with deferred gaps; HAPI-602 PARTIAL/IN_PROGRESS unchanged.
 
+HAPI-602 Package C1 (2026-11-01): [HPS-006](TASKS_HPS-006.md#hapi-602) records the explicit draft-only SAVE/READ/HISTORY application contract and protected-executor coordination with eleven synthetic unit cases. Full #1037 and Docs #806 confirmed the prior Package B database foundation. C1 has no wired native publisher or REST; C2 original-transaction cross-owner evidence and C3 configured HTTP are the shortest required software route. No production dataset, deployment or numerical P3 is assumed; HAPI-602 remains PARTIAL/IN_PROGRESS and HAPI-603 BLOCKED.
+
 ## Phase files
 
 | Phase | Definition file | Tasks |

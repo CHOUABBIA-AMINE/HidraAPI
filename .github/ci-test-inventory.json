@@ -11128,6 +11128,30 @@
       "path": "src/test/java/dz/sh/hidra/platform/workbench/HidraOperationalWorkbenchServiceTest.java",
       "source_sha256": "42e8fc8e06f115844a0d461745e4c9cd06c389fdb9c6a9a9dd1de5617ec5b424",
       "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "saveRequiresExactLinkAndPhysicalUnit",
+        "saveRequiresExpectedEpochAndNextImmutableRevision",
+        "saveRequiresExplicitRequestIdentityAndRejectsReadFields",
+        "currentReadCannotCarryDraftOrHistoryCursor",
+        "exactRevisionReadRequiresPositiveRevision",
+        "historyEnforcesLimitAndExclusivePositiveCursor",
+        "identitiesAreExactAndResultsAreDefensivelyCopied",
+        "onlyDraftOperationsExistWithoutApprovalOrQualification",
+        "successfulResultRequiresFinalGuardAndExecutorCompletion",
+        "deniedFinalGuardNeverReleasesProtectedRead",
+        "indeterminateCommitIsNeverAutomaticallyRetried"
+      ],
+      "class": "dz.sh.hidra.modules.topology.application.service.InstalledCharacteristicLinkApplicationServiceTest",
+      "dependency_reason": "HAPI-602 Package C1 draft-only application boundary: descriptor validation, physical-commit coordination and fail-closed simulation; actual source-backed native adapter and HTTP remain unimplemented; CI duration unmeasured",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/application/service/InstalledCharacteristicLinkApplicationServiceTest.java",
+      "source_sha256": "d89d01816656433778b99d277cf0ebe9d1bec8b0cae9b99542dafb01bc0b17a7",
+      "supports": []
     }
   ],
   "format": 1,

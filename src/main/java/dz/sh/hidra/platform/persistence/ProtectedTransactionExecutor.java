@@ -375,7 +375,7 @@ public final class ProtectedTransactionExecutor {
     public void requireStationConfigurationFinalPreparation(){
         var s=admissionScope();
         String caller=StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName();
-        if(!caller.equals(STATION_CONFIG_COORDINATOR) && !caller.equals(LINK_COORDINATOR) || !s.admission
+        if(!caller.equals(STATION_CONFIG_COORDINATOR) || !s.admission
             || s.phase!=ProtectedOperationDataSource.Phase.FLUSHING){
             s.reject("unreviewed station configuration final preparation");s.healthy();
         }

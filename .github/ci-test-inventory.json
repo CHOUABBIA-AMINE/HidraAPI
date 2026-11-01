@@ -81,6 +81,7 @@
         "appointmentImportsDoNotOpenPrivateSiblingsOrOtherConsumers",
         "crossModulePrivateImportsRemainClosed",
         "directWireDomainRepresentationLeakageRemainsAbsent",
+        "exactCharacteristicLinkContractsAreNarrowerThanAnySiblings",
         "fictionalModuleEventScaffoldingRemainsAbsent",
         "finalClosureEvidenceRecordsCompletedRerun",
         "productPublicationImportsHaveOnlyExactOwnerRoots",
@@ -94,7 +95,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java",
-      "source_sha256": "1bc76cd0a2f982f2225c910b29549abae29562ba5da3736fbed298792548d0a5",
+      "source_sha256": "5912a98557b62c4b238e8508c8c15f18f8875fe8b22cc56b37ae713824750227",
       "supports": []
     },
     {
@@ -2314,7 +2315,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java",
-      "source_sha256": "005745261aeb734e5aeca11c5a61a53a6e3b7a01b9709bebc3e42572862e6543",
+      "source_sha256": "9103b2915b5df88485cf8734081dc25c3da7d045500de39c46b5b8d797f68e7b",
       "supports": []
     },
     {
@@ -9898,7 +9899,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java",
-      "source_sha256": "b69fed9ce4b2ab872ad96bf78b15c81e51b839ad058eb0d061a648c062dee0a7",
+      "source_sha256": "84516dbfa2c06339e3c1f3f671a38bef7b9ca4cddbd528983fd4d718146db0f6",
       "supports": []
     },
     {
@@ -11170,7 +11171,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/api/rest/InstalledCharacteristicLinkRestMapperTest.java",
-      "source_sha256": "ca5d654570b2df1d8a575fa1e037c0012bfee9356c7d77180564300e5fd98a30",
+      "source_sha256": "779e9f2e564cbda23af2ad425518cd7fa337b491c195f16ac2a1e398fd1bea60",
       "supports": []
     },
     {
@@ -11187,7 +11188,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/api/rest/controller/InstalledCharacteristicLinkControllerTest.java",
-      "source_sha256": "6d397b274b155b6a0f70d73fd5fc663f223345d9356c5f882295015beb57cf7c",
+      "source_sha256": "b12c01dd33f3fc4eb1f5224580a9a9c0d435e2b48fc75b7462f7f95b2ba42e49",
       "supports": []
     },
     {
@@ -11219,7 +11220,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/qualification/InstalledCharacteristicLinkNativeHttpPostgresIntegrationTest.java",
-      "source_sha256": "c4443f701c172aa41c1ab744f6e8dd498b37bcf69f39358112d3f9c40c6d7f6f",
+      "source_sha256": "a71f5e3c77ead8767f5e426286b821b8d8592b740778a7af7c4f01c83773f95e",
       "supports": []
     }
   ],

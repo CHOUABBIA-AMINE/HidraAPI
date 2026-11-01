@@ -680,7 +680,12 @@ class JdbcProtectedAuthorizationEvidenceReaderTest {
                         "loadQualifiedInstalledUnitGroup", "recheckInstalledUnitGroup",
                         "loadQualifiedStationConfigurationGroup", "recheckStationConfigurationGroup",
                         "loadQualifiedProductPair", "recheckProductPair",
-                        "loadQualifiedSuppliedFluidPair", "recheckSuppliedFluidPair", "loadQualifiedProductPublicationPair", "recheckProductPublicationPair", "loadManufacturer");
+                        "loadQualifiedSuppliedFluidPair", "recheckSuppliedFluidPair", "loadQualifiedProductPublicationPair", "recheckProductPublicationPair", "loadManufacturer", "loadInstalledCharacteristic");
+        // Characteristic link joins only the reviewed exact native claim reader, never an authority export.
+        assertThat(JdbcProtectedAuthorizationEvidenceReader.class.getMethod(
+                    "loadInstalledCharacteristic", Evidence.class, AuthorizationEvaluationRequest.class,
+                    int.class, long.class).getReturnType())
+                .isEqualTo(AuthorizationEvidence.class);
         // New manufacturer reader remains a single typed physical-evidence method.
         assertThat(JdbcProtectedAuthorizationEvidenceReader.class.getMethod(
                         "loadManufacturer", Evidence.class, AuthorizationEvaluationRequest.class,

@@ -22,7 +22,7 @@ package dz.sh.hidra.modules.topology.api.rest.controller;
 import dz.sh.hidra.modules.topology.application.port.in.InstalledCharacteristicLinkUseCase;
 import dz.sh.hidra.modules.topology.application.port.in.InstalledCharacteristicLinkUseCase.*;
 import dz.sh.hidra.modules.topology.application.model.InstalledCharacteristicLinkFailure;
-import dz.sh.hidra.modules.topology.api.rest.request.InstalledCharacteristicLinkRequests.Save;
+import dz.sh.hidra.modules.topology.api.rest.request.InstalledCharacteristicLinkRequests.CharacteristicLinkDraftSave;
 import dz.sh.hidra.modules.topology.domain.model.InstalledCharacteristicLink;
 import java.time.Instant;
 import java.util.List;
@@ -41,7 +41,7 @@ class InstalledCharacteristicLinkControllerTest {
     @AfterEach void cleanup(){SecurityContextHolder.clearContext();}
     private static void auth(){SecurityContextHolder.getContext().setAuthentication(
         new UsernamePasswordAuthenticationToken("operator",null,List.of()));}
-    private static Save save(){return new Save("company","req",0L,1L,"src","rev",HASH,
+    private static CharacteristicLinkDraftSave save(){return new CharacteristicLinkDraftSave("company","req",0L,1L,"src","rev",HASH,
         "VALVE_MAP",AT,null,AT,"synthetic:evidence",null);}
     private static InstalledCharacteristicLink value(){
         return new InstalledCharacteristicLink("link",1L,"company","unit","src","rev",HASH,

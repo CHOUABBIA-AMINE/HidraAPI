@@ -20,7 +20,7 @@
 package dz.sh.hidra.modules.topology.api.rest;
 
 import dz.sh.hidra.modules.topology.api.rest.mapper.InstalledCharacteristicLinkRestMapper;
-import dz.sh.hidra.modules.topology.api.rest.request.InstalledCharacteristicLinkRequests.Save;
+import dz.sh.hidra.modules.topology.api.rest.request.InstalledCharacteristicLinkRequests.CharacteristicLinkDraftSave;
 import dz.sh.hidra.modules.topology.application.port.in.InstalledCharacteristicLinkUseCase.*;
 import dz.sh.hidra.modules.topology.domain.model.InstalledCharacteristicLink;
 import java.time.Instant;
@@ -31,8 +31,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class InstalledCharacteristicLinkRestMapperTest {
     private static final Instant AT=Instant.parse("2026-01-01T00:00:00Z");
     private static final String HASH="a".repeat(64);
-    private static Save save(){
-        return new Save("company","req-1",0L,1L,"source","rev-1",HASH,
+    private static CharacteristicLinkDraftSave save(){
+        return new CharacteristicLinkDraftSave("company","req-1",0L,1L,"source","rev-1",HASH,
             "COMPRESSOR_MAP",AT,null,AT,"synthetic:evidence",null);
     }
     @Test void mapsExactDraftWithoutApprovalOrSourcePayload(){
@@ -50,22 +50,22 @@ class InstalledCharacteristicLinkRestMapperTest {
     @Test void rejectsMalformedCanonicalDigestAndInvalidKind(){
         var s=save();
         assertThrows(RuntimeException.class,()->InstalledCharacteristicLinkRestMapper.save("u","l",
-            new Save(s.companyPartyId(),s.requestId(),s.expectedEpoch(),s.linkRevision(),
+            new CharacteristicLinkDraftSave(s.companyPartyId(),s.requestId(),s.expectedEpoch(),s.linkRevision(),
                 s.sourceId(),s.sourceRevisionId(),"NOT-A-DIGEST",s.kind(),s.effectiveFrom(),
                 s.effectiveUntil(),s.recordedAt(),s.evidenceReference(),s.installationId())));
         assertThrows(RuntimeException.class,()->InstalledCharacteristicLinkRestMapper.save("u","l",
-            new Save(s.companyPartyId(),s.requestId(),s.expectedEpoch(),s.linkRevision(),
+            new CharacteristicLinkDraftSave(s.companyPartyId(),s.requestId(),s.expectedEpoch(),s.linkRevision(),
                 s.sourceId(),s.sourceRevisionId(),s.sourceSha256(),"APPROVED",
                 s.effectiveFrom(),s.effectiveUntil(),s.recordedAt(),s.evidenceReference(),s.installationId())));
     }
     @Test void rejectsStaleRevisionAndMissingRequestId(){
         var s=save();
         assertThrows(RuntimeException.class,()->InstalledCharacteristicLinkRestMapper.save("u","l",
-            new Save(s.companyPartyId(),s.requestId(),2L,1L,s.sourceId(),s.sourceRevisionId(),
+            new CharacteristicLinkDraftSave(s.companyPartyId(),s.requestId(),2L,1L,s.sourceId(),s.sourceRevisionId(),
                 s.sourceSha256(),s.kind(),s.effectiveFrom(),s.effectiveUntil(),s.recordedAt(),
                 s.evidenceReference(),s.installationId())));
         assertThrows(RuntimeException.class,()->InstalledCharacteristicLinkRestMapper.save("u","l",
-            new Save(s.companyPartyId(),null,0L,1L,s.sourceId(),s.sourceRevisionId(),
+            new CharacteristicLinkDraftSave(s.companyPartyId(),null,0L,1L,s.sourceId(),s.sourceRevisionId(),
                 s.sourceSha256(),s.kind(),s.effectiveFrom(),s.effectiveUntil(),s.recordedAt(),
                 s.evidenceReference(),s.installationId())));
     }

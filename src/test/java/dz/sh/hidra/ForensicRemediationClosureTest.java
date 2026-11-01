@@ -223,6 +223,7 @@ class ForensicRemediationClosureTest {
                 }
                 if (manufacturerCharacteristicOwnerExport(source.fqcn(), imported)) continue;
                 if (stationConfigurationOwnerExport(source.fqcn(), imported)) continue;
+                if (characteristicLinkOwnerExport(source.fqcn(), imported)) continue;
                 if (installedUnitOwnerExport(source.fqcn(), imported)) continue;
                 if (organizationOwnerExport(source.fqcn(), imported)) continue;
                 if (custodyProductOwnerExport(source.fqcn(), imported)) continue;
@@ -239,6 +240,47 @@ class ForensicRemediationClosureTest {
                         "dz.sh.hidra.modules.identity.application.contract.simulation.SimulationManufacturerCharacteristicAuthorizationContract",
                         "dz.sh.hidra.modules.party.application.contract.simulation.SimulationManufacturerEvidenceContract")
                         .contains(imported);
+    }
+
+    /** Precisely five reviewed consumers of two public owner contracts; no package-wide export. */
+    private static boolean characteristicLinkOwnerExport(String source,String imported) {
+        String owner="dz.sh.hidra.modules.topology.application.service.ProtectedInstalledCharacteristicLinkAdmissionCoordinator";
+        String storage="dz.sh.hidra.modules.topology.application.port.out.InstalledCharacteristicLinkStoragePort";
+        String writer="dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.JdbcInstalledCharacteristicLinkRepositoryAdapter";
+        String simulation="dz.sh.hidra.modules.simulation.infrastructure.integration.TopologyManufacturerCharacteristicReferenceAdapter";
+        String identityContract="dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledCharacteristicLinkAuthorizationContract";
+        String simulationContract="dz.sh.hidra.modules.simulation.application.contract.topology.TopologyManufacturerCharacteristicReferenceContract";
+        String partyContract="dz.sh.hidra.modules.party.application.contract.simulation.SimulationManufacturerEvidenceContract";
+        return (source.equals(owner)
+                    && (imported.equals(identityContract)||imported.startsWith(identityContract+".")
+                        || imported.equals(simulationContract)||imported.startsWith(simulationContract+".")))
+                || ((source.equals(storage)||source.equals(writer))
+                    && imported.equals(identityContract+".Origin"))
+                || (source.equals(simulation) && (imported.equals(partyContract)
+                    || imported.startsWith(partyContract+".")));
+    }
+
+    @Test void exactCharacteristicLinkContractsAreNarrowerThanAnySiblings() {
+        String owner="dz.sh.hidra.modules.topology.application.service.ProtectedInstalledCharacteristicLinkAdmissionCoordinator";
+        String storage="dz.sh.hidra.modules.topology.application.port.out.InstalledCharacteristicLinkStoragePort";
+        String writer="dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.JdbcInstalledCharacteristicLinkRepositoryAdapter";
+        String reader="dz.sh.hidra.modules.simulation.infrastructure.integration.TopologyManufacturerCharacteristicReferenceAdapter";
+        String identity="dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledCharacteristicLinkAuthorizationContract";
+        String manufacturer="dz.sh.hidra.modules.simulation.application.contract.topology.TopologyManufacturerCharacteristicReferenceContract";
+        String party="dz.sh.hidra.modules.party.application.contract.simulation.SimulationManufacturerEvidenceContract";
+        assertTrue(characteristicLinkOwnerExport(owner,identity));
+        assertTrue(characteristicLinkOwnerExport(owner,identity+".Origin"));
+        assertTrue(characteristicLinkOwnerExport(owner,manufacturer));
+        assertTrue(characteristicLinkOwnerExport(storage,identity+".Origin"));
+        assertTrue(characteristicLinkOwnerExport(writer,identity+".Origin"));
+        assertTrue(characteristicLinkOwnerExport(reader,party));
+        assertFalse(characteristicLinkOwnerExport(owner+"Sibling",identity));
+        assertFalse(characteristicLinkOwnerExport(owner,identity+"Sibling"));
+        assertFalse(characteristicLinkOwnerExport(writer,identity));
+        assertFalse(characteristicLinkOwnerExport(storage,manufacturer));
+        assertFalse(characteristicLinkOwnerExport(reader+"Sibling",party));
+        assertFalse(characteristicLinkOwnerExport(reader,party+"Sibling"));
+        assertFalse(characteristicLinkOwnerExport(owner,"dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipant"));
     }
 
     private static boolean stationConfigurationOwnerExport(String source,String imported) {

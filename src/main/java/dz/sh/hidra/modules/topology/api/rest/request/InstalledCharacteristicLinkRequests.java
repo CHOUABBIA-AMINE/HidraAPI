@@ -21,7 +21,7 @@ package dz.sh.hidra.modules.topology.api.rest.request;
 import java.time.Instant;
 public final class InstalledCharacteristicLinkRequests {
     private InstalledCharacteristicLinkRequests(){}
-    public record Save(String companyPartyId,String requestId,Long expectedEpoch,
+    public record CharacteristicLinkDraftSave(String companyPartyId,String requestId,Long expectedEpoch,
             Long linkRevision,String sourceId,String sourceRevisionId,String sourceSha256,
             String kind,Instant effectiveFrom,Instant effectiveUntil,Instant recordedAt,
             String evidenceReference,String installationId){

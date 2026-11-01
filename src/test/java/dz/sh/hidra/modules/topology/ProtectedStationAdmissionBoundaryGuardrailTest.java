@@ -48,11 +48,16 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
                 permitted.add("ProtectedManufacturerCharacteristicAdmissionCoordinator.java");
                 expected = Set.copyOf(permitted);
             }
+            // HAPI-602: only this concrete original-transaction characteristic-link coordinator
+            // may call the four guarded technical phases; all other possible callers remain denied.
+            var withCharacteristic = new HashSet<>(expected);
+            withCharacteristic.add("ProtectedInstalledCharacteristicLinkAdmissionCoordinator.java");
+            expected=Set.copyOf(withCharacteristic);
             assertEquals(expected,found);
         }
     }
     @Test void identityAdmissionAndCollectorHaveOnlyReviewedCallers() throws Exception {
-        var expected=Map.of("collectFenced",Set.of("JdbcIdentityAuthorityFence.java"),"acquireNowait",Set.of("ProtectedOperationIdentityParticipant.java"),"admit",Set.of("ProtectedTopologyStationConfigurationAuthorizationParticipant.java","ProtectedTopologyInstalledUnitAuthorizationParticipant.java","ProtectedProductPublicationAuthorizationParticipant.java","ProtectedFluidPropertyAuthorizationParticipant.java","ProtectedProductDraftAuthorizationParticipant.java","ProtectedTopologyAuthorizationParticipant.java","ProtectedEngineeringDraftAuthorizationParticipant.java","ProtectedOrganizationAppointmentAuthorizationParticipant.java","ProtectedSimulationManufacturerCharacteristicAuthorizationParticipant.java"));
+        var expected=Map.of("collectFenced",Set.of("JdbcIdentityAuthorityFence.java"),"acquireNowait",Set.of("ProtectedOperationIdentityParticipant.java"),"admit",Set.of("ProtectedTopologyStationConfigurationAuthorizationParticipant.java","ProtectedTopologyInstalledUnitAuthorizationParticipant.java","ProtectedProductPublicationAuthorizationParticipant.java","ProtectedFluidPropertyAuthorizationParticipant.java","ProtectedProductDraftAuthorizationParticipant.java","ProtectedTopologyAuthorizationParticipant.java","ProtectedEngineeringDraftAuthorizationParticipant.java","ProtectedOrganizationAppointmentAuthorizationParticipant.java","ProtectedSimulationManufacturerCharacteristicAuthorizationParticipant.java","ProtectedTopologyInstalledCharacteristicLinkAuthorizationParticipant.java"));
         for(var item:expected.entrySet()) {
             var found=new HashSet<String>();try(var files=Files.walk(Path.of("src/main/java"))) {for(var f:files.filter(x->x.toString().endsWith(".java")).toList())if(Files.readString(f).contains("."+item.getKey()+"("))found.add(f.getFileName().toString());}assertEquals(item.getValue(),found);
         }
@@ -80,6 +85,9 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
         String draftCoordinator="\"dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringDraftAdmissionCoordinator\"";
         String appointment="\"dz.sh.hidra.modules.organization.application.service.ProtectedEmployeeAppointmentAdmissionCoordinator\"";
         String appointmentService="\"dz.sh.hidra.modules.organization.application.service.EmployeeAppointmentLifecycleApplicationService\"";
+        String linkService="\"dz.sh.hidra.modules.topology.application.service.InstalledCharacteristicLinkApplicationService\"";
+        String linkCoordinator="\"dz.sh.hidra.modules.topology.application.service.ProtectedInstalledCharacteristicLinkAdmissionCoordinator\"";
+        String linkRepository="\"dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.JdbcInstalledCharacteristicLinkRepositoryAdapter\"";
         for(String name:List.of("ProtectedTransactionExecutor","ProtectedOperationDataSource")) {
             String s=source("platform/persistence/"+name+".java");
             String productService="\"dz.sh.hidra.modules.custody.application.service.ProductEngineeringDraftApplicationService\"";
@@ -106,7 +114,13 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
             assertEquals(name.equals("ProtectedTransactionExecutor")?1:0,s.split(java.util.regex.Pattern.quote(installedCoordinator),-1).length-1);
             assertEquals(name.equals("ProtectedTransactionExecutor")?1:0,s.split(java.util.regex.Pattern.quote(manufacturerService),-1).length-1);
             assertEquals(name.equals("ProtectedTransactionExecutor")?1:0,s.split(java.util.regex.Pattern.quote(manufacturerCoordinator),-1).length-1);
-            assertFalse(s.replace(configService,"\"reviewed-config-service\"")
+            for(var reviewed:List.of(linkService,linkCoordinator,linkRepository))
+                assertEquals(name.equals("ProtectedTransactionExecutor")?1:0,
+                    s.split(java.util.regex.Pattern.quote(reviewed),-1).length-1);
+            assertFalse(s.replace(linkService,"\"reviewed-link-service\"")
+                .replace(linkCoordinator,"\"reviewed-link-coordinator\"")
+                .replace(linkRepository,"\"reviewed-link-repository\"")
+                .replace(configService,"\"reviewed-config-service\"")
                 .replace(configCoordinator,"\"reviewed-config-coordinator\"")
                 .replace(configRepository,"\"reviewed-config-repository\"")
                 .replace(installedService,"\"reviewed-installed-service\"").replace(installedCoordinator,"\"reviewed-installed-coordinator\"").replace(newPublicationService,"\"reviewed-product-publication-service\"").replace(newPublicationCoordinator,"\"reviewed-product-publication-coordinator\"").replace(fluidService,"\"reviewed-fluid-service\"").replace(fluidCoordinator,"\"reviewed-fluid-coordinator\"").replace(productService,"\"reviewed-product-service\"").replace(productCoordinator,"\"reviewed-product-coordinator\"").replace(appointmentService,"\"reviewed-appointment-service\"").replace(appointment,"\"reviewed-appointment-caller\"").replace(approved,"\"reviewed-caller\"").replace(publication,"\"reviewed-publication-caller\"").replace(draft,"\"reviewed-draft\"").replace(draftCoordinator,"\"reviewed-draft-coordinator\"").replace(manufacturerService,"\"reviewed-manufacturer-service\"").replace(manufacturerCoordinator,"\"reviewed-manufacturer-coordinator\"").replace("\"dz.sh.hidra.modules.topology.application.service.EngineeringRevisionPublicationApplicationService\"","\"reviewed-publication-service\"").replace("\"dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringPublicationAdmissionCoordinator\"","\"reviewed-publication-coordinator\"").contains("dz.sh.hidra.modules."));
@@ -115,7 +129,7 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
     // HAPI-599B admits the reviewed per-resource replacement binding; pin actual reader bytes and unchanged J contracts.
     @Test void existingReaderAndJContractsRemainUnchanged() throws Exception {
         // B2 reviewed typed configuration-family extension; every other source pin remains unchanged.
-        assertEquals("3da973eda0d22ee60337c390cd06be361db2c84fbf1bfa2ae49f7a9c5bacc5c8",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(Path.of("src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java")))));
+        assertEquals("1510b738e52196822571415d28b1d1a3ddde703994764349be4fd790ff98d411",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(Path.of("src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java")))));
         assertEquals("ae4b5c36fbe2531ab5fc82988a05206ad850dfb5377792f7201d2394eb5c41cc",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(Path.of("src/main/java/dz/sh/hidra/modules/party/application/contract/topology/TopologyProtectedPartyEligibilityContract.java")))));
         assertEquals("11a7e8b269fd96e4132437831b6efd4184c1cd17765438d52bb022decaf3e886",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(Path.of("src/main/java/dz/sh/hidra/modules/topology/application/contract/station/StationProtectedFacilityOwnershipContract.java")))));
         assertEquals("b4ed2114a0af4d715d3da994ed096b2d0b184f5106ddf68cd16dd8cedbdc666c",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(Path.of("src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JdbcTopologyProtectedPartyEligibilityAdapter.java")))));

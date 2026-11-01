@@ -20,7 +20,7 @@
 package dz.sh.hidra.modules.topology.api.rest.controller;
 
 import dz.sh.hidra.modules.topology.api.rest.mapper.InstalledCharacteristicLinkRestMapper;
-import dz.sh.hidra.modules.topology.api.rest.request.InstalledCharacteristicLinkRequests.Save;
+import dz.sh.hidra.modules.topology.api.rest.request.InstalledCharacteristicLinkRequests.CharacteristicLinkDraftSave;
 import dz.sh.hidra.modules.topology.api.rest.response.InstalledCharacteristicLinkResponses.Page;
 import dz.sh.hidra.modules.topology.application.model.InstalledCharacteristicLinkFailure;
 import dz.sh.hidra.modules.topology.application.port.in.InstalledCharacteristicLinkUseCase;
@@ -60,7 +60,7 @@ public final class InstalledCharacteristicLinkController {
     @Operation(operationId="saveInstalledCharacteristicDraftLink",summary="Record a protected unapproved immutable characteristic draft")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode="200",description="Saved immutable draft or exact replay",useReturnTypeSchema=true)
     @PutMapping
-    public Page save(@PathVariable("unitId") String unit,@PathVariable("linkId") String link,@RequestBody Save body){
+    public Page save(@PathVariable("unitId") String unit,@PathVariable("linkId") String link,@RequestBody CharacteristicLinkDraftSave body){
         authenticated();return run(InstalledCharacteristicLinkRestMapper.save(unit,link,body),true);
     }
     @Operation(operationId="readCurrentInstalledCharacteristicDraftLink",summary="Read current authorized characteristic draft")

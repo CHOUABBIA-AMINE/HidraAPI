@@ -18,7 +18,7 @@
  *
  */
 package dz.sh.hidra.modules.topology.api.rest.mapper;
-import dz.sh.hidra.modules.topology.api.rest.request.InstalledCharacteristicLinkRequests.Save;
+import dz.sh.hidra.modules.topology.api.rest.request.InstalledCharacteristicLinkRequests.CharacteristicLinkDraftSave;
 import dz.sh.hidra.modules.topology.api.rest.response.InstalledCharacteristicLinkResponses;
 import dz.sh.hidra.modules.topology.application.port.in.InstalledCharacteristicLinkUseCase;
 import dz.sh.hidra.modules.topology.domain.model.InstalledCharacteristicLink;
@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Objects;
 public final class InstalledCharacteristicLinkRestMapper {
     private InstalledCharacteristicLinkRestMapper(){}
-    public static InstalledCharacteristicLinkUseCase.Command save(String unit,String link,Save r){
+    public static InstalledCharacteristicLinkUseCase.Command save(String unit,String link,CharacteristicLinkDraftSave r){
         Objects.requireNonNull(r,"Body required");
         var item=new InstalledCharacteristicLink(link,Objects.requireNonNull(r.linkRevision()),
                 r.companyPartyId(),unit,r.sourceId(),r.sourceRevisionId(),r.sourceSha256(),

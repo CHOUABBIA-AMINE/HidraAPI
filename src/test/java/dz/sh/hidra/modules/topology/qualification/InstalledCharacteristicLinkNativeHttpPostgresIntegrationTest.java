@@ -45,6 +45,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -254,6 +255,25 @@ class InstalledCharacteristicLinkNativeHttpPostgresIntegrationTest {
               "evidenceReference":"synthetic bounds"}]}}}
           """.formatted(company,source,manufacturer,"a".repeat(64));
     }
+    /** CI-only failure classification: no SQL, IDs, request content or protected values. */
+    private static ResultActions requireStatus(ResultActions action,int expected) throws Exception {
+        return action.andDo(result -> {
+            if(result.getResponse().getStatus()==expected)return;
+            var trace=new java.util.ArrayList<String>();
+            Throwable fault=result.getResolvedException();
+            for(int i=0;i<8 && fault!=null;i++,fault=fault.getCause()) {
+                String location="no-application-frame";
+                for(var frame:fault.getStackTrace())
+                    if(frame.getClassName().startsWith("dz.sh.hidra.")) {
+                        location=frame.getClassName()+"#"+frame.getMethodName()+":"+frame.getLineNumber();
+                        break;
+                    }
+                trace.add(fault.getClass().getSimpleName()+"@"+location);
+            }
+            throw new AssertionError("Expected protected HTTP status "+expected+" but got "+
+                    result.getResponse().getStatus()+"; redacted cause chain "+trace);
+        }).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().is(expected));
+    }
     private String linkPath(){return LINK+unit+"/characteristic-links/"+link;}
     private void saveManufacturer()throws Exception{
         http.perform(put(MS+source+"/revisions/"+REV).header("Authorization","Bearer "+token)
@@ -273,9 +293,9 @@ class InstalledCharacteristicLinkNativeHttpPostgresIntegrationTest {
     }
     @Test void authenticatedDraftSaveReplayCurrentRevisionHistoryUseOriginalNativeOwner()throws Exception{
         grants();saveManufacturer();String body=draftBody();
-        http.perform(put(linkPath()).header("Authorization","Bearer "+token)
-            .contentType(MediaType.APPLICATION_JSON).content(body))
-            .andExpect(status().isOk()).andExpect(jsonPath("$.link.state").value("DRAFT"));
+        requireStatus(http.perform(put(linkPath()).header("Authorization","Bearer "+token)
+            .contentType(MediaType.APPLICATION_JSON).content(body)),200)
+            .andExpect(jsonPath("$.link.state").value("DRAFT"));
         http.perform(put(linkPath()).header("Authorization","Bearer "+token)
             .contentType(MediaType.APPLICATION_JSON).content(body))
             .andExpect(status().isOk()).andExpect(jsonPath("$.replayed").value(true));
@@ -300,8 +320,8 @@ class InstalledCharacteristicLinkNativeHttpPostgresIntegrationTest {
             +" VALUES (?,?,?,'DENY','CUSTOM',?,'synthetic source DENY',false,"
             +"now()-interval '1 hour',now()+interval '1 hour','ACTIVE',now())",
             id(),user,permission,"simulation-source:"+sourceScope(company,source,REV));
-        http.perform(put(linkPath()).header("Authorization","Bearer "+token)
-            .contentType(MediaType.APPLICATION_JSON).content(body)).andExpect(status().isForbidden());
+        requireStatus(http.perform(put(linkPath()).header("Authorization","Bearer "+token)
+            .contentType(MediaType.APPLICATION_JSON).content(body)),403);
         assertEquals(0L,admin.queryForObject("SELECT count(*) FROM public.hidra_topology_installed_characteristic_revision"
             +" WHERE company_party_id=? AND installed_unit_id=? AND link_id=?",
             Long.class,company,unit,link));

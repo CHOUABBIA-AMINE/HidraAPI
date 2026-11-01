@@ -113,7 +113,8 @@ public class JdbcManufacturerCharacteristicRevisionRepositoryAdapter
         return List.copyOf(rows);
     }
 
-    /** Streams every immutable row for canonical-integrity proof, retaining only page summaries. */
+
+    /** Verify all immutable source rows while bounding each materialized JDBC page. */
     @Override @Transactional(propagation=Propagation.MANDATORY)
     public HistoryScan scanHistory(Admission admission,String company,String source,int size,
             dz.sh.hidra.modules.simulation.application.port.out.ManufacturerCharacteristicHistoryCursorPort.Position after,
@@ -121,53 +122,69 @@ public class JdbcManufacturerCharacteristicRevisionRepositoryAdapter
         current(admission);
         if(size<1 || size>10_000 || maximumPrincipals<1 || maximumPrincipals>64)
             throw denied();
-        String beyond = after == null ? "TRUE"
-                : "(source_recorded_at,revision_id)>(?::timestamptz,?::varchar)";
-        String query = "SELECT *, "+beyond+" AS beyond FROM "+SOURCE
-                +" WHERE company_party_id=? AND source_id=? ORDER BY source_recorded_at,revision_id";
+        // ProtectedOperationDataSource forbids positive JDBC fetch sizes.
+        // Every batch is bounded, fully consumed and closed before the next batch.
+        // Scan from the first row even when the requested cursor starts later:
+        // off-page manufacturer/model and payload integrity remain mandatory.
+        final int batchSize=32;
+        String beyond=after==null?"TRUE":
+            "(source_recorded_at,revision_id)>(?::timestamptz,?::varchar)";
+        String prefix="SELECT *, "+beyond+" AS beyond FROM "+SOURCE
+            +" WHERE company_party_id=? AND source_id=?";
+        String order=" ORDER BY source_recorded_at,revision_id LIMIT "+batchSize;
+        var principals=new java.util.LinkedHashSet<Principal>();
+        var candidates=new java.util.ArrayList<ManufacturerCharacteristicRevisionUseCase.RevisionSummary>();
+        dz.sh.hidra.modules.simulation.application.port.out.ManufacturerCharacteristicHistoryCursorPort.Position
+            position=null;
+        boolean any=false;
         try {
-            return jdbc.query(connection -> {
-                var statement=connection.prepareStatement(query,
-                        java.sql.ResultSet.TYPE_FORWARD_ONLY,java.sql.ResultSet.CONCUR_READ_ONLY);
-                statement.setFetchSize(32);
-                int index=1;
-                if(after!=null){
-                    statement.setTimestamp(index++,java.sql.Timestamp.from(after.recordedAt()));
-                    statement.setString(index++,after.revisionId());
+            while(true) {
+                var parameters=new java.util.ArrayList<Object>();
+                if(after!=null) {
+                    parameters.add(java.sql.Timestamp.from(after.recordedAt()));
+                    parameters.add(after.revisionId());
                 }
-                statement.setString(index++,company);
-                statement.setString(index,source);
-                return statement;
-            },rs->{
-                var principals=new java.util.LinkedHashSet<Principal>();
-                var candidates=new java.util.ArrayList<ManufacturerCharacteristicRevisionUseCase.RevisionSummary>();
-                boolean any=false;
-                while(rs.next()){
+                parameters.add(company);
+                parameters.add(source);
+                String statement=prefix;
+                if(position!=null) {
+                    statement+=" AND (source_recorded_at,revision_id)>(?::timestamptz,?::varchar)";
+                    parameters.add(java.sql.Timestamp.from(position.recordedAt()));
+                    parameters.add(position.revisionId());
+                }
+                var batch=jdbc.query(statement+order,(rs,n)->new HistoryRow(
+                    stored(rs),rs.getObject("source_recorded_at",
+                        java.time.OffsetDateTime.class).toInstant(),rs.getBoolean("beyond")),
+                    parameters.toArray());
+                if(batch.isEmpty())break;
+                for(var row:batch) {
                     any=true;
-                    // Each row is decoded, SHA checked and compared with its relational owner identity.
-                    // No canonical bytes or decoded families are retained beyond this iteration.
-                    Stored stored=stored(rs);
+                    Stored stored=row.source();
                     if(!company.equals(stored.key().companyPartyId())
                             ||!source.equals(stored.key().sourceId()))throw denied();
                     var manufacturer=stored.revision();
                     principals.add(new Principal(manufacturer.manufacturerPartyId(),
-                            manufacturer.manufacturerModelReference()));
+                        manufacturer.manufacturerModelReference()));
                     if(principals.size()>maximumPrincipals)throw denied();
-                    java.time.Instant persisted=rs.getObject("source_recorded_at",
-                            java.time.OffsetDateTime.class).toInstant();
+                    java.time.Instant persisted=row.recordedAt();
                     if(persisted.getNano()%1_000!=0)throw denied();
-                    if(rs.getBoolean("beyond") && candidates.size()<=size)
+                    if(row.beyond() && candidates.size()<=size)
                         candidates.add(new ManufacturerCharacteristicRevisionUseCase.RevisionSummary(
                             source,stored.key().revisionId(),stored.payloadSha256(),persisted,
                             manufacturer.effectiveFrom(),manufacturer.effectiveUntil(),false));
+                    position=new dz.sh.hidra.modules.simulation.application.port.out.ManufacturerCharacteristicHistoryCursorPort.Position(
+                        persisted,stored.key().revisionId());
                 }
-                if(!any)throw denied();
-                boolean more=candidates.size()>size;
-                if(more)candidates.remove(candidates.size()-1);
-                return new HistoryScan(List.copyOf(principals),List.copyOf(candidates),more);
-            });
+                if(batch.size()<batchSize)break;
+            }
+            if(!any)throw denied();
+            boolean more=candidates.size()>size;
+            if(more)candidates.remove(candidates.size()-1);
+            return new HistoryScan(List.copyOf(principals),List.copyOf(candidates),more);
         }catch(RuntimeException fault){throw denied();}
     }
+    private record HistoryRow(Stored source,java.time.Instant recordedAt,boolean beyond) {}
+
     @Override @Transactional(propagation=Propagation.MANDATORY)
     public Optional<Stored> byWorkflowTarget(Admission admission,String digest){
         current(admission);

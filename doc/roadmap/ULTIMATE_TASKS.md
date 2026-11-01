@@ -437,6 +437,8 @@ HAPI-601 CI #1030 preflight fix (2026-10-31): the six manufacturer HTTP 403 requ
 
 HAPI-601 CI #1031 (2026-10-31): preflight repair now permits successful native SAVE/READ, but five forbidden operations returned 503 instead of 403; genuine two-row history also returned 503. [HPS-007](TASKS_HPS-007.md#hapi-601) registers a bounded mapping only for trusted precommit owner denials plus safe stage diagnostics for the *unresolved* history 503. Exact new-SHA Full/Docs required; HAPI-601 NOT_ACCEPTED and HAPI-602/P3 unselected.
 
+HAPI-601 CI #1032 (2026-11-01): 7/9 configured native manufacturer HTTP tests passed; the protected datasource forbids history JDBC streaming, while a separate SAVE's poisoned scope remains unexplained. [HPS-007](TASKS_HPS-007.md#hapi-601) records a bounded 32-row full-source keyset repair without authorization/deadline changes. Exact new-SHA Full/Docs required; HAPI-601 NOT_ACCEPTED, HAPI-602/P3 unselected.
+
 ## Phase files
 
 | Phase | Definition file | Tasks |

@@ -50,15 +50,16 @@ class InstalledCharacteristicLinkPostgresIntegrationTest {
     }
     private record Fixture(String company,String unit,String link,String source,String revision,String sha) {}
     private Fixture fixture(JdbcTemplate db) {
-        String company=id(),unit=id(),link=id(),sourceId=id(),sourceRevision=id();
+        String company=id(),unit=id(),link=id(),sourceId=id(),sourceRevision=id(),equipmentKind=id();
         byte[] payload="synthetic-characteristic-v1".getBytes(StandardCharsets.UTF_8);
         String sha=digest(payload);
+        db.update("INSERT INTO public.hidra_topology_equipment_type(id,code,name,status,created_at,updated_at) VALUES(?,?,'Synthetic kind','ACTIVE',now(),now())",equipmentKind,equipmentKind);
         db.update("""
             INSERT INTO public.hidra_topology_installed_unit(
               id,company_party_id,equipment_kind_id,manufacturer_party_verification,
               manufacturer_model_verification,serial_verification)
             VALUES(?,?,?,'UNKNOWN','UNKNOWN','UNKNOWN')
-            """,unit,company,"COMPRESSOR");
+            """,unit,company,equipmentKind);
         db.update("""
             INSERT INTO public.hidra_simulation_manufacturer_characteristic_revision(
               company_party_id,source_id,revision_id,manufacturer_party_id,manufacturer_model_reference,

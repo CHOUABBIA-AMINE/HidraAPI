@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `2001971758d21f02040b867e709270cd04b8c11d`
+Captured source SHA: `944c9b5b84a2553268a58d4990a9700235297dfd`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `d3de75e854683f232338941acefef95792b9d1d812817755afddaf9755f0b777`.
-Migrations: 192; JPA mappings: 470; catalog relations: 539; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `2d6ea17720b6cd886541d93727b66862eae308cb1c7e8fef47013ac0a85ed352`.
+Migrations: 193; JPA mappings: 470; catalog relations: 542; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -24846,6 +24846,7 @@ Simulation-owned immutable canonical manufacturer characteristic source with dig
 - Evidence: [JdbcManufacturerCharacteristicRevisionRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/JdbcManufacturerCharacteristicRevisionRepositoryAdapter.java)
 - Evidence: [ManufacturerCharacteristicRevision.java](../../src/main/java/dz/sh/hidra/modules/simulation/domain/model/ManufacturerCharacteristicRevision.java)
 - Migration mention (not inferred introduction): [V20261030_002__simulation_manufacturer_characteristic_sources.sql](../../src/main/resources/db/migration/V20261030_002__simulation_manufacturer_characteristic_sources.sql)
+- Migration mention (not inferred introduction): [V20261101_001__topology_installed_characteristic_links.sql](../../src/main/resources/db/migration/V20261101_001__topology_installed_characteristic_links.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -27999,6 +28000,169 @@ Persisted FacilityTypeVersionJpaEntity state; semantic authority remains with to
 
 None captured in this catalog category.
 
+### public.hidra_topology_installed_characteristic_head
+
+Owner: **topology**; relation kind: `r`.
+
+Topology-owned current draft characteristic selection, monotone CAS head referencing an immutable revision; no approval or simulation qualification.
+
+- Evidence: [V20261101_001__topology_installed_characteristic_links.sql](../../src/main/resources/db/migration/V20261101_001__topology_installed_characteristic_links.sql)
+- Evidence: [InstalledCharacteristicLinkPostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/InstalledCharacteristicLinkPostgresIntegrationTest.java)
+- Migration mention (not inferred introduction): [V20261101_001__topology_installed_characteristic_links.sql](../../src/main/resources/db/migration/V20261101_001__topology_installed_characteristic_links.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| installed_unit_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| link_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| link_revision | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| head_epoch | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `ck_topology_characteristic_head`: CHECK (head_epoch &gt; 0 AND link_revision = head_epoch)
+  - Catalog attributes: {"columns": ["head_epoch", "link_revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `fk_topology_characteristic_head`: FOREIGN KEY (company_party_id, installed_unit_id, link_id, link_revision) REFERENCES hidra_topology_installed_characteristic_revision(company_party_id, installed_unit_id, link_id, link_revision) ON UPDATE RESTRICT ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["company_party_id", "installed_unit_id", "link_id", "link_revision"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["company_party_id", "installed_unit_id", "link_id", "link_revision"], "match": "s", "on_delete": "r", "on_update": "r", "schema": "public", "table": "hidra_topology_installed_characteristic_revision"}, "type": "f", "validated": true}
+- `pk_topology_characteristic_head`: PRIMARY KEY (company_party_id, installed_unit_id, link_id)
+  - Catalog attributes: {"columns": ["company_party_id", "installed_unit_id", "link_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `pk_topology_characteristic_head`: CREATE UNIQUE INDEX pk_topology_characteristic_head ON public.hidra_topology_installed_characteristic_head USING btree (company_party_id, installed_unit_id, link_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `trg_topology_characteristic_head_cas`: CREATE TRIGGER trg_topology_characteristic_head_cas BEFORE INSERT OR DELETE OR UPDATE ON hidra_topology_installed_characteristic_head FOR EACH ROW EXECUTE FUNCTION hidra_topology_characteristic_head_cas()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_characteristic_head_cas()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_characteristic_head_cas()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    IF TG_OP='INSERT' THEN<br>        IF NEW.head_epoch&lt;&gt;1 OR NEW.link_revision&lt;&gt;1 THEN<br>            RAISE EXCEPTION 'First characteristic draft must be revision one' USING ERRCODE='23514';<br>        END IF;<br>    ELSIF TG_OP='UPDATE' THEN<br>        IF NEW.company_party_id IS DISTINCT FROM OLD.company_party_id<br>           OR NEW.installed_unit_id IS DISTINCT FROM OLD.installed_unit_id<br>           OR NEW.link_id IS DISTINCT FROM OLD.link_id<br>           OR OLD.head_epoch=9223372036854775807::bigint<br>           OR NEW.head_epoch&lt;&gt;OLD.head_epoch+1<br>           OR NEW.link_revision&lt;&gt;OLD.link_revision+1 THEN<br>            RAISE EXCEPTION 'Characteristic draft head requires a new consecutive revision' USING ERRCODE='23514';<br>        END IF;<br>    ELSE<br>        RAISE EXCEPTION 'Characteristic draft head cannot be removed' USING ERRCODE='23514';<br>    END IF;<br>    RETURN NEW;<br>END;<br>$function$<br>
+- `trg_topology_characteristic_head_truncate`: CREATE TRIGGER trg_topology_characteristic_head_truncate BEFORE TRUNCATE ON hidra_topology_installed_characteristic_head FOR EACH STATEMENT EXECUTE FUNCTION hidra_topology_characteristic_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_characteristic_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_characteristic_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Installed characteristic draft evidence is immutable' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
+### public.hidra_topology_installed_characteristic_request
+
+Owner: **topology**; relation kind: `r`.
+
+Topology-owned immutable draft-link idempotency receipts; a recorded request is not a native authorization.
+
+- Evidence: [V20261101_001__topology_installed_characteristic_links.sql](../../src/main/resources/db/migration/V20261101_001__topology_installed_characteristic_links.sql)
+- Evidence: [InstalledCharacteristicLinkPostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/InstalledCharacteristicLinkPostgresIntegrationTest.java)
+- Migration mention (not inferred introduction): [V20261101_001__topology_installed_characteristic_links.sql](../../src/main/resources/db/migration/V20261101_001__topology_installed_characteristic_links.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| installed_unit_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| link_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| request_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| command_sha256 | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| link_revision | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_binding_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_session_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_user_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| backend_pid | integer | False | None; identity=; generated= | No current mapped Java column | — |
+| transaction_id | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| database_role | name | False | None; identity=; generated= | No current mapped Java column | — |
+| recorded_at | timestamp with time zone | False | clock_timestamp(); identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `ck_topology_characteristic_request`: CHECK (request_id::text = btrim(request_id::text) AND length(request_id::text) &gt; 0 AND command_sha256 ~ '^[0-9a-f]{64}$'::text AND actor_binding_id::text = btrim(actor_binding_id::text) AND length(actor_binding_id::text) &gt; 0 AND actor_session_id::text = btrim(actor_session_id::text) AND length(actor_session_id::text) &gt; 0 AND actor_user_id::text = btrim(actor_user_id::text) AND length(actor_user_id::text) &gt; 0 AND backend_pid &gt; 0 AND transaction_id &gt; 0)
+  - Catalog attributes: {"columns": ["request_id", "command_sha256", "actor_binding_id", "actor_session_id", "actor_user_id", "backend_pid", "transaction_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `fk_topology_characteristic_request`: FOREIGN KEY (company_party_id, installed_unit_id, link_id, link_revision) REFERENCES hidra_topology_installed_characteristic_revision(company_party_id, installed_unit_id, link_id, link_revision) ON UPDATE RESTRICT ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["company_party_id", "installed_unit_id", "link_id", "link_revision"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["company_party_id", "installed_unit_id", "link_id", "link_revision"], "match": "s", "on_delete": "r", "on_update": "r", "schema": "public", "table": "hidra_topology_installed_characteristic_revision"}, "type": "f", "validated": true}
+- `pk_topology_characteristic_request`: PRIMARY KEY (company_party_id, installed_unit_id, link_id, request_id)
+  - Catalog attributes: {"columns": ["company_party_id", "installed_unit_id", "link_id", "request_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `pk_topology_characteristic_request`: CREATE UNIQUE INDEX pk_topology_characteristic_request ON public.hidra_topology_installed_characteristic_request USING btree (company_party_id, installed_unit_id, link_id, request_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `trg_topology_characteristic_request_immutable`: CREATE TRIGGER trg_topology_characteristic_request_immutable BEFORE DELETE OR UPDATE ON hidra_topology_installed_characteristic_request FOR EACH ROW EXECUTE FUNCTION hidra_topology_characteristic_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_characteristic_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_characteristic_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Installed characteristic draft evidence is immutable' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `trg_topology_characteristic_request_origin`: CREATE TRIGGER trg_topology_characteristic_request_origin BEFORE INSERT ON hidra_topology_installed_characteristic_request FOR EACH ROW EXECUTE FUNCTION hidra_topology_characteristic_insert_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_characteristic_insert_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_characteristic_insert_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    IF NEW.backend_pid IS DISTINCT FROM pg_catalog.pg_backend_pid()<br>       OR NEW.transaction_id IS DISTINCT FROM pg_catalog.txid_current()<br>       OR NEW.database_role IS DISTINCT FROM session_user<br>       OR pg_catalog.current_setting('transaction_isolation')&lt;&gt;'read committed'<br>       OR pg_catalog.current_setting('transaction_read_only')&lt;&gt;'off'<br>       OR pg_catalog.current_setting('session_replication_role')&lt;&gt;'origin' THEN<br>        RAISE EXCEPTION 'Characteristic draft original transaction invalid' USING ERRCODE='42501';<br>    END IF;<br>    IF TG_TABLE_NAME='hidra_topology_installed_characteristic_revision' THEN<br>        IF NOT EXISTS (<br>            SELECT 1 FROM public.hidra_simulation_manufacturer_characteristic_revision r<br>            WHERE r.company_party_id=NEW.company_party_id<br>              AND r.source_id=NEW.source_id<br>              AND r.revision_id=NEW.source_revision_id<br>              AND r.payload_sha256=NEW.source_sha256<br>        ) THEN<br>            RAISE EXCEPTION 'Exact manufacturer source digest not found' USING ERRCODE='23514';<br>        END IF;<br>    END IF;<br>    RETURN NEW;<br>END;<br>$function$<br>
+- `trg_topology_characteristic_request_truncate`: CREATE TRIGGER trg_topology_characteristic_request_truncate BEFORE TRUNCATE ON hidra_topology_installed_characteristic_request FOR EACH STATEMENT EXECUTE FUNCTION hidra_topology_characteristic_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_characteristic_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_characteristic_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Installed characteristic draft evidence is immutable' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
+### public.hidra_topology_installed_characteristic_revision
+
+Owner: **topology**; relation kind: `r`.
+
+Topology-owned immutable physical-unit manufacturer characteristic draft history, source FK/digest pin and PostgreSQL effective-interval exclusion.
+
+- Evidence: [V20261101_001__topology_installed_characteristic_links.sql](../../src/main/resources/db/migration/V20261101_001__topology_installed_characteristic_links.sql)
+- Evidence: [InstalledCharacteristicLinkPostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/InstalledCharacteristicLinkPostgresIntegrationTest.java)
+- Migration mention (not inferred introduction): [V20261101_001__topology_installed_characteristic_links.sql](../../src/main/resources/db/migration/V20261101_001__topology_installed_characteristic_links.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| installed_unit_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| link_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| link_revision | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| source_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| source_revision_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| source_sha256 | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| source_kind | character varying(32) | False | None; identity=; generated= | No current mapped Java column | — |
+| effective_from | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| effective_until | timestamp with time zone | True | None; identity=; generated= | No current mapped Java column | — |
+| recorded_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| evidence_reference | text | False | None; identity=; generated= | No current mapped Java column | — |
+| installation_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| link_state | character varying(16) | False | 'DRAFT'::character varying; identity=; generated= | No current mapped Java column | — |
+| operation_binding_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_session_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_user_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| backend_pid | integer | False | None; identity=; generated= | No current mapped Java column | — |
+| transaction_id | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| database_role | name | False | None; identity=; generated= | No current mapped Java column | — |
+| inserted_at | timestamp with time zone | False | clock_timestamp(); identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `ck_topology_characteristic_draft`: CHECK (link_revision &gt; 0 AND link_state::text = 'DRAFT'::text AND source_sha256 ~ '^[0-9a-f]{64}$'::text AND (source_kind::text = ANY (ARRAY['COMPRESSOR_MAP'::character varying, 'VALVE_MAP'::character varying, 'PARAMETER_TABLE'::character varying, 'OPERATING_LIMITS'::character varying]::text[])) AND effective_until IS DISTINCT FROM effective_from AND (effective_until IS NULL OR effective_until &gt; effective_from) AND evidence_reference = btrim(evidence_reference) AND length(evidence_reference) &gt; 0 AND octet_length(evidence_reference) &lt;= 65536 AND backend_pid &gt; 0 AND transaction_id &gt; 0)
+  - Catalog attributes: {"columns": ["link_revision", "link_state", "source_sha256", "source_kind", "effective_until", "effective_from", "evidence_reference", "backend_pid", "transaction_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_topology_characteristic_identity`: CHECK (company_party_id::text = btrim(company_party_id::text) AND length(company_party_id::text) &gt; 0 AND installed_unit_id::text = btrim(installed_unit_id::text) AND length(installed_unit_id::text) &gt; 0 AND link_id::text = btrim(link_id::text) AND length(link_id::text) &gt; 0 AND source_id::text = btrim(source_id::text) AND length(source_id::text) &gt; 0 AND source_revision_id::text = btrim(source_revision_id::text) AND length(source_revision_id::text) &gt; 0 AND operation_binding_id::text = btrim(operation_binding_id::text) AND length(operation_binding_id::text) &gt; 0 AND actor_session_id::text = btrim(actor_session_id::text) AND length(actor_session_id::text) &gt; 0 AND actor_user_id::text = btrim(actor_user_id::text) AND length(actor_user_id::text) &gt; 0 AND (installation_id IS NULL OR installation_id::text = btrim(installation_id::text) AND length(installation_id::text) &gt; 0))
+  - Catalog attributes: {"columns": ["company_party_id", "installed_unit_id", "link_id", "source_id", "source_revision_id", "operation_binding_id", "actor_session_id", "actor_user_id", "installation_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ex_topology_characteristic_selection`: EXCLUDE USING gist (company_party_id WITH =, installed_unit_id WITH =, source_kind WITH =, tstzrange(effective_from, effective_until, '[)'::text) WITH &amp;&amp;)
+  - Catalog attributes: {"columns": ["company_party_id", "installed_unit_id", "source_kind"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "x", "validated": true}
+- `fk_topology_characteristic_source`: FOREIGN KEY (company_party_id, source_id, source_revision_id) REFERENCES hidra_simulation_manufacturer_characteristic_revision(company_party_id, source_id, revision_id) ON UPDATE RESTRICT ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["company_party_id", "source_id", "source_revision_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["company_party_id", "source_id", "revision_id"], "match": "s", "on_delete": "r", "on_update": "r", "schema": "public", "table": "hidra_simulation_manufacturer_characteristic_revision"}, "type": "f", "validated": true}
+- `fk_topology_characteristic_unit`: FOREIGN KEY (installed_unit_id, company_party_id) REFERENCES hidra_topology_installed_unit(id, company_party_id) ON UPDATE RESTRICT ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["installed_unit_id", "company_party_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id", "company_party_id"], "match": "s", "on_delete": "r", "on_update": "r", "schema": "public", "table": "hidra_topology_installed_unit"}, "type": "f", "validated": true}
+- `pk_topology_characteristic_revision`: PRIMARY KEY (company_party_id, installed_unit_id, link_id, link_revision)
+  - Catalog attributes: {"columns": ["company_party_id", "installed_unit_id", "link_id", "link_revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `ex_topology_characteristic_selection`: CREATE INDEX ex_topology_characteristic_selection ON public.hidra_topology_installed_characteristic_revision USING gist (company_party_id, installed_unit_id, source_kind, tstzrange(effective_from, effective_until, '[)'::text))
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+- `ix_topology_characteristic_history`: CREATE INDEX ix_topology_characteristic_history ON public.hidra_topology_installed_characteristic_revision USING btree (company_party_id, installed_unit_id, link_id, link_revision DESC)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+- `pk_topology_characteristic_revision`: CREATE UNIQUE INDEX pk_topology_characteristic_revision ON public.hidra_topology_installed_characteristic_revision USING btree (company_party_id, installed_unit_id, link_id, link_revision)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `trg_topology_characteristic_revision_immutable`: CREATE TRIGGER trg_topology_characteristic_revision_immutable BEFORE DELETE OR UPDATE ON hidra_topology_installed_characteristic_revision FOR EACH ROW EXECUTE FUNCTION hidra_topology_characteristic_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_characteristic_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_characteristic_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Installed characteristic draft evidence is immutable' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `trg_topology_characteristic_revision_origin`: CREATE TRIGGER trg_topology_characteristic_revision_origin BEFORE INSERT ON hidra_topology_installed_characteristic_revision FOR EACH ROW EXECUTE FUNCTION hidra_topology_characteristic_insert_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_characteristic_insert_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_characteristic_insert_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    IF NEW.backend_pid IS DISTINCT FROM pg_catalog.pg_backend_pid()<br>       OR NEW.transaction_id IS DISTINCT FROM pg_catalog.txid_current()<br>       OR NEW.database_role IS DISTINCT FROM session_user<br>       OR pg_catalog.current_setting('transaction_isolation')&lt;&gt;'read committed'<br>       OR pg_catalog.current_setting('transaction_read_only')&lt;&gt;'off'<br>       OR pg_catalog.current_setting('session_replication_role')&lt;&gt;'origin' THEN<br>        RAISE EXCEPTION 'Characteristic draft original transaction invalid' USING ERRCODE='42501';<br>    END IF;<br>    IF TG_TABLE_NAME='hidra_topology_installed_characteristic_revision' THEN<br>        IF NOT EXISTS (<br>            SELECT 1 FROM public.hidra_simulation_manufacturer_characteristic_revision r<br>            WHERE r.company_party_id=NEW.company_party_id<br>              AND r.source_id=NEW.source_id<br>              AND r.revision_id=NEW.source_revision_id<br>              AND r.payload_sha256=NEW.source_sha256<br>        ) THEN<br>            RAISE EXCEPTION 'Exact manufacturer source digest not found' USING ERRCODE='23514';<br>        END IF;<br>    END IF;<br>    RETURN NEW;<br>END;<br>$function$<br>
+- `trg_topology_characteristic_revision_truncate`: CREATE TRIGGER trg_topology_characteristic_revision_truncate BEFORE TRUNCATE ON hidra_topology_installed_characteristic_revision FOR EACH STATEMENT EXECUTE FUNCTION hidra_topology_characteristic_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_characteristic_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_characteristic_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Installed characteristic draft evidence is immutable' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
 ### public.hidra_topology_installed_unit
 
 Owner: **topology**; relation kind: `r`.
@@ -28014,6 +28178,7 @@ Immutable Topology physical-unit identity and manufacturer/model/serial evidence
 - Migration mention (not inferred introduction): [V20261029_001__topology_installed_unit_replacement.sql](../../src/main/resources/db/migration/V20261029_001__topology_installed_unit_replacement.sql)
 - Migration mention (not inferred introduction): [V20261029_002__topology_station_installed_configurations.sql](../../src/main/resources/db/migration/V20261029_002__topology_station_installed_configurations.sql)
 - Migration mention (not inferred introduction): [V20261029_003__topology_station_configuration_protected_operations.sql](../../src/main/resources/db/migration/V20261029_003__topology_station_configuration_protected_operations.sql)
+- Migration mention (not inferred introduction): [V20261101_001__topology_installed_characteristic_links.sql](../../src/main/resources/db/migration/V20261101_001__topology_installed_characteristic_links.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

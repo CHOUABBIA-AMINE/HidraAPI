@@ -22,7 +22,7 @@ package dz.sh.hidra.platform.configuration;
 import org.springframework.core.env.Environment;
 
 /** Finite server-owned work caps; no extension of independently attested authority validity. */
-public record ProtectedExecutionBudgetProperties(long appointmentWorkBudgetMillis,long custodyWorkBudgetMillis,long installedUnitWorkBudgetMillis) {
+public record ProtectedExecutionBudgetProperties(long appointmentWorkBudgetMillis,long custodyWorkBudgetMillis,long installedUnitWorkBudgetMillis,long manufacturerWorkBudgetMillis) {
     public static final long STANDARD_WORK_BUDGET_MILLIS=500;
     // Development software work cap, not an HTTP latency target or industrial operating SLA.
     public static final long DEFAULT_APPOINTMENT_WORK_BUDGET_MILLIS=7_500;
@@ -34,6 +34,11 @@ public record ProtectedExecutionBudgetProperties(long appointmentWorkBudgetMilli
     public static final long DEFAULT_INSTALLED_UNIT_WORK_BUDGET_MILLIS=1_000;
     public static final String INSTALLED_UNIT_PROPERTY=
             "hidra.platform.persistence.execution.installed-unit-work-budget-ms";
+    // Finite manufacturer development headroom for original Identity/Party/SQL qualification.
+    // Not an industrial SLA, and never an extension of independently attested authority.
+    public static final long DEFAULT_MANUFACTURER_WORK_BUDGET_MILLIS=1_500;
+    public static final String MANUFACTURER_PROPERTY=
+            "hidra.platform.persistence.execution.manufacturer-work-budget-ms";
     // Finite development qualification ceiling, not an accepted operational latency target.
     public static final long MAX_WORK_BUDGET_MILLIS=10_000;
     public static final String APPOINTMENT_PROPERTY=
@@ -45,6 +50,9 @@ public record ProtectedExecutionBudgetProperties(long appointmentWorkBudgetMilli
     public ProtectedExecutionBudgetProperties(long appointmentWorkBudgetMillis,long custodyWorkBudgetMillis) {
         this(appointmentWorkBudgetMillis,custodyWorkBudgetMillis,DEFAULT_INSTALLED_UNIT_WORK_BUDGET_MILLIS);
     }
+    public ProtectedExecutionBudgetProperties(long appointmentWorkBudgetMillis,long custodyWorkBudgetMillis,long installedUnitWorkBudgetMillis) {
+        this(appointmentWorkBudgetMillis,custodyWorkBudgetMillis,installedUnitWorkBudgetMillis,DEFAULT_MANUFACTURER_WORK_BUDGET_MILLIS);
+    }
     public ProtectedExecutionBudgetProperties {
         if(appointmentWorkBudgetMillis<1 || appointmentWorkBudgetMillis>MAX_WORK_BUDGET_MILLIS)
             throw new IllegalArgumentException("Protected appointment work budget must be between 1 and 10000 milliseconds");
@@ -52,6 +60,8 @@ public record ProtectedExecutionBudgetProperties(long appointmentWorkBudgetMilli
             throw new IllegalArgumentException("Protected custody work budget must be between 1 and 10000 milliseconds");
         if(installedUnitWorkBudgetMillis<1 || installedUnitWorkBudgetMillis>MAX_WORK_BUDGET_MILLIS)
             throw new IllegalArgumentException("Protected installed-unit work budget must be between 1 and 10000 milliseconds");
+        if(manufacturerWorkBudgetMillis<1 || manufacturerWorkBudgetMillis>MAX_WORK_BUDGET_MILLIS)
+            throw new IllegalArgumentException("Protected manufacturer work budget must be between 1 and 10000 milliseconds");
     }
     public static ProtectedExecutionBudgetProperties defaults() {
         return new ProtectedExecutionBudgetProperties(DEFAULT_APPOINTMENT_WORK_BUDGET_MILLIS);
@@ -60,8 +70,10 @@ public record ProtectedExecutionBudgetProperties(long appointmentWorkBudgetMilli
         return new ProtectedExecutionBudgetProperties(environment.getProperty(
                 APPOINTMENT_PROPERTY,Long.class,DEFAULT_APPOINTMENT_WORK_BUDGET_MILLIS),
                 environment.getProperty(CUSTODY_PROPERTY,Long.class,DEFAULT_CUSTODY_WORK_BUDGET_MILLIS),
-                environment.getProperty(INSTALLED_UNIT_PROPERTY,Long.class,DEFAULT_INSTALLED_UNIT_WORK_BUDGET_MILLIS));
+                environment.getProperty(INSTALLED_UNIT_PROPERTY,Long.class,DEFAULT_INSTALLED_UNIT_WORK_BUDGET_MILLIS),
+                environment.getProperty(MANUFACTURER_PROPERTY,Long.class,DEFAULT_MANUFACTURER_WORK_BUDGET_MILLIS));
     }
+    public long manufacturerWorkBudgetNanos() { return manufacturerWorkBudgetMillis*1_000_000L; }
     public long installedUnitWorkBudgetNanos() { return installedUnitWorkBudgetMillis*1_000_000L; }
     public long custodyWorkBudgetNanos() { return custodyWorkBudgetMillis*1_000_000L; }
     public long appointmentWorkBudgetNanos() { return appointmentWorkBudgetMillis*1_000_000L; }

@@ -439,6 +439,8 @@ HAPI-601 CI #1031 (2026-10-31): preflight repair now permits successful native S
 
 HAPI-601 CI #1032 (2026-11-01): 7/9 configured native manufacturer HTTP tests passed; the protected datasource forbids history JDBC streaming, while a separate SAVE's poisoned scope remains unexplained. [HPS-007](TASKS_HPS-007.md#hapi-601) records a bounded 32-row full-source keyset repair without authorization/deadline changes. Exact new-SHA Full/Docs required; HAPI-601 NOT_ACCEPTED, HAPI-602/P3 unselected.
 
+HAPI-601 CI #1033 (2026-11-01): manufacturer history GET now passes; invalid cursor still returned 400 rather than protected 403, and one authorized SAVE hit a poisoned protected scope after final preparation. [HPS-007](TASKS_HPS-007.md#hapi-601) records the cursor-denial fix and an independent finite/configurable manufacturer work budget (1500ms provisional default). Strict native HTTP assertions and authorization remain unchanged; exact new-SHA CI required, HAPI-601 NOT_ACCEPTED.
+
 ## Phase files
 
 | Phase | Definition file | Tasks |

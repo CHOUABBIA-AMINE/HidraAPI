@@ -91,9 +91,16 @@ public final class ProtectedManufacturerCharacteristicAdmissionCoordinator {
         Objects.requireNonNull(query);
         if(!cursors.available())throw denied();
         int size=pagination.resolveSize(query.requestedSize(),pagination.maxSize());
-        pagination.validateCursor(query.cursor(),pagination.maxCursorLength());
-        var after=query.cursor()==null?null:cursors.decode(
-                query.cursor(),query.companyPartyId(),query.sourceId(),size);
+        // Bad, tampered and foreign cursors are protected denial, not a 400 payload hint.
+        // Page-size syntax remains separately validated and mapped to 400.
+        dz.sh.hidra.modules.simulation.application.port.out.ManufacturerCharacteristicHistoryCursorPort.Position after;
+        try {
+            pagination.validateCursor(query.cursor(),pagination.maxCursorLength());
+            after=query.cursor()==null?null:cursors.decode(
+                    query.cursor(),query.companyPartyId(),query.sourceId(),size);
+        } catch(IllegalArgumentException invalidCursor) {
+            throw denied();
+        }
         Command command=new Command(Operation.LIST_HISTORY,query.companyPartyId(),query.sourceId(),
                 null,null,null);
         Prepared prepared=prepare(command);

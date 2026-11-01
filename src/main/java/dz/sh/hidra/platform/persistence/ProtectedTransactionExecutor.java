@@ -134,6 +134,7 @@ public final class ProtectedTransactionExecutor {
 
     // Only executePublication, after its unchanged exact compiled-caller check, selects this policy.
     private long publicationWorkBudgetNanos(String caller) {
+        if(caller.equals(MANUFACTURER_SERVICE))return budgets.manufacturerWorkBudgetNanos();
         if(caller.equals(APPOINTMENT_SERVICE))return budgets.appointmentWorkBudgetNanos();
         if(caller.equals(INSTALLED_SERVICE) || caller.equals(STATION_CONFIG_SERVICE))return budgets.installedUnitWorkBudgetNanos();
         if(caller.equals(PRODUCT_SERVICE) || caller.equals(FLUID_SERVICE) || caller.equals(PRODUCT_PUBLICATION_SERVICE))

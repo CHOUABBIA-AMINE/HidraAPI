@@ -469,6 +469,8 @@ HAPI-602 staged execution audit and distinct history DENY regression (2026-11-01
 
 Owner-approved no-splitting execution rule (2026-11-01): root [AGENTS.md](../../AGENTS.md) §3.3 forbids future splitting of one registered task. Sole flat exception accepts S0–S5 under [HAPI-602](TASKS_HPS-006.md#hapi-602), followed by registered HAPI-603/S6 and HAPI-598/S7; **no substages**. Source-backed stage ledgers and link-approval policy still require admission. Baseline [Full #1048](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41322493661) and [Docs #818](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41322493671) passed. Task statuses unchanged.
 
+HAPI-602 S0 policy and flat execution ledger registered (2026-11-01): [HPS-006](TASKS_HPS-006.md#hapi-602) contains owner-approved distinct human approver/current native authorization, immutable revision/source/installation target digest, genuine terminal Workflow, separate append-only approval decision, original-transaction denial/rollback and exact S1–S5 commit/file/acceptance envelopes, **without substages**. [Docs #819](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41327974153) on current parent and previous code [Full #1048](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41322493661) passed. S0 documentation only; HAPI-602 PARTIAL/IN_PROGRESS, HAPI-603 and HAPI-598 BLOCKED; S1 is next after new Docs CI.
+
 ## Phase files
 
 | Phase | Definition file | Tasks |

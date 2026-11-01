@@ -8778,6 +8778,29 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "acceptsAdjacentPeriodsAndMultipleKindsForSameUnit",
+        "acceptsFourKindsWithoutInferringPhysicalQualification",
+        "installationReferenceIsOptionalAndDoesNotProvePlacement",
+        "preservesExactSourceAndDigestInImmutableRecordValue",
+        "preservesPhysicalUnitAndCompanySeparation",
+        "rejectsConflictingSameUnitKindIntervalsAcrossLinkIds",
+        "rejectsDuplicateLinkRevisionAndNullSnapshots",
+        "rejectsMalformedIdentityRevisionAndSourceReferences",
+        "rejectsMalformedSourceDigestsAndMissingKind",
+        "requiresExplicitMicrosecondTimesAndNonemptyHalfOpenPeriod"
+      ],
+      "class": "dz.sh.hidra.modules.topology.domain.model.InstalledCharacteristicLinkTest",
+      "dependency_reason": "HAPI-602 Package A synthetic pure Java invariant checks; local Java21 stand-in execution only; Maven JUnit and exact-SHA CI pending, unmeasured hosted duration",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/domain/model/InstalledCharacteristicLinkTest.java",
+      "source_sha256": "b45b533cb4c6c956b522409811794b27c4128d118a47a5d94eda7f066893cc22",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
         "adjacentPhysicalReplacementPreservesDistinctInstallations",
         "rejectsDuplicateInstallationIdentityAndNullSnapshots",
         "rejectsInvalidEndRevisionAndMissingEvidence",

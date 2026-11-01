@@ -447,6 +447,8 @@ HAPI-602 `Next` technical-contract preflight (2026-11-01): [HPS-006](TASKS_HPS-0
 
 HAPI-602 `Next` preparatory Package A source-contract registration (2026-11-01): [HPS-006](TASKS_HPS-006.md#hapi-602) now defines one bounded future `feat(topology): model immutable installed characteristic links` stage (new pure-Java model and synthetic domain test, strict test inventory, phase record and index only). Latest baseline [Docs #800](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41281143565) and unchanged Java [Full #1034](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41277972324) succeeded. **No code in this registration; HAPI-601 software acceptance remains deferred and HAPI-602 status/dependency remains NOT_IMPLEMENTED/BLOCKED.** No native link publication/REST/SQL or HAPI-603.
 
+HAPI-602 Package A source implementation (2026-11-01): [HPS-006](TASKS_HPS-006.md#hapi-602) records a CI-first preparatory pure-Java immutable installed-characteristic model plus ten synthetic JUnit 5 domain test methods; exactly two Java files created, one strict inventory entry and two documentation updates. Local `javac --release 21` + ten stand-in-runner cases passed; real Maven/hosted Full/Docs acceptance is pending. HAPI-601 formal acceptance remains deferred; HAPI-602 functional protected link publication/API/SQL and HAPI-603 remain BLOCKED and unimplemented. No release/SITE/simulator claim.
+
 ## Phase files
 
 | Phase | Definition file | Tasks |

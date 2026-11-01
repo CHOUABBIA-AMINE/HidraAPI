@@ -154,7 +154,9 @@ public final class JdbcInstalledCharacteristicLinkRepositoryAdapter implements I
         }catch(RuntimeException ex){reject(t);executor.rejectAdmission();throw ex;}
     }
     private static InstalledCharacteristicLink map(ResultSet r,int row) throws SQLException {
-        var start=r.getTimestamp("effective_from"),end=r.getTimestamp("effective_until"),at=r.getTimestamp("recorded_at");
+        Timestamp start=r.getTimestamp("effective_from");
+        Timestamp end=r.getTimestamp("effective_until");
+        Timestamp at=r.getTimestamp("recorded_at");
         return new InstalledCharacteristicLink(r.getString("link_id"),r.getLong("link_revision"),
                 r.getString("company_party_id"),r.getString("installed_unit_id"),
                 r.getString("source_id"),r.getString("source_revision_id"),r.getString("source_sha256"),

@@ -457,6 +457,8 @@ HAPI-602 Package B source-backed draft persistence (2026-11-01): [HPS-006](TASKS
 
 HAPI-602 Package C1 (2026-11-01): [HPS-006](TASKS_HPS-006.md#hapi-602) records the explicit draft-only SAVE/READ/HISTORY application contract and protected-executor coordination with eleven synthetic unit cases. Full #1037 and Docs #806 confirmed the prior Package B database foundation. C1 has no wired native publisher or REST; C2 original-transaction cross-owner evidence and C3 configured HTTP are the shortest required software route. No production dataset, deployment or numerical P3 is assumed; HAPI-602 remains PARTIAL/IN_PROGRESS and HAPI-603 BLOCKED.
 
+HAPI-602 C2 source admission (2026-11-01): [HPS-006](TASKS_HPS-006.md#hapi-602) now registers a bounded C2-A *native Identity and Simulation source-authority contract* implementation stage with exact file ledger and message; C2-B restricted PostgreSQL publisher/grants and C3 configured HTTP remain separately gated. Green Full #1038 attempt 2 and Docs #807 on `9db67b9986710329d2a1c4c96dbcff469903897d` verify C1 only. This governance-only step changes no runtime, permissions, migrations, statuses or dependencies; HAPI-602 stays PARTIAL/IN_PROGRESS, HAPI-603 BLOCKED.
+
 ## Phase files
 
 | Phase | Definition file | Tasks |

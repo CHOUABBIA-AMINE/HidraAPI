@@ -463,6 +463,8 @@ HAPI-602 unified protected characteristic draft workflow source (2026-11-01): [H
 
 HAPI-602 native historical-read revocation regression (2026-11-01): the green exact-head [Full #1045](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41314028330) and [Docs #815](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41314028203) authorize one focused same-task configured-JWT/PostgreSQL test for source DENY after a successful immutable save. [HPS-006](TASKS_HPS-006.md#hapi-602) records the exact four-file allowlist, real strict 403 current/revision/history assertions, unchanged historical row and new inventory SHA-256. CI on the new SHA is pending; HAPI-602 remains PARTIAL/IN_PROGRESS, HAPI-603 BLOCKED, no Workflow link approval, frontend or SITE acceptance.
 
+HAPI-602 idempotency and CAS HTTP regression (2026-11-01): green [Full #1046](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41320124539) and [Docs #816](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41320124553) allow one same-task strict configured JWT/PostgreSQL test: altered replay and stale epoch each reject with 409 without mutating revision, receipt or head. [HPS-006](TASKS_HPS-006.md#hapi-602) registers exact four-file scope and approval gap. HAPI-602 PARTIAL/IN_PROGRESS; HAPI-603 BLOCKED; new exact-SHA CI pending.
+
 ## Phase files
 
 | Phase | Definition file | Tasks |

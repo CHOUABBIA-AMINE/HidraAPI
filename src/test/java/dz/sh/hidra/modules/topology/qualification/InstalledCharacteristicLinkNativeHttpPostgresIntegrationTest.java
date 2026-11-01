@@ -362,6 +362,39 @@ class InstalledCharacteristicLinkNativeHttpPostgresIntegrationTest {
             +" WHERE company_party_id=? AND installed_unit_id=? AND link_id=?",
             Long.class,company,unit,link));
     }
+    @Test void changedReplayPayloadAndStaleEpochRejectWithoutMutatingOriginalDraft()throws Exception{
+        grants();saveManufacturer();String body=draftBody();
+        requireStatus(http.perform(put(linkPath()).header("Authorization","Bearer "+token)
+            .contentType(MediaType.APPLICATION_JSON).content(body)),200)
+            .andExpect(jsonPath("$.replayed").value(false));
+        String changed=body.replace("\"evidenceReference\":\"synthetic:link\"",
+            "\"evidenceReference\":\"synthetic:changed\"");
+        assertNotEquals(body,changed);
+        requireStatus(http.perform(put(linkPath()).header("Authorization","Bearer "+token)
+            .contentType(MediaType.APPLICATION_JSON).content(changed)),409);
+        String stale=body.replace("\"requestId\":\"req-one\"",
+            "\"requestId\":\"req-stale\"");
+        assertNotEquals(body,stale);
+        requireStatus(http.perform(put(linkPath()).header("Authorization","Bearer "+token)
+            .contentType(MediaType.APPLICATION_JSON).content(stale)),409);
+        http.perform(get(linkPath()).header("Authorization","Bearer "+token)
+            .param("companyPartyId",company))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.link.linkRevision").value(1))
+            .andExpect(jsonPath("$.link.evidenceReference").value("synthetic:link"));
+        assertEquals(1L,admin.queryForObject("SELECT count(*)"
+            +" FROM public.hidra_topology_installed_characteristic_revision"
+            +" WHERE company_party_id=? AND installed_unit_id=? AND link_id=?",
+            Long.class,company,unit,link));
+        assertEquals(1L,admin.queryForObject("SELECT count(*)"
+            +" FROM public.hidra_topology_installed_characteristic_request"
+            +" WHERE company_party_id=? AND installed_unit_id=? AND link_id=?",
+            Long.class,company,unit,link));
+        assertEquals(1L,admin.queryForObject("SELECT head_epoch"
+            +" FROM public.hidra_topology_installed_characteristic_head"
+            +" WHERE company_party_id=? AND installed_unit_id=? AND link_id=?",
+            Long.class,company,unit,link));
+    }
     @Test void absentBearerCannotReadCurrentOrHistoricalExistence()throws Exception{
         http.perform(get(linkPath()).param("companyPartyId",company))
             .andExpect(status().isUnauthorized());

@@ -42,7 +42,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 /** Private producer adapter: source bytes never leave Simulation or qualify as Workflow approval. */
 @Component
-public final class TopologyManufacturerCharacteristicReferenceAdapter
+public class TopologyManufacturerCharacteristicReferenceAdapter
         implements TopologyManufacturerCharacteristicReferenceContract {
     private static final String TABLE="public.hidra_simulation_manufacturer_characteristic_revision";
     private static final String SOURCE_SQL="""

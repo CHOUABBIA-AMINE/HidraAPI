@@ -52,7 +52,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 /** This adapter owns storage only; it cannot manufacture an Identity or Simulation authorization. */
 @Repository
-public final class JdbcInstalledCharacteristicLinkRepositoryAdapter implements InstalledCharacteristicLinkStoragePort {
+public class JdbcInstalledCharacteristicLinkRepositoryAdapter implements InstalledCharacteristicLinkStoragePort {
     private static final String REV="public.hidra_topology_installed_characteristic_revision";
     private static final String HEAD="public.hidra_topology_installed_characteristic_head";
     private static final String RECEIPT="public.hidra_topology_installed_characteristic_request";

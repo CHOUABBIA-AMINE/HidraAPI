@@ -27,6 +27,7 @@ import dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcIdent
 import dz.sh.hidra.platform.persistence.ProtectedRelationFence;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.HexFormat;
 import java.util.List;

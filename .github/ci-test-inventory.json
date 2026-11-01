@@ -35,7 +35,8 @@
         "suppliedFluidExportsStayExactToTheirCoordinator",
         "transactionalOrganizationResponsibilityServicesMustRemainProxyable",
         "transitionalCrossModuleAllowlistMustRemainExactAndInUse",
-        "trustedNativeRoutesCannotBeSelfRegisteredByBusinessModules"
+        "trustedNativeRoutesCannotBeSelfRegisteredByBusinessModules",
+        "characteristicSourceExportRemainsExactAndOwnerPrivate"
       ],
       "class": "dz.sh.hidra.ArchitectureGuardrailTest",
       "dependency_reason": "Candidate included; ArchUnit/JVM/source",
@@ -43,7 +44,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java",
-      "source_sha256": "d341500d1c00968876d1a9434c1859850eaa8c149ee23633859b4cf1db47a01f",
+      "source_sha256": "539003883bb3f5583c45edfff83a7a1be2c5237543ccca71e844d5ce7e076d32",
       "supports": []
     },
     {
@@ -10795,7 +10796,8 @@
         "stationConfigurationDelegationRequiresFourExactAuthenticatedOwnerTuples",
         "suppliedFluidDelegationRequiresExactAuthenticatedOwnerTuples",
         "surveyDelegationRequiresExactNativeControllerMethodAndAuthentication",
-        "trustedPlatformRegistryStillRequiresAuthenticatedExactCompiledTuple"
+        "trustedPlatformRegistryStillRequiresAuthenticatedExactCompiledTuple",
+        "characteristicLinkDelegationRequiresFourExactAuthenticatedOwnerTuples"
       ],
       "class": "dz.sh.hidra.platform.permissions.HidraRouteAuthorizationInterceptorTest",
       "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
@@ -10803,7 +10805,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptorTest.java",
-      "source_sha256": "779ecc01516e7c17fcf9b371432e7a7021b25b50158db70c61c9d4743707276b",
+      "source_sha256": "95d530a11eb228d81e3cf93a6b7353988d7cb49cf78a2c1e5fb674e3b2b02f95",
       "supports": []
     },
     {
@@ -11151,6 +11153,73 @@
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/application/service/InstalledCharacteristicLinkApplicationServiceTest.java",
       "source_sha256": "d89d01816656433778b99d277cf0ebe9d1bec8b0cae9b99542dafb01bc0b17a7",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "mapsExactDraftWithoutApprovalOrSourcePayload",
+        "rejectsMalformedCanonicalDigestAndInvalidKind",
+        "rejectsStaleRevisionAndMissingRequestId",
+        "exactHistoricalRevisionAndExclusiveCursorAreBounded",
+        "authorizedReadOutputsImmutableHistoryAndNeverQualifies"
+      ],
+      "class": "dz.sh.hidra.modules.topology.api.rest.InstalledCharacteristicLinkRestMapperTest",
+      "dependency_reason": "HAPI-602 unified protected characteristic draft HTTP contract regression; synthetic unit assertions; native PostgreSQL qualification remains independent",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/api/rest/InstalledCharacteristicLinkRestMapperTest.java",
+      "source_sha256": "ca5d654570b2df1d8a575fa1e037c0012bfee9356c7d77180564300e5fd98a30",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "anonymousCannotInvokeAnyProtectedReadOrWrite",
+        "authenticatedSaveRequiresOriginalOwnerAndReturnsDraftOnly",
+        "authorizedCurrentAndHistoricalReadsRequireOwnerReturnedRows",
+        "historyWithoutRowsDisclosesNothingAndUsesExclusiveCursor"
+      ],
+      "class": "dz.sh.hidra.modules.topology.api.rest.controller.InstalledCharacteristicLinkControllerTest",
+      "dependency_reason": "HAPI-602 unified protected characteristic draft HTTP contract regression; synthetic unit assertions; native PostgreSQL qualification remains independent",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/api/rest/controller/InstalledCharacteristicLinkControllerTest.java",
+      "source_sha256": "6d397b274b155b6a0f70d73fd5fc663f223345d9356c5f882295015beb57cf7c",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "typedDenialsAndConflictsDoNotDiscloseSourceIdentifiers",
+        "malformedInputNeverReturnsProtectedSource",
+        "rejectedNativeCommitDoesNotClaimSuccess"
+      ],
+      "class": "dz.sh.hidra.modules.topology.api.rest.InstalledCharacteristicLinkApiExceptionHandlerTest",
+      "dependency_reason": "HAPI-602 unified protected characteristic draft HTTP contract regression; synthetic unit assertions; native PostgreSQL qualification remains independent",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/api/rest/InstalledCharacteristicLinkApiExceptionHandlerTest.java",
+      "source_sha256": "4ed8c4a747fa34794f3c505e72b7660158c0f9b27e3aad713cf122aac05089f5",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "authenticatedDraftSaveReplayCurrentRevisionHistoryUseOriginalNativeOwner",
+        "missingSourcePermissionDeniesBeforeAnyDraftMutation",
+        "absentBearerCannotReadCurrentOrHistoricalExistence"
+      ],
+      "class": "dz.sh.hidra.modules.topology.qualification.InstalledCharacteristicLinkNativeHttpPostgresIntegrationTest",
+      "dependency_reason": "HAPI-602 one coherent protected draft-link workflow: genuine configured JWT, native Identity, Party, Simulation source and original PostgreSQL 16 writer/replay/history; synthetic data only",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/qualification/InstalledCharacteristicLinkNativeHttpPostgresIntegrationTest.java",
+      "source_sha256": "1b8c199afc28ce1cf75be92f93bd9ee176a9de0f2b5fca95b4761b598786f2d8",
       "supports": []
     }
   ],

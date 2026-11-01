@@ -25,14 +25,17 @@ import dz.sh.hidra.modules.topology.application.port.in.InstalledCharacteristicL
 import dz.sh.hidra.modules.topology.application.port.out.InstalledCharacteristicLinkRepositoryPort;
 import dz.sh.hidra.platform.persistence.ProtectedTransactionExecutor;
 import java.util.Objects;
+import org.springframework.stereotype.Service;
+import org.springframework.security.access.AccessDeniedException;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * Deliberately not a Spring bean until native cross-owner authorization, final
+ * Requires genuine native cross-owner authorization, final
  * fences and trusted SQL are independently implemented and verified. A caller
  * cannot obtain a result until the executor reports committed publication.
  * Never retry a potentially indeterminate physical commit automatically.
  */
+@Service
 public final class InstalledCharacteristicLinkApplicationService
         implements InstalledCharacteristicLinkUseCase {
     private final InstalledCharacteristicLinkRepositoryPort repository;
@@ -50,6 +53,7 @@ public final class InstalledCharacteristicLinkApplicationService
         executor.requireNoProtectedContext();
         var prepared = repository.prepare(command);
         var admitted = new AtomicReference<InstalledCharacteristicLinkRepositoryPort.Admission>();
+        try {
         return executor.executePublication(() -> {
             var ticket = Objects.requireNonNull(repository.acquire(prepared, command));
             admitted.set(ticket);
@@ -63,5 +67,14 @@ public final class InstalledCharacteristicLinkApplicationService
             if (!repository.finalGuard(ticket))
                 throw new IllegalStateException("Protected characteristic link final guard unavailable");
         });
+        }catch(ProtectedTransactionExecutor.ExecutionFailure error){
+            if(error.outcome()==ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT
+                    && error.getCause() instanceof AccessDeniedException)
+                throw new AccessDeniedException("Characteristic link permission denied");
+            if(error.outcome()==ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT
+                    && error.getCause() instanceof dz.sh.hidra.modules.topology.application.model.InstalledCharacteristicLinkFailure typed)
+                throw typed;
+            throw error;
+        }
     }
 }

@@ -93,6 +93,7 @@ class ArchitectureGuardrailTest {
                     "dz.sh.hidra.modules.workflow.application.contract.alarm",
                     "dz.sh.hidra.modules.topology.application.contract.organization",
                     "dz.sh.hidra.modules.topology.application.contract.simulation",
+                    "dz.sh.hidra.modules.simulation.application.contract.topology",
                     "dz.sh.hidra.modules.topology.application.contract.leakdetection",
                     "dz.sh.hidra.modules.topology.application.contract.analytics",
                     "dz.sh.hidra.modules.organization.application.contract.analytics",
@@ -167,6 +168,12 @@ class ArchitectureGuardrailTest {
                 && ORGANIZATION_OWNER_EXPORTS.stream().anyMatch(root -> target.equals(root) || target.startsWith(root + "$"));
     }
 
+    private static boolean isCharacteristicManufacturerPartyExport(String source,String target) {
+        String producer="dz.sh.hidra.modules.simulation.infrastructure.integration.TopologyManufacturerCharacteristicReferenceAdapter";
+        String contract="dz.sh.hidra.modules.party.application.contract.simulation.SimulationManufacturerEvidenceContract";
+        return (source.equals(producer)||source.startsWith(producer+"$"))
+                && (target.equals(contract)||target.startsWith(contract+"$"));
+    }
     private static boolean isManufacturerOwnerExport(String source,String target) {
         return (source.equals("dz.sh.hidra.modules.simulation.application.service.ProtectedManufacturerCharacteristicAdmissionCoordinator")
                 || source.startsWith("dz.sh.hidra.modules.simulation.application.service.ProtectedManufacturerCharacteristicAdmissionCoordinator$"))
@@ -386,6 +393,7 @@ class ArchitectureGuardrailTest {
                 if (isOrganizationOwnerExport(source.getName(), target.getName())) continue;
                 if (isCustodyProductOwnerExport(source.getName(), target.getName())) continue;
                 if (isManufacturerOwnerExport(source.getName(), target.getName())) continue;
+                if (isCharacteristicManufacturerPartyExport(source.getName(),target.getName())) continue;
 
                 violations.add(source.getName() + " -> " + target.getName());
             }
@@ -657,6 +665,18 @@ class ArchitectureGuardrailTest {
     private static final Set<String> MANUFACTURER_OWNER_ROOTS=Set.of(
             "dz.sh.hidra.modules.party.application.contract.simulation.SimulationManufacturerEvidenceContract",
             "dz.sh.hidra.modules.identity.application.contract.simulation.SimulationManufacturerCharacteristicAuthorizationContract");
+    @Test void characteristicSourceExportRemainsExactAndOwnerPrivate() {
+        String producer="dz.sh.hidra.modules.simulation.infrastructure.integration.TopologyManufacturerCharacteristicReferenceAdapter";
+        String party="dz.sh.hidra.modules.party.application.contract.simulation.SimulationManufacturerEvidenceContract";
+        String topology="dz.sh.hidra.modules.simulation.application.contract.topology.TopologyManufacturerCharacteristicReferenceContract";
+        assertFalse(isForbiddenCrossModuleDependency(producer,party));
+        assertFalse(isForbiddenCrossModuleDependency(producer+"$Ticket",party+"$Admission"));
+        assertTrue(isForbiddenCrossModuleDependency(producer+"Sibling",party));
+        assertTrue(isForbiddenCrossModuleDependency("dz.sh.hidra.modules.topology.application.service.Other",party));
+        assertFalse(isForbiddenCrossModuleDependency("dz.sh.hidra.modules.topology.application.service.ProtectedInstalledCharacteristicLinkAdmissionCoordinator",topology));
+        assertTrue(isForbiddenCrossModuleDependency("dz.sh.hidra.modules.topology.application.service.Other",
+                "dz.sh.hidra.modules.simulation.infrastructure.integration.TopologyManufacturerCharacteristicReferenceAdapter"));
+    }
     @Test void manufacturerNativeAndPartyOwnerExportsRemainExact() {
         for(String root:MANUFACTURER_OWNER_ROOTS){
             assertFalse(isForbiddenCrossModuleDependency(MANUFACTURER_COORDINATOR,root));
@@ -692,6 +712,15 @@ class ArchitectureGuardrailTest {
         if (sourceModule == null || targetModule == null || sourceModule.equals(targetModule)) {
             return false;
         }
+        // Simulation's exact Topology source reader may use its existing Party owner contract.
+        // No sibling, general Simulation class or Topology port receives that private export.
+        String partyRoot="dz.sh.hidra.modules.party.application.contract.simulation.SimulationManufacturerEvidenceContract";
+        String simulationReader="dz.sh.hidra.modules.simulation.infrastructure.integration.TopologyManufacturerCharacteristicReferenceAdapter";
+        if(targetClassName.equals(partyRoot)||targetClassName.startsWith(partyRoot+"$"))
+            return !(sourceClassName.equals(simulationReader)
+                    || sourceClassName.startsWith(simulationReader+"$")
+                    || isManufacturerOwnerExport(sourceClassName,targetClassName)
+                    || isCharacteristicManufacturerPartyExport(sourceClassName,targetClassName));
         for(String root:MANUFACTURER_OWNER_ROOTS)if(targetClassName.equals(root)
                 || targetClassName.startsWith(root+"$"))
             return !(sourceClassName.equals(MANUFACTURER_COORDINATOR)

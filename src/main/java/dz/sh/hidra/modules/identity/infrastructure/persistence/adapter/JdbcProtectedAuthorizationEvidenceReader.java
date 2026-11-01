@@ -564,6 +564,46 @@ public class JdbcProtectedAuthorizationEvidenceReader {
     }
 
     /**
+     * Exact Topology characteristic link/unit native evidence. Only the original
+     * Identity owner may supply genuine fenced provenance; this does not issue
+     * a permission or make a later second native credential.
+     */
+    @Transactional(propagation = Propagation.MANDATORY)
+    public AuthorizationEvidence loadInstalledCharacteristic(
+            Evidence origin, AuthorizationEvaluationRequest request,int backendPid,long transactionId) {
+        try {
+            if(origin==null || request==null || request.scope()==null
+                    || !origin.userId().equals(request.userId())
+                    || request.scope().scopeType()!=dz.sh.hidra.modules.identity.domain.value.ScopeType.CUSTOM
+                    || request.scope().scopeCodeSnapshot()!=null
+                    || request.scope().scopeReferenceId()==null
+                    || !request.scope().scopeReferenceId().startsWith("topology-company:")
+                    || !text(request.scope().scopeReferenceId().substring("topology-company:".length()),80)
+                    || !text(request.resourceReferenceId(),80)
+                    || !("INSTALLED_CHARACTERISTIC_LINK".equals(request.resourceType())
+                        && java.util.Set.of("topology:installed-characteristic:save",
+                                "topology:installed-characteristic:read",
+                                "topology:installed-characteristic:history").contains(request.permissionCode())
+                        || "INSTALLED_UNIT".equals(request.resourceType())
+                           && "topology:installed-unit:read".equals(request.permissionCode())))
+                throw invalid();
+            validateCharacteristicOrigin(origin,backendPid,transactionId);
+            qualifiedPhysicalFences(backendPid,transactionId);
+            if(!RELATIONS.stream().map(PREFIX::concat).toList().equals(
+                    jdbc.queryForList(HELD,String.class)))throw invalid();
+            var graph=read(origin,request,new Rows());
+            coordinates(backendPid,transactionId);
+            return graph;
+        }catch(RuntimeException failure){throw invalid();}
+    }
+    private void validateCharacteristicOrigin(Evidence origin,int pid,long xid) {
+        if(!java.util.Set.of("LOCAL","LDAP","ACTIVE_DIRECTORY","OIDC").contains(origin.authenticationType())
+                ||origin.observedAt()==null||origin.expiresAt()==null
+                ||!origin.observedAt().isBefore(origin.expiresAt()))throw invalid();
+        coordinates(pid,xid);
+    }
+
+    /**
      * The manufacturer family is exact, native-only and denied by default.
      * Called solely after a genuine one-use ProtectedOperationIdentityParticipant admission
      * has fixed the same physical PID/XID; no policy or grant is synthesized.

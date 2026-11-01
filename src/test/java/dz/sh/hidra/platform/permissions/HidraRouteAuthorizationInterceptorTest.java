@@ -448,6 +448,48 @@ class HidraRouteAuthorizationInterceptorTest {
         }
     }
 
+    @Test void characteristicLinkDelegationRequiresFourExactAuthenticatedOwnerTuples() throws Exception {
+        var resolver=org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class);
+        var interceptor=new HidraRouteAuthorizationInterceptor(resolver,naming,true,"jwt");
+        var useCase=org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in
+            .InstalledCharacteristicLinkUseCase.class);
+        var controller=new dz.sh.hidra.modules.topology.api.rest.controller
+            .InstalledCharacteristicLinkController(useCase);
+        String root="/api/v1/topology/installed-units/{unitId}/characteristic-links/{linkId}";
+        String[] names={"save","current","revision","history"};
+        String[] verbs={"PUT","GET","GET","GET"};
+        String[] routes={root,root,root+"/revisions/{revisionId}",root+"/history"};
+        for(int n=0;n<names.length;n++){
+            String target=names[n],route=routes[n],verb=verbs[n];
+            var method=java.util.Arrays.stream(controller.getClass().getDeclaredMethods())
+                .filter(m->m.getName().equals(target)).findFirst().orElseThrow();
+            var handler=new HandlerMethod(controller,method);
+            var request=new MockHttpServletRequest(verb,route.replace("{unitId}","u")
+                .replace("{linkId}","l").replace("{revisionId}","1"));
+            request.setAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE,route);
+            SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("operator",null,List.of()));
+            org.mockito.Mockito.clearInvocations(resolver);
+            assertTrue(interceptor.preHandle(request,new MockHttpServletResponse(),handler));
+            org.mockito.Mockito.verifyNoInteractions(resolver,useCase);
+            request.setMethod("DELETE");
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(request,new MockHttpServletResponse(),handler));
+            request.setMethod(verb);
+            request.setAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE,route+"/wrong");
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(request,new MockHttpServletResponse(),handler));
+            request.setAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE,route);
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(request,new MockHttpServletResponse(),handlerMethod()));
+            var wrong=java.util.Arrays.stream(controller.getClass().getDeclaredMethods())
+                .filter(m->m.getName().equals(names[(java.util.Arrays.asList(names).indexOf(target)+1)%names.length]))
+                .findFirst().orElseThrow();
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(request,new MockHttpServletResponse(),new HandlerMethod(controller,wrong)));
+            SecurityContextHolder.clearContext();
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(request,new MockHttpServletResponse(),handler));
+            SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("operator",null));
+            assertThrows(AccessDeniedException.class,()->interceptor.preHandle(request,new MockHttpServletResponse(),handler));
+        }
+    }
     @Test void stationConfigurationDelegationRequiresFourExactAuthenticatedOwnerTuples() throws Exception {
         var resolver=org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class);
         var interceptor=new HidraRouteAuthorizationInterceptor(resolver,naming,true,"jwt");

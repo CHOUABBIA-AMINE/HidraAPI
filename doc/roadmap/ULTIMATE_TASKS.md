@@ -459,6 +459,8 @@ HAPI-602 Package C1 (2026-11-01): [HPS-006](TASKS_HPS-006.md#hapi-602) records t
 
 HAPI-602 C2 source admission (2026-11-01): [HPS-006](TASKS_HPS-006.md#hapi-602) now registers a bounded C2-A *native Identity and Simulation source-authority contract* implementation stage with exact file ledger and message; C2-B restricted PostgreSQL publisher/grants and C3 configured HTTP remain separately gated. Green Full #1038 attempt 2 and Docs #807 on `9db67b9986710329d2a1c4c96dbcff469903897d` verify C1 only. This governance-only step changes no runtime, permissions, migrations, statuses or dependencies; HAPI-602 stays PARTIAL/IN_PROGRESS, HAPI-603 BLOCKED.
 
+HAPI-602 unified protected characteristic draft workflow source (2026-11-01): [HPS-006](TASKS_HPS-006.md#hapi-602) records **one non-split source commit** integrating original native Identity+Simulation/Party source admission, original-transaction immutable PostgreSQL draft save/current/revision/history, strict four-route REST and a synthetic configured JWT/PostgreSQL qualification suite. Full/Docs on the new source SHA and actual runtime OpenAPI regeneration are still PENDING; no waiver, task closure, production/OT or simulation qualification. HAPI-602 PARTIAL/IN_PROGRESS, HAPI-603 BLOCKED.
+
 ## Phase files
 
 | Phase | Definition file | Tasks |

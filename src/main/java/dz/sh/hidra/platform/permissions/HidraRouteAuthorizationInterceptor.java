@@ -119,6 +119,7 @@ public final class HidraRouteAuthorizationInterceptor implements HandlerIntercep
                 || isOwnedProductPublicationRoute(handlerMethod,routePattern,request.getMethod())
                 || isOwnedInstalledUnitLifecycleRoute(handlerMethod,routePattern,request.getMethod())
                 || isOwnedStationConfigurationRoute(handlerMethod,routePattern,request.getMethod())
+                || isOwnedInstalledCharacteristicLinkRoute(handlerMethod,routePattern,request.getMethod())
                 || trustedNativeRoutes.isTrusted(handlerMethod, request.getMethod(), routePattern)) {
             if (authentication == null || !authentication.isAuthenticated()
                     || authentication instanceof AnonymousAuthenticationToken) {
@@ -135,6 +136,19 @@ public final class HidraRouteAuthorizationInterceptor implements HandlerIntercep
         throw new AccessDeniedException("Missing required permission: " + requiredPermission);
     }
 
+
+    // Exact characteristic-link handlers delegate to independently enforced native grants.
+    private static boolean isOwnedInstalledCharacteristicLinkRoute(HandlerMethod handler,String route,String verb) {
+        if(handler==null || route==null || verb==null || !handler.getBeanType().getName().equals(
+                "dz.sh.hidra.modules.topology.api.rest.controller.InstalledCharacteristicLinkController"))return false;
+        return switch(verb+" "+route+" "+handler.getMethod().getName()) {
+            case "PUT /api/v1/topology/installed-units/{unitId}/characteristic-links/{linkId} save",
+                 "GET /api/v1/topology/installed-units/{unitId}/characteristic-links/{linkId} current",
+                 "GET /api/v1/topology/installed-units/{unitId}/characteristic-links/{linkId}/revisions/{revisionId} revision",
+                 "GET /api/v1/topology/installed-units/{unitId}/characteristic-links/{linkId}/history history" -> true;
+            default -> false;
+        };
+    }
 
     // An exact compiled handler delegates only to the native protected station-configuration
     // owner. Ordinary route permissions still apply to every other tuple.

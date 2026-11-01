@@ -443,6 +443,8 @@ HAPI-601 CI #1033 (2026-11-01): manufacturer history GET now passes; invalid cur
 
 Owner-directed HAPI-601/HAPI-602 handoff (2026-11-01): preserve the [HAPI-601 deferred software-acceptance backlog](TASKS_HPS-007.md#hapi-601) without marking it accepted; green [Full #1034](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41277972324) and [Docs #798](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41277972266) prove the currently implemented subset only. [HAPI-602 source-backed design preflight](TASKS_HPS-006.md#hapi-602) is now selected as registration-only: protected cross-owner revision/digest link semantics proposed; HAPI-601 remains NOT_ACCEPTED and HAPI-602 remains NOT_IMPLEMENTED/BLOCKED pending independent dependency and exact implementation-contract admission. No runtime, roadmap status or frontend/numerical work selected.
 
+HAPI-602 `Next` technical-contract preflight (2026-11-01): [HPS-006](TASKS_HPS-006.md#hapi-602) records the exact source ownership/invariant analysis and a **candidate only** Domain/port/adapter/native-security/API/Flyway/test ledger for protected installed-unit-to-manufacturer revision links. [Docs #799](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41280854263) passed on the predecessor, with the earlier unchanged-runtime [Full #1034](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41277972324) green. HAPI-601 gaps remain explicitly deferred; HAPI-602's canonical dependency and physical cross-owner transaction authority remain BLOCKED. This documentation stage admits **no runtime implementation or status upgrade**.
+
 ## Phase files
 
 | Phase | Definition file | Tasks |

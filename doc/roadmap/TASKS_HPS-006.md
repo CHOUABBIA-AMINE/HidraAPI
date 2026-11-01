@@ -10302,6 +10302,87 @@ SQL append-only persistence and final fences; S4 public proof and S5 independent
 task acceptance also remain open. HAPI-601 keeps its separately deferred assurance,
 numerical P3 and human operational/SITE decisions remain out of scope.
 
+### HAPI-602 — S2 owner-approved full-scope extension: protected Workflow characteristic evidence (2026-11-01)
+
+**One indivisible stage / authority.** The owner approved the registered S2 and subsequently
+approved, in two explicit replies, expansion of its complete scope for Workflow protected
+reads, exact Topology-native target-locator resolution and Workflow transaction compatibility.
+This is the existing AGENTS.md §3.3 S2 exception, **not** an S2-A/B split or HAPI-603 work.
+Parent main `4b3cc9dce93ca0d301b2c5885c2a0662fba3c86c` passed
+[Full #1049](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41343040514)
+and [Docs #821](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41343040535).
+Exact S2 commit message is `feat(workflow): support topology characteristic approval evidence`.
+
+**Whole-stage amended source ledger.** CREATE
+`src/main/java/dz/sh/hidra/modules/topology/application/port/out/InstalledCharacteristicLinkApprovalEvidencePort.java`,
+`src/main/java/dz/sh/hidra/modules/topology/infrastructure/integration/TopologyInstalledCharacteristicLinkWorkflowTargetLookup.java`,
+`src/main/java/dz/sh/hidra/modules/topology/infrastructure/integration/WorkflowInstalledCharacteristicLinkApprovalEvidenceAdapter.java`,
+`src/main/resources/db/migration/V20261101_002__workflow_topology_characteristic_approval_catalog.sql`,
+`src/test/java/dz/sh/hidra/modules/topology/infrastructure/integration/TopologyInstalledCharacteristicLinkWorkflowTargetLookupTest.java`
+and `src/test/java/dz/sh/hidra/modules/workflow/infrastructure/query/JpaWorkflowTopologyProtectedReadTest.java`.
+MODIFY
+`src/main/java/dz/sh/hidra/modules/workflow/application/contract/target/WorkflowOwnedTargetLookup.java`,
+`src/main/java/dz/sh/hidra/modules/workflow/application/command/StartWorkflowInstanceCommand.java`,
+`src/main/java/dz/sh/hidra/modules/workflow/application/service/WorkflowExecutionOwnership.java`,
+`src/main/java/dz/sh/hidra/modules/workflow/application/service/WorkflowApplicationService.java`,
+`src/main/java/dz/sh/hidra/modules/workflow/application/service/WorkflowTransitionApplicationService.java`,
+`src/main/java/dz/sh/hidra/modules/workflow/application/service/RevisionApprovalEvidenceQueryService.java`,
+`src/main/java/dz/sh/hidra/modules/workflow/infrastructure/query/JpaWorkflowQueryAdapter.java`,
+`src/main/java/dz/sh/hidra/modules/workflow/infrastructure/persistence/entity/WorkflowInstanceJpaEntity.java`,
+`src/main/java/dz/sh/hidra/modules/workflow/api/rest/mapper/WorkflowGeneratedRestMapper.java`,
+`src/test/java/dz/sh/hidra/modules/workflow/application/service/RevisionApprovalEvidenceQueryServiceTest.java`,
+`src/test/java/dz/sh/hidra/modules/workflow/infrastructure/persistence/RevisionApprovalEvidencePostgresIntegrationTest.java`,
+`.github/ci-test-inventory.json`, this owning HPS-006 register (append-only history)
+and `doc/roadmap/ULTIMATE_TASKS.md` (compact pointer).
+No DELETE or mutable historical Flyway modification. No Identity grants, Workflow
+definitions/bindings, dummy decisions, Topology approval SQL or public approval REST route.
+
+**Authorization and original transaction.** Workflow starts with an exact immutable SHA-256
+target plus a *caller-untrusted* canonical `v1` base64url triple
+(company, installed unit, link) and positive link revision.
+The Topology adapter decodes/round-trip validates the locator and invokes only
+`InstalledCharacteristicLinkUseCase.READ_REVISION` in Topology's **native original
+Identity/Party/Simulation-protected publication transaction**; it checks the exact
+returned tuple and S1 canonical SHA, not a caller digest alone. Owner denial,
+missing source, changed revision, revoked grant, invalid locator or indeterminate
+commit returns no target without disclosing existence. Workflow's ambient JPA
+transaction is suspended for the distinct Topology native proof, then resumed
+for a normal Workflow operation; this is not one shared physical transaction,
+and S3 must revalidate live owner evidence before publishing an approval.
+Workflow persists only the owner-confirmed canonical locator in its enlarged
+target-code snapshot (forward-only varchar(2048)), and must refresh current
+Topological source rights at task, action and transition operations and before
+exposing instance, task or timeline read. History reads require independent
+native history permission. Other Workflow targets retain their previous
+resolution semantics. The S2 Workflow resolver cannot be used with digest
+alone; the existing REST request remains unchanged and **cannot** start this
+Topology target until the explicit S4 REST schema and generated-OpenAPI gate.
+
+**Workflow terminal evidence.** The forward migration registers the two exact catalog
+codes, but deliberately creates **no** active Workflow definition, binding,
+assignment, permission or human decision. Workflow evidence uses the real current
+definition/version, target/purpose binding, completed instance, approved task,
+latest terminal APPROVE action and identical actor with exact digest/timestamps.
+The existing Workflow-owned NOWAIT locking contract is reused inside the
+originating protected Topology transaction; evidence failure remains closed.
+The Topology outbound port is evidence only, not authority to approve or an
+approval writer. Distinct human Identity approval and append-only SQL belong to
+S3, explicit REST and configured JWT/PostgreSQL approval qualification to S4,
+independent acceptance to S5.
+
+**Validation and outstanding acceptance.** New topology-native unit regressions,
+Workflow metadata negative/purpose checks, protected-read denial tests and a
+fresh PostgreSQL Workflow catalog/terminal-evidence fixture are inventoried.
+The fixture proves persisted Workflow evidence semantics; its synthetic inserted
+terminal records are **not** by themselves proof of a real human operator
+transition, native approval commit or site qualification. Live cross-owner
+configured Workflow transition/native approval and API remain acceptance gates
+for subsequent S3/S4 and final S5. Source review, SHA-256 inventory checks and
+exact-scope diff are prepublication checks; local Maven/PostgreSQL execution is
+**not claimed**. Exact-head hosted Full and Documentation CI are required
+on the new commit before S2 can be deemed CI-verified. HAPI-602 remains
+PARTIAL/IN_PROGRESS, HAPI-603 and HAPI-598 remain BLOCKED.
+
 <a id="hapi-603"></a>
 ## HAPI-603 — Installed-equipment consumer qualification
 

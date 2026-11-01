@@ -10333,7 +10333,10 @@
         "rejectsWorkflowTaskCompletedAtMismatch",
         "rejectsWorkflowTaskCompletedByActorIdMismatch",
         "rejectsWorkflowTaskInstanceIdMismatch",
-        "rejectsWorkflowTaskStatusMismatch"
+        "rejectsWorkflowTaskStatusMismatch",
+        "topologyRequiresGenuineOriginalWorkflowFence",
+        "topologyWrongDigestAndActionAreRejected",
+        "topologyWrongPurposeAndMissingBindingAlwaysFail"
       ],
       "class": "dz.sh.hidra.modules.workflow.application.service.RevisionApprovalEvidenceQueryServiceTest",
       "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
@@ -10341,7 +10344,7 @@
       "lane": "unit-architecture",
       "owner": "workflow",
       "path": "src/test/java/dz/sh/hidra/modules/workflow/application/service/RevisionApprovalEvidenceQueryServiceTest.java",
-      "source_sha256": "b5111177a7cd37f703853201f25b45b48df74df4b297db937d0cc51aaf2b0e9d",
+      "source_sha256": "a9ec70860a46373c7a3a35b69d0efdab56990f90825174807e95606b945eba0a",
       "supports": []
     },
     {
@@ -10410,6 +10413,7 @@
     {
       "baseline_seconds": 17.313,
       "cases": [
+        "actualTopologyCatalogAndTerminalApprovalBindExactDigestAndPurpose",
         "actualTransitionQualifiesOnlyExactDigestAndWithdrawalMakesItUnavailable",
         "realTerminalManufacturerApprovalMustMatchItsExactConfiguredPurposeAndDigest"
       ],
@@ -10419,7 +10423,7 @@
       "lane": "postgres-integration",
       "owner": "workflow",
       "path": "src/test/java/dz/sh/hidra/modules/workflow/infrastructure/persistence/RevisionApprovalEvidencePostgresIntegrationTest.java",
-      "source_sha256": "3f6c875e121d6d9aac6e83253cccaf4c5af4c0229f4b44d7b73dd60800b0aa25",
+      "source_sha256": "210cd5f55faf2ede4894a817040e7572b8a2fca1bf89a2b445428c0fc6510b04",
       "supports": []
     },
     {
@@ -11269,6 +11273,41 @@
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/workbench/HidraOperationalWorkbenchServiceTest.java",
       "source_sha256": "42e8fc8e06f115844a0d461745e4c9cd06c389fdb9c6a9a9dd1de5617ec5b424",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "exactAuthorizedRevisionResolvesOnlyThroughNativeOwner",
+        "noDigestOnlyLookupOrUntrustedLocatorBypass",
+        "nativeDenialAndUnavailableSourceAreNonDisclosing",
+        "wrongActualRevisionOrShaCannotResolve",
+        "historyRequiresIndependentNativeHistoryAuthorization",
+        "canonicalLocatorDoesNotAliasMalformedOrAmbiguousInput"
+      ],
+      "class": "dz.sh.hidra.modules.topology.infrastructure.integration.TopologyInstalledCharacteristicLinkWorkflowTargetLookupTest",
+      "dependency_reason": "HAPI-602 S2 genuine native Topology Workflow locator/denial unit behavior; hosted timing pending",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/integration/TopologyInstalledCharacteristicLinkWorkflowTargetLookupTest.java",
+      "source_sha256": "d522f3e3e6da27dd798a3bacb45214ca448c9ae4785a1f819a221f9c00389c44",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "neverDisclosesTopologyInstanceWithoutOwnerAuthorization",
+        "nativeDenialOnHistoryIsNotConvertedToAHistoryLeak",
+        "nullOrWrongTargetCatalogCannotBypassTheOwnerGuard"
+      ],
+      "class": "dz.sh.hidra.modules.workflow.infrastructure.query.JpaWorkflowTopologyProtectedReadTest",
+      "dependency_reason": "HAPI-602 S2: native protected Topology-target Workflow disclosure guard; hosted timing pending",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "workflow",
+      "path": "src/test/java/dz/sh/hidra/modules/workflow/infrastructure/query/JpaWorkflowTopologyProtectedReadTest.java",
+      "source_sha256": "b355f8d69aeb0aaed73b04b777e2d7873e1bb2e21d644db4e3f0367185c73f5b",
       "supports": []
     }
   ],

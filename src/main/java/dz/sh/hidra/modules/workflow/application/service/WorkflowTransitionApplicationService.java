@@ -117,6 +117,7 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
 
         WorkflowInstance instance = instanceRepository.findByIdForUpdate(task.instanceId())
                 .orElseThrow(() -> new NoSuchElementException("Unknown workflow instance: " + task.instanceId()));
+        ownership.requireProtectedCurrentTarget(instance,configuration);
         if (!instance.nonTerminal()) {
             throw new WorkflowTransitionConflictException("Workflow instance is already terminal: " + instance.id());
         }

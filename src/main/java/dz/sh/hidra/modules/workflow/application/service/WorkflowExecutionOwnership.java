@@ -86,11 +86,27 @@ public class WorkflowExecutionOwnership {
         return organizations.eligibleMember(actor.employeeId(),unitId,Instant.now());
     }
     public WorkflowOwnedTargetLookup.Target requireTarget(String module,String code,String id){
+        return requireTarget(module,code,id,null);
+    }
+    public WorkflowOwnedTargetLookup.Target requireTarget(String module,String code,String id,String locator){
         var matches=targets.stream().filter(t->module.equals(t.module()) && t.targetTypeCodes().contains(code)).toList();
         if(matches.size()!=1) throw denied("Exactly one owner target resolver required: "+module+"/"+code);
-        var target=matches.get(0).eligibleTarget(code,id).orElseThrow(()->denied("Workflow target is unavailable."));
+        var target=matches.get(0).eligibleTarget(code,id,locator).orElseThrow(()->denied("Workflow target is unavailable."));
         if(!id.equals(target.id())) throw denied("Owner target identity mismatch.");
         return target;
+    }
+    /** Refresh native Topology rights at every Workflow operation. */
+    public void requireProtectedCurrentTarget(dz.sh.hidra.modules.workflow.domain.model.WorkflowInstance instance,
+            dz.sh.hidra.modules.workflow.application.port.out.WorkflowConfigurationPort configuration) {
+        if (!"topology".equals(instance.targetModule())) return;
+        var type=configuration.requireActiveCatalog(instance.targetTypeId(),"WORKFLOW_TARGET_TYPE");
+        if (!"INSTALLED_CHARACTERISTIC_LINK_REVISION".equals(type.code())) return;
+        var purpose=configuration.requireActiveCatalog(instance.workflowPurposeId(),"WORKFLOW_PURPOSE");
+        if (!"INSTALLED_CHARACTERISTIC_LINK_APPROVAL".equals(purpose.code())
+                || !configuration.activeBinding(instance.definitionId(),instance.targetModule(),
+                        instance.targetTypeId(),instance.workflowPurposeId()))
+            throw denied("Topology Workflow target unavailable.");
+        requireTarget(instance.targetModule(),type.code(),instance.targetId(),instance.targetCodeSnapshot());
     }
     private static WorkflowTransitionDeniedException denied(String message){return new WorkflowTransitionDeniedException(message);}
 }

@@ -133,4 +133,56 @@ public class RevisionApprovalEvidenceQueryServiceTest {
         var v = action(); var changed = new WorkflowAction(v.id(), v.instanceId(), v.taskId(), WorkflowActionType.COMMENT, null, v.reasonId(), v.decisionNote(), v.commentText(), v.actorId(), v.actorUsernameSnapshot(), v.actorDisplayNameSnapshot(), v.actorRoleCodeSnapshot(), v.organizationUnitId(), v.organizationUnitNameSnapshot(), v.organizationRoleCodeSnapshot(), v.correlationId(), v.actionSequence(), v.sourceSystem(), v.ipAddressHash(), v.userAgentHash(), v.actedAt());
         when(actions.findById("action")).thenReturn(Optional.of(changed)); assertTrue(service.resolve(request()).isEmpty());
     }
+    private void topologyFixture() {
+        var old=instance();
+        var changed=new WorkflowInstance(old.id(),old.definitionId(),old.definitionVersion(),
+                old.workflowPurposeId(),"topology",old.targetTypeId(),old.targetId(),
+                old.targetCodeSnapshot(),old.targetLabelSnapshot(),old.status(),old.currentStepId(),
+                old.startedByActorId(),old.startedByUsernameSnapshot(),old.startedByDisplayNameSnapshot(),
+                old.startedByRoleCodeSnapshot(),old.startedAt(),old.completedAt(),old.cancelledAt(),
+                old.correlationId(),old.createdAt(),old.updatedAt());
+        when(instances.findById("instance")).thenReturn(Optional.of(changed));
+        when(config.requireActiveCatalog("type","WORKFLOW_TARGET_TYPE")).thenReturn(
+                new WorkflowConfigurationPort.Catalog("type","WORKFLOW_TARGET_TYPE",
+                        "INSTALLED_CHARACTERISTIC_LINK_REVISION",true));
+        when(config.requireActiveCatalog("purpose","WORKFLOW_PURPOSE")).thenReturn(
+                new WorkflowConfigurationPort.Catalog("purpose","WORKFLOW_PURPOSE",
+                        "INSTALLED_CHARACTERISTIC_LINK_APPROVAL",true));
+        when(config.activeBinding("def","topology","type","purpose")).thenReturn(true);
+    }
+    private RevisionApprovalEvidenceContract.Request topologyRequest() {
+        return new RevisionApprovalEvidenceContract.Request("topology",DIGEST,"def",1,
+                "type","purpose","instance","task","action",AT);
+    }
+    @Test void topologyRequiresGenuineOriginalWorkflowFence() {
+        topologyFixture();
+        assertTrue(service.resolve(topologyRequest()).isEmpty());
+        var fence=mock(RevisionApprovalEvidenceQueryService.ManufacturerWorkflowFencePort.class);
+        var protectedService=new RevisionApprovalEvidenceQueryService(instances,tasks,actions,config,fence);
+        assertEquals("actor",protectedService.resolve(topologyRequest()).orElseThrow().actorId());
+        verify(fence).lockCurrentTopologyApprovalEvidence();
+    }
+    @Test void topologyWrongPurposeAndMissingBindingAlwaysFail() {
+        topologyFixture();
+        var fence=mock(RevisionApprovalEvidenceQueryService.ManufacturerWorkflowFencePort.class);
+        var protectedService=new RevisionApprovalEvidenceQueryService(instances,tasks,actions,config,fence);
+        when(config.requireActiveCatalog("purpose","WORKFLOW_PURPOSE")).thenReturn(
+                new WorkflowConfigurationPort.Catalog("purpose","WORKFLOW_PURPOSE",
+                        "MANUFACTURER_CHARACTERISTIC_QUALIFICATION",true));
+        assertTrue(protectedService.resolve(topologyRequest()).isEmpty());
+        topologyFixture();
+        when(config.activeBinding("def","topology","type","purpose")).thenReturn(false);
+        assertTrue(protectedService.resolve(topologyRequest()).isEmpty());
+    }
+    @Test void topologyWrongDigestAndActionAreRejected() {
+        topologyFixture();
+        var protectedService=new RevisionApprovalEvidenceQueryService(instances,tasks,actions,config,
+                mock(RevisionApprovalEvidenceQueryService.ManufacturerWorkflowFencePort.class));
+        var wrong=new RevisionApprovalEvidenceContract.Request("topology","b".repeat(64),"def",1,
+                "type","purpose","instance","task","action",AT);
+        assertTrue(protectedService.resolve(wrong).isEmpty());
+        when(actions.nextSequence("instance")).thenReturn(3L);
+        assertTrue(protectedService.resolve(topologyRequest()).isEmpty());
+    }
+
 }

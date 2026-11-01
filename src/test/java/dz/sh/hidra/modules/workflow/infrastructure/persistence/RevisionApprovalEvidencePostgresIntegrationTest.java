@@ -172,4 +172,50 @@ public class RevisionApprovalEvidencePostgresIntegrationTest {
                 "simulation",targetDigest,definition,1,type,"wrong-purpose",instance,task,action,Instant.now())).isEmpty())));
     }
 
+    @Test void actualTopologyCatalogAndTerminalApprovalBindExactDigestAndPurpose() {
+        String suffix=UUID.randomUUID().toString();
+        String actor="topology-reviewer-"+suffix, definition="topology-def-"+suffix,
+                type="topology-type-"+suffix,purpose="topology-purpose-"+suffix,
+                start="topology-step-"+suffix,end="topology-end-"+suffix,
+                instance="topology-instance-"+suffix,task="topology-task-"+suffix,action="topology-action-"+suffix;
+        String digest="c".repeat(64);
+        Instant completed=Instant.now().minusSeconds(1).truncatedTo(java.time.temporal.ChronoUnit.MICROS);
+        Timestamp done=Timestamp.from(completed);
+        jdbc.update("INSERT INTO hidra_identity_user(id,username,display_name,user_type,status,failed_login_count,created_at,activated_at,updated_at)"
+                +" VALUES (?,?,'Synthetic Topology Reviewer','HUMAN','ACTIVE',0,now(),now(),now())",actor,actor);
+        for(var row:List.of(new String[]{type,"WORKFLOW_TARGET_TYPE","INSTALLED_CHARACTERISTIC_LINK_REVISION"},
+                new String[]{purpose,"WORKFLOW_PURPOSE","INSTALLED_CHARACTERISTIC_LINK_APPROVAL"}))
+            jdbc.update("INSERT INTO hidra_workflow_type_catalog(id,catalog_name,code,active,sort_order,system_defined,created_at,updated_at)"
+                    +" VALUES (?,?,?,true,0,false,now(),now())",row[0],row[1],row[2]);
+        jdbc.update("INSERT INTO hidra_workflow_definition(id,code,name_fr,type_id,status,version,created_at,updated_at)"
+                +" VALUES (?,?,'Synthetic topology decision',?,'ACTIVE',1,now(),now())",definition,definition,type);
+        for(var step:List.of(new Object[]{start,1},new Object[]{end,2}))
+            jdbc.update("INSERT INTO hidra_workflow_step(id,definition_id,code,name_fr,step_order,mandatory,allow_claim,allow_delegation,allow_escalation,created_at,updated_at)"
+                    +" VALUES (?,?,?,'Review',?,true,true,false,false,now(),now())",
+                    step[0],definition,step[0],step[1]);
+        jdbc.update("INSERT INTO hidra_workflow_definition_target_binding(id,definition_id,target_module,target_type_id,workflow_purpose_id,active,created_at,updated_at)"
+                +" VALUES (?,?, 'topology', ?, ?,true,now(),now())",
+                "topology-binding-"+suffix,definition,type,purpose);
+        jdbc.update("INSERT INTO hidra_workflow_instance(id,definition_id,definition_version,workflow_purpose_id,target_module,target_type_id,target_id,status,current_step_id,started_by_actor_id,started_by_display_name_snapshot,started_at,completed_at,created_at,updated_at)"
+                +" VALUES (?, ?,1, ?, 'topology', ?, ?, 'COMPLETED', ?, ?, 'Synthetic Topology Reviewer',?,?,?,now())",
+                instance,definition,purpose,type,digest,end,actor,
+                Timestamp.from(completed.minusSeconds(10)),done,Timestamp.from(completed.minusSeconds(10)));
+        jdbc.update("INSERT INTO hidra_workflow_task(id,instance_id,step_id,status,assigned_actor_id,completed_by_actor_id,completed_at,created_at,updated_at)"
+                +" VALUES (?,?,?,'APPROVED',?,?,?, ?,now())",task,instance,start,actor,actor,done,
+                Timestamp.from(completed.minusSeconds(10)));
+        jdbc.update("INSERT INTO hidra_workflow_action(id,instance_id,task_id,action_type,decision,actor_id,actor_display_name_snapshot,action_sequence,source_system,acted_at)"
+                +" VALUES (?,?,?,'APPROVE','APPROVE',?,'Synthetic Topology Reviewer',1,'HIDRA_API',?)",
+                action,instance,task,actor,done);
+        var request=new RevisionApprovalEvidenceContract.Request("topology",digest,definition,1,
+                type,purpose,instance,task,action,Instant.now());
+        var tx=new org.springframework.transaction.support.TransactionTemplate(manager);
+        tx.setIsolationLevel(org.springframework.transaction.TransactionDefinition.ISOLATION_READ_COMMITTED);
+        assertEquals(actor,tx.execute(status->evidence.resolve(request).orElseThrow()).actorId());
+        assertTrue(Boolean.TRUE.equals(tx.execute(status->evidence.resolve(
+                new RevisionApprovalEvidenceContract.Request("topology","d".repeat(64),definition,1,
+                        type,purpose,instance,task,action,Instant.now())).isEmpty())));
+        jdbc.update("UPDATE hidra_workflow_definition_target_binding SET active=false WHERE definition_id=?",definition);
+        assertTrue(Boolean.TRUE.equals(tx.execute(status->evidence.resolve(request).isEmpty())));
+    }
+
 }

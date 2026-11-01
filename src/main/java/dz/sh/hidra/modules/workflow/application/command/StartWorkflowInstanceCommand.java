@@ -36,6 +36,18 @@ public record StartWorkflowInstanceCommand(
         String startedByUsernameSnapshot,
         String startedByDisplayNameSnapshot,
         String startedByRoleCodeSnapshot,
-        String correlationId
+        String correlationId,
+        String targetLocator
 ) {
+    /** Existing callers retain the pre-S2 constructor; Topology requires the explicit locator. */
+    public StartWorkflowInstanceCommand(String definitionId,int definitionVersion,String workflowPurposeId,
+            String targetModule,String targetTypeId,String targetId,String targetCodeSnapshot,
+            String targetLabelSnapshot,String currentStepId,String startedByActorId,
+            String startedByUsernameSnapshot,String startedByDisplayNameSnapshot,
+            String startedByRoleCodeSnapshot,String correlationId) {
+        this(definitionId,definitionVersion,workflowPurposeId,targetModule,targetTypeId,targetId,
+                targetCodeSnapshot,targetLabelSnapshot,currentStepId,startedByActorId,
+                startedByUsernameSnapshot,startedByDisplayNameSnapshot,startedByRoleCodeSnapshot,
+                correlationId,null);
+    }
 }

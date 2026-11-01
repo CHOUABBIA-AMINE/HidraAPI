@@ -217,20 +217,23 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase, Manufactur
     }
 
     private void requireProtectedRead(WorkflowInstanceJpaEntity instance, WorkflowOwnedTargetLookup.ProtectedRead access) {
-        if (!"simulation".equals(instance.targetModule())) return;
+        boolean topology="topology".equals(instance.targetModule());
+        boolean simulation="simulation".equals(instance.targetModule());
+        if (!topology && !simulation) return;
         WorkflowCatalogEntryJpaEntity type = entityManager.find(WorkflowCatalogEntryJpaEntity.class, instance.targetTypeId());
         if (type == null || !"WORKFLOW_TARGET_TYPE".equals(type.catalogName()) || !type.active())
             throw new NoSuchElementException("Workflow target unavailable.");
-        if (!"MANUFACTURER_CHARACTERISTIC_REVISION".equals(type.code())) return;
+        String expected=topology?"INSTALLED_CHARACTERISTIC_LINK_REVISION":"MANUFACTURER_CHARACTERISTIC_REVISION";
+        if (!expected.equals(type.code())) return;
         if (instance.targetId() == null || !instance.targetId().matches("[0-9a-f]{64}"))
             throw new NoSuchElementException("Workflow target unavailable.");
         var owners = targetOwners.stream()
-                .filter(o -> "simulation".equals(o.module())
-                        && o.targetTypeCodes().contains("MANUFACTURER_CHARACTERISTIC_REVISION")).toList();
+                .filter(o -> instance.targetModule().equals(o.module())
+                        && o.targetTypeCodes().contains(expected)).toList();
         if (owners.size() != 1) throw new NoSuchElementException("Workflow target unavailable.");
         try {
             if (!owners.getFirst().protectedReadAllowed(
-                    "MANUFACTURER_CHARACTERISTIC_REVISION", instance.targetId(), access))
+                    expected, instance.targetId(), instance.targetCodeSnapshot(), access))
                 throw new NoSuchElementException("Workflow target unavailable.");
         } catch (RuntimeException unavailable) {
             // A native denial, unavailable PostgreSQL principal or revoked grant is non-disclosing.

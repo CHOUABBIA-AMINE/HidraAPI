@@ -32,6 +32,7 @@ import dz.sh.hidra.modules.workflow.application.dto.WorkflowActionSummaryDto;
 import dz.sh.hidra.modules.workflow.application.dto.WorkflowInstanceSummaryDto;
 import dz.sh.hidra.modules.workflow.application.dto.WorkflowTaskSummaryDto;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
@@ -50,6 +51,8 @@ public interface WorkflowGeneratedRestMapper {
 
     RecordWorkflowActionCommand toCommand(RecordWorkflowActionRequest request);
 
+    /** S2 keeps the REST surface unchanged: the explicit Topology locator REST contract is S4. */
+    @Mapping(target = "targetLocator", ignore = true)
     StartWorkflowInstanceCommand toCommand(StartWorkflowInstanceRequest request);
 
     WorkflowActionResponse toResponse(WorkflowActionSummaryDto dto);

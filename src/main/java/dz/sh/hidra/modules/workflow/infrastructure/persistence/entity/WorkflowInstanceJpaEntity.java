@@ -57,7 +57,7 @@ import java.time.Instant;
     @Column(name = "target_id", nullable = false, length = 120)
     private String targetId;
 
-    @Column(name = "target_code_snapshot", nullable = true, length = 120)
+    @Column(name = "target_code_snapshot", nullable = true, length = 2048)
     private String targetCodeSnapshot;
 
     @Column(name = "target_label_snapshot", nullable = true, length = 240)

@@ -44,6 +44,8 @@ public class RevisionApprovalEvidenceQueryService implements RevisionApprovalEvi
     /** Workflow owns this exact protected evidence locking contract. */
     public interface ManufacturerWorkflowFencePort {
         void lockCurrentManufacturerApprovalEvidence();
+        /** The same Workflow-owned table fence also protects Topology terminal decisions. */
+        default void lockCurrentTopologyApprovalEvidence() { lockCurrentManufacturerApprovalEvidence(); }
     }
     /** Preserve existing unit-test and ordinary Workflow wiring. */
     public RevisionApprovalEvidenceQueryService(WorkflowInstanceRepositoryPort instances,
@@ -89,6 +91,13 @@ public class RevisionApprovalEvidenceQueryService implements RevisionApprovalEvi
                 if (manufacturerFence == null) return Optional.empty();
                 manufacturerFence.lockCurrentManufacturerApprovalEvidence();
             }
+        } else if ("topology".equals(r.targetModule())) {
+            type = "INSTALLED_CHARACTERISTIC_LINK_REVISION";
+            purpose = "INSTALLED_CHARACTERISTIC_LINK_APPROVAL";
+            // The original protected Topology approval publication must hold a current,
+            // non-read-only original transaction and lock Workflow's real evidence graph.
+            if (manufacturerFence == null) return Optional.empty();
+            manufacturerFence.lockCurrentTopologyApprovalEvidence();
         } else return Optional.empty();
         try {
             var t = configuration.requireActiveCatalog(r.targetTypeId(), "WORKFLOW_TARGET_TYPE");

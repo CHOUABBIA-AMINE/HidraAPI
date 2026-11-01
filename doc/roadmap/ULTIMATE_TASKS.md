@@ -481,7 +481,7 @@ entries. **S1 only**; genuine Workflow/Identity/SQL/REST approval and final
 acceptance remain S2–S5, HAPI-602 PARTIAL/IN_PROGRESS, HAPI-603/HAPI-598
 BLOCKED. New exact-SHA Java/Docs CI is required; no SITE/simulation/release.
 
-## Phase files
+HAPI-602 S2 whole-scope Workflow characteristic approval evidence (2026-11-01): owner-approved amendment covers protected native Topology digest/locator lookup, ambient Workflow transaction suspension, protected Workflow task/history disclosure, current target/purpose and genuine terminal decision evidence, additive catalog/locator storage, tests and exact CI inventory. [HPS-006](TASKS_HPS-006.md#hapi-602) records the full file ledger, S1 [Full #1049](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41343040514) and [Docs #821](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41343040535) SUCCESS, and pending new exact-SHA CI. Existing REST stays unchanged until S4 generated OpenAPI; no approval storage, grants, industrial authorization, P3 or release. HAPI-602 PARTIAL/IN_PROGRESS; HAPI-603 and HAPI-598 BLOCKED.\n\n## Phase files
 
 | Phase | Definition file | Tasks |
 |---|---|---|

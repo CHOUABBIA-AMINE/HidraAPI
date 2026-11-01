@@ -88,15 +88,19 @@ public class WorkflowApplicationService implements StartWorkflowInstanceUseCase,
         var definition=definitions.findById(command.definitionId()).orElseThrow(()->new InvalidWorkflowValueException("Unknown Workflow definition."));
         if(definition.status()!=WorkflowDefinitionStatus.ACTIVE || definition.version()!=command.definitionVersion())
             throw new InvalidWorkflowValueException("Workflow start requires ACTIVE matching definition version.");
-        configuration.requireActiveCatalog(command.workflowPurposeId(),"WORKFLOW_PURPOSE");
+        var purpose=configuration.requireActiveCatalog(command.workflowPurposeId(),"WORKFLOW_PURPOSE");
         var type=configuration.requireActiveCatalog(command.targetTypeId(),"WORKFLOW_TARGET_TYPE");
+        if("topology".equals(command.targetModule())
+                && "INSTALLED_CHARACTERISTIC_LINK_REVISION".equals(type.code())
+                && !"INSTALLED_CHARACTERISTIC_LINK_APPROVAL".equals(purpose.code()))
+            throw new InvalidWorkflowValueException("Exact Topology characteristic approval family required.");
         if(!configuration.activeBinding(command.definitionId(),command.targetModule(),command.targetTypeId(),command.workflowPurposeId()))
             throw new InvalidWorkflowValueException("Exact active Workflow target/purpose binding required.");
         if(command.currentStepId()!=null && !command.currentStepId().isBlank()) {
             var step=steps.findById(command.currentStepId()).orElseThrow(()->new InvalidWorkflowValueException("Unknown Workflow current step."));
             if(!definition.id().equals(step.definitionId())) throw new InvalidWorkflowValueException("Workflow current step belongs to another definition.");
         }
-        var target=ownership.requireTarget(command.targetModule(),type.code(),command.targetId());
+        var target=ownership.requireTarget(command.targetModule(),type.code(),command.targetId(),command.targetLocator());
         WorkflowInstance instance = new WorkflowInstance(
                 WorkflowId.newId().value(),
                 command.definitionId(),
@@ -131,6 +135,7 @@ public class WorkflowApplicationService implements StartWorkflowInstanceUseCase,
         var creator=ownership.requireCurrentActor();
         var instance=instanceRepositoryPort.findByIdForUpdate(command.instanceId()).orElseThrow(()->new InvalidWorkflowValueException("Unknown Workflow instance."));
         var step=steps.findById(command.stepId()).orElseThrow(()->new InvalidWorkflowValueException("Unknown Workflow step."));
+        ownership.requireProtectedCurrentTarget(instance,configuration);
         if(!instance.nonTerminal() || !Objects.equals(instance.currentStepId(),step.id()) || !instance.definitionId().equals(step.definitionId())
                 || !instance.startedByActorId().equals(creator.id()))
             throw new InvalidWorkflowValueException("Generic task creation is limited to the starter and coherent current instance step.");
@@ -179,6 +184,7 @@ public class WorkflowApplicationService implements StartWorkflowInstanceUseCase,
         // Use the same task-before-instance lock order as configured transition execution.
         WorkflowTask task=command.taskId()==null?null:taskRepositoryPort.findByIdForUpdate(command.taskId()).orElseThrow(()->new InvalidWorkflowValueException("Unknown Workflow action task."));
         var instance=instanceRepositoryPort.findByIdForUpdate(command.instanceId()).orElseThrow(()->new InvalidWorkflowValueException("Unknown Workflow action instance."));
+        ownership.requireProtectedCurrentTarget(instance,configuration);
         if(task!=null){
             if(!task.instanceId().equals(instance.id())) throw new InvalidWorkflowValueException("Workflow action task belongs to another instance.");
             var step=steps.findById(task.stepId()).orElseThrow(()->new InvalidWorkflowValueException("Unknown Workflow action step."));

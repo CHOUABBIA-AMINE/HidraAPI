@@ -395,6 +395,32 @@ class InstalledCharacteristicLinkNativeHttpPostgresIntegrationTest {
             +" WHERE company_party_id=? AND installed_unit_id=? AND link_id=?",
             Long.class,company,unit,link));
     }
+    @Test void revokedTopologyHistoryPermissionSeparatelyDeniesHistoricalListing()throws Exception{
+        grants();saveManufacturer();String body=draftBody();
+        requireStatus(http.perform(put(linkPath()).header("Authorization","Bearer "+token)
+            .contentType(MediaType.APPLICATION_JSON).content(body)),200);
+        // Existing JWT stays unchanged; current Identity history authority is revoked.
+        String permission=admin.queryForObject("SELECT id FROM public.hidra_identity_permission"
+            +" WHERE code='topology:installed-characteristic:history'",String.class);
+        admin.update("INSERT INTO public.hidra_identity_user_permission_grant"
+            +"(id,user_id,permission_id,effect,scope_type,scope_reference_id,grant_reason,"
+            +"emergency_access,valid_from,valid_to,status,created_at)"
+            +" VALUES (?,?,?,'DENY','CUSTOM',?,'synthetic revoked link history',false,"
+            +"now()-interval '1 hour',now()+interval '1 hour','ACTIVE',now())",
+            id(),user,permission,"topology-company:"+company);
+        requireStatus(http.perform(get(linkPath()+"/history").header("Authorization","Bearer "+token)
+            .param("companyPartyId",company).param("limit","5")),403);
+        // Different permitted operation: current and exact-revision reads remain available.
+        for(String url:List.of(linkPath(),linkPath()+"/revisions/1"))
+            requireStatus(http.perform(get(url).header("Authorization","Bearer "+token)
+                .param("companyPartyId",company)),200)
+                .andExpect(jsonPath("$.link.sourceId").value(source))
+                .andExpect(jsonPath("$.link.state").value("DRAFT"));
+        assertEquals(1L,admin.queryForObject("SELECT count(*)"
+            +" FROM public.hidra_topology_installed_characteristic_revision"
+            +" WHERE company_party_id=? AND installed_unit_id=? AND link_id=?",
+            Long.class,company,unit,link));
+    }
     @Test void absentBearerCannotReadCurrentOrHistoricalExistence()throws Exception{
         http.perform(get(linkPath()).param("companyPartyId",company))
             .andExpect(status().isUnauthorized());

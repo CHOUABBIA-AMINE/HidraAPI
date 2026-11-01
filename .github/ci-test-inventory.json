@@ -11214,7 +11214,8 @@
         "missingSourcePermissionDeniesBeforeAnyDraftMutation",
         "absentBearerCannotReadCurrentOrHistoricalExistence",
         "revokedManufacturerSourceDeniesExistingLinkCurrentRevisionAndHistory",
-        "changedReplayPayloadAndStaleEpochRejectWithoutMutatingOriginalDraft"
+        "changedReplayPayloadAndStaleEpochRejectWithoutMutatingOriginalDraft",
+        "revokedTopologyHistoryPermissionSeparatelyDeniesHistoricalListing"
       ],
       "class": "dz.sh.hidra.modules.topology.qualification.InstalledCharacteristicLinkNativeHttpPostgresIntegrationTest",
       "dependency_reason": "HAPI-602 one coherent protected draft-link workflow: genuine configured JWT, native Identity, Party, Simulation source and original PostgreSQL 16 writer/replay/history; synthetic data only",
@@ -11222,7 +11223,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/qualification/InstalledCharacteristicLinkNativeHttpPostgresIntegrationTest.java",
-      "source_sha256": "7bafca37176eb29b26630f889c62b981615b1ccaa2ab81b8b00dae7f3fe55106",
+      "source_sha256": "df046652c7c914f89b1600715a0f723dbe21580552f16c4f19de772b461fde3c",
       "supports": []
     }
   ],

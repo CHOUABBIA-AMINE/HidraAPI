@@ -465,6 +465,8 @@ HAPI-602 native historical-read revocation regression (2026-11-01): the green ex
 
 HAPI-602 idempotency and CAS HTTP regression (2026-11-01): green [Full #1046](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41320124539) and [Docs #816](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41320124553) allow one same-task strict configured JWT/PostgreSQL test: altered replay and stale epoch each reject with 409 without mutating revision, receipt or head. [HPS-006](TASKS_HPS-006.md#hapi-602) registers exact four-file scope and approval gap. HAPI-602 PARTIAL/IN_PROGRESS; HAPI-603 BLOCKED; new exact-SHA CI pending.
 
+HAPI-602 staged execution audit and distinct history DENY regression (2026-11-01): [Full #1047](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41321247805) and [Docs #817](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41321247849) passed on `02e71a0f05b0514dbe1717a73692e4f841dc00ef`. [HPS-006](TASKS_HPS-006.md#hapi-602) traces design, domain, persistence, application, native REST, six observed CI repairs, and revocation/replay regression reasons with verified versus unresolved gates. One configured JWT/Postgres history-only permission DENY test awaits next exact-SHA CI; HAPI-602 PARTIAL/IN_PROGRESS, HAPI-603 BLOCKED, approved-link Workflow policy unresolved.
+
 ## Phase files
 
 | Phase | Definition file | Tasks |

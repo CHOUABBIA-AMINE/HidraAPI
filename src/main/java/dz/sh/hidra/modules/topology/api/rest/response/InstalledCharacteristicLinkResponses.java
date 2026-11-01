@@ -22,10 +22,12 @@ import java.time.Instant;
 import java.util.List;
 public final class InstalledCharacteristicLinkResponses {
     private InstalledCharacteristicLinkResponses(){}
+    @io.swagger.v3.oas.annotations.media.Schema(name="TopologyInstalledCharacteristicLinkRecord")
     public record Link(String linkId,long linkRevision,String companyPartyId,String installedUnitId,
             String sourceId,String sourceRevisionId,String sourceSha256,String kind,
             Instant effectiveFrom,Instant effectiveUntil,Instant recordedAt,
             String evidenceReference,String installationId,String state){}
+    @io.swagger.v3.oas.annotations.media.Schema(name="TopologyInstalledCharacteristicLinkPage")
     public record Page(Link link,List<Link> history,boolean replayed,Long nextBeforeRevision){
         public Page{history=List.copyOf(history);}
     }

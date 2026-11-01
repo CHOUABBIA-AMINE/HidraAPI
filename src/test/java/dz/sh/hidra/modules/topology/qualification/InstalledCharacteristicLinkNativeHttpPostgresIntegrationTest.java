@@ -276,9 +276,23 @@ class InstalledCharacteristicLinkNativeHttpPostgresIntegrationTest {
     }
     private String linkPath(){return LINK+unit+"/characteristic-links/"+link;}
     private void saveManufacturer()throws Exception{
-        http.perform(put(MS+source+"/revisions/"+REV).header("Authorization","Bearer "+token)
-            .contentType(MediaType.APPLICATION_JSON).content(manufacturerBody()))
-            .andExpect(status().isOk());
+        // The synthetic manufacturer publisher capability exists only during that earlier operation.
+        for(String relation:List.of("hidra_simulation_manufacturer_characteristic_revision",
+                "hidra_simulation_manufacturer_characteristic_qualification"))
+            admin.execute("GRANT INSERT ON public."+relation+" TO "+PUBLISHER);
+        try{
+            http.perform(put(MS+source+"/revisions/"+REV).header("Authorization","Bearer "+token)
+                .contentType(MediaType.APPLICATION_JSON).content(manufacturerBody()))
+                .andExpect(status().isOk());
+        }finally{
+            for(String relation:List.of("hidra_simulation_manufacturer_characteristic_revision",
+                    "hidra_simulation_manufacturer_characteristic_qualification"))
+                admin.execute("REVOKE INSERT ON public."+relation+" FROM "+PUBLISHER);
+        }
+        assertFalse(Boolean.TRUE.equals(admin.queryForObject(
+            "SELECT pg_catalog.has_table_privilege(?::name,"
+               +"'public.hidra_simulation_manufacturer_characteristic_revision','INSERT')",
+            Boolean.class,PUBLISHER)));
     }
     private String draftBody(){
         String digest=admin.queryForObject("SELECT payload_sha256 FROM public.hidra_simulation_manufacturer_characteristic_revision"

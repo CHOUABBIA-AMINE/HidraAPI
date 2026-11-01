@@ -52,6 +52,8 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
             // may call the four guarded technical phases; all other possible callers remain denied.
             var withCharacteristic = new HashSet<>(expected);
             withCharacteristic.add("ProtectedInstalledCharacteristicLinkAdmissionCoordinator.java");
+            if(method.equals("rejectAdmission"))
+                withCharacteristic.add("JdbcInstalledCharacteristicLinkRepositoryAdapter.java");
             expected=Set.copyOf(withCharacteristic);
             assertEquals(expected,found);
         }

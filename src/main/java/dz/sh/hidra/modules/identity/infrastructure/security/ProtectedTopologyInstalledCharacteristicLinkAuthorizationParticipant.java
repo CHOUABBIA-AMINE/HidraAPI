@@ -88,7 +88,7 @@ public class ProtectedTopologyInstalledCharacteristicLinkAuthorizationParticipan
             var contribution=identity.contribute(nativeTicket);
             var evidence=contribution.evidence();
             var requests=List.of(
-                new AuthorizationEvaluationRequest(evidence.userId(),permission(request.operation()),
+                new AuthorizationEvaluationRequest(evidence.userId(),TopologyInstalledCharacteristicLinkAuthorizationContract.permission(request.operation()),
                         LINK_RESOURCE,request.linkId(),companyScope(request.companyPartyId())),
                 new AuthorizationEvaluationRequest(evidence.userId(),"topology:installed-unit:read",
                         UNIT_RESOURCE,request.installedUnitId(),companyScope(request.companyPartyId())));

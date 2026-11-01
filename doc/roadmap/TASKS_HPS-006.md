@@ -10133,6 +10133,14 @@ MODIFY candidates (do not extend beyond these without a new owner-reviewed ledge
 
 **Validation and acceptance.** Source replacement checked as exact reversible edit and no similar compound `var` declaration remains in the affected adapter. No local Maven or PostgreSQL execution performed or claimed. GitHub must rebuild and run all lanes on the published new commit before source, native JWT/PostgreSQL, OpenAPI or whole HAPI-602 acceptance can be claimed. HAPI-602 stays PARTIAL/IN_PROGRESS, HAPI-603 BLOCKED; an exact-SHA CI failure continues to take priority over Next. Confirm the new Full CI/Documentation CI are started/queued then STOP without waiting or advancing.
 
+### HAPI-602 — CI #1040 exact interface-static authorization compile repair (2026-11-01; owner Fail, SAME TASK)
+
+**Observed failure.** [HidraAPI CI #1040](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41307555123) on `8f69c74fa6c712d0e6762c7ab46c578c43ba5c3c` completed FAILURE at production Java 21 compilation in `ProtectedTopologyInstalledCharacteristicLinkAuthorizationParticipant.java:91`: unresolved `permission(TopologyInstalledCharacteristicLinkAuthorizationContract.Operation)`. The compile failure is shared by unit, all 14 PostgreSQL and API lanes; the test and contract outcomes have NOT been exercised. [Documentation #810](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41307555097) passed on the same SHA.
+
+**Exact one-task source correction.** Java interface static functions are not inherited by implementing classes and cannot be imported through the nested-type wildcard; invoke the existing unchanged `TopologyInstalledCharacteristicLinkAuthorizationContract.permission(request.operation())` explicitly. This preserves the exact Identity resource permission naming and authorization evaluation. MODIFY only that one Java file plus this append-only owner task evidence; do not create a task/package, alter Identity grants, permission meaning, database schema, CI inventory, tests, transaction guards, OpenAPI snapshot, roadmap or phase statuses. Keep the originally selected single HAPI-602 message `feat(topology): expose protected installed characteristic draft links`.
+
+**Checks/gate.** Inspected the exact declared interface static method, its already imported owner type and the failing call; source replacement is unique and reversible. No local Maven/PostgreSQL checks claimed. GitHub Full+Docs CI on the new exact SHA remains the authority; HAPI-602 stays PARTIAL/IN_PROGRESS, HAPI-603 BLOCKED. Check workflow startup after guarded direct-main publication and STOP. If Full fails, repair this SAME task before Next.
+
 <a id="hapi-603"></a>
 ## HAPI-603 — Installed-equipment consumer qualification
 

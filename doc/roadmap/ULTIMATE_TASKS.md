@@ -471,6 +471,16 @@ Owner-approved no-splitting execution rule (2026-11-01): root [AGENTS.md](../../
 
 HAPI-602 S0 policy and flat execution ledger registered (2026-11-01): [HPS-006](TASKS_HPS-006.md#hapi-602) contains owner-approved distinct human approver/current native authorization, immutable revision/source/installation target digest, genuine terminal Workflow, separate append-only approval decision, original-transaction denial/rollback and exact S1–S5 commit/file/acceptance envelopes, **without substages**. [Docs #819](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41327974153) on current parent and previous code [Full #1048](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41322493661) passed. S0 documentation only; HAPI-602 PARTIAL/IN_PROGRESS, HAPI-603 and HAPI-598 BLOCKED; S1 is next after new Docs CI.
 
+HAPI-602 S1 immutable approval-domain stage (2026-11-01): after S0
+[Docs #820](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41328973986)
+SUCCESS and unchanged Java [Full #1048](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41322493661)
+SUCCESS, [HPS-006](TASKS_HPS-006.md#hapi-602) records four new pure-Java
+Topology domain/test files for an immutable independent-approver decision
+and versioned UTF-8 SHA-256 link target digest, plus two strict CI inventory
+entries. **S1 only**; genuine Workflow/Identity/SQL/REST approval and final
+acceptance remain S2–S5, HAPI-602 PARTIAL/IN_PROGRESS, HAPI-603/HAPI-598
+BLOCKED. New exact-SHA Java/Docs CI is required; no SITE/simulation/release.
+
 ## Phase files
 
 | Phase | Definition file | Tasks |

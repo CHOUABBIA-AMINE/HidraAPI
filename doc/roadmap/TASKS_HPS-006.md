@@ -10260,6 +10260,48 @@ MODIFY candidates (do not extend beyond these without a new owner-reviewed ledge
 **S0 completion scope / execution guard.** This stage registers the approved human policy and the five complete execution envelopes at once; it does not execute or preaccept S1–S5. Future scopes/filenames are executable only at a fresh checked HEAD with all required authority; no silent new file or unregistered schema version. Approval policy is registered, but actual catalog IDs/definition versions require real configuration and no fabricated active human approval. No later stage, substage, source release or numerical P3 selected. Exact owner-approved S0 message: \`docs(topology): register installed characteristic link approval policy\`. MODIFY **only** this phase task record (append-only within HAPI-602) and \`doc/roadmap/ULTIMATE_TASKS.md\` (one pointer). CREATE/DELETE none; preserve AGENTS, ROADMAP/PHASES status, Java, migrations, grants, docs API, test suites and CI workflow. Verify two-file diff, exact parent/tree and new Documentation CI creation/start then STOP.
 
 
+
+### HAPI-602 — S1 immutable approval domain and canonical target digest (2026-11-01)
+
+**Stage admission and exact baseline.** Owner-approved one-time S0–S7 flat exception
+under root AGENTS.md §3.3; S0's six-rule human approval policy and exact S1
+four-CREATE ledger were registered at `b74912deab7eaf35fa2f3da7d4bec611860903ff`, with [Documentation #820](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41328973986) SUCCESS and the unchanged Java predecessor `dcf0673b498781c13e37bce33e158de179c23702` [Full #1048](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41322493661) SUCCESS.
+This selection is **S1 only**. Exact message:
+`feat(topology): model immutable characteristic link approval decisions`.
+
+**Source design.** Topology owns the immutable `InstalledCharacteristicLinkApproval`
+value carrying the exact DRAFT link snapshot, original draft actor, independent
+approver, source-bound target SHA-256, immutable Workflow evidence identifiers,
+definition/version/target/purpose and ordered action/decision times. No current
+Identity/Workflow authority is asserted by creating a domain value: S2–S4 must
+resolve and verify it in a protected original transaction. Workflow target/purpose
+codes are `INSTALLED_CHARACTERISTIC_LINK_REVISION` and
+`INSTALLED_CHARACTERISTIC_LINK_APPROVAL`; actual catalog IDs and human approval
+are **not** manufactured. Target V1 SHA-256 encodes a version tag and the thirteen
+fixed-order fields from S0 using UTF-8 byte-length frames (decimal length, colon,
+raw bytes, LF; explicit `-1:\n` null sentinel), UTC six-digit microseconds,
+lowercase hex. Two deterministic golden digests are pinned in synthetic tests;
+each of the thirteen fields and null/present values is independently sensitive.
+
+**Exact ledger.** CREATE only `src/main/java/dz/sh/hidra/modules/topology/domain/model/InstalledCharacteristicLinkApproval.java`,
+`src/main/java/dz/sh/hidra/modules/topology/domain/service/InstalledCharacteristicLinkApprovalTargetDigester.java`, `src/test/java/dz/sh/hidra/modules/topology/domain/model/InstalledCharacteristicLinkApprovalTest.java`, `src/test/java/dz/sh/hidra/modules/topology/domain/service/InstalledCharacteristicLinkApprovalTargetDigesterTest.java`.
+MODIFY only `.github/ci-test-inventory.json` for two actual JUnit classes/source hashes,
+this append-only HPS-006 evidence and one compact `doc/roadmap/ULTIMATE_TASKS.md` pointer.
+No Domain-to-Workflow/Identity imports, database migration, API, permissions,
+operational source, protected persistence, Full-CI gate/configuration, status,
+release or SITE change. Golden-vector and structure source review and strict
+test-inventory validation are prepublication checks; **no local Maven/PostgreSQL
+execution is claimed**. Observe applicable exact-SHA CI creation/start on publish
+and stop; S2 remains separately selected by a later owner Next.
+
+**Acceptance still required.** Hosted exact-source tests, architecture and
+documentation evidence must succeed before S1 is accepted as VERIFIED. HAPI-602
+remains PARTIAL/IN_PROGRESS, HAPI-603 and HAPI-598 remain BLOCKED. The decisions
+are untrusted values until S2 live Workflow and S3 original native authorization,
+SQL append-only persistence and final fences; S4 public proof and S5 independent
+task acceptance also remain open. HAPI-601 keeps its separately deferred assurance,
+numerical P3 and human operational/SITE decisions remain out of scope.
+
 <a id="hapi-603"></a>
 ## HAPI-603 — Installed-equipment consumer qualification
 

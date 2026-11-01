@@ -145,6 +145,46 @@ After completing a single task or batch:
 4. Leave the branch at the final verified task/batch head.
 5. Report every commit hash, changed-file scope, validation/CI result, and next registered execution.
 
+### 3.3 Owner execution rule — never split a registered task (2026-11-01)
+
+**Binding for future selections:** execute each registered roadmap task as **one
+complete, indivisible delivery**. Do not decompose a task into A/B/C packages,
+S0/S1 stages, sub-stages, serial preflights, individual test commits, or
+repeated small `Next` steps. The single authorized task scope must contain
+its necessary Domain, Application, owner/public contracts, adapters, database,
+authorization, REST, tests and acceptance criteria. Planning and source review
+within the same task are allowed, but are not independent delivery stages.
+Size and register that whole scope before beginning implementation.
+
+**Failures and blockers:** CI-triggered defect fixes may require additional
+commits using the same registered task and its approved repair scope; these
+are repairs, **not** new stages. Never split a task to work around failed CI
+or a missing owner/transaction/security decision. If a blocker makes the
+whole task unsafe or impossible to deliver, STOP, report the evidence and
+request an owner decision on the whole task. Existing separately registered
+roadmap codes remain independent tasks. Section 3.2 batch handling combines
+independent codes; its split-out rule does not permit subdividing one code.
+
+**One-time owner-approved exception:** only the existing proposed **flat**
+S0–S7 sequence may be followed: S0 exact approval-policy/technical-ledger
+registration; S1 immutable characteristic-link approval model; S2 Workflow
+target and final-decision integration; S3 original-transaction approval
+authorization/storage; S4 approved-link REST and native qualification;
+S5 HAPI-602 software acceptance; S6 already registered HAPI-603 consumer
+qualification; S7 already registered HAPI-598 integrated closure. S0–S5
+are the sole permitted division of HAPI-602, **not** new roadmap task IDs.
+Every one of S0–S7 is indivisible: **no substages** (including S1-A,
+S1.1, B/C or further planning/test subdivisions). Owner acceptance of the
+flat sequence does not by itself admit proposed commit messages, exact
+source/DDL paths or a business approval policy. S0 must record exact
+decisions and executable ledgers before S1–S5 can run. This governance
+change does not execute S0, advance any later task, change status/dependencies,
+waive HAPI-601 acceptance gaps, or authorize simulation/P3, HidraWEB,
+deployment or SITE acceptance.
+
+This instruction supersedes older discretionary single-task splitting
+practices for future work without rewriting historical package evidence.
+
 ---
 
 ## 4. Git Commit Rules

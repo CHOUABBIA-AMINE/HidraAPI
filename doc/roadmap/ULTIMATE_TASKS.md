@@ -467,6 +467,8 @@ HAPI-602 idempotency and CAS HTTP regression (2026-11-01): green [Full #1046](ht
 
 HAPI-602 staged execution audit and distinct history DENY regression (2026-11-01): [Full #1047](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41321247805) and [Docs #817](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41321247849) passed on `02e71a0f05b0514dbe1717a73692e4f841dc00ef`. [HPS-006](TASKS_HPS-006.md#hapi-602) traces design, domain, persistence, application, native REST, six observed CI repairs, and revocation/replay regression reasons with verified versus unresolved gates. One configured JWT/Postgres history-only permission DENY test awaits next exact-SHA CI; HAPI-602 PARTIAL/IN_PROGRESS, HAPI-603 BLOCKED, approved-link Workflow policy unresolved.
 
+Owner-approved no-splitting execution rule (2026-11-01): root [AGENTS.md](../../AGENTS.md) §3.3 forbids future splitting of one registered task. Sole flat exception accepts S0–S5 under [HAPI-602](TASKS_HPS-006.md#hapi-602), followed by registered HAPI-603/S6 and HAPI-598/S7; **no substages**. Source-backed stage ledgers and link-approval policy still require admission. Baseline [Full #1048](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41322493661) and [Docs #818](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41322493671) passed. Task statuses unchanged.
+
 ## Phase files
 
 | Phase | Definition file | Tasks |

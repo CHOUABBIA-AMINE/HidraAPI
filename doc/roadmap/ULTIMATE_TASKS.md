@@ -449,6 +449,8 @@ HAPI-602 `Next` preparatory Package A source-contract registration (2026-11-01):
 
 HAPI-602 Package A source implementation (2026-11-01): [HPS-006](TASKS_HPS-006.md#hapi-602) records a CI-first preparatory pure-Java immutable installed-characteristic model plus ten synthetic JUnit 5 domain test methods; exactly two Java files created, one strict inventory entry and two documentation updates. Local `javac --release 21` + ten stand-in-runner cases passed; real Maven/hosted Full/Docs acceptance is pending. HAPI-601 formal acceptance remains deferred; HAPI-602 functional protected link publication/API/SQL and HAPI-603 remain BLOCKED and unimplemented. No release/SITE/simulator claim.
 
+HAPI-602 next integrated backend workflow scope (2026-11-01): after exact-SHA [Full #1035](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41282289587) and [Docs #802](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41282289512) SUCCESS, [HPS-006](TASKS_HPS-006.md#hapi-602) now registers **one proposed draft-only protected save/current/revision/history vertical slice** with exact candidate Java/Identity/Simulation/SQL/API/CI paths and physical security gates. Source implementation has **not** been selected; HAPI-601 remains NOT_ACCEPTED/deferred and HAPI-602 stays BLOCKED by its unchanged dependency. No approved linkage, simulation consumer or field command is implied.
+
 ## Phase files
 
 | Phase | Definition file | Tasks |

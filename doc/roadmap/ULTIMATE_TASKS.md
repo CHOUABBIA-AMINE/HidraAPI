@@ -441,6 +441,8 @@ HAPI-601 CI #1032 (2026-11-01): 7/9 configured native manufacturer HTTP tests pa
 
 HAPI-601 CI #1033 (2026-11-01): manufacturer history GET now passes; invalid cursor still returned 400 rather than protected 403, and one authorized SAVE hit a poisoned protected scope after final preparation. [HPS-007](TASKS_HPS-007.md#hapi-601) records the cursor-denial fix and an independent finite/configurable manufacturer work budget (1500ms provisional default). Strict native HTTP assertions and authorization remain unchanged; exact new-SHA CI required, HAPI-601 NOT_ACCEPTED.
 
+Owner-directed HAPI-601/HAPI-602 handoff (2026-11-01): preserve the [HAPI-601 deferred software-acceptance backlog](TASKS_HPS-007.md#hapi-601) without marking it accepted; green [Full #1034](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41277972324) and [Docs #798](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41277972266) prove the currently implemented subset only. [HAPI-602 source-backed design preflight](TASKS_HPS-006.md#hapi-602) is now selected as registration-only: protected cross-owner revision/digest link semantics proposed; HAPI-601 remains NOT_ACCEPTED and HAPI-602 remains NOT_IMPLEMENTED/BLOCKED pending independent dependency and exact implementation-contract admission. No runtime, roadmap status or frontend/numerical work selected.
+
 ## Phase files
 
 | Phase | Definition file | Tasks |

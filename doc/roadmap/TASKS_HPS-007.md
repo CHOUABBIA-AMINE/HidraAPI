@@ -175,9 +175,9 @@ Legacy IDs: HPR-P25-054C
 
 Priority: P1
 
-Implementation Status: NOT_IMPLEMENTED
+Implementation Status: IMPLEMENTED
 
-Planning Status: BLOCKED
+Planning Status: COMPLETED
 
 Owning Module: `simulation` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -1502,3 +1502,14 @@ Exact-source [HidraAPI CI #1027](https://github.com/CHOUABBIA-AMINE/HidraAPI/act
 **Handoff.** Under the existing HPR-P25-054D / HAPI-602 task, proceed to **read-only contract/design preflight** without claiming HAPI-601 dependency satisfaction. Any future installed-unit binding must treat unverified manufacturer certification/Workflow qualification as unverified, enforce current company/unit/source authority and fully protect reads/exports/history, pin exact source revision and digest, preserve old baselines, and fail closed on missing authority. HAPI-602 source implementation, status-unblocking, independent final acceptance, HAPI-603, P3, SITE, deployment and release are NOT selected by this deferral record. The separate owning HPS-006 record describes the bounded preflight.
 
 **This one owner-directed registration stage.** Exact message `docs(topology): register installed characteristic link preflight`; MODIFY only this HPS-007 append-only owner-decision/evidence record, `doc/roadmap/TASKS_HPS-006.md` within HAPI-602 (preflight registration), and one concise `doc/roadmap/ULTIMATE_TASKS.md` navigation pointer. CREATE/DELETE none. Frozen ROADMAP/PHASES status cells, Java, tests/inventory, OpenAPI, migration history, security, numerical simulation and HidraWEB unchanged. Require current-SHA Documentation Validation startup after guarded direct-main publication and STOP. A green documentation check validates documentation structure, not HAPI-602 runtime or waived acceptance.
+
+
+### HAPI-601 — owner-directed delivery completed with deferred gaps (2026-11-01; STATUS ONLY, NOT VERIFIED)
+
+**Decision and bounded interpretation.** The repository owner explicitly classified HAPI-601 / HPR-P25-054C as "completed with gaps" and HAPI-602 as "in progress." Set HAPI-601 **Implementation Status IMPLEMENTED; Planning Status COMPLETED** in this owner record and the two frozen-status tables. This `COMPLETED` records delivery of the selected manufacturer-source software and the owner's decision to close its current implementation workstream **with a separately visible qualification backlog**. It does **not** mean `VERIFIED`, all original acceptance cases met, qualification waived, supplier certificates genuinely verified, Workflow approval proven, engineering calibration, SITE, release or deployment. Earlier historical `NOT_ACCEPTED` evidence and exact failed/passed CI data remain intact and date-scoped; they are not overwritten.
+
+**Implemented subset and CI basis.** The current backend has immutable manufacturer characteristic source/model family, source SHA-256 provenance, native protected SAVE/READ_REVISION/LIST_HISTORY/READ_CERTIFICATE/QUALIFY route implementations and synthetic configured-local HTTP/PostgreSQL cases. `8cfb21a95f620f11abe63b31c9a308295e1b2c81` passed [Full #1034](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41277972324) and [Docs #798](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41277972266); unchanged Java source with HAPI-602 Package A passed [Full #1035](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41282289587). Those green suites verify **only their executed cases**.
+
+**Remaining qualification backlog is deferred, not discarded.** Retain the preceding owner's saved exact list: configured OIDC/LDAP/AD provenance, genuinely terminal Workflow qualify and rollback, separately authorized documentary certificates, source-wide >256 revision / >65 principals / HMAC key rotation and missing-key native HTTP, indeterminate physical commit response, full protected error matrix, and independent 500ms/1500ms budget assessment. Keep every current denial, authorization/final guard, approval and data integrity requirement intact. Treat those tests as open assurance debt; if future integrated HAPI-602 binding depends on a specific unproven fact, validate it then, not by pretending it was established. HAPI-601's canonical dependency relation with HAPI-602 is unchanged; it is **delivery-completed with explicit assurance exceptions**, not engineering-accepted as a full qualified manufacturer workflow.
+
+**Scope.** This governance correction modifies only the owner task status metadata, status cells in `ULTIMATE_ROADMAP.md` and `ULTIMATE_PHASES.md`, append-only owner record and one concise `ULTIMATE_TASKS.md` pointer. No original source/API/CI/frozen dependency changes. Exact message `docs(roadmap): reconcile manufacturer and characteristic-link progress`; docs CI on the new SHA must start; no second stage in this turn.

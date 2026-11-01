@@ -9772,9 +9772,9 @@ Legacy IDs: HPR-P25-054D
 
 Priority: P1
 
-Implementation Status: NOT_IMPLEMENTED
+Implementation Status: PARTIAL
 
-Planning Status: BLOCKED
+Planning Status: IN_PROGRESS
 
 Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -10055,6 +10055,16 @@ MODIFY candidates (do not extend beyond these without a new owner-reviewed ledge
 **Authorization and stop.** This `Next` selects only **documentation registration** of the integrated developer-facing scope; it does **not** select a 20-file runtime mutation or silently approve a dependency waiver. The following explicit `Next` may select source preparation under the registered envelope only if the owner confirms proceeding with **provisional draft development despite HAPI-601's formally open acceptance gate**, while no binding is asserted approved or made visible without its own current permissions. The current canonical dependency remains open until independently reconciled. If composite native issuer, original transaction and immutable SQL constraint are not yet proven, no protected API is to be exposed, even as a demo. No new standalone task, arbitrary security control, CI skip or deployment is authorized.
 
 **This one docs-only stage.** Exact message `docs(topology): admit protected characteristic draft workflow`. MODIFY only `doc/roadmap/TASKS_HPS-006.md` (append here under HAPI-602 before HAPI-603) and `doc/roadmap/ULTIMATE_TASKS.md` (one compact pointer); CREATE/DELETE none. Preserve all frozen statuses/dependencies, deferred HAPI-601 task history and current runtime. Guard direct-main publication and verify exact-SHA Documentation CI created/queued or started, then STOP; do not wait or auto-run the implementation stage.
+
+
+
+### HAPI-602 — owner-directed progress status reconciliation (2026-11-01; STATUS ONLY)
+
+**Decision and current classification.** The repository owner explicitly determined: "601 completed with gaps; 602 in progress." The prior canonical HAPI-602 `NOT_IMPLEMENTED / BLOCKED` was the initial planning snapshot and is no longer an accurate description of its *partial actual software work*. Set HAPI-602 / HPR-P25-054D to **Implementation Status PARTIAL; Planning Status IN_PROGRESS** in its owning task metadata and corresponding status cells of `ULTIMATE_ROADMAP.md` and `ULTIMATE_PHASES.md`. HAPI-600 remains VERIFIED/COMPLETED; HAPI-603 remains NOT_IMPLEMENTED/BLOCKED. The original HAPI-601 dependency edge is **preserved**; HAPI-601's narrower software delivery is recognized as completed with deferred qualification, not falsely VERIFIED. A status label is not a permission waiver or software acceptance certificate.
+
+**Actual bounded evidence.** GitHub `main` `cbb412e24723790121704b7c745890ec636f0f1e`; the installed characteristic `InstalledCharacteristicLink.java` domain, ten focused synthetic JUnit cases and exact CI test inventory landed at `63d43c93fde596524e6047ba96561e09da1228f1` and passed [Full #1035](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41282289587) and [Docs #802](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41282289512). The later registered draft workflow design passed [Docs #803](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41283720436). **No installed-characteristic protected REST, PostgreSQL link publication/history or user-facing end-to-end workflow yet exists.** The proposed protected draft save/current/revision/history package remains the next integrated delivery, not a completed operation. Genuine same-physical-transaction cross-owner Identity/Party/Simulation/Topology authority, immutable SQL and independent approval qualification remain binding runtime acceptance gates. Continue without unnecessary repetitive preflights and without implying a qualified simulator or an approved industrial configuration.
+
+**One governance stage.** Exact commit message `docs(roadmap): reconcile manufacturer and characteristic-link progress`; status-cell edits only in `ULTIMATE_ROADMAP.md` and `ULTIMATE_PHASES.md`, HAPI-601/HAPI-602 owning task metadata, append-only status-reconciliation evidence in both HPS-006 and HPS-007, and one compact task-index update. No dependency, task ID, prior evidence, source, test, migration, route, security policy, OpenAPI, CI workflow, release or numerical/P3 changes. Expected-head guarded publication and exact-SHA Documentation Validation startup required, then STOP.
 
 <a id="hapi-603"></a>
 ## HAPI-603 — Installed-equipment consumer qualification

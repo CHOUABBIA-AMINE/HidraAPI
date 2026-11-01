@@ -451,6 +451,8 @@ HAPI-602 Package A source implementation (2026-11-01): [HPS-006](TASKS_HPS-006.m
 
 HAPI-602 next integrated backend workflow scope (2026-11-01): after exact-SHA [Full #1035](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41282289587) and [Docs #802](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41282289512) SUCCESS, [HPS-006](TASKS_HPS-006.md#hapi-602) now registers **one proposed draft-only protected save/current/revision/history vertical slice** with exact candidate Java/Identity/Simulation/SQL/API/CI paths and physical security gates. Source implementation has **not** been selected; HAPI-601 remains NOT_ACCEPTED/deferred and HAPI-602 stays BLOCKED by its unchanged dependency. No approved linkage, simulation consumer or field command is implied.
 
+Owner-approved progress status correction (2026-11-01): **[HAPI-601](TASKS_HPS-007.md#hapi-601) IMPLEMENTED / COMPLETED with explicitly deferred, unverified qualification gaps**; **[HAPI-602](TASKS_HPS-006.md#hapi-602) PARTIAL / IN_PROGRESS**, after its Package A Java+ten-test [Full #1035](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41282289587) passed and draft API work was registered. HAPI-601 is not VERIFIED; HAPI-602 does not yet provide protected integrated save/read/history or approval; no dependencies, security gates or industrial acceptance waived. Both canonical status tables and owner task headers are synchronized. Next priority is an actually working protected HAPI-602 draft vertical slice, not another domain-only planning iteration.
+
 ## Phase files
 
 | Phase | Definition file | Tasks |

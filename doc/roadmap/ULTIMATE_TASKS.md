@@ -445,6 +445,8 @@ Owner-directed HAPI-601/HAPI-602 handoff (2026-11-01): preserve the [HAPI-601 de
 
 HAPI-602 `Next` technical-contract preflight (2026-11-01): [HPS-006](TASKS_HPS-006.md#hapi-602) records the exact source ownership/invariant analysis and a **candidate only** Domain/port/adapter/native-security/API/Flyway/test ledger for protected installed-unit-to-manufacturer revision links. [Docs #799](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41280854263) passed on the predecessor, with the earlier unchanged-runtime [Full #1034](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41277972324) green. HAPI-601 gaps remain explicitly deferred; HAPI-602's canonical dependency and physical cross-owner transaction authority remain BLOCKED. This documentation stage admits **no runtime implementation or status upgrade**.
 
+HAPI-602 `Next` preparatory Package A source-contract registration (2026-11-01): [HPS-006](TASKS_HPS-006.md#hapi-602) now defines one bounded future `feat(topology): model immutable installed characteristic links` stage (new pure-Java model and synthetic domain test, strict test inventory, phase record and index only). Latest baseline [Docs #800](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41281143565) and unchanged Java [Full #1034](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41277972324) succeeded. **No code in this registration; HAPI-601 software acceptance remains deferred and HAPI-602 status/dependency remains NOT_IMPLEMENTED/BLOCKED.** No native link publication/REST/SQL or HAPI-603.
+
 ## Phase files
 
 | Phase | Definition file | Tasks |

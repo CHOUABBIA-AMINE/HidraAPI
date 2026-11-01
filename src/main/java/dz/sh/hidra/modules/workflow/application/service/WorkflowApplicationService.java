@@ -100,7 +100,12 @@ public class WorkflowApplicationService implements StartWorkflowInstanceUseCase,
             var step=steps.findById(command.currentStepId()).orElseThrow(()->new InvalidWorkflowValueException("Unknown Workflow current step."));
             if(!definition.id().equals(step.definitionId())) throw new InvalidWorkflowValueException("Workflow current step belongs to another definition.");
         }
-        var target=ownership.requireTarget(command.targetModule(),type.code(),command.targetId(),command.targetLocator());
+        // The legacy fourteen-field Workflow boundary carries the untrusted locator
+        // in targetCodeSnapshot for Topology only. The owner validates every original
+        // company/unit/link revision through native protected admission before use.
+        // The verified target.code(), never the request snapshot, is persisted.
+        var target=ownership.requireTarget(command.targetModule(),type.code(),command.targetId(),
+                "topology".equals(command.targetModule()) ? command.targetCodeSnapshot() : null);
         WorkflowInstance instance = new WorkflowInstance(
                 WorkflowId.newId().value(),
                 command.definitionId(),

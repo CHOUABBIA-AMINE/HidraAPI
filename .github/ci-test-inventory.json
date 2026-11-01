@@ -10372,7 +10372,10 @@
         "publicationApprovalRejectsNonhumanBeforeMutation",
         "rejectsActorWhoDoesNotOwnTask",
         "rejectsMissingTransitionPermission",
-        "rejectsStaleTaskVersionBeforeMutation"
+        "rejectsStaleTaskVersionBeforeMutation",
+        "topologyApprovalAllowsOnlyNativeMatchingHumanAndConfiguredPurpose",
+        "topologyApprovalRejectsAbsentHumanBeforeAnyDecisionMutation",
+        "topologyApprovalRejectsMismatchedHumanIdentityBeforeMutation"
       ],
       "class": "dz.sh.hidra.modules.workflow.application.service.WorkflowTransitionApplicationServiceTest",
       "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
@@ -10380,7 +10383,7 @@
       "lane": "unit-architecture",
       "owner": "workflow",
       "path": "src/test/java/dz/sh/hidra/modules/workflow/application/service/WorkflowTransitionApplicationServiceTest.java",
-      "source_sha256": "55ce06b06da1fbf1ba8ef02c42ffddc50b667b54e97af95dd5c5154fd0bd5a69",
+      "source_sha256": "282684612f70af977b23083149a7146119b999ca0d547a2f41afdd842e40034c",
       "supports": []
     },
     {

@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `944c9b5b84a2553268a58d4990a9700235297dfd`
+Captured source SHA: `1082a432e91f32493df51aad8aa3a68a1efe817a`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `2d6ea17720b6cd886541d93727b66862eae308cb1c7e8fef47013ac0a85ed352`.
-Migrations: 193; JPA mappings: 470; catalog relations: 542; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `0d620b400657638fac0bf121b2481e1703736fb9def8564be362753aa1603204`.
+Migrations: 194; JPA mappings: 470; catalog relations: 542; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -29863,6 +29863,7 @@ Persisted WorkflowInstanceJpaEntity state; semantic authority remains with workf
 - Migration mention (not inferred introduction): [V20261006_016__hmr_066_workflow_task.sql](../../src/main/resources/db/migration/V20261006_016__hmr_066_workflow_task.sql)
 - Migration mention (not inferred introduction): [V20261006_017__hmr_081_workflow_action.sql](../../src/main/resources/db/migration/V20261006_017__hmr_081_workflow_action.sql)
 - Migration mention (not inferred introduction): [V20261006_018__hmr_099_workflow_state_history.sql](../../src/main/resources/db/migration/V20261006_018__hmr_099_workflow_state_history.sql)
+- Migration mention (not inferred introduction): [V20261101_002__workflow_topology_characteristic_approval_catalog.sql](../../src/main/resources/db/migration/V20261101_002__workflow_topology_characteristic_approval_catalog.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -29873,7 +29874,7 @@ Persisted WorkflowInstanceJpaEntity state; semantic authority remains with workf
 | target_module | character varying(80) | False | None; identity=; generated= | targetModule: String; {"length": "80", "nullable": "false"}; columnDefinition=None | — |
 | target_type_id | character varying(80) | False | None; identity=; generated= | targetTypeId: String; {"length": "80", "nullable": "false"}; columnDefinition=None | — |
 | target_id | character varying(120) | False | None; identity=; generated= | targetId: String; {"length": "120", "nullable": "false"}; columnDefinition=None | — |
-| target_code_snapshot | character varying(120) | True | None; identity=; generated= | targetCodeSnapshot: String; {"length": "120", "nullable": "true"}; columnDefinition=None | — |
+| target_code_snapshot | character varying(2048) | True | None; identity=; generated= | targetCodeSnapshot: String; {"length": "2048", "nullable": "true"}; columnDefinition=None | — |
 | target_label_snapshot | character varying(240) | True | None; identity=; generated= | targetLabelSnapshot: String; {"length": "240", "nullable": "true"}; columnDefinition=None | — |
 | status | character varying(40) | False | None; identity=; generated= | status: WorkflowInstanceStatus; {"length": "40", "nullable": "false"}; columnDefinition=None | — |
 | current_step_id | character varying(80) | True | None; identity=; generated= | currentStepId: String; {"length": "80", "nullable": "true"}; columnDefinition=None | — |
@@ -30384,6 +30385,7 @@ Persisted WorkflowCatalogEntryJpaEntity state; semantic authority remains with w
 - Migration mention (not inferred introduction): [V20261006_017__hmr_081_workflow_action.sql](../../src/main/resources/db/migration/V20261006_017__hmr_081_workflow_action.sql)
 - Migration mention (not inferred introduction): [V20261006_018__hmr_099_workflow_state_history.sql](../../src/main/resources/db/migration/V20261006_018__hmr_099_workflow_state_history.sql)
 - Migration mention (not inferred introduction): [V20261027_005__workflow_custody_publication_policy.sql](../../src/main/resources/db/migration/V20261027_005__workflow_custody_publication_policy.sql)
+- Migration mention (not inferred introduction): [V20261101_002__workflow_topology_characteristic_approval_catalog.sql](../../src/main/resources/db/migration/V20261101_002__workflow_topology_characteristic_approval_catalog.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

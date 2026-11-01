@@ -260,4 +260,55 @@ class WorkflowTransitionApplicationServiceTest {
         when(humans.eligibleHuman(org.mockito.ArgumentMatchers.eq("actor-1"),any())).thenReturn(Optional.of(new dz.sh.hidra.modules.identity.application.contract.workflow.WorkflowHumanActorContract.Human("actor-1","Alice")));
         assertEquals("COMPLETED",service.execute(command("actor-1","alice",Set.of())).instanceStatus());
     }
+    private WorkflowInstance topologyApprovalInstance() {
+        return new WorkflowInstance("instance-1","def-1",1,"topology-purpose","topology",
+                "topology-type","a".repeat(64),"v1.synthetic","Installed characteristic",
+                WorkflowInstanceStatus.IN_PROGRESS,"step-1","starter-1","starter","Starter","OPERATOR",
+                TASK_UPDATED_AT.minusSeconds(120),null,null,"corr-1",
+                TASK_UPDATED_AT.minusSeconds(120),TASK_UPDATED_AT);
+    }
+    private void topologyApprovalCatalogs() {
+        when(configuration.requireActiveCatalog("topology-type","WORKFLOW_TARGET_TYPE"))
+                .thenReturn(new dz.sh.hidra.modules.workflow.application.port.out.WorkflowConfigurationPort.Catalog(
+                        "topology-type","WORKFLOW_TARGET_TYPE","INSTALLED_CHARACTERISTIC_LINK_REVISION",true));
+        when(configuration.requireActiveCatalog("topology-purpose","WORKFLOW_PURPOSE"))
+                .thenReturn(new dz.sh.hidra.modules.workflow.application.port.out.WorkflowConfigurationPort.Catalog(
+                        "topology-purpose","WORKFLOW_PURPOSE","INSTALLED_CHARACTERISTIC_LINK_APPROVAL",true));
+    }
+    @Test void topologyApprovalRejectsAbsentHumanBeforeAnyDecisionMutation() {
+        when(taskRepository.findByIdForUpdate("task-1")).thenReturn(Optional.of(task()));
+        when(instanceRepository.findByIdForUpdate("instance-1")).thenReturn(Optional.of(topologyApprovalInstance()));
+        when(transitionRepository.findById("transition-1")).thenReturn(Optional.of(transition()));
+        topologyApprovalCatalogs();
+        assertThrows(WorkflowTransitionDeniedException.class,
+                ()->service.execute(command("actor-1","alice",Set.of())));
+        verify(actionRepository,never()).save(any());
+        verify(taskRepository,never()).save(any());
+    }
+    @Test void topologyApprovalRejectsMismatchedHumanIdentityBeforeMutation() {
+        when(taskRepository.findByIdForUpdate("task-1")).thenReturn(Optional.of(task()));
+        when(instanceRepository.findByIdForUpdate("instance-1")).thenReturn(Optional.of(topologyApprovalInstance()));
+        when(transitionRepository.findById("transition-1")).thenReturn(Optional.of(transition()));
+        topologyApprovalCatalogs();
+        var humans=org.mockito.Mockito.mock(dz.sh.hidra.modules.identity.application.contract.workflow.WorkflowHumanActorContract.class);
+        service.publicationHumanActors(humans);
+        when(humans.eligibleHuman(org.mockito.ArgumentMatchers.eq("actor-1"),any()))
+                .thenReturn(Optional.of(new dz.sh.hidra.modules.identity.application.contract.workflow.WorkflowHumanActorContract.Human("actor-1","Mismatched Person")));
+        assertThrows(WorkflowTransitionDeniedException.class,
+                ()->service.execute(command("actor-1","alice",Set.of())));
+        verify(actionRepository,never()).save(any());
+        verify(taskRepository,never()).save(any());
+    }
+    @Test void topologyApprovalAllowsOnlyNativeMatchingHumanAndConfiguredPurpose() {
+        stubCommon(false);
+        when(instanceRepository.findByIdForUpdate("instance-1")).thenReturn(Optional.of(topologyApprovalInstance()));
+        topologyApprovalCatalogs();
+        var humans=org.mockito.Mockito.mock(dz.sh.hidra.modules.identity.application.contract.workflow.WorkflowHumanActorContract.class);
+        service.publicationHumanActors(humans);
+        when(humans.eligibleHuman(org.mockito.ArgumentMatchers.eq("actor-1"),any()))
+                .thenReturn(Optional.of(new dz.sh.hidra.modules.identity.application.contract.workflow.WorkflowHumanActorContract.Human("actor-1","Alice")));
+        assertEquals("COMPLETED",service.execute(command("actor-1","alice",Set.of())).instanceStatus());
+        verify(actionRepository).save(any(WorkflowAction.class));
+    }
+
 }

@@ -461,6 +461,8 @@ HAPI-602 C2 source admission (2026-11-01): [HPS-006](TASKS_HPS-006.md#hapi-602) 
 
 HAPI-602 unified protected characteristic draft workflow source (2026-11-01): [HPS-006](TASKS_HPS-006.md#hapi-602) records **one non-split source commit** integrating original native Identity+Simulation/Party source admission, original-transaction immutable PostgreSQL draft save/current/revision/history, strict four-route REST and a synthetic configured JWT/PostgreSQL qualification suite. Full/Docs on the new source SHA and actual runtime OpenAPI regeneration are still PENDING; no waiver, task closure, production/OT or simulation qualification. HAPI-602 PARTIAL/IN_PROGRESS, HAPI-603 BLOCKED.
 
+HAPI-602 native historical-read revocation regression (2026-11-01): the green exact-head [Full #1045](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41314028330) and [Docs #815](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41314028203) authorize one focused same-task configured-JWT/PostgreSQL test for source DENY after a successful immutable save. [HPS-006](TASKS_HPS-006.md#hapi-602) records the exact four-file allowlist, real strict 403 current/revision/history assertions, unchanged historical row and new inventory SHA-256. CI on the new SHA is pending; HAPI-602 remains PARTIAL/IN_PROGRESS, HAPI-603 BLOCKED, no Workflow link approval, frontend or SITE acceptance.
+
 ## Phase files
 
 | Phase | Definition file | Tasks |

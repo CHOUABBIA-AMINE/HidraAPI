@@ -453,6 +453,8 @@ HAPI-602 next integrated backend workflow scope (2026-11-01): after exact-SHA [F
 
 Owner-approved progress status correction (2026-11-01): **[HAPI-601](TASKS_HPS-007.md#hapi-601) IMPLEMENTED / COMPLETED with explicitly deferred, unverified qualification gaps**; **[HAPI-602](TASKS_HPS-006.md#hapi-602) PARTIAL / IN_PROGRESS**, after its Package A Java+ten-test [Full #1035](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41282289587) passed and draft API work was registered. HAPI-601 is not VERIFIED; HAPI-602 does not yet provide protected integrated save/read/history or approval; no dependencies, security gates or industrial acceptance waived. Both canonical status tables and owner task headers are synchronized. Next priority is an actually working protected HAPI-602 draft vertical slice, not another domain-only planning iteration.
 
+HAPI-602 Package B source-backed draft persistence (2026-11-01): [HPS-006](TASKS_HPS-006.md#hapi-602) records a real forward-only PostgreSQL migration with immutable DRAFT revision/head/receipt, manufacturer SHA-256 source FK/check, physical GiST interval exclusion and no PUBLIC role grants, plus nine PostgreSQL 16 integration cases and strict inventory/ownership registration. This is a CI-first **partial backend foundation**, not a native-authorized publisher, REST API, Workflow-approved configuration or qualified simulation input. New-SHA Flyway/Postgres and reviewed exact-catalog dictionary remain acceptance gates. HAPI-601 IMPLEMENTED/COMPLETED with deferred gaps; HAPI-602 PARTIAL/IN_PROGRESS unchanged.
+
 ## Phase files
 
 | Phase | Definition file | Tasks |

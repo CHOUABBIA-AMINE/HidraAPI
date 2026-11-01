@@ -548,6 +548,30 @@
     "owner": "topology",
     "purpose": "Owner-issued monotone live/tombstone witness for protected Facility ownership; not a publication epoch or permission."
   },
+  "public.hidra_topology_installed_characteristic_head": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261101_001__topology_installed_characteristic_links.sql",
+      "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/InstalledCharacteristicLinkPostgresIntegrationTest.java"
+    ],
+    "owner": "topology",
+    "purpose": "Topology-owned current draft characteristic selection, monotone CAS head referencing an immutable revision; no approval or simulation qualification."
+  },
+  "public.hidra_topology_installed_characteristic_request": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261101_001__topology_installed_characteristic_links.sql",
+      "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/InstalledCharacteristicLinkPostgresIntegrationTest.java"
+    ],
+    "owner": "topology",
+    "purpose": "Topology-owned immutable draft-link idempotency receipts; a recorded request is not a native authorization."
+  },
+  "public.hidra_topology_installed_characteristic_revision": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261101_001__topology_installed_characteristic_links.sql",
+      "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/InstalledCharacteristicLinkPostgresIntegrationTest.java"
+    ],
+    "owner": "topology",
+    "purpose": "Topology-owned immutable physical-unit manufacturer characteristic draft history, source FK/digest pin and PostgreSQL effective-interval exclusion."
+  },
   "public.hidra_topology_installed_unit": {
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcInstalledUnitRepositoryAdapter.java",

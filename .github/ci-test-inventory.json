@@ -9423,6 +9423,28 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "draftRelationsAndLockFunctionGrantNothingToPublic",
+        "freshFlywayInstallsThreeOwnerTablesAndPhysicalExclusion",
+        "headRequiresConsecutiveRevisionAndRejectsStaleEpoch",
+        "immutableDraftEvidenceRejectsUpdateDeleteAndTruncate",
+        "permitsAdjacentPeriodsAndDistinctKinds",
+        "rejectsForeignPhysicalUnitAndInvalidDraftState",
+        "rejectsOverlappingSameCompanyUnitAndKindUnderRealExclusion",
+        "rejectsWrongManufacturerDigestAndMissingSource",
+        "requestReceiptRequiresRealRevisionAndIsAppendOnly"
+      ],
+      "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.InstalledCharacteristicLinkPostgresIntegrationTest",
+      "dependency_reason": "HAPI-602 Package B PostgreSQL 16 immutable draft persistence tests; no publisher permission or native REST, hosted duration unmeasured",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/InstalledCharacteristicLinkPostgresIntegrationTest.java",
+      "source_sha256": "a390b2c68c916b454b4f90b9b92adec0c27f1acf3e98ab073e50df816ad7c701",
+      "supports": []
+    },
+    {
       "baseline_seconds": 9.016,
       "cases": [
         "databaseDoesNotAllowGenericReplacementRequestShape",

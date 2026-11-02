@@ -20,8 +20,6 @@
 package dz.sh.hidra.modules.simulation.infrastructure.persistence;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -991,26 +989,6 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
     /** Decode the real signed native issuer token before constructing an authenticated
      * synthetic test security context. The Workflow app still owns its identity,
      * assignment and transition checks; no caller claim or approval is forged. */
-    /** Private fixed-stage diagnostics: no messages, arguments, tokens or source data. */
-    private static Object traceWorkflowLookup(org.mockito.invocation.InvocationOnMock invocation)
-            throws Throwable {
-        String stage=invocation.getMethod().getName();
-        try {
-            Object result=invocation.callRealMethod();
-            System.err.println("HAPI601 PRIVATE LOOKUP stage="+stage+" outcome="
-                +(result instanceof java.util.Optional<?> value
-                    ?(value.isPresent()?"PRESENT":"EMPTY"):"RETURNED"));
-            return result;
-        } catch(Throwable failure) {
-            Throwable cause=failure;
-            for(int depth=0;cause!=null && depth<8;depth++,cause=cause.getCause()) {
-                System.err.println("HAPI601 PRIVATE LOOKUP stage="+stage
-                    +" causeClass="+cause.getClass().getSimpleName());
-            }
-            throw failure;
-        }
-    }
-
     private void useVerifiedNativeWorkflowActor(String bearer,String expectedActor) {
         var decoded=nativeJwtDecoder.decode(bearer);
         assertThat(decoded.getSubject()).isEqualTo(expectedActor);
@@ -1094,34 +1072,18 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
             // transaction, to distinguish native authorization from Workflow fencing.
             // Scope diagnostics to this lookup, excluding prior SAVE/READ calls.
             org.mockito.Mockito.clearInvocations(coordinator,nativeSource,nativeIdentity,nativeParty);
-            // Arm transactional spies only inside the original protected transaction.
-            // Stubbing a MANDATORY adapter outside it would itself be an invalid call.
-            org.mockito.Mockito.doAnswer(lookup->{
-            org.mockito.Mockito.doAnswer(
-                ManufacturerCharacteristicNativeHttpPostgresIntegrationTest::traceWorkflowLookup)
-                .when(nativeSource).byWorkflowTarget(any(),eq(digest));
-            org.mockito.Mockito.doAnswer(
-                ManufacturerCharacteristicNativeHttpPostgresIntegrationTest::traceWorkflowLookup)
-                .when(nativeIdentity).acquire(any(),any());
-            org.mockito.Mockito.doAnswer(
-                ManufacturerCharacteristicNativeHttpPostgresIntegrationTest::traceWorkflowLookup)
-                .when(nativeParty).acquire(any());
-            org.mockito.Mockito.doAnswer(
-                ManufacturerCharacteristicNativeHttpPostgresIntegrationTest::traceWorkflowLookup)
-                .when(nativeParty).read(any());
-            org.mockito.Mockito.doAnswer(
-                ManufacturerCharacteristicNativeHttpPostgresIntegrationTest::traceWorkflowLookup)
-                .when(nativeSource).acquire(any());
-                return lookup.callRealMethod();
-            }).when(coordinator).acquireWorkflowTarget(any(),eq(digest),eq(false));
             var protectedTarget=apiOwner.resolveWorkflowTarget(digest,false);
             // CI-only non-disclosing stage diagnostics. Keep all actual guards and
             // the required positive assertion; never silently treat denial as success.
             if(protectedTarget.isEmpty()) {
-                System.err.println("HAPI601 PRIVATE WORKFLOW TARGET stages coordinator="
-                    +methodNames(coordinator)+" source="+methodNames(nativeSource)
-                    +" identity="+methodNames(nativeIdentity)
-                    +" party="+methodNames(nativeParty));
+                var calls=new java.util.ArrayList<org.mockito.invocation.Invocation>();
+                for(Object spy:java.util.List.of(coordinator,nativeSource,nativeIdentity,nativeParty))
+                    calls.addAll(org.mockito.Mockito.mockingDetails(spy).getInvocations());
+                calls.sort(java.util.Comparator.comparingInt(
+                    org.mockito.invocation.Invocation::getSequenceNumber));
+                System.err.println("HAPI601 PRIVATE WORKFLOW TARGET lookup-only stages="
+                    +calls.stream().map(call->call.getMethod().getDeclaringClass().getSimpleName()
+                        +"."+call.getMethod().getName()).toList());
             }
             assertThat(protectedTarget)
                 .isPresent().get().extracting(v->v.workflowTargetDigest()).isEqualTo(digest);

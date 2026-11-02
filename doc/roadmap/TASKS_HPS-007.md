@@ -1663,3 +1663,46 @@ the genuine Workflow/native test. The original empty-target lookup root cause
 remains UNVERIFIED; this repairs compilation only. HAPI-601 assurance, HAPI-603
 deferred consumer gates and HAPI-598 closure remain pending. Verify guarded main
 publication and applicable CI queued/started, then STOP.
+
+### HAPI-601 — Full1070 remove active diagnostic interception (2026-11-02)
+
+Owner Fail selects the responsible repair on7e813663344dafb565ccfc5dcd10ea9e62cb0b13.
+Full1070/run41470553072 compiled successfully but failed shard9 and its
+aggregate gate. The genuine Workflow test raised Cannot activate transaction
+synchronization - already active at ManufacturerCharacteristicRevisionApplicationService
+resolveWorkflowTarget finally/initSynchronization. No PRIVATE LOOKUP hook result
+was emitted. Sixteen later manufacturer setup calls failed using an expired or
+foreign-thread protected handle, for17 execution errors in that shard.
+These are not seventeen independent product bugs. The added nested transactional
+spy configuration precedes this new failure; its precise internal triggering call
+has not been independently proven. The older empty-target failure remains open.
+
+Remove the newly added callRealMethod/doAnswer lookup diagnostic hooks and their
+helper/matcher imports. Retain only clearInvocations immediately before the real
+lookup, then passively inspect existing Mockito invocation metadata if its
+required positive Optional assertion would fail. Merge invocation records from
+the four already-spied owners using their global sequence number, reporting only
+declaring-class and method names. No arguments, messages, results, SQL values,
+tokens or identifiers are read or logged. Passive inspection changes no return,
+exception, transaction propagation, protected scope or authorization decision.
+Do not add synchronization cleanup/bypass to production, drop the Workflow case,
+replace terminal approval by SQL, widen authority or alter temporal limits.
+
+Exact registered message remains
+`test(simulation): complete manufacturer characteristic assurance`.
+Four MODIFY paths only: existing manufacturer native HTTP/PostgreSQL test,
+source digest in .github/ci-test-inventory.json, append-only HPS-007 record and
+compact ULTIMATE_TASKS.md pointer. No CREATE/DELETE. All21 case identities,
+real original-transaction/native/Workflow transitions and strict HTTP/replay/
+revocation assertions remain. Production source, migration, budgets, CI matrix
+and task statuses are unchanged.
+
+Available source checks PASS:21 distinct case methods match the inventory;
+all newly added active lookup interception and traceWorkflowLookup references
+are removed, with the original direct resolveWorkflowTarget invocation retained.
+UTF-8 source SHA256 `4d226da4098eac914ff8aceea0a64d1f0eaebbc3f3b35a67784b0c5f99a3f4f7`.
+No local Java/Maven/PostgreSQL execution claimed; new exact-SHA hosted runtime
+proof remains mandatory. This repairs diagnostic interference and does NOT
+establish that the underlying Workflow target lookup works. HAPI-601 assurance,
+HAPI-603 deferred gaps and HAPI-598 acceptance remain pending. Publish guarded
+main, confirm applicable exact-SHA CI queued/started, then STOP.

@@ -572,6 +572,9 @@ public class JdbcProtectedAuthorizationEvidenceReader {
     public AuthorizationEvidence loadInstalledCharacteristic(
             Evidence origin, AuthorizationEvaluationRequest request,int backendPid,long transactionId) {
         try {
+            // Diagnostic/unattached readers have no native Identity participant or original transaction.
+            if(participant==null || !TransactionSynchronizationManager.isActualTransactionActive()
+                    || TransactionSynchronizationManager.isCurrentTransactionReadOnly()) throw invalid();
             if(origin==null || request==null || request.scope()==null
                     || !origin.userId().equals(request.userId())
                     || request.scope().scopeType()!=dz.sh.hidra.modules.identity.domain.value.ScopeType.CUSTOM

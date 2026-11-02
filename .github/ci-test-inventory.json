@@ -7635,6 +7635,7 @@
         "configuredNativeManufacturerQualificationAcceptsRealHumanWorkflowTransition",
         "currentPartySuspensionBlocksPreviouslyAuthorizedRevision",
         "divergentImmutableReplayAndMalformedSupplierAxisCannotModifyStoredRevision",
+        "expiredManufacturerProtectedBudgetRollsBackSourceAndQualification",
         "foreignSourceAndWrongHttpVerbDoNotInheritNativeAuthority",
         "historyCursorRejectsTamperingAndQualificationCannotInventWorkflow",
         "immutableReplayOfSameIssuerTokenDoesNotAppendAnotherRevision",
@@ -7653,7 +7654,7 @@
         "retiredExpiredAndCrossScopeManufacturerHistoryHmacCursorsFailClosed",
         "supplierDeclaredCertificateRemainsDocumentaryAndNeedsSeparateCurrentGrant"
       ],
-      "source_sha256": "86294bdfdc20edba963b8ee4e2b528bb09c5b18fbbbcb11ebd51258a1e6e1a09"
+      "source_sha256": "11900f3142b5e6c720be6791271861653190c0426c15b2d14f98f71e66ce4f71"
     },
     {
       "baseline_seconds": 0,

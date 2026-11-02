@@ -1130,7 +1130,83 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
                 .andExpect(status().isForbidden()).andExpect(jsonPath("$.code").value("DENIED"));
             assertThat(count(QUAL)).isEqualTo(1);
             assertThat(count(REV)).isEqualTo(1);
+
+            // A second genuine Workflow transition by the same independent reviewer
+            // REJECTS a different immutable revision. A terminal instance alone
+            // must not be confused with an APPROVE decision or certificate.
+            admin.update("UPDATE public.hidra_workflow_definition_target_binding"
+                +" SET active=true WHERE definition_id=?",definition);
+            String rejectedRevision="human-rejected-v1";
+            save(rejectedRevision);
+            allow(Operation.READ_REVISION,rejectedRevision);
+            grantFor(reviewer,Operation.READ_REVISION,rejectedRevision,"GRANT","company");
+            grantFor(reviewer,Operation.READ_REVISION,rejectedRevision,"GRANT","source");
+            String rejectedDigest=admin.queryForObject(
+                "SELECT workflow_target_digest FROM "+REV
+                +" WHERE company_party_id=? AND source_id=? AND revision_id=?",
+                String.class,company,source,rejectedRevision);
+            String rejectTransition=id(),reason=id();
+            admin.update("INSERT INTO public.hidra_workflow_transition"
+                +"(id,definition_id,from_step_id,to_step_id,decision,reason_required,"
+                +"comment_required,created_at,updated_at)"
+                +" VALUES (?,?,?,?,'REJECT',true,false,now(),now())",
+                rejectTransition,definition,first,last);
+            admin.update("INSERT INTO public.hidra_workflow_type_catalog"
+                +"(id,catalog_name,code,active,sort_order,system_defined,created_at,updated_at)"
+                +" VALUES (?,'WORKFLOW_REASON',?,true,0,false,now(),now())",
+                reason,"SYNTHETIC_MANUFACTURER_REJECTION");
+            useVerifiedNativeWorkflowActor(token,user);
+            var rejectedInstance=workflowApplication.startWorkflowInstance(
+                new dz.sh.hidra.modules.workflow.application.command.StartWorkflowInstanceCommand(
+                    definition,1,purpose,"simulation",type,rejectedDigest,null,null,first,user,
+                    null,"Untrusted original actor snapshot",null,"synthetic-rejection"));
+            var rejectedTask=workflowApplication.createWorkflowTask(
+                new dz.sh.hidra.modules.workflow.application.command.CreateWorkflowTaskCommand(
+                    rejectedInstance.id(),first,reviewer,null,null,null,null,null,null,null,null,
+                    "Independent manufacturer rejection"));
+            var rejectedTaskRow=workflowTasks.findById(rejectedTask.id()).orElseThrow();
+            useVerifiedNativeWorkflowActor(reviewerBearer,reviewer);
+            var rejectedAction=workflowTransitions.execute(
+                new dz.sh.hidra.modules.workflow.application.command.ExecuteWorkflowTransitionCommand(
+                    rejectedTask.id(),rejectTransition,rejectedTaskRow.updatedAt(),reason,
+                    null,null,"synthetic-manufacturer-rejection",reviewer,null,
+                    "Untrusted reviewer snapshot",java.util.Set.of()));
+            assertThat(rejectedAction.decision()).isEqualTo("REJECT");
+            assertThat(admin.queryForObject("SELECT decision FROM public.hidra_workflow_action"
+                +" WHERE id=?",String.class,rejectedAction.actionId())).isEqualTo("REJECT");
+            assertThat(admin.queryForObject("SELECT status FROM public.hidra_workflow_instance"
+                +" WHERE id=?",String.class,rejectedInstance.id())).isEqualTo("COMPLETED");
+            SecurityContextHolder.clearContext();
+            allow(Operation.QUALIFY,rejectedRevision);
+            var rejectedEvidence=new ManufacturerTerminalWorkflow(definition,type,purpose,
+                rejectedAction.instanceId(),rejectedAction.taskId(),rejectedAction.actionId());
+            http("POST",path(rejectedRevision)+"/qualification",
+                qualificationBody(rejectedEvidence),token)
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.code").value("DENIED"));
+            assertThat(count(QUAL)).isEqualTo(1);
+            assertThat(count(REV)).isEqualTo(2);
         } finally {SecurityContextHolder.clearContext();}
+    }
+
+    /** A real protected deadline must reject and roll back a provisional SAVE. */
+    @Test void expiredManufacturerProtectedBudgetRollsBackSourceAndQualification() throws Exception {
+        String revision="deadline-rejected-v1";
+        allow(Operation.SAVE,revision);
+        // Inject delay at the actual managed flush stage, after provisional source
+        // persistence but before final admission. No owner guard or SQL is mocked.
+        org.mockito.Mockito.doAnswer(invocation->{
+            Thread.sleep(workBudgets.manufacturerWorkBudgetMillis()+250L);
+            return invocation.callRealMethod();
+        }).when(coordinator).prepareFinal(org.mockito.ArgumentMatchers.any());
+        try {
+            http("PUT",path(revision),body(revision),token)
+                .andExpect(status().isServiceUnavailable());
+            assertThat(count(REV)).isZero();
+            assertThat(count(QUAL)).isZero();
+        } finally {
+            org.mockito.Mockito.reset(coordinator);
+        }
     }
 
     /** No history continuation may borrow the JWT key or become unsigned. */

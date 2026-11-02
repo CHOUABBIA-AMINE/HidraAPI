@@ -546,7 +546,7 @@ Cross-phase prerequisites in the approved task graph: HPS-006 Dependency edges a
 | Task ID | Task Name | Deliverable | Priority | Dependencies | Implementation Status | Planning Status |
 |---|---|---|---|---|---|---|
 | [HAPI-533](TASKS_HPS-007.md#hapi-533) | define manufacturer characteristic provisioning | define manufacturer characteristic provisioning | P1 | — | VERIFIED | COMPLETED |
-| [HAPI-601](TASKS_HPS-007.md#hapi-601) | Supplied manufacturer maps, tables and limits | Supplied manufacturer maps/tables/limits/axes/units/reference conditions and source evidence. | P1 | HAPI-599 | IMPLEMENTED | IN_PROGRESS |
+| [HAPI-601](TASKS_HPS-007.md#hapi-601) | Supplied manufacturer maps, tables and limits | Supplied manufacturer maps/tables/limits/axes/units/reference conditions and source evidence. | P1 | HAPI-599 | VERIFIED | COMPLETED |
 
 ### 8. Phase Completion Criteria
 

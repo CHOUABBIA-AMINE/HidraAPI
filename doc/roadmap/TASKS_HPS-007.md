@@ -1632,3 +1632,34 @@ Production Java, permissions, transaction/temporal guarantees, schema, API,
 work budgets, workflow matrix and all roadmap statuses remain unchanged.
 HAPI-601 assurance is NOT VERIFIED; HAPI-603 deferred gaps and HAPI-598 closure
 remain open. Publish expected-head main, observe new CI startup, then STOP.
+
+### HAPI-601 — Full1069 diagnostic matcher-import repair (2026-11-02)
+
+Owner Fail refreshes main1af3a2dbe0e549b82e5d2c4b78c27ea6110f488e.
+Full1069/run41469234360 failed test compilation in unit/architecture and all
+fourteen PostgreSQL lanes before tests could execute. The repeated compiler
+errors have exactly three unresolved-symbol forms: any(), eq(String), eq(boolean),
+all in the new manufacturer lookup probe. They share one responsible defect:
+the previous diagnostic used unqualified Mockito matchers without importing them.
+Cascading missing reports/evidence and Full gate failure are not separate product
+bugs, and this run provides no executed lookup diagnostic or PostgreSQL acceptance.
+
+Correction adds only explicit static imports for
+org.mockito.ArgumentMatchers.any and org.mockito.ArgumentMatchers.eq.
+No executable method, diagnostic call, test name, positive assertion, permission,
+transaction/expiry guard, production source, migration, workflow or budget changes.
+Exact message remains `test(simulation): complete manufacturer characteristic assurance`.
+Four MODIFY paths: existing ManufacturerCharacteristicNativeHttpPostgresIntegrationTest.java,
+its source SHA only in .github/ci-test-inventory.json, this append-only owner record,
+and the compact ULTIMATE_TASKS.md pointer. No CREATE/DELETE.
+
+Validation: inverse removal of the two added imports reconstructs the parent
+source exactly; all21 test methods and strict inventory case identities remain.
+All compiler missing-symbol forms match these explicit imported method families.
+New UTF-8 source SHA256 `9500dc58b47dc4256355ece2bcd84327d084bb9d219f096e37973c32fe8e2cf8`.
+No Java/Maven/PostgreSQL execution is claimed locally; no complete environment
+was provisioned. Exact new-SHA hosted Full/Docs must compile the probe and execute
+the genuine Workflow/native test. The original empty-target lookup root cause
+remains UNVERIFIED; this repairs compilation only. HAPI-601 assurance, HAPI-603
+deferred consumer gates and HAPI-598 closure remain pending. Verify guarded main
+publication and applicable CI queued/started, then STOP.

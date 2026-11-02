@@ -1000,6 +1000,15 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
     }
 
     @Test void configuredNativeManufacturerQualificationAcceptsRealHumanWorkflowTransition()throws Exception {
+        // The Workflow actor contract requires a present display name on the original
+        // active Identity user. The generic manufacturer fixture intentionally omits it.
+        // Upgrade only this synthetic actor before issuing the signed Workflow bearer.
+        admin.update("UPDATE public.hidra_identity_user"
+            +" SET display_name='Synthetic Manufacturer Workflow Starter',"
+            +" updated_at=clock_timestamp() WHERE id=?",user);
+        token=authentication.authenticate(new DirectAuthenticationCommand(
+            ProviderType.LOCAL,user,"synthetic-password","synthetic-ip",
+            "synthetic-agent","manufacturer-workflow-authentication")).accessToken();
         String revision="human-approved-v1";
         save(revision);
         allow(Operation.READ_REVISION,revision);

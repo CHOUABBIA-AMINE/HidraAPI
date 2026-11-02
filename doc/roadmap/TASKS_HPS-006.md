@@ -10889,3 +10889,47 @@ Exact production SHA `4d413b10bb5f26e3033a3f94f3e126135bac58ae`: [Full CI #1077]
 **Same-task narrow repair.** Preserve the owner's approved indivisible HAPI-603 real Workflow consumer qualification. MODIFY only `src/test/java/dz/sh/hidra/modules/topology/qualification/InstalledEquipmentOperatorQualificationTest.java`, `.github/ci-test-inventory.json` (exact source SHA only), this append-only owner record and `doc/roadmap/ULTIMATE_TASKS.md` pointer. CREATE/DELETE none. Reuse exact registered commit message `test(topology): qualify installed equipment consumers`. The existing simulation manufacturer genuine Workflow PostgreSQL test already grants Workflow DML to its disposable app role; align this independent Topology consumer fixture more narrowly. In its dedicated PostgreSQL16 Testcontainers database only, grant `INSERT,UPDATE` on Workflow instance/task to `consumer_native_app`, `INSERT` on append-only Workflow action/state_history to that same role. Preserve existing SELECT, synthetic publisher SHARE NOWAIT, source/identity owner grants, all nine case identities, and every genuine native/human/negative assertion. Do **not** grant DELETE/TRUNCATE or unrestricted DML on definition/binding/type catalogs. Do **not** modify production authorization, migration grants, Workflow services, JPA entities, rest APIs, CI or security checks. Exact nine-case UTF-8 test source SHA-256 `d457ff421fb4cdaa7a9d50bfa3d3a20d6cb557c41436c1fc56b712a9f1f3b480`.
 
 **Acceptance/stop gate.** Programmatic patch uniqueness, SHA-256 known vector, baseline source integrity, JSON strict inventory parse, and unchanged nine cases checked before publication. Local Java 21/Maven/PostgreSQL runtime validation is **not claimed**. New exact-SHA hosted Full/Docs CI must be created and actually run; green results are not presumed. HAPI-603 IMPLEMENTED/IN_PROGRESS pending complete C1–C5 software matrix and separate C6 external gates; HAPI-598 PARTIAL/BLOCKED. No automatic progression, deployment, numerical P3 or SITE acceptance.
+
+### HAPI-603 — CI1079 genuine Workflow rejection reason fixture repair (2026-11-02)
+
+Exact parent ceefecb885a7df6db686fda0900ba3dda0ee0359:
+Full1079/run41521822999 FAILED only PostgreSQL shard1, with one error in
+realIndependentHumanWorkflowRejectionCannotPublishApproval among nine consumer
+cases. WorkflowDecisionGuard raised Workflow decision requires a reason.
+All eight other consumer cases passed; Docs855 passed. The full gate failure
+cascades from this actual test error.
+
+Deep source diagnosis: terminalWorkflow passed null reasonId for both APPROVE
+and REJECT and configured reason_required=false. WorkflowDecisionGuard independently
+requires a reason for REJECT regardless of the configurable transition flag;
+WorkflowTransitionApplicationService also requires the supplied reason ID to be
+an active WORKFLOW_REASON catalog entry. This is a fixture omission, not a
+production permission, synchronization, migration or authorization defect.
+The already-passing manufacturer real-Workflow rejection test supplies exactly
+such an active reason and is the reviewed source precedent.
+
+Same registered indivisible HAPI-603 message:
+`test(topology): qualify installed equipment consumers`.
+Modify exactly the existing consumer qualification test,
+.github/ci-test-inventory.json (only its source SHA), this append-only HPS-006
+record and compact ULTIMATE_TASKS.md pointer. No CREATE/DELETE.
+For REJECT only, seed a unique active synthetic WORKFLOW_REASON, set transition
+reason_required=true, and pass that exact reason ID to the actual transition
+command. APPROVE retains no reason. Assert returned and persisted action decision
+matches APPROVE/REJECT before constructing the original Workflow evidence.
+Retain all nine case identities, independent signed human actor, genuine owner
+start/task/transition, persisted terminal state, and strict downstream rejection
+that cannot publish an installed-link approval. No terminal result fabricated
+in SQL; only synthetic Workflow configuration is seeded.
+
+Source SHA256 `7dec2cdab2ec0a02a2c33054cf1af1b74ce2435aefb704a2d5d8923a4302f6a2`.
+Checks: nine distinct methods exactly match the parent inventory; test-source
+digest computed from UTF-8 bytes; inventory changes only its source hash; helper
+SQL placeholders/arguments and existing command reason position checked against
+current Workflow guard/catalog semantics. No local Java/Maven/PostgreSQL runtime
+pass claimed. Exact-new-SHA Full/Docs must compile and execute all cases and
+mandatory gates; prior green lanes are not acceptance for the repair.
+Production Java, Workflow guard, owner grants, SQL migrations, API, work budgets,
+CI matrix and task statuses remain unchanged. HAPI-603 remains IMPLEMENTED/
+IN_PROGRESS; HAPI-598 PARTIAL/BLOCKED. Publish guarded main, verify exact scope
+and parent/tree/blobs, observe applicable CI queued/started, then STOP.

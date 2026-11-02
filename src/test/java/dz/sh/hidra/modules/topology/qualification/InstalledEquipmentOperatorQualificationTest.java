@@ -408,6 +408,13 @@ class InstalledEquipmentOperatorQualificationTest {
     }
     private ActualWorkflow terminalWorkflow(String reviewer,String digest,boolean approved){
         String definition=id(),start=id(),end=id(),transition=id();
+        String reason=approved?null:id();
+        if(!approved) {
+            admin.update("INSERT INTO public.hidra_workflow_type_catalog"+
+                "(id,catalog_name,code,active,sort_order,system_defined,created_at,updated_at)"+
+                " VALUES (?,\'WORKFLOW_REASON\',?,true,0,false,now(),now())",
+                reason,"SYNTHETIC_INSTALLED_LINK_REJECTION_"+reason);
+        }
         String type=admin.queryForObject(
             "SELECT id FROM public.hidra_workflow_type_catalog"+
             " WHERE catalog_name='WORKFLOW_TARGET_TYPE' AND code='INSTALLED_CHARACTERISTIC_LINK_REVISION'",
@@ -431,8 +438,8 @@ class InstalledEquipmentOperatorQualificationTest {
             " VALUES (?,?,'topology',?,?,true,now(),now())",id(),definition,type,purpose);
         admin.update("INSERT INTO public.hidra_workflow_transition"+
             "(id,definition_id,from_step_id,to_step_id,decision,reason_required,comment_required,created_at,updated_at)"+
-            " VALUES (?,?,?,?,?,false,false,now(),now())",
-            transition,definition,start,end,approved?"APPROVE":"REJECT");
+            " VALUES (?,?,?,?,?,?,false,now(),now())",
+            transition,definition,start,end,approved?"APPROVE":"REJECT",!approved);
         admin.update("UPDATE public.hidra_identity_user SET display_name='Synthetic Workflow Starter',"+
             "activated_at=coalesce(activated_at,now()),updated_at=now() WHERE id=?",user);
         String starter=authentication.authenticate(new DirectAuthenticationCommand(
@@ -468,9 +475,13 @@ class InstalledEquipmentOperatorQualificationTest {
             useWorkflowActor(reviewerBearer,reviewer);
             var decision=workflowTransitions.execute(
                 new dz.sh.hidra.modules.workflow.application.command.ExecuteWorkflowTransitionCommand(
-                    task.id(),transition,persisted.updatedAt(),null,null,null,
+                    task.id(),transition,persisted.updatedAt(),reason,null,null,
                     "synthetic-installed-link-decision",reviewer,null,
                     "Untrusted reviewer snapshot",java.util.Set.of()));
+            assertEquals(approved?"APPROVE":"REJECT",decision.decision());
+            assertEquals(approved?"APPROVE":"REJECT",admin.queryForObject(
+                "SELECT decision FROM public.hidra_workflow_action WHERE id=?",
+                String.class,decision.actionId()));
             assertEquals(instance.id(),decision.instanceId());
             assertEquals(task.id(),decision.taskId());
             assertEquals("COMPLETED",admin.queryForObject(

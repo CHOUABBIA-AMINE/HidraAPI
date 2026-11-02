@@ -7631,14 +7631,19 @@
         "absentAndMalformedBearerCannotReadOrWriteSource",
         "certificateRequiresItsOwnCurrentPermissionEvenAfterRevisionRead",
         "currentPartySuspensionBlocksPreviouslyAuthorizedRevision",
+        "divergentImmutableReplayAndMalformedSupplierAxisCannotModifyStoredRevision",
         "foreignSourceAndWrongHttpVerbDoNotInheritNativeAuthority",
         "historyCursorRejectsTamperingAndQualificationCannotInventWorkflow",
         "immutableReplayOfSameIssuerTokenDoesNotAppendAnotherRevision",
         "missingSourceScopeAndExplicitDenyPrecedeExistenceAndReplay",
+        "nativeHttpHistoryChecksAll265RowsAndFailsClosedAtSixtyFifthPrincipal",
+        "nativeManufacturerQualificationRequiresRealTerminalWorkflowAndReplaysOnce",
+        "nativePagedManufacturerHistoryRechecksCurrentAuthorityForEveryContinuation",
         "realLocalBearerPersistsCanonicalSourceAndReadsThroughConfiguredFilters",
-        "replayAfterSessionRevocationCannotMutatePreviouslyCommittedSource"
+        "replayAfterSessionRevocationCannotMutatePreviouslyCommittedSource",
+        "supplierDeclaredCertificateRemainsDocumentaryAndNeedsSeparateCurrentGrant"
       ],
-      "source_sha256": "69d877843d7e216d981d161755078064551e25af087f68a58a3bd11e6ba1ff0d"
+      "source_sha256": "02078389d74040ebc103cf167c667aaf00b4a219b46766fcb9ff513af923eab9"
     },
     {
       "baseline_seconds": 0,

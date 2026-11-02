@@ -116,6 +116,13 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
                 admin.execute("GRANT UPDATE ON "+fence.relation()+" TO "+PUBLISHER);
         for(String table:List.of(REV,QUAL))
             admin.execute("GRANT SELECT,INSERT,UPDATE ON "+table+" TO "+PUBLISHER);
+        // Genuine Workflow SHARE NOWAIT fences require table UPDATE privilege for the
+        // disposable publisher role. These test-only grants are never deployment policy.
+        for(String table:List.of("hidra_workflow_action","hidra_workflow_definition",
+                "hidra_workflow_definition_target_binding","hidra_workflow_instance",
+                "hidra_workflow_state_history","hidra_workflow_step",
+                "hidra_workflow_task","hidra_workflow_transition","hidra_workflow_type_catalog"))
+            admin.execute("GRANT UPDATE ON public."+table+" TO "+PUBLISHER);
         // The real Party owner publishes SHARE_ROW_EXCLUSIVE final relation fences.
         // PostgreSQL requires a table-level UPDATE privilege for that lock strength;
         // the test-only publication role previously had SELECT and could never
@@ -446,5 +453,258 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
             .andReturn().getResponse();
         assertThat(wrong.getStatus()).isNotEqualTo(200);
         assertThat(count(REV)).isZero();
+    }
+
+    /**
+     * A genuine persisted terminal Workflow is required by the configured manufacturer
+     * QUALIFY route. The synthetic schema-owner fixture cannot manufacture operator authority.
+     */
+    private record ManufacturerTerminalWorkflow(String definition,String type,String purpose,
+                                                String instance,String task,String action) {}
+    private ManufacturerTerminalWorkflow terminalManufacturerWorkflow(String revision) {
+        String suffix=id(),reviewer=id(),definition=id(),type=id(),purpose=id();
+        String start=id(),end=id(),instance=id(),task=id(),action=id();
+        Timestamp at=Timestamp.from(Instant.now().minusSeconds(1)
+            .truncatedTo(java.time.temporal.ChronoUnit.MICROS));
+        String sha=admin.queryForObject("SELECT payload_sha256 FROM "+REV
+                +" WHERE company_party_id=? AND source_id=? AND revision_id=?",
+                String.class,company,source,revision);
+        String target=dz.sh.hidra.modules.simulation.application.service
+            .ProtectedManufacturerCharacteristicAdmissionCoordinator.targetDigestStatic(
+                new dz.sh.hidra.modules.simulation.application.port.out
+                    .ManufacturerCharacteristicRevisionRepositoryPort.Key(company,source,revision),sha);
+        admin.update("INSERT INTO public.hidra_identity_user"
+                +"(id,username,display_name,user_type,status,failed_login_count,created_at,activated_at,updated_at)"
+                +" VALUES (?,?,'Synthetic Manufacturer Reviewer','HUMAN','ACTIVE',0,now(),now(),now())",
+                reviewer,reviewer);
+        for(String[] row:List.of(new String[]{type,"WORKFLOW_TARGET_TYPE","MANUFACTURER_CHARACTERISTIC_REVISION"},
+                new String[]{purpose,"WORKFLOW_PURPOSE","MANUFACTURER_CHARACTERISTIC_QUALIFICATION"}))
+            admin.update("INSERT INTO public.hidra_workflow_type_catalog"
+                +"(id,catalog_name,code,active,sort_order,system_defined,created_at,updated_at)"
+                +" VALUES (?,?,?,true,0,false,now(),now())",row[0],row[1],row[2]);
+        admin.update("INSERT INTO public.hidra_workflow_definition"
+            +"(id,code,name_fr,type_id,status,version,created_at,updated_at)"
+            +" VALUES (?,?,'Synthetic manufacturer qualification',?,'ACTIVE',1,now(),now())",
+            definition,definition,type);
+        for(Object[] step:List.<Object[]>of(new Object[]{start,1},new Object[]{end,2}))
+            admin.update("INSERT INTO public.hidra_workflow_step"
+                +"(id,definition_id,code,name_fr,step_order,mandatory,allow_claim,"
+                +"allow_delegation,allow_escalation,created_at,updated_at)"
+                +" VALUES (?,?,?,'Synthetic review',?,true,true,false,false,now(),now())",
+                step[0],definition,step[0],step[1]);
+        String binding=id();
+        admin.update("INSERT INTO public.hidra_workflow_definition_target_binding"
+            +"(id,definition_id,target_module,target_type_id,workflow_purpose_id,"
+            +"active,created_at,updated_at) VALUES (?,?,'simulation',?,?,true,now(),now())",
+            binding,definition,type,purpose);
+        admin.update("INSERT INTO public.hidra_workflow_instance"
+            +"(id,definition_id,definition_version,workflow_purpose_id,target_module,target_type_id,"
+            +"target_id,status,current_step_id,started_by_actor_id,started_by_display_name_snapshot,"
+            +"started_at,completed_at,created_at,updated_at)"
+            +" VALUES (?,?,1,?,'simulation',?,?,'COMPLETED',?,?,'Synthetic Reviewer',?,?,?,now())",
+            instance,definition,purpose,type,target,end,reviewer,
+            Timestamp.from(at.toInstant().minusSeconds(10)),at,
+            Timestamp.from(at.toInstant().minusSeconds(10)));
+        admin.update("INSERT INTO public.hidra_workflow_task"
+            +"(id,instance_id,step_id,status,assigned_actor_id,completed_by_actor_id,"
+            +"completed_at,created_at,updated_at)"
+            +" VALUES (?,?,?,'APPROVED',?,?,?, ?,now())",
+            task,instance,start,reviewer,reviewer,at,
+            Timestamp.from(at.toInstant().minusSeconds(10)));
+        admin.update("INSERT INTO public.hidra_workflow_action"
+            +"(id,instance_id,task_id,action_type,decision,actor_id,"
+            +"actor_display_name_snapshot,action_sequence,source_system,acted_at)"
+            +" VALUES (?,?,?,'APPROVE','APPROVE',?,'Synthetic Reviewer',1,'HIDRA_API',?)",
+            action,instance,task,reviewer,at);
+        return new ManufacturerTerminalWorkflow(definition,type,purpose,instance,task,action);
+    }
+
+    private String qualificationBody(ManufacturerTerminalWorkflow w) {
+        return "{\"companyPartyId\":\""+company+"\",\"approval\":{"
+            +"\"definitionId\":\""+w.definition()+"\",\"definitionVersion\":1,"
+            +"\"targetTypeId\":\""+w.type()+"\",\"purposeId\":\""+w.purpose()+"\","
+            +"\"instanceId\":\""+w.instance()+"\",\"taskId\":\""+w.task()+"\","
+            +"\"actionId\":\""+w.action()+"\"}}";
+    }
+
+    @Test void nativeManufacturerQualificationRequiresRealTerminalWorkflowAndReplaysOnce()throws Exception{
+        save("v1");
+        allow(Operation.QUALIFY,"v1");
+        var w=terminalManufacturerWorkflow("v1");
+        String payload=qualificationBody(w);
+        http("POST",path("v1")+"/qualification",payload,token)
+            .andExpect(status().isOk()).andExpect(jsonPath("$.workflowQualified").value(true));
+        http("POST",path("v1")+"/qualification",payload,token)
+            .andExpect(status().isOk()).andExpect(jsonPath("$.workflowQualified").value(true));
+        assertThat(count(QUAL)).isEqualTo(1);
+        admin.update("UPDATE public.hidra_workflow_definition_target_binding"
+                +" SET active=false WHERE definition_id=?",w.definition());
+        http("POST",path("v1")+"/qualification",payload,token)
+            .andExpect(status().isForbidden()).andExpect(jsonPath("$.code").value("DENIED"));
+        assertThat(count(REV)).isEqualTo(1);
+        assertThat(count(QUAL)).isEqualTo(1);
+    }
+
+    @Test void supplierDeclaredCertificateRemainsDocumentaryAndNeedsSeparateCurrentGrant()throws Exception{
+        String revision="certificate-v1";
+        String certificate="\"certificate\":{\"issuerReference\":\"synthetic-issuer\","
+            +"\"certificateReference\":\"unverified-supplier-document\","
+            +"\"certificateSha256\":\""+ "b".repeat(64) +"\","
+            +"\"sourceId\":\""+source+"\",\"revisionId\":\""+revision+"\","
+            +"\"sourceDocumentSha256\":\""+ "a".repeat(64) +"\","
+            +"\"manufacturerPartyId\":\""+manufacturer+"\","
+            +"\"manufacturerModelReference\":\""+MODEL+"\","
+            +"\"characteristicKind\":\"OPERATING_LIMITS\","
+            +"\"validFrom\":\"2026-10-01T10:00:00Z\"},";
+        String supplied=body(revision).replace("\"origin\":\"SYNTHETIC\"",
+                "\"origin\":\"SUPPLIER_DECLARED\"").replace("\"family\":",certificate+"\"family\":");
+        allow(Operation.SAVE,revision);
+        http("PUT",path(revision),supplied,token).andExpect(status().isOk());
+        allow(Operation.READ_REVISION,revision);
+        http("GET",path(revision),null,token).andExpect(status().isOk())
+            .andExpect(jsonPath("$.source.certificate").doesNotExist());
+        http("GET",path(revision)+"/certificate",null,token)
+            .andExpect(status().isForbidden());
+        allow(Operation.READ_CERTIFICATE,revision);
+        http("GET",path(revision)+"/certificate",null,token).andExpect(status().isOk())
+            .andExpect(jsonPath("$.certificate.issuerReference").value("synthetic-issuer"))
+            .andExpect(jsonPath("$.certificate.certificateReference")
+                .value("unverified-supplier-document"));
+        grant(Operation.READ_CERTIFICATE,revision,"DENY","source");
+        http("GET",path(revision)+"/certificate",null,token)
+            .andExpect(status().isForbidden());
+        assertThat(count(REV)).isEqualTo(1);
+        assertThat(count(QUAL)).isZero();
+    }
+
+    @Test void nativePagedManufacturerHistoryRechecksCurrentAuthorityForEveryContinuation()throws Exception{
+        save("v1");save("v2");save("v3");allow(Operation.LIST_HISTORY,null);
+        String first=http.perform(get(ROOT+source+"/history").param("companyPartyId",company)
+            .param("size","1").header("Authorization","Bearer "+token))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.history.length()").value(1))
+            .andReturn().getResponse().getContentAsString();
+        var json=new com.fasterxml.jackson.databind.ObjectMapper().readTree(first);
+        String cursor=json.path("nextCursor").asText();
+        assertThat(cursor).isNotBlank();
+        assertThat(first).doesNotContain("totalCount","manufacturerPartyId","issuerReference");
+        http.perform(get(ROOT+source+"/history").param("companyPartyId",company)
+            .param("size","1").param("cursor",cursor).header("Authorization","Bearer "+token))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.history.length()").value(1));
+        http.perform(get(ROOT+source+"/history").param("companyPartyId",company)
+            .param("size","2").param("cursor",cursor).header("Authorization","Bearer "+token))
+            .andExpect(status().isForbidden());
+        grant(Operation.LIST_HISTORY,null,"DENY","source");
+        http.perform(get(ROOT+source+"/history").param("companyPartyId",company)
+            .param("size","1").param("cursor",cursor).header("Authorization","Bearer "+token))
+            .andExpect(status().isForbidden()).andExpect(jsonPath("$.code").value("DENIED"));
+        assertThat(count(REV)).isEqualTo(3);
+    }
+
+    @Test void divergentImmutableReplayAndMalformedSupplierAxisCannotModifyStoredRevision()throws Exception{
+        save("v1");
+        String old=admin.queryForObject("SELECT payload_sha256 FROM "+REV
+            +" WHERE company_party_id=? AND source_id=? AND revision_id=?",
+            String.class,company,source,"v1");
+        String changed=body("v1").replace("\"maximumInclusive\":2.00",
+            "\"maximumInclusive\":3.00");
+        assertThat(changed).isNotEqualTo(body("v1"));
+        http("PUT",path("v1"),changed,token).andExpect(status().isForbidden());
+        String malformed=body("v1").replace("\"unit\":\"KILOGRAM_PER_SECOND\"",
+            "\"unit\":\"UNSUPPORTED_UNIT\"");
+        assertThat(malformed).isNotEqualTo(body("v1"));
+        http("PUT",path("v1"),malformed,token).andExpect(status().isBadRequest());
+        assertThat(count(REV)).isEqualTo(1);
+        assertThat(admin.queryForObject("SELECT payload_sha256 FROM "+REV
+            +" WHERE company_party_id=? AND source_id=? AND revision_id=?",
+            String.class,company,source,"v1")).isEqualTo(old);
+        assertThat(count(QUAL)).isZero();
+    }
+
+    /** Schema-owner synthetic bulk fixture; the native HTTP route must authenticate all
+     * source principals, including those beyond the page boundary. This helper is not a
+     * bypass for a real publisher or a claim of authorized vendor data. */
+    private void insertCanonicalHistory(int rows, boolean distinctModels) {
+        var datasource=new DriverManagerDataSource(PG.getJdbcUrl(),PG.getUsername(),PG.getPassword());
+        var jdbc=new JdbcTemplate(datasource);
+        var manager=new org.springframework.jdbc.datasource.DataSourceTransactionManager(datasource);
+        var tx=new org.springframework.transaction.support.TransactionTemplate(manager);
+        tx.setIsolationLevel(org.springframework.transaction.TransactionDefinition.ISOLATION_READ_COMMITTED);
+        tx.execute(status->{
+            int pid=jdbc.queryForObject("SELECT pg_backend_pid()",Integer.class);
+            long xid=jdbc.queryForObject("SELECT txid_current()",Long.class);
+            String dbRole=jdbc.queryForObject("SELECT current_user",String.class);
+            var codec=new dz.sh.hidra.modules.simulation.infrastructure.persistence.adapter
+                .ManufacturerCharacteristicRevisionCodec();
+            Instant recorded=Instant.parse("2026-10-01T10:00:00Z");
+            for(int i=0;i<rows;i++){
+                String revision="history-"+String.format(java.util.Locale.ROOT,"%04d",i);
+                String model=distinctModels?"synthetic-model-"+i:MODEL;
+                var sourceRevision=new dz.sh.hidra.modules.simulation.domain.model
+                    .ManufacturerCharacteristicRevision(
+                        source,revision,recorded,recorded,null,
+                        dz.sh.hidra.modules.simulation.domain.model
+                            .ManufacturerCharacteristicRevision.Origin.SYNTHETIC,
+                        manufacturer,model,"synthetic-history-evidence","a".repeat(64),
+                        new dz.sh.hidra.modules.simulation.domain.model
+                            .ManufacturerCharacteristicRevision.ReferenceConditions(
+                                new java.math.BigDecimal("180000.00"),
+                                new java.math.BigDecimal("298.15"),"synthetic history conditions"),
+                        null,new dz.sh.hidra.modules.simulation.domain.model
+                            .ManufacturerCharacteristicRevision.OperatingLimits(List.of(
+                                new dz.sh.hidra.modules.simulation.domain.model
+                                    .ManufacturerCharacteristicRevision.Limit(
+                                        new dz.sh.hidra.modules.simulation.domain.model
+                                            .ManufacturerCharacteristicRevision.Axis(
+                                                dz.sh.hidra.modules.simulation.domain.model
+                                                    .ManufacturerCharacteristicRevision.Quantity.MASS_FLOW,
+                                                dz.sh.hidra.modules.simulation.domain.model
+                                                    .ManufacturerCharacteristicRevision.Unit.KILOGRAM_PER_SECOND),
+                                        new java.math.BigDecimal("0.00"),
+                                        new java.math.BigDecimal("2.00"),"synthetic history bounds"))));
+                byte[] payload=codec.encode(sourceRevision);
+                String payloadSha=codec.sha256(payload);
+                String target=dz.sh.hidra.modules.simulation.application.service
+                    .ProtectedManufacturerCharacteristicAdmissionCoordinator.targetDigestStatic(
+                        new dz.sh.hidra.modules.simulation.application.port.out
+                            .ManufacturerCharacteristicRevisionRepositoryPort.Key(company,source,revision),
+                        payloadSha);
+                jdbc.update("INSERT INTO "+REV
+                    +" (company_party_id,source_id,revision_id,manufacturer_party_id,"
+                    +"manufacturer_model_reference,payload_format,canonical_payload,payload_sha256,"
+                    +"workflow_target_digest,document_sha256,source_recorded_at,effective_from,source_origin,"
+                    +"creator_user_id,operation_binding_id,session_id,backend_pid,transaction_id,database_role,inserted_at)"
+                    +" VALUES (?,?,?,?,?,?,?,?,?,?,?,?,'SYNTHETIC',?,?,?,?,?,?,?)",
+                    company,source,revision,manufacturer,model,
+                    "HIDRA_MANUFACTURER_CHARACTERISTIC_SOURCE_V1",payload,payloadSha,target,
+                    "a".repeat(64),Timestamp.from(recorded),Timestamp.from(recorded),
+                    user,"synthetic-history-binding","synthetic-history-session",pid,xid,dbRole,
+                    Timestamp.from(Instant.now()));
+            }
+            return null;
+        });
+    }
+    @Test void nativeHttpHistoryChecksAll265RowsAndFailsClosedAtSixtyFifthPrincipal()throws Exception{
+        insertCanonicalHistory(265,false);
+        allow(Operation.LIST_HISTORY,null);
+        String current=http.perform(get(ROOT+source+"/history")
+                .param("companyPartyId",company).param("size","5")
+                .header("Authorization","Bearer "+token))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.history.length()").value(5))
+            .andReturn().getResponse().getContentAsString();
+        var json=new com.fasterxml.jackson.databind.ObjectMapper().readTree(current);
+        assertThat(json.path("history").get(0).path("revisionId").asText())
+            .isEqualTo("history-0000");
+        assertThat(json.path("nextCursor").asText()).isNotBlank();
+        assertThat(current).doesNotContain("totalCount","manufacturerPartyId");
+        assertThat(count(REV)).isEqualTo(265);
+        // This is a distinct source so a small page may not hide 65 forbidden principals.
+        source=id();
+        insertCanonicalHistory(65,true);
+        allow(Operation.LIST_HISTORY,null);
+        http.perform(get(ROOT+source+"/history")
+            .param("companyPartyId",company).param("size","1")
+            .header("Authorization","Bearer "+token))
+            .andExpect(status().isForbidden()).andExpect(jsonPath("$.code").value("DENIED"));
+        assertThat(count(REV)).isEqualTo(65);
     }
 }

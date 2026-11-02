@@ -1070,7 +1070,16 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
             useVerifiedNativeWorkflowActor(token,user);
             // Exercise the protected owner lookup directly before the real Workflow
             // transaction, to distinguish native authorization from Workflow fencing.
-            assertThat(apiOwner.resolveWorkflowTarget(digest,false))
+            var protectedTarget=apiOwner.resolveWorkflowTarget(digest,false);
+            // CI-only non-disclosing stage diagnostics. Keep all actual guards and
+            // the required positive assertion; never silently treat denial as success.
+            if(protectedTarget.isEmpty()) {
+                System.err.println("HAPI601 PRIVATE WORKFLOW TARGET stages coordinator="
+                    +methodNames(coordinator)+" source="+methodNames(nativeSource)
+                    +" identity="+methodNames(nativeIdentity)
+                    +" party="+methodNames(nativeParty));
+            }
+            assertThat(protectedTarget)
                 .isPresent().get().extracting(v->v.workflowTargetDigest()).isEqualTo(digest);
             var instance=workflowApplication.startWorkflowInstance(
                 new dz.sh.hidra.modules.workflow.application.command.StartWorkflowInstanceCommand(

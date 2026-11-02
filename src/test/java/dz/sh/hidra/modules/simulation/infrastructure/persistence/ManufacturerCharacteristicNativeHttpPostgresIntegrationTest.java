@@ -130,6 +130,11 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
                 "hidra_workflow_state_history","hidra_workflow_step",
                 "hidra_workflow_task","hidra_workflow_transition","hidra_workflow_type_catalog"))
             admin.execute("GRANT UPDATE ON public."+table+" TO "+PUBLISHER);
+        // Test-only app role executes genuine Workflow services against migrated PostgreSQL.
+        for(String table:List.of("hidra_workflow_action","hidra_workflow_instance",
+                "hidra_workflow_state_history","hidra_workflow_task"))
+            admin.execute("GRANT INSERT,UPDATE ON public."+table+" TO "+APP);
+
         // The real Party owner publishes SHARE_ROW_EXCLUSIVE final relation fences.
         // PostgreSQL requires a table-level UPDATE privilege for that lock strength;
         // the test-only publication role previously had SELECT and could never
@@ -175,6 +180,9 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
     @Autowired AuthenticateDirectUserUseCase authentication;
     @Autowired PasswordEncoder passwords;
     @Autowired Flyway flyway;
+    @Autowired dz.sh.hidra.modules.workflow.application.service.WorkflowApplicationService workflowApplication;
+    @Autowired dz.sh.hidra.modules.workflow.application.port.in.ExecuteWorkflowTransitionUseCase workflowTransitions;
+    @Autowired dz.sh.hidra.modules.workflow.application.port.out.WorkflowTaskRepositoryPort workflowTasks;
     @Autowired @org.springframework.beans.factory.annotation.Qualifier("hidraJwtDecoder")
     org.springframework.security.oauth2.jwt.JwtDecoder nativeJwtDecoder;
     @Autowired dz.sh.hidra.modules.identity.application.port.in.CompleteAuthenticatedPrincipalUseCase completion;
@@ -968,5 +976,107 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
             +saveMillis+" readMs="+readMillis+" configuredProtectedWorkMs="
             +workBudgets.manufacturerWorkBudgetMillis());
         assertThat(count(REV)).isEqualTo(1);
+    }
+
+    /**
+     * An approved manufacturer revision must originate in Workflow's real instance/task/action
+     * transition services, not a schema-owner INSERT into terminal approval tables.
+     * The independent synthetic reviewer is not the source publisher.
+     */
+    @Test void configuredNativeManufacturerQualificationAcceptsRealHumanWorkflowTransition()throws Exception {
+        String revision="human-approved-v1";
+        save(revision);
+        allow(Operation.READ_REVISION,revision);
+        String digest=admin.queryForObject("SELECT workflow_target_digest FROM "+REV
+            +" WHERE company_party_id=? AND source_id=? AND revision_id=?",
+            String.class,company,source,revision);
+        String reviewer=id(),definition=id(),type=id(),purpose=id();
+        String first=id(),last=id(),transition=id();
+        Timestamp created=Timestamp.from(Instant.now());
+        admin.update("INSERT INTO public.hidra_identity_user"
+            +"(id,username,display_name,user_type,status,failed_login_count,created_at,activated_at,updated_at)"
+            +" VALUES (?,?,'Synthetic Independent Reviewer','HUMAN','ACTIVE',0,?,?,?)",
+            reviewer,reviewer,created,created,created);
+        admin.update("INSERT INTO public.hidra_identity_local_credential"
+            +"(id,user_id,password_hash,credential_status,created_at,updated_at)"
+            +" VALUES (?,?,?,'ACTIVE',?,?)",id(),reviewer,passwords.encode(PASSWORD),created,created);
+        String reviewerBearer=authentication.authenticate(new DirectAuthenticationCommand(
+            ProviderType.LOCAL,reviewer,PASSWORD,"synthetic-ip","synthetic-reviewer",
+            "independent-human-approval")).accessToken();
+        for(String[] row:List.of(
+                new String[]{type,"WORKFLOW_TARGET_TYPE","MANUFACTURER_CHARACTERISTIC_REVISION"},
+                new String[]{purpose,"WORKFLOW_PURPOSE","MANUFACTURER_CHARACTERISTIC_QUALIFICATION"}))
+            admin.update("INSERT INTO public.hidra_workflow_type_catalog"
+                +"(id,catalog_name,code,active,sort_order,system_defined,created_at,updated_at)"
+                +" VALUES (?,?,?,true,0,false,now(),now())",row[0],row[1],row[2]);
+        admin.update("INSERT INTO public.hidra_workflow_definition"
+            +"(id,code,name_fr,type_id,status,version,created_at,updated_at)"
+            +" VALUES (?,?,'Synthetic end-user review',?,'ACTIVE',1,now(),now())",
+            definition,definition,type);
+        for(Object[] row:List.<Object[]>of(new Object[]{first,1},new Object[]{last,2}))
+            admin.update("INSERT INTO public.hidra_workflow_step"
+                +"(id,definition_id,code,name_fr,step_order,mandatory,allow_claim,"
+                +"allow_delegation,allow_escalation,created_at,updated_at)"
+                +" VALUES (?,?,?,'Engineering review',?,true,true,false,false,now(),now())",
+                row[0],definition,row[0],row[1]);
+        admin.update("INSERT INTO public.hidra_workflow_definition_target_binding"
+            +"(id,definition_id,target_module,target_type_id,workflow_purpose_id,"
+            +"active,created_at,updated_at) VALUES (?,?,'simulation',?,?,true,now(),now())",
+            id(),definition,type,purpose);
+        admin.update("INSERT INTO public.hidra_workflow_transition"
+            +"(id,definition_id,from_step_id,to_step_id,decision,reason_required,"
+            +"comment_required,created_at,updated_at)"
+            +" VALUES (?,?,?,?,'APPROVE',false,false,now(),now())",
+            transition,definition,first,last);
+        try {
+            SecurityContextHolder.getContext().setAuthentication(
+                new org.springframework.security.oauth2.server.resource.authentication
+                    .JwtAuthenticationToken(nativeJwtDecoder.decode(token)));
+            var instance=workflowApplication.startWorkflowInstance(
+                new dz.sh.hidra.modules.workflow.application.command.StartWorkflowInstanceCommand(
+                    definition,1,purpose,"simulation",type,digest,null,null,first,user,
+                    null,"Untrusted original actor snapshot",null,"synthetic-manufacturer-approval"));
+            var task=workflowApplication.createWorkflowTask(
+                new dz.sh.hidra.modules.workflow.application.command.CreateWorkflowTaskCommand(
+                    instance.id(),first,reviewer,null,null,null,null,null,null,null,null,
+                    "Synthetic independent engineering review"));
+            var persisted=workflowTasks.findById(task.id()).orElseThrow();
+            SecurityContextHolder.getContext().setAuthentication(
+                new org.springframework.security.oauth2.server.resource.authentication
+                    .JwtAuthenticationToken(nativeJwtDecoder.decode(reviewerBearer)));
+            var approval=workflowTransitions.execute(
+                new dz.sh.hidra.modules.workflow.application.command.ExecuteWorkflowTransitionCommand(
+                    task.id(),transition,persisted.updatedAt(),null,null,null,
+                    "synthetic-manufacturer-decision",reviewer,null,
+                    "Untrusted reviewer snapshot",java.util.Set.of()));
+            assertThat(approval.instanceId()).isEqualTo(instance.id());
+            assertThat(approval.taskId()).isEqualTo(task.id());
+            assertThat(admin.queryForObject("SELECT status FROM public.hidra_workflow_instance"
+                +" WHERE id=?",String.class,instance.id())).isEqualTo("COMPLETED");
+            assertThat(admin.queryForObject("SELECT actor_id FROM public.hidra_workflow_action"
+                +" WHERE id=?",String.class,approval.actionId())).isEqualTo(reviewer);
+            assertThat(reviewer).isNotEqualTo(user);
+            SecurityContextHolder.clearContext();
+            allow(Operation.QUALIFY,revision);
+            var reference=new ManufacturerTerminalWorkflow(definition,type,purpose,
+                approval.instanceId(),approval.taskId(),approval.actionId());
+            String request=qualificationBody(reference);
+            http("POST",path(revision)+"/qualification",request,token)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.workflowQualified").value(true));
+            http("POST",path(revision)+"/qualification",request,token)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.workflowQualified").value(true));
+            assertThat(admin.queryForObject("SELECT approver_id FROM "+QUAL
+                +" WHERE company_party_id=? AND source_id=? AND revision_id=?",
+                String.class,company,source,revision)).isEqualTo(reviewer);
+            assertThat(count(QUAL)).isEqualTo(1);
+            admin.update("UPDATE public.hidra_workflow_definition_target_binding"
+                +" SET active=false WHERE definition_id=?",definition);
+            http("POST",path(revision)+"/qualification",request,token)
+                .andExpect(status().isForbidden()).andExpect(jsonPath("$.code").value("DENIED"));
+            assertThat(count(QUAL)).isEqualTo(1);
+            assertThat(count(REV)).isEqualTo(1);
+        } finally {SecurityContextHolder.clearContext();}
     }
 }

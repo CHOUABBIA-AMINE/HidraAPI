@@ -7631,6 +7631,7 @@
         "absentAndMalformedBearerCannotReadOrWriteSource",
         "certificateRequiresItsOwnCurrentPermissionEvenAfterRevisionRead",
         "configuredHttpHistoryAcceptsPreviousHmacKeyOnlyDuringRotation",
+        "configuredNativeManufacturerQualificationAcceptsRealHumanWorkflowTransition",
         "currentPartySuspensionBlocksPreviouslyAuthorizedRevision",
         "divergentImmutableReplayAndMalformedSupplierAxisCannotModifyStoredRevision",
         "foreignSourceAndWrongHttpVerbDoNotInheritNativeAuthority",
@@ -7649,7 +7650,7 @@
         "replayAfterSessionRevocationCannotMutatePreviouslyCommittedSource",
         "supplierDeclaredCertificateRemainsDocumentaryAndNeedsSeparateCurrentGrant"
       ],
-      "source_sha256": "8601878242a42e34727e6d490582d5f00c396c2ea32e289df955de2f3007a009"
+      "source_sha256": "95190f58c2f8d3cced4801f541637a347084c0ee5ab3fea5060333db14696d94"
     },
     {
       "baseline_seconds": 0,

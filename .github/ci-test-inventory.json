@@ -10096,7 +10096,8 @@
         "realIndependentHumanWorkflowRejectionCannotPublishApproval",
         "replayConflictAndStaleEpochPreserveHistoricalSourceAndReceipt",
         "sourcePermissionRevocationFencesCurrentRevisionAndHistory",
-        "terminalApprovalRequiresIndependentHumanAndNeverReclassifiesDraft"
+        "terminalApprovalRequiresIndependentHumanAndNeverReclassifiesDraft",
+        "workflowTargetReadSuspendsAmbientSynchronizationAndRestoresOriginalTransaction"
       ],
       "class": "dz.sh.hidra.modules.topology.qualification.InstalledEquipmentOperatorQualificationTest",
       "dependency_reason": "HAPI-603 integrated consumer qualification: genuine configured LOCAL JWT and fresh PostgreSQL16 native Topology/Simulation/Party/Identity/Workflow boundaries, nine separate unit/source links across three synthetic station installations, current/history, denied/malformed/replay approvals and canonical V1 historical graph compatibility; synthetic only, manufacturer assurance remains deferred",
@@ -10104,7 +10105,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/qualification/InstalledEquipmentOperatorQualificationTest.java",
-      "source_sha256": "5024166129a4956eae015468fd8de8f79cf5c5a577abb98234f68538d9819068",
+      "source_sha256": "efc3e015502fdcee3ef5cc8009b9e9caafb891143b6ea4b1a4e4e61a32c59baf",
       "supports": []
     },
     {

@@ -174,6 +174,7 @@ class InstalledEquipmentOperatorQualificationTest {
     @Autowired dz.sh.hidra.modules.workflow.application.port.out.WorkflowTaskRepositoryPort workflowTasks;
     @Autowired dz.sh.hidra.modules.topology.application.port.in.InstalledCharacteristicLinkUseCase nativeLinkOwner;
     @Autowired dz.sh.hidra.modules.topology.infrastructure.integration.TopologyInstalledCharacteristicLinkWorkflowTargetLookup targetLookup;
+    @Autowired org.springframework.transaction.PlatformTransactionManager transactionManager;
     @Autowired @org.springframework.beans.factory.annotation.Qualifier("hidraJwtDecoder")
     org.springframework.security.oauth2.jwt.JwtDecoder nativeJwtDecoder;
     private JdbcTemplate admin;
@@ -664,6 +665,38 @@ class InstalledEquipmentOperatorQualificationTest {
                 .param("companyPartyId",company)),403);
         }
         assertEquals(1L,countFor("revision"));
+    }
+
+    @Test void workflowTargetReadSuspendsAmbientSynchronizationAndRestoresOriginalTransaction() throws Exception {
+        savedDraft();
+        String digest=canonicalDraftDigest();
+        String locator=dz.sh.hidra.modules.topology.infrastructure.integration
+            .TopologyInstalledCharacteristicLinkWorkflowTargetLookup.locator(company,unit,link,1);
+        useWorkflowActor(token,user);
+        try {
+            var workflowTransaction=new org.springframework.transaction.support.TransactionTemplate(transactionManager);
+            workflowTransaction.executeWithoutResult(status -> {
+                assertTrue(org.springframework.transaction.support.TransactionSynchronizationManager.isActualTransactionActive());
+                assertTrue(org.springframework.transaction.support.TransactionSynchronizationManager.isSynchronizationActive());
+                assertTrue(targetLookup.eligibleTarget(
+                    dz.sh.hidra.modules.topology.infrastructure.integration
+                        .TopologyInstalledCharacteristicLinkWorkflowTargetLookup.TYPE,digest,locator).isPresent());
+                for(var operation:dz.sh.hidra.modules.workflow.application.contract.target
+                        .WorkflowOwnedTargetLookup.ProtectedRead.values())
+                    assertTrue(targetLookup.protectedReadAllowed(
+                        dz.sh.hidra.modules.topology.infrastructure.integration
+                            .TopologyInstalledCharacteristicLinkWorkflowTargetLookup.TYPE,
+                        digest,locator,operation));
+                assertTrue(targetLookup.eligibleTarget(
+                    dz.sh.hidra.modules.topology.infrastructure.integration
+                        .TopologyInstalledCharacteristicLinkWorkflowTargetLookup.TYPE,
+                    "0".repeat(64),locator).isEmpty());
+                assertTrue(org.springframework.transaction.support.TransactionSynchronizationManager.isActualTransactionActive());
+                assertTrue(org.springframework.transaction.support.TransactionSynchronizationManager.isSynchronizationActive());
+            });
+        } finally {SecurityContextHolder.clearContext();}
+        assertEquals(1L,countFor("revision"));
+        assertEquals(0L,countFor("approval"));
     }
 
     @Test void terminalApprovalRequiresIndependentHumanAndNeverReclassifiesDraft() throws Exception {

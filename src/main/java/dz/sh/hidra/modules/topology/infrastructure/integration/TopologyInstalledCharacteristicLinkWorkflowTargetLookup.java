@@ -10,9 +10,13 @@ import java.util.Base64;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.support.DefaultTransactionStatus;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * Treats a locator as untrusted addressing data. Every disclosure goes through the
@@ -26,9 +30,12 @@ public class TopologyInstalledCharacteristicLinkWorkflowTargetLookup implements 
     public static final String TYPE="INSTALLED_CHARACTERISTIC_LINK_REVISION";
     private static final String PREFIX="v1";
     private final InstalledCharacteristicLinkUseCase owner;
+    private final PlatformTransactionManager manager;
 
-    public TopologyInstalledCharacteristicLinkWorkflowTargetLookup(InstalledCharacteristicLinkUseCase owner) {
+    public TopologyInstalledCharacteristicLinkWorkflowTargetLookup(InstalledCharacteristicLinkUseCase owner,
+            PlatformTransactionManager manager) {
         this.owner=Objects.requireNonNull(owner);
+        this.manager=Objects.requireNonNull(manager);
     }
     @Override public String module() { return "topology"; }
     @Override public Set<String> targetTypeCodes() { return Set.of(TYPE); }
@@ -59,10 +66,38 @@ public class TopologyInstalledCharacteristicLinkWorkflowTargetLookup implements 
     private static String dec(String value) {
         return new String(Base64.getUrlDecoder().decode(value),StandardCharsets.UTF_8);
     }
+    /**
+     * Spring NOT_SUPPORTED can create an empty synchronization after suspending Workflow.
+     * The native private credential route forbids both ambient transactions and synchronization.
+     * Remove only this new empty scaffold during the protected read and restore it before
+     * Spring resumes the original Workflow transaction. Never remove a populated context.
+     */
+    private <T> T withoutWorkflowTransaction(Supplier<T> read) {
+        var suspended=new TransactionTemplate(manager);
+        suspended.setPropagationBehavior(TransactionDefinition.PROPAGATION_NOT_SUPPORTED);
+        return suspended.execute(status -> {
+            boolean scaffold=status instanceof DefaultTransactionStatus d && d.isNewSynchronization();
+            if(TransactionSynchronizationManager.isActualTransactionActive())
+                throw new IllegalStateException("Workflow owner read must be detached");
+            if(scaffold) {
+                if(!TransactionSynchronizationManager.getSynchronizations().isEmpty())
+                    throw new IllegalStateException("Unexpected Workflow suspension synchronization");
+                TransactionSynchronizationManager.clearSynchronization();
+            } else if(TransactionSynchronizationManager.isSynchronizationActive()) {
+                throw new IllegalStateException("Unexpected active Workflow synchronization");
+            }
+            try {return read.get();}
+            finally {if(scaffold)TransactionSynchronizationManager.initSynchronization();}
+        });
+    }
+
     @Override
-    @Transactional(propagation=Propagation.NOT_SUPPORTED)
     public Optional<Target> eligibleTarget(String type,String digest,String untrustedLocator) {
         if(!TYPE.equals(type)||digest==null||!digest.matches("[0-9a-f]{64}")) return Optional.empty();
+        return withoutWorkflowTransaction(() -> eligibleTargetDetached(digest,untrustedLocator));
+    }
+
+    private Optional<Target> eligibleTargetDetached(String digest,String untrustedLocator) {
         try {
             var c=parse(untrustedLocator);
             var r=owner.execute(new Command(Operation.READ_REVISION,c.company(),c.unit(),c.link(),
@@ -77,22 +112,26 @@ public class TopologyInstalledCharacteristicLinkWorkflowTargetLookup implements 
             return Optional.of(new Target(digest,locator(c.company(),c.unit(),c.link(),c.revision()),
                     "Installed characteristic link revision"));
         } catch(RuntimeException unavailable) {
-            // Includes identity DENY, missing source, indeterminate outcome and malformed locator.
-            // Never return a fallback target or a protected existence distinction.
+            // Includes Identity denial, missing source, indeterminate outcome and malformed locator.
+            // No protected existence distinction or fallback target is disclosed.
             return Optional.empty();
         }
     }
+
     @Override
-    @Transactional(propagation=Propagation.NOT_SUPPORTED)
     public boolean protectedReadAllowed(String type,String digest,String untrustedLocator,ProtectedRead operation) {
-        if(operation==null||eligibleTarget(type,digest,untrustedLocator).isEmpty()) return false;
-        if(operation==ProtectedRead.REVISION) return true;
-        try {
-            var c=parse(untrustedLocator);
-            // HISTORY requires its independent native permission as well as exact revision READ.
-            owner.execute(new Command(Operation.LIST_HISTORY,c.company(),c.unit(),c.link(),
-                    null,null,null,null,1,null));
-            return true;
-        }catch(RuntimeException denied){return false;}
+        if(operation==null||!TYPE.equals(type)||digest==null||!digest.matches("[0-9a-f]{64}"))
+            return false;
+        return withoutWorkflowTransaction(() -> {
+            if(eligibleTargetDetached(digest,untrustedLocator).isEmpty()) return false;
+            if(operation==ProtectedRead.REVISION) return true;
+            try {
+                var c=parse(untrustedLocator);
+                // HISTORY requires its independent native permission as well as exact revision READ.
+                owner.execute(new Command(Operation.LIST_HISTORY,c.company(),c.unit(),c.link(),
+                        null,null,null,null,1,null));
+                return true;
+            }catch(RuntimeException denied){return false;}
+        });
     }
 }

@@ -23,6 +23,8 @@ import dz.sh.hidra.modules.topology.application.port.in.InstalledCharacteristicL
 import dz.sh.hidra.modules.topology.application.port.in.InstalledCharacteristicLinkUseCase.*;
 import dz.sh.hidra.modules.topology.application.model.InstalledCharacteristicLinkFailure;
 import dz.sh.hidra.modules.topology.api.rest.request.InstalledCharacteristicLinkRequests.CharacteristicLinkDraftSave;
+import dz.sh.hidra.modules.topology.api.rest.request.InstalledCharacteristicLinkRequests.CharacteristicLinkApprovalCommand;
+import dz.sh.hidra.modules.topology.api.rest.request.InstalledCharacteristicLinkRequests.CharacteristicLinkWorkflowReference;
 import dz.sh.hidra.modules.topology.domain.model.InstalledCharacteristicLink;
 import java.time.Instant;
 import java.util.List;
@@ -50,7 +52,14 @@ class InstalledCharacteristicLinkControllerTest {
     @Test void anonymousCannotInvokeAnyProtectedReadOrWrite(){
         assertThrows(InstalledCharacteristicLinkFailure.class,()->controller.current("unit","link","company"));
         assertThrows(InstalledCharacteristicLinkFailure.class,()->controller.save("unit","link",save()));
+        assertThrows(InstalledCharacteristicLinkFailure.class,()->controller.approve("unit","link",1,approval()));
+        assertThrows(InstalledCharacteristicLinkFailure.class,()->controller.approvedRevision("unit","link",1,"company"));
+        assertThrows(InstalledCharacteristicLinkFailure.class,()->controller.approvalHistory("unit","link","company",5,null));
         verifyNoInteractions(owner);
+    }
+    private static CharacteristicLinkApprovalCommand approval(){
+        return new CharacteristicLinkApprovalCommand("company","req-approval",1L,
+            new CharacteristicLinkWorkflowReference("def",1,"type","purpose","instance","task","action"));
     }
     @Test void authenticatedSaveRequiresOriginalOwnerAndReturnsDraftOnly(){
         auth();when(owner.execute(any())).thenReturn(new Result(value(),List.of(),false,null));
@@ -75,5 +84,33 @@ class InstalledCharacteristicLinkControllerTest {
         assertNull(reply.link());assertTrue(reply.history().isEmpty());
         verify(owner).execute(argThat(c->c.operation()==Operation.LIST_HISTORY
             &&c.limit()==5&&c.beforeRevision()==3L));
+    }
+    @Test void exactWorkflowDescriptorIsNeverAnApprovalClaim(){
+        auth();
+        when(owner.execute(any())).thenReturn(new Result(null,List.of(),false,null));
+        assertEquals(InstalledCharacteristicLinkFailure.Kind.NOT_FOUND,
+            assertThrows(InstalledCharacteristicLinkFailure.class,
+                ()->controller.approve("unit","link",1,approval())).kind());
+        verify(owner).execute(argThat(c->c.operation()==Operation.APPROVE
+            && c.expectedEpoch()==1L && c.revision()==1L
+            && c.approval().actionId().equals("action")));
+    }
+    @Test void protectedReadUsesIndependentApprovalOperations(){
+        auth();
+        when(owner.execute(any())).thenReturn(new Result(null,List.of(),false,null));
+        assertEquals(InstalledCharacteristicLinkFailure.Kind.NOT_FOUND,
+            assertThrows(InstalledCharacteristicLinkFailure.class,
+                ()->controller.approvedRevision("unit","link",1,"company")).kind());
+        var page=controller.approvalHistory("unit","link","company",5,3L);
+        assertTrue(page.history().isEmpty());
+        verify(owner).execute(argThat(c->c.operation()==Operation.LIST_APPROVAL_HISTORY
+            && c.limit()==5 && c.beforeRevision()==3L));
+    }
+    @Test void malformedWorkflowDescriptorRejectsBeforeOwner(){
+        auth();
+        var invalid=new CharacteristicLinkApprovalCommand("company","req",1L,
+            new CharacteristicLinkWorkflowReference("def",0,"type","purpose","instance","task","action"));
+        assertThrows(IllegalArgumentException.class,()->controller.approve("unit","link",1,invalid));
+        verifyNoInteractions(owner);
     }
 }

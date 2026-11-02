@@ -31,4 +31,16 @@ public final class InstalledCharacteristicLinkResponses {
     public record Page(Link link,List<Link> history,boolean replayed,Long nextBeforeRevision){
         public Page{history=List.copyOf(history);}
     }
+    @io.swagger.v3.oas.annotations.media.Schema(name="TopologyInstalledCharacteristicApprovalWorkflow")
+    public record WorkflowEvidence(String definitionId,int definitionVersion,
+            String targetTypeId,String targetTypeCode,String purposeId,String purposeCode,
+            String instanceId,String taskId,String actionId,String actorUserId,Instant actedAt){}
+    @io.swagger.v3.oas.annotations.media.Schema(name="TopologyInstalledCharacteristicApprovalDecision")
+    public record ApprovalDecision(Link target,String draftActorUserId,String approvingActorUserId,
+            String targetSha256,WorkflowEvidence workflow,Instant approvedAt){}
+    @io.swagger.v3.oas.annotations.media.Schema(name="TopologyInstalledCharacteristicApprovalPage")
+    public record ApprovalPage(ApprovalDecision approval,List<ApprovalDecision> history,
+            boolean replayed,Long nextBeforeRevision){
+        public ApprovalPage{history=List.copyOf(history);}
+    }
 }

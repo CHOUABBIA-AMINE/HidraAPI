@@ -20,6 +20,8 @@
 package dz.sh.hidra.modules.topology.qualification;
 
 import dz.sh.hidra.HidraApplication;
+import dz.sh.hidra.modules.topology.domain.model.InstalledCharacteristicLink;
+import dz.sh.hidra.modules.topology.domain.service.InstalledCharacteristicLinkApprovalTargetDigester;
 import dz.sh.hidra.modules.identity.application.model.DirectAuthenticationCommand;
 import dz.sh.hidra.modules.identity.application.port.in.AuthenticateDirectUserUseCase;
 import dz.sh.hidra.modules.identity.domain.value.ProviderType;
@@ -111,6 +113,8 @@ class InstalledCharacteristicLinkNativeHttpPostgresIntegrationTest {
         for(String relation:List.of("revision","request"))
             admin.execute("GRANT INSERT ON public.hidra_topology_installed_characteristic_"+relation+" TO "+PUBLISHER);
         admin.execute("GRANT INSERT,UPDATE ON public.hidra_topology_installed_characteristic_head TO "+PUBLISHER);
+        for(String relation:List.of("approval","approval_request"))
+            admin.execute("GRANT INSERT ON public.hidra_topology_installed_characteristic_"+relation+" TO "+PUBLISHER);
         provisionLock(admin,"link_party_lock_owner","public.hidra_party_manufacturer_authorization_lock()",
             List.of("hidra_party_party","hidra_party_eligibility_generation","hidra_party_role",
                 "hidra_party_role_assignment","hidra_party_manufacturer_profile",
@@ -122,6 +126,15 @@ class InstalledCharacteristicLinkNativeHttpPostgresIntegrationTest {
             List.of("hidra_simulation_manufacturer_characteristic_revision","hidra_topology_installed_unit",
                 "hidra_topology_installed_characteristic_revision",
                 "hidra_topology_installed_characteristic_head","hidra_topology_installed_characteristic_request"));
+        provisionLock(admin,"link_topology_approval_lock_owner",
+            "public.hidra_topology_characteristic_lock_approval_sources()",
+            List.of("hidra_simulation_manufacturer_characteristic_revision",
+                "hidra_topology_installed_unit","hidra_topology_installed_unit_installation",
+                "hidra_topology_installed_characteristic_revision",
+                "hidra_topology_installed_characteristic_head",
+                "hidra_topology_installed_characteristic_request",
+                "hidra_topology_installed_characteristic_approval",
+                "hidra_topology_installed_characteristic_approval_request"));
         registry.add("spring.datasource.url",PG::getJdbcUrl);
         registry.add("spring.datasource.username",()->APP);
         registry.add("spring.datasource.password",()->PASSWORD);
@@ -428,5 +441,202 @@ class InstalledCharacteristicLinkNativeHttpPostgresIntegrationTest {
             .andExpect(status().isUnauthorized());
         http.perform(put(linkPath()).contentType(MediaType.APPLICATION_JSON)
             .content("{}")).andExpect(status().isUnauthorized());
+    }
+
+    private String protectedApprovalPath(){return linkPath()+"/revisions/1/approval";}
+    /** The publisher remains untrusted; all fixture entries are synthetic schema-owner test data. */
+    private String distinctReviewer() {
+        String reviewer=id();
+        Timestamp now=Timestamp.from(Instant.now());
+        admin.update("INSERT INTO public.hidra_identity_user"+
+            "(id,username,user_type,status,failed_login_count,created_at,updated_at)"+
+            " VALUES (?,?,'HUMAN','ACTIVE',0,?,?)",reviewer,reviewer,now,now);
+        admin.update("INSERT INTO public.hidra_identity_local_credential"+
+            "(id,user_id,password_hash,credential_status,created_at,updated_at)"+
+            " VALUES (?,?,?,'ACTIVE',?,?)",id(),reviewer,passwords.encode(PASSWORD),now,now);
+        return reviewer;
+    }
+    private String reviewerToken(String reviewer) {
+        return authentication.authenticate(new DirectAuthenticationCommand(
+            ProviderType.LOCAL,reviewer,PASSWORD,"synthetic-ip","synthetic-agent",
+            "synthetic-approval-correlation")).accessToken();
+    }
+    private void reviewerGrants(String reviewer, boolean approve) {
+        String original=user;
+        try {
+            user=reviewer;
+            for(String code:List.of("topology:installed-characteristic:read",
+                    "topology:installed-characteristic:history"))
+                grant(code,"INSTALLED_CHARACTERISTIC_LINK","topology-company:"+company);
+            if(approve)
+                grant("topology:installed-characteristic:approve",
+                    "INSTALLED_CHARACTERISTIC_LINK","topology-company:"+company);
+            grant("topology:installed-unit:read","INSTALLED_UNIT","topology-company:"+company);
+            grant("simulation:manufacturer-characteristic:read",
+                "MANUFACTURER_CHARACTERISTIC_REVISION","simulation-company:"+company);
+            grant("simulation:manufacturer-characteristic:read",
+                "MANUFACTURER_CHARACTERISTIC_REVISION",
+                "simulation-source:"+sourceScope(company,source,REV));
+        } finally {user=original;}
+    }
+    private String canonicalDraftDigest(){
+        String sourceSha=admin.queryForObject(
+            "SELECT payload_sha256 FROM public.hidra_simulation_manufacturer_characteristic_revision"+
+            " WHERE company_party_id=? AND source_id=? AND revision_id=?",
+            String.class,company,source,REV);
+        var draft=new InstalledCharacteristicLink(link,1L,company,unit,source,REV,sourceSha,
+            InstalledCharacteristicLink.Kind.OPERATING_LIMITS,
+            Instant.parse("2026-10-01T10:00:00Z"),null,
+            Instant.parse("2026-10-01T10:00:00Z"),"synthetic:link",null);
+        return InstalledCharacteristicLinkApprovalTargetDigester.digest(draft);
+    }
+    private record ActualWorkflow(String definition,String type,String purpose,
+            String instance,String task,String action,String digest){}
+    /** Real Workflow owner relations: configured target, active definition, approved terminal action. */
+    private ActualWorkflow terminalWorkflow(String reviewer,String digest){
+        String definition=id(),start=id(),end=id(),instance=id(),task=id(),action=id();
+        String type=admin.queryForObject(
+            "SELECT id FROM public.hidra_workflow_type_catalog"+
+            " WHERE catalog_name='WORKFLOW_TARGET_TYPE' AND code='INSTALLED_CHARACTERISTIC_LINK_REVISION'",
+            String.class);
+        String purpose=admin.queryForObject(
+            "SELECT id FROM public.hidra_workflow_type_catalog"+
+            " WHERE catalog_name='WORKFLOW_PURPOSE' AND code='INSTALLED_CHARACTERISTIC_LINK_APPROVAL'",
+            String.class);
+        admin.update("INSERT INTO public.hidra_workflow_definition"+
+            "(id,code,name_fr,type_id,status,version,created_at,updated_at)"+
+            " VALUES (?,?,'Synthetic installed characteristic approval',?,'ACTIVE',1,now(),now())",
+            definition,definition,type);
+        for(Object[] row:List.of(new Object[]{start,1},new Object[]{end,2}))
+            admin.update("INSERT INTO public.hidra_workflow_step"+
+                "(id,definition_id,code,name_fr,step_order,mandatory,allow_claim,"+
+                "allow_delegation,allow_escalation,created_at,updated_at)"+
+                " VALUES (?,?,?,'Synthetic terminal review',?,true,true,false,false,now(),now())",
+                row[0],definition,row[0],row[1]);
+        admin.update("INSERT INTO public.hidra_workflow_definition_target_binding"+
+            "(id,definition_id,target_module,target_type_id,workflow_purpose_id,"+
+            "active,created_at,updated_at)"+
+            " VALUES (?,?,'topology',?,?,true,now(),now())",
+            id(),definition,type,purpose);
+        Instant terminal=Instant.now().minusSeconds(1).truncatedTo(java.time.temporal.ChronoUnit.MICROS);
+        Timestamp done=Timestamp.from(terminal);
+        admin.update("INSERT INTO public.hidra_workflow_instance"+
+            "(id,definition_id,definition_version,workflow_purpose_id,target_module,target_type_id,"+
+            "target_id,status,current_step_id,started_by_actor_id,started_by_display_name_snapshot,"+
+            "started_at,completed_at,created_at,updated_at)"+
+            " VALUES (?,?,1,?,'topology',?,?,'COMPLETED',?,?,'Synthetic Reviewer',?,?,?,now())",
+            instance,definition,purpose,type,digest,end,reviewer,
+            Timestamp.from(terminal.minusSeconds(10)),done,
+            Timestamp.from(terminal.minusSeconds(10)));
+        admin.update("INSERT INTO public.hidra_workflow_task"+
+            "(id,instance_id,step_id,status,assigned_actor_id,completed_by_actor_id,"+
+            "completed_at,created_at,updated_at)"+
+            " VALUES (?,?,?,'APPROVED',?,?,?, ?,now())",
+            task,instance,start,reviewer,reviewer,done,
+            Timestamp.from(terminal.minusSeconds(10)));
+        admin.update("INSERT INTO public.hidra_workflow_action"+
+            "(id,instance_id,task_id,action_type,decision,actor_id,"+
+            "actor_display_name_snapshot,action_sequence,source_system,acted_at)"+
+            " VALUES (?,?,?,'APPROVE','APPROVE',?,'Synthetic Reviewer',1,'HIDRA_API',?)",
+            action,instance,task,reviewer,done);
+        return new ActualWorkflow(definition,type,purpose,instance,task,action,digest);
+    }
+    private String approvalBody(ActualWorkflow w){
+        return """
+            {"companyPartyId":"%s","requestId":"approved-once","expectedEpoch":1,
+             "workflow":{"definitionId":"%s","definitionVersion":1,
+                 "targetTypeId":"%s","purposeId":"%s","instanceId":"%s",
+                 "taskId":"%s","actionId":"%s"}}
+            """.formatted(company,w.definition(),w.type(),w.purpose(),
+                w.instance(),w.task(),w.action());
+    }
+    private void savedDraft() throws Exception {
+        grants();saveManufacturer();
+        requireStatus(http.perform(put(linkPath()).header("Authorization","Bearer "+token)
+            .contentType(MediaType.APPLICATION_JSON).content(draftBody())),200);
+    }
+    private long approvalCount(){
+        return admin.queryForObject(
+            "SELECT count(*) FROM public.hidra_topology_installed_characteristic_approval"+
+            " WHERE company_party_id=? AND installed_unit_id=? AND link_id=?",
+            Long.class,company,unit,link);
+    }
+    @Test void independentHumanTerminalWorkflowPublishesExactlyOneApprovalAndKeepsDraft() throws Exception {
+        savedDraft();
+        String reviewer=distinctReviewer();
+        reviewerGrants(reviewer,false);
+        String reviewerJwt=reviewerToken(reviewer);
+        var workflow=terminalWorkflow(reviewer,canonicalDraftDigest());
+        String body=approvalBody(workflow);
+        requireStatus(http.perform(post(protectedApprovalPath())
+            .header("Authorization","Bearer "+reviewerJwt)
+            .contentType(MediaType.APPLICATION_JSON).content(body)),403);
+        assertEquals(0L,approvalCount());
+
+        reviewerGrants(reviewer,true);
+        requireStatus(http.perform(post(protectedApprovalPath())
+            .header("Authorization","Bearer "+reviewerJwt)
+            .contentType(MediaType.APPLICATION_JSON).content(body)),200)
+            .andExpect(jsonPath("$.approval.targetSha256").value(workflow.digest()))
+            .andExpect(jsonPath("$.approval.approvingActorUserId").value(reviewer))
+            .andExpect(jsonPath("$.replayed").value(false));
+        requireStatus(http.perform(post(protectedApprovalPath())
+            .header("Authorization","Bearer "+reviewerJwt)
+            .contentType(MediaType.APPLICATION_JSON).content(body)),200)
+            .andExpect(jsonPath("$.replayed").value(true));
+        requireStatus(http.perform(post(protectedApprovalPath())
+            .header("Authorization","Bearer "+reviewerJwt)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body.replace("approved-once","different-request"))),409);
+        requireStatus(http.perform(get(protectedApprovalPath())
+            .header("Authorization","Bearer "+reviewerJwt).param("companyPartyId",company)),200)
+            .andExpect(jsonPath("$.approval.targetSha256").value(workflow.digest()));
+        requireStatus(http.perform(get(linkPath()+"/approvals/history")
+            .header("Authorization","Bearer "+reviewerJwt).param("companyPartyId",company)
+            .param("limit","5")),200).andExpect(jsonPath("$.history.length()").value(1));
+        requireStatus(http.perform(get(linkPath())
+            .header("Authorization","Bearer "+token).param("companyPartyId",company)),200)
+            .andExpect(jsonPath("$.link.state").value("DRAFT"));
+        assertEquals(1L,approvalCount());
+        assertEquals(1L,admin.queryForObject(
+            "SELECT count(*) FROM public.hidra_topology_installed_characteristic_approval_request"+
+            " WHERE company_party_id=? AND installed_unit_id=? AND link_id=?",
+            Long.class,company,unit,link));
+    }
+    @Test void unauthorizedOrForgedWorkflowCannotMutateApprovalAndRevocationProtectsHistory() throws Exception {
+        savedDraft();
+        String reviewer=distinctReviewer();reviewerGrants(reviewer,true);
+        String reviewerJwt=reviewerToken(reviewer);
+        var workflow=terminalWorkflow(reviewer,canonicalDraftDigest());
+        String body=approvalBody(workflow);
+        requireStatus(http.perform(post(protectedApprovalPath())
+            .contentType(MediaType.APPLICATION_JSON).content(body)),401);
+        requireStatus(http.perform(post(protectedApprovalPath())
+            .header("Authorization","Bearer "+reviewerJwt)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body.replace(workflow.action(),id()))),403);
+        assertEquals(0L,approvalCount());
+        requireStatus(http.perform(post(protectedApprovalPath())
+            .header("Authorization","Bearer "+reviewerJwt)
+            .contentType(MediaType.APPLICATION_JSON).content(body)),200);
+        String permission=admin.queryForObject(
+            "SELECT id FROM public.hidra_identity_permission"+
+            " WHERE code='simulation:manufacturer-characteristic:read'",String.class);
+        admin.update("INSERT INTO public.hidra_identity_user_permission_grant"+
+            "(id,user_id,permission_id,effect,scope_type,scope_reference_id,grant_reason,"+
+            "emergency_access,valid_from,valid_to,status,created_at)"+
+            " VALUES (?,?,?,'DENY','CUSTOM',?,'synthetic approval revocation',false,"+
+            "now()-interval '1 hour',now()+interval '1 hour','ACTIVE',now())",
+            id(),reviewer,permission,"simulation-source:"+sourceScope(company,source,REV));
+        requireStatus(http.perform(get(protectedApprovalPath())
+            .header("Authorization","Bearer "+reviewerJwt)
+            .param("companyPartyId",company)),403);
+        requireStatus(http.perform(get(linkPath()+"/approvals/history")
+            .header("Authorization","Bearer "+reviewerJwt)
+            .param("companyPartyId",company)),403);
+        requireStatus(http.perform(post(protectedApprovalPath())
+            .header("Authorization","Bearer "+reviewerJwt)
+            .contentType(MediaType.APPLICATION_JSON).content(body)),403);
+        assertEquals(1L,approvalCount());
     }
 }

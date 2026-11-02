@@ -21,6 +21,9 @@ package dz.sh.hidra.modules.topology.api.rest.controller;
 
 import dz.sh.hidra.modules.topology.api.rest.mapper.InstalledCharacteristicLinkRestMapper;
 import dz.sh.hidra.modules.topology.api.rest.request.InstalledCharacteristicLinkRequests.CharacteristicLinkDraftSave;
+import dz.sh.hidra.modules.topology.api.rest.request.InstalledCharacteristicLinkRequests.CharacteristicLinkApprovalCommand;
+import dz.sh.hidra.modules.topology.api.rest.response.InstalledCharacteristicLinkResponses.ApprovalPage;
+import dz.sh.hidra.platform.permissions.NativeProtectedOperation;
 import dz.sh.hidra.modules.topology.api.rest.response.InstalledCharacteristicLinkResponses.Page;
 import dz.sh.hidra.modules.topology.application.model.InstalledCharacteristicLinkFailure;
 import dz.sh.hidra.modules.topology.application.port.in.InstalledCharacteristicLinkUseCase;
@@ -57,6 +60,13 @@ public final class InstalledCharacteristicLinkController {
             throw new InstalledCharacteristicLinkFailure(InstalledCharacteristicLinkFailure.Kind.NOT_FOUND);
         return InstalledCharacteristicLinkRestMapper.from(v);
     }
+    private ApprovalPage runApproval(InstalledCharacteristicLinkUseCase.Command c,boolean present){
+        authenticated();
+        var v=owner.execute(c);
+        if(present && v.approval()==null)
+            throw new InstalledCharacteristicLinkFailure(InstalledCharacteristicLinkFailure.Kind.NOT_FOUND);
+        return InstalledCharacteristicLinkRestMapper.approvalPage(v);
+    }
     @Operation(operationId="saveInstalledCharacteristicDraftLink",summary="Record a protected unapproved immutable characteristic draft")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode="200",description="Saved immutable draft or exact replay",useReturnTypeSchema=true)
     @PutMapping
@@ -86,5 +96,35 @@ public final class InstalledCharacteristicLinkController {
                         @RequestParam(value="limit",defaultValue="100") int limit,
                         @RequestParam(value="beforeRevision",required=false) Long beforeRevision){
         return run(InstalledCharacteristicLinkRestMapper.history(unit,link,company,limit,beforeRevision),false);
+    }
+    /** Source/actor/approval status are resolved only by native Identity and Workflow owners. */
+    @NativeProtectedOperation
+    @Operation(operationId="approveInstalledCharacteristicLinkRevision",summary="Publish a separate exact human-approved installed characteristic decision")
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode="200",description="Committed immutable approval or authorized exact replay",useReturnTypeSchema=true)
+    @PostMapping("/revisions/{revisionId}/approval")
+    public ApprovalPage approve(@PathVariable("unitId") String unit,@PathVariable("linkId") String link,
+            @PathVariable("revisionId") long revision,
+            @RequestBody CharacteristicLinkApprovalCommand body){
+        return runApproval(InstalledCharacteristicLinkRestMapper.approve(unit,link,revision,body),true);
+    }
+
+    @NativeProtectedOperation
+    @Operation(operationId="readInstalledCharacteristicLinkApproval",summary="Read independently authorized exact immutable link approval")
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode="200",description="Authorized committed approval",useReturnTypeSchema=true)
+    @GetMapping("/revisions/{revisionId}/approval")
+    public ApprovalPage approvedRevision(@PathVariable("unitId") String unit,@PathVariable("linkId") String link,
+            @PathVariable("revisionId") long revision,@RequestParam("companyPartyId") String company){
+        return runApproval(InstalledCharacteristicLinkRestMapper.approvedRevision(unit,link,company,revision),true);
+    }
+
+    @NativeProtectedOperation
+    @Operation(operationId="listInstalledCharacteristicLinkApprovalHistory",summary="Read bounded original-authorized immutable approval decisions")
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode="200",description="Authorized approval history",useReturnTypeSchema=true)
+    @GetMapping("/approvals/history")
+    public ApprovalPage approvalHistory(@PathVariable("unitId") String unit,@PathVariable("linkId") String link,
+            @RequestParam("companyPartyId") String company,
+            @RequestParam(value="limit",defaultValue="100") int limit,
+            @RequestParam(value="beforeRevision",required=false) Long beforeRevision){
+        return runApproval(InstalledCharacteristicLinkRestMapper.approvalHistory(unit,link,company,limit,beforeRevision),false);
     }
 }

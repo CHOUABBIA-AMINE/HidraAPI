@@ -11,7 +11,7 @@ import org.springframework.web.method.HandlerMethod;
 /**
  * Independently controlled Platform whitelist for native-protected HTTP routes.
  * No business module, annotation scan or application property can add entries.
- * Production activates only five separately approved manufacturer tuples after
+ * Production activates only explicitly registered manufacturer and Topology approval tuples after
  * exact Spring MVC compilation validation. This is NOT a native Identity grant.
  */
 @Component
@@ -21,7 +21,7 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
     private volatile Set<Route> verified = Set.of();
 
     public HidraTrustedNativeProtectedRouteRegistry() {
-        this(manufacturerCandidates());
+        this(approvedCandidates());
     }
 
     // Deliberately package-private for Platform's synthetic qualification tests.
@@ -33,11 +33,11 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
     }
 
     /**
-     * Independent, fixed Platform-owned five-tuple registration.
+     * Independent, fixed Platform-owned exact compiled tuple registration.
      * Literal reflective class/method signatures avoid a prohibited Platform->module
      * compile dependency. No scans, configuration overrides or runtime registration.
      */
-    private static List<Route> manufacturerCandidates() {
+    private static List<Route> approvedCandidates() {
         final String prefix="dz.sh.hidra.modules.simulation.api.rest.";
         final String controllerName=prefix+"controller.ManufacturerCharacteristicRevisionController";
         final String base="/api/v1/simulation/manufacturer-characteristics/{sourceId}";
@@ -45,6 +45,10 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             Class<?> controller=Class.forName(controllerName);
             Class<?> save=Class.forName(prefix+"request.ManufacturerCharacteristicRevisionRequests$Save");
             Class<?> qualify=Class.forName(prefix+"request.ManufacturerCharacteristicRevisionRequests$Qualify");
+            final String topology="dz.sh.hidra.modules.topology.api.rest.";
+            Class<?> installed=Class.forName(topology+"controller.InstalledCharacteristicLinkController");
+            Class<?> approval=Class.forName(topology+"request.InstalledCharacteristicLinkRequests$CharacteristicLinkApprovalCommand");
+            final String linkBase="/api/v1/topology/installed-units/{unitId}/characteristic-links/{linkId}";
             return List.of(
                 new Route(controller,controller.getDeclaredMethod("save",String.class,String.class,save),
                     "PUT",base+"/revisions/{revisionId}"),
@@ -55,10 +59,16 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
                 new Route(controller,controller.getDeclaredMethod("certificate",String.class,String.class,
                     String.class),"GET",base+"/revisions/{revisionId}/certificate"),
                 new Route(controller,controller.getDeclaredMethod("qualify",String.class,String.class,qualify),
-                    "POST",base+"/revisions/{revisionId}/qualification")
+                    "POST",base+"/revisions/{revisionId}/qualification"),
+                new Route(installed,installed.getDeclaredMethod("approve",String.class,String.class,long.class,approval),
+                    "POST",linkBase+"/revisions/{revisionId}/approval"),
+                new Route(installed,installed.getDeclaredMethod("approvedRevision",String.class,String.class,long.class,String.class),
+                    "GET",linkBase+"/revisions/{revisionId}/approval"),
+                new Route(installed,installed.getDeclaredMethod("approvalHistory",String.class,String.class,
+                    String.class,int.class,Long.class),"GET",linkBase+"/approvals/history")
             );
         } catch (ClassNotFoundException | NoSuchMethodException contractDrift) {
-            throw new IllegalStateException("Missing approved compiled manufacturer native route contract",
+            throw new IllegalStateException("Missing approved compiled native route contract",
                     contractDrift);
         }
     }

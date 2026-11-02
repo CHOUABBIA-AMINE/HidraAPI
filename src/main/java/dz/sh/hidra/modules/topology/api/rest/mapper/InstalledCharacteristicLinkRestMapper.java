@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.topology.api.rest.mapper;
 import dz.sh.hidra.modules.topology.api.rest.request.InstalledCharacteristicLinkRequests.CharacteristicLinkDraftSave;
+import dz.sh.hidra.modules.topology.api.rest.request.InstalledCharacteristicLinkRequests.CharacteristicLinkApprovalCommand;
+import dz.sh.hidra.modules.topology.domain.model.InstalledCharacteristicLinkApproval;
 import dz.sh.hidra.modules.topology.api.rest.response.InstalledCharacteristicLinkResponses;
 import dz.sh.hidra.modules.topology.application.port.in.InstalledCharacteristicLinkUseCase;
 import dz.sh.hidra.modules.topology.domain.model.InstalledCharacteristicLink;
@@ -50,6 +52,42 @@ public final class InstalledCharacteristicLinkRestMapper {
         return new InstalledCharacteristicLinkUseCase.Command(
                 InstalledCharacteristicLinkUseCase.Operation.LIST_HISTORY,company,unit,link,
                 null,null,null,null,limit,before);
+    }
+    public static InstalledCharacteristicLinkUseCase.Command approve(String unit,String link,long revision,
+            CharacteristicLinkApprovalCommand body) {
+        Objects.requireNonNull(body,"Approval request required");
+        var keys=Objects.requireNonNull(body.workflow(),"Workflow reference required");
+        var evidence=new InstalledCharacteristicLinkUseCase.ApprovalRequest(
+                keys.definitionId(),keys.definitionVersion(),keys.targetTypeId(),keys.purposeId(),
+                keys.instanceId(),keys.taskId(),keys.actionId());
+        return new InstalledCharacteristicLinkUseCase.Command(
+                InstalledCharacteristicLinkUseCase.Operation.APPROVE,body.companyPartyId(),unit,link,
+                null,body.requestId(),body.expectedEpoch(),revision,0,null,evidence);
+    }
+    public static InstalledCharacteristicLinkUseCase.Command approvedRevision(String unit,String link,String company,long revision){
+        return new InstalledCharacteristicLinkUseCase.Command(
+                InstalledCharacteristicLinkUseCase.Operation.READ_APPROVAL,company,unit,link,
+                null,null,null,revision,0,null);
+    }
+    public static InstalledCharacteristicLinkUseCase.Command approvalHistory(String unit,String link,String company,int limit,Long before){
+        return new InstalledCharacteristicLinkUseCase.Command(
+                InstalledCharacteristicLinkUseCase.Operation.LIST_APPROVAL_HISTORY,company,unit,link,
+                null,null,null,null,limit,before);
+    }
+    private static InstalledCharacteristicLinkResponses.ApprovalDecision decision(InstalledCharacteristicLinkApproval a) {
+        if(a==null)return null;
+        var e=a.workflow();
+        return new InstalledCharacteristicLinkResponses.ApprovalDecision(from(a.target()),
+                a.draftActorUserId(),a.approvingActorUserId(),a.targetSha256(),
+                new InstalledCharacteristicLinkResponses.WorkflowEvidence(
+                    e.definitionId(),e.definitionVersion(),e.targetTypeId(),e.targetTypeCode(),
+                    e.purposeId(),e.purposeCode(),e.instanceId(),e.taskId(),e.actionId(),
+                    e.actorUserId(),e.actedAt()),a.approvedAt());
+    }
+    public static InstalledCharacteristicLinkResponses.ApprovalPage approvalPage(InstalledCharacteristicLinkUseCase.Result r){
+        return new InstalledCharacteristicLinkResponses.ApprovalPage(decision(r.approval()),
+                r.approvalHistory().stream().map(InstalledCharacteristicLinkRestMapper::decision).toList(),
+                r.replayed(),r.nextBeforeRevision());
     }
     private static InstalledCharacteristicLinkResponses.Link from(InstalledCharacteristicLink v){
         if(v==null)return null;

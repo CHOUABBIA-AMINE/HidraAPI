@@ -33,8 +33,8 @@ import org.springframework.security.access.AccessDeniedException;
 public final class InstalledCharacteristicLinkApiExceptionHandler {
     private static ResponseEntity<ProblemDetail> error(int status,String code){
         var p=ProblemDetail.forStatusAndDetail(HttpStatus.valueOf(status),
-                status==503?"Characteristic draft outcome unavailable; confirm before retry"
-                :"Characteristic draft operation not completed");
+                status==503?"Characteristic link outcome unavailable; confirm before retry"
+                :"Characteristic link operation not completed");
         p.setInstance(java.net.URI.create("urn:hidra:installed-characteristic-link"));
         p.setProperty("code",code);
         return ResponseEntity.status(status).body(p);

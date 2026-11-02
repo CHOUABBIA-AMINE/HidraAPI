@@ -8421,7 +8421,10 @@
         "anonymousCannotInvokeAnyProtectedReadOrWrite",
         "authenticatedSaveRequiresOriginalOwnerAndReturnsDraftOnly",
         "authorizedCurrentAndHistoricalReadsRequireOwnerReturnedRows",
-        "historyWithoutRowsDisclosesNothingAndUsesExclusiveCursor"
+        "exactWorkflowDescriptorIsNeverAnApprovalClaim",
+        "historyWithoutRowsDisclosesNothingAndUsesExclusiveCursor",
+        "malformedWorkflowDescriptorRejectsBeforeOwner",
+        "protectedReadUsesIndependentApprovalOperations"
       ],
       "class": "dz.sh.hidra.modules.topology.api.rest.controller.InstalledCharacteristicLinkControllerTest",
       "dependency_reason": "HAPI-602 unified protected characteristic draft HTTP contract regression; synthetic unit assertions; native PostgreSQL qualification remains independent",
@@ -8429,7 +8432,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/api/rest/controller/InstalledCharacteristicLinkControllerTest.java",
-      "source_sha256": "b12c01dd33f3fc4eb1f5224580a9a9c0d435e2b48fc75b7462f7f95b2ba42e49",
+      "source_sha256": "8f4127f7ce7dbef430cd3f456eed43c39513cfe189a9c20cb0892124108876e0",
       "supports": []
     },
     {
@@ -10049,12 +10052,14 @@
     {
       "baseline_seconds": 0,
       "cases": [
-        "authenticatedDraftSaveReplayCurrentRevisionHistoryUseOriginalNativeOwner",
-        "missingSourcePermissionDeniesBeforeAnyDraftMutation",
         "absentBearerCannotReadCurrentOrHistoricalExistence",
-        "revokedManufacturerSourceDeniesExistingLinkCurrentRevisionAndHistory",
+        "authenticatedDraftSaveReplayCurrentRevisionHistoryUseOriginalNativeOwner",
         "changedReplayPayloadAndStaleEpochRejectWithoutMutatingOriginalDraft",
-        "revokedTopologyHistoryPermissionSeparatelyDeniesHistoricalListing"
+        "independentHumanTerminalWorkflowPublishesExactlyOneApprovalAndKeepsDraft",
+        "missingSourcePermissionDeniesBeforeAnyDraftMutation",
+        "revokedManufacturerSourceDeniesExistingLinkCurrentRevisionAndHistory",
+        "revokedTopologyHistoryPermissionSeparatelyDeniesHistoricalListing",
+        "unauthorizedOrForgedWorkflowCannotMutateApprovalAndRevocationProtectsHistory"
       ],
       "class": "dz.sh.hidra.modules.topology.qualification.InstalledCharacteristicLinkNativeHttpPostgresIntegrationTest",
       "dependency_reason": "HAPI-602 one coherent protected draft-link workflow: genuine configured JWT, native Identity, Party, Simulation source and original PostgreSQL 16 writer/replay/history; synthetic data only",
@@ -10062,7 +10067,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/qualification/InstalledCharacteristicLinkNativeHttpPostgresIntegrationTest.java",
-      "source_sha256": "df046652c7c914f89b1600715a0f723dbe21580552f16c4f19de772b461fde3c",
+      "source_sha256": "7f2eedf0600faa49050feede98528770a1289d9d999cf2c245cfaa5f3a88e3fe",
       "supports": []
     },
     {
@@ -10980,7 +10985,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java",
-      "source_sha256": "813a384d1139ac4c0d8a377e7721a3437884c5ebbd4b131519475581c668ae85",
+      "source_sha256": "da9f74aa3780ad28d87f2ba133a67bd8fe85c49f9e3905bf009bd81c61ce0e19",
       "supports": []
     },
     {
@@ -11000,7 +11005,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java",
-      "source_sha256": "e43a83d5b1ad5946ce49d0049a2201bd93e851fe1bd014e39d956adcd0abf5be",
+      "source_sha256": "b0024d3ed9b309ce43b70781f6d3f0f0c73dcf04362163b9a561133e3801d34f",
       "supports": []
     },
     {
@@ -11020,7 +11025,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java",
-      "source_sha256": "710663a813ba66a21904ab580895402d2b52a20b017587d332e9784496af40ec",
+      "source_sha256": "e8518128922362494eeb1f9c9bfc6eae677d7d4bcb48bcdf934f7710aa19c92f",
       "supports": []
     },
     {

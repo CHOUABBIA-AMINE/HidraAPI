@@ -3294,3 +3294,5 @@ Existing `ULTIMATE_TASKS.md#hapi-XXX` links still land here. Follow the task lin
 
 <a id="hapi-921"></a>
 [HAPI-921](TASKS_HPS-015.md#hapi-921) — docs(workflow): finalize workflow validation checklist
+
+HAPI-602 S4 protected characteristic-link approval REST and native route/test admission (2026-11-02): [HPS-006](TASKS_HPS-006.md#hapi-602) records owner-amended whole-S4 scope, three independently native-registered approval routes, explicit DTOs and synthetic configured JWT/PostgreSQL/Workflow replay, denial and revocation regressions with strict inventory hashes. Runtime-generated OpenAPI snapshot/provenance, new exact-SHA Full/Docs CI and independent S5 acceptance remain PENDING; HAPI-602 PARTIAL/IN_PROGRESS, HAPI-603 and HAPI-598 BLOCKED.

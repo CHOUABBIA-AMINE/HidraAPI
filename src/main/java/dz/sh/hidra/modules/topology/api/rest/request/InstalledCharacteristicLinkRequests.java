@@ -27,4 +27,14 @@ public final class InstalledCharacteristicLinkRequests {
             String evidenceReference,String installationId){
         @Override public String toString(){return "CharacteristicDraftSave[redacted]";}
     }
+    /** These are immutable Workflow lookup keys, never caller-provided actor/decision evidence. */
+    public record CharacteristicLinkWorkflowReference(String definitionId,int definitionVersion,
+            String targetTypeId,String purposeId,String instanceId,String taskId,String actionId){
+        @Override public String toString(){return "CharacteristicLinkWorkflowReference[redacted]";}
+    }
+    /** The exact target SHA is computed from stored DRAFT data inside the protected transaction. */
+    public record CharacteristicLinkApprovalCommand(String companyPartyId,String requestId,
+            Long expectedEpoch,CharacteristicLinkWorkflowReference workflow){
+        @Override public String toString(){return "CharacteristicLinkApprovalCommand[redacted]";}
+    }
 }

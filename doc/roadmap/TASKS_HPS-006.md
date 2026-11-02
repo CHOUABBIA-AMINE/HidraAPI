@@ -10942,3 +10942,73 @@ and parent/tree/blobs, observe applicable CI queued/started, then STOP.
 **Hard sequencing and scope preservation.** Under this final owner direction **reject** any attempt to add, renumber, rename, reorder, divide or repackage S0–S7; do not create new A/B/C, micro-preflights, CI-only stages or newly staged task IDs. No silent expansion/rewriting of frozen objectives, module owners, approved contracts, stage completion or external acceptance. The independent **HAPI-601** supplier-source assurance is a previously registered task with its own outstanding software/external acceptance; it is *not* S8. Fix failed CI within the responsible *same registered task* and its already authorized scope. Continue S6 only as one complete acceptance deliverable, including remaining C1–C5 and deferred C6 limitations; S7 selection/acceptance remains blocked until prerequisite evidence is independently accepted. Existence of successful CI alone is not approval or a permission to bypass backlog. Any future exception needs a fresh **explicit owner governance decision**, not this freeze or casual `Next`/`Fail`.
 
 **Exact source/evidence and allowed documentation scope.** Current live main `f0ae75a066498de7eee53a17a93cb99ce4b56651`: [Full #1080](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41523276539) **SUCCESS** (547 source-bound classes, 4,158 executed synthetic tests, zero failures/errors/skips, 14/14 PostgreSQL shards), [Documentation #856](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41523277117) **SUCCESS**. Canonical ROADMAP and PHASES independently retain HAPI-602 VERIFIED/COMPLETED, HAPI-603 IMPLEMENTED/IN_PROGRESS, HAPI-598 PARTIAL/BLOCKED, and manufacturer HAPI-601 IMPLEMENTED/IN_PROGRESS. This decision adds a root governance freeze statement, preserves prior owner task history and appends one pointer in the compact index; **MODIFY only** root `AGENTS.md`, this append-only `doc/roadmap/TASKS_HPS-006.md`, `doc/roadmap/ULTIMATE_TASKS.md`; CREATE/DELETE none; do not modify ROADMAP/PHASES, Java, Flyway, OpenAPI, security roles or CI. Reuse the prior exact owner-approved same-governance rule message `docs(governance): enforce unsplit tasks with one-time flat exception`. Verify guarded direct-main parent/tree/blobs and new exact-SHA Documentation CI creation then **STOP**. This record is not a GitHub branch-protection rule, release approval, SITE signoff or completion of S6/S7.
+
+### HAPI-603 S6 — owner-accepted F04/F05 backend contract baseline (2026-11-02)
+
+**Explicit owner decision.** The owner answered Approved to using Full1080's
+verified generated backend OpenAPI as the F04/F05 handoff contract baseline for
+completing whole S6, with frontend implementation and UI acceptance external.
+This records that contract decision INSIDE existing HAPI-603/S6; it introduces
+no stage, subdivision, new ID, frontend work or acceptance waiver. The official
+S0–S7 list and original whole C1–C5 software evidence obligations remain intact.
+
+**Independently retrieved artifact pin.** Full1080/run41523276539 attempt1,
+source f0ae75a066498de7eee53a17a93cb99ce4b56651, artifact13179161181:
+hidra-api-openapi-f0ae75a066498de7eee53a17a93cb99ce4b56651-41523276539-1-api-contract.
+Downloaded ZIP SHA256
+`bb156ac33d2a790c4f949c890d4c8402043a453463adc5f7d035ff2eecbf7d77`
+matches GitHub's artifact digest. ZIP member hidra-api.json SHA256
+`a6754a556d8ebbbcf1c2fbd3b01be44745387456ff928195e0aa1ac83032f723`;
+its x-hidra-ci-source-sha equals the exact source above.
+Git comparison from that implementation to main
+f5ecd57da7be64ad4b84140053dd75ffb1ffd3b7 changes only AGENTS.md,
+this phase record and ULTIMATE_TASKS.md; runtime/test/API sources are unchanged.
+Full1080 and Docs856 succeeded; current governance Docs857 succeeded.
+HidraWEB46676deb70fd38b906bdb370f020f609d0a16c98 still lists F04/F05 as
+proposed. This owner decision accepts the backend handoff baseline only;
+it does not claim repinning/generated-client execution in HidraWEB.
+
+**Exact pinned mapping.** Paths below are under /api/v1. Schema names refer
+to components/schemas in the retrieved member, not invented DTO definitions.
+
+| Consumer boundary | Actual routes / schema references |
+|---|---|
+| F04 unit identity and installation | topology/installed-units/{unitId} GET/PUT; installations POST plus exact/history/close/relocate/replace routes. InstalledUnitIdentityResponse retains id, companyPartyId, equipmentKindId, manufacturerParty, manufacturerModel, serialNumber, maintainableAssetId. InstalledUnitInstallationResponse retains installationId, installedUnitId, equipmentPositionId, companyPartyId, effectiveFrom/effectiveUntil, recordedAt, evidenceReference, revision. |
+| F04 effective station configuration | topology/facilities/{facilityId}/installed-configuration GET/PUT; /history and /revisions/{revisionId} GET. StationConfigurationSaveRequest and StationConfigurationOperationResponse remain the exact request/response schemas. |
+| F04/F05 immutable source links | topology/installed-units/{unitId}/characteristic-links/{linkId} GET/PUT, /history and /revisions/{revisionId} GET. TopologyInstalledCharacteristicLinkPage exposes link, history, nextBeforeRevision, replayed; its record retains companyPartyId, installedUnitId, installationId, linkId/linkRevision, sourceId/sourceRevisionId/sourceSha256, kind, effective/recorded times, evidenceReference and state. |
+| F04/F05 independent approval | Same link root /revisions/{revisionId}/approval GET/POST and /approvals/history GET. TopologyInstalledCharacteristicApprovalPage and ApprovalDecision retain target/targetSha256, draftActorUserId, approvingActorUserId, approvedAt, Workflow evidence and replay/history/cursor semantics. |
+| F05 manufacturer source | simulation/manufacturer-characteristics/{sourceId}/revisions/{revisionId} GET/PUT, /history GET, /certificate GET, /qualification POST. Exact schemas: Save, Revision, HistoryPage, Certificate, Qualify, Receipt. Preserve nested typed family/unit/reference-condition/source evidence from the artifact. |
+
+Schema/cursor/digest fields are versioned backend facts, not UI permission,
+manufacturer certification or solver qualification. Preserve explicit evidence
+states and unknown/unsupported values. Do not infer link APPROVED from DRAFT
+existence or a completed Workflow alone. History cursors/epoch and request replay
+retain their registered semantics; no cross-request snapshot guarantee added.
+
+**Error and authority limits.** Generated manufacturer operations currently list
+only200 responses, so this pin alone is incomplete error documentation.
+Retain the already accepted HAPI-601 runtime400/401/403/503 behavior, including
+non-disclosing403 for protected immutable conflicts, and mandatory actual negative
+HTTP assertions. Do not infer manufacturer409 from other Topology operations.
+Generic advertised Topology404/409 entries do not waive exact native denial rules.
+Runtime guards, exact native grants, independent human decision, CAS, rollback,
+indeterminate commits and every source authorization precede protected disclosure.
+Source-backed backend field/error/permission mapping remains part of C3 proof.
+
+**Remaining whole-S6 acceptance.** This decision resolves the missing accepted
+backend baseline; it does not substitute for C1's combined same-identity nine-unit/
+three-station publication and historical reload, C4's combined cross-owner races/
+rollback/indeterminacy, the remaining exact C3 assertions or independent C5
+manufacturer software-evidence review. C6 supplier/enterprise/SITE/UI/deployment
+limitations remain external. No individual criterion is split into a stage or
+silently waived. HAPI-603 remains IMPLEMENTED/IN_PROGRESS and HAPI-598
+PARTIAL/BLOCKED; no HAPI-601 VERIFIED claim.
+
+**Bounded decision publication.** MODIFY only this append-only phase record and
+the compact task pointer; no code/test/OpenAPI/migration/workflow/status changes.
+Reuse existing S6 message `test(topology): qualify installed equipment consumers`.
+Validation is actual ZIP/member digest/source-pin verification, generated
+route/schema extraction and exact runtime-source comparison. No new Java/
+PostgreSQL execution claimed. Observe exact-SHA Docs creation/start and STOP
+under the owner's publication rule. This is a recorded owner decision, not an
+additional S6 implementation stage or a claim that the whole S6 work is complete.

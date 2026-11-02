@@ -177,7 +177,7 @@ Priority: P1
 
 Implementation Status: IMPLEMENTED
 
-Planning Status: COMPLETED
+Planning Status: IN_PROGRESS
 
 Owning Module: `simulation` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -1761,3 +1761,16 @@ Full/Docs, including real Workflow qualification and negative cases. No HAPI-601
 VERIFIED status, HAPI-603 gap closure, HAPI-598 closure, deployment, numerical/P3
 or operational qualification follows. Verify guarded main and applicable CI
 queued/started, then STOP.
+
+
+### HAPI-601 — approved indivisible software-assurance reopening (2026-11-02)
+
+Owner approval 2026-11-02. Verified source baseline `2ec8dcbd74b636952a951f70ed5243e092af38ee`: [Full #1072](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41475680884) SUCCESS (4,152 tests, 14/14 PostgreSQL shards, zero failures/errors/skips) and [Docs #846](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41475680721) SUCCESS. This registration is documentation-only; no new runtime execution is claimed. Amendment message `docs(roadmap): reopen manufacturer and consumer assurance`. Keep legacy mappings, owner, priority, dependency and implementation reality unchanged. Reopen planning to IN_PROGRESS, implementation IMPLEMENTED; NOT VERIFIED.
+
+**Execution order and registered message.** One complete HAPI-601 software-assurance task first; reuse `test(simulation): complete manufacturer characteristic assurance`. Simulation owns immutable manufacturer source; Identity owns current actor/resource permission; Party owns manufacturer eligibility; Workflow owns real human transitions. No solver, calibration, SCADA, production OT or external-engine claim.
+
+**Exact maximum file ledger (single task, no A/B/C):** MODIFY `src/test/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/ManufacturerCharacteristicNativeHttpPostgresIntegrationTest.java`, `src/test/java/dz/sh/hidra/modules/simulation/application/service/ManufacturerCharacteristicRevisionApplicationServiceTest.java`, `.github/ci-test-inventory.json` (exact source SHA and actual test cases only), this append-only task record and the compact `doc/roadmap/ULTIMATE_TASKS.md` pointer. CREATE/DELETE none. Preserve existing 21 configured manufacturer cases, production source, Flyway history, role policy, original transaction, Workflow, HTTP contract, current budget limits and generated OpenAPI. If source review proves a necessary production change or additional test file outside this ledger, stop and request an amendment of the **whole task** before mutation; no independent preflight or substage.
+
+**Complete software-verifiable acceptance matrix:** genuine signed native LOCAL and synthetic OIDC/LDAP/AD-origin provenance with honest separation from live enterprise IdP evidence; missing/invalid HMAC key fail-closed and old-token/key-rollover denial; current company/source/revision READ_REVISION versus READ_CERTIFICATE grants, explicit deny/revocation, protected 400/401/403/409/503 semantics and no private existence disclosure. Preserve and extend real PostgreSQL tests for 265-row source paging, 65th-principal limit, cursor tampering, canonical axes/units/family, exact immutable replay/CAS, physical lost-commit-acknowledgement indeterminacy without retry, timed protected-budget denial/rollback and final fences. Real Workflow start, task and terminal decision by distinct authorized human reviewer must be proven, including denial/withdrawal, immutable target digest and post-revocation invalidation; no database-inserted terminal fixture may substitute for the positive path. Supplier-declared documentary certificate must remain non-certified absent independent authority; negative software proof is not a real certificate validation.
+
+**Acceptance gates:** retain 21 original case identities and register any additions with actual source digests. Full real PostgreSQL/Flyway/HTTP/Workflow, unit/architecture/security, generated API and dictionary checks; exact implementation-SHA Full and Docs SUCCESS with zero applicable failures/errors/skips before a separate software-acceptance decision. Live OIDC/LDAP/AD, independent supplier certification, manufacturer engineering approval, production grants, measured SITE work budgets and operational acceptance remain external and unverified; cannot be manufactured with synthetic fixtures. HAPI-603 follows only after HAPI-601 software-verifiable evidence is reviewed; HAPI-598 S7 stays PARTIAL/BLOCKED, separately selected.

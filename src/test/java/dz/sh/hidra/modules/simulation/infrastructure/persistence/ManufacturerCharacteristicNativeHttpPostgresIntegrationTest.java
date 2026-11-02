@@ -1132,4 +1132,63 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
             assertThat(count(REV)).isEqualTo(1);
         } finally {SecurityContextHolder.clearContext();}
     }
+
+    /** No history continuation may borrow the JWT key or become unsigned. */
+    @Test void missingManufacturerHistoryHmacKeyFailsClosedAndInvalidRotationIsRejected() {
+        var clock=java.time.Clock.fixed(Instant.parse("2026-11-02T12:00:00Z"),
+            java.time.ZoneOffset.UTC);
+        var position=new dz.sh.hidra.modules.simulation.application.port.out
+            .ManufacturerCharacteristicHistoryCursorPort.Position(
+                Instant.parse("2026-10-01T10:00:00Z"),"v1");
+        var missing=new dz.sh.hidra.modules.simulation.infrastructure.security
+            .HmacManufacturerCharacteristicHistoryCursorAdapter("missing",null,null,null,clock);
+        assertThat(missing.available()).isFalse();
+        assertThatThrownBy(()->missing.encode(company,source,1,position))
+            .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(()->missing.decode("untrusted",company,source,1))
+            .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(()->new dz.sh.hidra.modules.simulation.infrastructure.security
+            .HmacManufacturerCharacteristicHistoryCursorAdapter(
+                "current",null,"former",
+                "BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc",clock))
+            .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(()->new dz.sh.hidra.modules.simulation.infrastructure.security
+            .HmacManufacturerCharacteristicHistoryCursorAdapter(
+                "current","invalid",null,null,clock))
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    /** Former-key compatibility ends on retirement, TTL expiry or scope mismatch. */
+    @Test void retiredExpiredAndCrossScopeManufacturerHistoryHmacCursorsFailClosed() {
+        String formerKey="BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc";
+        String currentKey="AQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyA";
+        var now=java.time.Clock.fixed(Instant.parse("2026-11-02T12:00:00Z"),
+            java.time.ZoneOffset.UTC);
+        var position=new dz.sh.hidra.modules.simulation.application.port.out
+            .ManufacturerCharacteristicHistoryCursorPort.Position(
+                Instant.parse("2026-10-01T10:00:00Z"),"v1");
+        var original=new dz.sh.hidra.modules.simulation.infrastructure.security
+            .HmacManufacturerCharacteristicHistoryCursorAdapter(
+                "former",formerKey,null,null,now);
+        String signed=original.encode(company,source,1,position);
+        var rotating=new dz.sh.hidra.modules.simulation.infrastructure.security
+            .HmacManufacturerCharacteristicHistoryCursorAdapter(
+                "current",currentKey,"former",formerKey,now);
+        assertThat(rotating.decode(signed,company,source,1)).isEqualTo(position);
+        assertThatThrownBy(()->rotating.decode(signed,company,"different-source",1))
+            .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(()->rotating.decode(signed,company,source,2))
+            .isInstanceOf(IllegalArgumentException.class);
+        var retired=new dz.sh.hidra.modules.simulation.infrastructure.security
+            .HmacManufacturerCharacteristicHistoryCursorAdapter(
+                "current",currentKey,null,null,now);
+        assertThatThrownBy(()->retired.decode(signed,company,source,1))
+            .isInstanceOf(IllegalArgumentException.class);
+        var expired=new dz.sh.hidra.modules.simulation.infrastructure.security
+            .HmacManufacturerCharacteristicHistoryCursorAdapter(
+                "current",currentKey,"former",formerKey,
+                java.time.Clock.offset(now,java.time.Duration.ofSeconds(901)));
+        assertThatThrownBy(()->expired.decode(signed,company,source,1))
+            .isInstanceOf(IllegalArgumentException.class);
+    }
 }

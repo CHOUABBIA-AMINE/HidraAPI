@@ -7640,6 +7640,7 @@
         "immutableReplayOfSameIssuerTokenDoesNotAppendAnotherRevision",
         "manufacturerLostPhysicalCommitAcknowledgementRemainsIndeterminateWithoutBlindRetry",
         "manufacturerPublicationBudgetIsIndependentAndFiniteWithoutAnArbitraryHttpLatencySla",
+        "missingManufacturerHistoryHmacKeyFailsClosedAndInvalidRotationIsRejected",
         "missingSourceScopeAndExplicitDenyPrecedeExistenceAndReplay",
         "nativeHttpHistoryChecksAll265RowsAndFailsClosedAtSixtyFifthPrincipal",
         "nativeManufacturerQualificationRequiresRealTerminalWorkflowAndReplaysOnce",
@@ -7649,9 +7650,10 @@
         "originalSignedOidcAuthenticationCompletesToNativeManufacturerHttpWithRevocation",
         "realLocalBearerPersistsCanonicalSourceAndReadsThroughConfiguredFilters",
         "replayAfterSessionRevocationCannotMutatePreviouslyCommittedSource",
+        "retiredExpiredAndCrossScopeManufacturerHistoryHmacCursorsFailClosed",
         "supplierDeclaredCertificateRemainsDocumentaryAndNeedsSeparateCurrentGrant"
       ],
-      "source_sha256": "4d226da4098eac914ff8aceea0a64d1f0eaebbc3f3b35a67784b0c5f99a3f4f7"
+      "source_sha256": "86294bdfdc20edba963b8ee4e2b528bb09c5b18fbbbcb11ebd51258a1e6e1a09"
     },
     {
       "baseline_seconds": 0,

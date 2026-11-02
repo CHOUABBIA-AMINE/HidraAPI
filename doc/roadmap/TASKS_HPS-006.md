@@ -11012,3 +11012,98 @@ route/schema extraction and exact runtime-source comparison. No new Java/
 PostgreSQL execution claimed. Observe exact-SHA Docs creation/start and STOP
 under the owner's publication rule. This is a recorded owner decision, not an
 additional S6 implementation stage or a claim that the whole S6 work is complete.
+
+### HAPI-603 S6 — whole consumer-assurance source candidate (2026-11-02; CI-first)
+
+Owner Next selects existing indivisible S6 under the frozen S0–S7 register,
+after the approved F04/F05 backend pin. Expected main
+e62c8e33cae0d7e146200b8a728919745fc30a5e has Docs858 SUCCESS;
+unchanged executable source f0ae75a066498de7eee53a17a93cb99ce4b56651
+has Full1080/Docs856 SUCCESS (547 classes/4158 synthetic cases).
+This is ONE same-task source submission, not a C1/C4 substage, new task,
+acceptance waiver or selection of S7.
+
+**Exact scope/message:** `test(topology): qualify installed equipment consumers`.
+MODIFY only existing InstalledEquipmentOperatorQualificationTest.java,
+its source/case entry in .github/ci-test-inventory.json, this append-only
+HPS-006 owner record and compact ULTIMATE_TASKS.md pointer. No CREATE/DELETE;
+other admitted station suites are reused unchanged. No production Java,
+Flyway/schema, REST/OpenAPI, CI matrix, native policy or work-budget edit.
+
+**C1 integrated identity/lineage candidate.** Extend the original nine distinct
+unit/source/link, three-station case rather than invent another dataset. After
+actual Simulation source SAVE and native Topology link SAVE/read/history,
+build each station's published canonical graph from the SAME existing three
+position/installation/unit rows. Graph facts are synthetic owner fixtures;
+configuration SAVE/replay/current/exact/history uses the actual native
+StationInstalledConfigurationUseCase with genuine signed LOCAL authentication,
+exact requirement-derived company/facility/unit grants and protected publisher.
+Publish a second immutable configuration epoch and re-read the first unchanged.
+Reload each original member's exact link revision through configured JWT HTTP
+and compare installedUnitId/sourceId/sourceRevisionId/sourceSha256 to the
+configuration and original canonical manufacturer row. Close/revise the retained
+installation and move a position to another station to require protected SAVE
+denial; restore synthetic source facts and require original historical equality.
+The existing malformed-source case additionally rejects unsupported family kind.
+No industrial graph qualification or source fact is inferred.
+
+**C2/C3/C5 evidence retained.** All nine original cases and positive/negative
+assertions remain, including actual independent-human Workflow APPROVE/REJECT,
+protected target suspension/restoration, denied approval after REJECT, scope
+revocation, stale CAS/replay and canonical V1 corruption rejection. HMAC/source/
+manufacturer assurance is inherited only from the previously reviewed HAPI-601
+software matrix and Full1074 evidence, never from an installed-link's existence.
+The owner-approved Full1080 OpenAPI route/schema pin is the F04/F05 backend
+mapping baseline; exact real response checks include unit/source/revision/hash,
+DRAFT state, approval actor and protected history/replay. Actual frontend/UI,
+enterprise IdP, independent supplier certification and SITE remain external.
+This candidate does not relabel them passing.
+
+**C4 additional real physical boundaries (four new methods;13 total).**
+1. Hold a competing schema-owner manufacturer relation lock on a separate
+   PostgreSQL connection; configured native consumer GET/SAVE must return503
+   without changing immutable revision/request counts. Release and require
+   authorized read with the original source revision.
+2. Throw a synthetic failure at actual link final preparation after provisional
+   writes;503 must leave revision/request/approval empty, then the same authorized
+   request can succeed after observer removal.
+3. Arm a thread-bound acknowledgement fault after the real link scalar final
+   guard; execute the actual PostgreSQL manager commit, then lose the acknowledgement.
+   Require503, one committed revision/receipt and no approval, followed by fresh
+   explicit authorized replay without an extra immutable row. No service retry.
+4. Hold a competing installation relation lock while a genuine terminal human
+   approval is consumed; require503 and zero approval/approval-request rows,
+   release the writer, then require the same real evidence to commit exactly once.
+These are separate real connections/physical commits, not fabricated returned
+approval/commit results. Mockito spies observe nontransactional coordinator seams
+and call actual manager commit; explicit finally-reset bounds each fault.
+Existing source/current/authority fences, deadlines and rollback remain active.
+Companion station/source suites retain physical source-drift, simultaneous first
+epoch, scope/role/catalog and final-guard adversarial cases.
+
+**Test-only grants and safety.** Add the same reviewed station fixture INSERT
+grants on configuration revision/member/request, INSERT/UPDATE head and execute
+on the existing guarded source-lock function to the disposable publisher only.
+Ordinary application SELECT on configuration revision is revoked. Existing
+source/Identity/Party/Workflow/approval roles remain; no deployment grants
+or PUBLIC privileges introduced. Reuse exact existing configuration authorization
+requirement expansion and graph envelope types. No native issuer, evidence
+verifier, storage guard or final scalar SQL is mocked.
+
+**Validation/disposition.** Available static checks:13 unique method identities;
+all nine prior names retained; strict inventory JSON parses and only this entry's
+case/source digest changes; Java lexical delimiters balanced; new graph/command/
+source fixture constructors and grants checked against current accepted station
+suite; lost-ack observation mirrors the previously passing manufacturer seam.
+UTF-8 source SHA256
+`4acae53dc9bde375e6a95c792ec59b008964fc410b52701243bb84ea13a2af37`.
+These are NOT Java compilation or PostgreSQL execution. Local javac/Maven/services
+are unavailable and no full environment was provisioned. New exact-SHA Full/Docs
+must compile and execute all13 genuine cases,14 database shards, architecture,
+API/dictionary and complete raw report equality with zero failures/errors/skips.
+The candidate is CI-pending, not accepted C1–C5 proof. Independent whole-matrix
+review must assess actual results and any remaining gap before VERIFIED.
+HAPI-603 stays IMPLEMENTED/IN_PROGRESS; HAPI-601 formal status and HAPI-598
+PARTIAL/BLOCKED stay unchanged. C6 operational limitations remain unaccepted.
+Publish expected-head main, verify exact parent/tree/source/scope, observe
+applicable CI queued/started, then STOP.

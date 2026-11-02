@@ -20,6 +20,13 @@
 package dz.sh.hidra.modules.topology.qualification;
 
 import dz.sh.hidra.HidraApplication;
+import dz.sh.hidra.modules.topology.domain.model.*;
+import dz.sh.hidra.modules.topology.domain.model.StationInternalGraph.*;
+import dz.sh.hidra.modules.topology.domain.model.StationInternalGraphRevision.*;
+import dz.sh.hidra.modules.topology.domain.model.StationInstalledConfiguration.*;
+import dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.StationInternalGraphRevisionCodec;
+import dz.sh.hidra.modules.topology.application.port.in.StationInstalledConfigurationUseCase;
+
 import dz.sh.hidra.modules.topology.domain.model.InstalledCharacteristicLink;
 import dz.sh.hidra.modules.topology.domain.service.InstalledCharacteristicLinkApprovalTargetDigester;
 import dz.sh.hidra.modules.identity.application.model.DirectAuthenticationCommand;
@@ -130,6 +137,11 @@ class InstalledEquipmentOperatorQualificationTest {
         for(String relation:List.of("hidra_simulation_manufacturer_characteristic_revision",
                 "hidra_simulation_manufacturer_characteristic_qualification"))
             admin.execute("GRANT INSERT ON public."+relation+" TO "+PUBLISHER);
+        for(String relation:List.of("revision","member","request"))
+            admin.execute("GRANT INSERT ON public.hidra_topology_station_configuration_"+relation+" TO "+PUBLISHER);
+        admin.execute("GRANT INSERT,UPDATE ON public.hidra_topology_station_configuration_head TO "+PUBLISHER);
+        admin.execute("GRANT EXECUTE ON FUNCTION public.hidra_station_configuration_lock_sources() TO "+PUBLISHER);
+        admin.execute("REVOKE SELECT ON public.hidra_topology_station_configuration_revision FROM "+APP);
         for(String relation:List.of("revision","request"))
             admin.execute("GRANT INSERT ON public.hidra_topology_installed_characteristic_"+relation+" TO "+PUBLISHER);
         admin.execute("GRANT INSERT,UPDATE ON public.hidra_topology_installed_characteristic_head TO "+PUBLISHER);
@@ -183,7 +195,11 @@ class InstalledEquipmentOperatorQualificationTest {
     @Autowired dz.sh.hidra.modules.workflow.application.port.out.WorkflowTaskRepositoryPort workflowTasks;
     @Autowired dz.sh.hidra.modules.topology.application.port.in.InstalledCharacteristicLinkUseCase nativeLinkOwner;
     @Autowired dz.sh.hidra.modules.topology.infrastructure.integration.TopologyInstalledCharacteristicLinkWorkflowTargetLookup targetLookup;
-    @Autowired org.springframework.transaction.PlatformTransactionManager transactionManager;
+    @org.springframework.test.context.bean.override.mockito.MockitoSpyBean
+    org.springframework.transaction.PlatformTransactionManager transactionManager;
+    @org.springframework.test.context.bean.override.mockito.MockitoSpyBean
+    dz.sh.hidra.modules.topology.application.service.ProtectedInstalledCharacteristicLinkAdmissionCoordinator linkCoordinator;
+    @Autowired StationInstalledConfigurationUseCase stationService;
     @Autowired @org.springframework.beans.factory.annotation.Qualifier("hidraJwtDecoder")
     org.springframework.security.oauth2.jwt.JwtDecoder nativeJwtDecoder;
     private JdbcTemplate admin;
@@ -528,6 +544,80 @@ class InstalledEquipmentOperatorQualificationTest {
         return admin.queryForObject(tableCountSql(relation),Long.class,company,unit,link);
     }
 
+
+    private static final Instant STATION_FROM=Instant.parse("2026-10-01T10:00:00Z");
+    private StationInstalledConfiguration stationDeclaration(String facility) {
+        var rows=admin.queryForList("SELECT e.id AS position,i.unit_id,i.installation_id FROM public.hidra_topology_equipment e JOIN public.hidra_topology_installed_unit_installation i ON i.position_id=e.id WHERE e.facility_id=? AND i.effective_until IS NULL ORDER BY e.id",facility);
+        assertEquals(3,rows.size());
+        var units=new java.util.ArrayList<Unit>();var edges=new java.util.ArrayList<Edge>();
+        var positions=new java.util.ArrayList<Position>();
+        for(int n=0;n<rows.size();n++) {
+            var row=rows.get(n);String position=(String)row.get("position");
+            units.add(new Unit(position,facility,"i"+n,"o"+n));
+            edges.add(new Edge("in"+n,"s","i"+n));edges.add(new Edge("out"+n,"o"+n,"d"));
+            positions.add(new Position(position,Disposition.CONNECTED,(String)row.get("unit_id"),
+                (String)row.get("installation_id"),1,STATION_FROM,null,"synthetic:station-binding"));
+        }
+        var graph=new StationInternalGraph(facility,"consumer-graph-v1",Status.COMPLETE,
+            List.of(new Header("suction",HeaderKind.SUCTION,"s"),new Header("discharge",HeaderKind.DISCHARGE,"d")),units,edges);
+        var revision=new StationInternalGraphRevision(facility,"consumer-graph-v1",graph,
+            SourceClassification.SYNTHETIC,STATION_FROM,STATION_FROM,null,"synthetic:consumer-graph",null,Qualification.STRUCTURALLY_QUALIFIED);
+        var codec=new StationInternalGraphRevisionCodec();byte[] bytes=codec.encode(revision);
+        admin.update("INSERT INTO public.hidra_topology_station_graph_revision(facility_id,revision_id,payload_format,canonical_payload,sha256) VALUES(?,?,?,?,?)",facility,revision.revisionId(),StationInternalGraphRevisionCodec.FORMAT,bytes,codec.sha256(bytes));
+        var event=UUID.randomUUID();
+        admin.update("INSERT INTO public.hidra_topology_station_graph_operation_event(event_id,facility_id,event_kind,resulting_epoch,resulting_revision_id,actor_binding_id,actor_session_id,actor_user_id,company_party_id,party_generation,facility_generation,sampled_at,valid_until,backend_pid,transaction_id) VALUES(?,?,'PUBLISH',1,?,?,?,?,?,?,?,?,?,?,?)",event,facility,revision.revisionId(),"synthetic-binding","synthetic-session",user,company,1L,1L,Timestamp.from(STATION_FROM),Timestamp.from(STATION_FROM.plusSeconds(3600)),1,1L);
+        admin.update("INSERT INTO public.hidra_topology_station_graph_head(facility_id,revision_id,head_epoch,state,last_event_id) VALUES(?,?,1,'ACTIVE',?)",facility,revision.revisionId(),event);
+        return new StationInstalledConfiguration(company,facility,"consumer-config-v1",id(),0,1,1,
+            revision,StationInternalGraphRevisionCodec.FORMAT,codec.sha256(bytes),STATION_FROM,null,STATION_FROM,
+            "synthetic:consumer-config","synthetic-binding","synthetic-session",user,positions,edges.stream().map(Edge::id).toList());
+    }
+    private StationInstalledConfigurationUseCase.Result configuration(
+            StationInstalledConfigurationUseCase.Operation operation,StationInstalledConfiguration c) {
+        var command=new StationInstalledConfigurationUseCase.Command(operation,company,c.facilityId(),
+            operation==StationInstalledConfigurationUseCase.Operation.SAVE || operation==StationInstalledConfigurationUseCase.Operation.READ_REVISION?c.revisionId():null,
+            operation==StationInstalledConfigurationUseCase.Operation.SAVE?c:null,
+            operation==StationInstalledConfigurationUseCase.Operation.LIST_HISTORY?10:0);
+        authorizeConfiguration(command,c.positions().stream().map(Position::installedUnitId).toList());
+        String bearer=authentication.authenticate(new DirectAuthenticationCommand(ProviderType.LOCAL,user,PASSWORD,"synthetic-ip","synthetic-agent","consumer-station")).accessToken();
+        useWorkflowActor(bearer,user);
+        try{return stationService.execute(command);}finally{SecurityContextHolder.clearContext();}
+    }
+    private void authorizeConfiguration(
+          dz.sh.hidra.modules.topology.application.port.in.StationInstalledConfigurationUseCase.Command c,
+          java.util.Collection<String> units) {
+        var req=new dz.sh.hidra.modules.identity.application.contract.topology
+            .TopologyStationConfigurationAuthorizationContract.Request(
+                dz.sh.hidra.modules.identity.application.contract.topology
+                    .TopologyStationConfigurationAuthorizationContract.Operation.valueOf(c.operation().name()),
+                c.companyPartyId(),c.facilityId(),c.revisionId(),List.copyOf(new java.util.TreeSet<>(units)));
+        for(var q:req.requirements()) {
+            String code=dz.sh.hidra.modules.identity.application.contract.topology
+                .TopologyStationConfigurationAuthorizationContract.permissionCode(
+                    req.operation(),q.resourceType());
+            var ids=admin.queryForList("SELECT id FROM "+"public.hidra_identity_"+"permission WHERE code=?",
+                String.class,code);
+            String permission=ids.isEmpty()?id():ids.getFirst();
+            if(ids.isEmpty())admin.update("INSERT INTO "+"public.hidra_identity_"+"permission"
+                +"(id,code,permission_domain,resource_type,action,sensitive,status,created_at,updated_at)"
+                +" VALUES (?,?,'topology',?,?,false,'ACTIVE',now(),now())",
+                permission,code,q.resourceType(),code.substring(code.lastIndexOf(':')+1));
+            String scope=q.scope().name().equals("COMPANY")?"CUSTOM":"FACILITY";
+            String value=scope.equals("CUSTOM")?"topology-company:"+q.scopeReference():q.scopeReference();
+            Integer count=admin.queryForObject(
+                "SELECT count(*) FROM "+"public.hidra_identity_"+"user_permission_grant "
+                +"WHERE user_id=? AND permission_id=? AND effect='GRANT' AND status='ACTIVE' "
+                +"AND scope_type=? AND scope_reference_id=? AND valid_to>clock_timestamp()",
+                Integer.class,user,permission,scope,value);
+            if(count!=null && count>0)continue;
+            admin.update("INSERT INTO "+"public.hidra_identity_"+"user_permission_grant"
+                +"(id,user_id,permission_id,effect,scope_type,scope_reference_id,grant_reason,"
+                +"emergency_access,valid_from,valid_to,status,created_at)"
+                +" VALUES (?,?,?,'GRANT',?,?,'synthetic native configuration',false,"
+                +"now()-interval '1 hour',now()+interval '1 hour','ACTIVE',now())",
+                id(),user,permission,scope,value);
+        }
+    }
+
     /** Each source is published through actual Simulation HTTP; each link through native Topology. */
     @Test void nineIndependentUnitSourceBindingsRemainSeparateAcrossThreeStations() throws Exception {
         grants();
@@ -619,6 +709,49 @@ class InstalledEquipmentOperatorQualificationTest {
         assertEquals(9L,admin.queryForObject(
             "SELECT count(*) FROM public.hidra_topology_installed_characteristic_revision"+
             " WHERE company_party_id=?",Long.class,company));
+        for(String facility:stations) {
+            var declaration=stationDeclaration(facility);
+            var saved=configuration(StationInstalledConfigurationUseCase.Operation.SAVE,declaration);
+            assertFalse(saved.replayed());
+            assertTrue(configuration(StationInstalledConfigurationUseCase.Operation.SAVE,declaration).replayed());
+            var historical=configuration(StationInstalledConfigurationUseCase.Operation.READ_REVISION,declaration).declaration();
+            assertEquals(saved.declaration(),historical);
+            assertEquals(historical,configuration(StationInstalledConfigurationUseCase.Operation.READ_CURRENT,declaration).declaration());
+            assertEquals(1,configuration(StationInstalledConfigurationUseCase.Operation.LIST_HISTORY,declaration).history().size());
+            var successor=new StationInstalledConfiguration(declaration.companyPartyId(),declaration.facilityId(),
+                "consumer-config-v2",id(),1,2,declaration.graphHeadEpoch(),declaration.pinnedGraph(),
+                declaration.graphPayloadFormat(),declaration.graphSha256(),declaration.effectiveFrom(),
+                declaration.effectiveUntil(),declaration.recordedAt(),declaration.sourceReference(),
+                declaration.actorBindingId(),declaration.actorSessionId(),declaration.actorUserId(),
+                declaration.positions(),declaration.activeEdgeIds());
+            assertEquals("consumer-config-v2",configuration(StationInstalledConfigurationUseCase.Operation.SAVE,successor).declaration().revisionId());
+            assertEquals(2,configuration(StationInstalledConfigurationUseCase.Operation.LIST_HISTORY,successor).history().size());
+            assertEquals(historical,configuration(StationInstalledConfigurationUseCase.Operation.READ_REVISION,declaration).declaration());
+
+            for(var member:historical.positions()) {
+                var linked=admin.queryForMap("SELECT installed_unit_id,link_id,source_id,source_revision_id,source_sha256 FROM public.hidra_topology_installed_characteristic_revision WHERE company_party_id=? AND installed_unit_id=?",company,member.installedUnitId());
+                token=authentication.authenticate(new DirectAuthenticationCommand(ProviderType.LOCAL,user,PASSWORD,"synthetic-ip","synthetic-agent","consumer-historical-reload")).accessToken();
+                requireStatus(http.perform(get(LINK+member.installedUnitId()+"/characteristic-links/"+linked.get("link_id")+"/revisions/1")
+                    .header("Authorization","Bearer "+token).param("companyPartyId",company)),200)
+                    .andExpect(jsonPath("$.link.installedUnitId").value(member.installedUnitId()))
+                    .andExpect(jsonPath("$.link.sourceId").value(linked.get("source_id")))
+                    .andExpect(jsonPath("$.link.sourceRevisionId").value(REV))
+                    .andExpect(jsonPath("$.link.sourceSha256").value(linked.get("source_sha256")));
+                assertTrue(seenSources.contains(linked.get("source_id")));
+                assertEquals(REV,linked.get("source_revision_id"));
+                assertEquals(member.installedUnitId(),linked.get("installed_unit_id"));
+                assertEquals(linked.get("source_sha256"),admin.queryForObject("SELECT payload_sha256 FROM public.hidra_simulation_manufacturer_characteristic_revision WHERE company_party_id=? AND source_id=? AND revision_id=?",String.class,company,linked.get("source_id"),REV));
+            }
+            String installation=historical.positions().getFirst().installationId();
+            admin.update("UPDATE public.hidra_topology_installed_unit_installation SET effective_until=?,revision=revision+1 WHERE installation_id=?",Timestamp.from(STATION_FROM.plusSeconds(3600)),installation);
+            try {assertThrows(RuntimeException.class,()->configuration(StationInstalledConfigurationUseCase.Operation.SAVE,successor));}
+            finally {admin.update("UPDATE public.hidra_topology_installed_unit_installation SET effective_until=NULL,revision=revision-1 WHERE installation_id=?",installation);}
+            String position=historical.positions().getFirst().positionId();
+            admin.update("UPDATE public.hidra_topology_equipment SET facility_id=? WHERE id=?",stations.stream().filter(f->!f.equals(facility)).findFirst().orElseThrow(),position);
+            try {assertThrows(RuntimeException.class,()->configuration(StationInstalledConfigurationUseCase.Operation.SAVE,declaration));}
+            finally {admin.update("UPDATE public.hidra_topology_equipment SET facility_id=? WHERE id=?",facility,position);}
+            assertEquals(historical,configuration(StationInstalledConfigurationUseCase.Operation.READ_REVISION,declaration).declaration());
+        }
     }
 
     @Test void malformedManufacturerAxisAndLinkDigestCannotCreateConsumerRevision() throws Exception {
@@ -629,6 +762,9 @@ class InstalledEquipmentOperatorQualificationTest {
         assertEquals(0L,admin.queryForObject(
             "SELECT count(*) FROM public.hidra_simulation_manufacturer_characteristic_revision"+
             " WHERE company_party_id=? AND source_id=?",Long.class,company,source));
+        requireStatus(http.perform(put(MS+source+"/revisions/"+REV)
+            .header("Authorization","Bearer "+token).contentType(MediaType.APPLICATION_JSON)
+            .content(manufacturerBody().replace("OPERATING_LIMITS","UNSUPPORTED_FAMILY"))),400);
         saveManufacturer();
         requireStatus(http.perform(put(linkPath()).header("Authorization","Bearer "+token)
             .contentType(MediaType.APPLICATION_JSON)
@@ -787,4 +923,63 @@ class InstalledEquipmentOperatorQualificationTest {
         assertThrows(RuntimeException.class,()->codec.decode(damaged));
     }
 
+
+    @Test void crossOwnerManufacturerWriterCannotDiscloseOrMutateConsumerWhileLocked() throws Exception {
+        savedDraft();long revisions=countFor("revision"),receipts=countFor("request");
+        try(var writer=java.sql.DriverManager.getConnection(PG.getJdbcUrl(),PG.getUsername(),PG.getPassword())) {
+            writer.setAutoCommit(false);
+            try(var statement=writer.createStatement()) {
+                statement.execute("LOCK TABLE public.hidra_simulation_manufacturer_characteristic_revision IN ACCESS EXCLUSIVE MODE NOWAIT");
+                requireStatus(http.perform(get(linkPath()).header("Authorization","Bearer "+token).param("companyPartyId",company)),503);
+                requireStatus(http.perform(put(linkPath()).header("Authorization","Bearer "+token).contentType(MediaType.APPLICATION_JSON).content(draftBody())),503);
+            } finally {writer.rollback();}
+        }
+        assertEquals(revisions,countFor("revision"));assertEquals(receipts,countFor("request"));
+        requireStatus(http.perform(get(linkPath()).header("Authorization","Bearer "+token).param("companyPartyId",company)),200).andExpect(jsonPath("$.link.sourceRevisionId").value(REV));
+    }
+    @Test void consumerFailureAfterProvisionalSourceBindingRollsBackEveryLinkRow() throws Exception {
+        grants();saveManufacturer();
+        org.mockito.Mockito.doAnswer(invocation->{throw new IllegalStateException("synthetic consumer flush failure");})
+            .when(linkCoordinator).prepareFinal(org.mockito.ArgumentMatchers.any());
+        try {requireStatus(http.perform(put(linkPath()).header("Authorization","Bearer "+token).contentType(MediaType.APPLICATION_JSON).content(draftBody())),503);}
+        finally {org.mockito.Mockito.reset(linkCoordinator);}
+        assertEquals(0,countFor("revision"));assertEquals(0,countFor("request"));assertEquals(0,approvalCount());
+        requireStatus(http.perform(put(linkPath()).header("Authorization","Bearer "+token).contentType(MediaType.APPLICATION_JSON).content(draftBody())),200);
+        assertEquals(1,countFor("revision"));assertEquals(1,countFor("request"));
+    }
+    @Test void consumerLostPhysicalCommitAcknowledgementIsIndeterminateAndFreshReplayIsStable() throws Exception {
+        grants();saveManufacturer();
+        var armed=new java.util.concurrent.atomic.AtomicReference<Thread>();
+        var observed=new java.util.concurrent.atomic.AtomicBoolean();
+        org.mockito.Mockito.doAnswer(invocation->{Object result=invocation.callRealMethod();assertEquals(true,result);armed.set(Thread.currentThread());return result;})
+            .when(linkCoordinator).finalGuard(org.mockito.ArgumentMatchers.any());
+        org.mockito.Mockito.doAnswer(invocation->{
+            if(armed.get()==Thread.currentThread() && !observed.get()) {
+                invocation.callRealMethod();observed.set(true);armed.set(null);
+                throw new org.springframework.transaction.TransactionSystemException("synthetic consumer commit acknowledgement lost");
+            }
+            return invocation.callRealMethod();
+        }).when(transactionManager).commit(org.mockito.ArgumentMatchers.any(org.springframework.transaction.TransactionStatus.class));
+        try {requireStatus(http.perform(put(linkPath()).header("Authorization","Bearer "+token).contentType(MediaType.APPLICATION_JSON).content(draftBody())),503);assertTrue(observed.get());}
+        finally {org.mockito.Mockito.reset(transactionManager,linkCoordinator);}
+        assertEquals(1,countFor("revision"));assertEquals(1,countFor("request"));assertEquals(0,approvalCount());
+        requireStatus(http.perform(put(linkPath()).header("Authorization","Bearer "+token).contentType(MediaType.APPLICATION_JSON).content(draftBody())),200).andExpect(jsonPath("$.replayed").value(true));
+        assertEquals(1,countFor("revision"));assertEquals(1,countFor("request"));
+    }
+
+    @Test void concurrentInstallationWriterFencesRealHumanApprovalWithoutPartialReceipt() throws Exception {
+        savedDraft();String reviewer=distinctReviewer();reviewerGrants(reviewer,true);
+        String bearer=reviewerToken(reviewer);var workflow=terminalWorkflow(reviewer,canonicalDraftDigest(),true);
+        try(var writer=java.sql.DriverManager.getConnection(PG.getJdbcUrl(),PG.getUsername(),PG.getPassword())) {
+            writer.setAutoCommit(false);
+            try(var statement=writer.createStatement()) {
+                statement.execute("LOCK TABLE public.hidra_topology_installed_unit_installation IN ACCESS EXCLUSIVE MODE NOWAIT");
+                requireStatus(http.perform(post(protectedApprovalPath()).header("Authorization","Bearer "+bearer).contentType(MediaType.APPLICATION_JSON).content(approvalBody(workflow))),503);
+            } finally {writer.rollback();}
+        }
+        assertEquals(0,countFor("approval"));assertEquals(0,countFor("approval_request"));assertEquals(1,countFor("revision"));
+        requireStatus(http.perform(post(protectedApprovalPath()).header("Authorization","Bearer "+bearer).contentType(MediaType.APPLICATION_JSON).content(approvalBody(workflow))),200)
+            .andExpect(jsonPath("$.approval.approvingActorUserId").value(reviewer));
+        assertEquals(1,countFor("approval"));assertEquals(1,countFor("approval_request"));
+    }
 }

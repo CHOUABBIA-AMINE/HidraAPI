@@ -10089,6 +10089,10 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "concurrentInstallationWriterFencesRealHumanApprovalWithoutPartialReceipt",
+        "consumerFailureAfterProvisionalSourceBindingRollsBackEveryLinkRow",
+        "consumerLostPhysicalCommitAcknowledgementIsIndeterminateAndFreshReplayIsStable",
+        "crossOwnerManufacturerWriterCannotDiscloseOrMutateConsumerWhileLocked",
         "foreignCompanyAndUnauthenticatedConsumerCannotDiscoverExistingSource",
         "malformedManufacturerAxisAndLinkDigestCannotCreateConsumerRevision",
         "nineIndependentUnitSourceBindingsRemainSeparateAcrossThreeStations",
@@ -10105,7 +10109,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/qualification/InstalledEquipmentOperatorQualificationTest.java",
-      "source_sha256": "7dec2cdab2ec0a02a2c33054cf1af1b74ce2435aefb704a2d5d8923a4302f6a2",
+      "source_sha256": "4acae53dc9bde375e6a95c792ec59b008964fc410b52701243bb84ea13a2af37",
       "supports": []
     },
     {

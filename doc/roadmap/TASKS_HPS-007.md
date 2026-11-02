@@ -1592,3 +1592,43 @@ HAPI-601 same-task whole-run #1066 CI-first repair (2026-11-02): [Full #1066](ht
 [Full #1067](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41464188106) on `e4df16d09985e4cd3035315425e40c586b7a37ac` FAILED exactly one of 21 configured native manufacturer HTTP/PostgreSQL test cases in shard 9: `configuredNativeManufacturerQualificationAcceptsRealHumanWorkflowTransition`, assertion line 1074, because `ManufacturerCharacteristicRevisionApplicationService.resolveWorkflowTarget(digest,false)` returned `Optional.empty` even after successful real signed-token HTTP READ_REVISION. All 13 other PostgreSQL shards, Java/architecture, static and API/dictionary succeeded; [Docs #841](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41464188115) SUCCESS. Raw report verification, normal evidence-artifact upload and aggregate gate were cascading failures, not new independent assertion faults. The native Workflow-owner read intentionally hides internal pre-commit failures and no trustworthy detailed failure reason is available from #1067. Do not assert this is an authorization or transaction regression without evidence.
 
 Same registered HAPI-601 failure-repair scope: **test-only diagnostic** records already-spied coordinator, native source, Identity and Party method **names only** if genuine protected Workflow target resolution remains unavailable. The exact positive assertion, real Workflow start/task/transition, independent reviewer, native qualification, all 21 cases, denial/indeterminate outcomes and security guarantees are preserved. No raw claims, business identifiers, token bytes, SQL values, exception messages or production source behavior logged; no positive acceptance is manufactured. Updated strict test-source hash; no production Java, Flyway, CI workflow, REST, permissions or threshold changes. **This stage is diagnostic instrumentation, not a verified functional correction**; exact-new-SHA CI must localize the suppressed guarded stage. HAPI-601 remains IMPLEMENTED with assurance NOT VERIFIED; HAPI-598 remains PARTIAL/BLOCKED and HAPI-603 consumer gates remain open. Recheck complete exact-SHA CI on owner `Fail` before any further implementation.
+
+### HAPI-601 — Full1068 single-lookup diagnostic correction (2026-11-02)
+
+Owner Next refreshes main14f846c7b81689ea18994b26b16b987cbd3ac2aa and
+repairs the still-failed responsible task before any successor. Full1068
+(run41466657318) failed one of21 manufacturer native HTTP/PostgreSQL cases:
+configuredNativeManufacturerQualificationAcceptsRealHumanWorkflowTransition,
+empty protected target Optional at line1083. Other20 cases, thirteen other DB
+shards, Java/static/API/dictionary pass; Docs842 passes. Full gate failure is
+cascading. Existing diagnostic lists include calls from preceding SAVE/READ
+operations and therefore do not establish the failing lookup boundary.
+The root cause remains UNVERIFIED; no runtime repair or green acceptance is claimed.
+
+Same registered message: `test(simulation): complete manufacturer characteristic assurance`.
+Exact four MODIFY paths: the existing manufacturer native HTTP/PostgreSQL test,
+its source digest only in .github/ci-test-inventory.json, this append-only
+HPS-007 record, and compact ULTIMATE_TASKS pointer. No new test IDs or files.
+Clear Mockito invocation history immediately before that protected lookup.
+Arm source acquire/byWorkflowTarget, native Identity acquire and Party
+acquire/read observation hooks from the nontransactional coordinator's real
+acquireWorkflowTarget callback INSIDE the original protected transaction.
+This avoids invalid MANDATORY adapter stubbing outside a transaction.
+Each hook calls the real method once and returns its original result or
+rethrows the original Throwable. Emit only fixed method-stage names, optional
+presence/empty outcome and exception simple-class chains bounded to eight.
+Never print exception messages, arguments, SQL values, identifiers, payloads,
+tokens or grants. Preserve all21 methods, genuine Workflow transition,
+independent reviewer, strict required positive assertion and denial/replay
+outcomes. Mockito's existing AFTER reset retains per-test isolation.
+
+Source review and exact21-case inventory comparison PASS; SHA-256 is
+`5df92fc1f170ad00cfc793fef72ab72ae8b981f11a03df99dad79836d0f4b7f8`. No local Java/Maven/PostgreSQL
+execution is claimed; a complete service environment is not provisioned solely
+for this CI-first diagnostic. New exact-SHA Full/Docs must compile and execute
+the real calls. A remaining failure is expected to identify the actual boundary;
+it must not be relabeled success or repaired by relaxing guards.
+Production Java, permissions, transaction/temporal guarantees, schema, API,
+work budgets, workflow matrix and all roadmap statuses remain unchanged.
+HAPI-601 assurance is NOT VERIFIED; HAPI-603 deferred gaps and HAPI-598 closure
+remain open. Publish expected-head main, observe new CI startup, then STOP.

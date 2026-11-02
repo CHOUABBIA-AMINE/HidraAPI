@@ -10073,6 +10073,26 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "foreignCompanyAndUnauthenticatedConsumerCannotDiscoverExistingSource",
+        "malformedManufacturerAxisAndLinkDigestCannotCreateConsumerRevision",
+        "nineIndependentUnitSourceBindingsRemainSeparateAcrossThreeStations",
+        "previousV1StationGraphDecoderKeepsExactPayloadAndRejectsCorruption",
+        "replayConflictAndStaleEpochPreserveHistoricalSourceAndReceipt",
+        "sourcePermissionRevocationFencesCurrentRevisionAndHistory",
+        "terminalApprovalRequiresIndependentHumanAndNeverReclassifiesDraft"
+      ],
+      "class": "dz.sh.hidra.modules.topology.qualification.InstalledEquipmentOperatorQualificationTest",
+      "dependency_reason": "HAPI-603 integrated consumer qualification: genuine configured LOCAL JWT and fresh PostgreSQL16 native Topology/Simulation/Party/Identity/Workflow boundaries, nine separate unit/source links across three synthetic station installations, current/history, denied/malformed/replay approvals and canonical V1 historical graph compatibility; synthetic only, manufacturer assurance remains deferred",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/qualification/InstalledEquipmentOperatorQualificationTest.java",
+      "source_sha256": "d57d745422c82b3a5ca92db1b0385720ae5627d0470306bf0f3ea0b3adb42cd1",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
         "repeatedMarkedSerialDoesNotCollapseIndependentPhysicalUnitIdentity",
         "sourceAndAssetAssociationAreLabelsNotCrossAggregateMutation",
         "unknownProvenanceNeverManufacturesSerialOrModel",

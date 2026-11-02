@@ -46,7 +46,9 @@ public final class ProtectedTransactionExecutor {
         "b510776b865bd270b8d8ca3739fd450dca8e2bc9fe11b26867329d1cf5d6bdeb",
         "c5811865b77b67d7bc20211a09264a36e36165001fbd80bae8a80abfc83d1bdd",
         "e6db88ec87ac68d0f27e41024e480412242e9dd4cd59b47c30ff3e3c070fe482",
-        "04a48931f5568b11debf736be7095735432f2b452054896f341e9b53affa1f00");
+        "04a48931f5568b11debf736be7095735432f2b452054896f341e9b53affa1f00",
+        "f5db1affbfbf7ffef00c60d32a23ddc5907cc4e8da94d74eeff6fe74de20d059",
+        "7e79f7f7fd8bd255834fd7d34054a94e3c04606cec4026448bdbb3cd1c1581a6");
     private static final String STATION_CONFIG_SERVICE="dz.sh.hidra.modules.topology.application.service.StationInstalledConfigurationApplicationService";
     private static final String STATION_CONFIG_COORDINATOR="dz.sh.hidra.modules.topology.application.service.ProtectedStationConfigurationAdmissionCoordinator";
     private static final String STATION_CONFIG_REPOSITORY="dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.JdbcStationInstalledConfigurationRepositoryAdapter";
@@ -386,6 +388,16 @@ public final class ProtectedTransactionExecutor {
         if(!caller.equals(LINK_REPOSITORY)||!s.admission
                 ||s.phase!=ProtectedOperationDataSource.Phase.ADMITTING){
             s.reject("unreviewed characteristic source lock");s.healthy();
+        }
+    }
+    /** The approval-specific lock function is distinct from legacy DRAFT lock rights. */
+    public void requireCharacteristicLinkApprovalSourceLock() {
+        var scope=admissionScope();
+        String caller=StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)
+                .getCallerClass().getName();
+        if(!caller.equals(LINK_REPOSITORY)||!scope.admission
+                ||scope.phase!=ProtectedOperationDataSource.Phase.ADMITTING){
+            scope.reject("unreviewed characteristic approval source lock");scope.healthy();
         }
     }
     public void requireCharacteristicLinkFinalPreparation() {

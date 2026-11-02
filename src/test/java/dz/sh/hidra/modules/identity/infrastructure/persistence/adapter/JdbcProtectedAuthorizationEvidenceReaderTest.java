@@ -825,5 +825,34 @@ class JdbcProtectedAuthorizationEvidenceReaderTest {
         custodyRowsBegin(rows);custodyRowsGet(rows,USER);
         assertThat(sqls).hasSize(1);
     }
+    @Test void installedCharacteristicApprovalRequiresOriginalNativeReaderNotStructuralGrant() {
+        var approve = new dz.sh.hidra.modules.identity.application.contract.topology
+            .TopologyInstalledCharacteristicLinkAuthorizationContract.Request(
+                dz.sh.hidra.modules.identity.application.contract.topology
+                    .TopologyInstalledCharacteristicLinkAuthorizationContract.Operation.APPROVE,
+                "company","unit","link");
+        assertThat(dz.sh.hidra.modules.identity.application.contract.topology
+            .TopologyInstalledCharacteristicLinkAuthorizationContract.permission(approve.operation()))
+            .isEqualTo("topology:installed-characteristic:approve");
+        assertThat(dz.sh.hidra.modules.identity.application.contract.topology
+            .TopologyInstalledCharacteristicLinkAuthorizationContract.permission(
+                dz.sh.hidra.modules.identity.application.contract.topology
+                    .TopologyInstalledCharacteristicLinkAuthorizationContract.Operation.READ_APPROVAL))
+            .isEqualTo("topology:installed-characteristic:read");
+        assertThat(dz.sh.hidra.modules.identity.application.contract.topology
+            .TopologyInstalledCharacteristicLinkAuthorizationContract.permission(
+                dz.sh.hidra.modules.identity.application.contract.topology
+                    .TopologyInstalledCharacteristicLinkAuthorizationContract.Operation.LIST_APPROVAL_HISTORY))
+            .isEqualTo("topology:installed-characteristic:history");
+        var request=new AuthorizationEvaluationRequest(USER,"topology:installed-characteristic:approve",
+            "INSTALLED_CHARACTERISTIC_LINK","link",
+            new AuthorizationScope(ScopeType.CUSTOM,"topology-company:company",null));
+        clearInvocations(jdbc);
+        assertThatThrownBy(()->reader.load(identity,request,7,11)).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(()->reader.loadInstalledCharacteristic(identity,request,7,11))
+            .isInstanceOf(RuntimeException.class);
+        // No detached request can install a native credential or disclose protected existence.
+    }
+
 }
 

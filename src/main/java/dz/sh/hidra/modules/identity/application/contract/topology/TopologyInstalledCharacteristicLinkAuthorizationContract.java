@@ -26,7 +26,7 @@ import java.util.Objects;
 
 /** Separate Topology link, unit and Simulation source authorizations must all pass. */
 public interface TopologyInstalledCharacteristicLinkAuthorizationContract {
-    enum Operation { SAVE_DRAFT, READ_CURRENT, READ_REVISION, LIST_HISTORY }
+    enum Operation { SAVE_DRAFT, READ_CURRENT, READ_REVISION, LIST_HISTORY, APPROVE, READ_APPROVAL, LIST_APPROVAL_HISTORY }
     String LINK_RESOURCE = "INSTALLED_CHARACTERISTIC_LINK";
     String UNIT_RESOURCE = "INSTALLED_UNIT";
     String SOURCE_RESOURCE = "MANUFACTURER_CHARACTERISTIC_REVISION";
@@ -67,8 +67,9 @@ public interface TopologyInstalledCharacteristicLinkAuthorizationContract {
     static String permission(Operation operation) {
         return "topology:installed-characteristic:" + switch(operation) {
             case SAVE_DRAFT -> "save";
-            case READ_CURRENT, READ_REVISION -> "read";
-            case LIST_HISTORY -> "history";
+            case APPROVE -> "approve";
+            case READ_CURRENT, READ_REVISION, READ_APPROVAL -> "read";
+            case LIST_HISTORY, LIST_APPROVAL_HISTORY -> "history";
         };
     }
     private static void exact(String value) {

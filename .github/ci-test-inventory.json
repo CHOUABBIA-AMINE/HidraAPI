@@ -3143,6 +3143,7 @@
         "custodyPairRowsReuseExactQueriesButSeparateParametersAndInvocations",
         "fakeDraftPairCannotBypassGenuineIssuerTransport",
         "hasNoJpaCacheWallClockDecisionPersistenceOrAuthorityExport",
+        "installedCharacteristicApprovalRequiresOriginalNativeReaderNotStructuralGrant",
         "installedUnitFamilyRequiresOpaqueNativeGroupAndCannotUseStructuralDiagnosticRead",
         "organizationReaderRejectsMissingNativeOwnerBeforeAnySql",
         "preservesGrantOrderScopeWindowsAndDenyPrecedence",
@@ -3166,7 +3167,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java",
-      "source_sha256": "9103b2915b5df88485cf8734081dc25c3da7d045500de39c46b5b8d797f68e7b",
+      "source_sha256": "80e4fc4fd9fa496f03a57be644ee99079b5fb29451570cccd5420bad027e8c23",
       "supports": []
     },
     {
@@ -8595,17 +8596,19 @@
     {
       "baseline_seconds": 0,
       "cases": [
-        "saveRequiresExactLinkAndPhysicalUnit",
-        "saveRequiresExpectedEpochAndNextImmutableRevision",
-        "saveRequiresExplicitRequestIdentityAndRejectsReadFields",
+        "approvalHistoryHasItsOwnNativeReadModeAndCursorValidation",
+        "approvalRequiresExactRevisionEpochReceiptAndWorkflowKeys",
         "currentReadCannotCarryDraftOrHistoryCursor",
+        "deniedFinalGuardNeverReleasesProtectedRead",
         "exactRevisionReadRequiresPositiveRevision",
         "historyEnforcesLimitAndExclusivePositiveCursor",
         "identitiesAreExactAndResultsAreDefensivelyCopied",
-        "onlyDraftOperationsExistWithoutApprovalOrQualification",
-        "successfulResultRequiresFinalGuardAndExecutorCompletion",
-        "deniedFinalGuardNeverReleasesProtectedRead",
-        "indeterminateCommitIsNeverAutomaticallyRetried"
+        "indeterminateCommitIsNeverAutomaticallyRetried",
+        "protectedApprovalOperationsAreDistinctFromImmutableDraftWrites",
+        "saveRequiresExactLinkAndPhysicalUnit",
+        "saveRequiresExpectedEpochAndNextImmutableRevision",
+        "saveRequiresExplicitRequestIdentityAndRejectsReadFields",
+        "successfulResultRequiresFinalGuardAndExecutorCompletion"
       ],
       "class": "dz.sh.hidra.modules.topology.application.service.InstalledCharacteristicLinkApplicationServiceTest",
       "dependency_reason": "HAPI-602 Package C1 draft-only application boundary: descriptor validation, physical-commit coordination and fail-closed simulation; actual source-backed native adapter and HTTP remain unimplemented; CI duration unmeasured",
@@ -8613,7 +8616,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/application/service/InstalledCharacteristicLinkApplicationServiceTest.java",
-      "source_sha256": "d89d01816656433778b99d277cf0ebe9d1bec8b0cae9b99542dafb01bc0b17a7",
+      "source_sha256": "525a1b3597ad90c6a6b0009f4add39ba08ae62609cfcdd26165ee93ed6e35d6a",
       "supports": []
     },
     {
@@ -9390,10 +9393,15 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "approvalForbidsSelfReviewStaleDraftAndSecondDecision",
+        "approvalMigrationIsAppendOnlyAndSeparateFromDraftLinkHistory",
+        "approvalRequestReceiptIsImmutableAndReferencesActualApproval",
+        "concurrentCompetingApprovalWritersCannotBothPublish",
         "draftRelationsAndLockFunctionGrantNothingToPublic",
         "freshFlywayInstallsThreeOwnerTablesAndPhysicalExclusion",
         "headRequiresConsecutiveRevisionAndRejectsStaleEpoch",
         "immutableDraftEvidenceRejectsUpdateDeleteAndTruncate",
+        "newApprovalRelationsAndDedicatedLockGrantNothingToPublic",
         "permitsAdjacentPeriodsAndDistinctKinds",
         "rejectsForeignPhysicalUnitAndInvalidDraftState",
         "rejectsOverlappingSameCompanyUnitAndKindUnderRealExclusion",
@@ -9406,7 +9414,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/InstalledCharacteristicLinkPostgresIntegrationTest.java",
-      "source_sha256": "0d10096bd53ccc48ef815b9cd98f41cb3c2989eefeeb4ea56bccdd89ec679dd2",
+      "source_sha256": "dc0d535fb1715384e6b04c2fd788c1b84bdb2b2e65b36f47204aeff3caf63496",
       "supports": []
     },
     {
@@ -11086,6 +11094,7 @@
         "batchStreamingAndStatementUnwrapReject",
         "beforeCommitCallbackWriteRejectsFullAttempt",
         "changedServerBackendOrTransactionIdentityRejects",
+        "characteristicApprovalExactSqlPinsExtendButNeverBypassDraftFamily",
         "commitDriverErrorIsIndeterminateWithoutRetry",
         "crossThreadCapturedHandleRejectsAndPoisons",
         "custodyPolicyIsSelectedOnlyForItsThreeCompiledServiceNames",
@@ -11108,7 +11117,6 @@
         "fluidProvisionalStatementsAreExactReviewedTemplates",
         "graphSqlProvisionalFamilyDoesNotGrantUnreviewedOwnerExecution",
         "installedReplacementReceiptPinDoesNotAdmitAnyOtherOwnerOrSqlShape",
-        "installedUnitSqlAndBoundedFamilyBudgetRemainExact",
         "installedUnitWorkPolicyRetainsFiniteExpiryAndStandardDefault",
         "mutableOrJdbcResultsCannotBeDelivered",
         "nativeControlAndMultipleSqlReject",
@@ -11143,7 +11151,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java",
-      "source_sha256": "4275c5031f64152dc0dcce8aa397e32980d8fd2a20191074e1b421a5384ce052",
+      "source_sha256": "a188a0821d33c9f0f36682b616cd444bc34fb36842f6a68f4989e5a720a42f47",
       "supports": []
     },
     {

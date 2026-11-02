@@ -112,10 +112,45 @@ class InstalledCharacteristicLinkApplicationServiceTest {
         assertFalse(save(0).toString().contains("request"));
     }
 
-    @Test void onlyDraftOperationsExistWithoutApprovalOrQualification() {
-        assertEquals(List.of("SAVE_DRAFT", "READ_CURRENT", "READ_REVISION", "LIST_HISTORY"),
+    @Test void protectedApprovalOperationsAreDistinctFromImmutableDraftWrites() {
+        assertEquals(List.of("SAVE_DRAFT", "READ_CURRENT", "READ_REVISION", "LIST_HISTORY",
+                        "APPROVE", "READ_APPROVAL", "LIST_APPROVAL_HISTORY"),
             java.util.Arrays.stream(Operation.values()).map(Enum::name).toList());
     }
+    private ApprovalRequest intent() {
+        return new ApprovalRequest("definition",1,"type","purpose","instance","task","action");
+    }
+    @Test void approvalRequiresExactRevisionEpochReceiptAndWorkflowKeys() {
+        assertThrows(IllegalArgumentException.class,()->new Command(Operation.APPROVE,"company","unit",
+            "link",null,"request",1L,1L,0,null,null));
+        assertThrows(IllegalArgumentException.class,()->new Command(Operation.APPROVE,"company","unit",
+            "link",null,"request",2L,1L,0,null,intent()));
+        assertThrows(IllegalArgumentException.class,()->new Command(Operation.APPROVE,"company","unit",
+            "link",null,"request",null,1L,0,null,intent()));
+        assertThrows(IllegalArgumentException.class,()->new Command(Operation.APPROVE,"company","unit",
+            "link",null,"request",1L,1L,1,null,intent()));
+        assertThrows(IllegalArgumentException.class,()->new ApprovalRequest("definition",0,
+            "type","purpose","instance","task","action"));
+        var op=new Command(Operation.APPROVE,"company","unit","link",null,
+            "request",1L,1L,0,null,intent());
+        assertEquals(1L,op.revision());
+        assertFalse(op.toString().contains("instance"));
+        assertFalse(op.approval().toString().contains("instance"));
+    }
+    @Test void approvalHistoryHasItsOwnNativeReadModeAndCursorValidation() {
+        var read=new Command(Operation.READ_APPROVAL,"company","unit","link",
+            null,null,null,2L,0,null);
+        assertEquals(Operation.READ_APPROVAL,read.operation());
+        assertThrows(IllegalArgumentException.class,()->new Command(
+            Operation.READ_APPROVAL,"company","unit","link",null,null,null,0L,0,null));
+        assertThrows(IllegalArgumentException.class,()->new Command(
+            Operation.LIST_APPROVAL_HISTORY,"company","unit","link",null,null,null,null,101,null));
+        assertThrows(IllegalArgumentException.class,()->new Command(
+            Operation.LIST_APPROVAL_HISTORY,"company","unit","link",null,null,null,null,5,0L));
+        assertEquals(Operation.LIST_APPROVAL_HISTORY,new Command(
+            Operation.LIST_APPROVAL_HISTORY,"company","unit","link",null,null,null,null,2,1L).operation());
+    }
+
 
     @Test void successfulResultRequiresFinalGuardAndExecutorCompletion() {
         var command = current();

@@ -87,6 +87,10 @@ public class ProtectedTopologyInstalledCharacteristicLinkAuthorizationParticipan
             var nativeTicket=identity.admit(entry.prepared);
             var contribution=identity.contribute(nativeTicket);
             var evidence=contribution.evidence();
+            // The native issuer, not a Workflow/DTO claimant, must be a current
+            // active human approver in the same original physical transaction.
+            if(request.operation()==Operation.APPROVE) requireHumanIssuer(evidence.userId());
+
             var requests=List.of(
                 new AuthorizationEvaluationRequest(evidence.userId(),TopologyInstalledCharacteristicLinkAuthorizationContract.permission(request.operation()),
                         LINK_RESOURCE,request.linkId(),companyScope(request.companyPartyId())),
@@ -127,6 +131,8 @@ public class ProtectedTopologyInstalledCharacteristicLinkAuthorizationParticipan
             if(!t.used.get())throw denied();
             identity.requireAdmitted(t.nativeTicket);
             if(!t.graphs.equals(loadTopology(t.contribution,t.requests)))throw denied();
+            if(t.request.operation()==Operation.APPROVE) requireHumanIssuer(t.origin.userId());
+
             for(var entry:t.sources.entrySet())
                 if(!entry.getValue().graphs().equals(loadManufacturer(t.contribution,entry.getValue().requests())))
                     throw denied();
@@ -150,6 +156,12 @@ public class ProtectedTopologyInstalledCharacteristicLinkAuthorizationParticipan
                 ||!t.used.get()||t.finalized||t.holder.isRollbackOnly())
             throw denied();
         t.finalized=true;
+    }
+    private void requireHumanIssuer(String actor) {
+        var matches=jdbc.queryForList(
+            "SELECT id FROM public.hidra_identity_user WHERE id=? AND user_type='HUMAN' AND status='ACTIVE'",
+            String.class, actor);
+        if(matches.size()!=1 || !actor.equals(matches.getFirst()))throw denied();
     }
     private List<AuthorizationEvidence> loadTopology(ProtectedOperationIdentityParticipant.Contribution c,
                                                      List<AuthorizationEvaluationRequest> requests) {

@@ -22,6 +22,7 @@ package dz.sh.hidra.modules.topology.application.port.out;
 
 import dz.sh.hidra.modules.topology.application.port.in.InstalledCharacteristicLinkUseCase.*;
 import dz.sh.hidra.modules.topology.domain.model.InstalledCharacteristicLink;
+import dz.sh.hidra.modules.topology.domain.model.InstalledCharacteristicLinkApproval;
 import dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledCharacteristicLinkAuthorizationContract.Origin;
 import dz.sh.hidra.platform.persistence.ProtectedRelationFence;
 import java.util.List;
@@ -55,6 +56,29 @@ public interface InstalledCharacteristicLinkStoragePort {
             if(link!=null)rows.putIfAbsent(link.linkId()+"|"+link.linkRevision(),link);
         }
     }
+    /** Read data is not native authority; only the coordinator can request it with a live ticket. */
+    record ApprovalReceipt(String commandSha256,long linkRevision,String approvingActorUserId) {
+        public ApprovalReceipt {
+            if(commandSha256==null || !commandSha256.matches("[0-9a-f]{64}") || linkRevision<1
+                    || approvingActorUserId==null || approvingActorUserId.isBlank())
+                throw new IllegalArgumentException("Invalid immutable approval receipt");
+        }
+    }
+    record ApprovalObservation(InstalledCharacteristicLinkApproval existing,
+            List<InstalledCharacteristicLinkApproval> history,String draftActorUserId,
+            ApprovalReceipt receipt,Long nextBeforeRevision) {
+        public ApprovalObservation {
+            history=List.copyOf(Objects.requireNonNull(history));
+            if(nextBeforeRevision!=null && nextBeforeRevision<1)
+                throw new IllegalArgumentException("Invalid approval cursor");
+        }
+    }
+    ApprovalObservation observeApproval(Admission admission,Command command);
+    void requireInstallation(Admission admission,InstalledCharacteristicLink row);
+    Set<String> approvalMutationSql();
+    String approvalCommandDigest(Command command,String nativeActorUserId,String exactTargetDigest);
+    Result performApproval(Admission admission,Command command,Origin original,
+        Snapshot draft,ApprovalObservation approval,InstalledCharacteristicLinkApproval validated);
     Admission acquire(Command command);
     Snapshot observe(Admission admission,Command command);
     Set<String> mutationSql();

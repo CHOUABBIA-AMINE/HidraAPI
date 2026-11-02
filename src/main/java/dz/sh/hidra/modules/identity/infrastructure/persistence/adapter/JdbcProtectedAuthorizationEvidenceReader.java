@@ -582,6 +582,7 @@ public class JdbcProtectedAuthorizationEvidenceReader {
                     || !text(request.resourceReferenceId(),80)
                     || !("INSTALLED_CHARACTERISTIC_LINK".equals(request.resourceType())
                         && java.util.Set.of("topology:installed-characteristic:save",
+                                 "topology:installed-characteristic:approve",
                                 "topology:installed-characteristic:read",
                                 "topology:installed-characteristic:history").contains(request.permissionCode())
                         || "INSTALLED_UNIT".equals(request.resourceType())

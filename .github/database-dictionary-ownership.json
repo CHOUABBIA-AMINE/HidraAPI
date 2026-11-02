@@ -548,6 +548,22 @@
     "owner": "topology",
     "purpose": "Owner-issued monotone live/tombstone witness for protected Facility ownership; not a publication epoch or permission."
   },
+  "public.hidra_topology_installed_characteristic_approval": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261101_003__topology_installed_characteristic_approvals.sql",
+      "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/InstalledCharacteristicLinkPostgresIntegrationTest.java"
+    ],
+    "owner": "topology",
+    "purpose": "Topology-owned immutable original-transaction characteristic-link approval per exact draft revision, linked to genuine Workflow human decision and native Identity/SIM source; never a DRAFT rewrite or simulator permission."
+  },
+  "public.hidra_topology_installed_characteristic_approval_request": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261101_003__topology_installed_characteristic_approvals.sql",
+      "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/InstalledCharacteristicLinkPostgresIntegrationTest.java"
+    ],
+    "owner": "topology",
+    "purpose": "Topology-owned append-only authenticated approval request receipts; replay requires a live native approver and exact Workflow evidence rather than receipt possession."
+  },
   "public.hidra_topology_installed_characteristic_head": {
     "evidence": [
       "src/main/resources/db/migration/V20261101_001__topology_installed_characteristic_links.sql",

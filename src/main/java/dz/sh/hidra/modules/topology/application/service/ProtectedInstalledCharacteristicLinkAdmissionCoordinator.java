@@ -24,6 +24,12 @@ import dz.sh.hidra.modules.topology.application.port.out.InstalledCharacteristic
 import dz.sh.hidra.modules.topology.application.port.out.InstalledCharacteristicLinkStoragePort;
 import dz.sh.hidra.modules.topology.application.port.out.InstalledCharacteristicLinkStoragePort.Snapshot;
 import dz.sh.hidra.modules.topology.domain.model.InstalledCharacteristicLink;
+import dz.sh.hidra.modules.topology.domain.model.InstalledCharacteristicLinkApproval;
+import dz.sh.hidra.modules.topology.domain.service.InstalledCharacteristicLinkApprovalTargetDigester;
+import dz.sh.hidra.modules.topology.application.port.out.InstalledCharacteristicLinkApprovalEvidencePort;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import org.springframework.beans.factory.annotation.Autowired;
 import dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledCharacteristicLinkAuthorizationContract;
 import dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledCharacteristicLinkAuthorizationContract.Origin;
 import dz.sh.hidra.modules.simulation.application.contract.topology.TopologyManufacturerCharacteristicReferenceContract;
@@ -46,7 +52,11 @@ public final class ProtectedInstalledCharacteristicLinkAdmissionCoordinator
     private final TopologyManufacturerCharacteristicReferenceContract sources;
     private final InstalledCharacteristicLinkStoragePort storage;
     private final ProtectedTransactionExecutor executor;
+    private final InstalledCharacteristicLinkApprovalEvidencePort workflow;
     private static final String DML_OWNER="HAPI-602";
+    private static final Set<String> APPROVAL_DML_HASHES=Set.of(
+        "f5db1affbfbf7ffef00c60d32a23ddc5907cc4e8da94d74eeff6fe74de20d059",
+        "7e79f7f7fd8bd255834fd7d34054a94e3c04606cec4026448bdbb3cd1c1581a6");
     private static final Set<String> DML_HASHES=Set.of(
         "b510776b865bd270b8d8ca3739fd450dca8e2bc9fe11b26867329d1cf5d6bdeb",
         "c5811865b77b67d7bc20211a09264a36e36165001fbd80bae8a80abfc83d1bdd",
@@ -55,9 +65,18 @@ public final class ProtectedInstalledCharacteristicLinkAdmissionCoordinator
     public ProtectedInstalledCharacteristicLinkAdmissionCoordinator(
             TopologyInstalledCharacteristicLinkAuthorizationContract identity,
             TopologyManufacturerCharacteristicReferenceContract sources,
-            InstalledCharacteristicLinkStoragePort storage,ProtectedTransactionExecutor executor){
+            InstalledCharacteristicLinkStoragePort storage,ProtectedTransactionExecutor executor) {
+        this(identity,sources,storage,executor,null); // legacy DRAFT-only test constructor
+    }
+    @Autowired
+    public ProtectedInstalledCharacteristicLinkAdmissionCoordinator(
+            TopologyInstalledCharacteristicLinkAuthorizationContract identity,
+            TopologyManufacturerCharacteristicReferenceContract sources,
+            InstalledCharacteristicLinkStoragePort storage,ProtectedTransactionExecutor executor,
+            InstalledCharacteristicLinkApprovalEvidencePort workflow){
         this.identity=Objects.requireNonNull(identity);this.sources=Objects.requireNonNull(sources);
         this.storage=Objects.requireNonNull(storage);this.executor=Objects.requireNonNull(executor);
+        this.workflow=workflow;
     }
     private static AccessDeniedException denied(){return new AccessDeniedException("Installed characteristic link denied");}
     @Override public Prepared prepare(Command c) {
@@ -82,10 +101,12 @@ public final class ProtectedInstalledCharacteristicLinkAdmissionCoordinator
             var nativeTicket=identity.acquire(p.nativePrepared,request(c));
             Origin origin=identity.contribute(nativeTicket);
             var snap=storage.observe(locked,c);
+            var approvalObservation=isApproval(c.operation())?storage.observeApproval(locked,c):null;
             var verified=new ArrayList<TopologyManufacturerCharacteristicReferenceContract.Admission>();
             var all=new ArrayList<>(snap.sourceRows());
             if(c.operation()==Operation.SAVE_DRAFT)all.add(c.draft());
             for(var row:all){
+                if(isApproval(c.operation()))storage.requireInstallation(locked,row);
                 var source=new TopologyInstalledCharacteristicLinkAuthorizationContract.Source(
                     row.companyPartyId(),row.sourceId(),row.sourceRevisionId());
                 identity.requireSourceRead(nativeTicket,source);
@@ -109,12 +130,15 @@ public final class ProtectedInstalledCharacteristicLinkAdmissionCoordinator
             }
             var fences=union(identity.finalFences(nativeTicket),storage.finalFences(locked),
                     verified.stream().flatMap(t->sources.finalFences(t).stream()).toList());
-            ticket=new Ticket(this,c,nativeTicket,origin,locked,snap,verified,fences);
+            ticket=new Ticket(this,c,nativeTicket,origin,locked,snap,approvalObservation,verified,fences);
             TransactionSynchronizationManager.registerSynchronization(ticket);
             ticket.permit=executor.sealAdmission();
             requireCurrent(ticket,false);
             return ticket;
         }catch(RuntimeException failure){reject(ticket);throw failure;}
+    }
+    private static boolean isApproval(Operation op){
+        return op==Operation.APPROVE||op==Operation.READ_APPROVAL||op==Operation.LIST_APPROVAL_HISTORY;
     }
     private static int rank(ProtectedRelationFence.Mode m) {
         return switch(m){case ACCESS_SHARE->0;case SHARE->1;case SHARE_ROW_EXCLUSIVE->2;};
@@ -132,9 +156,11 @@ public final class ProtectedInstalledCharacteristicLinkAdmissionCoordinator
                 .digest(sql.getBytes(StandardCharsets.UTF_8)));}
         catch(java.security.NoSuchAlgorithmException ex){throw new IllegalStateException(ex);}
     }
-    private static void pin(Set<String> sql){
-        if(sql==null||sql.size()!=4||!sql.stream().map(ProtectedInstalledCharacteristicLinkAdmissionCoordinator::hash)
-                .collect(java.util.stream.Collectors.toSet()).equals(DML_HASHES))throw denied();
+    private static void pin(Set<String> sql,boolean approval){
+        Set<String> expected=approval?APPROVAL_DML_HASHES:DML_HASHES;
+        if(sql==null||sql.size()!=expected.size()||!sql.stream()
+                .map(ProtectedInstalledCharacteristicLinkAdmissionCoordinator::hash)
+                .collect(java.util.stream.Collectors.toSet()).equals(expected))throw denied();
     }
     private Ticket ticket(Admission a){
         if(!(a instanceof Ticket t)||t.owner!=this||!t.active||t.thread!=Thread.currentThread()
@@ -154,8 +180,38 @@ public final class ProtectedInstalledCharacteristicLinkAdmissionCoordinator
         try {
             if(!t.command.equals(c)||!t.used.compareAndSet(false,true)||t.result!=null)throw denied();
             requireCurrent(t,false);
-            if(c.operation()==Operation.SAVE_DRAFT&&t.snapshot.receipt()==null){
-                var sql=storage.mutationSql();pin(sql);
+            if(c.operation()==Operation.APPROVE){
+                if(workflow==null||t.snapshot.revision()==null||t.snapshot.current()==null
+                        ||!t.snapshot.current().equals(t.snapshot.revision())
+                        ||t.snapshot.headEpoch()==null||!t.snapshot.headEpoch().equals(c.expectedEpoch())
+                        ||t.approvalObservation==null||t.approvalObservation.draftActorUserId()==null
+                        ||t.approvalObservation.draftActorUserId().equals(t.origin.userId()))
+                    throw denied();
+                var current=t.snapshot.revision();
+                var keys=c.approval();
+                var now=Instant.now().truncatedTo(ChronoUnit.MICROS);
+                var approvedWorkflow=workflow.resolve(new InstalledCharacteristicLinkApprovalEvidencePort.Request(
+                    current,keys.definitionId(),keys.definitionVersion(),keys.targetTypeId(),
+                    keys.purposeId(),keys.instanceId(),keys.taskId(),keys.actionId(),now))
+                    .orElseThrow(ProtectedInstalledCharacteristicLinkAdmissionCoordinator::denied);
+                var approval=new InstalledCharacteristicLinkApproval(current,
+                    t.approvalObservation.draftActorUserId(),t.origin.userId(),
+                    InstalledCharacteristicLinkApprovalTargetDigester.digest(current),
+                    approvedWorkflow,now);
+                if(t.approvalObservation.receipt()==null){
+                    var sql=storage.approvalMutationSql();pin(sql,true);
+                    executor.beginProvisional(t.permit,sql);
+                    t.result=storage.performApproval(t.storageTicket,c,t.origin,t.snapshot,t.approvalObservation,approval);
+                    executor.endProvisional(t.permit);
+                }else
+                    t.result=storage.performApproval(t.storageTicket,c,t.origin,t.snapshot,t.approvalObservation,approval);
+            }else if(isApproval(c.operation())){
+                var source=storage.perform(t.storageTicket,c,t.origin,t.snapshot);
+                t.result=new Result(source.link(),source.history(),false,
+                    t.approvalObservation.nextBeforeRevision(),
+                    t.approvalObservation.existing(),t.approvalObservation.history());
+            }else if(c.operation()==Operation.SAVE_DRAFT&&t.snapshot.receipt()==null){
+                var sql=storage.mutationSql();pin(sql,false);
                 executor.beginProvisional(t.permit,sql);
                 t.result=storage.perform(t.storageTicket,c,t.origin,t.snapshot);
                 executor.endProvisional(t.permit);
@@ -206,6 +262,7 @@ public final class ProtectedInstalledCharacteristicLinkAdmissionCoordinator
         final Origin origin;
         final InstalledCharacteristicLinkStoragePort.Admission storageTicket;
         final Snapshot snapshot;
+        final InstalledCharacteristicLinkStoragePort.ApprovalObservation approvalObservation;
         final List<TopologyManufacturerCharacteristicReferenceContract.Admission> verified;
         final List<ProtectedRelationFence> fences;
         final Thread thread=Thread.currentThread();
@@ -216,10 +273,12 @@ public final class ProtectedInstalledCharacteristicLinkAdmissionCoordinator
         Ticket(ProtectedInstalledCharacteristicLinkAdmissionCoordinator owner,Command command,
                TopologyInstalledCharacteristicLinkAuthorizationContract.Admission nativeTicket,
                Origin origin,InstalledCharacteristicLinkStoragePort.Admission storageTicket,Snapshot snapshot,
+               InstalledCharacteristicLinkStoragePort.ApprovalObservation approvalObservation,
                List<TopologyManufacturerCharacteristicReferenceContract.Admission> verified,
                List<ProtectedRelationFence> fences){
             this.owner=owner;this.command=command;this.nativeTicket=nativeTicket;this.origin=origin;
-            this.storageTicket=storageTicket;this.snapshot=snapshot;this.verified=List.copyOf(verified);
+            this.storageTicket=storageTicket;this.snapshot=snapshot;
+            this.approvalObservation=approvalObservation;this.verified=List.copyOf(verified);
             this.fences=List.copyOf(fences);
         }
         @Override public void suspend(){active=false;}

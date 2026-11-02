@@ -218,4 +218,119 @@ class InstalledCharacteristicLinkPostgresIntegrationTest {
                  AND x.grantee=0 AND x.privilege_type='EXECUTE')
             """,Boolean.class));
     }
+    private void approval(JdbcTemplate db,Fixture f,long revision,String actor,String action) {
+        db.update("""
+            INSERT INTO public.hidra_topology_installed_characteristic_approval(
+              company_party_id,installed_unit_id,link_id,link_revision,target_sha256,
+              draft_actor_user_id,approving_actor_user_id,workflow_definition_id,
+              workflow_definition_version,workflow_target_type_id,workflow_purpose_id,
+              workflow_instance_id,workflow_task_id,workflow_action_id,workflow_acted_at,
+              approved_at,operation_binding_id,actor_session_id,backend_pid,transaction_id,database_role)
+            VALUES (?,?,?,?,?,'synthetic-user',?,'definition',1,'target-type','purpose',
+              'instance','task',?, ?,?,'synthetic-binding','synthetic-session',
+              pg_backend_pid(),txid_current(),session_user)
+            """,f.company(),f.unit(),f.link(),revision,"b".repeat(64),actor,action,
+            Timestamp.from(END),Timestamp.from(END.plusSeconds(1)));
+    }
+    private void approvalSource(JdbcTemplate db,Fixture f) {
+        insert(db,f,1,"COMPRESSOR_MAP",START,MIDDLE,f.sha());
+        db.update("""
+            INSERT INTO public.hidra_topology_installed_characteristic_head
+              (company_party_id,installed_unit_id,link_id,link_revision,head_epoch)
+            VALUES(?,?,?,1,1)
+            """,f.company(),f.unit(),f.link());
+    }
+    @Test void approvalMigrationIsAppendOnlyAndSeparateFromDraftLinkHistory() {
+        JdbcTemplate db=jdbc();var f=fixture(db);approvalSource(db,f);
+        assertEquals(Boolean.TRUE,db.queryForObject(
+            "SELECT to_regclass('public.hidra_topology_installed_characteristic_approval') IS NOT NULL",
+            Boolean.class));
+        assertEquals(Boolean.TRUE,db.queryForObject(
+            "SELECT to_regclass('public.hidra_topology_installed_characteristic_approval_request') IS NOT NULL",
+            Boolean.class));
+        approval(db,f,1,"different-human",id());
+        assertEquals(1,db.queryForObject("SELECT count(*) FROM public.hidra_topology_installed_characteristic_approval WHERE company_party_id=?",
+                Integer.class,f.company()));
+        assertEquals("DRAFT",db.queryForObject("SELECT link_state FROM "+TABLE+
+                " WHERE company_party_id=? AND link_id=?",
+                String.class,f.company(),f.link()));
+        assertThrows(DataAccessException.class,()->db.update(
+            "UPDATE public.hidra_topology_installed_characteristic_approval SET approved_at=now() WHERE company_party_id=?",
+            f.company()));
+        assertThrows(DataAccessException.class,()->db.update(
+            "DELETE FROM public.hidra_topology_installed_characteristic_approval WHERE company_party_id=?",f.company()));
+        assertThrows(DataAccessException.class,()->db.execute(
+            "TRUNCATE public.hidra_topology_installed_characteristic_approval"));
+    }
+    @Test void approvalForbidsSelfReviewStaleDraftAndSecondDecision() {
+        JdbcTemplate db=jdbc();var f=fixture(db);approvalSource(db,f);
+        assertThrows(DataAccessException.class,()->approval(db,f,1,"synthetic-user",id()));
+        assertThrows(DataAccessException.class,()->approval(db,f,2,"different-human",id()));
+        approval(db,f,1,"different-human",id());
+        assertThrows(DataAccessException.class,()->approval(db,f,1,"different-human",id()));
+    }
+    @Test void approvalRequestReceiptIsImmutableAndReferencesActualApproval() {
+        JdbcTemplate db=jdbc();var f=fixture(db);approvalSource(db,f);
+        approval(db,f,1,"different-human",id());
+        String command="c".repeat(64),request=id();
+        db.update("""
+            INSERT INTO public.hidra_topology_installed_characteristic_approval_request(
+              company_party_id,installed_unit_id,link_id,request_id,link_revision,
+              command_sha256,approving_actor_user_id,operation_binding_id,actor_session_id,
+              backend_pid,transaction_id,database_role)
+            VALUES (?,?,?,?,1,?,'different-human','synthetic-binding','synthetic-session',
+              pg_backend_pid(),txid_current(),session_user)
+            """,f.company(),f.unit(),f.link(),request,command);
+        assertThrows(DataAccessException.class,()->db.update(
+            "DELETE FROM public.hidra_topology_installed_characteristic_approval_request WHERE request_id=?",request));
+        assertThrows(DataAccessException.class,()->db.update("""
+            INSERT INTO public.hidra_topology_installed_characteristic_approval_request(
+              company_party_id,installed_unit_id,link_id,request_id,link_revision,command_sha256,
+              approving_actor_user_id,operation_binding_id,actor_session_id,backend_pid,transaction_id,database_role)
+            VALUES (?,?,?,?,1,?,'different-human','synthetic-binding','synthetic-session',
+              pg_backend_pid(),txid_current(),session_user)
+            """,f.company(),f.unit(),f.link(),request,command));
+    }
+    @Test void concurrentCompetingApprovalWritersCannotBothPublish()throws Exception {
+        JdbcTemplate db=jdbc();var f=fixture(db);approvalSource(db,f);
+        try(var executor=java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor()){
+            var ready=new java.util.concurrent.CountDownLatch(1);
+            var release=new java.util.concurrent.CountDownLatch(1);
+            var future=executor.submit(()->{
+                try {
+                    var ds=new DriverManagerDataSource(POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword());
+                    try(var connection=ds.getConnection()){
+                        connection.setAutoCommit(false);
+                        try(var statement=connection.createStatement()){
+                            statement.execute("SELECT public.hidra_topology_characteristic_lock_approval_sources()");
+                        }
+                        ready.countDown();
+                        if(!release.await(10,java.util.concurrent.TimeUnit.SECONDS))throw new IllegalStateException("Synthetic release timeout");
+                        connection.commit();
+                    }
+                    return true;
+                }catch(Exception e){ready.countDown();throw new RuntimeException(e);}
+            });
+            assertTrue(ready.await(10,java.util.concurrent.TimeUnit.SECONDS));
+            assertThrows(DataAccessException.class,()->db.queryForObject(
+                "SELECT public.hidra_topology_characteristic_lock_approval_sources()",Object.class));
+            release.countDown();
+            assertTrue(future.get(10,java.util.concurrent.TimeUnit.SECONDS));
+        }
+    }
+    @Test void newApprovalRelationsAndDedicatedLockGrantNothingToPublic() {
+        JdbcTemplate db=jdbc();
+        for(String relation:new String[]{"approval","approval_request"})
+            assertEquals(Boolean.FALSE,db.queryForObject("""
+                SELECT EXISTS(SELECT 1 FROM pg_class c,LATERAL aclexplode(c.relacl) x
+                  WHERE c.oid=?::regclass AND x.grantee=0
+                    AND x.privilege_type IN ('SELECT','INSERT','UPDATE','DELETE'))
+                """,Boolean.class,"public.hidra_topology_installed_characteristic_"+relation));
+        assertEquals(Boolean.FALSE,db.queryForObject("""
+            SELECT EXISTS(SELECT 1 FROM pg_proc p,LATERAL aclexplode(p.proacl) x
+              WHERE p.oid='public.hidra_topology_characteristic_lock_approval_sources()'::regprocedure
+              AND x.grantee=0 AND x.privilege_type='EXECUTE')
+            """,Boolean.class));
+    }
+
 }

@@ -71,7 +71,14 @@ import org.testcontainers.junit.jupiter.Testcontainers;
         "hidra.platform.security.jwt.token-issuer=hidra-api",
         "hidra.platform.security.jwt.audience=hidra-api",
         "hidra.simulation.manufacturer-history.cursor-current-key-id=synthetic",
-        "hidra.simulation.manufacturer-history.cursor-current-key-base64=AQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyA"
+        "hidra.simulation.manufacturer-history.cursor-current-key-base64=AQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyA",
+        "hidra.simulation.manufacturer-history.cursor-previous-key-id=synthetic-former",
+        "hidra.simulation.manufacturer-history.cursor-previous-key-base64=BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc",
+        "hidra.platform.security.ldap.enabled=true",
+        "hidra.platform.security.ldap.url=ldap://synthetic.invalid:389",
+        "hidra.platform.security.ldap.base-dn=dc=synthetic,dc=invalid",
+        "hidra.platform.security.ldap.user-search-base=ou=people",
+        "hidra.platform.security.ldap.user-search-filter=(uid={0})"
     })
 @ActiveProfiles("test")
 @org.springframework.test.annotation.DirtiesContext(
@@ -168,6 +175,12 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
     @Autowired AuthenticateDirectUserUseCase authentication;
     @Autowired PasswordEncoder passwords;
     @Autowired Flyway flyway;
+    @Autowired dz.sh.hidra.modules.identity.application.port.in.CompleteAuthenticatedPrincipalUseCase completion;
+    @Autowired dz.sh.hidra.modules.identity.infrastructure.security.IdentityOidcJwtAuthenticationConverter oidc;
+    @MockitoSpyBean dz.sh.hidra.modules.identity.infrastructure.security.LdapCredentialVerificationAdapter ldapVerification;
+    @org.springframework.test.context.bean.override.mockito.MockitoBean(name="externalOidcJwtDecoder")
+    org.springframework.security.oauth2.jwt.JwtDecoder externalOidcDecoder;
+
     // Real owner methods execute as usual. Spies observe stage *names* only;
     // they do not stub native Identity, Party, Workflow or persistence.
     @MockitoSpyBean dz.sh.hidra.modules.simulation.application.service.ManufacturerCharacteristicRevisionApplicationService apiOwner;
@@ -175,6 +188,8 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
     @MockitoSpyBean dz.sh.hidra.modules.identity.infrastructure.security.ProtectedSimulationManufacturerCharacteristicAuthorizationParticipant nativeIdentity;
     @MockitoSpyBean dz.sh.hidra.modules.party.infrastructure.persistence.adapter.JdbcSimulationManufacturerEvidenceAdapter nativeParty;
     @MockitoSpyBean dz.sh.hidra.modules.simulation.infrastructure.persistence.adapter.JdbcManufacturerCharacteristicRevisionRepositoryAdapter nativeSource;
+    @MockitoSpyBean org.springframework.transaction.PlatformTransactionManager transactionManager;
+    @Autowired dz.sh.hidra.platform.configuration.ProtectedExecutionBudgetProperties workBudgets;
     private JdbcTemplate admin;
     private MockMvc http;
     private String company, manufacturer, source, user, token;
@@ -706,5 +721,245 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
             .header("Authorization","Bearer "+token))
             .andExpect(status().isForbidden()).andExpect(jsonPath("$.code").value("DENIED"));
         assertThat(count(REV)).isEqualTo(65);
+    }
+
+    /** Only an external transport is synthetic. Identity's verified external completion,
+     * producer binding, native issuer, Party grants, original transaction and HTTP stack
+     * retain their real configured implementations. No enterprise IdP is contacted. */
+    private String externalProvider(String type,String subject) {
+        admin.update("UPDATE public.hidra_identity_provider"
+            +" SET status='INACTIVE' WHERE status='ACTIVE'");
+        String provider=id(),link=id();
+        Timestamp now=Timestamp.from(Instant.now());
+        admin.update("INSERT INTO public.hidra_identity_provider"
+            +"(id,code,name,provider_type,issuer_uri,directory_base_dn,user_search_base,"
+            +"status,sync_enabled,just_in_time_provisioning_enabled,created_at,updated_at)"
+            +" VALUES (?,?,'Synthetic original-source provider',?,?,?,?,'ACTIVE',false,false,?,?)",
+            provider,provider,type,type.equals("OIDC")?"https://oidc.synthetic.invalid":null,
+            type.equals("OIDC")?null:"dc=synthetic,dc=invalid",
+            type.equals("OIDC")?null:"ou=people",now,now);
+        admin.update("INSERT INTO public.hidra_identity_external_identity"
+            +"(id,user_id,identity_provider_id,external_subject,status,created_at,updated_at)"
+            +" VALUES (?,?,?,?,'LINKED',?,?)",link,user,provider,subject,now,now);
+        return provider;
+    }
+    private static final String SYNTHETIC_SOURCE_SECRET =
+        "synthetic-completion-test-key-32-bytes-only";
+    private String signedOriginalOidcBearer(String subject) {
+        var secret=new javax.crypto.spec.SecretKeySpec(
+            SYNTHETIC_SOURCE_SECRET.getBytes(StandardCharsets.UTF_8),"HmacSHA256");
+        var encoder=org.springframework.security.oauth2.jwt.NimbusJwtEncoder
+            .withSecretKey(secret)
+            .algorithm(org.springframework.security.oauth2.jose.jws.MacAlgorithm.HS256).build();
+        var decoder=org.springframework.security.oauth2.jwt.NimbusJwtDecoder
+            .withSecretKey(secret)
+            .macAlgorithm(org.springframework.security.oauth2.jose.jws.MacAlgorithm.HS256).build();
+        org.mockito.Mockito.when(externalOidcDecoder.decode(
+            org.mockito.ArgumentMatchers.anyString())).thenAnswer(
+                i->decoder.decode(i.getArgument(0)));
+        var jwt=encoder.encode(org.springframework.security.oauth2.jwt.JwtEncoderParameters.from(
+            org.springframework.security.oauth2.jwt.JwtClaimsSet.builder()
+                .issuer("https://oidc.synthetic.invalid").subject(subject)
+                .audience(List.of("hidra-api"))
+                .issuedAt(Instant.now().minusSeconds(1))
+                .expiresAt(Instant.now().plusSeconds(300)
+                    .truncatedTo(java.time.temporal.ChronoUnit.SECONDS))
+                .build()));
+        var authentication=oidc.convert(decoder.decode(jwt.getTokenValue()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            var principal=(dz.sh.hidra.modules.identity.domain.model.HidraPrincipal)
+                authentication.getPrincipal();
+            return completion.complete(
+                new dz.sh.hidra.modules.identity.application.model.AuthenticatedPrincipalInput(
+                    principal.userId(),principal.username(),principal.displayName(),
+                    principal.authenticationType(),principal.identityProviderId(),
+                    principal.roles(),principal.permissions(),principal.externalIdentityId(),null),
+                "synthetic-ip","synthetic-agent","synthetic-correlation").accessToken();
+        } finally {SecurityContextHolder.clearContext();}
+    }
+    @Test void originalSignedOidcAuthenticationCompletesToNativeManufacturerHttpWithRevocation()throws Exception{
+        String provider=externalProvider("OIDC","synthetic-oidc-subject-"+id());
+        String subject=admin.queryForObject("SELECT external_subject FROM public.hidra_identity_external_identity"
+            +" WHERE user_id=? AND identity_provider_id=?",String.class,user,provider);
+        String externalToken=signedOriginalOidcBearer(subject);
+        assertThat(admin.queryForObject(
+            "SELECT authentication_type FROM public.hidra_identity_operation_binding"
+                +" WHERE user_id=? ORDER BY issued_at DESC LIMIT 1",String.class,user))
+            .isEqualTo("OIDC");
+        allow(Operation.SAVE,"oidc-v1");
+        http("PUT",path("oidc-v1"),body("oidc-v1"),externalToken)
+            .andExpect(status().isOk());
+        allow(Operation.READ_REVISION,"oidc-v1");
+        http("GET",path("oidc-v1"),null,externalToken)
+            .andExpect(status().isOk()).andExpect(jsonPath("$.source.certificate").doesNotExist());
+        admin.update("UPDATE public.hidra_identity_provider"
+            +" SET status='INACTIVE',updated_at=clock_timestamp() WHERE id=?",provider);
+        http("GET",path("oidc-v1"),null,externalToken)
+            .andExpect(status().isForbidden());
+        assertThat(count(REV)).isEqualTo(1);
+    }
+
+    private String simulatedRealDirectoryCallback(ProviderType type,String subject) throws Exception {
+        var target=org.springframework.test.util.AopTestUtils
+            .<dz.sh.hidra.modules.identity.infrastructure.security.LdapCredentialVerificationAdapter>
+                getUltimateTargetObject(ldapVerification);
+        var original=org.springframework.test.util.ReflectionTestUtils.getField(
+            target,"ldapTemplate");
+        var transport=org.mockito.Mockito.mock(org.springframework.ldap.core.LdapTemplate.class);
+        var context=org.mockito.Mockito.mock(javax.naming.directory.DirContext.class);
+        var attributes=new javax.naming.directory.BasicAttributes(true);
+        attributes.put("entryUUID",subject);
+        attributes.put("uid",user);
+        attributes.put("displayName","Synthetic Manufacturer Operator");
+        org.mockito.Mockito.when(context.getAttributes(
+            org.mockito.ArgumentMatchers.any(javax.naming.Name.class),
+            org.mockito.ArgumentMatchers.any(String[].class))).thenReturn(attributes);
+        org.mockito.Mockito.when(transport.authenticate(
+            org.mockito.ArgumentMatchers.anyString(),
+            org.mockito.ArgumentMatchers.anyString(),
+            org.mockito.ArgumentMatchers.anyString(),
+            org.mockito.ArgumentMatchers.any(
+                org.springframework.ldap.core.AuthenticatedLdapEntryContextCallback.class)))
+            .thenAnswer(i->{
+                ((org.springframework.ldap.core.AuthenticatedLdapEntryContextCallback)i.getArgument(3))
+                    .executeWithContext(context,new org.springframework.ldap.core.LdapEntryIdentification(
+                        new javax.naming.ldap.LdapName("uid=synthetic,ou=people,dc=synthetic,dc=invalid"),
+                        new javax.naming.ldap.LdapName("uid=synthetic,ou=people")));
+                return true;
+            });
+        org.springframework.test.util.ReflectionTestUtils.setField(target,"ldapTemplate",transport);
+        try {
+            // Actual LDAP verification adapter invokes the original authenticated callback;
+            // only the directory network transport is simulated.
+            return authentication.authenticate(new DirectAuthenticationCommand(
+                type,user,PASSWORD,"synthetic-ip","synthetic-agent",
+                "synthetic-directory-native")).accessToken();
+        } finally {
+            org.springframework.test.util.ReflectionTestUtils.setField(target,"ldapTemplate",original);
+        }
+    }
+    @Test void originalLdapCallbackCompletesToNativeManufacturerHttpWithoutBorrowedLocalGrant()throws Exception{
+        String subject="synthetic-ldap-subject-"+id();
+        externalProvider("LDAP",subject);
+        String directoryToken=simulatedRealDirectoryCallback(ProviderType.LDAP,subject);
+        assertThat(admin.queryForObject("SELECT authentication_type"
+            +" FROM public.hidra_identity_operation_binding WHERE user_id=?"
+            +" ORDER BY issued_at DESC LIMIT 1",String.class,user)).isEqualTo("LDAP");
+        allow(Operation.SAVE,"ldap-v1");
+        http("PUT",path("ldap-v1"),body("ldap-v1"),directoryToken)
+            .andExpect(status().isOk());
+        allow(Operation.READ_REVISION,"ldap-v1");
+        http("GET",path("ldap-v1"),null,directoryToken)
+            .andExpect(status().isOk());
+        admin.update("UPDATE public.hidra_identity_external_identity"
+            +" SET status='UNLINKED',updated_at=clock_timestamp()"
+            +" WHERE user_id=?",user);
+        http("GET",path("ldap-v1"),null,directoryToken)
+            .andExpect(status().isForbidden());
+        assertThat(count(REV)).isEqualTo(1);
+    }
+
+    @Test void configuredHttpHistoryAcceptsPreviousHmacKeyOnlyDuringRotation()throws Exception{
+        save("v1");save("v2");
+        allow(Operation.LIST_HISTORY,null);
+        var old=new dz.sh.hidra.modules.simulation.infrastructure.security
+            .HmacManufacturerCharacteristicHistoryCursorAdapter(
+                "synthetic-former","BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc",
+                null,null,java.time.Clock.systemUTC());
+        var position=new dz.sh.hidra.modules.simulation.application.port.out
+            .ManufacturerCharacteristicHistoryCursorPort.Position(
+                Instant.parse("2026-10-01T10:00:00Z"),"v1");
+        String previous=old.encode(company,source,1,position);
+        http.perform(get(ROOT+source+"/history").param("companyPartyId",company)
+            .param("size","1").param("cursor",previous)
+            .header("Authorization","Bearer "+token))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.history[0].revisionId").value("v2"));
+        String poisoned=previous.substring(0,previous.length()-1)
+            +(previous.endsWith("A")?"B":"A");
+        http.perform(get(ROOT+source+"/history").param("companyPartyId",company)
+            .param("size","1").param("cursor",poisoned)
+            .header("Authorization","Bearer "+token))
+            .andExpect(status().isForbidden());
+        assertThat(count(REV)).isEqualTo(2);
+    }
+
+    @Test void originalActiveDirectoryCallbackCompletesToNativeManufacturerHistory()throws Exception{
+        String subject="synthetic-ad-subject-"+id();
+        externalProvider("ACTIVE_DIRECTORY",subject);
+        String directoryToken=simulatedRealDirectoryCallback(ProviderType.ACTIVE_DIRECTORY,subject);
+        assertThat(admin.queryForObject("SELECT authentication_type"
+            +" FROM public.hidra_identity_operation_binding WHERE user_id=?"
+            +" ORDER BY issued_at DESC LIMIT 1",String.class,user)).isEqualTo("ACTIVE_DIRECTORY");
+        allow(Operation.SAVE,"ad-v1");
+        http("PUT",path("ad-v1"),body("ad-v1"),directoryToken)
+            .andExpect(status().isOk());
+        allow(Operation.LIST_HISTORY,null);
+        http("GET",source+"/history",null,directoryToken)
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.history[0].revisionId").value("ad-v1"));
+        admin.update("UPDATE public.hidra_identity_provider SET status='INACTIVE'"
+            +" WHERE provider_type='ACTIVE_DIRECTORY'");
+        http("GET",source+"/history",null,directoryToken).andExpect(status().isForbidden());
+        assertThat(count(REV)).isEqualTo(1);
+    }
+
+    @Test void manufacturerLostPhysicalCommitAcknowledgementRemainsIndeterminateWithoutBlindRetry()throws Exception{
+        allow(Operation.SAVE,"lost-v1");
+        var armed=new java.util.concurrent.atomic.AtomicReference<Thread>();
+        var observed=new java.util.concurrent.atomic.AtomicBoolean();
+        org.mockito.Mockito.doAnswer(inv->{
+            Object result=inv.callRealMethod();
+            assertThat(result).isEqualTo(true);
+            armed.set(Thread.currentThread());
+            return result;
+        }).when(nativeSource).finalGuard(org.mockito.ArgumentMatchers.any());
+        org.mockito.Mockito.doAnswer(inv->{
+            if(armed.get()==Thread.currentThread() && !observed.get()) {
+                inv.callRealMethod(); // A genuine physical PostgreSQL commit succeeded.
+                observed.set(true);
+                armed.set(null);
+                throw new org.springframework.transaction.TransactionSystemException(
+                    "synthetic manufacturer physical commit acknowledgement lost");
+            }
+            return inv.callRealMethod();
+        }).when(transactionManager).commit(org.mockito.ArgumentMatchers.any(
+            org.springframework.transaction.TransactionStatus.class));
+        http("PUT",path("lost-v1"),body("lost-v1"),token)
+            .andExpect(status().isServiceUnavailable())
+            .andExpect(jsonPath("$.code").value("INDETERMINATE"));
+        assertThat(observed.get()).isTrue();
+        assertThat(count(REV)).isEqualTo(1);
+        http("PUT",path("lost-v1"),body("lost-v1"),token)
+            .andExpect(status().isOk());
+        assertThat(count(REV)).isEqualTo(1);
+        assertThat(count(QUAL)).isZero();
+    }
+
+    @Test void manufacturerPublicationBudgetIsIndependentAndFiniteWithoutAnArbitraryHttpLatencySla()throws Exception{
+        assertThat(workBudgets.manufacturerWorkBudgetMillis())
+            .isEqualTo(dz.sh.hidra.platform.configuration.ProtectedExecutionBudgetProperties
+                .DEFAULT_MANUFACTURER_WORK_BUDGET_MILLIS);
+        assertThat(workBudgets.manufacturerWorkBudgetNanos()).isGreaterThan(
+            dz.sh.hidra.platform.configuration.ProtectedExecutionBudgetProperties
+                .STANDARD_WORK_BUDGET_MILLIS*1_000_000L);
+        assertThat(workBudgets.manufacturerWorkBudgetMillis()).isLessThanOrEqualTo(
+            dz.sh.hidra.platform.configuration.ProtectedExecutionBudgetProperties
+                .MAX_WORK_BUDGET_MILLIS);
+        allow(Operation.SAVE,"budget-v1");allow(Operation.READ_REVISION,"budget-v1");
+        long start=System.nanoTime();
+        http("PUT",path("budget-v1"),body("budget-v1"),token).andExpect(status().isOk());
+        long saveMillis=java.util.concurrent.TimeUnit.NANOSECONDS
+            .toMillis(System.nanoTime()-start);
+        start=System.nanoTime();
+        http("GET",path("budget-v1"),null,token).andExpect(status().isOk());
+        long readMillis=java.util.concurrent.TimeUnit.NANOSECONDS
+            .toMillis(System.nanoTime()-start);
+        // Observational fixture metrics, not an arbitrary HTTP deadline assertion or an OT SLA.
+        System.out.println("HAPI601 SYNTHETIC manufacturer budget sample saveMs="
+            +saveMillis+" readMs="+readMillis+" configuredProtectedWorkMs="
+            +workBudgets.manufacturerWorkBudgetMillis());
+        assertThat(count(REV)).isEqualTo(1);
     }
 }

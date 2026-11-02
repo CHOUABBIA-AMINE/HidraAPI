@@ -7630,20 +7630,26 @@
       "cases": [
         "absentAndMalformedBearerCannotReadOrWriteSource",
         "certificateRequiresItsOwnCurrentPermissionEvenAfterRevisionRead",
+        "configuredHttpHistoryAcceptsPreviousHmacKeyOnlyDuringRotation",
         "currentPartySuspensionBlocksPreviouslyAuthorizedRevision",
         "divergentImmutableReplayAndMalformedSupplierAxisCannotModifyStoredRevision",
         "foreignSourceAndWrongHttpVerbDoNotInheritNativeAuthority",
         "historyCursorRejectsTamperingAndQualificationCannotInventWorkflow",
         "immutableReplayOfSameIssuerTokenDoesNotAppendAnotherRevision",
+        "manufacturerLostPhysicalCommitAcknowledgementRemainsIndeterminateWithoutBlindRetry",
+        "manufacturerPublicationBudgetIsIndependentAndFiniteWithoutAnArbitraryHttpLatencySla",
         "missingSourceScopeAndExplicitDenyPrecedeExistenceAndReplay",
         "nativeHttpHistoryChecksAll265RowsAndFailsClosedAtSixtyFifthPrincipal",
         "nativeManufacturerQualificationRequiresRealTerminalWorkflowAndReplaysOnce",
         "nativePagedManufacturerHistoryRechecksCurrentAuthorityForEveryContinuation",
+        "originalActiveDirectoryCallbackCompletesToNativeManufacturerHistory",
+        "originalLdapCallbackCompletesToNativeManufacturerHttpWithoutBorrowedLocalGrant",
+        "originalSignedOidcAuthenticationCompletesToNativeManufacturerHttpWithRevocation",
         "realLocalBearerPersistsCanonicalSourceAndReadsThroughConfiguredFilters",
         "replayAfterSessionRevocationCannotMutatePreviouslyCommittedSource",
         "supplierDeclaredCertificateRemainsDocumentaryAndNeedsSeparateCurrentGrant"
       ],
-      "source_sha256": "02078389d74040ebc103cf167c667aaf00b4a219b46766fcb9ff513af923eab9"
+      "source_sha256": "59e691262fcaed99b04e542a2d652fe0cbbb1b027c27a8686518f9f573c726ac"
     },
     {
       "baseline_seconds": 0,

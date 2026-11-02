@@ -172,6 +172,8 @@ class InstalledEquipmentOperatorQualificationTest {
     @Autowired dz.sh.hidra.modules.workflow.application.service.WorkflowApplicationService workflowApplication;
     @Autowired dz.sh.hidra.modules.workflow.application.port.in.ExecuteWorkflowTransitionUseCase workflowTransitions;
     @Autowired dz.sh.hidra.modules.workflow.application.port.out.WorkflowTaskRepositoryPort workflowTasks;
+    @Autowired dz.sh.hidra.modules.topology.application.port.in.InstalledCharacteristicLinkUseCase nativeLinkOwner;
+    @Autowired dz.sh.hidra.modules.topology.infrastructure.integration.TopologyInstalledCharacteristicLinkWorkflowTargetLookup targetLookup;
     @Autowired @org.springframework.beans.factory.annotation.Qualifier("hidraJwtDecoder")
     org.springframework.security.oauth2.jwt.JwtDecoder nativeJwtDecoder;
     private JdbcTemplate admin;
@@ -431,6 +433,19 @@ class InstalledEquipmentOperatorQualificationTest {
             useWorkflowActor(starter,user);
             String locator=dz.sh.hidra.modules.topology.infrastructure.integration
                 .TopologyInstalledCharacteristicLinkWorkflowTargetLookup.locator(company,unit,link,1);
+            // Diagnose the protected owner boundary without weakening it or logging identities.
+            // The same signed starter is used for the direct owner read and Workflow target lookup.
+            var nativeRevision=nativeLinkOwner.execute(
+                new dz.sh.hidra.modules.topology.application.port.in.InstalledCharacteristicLinkUseCase.Command(
+                    dz.sh.hidra.modules.topology.application.port.in.InstalledCharacteristicLinkUseCase.Operation.READ_REVISION,
+                    company,unit,link,null,null,null,1L,0,null)).link();
+            assertNotNull(nativeRevision,"HAPI-603 protected native revision preflight unavailable");
+            assertEquals(digest,InstalledCharacteristicLinkApprovalTargetDigester.digest(nativeRevision),
+                "HAPI-603 immutable target digest differs from native owner revision");
+            assertTrue(targetLookup.eligibleTarget(
+                dz.sh.hidra.modules.topology.infrastructure.integration
+                    .TopologyInstalledCharacteristicLinkWorkflowTargetLookup.TYPE,digest,locator).isPresent(),
+                "HAPI-603 protected target resolver unavailable outside Workflow transaction");
             var instance=workflowApplication.startWorkflowInstance(
                 new dz.sh.hidra.modules.workflow.application.command.StartWorkflowInstanceCommand(
                     definition,1,purpose,"topology",type,digest,locator,null,start,user,

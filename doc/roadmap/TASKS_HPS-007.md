@@ -1706,3 +1706,58 @@ proof remains mandatory. This repairs diagnostic interference and does NOT
 establish that the underlying Workflow target lookup works. HAPI-601 assurance,
 HAPI-603 deferred gaps and HAPI-598 acceptance remain pending. Publish guarded
 main, confirm applicable exact-SHA CI queued/started, then STOP.
+
+### HAPI-601 — Full1071 immutable Workflow lookup result repair (2026-11-02)
+
+Owner Fail requests deep source diagnosis on82f649a875b782c214adec7d0ccd97557585d225.
+Full1071/run41472353110 again failed one of21 manufacturer native cases
+(empty protected Workflow target); no synchronization/setup cascade remains.
+Its passive lookup-only trace proves completion of native preparation, source
+lookup, Identity acquire/contribute/current checks, Party acquire/read/current
+checks, fence acquisition, coordinator.perform, qualification read and targetDigest.
+There is NO prepareFinal invocation. The failure is after the work result is
+created and before the flush callback, not a failed native grant/source lookup.
+
+Exact-source root cause: resolveWorkflowTarget returned Optional.of(view) from
+the executor work supplier. ProtectedTransactionExecutor.executeWithBudget calls
+its real materialized(result,0) before FLUSHING. That unchanged classifier accepts
+scalar/time values, recursively checked records and immutable collections, but
+NOT java.util.Optional; it throws IllegalArgumentException and rolls back.
+resolveWorkflowTarget then intentionally maps rejected-before-commit failure
+to Optional.empty, concealing this internal result-shape error from Workflow.
+
+Fix only the Simulation application service: return the existing immutable
+WorkflowTargetView record from the original protected transaction, allow normal
+materialization, final preparation, flush, guard and observed commit, then wrap
+the committed view in Optional outside executePublication. Preserve invalid
+digest denial, ambient Workflow suspension/restoration, private credential route,
+native scope, Party/source fences, authorization expiry, scalar final guard,
+rollback and indeterminate-outcome handling. DO NOT broaden the executor's
+accepted result types or weaken guards. This is a source-backed functional
+correction, pending hosted runtime validation, not another diagnostic-only stage.
+
+Exact registered message remains
+`test(simulation): complete manufacturer characteristic assurance`.
+Five MODIFY paths: ManufacturerCharacteristicRevisionApplicationService.java,
+its existing same-package application service test, .github/ci-test-inventory.json,
+this append-only HPS-007 record and compact ULTIMATE_TASKS.md pointer.
+No CREATE/DELETE or unrelated production change.
+Add one regression workflowLookupMaterializesRecordInsideExecutorBeforeWrappingOptional:
+run the actual service work supplier against the unchanged real executor's
+materialized classifier via reflection, assert its in-transaction value is the
+existing record and the service's public result is Optional after return.
+Transaction/coordinator dependencies are explicitly mocked JVM fixtures;
+this is not physical-commit proof. The original21 configured HTTP/PostgreSQL
+methods retain the actual native/Workflow/commit/replay/denial acceptance gates.
+
+Available checks: exact source comparison restricts production edits to record
+return and post-executor wrapping; four existing JVM cases preserved plus one
+new identity; all21 native cases unchanged; inventory JSON parses and changes
+only that JVM class's source digest/case list. Source SHA256
+`9c1ba67934b7fa33e6304692005e4549d3dd2e6f1a1a240e7c0f94f7749934d8`.
+No local Java/Maven/PostgreSQL execution claimed: those tools are unavailable
+and no complete environment was provisioned. Require new exact-SHA hosted
+Full/Docs, including real Workflow qualification and negative cases. No HAPI-601
+VERIFIED status, HAPI-603 gap closure, HAPI-598 closure, deployment, numerical/P3
+or operational qualification follows. Verify guarded main and applicable CI
+queued/started, then STOP.

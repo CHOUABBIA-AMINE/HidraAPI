@@ -7181,18 +7181,19 @@
     {
       "baseline_seconds": 0,
       "cases": [
-        "historyPageQueryValidatesScopeAndNullCannotAcquirePrivileges",
-        "invalidWorkflowDigestDoesNotInvokeProtectedExecutor",
-        "malformedExactCompanySourceAndRevisionAreRejected",
-        "missingCommandIsRejectedBeforeNativePreparation"
-      ],
+      "historyPageQueryValidatesScopeAndNullCannotAcquirePrivileges",
+      "invalidWorkflowDigestDoesNotInvokeProtectedExecutor",
+      "malformedExactCompanySourceAndRevisionAreRejected",
+      "missingCommandIsRejectedBeforeNativePreparation",
+      "workflowLookupMaterializesRecordInsideExecutorBeforeWrappingOptional"
+    ],
       "class": "dz.sh.hidra.modules.simulation.application.service.ManufacturerCharacteristicRevisionApplicationServiceTest",
       "dependency_reason": "New unit and authorization-boundary contract; CI measurement pending",
       "fast": true,
       "lane": "unit-architecture",
       "owner": "simulation",
       "path": "src/test/java/dz/sh/hidra/modules/simulation/application/service/ManufacturerCharacteristicRevisionApplicationServiceTest.java",
-      "source_sha256": "a44c623e7f43b5465b2a0110d2c370a0b1427f5f7dc9a4caa77135c3eb0eab6d",
+      "source_sha256": "9c1ba67934b7fa33e6304692005e4549d3dd2e6f1a1a240e7c0f94f7749934d8",
       "supports": []
     },
     {

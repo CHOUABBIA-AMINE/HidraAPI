@@ -64,4 +64,36 @@ class ManufacturerCharacteristicRevisionApplicationServiceTest {
         assertThrows(NullPointerException.class,()->service.pageHistory(null));
         verifyNoInteractions(coordinator,repo,executor,manager);
     }
+
+    @Test void workflowLookupMaterializesRecordInsideExecutorBeforeWrappingOptional() throws Exception {
+        var coordinator=mock(ProtectedManufacturerCharacteristicAdmissionCoordinator.class);
+        var repo=mock(ManufacturerCharacteristicRevisionRepositoryPort.class);
+        var executor=mock(ProtectedTransactionExecutor.class);
+        var manager=mock(PlatformTransactionManager.class);
+        when(manager.getTransaction(any())).thenReturn(
+            new org.springframework.transaction.support.SimpleTransactionStatus());
+        var prepared=mock(ProtectedManufacturerCharacteristicAdmissionCoordinator.Prepared.class);
+        var admission=mock(ProtectedManufacturerCharacteristicAdmissionCoordinator.Admission.class);
+        String digest="b".repeat(64);
+        when(coordinator.prepareWorkflowTarget(digest,false)).thenReturn(prepared);
+        when(coordinator.acquireWorkflowTarget(prepared,digest,false)).thenReturn(admission);
+        when(coordinator.perform(admission)).thenReturn(new Result(Operation.READ_REVISION,
+            "company","source","v1","a".repeat(64),null,java.util.List.of(),
+            java.time.Instant.parse("2026-11-02T00:00:00Z"),false));
+        when(coordinator.targetDigest(any(),eq("a".repeat(64)))).thenReturn(digest);
+        var materialized=ProtectedTransactionExecutor.class.getDeclaredMethod(
+            "materialized",Object.class,int.class);
+        materialized.setAccessible(true);
+        when(executor.executePublication(any(),any(),any())).thenAnswer(invocation->{
+            Object value=((java.util.function.Supplier<?>)invocation.getArgument(0)).get();
+            // Exercise the real unchanged executor result-shape check; Optional fails here.
+            materialized.invoke(null,value,0);
+            assertInstanceOf(ProtectedManufacturerCharacteristicAdmissionCoordinator.WorkflowTargetView.class,value);
+            return value;
+        });
+        var service=new ManufacturerCharacteristicRevisionApplicationService(coordinator,repo,executor,manager);
+        assertEquals(Optional.of(new ProtectedManufacturerCharacteristicAdmissionCoordinator.WorkflowTargetView(
+            digest,"v1")),service.resolveWorkflowTarget(digest,false));
+        verify(manager).commit(any());
+    }
 }

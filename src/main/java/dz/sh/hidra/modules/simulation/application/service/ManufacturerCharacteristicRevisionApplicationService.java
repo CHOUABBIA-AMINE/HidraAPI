@@ -138,14 +138,14 @@ public final class ManufacturerCharacteristicRevisionApplicationService
                 var prepared=coordinator.prepareWorkflowTarget(digest,history);
                 var admission=new AtomicReference<ProtectedManufacturerCharacteristicAdmissionCoordinator.Admission>();
                 try {
-                    return executor.executePublication(()->{
+                    var resolved=executor.executePublication(()->{
                         var a=coordinator.acquireWorkflowTarget(prepared,digest,history);
                         admission.set(a);
                         var view=coordinator.perform(a);
                         var key=new ManufacturerCharacteristicRevisionRepositoryPort.Key(
                             view.companyPartyId(),view.sourceId(),view.revisionId());
-                        return Optional.of(new ProtectedManufacturerCharacteristicAdmissionCoordinator.WorkflowTargetView(
-                            coordinator.targetDigest(key,view.payloadSha256()),view.revisionId()));
+                        return new ProtectedManufacturerCharacteristicAdmissionCoordinator.WorkflowTargetView(
+                            coordinator.targetDigest(key,view.payloadSha256()),view.revisionId());
                     },()->{
                         coordinator.prepareFinal(admission.get());
                         coordinator.flush();
@@ -153,6 +153,7 @@ public final class ManufacturerCharacteristicRevisionApplicationService
                         if(!coordinator.finalGuard(admission.get()))
                             throw new IllegalStateException("Manufacturer read guard unavailable");
                     });
+                    return Optional.of(resolved);
                 }catch(ProtectedTransactionExecutor.ExecutionFailure failure){
                     if(failure.outcome()==ProtectedTransactionExecutor.Outcome.INDETERMINATE)
                         throw new IllegalStateException("Manufacturer read outcome indeterminate",failure);

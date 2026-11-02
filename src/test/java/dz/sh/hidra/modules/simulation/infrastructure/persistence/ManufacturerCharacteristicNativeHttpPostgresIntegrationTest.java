@@ -286,6 +286,9 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
         return id;
     }
     private void grant(Operation op,String revision,String effect,String scoped){
+        grantFor(user,op,revision,effect,scoped);
+    }
+    private void grantFor(String grantedActor,Operation op,String revision,String effect,String scoped){
         String pid=permission(op);
         String ref=scoped.equals("company")?"simulation-company:"+company
             :"simulation-source:"+resource(company,source,revision);
@@ -294,7 +297,7 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
             +"emergency_access,valid_from,valid_to,status,created_at)"
             +" VALUES (?,?,?,?,'CUSTOM',?,'synthetic native qualification',false,"
             +"now()-interval '1 hour',now()+interval '1 hour','ACTIVE',now())",
-            id(),user,pid,effect,ref);
+            id(),grantedActor,pid,effect,ref);
     }
     private void allow(Operation op,String revision){
         grant(op,revision,"GRANT","company");grant(op,revision,"GRANT","source");
@@ -1012,6 +1015,12 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
         String revision="human-approved-v1";
         save(revision);
         allow(Operation.READ_REVISION,revision);
+        // Reauthenticate after scope admission: Workflow must consume the current
+        // genuine signed Identity binding, never a caller-forged grant snapshot.
+        token=authentication.authenticate(new DirectAuthenticationCommand(
+            ProviderType.LOCAL,user,"synthetic-password","synthetic-ip",
+            "synthetic-agent","manufacturer-workflow-scoped-authentication")).accessToken();
+        http("GET",path(revision),null,token).andExpect(status().isOk());
         String digest=admin.queryForObject("SELECT workflow_target_digest FROM "+REV
             +" WHERE company_party_id=? AND source_id=? AND revision_id=?",
             String.class,company,source,revision);
@@ -1025,6 +1034,10 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
         admin.update("INSERT INTO public.hidra_identity_local_credential"
             +"(id,user_id,password_hash,credential_status,created_at,updated_at)"
             +" VALUES (?,?,?,'ACTIVE',?,?)",id(),reviewer,passwords.encode(PASSWORD),created,created);
+        // The independent human reviewer needs their own exact native source-read
+        // authority; inheriting the publisher's protected scope would be a bypass.
+        grantFor(reviewer,Operation.READ_REVISION,revision,"GRANT","company");
+        grantFor(reviewer,Operation.READ_REVISION,revision,"GRANT","source");
         String reviewerBearer=authentication.authenticate(new DirectAuthenticationCommand(
             ProviderType.LOCAL,reviewer,PASSWORD,"synthetic-ip","synthetic-reviewer",
             "independent-human-approval")).accessToken();
@@ -1055,6 +1068,10 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
             transition,definition,first,last);
         try {
             useVerifiedNativeWorkflowActor(token,user);
+            // Exercise the protected owner lookup directly before the real Workflow
+            // transaction, to distinguish native authorization from Workflow fencing.
+            assertThat(apiOwner.resolveWorkflowTarget(digest,false))
+                .isPresent().get().extracting(v->v.workflowTargetDigest()).isEqualTo(digest);
             var instance=workflowApplication.startWorkflowInstance(
                 new dz.sh.hidra.modules.workflow.application.command.StartWorkflowInstanceCommand(
                     definition,1,purpose,"simulation",type,digest,null,null,first,user,

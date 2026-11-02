@@ -983,6 +983,22 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
      * transition services, not a schema-owner INSERT into terminal approval tables.
      * The independent synthetic reviewer is not the source publisher.
      */
+    /** Decode the real signed native issuer token before constructing an authenticated
+     * synthetic test security context. The Workflow app still owns its identity,
+     * assignment and transition checks; no caller claim or approval is forged. */
+    private void useVerifiedNativeWorkflowActor(String bearer,String expectedActor) {
+        var decoded=nativeJwtDecoder.decode(bearer);
+        assertThat(decoded.getSubject()).isEqualTo(expectedActor);
+        var auth=new org.springframework.security.oauth2.server.resource.authentication
+            .JwtAuthenticationToken(decoded,java.util.List.of());
+        // JwtAuthenticationToken constructor alone does not assert the simulated
+        // authenticated security-filter outcome; existing test suites do this explicitly.
+        auth.setAuthenticated(true);
+        assertThat(auth.isAuthenticated()).isTrue();
+        assertThat(auth.getName()).isEqualTo(expectedActor);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+    }
+
     @Test void configuredNativeManufacturerQualificationAcceptsRealHumanWorkflowTransition()throws Exception {
         String revision="human-approved-v1";
         save(revision);
@@ -1029,9 +1045,7 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
             +" VALUES (?,?,?,?,'APPROVE',false,false,now(),now())",
             transition,definition,first,last);
         try {
-            SecurityContextHolder.getContext().setAuthentication(
-                new org.springframework.security.oauth2.server.resource.authentication
-                    .JwtAuthenticationToken(nativeJwtDecoder.decode(token)));
+            useVerifiedNativeWorkflowActor(token,user);
             var instance=workflowApplication.startWorkflowInstance(
                 new dz.sh.hidra.modules.workflow.application.command.StartWorkflowInstanceCommand(
                     definition,1,purpose,"simulation",type,digest,null,null,first,user,
@@ -1041,9 +1055,7 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
                     instance.id(),first,reviewer,null,null,null,null,null,null,null,null,
                     "Synthetic independent engineering review"));
             var persisted=workflowTasks.findById(task.id()).orElseThrow();
-            SecurityContextHolder.getContext().setAuthentication(
-                new org.springframework.security.oauth2.server.resource.authentication
-                    .JwtAuthenticationToken(nativeJwtDecoder.decode(reviewerBearer)));
+            useVerifiedNativeWorkflowActor(reviewerBearer,reviewer);
             var approval=workflowTransitions.execute(
                 new dz.sh.hidra.modules.workflow.application.command.ExecuteWorkflowTransitionCommand(
                     task.id(),transition,persisted.updatedAt(),null,null,null,

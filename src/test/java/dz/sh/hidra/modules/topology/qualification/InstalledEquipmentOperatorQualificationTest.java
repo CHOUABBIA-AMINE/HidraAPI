@@ -744,15 +744,21 @@ class InstalledEquipmentOperatorQualificationTest {
                 assertEquals(member.installedUnitId(),linked.get("installed_unit_id"));
                 assertEquals(linked.get("source_sha256"),admin.queryForObject("SELECT payload_sha256 FROM public.hidra_simulation_manufacturer_characteristic_revision WHERE company_party_id=? AND source_id=? AND revision_id=?",String.class,company,linked.get("source_id"),REV));
             }
-            String installation=historical.positions().getFirst().installationId();
-            admin.update("UPDATE public.hidra_topology_installed_unit_installation SET effective_until=?,revision=revision+1 WHERE installation_id=?",Timestamp.from(STATION_FROM.plusSeconds(3600)),installation);
-            try {assertThrows(RuntimeException.class,()->configuration(StationInstalledConfigurationUseCase.Operation.SAVE,successor));}
-            finally {admin.update("UPDATE public.hidra_topology_installed_unit_installation SET effective_until=NULL,revision=revision-1 WHERE installation_id=?",installation);}
             String position=historical.positions().getFirst().positionId();
             admin.update("UPDATE public.hidra_topology_equipment SET facility_id=? WHERE id=?",stations.stream().filter(f->!f.equals(facility)).findFirst().orElseThrow(),position);
             try {assertThrows(RuntimeException.class,()->configuration(StationInstalledConfigurationUseCase.Operation.SAVE,declaration));}
             finally {admin.update("UPDATE public.hidra_topology_equipment SET facility_id=? WHERE id=?",facility,position);}
             assertEquals(historical,configuration(StationInstalledConfigurationUseCase.Operation.READ_REVISION,declaration).declaration());
+            // Closure is a forward-only fact. Exercise it last; never undo a committed revision.
+            String installation=historical.positions().getFirst().installationId();
+            admin.update("UPDATE public.hidra_topology_installed_unit_installation SET effective_until=?,revision=revision+1 WHERE installation_id=?",Timestamp.from(STATION_FROM.plusSeconds(3600)),installation);
+            assertThrows(RuntimeException.class,()->configuration(StationInstalledConfigurationUseCase.Operation.SAVE,successor));
+            assertThrows(org.springframework.dao.DataIntegrityViolationException.class,()->
+                admin.update("UPDATE public.hidra_topology_installed_unit_installation SET effective_until=NULL,revision=revision-1 WHERE installation_id=?",installation));
+            assertEquals(2L,admin.queryForObject("SELECT revision FROM public.hidra_topology_installed_unit_installation WHERE installation_id=?",Long.class,installation));
+            assertNotNull(admin.queryForObject("SELECT effective_until FROM public.hidra_topology_installed_unit_installation WHERE installation_id=?",Timestamp.class,installation));
+            assertEquals(2L,admin.queryForObject("SELECT count(*) FROM public.hidra_topology_station_configuration_revision WHERE facility_id=?",Long.class,facility));
+
         }
     }
 

@@ -11160,3 +11160,50 @@ No cancellation capability is exposed by the connected GitHub tools; no claim
 of cancelling the old job. Publish guarded main, verify exact scope/tree/parent,
 observe new applicable CI queued/started, then STOP. S6 acceptance and S7
 remain pending; no budget/default/security waiver.
+
+### HAPI-603 S6 — Full1082 forward-only installation fixture correction (2026-11-02)
+
+Owner Fail on9d2701ac9ee07739c4011367442bf5a08568d7f4.
+Full1082/run41534214507 failed shard1 and its dependent Full gate.
+InstalledEquipmentOperatorQualificationTest completed13 cases in80.24 seconds:
+zero assertion failures, one error, no skips. The earlier long fixture wait
+is absent in this run; seven-minute workflow performance is not inferred.
+The sole error is nineIndependentUnitSourceBindingsRemainSeparateAcrossThreeStations
+at line750, from its finally cleanup attempting effective_until=NULL and
+revision=revision-1 after committing a closure. PostgreSQL's
+hidra_topology_installed_installation_guard correctly rejects this with
+Only one versioned installation closure is permitted.
+
+Root cause is a test-fixture attempt to reverse a forward-only domain fact,
+not failure of the installation guard, historical source qualification or
+protected lock deadlines. Move the closure exercise AFTER that station's
+position reassignment/restoration and authorized historical-read checks.
+Then close the installation once, retain the expected protected SAVE rejection,
+and leave the closure committed. Explicitly assert that the former reopen/
+revision-decrement UPDATE throws DataIntegrityViolationException, matching
+the genuine guarded PostgreSQL behavior observed by CI. Assert revision stays2,
+effective_until stays present and both immutable station configuration rows remain.
+No physical history is rewritten or trigger disabled; subsequent stations use
+different installation identities and require no rollback of this committed fact.
+
+Exact same S6 message `test(topology): qualify installed equipment consumers`.
+Four MODIFY paths only: existing consumer qualification test, its source digest
+in .github/ci-test-inventory.json, this append-only HPS-006 owner record and
+compact ULTIMATE_TASKS.md pointer. No CREATE/DELETE, production Java, migration,
+schema/permission, runtime budget, workflow matrix, OpenAPI or status changes.
+All13 method names and all native positive/negative cases retained.
+The new expected rejection strengthens the database immutability assertion;
+it does not convert the actual protected positive approval flow into denial.
+
+Available static validation:13 unique case names exactly match inventory;
+the installation reopen statement is no longer finally cleanup and appears
+only inside explicit assertThrows; committed closure/reassignment operations
+are ordered so historical verification precedes irreversible source closure.
+UTF-8 source SHA256
+`7745d548b0c607de3035168c63af080d0d6ad2fe6c2b2be8ea2911bc5e65b08c`.
+No local Java/Maven/PostgreSQL execution claimed. Require exact-new-SHA hosted
+Full/Docs and all three station journeys to actually complete; the prior run
+stopped during the first station's closure cleanup and does not establish all
+three later journeys. Whole S6 matrix acceptance and S7 remain pending.
+Publish expected-head main, verify source/blob/parent/tree/four-path scope,
+observe applicable CI queued/started, then STOP.

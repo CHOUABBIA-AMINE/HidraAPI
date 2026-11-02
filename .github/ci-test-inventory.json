@@ -11117,6 +11117,7 @@
         "fluidProvisionalStatementsAreExactReviewedTemplates",
         "graphSqlProvisionalFamilyDoesNotGrantUnreviewedOwnerExecution",
         "installedReplacementReceiptPinDoesNotAdmitAnyOtherOwnerOrSqlShape",
+        "installedUnitSqlAndBoundedFamilyBudgetRemainExact",
         "installedUnitWorkPolicyRetainsFiniteExpiryAndStandardDefault",
         "mutableOrJdbcResultsCannotBeDelivered",
         "nativeControlAndMultipleSqlReject",

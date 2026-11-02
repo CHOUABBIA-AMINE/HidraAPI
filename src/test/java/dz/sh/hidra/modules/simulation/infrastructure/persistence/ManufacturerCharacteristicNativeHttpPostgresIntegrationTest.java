@@ -175,6 +175,8 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
     @Autowired AuthenticateDirectUserUseCase authentication;
     @Autowired PasswordEncoder passwords;
     @Autowired Flyway flyway;
+    @Autowired @org.springframework.beans.factory.annotation.Qualifier("hidraJwtDecoder")
+    org.springframework.security.oauth2.jwt.JwtDecoder nativeJwtDecoder;
     @Autowired dz.sh.hidra.modules.identity.application.port.in.CompleteAuthenticatedPrincipalUseCase completion;
     @Autowired dz.sh.hidra.modules.identity.infrastructure.security.IdentityOidcJwtAuthenticationConverter oidc;
     @MockitoSpyBean dz.sh.hidra.modules.identity.infrastructure.security.LdapCredentialVerificationAdapter ldapVerification;
@@ -783,10 +785,7 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
         String subject=admin.queryForObject("SELECT external_subject FROM public.hidra_identity_external_identity"
             +" WHERE user_id=? AND identity_provider_id=?",String.class,user,provider);
         String externalToken=signedOriginalOidcBearer(subject);
-        assertThat(admin.queryForObject(
-            "SELECT authentication_type FROM public.hidra_identity_operation_binding"
-                +" WHERE user_id=? ORDER BY issued_at DESC LIMIT 1",String.class,user))
-            .isEqualTo("OIDC");
+        assertNativeBinding(externalToken,"OIDC");
         allow(Operation.SAVE,"oidc-v1");
         http("PUT",path("oidc-v1"),body("oidc-v1"),externalToken)
             .andExpect(status().isOk());
@@ -798,6 +797,14 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
         http("GET",path("oidc-v1"),null,externalToken)
             .andExpect(status().isForbidden());
         assertThat(count(REV)).isEqualTo(1);
+    }
+
+    private void assertNativeBinding(String nativeBearer,String expectedType) {
+        String jti=nativeJwtDecoder.decode(nativeBearer).getClaimAsString("jti");
+        assertThat(jti).isNotBlank();
+        assertThat(admin.queryForObject(
+            "SELECT authentication_type FROM public.hidra_identity_operation_binding"
+                +" WHERE user_id=? AND jti=?",String.class,user,jti)).isEqualTo(expectedType);
     }
 
     private String simulatedRealDirectoryCallback(ProviderType type,String subject) throws Exception {
@@ -843,9 +850,7 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
         String subject="synthetic-ldap-subject-"+id();
         externalProvider("LDAP",subject);
         String directoryToken=simulatedRealDirectoryCallback(ProviderType.LDAP,subject);
-        assertThat(admin.queryForObject("SELECT authentication_type"
-            +" FROM public.hidra_identity_operation_binding WHERE user_id=?"
-            +" ORDER BY issued_at DESC LIMIT 1",String.class,user)).isEqualTo("LDAP");
+        assertNativeBinding(directoryToken,"LDAP");
         allow(Operation.SAVE,"ldap-v1");
         http("PUT",path("ldap-v1"),body("ldap-v1"),directoryToken)
             .andExpect(status().isOk());
@@ -889,9 +894,7 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
         String subject="synthetic-ad-subject-"+id();
         externalProvider("ACTIVE_DIRECTORY",subject);
         String directoryToken=simulatedRealDirectoryCallback(ProviderType.ACTIVE_DIRECTORY,subject);
-        assertThat(admin.queryForObject("SELECT authentication_type"
-            +" FROM public.hidra_identity_operation_binding WHERE user_id=?"
-            +" ORDER BY issued_at DESC LIMIT 1",String.class,user)).isEqualTo("ACTIVE_DIRECTORY");
+        assertNativeBinding(directoryToken,"ACTIVE_DIRECTORY");
         allow(Operation.SAVE,"ad-v1");
         http("PUT",path("ad-v1"),body("ad-v1"),directoryToken)
             .andExpect(status().isOk());
@@ -914,7 +917,7 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
             assertThat(result).isEqualTo(true);
             armed.set(Thread.currentThread());
             return result;
-        }).when(nativeSource).finalGuard(org.mockito.ArgumentMatchers.any());
+        }).when(coordinator).finalGuard(org.mockito.ArgumentMatchers.any());
         org.mockito.Mockito.doAnswer(inv->{
             if(armed.get()==Thread.currentThread() && !observed.get()) {
                 inv.callRealMethod(); // A genuine physical PostgreSQL commit succeeded.
@@ -926,10 +929,14 @@ public class ManufacturerCharacteristicNativeHttpPostgresIntegrationTest {
             return inv.callRealMethod();
         }).when(transactionManager).commit(org.mockito.ArgumentMatchers.any(
             org.springframework.transaction.TransactionStatus.class));
-        http("PUT",path("lost-v1"),body("lost-v1"),token)
-            .andExpect(status().isServiceUnavailable())
-            .andExpect(jsonPath("$.code").value("INDETERMINATE"));
-        assertThat(observed.get()).isTrue();
+        try {
+            http("PUT",path("lost-v1"),body("lost-v1"),token)
+                .andExpect(status().isServiceUnavailable())
+                .andExpect(jsonPath("$.code").value("INDETERMINATE"));
+            assertThat(observed.get()).isTrue();
+        } finally {
+            org.mockito.Mockito.reset(transactionManager,coordinator);
+        }
         assertThat(count(REV)).isEqualTo(1);
         http("PUT",path("lost-v1"),body("lost-v1"),token)
             .andExpect(status().isOk());

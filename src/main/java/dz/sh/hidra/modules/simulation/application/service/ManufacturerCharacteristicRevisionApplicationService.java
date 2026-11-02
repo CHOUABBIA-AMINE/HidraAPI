@@ -91,7 +91,8 @@ public final class ManufacturerCharacteristicRevisionApplicationService
             throw new IllegalStateException("Manufacturer history requires a new original transaction");
         var prepared=coordinator.preparePage(query);
         var admission=new AtomicReference<ProtectedManufacturerCharacteristicAdmissionCoordinator.Admission>();
-        return executor.executePublication(()->{
+        try {
+            return executor.executePublication(()->{
             var a=coordinator.acquirePage(prepared);
             admission.set(a);
             return coordinator.performPage(a);
@@ -103,7 +104,15 @@ public final class ManufacturerCharacteristicRevisionApplicationService
             var a=Objects.requireNonNull(admission.get(),"Missing manufacturer history admission");
             if(!coordinator.finalGuard(a))
                 throw new IllegalStateException("Manufacturer history guard unavailable");
-        });
+            });
+        } catch (ProtectedTransactionExecutor.ExecutionFailure failure) {
+            // Only the original admission's pre-commit authority denial maps to 403.
+            // Indeterminate outcomes and non-authorization faults retain 503.
+            if (failure.outcome() == ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT
+                    && failure.getCause() instanceof AccessDeniedException)
+                throw new AccessDeniedException("Manufacturer characteristic denied");
+            throw failure;
+        }
     }
 
     /**

@@ -10438,6 +10438,88 @@ PARTIAL/IN_PROGRESS, HAPI-603 and HAPI-598 remain BLOCKED.
 **Verification limit.** Exact raw report counts, actual case identity, manifest old/new comparison, sorted insertion, class source digest and expected-head scope checks were verified. No additional local JVM or PostgreSQL test was executed. A fresh source-bound Full CI run must report successful strict unit inventory membership and aggregate gate before HAPI-602 S3 can be accepted; status remains PARTIAL/IN_PROGRESS.
 
 
+### HAPI-602 S4 — CI #1056 same-stage admission-order, inventory and generated API repair (2026-11-02)
+
+**Exact baseline and failure.** Owner Next refreshes main
+6a26e53eab662e9cb16b7ec8654b29b64602ead0, tree
+5843c4152fe1547522d73968e013b969a3df6449. Full1056/run41428752896
+failed; Docs828/run41428752855 passed. Thirteen of fourteen PostgreSQL shards
+and static validation passed. Shard13/job125221699202 ran170 cases with two
+failures/zero errors/skips; the eight-case native link HTTP suite failed real
+approval200 and forged Workflow403 expectations with503. Their redacted chains
+identify JpaWorkflowQueryAdapter.lockCurrentManufacturerApprovalEvidence line96
+and ProtectedOperationDataSource.Scope.reject. Source confirms a late LOCK:
+coordinator.acquire seals admission, then perform resolves Workflow, whose
+original-transaction evidence graph requires SHARE NOWAIT locks. The datasource
+correctly prohibits any LOCK after ADMITTING. Do not remove that technical guard,
+change403/200 assertions or map an arbitrary SQL rejection to a business denial.
+
+**One indivisible same-S4 repair, exact scope amendment.** Preserve message
+`feat(topology): expose authorized characteristic link approvals`.
+CREATE/DELETE none; MODIFY precisely:
+- src/main/java/dz/sh/hidra/modules/topology/application/service/ProtectedInstalledCharacteristicLinkAdmissionCoordinator.java
+- .github/ci-test-inventory.json
+- doc/api/openapi.yaml
+- .github/documentation-validation.json
+- doc/roadmap/TASKS_HPS-006.md (this append-only HAPI-602 record).
+
+The causal existing S3 coordinator path is admitted solely to correct S4's real
+HTTP approval failure. Resolve genuine Workflow evidence and construct the private
+immutable approval candidate during acquire, after actual Identity/source/installation
+checks and existing current-revision/epoch/distinct-human prerequisites, before
+sealAdmission. Retain that candidate on the original opaque thread/transaction-
+bound ticket. perform still requires current native/source authority and uses that
+candidate only for its pinned provisional write or exact receipt replay. Required
+Workflow SHARE NOWAIT fences and complete Workflow decision validation remain;
+all owner checks, final source/physical guard, SQL pins, DRAFT paths and rollback
+semantics remain. No second transaction, detached Workflow value, grant shortcut,
+late-lock exemption or relaxed processing budget is introduced.
+
+**Strict unit inventory reconciliation.** Unit/job125221698742 completed all412
+classes/2,453 invocations with zero failures/errors/skips, but the report gate found
+two stale names, no missing class: Platform RegistryTest renamed
+productionRegistryDeclaresOnlyFiveUnverifiedManufacturerTuples to
+productionRegistryDeclaresFiveManufacturerAndThreeTopologyApprovalTuples;
+StartupValidatorTest renamed productionNativeManufacturerRoutesFailWithoutCompiledMappings
+to productionNativeExactRoutesFailWithoutCompiledMappings. Change only these two
+exact case identities in their existing source-hashed inventory entries. Do not
+remove assertions, add exclusions, invent timing, change lanes or alter14 shards.
+All existing eight native HTTP cases and their exact expectations remain unchanged;
+they already regress the causal approval/forged-Workflow failure.
+
+**Real generated OpenAPI refresh and evidence.** Actual source build step8 and
+Publish deterministic OpenAPI contract step9 succeeded; canonical equality step10
+failed in API/job125221698288, with dictionary/base-compatibility/sealing steps
+not executed. Digest-verified retained diagnostic artifacts:
+unit13134100536 ZIP7c97f4dfe7186cb3eecc77bb1696e875af7857547e323d554760f2523d392670;
+Postgres13133268036 ZIP52de12dbe28f1e0f8e508a6927d59d73d67c3b3a31153efa5cfbfb8a9456c22c;
+API13132708028 ZIP79ca859998e2be5afdd6f7af0704f242bbaf47d93524bc13d91d4a50d26a5cdd.
+Actual member openapi/hidra-api.json SHA256
+d31c3d0e839183d1a940865410091dab7a29134f7401d1c2ab4e318974359c12,
+stamped with exact6a26e53e source. Generate the sorted compact canonical JSON snapshot
+from that actual document and update only its manifest contract/provenance, retaining
+all previous reviewed provenance. Actual counts:330 operations/301 paths/377 schemas.
+Only two new paths containing three approved S4 operations and five new schemas are
+added; all prior paths/schemas/security contracts remain unchanged. The existing
+backward-compatibility checker passes against the prior reviewed snapshot. This is
+artifact comparison, not a newly executed old-base runtime or same-run compatibility
+lane. Generation success is not whole-job/Full acceptance. Current dictionary stays
+unchanged because no schema changed; actual next-run catalog equality remains required.
+
+**Validation, hold and stop.** Recovered local source is byte/tree-identical to
+published baseline before editing. Source/order inspection, original native-test
+preservation, strict inventory/raw-report replay, runtime snapshot equality, prior-
+snapshot compatibility, documentation/link and exact five-file/whitespace checks
+are useful static/retained evidence. Focused Maven command
+`mvn -q -Dtest=InstalledCharacteristicLinkApplicationServiceTest,InstalledCharacteristicLinkNativeHttpPostgresIntegrationTest test`
+exits127: mvn: command not found. Do not provision a full environment or claim
+a local runtime pass.
+Publish guarded main against expected6a26e53e with verified blobs/tree/parent/scope,
+observe applicable exact-SHA Full/Docs startup and STOP. Full new-SHA tests, API/base
+compatibility and physical dictionary gates must pass before S4 acceptance or S5.
+HAPI-602 stays PARTIAL/IN_PROGRESS; HAPI-603/HAPI-598 remain BLOCKED, HAPI-601's
+qualification backlog stays deferred; no new substage, frontend, P3/SITE or release.
+
 <a id="hapi-603"></a>
 ## HAPI-603 — Installed-equipment consumer qualification
 

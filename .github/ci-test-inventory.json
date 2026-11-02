@@ -10994,7 +10994,7 @@
         "duplicateAndInvalidEntriesAreRejected",
         "markedMethodCannotSelfRegister",
         "matchingRequiresBothVerifiedTupleAndMethodMarker",
-        "productionRegistryDeclaresOnlyFiveUnverifiedManufacturerTuples",
+        "productionRegistryDeclaresFiveManufacturerAndThreeTopologyApprovalTuples",
         "trustedDeclarationsAreImmutableAndCannotBeSilentlyReplaced",
         "unvalidatedTrustedEntryNeverDelegates",
         "verifiedEntryMatchesExactCompiledSignatureVerbAndRoute"
@@ -11012,7 +11012,7 @@
       "baseline_seconds": 0,
       "cases": [
         "exactMappedAnnotatedRouteBecomesTrustedOnlyAfterValidation",
-        "productionNativeManufacturerRoutesFailWithoutCompiledMappings",
+        "productionNativeExactRoutesFailWithoutCompiledMappings",
         "rejectedStartupNeverActivatesTrustedDelegation",
         "startupFailsOnAbsentControllerMapping",
         "startupFailsOnAmbiguousRegisteredMapping",

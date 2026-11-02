@@ -7,7 +7,7 @@
  *
  * @Name        : ProtectedInstalledCharacteristicLinkAdmissionCoordinator
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-01
+ * @UpdatedOn   : 2026-11-02
  *
  * @Type        : Class
  * @Layer       : Application
@@ -132,6 +132,8 @@ public final class ProtectedInstalledCharacteristicLinkAdmissionCoordinator
                     verified.stream().flatMap(t->sources.finalFences(t).stream()).toList());
             ticket=new Ticket(this,c,nativeTicket,origin,locked,snap,approvalObservation,verified,fences);
             TransactionSynchronizationManager.registerSynchronization(ticket);
+            // Workflow must acquire its original-transaction fences before admission forbids late LOCKs.
+            if(c.operation()==Operation.APPROVE)ticket.approval=approvalDuringAdmission(ticket);
             ticket.permit=executor.sealAdmission();
             requireCurrent(ticket,false);
             return ticket;
@@ -175,29 +177,34 @@ public final class ProtectedInstalledCharacteristicLinkAdmissionCoordinator
         identity.requireCurrent(t.nativeTicket);
         for(var source:t.verified)sources.requireCurrent(source);
     }
+    private InstalledCharacteristicLinkApproval approvalDuringAdmission(Ticket t) {
+        var c=t.command;
+        if(workflow==null||t.snapshot.revision()==null||t.snapshot.current()==null
+                ||!t.snapshot.current().equals(t.snapshot.revision())
+                ||t.snapshot.headEpoch()==null||!t.snapshot.headEpoch().equals(c.expectedEpoch())
+                ||t.approvalObservation==null||t.approvalObservation.draftActorUserId()==null
+                ||t.approvalObservation.draftActorUserId().equals(t.origin.userId()))
+            throw denied();
+        var current=t.snapshot.revision();
+        var keys=c.approval();
+        var now=Instant.now().truncatedTo(ChronoUnit.MICROS);
+        var approvedWorkflow=workflow.resolve(new InstalledCharacteristicLinkApprovalEvidencePort.Request(
+            current,keys.definitionId(),keys.definitionVersion(),keys.targetTypeId(),
+            keys.purposeId(),keys.instanceId(),keys.taskId(),keys.actionId(),now))
+            .orElseThrow(ProtectedInstalledCharacteristicLinkAdmissionCoordinator::denied);
+        return new InstalledCharacteristicLinkApproval(current,
+            t.approvalObservation.draftActorUserId(),t.origin.userId(),
+            InstalledCharacteristicLinkApprovalTargetDigester.digest(current),
+            approvedWorkflow,now);
+    }
     @Override public Result perform(Admission admission,Command c){
         var t=ticket(admission);
         try {
             if(!t.command.equals(c)||!t.used.compareAndSet(false,true)||t.result!=null)throw denied();
             requireCurrent(t,false);
             if(c.operation()==Operation.APPROVE){
-                if(workflow==null||t.snapshot.revision()==null||t.snapshot.current()==null
-                        ||!t.snapshot.current().equals(t.snapshot.revision())
-                        ||t.snapshot.headEpoch()==null||!t.snapshot.headEpoch().equals(c.expectedEpoch())
-                        ||t.approvalObservation==null||t.approvalObservation.draftActorUserId()==null
-                        ||t.approvalObservation.draftActorUserId().equals(t.origin.userId()))
-                    throw denied();
-                var current=t.snapshot.revision();
-                var keys=c.approval();
-                var now=Instant.now().truncatedTo(ChronoUnit.MICROS);
-                var approvedWorkflow=workflow.resolve(new InstalledCharacteristicLinkApprovalEvidencePort.Request(
-                    current,keys.definitionId(),keys.definitionVersion(),keys.targetTypeId(),
-                    keys.purposeId(),keys.instanceId(),keys.taskId(),keys.actionId(),now))
-                    .orElseThrow(ProtectedInstalledCharacteristicLinkAdmissionCoordinator::denied);
-                var approval=new InstalledCharacteristicLinkApproval(current,
-                    t.approvalObservation.draftActorUserId(),t.origin.userId(),
-                    InstalledCharacteristicLinkApprovalTargetDigester.digest(current),
-                    approvedWorkflow,now);
+                var approval=t.approval;
+                if(approval==null)throw denied();
                 if(t.approvalObservation.receipt()==null){
                     var sql=storage.approvalMutationSql();pin(sql,true);
                     executor.beginProvisional(t.permit,sql);
@@ -270,6 +277,7 @@ public final class ProtectedInstalledCharacteristicLinkAdmissionCoordinator
         ProtectedTransactionExecutor.ProvisionalPermit permit;
         boolean active=true,frozen=false,guarded=false;
         Result result;
+        InstalledCharacteristicLinkApproval approval;
         Ticket(ProtectedInstalledCharacteristicLinkAdmissionCoordinator owner,Command command,
                TopologyInstalledCharacteristicLinkAuthorizationContract.Admission nativeTicket,
                Origin origin,InstalledCharacteristicLinkStoragePort.Admission storageTicket,Snapshot snapshot,

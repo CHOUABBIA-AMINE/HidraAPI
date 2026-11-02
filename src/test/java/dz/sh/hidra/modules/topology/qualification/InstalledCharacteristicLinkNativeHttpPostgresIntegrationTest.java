@@ -107,6 +107,17 @@ class InstalledCharacteristicLinkNativeHttpPostgresIntegrationTest {
                 "hidra_party_role","hidra_party_role_assignment",
                 "hidra_party_manufacturer_profile","hidra_party_manufacturer_source_authorization"))
             admin.execute("GRANT UPDATE ON public."+relation+" TO "+PUBLISHER);
+        // This test-only publisher exercises Workflow's real SHARE NOWAIT table fences.
+        // PostgreSQL requires UPDATE (or a stronger DML privilege) to take SHARE locks.
+        // Schema owners configure these synthetic role grants; no migration grants them.
+        // This is NOT a deployment privilege policy or proof of least-privilege production roles.
+        for(String relation:List.of("hidra_workflow_action","hidra_workflow_definition",
+                "hidra_workflow_definition_target_binding","hidra_workflow_instance",
+                "hidra_workflow_state_history","hidra_workflow_step",
+                "hidra_workflow_task","hidra_workflow_transition",
+                "hidra_workflow_type_catalog"))
+            admin.execute("GRANT UPDATE ON public."+relation+" TO "+PUBLISHER);
+
         for(String relation:List.of("hidra_simulation_manufacturer_characteristic_revision",
                 "hidra_simulation_manufacturer_characteristic_qualification"))
             admin.execute("GRANT INSERT ON public."+relation+" TO "+PUBLISHER);

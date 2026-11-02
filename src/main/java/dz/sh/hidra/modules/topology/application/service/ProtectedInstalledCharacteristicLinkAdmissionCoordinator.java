@@ -73,7 +73,7 @@ public final class ProtectedInstalledCharacteristicLinkAdmissionCoordinator
             TopologyInstalledCharacteristicLinkAuthorizationContract identity,
             TopologyManufacturerCharacteristicReferenceContract sources,
             InstalledCharacteristicLinkStoragePort storage,ProtectedTransactionExecutor executor,
-            InstalledCharacteristicLinkApprovalEvidencePort workflow){
+            @org.springframework.context.annotation.Lazy InstalledCharacteristicLinkApprovalEvidencePort workflow){
         this.identity=Objects.requireNonNull(identity);this.sources=Objects.requireNonNull(sources);
         this.storage=Objects.requireNonNull(storage);this.executor=Objects.requireNonNull(executor);
         this.workflow=workflow;

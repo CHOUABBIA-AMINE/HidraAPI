@@ -1102,20 +1102,20 @@ class ProtectedTransactionExecutorTest {
         field.setAccessible(true);
         var pins=(java.util.Set<?>)field.get(null);
         assertThat(pins).hasSize(6);
-        assertThat(pins).contains(
+        assertThat(pins).isEqualTo(java.util.Set.of(
             "b510776b865bd270b8d8ca3739fd450dca8e2bc9fe11b26867329d1cf5d6bdeb",
             "c5811865b77b67d7bc20211a09264a36e36165001fbd80bae8a80abfc83d1bdd",
             "e6db88ec87ac68d0f27e41024e480412242e9dd4cd59b47c30ff3e3c070fe482",
             "04a48931f5568b11debf736be7095735432f2b452054896f341e9b53affa1f00",
             "f5db1affbfbf7ffef00c60d32a23ddc5907cc4e8da94d74eeff6fe74de20d059",
-            "7e79f7f7fd8bd255834fd7d34054a94e3c04606cec4026448bdbb3cd1c1581a6");
+            "7e79f7f7fd8bd255834fd7d34054a94e3c04606cec4026448bdbb3cd1c1581a6"));
         for(String sql:java.util.List.of(
             "DELETE FROM public.hidra_topology_installed_characteristic_approval",
             "UPDATE public.hidra_topology_installed_characteristic_approval SET approved_at=now()",
             "INSERT INTO public.hidra_topology_installed_characteristic_approval DEFAULT VALUES"))
-            assertThat(pins).doesNotContain(java.util.HexFormat.of().formatHex(
+            assertThat(pins.contains(java.util.HexFormat.of().formatHex(
                 java.security.MessageDigest.getInstance("SHA-256")
-                .digest(sql.getBytes(java.nio.charset.StandardCharsets.UTF_8))));
+                .digest(sql.getBytes(java.nio.charset.StandardCharsets.UTF_8))))).isFalse();
         assertThatThrownBy(executor::requireCharacteristicLinkApprovalSourceLock)
             .isInstanceOf(IllegalStateException.class);
     }

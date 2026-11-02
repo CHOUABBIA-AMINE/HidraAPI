@@ -217,6 +217,8 @@ class InstalledEquipmentOperatorQualificationTest {
     }
     @BeforeEach void setup(){
         admin=new JdbcTemplate(new DriverManagerDataSource(PG.getJdbcUrl(),PG.getUsername(),PG.getPassword()));
+        // Fixture-only owner reads must fail rather than wait on a lock held by this test.
+        admin.setQueryTimeout(5);
         SecurityContextHolder.clearContext();
         http=MockMvcBuilders.webAppContextSetup(context)
             .apply(org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity())
@@ -926,12 +928,14 @@ class InstalledEquipmentOperatorQualificationTest {
 
     @Test void crossOwnerManufacturerWriterCannotDiscloseOrMutateConsumerWhileLocked() throws Exception {
         savedDraft();long revisions=countFor("revision"),receipts=countFor("request");
+        // draftBody reads the manufacturer source: materialize before the competing lock.
+        String requestBody=draftBody();
         try(var writer=java.sql.DriverManager.getConnection(PG.getJdbcUrl(),PG.getUsername(),PG.getPassword())) {
             writer.setAutoCommit(false);
             try(var statement=writer.createStatement()) {
                 statement.execute("LOCK TABLE public.hidra_simulation_manufacturer_characteristic_revision IN ACCESS EXCLUSIVE MODE NOWAIT");
                 requireStatus(http.perform(get(linkPath()).header("Authorization","Bearer "+token).param("companyPartyId",company)),503);
-                requireStatus(http.perform(put(linkPath()).header("Authorization","Bearer "+token).contentType(MediaType.APPLICATION_JSON).content(draftBody())),503);
+                requireStatus(http.perform(put(linkPath()).header("Authorization","Bearer "+token).contentType(MediaType.APPLICATION_JSON).content(requestBody)),503);
             } finally {writer.rollback();}
         }
         assertEquals(revisions,countFor("revision"));assertEquals(receipts,countFor("request"));

@@ -11107,3 +11107,56 @@ HAPI-603 stays IMPLEMENTED/IN_PROGRESS; HAPI-601 formal status and HAPI-598
 PARTIAL/BLOCKED stay unchanged. C6 operational limitations remain unaccepted.
 Publish expected-head main, verify exact parent/tree/source/scope, observe
 applicable CI queued/started, then STOP.
+
+### HAPI-603 S6 — shard1 prolonged-run self-blocking fixture repair (2026-11-02)
+
+Owner reports shard1 taking too long. Run1081/41530508723 on
+9b48834aa7c56a74dc93a40737aad23cdcd8a64e: shard1/job125569159874
+was still in Selected clean verify lifecycle more than23 minutes after its
+21:40:40Z start, while all thirteen other PostgreSQL shards, JVM, static and
+API/dictionary had completed successfully. Hosted running-job logs returned404
+BlobNotFound; no live thread stack or actual current test identity was available.
+Do not represent source analysis as a captured live database wait graph.
+
+**Definite source hazard.** crossOwnerManufacturerWriterCannotDiscloseOrMutateConsumerWhileLocked
+takes ACCESS EXCLUSIVE on the manufacturer revision table using a separate
+owner connection, then builds its PUT request by calling draftBody().
+draftBody queries the same table using the fixture's admin JdbcTemplate.
+That connection's SELECT requires ACCESS SHARE and waits on the lock held by
+the first connection. The test cannot reach finally/writer.rollback until
+the SELECT completes. Since fixture admin had no query timeout, this can
+self-block until the workflow's outer30-minute job timeout. Increasing shards,
+test retries or application time limits would not fix this ordering error.
+The earlier native HTTP GET under that lock remains independently bounded
+by the real protected operation policies.
+
+**Exact same-task fix.** Materialize the request body BEFORE taking the competing
+lock, then use that detached String for the PUT. Add five-second query timeout
+to the fixture-created admin JdbcTemplate only so accidental schema-owner reads
+under a competing test lock fail promptly in future. Preserve finally rollback,
+actual protected GET/PUT503 assertions, unchanged revision/receipt counts,
+and authorized recovery after release. This changes no managed application
+JdbcTemplate, production database/HTTP/authorization timeout, native work cap,
+test expectation, scope, guard, SQL, race condition or test-case identity.
+
+MODIFY exactly the existing consumer qualification test, its source digest only
+in .github/ci-test-inventory.json, this append-only HPS-006 record and compact
+ULTIMATE_TASKS.md pointer; no CREATE/DELETE. Retain registered S6 message
+`test(topology): qualify installed equipment consumers`. This is a responsible
+repair within indivisible S6, not a CI-only stage or freeze amendment.
+All13 test methods remain, including the other new combined consumer cases.
+
+**Validation and limits.** Programmatic ordering check proves draftBody completes
+before LOCK TABLE and no draftBody invocation remains in the locked section;
+the only setup timeout added is on the fixture's private admin template.
+Thirteen unique method identities match the prior exact inventory.
+UTF-8 source SHA256
+`74d263cbd6b3f448133621b3b393f660423ead2b62c503f14a69bee2cb4aedd4`.
+No local Maven/Java/PostgreSQL runtime pass is claimed. Source proof establishes
+the blocking cycle can occur; new exact-SHA hosted CI must establish actual
+completion and reveal any other assertion failure. Do not claim seven-minute
+target achieved, green S6, or known completion of the still-running old run.
+No cancellation capability is exposed by the connected GitHub tools; no claim
+of cancelling the old job. Publish guarded main, verify exact scope/tree/parent,
+observe new applicable CI queued/started, then STOP. S6 acceptance and S7
+remain pending; no budget/default/security waiver.

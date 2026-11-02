@@ -1331,9 +1331,9 @@ Legacy IDs: HPR-P25-054
 
 Priority: P1
 
-Implementation Status: PARTIAL
+Implementation Status: VERIFIED
 
-Planning Status: BLOCKED
+Planning Status: COMPLETED
 
 Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -1494,6 +1494,29 @@ Initial canonical adoption, 2026-10-16: Historical task retained independently; 
 No single stronger current disposition was independently extracted; original recorded evidence retains its dated applicability.
 
 Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
+
+
+### HAPI-598 / HPR-P25-054 — S7 integrated five-child backend software closure (2026-11-02)
+
+**Owner authorization, exact whole-stage contract.** Following HAPI-603 S6 acceptance and the separately accepted HAPI-601 manufacturer software assurance, the owner expressly approved this one final **S7 / HAPI-598** closure: commit message `docs(topology): accept integrated installed equipment software`; MODIFY only this HPS-006 owning record, compact `doc/roadmap/ULTIMATE_TASKS.md` pointer, and HAPI-598 status cells in `doc/roadmap/ULTIMATE_ROADMAP.md` and `doc/roadmap/ULTIMATE_PHASES.md`; CREATE/DELETE none. No production/test/migration/config/permission/OpenAPI/CI changes, new HAPI/HPR ID or change to the frozen S0–S7 sequence in `AGENTS.md` §3.4. This is **one** complete integration-acceptance task, not an extra preflight or a split delivery. The historical §6 `DISCOVERY_REQUIRED` source allowlist remains historically accurate for any future feature implementation; the owner's specific four-document closure contract controls this already demonstrated, code-free evidence disposition only.
+
+**Live baseline and independent verification.** Parent `5775fda2327c42b1093e3f26459e902986486b7b` has [Documentation #863](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41540228873) SUCCESS. Its Java implementation remains the unchanged `06b6121a79c431f1452552ecf8ca9126c6f11e4a`: [Full #1083](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41535930434) and [Docs #861](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41535930610) SUCCESS. Full #1083's exact-run Full Verification Gate accepted 547 source-bound classes / **4,162 distinct executed synthetic tests**, zero failures/errors/test skips, 14/14 PostgreSQL shards, Java 21 unit/architecture, static and runtime API/dictionary gates. The optional monolithic Maven verification job was intentionally SKIPPED by the partitioned CI design and is not claimed executed. Later heads `b5aef75b49dad5dfa32d09aa069a9eef38609bc0` and the present parent change **only** owning task evidence/status documentation; they are not fresh Java execution SHAs. S6 independently matched the authenticated Full1083 evidence ZIP, all 554 retained source-bound entries, its full test-case union, real PostgreSQL catalog/Flyway consistency and F04/F05 backend OpenAPI equivalence. This S7 reconciliation does not claim a new physical test run on a documentation-only commit.
+
+**Exactly five independently owned child deliverables.**
+
+| Child / original package | Accepted bounded software objective and evidence | Official status |
+|---|---|---|
+| **HAPI-599 / HPR-P25-054A** | Independent installed physical unit/model/serial/lifecycle and owner references; separate Assets maintainability, negative cross-company and real native lifecycle tests including 48 `ProtectedInstalledUnitLifecyclePostgresIntegrationTest` cases | VERIFIED / COMPLETED |
+| **HAPI-600 / HPR-P25-054B** | Versioned station position/incidence, effective install/replacement, graph V1 and historical reload; 28 protected station, 13 station-persistence cases, plus three native station publication/revision/replay journeys in the 13-case integrated consumer suite | VERIFIED / COMPLETED |
+| **HAPI-601 / HPR-P25-054C** | Supplied immutable manufacturer source, canonical family/maps/tables/axes/units, guarded history, separate certification visibility, native authorization/Workflow, genuine rollback/indeterminate outcome; 24 configured native manufacturer integration cases and five application JVM cases; independent acceptance record in HPS-007 | VERIFIED / COMPLETED |
+| **HAPI-602 / HPR-P25-054D** | Immutable source-revision/digest-pinned installed-unit links, distinct actual human Workflow link approval, current/historical API, denial and original protected transaction; eight `InstalledCharacteristicLinkNativeHttpPostgresIntegrationTest` cases plus integrated qualification | VERIFIED / COMPLETED |
+| **HAPI-603 / HPR-P25-054E** | Actual source/link/station journey for **nine distinct units across three synthetic stations**, native owner/API/security/compatibility, approved F04/F05 backend contract, V1 decode, malformed/denied/replay/rollback, manufacturer lock, installation contention, lost-acknowledgement and human approval/rejection; all 13 `InstalledEquipmentOperatorQualificationTest` cases and its independently accepted C1–C6 software matrix | VERIFIED / COMPLETED |
+
+Those six source-bound PostgreSQL suites (48+28+13+24+8+13) account for **134 passing integration cases in the same Full #1083 run**; they complement the whole 4,162-case gate. Source SHA-256 inventory remains unmodified. The integrated journey establishes software-owned identities and historical source/graph links, not manufacturer performance-curve physics, numerical flow output or operational pipeline suitability. Manufacturer facts remain owned by Simulation; installed units/configuration/links by Topology; Workflow decisions and Identity authorization are independent; Assets maintainability is not conflated with physical installed unit identity. No new cross-owner aggregate coupling is introduced.
+
+**Acceptance boundary and status disposition.** Independently reconciled five-child implementation, synthetic native/HTTP/PostgreSQL authorization and immutable revision/transaction evidence, supported canonical graph V1 and F04/F05 backend handoff: mark this **HAPI-598 parent VERIFIED / COMPLETED for bounded backend-development software only**, updating its owning header and only its exact canonical ROADMAP/PHASES cells. This is the final **S7** disposition under the owner-frozen S0–S7 list, not a permission for S8, follow-up subdivision, release or deployment. **Not engineering or operational acceptance:** no independently authenticated supplier certification/corrected field curves; no live enterprise OIDC/LDAP/AD or deployed grants; no HidraWEB F04/F05 implementation/generated-client UI/UAT; no calibrated steady/transient numerical engine or third-party-engine qualification; no SCADA/OT connection, field commissioning, on-site performance measurement, operation decision signoff, SITE or production release. Green CI does not override any of these separately required gates. No fresh schema/backfill or invented industrial measurements.
+
+**Exact publication gate.** The only proposed files are the four owner-approved Markdown records; preserve unrelated table cells, historic append-only entries, source and test inventories. Verify the exact parent/tree/blob paths and guarded update of existing `main`, then confirm newly created exact-SHA Documentation Validation queued/started and **STOP** without waiting for completion or executing a new task. This closure must not silently promote any separate phase or claim release eligibility.
 
 <a id="hapi-599"></a>
 ## HAPI-599 — Independent installed-unit identity and references

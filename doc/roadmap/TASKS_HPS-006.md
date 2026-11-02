@@ -10529,9 +10529,9 @@ Legacy IDs: HPR-P25-054E
 
 Priority: P1
 
-Implementation Status: IMPLEMENTED
+Implementation Status: VERIFIED
 
-Planning Status: IN_PROGRESS
+Planning Status: COMPLETED
 
 Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -11207,3 +11207,78 @@ stopped during the first station's closure cleanup and does not establish all
 three later journeys. Whole S6 matrix acceptance and S7 remain pending.
 Publish expected-head main, verify source/blob/parent/tree/four-path scope,
 observe applicable CI queued/started, then STOP.
+
+### HAPI-603 S6 — independent bounded backend-software acceptance (2026-11-02)
+
+Owner Next selects acceptance of the completed indivisible S6 source, not S7.
+Implementation main06b6121a79c431f1452552ecf8ca9126c6f11e4a has
+[Full1083](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41535930434)
+and [Docs861](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41535930610)
+completed SUCCESS. No newer runtime source is assumed.
+Retain exact registered message `test(topology): qualify installed equipment consumers`.
+
+**Independent authenticated artifact review.** Downloaded aggregate13183918287,
+run41535930434 attempt1, ZIP SHA256
+`6c3fe8e70cd01f35c02d2324c7aee793f950348e9a46e221894bb68165d7322e`
+matches GitHub's digest. All17 lane receipts independently match source/run/
+attempt; all554 referenced retained member hashes match actual ZIP bytes.
+Reconstructed all547 XML suites and4162 distinct testcase identities against
+the exact implementation inventory: zero failures/errors/skips, no missing,
+extra or duplicate classes/cases. All13 dedicated consumer cases passed in
+111.135 seconds, source SHA256
+`7745d548b0c607de3035168c63af080d0d6ad2fe6c2b2be8ea2911bc5e65b08c`.
+Earlier failed/stalled runs remain diagnostic history, not acceptance samples.
+
+**Whole software matrix and practical limits.**
+
+| Criterion | Independently matched evidence in Full1083 | Accepted limit |
+|---|---|---|
+| C1 integrated identity/source/station | nineIndependentUnitSourceBindingsRemainSeparateAcrossThreeStations: nine distinct unit/source/link identities through actual source/link HTTP, three native station configuration saves/replays, second configuration epochs, original revision/history reload, exact member HTTP source revision/hash, moved position denial and forward-only installation closure/reopen rejection | Synthetic published graph/source configuration only; no industrial hydraulic qualification or arbitrary source-lifecycle coverage inferred |
+| C2 human Workflow and authority | terminalApprovalRequiresIndependentHumanAndNeverReclassifiesDraft, realIndependentHumanWorkflowRejectionCannotPublishApproval, workflowTargetReadSuspendsAmbientSynchronizationAndRestoresOriginalTransaction, sourcePermissionRevocationFencesCurrentRevisionAndHistory | Real application Workflow/JWT/PostgreSQL with independent synthetic LOCAL users; live enterprise federation and operator acceptance are external |
+| C3 backend handoff/compatibility | owner-approved Full1080 F04/F05 artifact; Full1083 generated OpenAPI equals that baseline after removing only x-hidra-ci-source-sha; consumer exact link/unit/source/revision/hash/DRAFT/approval actor assertions; previousV1StationGraphDecoderKeepsExactPayloadAndRejectsCorruption; malformed/foreign/unauthenticated/replay conflict tests | Actual HidraWEB implementation/generated-client/UI/UAT excluded; canonical V1 only, no fabricated V0 support; manufacturer errors retain accepted non-disclosing400/401/403/503 semantics |
+| C4 cross-owner physical adversity | crossOwnerManufacturerWriterCannotDiscloseOrMutateConsumerWhileLocked; concurrentInstallationWriterFencesRealHumanApprovalWithoutPartialReceipt; consumerFailureAfterProvisionalSourceBindingRollsBackEveryLinkRow; consumerLostPhysicalCommitAcknowledgementIsIndeterminateAndFreshReplayIsStable; original stale epoch/divergent replay assertions | Real competing connections, rollback and commit observations, bounded deliberate faults; no exhaustive scheduling proof, blind retry or operational latency guarantee |
+| C5 manufacturer software dependency | actual same-run24 ManufacturerCharacteristicNativeHttpPostgresIntegrationTest cases, exact source11900f3142b5e6c720be6791271861653190c0426c15b2d14f98f71e66ce4f71, matching prior accepted HAPI-601 software matrix | No formal HAPI-601 status promotion, independent supplier certificate verification, real enterprise origin, industrial calibration or SITE waiver |
+| C6 development least privilege and external limits | ordinary app/publisher separation, actual native scopes and denial, immutable row/receipt/state checks and genuine guarded PostgreSQL behavior; existing source/catalog/role/final-guard companion cases retained | Fixture-owner role provisioning is not approved deployment grants; real credentials, external IdP/certificates, F04/F05 UI, operator safety/SITE, release and deployment remain unaccepted |
+
+Supporting same-run source-bound suites: ProtectedStationInstalledConfigurationPostgresIntegrationTest
+28 cases, StationInstalledConfigurationPostgresIntegrationTest13,
+ProtectedInstalledUnitLifecyclePostgresIntegrationTest48,
+InstalledCharacteristicLinkNativeHttpPostgresIntegrationTest8, and manufacturer24.
+Together with consumer13 these six distinct suites contain134 passing cases;
+they are complementary evidence, not a substitute for the cohesive consumer case.
+Scope is observed branches and registered software invariants, not every possible
+cross-module race or an assertion that synthetic evidence qualifies industrial use.
+
+**Actual API/catalog proof.** Full1083 API receipt pins base source
+f0ae75a066498de7eee53a17a93cb99ce4b56651; raw current API SHA256
+`f6d24aae85c071990607d69103bcab4cfe111228954ee9627aa46b47f0c68601`.
+Independent parsed JSON comparison against the downloaded owner-approved
+Full1080 OpenAPI equals after removing only the explicit source-SHA extension.
+Current actual PostgreSQL16.15 catalog verification:195 Flyway migrations,
+470 JPA mapping sources,544 relations, zero unresolved owners,
+reviewed_dictionary_checked=true. Catalog SHA256
+`7c4c61774f4acaa1eef86c7fe27542d0c0cb2584186ca3e475a82a4455f2d8dd`;
+source bundle `5327eb0ee0f5a7d0f704d7a6a3857b0789a11587a78a833bfac8fc49fefcabfa`.
+Fourteen database shards and mandatory API/architecture/static/full gates pass.
+
+**Disposition.** Set HAPI-603 to VERIFIED/COMPLETED for its bounded backend
+development-software consumer qualification in this owning header and only its
+ROADMAP/PHASES status cells. Historical completed-with-gaps/failed-CI notes remain
+append-only and are superseded only for the software evidence accepted above.
+External C6 limits remain explicitly unaccepted. Preserve HAPI-601
+IMPLEMENTED/IN_PROGRESS and HAPI-598 PARTIAL/BLOCKED: S7 still requires separate
+whole five-child reconciliation/selection and must not infer manufacturer
+formal acceptance from this dependency review. No new stage or stage-list change.
+Full evidence is development-partitioned, same_run_equivalence=false and
+release_eligible=false; no serial-oracle, release, deployment, SITE, simulation/P3
+or autonomous control claim follows.
+
+**Exact acceptance publication/validation.** MODIFY only this owner record,
+compact ULTIMATE_TASKS.md pointer and HAPI-603 status cells in ULTIMATE_ROADMAP.md
+and ULTIMATE_PHASES.md. No source/test/inventory/schema/API/workflow changes.
+Actual artifact hashes, source/case union, API equivalence and catalog receipt
+checks above PASS;19 current documentation-validator fixtures PASS locally.
+Full canonical repository documentation validation remains hosted because the
+local checkout is partial. This docs-only head does not claim fresh Java execution.
+Verify exact four-path scope/parent/tree, observe new exact-SHA Docs queued/started
+and STOP. S7 is the next registered task, not executed or accepted by S6 closure.

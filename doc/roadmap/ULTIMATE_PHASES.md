@@ -509,7 +509,7 @@ Cross-phase prerequisites in the approved task graph: HPS-002, HPS-004, HPS-007,
 | [HAPI-599](TASKS_HPS-006.md#hapi-599) | Independent installed-unit identity and references | Independent installed-unit identity, model/serial/lifecycle and correct source-owner references. | P1 | HAPI-567 | VERIFIED | COMPLETED |
 | [HAPI-600](TASKS_HPS-006.md#hapi-600) | Effective station configuration and connectivity | Effective facility/station configuration membership and series/parallel installed incidence. | P1 | HAPI-588, HAPI-599 | VERIFIED | COMPLETED |
 | [HAPI-602](TASKS_HPS-006.md#hapi-602) | Versioned installed-unit/characteristic links | Versioned installed-unit to characteristic links, approval and current/historical read. | P1 | HAPI-600, HAPI-601 | VERIFIED | COMPLETED |
-| [HAPI-603](TASKS_HPS-006.md#hapi-603) | Installed-equipment consumer qualification | Owner/API/security/compatibility and consumer-ready qualification. | P1 | HAPI-602 | IMPLEMENTED | IN_PROGRESS |
+| [HAPI-603](TASKS_HPS-006.md#hapi-603) | Installed-equipment consumer qualification | Owner/API/security/compatibility and consumer-ready qualification. | P1 | HAPI-602 | VERIFIED | COMPLETED |
 
 ### 8. Phase Completion Criteria
 

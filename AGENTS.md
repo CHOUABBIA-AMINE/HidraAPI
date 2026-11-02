@@ -185,6 +185,44 @@ deployment or SITE acceptance.
 This instruction supersedes older discretionary single-task splitting
 practices for future work without rewriting historical package evidence.
 
+### 3.4 Final official S0–S7 stage list — owner freeze (2026-11-02)
+
+**Binding stage-register freeze:** the owner reconfirms the sole official, flat,
+unchanged sequence below. No added stage, renamed stage, renumbering, reordering,
+merger, parallel stage, A/B/C package, separate CI-preflight stage or expansion
+of a stage's registered objective is accepted under the current authorization.
+A blocked criterion is recorded as a blocker *inside its existing registered
+task*, never turned into a newly invented step.
+
+1. **S0** — HAPI-602 approval policy and exact technical registration.
+2. **S1** — HAPI-602 immutable characteristic-link approval domain.
+3. **S2** — HAPI-602 genuine Workflow target and human approval evidence.
+4. **S3** — HAPI-602 protected original-transaction approval persistence and Identity authorization.
+5. **S4** — HAPI-602 approval REST API and configured native JWT/PostgreSQL qualification.
+6. **S5** — HAPI-602 independent development-software acceptance.
+7. **S6** — HAPI-603 / HPR-P25-054E installed-equipment consumer qualification.
+8. **S7** — HAPI-598 / HPR-P25-054 integrated five-child closure.
+
+**Status is not frozen or fabricated.** At evidence head
+`f0ae75a066498de7eee53a17a93cb99ce4b56651`, HAPI-602 is
+VERIFIED / COMPLETED (S0–S5); HAPI-603 S6 is IMPLEMENTED / IN_PROGRESS;
+HAPI-598 S7 is PARTIAL / BLOCKED. Independent manufacturer HAPI-601 remains
+IMPLEMENTED / IN_PROGRESS, with its accepted software and external assurance
+limitations; it is not a ninth stage. Exact-head [Full CI #1080](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41523276539)
+and [Documentation #856](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41523277117)
+SUCCEEDED, but green CI does not close S6 or qualify S7.
+
+**Permitted without changing the frozen list:** same-task `Fail` repairs within
+authorized scope, execution of the still-unfinished *whole* S6 task,
+reconciliation/acceptance within S7 only after prerequisites, append-only
+evidence and legitimately justified status-cell updates under existing rules.
+`Next` selects no extra stage. No new task ID, scope widening, HAPI-601
+assurance waiver, frontend/SITE acceptance or numerical/P3 execution follows
+from this freeze. A contrary future instruction would require an **explicit
+new owner governance decision**; this freeze supplies no such permission.
+It is a repository governance rule, **not** a claim of GitHub branch/ruleset
+write protection or inability to change code.
+
 ---
 
 ## 4. Git Commit Rules

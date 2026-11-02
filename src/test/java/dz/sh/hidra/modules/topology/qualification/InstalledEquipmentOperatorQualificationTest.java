@@ -118,6 +118,15 @@ class InstalledEquipmentOperatorQualificationTest {
                 "hidra_workflow_type_catalog"))
             admin.execute("GRANT UPDATE ON public."+relation+" TO "+PUBLISHER);
 
+        // Genuine Workflow start/task/decision runs on the disposable APP datasource.
+        // The producer's companion PostgreSQL test provisions these same DML boundaries.
+        // Limit mutable rows to instance/task; action/history are append-only.
+        // Testcontainers-only roles: no production grants, schema migration or bypass.
+        for(String relation:List.of("hidra_workflow_instance","hidra_workflow_task"))
+            admin.execute("GRANT INSERT,UPDATE ON public."+relation+" TO "+APP);
+        for(String relation:List.of("hidra_workflow_action","hidra_workflow_state_history"))
+            admin.execute("GRANT INSERT ON public."+relation+" TO "+APP);
+
         for(String relation:List.of("hidra_simulation_manufacturer_characteristic_revision",
                 "hidra_simulation_manufacturer_characteristic_qualification"))
             admin.execute("GRANT INSERT ON public."+relation+" TO "+PUBLISHER);

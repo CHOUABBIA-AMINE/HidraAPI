@@ -7181,12 +7181,12 @@
     {
       "baseline_seconds": 0,
       "cases": [
-      "historyPageQueryValidatesScopeAndNullCannotAcquirePrivileges",
-      "invalidWorkflowDigestDoesNotInvokeProtectedExecutor",
-      "malformedExactCompanySourceAndRevisionAreRejected",
-      "missingCommandIsRejectedBeforeNativePreparation",
-      "workflowLookupMaterializesRecordInsideExecutorBeforeWrappingOptional"
-    ],
+        "historyPageQueryValidatesScopeAndNullCannotAcquirePrivileges",
+        "invalidWorkflowDigestDoesNotInvokeProtectedExecutor",
+        "malformedExactCompanySourceAndRevisionAreRejected",
+        "missingCommandIsRejectedBeforeNativePreparation",
+        "workflowLookupMaterializesRecordInsideExecutorBeforeWrappingOptional"
+      ],
       "class": "dz.sh.hidra.modules.simulation.application.service.ManufacturerCharacteristicRevisionApplicationServiceTest",
       "dependency_reason": "New unit and authorization-boundary contract; CI measurement pending",
       "fast": true,
@@ -10093,6 +10093,7 @@
         "malformedManufacturerAxisAndLinkDigestCannotCreateConsumerRevision",
         "nineIndependentUnitSourceBindingsRemainSeparateAcrossThreeStations",
         "previousV1StationGraphDecoderKeepsExactPayloadAndRejectsCorruption",
+        "realIndependentHumanWorkflowRejectionCannotPublishApproval",
         "replayConflictAndStaleEpochPreserveHistoricalSourceAndReceipt",
         "sourcePermissionRevocationFencesCurrentRevisionAndHistory",
         "terminalApprovalRequiresIndependentHumanAndNeverReclassifiesDraft"
@@ -10103,7 +10104,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/qualification/InstalledEquipmentOperatorQualificationTest.java",
-      "source_sha256": "d57d745422c82b3a5ca92db1b0385720ae5627d0470306bf0f3ea0b3adb42cd1",
+      "source_sha256": "fe7804eb1485123c482fe4faeff1e71cb0026cc3472238f21ee92efc3de913b6",
       "supports": []
     },
     {

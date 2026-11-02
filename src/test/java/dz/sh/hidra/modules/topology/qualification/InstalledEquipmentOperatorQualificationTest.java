@@ -169,6 +169,11 @@ class InstalledEquipmentOperatorQualificationTest {
     @Autowired WebApplicationContext context;
     @Autowired AuthenticateDirectUserUseCase authentication;
     @Autowired PasswordEncoder passwords;
+    @Autowired dz.sh.hidra.modules.workflow.application.service.WorkflowApplicationService workflowApplication;
+    @Autowired dz.sh.hidra.modules.workflow.application.port.in.ExecuteWorkflowTransitionUseCase workflowTransitions;
+    @Autowired dz.sh.hidra.modules.workflow.application.port.out.WorkflowTaskRepositoryPort workflowTasks;
+    @Autowired @org.springframework.beans.factory.annotation.Qualifier("hidraJwtDecoder")
+    org.springframework.security.oauth2.jwt.JwtDecoder nativeJwtDecoder;
     private JdbcTemplate admin;
     private MockMvc http;
     private String company,manufacturer,source,unit,link,user,token;
@@ -340,6 +345,7 @@ class InstalledEquipmentOperatorQualificationTest {
         admin.update("INSERT INTO public.hidra_identity_local_credential"+
             "(id,user_id,password_hash,credential_status,created_at,updated_at)"+
             " VALUES (?,?,?,'ACTIVE',?,?)",id(),reviewer,passwords.encode(PASSWORD),now,now);
+        admin.update("UPDATE public.hidra_identity_user SET display_name='Synthetic Independent Reviewer',activated_at=? WHERE id=?",now,reviewer);
         return reviewer;
     }
     private String reviewerToken(String reviewer) {
@@ -378,9 +384,18 @@ class InstalledEquipmentOperatorQualificationTest {
     }
     private record ActualWorkflow(String definition,String type,String purpose,
             String instance,String task,String action,String digest){}
-    /** Real Workflow owner relations: configured target, active definition, approved terminal action. */
-    private ActualWorkflow terminalWorkflow(String reviewer,String digest){
-        String definition=id(),start=id(),end=id(),instance=id(),task=id(),action=id();
+
+    /** Actual Workflow owner start/task/transition; only configuration is synthetic SQL. */
+    private void useWorkflowActor(String bearer,String expectedActor) {
+        var jwt=nativeJwtDecoder.decode(bearer);
+        assertEquals(expectedActor,jwt.getSubject());
+        var authentication=new org.springframework.security.oauth2.server.resource.authentication
+            .JwtAuthenticationToken(jwt,java.util.List.of());
+        authentication.setAuthenticated(true);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+    private ActualWorkflow terminalWorkflow(String reviewer,String digest,boolean approved){
+        String definition=id(),start=id(),end=id(),transition=id();
         String type=admin.queryForObject(
             "SELECT id FROM public.hidra_workflow_type_catalog"+
             " WHERE catalog_name='WORKFLOW_TARGET_TYPE' AND code='INSTALLED_CHARACTERISTIC_LINK_REVISION'",
@@ -400,32 +415,49 @@ class InstalledEquipmentOperatorQualificationTest {
                 " VALUES (?,?,?,'Synthetic terminal review',?,true,true,false,false,now(),now())",
                 row[0],definition,row[0],row[1]);
         admin.update("INSERT INTO public.hidra_workflow_definition_target_binding"+
-            "(id,definition_id,target_module,target_type_id,workflow_purpose_id,"+
-            "active,created_at,updated_at)"+
-            " VALUES (?,?,'topology',?,?,true,now(),now())",
-            id(),definition,type,purpose);
-        Instant terminal=Instant.now().minusSeconds(1).truncatedTo(java.time.temporal.ChronoUnit.MICROS);
-        Timestamp done=Timestamp.from(terminal);
-        admin.update("INSERT INTO public.hidra_workflow_instance"+
-            "(id,definition_id,definition_version,workflow_purpose_id,target_module,target_type_id,"+
-            "target_id,status,current_step_id,started_by_actor_id,started_by_display_name_snapshot,"+
-            "started_at,completed_at,created_at,updated_at)"+
-            " VALUES (?,?,1,?,'topology',?,?,'COMPLETED',?,?,'Synthetic Reviewer',?,?,?,now())",
-            instance,definition,purpose,type,digest,end,reviewer,
-            Timestamp.from(terminal.minusSeconds(10)),done,
-            Timestamp.from(terminal.minusSeconds(10)));
-        admin.update("INSERT INTO public.hidra_workflow_task"+
-            "(id,instance_id,step_id,status,assigned_actor_id,completed_by_actor_id,"+
-            "completed_at,created_at,updated_at)"+
-            " VALUES (?,?,?,'APPROVED',?,?,?, ?,now())",
-            task,instance,start,reviewer,reviewer,done,
-            Timestamp.from(terminal.minusSeconds(10)));
-        admin.update("INSERT INTO public.hidra_workflow_action"+
-            "(id,instance_id,task_id,action_type,decision,actor_id,"+
-            "actor_display_name_snapshot,action_sequence,source_system,acted_at)"+
-            " VALUES (?,?,?,'APPROVE','APPROVE',?,'Synthetic Reviewer',1,'HIDRA_API',?)",
-            action,instance,task,reviewer,done);
-        return new ActualWorkflow(definition,type,purpose,instance,task,action,digest);
+            "(id,definition_id,target_module,target_type_id,workflow_purpose_id,active,created_at,updated_at)"+
+            " VALUES (?,?,'topology',?,?,true,now(),now())",id(),definition,type,purpose);
+        admin.update("INSERT INTO public.hidra_workflow_transition"+
+            "(id,definition_id,from_step_id,to_step_id,decision,reason_required,comment_required,created_at,updated_at)"+
+            " VALUES (?,?,?,?,?,false,false,now(),now())",
+            transition,definition,start,end,approved?"APPROVE":"REJECT");
+        admin.update("UPDATE public.hidra_identity_user SET display_name='Synthetic Workflow Starter',"+
+            "activated_at=coalesce(activated_at,now()),updated_at=now() WHERE id=?",user);
+        String starter=authentication.authenticate(new DirectAuthenticationCommand(
+            ProviderType.LOCAL,user,PASSWORD,"synthetic-ip","synthetic-agent",
+            "installed-workflow-start")).accessToken();
+        String reviewerBearer=reviewerToken(reviewer);
+        try {
+            useWorkflowActor(starter,user);
+            String locator=dz.sh.hidra.modules.topology.infrastructure.integration
+                .TopologyInstalledCharacteristicLinkWorkflowTargetLookup.locator(company,unit,link,1);
+            var instance=workflowApplication.startWorkflowInstance(
+                new dz.sh.hidra.modules.workflow.application.command.StartWorkflowInstanceCommand(
+                    definition,1,purpose,"topology",type,digest,locator,null,start,user,
+                    null,"Untrusted starter snapshot",null,"synthetic-link-workflow"));
+            var task=workflowApplication.createWorkflowTask(
+                new dz.sh.hidra.modules.workflow.application.command.CreateWorkflowTaskCommand(
+                    instance.id(),start,reviewer,null,null,null,null,null,null,null,null,
+                    "Independent installed-link review"));
+            var persisted=workflowTasks.findById(task.id()).orElseThrow();
+            useWorkflowActor(reviewerBearer,reviewer);
+            var decision=workflowTransitions.execute(
+                new dz.sh.hidra.modules.workflow.application.command.ExecuteWorkflowTransitionCommand(
+                    task.id(),transition,persisted.updatedAt(),null,null,null,
+                    "synthetic-installed-link-decision",reviewer,null,
+                    "Untrusted reviewer snapshot",java.util.Set.of()));
+            assertEquals(instance.id(),decision.instanceId());
+            assertEquals(task.id(),decision.taskId());
+            assertEquals("COMPLETED",admin.queryForObject(
+                "SELECT status FROM public.hidra_workflow_instance WHERE id=?",
+                String.class,instance.id()));
+            assertEquals(reviewer,admin.queryForObject(
+                "SELECT actor_id FROM public.hidra_workflow_action WHERE id=?",
+                String.class,decision.actionId()));
+            assertNotEquals(user,reviewer);
+            return new ActualWorkflow(definition,type,purpose,instance.id(),task.id(),
+                decision.actionId(),digest);
+        } finally {SecurityContextHolder.clearContext();}
     }
     private String approvalBody(ActualWorkflow w){
         return """
@@ -624,7 +656,7 @@ class InstalledEquipmentOperatorQualificationTest {
         String reviewer=distinctReviewer();
         reviewerGrants(reviewer,true);
         String reviewerJwt=reviewerToken(reviewer);
-        var workflow=terminalWorkflow(reviewer,canonicalDraftDigest());
+        var workflow=terminalWorkflow(reviewer,canonicalDraftDigest(),true);
         requireStatus(http.perform(post(protectedApprovalPath())
             .header("Authorization","Bearer "+reviewerJwt)
             .contentType(MediaType.APPLICATION_JSON).content(approvalBody(workflow))),200)
@@ -636,6 +668,22 @@ class InstalledEquipmentOperatorQualificationTest {
             .header("Authorization","Bearer "+token).param("companyPartyId",company)),200)
             .andExpect(jsonPath("$.link.state").value("DRAFT"));
         assertEquals(1L,countFor("approval"));
+    }
+
+    @Test void realIndependentHumanWorkflowRejectionCannotPublishApproval() throws Exception {
+        savedDraft();
+        String reviewer=distinctReviewer();
+        reviewerGrants(reviewer,true);
+        var rejected=terminalWorkflow(reviewer,canonicalDraftDigest(),false);
+        requireStatus(http.perform(post(protectedApprovalPath())
+            .header("Authorization","Bearer "+reviewerToken(reviewer))
+            .contentType(MediaType.APPLICATION_JSON).content(approvalBody(rejected))),403);
+        assertEquals(0L,countFor("approval"));
+        assertEquals(0L,countFor("approval_request"));
+        assertEquals(1L,countFor("revision"));
+        requireStatus(http.perform(get(linkPath())
+            .header("Authorization","Bearer "+token).param("companyPartyId",company)),200)
+            .andExpect(jsonPath("$.link.state").value("DRAFT"));
     }
 
     @Test void previousV1StationGraphDecoderKeepsExactPayloadAndRejectsCorruption() {

@@ -11338,7 +11338,8 @@
         "nativeDenialAndUnavailableSourceAreNonDisclosing",
         "wrongActualRevisionOrShaCannotResolve",
         "historyRequiresIndependentNativeHistoryAuthorization",
-        "canonicalLocatorDoesNotAliasMalformedOrAmbiguousInput"
+        "canonicalLocatorDoesNotAliasMalformedOrAmbiguousInput",
+        "detachedNativeReadHasNoSpringSynchronizationAndDoesNotLeakOne"
       ],
       "class": "dz.sh.hidra.modules.topology.infrastructure.integration.TopologyInstalledCharacteristicLinkWorkflowTargetLookupTest",
       "dependency_reason": "HAPI-602 S2 genuine native Topology Workflow locator/denial unit behavior; hosted timing pending",
@@ -11346,7 +11347,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/integration/TopologyInstalledCharacteristicLinkWorkflowTargetLookupTest.java",
-      "source_sha256": "d522f3e3e6da27dd798a3bacb45214ca448c9ae4785a1f819a221f9c00389c44",
+      "source_sha256": "616c1b8f9994a9569a86fe850bdb53e5c0a3a3b46acf6b398567bee3ca48f059",
       "supports": []
     },
     {

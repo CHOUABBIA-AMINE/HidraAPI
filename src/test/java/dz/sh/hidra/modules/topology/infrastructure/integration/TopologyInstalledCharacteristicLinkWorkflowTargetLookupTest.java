@@ -8,7 +8,10 @@ import dz.sh.hidra.modules.topology.domain.service.InstalledCharacteristicLinkAp
 import dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup.ProtectedRead;
 import java.time.Instant;
 import java.util.List;
+import javax.sql.DataSource;
 import org.junit.jupiter.api.Test;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.security.access.AccessDeniedException;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -22,8 +25,12 @@ class TopologyInstalledCharacteristicLinkWorkflowTargetLookupTest {
                 Instant.parse("2026-11-01T09:00:00Z"),"synthetic",null);
     }
     private final InstalledCharacteristicLinkUseCase nativeOwner=mock(InstalledCharacteristicLinkUseCase.class);
+    // NOT_SUPPORTED does not open a JDBC connection; this manager exercises Spring's
+    // real empty synchronization scaffold without Docker or database fixtures.
+    private final DataSourceTransactionManager manager=
+            new DataSourceTransactionManager(mock(DataSource.class));
     private final TopologyInstalledCharacteristicLinkWorkflowTargetLookup lookup=
-            new TopologyInstalledCharacteristicLinkWorkflowTargetLookup(nativeOwner);
+            new TopologyInstalledCharacteristicLinkWorkflowTargetLookup(nativeOwner,manager);
     private final InstalledCharacteristicLink value=draft();
     private final String digest=InstalledCharacteristicLinkApprovalTargetDigester.digest(value);
     private final String locator=TopologyInstalledCharacteristicLinkWorkflowTargetLookup.locator(
@@ -36,6 +43,18 @@ class TopologyInstalledCharacteristicLinkWorkflowTargetLookupTest {
         verify(nativeOwner).execute(argThat(c->c.operation()==InstalledCharacteristicLinkUseCase.Operation.READ_REVISION
                 && c.companyPartyId().equals("party-1") && c.installedUnitId().equals("unit-1")
                 && c.linkId().equals("link-1") && c.revision()==7));
+    }
+    @Test void detachedNativeReadHasNoSpringSynchronizationAndDoesNotLeakOne() {
+        when(nativeOwner.execute(any())).thenAnswer(inv->{
+            assertFalse(TransactionSynchronizationManager.isActualTransactionActive());
+            assertFalse(TransactionSynchronizationManager.isSynchronizationActive());
+            return new Result(value,List.of(),false,null);
+        });
+        assertFalse(TransactionSynchronizationManager.isSynchronizationActive());
+        assertTrue(lookup.eligibleTarget(
+                TopologyInstalledCharacteristicLinkWorkflowTargetLookup.TYPE,digest,locator).isPresent());
+        assertFalse(TransactionSynchronizationManager.isSynchronizationActive());
+        verify(nativeOwner,times(1)).execute(any());
     }
     @Test void noDigestOnlyLookupOrUntrustedLocatorBypass() {
         assertTrue(lookup.eligibleTarget(TopologyInstalledCharacteristicLinkWorkflowTargetLookup.TYPE,digest).isEmpty());

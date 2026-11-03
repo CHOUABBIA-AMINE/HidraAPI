@@ -147,6 +147,46 @@ abstract class EngineeringBaselineManifestChecks {
                 new SourceFacts(PRODUCT,FROM,null,Set.of(),List.of(Finding.METHOD_NOT_SUPPLIED,Finding.APPROVAL_NOT_ESTABLISHED)));
         require(!report.complete()); eq(2,report.diagnostics().size());
     }
+
+    static void checkEveryRequiredFamilyUsesExactOwnerDerivedMembership() {
+        var all=manifest(NETWORK,PRODUCT,STATION,LINK);
+        var networkFacts=facts(NETWORK,new Requirement(Kind.STATION_CONFIGURATION,"station"));
+        var stationFacts=facts(STATION,new Requirement(Kind.CHARACTERISTIC_LINK,"unit"));
+        var observed=inspect(all,networkFacts,facts(PRODUCT),stationFacts,facts(LINK));
+        require(observed.complete());
+        require(!observed.frozen()&&!observed.authoritative()&&!observed.engineeringQualified());
+        eq(List.of(NETWORK,PRODUCT,STATION,LINK).stream()
+                .sorted(Comparator.comparing(Pin::kind).thenComparing(Pin::ownerId)
+                        .thenComparing(Pin::sourceId)).toList(),all.pins());
+        eq(all,codec().decode(codec().encode(all)));
+        var noStation=inspect(manifest(NETWORK,PRODUCT),networkFacts,facts(PRODUCT));
+        require(!noStation.complete());
+        eq(List.of(new Diagnostic(Finding.STATION_CONFIGURATION_NOT_SELECTED,
+                Kind.STATION_CONFIGURATION,"station")),noStation.diagnostics());
+        var noLink=inspect(manifest(NETWORK,PRODUCT,STATION),
+                networkFacts,facts(PRODUCT),stationFacts);
+        require(!noLink.complete());
+        eq(List.of(new Diagnostic(Finding.CHARACTERISTIC_NOT_SELECTED,
+                Kind.CHARACTERISTIC_LINK,"unit")),noLink.diagnostics());
+    }
+    static void checkComposedSourceWithdrawalAndEvidenceGapsNeverRewriteCapture() {
+        var captured=manifest(NETWORK,PRODUCT,STATION,LINK);
+        var ownerNetwork=facts(NETWORK,new Requirement(Kind.STATION_CONFIGURATION,"station"));
+        var ownerStation=facts(STATION,new Requirement(Kind.CHARACTERISTIC_LINK,"unit"));
+        require(inspect(captured,ownerNetwork,ownerStation,facts(PRODUCT),facts(LINK)).complete());
+        var withdrawn=new SourceFacts(PRODUCT,FROM,null,Set.of(),
+                List.of(Finding.SOURCE_NOT_CURRENTLY_ELIGIBLE,Finding.METHOD_NOT_SUPPLIED));
+        var approvalLost=new SourceFacts(LINK,FROM,null,Set.of(),
+                List.of(Finding.APPROVAL_NOT_ESTABLISHED));
+        var current=inspect(captured,ownerNetwork,ownerStation,withdrawn,approvalLost);
+        eq(Set.of(Finding.SOURCE_NOT_CURRENTLY_ELIGIBLE,Finding.METHOD_NOT_SUPPLIED,
+                    Finding.APPROVAL_NOT_ESTABLISHED),
+                new HashSet<>(current.diagnostics().stream().map(Diagnostic::finding).toList()));
+        require(!current.complete());
+        eq(captured,codec().decode(codec().encode(captured)));
+        require(!captured.frozen()&&!captured.authoritative()&&!captured.engineeringQualified());
+    }
+
     static void checkCanonicalRoundTripPreservesEveryField() {
         var draft=manifest(NETWORK,PRODUCT,STATION,LINK);
         eq(draft,codec().decode(codec().encode(draft)));
@@ -185,7 +225,7 @@ abstract class EngineeringBaselineManifestChecks {
                     || method.getReturnType()!=void.class || method.getName().startsWith("lambda$"))continue;
             method.invoke(null); count++;
         }
-        if(count!=22)throw new AssertionError("Unexpected check inventory: "+count);
+        if(count!=24)throw new AssertionError("Unexpected check inventory: "+count);
         System.out.println("PASS: "+count+" shared draft model, completeness and canonical codec checks");
     }
 }

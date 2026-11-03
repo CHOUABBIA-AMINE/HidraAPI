@@ -40,6 +40,8 @@ class EngineeringBaselineManifestContractTest extends EngineeringBaselineManifes
     @Test void duplicateOrInvalidOwnerRequirementsAreRejected(){EngineeringBaselineManifestChecks.checkDuplicateOrInvalidOwnerRequirementsAreRejected();}
     @Test void sourceCoverageFailureRemainsAnExplicitFinding(){EngineeringBaselineManifestChecks.checkSourceCoverageFailureRemainsAnExplicitFinding();}
     @Test void sourceMethodAndApprovalGapsAreNeverInventedAway(){EngineeringBaselineManifestChecks.checkSourceMethodAndApprovalGapsAreNeverInventedAway();}
+    @Test void everyRequiredFamilyUsesExactOwnerDerivedMembership(){EngineeringBaselineManifestChecks.checkEveryRequiredFamilyUsesExactOwnerDerivedMembership();}
+    @Test void composedSourceWithdrawalAndEvidenceGapsNeverRewriteCapture(){EngineeringBaselineManifestChecks.checkComposedSourceWithdrawalAndEvidenceGapsNeverRewriteCapture();}
     @Test void canonicalRoundTripPreservesEveryField(){EngineeringBaselineManifestChecks.checkCanonicalRoundTripPreservesEveryField();}
     @Test void everyTruncationAndTrailingDataAreRejected(){EngineeringBaselineManifestChecks.checkEveryTruncationAndTrailingDataAreRejected();}
     @Test void malformedUtf8AndNoncanonicalMarkersAreRejected(){EngineeringBaselineManifestChecks.checkMalformedUtf8AndNoncanonicalMarkersAreRejected();}

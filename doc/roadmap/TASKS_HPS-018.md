@@ -1687,3 +1687,21 @@ doc/model-remediation/RECONCILIATION.md:23753 | HPR-P25-055E | BLOCKED_SPECIFICA
 **Physical database dictionary generated evidence.** Full #1087's [API job #125852197708](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41616814238/job/125852197708) generated the true fresh PostgreSQL catalog, derived source mapping and **CURRENT** markdown (before failing the strict reviewed snapshot comparison). Downloaded GitHub artifact `hidra-database-schema-1b96cdc696ed08c69c8fd5b8dc566014abc5e8ed-41616814238-1-api-contract`, artifact ID **13220964124**, archive SHA-256 `604d94b8ae7ac238ce6683e98043ce76d89fd9129d6ee6d2f34155ac90941b70`. Actual catalog `schema.json` SHA-256 `145c84cf71baccf3110737333eaf1b6ed2440f8de2367c7577645bf6b6150a3c`. Generated `DATA_DICTIONARY.md` SHA-256 `0825e51139e3dbabbf8b687af11e41ee22b489f24a18977e59c696fb2e9f1c4d`, **3,626,106 bytes**, Git blob SHA `aff12e2d0bb4fd81e1193e44c49ae58f1b726fa7`. The byte-identical blob has been independently reconstructed and Git-verified from real reviewed hosted output; this is **not** a handwritten schema or assertion that CI dictionary equality passed. Catalog: PostgreSQL 16.15, 196 successful migrations, 470 JPA mappings, 547 relations, zero unresolved owners. The current-run strict comparator remains FAILED until rerun against this exact updated snapshot. Existing migrations and dictionary generator unchanged.
 
 **Exact same-delivery repair envelope.** Retain the delivery-2 registered message `feat(topology): implement protected engineering baseline drafts`. MODIFY exactly: the one Identity participant noted above; `doc/database/DATA_DICTIONARY.md` using exact generated 1087 bytes; this append-only `doc/roadmap/TASKS_HPS-018.md` evidence; and the compact `doc/roadmap/ULTIMATE_TASKS.md` pointer. No tests, inventories, native source reader hashes, migration files, API snapshot or OpenAPI metadata, security grants, workflows or unrelated modules modified. Preserve all earlier 5,000+ blobs and original cases. Source-level checks and exact generated artifact SHA are preliminary; only the new published SHA's full raw CI/Docs status can establish test and catalog approval. This is one bounded HAPI-605 *delivery-2* failed-CI repair, not an added exceptional delivery nor a selected HAPI-606 stage. HAPI-605 stays **PARTIAL / IN_PROGRESS**; third exceptional delivery not yet executed, HAPI-606 BLOCKED. After expected-head guarded main publication, verify both applicable workflow runs were created/queued/started and STOP without waiting.
+
+
+### HAPI-605 — one additional owner-authorized acceptance attempt, 2026-11-03
+Owner direction: `Next` following the proposed single additional HAPI-605 closure delivery.
+**Registered exact commit message:** `test(topology): qualify HAPI-605 four-family draft completeness`.
+**Exact MODIFY allowlist:** `src/test/java/dz/sh/hidra/modules/topology/qualification/EngineeringBaselineManifestChecks.java`, `src/test/java/dz/sh/hidra/modules/topology/qualification/EngineeringBaselineManifestContractTest.java`, `doc/roadmap/TASKS_HPS-018.md`,
+`doc/roadmap/ULTIMATE_TASKS.md`, `.github/ci-test-inventory.json`. **CREATE/DELETE:** none.
+No production, Identity/Workflow permission, migration, freeze/exchange or HAPI-606 edits.
+Added pure Java four-family composition assertions prove exact source membership
+(network to station to installed characteristic), complete draft diagnostics,
+canonical round-trip, and retained captured source when current product eligibility,
+method provenance or characteristic approval changes. The parent Full #1091 and
+Docs #872 succeeded at the authorized parent SHA.
+**This synthetic composition is not a real four-producer published HTTP/PostgreSQL
+journey**. In-original-transaction expiry/revocation, moving characteristic
+approval, cross-owner rollback and new exact-SHA generated API/catalog proof
+remain OPEN. HAPI-605 remains PARTIAL / IN_PROGRESS; HAPI-606 blocked.
+The single additional delivery is not an authorization for further subtasks.

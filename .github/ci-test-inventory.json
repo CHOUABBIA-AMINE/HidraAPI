@@ -10170,18 +10170,20 @@
         "duplicateOrInvalidOwnerRequirementsAreRejected",
         "sourceCoverageFailureRemainsAnExplicitFinding",
         "sourceMethodAndApprovalGapsAreNeverInventedAway",
+        "everyRequiredFamilyUsesExactOwnerDerivedMembership",
+        "composedSourceWithdrawalAndEvidenceGapsNeverRewriteCapture",
         "canonicalRoundTripPreservesEveryField",
         "everyTruncationAndTrailingDataAreRejected",
         "malformedUtf8AndNoncanonicalMarkersAreRejected",
         "configuredEncodingBoundsAreEnforced"
       ],
       "class": "dz.sh.hidra.modules.topology.qualification.EngineeringBaselineManifestContractTest",
-      "dependency_reason": "HAPI-605 pure draft identity/revision/source membership/completeness and canonical codec contracts; 22 shared assertions pass in isolated Java17 harness, hosted Java21/JUnit pending; no Spring or database",
+      "dependency_reason": "HAPI-605 pure draft identity, exact four-family membership and completeness, source eligibility/method/approval findings, immutable canonical codec; producer-native combined HTTP remains separate acceptance.",
       "fast": true,
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/qualification/EngineeringBaselineManifestContractTest.java",
-      "source_sha256": "849f4c1d516cf68a3d799f012039be1da928955a7d1ed96df482134424346e9a",
+      "source_sha256": "ce0dd5ba17a6e26060328a3a2bd3e90c542de86553149a50be2360bd745b4199",
       "supports": [
         "dz.sh.hidra.modules.topology.qualification.EngineeringBaselineManifestChecks"
       ]
@@ -11525,7 +11527,7 @@
       "abstract": true,
       "class": "dz.sh.hidra.modules.topology.qualification.EngineeringBaselineManifestChecks",
       "path": "src/test/java/dz/sh/hidra/modules/topology/qualification/EngineeringBaselineManifestChecks.java",
-      "source_sha256": "f151b8fb051181d42b077f3071e1f95dbcda9cc5b71a18fad5f697be32c72f6d",
+      "source_sha256": "f156feb102f218de6a8f6b33f12b82d3c8b103fe6a8e877ed20440b8605b288d",
       "supports": [],
       "used_by": [
         "dz.sh.hidra.modules.topology.qualification.EngineeringBaselineManifestContractTest"

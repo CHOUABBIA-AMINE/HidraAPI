@@ -173,6 +173,14 @@
     "owner": "identity",
     "purpose": "Database-owned per-provider committed external mapping generation; not an OIDC/LDAP claim attestation or authorization grant."
   },
+  "public.hidra_identity_lifecycle_event": {
+    "evidence": [
+      "src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcFoundationIdentityLifecycleAdapter.java",
+      "src/main/resources/db/migration/V20261103_002__foundation_identity_lifecycle.sql"
+    ],
+    "owner": "identity",
+    "purpose": "Identity-owned append-only reasons and actor/target evidence for controlled ordinary user lifecycle and grant revocation; no credential or bearer material."
+  },
   "public.hidra_identity_local_credential": {
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/LocalCredentialJpaEntity.java",

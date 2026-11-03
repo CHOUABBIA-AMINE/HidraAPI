@@ -25,6 +25,7 @@ import java.util.Objects;
 import java.util.Set;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
 
 /**
@@ -55,7 +56,13 @@ public final class HidraEffectivePermissionResolver {
                 .anyMatch(authority -> ADMIN_AUTHORITY.equals(normalize(authority.getAuthority())));
         LinkedHashSet<String> permissions = new LinkedHashSet<>();
         boolean currentAdministratorGrant = false;
-        authentication.getAuthorities().forEach(authority -> addAuthority(permissions, authority.getAuthority()));
+        // Hidra-issued bearer scopes are historical issuance claims, never an authority
+        // source after grant revocation. Runtime Identity sources are queried every time.
+        // The native JWT carries this claim in addition to its exact signed identity.
+        boolean nativeBearer = authentication instanceof JwtAuthenticationToken bearer
+                && bearer.getToken().getClaimAsString("authentication_type") != null;
+        if (!nativeBearer)
+            authentication.getAuthorities().forEach(authority -> addAuthority(permissions, authority.getAuthority()));
         // Never trust a wildcard from a JWT scope or authority claim on its own.
         permissions.remove(ALL_PERMISSIONS);
 

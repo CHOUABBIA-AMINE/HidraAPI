@@ -108,6 +108,15 @@ public class JpaIdentityAdministrationQueryAdapter implements IdentityAdministra
             return new PrincipalView(subject, "AUTHENTICATION", null, null, null, null, safeAuthorities, List.of());
         }
 
+        // Account deactivation/lock is effective immediately, regardless of any
+        // formerly issued JWT scope or role claims.
+        Instant eligibilityAt = Instant.now();
+        if (user.status() != dz.sh.hidra.modules.identity.domain.value.UserStatus.ACTIVE
+                || (user.lockedUntil() != null && eligibilityAt.isBefore(user.lockedUntil()))) {
+            return new PrincipalView(subject, "IDENTITY_USER", user.id(), user.username(),
+                    user.displayName(), user.employeeReferenceId(), safeAuthorities, List.of());
+        }
+
         Map<String, String> permissionCodes = new LinkedHashMap<>();
         entityManager.createQuery("select e from PermissionJpaEntity e", PermissionJpaEntity.class)
                 .getResultList()

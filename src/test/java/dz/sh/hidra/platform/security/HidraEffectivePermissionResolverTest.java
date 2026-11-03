@@ -86,4 +86,21 @@ class HidraEffectivePermissionResolverTest {
                 "operator", "n/a", List.of());
         assertFalse(resolver.hasPermission(operator, "security:permissions:read"));
     }
+    @Test
+    void hidraBearerScopesAreNotTrustedAfterTheirDatabaseGrantIsRevoked() {
+        var jwt = org.springframework.security.oauth2.jwt.Jwt.withTokenValue("synthetic-native")
+                .header("alg", "HS256").subject("operator").issuer("hidra-api")
+                .claim("authentication_type", "LOCAL")
+                .issuedAt(java.time.Instant.now().minusSeconds(10))
+                .expiresAt(java.time.Instant.now().plusSeconds(30)).build();
+        var auth = new org.springframework.security.oauth2.server.resource.authentication
+                .JwtAuthenticationToken(jwt, List.of(new SimpleGrantedAuthority("SCOPE_topology:networks:read")));
+        var current = new java.util.concurrent.atomic.AtomicBoolean(true);
+        var resolver = new HidraEffectivePermissionResolver(List.of(
+                principal -> current.get() ? Set.of("topology:networks:read") : Set.of()));
+        assertTrue(resolver.hasPermission(auth, "topology:networks:read"));
+        current.set(false);
+        assertFalse(resolver.hasPermission(auth, "topology:networks:read"));
+    }
+
 }

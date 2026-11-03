@@ -12157,9 +12157,9 @@ Legacy IDs: None — owner-approved foundation supplement B1; no historical mapp
 
 Priority: P0
 
-Implementation Status: PARTIAL
+Implementation Status: IMPLEMENTED
 
-Planning Status: REGISTERED_PENDING
+Planning Status: IN_PROGRESS
 
 Owning Module: `identity`
 
@@ -12186,5 +12186,20 @@ Controlled development provisioning is opt-in only in dev with explicit non-secr
 - Two independently permitted users demonstrate allow/deny on a business API; native capability previews never become commit authority; last usable administrator remains protected.
 
 Run existing applicable domain/application/HTTP/security/PostgreSQL/rollback/concurrency suites and add the named missing tests. Regenerate API/catalog only from real migrated runtime evidence. Preserve every preexisting test and hash-bound class. Missing local Java21/Maven/Docker does not waive hosted full CI, and skipped tests are not database proof. No frontend acceptance is asserted.
+
+### 2026-11-03 whole-task source delivery and bounded security extension
+
+Owner approved this HAPI-923 scope extension to correct stale JWT permission use while keeping the app foundation simple. This remains **one indivisible B1 task**, not a new stage, branch, PR, or numerical/P3 undertaking. Exact message: `feat(identity): complete foundation user access lifecycle`.
+
+Implementation consists of pure Java lifecycle state checks; inbound/application/outbound ports; server-authenticated original bearer proof; guarded user activation/deactivation; BCrypt-backed LOCAL credential creation/reset; existing database-managed security-version increment; locked grant revocation (user-role/user-permission/role-permission), preservation of the last usable administrator, session invalidation and immutable lifecycle audit; explicit REST request/response DTOs and advisory-only capability preview. Existing user creation, native LOCAL login, me/effective-grant reads, and protected module authorization are reused, not reimplemented. The approved extension modifies exactly:
+
+- `src/main/java/dz/sh/hidra/platform/security/HidraEffectivePermissionResolver.java` — native JWT's historical scopes no longer override current Identity-backed grants; non-native compatibility retains its prior scope behavior.
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityEffectivePermissionSourceAdapter.java` — native binding/session/current-state proof, with old test constructor preserved.
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/query/JpaIdentityAdministrationQueryAdapter.java` — inactive/locked Identity users have no current effective grants.
+- `src/test/java/dz/sh/hidra/platform/security/HidraEffectivePermissionResolverTest.java` — additive stale-native-scope regression; no old cases removed.
+
+The new audit relation is also explicitly registered in `.github/database-dictionary-ownership.json` as Identity-owned for strict migrated-catalog ownership checks; generated `doc/database/DATA_DICTIONARY.md` remains pending real PostgreSQL introspection. The full source delta is limited to the explicitly registered B1 owner create paths actually needed (use case, ports, application service, domain policy, REST DTO/controller, JDBC/auth adapters, three tests), the above four security extension paths, and the pre-registered forward-only `V20261103_002__foundation_identity_lifecycle.sql` (revocation evidence columns, append-only event). Existing JPA repository ports and adapters are reused without unnecessary changes. No wildcard grants, privileged admin-creation endpoint, autonomous action, frontend, or secret-bearing response. The already opt-in existing LOCAL bootstrap is reused; no new unguarded development provisioner is introduced.
+
+Actual cases are registered in `.github/ci-test-inventory.json`: four domain transition/reason/version cases, three API/native authentication contract cases, three real PostgreSQL/Flyway/transaction cases, and one additional existing Platform stale-JWT-scope case. Existing inventory classes and cases remain. Test execution in this delivery environment: **NOT RUN** because Maven/Docker are unavailable locally. Exact-new-SHA hosted Full and Documentation CI, runtime OpenAPI/catalog capture, native two-actor HTTP/PostgreSQL flow and independent engineering acceptance are **PENDING**; green CI from the P0 parent must not be reused as this delivery's proof. No release/SITE acceptance claim. If hosted CI fails, repair **within HAPI-923**, do not introduce subtasks or advance HAPI-924. Preserve status IMPLEMENTED / IN_PROGRESS until evidenced acceptance.
 
 <!-- task-register:payload:end -->

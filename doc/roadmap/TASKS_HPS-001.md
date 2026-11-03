@@ -12147,4 +12147,44 @@ docs/roadmap/fixs/stabilization_01.md:71 | STB-005 | db(identity): add identity 
 docs/roadmap/fixs/stabilization_01.md:89 | STB-005 | 7638896b8ba5c2b72350561dfadd32d69b7a7d2f | Added identity migration.
 ~~~~~~~~
 
+
+<a id="hapi-923"></a>
+## HAPI-923 — complete foundation user access lifecycle
+
+Phase: HPS-001 — Identity and Authentication
+
+Legacy IDs: None — owner-approved foundation supplement B1; no historical mapping replaced.
+
+Priority: P0
+
+Implementation Status: PARTIAL
+
+Planning Status: REGISTERED_PENDING
+
+Owning Module: `identity`
+
+Dependencies: HAPI-922
+
+Cross-Repository Dependencies: HidraWEB handoff remains reserved/dependency-gated; no WEB implementation selected by this registration.
+
+### Objective and authority
+
+Owner approved the six-module functional foundation roadmap on 2026-11-03. This whole delivery is B1 of exactly12; no nested stages. Current source baseline is `b457a28c507dab07e554d4d9e52741783e415ba2`, Full CI41642224597 and Docs41642224576 SUCCESS. Existing code and tests do not prove the complete new browser workflow. Numerical/P3, deployment and SITE acceptance remain DEFERRED/NOT ESTABLISHED.
+
+Registered exact commit message: `feat(identity): complete foundation user access lifecycle`.
+
+Binding scope, owner policies, exact CREATE/MODIFY/conditional migration paths, objective acceptance and limits: [adopted foundation supplement](FOUNDATION_PRODUCTION_ROADMAP.md). Section B1 / HAPI-923 contains its full executable ledger; retain module boundaries and current native security guarantees.
+
+### Minimum policy and test gate
+
+Minimum policy: ordinary LOCAL onboarding is REGISTERED -> ACTIVE after a valid credential has been stored; ACTIVE -> DISABLED is the admitted deactivation. LOCKED/SUSPENDED are not silently unlocked by activation. Credential initialization/reset hashes through the existing port and never discloses hashes/passwords. Derive actor on the server, require explicit current administrator action/resource authority, expected updatedAt or equivalent locked generation and a reason; preserve the last usable administrator. Deactivation/reset revokes affected sessions and invalidates native authentication provenance using existing fences, not a browser-only logout. Revocation is an ACTIVE ordinary grant -> REVOKED transition retaining the original row/evidence; no unrelated protected grant is fabricated. Effective permissions must stop authorizing after current revocation. Existing authorization decision/AuthenticationEvent evidence is reused; no new universal approval workflow. The capability preview accepts exact company/resource selectors and emits advisory supported/permitted actions, no raw grants/keys/tickets and no protected-resource enumeration. Original protected operations independently reauthorize in their native transaction.
+
+Controlled development provisioning is opt-in only in dev with explicit non-secret selectors and external password/keys; fail outside dev. It may deliberately provision synthetic native test principals/grants under existing authorized writer/separated database-role rules, never ordinary app-owner SQL privilege or a wildcard shortcut. No production credential or general native grant-writer API is introduced.
+
+- New ordinary user is created, credentialed, activated, logged in and receives native bearer/me/effective grants through real HTTP and PostgreSQL.
+- Invalid credentials, expired/revoked session, disabled user, forbidden admin, missing resource authority, stale mutation, failed transaction and grant revocation fail safely.
+- Two independently permitted users demonstrate allow/deny on a business API; native capability previews never become commit authority; last usable administrator remains protected.
+
+Run existing applicable domain/application/HTTP/security/PostgreSQL/rollback/concurrency suites and add the named missing tests. Regenerate API/catalog only from real migrated runtime evidence. Preserve every preexisting test and hash-bound class. Missing local Java21/Maven/Docker does not waive hosted full CI, and skipped tests are not database proof. No frontend acceptance is asserted.
+
 <!-- task-register:payload:end -->

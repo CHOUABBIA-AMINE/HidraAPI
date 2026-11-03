@@ -3390,3 +3390,29 @@ HAPI-605 delivery-2 same-task CI repair (2026-11-03): [Full #1085](https://githu
 HAPI-605 delivery-2 [Full #1086](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41612895970) FAILED at `adeda546c60a7f148afb27bbcde2ad6176456d9c` (2 JVM architecture checks, three catalog ownership failures across shards 3/8/12, fifteen protected baseline authority cases on shard 13, stale generated OpenAPI); [Docs #867](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41612895962) SUCCESS. [HPS-018](TASKS_HPS-018.md#hapi-605) records a bounded same-task fix to exact architecture exceptions, three Topology schema owners and genuine Full1086 OpenAPI provenance, plus one synthetic-only redacted reader diagnostic. Production rights, original transaction guards and migration history unchanged. **HAPI-605 PARTIAL / IN_PROGRESS**; auth-positive qualification and regenerated database dictionary remain unverified; new exact SHA Full/Docs gates required before exceptional delivery 3; HAPI-606 BLOCKED.
 
 HAPI-605 delivery-2 [Full #1087](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41616814238) FAILED at `1b96cdc696ed08c69c8fd5b8dc566014abc5e8ed`: Java21 unit/architecture, 13/14 PostgreSQL shards and OpenAPI equality passed; baseline native shard 13 rejected preparation at `ProtectedEngineeringBaselineAuthorizationParticipant:72`; database dictionary strict equality failed against new real 196-migration, 547-relation, 470-mapping catalog. [HPS-018](TASKS_HPS-018.md#hapi-605) records exact same-task repair removing only the spurious Spring synchronization check (actual transaction still denied), plus exact hosted artifact 13220964124 dictionary Git blob `aff12e2d0bb4fd81e1193e44c49ae58f1b726fa7`, with unchanged migration/authority policies. Docs #868 SUCCESS. **HAPI-605 PARTIAL / IN_PROGRESS**, third exceptional delivery unexecuted and HAPI-606 BLOCKED pending new-SHA CI.
+
+
+## Owner-approved foundation navigation — 2026-11-03
+
+The historical921-task baseline is preserved; the approved bounded extension contains928 current tasks in25 phases. [Adopted foundation supplement](FOUNDATION_PRODUCTION_ROADMAP.md). Current foundation pointer: [HAPI-923](TASKS_HPS-001.md#hapi-923), after exact-P0 CI acceptance and explicit Next. P0 does not execute it. Earlier execution pointers remain historical.
+
+<a id="hapi-922"></a>
+[HAPI-922](TASKS_HPS-025.md#hapi-922) — Foundation P0.
+
+<a id="hapi-923"></a>
+[HAPI-923](TASKS_HPS-001.md#hapi-923) — Foundation B1.
+
+<a id="hapi-924"></a>
+[HAPI-924](TASKS_HPS-003.md#hapi-924) — Foundation B2.
+
+<a id="hapi-925"></a>
+[HAPI-925](TASKS_HPS-003.md#hapi-925) — Foundation B3.
+
+<a id="hapi-926"></a>
+[HAPI-926](TASKS_HPS-004.md#hapi-926) — Foundation B4.
+
+<a id="hapi-927"></a>
+[HAPI-927](TASKS_HPS-018.md#hapi-927) — Foundation B5.
+
+<a id="hapi-928"></a>
+[HAPI-928](TASKS_HPS-015.md#hapi-928) — Foundation B6.

@@ -4756,4 +4756,40 @@ doc/roadmap/ULTIMATE_ROADMAP.md:6150 | HPR-REL-002 | COMPLETED / ACCEPTED (recor
 doc/model-remediation/RECONCILIATION.md:13821 | HPR-REL-002 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Release Management; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization
 ~~~~~~~~
 
+
+<a id="hapi-922"></a>
+## HAPI-922 — register six-module functional foundation
+
+Phase: HPS-025 — Deployment and Operational Readiness
+
+Legacy IDs: None — owner-approved foundation supplement P0; no historical mapping replaced.
+
+Priority: P0
+
+Implementation Status: VERIFIED
+
+Planning Status: COMPLETED
+
+Owning Module: `governance`
+
+Dependencies: Owner approval, 2026-11-03
+
+Cross-Repository Dependencies: HidraWEB handoff remains reserved/dependency-gated; no WEB implementation selected by this registration.
+
+### Objective and authority
+
+Owner approved the six-module functional foundation roadmap on 2026-11-03. This whole delivery is P0 of exactly12; no nested stages. Current source baseline is `b457a28c507dab07e554d4d9e52741783e415ba2`, Full CI41642224597 and Docs41642224576 SUCCESS. Existing code and tests do not prove the complete new browser workflow. Numerical/P3, deployment and SITE acceptance remain DEFERRED/NOT ESTABLISHED.
+
+Registered exact commit message: `docs(roadmap): register six-module functional foundation`.
+
+Binding scope, owner policies, exact CREATE/MODIFY/conditional migration paths, objective acceptance and limits: [adopted foundation supplement](FOUNDATION_PRODUCTION_ROADMAP.md). P0 publication envelope contains the complete documentation-only allowlist and preservation checks.
+
+### Bounded verification
+
+Governance-only registration, no runtime implementation. Local documentation/OpenAPI/inventory validators and workflow-required Python suites must pass before publication. The exact published commit CI must be created/started and reported, not awaited. P0 completion records document registration, not six-module acceptance. B1 remains gated by subsequent successful exact-P0 CI evidence and explicit selection.
+
+
+
+P0 local verification (2026-11-03): all157 tests across the six existing workflow-required Python suites PASS (19 docs,10 snapshot,18 dictionary,18 comparison-base,38 inventory,54 full-evidence). Canonical documentation validation PASS:129 documents,8938 relative links,24 modules,928 tasks,25 phases. Offline OpenAPI snapshot PASS:305 paths/335 operations/383 schemas. Exact test inventory PASS, unchanged inventory SHA25658da48d20678984859bb628e5fcc0b06256cacc86ed362aa492b3de08ff306bd. These are local governance checks, not a new application/database/browser test run. Published exact-SHA CI remains pending at commit creation.
+
 <!-- task-register:payload:end -->

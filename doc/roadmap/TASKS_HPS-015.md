@@ -12900,4 +12900,42 @@ No single stronger current disposition was independently extracted; original rec
 
 Future discoveries, refined exact file scope, accepted tests, blockers and decisions belong here. Retain prior evidence; synchronize only status fields into ROADMAP/PHASES. Newly standalone work stays PENDING_BASELINE_APPROVAL until authorized.
 
+
+<a id="hapi-928"></a>
+## HAPI-928 — complete foundation task discovery and scoped reads
+
+Phase: HPS-015 — Workflow and Approvals
+
+Legacy IDs: None — owner-approved foundation supplement B6; no historical mapping replaced.
+
+Priority: P1
+
+Implementation Status: PARTIAL
+
+Planning Status: BLOCKED
+
+Owning Module: `workflow`
+
+Dependencies: HAPI-923, HAPI-925, HAPI-926
+
+Cross-Repository Dependencies: HidraWEB handoff remains reserved/dependency-gated; no WEB implementation selected by this registration.
+
+### Objective and authority
+
+Owner approved the six-module functional foundation roadmap on 2026-11-03. This whole delivery is B6 of exactly12; no nested stages. Current source baseline is `b457a28c507dab07e554d4d9e52741783e415ba2`, Full CI41642224597 and Docs41642224576 SUCCESS. Existing code and tests do not prove the complete new browser workflow. Numerical/P3, deployment and SITE acceptance remain DEFERRED/NOT ESTABLISHED.
+
+Registered exact commit message: `feat(workflow): complete foundation task discovery and scoped reads`.
+
+Binding scope, owner policies, exact CREATE/MODIFY/conditional migration paths, objective acceptance and limits: [adopted foundation supplement](FOUNDATION_PRODUCTION_ROADMAP.md). Section B6 / HAPI-928 contains its full executable ledger; retain module boundaries and current native security guarantees.
+
+### Minimum policy and test gate
+
+Minimum policy: starter, eligible assigned/claimed actor, authorized organization member or explicit supervisor with the applicable target-resource read may read task/instance/history. Require the protected owner admission as well for recognized native targets, and filter before existence/counts/history disclosure. Definition discovery lists only supported active bindings and safe assignment choices. Use the existing installed-characteristic-link approval target for the synthetic workflow; existing Simulation-owned source evidence is an essential reference dependency only and is not new numerical work. Controlled dev process configuration is explicit opt-in, unavailable outside dev, with an independent human approver; no active business policy is seeded automatically into a production schema. Execute real configured transitions; COMMENT recording cannot create decisions; unsupported condition/callback mechanisms remain fail-closed.
+
+- Deliberately provision supported dev process configuration, discover it, start valid instance/create permitted task and retrieve the actual assigned inbox.
+- Discover backend actions, execute real human APPROVE/REJECT and verify durable task/instance/action/history and independent denial.
+- Reject stale/replayed/conflicting transitions, unsupported mechanisms and unauthorized general/protected detail/history/existence; preserve genuine native approvals.
+
+Run existing applicable domain/application/HTTP/security/PostgreSQL/rollback/concurrency suites and add the named missing tests. Regenerate API/catalog only from real migrated runtime evidence. Preserve every preexisting test and hash-bound class. Missing local Java21/Maven/Docker does not waive hosted full CI, and skipped tests are not database proof. No frontend acceptance is asserted.
+
 <!-- task-register:payload:end -->

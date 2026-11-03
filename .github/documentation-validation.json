@@ -573,6 +573,13 @@
       ],
       "status": "LEGACY-P1"
     },
+    "doc/roadmap/FOUNDATION_PRODUCTION_ROADMAP.md": {
+      "metadata_from": [
+        "doc/roadmap/FOUNDATION_PRODUCTION_ROADMAP.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
     "doc/roadmap/PLATFORM_ACCEPTANCE.md": {
       "metadata_from": [
         "doc/governance/DOCUMENT_REGISTER.md"
@@ -1585,6 +1592,6 @@
       "doc/roadmap/ULTIMATE_ROADMAP.md",
       "doc/roadmap/ULTIMATE_PHASES.md"
     ],
-    "task_count": 921
+    "task_count": 928
   }
 }

@@ -1801,3 +1801,18 @@ Cross-phase prerequisites in the approved task graph: HPS-010, HPS-016, HPS-018,
 ### 8. Phase Completion Criteria
 
 Every supported in-scope task has its independently established technical acceptance and consistent status; no unfinished active obligation is silently omitted. Actual owner/API/domain/persistence/security behavior and required concurrency/rollback/history evidence pass on the exact accepted source. Deferred or superseded tasks retain explicit disposition and do not become falsely completed. Documentation-only completion does not prove the associated application feature. PLATFORM acceptance is separate from owner calibration, SITE qualification and release/deployment authorization.
+
+
+## Owner-approved six-module foundation extension — 2026-11-03
+
+Bounded append-only membership extension approved with the foundation roadmap. Original921 rows, phases, semantics and statuses are unchanged. Technical evidence and policies remain in the linked owning phase files and [foundation supplement](FOUNDATION_PRODUCTION_ROADMAP.md). No implementation is selected by a future task being listed.
+
+| Phase ID | Phase Name | Task ID | Legacy ID(s) | Task Name | Deliverable | Priority | Dependencies | Implementation Status | Planning Status |
+|---|---|---|---|---|---|---|---|---|---|
+| HPS-025 | Deployment and Operational Readiness | [HAPI-922](TASKS_HPS-025.md#hapi-922) | Foundation P0; no legacy replacement | register six-module functional foundation | Whole approved P0 delivery; see owning task definition | P0 | Owner approval | VERIFIED | COMPLETED |
+| HPS-001 | Identity and Authentication | [HAPI-923](TASKS_HPS-001.md#hapi-923) | Foundation B1; no legacy replacement | complete foundation user access lifecycle | Whole approved B1 delivery; see owning task definition | P0 | HAPI-922 | PARTIAL | REGISTERED_PENDING |
+| HPS-003 | Organization and Responsibility | [HAPI-924](TASKS_HPS-003.md#hapi-924) | Foundation B2; no legacy replacement | complete foundation party selection lifecycle | Whole approved B2 delivery; see owning task definition | P1 | HAPI-923 | PARTIAL | BLOCKED |
+| HPS-003 | Organization and Responsibility | [HAPI-925](TASKS_HPS-003.md#hapi-925) | Foundation B3; no legacy replacement | complete foundation organization administration | Whole approved B3 delivery; see owning task definition | P1 | HAPI-923, HAPI-924 | PARTIAL | BLOCKED |
+| HPS-004 | Physical Network Topology | [HAPI-926](TASKS_HPS-004.md#hapi-926) | Foundation B4; no legacy replacement | connect pipeline authoring to persisted graph views | Whole approved B4 delivery; see owning task definition | P1 | HAPI-923, HAPI-924 | PARTIAL | BLOCKED |
+| HPS-018 | Engineering Baselines and Configuration | [HAPI-927](TASKS_HPS-018.md#hapi-927) | Foundation B5; no legacy replacement | complete typed foundation configuration lifecycle | Whole approved B5 delivery; see owning task definition | P1 | HAPI-923 | PARTIAL | BLOCKED |
+| HPS-015 | Workflow and Approvals | [HAPI-928](TASKS_HPS-015.md#hapi-928) | Foundation B6; no legacy replacement | complete foundation task discovery and scoped reads | Whole approved B6 delivery; see owning task definition | P1 | HAPI-923, HAPI-925, HAPI-926 | PARTIAL | BLOCKED |

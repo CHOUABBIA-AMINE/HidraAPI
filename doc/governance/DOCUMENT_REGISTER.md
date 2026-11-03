@@ -190,3 +190,8 @@ P1 deployed/recovery evidence retains its original scope. No production-data/imp
 approval, business retention/policy values, hydraulic/ML runtime execution or field
 actuation is established. Version remains 0.6.0-SNAPSHOT. No executable, migration,
 contract snapshot, dictionary, ownership metadata or operating artifact is changed.
+
+
+## Owner-approved foundation supplement — 2026-11-03
+
+[FOUNDATION_PRODUCTION_ROADMAP.md](../roadmap/FOUNDATION_PRODUCTION_ROADMAP.md) is CURRENT for the approved minimum and exact HAPI-922–928 technical registration. Original921-task baseline/archives remain unchanged;25 phases,928 current backend tasks. HidraWEB handoffs are reserved, not a claim of frontend registration/implementation. Exact-P0 CI acceptance remains required before selecting B1; industrial/SITE/deployment acceptance is NOT ESTABLISHED.

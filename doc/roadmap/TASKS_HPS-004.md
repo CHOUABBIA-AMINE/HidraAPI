@@ -12007,6 +12007,44 @@ Future discoveries, refined exact file scope, accepted tests, blockers and decis
 docs/roadmap/fixs/telemetry_corrected_baseline_validated.md:45 | TOP-COR-002 | topology | Accepted | Explicit `@Qualifier(...)` annotations on topology use-case factory parameters remove ambiguity.
 ~~~~~~~~
 
+
+<a id="hapi-926"></a>
+## HAPI-926 — connect pipeline authoring to persisted graph views
+
+Phase: HPS-004 — Physical Network Topology
+
+Legacy IDs: None — owner-approved foundation supplement B4; no historical mapping replaced.
+
+Priority: P1
+
+Implementation Status: PARTIAL
+
+Planning Status: BLOCKED
+
+Owning Module: `topology`
+
+Dependencies: HAPI-923, HAPI-924
+
+Cross-Repository Dependencies: HidraWEB handoff remains reserved/dependency-gated; no WEB implementation selected by this registration.
+
+### Objective and authority
+
+Owner approved the six-module functional foundation roadmap on 2026-11-03. This whole delivery is B4 of exactly12; no nested stages. Current source baseline is `b457a28c507dab07e554d4d9e52741783e415ba2`, Full CI41642224597 and Docs41642224576 SUCCESS. Existing code and tests do not prove the complete new browser workflow. Numerical/P3, deployment and SITE acceptance remain DEFERRED/NOT ESTABLISHED.
+
+Registered exact commit message: `feat(topology): connect pipeline authoring to persisted graph views`.
+
+Binding scope, owner policies, exact CREATE/MODIFY/conditional migration paths, objective acceptance and limits: [adopted foundation supplement](FOUNDATION_PRODUCTION_ROADMAP.md). Section B4 / HAPI-926 contains its full executable ledger; retain module boundaries and current native security guarantees.
+
+### Minimum policy and test gate
+
+Minimum policy: Pipeline has explicit owning company/system context and canonical identity. Link graph PIPE branches and essential Segment references through versioned owner associations; no second editable graph store. Update and view operations require current owner/source authorization and expected version; legacy immutable payloads remain decodable and histories exact. Missing geometry is explicit and a persisted schematic is acceptable; do not synthesize surveyed routes from endpoints. Pipeline/facility/unit/catalog discovery is bounded and scope-filtered before totals. Preserve existing graph publication, installations and station incidence without requiring manufacturer curves, fluid data or aggregate baseline freeze. Supplied optional survey geometry may be reused; no numerical or new OT integration.
+
+- Create system -> create associated canonical Pipeline -> author nodes/ports/branches/station -> register/install equipment -> save station incidence -> retrieve exact persisted graph -> revise permitted record.
+- Revision-aware schematic/map projection shows persisted owner identity without fabricated geometry; canonical Pipeline and Segment references survive reload.
+- Dangling connections, wrong ownership/catalogs, stale expected versions, conflicting/replayed writes and rollback reject without partial graphs; existing native suites remain passing.
+
+Run existing applicable domain/application/HTTP/security/PostgreSQL/rollback/concurrency suites and add the named missing tests. Regenerate API/catalog only from real migrated runtime evidence. Preserve every preexisting test and hash-bound class. Missing local Java21/Maven/Docker does not waive hosted full CI, and skipped tests are not database proof. No frontend acceptance is asserted.
+
 <!-- task-register:payload:end -->
 
 ### HAPI-588B CI-first implementation checkpoint — 2026-10-20

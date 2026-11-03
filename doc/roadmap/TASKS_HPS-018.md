@@ -1650,6 +1650,43 @@ doc/model-remediation/RECONCILIATION.md:23415 | HPR-P25-055E | Multi-owner freez
 doc/model-remediation/RECONCILIATION.md:23753 | HPR-P25-055E | BLOCKED_SPECIFICATION | Multi-owner baseline and exchange qualification
 ~~~~~~~~
 
+
+<a id="hapi-927"></a>
+## HAPI-927 — complete typed foundation configuration lifecycle
+
+Phase: HPS-018 — Engineering Baselines and Configuration
+
+Legacy IDs: None — owner-approved foundation supplement B5; no historical mapping replaced.
+
+Priority: P1
+
+Implementation Status: PARTIAL
+
+Planning Status: BLOCKED
+
+Owning Module: `configuration`
+
+Dependencies: HAPI-923
+
+Cross-Repository Dependencies: HidraWEB handoff remains reserved/dependency-gated; no WEB implementation selected by this registration.
+
+### Objective and authority
+
+Owner approved the six-module functional foundation roadmap on 2026-11-03. This whole delivery is B5 of exactly12; no nested stages. Current source baseline is `b457a28c507dab07e554d4d9e52741783e415ba2`, Full CI41642224597 and Docs41642224576 SUCCESS. Existing code and tests do not prove the complete new browser workflow. Numerical/P3, deployment and SITE acceptance remain DEFERRED/NOT ESTABLISHED.
+
+Registered exact commit message: `feat(configuration): complete typed foundation configuration lifecycle`.
+
+Binding scope, owner policies, exact CREATE/MODIFY/conditional migration paths, objective acceptance and limits: [adopted foundation supplement](FOUNDATION_PRODUCTION_ROADMAP.md). Section B5 / HAPI-927 contains its full executable ledger; retain module boundaries and current native security guarantees.
+
+### Minimum policy and test gate
+
+Minimum policy: environment-scoped non-sensitive definitions and BOOLEAN flags are the initial supported administration. Admit strict existing STRING/BOOLEAN/numeric value types only where each parser is implemented/tested; unsupported declared types fail closed rather than being stored as arbitrary text. Definitions/flags activate from DRAFT through an authorized version-guarded command. A valid current environment override wins over the admitted definition default at an explicit instant; half-open windows and overlapping active overrides are rejected. Values must match the active exact definition/version, type and bounds. Derive actor server-side, inspect raw/JSON/default payloads for forbidden secret material and block unsupported requiresApproval changes. Sensitive settings return authorized redacted metadata/reference only. No vault, universal flag rule engine or business taxonomy redesign.
+
+- Create/activate admitted definition and boolean flag, read default, set typed environment override, persist and read exact effective result through HTTP/PostgreSQL.
+- Reject wrong type/version/window/overlap/unsupported approval, impersonated actor, sensitive material and unauthorized reads/writes; rollback and competing writes proven.
+
+Run existing applicable domain/application/HTTP/security/PostgreSQL/rollback/concurrency suites and add the named missing tests. Regenerate API/catalog only from real migrated runtime evidence. Preserve every preexisting test and hash-bound class. Missing local Java21/Maven/Docker does not waive hosted full CI, and skipped tests are not database proof. No frontend acceptance is asserted.
+
 <!-- task-register:payload:end -->
 
 

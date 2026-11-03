@@ -31425,4 +31425,79 @@ docs/roadmap/fixs/stabilization_01.md:95 | STB-008 | 5bceac46c30709228d88bb8a189
 docs/roadmap/fixs/stabilization_01.md:96 | STB-008 | f44ef63a3dd1ce606ed4ed7746e24748b824459a | Updated `ReportingLinePolicyTest`.
 ~~~~~~~~
 
+
+<a id="hapi-924"></a>
+## HAPI-924 — complete foundation party selection lifecycle
+
+Phase: HPS-003 — Organization and Responsibility
+
+Legacy IDs: None — owner-approved foundation supplement B2; no historical mapping replaced.
+
+Priority: P1
+
+Implementation Status: PARTIAL
+
+Planning Status: BLOCKED
+
+Owning Module: `party`
+
+Dependencies: HAPI-923
+
+Cross-Repository Dependencies: HidraWEB handoff remains reserved/dependency-gated; no WEB implementation selected by this registration.
+
+### Objective and authority
+
+Owner approved the six-module functional foundation roadmap on 2026-11-03. This whole delivery is B2 of exactly12; no nested stages. Current source baseline is `b457a28c507dab07e554d4d9e52741783e415ba2`, Full CI41642224597 and Docs41642224576 SUCCESS. Existing code and tests do not prove the complete new browser workflow. Numerical/P3, deployment and SITE acceptance remain DEFERRED/NOT ESTABLISHED.
+
+Registered exact commit message: `feat(party): complete foundation party selection lifecycle`.
+
+Binding scope, owner policies, exact CREATE/MODIFY/conditional migration paths, objective acceptance and limits: [adopted foundation supplement](FOUNDATION_PRODUCTION_ROADMAP.md). Section B2 / HAPI-924 contains its full executable ledger; retain module boundaries and current native security guarantees.
+
+### Minimum policy and test gate
+
+Minimum policy: DRAFT -> ACTIVE requires valid Party type, unique code and current authorized administration. Deactivation is ACTIVE -> SUSPENDED with a reason; BLOCKED/RETIRED are not silently reactivated. Metadata edits are version-guarded, preserve canonical identity/history and never change an existing reference's identity. Read visibility is explicit administrator-global access or current authorized company/resource visibility, evaluated before counts/detail. New references require ACTIVE current eligibility; existing historical references remain intact. Type/role choices come from Party owner catalogs and role assignments validate current referenced parties/catalogs. Preserve all generation/lock semantics used by Topology and Organization.
+
+- Register DRAFT Party, discover type/role choices, activate, retrieve/search and select as a current permitted Topology company/owner/manufacturer.
+- Duplicate code, invalid catalog/role, inactive/foreign Party, stale lifecycle write and rollback preserve exact owner/generation history.
+
+Run existing applicable domain/application/HTTP/security/PostgreSQL/rollback/concurrency suites and add the named missing tests. Regenerate API/catalog only from real migrated runtime evidence. Preserve every preexisting test and hash-bound class. Missing local Java21/Maven/Docker does not waive hosted full CI, and skipped tests are not database proof. No frontend acceptance is asserted.
+
+
+<a id="hapi-925"></a>
+## HAPI-925 — complete foundation organization administration
+
+Phase: HPS-003 — Organization and Responsibility
+
+Legacy IDs: None — owner-approved foundation supplement B3; no historical mapping replaced.
+
+Priority: P1
+
+Implementation Status: PARTIAL
+
+Planning Status: BLOCKED
+
+Owning Module: `organization`
+
+Dependencies: HAPI-923, HAPI-924
+
+Cross-Repository Dependencies: HidraWEB handoff remains reserved/dependency-gated; no WEB implementation selected by this registration.
+
+### Objective and authority
+
+Owner approved the six-module functional foundation roadmap on 2026-11-03. This whole delivery is B3 of exactly12; no nested stages. Current source baseline is `b457a28c507dab07e554d4d9e52741783e415ba2`, Full CI41642224597 and Docs41642224576 SUCCESS. Existing code and tests do not prove the complete new browser workflow. Numerical/P3, deployment and SITE acceptance remain DEFERRED/NOT ESTABLISHED.
+
+Registered exact commit message: `feat(organization): complete foundation organization administration`.
+
+Binding scope, owner policies, exact CREATE/MODIFY/conditional migration paths, objective acceptance and limits: [adopted foundation supplement](FOUNDATION_PRODUCTION_ROADMAP.md). Section B3 / HAPI-925 contains its full executable ledger; retain module boundaries and current native security guarantees.
+
+### Minimum policy and test gate
+
+Minimum policy: REGISTERED -> ACTIVE employee activation requires current personnel administration, expected updatedAt and valid existing identity/company context; SUSPENDED/RETIRED/TERMINATED are not silently changed. Unit/employee global reads require explicit administrator authority; scoped readers receive only admitted company/unit records and filtered hierarchy/counts, before detail disclosure. Unit/position choices are current owner reference data, not Configuration-owned taxonomy. Preserve native appointment half-open effective windows, proof, writer ordering and history. Existing responsibility operations retain their actual Workflow/reference policy; no new requirement for every Organization mutation to use Workflow. Contacts remain within existing registration capability.
+
+- Create/read hierarchy, discover valid unit/position, register and activate employee, create and transfer/end an appointment through existing protected APIs.
+- Assign/query/revoke an actual supported responsibility; unauthorized hierarchy/detail/count/history and wrong company are denied before disclosure.
+- Effective-date/concurrency/rollback regression and existing proof suites remain unchanged and passing.
+
+Run existing applicable domain/application/HTTP/security/PostgreSQL/rollback/concurrency suites and add the named missing tests. Regenerate API/catalog only from real migrated runtime evidence. Preserve every preexisting test and hash-bound class. Missing local Java21/Maven/Docker does not waive hosted full CI, and skipped tests are not database proof. No frontend acceptance is asserted.
+
 <!-- task-register:payload:end -->

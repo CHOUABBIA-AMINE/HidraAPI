@@ -808,3 +808,14 @@ Mandatory rules:
     Reconstruct or validate release history from real Git commits, roadmaps, tags/releases, and
     `VERSIONS.md`. Never invent commit hashes, tags, CI results, or release dates.
 
+
+
+## Owner-approved six-module foundation selection — 2026-11-03
+
+The owner approved `doc/roadmap/FOUNDATION_PRODUCTION_ROADMAP.md` and its P0 registration. This is an explicit bounded sequencing and membership amendment: preserve the original921 tasks and25 phases; append HAPI-922–928 and corresponding compatibility links/rows, with the manifest expecting exactly928 tasks. Do not relax any validation or rewrite historical archives/IDs/statuses. The completed historical S0–S7 sequence remains unchanged and supplies no S8.
+
+For this milestone, execute the supplement's minimum Identity, Organization, Party, Topology, Configuration and Workflow journeys before enhancements. Existing HAPI-605 and HAPI-604/606–609 statuses remain unchanged; their broader baseline/freeze/exchange objectives are not prerequisites for the admitted minimum. Reuse accepted graph, station/equipment, authentication and Workflow implementation; retain all native authority, version/history and concurrency guarantees. No numerical/P3, live OT, deployment/release or supplier/SITE acceptance is selected.
+
+P0 is HAPI-922, exact message `docs(roadmap): register six-module functional foundation`, governance only. After exact-P0 documentation CI succeeds, the next separately selected whole task is HAPI-923/B1, `feat(identity): complete foundation user access lifecycle`. The ten implementation deliveries and final acceptance remain distinct registered/dependency-gated scopes, not automatic authorization to execute them all. Frontend handoff IDs HWEB-F11–F15 are reserved in the supplement; HidraWEB canonical adoption occurs in its selected whole delivery. Existing HWEB-F01–F10 and all prior mappings remain unchanged.
+
+Only this bounded supplement supersedes older foundation sequencing pointers. Preserve the original no-substage, direct-main expected-head, CI-first, one-task/stop rules. Current source and exact-SHA test/artifact evidence establish implementation reality; this document does not promote an unfinished six-module workflow.

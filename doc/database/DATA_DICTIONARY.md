@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `0d532afee8267571935fc57bddec7a198e190867`
+Captured source SHA: `1b96cdc696ed08c69c8fd5b8dc566014abc5e8ed`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `5327eb0ee0f5a7d0f704d7a6a3857b0789a11587a78a833bfac8fc49fefcabfa`.
-Migrations: 195; JPA mappings: 470; catalog relations: 544; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `a0e7e1ee0acde80de134453de994f5d8d26804a9b25aa436611ea166b3d7d85d`.
+Migrations: 196; JPA mappings: 470; catalog relations: 547; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -5418,6 +5418,7 @@ Persisted CustodyCatalogEntryJpaEntity state; semantic authority remains with cu
 - Migration mention (not inferred introduction): [V20261008_025__hmr_080_nomination_owner_reference_policies.sql](../../src/main/resources/db/migration/V20261008_025__hmr_080_nomination_owner_reference_policies.sql)
 - Migration mention (not inferred introduction): [V20261008_026__hmr_080_planning_nomination_integrity.sql](../../src/main/resources/db/migration/V20261008_026__hmr_080_planning_nomination_integrity.sql)
 - Migration mention (not inferred introduction): [V20261026_002__custody_product_engineering_drafts.sql](../../src/main/resources/db/migration/V20261026_002__custody_product_engineering_drafts.sql)
+- Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -6264,6 +6265,7 @@ Custody-owned governed product publication snapshot; immutable source software e
 - Evidence: [V20261027_006__custody_product_revision_publications.sql](../../src/main/resources/db/migration/V20261027_006__custody_product_revision_publications.sql)
 - Evidence: [JdbcProductRevisionPublicationRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcProductRevisionPublicationRepositoryAdapter.java)
 - Migration mention (not inferred introduction): [V20261027_006__custody_product_revision_publications.sql](../../src/main/resources/db/migration/V20261027_006__custody_product_revision_publications.sql)
+- Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -6423,6 +6425,7 @@ Custody-owned governed product publication event; immutable source software evid
 - Evidence: [JdbcProductRevisionPublicationRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcProductRevisionPublicationRepositoryAdapter.java)
 - Migration mention (not inferred introduction): [V20261027_006__custody_product_revision_publications.sql](../../src/main/resources/db/migration/V20261027_006__custody_product_revision_publications.sql)
 - Migration mention (not inferred introduction): [V20261028_001__custody_publication_trigger_row_dispatch.sql](../../src/main/resources/db/migration/V20261028_001__custody_publication_trigger_row_dispatch.sql)
+- Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -6529,6 +6532,7 @@ Custody-owned governed product publication head; immutable source software evide
 - Evidence: [JdbcProductRevisionPublicationRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcProductRevisionPublicationRepositoryAdapter.java)
 - Migration mention (not inferred introduction): [V20261027_006__custody_product_revision_publications.sql](../../src/main/resources/db/migration/V20261027_006__custody_product_revision_publications.sql)
 - Migration mention (not inferred introduction): [V20261028_001__custody_publication_trigger_row_dispatch.sql](../../src/main/resources/db/migration/V20261028_001__custody_publication_trigger_row_dispatch.sql)
+- Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -10274,6 +10278,7 @@ Persisted PermissionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261026_001__custody_product_draft_authority.sql](../../src/main/resources/db/migration/V20261026_001__custody_product_draft_authority.sql)
 - Migration mention (not inferred introduction): [V20261027_001__custody_fluid_property_authority.sql](../../src/main/resources/db/migration/V20261027_001__custody_fluid_property_authority.sql)
 - Migration mention (not inferred introduction): [V20261027_004__custody_product_publication_authority.sql](../../src/main/resources/db/migration/V20261027_004__custody_product_publication_authority.sql)
+- Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -19257,6 +19262,7 @@ Owner-issued monotone live/tombstone witness for protected ACTIVE Party eligibil
 - Migration mention (not inferred introduction): [V20261023_001__organization_appointment_final_write_guard.sql](../../src/main/resources/db/migration/V20261023_001__organization_appointment_final_write_guard.sql)
 - Migration mention (not inferred introduction): [V20261023_003__organization_appointment_fingerprint_visibility.sql](../../src/main/resources/db/migration/V20261023_003__organization_appointment_fingerprint_visibility.sql)
 - Migration mention (not inferred introduction): [V20261030_001__party_manufacturer_source_authorizations.sql](../../src/main/resources/db/migration/V20261030_001__party_manufacturer_source_authorizations.sql)
+- Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -19635,6 +19641,7 @@ Persisted PartyJpaEntity state; semantic authority remains with party.
 - Migration mention (not inferred introduction): [V20261023_003__organization_appointment_fingerprint_visibility.sql](../../src/main/resources/db/migration/V20261023_003__organization_appointment_fingerprint_visibility.sql)
 - Migration mention (not inferred introduction): [V20261028_003__party_installed_unit_manufacturer_evidence_owner_lock.sql](../../src/main/resources/db/migration/V20261028_003__party_installed_unit_manufacturer_evidence_owner_lock.sql)
 - Migration mention (not inferred introduction): [V20261030_001__party_manufacturer_source_authorizations.sql](../../src/main/resources/db/migration/V20261030_001__party_manufacturer_source_authorizations.sql)
+- Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -24848,6 +24855,7 @@ Simulation-owned immutable canonical manufacturer characteristic source with dig
 - Migration mention (not inferred introduction): [V20261030_002__simulation_manufacturer_characteristic_sources.sql](../../src/main/resources/db/migration/V20261030_002__simulation_manufacturer_characteristic_sources.sql)
 - Migration mention (not inferred introduction): [V20261101_001__topology_installed_characteristic_links.sql](../../src/main/resources/db/migration/V20261101_001__topology_installed_characteristic_links.sql)
 - Migration mention (not inferred introduction): [V20261101_003__topology_installed_characteristic_approvals.sql](../../src/main/resources/db/migration/V20261101_003__topology_installed_characteristic_approvals.sql)
+- Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -26901,6 +26909,204 @@ Persisted ConnectionTypeJpaEntity state; semantic authority remains with topolog
 
 None captured in this catalog category.
 
+### public.hidra_topology_engineering_baseline_draft
+
+Owner: **topology**; relation kind: `r`.
+
+Topology-owned mutable head pointer for a company/network/manifest draft; monotone version reference only, not frozen, authoritative or engineering-qualified.
+
+- Evidence: [EngineeringBaselineManifest.java](../../src/main/java/dz/sh/hidra/modules/topology/domain/model/EngineeringBaselineManifest.java)
+- Evidence: [JdbcEngineeringBaselineDraftRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringBaselineDraftRepositoryAdapter.java)
+- Evidence: [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
+- Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| pipeline_system_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| manifest_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| head_version | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| created_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| created_by_user_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `fk_topology_baseline_current_revision`: FOREIGN KEY (company_party_id, pipeline_system_id, manifest_id, head_version) REFERENCES hidra_topology_engineering_baseline_revision(company_party_id, pipeline_system_id, manifest_id, version) ON DELETE RESTRICT DEFERRABLE INITIALLY DEFERRED
+  - Catalog attributes: {"columns": ["company_party_id", "pipeline_system_id", "manifest_id", "head_version"], "deferrable": true, "initially_deferred": true, "reference": {"columns": ["company_party_id", "pipeline_system_id", "manifest_id", "version"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_topology_engineering_baseline_revision"}, "type": "f", "validated": true}
+- `hidra_topology_engineering_baseline_dra_pipeline_system_id_fkey`: FOREIGN KEY (pipeline_system_id) REFERENCES hidra_topology_pipeline_system(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["pipeline_system_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_topology_pipeline_system"}, "type": "f", "validated": true}
+- `hidra_topology_engineering_baseline_draft_check`: CHECK (company_party_id::text = btrim(company_party_id::text) AND length(company_party_id::text) &gt; 0 AND pipeline_system_id::text = btrim(pipeline_system_id::text) AND length(pipeline_system_id::text) &gt; 0 AND created_by_user_id::text = btrim(created_by_user_id::text) AND length(created_by_user_id::text) &gt; 0 AND isfinite(created_at))
+  - Catalog attributes: {"columns": ["company_party_id", "pipeline_system_id", "created_by_user_id", "created_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_baseline_draft_head_version_check`: CHECK (head_version &gt; 0)
+  - Catalog attributes: {"columns": ["head_version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_baseline_draft_pkey`: PRIMARY KEY (company_party_id, pipeline_system_id, manifest_id)
+  - Catalog attributes: {"columns": ["company_party_id", "pipeline_system_id", "manifest_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `hidra_topology_engineering_baseline_draft_pkey`: CREATE UNIQUE INDEX hidra_topology_engineering_baseline_draft_pkey ON public.hidra_topology_engineering_baseline_draft USING btree (company_party_id, pipeline_system_id, manifest_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `trg_topology_baseline_draft_truncate`: CREATE TRIGGER trg_topology_baseline_draft_truncate BEFORE TRUNCATE ON hidra_topology_engineering_baseline_draft FOR EACH STATEMENT EXECUTE FUNCTION hidra_topology_baseline_immutable_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_baseline_immutable_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_baseline_immutable_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Engineering baseline draft history is immutable' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `trg_topology_baseline_head_delete`: CREATE TRIGGER trg_topology_baseline_head_delete BEFORE DELETE ON hidra_topology_engineering_baseline_draft FOR EACH ROW EXECUTE FUNCTION hidra_topology_baseline_immutable_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_baseline_immutable_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_baseline_immutable_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Engineering baseline draft history is immutable' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `trg_topology_baseline_head_transition`: CREATE TRIGGER trg_topology_baseline_head_transition BEFORE UPDATE ON hidra_topology_engineering_baseline_draft FOR EACH ROW EXECUTE FUNCTION hidra_topology_baseline_head_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_baseline_head_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_baseline_head_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    IF NEW.company_party_id IS DISTINCT FROM OLD.company_party_id<br>       OR NEW.pipeline_system_id IS DISTINCT FROM OLD.pipeline_system_id<br>       OR NEW.manifest_id IS DISTINCT FROM OLD.manifest_id<br>       OR NEW.created_at IS DISTINCT FROM OLD.created_at<br>       OR NEW.created_by_user_id IS DISTINCT FROM OLD.created_by_user_id<br>       OR OLD.head_version=9223372036854775807::bigint<br>       OR NEW.head_version&lt;&gt;OLD.head_version+1<br>       OR NOT EXISTS (<br>           SELECT 1 FROM public.hidra_topology_engineering_baseline_revision r<br>            WHERE r.company_party_id=NEW.company_party_id AND r.pipeline_system_id=NEW.pipeline_system_id<br>              AND r.manifest_id=NEW.manifest_id AND r.version=NEW.head_version<br>              AND r.backend_pid=pg_catalog.pg_backend_pid() AND r.transaction_id=pg_catalog.txid_current()<br>              AND r.database_role=session_user<br>       ) THEN<br>        RAISE EXCEPTION 'Invalid engineering baseline draft head transition' USING ERRCODE='23514';<br>    END IF;<br>    RETURN NEW;<br>END;<br>$function$<br>
+
+### public.hidra_topology_engineering_baseline_request
+
+Owner: **topology**; relation kind: `r`.
+
+Topology-owned original-transaction idempotent create/update receipt bound to exact actor, request digest and immutable revision; does not grant resource or source permission.
+
+- Evidence: [EngineeringBaselineManifest.java](../../src/main/java/dz/sh/hidra/modules/topology/domain/model/EngineeringBaselineManifest.java)
+- Evidence: [JdbcEngineeringBaselineDraftRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringBaselineDraftRepositoryAdapter.java)
+- Evidence: [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
+- Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| pipeline_system_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| manifest_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_user_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| request_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| operation | character varying(8) | False | None; identity=; generated= | No current mapped Java column | — |
+| expected_version | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| version | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| command_sha256 | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_binding_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_session_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| sampled_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| valid_until | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| backend_pid | integer | False | None; identity=; generated= | No current mapped Java column | — |
+| transaction_id | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| database_role | name | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_topology_engineering_b_company_party_id_pipeline_sy_fkey1`: FOREIGN KEY (company_party_id, pipeline_system_id, manifest_id, version) REFERENCES hidra_topology_engineering_baseline_revision(company_party_id, pipeline_system_id, manifest_id, version) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["company_party_id", "pipeline_system_id", "manifest_id", "version"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["company_party_id", "pipeline_system_id", "manifest_id", "version"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_topology_engineering_baseline_revision"}, "type": "f", "validated": true}
+- `hidra_topology_engineering_baseline_requ_expected_version_check`: CHECK (expected_version &gt;= 0)
+  - Catalog attributes: {"columns": ["expected_version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_baseline_reques_command_sha256_check`: CHECK (command_sha256::text ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["command_sha256"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_baseline_reques_transaction_id_check`: CHECK (transaction_id &gt; 0)
+  - Catalog attributes: {"columns": ["transaction_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_baseline_request_backend_pid_check`: CHECK (backend_pid &gt; 0)
+  - Catalog attributes: {"columns": ["backend_pid"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_baseline_request_check`: CHECK (version = (expected_version + 1) AND (operation::text = 'CREATE'::text) = (expected_version = 0) AND actor_user_id::text = btrim(actor_user_id::text) AND length(actor_user_id::text) &gt; 0 AND isfinite(sampled_at) AND isfinite(valid_until) AND sampled_at &lt; valid_until)
+  - Catalog attributes: {"columns": ["version", "expected_version", "operation", "actor_user_id", "sampled_at", "valid_until"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_baseline_request_operation_check`: CHECK (operation::text = ANY (ARRAY['CREATE'::character varying, 'UPDATE'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["operation"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_baseline_request_pkey`: PRIMARY KEY (company_party_id, pipeline_system_id, manifest_id, actor_user_id, request_id)
+  - Catalog attributes: {"columns": ["company_party_id", "pipeline_system_id", "manifest_id", "actor_user_id", "request_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_topology_engineering_baseline_request_version_check`: CHECK (version &gt; 0)
+  - Catalog attributes: {"columns": ["version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_topology_engineering_baseline_request_pkey`: CREATE UNIQUE INDEX hidra_topology_engineering_baseline_request_pkey ON public.hidra_topology_engineering_baseline_request USING btree (company_party_id, pipeline_system_id, manifest_id, actor_user_id, request_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `trg_topology_baseline_request_immutable`: CREATE TRIGGER trg_topology_baseline_request_immutable BEFORE DELETE OR UPDATE ON hidra_topology_engineering_baseline_request FOR EACH ROW EXECUTE FUNCTION hidra_topology_baseline_immutable_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_baseline_immutable_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_baseline_immutable_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Engineering baseline draft history is immutable' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `trg_topology_baseline_request_origin`: CREATE TRIGGER trg_topology_baseline_request_origin BEFORE INSERT ON hidra_topology_engineering_baseline_request FOR EACH ROW EXECUTE FUNCTION hidra_topology_baseline_original_transaction_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_baseline_original_transaction_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_baseline_original_transaction_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>DECLARE sampled_clock timestamptz;<br>BEGIN<br>    sampled_clock:=pg_catalog.clock_timestamp();<br>    IF NEW.backend_pid IS DISTINCT FROM pg_catalog.pg_backend_pid()<br>       OR NEW.transaction_id IS DISTINCT FROM pg_catalog.txid_current()<br>       OR NEW.database_role IS DISTINCT FROM session_user<br>       OR current_user IS DISTINCT FROM session_user<br>       OR pg_catalog.current_setting('transaction_isolation')&lt;&gt;'read committed'<br>       OR pg_catalog.current_setting('transaction_read_only')&lt;&gt;'off'<br>       OR pg_catalog.current_setting('session_replication_role')&lt;&gt;'origin'<br>       OR sampled_clock&lt;NEW.sampled_at OR sampled_clock&gt;=NEW.valid_until THEN<br>        RAISE EXCEPTION 'Original engineering baseline transaction unavailable' USING ERRCODE='42501';<br>    END IF;<br>    IF TG_TABLE_NAME='hidra_topology_engineering_baseline_revision' THEN<br>        IF NOT EXISTS (<br>            SELECT 1 FROM public.hidra_topology_engineering_baseline_draft d<br>             WHERE d.company_party_id=NEW.company_party_id AND d.pipeline_system_id=NEW.pipeline_system_id<br>               AND d.manifest_id=NEW.manifest_id<br>               AND (NEW.version=1 AND d.head_version=1<br>                    OR d.head_version&lt;9223372036854775807::bigint AND NEW.version=d.head_version+1)<br>        ) THEN<br>            RAISE EXCEPTION 'Stale engineering baseline draft revision' USING ERRCODE='23514';<br>        END IF;<br>    ELSE<br>        IF NOT EXISTS (<br>            SELECT 1 FROM public.hidra_topology_engineering_baseline_revision r<br>             WHERE r.company_party_id=NEW.company_party_id AND r.pipeline_system_id=NEW.pipeline_system_id<br>               AND r.manifest_id=NEW.manifest_id AND r.version=NEW.version<br>               AND r.actor_user_id=NEW.actor_user_id AND r.actor_binding_id=NEW.actor_binding_id<br>               AND r.actor_session_id=NEW.actor_session_id AND r.backend_pid=NEW.backend_pid<br>               AND r.transaction_id=NEW.transaction_id AND r.database_role=NEW.database_role<br>               AND r.sampled_at=NEW.sampled_at AND r.valid_until=NEW.valid_until<br>        ) THEN<br>            RAISE EXCEPTION 'Engineering baseline receipt origin mismatch' USING ERRCODE='23514';<br>        END IF;<br>    END IF;<br>    RETURN NEW;<br>END;<br>$function$<br>
+- `trg_topology_baseline_request_truncate`: CREATE TRIGGER trg_topology_baseline_request_truncate BEFORE TRUNCATE ON hidra_topology_engineering_baseline_request FOR EACH STATEMENT EXECUTE FUNCTION hidra_topology_baseline_immutable_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_baseline_immutable_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_baseline_immutable_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Engineering baseline draft history is immutable' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
+### public.hidra_topology_engineering_baseline_revision
+
+Owner: **topology**; relation kind: `r`.
+
+Topology-owned immutable exact manifest revision, canonical bytes, findings and original native transaction provenance; its captures remain draft/unqualified.
+
+- Evidence: [EngineeringBaselineManifest.java](../../src/main/java/dz/sh/hidra/modules/topology/domain/model/EngineeringBaselineManifest.java)
+- Evidence: [JdbcEngineeringBaselineDraftRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringBaselineDraftRepositoryAdapter.java)
+- Evidence: [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
+- Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| pipeline_system_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| manifest_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| version | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| payload_format | character varying(48) | False | None; identity=; generated= | No current mapped Java column | — |
+| canonical_payload | bytea | False | None; identity=; generated= | No current mapped Java column | — |
+| canonical_sha256 | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| findings | jsonb | False | None; identity=; generated= | No current mapped Java column | — |
+| complete_at_capture | boolean | False | None; identity=; generated= | No current mapped Java column | — |
+| engineering_qualified | boolean | False | false; identity=; generated= | No current mapped Java column | — |
+| authoritative | boolean | False | false; identity=; generated= | No current mapped Java column | — |
+| frozen | boolean | False | false; identity=; generated= | No current mapped Java column | — |
+| actor_binding_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_session_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_user_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| sampled_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| valid_until | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| backend_pid | integer | False | None; identity=; generated= | No current mapped Java column | — |
+| transaction_id | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| database_role | name | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_topology_engineering_ba_company_party_id_pipeline_sy_fkey`: FOREIGN KEY (company_party_id, pipeline_system_id, manifest_id) REFERENCES hidra_topology_engineering_baseline_draft(company_party_id, pipeline_system_id, manifest_id) ON DELETE RESTRICT DEFERRABLE INITIALLY DEFERRED
+  - Catalog attributes: {"columns": ["company_party_id", "pipeline_system_id", "manifest_id"], "deferrable": true, "initially_deferred": true, "reference": {"columns": ["company_party_id", "pipeline_system_id", "manifest_id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_topology_engineering_baseline_draft"}, "type": "f", "validated": true}
+- `hidra_topology_engineering_baseline_engineering_qualified_check`: CHECK (NOT engineering_qualified)
+  - Catalog attributes: {"columns": ["engineering_qualified"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_baseline_rev_canonical_payload_check`: CHECK (octet_length(canonical_payload) &gt;= 64 AND octet_length(canonical_payload) &lt;= 4194304)
+  - Catalog attributes: {"columns": ["canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_baseline_revisi_payload_format_check`: CHECK (payload_format::text = 'HIDRA_ENGINEERING_BASELINE_MANIFEST_V1'::text)
+  - Catalog attributes: {"columns": ["payload_format"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_baseline_revisi_transaction_id_check`: CHECK (transaction_id &gt; 0)
+  - Catalog attributes: {"columns": ["transaction_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_baseline_revisio_authoritative_check`: CHECK (NOT authoritative)
+  - Catalog attributes: {"columns": ["authoritative"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_baseline_revision_backend_pid_check`: CHECK (backend_pid &gt; 0)
+  - Catalog attributes: {"columns": ["backend_pid"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_baseline_revision_check`: CHECK (canonical_sha256::text = encode(sha256(canonical_payload), 'hex'::text))
+  - Catalog attributes: {"columns": ["canonical_sha256", "canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_baseline_revision_check1`: CHECK (isfinite(sampled_at) AND isfinite(valid_until) AND sampled_at &lt; valid_until AND actor_user_id::text = btrim(actor_user_id::text) AND length(actor_user_id::text) &gt; 0 AND complete_at_capture = (jsonb_array_length(findings) = 0))
+  - Catalog attributes: {"columns": ["sampled_at", "valid_until", "actor_user_id", "complete_at_capture", "findings"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_baseline_revision_findings_check`: CHECK (jsonb_typeof(findings) = 'array'::text)
+  - Catalog attributes: {"columns": ["findings"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_baseline_revision_frozen_check`: CHECK (NOT frozen)
+  - Catalog attributes: {"columns": ["frozen"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_engineering_baseline_revision_pkey`: PRIMARY KEY (company_party_id, pipeline_system_id, manifest_id, version)
+  - Catalog attributes: {"columns": ["company_party_id", "pipeline_system_id", "manifest_id", "version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_topology_engineering_baseline_revision_version_check`: CHECK (version &gt; 0)
+  - Catalog attributes: {"columns": ["version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_topology_engineering_baseline_revision_pkey`: CREATE UNIQUE INDEX hidra_topology_engineering_baseline_revision_pkey ON public.hidra_topology_engineering_baseline_revision USING btree (company_party_id, pipeline_system_id, manifest_id, version)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `trg_topology_baseline_revision_immutable`: CREATE TRIGGER trg_topology_baseline_revision_immutable BEFORE DELETE OR UPDATE ON hidra_topology_engineering_baseline_revision FOR EACH ROW EXECUTE FUNCTION hidra_topology_baseline_immutable_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_baseline_immutable_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_baseline_immutable_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Engineering baseline draft history is immutable' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `trg_topology_baseline_revision_origin`: CREATE TRIGGER trg_topology_baseline_revision_origin BEFORE INSERT ON hidra_topology_engineering_baseline_revision FOR EACH ROW EXECUTE FUNCTION hidra_topology_baseline_original_transaction_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_baseline_original_transaction_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_baseline_original_transaction_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>DECLARE sampled_clock timestamptz;<br>BEGIN<br>    sampled_clock:=pg_catalog.clock_timestamp();<br>    IF NEW.backend_pid IS DISTINCT FROM pg_catalog.pg_backend_pid()<br>       OR NEW.transaction_id IS DISTINCT FROM pg_catalog.txid_current()<br>       OR NEW.database_role IS DISTINCT FROM session_user<br>       OR current_user IS DISTINCT FROM session_user<br>       OR pg_catalog.current_setting('transaction_isolation')&lt;&gt;'read committed'<br>       OR pg_catalog.current_setting('transaction_read_only')&lt;&gt;'off'<br>       OR pg_catalog.current_setting('session_replication_role')&lt;&gt;'origin'<br>       OR sampled_clock&lt;NEW.sampled_at OR sampled_clock&gt;=NEW.valid_until THEN<br>        RAISE EXCEPTION 'Original engineering baseline transaction unavailable' USING ERRCODE='42501';<br>    END IF;<br>    IF TG_TABLE_NAME='hidra_topology_engineering_baseline_revision' THEN<br>        IF NOT EXISTS (<br>            SELECT 1 FROM public.hidra_topology_engineering_baseline_draft d<br>             WHERE d.company_party_id=NEW.company_party_id AND d.pipeline_system_id=NEW.pipeline_system_id<br>               AND d.manifest_id=NEW.manifest_id<br>               AND (NEW.version=1 AND d.head_version=1<br>                    OR d.head_version&lt;9223372036854775807::bigint AND NEW.version=d.head_version+1)<br>        ) THEN<br>            RAISE EXCEPTION 'Stale engineering baseline draft revision' USING ERRCODE='23514';<br>        END IF;<br>    ELSE<br>        IF NOT EXISTS (<br>            SELECT 1 FROM public.hidra_topology_engineering_baseline_revision r<br>             WHERE r.company_party_id=NEW.company_party_id AND r.pipeline_system_id=NEW.pipeline_system_id<br>               AND r.manifest_id=NEW.manifest_id AND r.version=NEW.version<br>               AND r.actor_user_id=NEW.actor_user_id AND r.actor_binding_id=NEW.actor_binding_id<br>               AND r.actor_session_id=NEW.actor_session_id AND r.backend_pid=NEW.backend_pid<br>               AND r.transaction_id=NEW.transaction_id AND r.database_role=NEW.database_role<br>               AND r.sampled_at=NEW.sampled_at AND r.valid_until=NEW.valid_until<br>        ) THEN<br>            RAISE EXCEPTION 'Engineering baseline receipt origin mismatch' USING ERRCODE='23514';<br>        END IF;<br>    END IF;<br>    RETURN NEW;<br>END;<br>$function$<br>
+- `trg_topology_baseline_revision_truncate`: CREATE TRIGGER trg_topology_baseline_revision_truncate BEFORE TRUNCATE ON hidra_topology_engineering_baseline_revision FOR EACH STATEMENT EXECUTE FUNCTION hidra_topology_baseline_immutable_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_baseline_immutable_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_baseline_immutable_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Engineering baseline draft history is immutable' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
 ### public.hidra_topology_engineering_context
 
 Owner: **topology**; relation kind: `r`.
@@ -26911,6 +27117,7 @@ Immutable company/network engineering-context binding; HAPI-587, current physica
 - Evidence: [V20261019_001__p25_topology_engineering_drafts.sql](../../src/main/resources/db/migration/V20261019_001__p25_topology_engineering_drafts.sql)
 - Migration mention (not inferred introduction): [V20261019_001__p25_topology_engineering_drafts.sql](../../src/main/resources/db/migration/V20261019_001__p25_topology_engineering_drafts.sql)
 - Migration mention (not inferred introduction): [V20261020_002__p25_topology_engineering_publications.sql](../../src/main/resources/db/migration/V20261020_002__p25_topology_engineering_publications.sql)
+- Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -27128,6 +27335,7 @@ Immutable context publication transition and actor-scoped request receipt; immed
 - Evidence: [JdbcEngineeringRevisionPublicationRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringRevisionPublicationRepositoryAdapter.java)
 - Evidence: [V20261020_002__p25_topology_engineering_publications.sql](../../src/main/resources/db/migration/V20261020_002__p25_topology_engineering_publications.sql)
 - Migration mention (not inferred introduction): [V20261020_002__p25_topology_engineering_publications.sql](../../src/main/resources/db/migration/V20261020_002__p25_topology_engineering_publications.sql)
+- Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -27231,6 +27439,7 @@ Single current publication head per immutable company/network context; guarded e
 - Evidence: [JdbcEngineeringRevisionPublicationRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringRevisionPublicationRepositoryAdapter.java)
 - Evidence: [V20261020_002__p25_topology_engineering_publications.sql](../../src/main/resources/db/migration/V20261020_002__p25_topology_engineering_publications.sql)
 - Migration mention (not inferred introduction): [V20261020_002__p25_topology_engineering_publications.sql](../../src/main/resources/db/migration/V20261020_002__p25_topology_engineering_publications.sql)
+- Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -27280,6 +27489,7 @@ Immutable authored engineering-unqualified publication envelope; original metada
 - Evidence: [JdbcEngineeringRevisionPublicationRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringRevisionPublicationRepositoryAdapter.java)
 - Evidence: [V20261020_002__p25_topology_engineering_publications.sql](../../src/main/resources/db/migration/V20261020_002__p25_topology_engineering_publications.sql)
 - Migration mention (not inferred introduction): [V20261020_002__p25_topology_engineering_publications.sql](../../src/main/resources/db/migration/V20261020_002__p25_topology_engineering_publications.sql)
+- Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -27675,6 +27885,7 @@ Persisted FacilityJpaEntity state; semantic authority remains with topology.
 - Migration mention (not inferred introduction): [V20261018_002__p25_topology_facility_owner_generations.sql](../../src/main/resources/db/migration/V20261018_002__p25_topology_facility_owner_generations.sql)
 - Migration mention (not inferred introduction): [V20261028_004__topology_installed_unit_position_owner_lock.sql](../../src/main/resources/db/migration/V20261028_004__topology_installed_unit_position_owner_lock.sql)
 - Migration mention (not inferred introduction): [V20261029_003__topology_station_configuration_protected_operations.sql](../../src/main/resources/db/migration/V20261029_003__topology_station_configuration_protected_operations.sql)
+- Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -28010,6 +28221,7 @@ Topology-owned immutable original-transaction characteristic-link approval per e
 - Evidence: [V20261101_003__topology_installed_characteristic_approvals.sql](../../src/main/resources/db/migration/V20261101_003__topology_installed_characteristic_approvals.sql)
 - Evidence: [InstalledCharacteristicLinkPostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/InstalledCharacteristicLinkPostgresIntegrationTest.java)
 - Migration mention (not inferred introduction): [V20261101_003__topology_installed_characteristic_approvals.sql](../../src/main/resources/db/migration/V20261101_003__topology_installed_characteristic_approvals.sql)
+- Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -28225,6 +28437,7 @@ Topology-owned immutable physical-unit manufacturer characteristic draft history
 - Evidence: [InstalledCharacteristicLinkPostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/InstalledCharacteristicLinkPostgresIntegrationTest.java)
 - Migration mention (not inferred introduction): [V20261101_001__topology_installed_characteristic_links.sql](../../src/main/resources/db/migration/V20261101_001__topology_installed_characteristic_links.sql)
 - Migration mention (not inferred introduction): [V20261101_003__topology_installed_characteristic_approvals.sql](../../src/main/resources/db/migration/V20261101_003__topology_installed_characteristic_approvals.sql)
+- Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -28303,6 +28516,7 @@ Immutable Topology physical-unit identity and manufacturer/model/serial evidence
 - Migration mention (not inferred introduction): [V20261029_003__topology_station_configuration_protected_operations.sql](../../src/main/resources/db/migration/V20261029_003__topology_station_configuration_protected_operations.sql)
 - Migration mention (not inferred introduction): [V20261101_001__topology_installed_characteristic_links.sql](../../src/main/resources/db/migration/V20261101_001__topology_installed_characteristic_links.sql)
 - Migration mention (not inferred introduction): [V20261101_003__topology_installed_characteristic_approvals.sql](../../src/main/resources/db/migration/V20261101_003__topology_installed_characteristic_approvals.sql)
+- Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -28367,6 +28581,7 @@ Topology effective installation projection with native temporal exclusions and o
 - Migration mention (not inferred introduction): [V20261028_002__topology_installed_unit_identity_and_history.sql](../../src/main/resources/db/migration/V20261028_002__topology_installed_unit_identity_and_history.sql)
 - Migration mention (not inferred introduction): [V20261029_003__topology_station_configuration_protected_operations.sql](../../src/main/resources/db/migration/V20261029_003__topology_station_configuration_protected_operations.sql)
 - Migration mention (not inferred introduction): [V20261101_003__topology_installed_characteristic_approvals.sql](../../src/main/resources/db/migration/V20261101_003__topology_installed_characteristic_approvals.sql)
+- Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -28429,6 +28644,7 @@ Immutable Topology installation history revision ledger populated by database tr
 - Migration mention (not inferred introduction): [V20261028_002__topology_installed_unit_identity_and_history.sql](../../src/main/resources/db/migration/V20261028_002__topology_installed_unit_identity_and_history.sql)
 - Migration mention (not inferred introduction): [V20261029_002__topology_station_installed_configurations.sql](../../src/main/resources/db/migration/V20261029_002__topology_station_installed_configurations.sql)
 - Migration mention (not inferred introduction): [V20261029_003__topology_station_configuration_protected_operations.sql](../../src/main/resources/db/migration/V20261029_003__topology_station_configuration_protected_operations.sql)
+- Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -28819,6 +29035,7 @@ Persisted PipelineSystemJpaEntity state; semantic authority remains with topolog
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261004_022__hmr_022_topology_pipeline_system.sql](../../src/main/resources/db/migration/V20261004_022__hmr_022_topology_pipeline_system.sql)
 - Migration mention (not inferred introduction): [V20261019_001__p25_topology_engineering_drafts.sql](../../src/main/resources/db/migration/V20261019_001__p25_topology_engineering_drafts.sql)
+- Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -28919,6 +29136,7 @@ Persisted PipelineSystemTypeJpaEntity state; semantic authority remains with top
 
 - Evidence: [PipelineSystemTypeJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineSystemTypeJpaEntity.java)
 - Migration mention (not inferred introduction): [V20261004_022__hmr_022_topology_pipeline_system.sql](../../src/main/resources/db/migration/V20261004_022__hmr_022_topology_pipeline_system.sql)
+- Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -29040,6 +29258,7 @@ Topology-owned monotone CAS selected declaration for a company/facility, referen
 - Evidence: [StationInstalledConfigurationPostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/StationInstalledConfigurationPostgresIntegrationTest.java)
 - Migration mention (not inferred introduction): [V20261029_002__topology_station_installed_configurations.sql](../../src/main/resources/db/migration/V20261029_002__topology_station_installed_configurations.sql)
 - Migration mention (not inferred introduction): [V20261029_003__topology_station_configuration_protected_operations.sql](../../src/main/resources/db/migration/V20261029_003__topology_station_configuration_protected_operations.sql)
+- Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -29209,6 +29428,7 @@ Topology-owned immutable canonical installed-station configuration snapshot with
 - Evidence: [StationInstalledConfigurationPostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/StationInstalledConfigurationPostgresIntegrationTest.java)
 - Migration mention (not inferred introduction): [V20261029_002__topology_station_installed_configurations.sql](../../src/main/resources/db/migration/V20261029_002__topology_station_installed_configurations.sql)
 - Migration mention (not inferred introduction): [V20261029_003__topology_station_configuration_protected_operations.sql](../../src/main/resources/db/migration/V20261029_003__topology_station_configuration_protected_operations.sql)
+- Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

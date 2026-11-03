@@ -68,8 +68,9 @@ public class ProtectedEngineeringBaselineAuthorizationParticipant implements Top
     }
     @Override @Transactional(propagation=Propagation.NEVER)
     public Prepared prepare() {
-        if(TransactionSynchronizationManager.isActualTransactionActive()
-                || TransactionSynchronizationManager.isSynchronizationActive())throw denied();
+        // Propagation.NEVER can activate Spring synchronization without a physical transaction.
+        // Deny only a real active transaction, as the native Identity prepare contract does.
+        if(TransactionSynchronizationManager.isActualTransactionActive())throw denied();
         Authentication actual=SecurityContextHolder.getContext().getAuthentication();
         var nativePrepared=nativeIdentity.prepare();
         if(actual==null || !actual.isAuthenticated() || actual!=SecurityContextHolder.getContext().getAuthentication())throw denied();

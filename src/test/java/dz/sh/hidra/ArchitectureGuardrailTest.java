@@ -390,6 +390,7 @@ class ArchitectureGuardrailTest {
                 if (isTransitionallyAllowed(source.getName(), target.getName())) {
                     continue;
                 }
+                if (isBaselineOwnerExport(source.getName(), target.getName())) continue;
                 if (isOrganizationOwnerExport(source.getName(), target.getName())) continue;
                 if (isCustodyProductOwnerExport(source.getName(), target.getName())) continue;
                 if (isManufacturerOwnerExport(source.getName(), target.getName())) continue;
@@ -702,6 +703,30 @@ class ArchitectureGuardrailTest {
         assertTrue(isForbiddenCrossModuleDependency(INSTALLED_UNIT_COORDINATOR,"dz.sh.hidra.modules.party.infrastructure.persistence.adapter.JdbcTopologyInstalledUnitCompanyEvidenceAdapter"));
     }
 
+    private static boolean isBaselineOwnerExport(String source,String target){
+        String coordinator="dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringBaselineAdmissionCoordinator";
+        String reader="dz.sh.hidra.modules.topology.infrastructure.integration.EngineeringBaselineSourceAdapter";
+        String identity="dz.sh.hidra.modules.identity.application.contract.topology.TopologyEngineeringBaselineAuthorizationContract";
+        String product="dz.sh.hidra.modules.custody.application.contract.topology.TopologyBaselineProductSourceContract";
+        String manufacturer="dz.sh.hidra.modules.simulation.application.contract.topology.TopologyManufacturerCharacteristicReferenceContract";
+        return ((source.equals(coordinator)||source.startsWith(coordinator+"$"))&&(target.equals(identity)||target.startsWith(identity+"$")))
+            || ((source.equals(reader)||source.startsWith(reader+"$"))&&(target.equals(product)||target.startsWith(product+"$")||target.equals(manufacturer)||target.startsWith(manufacturer+"$")));
+    }
+    @Test void baselineOwnerExportsRemainExactAndOpaque(){
+        String coordinator="dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringBaselineAdmissionCoordinator";
+        String reader="dz.sh.hidra.modules.topology.infrastructure.integration.EngineeringBaselineSourceAdapter";
+        for(String root:List.of("dz.sh.hidra.modules.identity.application.contract.topology.TopologyEngineeringBaselineAuthorizationContract",
+                "dz.sh.hidra.modules.custody.application.contract.topology.TopologyBaselineProductSourceContract")){
+            String owner=root.contains(".identity.")?coordinator:reader;
+            assertFalse(isForbiddenCrossModuleDependency(owner,root));
+            assertFalse(isForbiddenCrossModuleDependency(owner+"$Ticket",root+"$Admission"));
+            assertTrue(isForbiddenCrossModuleDependency(owner+"Sibling",root));
+            assertTrue(isForbiddenCrossModuleDependency(owner,root+"Sibling"));
+            assertTrue(isForbiddenCrossModuleDependency("dz.sh.hidra.modules.planning.application.service.Other",root));
+        }
+        assertTrue(isForbiddenCrossModuleDependency(coordinator,"dz.sh.hidra.modules.identity.infrastructure.security.ProtectedEngineeringBaselineAuthorizationParticipant"));
+        assertTrue(isForbiddenCrossModuleDependency(reader,"dz.sh.hidra.modules.custody.infrastructure.integration.TopologyBaselineProductSourceAdapter"));
+    }
     private static boolean isForbiddenCrossModuleDependency(
             String sourceClassName, String targetClassName) {
         String sourcePackage = packageName(sourceClassName);
@@ -712,6 +737,7 @@ class ArchitectureGuardrailTest {
         if (sourceModule == null || targetModule == null || sourceModule.equals(targetModule)) {
             return false;
         }
+        if(isBaselineOwnerExport(sourceClassName,targetClassName))return false;
         // Simulation's exact Topology source reader may use its existing Party owner contract.
         // No sibling, general Simulation class or Topology port receives that private export.
         String partyRoot="dz.sh.hidra.modules.party.application.contract.simulation.SimulationManufacturerEvidenceContract";

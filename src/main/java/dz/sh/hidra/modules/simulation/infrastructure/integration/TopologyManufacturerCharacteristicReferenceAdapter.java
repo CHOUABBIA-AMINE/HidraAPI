@@ -140,7 +140,8 @@ public class TopologyManufacturerCharacteristicReferenceAdapter
         return images.getFirst();
     }
     private boolean caller(){return StackWalker.getInstance().walk(stream->stream.anyMatch(f->
-            f.getClassName().equals("dz.sh.hidra.modules.topology.application.service.ProtectedInstalledCharacteristicLinkAdmissionCoordinator")));}
+            (f.getClassName().equals("dz.sh.hidra.modules.topology.application.service.ProtectedInstalledCharacteristicLinkAdmissionCoordinator")
+            ||f.getClassName().equals("dz.sh.hidra.modules.topology.infrastructure.integration.EngineeringBaselineSourceAdapter"))));}
     private void requirePhysical(Original original){
         if(!Boolean.TRUE.equals(jdbc.queryForObject(
                 "SELECT pg_catalog.pg_backend_pid()=? AND pg_catalog.txid_current()=? AND current_user=?"

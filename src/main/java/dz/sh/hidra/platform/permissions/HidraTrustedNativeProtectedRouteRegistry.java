@@ -49,7 +49,16 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             Class<?> installed=Class.forName(topology+"controller.InstalledCharacteristicLinkController");
             Class<?> approval=Class.forName(topology+"request.InstalledCharacteristicLinkRequests$CharacteristicLinkApprovalCommand");
             final String linkBase="/api/v1/topology/installed-units/{unitId}/characteristic-links/{linkId}";
+            Class<?> baseline=Class.forName(topology+"controller.EngineeringBaselineDraftController");
+            Class<?> baselineCreate=Class.forName(topology+"request.EngineeringBaselineDraftRequests$Create");
+            Class<?> baselineUpdate=Class.forName(topology+"request.EngineeringBaselineDraftRequests$Update");
+            final String baselineBase="/api/v1/topology/engineering-baselines";
             return List.of(
+                new Route(baseline,baseline.getDeclaredMethod("create",baselineCreate),"POST",baselineBase),
+                new Route(baseline,baseline.getDeclaredMethod("update",java.util.UUID.class,baselineUpdate),"PUT",baselineBase+"/{manifestId}"),
+                new Route(baseline,baseline.getDeclaredMethod("current",java.util.UUID.class,String.class,String.class),"GET",baselineBase+"/{manifestId}"),
+                new Route(baseline,baseline.getDeclaredMethod("revision",java.util.UUID.class,long.class,String.class,String.class),"GET",baselineBase+"/{manifestId}/revisions/{version}"),
+                new Route(baseline,baseline.getDeclaredMethod("validate",java.util.UUID.class,String.class,String.class,Long.class),"POST",baselineBase+"/{manifestId}/validation"),
                 new Route(controller,controller.getDeclaredMethod("save",String.class,String.class,save),
                     "PUT",base+"/revisions/{revisionId}"),
                 new Route(controller,controller.getDeclaredMethod("revision",String.class,String.class,String.class),

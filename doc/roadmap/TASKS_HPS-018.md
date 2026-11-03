@@ -1002,6 +1002,79 @@ DELETE none. No changes to existing Java, migrations, workflows, architecture al
 
 **Publication gate.** Verify exact parent/tree/blob preservation and expected-head guarded direct main update. Confirm applicable HidraAPI CI and Documentation Validation created/queued/started on the actual published SHA, report their links/states and STOP without waiting for completion or starting commit 2. Its acceptance depends on fresh CI feedback; do not extend the planned two delivery commits into additional preflight stages.
 
+
+### HAPI-605 — current runtime implementation and third exceptional delivery (2026-11-03)
+
+**New explicit owner decision; this record controls delivery count.** The owner directed: "commit the current implantation, document the remaining implementation for a third exceptional stage". This authorizes publication of the present partial runtime work and **one third exceptional delivery under HAPI-605**. It supersedes the earlier exactly-two-delivery limit for this task only and the default indivisible-delivery restriction to that extent. It does not change the closed HAPI-602/S0–S7 sequence, create another task ID, waive security/CI, select HAPI-606..609, authorize further subdivisions or claim the present task complete.
+
+| Delivery | Registered message | Disposition |
+|---|---|---|
+| 1 | `feat(topology): add engineering baseline draft contracts` | Published `37ef6bcfbc4c7880e7c6bc1ced743588f6ca7e98`; exact-SHA Full #1084 and Docs #865 SUCCESS |
+| 2 — this publication | `feat(topology): implement protected engineering baseline drafts` | Current partial runtime implementation; Java21/application/PostgreSQL execution pending; HAPI-605 remains PARTIAL / IN_PROGRESS |
+| 3 — remaining exceptional delivery | `feat(topology): complete protected engineering baseline drafts` | Owner-authorized remaining implementation and qualification; not executed by this publication |
+
+**Live parent and review evidence.** Refreshed main `37ef6bcfbc4c7880e7c6bc1ced743588f6ca7e98`, parent `29ed0a686a0e82d9370b7383f85bc3bb2e319557`, tree `4031f7db41b9aca3e3b408132eee8832aff27b25`. Full #1084 https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41603419113 and Docs #865 https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41603418955 both completed successfully. This is acceptance evidence for delivery 1 only, never execution evidence for delivery 2. AGENTS, current canonical roadmap/task index/owning record, exact source contracts, existing qualification fixtures, migration chain and workflows were inspected. The legacy reconciliation file returned empty content at the retrieved baseline and is preserved.
+
+**Exact delivery-2 CREATE allowlist:**
+- `src/main/java/dz/sh/hidra/modules/custody/application/contract/topology/TopologyBaselineProductSourceContract.java`
+- `src/main/java/dz/sh/hidra/modules/custody/infrastructure/integration/TopologyBaselineProductSourceAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyEngineeringBaselineAuthorizationContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedEngineeringBaselineAuthorizationParticipant.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/EngineeringBaselineDraftApiExceptionHandler.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/EngineeringBaselineDraftController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/mapper/EngineeringBaselineDraftRestMapper.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/request/EngineeringBaselineDraftRequests.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/response/EngineeringBaselineDraftResponses.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/model/EngineeringBaselineDraftFailure.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/EngineeringBaselineDraftUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/EngineeringBaselineDraftRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/EngineeringBaselineSourcePort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/EngineeringBaselineDraftApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/ProtectedEngineeringBaselineAdmissionCoordinator.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/integration/EngineeringBaselineSourceAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/EngineeringBaselineDraftCatalog.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringBaselineDraftRepositoryAdapter.java`
+- `src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql`
+- `src/test/java/dz/sh/hidra/modules/topology/qualification/EngineeringBaselineDraftNativeHttpPostgresIntegrationTest.java`
+
+**Exact delivery-2 MODIFY allowlist:**
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java`
+- `src/main/java/dz/sh/hidra/modules/simulation/infrastructure/integration/TopologyManufacturerCharacteristicReferenceAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/EngineeringBaselineManifest.java`
+- `src/main/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistry.java`
+- `src/main/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutor.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java`
+- `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java`
+- `.github/ci-test-inventory.json`
+- `doc/roadmap/TASKS_HPS-018.md`
+- `doc/roadmap/ULTIMATE_TASKS.md`
+
+DELETE none. This is 20 CREATE and 11 MODIFY paths. Preserve all earlier Flyway scripts, existing installed-equipment test sources/cases, source inventories outside these exact edits, workflow definitions and generated OpenAPI/dictionary bytes. The locally materialized source-reference fixtures and older unpublished consumer-test edits are excluded. ROADMAP/PHASES stay PARTIAL / IN_PROGRESS without any status promotion.
+
+**Implemented source, not established runtime acceptance.** Identity now has the distinct baseline resource/action contract, genuine private prepared/admitted/read handles, company AND pipeline checks, independent source-owner permission evaluations, actor/thread/physical connection/PID/XID/role binding, native temporal deadline and SQL-free final marker. Source descriptors are requests, not caller-supplied permission attestations. Authorization rechecks remove only the advancing `context.evaluatedAt` observation from graph-equality comparisons and evaluate each fresh sample within the original native deadline. No source grant is implied by a baseline right. The new migration defines the four owner-approved permission codes, with no role/user assignments.
+
+Topology now has application/source/storage ports, a coordinator and post-commit service, exact source capture adapters, immutable draft/revision/request persistence, expected-version and exact-request replay handling, explicit transport DTOs/mapper/errors, and five independently fixed native route tuples: POST collection, PUT/GET manifest, GET exact revision, POST validation. All returned manifests remain unqualified, non-authoritative and unfrozen. The source implementation captures canonical network publication/graph/survey references, station configuration/installation witnesses, characteristic target digests/approval presence and existing Simulation manufacturer evidence. Custody owns its separate product-publication reader/decoder and method/input/approval observations; Topology does not import Custody persistence or domain types.
+
+The additive migration defines three baseline tables, immutable-history/head/original-transaction guards and three private fixed source-lock functions. These functions return no source data or business permission; PUBLIC execution is revoked and deployment grants remain explicit. Platform adds exact compiled baseline callers, four pinned DML statement digests and source/final-preparation hooks; existing caller/hash branches remain. The final guard candidate checks original coordinates/role/time, retained relation locks, exact draft/revision/receipt content, credential separation, basic relation shape, six function-body hashes and nine trigger contracts. This description is source-backed capability intent, not proof that the assembled protocol has run or that catalog coverage is complete.
+
+**Actual local checks.** Available OpenJDK 17.0.20 parsed 54 locally materialized Java sources without syntax errors; this includes reference files and is not full-repository/type verification. The compiler module compiled the framework-free manifest/policy/codec, new application/source contracts, DTOs/mapper and catalog constant. The same standalone manifest harness executed **22 shared assertion cases PASS** after the added diagnostic categories. Final staged parsing also checked all **27 Java files** in the publication scope without syntax errors; staged source identities and the four changed/new test inventory entries were checked separately. No Maven, Java21, Spring application, HTTP or PostgreSQL run was performed locally; no missing environment was provisioned.
+
+A new isolated native PostgreSQL fixture contains **21 unexecuted cases**: two independent/single-use native admissions; six baseline scope/source/actor/forgery cases; thirteen draft HTTP/storage cases covering incomplete/unqualified output, replay, stale version/history, authorization before existence, separate action rights, source denial, revocation/foreign company, unauthenticated requests, rollback, genuine post-COMMIT acknowledgement loss, immutable/raw-access rejection, source-lock contention and final-catalog drift. Isolation preserves the existing installed-equipment suite and its historical case membership. Architecture gains one exact baseline-export negative/positive case; Platform gains one exact five-route tuple case and updates startup expectations from eight to thirteen routes while retaining the eight legacy tuple assertions. The CI inventory adds the real new suite with unmeasured timing zero and updates only the three changed existing test-source hashes/case lists. No hosted test result or measured duration is fabricated.
+
+**Remaining delivery 3: concrete implementation and acceptance obligations.**
+1. First inspect delivery-2 exact-SHA CI. Repair its responsible failures under HAPI-605 before acceptance. Keep fail-closed permissions, the native deadline, one-use handles, executor phase checks, immutable DML and existing cases intact.
+2. Complete source-backed **positive source journeys**. The present added HTTP cases predominantly use empty/incomplete manifests and deny unauthorized source reads. They do not prove a full authorized network + survey/section + station + unit/characteristic/manufacturer + approved product/method capture. Exercise real owner-created sources through the baseline API and PostgreSQL; prove common PID/XID/actor, independent permissions, exact canonical revisions/digests and historical reconstruction after owner revisions. Add positive original-transaction Custody/Simulation reader coverage. A Boolean completeness result is not a substitute for these cases.
+3. Finish the source-integrity/semantics review and implement corrections it reveals: source scalar/canonical consistency, company/pipeline/station/unit membership, approved-link/Workflow references, method/source/unit applicability diagnostics, required survey/section coverage and source effective windows. Explicitly test withdrawal/reactivation and replacement boundaries; current publication interval selection uses the first publication and first later conflicting transition and does not yet demonstrate reactivation-window handling. Preserve captured findings separately from fresh findings and never convert missing physical facts into defaults or engineering qualification.
+4. Add genuine competing baseline writers and exact-request replay races, expiry/revocation during an admitted transaction, all-or-nothing multi-owner failure and final-guard denial tests. Existing lock-contention/rollback/indeterminate-ack cases are useful source but do not prove those missing concurrent/temporal journeys.
+5. Complete database/catalog assurance, including relevant PK/FK/CHECK/index/constraint and privilege coverage beyond the current function/trigger predicate; run actual fresh-schema Flyway validation and existing JPA validation. After this migration is published, preserve it; any required DDL repair must use a newly checked forward migration, not rewrite its history.
+6. Obtain actual hosted runtime OpenAPI and migrated-catalog artifacts. Reconcile the five operations, DTO/error/native-security contract and the three tables/permissions against those artifacts; update `doc/api/openapi.yaml`, `doc/database/DATA_DICTIONARY.md` and `.github/documentation-validation.json` only from genuine generated evidence through their current generators. Current generated files are preserved, not represented as regenerated.
+7. Run applicable Full/Docs gates on the final implementation SHA and independently reconcile the actual required cases, source hashes, raw PostgreSQL execution and API/schema artifacts. Only then consider HAPI-605 software completion. Engineering calibration, supplier assurance, live IdP deployment, UI/UAT, OT, SITE and release remain separate.
+
+**Delivery-3 file envelope and sequence.** Same task/message above; prerequisites are delivery-2 publication and refreshed exact-SHA CI/governance. Reuse and amend the exact production/migration/native-suite/architecture/Platform files listed for delivery 2 as evidence requires. Proposed focused CREATE tests, to register their final exact case scope before execution: `src/test/java/dz/sh/hidra/modules/topology/qualification/EngineeringBaselineSourceNativePostgresIntegrationTest.java`, `src/test/java/dz/sh/hidra/modules/topology/application/service/EngineeringBaselineDraftApplicationServiceTest.java`, `src/test/java/dz/sh/hidra/modules/topology/api/rest/EngineeringBaselineDraftRestMapperTest.java`. Existing owner-native publication fixtures may be extended only for the corresponding baseline-source acceptance cases after precise source review. A necessary new additive migration filename remains subject to the then-live chain; no old migration edit is authorized. Evidence writes belong here and in the compact index; ROADMAP/PHASES status cells only when justified. CI inventory/source/schema/API artifacts must match actual files and actual runtime output. No additional numbered delivery or preflight is admitted.
+
+**Publication/stop.** Owner explicitly requests this current partial commit. Publish directly to existing main with an expected-head guard; verify exact parent/tree/blobs, no deletions and preservation outside the allowlist. Confirm the applicable new exact-SHA CI/Docs runs created/queued/started and STOP. Do not wait for completion or execute delivery 3 in this turn. This record leaves HAPI-605 PARTIAL / IN_PROGRESS and records missing acceptance rather than closing it from syntax checks.
+
 <a id="hapi-606"></a>
 ## HAPI-606 — Atomic authoritative baseline freeze
 

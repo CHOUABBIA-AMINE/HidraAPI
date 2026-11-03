@@ -36,7 +36,8 @@
         "transactionalOrganizationResponsibilityServicesMustRemainProxyable",
         "transitionalCrossModuleAllowlistMustRemainExactAndInUse",
         "trustedNativeRoutesCannotBeSelfRegisteredByBusinessModules",
-        "characteristicSourceExportRemainsExactAndOwnerPrivate"
+        "characteristicSourceExportRemainsExactAndOwnerPrivate",
+        "baselineOwnerExportsRemainExactAndOpaque"
       ],
       "class": "dz.sh.hidra.ArchitectureGuardrailTest",
       "dependency_reason": "Candidate included; ArchUnit/JVM/source",
@@ -44,7 +45,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java",
-      "source_sha256": "539003883bb3f5583c45edfff83a7a1be2c5237543ccca71e844d5ce7e076d32",
+      "source_sha256": "24a2a72cabf9342f2b2456a71a1ef3df9486893d8992187b991d66553c0331e6",
       "supports": []
     },
     {
@@ -10088,6 +10089,40 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "independentNativeAdmissionsRetainOneOriginalPhysicalTransaction",
+        "composedNativeAdmissionsDoNotWaiveOneUseConsumption",
+        "baselineCompanyGrantAloneCannotAuthorizePipelineScope",
+        "baselinePipelineGrantAloneCannotAuthorizeCompanyScope",
+        "baselineRootGrantDoesNotConferExistingUnitSourceRead",
+        "baselineAndIndependentSourcePermissionKeepOriginalNativeProvenance",
+        "baselineAdmissionRejectsAuthenticatedActorReplacement",
+        "baselineRejectsStructuralPreparedAdmissionAndReadHandleCounterfeits",
+        "baselineHttpCreateReadAndValidateKeepDraftIncompleteAndUnqualified",
+        "baselineExactRequestReplayDoesNotAppendAnotherRevision",
+        "baselineChangedReplayAndStaleExpectedVersionDoNotMutateHistory",
+        "baselineMissingRootAuthorityHidesExistingAndMissingDrafts",
+        "baselineWriteGrantCannotReadOrValidateTheCreatedDraft",
+        "baselineRootRightsCannotReadAnUnpermittedNetworkSource",
+        "baselineRevokedReadAndForeignCompanyCannotDiscloseRetainedDraft",
+        "baselineUnauthenticatedRequestsCannotReadOrCreateDrafts",
+        "baselineFailureAfterProvisionalWriteRollsBackDraftRevisionAndReceipt",
+        "baselineLostPhysicalCommitAcknowledgementIsIndeterminateAndReplayIsStable",
+        "baselineImmutableRevisionAndReceiptRejectDatabaseMutation",
+        "baselineSourceLockContentionCannotPublishPartialDraft",
+        "baselineFinalGuardCatalogDriftCannotCommitARevision"
+      ],
+      "class": "dz.sh.hidra.modules.topology.qualification.EngineeringBaselineDraftNativeHttpPostgresIntegrationTest",
+      "dependency_reason": "HAPI-605 native baseline company/pipeline/source grants, opaque admission and original-transaction proof plus draft HTTP/Flyway/PostgreSQL replay/version/denial/rollback/commit-ack/catalog/lock cases; synthetic isolated fixtures; 21 added cases await hosted execution",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/qualification/EngineeringBaselineDraftNativeHttpPostgresIntegrationTest.java",
+      "source_sha256": "94cdd01e356cfd5d4d9c46300fbb7cbe4421d97d913f37c481fe05c4cd764863",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
         "canonicalOrderIsIndependentOfRequestOrder",
         "callerMutationCannotAlterTheDraft",
         "duplicateSourceSelectionsAreRejected",
@@ -11112,7 +11147,8 @@
         "productionRegistryDeclaresFiveManufacturerAndThreeTopologyApprovalTuples",
         "trustedDeclarationsAreImmutableAndCannotBeSilentlyReplaced",
         "unvalidatedTrustedEntryNeverDelegates",
-        "verifiedEntryMatchesExactCompiledSignatureVerbAndRoute"
+        "verifiedEntryMatchesExactCompiledSignatureVerbAndRoute",
+        "baselineRoutesDeclareOnlyFiveExactCompiledTuples"
       ],
       "class": "dz.sh.hidra.platform.permissions.HidraTrustedNativeProtectedRouteRegistryTest",
       "dependency_reason": "HPS-023 new synthetic Platform native-route security qualification; pure JVM/standalone MVC, no database",
@@ -11120,7 +11156,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java",
-      "source_sha256": "b0024d3ed9b309ce43b70781f6d3f0f0c73dcf04362163b9a561133e3801d34f",
+      "source_sha256": "2b4e6adb7f8bd88e2adb027b00844391590663165c551c441feb72ea0b9df38d",
       "supports": []
     },
     {
@@ -11140,7 +11176,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java",
-      "source_sha256": "e8518128922362494eeb1f9c9bfc6eae677d7d4bcb48bcdf934f7710aa19c92f",
+      "source_sha256": "4de9d6d2adf9bb29a2d14e2345d0afc346ba705f3c77fbb51ecb273be1a42769",
       "supports": []
     },
     {

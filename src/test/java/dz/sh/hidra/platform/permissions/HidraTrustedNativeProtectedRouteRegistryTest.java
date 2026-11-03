@@ -36,13 +36,26 @@ class HidraTrustedNativeProtectedRouteRegistryTest {
 
     @Test void productionRegistryDeclaresFiveManufacturerAndThreeTopologyApprovalTuples() throws Exception {
         var registry = new HidraTrustedNativeProtectedRouteRegistry();
-        assertEquals(8,registry.candidates().size());
+        var legacy=registry.candidates().stream().filter(r->!r.controller().getSimpleName().equals("EngineeringBaselineDraftController")).toList();
+        assertEquals(8,legacy.size());
         assertEquals(java.util.Set.of("save","revision","history","certificate","qualify","approve","approvedRevision","approvalHistory"),
-                registry.candidates().stream().map(v->v.method().getName())
+                legacy.stream().map(v->v.method().getName())
                     .collect(java.util.stream.Collectors.toSet()));
         assertTrue(registry.candidates().stream().allMatch(v->
                 v.method().isAnnotationPresent(NativeProtectedOperation.class)));
         assertFalse(registry.isTrusted(new HandlerMethod(new Owner(), row().method()), "POST", PATH));
+    }
+
+    @Test void baselineRoutesDeclareOnlyFiveExactCompiledTuples(){
+        var registry=new HidraTrustedNativeProtectedRouteRegistry();
+        assertEquals(13,registry.candidates().size());
+        var rows=registry.candidates().stream().filter(r->r.controller().getSimpleName().equals("EngineeringBaselineDraftController")).toList();
+        assertEquals(5,rows.size());
+        assertEquals(java.util.Set.of("POST /api/v1/topology/engineering-baselines","PUT /api/v1/topology/engineering-baselines/{manifestId}",
+            "GET /api/v1/topology/engineering-baselines/{manifestId}","GET /api/v1/topology/engineering-baselines/{manifestId}/revisions/{version}",
+            "POST /api/v1/topology/engineering-baselines/{manifestId}/validation"),
+            rows.stream().map(r->r.verb()+" "+r.pattern()).collect(java.util.stream.Collectors.toSet()));
+        assertTrue(rows.stream().allMatch(r->r.method().isAnnotationPresent(NativeProtectedOperation.class)));
     }
 
     @Test void markedMethodCannotSelfRegister() throws Exception {

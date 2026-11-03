@@ -647,6 +647,23 @@ public class JdbcProtectedAuthorizationEvidenceReader {
         }catch(RuntimeException failure) {throw invalid();}
     }
 
+    /** A private genuine Identity capability supplies the exact reviewed request, never raw caller claims. */
+    @Transactional(propagation = Propagation.MANDATORY)
+    public AuthorizationEvidence loadEngineeringBaseline(
+            dz.sh.hidra.modules.identity.infrastructure.security.ProtectedEngineeringBaselineAuthorizationParticipant.ReadHandle handle,
+            AuthorizationEvaluationRequest request) {
+        try {
+            if(participant==null || handle==null || request==null)throw invalid();
+            var contribution=handle.consume(request);
+            validateCharacteristicOrigin(contribution.evidence(),contribution.backendPid(),contribution.transactionId());
+            qualifiedPhysicalFences(contribution.backendPid(),contribution.transactionId());
+            var graph=read(contribution.evidence(),request,new Rows());
+            coordinates(contribution.backendPid(),contribution.transactionId());
+            handle.requireCurrent(request);
+            return graph;
+        }catch(RuntimeException failure){throw invalid();}
+    }
+
     @Transactional(propagation = Propagation.MANDATORY)
     public AuthorizationEvidence load(
             Evidence identity,

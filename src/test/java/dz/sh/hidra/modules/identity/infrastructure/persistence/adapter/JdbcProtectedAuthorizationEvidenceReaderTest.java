@@ -680,7 +680,13 @@ class JdbcProtectedAuthorizationEvidenceReaderTest {
                         "loadQualifiedInstalledUnitGroup", "recheckInstalledUnitGroup",
                         "loadQualifiedStationConfigurationGroup", "recheckStationConfigurationGroup",
                         "loadQualifiedProductPair", "recheckProductPair",
-                        "loadQualifiedSuppliedFluidPair", "recheckSuppliedFluidPair", "loadQualifiedProductPublicationPair", "recheckProductPublicationPair", "loadManufacturer", "loadInstalledCharacteristic");
+                        "loadQualifiedSuppliedFluidPair", "recheckSuppliedFluidPair", "loadQualifiedProductPublicationPair", "recheckProductPublicationPair", "loadManufacturer", "loadInstalledCharacteristic", "loadEngineeringBaseline");
+        // Baseline: the only new public reader method requires an Identity-private one-use handle.
+        assertThat(JdbcProtectedAuthorizationEvidenceReader.class.getMethod(
+                    "loadEngineeringBaseline",
+                    dz.sh.hidra.modules.identity.infrastructure.security.ProtectedEngineeringBaselineAuthorizationParticipant.ReadHandle.class,
+                    AuthorizationEvaluationRequest.class).getReturnType())
+                .isEqualTo(AuthorizationEvidence.class);
         // Characteristic link joins only the reviewed exact native claim reader, never an authority export.
         assertThat(JdbcProtectedAuthorizationEvidenceReader.class.getMethod(
                     "loadInstalledCharacteristic", Evidence.class, AuthorizationEvaluationRequest.class,

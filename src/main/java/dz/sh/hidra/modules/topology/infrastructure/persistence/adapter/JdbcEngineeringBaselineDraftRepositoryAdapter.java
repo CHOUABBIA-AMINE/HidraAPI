@@ -39,7 +39,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.support.*;
 
 @Repository
-public final class JdbcEngineeringBaselineDraftRepositoryAdapter implements EngineeringBaselineDraftRepositoryPort {
+public class JdbcEngineeringBaselineDraftRepositoryAdapter implements EngineeringBaselineDraftRepositoryPort {
     public static final String HEAD_INSERT="INSERT INTO public.hidra_topology_engineering_baseline_draft (company_party_id,pipeline_system_id,manifest_id,head_version,created_at,created_by_user_id) VALUES (?,?,?,1,?,?)";
     public static final String REV_INSERT="INSERT INTO public.hidra_topology_engineering_baseline_revision (company_party_id,pipeline_system_id,manifest_id,version,payload_format,canonical_payload,canonical_sha256,findings,complete_at_capture,actor_binding_id,actor_session_id,actor_user_id,sampled_at,valid_until,backend_pid,transaction_id,database_role) VALUES (?,?,?,?,?,?,?,?::jsonb,?,?::uuid,?::uuid,?,?,?,?,?,?::name)";
     public static final String HEAD_UPDATE="UPDATE public.hidra_topology_engineering_baseline_draft SET head_version=? WHERE company_party_id=? AND pipeline_system_id=? AND manifest_id=? AND head_version=?";

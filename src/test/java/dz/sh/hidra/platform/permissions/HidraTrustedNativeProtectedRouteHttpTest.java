@@ -137,7 +137,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
    var resolver = org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class);
    authenticated();
    var registry = new HidraTrustedNativeProtectedRouteRegistry();
-   assertEquals(8,registry.candidates().size());
+   assertEquals(13,registry.candidates().size());
    var mvc = mvc(owner, new UntrustedController(), resolver,registry);
    assertThrows(Exception.class, () ->
       mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(TRUSTED)));
@@ -146,7 +146,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
  @Test void realManufacturerTupleRegistryRejectsWrongVerbAndSiblingPattern() throws Exception {
    var registry=new HidraTrustedNativeProtectedRouteRegistry();
    var routes=registry.candidates();
-   assertEquals(8,routes.size());
+   assertEquals(13,routes.size());
    var expected=java.util.Set.of(
     "PUT /api/v1/simulation/manufacturer-characteristics/{sourceId}/revisions/{revisionId}",
     "GET /api/v1/simulation/manufacturer-characteristics/{sourceId}/revisions/{revisionId}",
@@ -155,7 +155,12 @@ class HidraTrustedNativeProtectedRouteHttpTest {
     "POST /api/v1/simulation/manufacturer-characteristics/{sourceId}/revisions/{revisionId}/qualification",
     "POST /api/v1/topology/installed-units/{unitId}/characteristic-links/{linkId}/revisions/{revisionId}/approval",
     "GET /api/v1/topology/installed-units/{unitId}/characteristic-links/{linkId}/revisions/{revisionId}/approval",
-    "GET /api/v1/topology/installed-units/{unitId}/characteristic-links/{linkId}/approvals/history");
+    "GET /api/v1/topology/installed-units/{unitId}/characteristic-links/{linkId}/approvals/history",
+    "POST /api/v1/topology/engineering-baselines",
+    "PUT /api/v1/topology/engineering-baselines/{manifestId}",
+    "GET /api/v1/topology/engineering-baselines/{manifestId}",
+    "GET /api/v1/topology/engineering-baselines/{manifestId}/revisions/{version}",
+    "POST /api/v1/topology/engineering-baselines/{manifestId}/validation");
    assertEquals(expected,routes.stream().map(r->r.verb()+" "+r.pattern())
     .collect(java.util.stream.Collectors.toSet()));
    var controller=new dz.sh.hidra.modules.simulation.api.rest.controller
@@ -164,16 +169,20 @@ class HidraTrustedNativeProtectedRouteHttpTest {
         .ManufacturerCharacteristicRevisionUseCase.class));
    var installed=new dz.sh.hidra.modules.topology.api.rest.controller.InstalledCharacteristicLinkController(
     org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.InstalledCharacteristicLinkUseCase.class));
-   var actual=new RequestMappingHandlerMapping();
+   var baseline=new dz.sh.hidra.modules.topology.api.rest.controller.EngineeringBaselineDraftController(
+      org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.EngineeringBaselineDraftUseCase.class));
+    var actual=new RequestMappingHandlerMapping();
    for(var entry:routes) {
-    Object owner=entry.controller().equals(controller.getClass())?controller:installed;
+    Object owner=entry.controller().equals(controller.getClass())?controller:
+       entry.controller().equals(installed.getClass())?installed:baseline;
     actual.registerMapping(RequestMappingInfo.paths(entry.pattern())
       .methods(RequestMethod.valueOf(entry.verb())).build(),owner,entry.method());
    }
    new HidraTrustedNativeProtectedRouteStartupValidator(actual,registry).validate();
    for(var entry:routes) {
     var handler=new org.springframework.web.method.HandlerMethod(
-      entry.controller().equals(controller.getClass())?controller:installed,entry.method());
+      entry.controller().equals(controller.getClass())?controller:
+       entry.controller().equals(installed.getClass())?installed:baseline,entry.method());
     assertTrue(registry.isTrusted(handler,entry.verb(),entry.pattern()));
     assertTrue(!registry.isTrusted(handler,
       entry.verb().equals("GET")?"PUT":"GET",entry.pattern()));

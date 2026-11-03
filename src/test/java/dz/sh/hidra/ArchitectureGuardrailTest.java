@@ -738,6 +738,14 @@ class ArchitectureGuardrailTest {
             return false;
         }
         if(isBaselineOwnerExport(sourceClassName,targetClassName))return false;
+        // HAPI-605: generic exported-package allowances must not admit unauthorized
+        // consumers of the three new source-owner contracts (or nested credentials).
+        if(List.of(
+                "dz.sh.hidra.modules.identity.application.contract.topology.TopologyEngineeringBaselineAuthorizationContract",
+                "dz.sh.hidra.modules.custody.application.contract.topology.TopologyBaselineProductSourceContract",
+                "dz.sh.hidra.modules.simulation.application.contract.topology.TopologyManufacturerCharacteristicReferenceContract")
+                .stream().anyMatch(root -> targetClassName.equals(root) || targetClassName.startsWith(root+"$")))
+            return true;
         // Simulation's exact Topology source reader may use its existing Party owner contract.
         // No sibling, general Simulation class or Topology port receives that private export.
         String partyRoot="dz.sh.hidra.modules.party.application.contract.simulation.SimulationManufacturerEvidenceContract";

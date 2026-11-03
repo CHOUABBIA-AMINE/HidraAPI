@@ -177,6 +177,18 @@ class ForensicRemediationClosureTest {
         }
         assertFalse(manufacturerCharacteristicOwnerExport(manufacturerConsumer,
                 "dz.sh.hidra.modules.identity.infrastructure.security.ProtectedSimulationManufacturerCharacteristicAuthorizationParticipant"));
+        // HAPI-605: only exact Topology callers may see these three public owner contracts.
+        String baselineCoordinator="dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringBaselineAdmissionCoordinator";
+        String baselineReader="dz.sh.hidra.modules.topology.infrastructure.integration.EngineeringBaselineSourceAdapter";
+        String baselineIdentity="dz.sh.hidra.modules.identity.application.contract.topology.TopologyEngineeringBaselineAuthorizationContract";
+        String baselineCustody="dz.sh.hidra.modules.custody.application.contract.topology.TopologyBaselineProductSourceContract";
+        String baselineManufacturer="dz.sh.hidra.modules.simulation.application.contract.topology.TopologyManufacturerCharacteristicReferenceContract";
+        assertTrue(baselineOwnerExport(baselineCoordinator,baselineIdentity));
+        assertTrue(baselineOwnerExport(baselineReader,baselineCustody));
+        assertTrue(baselineOwnerExport(baselineReader,baselineManufacturer));
+        assertFalse(baselineOwnerExport(baselineCoordinator+"Sibling",baselineIdentity));
+        assertFalse(baselineOwnerExport(baselineReader,baselineManufacturer+"Sibling"));
+        assertFalse(baselineOwnerExport(baselineReader,"dz.sh.hidra.modules.custody.infrastructure.integration.TopologyBaselineProductSourceAdapter"));
         List<String> violations = new ArrayList<>();
         for (SourceType source : sources().values()) {
             String sourceModule = module(source.packageName());
@@ -227,10 +239,23 @@ class ForensicRemediationClosureTest {
                 if (installedUnitOwnerExport(source.fqcn(), imported)) continue;
                 if (organizationOwnerExport(source.fqcn(), imported)) continue;
                 if (custodyProductOwnerExport(source.fqcn(), imported)) continue;
+                if (baselineOwnerExport(source.fqcn(), imported)) continue;
                 violations.add(source.fqcn() + " -> " + imported);
             }
         }
         assertTrue(violations.isEmpty(), () -> "Unapproved cross-module imports: " + violations);
+    }
+
+    /** HAPI-605: exact imported types and consumers; no cross-module package-wide bypass. */
+    private static boolean baselineOwnerExport(String source,String imported) {
+        String coordinator="dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringBaselineAdmissionCoordinator";
+        String reader="dz.sh.hidra.modules.topology.infrastructure.integration.EngineeringBaselineSourceAdapter";
+        String identity="dz.sh.hidra.modules.identity.application.contract.topology.TopologyEngineeringBaselineAuthorizationContract";
+        String custody="dz.sh.hidra.modules.custody.application.contract.topology.TopologyBaselineProductSourceContract";
+        String manufacturer="dz.sh.hidra.modules.simulation.application.contract.topology.TopologyManufacturerCharacteristicReferenceContract";
+        return (source.equals(coordinator) && (imported.equals(identity)||imported.startsWith(identity+".")))
+            || (source.equals(reader) && List.of(custody,manufacturer).stream()
+                .anyMatch(root -> imported.equals(root)||imported.startsWith(root+".")));
     }
 
     /** Only the reviewed Simulation coordinator may consume the two named owner exports. */

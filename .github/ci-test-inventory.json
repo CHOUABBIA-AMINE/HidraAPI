@@ -45,7 +45,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java",
-      "source_sha256": "24a2a72cabf9342f2b2456a71a1ef3df9486893d8992187b991d66553c0331e6",
+      "source_sha256": "b775e4c501366c57fa0baa3c7eb82200529f921326cc54a2c33f89588028daf1",
       "supports": []
     },
     {
@@ -96,7 +96,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java",
-      "source_sha256": "5912a98557b62c4b238e8508c8c15f18f8875fe8b22cc56b37ae713824750227",
+      "source_sha256": "72f1651b8ad67e9d529daf8816053245c62562054d09d10d0f7ec7e11cfc1687",
       "supports": []
     },
     {
@@ -3168,7 +3168,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReaderTest.java",
-      "source_sha256": "80e4fc4fd9fa496f03a57be644ee99079b5fb29451570cccd5420bad027e8c23",
+      "source_sha256": "26bff5eebc733c3a1a2aad60a67eff4a3bd6aac7804eb3ec26274768510c4182",
       "supports": []
     },
     {
@@ -8184,7 +8184,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java",
-      "source_sha256": "f4c557400d03aa1583c3e5b38e8ade7ecda8deed57862b9355a66af2dbe86fd0",
+      "source_sha256": "3bb8b41206178e8670175b83d2029d6bbd2d546493b3fda067f0aa6459b159fd",
       "supports": []
     },
     {
@@ -11135,7 +11135,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java",
-      "source_sha256": "da9f74aa3780ad28d87f2ba133a67bd8fe85c49f9e3905bf009bd81c61ce0e19",
+      "source_sha256": "0b066bc76661f6722958f588788e662eabbe10ca3cf1fa7483d754b97dd03e95",
       "supports": []
     },
     {

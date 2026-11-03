@@ -211,8 +211,6 @@ class EngineeringBaselineDraftNativeHttpPostgresIntegrationTest {
     dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringBaselineAdmissionCoordinator baselineCoordinator;
     @Autowired dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipant nativeIdentity;
     @Autowired dz.sh.hidra.modules.identity.application.contract.topology.TopologyEngineeringBaselineAuthorizationContract baselineAuthority;
-    @org.springframework.test.context.bean.override.mockito.MockitoSpyBean
-    dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcProtectedAuthorizationEvidenceReader baselineEvidenceReader;
     @Autowired @org.springframework.beans.factory.annotation.Qualifier("hidraJwtDecoder")
     org.springframework.security.oauth2.jwt.JwtDecoder nativeJwtDecoder;
     private JdbcTemplate admin;
@@ -366,24 +364,7 @@ class EngineeringBaselineDraftNativeHttpPostgresIntegrationTest {
         var original=new java.util.concurrent.atomic.AtomicReference<
             dz.sh.hidra.modules.identity.application.contract.topology.TopologyEngineeringBaselineAuthorizationContract.Admission>();
         var transaction=new org.springframework.transaction.support.TransactionTemplate(transactionManager);
-        // CI-only synthetic diagnostic: graph failure CATEGORY and count, never grants or IDs.
-        var readerStage=new java.util.concurrent.atomic.AtomicReference<String>("native-reader-not-entered");
-        try {
-            transaction.executeWithoutResult(status->{
-        org.mockito.Mockito.doAnswer(invocation->{
-            try {
-                var result=(dz.sh.hidra.modules.identity.domain.policy.AuthorizationEvidence)invocation.callRealMethod();
-                readerStage.set("reader-completed:"+
-                    (result.failure()==null?"no-failure":result.failure())+
-                    ":grant-count="+result.grants().size());
-                return result;
-            }catch(Throwable failure){
-                readerStage.set("reader-denied:"+failure.getClass().getSimpleName());
-                throw failure;
-            }
-        }).when(baselineEvidenceReader).loadEngineeringBaseline(
-            org.mockito.ArgumentMatchers.any(),org.mockito.ArgumentMatchers.any());
-
+        transaction.executeWithoutResult(status->{
             var admission=baselineAuthority.acquire(prepared,baselineRead(pipeline)); original.set(admission);
             var origin=baselineAuthority.contribute(admission);
             assertEquals(user,origin.userId());
@@ -398,10 +379,6 @@ class EngineeringBaselineDraftNativeHttpPostgresIntegrationTest {
             // This proves authority participation only; no fake final-guard or baseline commit is asserted.
             status.setRollbackOnly();
         });
-        } finally {
-            System.err.println("HAPI605_SYNTHETIC_BASELINE_READER_STAGE="+readerStage.get());
-            org.mockito.Mockito.reset(baselineEvidenceReader);
-        }
         assertThrows(org.springframework.security.access.AccessDeniedException.class,
             ()->baselineAuthority.requireCurrent(original.get()));
     }

@@ -457,6 +457,33 @@
     "owner": "telemetry",
     "purpose": "Telemetry-owned quantity/rate unit-role eligibility with approval provenance; no business role assignments are approved here."
   },
+  "public.hidra_topology_engineering_baseline_draft": {
+    "owner": "topology",
+    "purpose": "Topology-owned mutable head pointer for a company/network/manifest draft; monotone version reference only, not frozen, authoritative or engineering-qualified.",
+    "evidence": [
+      "src/main/java/dz/sh/hidra/modules/topology/domain/model/EngineeringBaselineManifest.java",
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringBaselineDraftRepositoryAdapter.java",
+      "src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql"
+    ]
+  },
+  "public.hidra_topology_engineering_baseline_request": {
+    "owner": "topology",
+    "purpose": "Topology-owned original-transaction idempotent create/update receipt bound to exact actor, request digest and immutable revision; does not grant resource or source permission.",
+    "evidence": [
+      "src/main/java/dz/sh/hidra/modules/topology/domain/model/EngineeringBaselineManifest.java",
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringBaselineDraftRepositoryAdapter.java",
+      "src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql"
+    ]
+  },
+  "public.hidra_topology_engineering_baseline_revision": {
+    "owner": "topology",
+    "purpose": "Topology-owned immutable exact manifest revision, canonical bytes, findings and original native transaction provenance; its captures remain draft/unqualified.",
+    "evidence": [
+      "src/main/java/dz/sh/hidra/modules/topology/domain/model/EngineeringBaselineManifest.java",
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringBaselineDraftRepositoryAdapter.java",
+      "src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql"
+    ]
+  },
   "public.hidra_topology_engineering_context": {
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringNetworkDraftRepositoryAdapter.java",

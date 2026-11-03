@@ -744,8 +744,17 @@ class ArchitectureGuardrailTest {
                 "dz.sh.hidra.modules.identity.application.contract.topology.TopologyEngineeringBaselineAuthorizationContract",
                 "dz.sh.hidra.modules.custody.application.contract.topology.TopologyBaselineProductSourceContract",
                 "dz.sh.hidra.modules.simulation.application.contract.topology.TopologyManufacturerCharacteristicReferenceContract")
-                .stream().anyMatch(root -> targetClassName.equals(root) || targetClassName.startsWith(root+"$")))
+                .stream().anyMatch(targetClassName::startsWith)) {
+            // HAPI-602 already authorized this genuine characteristic-link consumer.
+            // HAPI-605 must not revoke that existing exact owner contract while
+            // rejecting unrelated consumers and lookalike sibling classes.
+            String manufacturer="dz.sh.hidra.modules.simulation.application.contract.topology.TopologyManufacturerCharacteristicReferenceContract";
+            String existing="dz.sh.hidra.modules.topology.application.service.ProtectedInstalledCharacteristicLinkAdmissionCoordinator";
+            if ((sourceClassName.equals(existing)||sourceClassName.startsWith(existing+"$"))
+                    && (targetClassName.equals(manufacturer)||targetClassName.startsWith(manufacturer+"$")))
+                return false;
             return true;
+        }
         // Simulation's exact Topology source reader may use its existing Party owner contract.
         // No sibling, general Simulation class or Topology port receives that private export.
         String partyRoot="dz.sh.hidra.modules.party.application.contract.simulation.SimulationManufacturerEvidenceContract";

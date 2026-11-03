@@ -808,9 +808,9 @@ Legacy IDs: HPR-P25-055A
 
 Priority: P1
 
-Implementation Status: NOT_IMPLEMENTED
+Implementation Status: PARTIAL
 
-Planning Status: BLOCKED
+Planning Status: IN_PROGRESS
 
 Owning Module: `topology` (actual source owner; package modules are not separate Maven artifacts)
 
@@ -967,6 +967,40 @@ doc/roadmap/ULTIMATE_ROADMAP.md:1349 | HPR-P25-055A | Versioned manifest identit
 doc/model-remediation/RECONCILIATION.md:23411 | HPR-P25-055A | Versioned manifest identity/draft and exact owner-reference/completeness validation. | Pin route/profile/sections/stations/units/characteristics/products/method/source/effective/approval IDs and digests; incomplete capture diagnoses missing facts and cannot freeze.
 doc/model-remediation/RECONCILIATION.md:23749 | HPR-P25-055A | BLOCKED_SPECIFICATION | Baseline manifest drafts and completeness
 ~~~~~~~~
+
+
+### HAPI-605 — one-time two-commit owner exception and draft contracts (2026-11-03)
+
+**Owner decision and registered delivery boundary.** After selecting the entire HAPI-605 objective and approving its authorization policy, the owner explicitly authorized: "you can exceptionally this time commit in two steps". This decision overrides the single-commit/indivisible-delivery restriction in AGENTS.md sections 3.1 and 3.3 **for HAPI-605 only**. It does not alter the closed historical HAPI-602/S0–S7 sequence, create a task ID, authorize additional subdivisions, waive CI, or select HAPI-606..609. Exactly two planned delivery commits remain under the same HAPI-605 identity:
+1. `feat(topology): add engineering baseline draft contracts` — immutable draft manifest, completeness rules, canonical codec and focused executable tests, with this execution record and exact source inventory.
+2. `feat(topology): implement protected engineering baseline drafts` — the remaining whole-task application, owner-source capture, original-transaction authorization, persistence, REST and meaningful integration tests, with exact runtime paths registered here before publication. Same-task CI repairs remain repairs under the normal failure rule.
+
+**Already approved security policy.** Resource `ENGINEERING_BASELINE_DRAFT`; permissions `topology:engineering-baseline:create`, `topology:engineering-baseline:read`, `topology:engineering-baseline:update`, `topology:engineering-baseline:validate`. Every action requires company AND pipeline scope. Each protected source additionally requires its existing source-owner read permission in the same original physical transaction. Baseline permissions grant no source access. This first commit introduces no resource registration, grants, native route, source admission, schema or endpoint; the policy is recorded for the second commit and is not claimed implemented.
+
+**Exact first-commit allowlist, based on live main.** Parent `29ed0a686a0e82d9370b7383f85bc3bb2e319557`; parent `5775fda2327c42b1093e3f26459e902986486b7b`; tree `34abc9bdc8135d28ac4109cd66834ba93d9de2d6`. Exact-head Documentation #864 SUCCESS at https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41541348209. The implementation Full #1083 belongs to earlier source `06b6121a79c431f1452552ecf8ca9126c6f11e4a`, not this proposed commit.
+
+CREATE only:
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/EngineeringBaselineManifest.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/service/EngineeringBaselineCompletenessPolicy.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/EngineeringBaselineManifestCodec.java`
+- `src/test/java/dz/sh/hidra/modules/topology/qualification/EngineeringBaselineManifestChecks.java`
+- `src/test/java/dz/sh/hidra/modules/topology/qualification/EngineeringBaselineManifestContractTest.java`
+
+MODIFY only:
+- `.github/ci-test-inventory.json` — add the new 22-case JVM suite and its abstract shared-assertion support with actual current source SHA-256; preserve every existing test entry, case, timing and shard.
+- `doc/roadmap/TASKS_HPS-018.md` — this append-only technical registration and HAPI-605 status header only.
+- `doc/roadmap/ULTIMATE_TASKS.md` — compact execution pointer only.
+- `doc/roadmap/ULTIMATE_ROADMAP.md` and `doc/roadmap/ULTIMATE_PHASES.md` — HAPI-605 status cells only, PARTIAL / IN_PROGRESS.
+
+DELETE none. No changes to existing Java, migrations, workflows, architecture allowlists, API/dictionary snapshots or reconciliation history. Independently inspected the live recursive tree (not truncated); all five CREATE paths are absent. Existing unpublished Identity/schema/consumer-test candidates are excluded from this commit. Their presence locally does not establish implementation or runtime acceptance.
+
+**Bounded behavior and ownership.** Topology owns immutable manifest identity, company/pipeline scope, monotonically increasing draft revision, explicit half-open effective interval and exact owner/source/revision/SHA-256 selections. Identity strings preserve exact valid Unicode without normalization. Duplicate source selections, inconsistent revisions, malformed identities/digests, invalid temporal precision and version overflow fail. Pure Java completeness evaluates exact supplied source observations and owner-derived network/station/unit membership; it reports missing roots, membership, coverage, method and approval facts without inventing them. Observations are data, never authorization evidence. The application must obtain them through actual protected owners in the second commit. Deterministic bounded V1 encoding preserves all draft fields; decoding rejects malformed UTF-8, noncanonical order/markers, invalid counts, truncation and trailing bytes. Draft completeness never confers qualification, freeze, publication or operational authority.
+
+**Executed checks and CI-first limits.** On the available OpenJDK 17.0.20, `java --module jdk.compiler/com.sun.tools.javac.Main` compiled the three production classes and shared assertion support into scratch validation output; `java -cp <validation-output> dz.sh.hidra.modules.topology.qualification.EngineeringBaselineManifestChecks` executed **22 shared assertion cases PASS**. These include immutable/version behavior, exact source membership and digest matching, missing facts, interval coverage, canonical round-trip with Unicode, every truncated prefix, malformed input and configured bounds. This is isolated Java17 execution, not Java21/Maven/JUnit/full application/PostgreSQL proof. Maven is unavailable; no environment was provisioned. The JUnit entry points invoke the same assertion bodies. Stale checkpoint test names/hashes were corrected from actual source bytes; no old case was removed. New suite timing is zero (unmeasured), not fabricated runtime evidence. Full-repository validators and architecture tests await hosted CI because this workspace is a partial materialization.
+
+**Acceptance disposition and remaining work.** HAPI-605 is PARTIAL / IN_PROGRESS after the first commit, never completed or CI-passed by this record. Commit 2 must deliver genuine owner-derived network/route/profile/section/station/unit/characteristic/product/method/approval capture; company/pipeline and independent source authorization; original-transaction final guards and actor binding; immutable draft history, expected-version/idempotency/conflict, rollback and indeterminate commit-ack semantics; explicit REST DTOs/mappings/errors, trusted route registration, applicable fresh-schema/Flyway/JPA/dictionary evidence, and configured HTTP/PostgreSQL denial/revocation/concurrency tests. Exact runtime scope must be reconciled against the then-current main and registered here. No independent engineering calibration, live IdP, UI/UAT, OT, SITE, numerical/P3 or deployment acceptance is implied. HAPI-606 freeze remains unselected.
+
+**Publication gate.** Verify exact parent/tree/blob preservation and expected-head guarded direct main update. Confirm applicable HidraAPI CI and Documentation Validation created/queued/started on the actual published SHA, report their links/states and STOP without waiting for completion or starting commit 2. Its acceptance depends on fresh CI feedback; do not extend the planned two delivery commits into additional preflight stages.
 
 <a id="hapi-606"></a>
 ## HAPI-606 — Atomic authoritative baseline freeze

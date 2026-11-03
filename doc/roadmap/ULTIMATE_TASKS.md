@@ -2347,6 +2347,8 @@ Existing `ULTIMATE_TASKS.md#hapi-XXX` links still land here. Follow the task lin
 <a id="hapi-605"></a>
 [HAPI-605](TASKS_HPS-018.md#hapi-605) — Baseline manifest drafts and completeness
 
+Third exceptional delivery 2026-11-03: source activation-window corrections (Topology/Custody), owner PK/FK catalog fences, concurrent native baseline writers and six REST-mapping cases. Parent exact-SHA Full #1089 and Docs #870 passed; third-delivery CI pending. HAPI-605 remains PARTIAL / IN_PROGRESS; full positive source journey and generated API/catalog acceptance are not inferred. Technical scope and remaining gates are recorded in [HPS-018](TASKS_HPS-018.md#hapi-605).
+
 <a id="hapi-606"></a>
 [HAPI-606](TASKS_HPS-018.md#hapi-606) — Atomic authoritative baseline freeze
 

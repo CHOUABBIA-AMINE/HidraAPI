@@ -630,6 +630,120 @@ private static final String BASELINE="/api/v1/topology/engineering-baselines";
         }
         for(String table:List.of("draft","revision","request"))assertEquals(0,baselineRows(table,manifest));
     }
+    /** Same submitted request is either applied once, replayed, or safely rejected under contention. */
+    @Test void baselineConcurrentIdenticalCreateRequestsCannotDuplicateRevisionOrReceipt() throws Exception {
+        String pipeline=baselinePipeline(),manifest=id();baselineGrants(pipeline);
+        String body=baselineCreateBody(manifest,pipeline,id(),"[]");
+        var statuses=race(() -> createBaseline(body).andReturn().getResponse().getStatus(),
+            () -> createBaseline(body).andReturn().getResponse().getStatus());
+        for(int code:statuses)assertTrue(code==200||code==409||code==503,
+            "Concurrent duplicate draft writes must have a governed outcome, not "+code);
+        if(!statuses.contains(200))requireStatus(createBaseline(body),200);
+        requireStatus(createBaseline(body),200).andExpect(jsonPath("$.replayed").value(true));
+        assertEquals(1,baselineRows("draft",manifest));
+        assertEquals(1,baselineRows("revision",manifest));
+        assertEquals(1,baselineRows("request",manifest));
+    }
+    /** Two distinct first writers never append two competing version-one revisions. */
+    @Test void baselineConcurrentDifferentCreateRequestsRetainOneCommittedHead() throws Exception {
+        String pipeline=baselinePipeline(),manifest=id();baselineGrants(pipeline);
+        String first=baselineCreateBody(manifest,pipeline,id(),"[]");
+        String second=baselineCreateBody(manifest,pipeline,id(),"[]");
+        var statuses=race(() -> createBaseline(first).andReturn().getResponse().getStatus(),
+            () -> createBaseline(second).andReturn().getResponse().getStatus());
+        for(int code:statuses)assertTrue(code==200||code==409||code==503,
+            "Concurrent changed drafts must fail closed, not "+code);
+        assertTrue(statuses.stream().filter(x->x==200).count()<=1,
+            "Two distinct create requests cannot both win the first revision");
+        if(!statuses.contains(200))requireStatus(createBaseline(first),200);
+        assertEquals(1,baselineRows("draft",manifest));
+        assertEquals(1,baselineRows("revision",manifest));
+        assertEquals(1,baselineRows("request",manifest));
+        requireStatus(http.perform(get(BASELINE+"/"+manifest).header("Authorization","Bearer "+token)
+            .param("companyPartyId",company).param("pipelineSystemId",pipeline)),200)
+            .andExpect(jsonPath("$.version").value(1));
+    }
+    /** Two requests with the same expected version cannot both append version two. */
+    @Test void baselineConcurrentExpectedVersionUpdatesKeepOneImmutableSuccessor() throws Exception {
+        String pipeline=baselinePipeline(),manifest=id();baselineGrants(pipeline);
+        requireStatus(createBaseline(baselineCreateBody(manifest,pipeline,id(),"[]")),200);
+        var first=baselineUpdateBody(pipeline,id(),1);
+        var second=baselineUpdateBody(pipeline,id(),1);
+        var statuses=race(
+            () -> http.perform(put(BASELINE+"/"+manifest).header("Authorization","Bearer "+token)
+                .contentType(MediaType.APPLICATION_JSON).content(first)).andReturn().getResponse().getStatus(),
+            () -> http.perform(put(BASELINE+"/"+manifest).header("Authorization","Bearer "+token)
+                .contentType(MediaType.APPLICATION_JSON).content(second)).andReturn().getResponse().getStatus());
+        for(int code:statuses)assertTrue(code==200||code==409||code==503,
+            "Concurrent expected-version writes must fail closed, not "+code);
+        assertTrue(statuses.stream().filter(x->x==200).count()<=1,
+            "Two distinct expected-version requests cannot both commit");
+        if(!statuses.contains(200))
+            requireStatus(http.perform(put(BASELINE+"/"+manifest).header("Authorization","Bearer "+token)
+                .contentType(MediaType.APPLICATION_JSON).content(first)),200);
+        assertEquals(2,baselineRows("revision",manifest));
+        assertEquals(2,baselineRows("request",manifest));
+        requireStatus(http.perform(get(BASELINE+"/"+manifest+"/revisions/1")
+            .header("Authorization","Bearer "+token).param("companyPartyId",company)
+            .param("pipelineSystemId",pipeline)),200).andExpect(jsonPath("$.version").value(1));
+    }
+    private java.util.List<Integer> race(java.util.concurrent.Callable<Integer> one,
+                                          java.util.concurrent.Callable<Integer> two) throws Exception {
+        var pool=java.util.concurrent.Executors.newFixedThreadPool(2);
+        var gate=new java.util.concurrent.CountDownLatch(1);
+        try {
+            var first=pool.submit(()->{gate.await();return one.call();});
+            var second=pool.submit(()->{gate.await();return two.call();});
+            gate.countDown();
+            return java.util.List.of(first.get(20,java.util.concurrent.TimeUnit.SECONDS),
+                                     second.get(20,java.util.concurrent.TimeUnit.SECONDS));
+        }finally{gate.countDown();pool.shutdownNow();}
+    }
+    /** Fresh Flyway schema includes real composite keys and validated owner relationships. */
+    @Test void baselinePhysicalOwnerTablesRetainValidatedKeysAndReferences() {
+        for(String suffix:List.of("draft","revision","request")){
+            String table="public.hidra_topology_engineering_baseline_"+suffix;
+            assertEquals(1L,admin.queryForObject(
+                "SELECT count(*) FROM pg_catalog.pg_constraint WHERE conrelid=?::regclass"
+                +" AND contype='p' AND convalidated",Long.class,table));
+            assertTrue(admin.queryForObject(
+                "SELECT count(*) FROM pg_catalog.pg_constraint WHERE conrelid=?::regclass"
+                +" AND contype='c' AND convalidated",Long.class,table)>=2L);
+        }
+        assertEquals(2L,admin.queryForObject(
+            "SELECT count(*) FROM pg_catalog.pg_constraint"
+            +" WHERE conrelid='public.hidra_topology_engineering_baseline_draft'::regclass"
+            +" AND contype='f' AND convalidated",Long.class));
+        for(String suffix:List.of("revision","request"))
+            assertEquals(1L,admin.queryForObject(
+                "SELECT count(*) FROM pg_catalog.pg_constraint WHERE conrelid=?::regclass"
+                +" AND contype='f' AND convalidated",Long.class,
+                "public.hidra_topology_engineering_baseline_"+suffix));
+    }
+
+    /** Dropping a validated owner relationship must fail the final physical guard. */
+    @Test void baselineMissingRequiredForeignKeyCannotCommitAndRestoresFixture() throws Exception {
+        String pipeline=baselinePipeline(),manifest=id();baselineGrants(pipeline);
+        String table="public.hidra_topology_engineering_baseline_revision";
+        String constraint=admin.queryForObject(
+            "SELECT conname FROM pg_catalog.pg_constraint WHERE conrelid=?::regclass AND contype='f'",
+            String.class,table);
+        assertNotNull(constraint);
+        assertTrue(constraint.matches("[a-z0-9_]+"));
+        admin.execute("ALTER TABLE "+table+" DROP CONSTRAINT "+constraint);
+        try{
+            requireStatus(createBaseline(baselineCreateBody(manifest,pipeline,id(),"[]")),503);
+        }finally{
+            admin.execute("ALTER TABLE "+table+" ADD CONSTRAINT "+constraint
+                +" FOREIGN KEY (company_party_id,pipeline_system_id,manifest_id)"
+                +" REFERENCES public.hidra_topology_engineering_baseline_draft"
+                +" (company_party_id,pipeline_system_id,manifest_id)"
+                +" ON DELETE RESTRICT DEFERRABLE INITIALLY DEFERRED");
+        }
+        assertEquals(0,baselineRows("draft",manifest));
+        assertEquals(0,baselineRows("revision",manifest));
+        assertEquals(0,baselineRows("request",manifest));
+    }
     @Test void baselineFinalGuardCatalogDriftCannotCommitARevision()throws Exception{
         String pipeline=baselinePipeline(),manifest=id();baselineGrants(pipeline);
         admin.execute("ALTER TABLE public.hidra_topology_engineering_baseline_revision DISABLE TRIGGER trg_topology_baseline_revision_immutable");

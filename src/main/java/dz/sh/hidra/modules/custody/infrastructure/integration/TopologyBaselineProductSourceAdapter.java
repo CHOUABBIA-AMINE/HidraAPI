@@ -74,7 +74,14 @@ public final class TopologyBaselineProductSourceAdapter implements TopologyBasel
         if(!scope.companyPartyId().equals(q.companyPartyId())||!scope.productDraftId().equals(q.draftId())
             ||!scope.catalogProductId().equals(q.catalogProductId())||!p.publicationId().equals(q.publicationId())
             ||!p.approval().digest().equals(ProductRevisionPublication.hash(codec.encode(envelope))))throw denied();
-        var from=jdbc.queryForObject("SELECT min(effective_at) FROM "+PREFIX
+        // A draft after reactivation must use the resumed period; a draft in a
+        // withdrawn gap remains incomplete rather than inheriting the old period.
+        var from=jdbc.queryForObject("SELECT max(effective_at) FROM "+PREFIX
+            +"_event WHERE company_party_id=? AND product_draft_id=? AND publication_id=?"
+            +" AND action IN ('PUBLISH','REACTIVATE') AND state='ACTIVE' AND effective_at<=?",
+            Timestamp.class,q.companyPartyId(),q.draftId(),q.publicationId(),
+            Timestamp.from(q.effectiveFrom()));
+        if(from==null)from=jdbc.queryForObject("SELECT min(effective_at) FROM "+PREFIX
             +"_event WHERE company_party_id=? AND product_draft_id=? AND publication_id=? AND action='PUBLISH'",
             Timestamp.class,q.companyPartyId(),q.draftId(),q.publicationId());
         if(from==null)throw denied();

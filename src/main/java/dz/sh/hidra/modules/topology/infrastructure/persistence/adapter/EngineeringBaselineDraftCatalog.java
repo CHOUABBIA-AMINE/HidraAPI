@@ -37,5 +37,22 @@ final class EngineeringBaselineDraftCatalog {
         AND EXISTS(SELECT 1 FROM pg_trigger t WHERE t.tgrelid='public.hidra_topology_engineering_baseline_draft'::regclass AND t.tgname='trg_topology_baseline_draft_truncate' AND t.tgfoid='public.hidra_topology_baseline_immutable_guard()'::regprocedure AND t.tgenabled='O' AND t.tgtype=34 AND NOT t.tgisinternal)
         AND EXISTS(SELECT 1 FROM pg_trigger t WHERE t.tgrelid='public.hidra_topology_engineering_baseline_revision'::regclass AND t.tgname='trg_topology_baseline_revision_truncate' AND t.tgfoid='public.hidra_topology_baseline_immutable_guard()'::regprocedure AND t.tgenabled='O' AND t.tgtype=34 AND NOT t.tgisinternal)
         AND EXISTS(SELECT 1 FROM pg_trigger t WHERE t.tgrelid='public.hidra_topology_engineering_baseline_request'::regclass AND t.tgname='trg_topology_baseline_request_truncate' AND t.tgfoid='public.hidra_topology_baseline_immutable_guard()'::regprocedure AND t.tgenabled='O' AND t.tgtype=34 AND NOT t.tgisinternal)
+        -- Preserve owner composite keys and validated constraints, not only triggers.
+        AND (SELECT count(*)=3 FROM pg_catalog.pg_constraint c
+            WHERE c.contype='p' AND c.convalidated AND c.conrelid IN (
+              'public.hidra_topology_engineering_baseline_draft'::regclass,
+              'public.hidra_topology_engineering_baseline_revision'::regclass,
+              'public.hidra_topology_engineering_baseline_request'::regclass))
+        AND (SELECT count(*)=4 FROM pg_catalog.pg_constraint c
+            WHERE c.contype='f' AND c.convalidated AND c.conrelid IN (
+              'public.hidra_topology_engineering_baseline_draft'::regclass,
+              'public.hidra_topology_engineering_baseline_revision'::regclass,
+              'public.hidra_topology_engineering_baseline_request'::regclass))
+        AND NOT EXISTS(SELECT 1 FROM pg_catalog.pg_constraint c
+            WHERE c.conrelid IN (
+              'public.hidra_topology_engineering_baseline_draft'::regclass,
+              'public.hidra_topology_engineering_baseline_revision'::regclass,
+              'public.hidra_topology_engineering_baseline_request'::regclass)
+              AND NOT c.convalidated)
         """;
 }

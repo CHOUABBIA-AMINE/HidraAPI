@@ -106,7 +106,7 @@ public final class EngineeringBaselineSourceAdapter implements EngineeringBaseli
                     if(first){
                         admitted=products.acquire(new TopologyBaselineProductSourceContract.Request(
                             t.manifest.companyPartyId(),UUID.fromString(pin.ownerId()),pin.sourceId(),
-                            UUID.fromString(pin.revisionId()),pin.sha256()),
+                            UUID.fromString(pin.revisionId()),pin.sha256(),t.manifest.effectiveFrom()),
                             new TopologyBaselineProductSourceContract.Original(t.origin.backendPid(),t.origin.transactionId(),
                                 t.origin.databaseRole(),t.origin.sampledAt(),t.origin.validUntil()));
                         t.products.add(admitted);
@@ -158,8 +158,16 @@ public final class EngineeringBaselineSourceAdapter implements EngineeringBaseli
                 ||snapshot.surveys().stream().anyMatch(x->x.source()==null||!x.diagnostics().isEmpty()))
                 findings.add(Finding.ROUTE_PROFILE_NOT_SUPPLIED);
         }
-        var from=jdbc.queryForObject("SELECT min(effective_at) FROM public.hidra_topology_engineering_publication_event"
-            +" WHERE context_id=? AND revision_id=? AND operation='PUBLISH'",Timestamp.class,context,revision);
+        // Select the active activation epoch at this draft's effective start, not the
+        // first publication ever. A withdrawn revision may later be reactivated.
+        var from=jdbc.queryForObject("SELECT max(effective_at) FROM public.hidra_topology_engineering_publication_event"
+            +" WHERE context_id=? AND revision_id=? AND operation IN ('PUBLISH','REACTIVATE')"
+            +" AND resulting_state='ACTIVE' AND effective_at<=?",
+            Timestamp.class,context,revision,Timestamp.from(t.manifest.effectiveFrom()));
+        if(from==null)from=jdbc.queryForObject(
+            "SELECT min(effective_at) FROM public.hidra_topology_engineering_publication_event"
+            +" WHERE context_id=? AND revision_id=? AND operation='PUBLISH'",
+            Timestamp.class,context,revision);
         if(from==null)throw denied();
         var until=jdbc.queryForObject("SELECT min(effective_at) FROM public.hidra_topology_engineering_publication_event"
             +" WHERE context_id=? AND effective_at>? AND (revision_id<>? OR resulting_state<>'ACTIVE')",

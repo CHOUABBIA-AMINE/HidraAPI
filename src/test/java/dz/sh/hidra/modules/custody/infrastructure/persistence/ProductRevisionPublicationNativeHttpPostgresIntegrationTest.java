@@ -913,6 +913,50 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
     private String publishJson(String digest,Selection a,UUID request,long epoch,UUID expected){return "{\"requestId\":\""+request+"\",\"candidateDigest\":\""+digest+"\",\"expectedEpoch\":"+epoch+",\"expectedPublicationId\":"+(expected==null?"null":"\""+expected+"\"")+",\"approval\":"+approvalJson(a)+"}";}
     @Test void allFourNativeProducersPrepareApprovePublishAndReadConfiguredHttp()throws Exception{for(String type:List.of("LOCAL","OIDC","LDAP","ACTIVE_DIRECTORY")){var a=httpActor(type);UUID p=preparedProduct(absent());var prepared=json(send(a,p,"POST","/candidates",prep(UUID.randomUUID())).andExpect(status().isCreated()));String digest=prepared.get("candidateDigest").asText();send(a,p,"GET","/candidates/"+digest,null).andExpect(status().isOk()).andExpect(jsonPath("$.candidate.engineeringQualified").value(false));var selection=humanApproval(a,digest);var published=json(send(a,p,"POST","",publishJson(digest,selection,UUID.randomUUID(),0,null)).andExpect(status().isCreated()));String id=published.get("publication").get("publicationId").asText();send(a,p,"GET","/"+id,null).andExpect(status().isOk()).andExpect(jsonPath("$.publication.approval.actorDisplayName").value("Synthetic Publication Reviewer"));send(a,p,"GET","/current",null).andExpect(status().isOk()).andExpect(jsonPath("$.observedHead.epoch").value(1));}}
     @Test void configuredReplayWithdrawEffectiveHistoryAndReactivationRetainSnapshot()throws Exception{var a=httpActor("LOCAL");UUID p=preparedProduct(absent()),request=UUID.randomUUID();String digest=json(send(a,p,"POST","/candidates",prep(request)).andExpect(status().isCreated())).get("candidateDigest").asText();send(a,p,"POST","/candidates",prep(request)).andExpect(status().isOk()).andExpect(jsonPath("$.replayed").value(true));var approval=humanApproval(a,digest);UUID publishRequest=UUID.randomUUID();String body=publishJson(digest,approval,publishRequest,0,null);var first=json(send(a,p,"POST","",body).andExpect(status().isCreated()));String id=first.get("publication").get("publicationId").asText();String head="{\"requestId\":\""+UUID.randomUUID()+"\",\"expectedEpoch\":1,\"expectedPublicationId\":\""+id+"\"}";send(a,p,"POST","/"+id+"/withdraw",head).andExpect(status().isOk()).andExpect(jsonPath("$.observedHead.state").value("WITHDRAWN"));send(a,p,"POST","",body).andExpect(status().isOk()).andExpect(jsonPath("$.replayed").value(true)).andExpect(jsonPath("$.observedHead.epoch").value(2));send(a,p,"GET","/requests/"+publishRequest,null).andExpect(status().isOk());String at=jdbc.queryForObject("SELECT clock_timestamp()",Timestamp.class).toInstant().toString();send(a,p,"GET","/effective",null,"asOf",at).andExpect(status().isOk()).andExpect(jsonPath("$.selectedHead.state").value("WITHDRAWN"));send(a,p,"GET","/history",null,"asOf",at,"limit","1").andExpect(status().isOk()).andExpect(jsonPath("$.history.length()").value(1));String reactivate="{\"requestId\":\""+UUID.randomUUID()+"\",\"expectedEpoch\":2,\"expectedPublicationId\":\""+id+"\",\"approval\":"+approvalJson(approval)+"}";send(a,p,"POST","/"+id+"/reactivate",reactivate).andExpect(status().isOk()).andExpect(jsonPath("$.observedHead.epoch").value(3));assertThat(events(p)).isEqualTo(3);}
+    /** The Custody owner itself must preserve the interval gap when a publication is reactivated. */
+    @Test void nativeProductReactivateSuppliesBaselineAsOfWindow() throws Exception {
+        var actor=httpActor("LOCAL");
+        UUID draft=preparedProduct(absent());
+        String digest=json(send(actor,draft,"POST","/candidates",prep(UUID.randomUUID()))
+            .andExpect(status().isCreated())).get("candidateDigest").asText();
+        var approval=humanApproval(actor,digest);
+        var published=json(send(actor,draft,"POST","",
+            publishJson(digest,approval,UUID.randomUUID(),0,null))
+            .andExpect(status().isCreated()));
+        String publishedId=published.get("publication").get("publicationId").asText();
+        UUID publication=UUID.fromString(publishedId);
+        String withdraw="{\"requestId\":\""+UUID.randomUUID()
+            +"\",\"expectedEpoch\":1,\"expectedPublicationId\":\""+publishedId+"\"}";
+        send(actor,draft,"POST","/"+publishedId+"/withdraw",withdraw).andExpect(status().isOk());
+        String reactivate="{\"requestId\":\""+UUID.randomUUID()
+            +"\",\"expectedEpoch\":2,\"expectedPublicationId\":\""+publishedId
+            +"\",\"approval\":"+approvalJson(approval)+"}";
+        send(actor,draft,"POST","/"+publishedId+"/reactivate",reactivate)
+            .andExpect(status().isOk());
+        String base="public.hidra_custody_product_publication_event";
+        Timestamp withdrawal=jdbc.queryForObject("SELECT effective_at FROM "+base
+            +" WHERE company_party_id=? AND product_draft_id=? AND publication_id=?"
+            +" AND action='WITHDRAW'",Timestamp.class,COMPANY,draft,publication);
+        Timestamp resumedAt=jdbc.queryForObject("SELECT effective_at FROM "+base
+            +" WHERE company_party_id=? AND product_draft_id=? AND publication_id=?"
+            +" AND action='REACTIVATE'",Timestamp.class,COMPANY,draft,publication);
+        assertThat(withdrawal).isNotNull();
+        assertThat(resumedAt).isNotNull();
+        String selected="SELECT max(effective_at) FROM "+base
+            +" WHERE company_party_id=? AND product_draft_id=? AND publication_id=?"
+            +" AND action IN ('PUBLISH','REACTIVATE') AND state='ACTIVE' AND effective_at<=?";
+        Timestamp first=jdbc.queryForObject(selected,Timestamp.class,COMPANY,draft,publication,withdrawal);
+        Timestamp resumed=jdbc.queryForObject(selected,Timestamp.class,COMPANY,draft,publication,resumedAt);
+        assertThat(first).isNotNull();
+        assertThat(resumed).isEqualTo(resumedAt);
+        Timestamp closed=jdbc.queryForObject("SELECT min(effective_at) FROM "+base
+            +" WHERE company_party_id=? AND product_draft_id=? AND effective_at>?"
+            +" AND (publication_id<>? OR state<>'ACTIVE')",
+            Timestamp.class,COMPANY,draft,first,publication);
+        assertThat(closed).isEqualTo(withdrawal);
+        assertThat(first.toInstant()).isBefore(resumed.toInstant());
+        assertThat(withdrawal.toInstant()).isBefore(resumed.toInstant());
+    }
     @Test void missingMalformedAndRevokedBearerCannotDiscloseOrMutate()throws Exception{var a=httpActor("LOCAL");UUID p=preparedProduct(absent());send(null,p,"POST","/candidates",prep(UUID.randomUUID())).andExpect(status().isUnauthorized());send(new HttpActor(a.fixture(),"forged"),p,"GET","/current",null).andExpect(status().isUnauthorized());send(a,p,"POST","/candidates",prep(UUID.randomUUID())).andExpect(status().isCreated());jdbc.update("UPDATE hidra_identity_login_session SET status='REVOKED',ended_at=clock_timestamp() WHERE user_id=? AND status='ACTIVE'",a.fixture().user());send(a,p,"GET","/current",null).andExpect(status().isForbidden());send(a,p,"POST","/candidates",prep(UUID.randomUUID())).andExpect(status().isForbidden());assertThat(candidates(p)).isEqualTo(1);}
     @Test void independentCompanyDenyBlocksPreparationWithoutCandidate()throws Exception{var a=httpActor("LOCAL");UUID p=preparedProduct(absent());publicationGrant(a.fixture(),"prepare","DENY","custody-company:"+COMPANY);send(a,p,"POST","/candidates",prep(UUID.randomUUID())).andExpect(status().isForbidden());assertThat(candidates(p)).isZero();}
     @Test void otherCompanyAndUnknownTargetHaveSameNonDisclosingDenial()throws Exception{var a=httpActor("LOCAL");UUID p=preparedProduct(absent());for(UUID id:List.of(p,UUID.randomUUID())){SecurityContextHolder.clearContext();http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(url(id)+"/current").param("companyPartyId","foreign-company").header("Authorization","Bearer "+a.token())).andExpect(status().isForbidden());}assertThat(candidates(p)).isZero();}

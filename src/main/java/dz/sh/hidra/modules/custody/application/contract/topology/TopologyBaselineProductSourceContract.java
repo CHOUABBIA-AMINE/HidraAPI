@@ -25,7 +25,18 @@ import java.time.Instant;
 import java.util.*;
 
 public interface TopologyBaselineProductSourceContract {
-    record Request(String companyPartyId,UUID draftId,String catalogProductId,UUID publicationId,String sha256) {}
+    record Request(String companyPartyId,UUID draftId,String catalogProductId,UUID publicationId,
+                   String sha256,Instant effectiveFrom) {
+        public Request {
+            Objects.requireNonNull(companyPartyId);
+            Objects.requireNonNull(draftId);
+            Objects.requireNonNull(catalogProductId);
+            Objects.requireNonNull(publicationId);
+            Objects.requireNonNull(sha256);
+            if(effectiveFrom==null || effectiveFrom.getNano()%1000!=0)
+                throw new IllegalArgumentException("Exact baseline effective instant required");
+        }
+    }
     record Original(int backendPid,long transactionId,String databaseRole,Instant sampledAt,Instant validUntil) {}
     record Facts(Instant effectiveFrom,Instant effectiveUntil,boolean currentlyEligible,
                  boolean methodSupplied,boolean inputsComplete,boolean approved) {}

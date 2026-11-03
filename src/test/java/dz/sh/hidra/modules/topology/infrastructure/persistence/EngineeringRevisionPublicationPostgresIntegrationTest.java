@@ -1298,6 +1298,39 @@ public class EngineeringRevisionPublicationPostgresIntegrationTest {
         assertThat(effective.events().getFirst().epoch()).isEqualTo(5);assertThat(effective.publication()).isEqualTo(first.publication());
         assertThat(exact(draft,first.publication().revisionId()).publication()).isEqualTo(first.publication());
     }
+    /** A genuine owner withdrawal/reactivation retains two disjoint effective windows. */
+    @Test void nativeNetworkReactivateProducesDistinctBaselineSourceEpoch() {
+        publicationActor("LOCAL");
+        UUID draft=create(UUID.randomUUID(),"source window").draft().draftId();
+        var published=publish(draft,1,null);
+        var withdrawn=transition(Kind.WITHDRAW,draft,published.observedHead());
+        var reactivated=transition(Kind.REACTIVATE,draft,withdrawn.observedHead());
+        UUID context=published.publication().snapshot().scope().contextId();
+        UUID revision=published.publication().revisionId();
+        String table="public.hidra_topology_engineering_publication_event";
+        String query="SELECT max(effective_at) FROM "+table
+            +" WHERE context_id=? AND revision_id=? AND operation IN ('PUBLISH','REACTIVATE')"
+            +" AND resulting_state='ACTIVE' AND effective_at<=?";
+        Timestamp original=jdbc.queryForObject(query,Timestamp.class,context,revision,
+            Timestamp.from(withdrawn.observedHead().effectiveAt()));
+        Timestamp resumed=jdbc.queryForObject(query,Timestamp.class,context,revision,
+            Timestamp.from(reactivated.observedHead().effectiveAt()));
+        assertThat(original).isNotNull();
+        assertThat(resumed).isNotNull();
+        assertThat(original.toInstant()).isEqualTo(published.observedHead().effectiveAt());
+        assertThat(resumed.toInstant()).isEqualTo(reactivated.observedHead().effectiveAt());
+        Timestamp gapEnd=jdbc.queryForObject("SELECT min(effective_at) FROM "+table
+            +" WHERE context_id=? AND effective_at>? AND (revision_id<>? OR resulting_state<>'ACTIVE')",
+            Timestamp.class,context,original,revision);
+        assertThat(gapEnd).isNotNull();
+        assertThat(gapEnd.toInstant()).isEqualTo(withdrawn.observedHead().effectiveAt());
+        Timestamp resumedEnd=jdbc.queryForObject("SELECT min(effective_at) FROM "+table
+            +" WHERE context_id=? AND effective_at>? AND (revision_id<>? OR resulting_state<>'ACTIVE')",
+            Timestamp.class,context,resumed,revision);
+        assertThat(resumedEnd).isNull();
+        assertThat(exact(draft,revision).publication()).isEqualTo(published.publication());
+    }
+
     @Test void exactReadAndKeysetHistorySurviveMoreThanHundredEvents() {
         publicationActor("LOCAL");UUID draft=create(UUID.randomUUID(),"history").draft().draftId();
         var first=publish(draft,1,null);Head head=first.observedHead();

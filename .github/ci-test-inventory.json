@@ -1319,16 +1319,17 @@
     {
       "baseline_seconds": 48.223,
       "cases": [
-        "actualFinalScalarGuardFailureReturns503AndRollsBackHttpCandidate",
         "allFourNativeProducersPrepareApprovePublishAndReadConfiguredHttp",
         "configuredReplayWithdrawEffectiveHistoryAndReactivationRetainSnapshot",
-        "denyOnEitherScopeBlocksEveryNativePublicationAction",
-        "independentCompanyDenyBlocksPreparationWithoutCandidate",
+        "nativeProductReactivateSuppliesBaselineAsOfWindow",
         "missingMalformedAndRevokedBearerCannotDiscloseOrMutate",
+        "independentCompanyDenyBlocksPreparationWithoutCandidate",
         "otherCompanyAndUnknownTargetHaveSameNonDisclosingDenial",
-        "scalarExportRequiresFreshNativeProofAndRetainsExactUnqualifiedFacts",
+        "strictUnknownFieldsDuplicateScopesAndTemporalBoundsCannotApply",
         "staleSourcesAndSubstitutedApprovalConflictWithoutPublication",
-        "strictUnknownFieldsDuplicateScopesAndTemporalBoundsCannotApply"
+        "actualFinalScalarGuardFailureReturns503AndRollsBackHttpCandidate",
+        "scalarExportRequiresFreshNativeProofAndRetainsExactUnqualifiedFacts",
+        "denyOnEitherScopeBlocksEveryNativePublicationAction"
       ],
       "class": "dz.sh.hidra.modules.custody.infrastructure.persistence.ProductRevisionPublicationNativeHttpPostgresIntegrationTest",
       "dependency_reason": "Configured native HTTP/PostgreSQL/Workflow publication contract",
@@ -1336,7 +1337,7 @@
       "lane": "postgres-integration",
       "owner": "custody",
       "path": "src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/ProductRevisionPublicationNativeHttpPostgresIntegrationTest.java",
-      "source_sha256": "fef00594d64716811f92c52a4533033d58480b549e62c57a29036ff4ddcd4bbb",
+      "source_sha256": "9a3b34cb5291f34c60c84d224c1171f48d118d5096bc0eab1dbae956e433a46c",
       "supports": []
     },
     {
@@ -8204,6 +8205,25 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "createPreservesExactSelectionAndDoesNotClaimQualification",
+        "updateRequiresExactExpectedRevisionAndRequest",
+        "historicalReadAndCurrentValidationRemainNonMutating",
+        "responseSeparatesCapturedAndCurrentSourceDiagnostics",
+        "rejectsUnrecognizedKindsMalformedDigestsAndDuplicatePins",
+        "rejectsMissingScopeRequestAndInvalidEffectiveTimes"
+      ],
+      "class": "dz.sh.hidra.modules.topology.api.rest.EngineeringBaselineDraftRestMapperTest",
+      "dependency_reason": "HAPI-605 third exceptional delivery: exact baseline REST mapping, historical revision and unqualified completeness response tests; synthetic JUnit fixture",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/api/rest/EngineeringBaselineDraftRestMapperTest.java",
+      "source_sha256": "fdec56acf91a9aaa4ed11337481e8f2c5d683a901acec6b5e9aee70b9b7f54ab",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0.127,
       "cases": [
         "graphReadDefaultsToCurrentAndSupportsExplicitHistoricalVersion",
@@ -9406,20 +9426,21 @@
     {
       "baseline_seconds": 48.794,
       "cases": [
-        "catalogRoleAndLedgerTamperingFailClosed",
-        "concurrentDraftCandidatesHaveOneContextHeadCasWinner",
-        "currentDenyRevocationAndForeignScopeRevealNoPublicationData",
-        "draftEditsNeverRewritePublishedSnapshots",
-        "exactReadAndKeysetHistorySurviveMoreThanHundredEvents",
-        "expiredFinalGuardAndDirtyFlushRollBackAllPublicationEffects",
         "fourGenuineProvidersPublishAndReadExactSnapshots",
-        "identicalReplayIsStableAndConflictingReplayIsRejected",
-        "observedCommitAndIndeterminateOutcomeNeverAutoRetry",
         "ordinaryLoginCannotReadOrMutatePublicationStorage",
+        "currentDenyRevocationAndForeignScopeRevealNoPublicationData",
         "sourceGraphSurveyDigestsAndIncompleteDiagnosticsRemainExact",
-        "stationOwnerAbaAndTransferMismatchHoldWithoutRebinding",
+        "draftEditsNeverRewritePublishedSnapshots",
+        "concurrentDraftCandidatesHaveOneContextHeadCasWinner",
+        "identicalReplayIsStableAndConflictingReplayIsRejected",
         "withdrawReactivateAndEffectiveBoundariesPreserveHistory",
-        "writerFirstAndOwnerFirstRetainAllThirtyEightFences"
+        "nativeNetworkReactivateProducesDistinctBaselineSourceEpoch",
+        "exactReadAndKeysetHistorySurviveMoreThanHundredEvents",
+        "stationOwnerAbaAndTransferMismatchHoldWithoutRebinding",
+        "writerFirstAndOwnerFirstRetainAllThirtyEightFences",
+        "expiredFinalGuardAndDirtyFlushRollBackAllPublicationEffects",
+        "catalogRoleAndLedgerTamperingFailClosed",
+        "observedCommitAndIndeterminateOutcomeNeverAutoRetry"
       ],
       "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.EngineeringRevisionPublicationPostgresIntegrationTest",
       "dependency_reason": "HAPI-590B genuine native providers, separate PostgreSQL principals and publication ledger; hosted execution/timing pending, zero is unmeasured",
@@ -9427,7 +9448,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/EngineeringRevisionPublicationPostgresIntegrationTest.java",
-      "source_sha256": "8cc32d91c0ba069435c13c1df9407f25e7ec81a34f8e7b95769a3e0a72c848ca",
+      "source_sha256": "5f7c047ca1877cbc3c1af8fab0ea0e3ae28f2b3787fb10db6481817b7e9156e7",
       "supports": []
     },
     {
@@ -10109,15 +10130,20 @@
         "baselineLostPhysicalCommitAcknowledgementIsIndeterminateAndReplayIsStable",
         "baselineImmutableRevisionAndReceiptRejectDatabaseMutation",
         "baselineSourceLockContentionCannotPublishPartialDraft",
+        "baselineConcurrentIdenticalCreateRequestsCannotDuplicateRevisionOrReceipt",
+        "baselineConcurrentDifferentCreateRequestsRetainOneCommittedHead",
+        "baselineConcurrentExpectedVersionUpdatesKeepOneImmutableSuccessor",
+        "baselinePhysicalOwnerTablesRetainValidatedKeysAndReferences",
+        "baselineMissingRequiredForeignKeyCannotCommitAndRestoresFixture",
         "baselineFinalGuardCatalogDriftCannotCommitARevision"
       ],
       "class": "dz.sh.hidra.modules.topology.qualification.EngineeringBaselineDraftNativeHttpPostgresIntegrationTest",
-      "dependency_reason": "HAPI-605 native baseline company/pipeline/source grants, opaque admission and original-transaction proof plus draft HTTP/Flyway/PostgreSQL replay/version/denial/rollback/commit-ack/catalog/lock cases; synthetic isolated fixtures; 21 added cases await hosted execution",
+      "dependency_reason": "HAPI-605 native baseline company/pipeline/source grants, opaque admission and original-transaction proof plus draft HTTP/Flyway/PostgreSQL replay/version/denial/rollback/commit-ack/catalog/lock cases; synthetic isolated fixtures; 26 native guarded cases await hosted execution",
       "fast": false,
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/qualification/EngineeringBaselineDraftNativeHttpPostgresIntegrationTest.java",
-      "source_sha256": "94cdd01e356cfd5d4d9c46300fbb7cbe4421d97d913f37c481fe05c4cd764863",
+      "source_sha256": "6e3f287e1a68c41737ce05b0e48f541572a4b312b73aecaa168248948712fb86",
       "supports": []
     },
     {

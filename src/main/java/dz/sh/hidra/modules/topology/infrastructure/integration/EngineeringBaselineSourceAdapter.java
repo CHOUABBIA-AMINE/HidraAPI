@@ -130,7 +130,7 @@ public final class EngineeringBaselineSourceAdapter implements EngineeringBaseli
         authorize(t,new Read(Kind.NETWORK_PUBLICATION,t.manifest.pipelineSystemId()));
         var context=UUID.fromString(pin.ownerId());var revision=UUID.fromString(pin.revisionId());
         var scope=new EngineeringRevisionPublication.Scope(context,t.manifest.companyPartyId(),t.manifest.pipelineSystemId());
-        var rows=jdbc.query("SELECT canonical_payload,sha256,payload_format FROM public.hidra_topology_engineering_publication_snapshot"
+        var rows=jdbc.query("SELECT canonical_payload,sha256,payload_format,draft_id,draft_version FROM public.hidra_topology_engineering_publication_snapshot"
             +" WHERE context_id=? AND revision_id=? AND EXISTS(SELECT 1 FROM public.hidra_topology_engineering_context"
             +" WHERE id=? AND company_party_id=? AND pipeline_system_id=?)",
             (r,n)->{
@@ -138,7 +138,10 @@ public final class EngineeringBaselineSourceAdapter implements EngineeringBaseli
                 if(b==null||!EngineeringRevisionPublication.hash(b).equals(pin.sha256())
                     ||!pin.sha256().equals(r.getString(2))
                     ||!EngineeringRevisionPublicationCodec.FORMAT.equals(r.getString(3)))throw denied();
-                return new EngineeringRevisionPublicationCodec().decode(b,scope);
+                var decoded=new EngineeringRevisionPublicationCodec().decode(b,scope);
+                if(!decoded.draftId().equals(r.getObject(4,UUID.class))
+                    ||decoded.version()!=r.getLong(5))throw denied();
+                return decoded;
             },context,revision,context,scope.companyPartyId(),scope.pipelineSystemId());
         if(rows.size()!=1)throw denied();var snapshot=rows.getFirst();
         var required=new HashSet<Requirement>();var findings=new HashSet<Finding>();
@@ -147,7 +150,7 @@ public final class EngineeringBaselineSourceAdapter implements EngineeringBaseli
             var graph=new EngineeringGraphDraftCodec().decode(Base64.getDecoder().decode(snapshot.graph().base64()));
             for(var node:graph.nodes())if(node.kind()==EngineeringGraphDraft.NodeKind.STATION)
                 required.add(new Requirement(EngineeringBaselineManifest.Kind.STATION_CONFIGURATION,node.facilityId()));
-            if(graph.diagnostics().contains("GRAPH_DISCONNECTED"))findings.add(Finding.GRAPH_INCOMPLETE);
+            if(!graph.diagnostics().isEmpty())findings.add(Finding.GRAPH_INCOMPLETE);
             if(graph.branches().stream().noneMatch(b->b.kind()==EngineeringGraphDraft.BranchKind.PIPE))findings.add(Finding.SECTIONS_NOT_SUPPLIED);
             for(var survey:snapshot.surveys())if(survey.source()!=null){
                 var profile=new dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.SurveyRouteProfileCodec()
@@ -181,13 +184,16 @@ public final class EngineeringBaselineSourceAdapter implements EngineeringBaseli
     private SourceFacts station(Ticket t,Pin pin,Map<String,StationInstalledConfiguration.Position> installations){
         if(!pin.ownerId().equals(pin.sourceId()))throw denied();
         authorize(t,new Read(Kind.STATION_CONFIGURATION,pin.ownerId()));
-        var rows=jdbc.query("SELECT canonical_payload,canonical_sha256,payload_format FROM public.hidra_topology_station_configuration_revision"
+        var rows=jdbc.query("SELECT canonical_payload,canonical_sha256,payload_format,effective_from,effective_until FROM public.hidra_topology_station_configuration_revision"
             +" WHERE company_party_id=? AND facility_id=? AND revision_id=?",
             (r,n)->{
                 byte[] b=r.getBytes(1);var codec=new StationInstalledConfigurationCodec();
                 if(b==null||!codec.sha256(b).equals(pin.sha256())||!pin.sha256().equals(r.getString(2))
                     ||!StationInstalledConfigurationCodec.FORMAT.equals(r.getString(3)))throw denied();
-                return codec.decode(b);
+                var decoded=codec.decode(b);
+                if(!decoded.effectiveFrom().equals(r.getTimestamp(4).toInstant())
+                    ||!Objects.equals(decoded.effectiveUntil(),instant(r.getTimestamp(5))))throw denied();
+                return decoded;
             },t.manifest.companyPartyId(),pin.ownerId(),pin.revisionId());
         if(rows.size()!=1)throw denied();var value=rows.getFirst();
         if(!value.companyPartyId().equals(t.manifest.companyPartyId())||!value.facilityId().equals(pin.ownerId())
@@ -203,9 +209,13 @@ public final class EngineeringBaselineSourceAdapter implements EngineeringBaseli
             if(!Boolean.TRUE.equals(jdbc.queryForObject("SELECT EXISTS(SELECT 1 FROM public.hidra_topology_installed_unit"
                 +" WHERE id=? AND company_party_id=?)",Boolean.class,position.installedUnitId(),t.manifest.companyPartyId())))throw denied();
             if(!Boolean.TRUE.equals(jdbc.queryForObject("SELECT EXISTS(SELECT 1 FROM public.hidra_topology_installed_unit_installation_event"
-                +" WHERE installation_id=? AND revision=? AND unit_id=? AND position_id=? AND company_party_id=?)",
+                +" WHERE installation_id=? AND revision=? AND unit_id=? AND position_id=? AND company_party_id=?"
+                +" AND effective_from=? AND effective_until IS NOT DISTINCT FROM ?::timestamptz"
+                +" AND evidence_reference=?)",
                 Boolean.class,position.installationId(),position.installationRevision(),position.installedUnitId(),
-                position.positionId(),t.manifest.companyPartyId())))throw denied();
+                position.positionId(),t.manifest.companyPartyId(),Timestamp.from(position.installationFrom()),
+                position.installationUntil()==null?null:Timestamp.from(position.installationUntil()),
+                position.installationEvidenceReference())))throw denied();
             requirements.add(new Requirement(EngineeringBaselineManifest.Kind.CHARACTERISTIC_LINK,position.installedUnitId()));
         }
         var missing=new HashSet<Finding>();

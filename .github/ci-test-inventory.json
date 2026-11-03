@@ -1320,6 +1320,7 @@
       "baseline_seconds": 48.223,
       "cases": [
         "allFourNativeProducersPrepareApprovePublishAndReadConfiguredHttp",
+        "nativeApprovedProductFeedsProtectedBaselineWithRetainedWorkflowEvidence",
         "configuredReplayWithdrawEffectiveHistoryAndReactivationRetainSnapshot",
         "nativeProductReactivateSuppliesBaselineAsOfWindow",
         "missingMalformedAndRevokedBearerCannotDiscloseOrMutate",
@@ -1337,7 +1338,7 @@
       "lane": "postgres-integration",
       "owner": "custody",
       "path": "src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/ProductRevisionPublicationNativeHttpPostgresIntegrationTest.java",
-      "source_sha256": "9a3b34cb5291f34c60c84d224c1171f48d118d5096bc0eab1dbae956e433a46c",
+      "source_sha256": "3f1f4c244348844fe396a6010c4e91a93f8d8a1d9e137f85aa16d69c353efda6",
       "supports": []
     },
     {
@@ -9429,6 +9430,7 @@
         "fourGenuineProvidersPublishAndReadExactSnapshots",
         "ordinaryLoginCannotReadOrMutatePublicationStorage",
         "currentDenyRevocationAndForeignScopeRevealNoPublicationData",
+        "nativePublishedNetworkFeedsProtectedBaselineWithHistoricalSourceRevalidation",
         "sourceGraphSurveyDigestsAndIncompleteDiagnosticsRemainExact",
         "draftEditsNeverRewritePublishedSnapshots",
         "concurrentDraftCandidatesHaveOneContextHeadCasWinner",
@@ -9448,7 +9450,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/EngineeringRevisionPublicationPostgresIntegrationTest.java",
-      "source_sha256": "5f7c047ca1877cbc3c1af8fab0ea0e3ae28f2b3787fb10db6481817b7e9156e7",
+      "source_sha256": "ee26abe4c9c2c70b6870f880ee0080cce1734615a9a41b12dc9c881b4fb07f04",
       "supports": []
     },
     {
@@ -10135,15 +10137,16 @@
         "baselineConcurrentExpectedVersionUpdatesKeepOneImmutableSuccessor",
         "baselinePhysicalOwnerTablesRetainValidatedKeysAndReferences",
         "baselineMissingRequiredForeignKeyCannotCommitAndRestoresFixture",
+        "baselineForeignKeySubstitutionWithEqualConstraintCountStillFailsClosed",
         "baselineFinalGuardCatalogDriftCannotCommitARevision"
       ],
       "class": "dz.sh.hidra.modules.topology.qualification.EngineeringBaselineDraftNativeHttpPostgresIntegrationTest",
-      "dependency_reason": "HAPI-605 native baseline company/pipeline/source grants, opaque admission and original-transaction proof plus draft HTTP/Flyway/PostgreSQL replay/version/denial/rollback/commit-ack/catalog/lock cases; synthetic isolated fixtures; 26 native guarded cases await hosted execution",
+      "dependency_reason": "HAPI-605 27 native original-transaction draft/permission/source/rollback/concurrent writer/catalog cases, including substituted FK shape with unchanged constraint counts; synthetic PostgreSQL fixture; exact SHA CI acceptance pending",
       "fast": false,
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/qualification/EngineeringBaselineDraftNativeHttpPostgresIntegrationTest.java",
-      "source_sha256": "6e3f287e1a68c41737ce05b0e48f541572a4b312b73aecaa168248948712fb86",
+      "source_sha256": "97f4a66150f2b38212be7baab199661db6f50d9d1bb8165cb100a02f4c1de253",
       "supports": []
     },
     {

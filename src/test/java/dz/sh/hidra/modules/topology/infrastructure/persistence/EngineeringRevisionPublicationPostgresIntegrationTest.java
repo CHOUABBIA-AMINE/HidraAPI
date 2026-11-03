@@ -1205,6 +1205,142 @@ public class EngineeringRevisionPublicationPostgresIntegrationTest {
         assertThatThrownBy(()->exact(draft,revision)).isInstanceOf(EngineeringRevisionPublicationFailure.class);
         assertThat(events(published.publication().snapshot().scope().contextId())).isEqualTo(1);
     }
+
+    /** Real owner-created publication is read by the baseline API under independent grants. */
+    @Test void nativePublishedNetworkFeedsProtectedBaselineWithHistoricalSourceRevalidation() throws Exception {
+        var actor=publicationActor("LOCAL");
+        UUID networkDraft=surveyDraft();
+        surveyOwner().executeSurvey(surveyWrite(networkDraft,2));
+        var published=publish(networkDraft,3,null);
+        UUID context=published.publication().snapshot().scope().contextId();
+        UUID revision=published.publication().revisionId();
+        String digest=EngineeringRevisionPublication.hash(
+            new dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.EngineeringRevisionPublicationCodec()
+                .encode(published.publication().snapshot()));
+        String baseline="/api/v1/topology/engineering-baselines";
+        UUID manifest=UUID.randomUUID(),request=UUID.randomUUID();
+        // All grants are fresh fixture rows. A publication-read right does not imply the
+        // separate baseline company AND network create/read/validate rights.
+        for(String action:List.of("create","read","validate")) {
+            String code="topology:engineering-baseline:"+action;
+            var found=jdbc.queryForList(
+                "SELECT id FROM public.hidra_identity_permission WHERE code=?",String.class,code);
+            String permission=found.isEmpty()?id():found.getFirst();
+            if(found.isEmpty())jdbc.update(
+                "INSERT INTO public.hidra_identity_permission"
+                +"(id,code,permission_domain,resource_type,action,sensitive,status,created_at,updated_at)"
+                +" VALUES (?,?,'topology','ENGINEERING_BASELINE_DRAFT',?,true,'ACTIVE',now(),now())",
+                permission,code,action);
+            for(String scope:List.of("topology-company:"+COMPANY,"topology-network:"+network))
+                jdbc.update("INSERT INTO public.hidra_identity_user_permission_grant"
+                    +"(id,user_id,permission_id,effect,scope_type,scope_reference_id,grant_reason,"
+                    +"emergency_access,valid_from,valid_to,status,created_at)"
+                    +" VALUES (?,?,?,'GRANT','CUSTOM',?,'synthetic baseline source review',false,"
+                    +" now()-interval '1 hour',now()+interval '1 hour','ACTIVE',now())",
+                    id(),actor.user(),permission,scope);
+        }
+        String tables="public.hidra_topology_engineering_baseline_draft,"
+            +"public.hidra_topology_engineering_baseline_revision,"
+            +"public.hidra_topology_engineering_baseline_request";
+        jdbc.execute("REVOKE ALL ON "+tables+" FROM c3_source_claim_app");
+        jdbc.execute("GRANT SELECT,INSERT,UPDATE ON "+tables+" TO c3_publication_app");
+        for(String function:List.of("hidra_topology_baseline_lock_storage",
+                "hidra_topology_baseline_lock_sources","hidra_custody_baseline_lock_product_source"))
+            jdbc.execute("GRANT EXECUTE ON FUNCTION public."+function+"() TO c3_publication_app");
+        String body="""
+            {"manifestId":"%s","companyPartyId":"%s","pipelineSystemId":"%s",
+             "requestId":"%s","effectiveFrom":"%s","effectiveUntil":null,
+             "pins":[{"kind":"NETWORK_PUBLICATION","ownerId":"%s","sourceId":"%s",
+                      "revisionId":"%s","sha256":"%s"}]}
+            """.formatted(manifest,COMPANY,network,request,
+                published.observedHead().effectiveAt(),context,context,revision,digest);
+        // A permitted network source cannot waive a missing independent Custody read grant.
+        UUID refused=UUID.randomUUID();
+        String bothBody="""
+            {"manifestId":"%s","companyPartyId":"%s","pipelineSystemId":"%s",
+             "requestId":"%s","effectiveFrom":"%s","effectiveUntil":null,
+             "pins":[{"kind":"NETWORK_PUBLICATION","ownerId":"%s","sourceId":"%s",
+                      "revisionId":"%s","sha256":"%s"},
+                     {"kind":"PRODUCT_PUBLICATION","ownerId":"%s","sourceId":"missing-product",
+                      "revisionId":"%s","sha256":"%s"}]}
+            """.formatted(refused,COMPANY,network,UUID.randomUUID(),
+                published.observedHead().effectiveAt(),context,context,revision,digest,
+                UUID.randomUUID(),UUID.randomUUID(),"a".repeat(64));
+        SecurityContextHolder.clearContext();
+        http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(baseline)
+            .header("Authorization","Bearer "+rawToken).contentType("application/json").content(bothBody))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isForbidden());
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_engineering_baseline_revision"
+            +" WHERE manifest_id=?::uuid",Long.class,refused)).isZero();
+        SecurityContextHolder.clearContext();
+        var created=http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(baseline)
+            .header("Authorization","Bearer "+rawToken).contentType("application/json").content(body))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+            .andReturn();
+        var first=JSON.readTree(created.getResponse().getContentAsString());
+        assertThat(first.path("version").asLong()).isEqualTo(1);
+        assertThat(first.path("pins").size()).isEqualTo(1);
+        assertThat(first.path("pins").get(0).path("sha256").asText()).isEqualTo(digest);
+        assertThat(first.path("engineeringQualified").asBoolean()).isFalse();
+        assertThat(first.path("authoritative").asBoolean()).isFalse();
+        assertThat(first.path("frozen").asBoolean()).isFalse();
+        assertThat(first.path("capturedCompleteness").path("findings").toString())
+            .doesNotContain("NETWORK_NOT_SELECTED","SOURCE_INTERVAL_NOT_COVERED",
+                "SOURCE_NOT_CURRENTLY_ELIGIBLE");
+        assertThat(first.path("capturedCompleteness").path("findings").toString())
+            .contains("PRODUCT_NOT_SELECTED");
+        var origins=jdbc.queryForMap("""
+            SELECT r.backend_pid AS revision_pid,r.transaction_id AS revision_xid,
+                   q.backend_pid AS request_pid,q.transaction_id AS request_xid
+              FROM public.hidra_topology_engineering_baseline_revision r
+              JOIN public.hidra_topology_engineering_baseline_request q
+                ON q.manifest_id=r.manifest_id AND q.version=r.version
+               AND q.company_party_id=r.company_party_id AND q.pipeline_system_id=r.pipeline_system_id
+             WHERE r.manifest_id=?::uuid
+            """,manifest);
+        assertThat(origins.get("revision_pid")).isEqualTo(origins.get("request_pid"));
+        assertThat(origins.get("revision_xid")).isEqualTo(origins.get("request_xid"));
+        SecurityContextHolder.clearContext();
+        http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(baseline)
+            .header("Authorization","Bearer "+rawToken).contentType("application/json").content(body))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.replayed").value(true));
+        SecurityContextHolder.clearContext();
+        http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(
+                baseline+"/"+manifest+"/validation").header("Authorization","Bearer "+rawToken)
+                .param("companyPartyId",COMPANY).param("pipelineSystemId",network))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.version").value(1));
+        // The owner publishes a replacement. The old bytes and captured findings cannot change.
+        ambient(rawToken);
+        UUID replacement=create(UUID.randomUUID(),"new network publication").draft().draftId();
+        publish(replacement,1,published.observedHead());
+        SecurityContextHolder.clearContext();
+        var historical=http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(
+                baseline+"/"+manifest+"/revisions/1").header("Authorization","Bearer "+rawToken)
+                .param("companyPartyId",COMPANY).param("pipelineSystemId",network))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+            .andReturn();
+        var old=JSON.readTree(historical.getResponse().getContentAsString());
+        assertThat(old.path("pins").get(0).path("sha256").asText()).isEqualTo(digest);
+        assertThat(old.path("capturedCompleteness")).isEqualTo(first.path("capturedCompleteness"));
+        assertThat(old.path("currentCompleteness").path("findings").toString())
+            .contains("SOURCE_NOT_CURRENTLY_ELIGIBLE");
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_engineering_baseline_revision"
+            +" WHERE manifest_id=?::uuid",Long.class,manifest)).isEqualTo(1L);
+        // History existence and stale captured source data require fresh original owner authority.
+        jdbc.update("UPDATE public.hidra_identity_user_permission_grant SET status='REVOKED',revoked_at=now()"
+            +" WHERE user_id=? AND permission_id=(SELECT id FROM public.hidra_identity_permission"
+            +" WHERE code='topology:engineering-publication:read')",actor.user());
+        SecurityContextHolder.clearContext();
+        http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(
+                baseline+"/"+manifest+"/revisions/1").header("Authorization","Bearer "+rawToken)
+                .param("companyPartyId",COMPANY).param("pipelineSystemId",network))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isForbidden());
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_engineering_baseline_revision"
+            +" WHERE manifest_id=?::uuid",Long.class,manifest)).isEqualTo(1L);
+    }
+
     @Test void sourceGraphSurveyDigestsAndIncompleteDiagnosticsRemainExact() {
         publicationActor("LOCAL");UUID draft=surveyDraft();surveyOwner().executeSurvey(surveyWrite(draft,2));
         var first=publish(draft,3,null);var snapshot=first.publication().snapshot();

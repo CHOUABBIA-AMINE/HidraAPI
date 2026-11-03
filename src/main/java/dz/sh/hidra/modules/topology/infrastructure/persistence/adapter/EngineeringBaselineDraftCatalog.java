@@ -48,6 +48,46 @@ final class EngineeringBaselineDraftCatalog {
               'public.hidra_topology_engineering_baseline_draft'::regclass,
               'public.hidra_topology_engineering_baseline_revision'::regclass,
               'public.hidra_topology_engineering_baseline_request'::regclass))
+        -- Require the actual exact owned key columns and references. An unrelated
+        -- replacement constraint cannot satisfy the original count predicates.
+        AND (SELECT count(*)=3 FROM (VALUES
+            ('public.hidra_topology_engineering_baseline_draft',
+                ARRAY['company_party_id','pipeline_system_id','manifest_id']::text[]),
+            ('public.hidra_topology_engineering_baseline_revision',
+                ARRAY['company_party_id','pipeline_system_id','manifest_id','version']::text[]),
+            ('public.hidra_topology_engineering_baseline_request',
+                ARRAY['company_party_id','pipeline_system_id','manifest_id','actor_user_id','request_id']::text[])
+            ) AS expected(rel,columns)
+            WHERE EXISTS(SELECT 1 FROM pg_catalog.pg_constraint c
+                WHERE c.conrelid=expected.rel::regclass AND c.contype='p' AND c.convalidated
+                AND (SELECT array_agg(a.attname::text ORDER BY k.ord)
+                     FROM unnest(c.conkey) WITH ORDINALITY AS k(number,ord)
+                     JOIN pg_catalog.pg_attribute a ON a.attrelid=c.conrelid AND a.attnum=k.number)
+                    =expected.columns))
+        AND (SELECT count(*)=4 FROM (VALUES
+            ('public.hidra_topology_engineering_baseline_draft','public.hidra_topology_pipeline_system',
+                ARRAY['pipeline_system_id']::text[],ARRAY['id']::text[]),
+            ('public.hidra_topology_engineering_baseline_draft','public.hidra_topology_engineering_baseline_revision',
+                ARRAY['company_party_id','pipeline_system_id','manifest_id','head_version']::text[],
+                ARRAY['company_party_id','pipeline_system_id','manifest_id','version']::text[]),
+            ('public.hidra_topology_engineering_baseline_revision','public.hidra_topology_engineering_baseline_draft',
+                ARRAY['company_party_id','pipeline_system_id','manifest_id']::text[],
+                ARRAY['company_party_id','pipeline_system_id','manifest_id']::text[]),
+            ('public.hidra_topology_engineering_baseline_request','public.hidra_topology_engineering_baseline_revision',
+                ARRAY['company_party_id','pipeline_system_id','manifest_id','version']::text[],
+                ARRAY['company_party_id','pipeline_system_id','manifest_id','version']::text[])
+            ) AS expected(rel,referenced,columns,ref_columns)
+            WHERE EXISTS(SELECT 1 FROM pg_catalog.pg_constraint c
+                WHERE c.conrelid=expected.rel::regclass AND c.confrelid=expected.referenced::regclass
+                    AND c.contype='f' AND c.convalidated
+                    AND (SELECT array_agg(a.attname::text ORDER BY k.ord)
+                         FROM unnest(c.conkey) WITH ORDINALITY AS k(number,ord)
+                         JOIN pg_catalog.pg_attribute a ON a.attrelid=c.conrelid AND a.attnum=k.number)
+                        =expected.columns
+                    AND (SELECT array_agg(a.attname::text ORDER BY k.ord)
+                         FROM unnest(c.confkey) WITH ORDINALITY AS k(number,ord)
+                         JOIN pg_catalog.pg_attribute a ON a.attrelid=c.confrelid AND a.attnum=k.number)
+                        =expected.ref_columns))
         AND NOT EXISTS(SELECT 1 FROM pg_catalog.pg_constraint c
             WHERE c.conrelid IN (
               'public.hidra_topology_engineering_baseline_draft'::regclass,

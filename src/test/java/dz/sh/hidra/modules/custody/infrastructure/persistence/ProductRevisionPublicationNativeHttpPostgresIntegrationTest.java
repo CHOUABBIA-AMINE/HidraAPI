@@ -912,6 +912,135 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
     private String approvalJson(Selection a){return "{\"instanceId\":\""+a.instanceId()+"\",\"taskId\":\""+a.taskId()+"\",\"actionId\":\""+a.actionId()+"\"}";}
     private String publishJson(String digest,Selection a,UUID request,long epoch,UUID expected){return "{\"requestId\":\""+request+"\",\"candidateDigest\":\""+digest+"\",\"expectedEpoch\":"+epoch+",\"expectedPublicationId\":"+(expected==null?"null":"\""+expected+"\"")+",\"approval\":"+approvalJson(a)+"}";}
     @Test void allFourNativeProducersPrepareApprovePublishAndReadConfiguredHttp()throws Exception{for(String type:List.of("LOCAL","OIDC","LDAP","ACTIVE_DIRECTORY")){var a=httpActor(type);UUID p=preparedProduct(absent());var prepared=json(send(a,p,"POST","/candidates",prep(UUID.randomUUID())).andExpect(status().isCreated()));String digest=prepared.get("candidateDigest").asText();send(a,p,"GET","/candidates/"+digest,null).andExpect(status().isOk()).andExpect(jsonPath("$.candidate.engineeringQualified").value(false));var selection=humanApproval(a,digest);var published=json(send(a,p,"POST","",publishJson(digest,selection,UUID.randomUUID(),0,null)).andExpect(status().isCreated()));String id=published.get("publication").get("publicationId").asText();send(a,p,"GET","/"+id,null).andExpect(status().isOk()).andExpect(jsonPath("$.publication.approval.actorDisplayName").value("Synthetic Publication Reviewer"));send(a,p,"GET","/current",null).andExpect(status().isOk()).andExpect(jsonPath("$.observedHead.epoch").value(1));}}
+
+    /** Genuine Workflow-approved Custody publication is read in the baseline original transaction. */
+    @Test void nativeApprovedProductFeedsProtectedBaselineWithRetainedWorkflowEvidence() throws Exception {
+        var actor=httpActor("LOCAL");
+        UUID productDraft=preparedProduct(absent());
+        String candidate=json(send(actor,productDraft,"POST","/candidates",prep(UUID.randomUUID()))
+            .andExpect(status().isCreated())).path("candidateDigest").asText();
+        var selection=humanApproval(actor,candidate);
+        var publicationJson=json(send(actor,productDraft,"POST","",
+            publishJson(candidate,selection,UUID.randomUUID(),0,null))
+            .andExpect(status().isCreated()));
+        UUID publication=UUID.fromString(publicationJson.path("publication").path("publicationId").asText());
+        String sourceDigest=jdbc.queryForObject("SELECT sha256 FROM public.hidra_custody_product_publication"
+            +" WHERE company_party_id=? AND product_draft_id=? AND publication_id=?",
+            String.class,COMPANY,productDraft,publication);
+        Timestamp activeFrom=jdbc.queryForObject(
+            "SELECT effective_at FROM public.hidra_custody_product_publication_event"
+            +" WHERE company_party_id=? AND product_draft_id=? AND publication_id=? AND action='PUBLISH'",
+            Timestamp.class,COMPANY,productDraft,publication);
+        assertThat(sourceDigest).hasSize(64);
+        assertThat(activeFrom).isNotNull();
+        String type=id(),pipeline=id();
+        jdbc.update("INSERT INTO public.hidra_topology_pipeline_system_type(id,code,active,created_at,updated_at)"
+            +" VALUES (?,?,true,now(),now())",type,type);
+        jdbc.update("INSERT INTO public.hidra_topology_pipeline_system"
+            +"(id,code,system_type_id,status,created_at,updated_at)"
+            +" VALUES (?,?,?,'DRAFT',now(),now())",pipeline,pipeline,type);
+        for(String action:List.of("create","read","validate")){
+            String code="topology:engineering-baseline:"+action;
+            var ids=jdbc.queryForList("SELECT id FROM public.hidra_identity_permission WHERE code=?",
+                String.class,code);
+            String permission=ids.isEmpty()?id():ids.getFirst();
+            if(ids.isEmpty())jdbc.update("INSERT INTO public.hidra_identity_permission"
+                +"(id,code,permission_domain,resource_type,action,sensitive,status,created_at,updated_at)"
+                +" VALUES (?,?,'topology','ENGINEERING_BASELINE_DRAFT',?,true,'ACTIVE',now(),now())",
+                permission,code,action);
+            for(String scope:List.of("topology-company:"+COMPANY,"topology-network:"+pipeline))
+                jdbc.update("INSERT INTO public.hidra_identity_user_permission_grant"
+                    +"(id,user_id,permission_id,effect,scope_type,scope_reference_id,grant_reason,"
+                    +" emergency_access,valid_from,valid_to,status,created_at)"
+                    +" VALUES (?,?,?,'GRANT','CUSTOM',?,'synthetic baseline custody reader',false,"
+                    +" now()-interval '1 hour',now()+interval '1 hour','ACTIVE',now())",
+                    id(),actor.fixture().user(),permission,scope);
+        }
+        String tables="public.hidra_topology_engineering_baseline_draft,"
+            +"public.hidra_topology_engineering_baseline_revision,"
+            +"public.hidra_topology_engineering_baseline_request";
+        jdbc.execute("REVOKE ALL ON "+tables+" FROM c3_source_claim_app");
+        jdbc.execute("GRANT SELECT,INSERT,UPDATE ON "+tables+" TO c3_publication_app");
+        for(String function:List.of("hidra_topology_baseline_lock_storage",
+                "hidra_topology_baseline_lock_sources","hidra_custody_baseline_lock_product_source"))
+            jdbc.execute("GRANT EXECUTE ON FUNCTION public."+function+"() TO c3_publication_app");
+        UUID manifest=UUID.randomUUID(),request=UUID.randomUUID();
+        String body="""
+            {"manifestId":"%s","companyPartyId":"%s","pipelineSystemId":"%s",
+             "requestId":"%s","effectiveFrom":"%s","effectiveUntil":null,
+             "pins":[{"kind":"PRODUCT_PUBLICATION","ownerId":"%s","sourceId":"%s",
+                      "revisionId":"%s","sha256":"%s"}]}
+            """.formatted(manifest,COMPANY,pipeline,request,activeFrom.toInstant(),
+                productDraft,PRODUCT,publication,sourceDigest);
+        String base="/api/v1/topology/engineering-baselines";
+        SecurityContextHolder.clearContext();
+        var response=http.perform(post(base).header("Authorization","Bearer "+actor.token())
+            .contentType("application/json").content(body)).andExpect(status().isOk()).andReturn();
+        var created=JSON.readTree(response.getResponse().getContentAsString());
+        assertThat(created.path("version").asLong()).isEqualTo(1);
+        assertThat(created.path("pins").get(0).path("sha256").asText()).isEqualTo(sourceDigest);
+        assertThat(created.path("capturedCompleteness").path("findings").toString())
+            .doesNotContain("APPROVAL_NOT_ESTABLISHED","SOURCE_NOT_CURRENTLY_ELIGIBLE",
+                "SOURCE_INTERVAL_NOT_COVERED","PRODUCT_NOT_SELECTED");
+        assertThat(created.path("capturedCompleteness").path("findings").toString())
+            .contains("NETWORK_NOT_SELECTED","METHOD_NOT_SUPPLIED");
+        assertThat(created.path("engineeringQualified").asBoolean()).isFalse();
+        var coords=jdbc.queryForMap("""
+            SELECT r.backend_pid AS revision_pid,r.transaction_id AS revision_xid,
+                   q.backend_pid AS receipt_pid,q.transaction_id AS receipt_xid
+             FROM public.hidra_topology_engineering_baseline_revision r
+             JOIN public.hidra_topology_engineering_baseline_request q
+               ON q.company_party_id=r.company_party_id AND q.pipeline_system_id=r.pipeline_system_id
+              AND q.manifest_id=r.manifest_id AND q.version=r.version
+            WHERE r.manifest_id=?::uuid
+            """,manifest);
+        assertThat(coords.get("revision_pid")).isEqualTo(coords.get("receipt_pid"));
+        assertThat(coords.get("revision_xid")).isEqualTo(coords.get("receipt_xid"));
+        SecurityContextHolder.clearContext();
+        send(actor,productDraft,"POST","/"+publication+"/withdraw",
+            "{\"requestId\":\""+UUID.randomUUID()+"\",\"expectedEpoch\":1,"
+             +"\"expectedPublicationId\":\""+publication+"\"}").andExpect(status().isOk());
+        SecurityContextHolder.clearContext();
+        var validation=http.perform(post(base+"/"+manifest+"/validation")
+            .header("Authorization","Bearer "+actor.token())
+            .param("companyPartyId",COMPANY).param("pipelineSystemId",pipeline))
+            .andExpect(status().isOk()).andReturn();
+        var after=JSON.readTree(validation.getResponse().getContentAsString());
+        assertThat(after.path("capturedCompleteness")).isEqualTo(created.path("capturedCompleteness"));
+        assertThat(after.path("currentCompleteness").path("findings").toString())
+            .contains("SOURCE_NOT_CURRENTLY_ELIGIBLE","SOURCE_INTERVAL_NOT_COVERED");
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_engineering_baseline_revision"
+            +" WHERE manifest_id=?::uuid",Long.class,manifest)).isEqualTo(1L);
+        // Reactivation starts a new effective source interval. A fresh manifest
+        // may select it, but the earlier captured withdrawal gap remains immutable.
+        send(actor,productDraft,"POST","/"+publication+"/reactivate",
+            "{\"requestId\":\""+UUID.randomUUID()+"\",\"expectedEpoch\":2,"
+             +"\"expectedPublicationId\":\""+publication+"\","
+             +"\"approval\":"+approvalJson(selection)+"}").andExpect(status().isOk());
+        Timestamp resumed=jdbc.queryForObject(
+            "SELECT effective_at FROM public.hidra_custody_product_publication_event"
+            +" WHERE company_party_id=? AND product_draft_id=? AND publication_id=? AND action='REACTIVATE'",
+            Timestamp.class,COMPANY,productDraft,publication);
+        assertThat(resumed.toInstant()).isAfter(activeFrom.toInstant());
+        UUID newManifest=UUID.randomUUID();
+        String resumedBody="""
+            {"manifestId":"%s","companyPartyId":"%s","pipelineSystemId":"%s",
+             "requestId":"%s","effectiveFrom":"%s","effectiveUntil":null,
+             "pins":[{"kind":"PRODUCT_PUBLICATION","ownerId":"%s","sourceId":"%s",
+                      "revisionId":"%s","sha256":"%s"}]}
+            """.formatted(newManifest,COMPANY,pipeline,UUID.randomUUID(),resumed.toInstant(),
+                productDraft,PRODUCT,publication,sourceDigest);
+        SecurityContextHolder.clearContext();
+        var renewed=http.perform(post(base).header("Authorization","Bearer "+actor.token())
+            .contentType("application/json").content(resumedBody)).andExpect(status().isOk()).andReturn();
+        var next=JSON.readTree(renewed.getResponse().getContentAsString());
+        assertThat(next.path("capturedCompleteness").path("findings").toString())
+            .doesNotContain("APPROVAL_NOT_ESTABLISHED","SOURCE_NOT_CURRENTLY_ELIGIBLE",
+                "SOURCE_INTERVAL_NOT_COVERED","PRODUCT_NOT_SELECTED");
+        assertThat(next.path("pins").get(0).path("sha256").asText()).isEqualTo(sourceDigest);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_engineering_baseline_revision"
+            +" WHERE manifest_id=?::uuid",Long.class,manifest)).isEqualTo(1L);
+    }
     @Test void configuredReplayWithdrawEffectiveHistoryAndReactivationRetainSnapshot()throws Exception{var a=httpActor("LOCAL");UUID p=preparedProduct(absent()),request=UUID.randomUUID();String digest=json(send(a,p,"POST","/candidates",prep(request)).andExpect(status().isCreated())).get("candidateDigest").asText();send(a,p,"POST","/candidates",prep(request)).andExpect(status().isOk()).andExpect(jsonPath("$.replayed").value(true));var approval=humanApproval(a,digest);UUID publishRequest=UUID.randomUUID();String body=publishJson(digest,approval,publishRequest,0,null);var first=json(send(a,p,"POST","",body).andExpect(status().isCreated()));String id=first.get("publication").get("publicationId").asText();String head="{\"requestId\":\""+UUID.randomUUID()+"\",\"expectedEpoch\":1,\"expectedPublicationId\":\""+id+"\"}";send(a,p,"POST","/"+id+"/withdraw",head).andExpect(status().isOk()).andExpect(jsonPath("$.observedHead.state").value("WITHDRAWN"));send(a,p,"POST","",body).andExpect(status().isOk()).andExpect(jsonPath("$.replayed").value(true)).andExpect(jsonPath("$.observedHead.epoch").value(2));send(a,p,"GET","/requests/"+publishRequest,null).andExpect(status().isOk());String at=jdbc.queryForObject("SELECT clock_timestamp()",Timestamp.class).toInstant().toString();send(a,p,"GET","/effective",null,"asOf",at).andExpect(status().isOk()).andExpect(jsonPath("$.selectedHead.state").value("WITHDRAWN"));send(a,p,"GET","/history",null,"asOf",at,"limit","1").andExpect(status().isOk()).andExpect(jsonPath("$.history.length()").value(1));String reactivate="{\"requestId\":\""+UUID.randomUUID()+"\",\"expectedEpoch\":2,\"expectedPublicationId\":\""+id+"\",\"approval\":"+approvalJson(approval)+"}";send(a,p,"POST","/"+id+"/reactivate",reactivate).andExpect(status().isOk()).andExpect(jsonPath("$.observedHead.epoch").value(3));assertThat(events(p)).isEqualTo(3);}
     /** The Custody owner itself must preserve the interval gap when a publication is reactivated. */
     @Test void nativeProductReactivateSuppliesBaselineAsOfWindow() throws Exception {

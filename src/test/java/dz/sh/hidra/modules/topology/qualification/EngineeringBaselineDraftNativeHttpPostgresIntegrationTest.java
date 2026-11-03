@@ -744,6 +744,36 @@ private static final String BASELINE="/api/v1/topology/engineering-baselines";
         assertEquals(0,baselineRows("revision",manifest));
         assertEquals(0,baselineRows("request",manifest));
     }
+
+    /** Catalog shape, not a coincidental FK count, is an original-transaction safety fact. */
+    @Test void baselineForeignKeySubstitutionWithEqualConstraintCountStillFailsClosed() throws Exception {
+        String pipeline=baselinePipeline(),manifest=id();baselineGrants(pipeline);
+        String table="public.hidra_topology_engineering_baseline_draft";
+        String fk=admin.queryForObject(
+            "SELECT conname FROM pg_catalog.pg_constraint"
+            +" WHERE conrelid=?::regclass AND confrelid='public.hidra_topology_pipeline_system'::regclass"
+            +" AND contype='f'",String.class,table);
+        assertNotNull(fk);
+        assertTrue(fk.matches("[a-z0-9_]+"));
+        admin.execute("ALTER TABLE "+table+" DROP CONSTRAINT "+fk);
+        try {
+            admin.execute("ALTER TABLE "+table+" ADD CONSTRAINT "+fk
+                +" FOREIGN KEY (company_party_id) REFERENCES public.hidra_party_party(id)"
+                +" ON DELETE RESTRICT");
+            assertEquals(2L,admin.queryForObject(
+                "SELECT count(*) FROM pg_catalog.pg_constraint WHERE conrelid=?::regclass"
+                +" AND contype='f' AND convalidated",Long.class,table));
+            requireStatus(createBaseline(baselineCreateBody(manifest,pipeline,id(),"[]")),503);
+        } finally {
+            admin.execute("ALTER TABLE "+table+" DROP CONSTRAINT "+fk);
+            admin.execute("ALTER TABLE "+table+" ADD CONSTRAINT "+fk
+                +" FOREIGN KEY (pipeline_system_id)"
+                +" REFERENCES public.hidra_topology_pipeline_system(id) ON DELETE RESTRICT");
+        }
+        assertEquals(0,baselineRows("draft",manifest));
+        assertEquals(0,baselineRows("revision",manifest));
+        assertEquals(0,baselineRows("request",manifest));
+    }
     @Test void baselineFinalGuardCatalogDriftCannotCommitARevision()throws Exception{
         String pipeline=baselinePipeline(),manifest=id();baselineGrants(pipeline);
         admin.execute("ALTER TABLE public.hidra_topology_engineering_baseline_revision DISABLE TRIGGER trg_topology_baseline_revision_immutable");

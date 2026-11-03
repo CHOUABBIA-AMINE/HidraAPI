@@ -60,14 +60,16 @@ public final class TopologyBaselineProductSourceAdapter implements TopologyBasel
     private Facts observe(Ticket t) {
         physical(t);
         var q=t.request;
-        var rows=jdbc.query("SELECT canonical_payload,sha256,payload_format FROM "+PREFIX
+        var rows=jdbc.query("SELECT canonical_payload,sha256,payload_format,candidate_digest FROM "+PREFIX
             +" WHERE company_party_id=? AND product_draft_id=? AND catalog_product_id=? AND publication_id=?",
             (r,n)->{
                 byte[] b=r.getBytes(1);
                 if(b==null||b.length>4*1024*1024||!q.sha256().equals(r.getString(2))
                     ||!ProductRevisionPublication.hash(b).equals(q.sha256())
                     ||!ProductRevisionPublicationCodec.FORMAT.equals(r.getString(3)))throw denied();
-                return codec.publication(b);
+                var decoded=codec.publication(b);
+                if(!decoded.approval().digest().equals(r.getString(4)))throw denied();
+                return decoded;
             },q.companyPartyId(),q.draftId(),q.catalogProductId(),q.publicationId());
         if(rows.size()!=1)throw denied();
         var p=rows.getFirst();var envelope=p.envelope();var scope=envelope.scope();

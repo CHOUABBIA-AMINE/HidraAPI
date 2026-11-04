@@ -3394,7 +3394,7 @@ HAPI-605 delivery-2 [Full #1087](https://github.com/CHOUABBIA-AMINE/HidraAPI/act
 
 ## Owner-approved foundation navigation — 2026-11-03
 
-The historical921-task baseline is preserved; the approved bounded extension contains928 current tasks in25 phases. [Adopted foundation supplement](FOUNDATION_PRODUCTION_ROADMAP.md). Current foundation pointer: [HAPI-923](TASKS_HPS-001.md#hapi-923), after exact-P0 CI acceptance and explicit Next. P0 does not execute it. Earlier execution pointers remain historical.
+The historical921-task baseline is preserved; the approved bounded extension contains928 current tasks in25 phases. [Adopted foundation supplement](FOUNDATION_PRODUCTION_ROADMAP.md). Current foundation pointer: [HAPI-924](TASKS_HPS-003.md#hapi-924), for the next separate owner selection after accepted [HAPI-923/B1](TASKS_HPS-001.md#hapi-923). This acceptance does not execute B2. Earlier execution pointers remain historical.
 
 <a id="hapi-922"></a>
 [HAPI-922](TASKS_HPS-025.md#hapi-922) — Foundation P0.

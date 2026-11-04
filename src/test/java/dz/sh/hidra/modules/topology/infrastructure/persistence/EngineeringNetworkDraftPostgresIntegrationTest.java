@@ -1644,7 +1644,15 @@ public class EngineeringNetworkDraftPostgresIntegrationTest {
 
     @Autowired dz.sh.hidra.modules.topology.application.port.in.PipelineAuthoringUseCase pipelineAuthoring;
     @Autowired dz.sh.hidra.modules.topology.application.port.in.AuthoredTopologyViewUseCase authoredViews;
+    private void b4NativeBearer(){
+        // B4 exercises the genuine signed native credential, not the deliberately
+        // untrusted ambient wrapper used by the earlier protected-owner tests.
+        var nativeToken=new org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken(
+            nativeDecoder.decode(rawToken),List.of());
+        SecurityContextHolder.getContext().setAuthentication(nativeToken);
+    }
     private String b4Privileges(){
+        b4NativeBearer();
         String tables="public.hidra_topology_pipeline_authoring_revision,public.hidra_topology_pipeline_graph_snapshot,public.hidra_topology_pipeline_graph_binding";
         jdbc.execute("REVOKE ALL ON "+tables+" FROM c3_source_claim_app,c3_publication_app");
         jdbc.execute("GRANT SELECT,INSERT,UPDATE ON "+tables+" TO c3_publication_app");
@@ -1673,12 +1681,21 @@ public class EngineeringNetworkDraftPostgresIntegrationTest {
         draftActor("LOCAL");String type=b4Privileges(),pipeline=id();UUID draft=create(UUID.randomUUID(),"B4 native").draft().draftId();
         var command=b4Write(draft,1,pipeline,0,type,"Original Pipeline",null);
         http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put(b4Route(draft,"authored-topology")).header("Authorization","Bearer "+rawToken).contentType("application/json").content(b4Body(command)))
+            .andDo(result -> {
+                if(result.getResponse().getStatus()!=200){
+                    var exception=result.getResolvedException();
+                    throw new AssertionError("B4 native PUT returned HTTP "+result.getResponse().getStatus()
+                        +", resolved="+(exception==null?"none":exception.getClass().getName()),exception);
+                }
+            })
             .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
             .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.companyPartyId").value(COMPANY))
             .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.pipelineSystemId").value(network))
             .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.graph.version").value(2))
             .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.bindings[0].pipeline.id").value(pipeline))
             .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.geometryStatus").value("NOT_SUPPLIED"));
+        // MockMvc authentication is per-request; restore the valid native principal for direct calls.
+        b4NativeBearer();
         drafts.execute(command(dz.sh.hidra.modules.topology.application.port.in.EngineeringNetworkDraftUseCase.Kind.UPDATE,draft,null,2L,"Metadata-only successor"));
         var metadataOnly=authoredViews.view(b4Scope(draft),null);assertThat(metadataOnly.graph().version()).isEqualTo(3L);assertThat(metadataOnly.graph().graphVersion()).isEqualTo(2L);assertThat(metadataOnly.bindings().getFirst().pipeline().revision()).isEqualTo(1L);
         String fromNode=id(),toNode=id();for(String node:List.of(fromNode,toNode))jdbc.update("INSERT INTO public.hidra_topology_node(id,code,node_type,status,created_at,updated_at) VALUES (?,?,'JUNCTION','DRAFT',now(),now())",node,node);

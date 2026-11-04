@@ -1185,7 +1185,10 @@ public class TopologyEngineeringOperatorQualificationTest {
     @Test void runtimeConsumerContractMatchesTypedRoutesErrorsAndBounds() throws Exception {
         publicationActor("LOCAL");UUID draft=authoredHttp("consumer contract");
         var docs=send("GET","/v3/api-docs",null,200);int operations=0;
-        for(String path:docs.path("paths").propertyNames())if(path.startsWith(ROOT)) {
+        // Historical engineering-draft qualification keeps its exact twenty-operation
+        // contract; B4's new canonical views have independent typed assertions below.
+        for(String path:docs.path("paths").propertyNames())if(path.startsWith(ROOT)
+                && !path.endsWith("/authored-topology") && !path.endsWith("/authoring-choices")) {
             var item=docs.path("paths").path(path);
             for(String verb:List.of("get","post","put"))if(item.has(verb)) {
                 var operation=item.path(verb);operations++;
@@ -1199,6 +1202,20 @@ public class TopologyEngineeringOperatorQualificationTest {
             }
         }
         assertThat(operations).isEqualTo(20);
+        // The three new B4 operations are checked explicitly, not silently excluded.
+        for(String[] endpoint:List.of(
+                new String[]{ROOT+"/{draftId}/authored-topology","get","readFoundationAuthoredTopology"},
+                new String[]{ROOT+"/{draftId}/authored-topology","put","writeFoundationPipelineAndGraph"},
+                new String[]{ROOT+"/{draftId}/authoring-choices","get","discoverFoundationTopologyChoices"})){
+            var operation=docs.path("paths").path(endpoint[0]).path(endpoint[1]);
+            assertThat(operation.path("operationId").asText()).isEqualTo(endpoint[2]);
+            assertThat(operation.path("responses").path("200").path("content").toString())
+                .contains("#/components/schemas/");
+            assertThat(operation.path("security").toString()).contains("hidraBearerJwt");
+            if(endpoint[1].equals("put"))
+                assertThat(operation.path("requestBody").path("content").toString())
+                    .contains("#/components/schemas/");
+        }
         assertThat(docs.path("paths").path(ROOT).path("post").path("responses").has("201")).isTrue();
         var image=storageImage();
         send("GET",scoped(UUID.randomUUID(),""),null,404);

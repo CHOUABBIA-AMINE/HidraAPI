@@ -56,6 +56,11 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
                 withCharacteristic.add("JdbcInstalledCharacteristicLinkRepositoryAdapter.java");
             // HAPI-605: the reviewed baseline coordinator is one genuine technical caller.
             withCharacteristic.add("ProtectedEngineeringBaselineAdmissionCoordinator.java");
+            // HAPI-926: only the concrete Pipeline view adapter is an additional reviewed observer.
+            // Do not generalize the protected-admission caller set.
+            if (method.equals("requireAdmission")) {
+                withCharacteristic.add("JpaAuthoredTopologyViewAdapter.java");
+            }
             expected=Set.copyOf(withCharacteristic);
             assertEquals(expected,found);
         }

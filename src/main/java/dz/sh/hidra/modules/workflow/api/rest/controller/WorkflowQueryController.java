@@ -68,19 +68,19 @@ public class WorkflowQueryController {
             @RequestParam(defaultValue = "0") @Min(0) int page,
             @RequestParam(defaultValue = "20") @Min(1) @Max(200) int size
     ) {
-        return useCase.tasks(actorResolver.currentActorId().value(), view, page, size);
+        return useCase.authorizedTasks(actorResolver.currentActorId().value(), view, page, size);
     }
 
     @GetMapping("/tasks/{id}")
     @Operation(summary = "Get workflow task detail")
     public TaskView task(@PathVariable String id) {
-        return useCase.task(id);
+        return useCase.authorizedTask(id);
     }
 
     @GetMapping("/tasks/{id}/available-actions")
     @Operation(summary = "Get backend-authoritative available task actions")
     public List<AvailableActionView> availableActions(@PathVariable String id, Authentication authentication) {
-        return useCase.availableActions(
+        return useCase.authorizedAvailableActions(
                 id,
                 actorResolver.currentActorId().value(),
                 permissionResolver.resolve(authentication)
@@ -90,12 +90,12 @@ public class WorkflowQueryController {
     @GetMapping("/instances/{id}")
     @Operation(summary = "Get workflow instance detail")
     public InstanceView instance(@PathVariable String id) {
-        return useCase.instance(id);
+        return useCase.authorizedInstance(id);
     }
 
     @GetMapping("/instances/{id}/timeline")
     @Operation(summary = "Get workflow instance timeline")
     public List<TimelineEntry> timeline(@PathVariable String id) {
-        return useCase.timeline(id);
+        return useCase.authorizedTimeline(id);
     }
 }

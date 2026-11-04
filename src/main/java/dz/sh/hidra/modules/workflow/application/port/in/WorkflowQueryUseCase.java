@@ -28,6 +28,12 @@ public interface WorkflowQueryUseCase {
     Page<TaskView> tasks(String actorReference, String view, int page, int size);
 
     TaskView task(String id);
+    Page<TaskView> authorizedTasks(String actorReference,String view,int page,int size);
+    TaskView authorizedTask(String id);
+    TaskView authorizedCurrentTask(String instanceId);
+    InstanceView authorizedInstance(String id);
+    List<TimelineEntry> authorizedTimeline(String instanceId);
+    List<AvailableActionView> authorizedAvailableActions(String taskId,String actorReference,Set<String> effectivePermissions);
 
     TaskView currentTask(String instanceId);
 

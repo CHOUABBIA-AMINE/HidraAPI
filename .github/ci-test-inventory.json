@@ -10804,6 +10804,45 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "currentActorRevocationImmediatelyRemovesReadDisclosure",
+        "currentTaskAndKnownUnknownIdsNeverBypassMembership",
+        "recognizedNativeTopologyTargetRequiresActualOwnerAdmission",
+        "starterAndAssignedReviewerReadOnlyTheirAuthorizedWorkflow",
+        "unrelatedAdministratorCannotReadDetailHistoryActionsOrCounts"
+      ],
+      "class": "dz.sh.hidra.modules.workflow.infrastructure.persistence.WorkflowFoundationReadAuthorizationPostgresIntegrationTest",
+      "dependency_reason": "HAPI-928 whole B6: configured LOCAL JWT HTTP/fresh PostgreSQL/actor scope/native owner denial/approval and rollback",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "workflow",
+      "path": "src/test/java/dz/sh/hidra/modules/workflow/infrastructure/persistence/WorkflowFoundationReadAuthorizationPostgresIntegrationTest.java",
+      "source_sha256": "345a779f719ca84ea37f318666fccc2c3b4587dee0d7266820bf05a07e2d995f",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "commentCannotMasqueradeAsDecision",
+        "configuredRejectRequiresOwnerReasonAndRetainsTerminalEvidence",
+        "developmentProvisionerRequiresExplicitExistingHumanAndIsNeverAutoEnabledInTest",
+        "discoveredIndependentReviewerStartsAndApprovesDurableWorkflow",
+        "missingProtectedOwnerAdmissionHidesDiscoveryAndDetailEvenFromStarter",
+        "starterCannotAssignItselfAsIndependentCharacteristicApprover",
+        "unrelatedActorCannotExecuteAssignedApprovalOrReadProtectedHistory",
+        "unsupportedConditionAndCallbackFailClosedBeforeDecisionEvidence"
+      ],
+      "class": "dz.sh.hidra.modules.workflow.infrastructure.persistence.WorkflowFoundationProcessPostgresIntegrationTest",
+      "dependency_reason": "HAPI-928 whole B6: configured LOCAL JWT HTTP/fresh PostgreSQL/actor scope/native owner denial/approval and rollback",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "workflow",
+      "path": "src/test/java/dz/sh/hidra/modules/workflow/infrastructure/persistence/WorkflowFoundationProcessPostgresIntegrationTest.java",
+      "source_sha256": "e316c14af4cbeda004c365ddb8d633a0da66bb147dc8ef8999ccea570a308626",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
         "neverDisclosesTopologyInstanceWithoutOwnerAuthorization",
         "nativeDenialOnHistoryIsNotConvertedToAHistoryLeak",
         "nullOrWrongTargetCatalogCannotBypassTheOwnerGuard"

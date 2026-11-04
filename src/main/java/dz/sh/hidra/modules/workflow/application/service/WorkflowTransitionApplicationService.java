@@ -138,18 +138,21 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
                     throw new WorkflowTransitionDeniedException("Human publication reviewer required.");
             }
         }
-        // Topology characteristic approvals are genuine human decisions. Workflow
-        // verifies the original Identity human actor, while S3 must separately
-        // recheck draft/approver separation, source authority and final SQL fences.
-        if ("topology".equals(instance.targetModule()) && transition.decision()==WorkflowDecision.APPROVE) {
-            var approvedType=configuration.requireActiveCatalog(instance.targetTypeId(),"WORKFLOW_TARGET_TYPE");
-            var approvedPurpose=configuration.requireActiveCatalog(instance.workflowPurposeId(),"WORKFLOW_PURPOSE");
-            if (!"INSTALLED_CHARACTERISTIC_LINK_REVISION".equals(approvedType.code())
-                    || !"INSTALLED_CHARACTERISTIC_LINK_APPROVAL".equals(approvedPurpose.code())
-                    || publicationHumans==null
-                    || publicationHumans.eligibleHuman(actor.id(),now)
-                        .filter(h->actor.id().equals(h.id()) && actor.displayName().equals(h.displayName())).isEmpty())
-                throw new WorkflowTransitionDeniedException("Eligible human Topology reviewer required.");
+        // All supported Topology installed-link decisions require an independent
+        // eligible human. A negative outcome is a real, durable decision too.
+        if ("topology".equals(instance.targetModule())
+                && (transition.decision() == WorkflowDecision.APPROVE
+                        || transition.decision() == WorkflowDecision.REJECT)) {
+            var reviewedType = configuration.requireActiveCatalog(instance.targetTypeId(), "WORKFLOW_TARGET_TYPE");
+            var reviewedPurpose = configuration.requireActiveCatalog(instance.workflowPurposeId(), "WORKFLOW_PURPOSE");
+            if (actor.id().equals(instance.startedByActorId())
+                    || !"INSTALLED_CHARACTERISTIC_LINK_REVISION".equals(reviewedType.code())
+                    || !"INSTALLED_CHARACTERISTIC_LINK_APPROVAL".equals(reviewedPurpose.code())
+                    || publicationHumans == null
+                    || publicationHumans.eligibleHuman(actor.id(), now)
+                        .filter(h -> actor.id().equals(h.id())
+                                && actor.displayName().equals(h.displayName())).isEmpty())
+                throw new WorkflowTransitionDeniedException("Independent eligible human Topology reviewer required.");
         }
         long sequence = actionRepository.nextSequence(instance.id());
         String actionId = WorkflowId.newId().value();

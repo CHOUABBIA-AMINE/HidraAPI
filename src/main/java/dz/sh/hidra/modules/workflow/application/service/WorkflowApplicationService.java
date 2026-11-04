@@ -145,6 +145,13 @@ public class WorkflowApplicationService implements StartWorkflowInstanceUseCase,
                 || !instance.startedByActorId().equals(creator.id()))
             throw new InvalidWorkflowValueException("Generic task creation is limited to the starter and coherent current instance step.");
         var assigned=command.assignedActorId()==null?null:ownership.requireActor(command.assignedActorId());
+        // For the native installed-characteristic approval target, the reviewer must be
+        // independent of the instance starter. Generic assignment never grants owner rights.
+        if ("topology".equals(instance.targetModule())
+                && "INSTALLED_CHARACTERISTIC_LINK_REVISION".equals(
+                        configuration.requireActiveCatalog(instance.targetTypeId(), "WORKFLOW_TARGET_TYPE").code())
+                && (assigned == null || creator.id().equals(assigned.id())))
+            throw new InvalidWorkflowValueException("An independently assigned reviewer is required.");
         var unit=command.assignedOrganizationUnitId()==null?null:ownership.requireUnit(command.assignedOrganizationUnitId());
         WorkflowTask task = new WorkflowTask(
                 WorkflowId.newId().value(),

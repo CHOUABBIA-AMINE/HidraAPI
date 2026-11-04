@@ -12910,9 +12910,9 @@ Legacy IDs: None — owner-approved foundation supplement B6; no historical mapp
 
 Priority: P1
 
-Implementation Status: PARTIAL
+Implementation Status: IMPLEMENTED
 
-Planning Status: BLOCKED
+Planning Status: IN_PROGRESS
 
 Owning Module: `workflow`
 
@@ -12937,5 +12937,62 @@ Minimum policy: starter, eligible assigned/claimed actor, authorized organizatio
 - Reject stale/replayed/conflicting transitions, unsupported mechanisms and unauthorized general/protected detail/history/existence; preserve genuine native approvals.
 
 Run existing applicable domain/application/HTTP/security/PostgreSQL/rollback/concurrency suites and add the named missing tests. Regenerate API/catalog only from real migrated runtime evidence. Preserve every preexisting test and hash-bound class. Missing local Java21/Maven/Docker does not waive hosted full CI, and skipped tests are not database proof. No frontend acceptance is asserted.
+
+
+### 2026-11-04 B6 whole-task owner-approved compatibility reconciliation and source publication
+
+**Owner decision.** The owner approved continuing the indivisible HAPI-928/B6 delivery
+and reconciling its registered scope where the older internal reference readers
+conflict with actor-authorized REST disclosure. The existing WorkflowQueryUseCase
+reference methods remain available *only for existing internal application contracts*;
+the compiled WorkflowQueryController now invokes distinct authorized read methods.
+The new adapter's authenticated paths resolve a current server-side Identity actor,
+enforce starter/assigned/claimed/current organization membership (or explicit
+supervisor with accepted native owner read), and check recognized Topology/Simulation
+protected ownership before returning task/instance/history/action or counts.
+The preserved legacy WorkflowManufacturerSourceAuthorizationPostgresIntegrationTest
+is **not changed** or weakened. This distinction is a bounded compatibility repair,
+not a general authorization bypass or trusted anonymous HTTP endpoint.
+
+**Approved exact scope extension to the adopted B6 ledger.** MODIFY
+`src/main/java/dz/sh/hidra/modules/workflow/api/rest/controller/WorkflowQueryController.java`
+and `doc/roadmap/ULTIMATE_TASKS.md` (compact current pointer only) in the same
+whole delivery. The original B6 CREATE and MODIFY file paths, exact commit message,
+test inventory and current-roadmap status rows remain binding. No other module
+source, legacy test, Platform authorization, MySQL, release or deployment is selected.
+
+**Technical implementation.** Support only current owner-authorized active
+installed-characteristic-link target/purpose bindings, configured independent
+human assignment choices, supported APPROVE/REJECT transition discovery and
+explicit opt-in dev-only process registration. Preserve server-derived current
+actor, native protected owner admissions, Workflow original transitions,
+immutable action/history, stale/replayed state checks, COMMENT-only recording
+and unsupported condition/callback denial. Retain internal Workflow reference
+contracts and keep existing code/test inventory. No Flyway migration is required
+by the existing source schema.
+
+**Source-level test registration.** Add
+`WorkflowFoundationReadAuthorizationPostgresIntegrationTest` (5 cases) and
+`WorkflowFoundationProcessPostgresIntegrationTest` (8 cases), with exact
+SHA-256 identities registered in `.github/ci-test-inventory.json`.
+The tests cover authenticated REST + PostgreSQL current actor, denial and
+non-disclosing counts, protected owner denial, configured discovery,
+human APPROVE/REJECT, replay, independent assignment, unsupported mechanisms,
+comment denial and dev opt-in. These tests are pending actual hosted execution:
+source review is not PostgreSQL, HTTP or rollback proof.
+
+**Evidence and acceptance pending.** The accepted baseline is main
+`42456abe4fb0c016a00c0ae218487fd3bcfae087`, latest source-acceptance
+Full CI #1117 SUCCESS at `ed3f0a65e9e1674284ae2c0a25f0ba920c1dd9c9`,
+and acceptance-only Docs #903 SUCCESS at baseline head. The B6 source
+publication is **IMPLEMENTED / IN_PROGRESS**, not VERIFIED/COMPLETED.
+The first exact-SHA hosted Full run must execute the new and preserved
+tests, compare fresh actual runtime OpenAPI with compatibility controls,
+and capture real migrated dictionary equality if applicable. Do **not**
+invent or hand-author the runtime OpenAPI/catalog; update the checked-in
+snapshots only from hosted generated evidence in the same-task Fail repair
+if they differ. Current source review cannot establish industrial/SITE,
+HidraWEB/browser or production acceptance. Stop after exact-SHA CI
+creation/start, and do not start the next registered delivery.
 
 <!-- task-register:payload:end -->

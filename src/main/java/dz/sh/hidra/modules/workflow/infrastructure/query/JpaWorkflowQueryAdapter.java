@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.workflow.infrastructure.query;
 
 import dz.sh.hidra.modules.workflow.application.port.in.WorkflowQueryUseCase;
+import dz.sh.hidra.modules.workflow.application.port.out.WorkflowFoundationReadAuthorizationPort;
 import dz.sh.hidra.modules.workflow.infrastructure.persistence.entity.WorkflowActionJpaEntity;
 import dz.sh.hidra.modules.workflow.infrastructure.persistence.entity.WorkflowInstanceJpaEntity;
 import dz.sh.hidra.modules.workflow.infrastructure.persistence.entity.WorkflowTaskJpaEntity;
@@ -58,13 +59,23 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase, Manufactur
     private final JdbcTemplate jdbc;
     private final WorkflowExecutionOwnership ownership;
     private final List<WorkflowOwnedTargetLookup> targetOwners;
+    private final WorkflowFoundationReadAuthorizationPort readAuthorization;
 
+    /** Legacy internal-contract fixture constructor: never grants public read access. */
     public JpaWorkflowQueryAdapter(EntityManager entityManager, WorkflowExecutionOwnership ownership,
             List<WorkflowOwnedTargetLookup> targetOwners, JdbcTemplate jdbc) {
+        this(entityManager, ownership, targetOwners, jdbc, (scope, assignments) -> false);
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public JpaWorkflowQueryAdapter(EntityManager entityManager, WorkflowExecutionOwnership ownership,
+            List<WorkflowOwnedTargetLookup> targetOwners, JdbcTemplate jdbc,
+            WorkflowFoundationReadAuthorizationPort readAuthorization) {
         this.ownership = Objects.requireNonNull(ownership);
         this.entityManager = Objects.requireNonNull(entityManager, "EntityManager must not be null.");
         this.targetOwners = List.copyOf(targetOwners);
-        this.jdbc=Objects.requireNonNull(jdbc);
+        this.jdbc = Objects.requireNonNull(jdbc);
+        this.readAuthorization = Objects.requireNonNull(readAuthorization);
     }
 
     private static final List<String> MANUFACTURER_WORKFLOW_TABLES=List.of(
@@ -198,6 +209,122 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase, Manufactur
                 .getResultList().stream()
                 .map(transition -> actionView(transition, assigned && actionable, permissions))
                 .toList();
+    }
+
+    /**
+     * HTTP-facing reads must pass both current-actor membership and the existing
+     * protected target-owner check. Reference-query methods above are intentionally
+     * retained for existing cross-module contracts; no REST controller calls them.
+     */
+    @Override
+    public Page<TaskView> authorizedTasks(String actorReference, String view, int page, int size) {
+        ownership.requireCurrentActor(actorReference);
+        String normalizedView = view == null ? "assigned" : view.trim().toLowerCase(Locale.ROOT);
+        List<TaskView> permitted = entityManager.createQuery(
+                        "select e from WorkflowTaskJpaEntity e order by e.updatedAt desc",
+                        WorkflowTaskJpaEntity.class)
+                .getResultList().stream()
+                .filter(t -> belongsToActor(t, actorReference))
+                .filter(t -> matchesView(t, normalizedView))
+                .filter(t -> canDiscloseAuthorizedTask(t))
+                .map(this::taskView).toList();
+        return page(permitted, page, size);
+    }
+
+    @Override
+    public TaskView authorizedTask(String id) {
+        WorkflowTaskJpaEntity task = entityManager.find(WorkflowTaskJpaEntity.class, id);
+        requireAuthorizedTask(task, WorkflowOwnedTargetLookup.ProtectedRead.REVISION);
+        return taskView(task);
+    }
+
+    @Override
+    public TaskView authorizedCurrentTask(String instanceId) {
+        authorizedInstance(instanceId);
+        return currentTask(instanceId);
+    }
+
+    @Override
+    public InstanceView authorizedInstance(String id) {
+        WorkflowInstanceJpaEntity instance = entityManager.find(WorkflowInstanceJpaEntity.class, id);
+        requireAuthorizedInstance(instance, WorkflowOwnedTargetLookup.ProtectedRead.REVISION);
+        return instanceView(instance);
+    }
+
+    @Override
+    public List<TimelineEntry> authorizedTimeline(String instanceId) {
+        WorkflowInstanceJpaEntity instance = entityManager.find(WorkflowInstanceJpaEntity.class, instanceId);
+        requireAuthorizedInstance(instance, WorkflowOwnedTargetLookup.ProtectedRead.HISTORY);
+        return timeline(instanceId);
+    }
+
+    @Override
+    public List<AvailableActionView> authorizedAvailableActions(String taskId, String actorReference,
+            Set<String> effectivePermissions) {
+        ownership.requireCurrentActor(actorReference);
+        TaskView disclosed = authorizedTask(taskId);
+        WorkflowInstanceJpaEntity instance = entityManager.find(WorkflowInstanceJpaEntity.class,
+                disclosed.instanceId());
+        if (instance == null) throw new NoSuchElementException("Workflow task unavailable.");
+        return availableActions(taskId, actorReference, effectivePermissions).stream()
+                .map(a -> new AvailableActionView(a.transitionId(), a.decision(), a.fromStepId(),
+                        a.toStepId(), a.reasonRequired(), a.commentRequired(), a.requiredPermissionCode(),
+                        a.targetModuleCallback(),
+                        a.permitted() && !"COMMENT".equals(a.decision())
+                                && !Objects.equals(a.fromStepId(), a.toStepId())
+                                && !("topology".equals(instance.targetModule())
+                                    && actorReference.equals(instance.startedByActorId()))
+                                && ownership.permitted(actorReference, a.requiredPermissionCode(),
+                                        instance.id())))
+                .toList();
+    }
+
+    private boolean canDiscloseAuthorizedTask(WorkflowTaskJpaEntity task) {
+        try {
+            requireAuthorizedTask(task, WorkflowOwnedTargetLookup.ProtectedRead.REVISION);
+            return true;
+        } catch (NoSuchElementException | AccessDeniedException unavailable) {
+            return false;
+        }
+    }
+
+    private void requireAuthorizedTask(WorkflowTaskJpaEntity task, WorkflowOwnedTargetLookup.ProtectedRead access) {
+        if (task == null) throw new NoSuchElementException("Workflow task unavailable.");
+        WorkflowInstanceJpaEntity instance = entityManager.find(WorkflowInstanceJpaEntity.class, task.instanceId());
+        if (instance == null) throw new NoSuchElementException("Workflow task unavailable.");
+        requireProtectedRead(instance, access);
+        requireAuthorizedAudience(instance, List.of(task));
+    }
+
+    private void requireAuthorizedInstance(WorkflowInstanceJpaEntity instance,
+            WorkflowOwnedTargetLookup.ProtectedRead access) {
+        if (instance == null) throw new NoSuchElementException("Workflow instance unavailable.");
+        requireProtectedRead(instance, access);
+        List<WorkflowTaskJpaEntity> tasks = entityManager.createQuery(
+                        "select t from WorkflowTaskJpaEntity t where t.instanceId = :id",
+                        WorkflowTaskJpaEntity.class)
+                .setParameter("id", instance.id()).getResultList();
+        requireAuthorizedAudience(instance, tasks);
+    }
+
+    private void requireAuthorizedAudience(WorkflowInstanceJpaEntity instance,
+            List<WorkflowTaskJpaEntity> tasks) {
+        WorkflowCatalogEntryJpaEntity catalog = entityManager.find(
+                WorkflowCatalogEntryJpaEntity.class, instance.targetTypeId());
+        boolean ownerReadAdmitted = catalog != null && catalog.active()
+                && "WORKFLOW_TARGET_TYPE".equals(catalog.catalogName())
+                && (("topology".equals(instance.targetModule())
+                        && "INSTALLED_CHARACTERISTIC_LINK_REVISION".equals(catalog.code()))
+                    || ("simulation".equals(instance.targetModule())
+                        && "MANUFACTURER_CHARACTERISTIC_REVISION".equals(catalog.code())));
+        var scope = new WorkflowFoundationReadAuthorizationPort.Scope(instance.id(),
+                instance.startedByActorId(), instance.targetModule(), instance.targetTypeId(),
+                instance.targetId(), instance.targetCodeSnapshot(), ownerReadAdmitted);
+        var assignments = tasks.stream().map(t -> new WorkflowFoundationReadAuthorizationPort.Assignment(
+                t.assignedActorId(), t.claimedByActorId(), t.completedByActorId(),
+                t.assignedOrganizationUnitId())).toList();
+        if (!readAuthorization.permitted(scope, assignments))
+            throw new NoSuchElementException("Workflow resource unavailable.");
     }
 
     /** Metadata examination stays server-side; protected values are never returned before this guard. */

@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `1b96cdc696ed08c69c8fd5b8dc566014abc5e8ed`
+Captured source SHA: `082916f19c9832d27d7cf4025161e9bbf6766577`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `a0e7e1ee0acde80de134453de994f5d8d26804a9b25aa436611ea166b3d7d85d`.
-Migrations: 196; JPA mappings: 470; catalog relations: 547; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `4d352614906723da5d7700052a4c61b93312e077df4ce5a6fb96b1d4d91c8077`.
+Migrations: 197; JPA mappings: 470; catalog relations: 548; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -9840,6 +9840,55 @@ Persisted GroupRoleGrantJpaEntity state; semantic authority remains with identit
 
 None captured in this catalog category.
 
+### public.hidra_identity_lifecycle_event
+
+Owner: **identity**; relation kind: `r`.
+
+Identity-owned append-only reasons and actor/target evidence for controlled ordinary user lifecycle and grant revocation; no credential or bearer material.
+
+- Evidence: [JdbcFoundationIdentityLifecycleAdapter.java](../../src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcFoundationIdentityLifecycleAdapter.java)
+- Evidence: [V20261103_002__foundation_identity_lifecycle.sql](../../src/main/resources/db/migration/V20261103_002__foundation_identity_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261103_002__foundation_identity_lifecycle.sql](../../src/main/resources/db/migration/V20261103_002__foundation_identity_lifecycle.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| target_type | character varying(40) | False | None; identity=; generated= | No current mapped Java column | — |
+| target_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| action | character varying(40) | False | None; identity=; generated= | No current mapped Java column | — |
+| reason | text | False | None; identity=; generated= | No current mapped Java column | — |
+| occurred_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `ck_hidra_identity_lifecycle_action`: CHECK (action::text = ANY (ARRAY['ACTIVATE'::character varying, 'DEACTIVATE'::character varying, 'CREDENTIAL_RESET'::character varying, 'REVOKE'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["action"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_hidra_identity_lifecycle_reason`: CHECK (length(btrim(reason)) &gt;= 1 AND length(btrim(reason)) &lt;= 2000)
+  - Catalog attributes: {"columns": ["reason"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_identity_lifecycle_event_actor_id_fkey`: FOREIGN KEY (actor_id) REFERENCES hidra_identity_user(id)
+  - Catalog attributes: {"columns": ["actor_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_identity_user"}, "type": "f", "validated": true}
+- `hidra_identity_lifecycle_event_pkey`: PRIMARY KEY (id)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `hidra_identity_lifecycle_event_pkey`: CREATE UNIQUE INDEX hidra_identity_lifecycle_event_pkey ON public.hidra_identity_lifecycle_event USING btree (id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `ix_hidra_identity_lifecycle_event_actor_at`: CREATE INDEX ix_hidra_identity_lifecycle_event_actor_at ON public.hidra_identity_lifecycle_event USING btree (actor_id, occurred_at DESC)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+- `ix_hidra_identity_lifecycle_event_target_at`: CREATE INDEX ix_hidra_identity_lifecycle_event_target_at ON public.hidra_identity_lifecycle_event USING btree (target_type, target_id, occurred_at DESC)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+- `trg_hidra_identity_lifecycle_event_no_truncate`: CREATE TRIGGER trg_hidra_identity_lifecycle_event_no_truncate BEFORE TRUNCATE ON hidra_identity_lifecycle_event FOR EACH STATEMENT EXECUTE FUNCTION hidra_identity_lifecycle_event_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_identity_lifecycle_event_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_identity_lifecycle_event_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'public'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Identity lifecycle events are immutable' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `trg_hidra_identity_lifecycle_event_no_update`: CREATE TRIGGER trg_hidra_identity_lifecycle_event_no_update BEFORE DELETE OR UPDATE ON hidra_identity_lifecycle_event FOR EACH ROW EXECUTE FUNCTION hidra_identity_lifecycle_event_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_identity_lifecycle_event_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_identity_lifecycle_event_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'public'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Identity lifecycle events are immutable' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
 ### public.hidra_identity_local_credential
 
 Owner: **identity**; relation kind: `r`.
@@ -10503,6 +10552,7 @@ Persisted RolePermissionGrantJpaEntity state; semantic authority remains with id
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261103_002__foundation_identity_lifecycle.sql](../../src/main/resources/db/migration/V20261103_002__foundation_identity_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -10515,6 +10565,8 @@ Persisted RolePermissionGrantJpaEntity state; semantic authority remains with id
 | valid_to | timestamp with time zone | True | None; identity=; generated= | validTo: Instant; {"nullable": "true"}; columnDefinition=None | — |
 | status | character varying(40) | False | None; identity=; generated= | status: GrantStatus; {"length": "40", "nullable": "false"}; columnDefinition=None | — |
 | created_at | timestamp with time zone | False | None; identity=; generated= | createdAt: Instant; {"nullable": "false"}; columnDefinition=None | — |
+| revoked_at | timestamp with time zone | True | None; identity=; generated= | No current mapped Java column | — |
+| revoked_reason | text | True | None; identity=; generated= | No current mapped Java column | — |
 
 #### Constraints
 
@@ -10720,6 +10772,7 @@ Persisted UserJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261103_002__foundation_identity_lifecycle.sql](../../src/main/resources/db/migration/V20261103_002__foundation_identity_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -10856,6 +10909,7 @@ Persisted UserPermissionGrantJpaEntity state; semantic authority remains with id
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261103_002__foundation_identity_lifecycle.sql](../../src/main/resources/db/migration/V20261103_002__foundation_identity_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -10874,6 +10928,7 @@ Persisted UserPermissionGrantJpaEntity state; semantic authority remains with id
 | status | character varying(40) | False | None; identity=; generated= | status: GrantStatus; {"length": "40", "nullable": "false"}; columnDefinition=None | — |
 | created_at | timestamp with time zone | False | None; identity=; generated= | createdAt: Instant; {"nullable": "false"}; columnDefinition=None | — |
 | revoked_at | timestamp with time zone | True | None; identity=; generated= | revokedAt: Instant; {"nullable": "true"}; columnDefinition=None | — |
+| revoked_reason | text | True | None; identity=; generated= | No current mapped Java column | — |
 
 #### Constraints
 

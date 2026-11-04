@@ -84,8 +84,27 @@ class ConfigurationAdministrationPostgresIntegrationTest {
     private String value(ResultActions r,String field) throws Exception {return com.jayway.jsonpath.JsonPath.read(r.andReturn().getResponse().getContentAsString(),"$."+field);}
     private String json(Object... pairs) throws Exception {var map=new java.util.LinkedHashMap<String,Object>();for(int i=0;i<pairs.length;i+=2)map.put((String)pairs[i],pairs[i+1]);return tools.jackson.databind.json.JsonMapper.builder().build().writeValueAsString(map);}
 
+    /**
+     * Retain the exact HTTP 200 oracle while preserving the resolved server exception
+     * in failing synthetic CI. Never log a request body, bearer or protected value.
+     */
+    private ResultActions expectedOk(ResultActions result,String operation) throws Exception {
+        var mvc=result.andReturn();
+        int actual=mvc.getResponse().getStatus();
+        if(actual!=200) {
+            var caught=mvc.getResolvedException();
+            Throwable root=caught;
+            for(int depth=0;root!=null&&root.getCause()!=null&&depth<8;depth++)root=root.getCause();
+            throw new AssertionError("HAPI-927 "+operation+" expected HTTP 200 but received "+actual
+                +"; resolvedType="+(caught==null?"none":caught.getClass().getName())
+                +"; rootType="+(root==null?"none":root.getClass().getName())
+                +"; rootMessage="+(root==null?"none":String.valueOf(root.getMessage())),caught);
+        }
+        return result.andExpect(status().isOk());
+    }
+
     private String definition(String type,String sensitivity,Object defaultValue,boolean approval) throws Exception {
-        return value(call("POST",BASE+"/definitions",admin,json("namespaceId",namespace,"key","runtime."+id(),"displayNameFr","Synthetic setting","valueType",type,"sensitivity",sensitivity,"defaultValue",defaultValue,"requiresApproval",approval)).andExpect(status().isOk()),"id");
+        return value(expectedOk(call("POST",BASE+"/definitions",admin,json("namespaceId",namespace,"key","runtime."+id(),"displayNameFr","Synthetic setting","valueType",type,"sensitivity",sensitivity,"defaultValue",defaultValue,"requiresApproval",approval)),"create-definition"),"id");
     }
     private String version(String definition) throws Exception {return value(call("GET",BASE+"/definitions/"+definition,admin,null).andExpect(status().isOk()),"updatedAt");}
     private String activate(String definition) throws Exception {return value(call("POST",BASE+"/definitions/"+definition+"/activate",admin,json("expectedUpdatedAt",version(definition))).andExpect(status().isOk()),"activeVersionId");}
@@ -105,7 +124,7 @@ class ConfigurationAdministrationPostgresIntegrationTest {
         call("GET",BASE+"/definitions?namespaceId="+namespace,admin,null).andExpect(status().isOk()).andExpect(content().string(org.hamcrest.Matchers.containsString(d)));
     }
     @Test void nativeBooleanFlagActivationAndEnvironmentState() throws Exception {
-        String f=value(call("POST",BASE+"/feature-flags",admin,json("code","F-"+id(),"nameFr","Synthetic","owningModule","configuration","evaluationStrategy","BOOLEAN","defaultEnabled",false)).andExpect(status().isOk()),"id");
+        String f=value(expectedOk(call("POST",BASE+"/feature-flags",admin,json("code","F-"+id(),"nameFr","Synthetic","owningModule","configuration","evaluationStrategy","BOOLEAN","defaultEnabled",false)),"create-boolean-flag"),"id");
         var row=jdbc.queryForMap("SELECT updated_at FROM public.hidra_configuration_feature_flag WHERE id=?",f);String expected=((java.sql.Timestamp)row.get("updated_at")).toInstant().toString();
         String active=value(call("POST",BASE+"/feature-flags/"+f+"/activate",admin,json("expectedUpdatedAt",expected)).andExpect(status().isOk()),"updatedAt");
         call("GET",BASE+"/feature-flags/"+f+"/state?environment=TEST",admin,null).andExpect(status().isOk()).andExpect(jsonPath("$.enabled").value(false));

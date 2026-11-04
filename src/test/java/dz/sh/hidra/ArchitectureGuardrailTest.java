@@ -168,6 +168,14 @@ class ArchitectureGuardrailTest {
                 && ORGANIZATION_OWNER_EXPORTS.stream().anyMatch(root -> target.equals(root) || target.startsWith(root + "$"));
     }
 
+    /** HAPI-925: permit only the reviewed Identity eligibility contract to one Organization adapter. */
+    private static boolean isOrganizationFoundationIdentityEligibilityExport(String source, String target) {
+        String consumer = "dz.sh.hidra.modules.organization.infrastructure.security.OrganizationFoundationAuthorizationAdapter";
+        String contract = "dz.sh.hidra.modules.identity.application.contract.organization.OrganizationIdentityUserEligibility";
+        return source.equals(consumer)
+                && (target.equals(contract) || target.equals(contract + "$Eligibility"));
+    }
+
     private static boolean isCharacteristicManufacturerPartyExport(String source,String target) {
         String producer="dz.sh.hidra.modules.simulation.infrastructure.integration.TopologyManufacturerCharacteristicReferenceAdapter";
         String contract="dz.sh.hidra.modules.party.application.contract.simulation.SimulationManufacturerEvidenceContract";
@@ -214,6 +222,18 @@ class ArchitectureGuardrailTest {
         }
         assertTrue(isForbiddenCrossModuleDependency(source,
                 "dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipant$OrganizationClaimGroup"));
+        String consumer = "dz.sh.hidra.modules.organization.infrastructure.security.OrganizationFoundationAuthorizationAdapter";
+        String eligibility = "dz.sh.hidra.modules.identity.application.contract.organization.OrganizationIdentityUserEligibility";
+        assertFalse(isForbiddenCrossModuleDependency(consumer, eligibility));
+        assertFalse(isForbiddenCrossModuleDependency(consumer, eligibility + "$Eligibility"));
+        assertTrue(isForbiddenCrossModuleDependency(consumer, eligibility + "$Other"));
+        assertTrue(isForbiddenCrossModuleDependency(consumer, eligibility + "Sibling"));
+        assertTrue(isForbiddenCrossModuleDependency(
+                "dz.sh.hidra.modules.organization.application.service.Other", eligibility));
+        assertTrue(isForbiddenCrossModuleDependency(
+                "dz.sh.hidra.modules.topology.application.service.Other", eligibility));
+        assertTrue(isForbiddenCrossModuleDependency(consumer,
+                "dz.sh.hidra.modules.identity.application.port.in.IdentityAdministrationQueryUseCase"));
     }
 
     @Test
@@ -392,6 +412,7 @@ class ArchitectureGuardrailTest {
                 }
                 if (isBaselineOwnerExport(source.getName(), target.getName())) continue;
                 if (isOrganizationOwnerExport(source.getName(), target.getName())) continue;
+                if (isOrganizationFoundationIdentityEligibilityExport(source.getName(), target.getName())) continue;
                 if (isCustodyProductOwnerExport(source.getName(), target.getName())) continue;
                 if (isManufacturerOwnerExport(source.getName(), target.getName())) continue;
                 if (isCharacteristicManufacturerPartyExport(source.getName(),target.getName())) continue;
@@ -789,6 +810,7 @@ class ArchitectureGuardrailTest {
             return false;
         }
         if (isOrganizationOwnerExport(sourceClassName, targetClassName)) return false;
+        if (isOrganizationFoundationIdentityEligibilityExport(sourceClassName, targetClassName)) return false;
         if (isCustodyProductOwnerExport(sourceClassName, targetClassName)) return false;
         return !isTransitionallyAllowed(sourceClassName, targetClassName);
     }

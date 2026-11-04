@@ -327,6 +327,13 @@ class ForensicRemediationClosureTest {
     }
 
     private static boolean organizationOwnerExport(String source, String imported) {
+        // HAPI-925: exact Organization consumer and the two scalar Identity contract types;
+        // no new package-wide export, private Identity query, sibling or other caller.
+        String consumer = "dz.sh.hidra.modules.organization.infrastructure.security.OrganizationFoundationAuthorizationAdapter";
+        String contract = "dz.sh.hidra.modules.identity.application.contract.organization.OrganizationIdentityUserEligibility";
+        if (source.equals(consumer) && (imported.equals(contract) || imported.equals(contract + ".Eligibility"))) {
+            return true;
+        }
         return source.startsWith("dz.sh.hidra.modules.organization.") && Set.of(
                 "dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract",
                 "dz.sh.hidra.modules.party.application.contract.organization.OrganizationProtectedPartyEligibilityContract")
@@ -341,6 +348,16 @@ class ForensicRemediationClosureTest {
         assertFalse(organizationOwnerExport(source, root + "Sibling"));
         assertFalse(organizationOwnerExport(source, "dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipant.OrganizationClaimGroup"));
         assertFalse(organizationOwnerExport("dz.sh.hidra.modules.topology.application.service.Other", root));
+        String consumer = "dz.sh.hidra.modules.organization.infrastructure.security.OrganizationFoundationAuthorizationAdapter";
+        String eligibility = "dz.sh.hidra.modules.identity.application.contract.organization.OrganizationIdentityUserEligibility";
+        assertTrue(organizationOwnerExport(consumer, eligibility));
+        assertTrue(organizationOwnerExport(consumer, eligibility + ".Eligibility"));
+        assertFalse(organizationOwnerExport(consumer, eligibility + "Sibling"));
+        assertFalse(organizationOwnerExport(consumer, eligibility + ".Other"));
+        assertFalse(organizationOwnerExport("dz.sh.hidra.modules.organization.application.service.Other", eligibility));
+        assertFalse(organizationOwnerExport("dz.sh.hidra.modules.topology.application.service.Other", eligibility));
+        assertFalse(organizationOwnerExport(consumer,
+                "dz.sh.hidra.modules.identity.application.port.in.IdentityAdministrationQueryUseCase"));
     }
 
     @Test

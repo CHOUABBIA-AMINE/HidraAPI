@@ -45,7 +45,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java",
-      "source_sha256": "1767627755e0875b65ca8c73117606121f9b42f9bdf484a9796c734b1bb993cf",
+      "source_sha256": "c70a44f073d073005d0e557342b8a23f5b7cf18be082e6b3d1f9f20aa683962d",
       "supports": []
     },
     {
@@ -96,7 +96,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java",
-      "source_sha256": "72f1651b8ad67e9d529daf8816053245c62562054d09d10d0f7ec7e11cfc1687",
+      "source_sha256": "6da7aeac6fae499ca6493cc655fa73af5e4419c8a2bb69700abbf15434386bee",
       "supports": []
     },
     {

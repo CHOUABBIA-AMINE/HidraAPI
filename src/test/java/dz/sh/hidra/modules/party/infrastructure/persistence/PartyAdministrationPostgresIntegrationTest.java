@@ -95,7 +95,7 @@ class PartyAdministrationPostgresIntegrationTest {
         call("GET",BASE+"/reference/party-roles",admin,null).andExpect(status().isOk()).andExpect(content().string(org.hamcrest.Matchers.containsString(role)));
         String party=create();assertFalse(topology.eligibleForNewReference(party));activate(party);assertTrue(topology.eligibleForNewReference(party));
         call("POST",BASE+"/roles/assignments",admin,"{\"partyId\":\""+party+"\",\"roleId\":\""+role+"\",\"qualificationRequired\":false}").andExpect(status().isOk());
-        call("POST",BASE+"/roles/assignments",admin,"{\"partyId\":\""+party+"\",\"roleId\":\""+role+"\"}").andExpect(status().is(422));
+        call("POST",BASE+"/roles/assignments",admin,"{\"partyId\":\""+party+"\",\"roleId\":\""+role+"\",\"qualificationRequired\":false}").andExpect(status().is(422));
         call("GET",BASE+"/parties?eligibleOnly=true&typeId="+type+"&roleId="+role,admin,null).andExpect(status().isOk()).andExpect(jsonPath("$.total").value(1)).andExpect(jsonPath("$.items[0].id").value(party));
         String code=jdbc.queryForObject("SELECT code FROM public.hidra_party_party WHERE id=?",String.class,party);
         call("PUT",BASE+"/parties/"+party,admin,"{\"expectedUpdatedAt\":\""+version(party)+"\",\"legalName\":\"Revised legal label\",\"reason\":\"supplied metadata correction\"}").andExpect(status().isOk()).andExpect(jsonPath("$.code").value(code));

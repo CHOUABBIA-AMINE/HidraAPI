@@ -202,7 +202,7 @@ public class EngineeringNetworkDraftApplicationService implements EngineeringNet
             dz.sh.hidra.modules.topology.application.port.in.PipelineAuthoringUseCase.Scope scope,int offset,int limit){
         if(offset<0||offset>100000||limit<1||limit>200)throw new IllegalArgumentException("Bounded discovery required");return executeAuthored(scope,null,null,offset,limit).discovery();
     }
-    private record AuthoredResult(dz.sh.hidra.modules.topology.application.port.in.AuthoredTopologyViewUseCase.View view,
+    public record AuthoredResult(dz.sh.hidra.modules.topology.application.port.in.AuthoredTopologyViewUseCase.View view,
             dz.sh.hidra.modules.topology.application.port.in.AuthoredTopologyViewUseCase.Discovery discovery) {}
     private AuthoredResult executeAuthored(dz.sh.hidra.modules.topology.application.port.in.PipelineAuthoringUseCase.Scope scope,
             dz.sh.hidra.modules.topology.application.port.in.PipelineAuthoringUseCase.Write write,Long version,Integer offset,Integer limit){

@@ -6,9 +6,9 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `9533394e3a72472a62e98c71be44944b0fb1805b`
+Captured source SHA: `c871ac3e118565d533b751897698db5fd25a7a7f`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `6663d1e0b976f3389f9622a2e80e7772038fa9a33c56844287804242e43f658a`.
+Generator format: 1; source bundle SHA-256: `f77cbd7fcfb959519878ae98cfa8f7d3f8f119aba4c69bc235500787fd407e7a`.
 Migrations: 200; JPA mappings: 470; catalog relations: 552; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.

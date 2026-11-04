@@ -6536,7 +6536,7 @@
       "lane": "postgres-integration",
       "owner": "party",
       "path": "src/test/java/dz/sh/hidra/modules/party/infrastructure/persistence/PartyAdministrationPostgresIntegrationTest.java",
-      "source_sha256": "dce3c91e2f50047fb32e9a185ca8d154f74020f504f4cbf8b934fce98f662af6",
+      "source_sha256": "ced5202dff3182b746bcedfc3196fe041e3eecbc6145332b954aabfd5562e07e",
       "supports": []
     },
     {

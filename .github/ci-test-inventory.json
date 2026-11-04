@@ -954,7 +954,7 @@
       "lane": "postgres-integration",
       "owner": "configuration",
       "path": "src/test/java/dz/sh/hidra/modules/configuration/infrastructure/persistence/ConfigurationAdministrationPostgresIntegrationTest.java",
-      "source_sha256": "77647a7e9d82e0e8394352c51270c43246952564d426930692feb93371fdb44a",
+      "source_sha256": "e96a9c74034a1ff6bfae53b42516747d20ce297c86831c9552a5cd47b2e064c8",
       "supports": []
     },
     {

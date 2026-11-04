@@ -104,7 +104,7 @@ class ConfigurationAdministrationPostgresIntegrationTest {
     }
 
     private String definition(String type,String sensitivity,Object defaultValue,boolean approval) throws Exception {
-        return value(expectedOk(call("POST",BASE+"/definitions",admin,json("namespaceId",namespace,"key","runtime."+id(),"displayNameFr","Synthetic setting","valueType",type,"sensitivity",sensitivity,"defaultValue",defaultValue,"requiresApproval",approval)),"create-definition"),"id");
+        return value(expectedOk(call("POST",BASE+"/definitions",admin,json("namespaceId",namespace,"key","runtime."+id(),"displayNameFr","Synthetic setting","valueType",type,"sensitivity",sensitivity,"scoped",false,"defaultValue",defaultValue,"requiresApproval",approval)),"create-definition"),"id");
     }
     private String version(String definition) throws Exception {return value(call("GET",BASE+"/definitions/"+definition,admin,null).andExpect(status().isOk()),"updatedAt");}
     private String activate(String definition) throws Exception {return value(call("POST",BASE+"/definitions/"+definition+"/activate",admin,json("expectedUpdatedAt",version(definition))).andExpect(status().isOk()),"activeVersionId");}
@@ -136,11 +136,11 @@ class ConfigurationAdministrationPostgresIntegrationTest {
     }
     @Test void unsupportedTypesApprovalScopesSecretsAndStrategiesRejectWithoutRows() throws Exception {
         for(String type:java.util.List.of("JSON","DATE","REFERENCE","LIST","DURATION"))
-            call("POST",BASE+"/definitions",admin,json("namespaceId",namespace,"key","r."+id(),"displayNameFr","Synthetic","valueType",type,"sensitivity","INTERNAL")).andExpect(status().is4xxClientError());
-        call("POST",BASE+"/definitions",admin,json("namespaceId",namespace,"key","r."+id(),"displayNameFr","Synthetic","valueType","STRING","sensitivity","INTERNAL","requiresApproval",true)).andExpect(status().is4xxClientError());
+            call("POST",BASE+"/definitions",admin,json("namespaceId",namespace,"key","r."+id(),"displayNameFr","Synthetic","valueType",type,"sensitivity","INTERNAL","scoped",false,"requiresApproval",false)).andExpect(status().is4xxClientError());
+        call("POST",BASE+"/definitions",admin,json("namespaceId",namespace,"key","r."+id(),"displayNameFr","Synthetic","valueType","STRING","sensitivity","INTERNAL","scoped",false,"requiresApproval",true)).andExpect(status().is4xxClientError());
         for(String secret:java.util.List.of("password=x","{\"token\":\"x\"}","Bearer abc.def.ghi"))
-            call("POST",BASE+"/definitions",admin,json("namespaceId",namespace,"key","r."+id(),"displayNameFr","Synthetic","valueType","STRING","sensitivity","INTERNAL","defaultValue",secret)).andExpect(status().is4xxClientError());
-        call("POST",BASE+"/feature-flags",admin,json("code","F-"+id(),"nameFr","Synthetic","owningModule","configuration","evaluationStrategy","PERCENTAGE")).andExpect(status().is4xxClientError());
+            call("POST",BASE+"/definitions",admin,json("namespaceId",namespace,"key","r."+id(),"displayNameFr","Synthetic","valueType","STRING","sensitivity","INTERNAL","scoped",false,"requiresApproval",false,"defaultValue",secret)).andExpect(status().is4xxClientError());
+        call("POST",BASE+"/feature-flags",admin,json("code","F-"+id(),"nameFr","Synthetic","owningModule","configuration","evaluationStrategy","PERCENTAGE","defaultEnabled",false)).andExpect(status().is4xxClientError());
         assertEquals(0,jdbc.queryForObject("SELECT count(*) FROM public.hidra_configuration_definition WHERE namespace_id=?",Integer.class,namespace));
     }
     @Test void staleWrongTypesWindowsVersionAndImpersonationNeverPersist() throws Exception {

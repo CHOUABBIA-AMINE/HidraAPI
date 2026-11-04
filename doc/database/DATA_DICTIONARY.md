@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `f6db84f4f0f6781a4519d150b90c51dd084ebca0`
+Captured source SHA: `9533394e3a72472a62e98c71be44944b0fb1805b`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `03e277ed241fc6dca2d7ca5e2c57b6db9f5678621462b3ee5ccff5fdc94f2325`.
-Migrations: 199; JPA mappings: 470; catalog relations: 552; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `6663d1e0b976f3389f9622a2e80e7772038fa9a33c56844287804242e43f658a`.
+Migrations: 200; JPA mappings: 470; catalog relations: 552; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -4535,6 +4535,7 @@ Persisted ConfigurationDefinitionJpaEntity state; semantic authority remains wit
 - Evidence: [ConfigurationDefinitionJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/configuration/infrastructure/persistence/entity/ConfigurationDefinitionJpaEntity.java)
 - Migration mention (not inferred introduction): [V20260611_020__create_configuration_tables.sql](../../src/main/resources/db/migration/V20260611_020__create_configuration_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
+- Migration mention (not inferred introduction): [V20261103_006__foundation_configuration_lifecycle.sql](../../src/main/resources/db/migration/V20261103_006__foundation_configuration_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -4573,10 +4574,14 @@ Persisted ConfigurationDefinitionJpaEntity state; semantic authority remains wit
   - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
 - `ix_hidra_configuration_definition_updated_at`: CREATE INDEX ix_hidra_configuration_definition_updated_at ON public.hidra_configuration_definition USING btree (updated_at)
   - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+- `uq_b5_definition_namespace_key`: CREATE UNIQUE INDEX uq_b5_definition_namespace_key ON public.hidra_configuration_definition USING btree (namespace_id, key)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
 
 #### Triggers
 
-None captured in this catalog category.
+- `tr_b5_definition_immutable`: CREATE TRIGGER tr_b5_definition_immutable BEFORE DELETE OR UPDATE ON hidra_configuration_definition FOR EACH ROW EXECUTE FUNCTION hidra_b5_definition_immutable_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_b5_definition_immutable_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_b5_definition_immutable_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> IF TG_TABLE_NAME='hidra_configuration_definition_version' THEN<br>   IF OLD.validation_summary='HAPI-927' THEN RAISE EXCEPTION 'B5 definition versions are immutable' USING ERRCODE='23514'; END IF;<br> ELSE<br>   IF OLD.status='ACTIVE' AND EXISTS(SELECT 1 FROM hidra_configuration_definition_version WHERE definition_id=OLD.id AND validation_summary='HAPI-927') THEN<br>     RAISE EXCEPTION 'Active B5 definitions are immutable' USING ERRCODE='23514';<br>   END IF;<br> END IF;<br> IF TG_OP='DELETE' THEN RETURN OLD; END IF;<br> RETURN NEW;<br>END $function$<br>
 
 ### public.hidra_configuration_definition_version
 
@@ -4588,6 +4593,7 @@ Persisted ConfigurationDefinitionVersionJpaEntity state; semantic authority rema
 - Migration mention (not inferred introduction): [V20260611_020__create_configuration_tables.sql](../../src/main/resources/db/migration/V20260611_020__create_configuration_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
 - Migration mention (not inferred introduction): [V20261004_039__hmr_039_configuration_configuration_value.sql](../../src/main/resources/db/migration/V20261004_039__hmr_039_configuration_configuration_value.sql)
+- Migration mention (not inferred introduction): [V20261103_006__foundation_configuration_lifecycle.sql](../../src/main/resources/db/migration/V20261103_006__foundation_configuration_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -4620,10 +4626,16 @@ Persisted ConfigurationDefinitionVersionJpaEntity state; semantic authority rema
   - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
 - `ix_hidra_configuration_definition_version_definition_id`: CREATE INDEX ix_hidra_configuration_definition_version_definition_id ON public.hidra_configuration_definition_version USING btree (definition_id)
   - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+- `uq_b5_active_definition_version`: CREATE UNIQUE INDEX uq_b5_active_definition_version ON public.hidra_configuration_definition_version USING btree (definition_id) WHERE active
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `uq_b5_definition_version`: CREATE UNIQUE INDEX uq_b5_definition_version ON public.hidra_configuration_definition_version USING btree (definition_id, version_number)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
 
 #### Triggers
 
-None captured in this catalog category.
+- `tr_b5_definition_version_immutable`: CREATE TRIGGER tr_b5_definition_version_immutable BEFORE DELETE OR UPDATE ON hidra_configuration_definition_version FOR EACH ROW EXECUTE FUNCTION hidra_b5_definition_immutable_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_b5_definition_immutable_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_b5_definition_immutable_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> IF TG_TABLE_NAME='hidra_configuration_definition_version' THEN<br>   IF OLD.validation_summary='HAPI-927' THEN RAISE EXCEPTION 'B5 definition versions are immutable' USING ERRCODE='23514'; END IF;<br> ELSE<br>   IF OLD.status='ACTIVE' AND EXISTS(SELECT 1 FROM hidra_configuration_definition_version WHERE definition_id=OLD.id AND validation_summary='HAPI-927') THEN<br>     RAISE EXCEPTION 'Active B5 definitions are immutable' USING ERRCODE='23514';<br>   END IF;<br> END IF;<br> IF TG_OP='DELETE' THEN RETURN OLD; END IF;<br> RETURN NEW;<br>END $function$<br>
 
 ### public.hidra_configuration_deployment
 
@@ -4734,6 +4746,7 @@ Persisted FeatureFlagJpaEntity state; semantic authority remains with configurat
 - Migration mention (not inferred introduction): [V20260611_020__create_configuration_tables.sql](../../src/main/resources/db/migration/V20260611_020__create_configuration_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
 - Migration mention (not inferred introduction): [V20261004_026__hmr_026_configuration_feature_flag.sql](../../src/main/resources/db/migration/V20261004_026__hmr_026_configuration_feature_flag.sql)
+- Migration mention (not inferred introduction): [V20261103_006__foundation_configuration_lifecycle.sql](../../src/main/resources/db/migration/V20261103_006__foundation_configuration_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -4769,6 +4782,8 @@ Persisted FeatureFlagJpaEntity state; semantic authority remains with configurat
   - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
 - `ix_hidra_configuration_feature_flag_updated_at`: CREATE INDEX ix_hidra_configuration_feature_flag_updated_at ON public.hidra_configuration_feature_flag USING btree (updated_at)
   - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+- `uq_b5_flag_code`: CREATE UNIQUE INDEX uq_b5_flag_code ON public.hidra_configuration_feature_flag USING btree (code)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
 
 #### Triggers
 
@@ -4783,6 +4798,7 @@ Persisted FeatureFlagRuleJpaEntity state; semantic authority remains with config
 - Evidence: [FeatureFlagRuleJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/configuration/infrastructure/persistence/entity/FeatureFlagRuleJpaEntity.java)
 - Migration mention (not inferred introduction): [V20260611_020__create_configuration_tables.sql](../../src/main/resources/db/migration/V20260611_020__create_configuration_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
+- Migration mention (not inferred introduction): [V20261103_006__foundation_configuration_lifecycle.sql](../../src/main/resources/db/migration/V20261103_006__foundation_configuration_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -4820,6 +4836,8 @@ Persisted FeatureFlagRuleJpaEntity state; semantic authority remains with config
   - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
 - `ix_hidra_configuration_feature_flag_rule_updated_at`: CREATE INDEX ix_hidra_configuration_feature_flag_rule_updated_at ON public.hidra_configuration_feature_flag_rule USING btree (updated_at)
   - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+- `uq_b5_flag_environment`: CREATE UNIQUE INDEX uq_b5_flag_environment ON public.hidra_configuration_feature_flag_rule USING btree (feature_flag_id, scope_id) WHERE (active AND ((scope_type)::text = 'ENVIRONMENT'::text) AND ((rule_name)::text ~~ 'HAPI-927:%'::text))
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
 
 #### Triggers
 
@@ -5137,6 +5155,7 @@ Persisted ConfigurationValueJpaEntity state; semantic authority remains with con
 - Migration mention (not inferred introduction): [V20260611_020__create_configuration_tables.sql](../../src/main/resources/db/migration/V20260611_020__create_configuration_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
 - Migration mention (not inferred introduction): [V20261004_039__hmr_039_configuration_configuration_value.sql](../../src/main/resources/db/migration/V20261004_039__hmr_039_configuration_configuration_value.sql)
+- Migration mention (not inferred introduction): [V20261103_006__foundation_configuration_lifecycle.sql](../../src/main/resources/db/migration/V20261103_006__foundation_configuration_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -5184,7 +5203,9 @@ Persisted ConfigurationValueJpaEntity state; semantic authority remains with con
 
 #### Triggers
 
-None captured in this catalog category.
+- `tr_b5_configuration_value`: CREATE TRIGGER tr_b5_configuration_value BEFORE INSERT OR UPDATE ON hidra_configuration_value FOR EACH ROW EXECUTE FUNCTION hidra_b5_configuration_value_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_b5_configuration_value_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_b5_configuration_value_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE d hidra_configuration_definition%ROWTYPE; v hidra_configuration_definition_version%ROWTYPE;<br>BEGIN<br> SELECT * INTO d FROM hidra_configuration_definition WHERE id=NEW.definition_id FOR UPDATE;<br> SELECT * INTO v FROM hidra_configuration_definition_version WHERE id=NEW.definition_version_id;<br> -- Preserve legacy producer contracts. The B5 version marker selects the strict lifecycle.<br> IF v.validation_summary IS DISTINCT FROM 'HAPI-927' THEN<br>   IF EXISTS(SELECT 1 FROM hidra_configuration_definition_version WHERE definition_id=NEW.definition_id AND validation_summary='HAPI-927') THEN<br>     RAISE EXCEPTION 'Exact active B5 version required' USING ERRCODE='23514';<br>   END IF;<br>   RETURN NEW;<br> END IF;<br> IF TG_OP='UPDATE' THEN RAISE EXCEPTION 'B5 override revisions are append only' USING ERRCODE='23514'; END IF;<br> IF d.status&lt;&gt;'ACTIVE' OR d.requires_approval OR d.scoped OR d.sensitivity NOT IN ('PUBLIC','INTERNAL')<br>   OR NOT v.active OR v.definition_id&lt;&gt;NEW.definition_id OR v.schema_json IS NOT NULL<br>   OR NEW.status&lt;&gt;'ACTIVE' OR NEW.json_value IS NOT NULL OR NEW.secret_reference IS NOT NULL<br>   OR NEW.raw_value IS NULL OR length(NEW.raw_value)&gt;2000 OR btrim(NEW.raw_value)&lt;&gt;NEW.raw_value<br>   OR NEW.created_by_actor_id IS NULL OR btrim(NEW.created_by_actor_id)=''<br>   OR NEW.environment !~ '^[A-Za-z0-9][A-Za-z0-9_.-]{0,39}$'<br>   OR NEW.effective_from IS NULL OR NEW.effective_to&lt;=NEW.effective_from THEN<br>   RAISE EXCEPTION 'Invalid B5 value contract' USING ERRCODE='23514';<br> END IF;<br> IF (d.value_type='BOOLEAN' AND NEW.raw_value NOT IN ('true','false'))<br>   OR (d.value_type='NUMBER' AND (length(NEW.raw_value)&gt;58 OR NEW.raw_value !~ '^-?(0&#124;[1-9][0-9]*)(\.[0-9]+)?$'))<br>   OR d.value_type NOT IN ('STRING','BOOLEAN','NUMBER') THEN<br>   RAISE EXCEPTION 'Invalid B5 typed value' USING ERRCODE='23514';<br> END IF;<br> IF d.value_type='NUMBER' AND (length(replace(ltrim(NEW.raw_value,'-'),'.',''))&gt;38<br>   OR (position('.' in NEW.raw_value)&gt;0 AND length(split_part(NEW.raw_value,'.',2))&gt;18)) THEN<br>   RAISE EXCEPTION 'B5 decimal bounds exceeded' USING ERRCODE='23514';<br> END IF;<br> IF EXISTS(SELECT 1 FROM hidra_configuration_value x WHERE x.definition_id=NEW.definition_id<br>   AND x.environment=NEW.environment AND x.status='ACTIVE'<br>   AND (x.effective_to IS NULL OR x.effective_to&gt;NEW.effective_from)<br>   AND (NEW.effective_to IS NULL OR x.effective_from IS NULL OR x.effective_from&lt;NEW.effective_to)) THEN<br>   RAISE EXCEPTION 'Overlapping B5 override' USING ERRCODE='23514';<br> END IF;<br> RETURN NEW;<br>END $function$<br>
 
 ### public.hidra_custody_agreement
 

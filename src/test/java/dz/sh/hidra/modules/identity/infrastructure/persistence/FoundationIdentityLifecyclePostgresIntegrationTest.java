@@ -112,6 +112,14 @@ class FoundationIdentityLifecyclePostgresIntegrationTest {
     private String onboard(String administrator,String username) throws Exception {
         var created=request("POST",API+"/users",administrator,"{\"username\":\""+username
                 +"\",\"emailAddress\":\""+username+"@synthetic.invalid\",\"displayName\":\"Synthetic operator\",\"userType\":\"HUMAN\"}")
+                .andDo(result -> {
+                    var failure=result.getResolvedException();
+                    if(failure!=null) {
+                        String frames=java.util.Arrays.stream(failure.getStackTrace()).limit(6)
+                                .map(StackTraceElement::toString).collect(java.util.stream.Collectors.joining("; "));
+                        fail("Registration exception type="+failure.getClass().getName()+"; frames="+frames);
+                    }
+                })
                 .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
                 .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.status").value("REGISTERED"));
         String user=value(created,"id");

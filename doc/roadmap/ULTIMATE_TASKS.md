@@ -3394,7 +3394,7 @@ HAPI-605 delivery-2 [Full #1087](https://github.com/CHOUABBIA-AMINE/HidraAPI/act
 
 ## Owner-approved foundation navigation — 2026-11-03
 
-The historical921-task baseline is preserved; the approved bounded extension contains928 current tasks in25 phases. [Adopted foundation supplement](FOUNDATION_PRODUCTION_ROADMAP.md). Current foundation pointer: [HAPI-927](TASKS_HPS-018.md#hapi-927), for the next separate owner selection after accepted [HAPI-926/B4](TASKS_HPS-004.md#hapi-926). This acceptance does not execute B5. Earlier execution pointers remain historical.
+The historical921-task baseline is preserved; the approved bounded extension contains928 current tasks in25 phases. [Adopted foundation supplement](FOUNDATION_PRODUCTION_ROADMAP.md). Current foundation pointer: [HAPI-928](TASKS_HPS-015.md#hapi-928), for the next separate owner selection after accepted [HAPI-927/B5](TASKS_HPS-018.md#hapi-927). This acceptance does not execute B6. Earlier execution pointers remain historical.
 
 <a id="hapi-922"></a>
 [HAPI-922](TASKS_HPS-025.md#hapi-922) — Foundation P0.
@@ -3420,3 +3420,5 @@ The historical921-task baseline is preserved; the approved bounded extension con
 HAPI-927 same-task Full #1115 repair (2026-11-04): [HPS-018](TASKS_HPS-018.md#hapi-927) records three PostgreSQL HTTP failures from a missing JSONB JDBC type on ConfigurationValueJpaEntity. The bounded entity mapping fix retains all tests, migrations and security; HAPI-927 remains IMPLEMENTED / IN_PROGRESS pending new exact-SHA Full CI.
 
 HAPI-927 same-task Full #1116 dictionary repair (2026-11-04): all 14 PostgreSQL shards, unit/architecture, static and runtime OpenAPI equality succeeded; strict database dictionary comparison failed after the JSONB entity source-metadata change. [HPS-018](TASKS_HPS-018.md#hapi-927) records the real CI #1116 artifact and byte-exact generated dictionary replacement. HAPI-927 remains IMPLEMENTED / IN_PROGRESS pending new exact-SHA Full/Docs acceptance.
+
+HAPI-927/B5 independent development-software acceptance (2026-11-04): [HPS-018](TASKS_HPS-018.md#hapi-927) records exact source ed3f0a65e9e1674284ae2c0a25f0ba920c1dd9c9, Full #1117/Docs #902 SUCCESS, independently verified 560 suites/4,291 zero-failure/error/skip cases including all27 Configuration cases, runtime API/compatibility and strict physical dictionary proof. VERIFIED/COMPLETED for bounded synthetic backend software only; HAPI-928/B6 is next separately selected whole task, not executed here. Frontend/SITE/release gates remain separate.

@@ -34,8 +34,12 @@ public class ConfigurationValueGuard {
     }
 
     public void ensureNoSecretMaterial(String rawValue) {
-        if (ConfigurationBoundaryPolicy.containsSecretMaterial(rawValue)) {
+        if (ConfigurationBoundaryPolicy.containsSecretMaterial(rawValue)
+                || rawValue != null && java.util.regex.Pattern.compile(
+                    "(?is)(-----BEGIN[ A-Z]*PRIVATE KEY-----|\\bBearer\\s+[A-Za-z0-9._~-]+|[\\\"\\\']?(secret|token|api[_-]?key|private[_-]?key|credential[_-]?value)[\\\"\\\']?\\s*[:=]|eyJ[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+)")
+                    .matcher(rawValue).find()) {
             throw new ConfigurationBoundaryViolationException("Configuration values must not persist secret material; store references only.");
         }
     }
 }
+

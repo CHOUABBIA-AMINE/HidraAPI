@@ -50,27 +50,40 @@ import java.util.Objects;
  * Application service for configuration definitions, values, and feature flags.
  */
 @Service
-public final class ConfigurationApplicationService implements CreateConfigurationDefinitionUseCase, SetConfigurationValueUseCase, CreateFeatureFlagUseCase {
+@org.springframework.transaction.annotation.Transactional(readOnly=true)
+public class ConfigurationApplicationService implements CreateConfigurationDefinitionUseCase, SetConfigurationValueUseCase, CreateFeatureFlagUseCase {
 
     private final ConfigurationDefinitionRepositoryPort definitionRepositoryPort;
     private final ConfigurationValueRepositoryPort valueRepositoryPort;
     private final FeatureFlagRepositoryPort featureFlagRepositoryPort;
+    private final dz.sh.hidra.modules.configuration.application.port.out.ConfigurationAdministrationPersistencePort administration;
+    private final dz.sh.hidra.modules.configuration.application.port.out.ConfigurationAdministrationAuthorizationPort authority;
     private final ConfigurationValueGuard valueGuard = new ConfigurationValueGuard();
 
     public ConfigurationApplicationService(
             ConfigurationDefinitionRepositoryPort definitionRepositoryPort,
             ConfigurationValueRepositoryPort valueRepositoryPort,
-            FeatureFlagRepositoryPort featureFlagRepositoryPort
+            FeatureFlagRepositoryPort featureFlagRepositoryPort,
+            dz.sh.hidra.modules.configuration.application.port.out.ConfigurationAdministrationPersistencePort administration,
+            dz.sh.hidra.modules.configuration.application.port.out.ConfigurationAdministrationAuthorizationPort authority
     ) {
+        this.administration=Objects.requireNonNull(administration);this.authority=Objects.requireNonNull(authority);
         this.definitionRepositoryPort = Objects.requireNonNull(definitionRepositoryPort, "Configuration definition repository port must not be null.");
         this.valueRepositoryPort = Objects.requireNonNull(valueRepositoryPort, "Configuration value repository port must not be null.");
         this.featureFlagRepositoryPort = Objects.requireNonNull(featureFlagRepositoryPort, "Feature flag repository port must not be null.");
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional(rollbackFor=Exception.class)
     public ConfigurationDefinitionSummaryDto createConfigurationDefinition(CreateConfigurationDefinitionCommand command) {
+        authority.administrator();
         Objects.requireNonNull(command, "Create configuration definition command must not be null.");
+        administration.requireNamespace(command.namespaceId());
+        dz.sh.hidra.modules.configuration.domain.service.TypedConfigurationPolicy.noSecrets(command.key(),command.defaultValue(),command.description(),command.displayNameFr(),command.displayNameAr(),command.displayNameEn());
         valueGuard.ensureAllowedDefinition(command.key());
+        if(command.sensitivity()==dz.sh.hidra.modules.configuration.domain.value.ConfigurationSensitivity.PUBLIC
+                ||command.sensitivity()==dz.sh.hidra.modules.configuration.domain.value.ConfigurationSensitivity.INTERNAL)
+            dz.sh.hidra.modules.configuration.domain.service.TypedConfigurationPolicy.typed(command.valueType(),command.defaultValue());
         Instant now = Instant.now();
         ConfigurationDefinition definition = new ConfigurationDefinition(
                 ConfigurationId.newId().value(),
@@ -89,34 +102,56 @@ public final class ConfigurationApplicationService implements CreateConfiguratio
                 now,
                 now
         );
-        return ConfigurationApplicationMapper.toSummary(definitionRepositoryPort.save(definition));
+        if(definition.sensitivity()==dz.sh.hidra.modules.configuration.domain.value.ConfigurationSensitivity.PUBLIC
+                ||definition.sensitivity()==dz.sh.hidra.modules.configuration.domain.value.ConfigurationSensitivity.INTERNAL)
+            dz.sh.hidra.modules.configuration.domain.service.TypedConfigurationPolicy.supported(definition);
+        else if(definition.defaultValue()!=null)throw new IllegalArgumentException("Sensitive definitions accept metadata only.");
+        var result=ConfigurationApplicationMapper.toSummary(definitionRepositoryPort.save(definition));
+        authority.administrator();return result;
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional(rollbackFor=Exception.class)
     public ConfigurationValueSummaryDto setConfigurationValue(SetConfigurationValueCommand command) {
+        String actor=authority.administrator();
         Objects.requireNonNull(command, "Set configuration value command must not be null.");
-        valueGuard.ensureNoSecretMaterial(command.rawValue());
+        dz.sh.hidra.modules.configuration.domain.service.TypedConfigurationPolicy.exact(command.definitionId(),80);
+        dz.sh.hidra.modules.configuration.domain.service.TypedConfigurationPolicy.environment(command.environment());
+        dz.sh.hidra.modules.configuration.domain.service.TypedConfigurationPolicy.window(command.effectiveFrom(),command.effectiveTo());
+        dz.sh.hidra.modules.configuration.domain.service.TypedConfigurationPolicy.noSecrets(command.rawValue(),command.jsonValue(),command.secretReference());
+        if(command.jsonValue()!=null||command.secretReference()!=null)throw new IllegalArgumentException("Only typed non-sensitive scalar values are admitted.");
+        if(command.createdByActorId()!=null&&!actor.equals(command.createdByActorId()))throw new IllegalArgumentException("Actor impersonation is not permitted.");
+        var state=administration.definition(command.definitionId(),true);
+        dz.sh.hidra.modules.configuration.domain.service.TypedConfigurationPolicy.active(state.definition());
+        administration.requireNamespace(state.definition().namespaceId());administration.requireSupportedRules(command.definitionId());
+        if(state.activeVersionId()==null||!state.activeVersionId().equals(command.definitionVersionId()))throw new IllegalStateException("Exact active definition version required.");
+        String typed=dz.sh.hidra.modules.configuration.domain.service.TypedConfigurationPolicy.typed(state.definition().valueType(),command.rawValue());
+        if(typed==null)throw new IllegalArgumentException("Typed override value required.");
+        administration.requireNoOverlap(command.definitionId(),command.environment(),command.effectiveFrom(),command.effectiveTo());
         Instant now = Instant.now();
         ConfigurationValue value = new ConfigurationValue(
                 ConfigurationId.newId().value(),
                 command.definitionId(),
                 command.definitionVersionId(),
                 command.environment(),
-                command.rawValue(),
+                typed,
                 command.jsonValue(),
                 command.secretReference(),
                 ConfigurationValueStatus.ACTIVE,
                 command.effectiveFrom(),
                 command.effectiveTo(),
-                command.createdByActorId(),
+                actor,
                 now,
                 now
         );
-        return ConfigurationApplicationMapper.toSummary(valueRepositoryPort.save(value));
+        var result=ConfigurationApplicationMapper.toSummary(valueRepositoryPort.save(value));
+        authority.administrator();return result;
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional(rollbackFor=Exception.class)
     public FeatureFlagSummaryDto createFeatureFlag(CreateFeatureFlagCommand command) {
+        authority.administrator();
         Objects.requireNonNull(command, "Create feature flag command must not be null.");
         Instant now = Instant.now();
         FeatureFlag featureFlag = new FeatureFlag(
@@ -133,6 +168,9 @@ public final class ConfigurationApplicationService implements CreateConfiguratio
                 now,
                 now
         );
-        return ConfigurationApplicationMapper.toSummary(featureFlagRepositoryPort.save(featureFlag));
+        dz.sh.hidra.modules.configuration.domain.service.TypedConfigurationPolicy.booleanFlag(featureFlag);
+        var result=ConfigurationApplicationMapper.toSummary(featureFlagRepositoryPort.save(featureFlag));
+        authority.administrator();return result;
     }
 }
+

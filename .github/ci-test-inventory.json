@@ -914,6 +914,50 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "nonemptyHalfOpenWindowsAndExactMicroseconds",
+        "secretMaterialIsRejectedAcrossRawJsonAndDefaults",
+        "staleVersionAndInvalidEnvironmentReject",
+        "strictBooleanAndPlainBoundedDecimal",
+        "stringsAreBoundedAndNeverSilentlyTrimmed",
+        "unsupportedTypesFailEvenWithoutADefault"
+      ],
+      "class": "dz.sh.hidra.modules.configuration.domain.service.TypedConfigurationPolicyTest",
+      "dependency_reason": "HAPI-927 typed policy; pure Java bounds/windows/secret rejection",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "configuration",
+      "path": "src/test/java/dz/sh/hidra/modules/configuration/domain/service/TypedConfigurationPolicyTest.java",
+      "source_sha256": "89341c8a686dec396174137c2c9841f2c65f819dfefbf09df8438770c5e74136",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "activeDefinitionAndVersionCannotBeRewritten",
+        "competingActivationsCommitOneVersion",
+        "competingOverlappingWritesCommitOneValue",
+        "currentAdministratorRevocationDeniesKnownUnknownCountsAndWrites",
+        "downstreamFailureRollsBackActivationAndVersionTogether",
+        "finalCurrentAuthorityDenialRollsBackProvisionalActivation",
+        "nativeBooleanFlagActivationAndEnvironmentState",
+        "nativeDefinitionActivationTypedOverrideAndExactHalfOpenReload",
+        "overlappingOverridesRejectWhileAdjacentWindowsSucceed",
+        "sensitiveLegacyDefaultsAndValuesAreRedactedBeforeSerialization",
+        "staleWrongTypesWindowsVersionAndImpersonationNeverPersist",
+        "unsupportedTypesApprovalScopesSecretsAndStrategiesRejectWithoutRows"
+      ],
+      "class": "dz.sh.hidra.modules.configuration.infrastructure.persistence.ConfigurationAdministrationPostgresIntegrationTest",
+      "dependency_reason": "HAPI-927 whole B5; configured LOCAL JWT HTTP/fresh PostgreSQL/rollback/concurrent writers",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "configuration",
+      "path": "src/test/java/dz/sh/hidra/modules/configuration/infrastructure/persistence/ConfigurationAdministrationPostgresIntegrationTest.java",
+      "source_sha256": "0c12a0479c0b3a3f11dbf55bfa617a7a54b06fe546654af0644f8e66d75804cf",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0.041,
       "cases": [
         "generalDefinitionDefaultUsesSameSecretBoundary",

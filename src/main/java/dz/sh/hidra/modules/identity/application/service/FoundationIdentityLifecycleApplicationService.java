@@ -32,7 +32,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public final class FoundationIdentityLifecycleApplicationService implements FoundationIdentityLifecycleUseCase {
+public class FoundationIdentityLifecycleApplicationService implements FoundationIdentityLifecycleUseCase {
     private final FoundationIdentityLifecyclePersistencePort persistence;
     private final FoundationIdentityAuthorizationPort authorization;
     private final PasswordEncoder passwords;

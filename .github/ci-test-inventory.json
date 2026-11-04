@@ -1875,7 +1875,8 @@
       "cases": [
         "activationUsesExplicitExpectedVersionAndReturnsNoSecret",
         "credentialResponseContainsOnlyGenerationAndDate",
-        "nativeBearerMustHaveCurrentExactBindingAndLiveAdministratorGrant"
+        "nativeBearerMustHaveCurrentExactBindingAndLiveAdministratorGrant",
+        "springClassProxiesCanWrapBothLifecycleBeans"
       ],
       "class": "dz.sh.hidra.modules.identity.api.rest.controller.IdentityLifecycleControllerTest",
       "dependency_reason": "No live service; Mockito request DTO and native bearer checks",
@@ -1883,7 +1884,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityLifecycleControllerTest.java",
-      "source_sha256": "eb8723be07239e54a9a22b6f14cacada9a799f901e384a530cca3d87e8539a08",
+      "source_sha256": "3c12880a5bd2453433442f8d9383c994d998a5a17d62b22c1665e1bd9bc3fe77",
       "supports": []
     },
     {

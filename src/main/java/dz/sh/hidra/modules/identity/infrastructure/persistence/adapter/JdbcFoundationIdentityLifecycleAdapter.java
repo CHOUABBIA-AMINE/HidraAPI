@@ -41,7 +41,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
  * No independent transaction, dynamic SQL identifier or business authority shortcut.
  */
 @Repository
-public final class JdbcFoundationIdentityLifecycleAdapter implements FoundationIdentityLifecyclePersistencePort {
+public class JdbcFoundationIdentityLifecycleAdapter implements FoundationIdentityLifecyclePersistencePort {
     private static final String USER = "public.hidra_identity_user";
     private static final String CREDENTIAL = "public.hidra_identity_local_credential";
     private static final String SESSION = "public.hidra_identity_login_session";

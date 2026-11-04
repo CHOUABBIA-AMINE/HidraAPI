@@ -68,18 +68,34 @@ class IdentityLifecycleControllerTest {
         var admins = mock(IdentityAdministratorGrantService.class);
         var adapter = new FoundationIdentityAuthorizationAdapter(bindings,states,admins);
         var jwt = Jwt.withTokenValue("synthetic-signed-by-test-only").header("alg","HS256")
-                .issuer("hidra-api").subject("admin-1").id("jti-1")
+                .issuer("https://hidra.test").subject("admin-1").claim("jti","jti-1")
                 .issuedAt(Instant.now().minusSeconds(30)).expiresAt(Instant.now().plusSeconds(60)).build();
         SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(jwt));
         assertThrows(AccessDeniedException.class,adapter::authenticatedActor);
         var binding = mock(OperationAuthenticationBinding.class);
         when(binding.userId()).thenReturn("admin-1");
-        when(binding.nativeIssuer()).thenReturn("hidra-api");
-        when(bindings.findByNativeIssuerAndJti("hidra-api","jti-1")).thenReturn(Optional.of(binding));
+        when(binding.nativeIssuer()).thenReturn("https://hidra.test");
+        when(bindings.findByNativeIssuerAndJti("https://hidra.test","jti-1")).thenReturn(Optional.of(binding));
         when(states.current(eq(binding),any(Instant.class))).thenReturn(true);
         when(admins.hasActiveGlobalAdministratorGrant("admin-1")).thenReturn(true);
         assertEquals("admin-1",adapter.administratorActor());
         when(states.current(eq(binding),any(Instant.class))).thenReturn(false);
         assertThrows(AccessDeniedException.class,adapter::administratorActor);
+    }
+    @Test void springClassProxiesCanWrapBothLifecycleBeans() {
+        var service = new dz.sh.hidra.modules.identity.application.service.FoundationIdentityLifecycleApplicationService(
+                mock(dz.sh.hidra.modules.identity.application.port.out.FoundationIdentityLifecyclePersistencePort.class),
+                mock(dz.sh.hidra.modules.identity.application.port.out.FoundationIdentityAuthorizationPort.class),
+                mock(org.springframework.security.crypto.password.PasswordEncoder.class));
+        var persistence = new dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JdbcFoundationIdentityLifecycleAdapter(
+                new org.springframework.jdbc.core.JdbcTemplate());
+        for (Object target : new Object[] { service, persistence }) {
+            var factory = new org.springframework.aop.framework.ProxyFactory(target);
+            factory.setProxyTargetClass(true);
+            factory.addAdvice((org.aopalliance.intercept.MethodInterceptor) invocation -> invocation.proceed());
+            Object proxy = factory.getProxy();
+            assertTrue(org.springframework.aop.support.AopUtils.isCglibProxy(proxy));
+            assertNotSame(target, proxy);
+        }
     }
 }
